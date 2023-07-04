@@ -1,0 +1,24 @@
+@use 'sass:math';
+@use 'palette';
+
+$font-family-default: 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Apply SD Gothic Neo', 'Malgun Gothic', '맑은 고딕', arial,
+  sans-serif;
+$font-size-default: 16px;
+$font-color-default: palette.$Primary-Gray900;
+
+@function toRem($value) {
+  @return math.div($value, $font-size-default) * 1rem;
+}
+
+$font-size: toRem($font-size-default);
+$font-size-48: toRem(48px);
+$font-size-40: toRem(40px);
+$font-size-32: toRem(32px);
+$font-size-28: toRem(28px);
+$font-size-24: toRem(24px);
+$font-size-20: toRem(20px);
+$font-size-18: toRem(18px);
+$font-size-16: toRem(16px);
+$font-size-14: toRem(14px);
+$font-size-13: toRem(13px);
+$font-size-12: toRem(12px);

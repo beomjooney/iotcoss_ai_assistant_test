@@ -1,0 +1,154 @@
+@use 'src/stories/assets/styles/abstracts/font';
+@use 'src/stories/assets/styles/abstracts/palette';
+
+.node-card {
+  width: 120px;
+  height: 100%;
+  color: #000000;
+  position: relative;
+
+  .header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 33px;
+    border-radius: 5px 5px 0 0;
+
+    &.header-large {
+      width: 160px;
+    }
+
+    &.plan {
+      background-color: palette.$Primary-Plan800;
+      border: 1px solid palette.$Primary-Plan800;
+    }
+
+    &.design {
+      background-color: palette.$Primary-Design800;
+      border: 1px solid palette.$Primary-Design800;
+    }
+
+    &.develop {
+      background-color: palette.$Primary-Develop800;
+      border: 1px solid palette.$Primary-Develop800;
+    }
+
+    &.engine {
+      background-color: palette.$Primary-Design800;
+      border: 1px solid palette.$Primary-Design800;
+    }
+  }
+
+  .content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 56px;
+    border-radius: 0 0 5px 5px;
+    font-weight: 700;
+
+    &.content-large {
+      width: 160px;
+      height: 87px;
+    }
+
+    &.plan {
+      border: 1px solid palette.$Primary-Plan800;
+    }
+
+    &.design {
+      border: 1px solid palette.$Primary-Design800;
+    }
+
+    &.develop {
+      border: 1px solid palette.$Primary-Develop800;
+    }
+
+    &.engine {
+      border: 1px solid palette.$Primary-Design800;
+    }
+  }
+
+  &__close {
+    //display: flex;
+    //justify-content: flex-end;
+    margin-left: auto;
+  }
+
+  :global {
+    .node-card-button {
+      //display: inline-block;
+      position: absolute;
+      box-sizing: border-box;
+      text-align: left;
+      vertical-align: text-top;
+      top: -5%;
+      left: 90%;
+    }
+
+    .node-card-close {
+      width: 20px;
+      height: 20px;
+      position: absolute;
+      text-indent: -9999px;
+      background: #000;
+      border-radius: 50%;
+      border: 1px solid #000;
+    }
+    .node-card-close:before, .node-card-close:after {
+      content: '';
+      width: 10px;
+      height: 1px;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      border-radius: 4px;
+      background: #fff;
+    }
+    .node-card-close:before {
+      transform: translate(-50%,-50%) rotate(-45deg);
+    }
+    .node-card-close:after {
+      transform: translate(-50%,-50%) rotate(45deg)
+    }
+
+    .totop_arrow1 {
+      width: 50px;
+      height: 50px;
+      position: relative;
+      background: #000;
+      border-radius: 50%;
+      text-indent: -9999px;
+    }
+    .totop_arrow1:before, .totop_arrow1:after {
+      content: '';
+      width: 18px;
+      height: 4px;
+      position: absolute;
+      top: 48%;
+      border-radius: 5px;
+      background: #fff
+    }
+    .totop_arrow1:before {
+      left: 21px;
+      transform: translateY(-50%) rotate(45deg)
+    }
+    .totop_arrow1:after {
+      right: 21px;
+      transform: translateY(-50%) rotate(-45deg)
+    }
+  }
+}
+
+.node-card-header-large {
+  width: 160px;
+}
+
+.node-card-content-large {
+  width: 160px;
+  height: 87px;
+}
+
+.node-card-cursor {
+  cursor: pointer;
+}

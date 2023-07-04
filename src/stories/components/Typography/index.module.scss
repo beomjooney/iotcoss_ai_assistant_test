@@ -1,0 +1,76 @@
+@use 'src/stories/assets/styles/abstracts/font';
+@use 'src/stories/assets/styles/abstracts/palette';
+
+.typography {
+  word-break: keep-all;
+
+  &--A1 {
+    font-size: font.$font-size-40;
+    letter-spacing: -1.5px;
+    line-height: 40px;
+  }
+
+  &--A2 {
+    font-size: font.$font-size-48;
+    letter-spacing: -1.5px;
+    line-height: 40px;
+  }
+
+  &--A3 {
+    font-size: font.$font-size-32;
+    letter-spacing: -1.5px;
+    line-height: 40px;
+  }
+
+  &--H1 {
+    font-size: font.$font-size-28;
+    letter-spacing: -1.5px;
+    line-height: 40px;
+  }
+
+  &--H2 {
+    font-size: font.$font-size-24;
+    letter-spacing: -1.5px;
+    line-height: 36px;
+  }
+
+  &--H3 {
+    font-size: font.$font-size-20;
+    letter-spacing: -1.5px;
+    line-height: 28px;
+  }
+
+  &--B1 {
+    font-size: font.$font-size;
+    letter-spacing: -0.5px;
+    line-height: 22px;
+  }
+
+  &--B2 {
+    font-size: font.$font-size-14;
+    letter-spacing: -0.5px;
+    line-height: 20px;
+  }
+
+  &--B3 {
+    font-size: font.$font-size-13;
+    letter-spacing: -0.5px;
+    line-height: 19px;
+  }
+
+  &--C1 {
+    font-size: font.$font-size-12;
+    letter-spacing: -0.5px;
+    line-height: 16px;
+  }
+
+  &--regular {
+    font-weight: 400;
+  }
+  &--medium {
+    font-weight: 500;
+  }
+  &--bold {
+    font-weight: 700;
+  }
+}

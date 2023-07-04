@@ -1,0 +1,68 @@
+@use 'src/stories/assets/styles/abstracts/font';
+@use 'src/stories/assets/styles/abstracts/palette';
+
+.header-title {
+  display: flex;
+  gap: 20px;
+}
+
+.logo {
+  box-sizing: border-box;
+  width: 56px;
+  height: 56px;
+  background: #3D6AFE;
+  border: 1px solid #D2D8DD;
+  border-radius: 20px;
+  text-align: center;
+  padding: 10px;
+  font-size: font.toRem(24px);
+  color: palette.$Primary-Withe;
+  font-weight: 700;
+}
+
+.top-border {
+  border-top: 1px solid palette.$Primary-Gray500;
+  //padding-bottom: font.toRem(12px);
+}
+
+.bottom-border {
+  border-bottom: 1px solid palette.$Primary-Gray500;
+  //padding-bottom: font.toRem(12px);
+}
+
+.login-display {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.change-account {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.required-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.choice-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.right {
+  margin-left : auto;
+}
+
+.link {
+  color: palette.$Primary-Gray800;
+  text-decoration: underline;
+  cursor: pointer;
+}
+

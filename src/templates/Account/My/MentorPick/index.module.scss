@@ -1,0 +1,19 @@
+@use 'src/stories/assets/styles/abstracts/font';
+@use 'src/stories/assets/styles/abstracts/palette';
+@use 'src/stories/assets/styles/abstracts/mixin';
+
+.main-container {
+  margin-top: 49px;
+  @include mixin.initMyPageFotterButton;
+
+  .mentor-area {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    & > div:not(:first-child) {
+      margin-top: 32px;
+    }
+  }
+}

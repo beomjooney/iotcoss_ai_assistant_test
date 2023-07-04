@@ -1,0 +1,49 @@
+.contents-wrapper{
+  display: flex;
+  justify-items: center;
+  gap: 20px;
+  margin: 20px 0px;
+
+  .seminar-jobgroup-area{
+    label{
+      width: 80px;
+    }
+  }
+
+.contentsId{
+  width: 140px;
+}
+
+.contentsName{
+  width: 140px;
+}
+
+.contentsType{
+  width: 120px;
+  select {
+    width: 100%;
+  }
+}
+
+.recommendJobGroup{
+  width: 120px;
+  select {
+    width: 100%;
+  }
+}
+.seminarEndDateFrom{
+  width: 120px;
+  margin-top: 6px;
+}
+
+.seminarEndDateTo{
+  width: 120px;
+  margin-top: 6px;
+}
+
+.btn{
+  margin-top: 24px;
+}
+
+
+}

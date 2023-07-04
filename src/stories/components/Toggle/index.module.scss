@@ -1,0 +1,151 @@
+@use 'src/stories/assets/styles/abstracts/font';
+@use 'src/stories/assets/styles/abstracts/palette';
+
+.container {
+
+  &[data-icon='true'] {
+    width: 86px;
+  }
+
+  &[data-variant='medium'] {
+    width: 160px;
+    height: 68px;
+  }
+
+  &[data-variant='large'] {
+    width: 256px;
+    height: 68px;
+  }
+
+  &[data-variant^='tabButton'] {
+    width: auto;
+    height: 48px;
+    flex-grow: 1;
+  }
+
+  &[data-tab-button="true"] {
+    width: 120px;
+    height: 40px;
+    font-size: font.$font-size-14;
+  }
+
+  &--toggle {
+    display: inline-flex;
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+    height: 42px;
+
+    input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    & > span {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      //border: 1px solid palette.$Primary-Gray500;
+      border-radius: 5px;
+      box-sizing: border-box;
+      width: 100%;
+      height: 100%;
+      //color: palette.$Primary-Gray600;
+
+      &.isNone {
+        border: 1px solid palette.$Primary-Gray500;
+        color: palette.$Primary-Gray600;
+      }
+
+      &.isActive {
+        color: #000000;
+        border: 1px solid #000000;
+      }
+
+      span {
+        margin: 10px 20px;
+      }
+
+      &[data-variant^='tabButton'] {
+        justify-content: center;
+        color: palette.$Primary-Gray600;
+
+        span {
+          margin: 0;
+        }
+      }
+      &[data-variant='tabButton-left'] {
+        border-radius: 8px 0 0 8px;
+      }
+      &[data-variant='tabButton-center'] {
+        border-radius: 0;
+      }
+      &[data-variant='tabButton-right'] {
+        border-radius: 0 8px 8px 0;
+      }
+
+      i {
+        margin-left: 4px;
+      }
+    }
+
+    input:checked ~ span {
+      border-color: palette.$Primary-Gray900;
+      color: palette.$Primary-Gray900;
+      z-index: 1;
+    }
+
+    input:checked ~ .active {
+      border-color: palette.$Primary-Blue900;
+      background: palette.$Primary-Blue900;
+      color: palette.$Primary-Withe;
+      z-index: 1;
+    }
+
+    input[disabled],
+    input.disabled {
+      & ~ span {
+        color: palette.$Primary-Gray600;
+        background-color: palette.$Primary-Gray400;
+        border-color: palette.$Primary-Gray400;
+      }
+
+      & ~ span[data-variant='large'] {
+        background-color: palette.$Primary-Gray400;
+      }
+    }
+
+    span[data-isdisplay='true'] {
+      i,
+      span {
+        color: palette.$Primary-Gray600;
+      }
+    }
+  }
+
+  &--checkbox {
+    input[type="checkbox"] {
+      display: none;
+    }
+    span {
+      font-size: font.$font-size-16 !important;
+    }
+    input[type=checkbox] + span {
+      cursor: pointer;
+      padding-left: 23px;
+      background-repeat: no-repeat;
+      background-image: url('../../../../public/assets/images/icons/unchecked.svg');
+      color: palette.$Primary-Gray600;
+    }
+    input[type=checkbox]:checked + span {
+      background-image: url('../../../../public/assets/images/icons/checked.svg');
+      color: palette.$Primary-Gray900;
+    }
+    input[type=checkbox]:disabled + span {
+      //background-image: url('../../../../public/assets/images/icons/unchecked.svg');
+      color: palette.$Primary-Gray600;
+    }
+  }
+}

@@ -1,0 +1,200 @@
+@use 'src/stories/assets/styles/abstracts/font';
+@use 'src/stories/assets/styles/abstracts/palette';
+
+.career-tooltip-wrap {
+  :global {
+    .career-tooltip {
+      position: absolute;
+      display: none;
+      &.show {
+        display: flex;
+        z-index: 99;
+        .tooltip-bubble {
+          z-index: 100;
+        }
+      }
+    }
+    .career-tooltip::after {
+      border-left: 7px solid white;
+      border-right: 7px solid white;
+      content: '';
+      height: 0;
+      left: 21%;
+      position: absolute;
+      top: 20%;
+      width: 0;
+    }
+
+    .after-gray::after {
+      border-bottom: 8px solid palette.$Primary-Gray800;
+    }
+
+    .after-lite-gray::after {
+      border-bottom: 8px solid palette.$Primary-Gray600;
+    }
+
+    .after-blue::after {
+      border-bottom: 8px solid palette.$Primary-Blue900;
+    }
+
+    .tooltip-inner-mentors {
+      position: absolute;
+      max-width: 420px;
+      &.top {
+        padding-bottom: 8px;
+        top: 0;
+      }
+      &.bottom {
+        padding-top: 8px;
+        bottom: 0;
+      }
+    }
+    .tooltip-button {
+      display: inline-flex;
+    }
+
+    .tooltip-bubble {
+      position: relative;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      padding: 8px 16px;
+      background: palette.$Primary-Gray800;
+      color: palette.$Primary-Withe;
+      font-size: font.toRem(12px);
+      line-height: font.toRem(16px);
+      border-radius: 40px;
+      box-sizing: border-box;
+      transition: opacity 0.15s;
+      word-wrap: break-word;
+      &__arrow {
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-top: 5px solid transparent;
+        border-right: 8px solid palette.$Primary-Gray800;
+        border-bottom: 5px solid transparent;
+      }
+      .tooltip-close-button {
+        width: 12px;
+        height: 12px;
+        margin-left: 4px;
+        color: #fff;
+      }
+      & .tooltip-content {
+        & > :first-child {
+          padding-right: 16px;
+        }
+      }
+    }
+
+    .career-tooltip-bubble-type {
+      .tooltip-content {
+        min-width: 98px;
+      }
+    }
+
+    .career-tooltip-box-type {
+      .tooltip-inner-mentors {
+        max-width: 420px;
+        min-width: 136px;
+      }
+      .box-title {
+        display: block;
+        margin-bottom: 8px;
+        padding-right: 16px;
+        font-size: font.toRem(12px);
+        font-weight: 700;
+        line-height: font.toRem(16px);
+        color: palette.$Primary-Withe;
+        & ~ .tooltip-content {
+          & > :first-child {
+            padding-right: 0;
+          }
+        }
+      }
+    }
+
+    .gray {
+      border: 1px solid palette.$Primary-Gray800;
+      background-color: palette.$Primary-Gray800;
+    }
+
+    .lite-gray {
+      border: 1px solid palette.$Primary-Gray600;
+      background-color: palette.$Primary-Gray600;
+    }
+
+    .blue {
+      border: 1px solid palette.$Primary-Blue900;
+      background-color: palette.$Primary-Blue900;
+    }
+
+    .career-tooltip-box {
+      position: relative;
+      padding: 9px;
+      //border: 1px solid palette.$Primary-Gray800;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 5px;
+      box-sizing: border-box;
+      //background-color: palette.$Primary-Gray800;
+      font-size: font.toRem(12px);
+      font-weight: 700;
+      line-height: font.toRem(16px);
+      color: palette.$Primary-Withe;
+      word-wrap: normal;
+
+      .tooltip-close-button {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        font-size: font.toRem(20px);
+        color: #000000;
+      }
+      .tooltip-content {
+        & > :first-child {
+          padding-right: 16px;
+        }
+      }
+    }
+
+    .bottom {
+      .tooltip-bubble__arrow {
+        top: -7px;
+        transform: rotate(-270deg);
+      }
+      &-start {
+        @extend .bottom;
+        .tooltip-bubble__arrow {
+          left: 7%;
+        }
+      }
+      &-end {
+        @extend .bottom;
+        .tooltip-bubble__arrow {
+          right: 7%;
+        }
+      }
+    }
+    .top {
+      .tooltip-bubble__arrow {
+        bottom: -7px;
+        transform: rotate(270deg);
+      }
+      &-start {
+        @extend .top;
+        .tooltip-bubble__arrow {
+          left: 7%;
+        }
+      }
+      &-end {
+        @extend .top;
+        .tooltip-bubble__arrow {
+          right: 7%;
+        }
+      }
+    }
+  }
+}
+

@@ -1,0 +1,46 @@
+@use 'src/stories/assets/styles/abstracts/font';
+@use 'src/stories/assets/styles/abstracts/palette';
+
+$header-height: 52px;
+
+.modal-header {
+  background-color: palette.$Primary-Blue900;
+  color: white;
+  font-weight: bold;
+  font-size: font.$font-size-14 !important;
+  position: relative;
+  height: $header-height;
+
+  &__title {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    text-align: center;
+  }
+
+  span:not(.modal-header__title) {
+    cursor: pointer !important;
+  }
+}
+.closable {
+  text-align: right;
+  padding: 1rem 1rem;
+}
+.content-wrap {
+  top: $header-height;
+  padding: 4rem 5rem;
+  display: table;
+  width: 100%;
+  height: calc(100% - $header-height);
+
+  .content {
+    text-align: center;
+    color: black;
+    display: table-cell;
+    vertical-align: middle;
+  }
+}
+
+.text-bold {
+  font-weight: bold !important;
+}

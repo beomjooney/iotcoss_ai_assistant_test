@@ -1,0 +1,61 @@
+@use 'src/stories/assets/styles/abstracts/font';
+@use 'src/stories/assets/styles/abstracts/palette';
+
+.growth-story-container {
+  width: 160px;
+  .story-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .info {
+      color: palette.$Primary-Gray600;
+      //margin-bottom: font.toRem(200px);
+    }
+  }
+
+  .circle {
+    &__small {
+      width: 36px;
+      height: 36px;
+    }
+
+    &__large {
+      width: 60px;
+      height: 60px;
+    }
+
+    background: palette.$Primary-Blue900;
+    border-radius: 50%;
+    //margin-top: font.toRem(200px);
+    margin-bottom: font.toRem(19px);
+
+    &__text {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      color: palette.$Primary-Withe;
+      font-size: font.toRem(38px);
+    }
+
+    &__bg-withe {
+      width: font.toRem(60px);
+      height: font.toRem(60px);
+      background: palette.$Primary-Withe;
+      border: 1px solid palette.$Primary-Gray600;
+      border-radius: 50%;
+      //margin-top: font.toRem(200px);
+      margin-bottom: font.toRem(46px);
+    }
+
+    &__text-gray {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      color: palette.$Primary-Gray600;
+      font-size: font.toRem(38px);
+    }
+  }
+}

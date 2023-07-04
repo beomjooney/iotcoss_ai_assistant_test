@@ -1,0 +1,25 @@
+node_modules
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+/.vscode
+
+# compiled output
+/dist
+/build
+/tmp
+**/tmp
+/.next
+
+# temp file
+package-lock.json
+
+# log
+tsconfig.tsbuildinfo
+npm-debug.log
+yarn-error.log
+/.sass-cache
+
+career-mentors.iml

@@ -1,0 +1,130 @@
+@use './palette';
+@use './font';
+
+@mixin initLinkText($font-color: palette.$Primary-Gray900) {
+  color: $font-color;
+  font-style: normal;
+}
+
+@mixin setMaxTextLine($max-line: 1) {
+  display: -webkit-box;
+  -webkit-line-clamp: $max-line;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@mixin initMyPageFotterButton() {
+  text-align: center;
+
+  .button-area {
+    > button {
+      margin-top: 90px;
+      width: fit-content !important;
+
+      &:not(:first-child) {
+        margin-left: 40px;
+      }
+    }
+  }
+}
+
+@mixin initFlexWrap($gap: 12px, $direction: row) {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: $direction;
+  justify-content: center;
+  align-items: flex-start;
+  gap: $gap;
+}
+
+@mixin setTagsStyle() {
+  font-size: font.$font-size-12 !important;
+  color: palette.$Primary-Gray600;
+}
+
+@mixin initEditorContent() {
+  font-size: font.$font-size-14 !important;
+  line-height: 21px;
+  color: black;
+
+  i {
+    font-style: italic;
+  }
+
+  h2 {
+    font-weight: 700;
+    font-size: font.$font-size-20 !important;
+    line-height: 30px;
+    margin-bottom: 8px;
+  }
+
+  h3 {
+    font-weight: bold;
+    font-size: font.$font-size-16 !important;
+    line-height: 24px;
+    margin-bottom: 8px;
+  }
+
+  h4 {
+    font-weight: bold;
+    font-size: font.$font-size-14 !important;
+    line-height: 21px;
+  }
+
+  strong, b {
+    font-weight: 600;
+  }
+
+  ol, ul, blockquote {
+    margin-left: 16px;
+  }
+
+  ul {
+    list-style: '- ';
+  }
+
+  ol {
+    list-style: decimal;
+  }
+
+  blockquote, q {
+    margin-left: 0;
+    quotes: initial;
+    &::before {
+      content: open-quote;
+      color: palette.$Primary-Gray800;
+      font-size: 1.5rem;
+    }
+    p {
+      color: palette.$Primary-Gray700;
+      display: inline-block;
+    }
+  }
+}
+
+@mixin initflexWrapContainer() {
+  .flex-wrap-container {
+    @include initFlexWrap(15px);
+    row-gap: 15px;
+    justify-content: flex-start;
+  }
+
+  @media(max-width: 1200px) {
+    .flex-wrap-container {
+      justify-content: center;
+    }
+  }
+  @media (min-width: 992px) and (max-width: 1199px) {
+    width:100%;
+    .flex-wrap-container {
+      justify-content: center;
+    }
+  }
+
+  @media (min-width: 320px) and (max-width: 992px) {
+    width:100%;
+    .flex-wrap-container {
+      justify-content: center;
+    }
+  }
+}

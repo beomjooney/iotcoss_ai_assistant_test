@@ -1,0 +1,63 @@
+@use 'src/stories/assets/styles/abstracts/font';
+@use 'src/stories/assets/styles/abstracts/palette';
+
+.section-header {
+  //font-weight: bold;
+  width: 100%;
+  text-align: center;
+  padding: 10px;
+
+  span {
+    color: palette.$Primary-Blue900;
+    //font-weight: 700;
+    font-size: font.$font-size-16;
+    line-height: 24px;
+  }
+
+  h2 {
+    margin-top: 8px;
+    //font-weight: 700;
+    font-size: font.$font-size-24;
+    line-height: 36px;
+  }
+
+  &--lite {
+    font-weight: 400 !important;
+    span {
+      font-weight: 400 !important;
+    }
+    h2 {
+      font-weight: 400 !important;
+    }
+  }
+
+  &--bold {
+    font-weight: bold !important;
+    span {
+      font-weight: 700 !important;
+    }
+    h2 {
+      font-weight: 700 !important;
+    }
+  }
+
+  &--normal {
+    span {
+      font-size: font.$font-size-16 !important;
+    }
+
+    h2 {
+      font-size: font.$font-size-24 !important;
+    }
+  }
+
+  &--small {
+    span {
+      font-size: font.$font-size-14 !important;
+    }
+
+    h2 {
+      font-size: font.$font-size-20 !important;
+    }
+  }
+}

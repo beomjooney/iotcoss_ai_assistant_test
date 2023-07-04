@@ -1,0 +1,56 @@
+@use 'src/stories/assets/styles/abstracts/font';
+@use 'src/stories/assets/styles/abstracts/palette';
+@use 'src/stories/assets/styles/abstracts/mixin';
+
+.main-container {
+  @include mixin.initMyPageFotterButton;
+
+  &--not {
+    .content {
+      font-size: font.$font-size-20 !important;
+      font-weight: bold;
+      color: black;
+      margin-bottom: 32px;
+    }
+
+    padding-bottom: 90px;
+  }
+
+  .my-profile-area {
+    text-align: center;
+
+    &__profile {
+      margin: auto;
+      margin-bottom: 20px;
+    }
+
+    &__desc {
+      line-height: initial;
+      font-size: font.$font-size-14;
+    }
+  }
+
+  > section:not(.my-profile-area) {
+    margin-top: 40px;
+    padding: 0 10px;
+
+    h4 {
+      font-weight: bold;
+      font-size: font.$font-size-20 !important;
+      margin-bottom: 32px;
+    }
+
+    .skills-area {
+      @include mixin.initFlexWrap;
+
+      &__item {
+        padding: 20px;
+
+        span {
+          font-weight: bold;
+          font-size: font.$font-size-16 !important;
+        }
+      }
+    }
+  }
+}

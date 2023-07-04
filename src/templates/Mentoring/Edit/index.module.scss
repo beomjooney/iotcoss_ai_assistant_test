@@ -1,0 +1,90 @@
+@use 'src/stories/assets/styles/abstracts/font';
+@use 'src/stories/assets/styles/abstracts/palette';
+
+.mentoring-register-container {
+
+  article {
+    .filter-area-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filter-area-scroll {
+      overflow-x: auto;
+    }
+    .filter-area {
+      hr {
+        border-bottom: 1px solid palette.$Primary-Gray500;
+      }
+
+      .mentoring-button__group {
+        display: flex;
+        gap: 10px;
+      }
+
+      .skill__group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+        justify-content: center;
+        //width: 6rem;
+      }
+    }
+
+    .content {
+      padding: 60px 0;
+      //@include mixin.initFlexWrap(auto);
+      row-gap: 30px;
+      justify-content: space-between;
+
+      &__item {
+        width: 25%;
+      }
+    }
+  }
+  .fixed-width {
+    width: 255px;
+    font-size: font.$font-size-14;
+  }
+
+  &__card-nodes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 36px;
+  }
+
+  .custom-skill {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  .story-border {
+    display: flex;
+    justify-content: center;
+    border: 1px solid palette.$Primary-Gray500;
+    border-radius: 5px !important;
+  }
+
+  .borderRadius {
+    width:1050px;
+    margin-top: 20px;
+    border-radius: 5px !important;
+    margin-bottom: 32px !important;
+  }
+
+  :global {
+    .card.single-promo-card:hover {
+      background: palette.$Primary-Blue900 !important;
+      color: palette.$Primary-Withe;
+    }
+
+    //[name*='Toggle_container'] {
+    //  & > span {
+    //    border-color: palette.$Primary-Gray900 !important;
+    //    color: palette.$Primary-Gray900 !important;
+    //    z-index: 1 !important;
+    //  }
+    //}
+  }
+}

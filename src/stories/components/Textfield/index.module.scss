@@ -1,0 +1,203 @@
+@use 'src/stories/assets/styles/abstracts/font';
+@use 'src/stories/assets/styles/abstracts/palette';
+
+.container {
+  > label {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    color: palette.$Primary-Gray900;
+    //margin-bottom: 16px;
+
+    > span.required {
+      display: inline-block;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      color: transparent;
+    }
+  }
+
+  .wrap-input {
+    display: flex;
+    padding: 0 16px;
+    align-items: center;
+    border: 1px solid palette.$Primary-Gray500;
+    border-radius: 8px;
+    background-color: #fff;
+    position: relative;
+    &.focus {
+      border: 1px solid palette.$Primary-Gray900;
+    }
+  }
+
+  .wrap-input__underline {
+    display: flex;
+    padding: 0 2px;
+    align-items: center;
+    border-bottom: 1px solid palette.$Primary-Gray500;
+    //border-radius: 8px;
+    background-color: #fff;
+    position: relative;
+    &.focus {
+      border-bottom: 1px solid palette.$Primary-Gray900;
+    }
+  }
+
+  .wrap-icon {
+    flex-shrink: 0;
+    font-size: font.toRem(14px);
+    padding-top: 1px;
+
+    &.left {
+      margin-right: 8px;
+    }
+
+    &.right {
+      margin-left: 8px;
+    }
+  }
+
+  .wrap-children {
+    margin-top: 8px;
+    font-size: font.toRem(12px);
+
+    [class^='error'] {
+      color: palette.$Negative-Red;
+    }
+
+    [class^='success'] {
+      color: palette.$Primary-Blue900;
+    }
+  }
+
+  .wrap-input input {
+    width: 100%;
+    height: 40px;
+    color: palette.$Primary-Gray900;
+    font-size: font.toRem(14px);
+    caret-color: palette.$Primary-Blue800;
+    border: 0;
+
+    &::placeholder {
+      color: palette.$Primary-Gray400;
+      font-size: font.toRem(14px);
+      letter-spacing: -0.5%;
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .wrap-input__underline input {
+    width: 100%;
+    //height: 40px;
+    color: palette.$Primary-Gray900;
+    font-size: font.toRem(14px);
+    caret-color: palette.$Primary-Blue800;
+    border: 0;
+
+    &::placeholder {
+      color: palette.$Primary-Gray400;
+      font-size: font.toRem(14px);
+      letter-spacing: -0.5%;
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .button-input-clear {
+    position: relative;
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    background-color: palette.$Primary-Gray400;
+    border-radius: 50%;
+    margin-left: 4px;
+    //margin-right: 8px;
+    color: transparent;
+    overflow: hidden;
+
+    &:before {
+      content: '';
+      position: absolute;
+      left: 8px;
+      top: 4px;
+      width: 1px;
+      height: 8px;
+      background-color: white;
+      transform: rotate(45deg);
+    }
+
+    &:after {
+      content: '';
+      position: absolute;
+      left: 8px;
+      top: 4px;
+      width: 1px;
+      height: 8px;
+      background-color: white;
+      transform: rotate(-45deg);
+    }
+  }
+
+  // 2022-04-18 DSG 기능(선택만 표시) 으로 변경
+  // &[data-required='true'] {
+  //   label:after {
+  //     content: '*';
+  //     display: inline-block;
+  //   }
+  // }
+
+   &[data-description='true'] {
+     .description {
+       font-weight: 700;
+       font-size: 10px;
+       line-height: 15px;
+       color: palette.$Primary-Blue900;
+       margin-left: 8px;
+     }
+   }
+
+  &[data-filled='false'] {
+    // .wrap-input:not(.focus) .wrap-icon {
+    //   color: palette.$Grayscale-Gray400;
+    // }
+  }
+
+  &[data-align='right'] {
+    .wrap-input input {
+      text-align: right;
+    }
+  }
+
+  &[data-readonly='true'],
+  &[data-disabled='true'] {
+    .wrap-input {
+      color: palette.$Primary-Gray400;
+      border-color: palette.$Primary-Gray400;
+      background-color: palette.$Primary-Gray400;
+
+      input {
+        color: palette.$Primary-Gray400;
+      }
+
+      .wrap-icon {
+        color: inherit;
+      }
+    }
+  }
+
+  &[data-iserror='true'] {
+    .wrap-input {
+      border: 1px solid palette.$Negative-Red;
+    }
+
+    // .wrap-icon {
+    //   color: palette.$Negative-Red !important;
+    // }
+  }
+}

@@ -1,0 +1,28 @@
+@use 'src/stories/assets/styles/abstracts/font';
+@use 'src/stories/assets/styles/abstracts/palette';
+
+.slider{
+  margin-left: 10px;
+}
+
+.fixed-width {
+  width: 140px;
+  font-size: font.$font-size-14;
+  
+}
+
+.fromTo{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  // margin-top: 10px;
+  // margin-bottom: 10px;
+}
+
+.fromToDate{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  // margin-top: 10px;
+  // margin-bottom: 10px;
+}

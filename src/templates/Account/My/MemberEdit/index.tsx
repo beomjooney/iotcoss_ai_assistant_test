@@ -1,0 +1,692 @@
+import styles from './index.module.scss';
+import classNames from 'classnames/bind';
+import { Button, Profile, Modal, Textfield, Toggle } from 'src/stories/components';
+import { useStore } from 'src/store';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  useDeleteMember,
+  useEditUser,
+  useLoginOtp,
+  useLoginOtpVerification,
+} from 'src/services/account/account.mutations';
+import Image from 'next/image';
+import { useUploadImage } from 'src/services/image/image.mutations';
+import { useMemberInfo } from 'src/services/account/account.queries';
+import { useSessionStore } from 'src/store/session';
+import { User } from 'src/models/user';
+import Chip from '@mui/material/Chip';
+import Typography from '@mui/material/Typography';
+import _TextField from '@mui/material/TextField';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm, Controller } from 'react-hook-form';
+import * as Yup from 'yup';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import isURL from 'validator/lib/isURL';
+
+const cx = classNames.bind(styles);
+
+export function MemberEditTemplate() {
+  const { user, setUser } = useStore();
+  const { memberId } = useSessionStore.getState();
+  const [userInfo, setUserInfo] = useState<User>(user);
+  const [nickname, setNickname] = useState(null);
+  const [phoneNumber, setPhoneNumber] = useState(null);
+  const [otpNumber, setOtpNumber] = useState('');
+  const [nicknameEditMode, setNicknameEditMode] = useState(false);
+  const [phoneEditMode, setPhoneEditMode] = useState(false);
+  const [emailReceiveYn, setEmailReceiveYn] = useState(true);
+  const [smsReceiveYn, setSmsReceiveYn] = useState(true);
+  const [kakaoReceiveYn, setKakaoReceiveYn] = useState(true);
+  const [edting, setEditing] = useState(false);
+  const [file, setFile] = useState(null);
+  const [fileImageUrl, setFileImageUrl] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [smsFlag, setSmsFlag] = useState(false);
+  const [isDisabledPhone, setIsDisabledPhone] = useState<boolean>(false);
+  const [isDisabledOtp, setIsDisabledOtp] = useState<boolean>(true);
+  const [isDisabledTimer, setIsDisabledTimer] = useState<boolean>(true);
+
+  // ** SNS URL
+  const [youtubeUrl, setYoutubeUrl] = useState('');
+  const [instagramUrl, setInstagramUrl] = useState('');
+  const [twitterUrl, setTitterUrl] = useState('');
+  const [linkedUrl, setLinked] = useState('');
+  const [snsUrl, setSns] = useState('');
+  const [facebookUrl, setFacebook] = useState('');
+
+  // ** Timer
+  const [min, setMin] = useState(0);
+  const [sec, setSec] = useState(0);
+  useMemberInfo(memberId, user => {
+    setUserInfo(user);
+  });
+  const { mutate: onEditUser, status } = useEditUser();
+  const { mutate: onSaveImage, data: imageUrl, isSuccess: imageSuccess } = useUploadImage();
+  const { mutate: onDeleteMember } = useDeleteMember();
+
+  //otp
+  const { mutate: onLoginOtp, isSuccess } = useLoginOtp();
+  const { mutate: onLoginOtpVerification, isSuccess: isVerification, data: resultData } = useLoginOtpVerification();
+
+  const handleNickname = e => setNickname(e.target.value);
+  const handleYoutube = e => setYoutubeUrl(e.target.value);
+  const handleInstgram = e => setInstagramUrl(e.target.value);
+  const handleFacebook = e => setFacebook(e.target.value);
+  const handleTwitter = e => setTitterUrl(e.target.value);
+  const handleLinked = e => setLinked(e.target.value);
+  const handleSns = e => setSns(e.target.value);
+
+  const handlePhoneNumber = e => setPhoneNumber(e.target.value);
+  const handleOtpNumber = e => setOtpNumber(e.target.value);
+  const handleKakaoYn = e => setKakaoReceiveYn(e.target.value === 'true');
+  const handleEmailYn = e => setEmailReceiveYn(e.target.value === 'true');
+  const handleSmsYn = e => setSmsReceiveYn(e.target.value === 'true');
+
+  //** Fouse */
+  const focusYoutube_Ref = useRef(null);
+  const focusTwitter_Ref = useRef(null);
+  const focusLinked_Ref = useRef(null);
+  const focusFacebook_Ref = useRef(null);
+  const focusInstargram_Ref = useRef(null);
+  const focusSns_Ref = useRef(null);
+
+  const handleSubmit = () => {
+    if (nicknameEditMode || phoneEditMode) {
+      alert("수정 중인 정보가 있습니다. '변경 버튼'을 눌러 저장한 후 '수정 완료'해주세요.");
+      return;
+    }
+    if (phoneNumber?.length > 0 && (phoneNumber.length != 13 || !phoneNumber.startsWith('01'))) {
+      alert('휴대전화 정보가 정확하지 않습니다.');
+      return;
+    }
+
+    if (fileImageUrl) {
+      // 이미지도 변경한 경우 업로드부터 시행
+      onSaveImage(file);
+      setEditing(true);
+      return;
+    }
+
+    // 이미지 변경 안한 경우 정보만 변경
+    updateMemberInfo();
+  };
+
+  const handleDeleteSubmit = () => {
+    // 이미지 변경 안한 경우 정보만 변경
+    setIsModalOpen(false);
+    onDeleteMember(memberId);
+  };
+
+  const updateMemberInfo = () => {
+    const profileImageUrl = imageUrl ? imageUrl.toString().slice(1) : user?.profileImageUrl;
+    const params = {
+      ...userInfo,
+      nickname,
+      phoneNumber,
+      smsReceiveYn,
+      emailReceiveYn,
+      kakaoReceiveYn,
+      profileImageUrl,
+    };
+
+    if ((isURL(youtubeUrl) && youtubeUrl.includes('youtube')) || youtubeUrl === '') {
+    } else {
+      alert('youtube 주소가 잘못되었습니다.');
+      return;
+    }
+
+    if ((isURL(twitterUrl) && twitterUrl.includes('twitter')) || twitterUrl === '') {
+    } else {
+      alert('twitter 주소가 잘못되었습니다.');
+      return;
+    }
+
+    if ((isURL(linkedUrl) && linkedUrl.includes('linked')) || linkedUrl === '') {
+    } else {
+      alert('linked 주소가 잘못되었습니다.');
+      return;
+    }
+
+    if ((isURL(instagramUrl) && instagramUrl.includes('instagram')) || instagramUrl === '') {
+    } else {
+      alert('instagram 주소가 잘못되었습니다.');
+      return;
+    }
+
+    if ((isURL(facebookUrl) && facebookUrl.includes('facebook')) || facebookUrl === '') {
+    } else {
+      alert('facebook 주소가 잘못되었습니다.');
+      return;
+    }
+
+    onEditUser(params);
+    setUserInfo(params);
+  };
+
+  // 이미지 업로드 완료 시 최종 정보 수정
+  if (imageSuccess && edting) {
+    setEditing(false);
+    updateMemberInfo();
+  }
+
+  useEffect(() => {
+    setUser(userInfo); // 전역 정보 업데이트
+    setNickname(userInfo.nickname);
+    setPhoneNumber(userInfo.phoneNumber);
+    setEmailReceiveYn(userInfo.emailReceiveYn);
+    setKakaoReceiveYn(userInfo.kakaoReceiveYn);
+    setSmsReceiveYn(userInfo.smsReceiveYn);
+    userInfo?.snsUrl?.map((item, index) => {
+      if (item.includes('linked')) {
+        setLinked(item);
+      } else if (item.includes('facebook')) {
+        setFacebook(item);
+      } else if (item.includes('youtube')) {
+        setYoutubeUrl(item);
+      } else if (item.includes('instagram')) {
+        setInstagramUrl(item);
+      } else if (item.includes('twitter')) {
+        setTitterUrl(item);
+      } else {
+        setSns(item);
+      }
+    });
+
+    userInfo.snsUrl = [youtubeUrl, facebookUrl, linkedUrl, twitterUrl, snsUrl, instagramUrl].filter(v => v);
+  }, [userInfo]);
+
+  useEffect(() => {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const image = e.target.result;
+      setFileImageUrl(image);
+    };
+    reader.readAsDataURL(file);
+  }, [file]);
+
+  const onFileChange = files => {
+    if (!files || files.length === 0) return;
+    setFile(files[0]);
+  };
+
+  useEffect(() => {
+    let timer;
+    clearInterval(timer);
+    if (isDisabledTimer) {
+      timer = setInterval(() => {
+        if (Number(sec) > 0) {
+          setSec(Number(sec) - 1);
+        }
+        if (Number(sec) === 0) {
+          if (Number(min) === 0) {
+            //timer 종료
+            // console.log('타이머 종료');
+            setIsDisabledPhone(false);
+            setIsDisabledOtp(true);
+            clearInterval(timer);
+            // onCheckTime();
+          } else {
+            setMin(Number(min) - 1);
+            setSec(59);
+          }
+        }
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [min, sec]);
+
+  const validationSchemaOtp = Yup.object().shape({
+    otp: Yup.string()
+      .required('otp is required')
+      .matches(/^[0-9]+$/, 'Must be only number')
+      .min(6, 'Must be exactly 6 number')
+      .max(6, 'Must be exactly 6 number'),
+  });
+
+  const {
+    register: registerOtp,
+    control: controlOtp,
+    handleSubmit: handleSubmitOtp,
+    formState: { errors: errorsOtp },
+  } = useForm({
+    resolver: yupResolver(validationSchemaOtp),
+  });
+
+  const onSubmitOtp = data => {
+    console.log(data);
+    onLoginOtpVerification({ phoneNumber: phoneNumber, otpNumber: data.otp });
+  };
+
+  const onErrorOtp = (e: any) => {
+    console.log('error', e);
+    // setSmsFlag(false);
+  };
+
+  useEffect(() => {
+    if (resultData) {
+      setSmsFlag(false);
+      setIsDisabledTimer(false);
+      setPhoneEditMode(false);
+      // setIsDisabledPhone(true);
+    }
+  }, [resultData]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      setIsDisabledOtp(false);
+      setIsDisabledTimer(true);
+      setMin(3);
+      setSmsFlag(true);
+      setIsDisabledPhone(true);
+    }
+  }, [isSuccess]);
+
+  return (
+    <div className={cx('member-edit-container')}>
+      <div className={cx('sub-content')}>
+        <div className={cx('member-title')}>
+          <h4>기본정보</h4>
+        </div>
+        <div>
+          <div className={cx('image-info')}>
+            <Image
+              src={
+                fileImageUrl ??
+                (user?.profileImageUrl?.indexOf('http') > -1
+                  ? user?.profileImageUrl
+                  : `${process.env['NEXT_PUBLIC_GENERAL_IMAGE_URL']}/images/${user?.profileImageUrl}`)
+              }
+              alt="profile_image"
+              className={cx('rounded-circle', 'image-info__image')}
+              width="160px"
+              height="160px"
+              objectFit="cover"
+              unoptimized={true}
+            />
+            <div className={cx('image-item')}>
+              <span className={cx('image-item__file-size', 'area-desc')}>
+                * 사진은 256 X 256 사이즈로 등록해주세요.
+              </span>
+              <div className={cx('image-item__upload-wrap')}>
+                <Button type="button" color="primary" className={cx('change-button')}>
+                  <label htmlFor={`input-file`}>사진 변경</label>
+                  <input
+                    hidden
+                    id={`input-file`}
+                    accept="image/*"
+                    type="file"
+                    onChange={e => onFileChange(e.target?.files)}
+                  />
+                </Button>
+              </div>
+            </div>
+          </div>
+          <div className={cx('member-info')}>
+            <Textfield
+              label="이름"
+              type="text"
+              width={240}
+              isUnderline={true}
+              required
+              value={userInfo.name || ''}
+              readOnly
+              className={cx('text-field', 'text-field--normal')}
+            />
+          </div>
+          <div className={cx('member-info')}>
+            {' '}
+            {nickname !== userInfo.nickname && !nicknameEditMode && <span className={cx('change-dot')} />}
+            <Textfield
+              label="닉네임"
+              type="text"
+              width={240}
+              isUnderline={true}
+              required
+              value={nickname || ''}
+              onChange={handleNickname}
+              readOnly={!nicknameEditMode}
+              className={cx('text-field', 'text-field--normal')}
+            />
+            <Button
+              type="button"
+              // color={nicknameEditMode ? 'primary' : 'secondary'}
+              color="primary"
+              onClick={() => setNicknameEditMode(!nicknameEditMode)}
+              className={cx('change-button')}
+            >
+              {nicknameEditMode ? '확인' : '변경'}
+            </Button>
+          </div>
+          <div className={cx('member-info')}>
+            <Textfield
+              label="생일"
+              type="text"
+              isUnderline={true}
+              width={110}
+              required
+              readOnly
+              value={userInfo.birthday || ''}
+              className={cx('text-field', 'text-field--short')}
+            />
+            <Textfield
+              label="연령대"
+              type="text"
+              isUnderline={true}
+              width={110}
+              required
+              readOnly
+              value={userInfo.ageRange || ''}
+              className={cx('text-field', 'text-field--short')}
+            />
+          </div>
+          <div className={cx('member-info')}>
+            <Textfield
+              label="이메일"
+              type="email"
+              isUnderline={true}
+              width={240}
+              required
+              readOnly
+              value={userInfo.email || ''}
+              className={cx('text-field', 'text-field--long')}
+            />
+          </div>
+          <div className={cx('member-info')}>
+            {phoneNumber !== userInfo.phoneNumber && !phoneEditMode && <span className={cx('change-dot')} />}
+            <Textfield
+              label="휴대전화"
+              isUnderline={true}
+              isPhoneNumber={true}
+              width={240}
+              required
+              value={phoneNumber || ''}
+              onChange={handlePhoneNumber}
+              // readOnly={!phoneEditMode}
+              readOnly={isDisabledPhone}
+              className={cx('text-field', 'text-field--normal')}
+            />
+            <Button
+              type="button"
+              color="primary"
+              disabled={isDisabledPhone}
+              onClick={() => {
+                // setPhoneEditMode(!phoneEditMode);
+                if (phoneNumber === '') {
+                  alert('핸드폰 번호를 입력해주세요');
+                  // setPhoneEditMode(true);
+                  // setSmsFlag(false);
+                } else {
+                  onLoginOtp({ phoneNumber: phoneNumber });
+                }
+              }}
+              className={cx('change-button')}
+            >
+              {phoneEditMode ? '인증문자 발송' : '인증 완료'}
+            </Button>
+          </div>
+          {smsFlag && (
+            <form onSubmit={handleSubmitOtp(onSubmitOtp, onErrorOtp)}>
+              <div className={cx('member-info-mobile', 'mb-5')}>
+                {/* <div className={cx('member-info')}> */}
+                {/* <Textfield
+                label="인증번호"
+                type="number"
+                maxLength={6}
+                isUnderline={true}
+                required
+                value={otpNumber || ''}
+                onChange={handleOtpNumber}
+                // readOnly={!phoneEditMode}
+                className={cx('text-field', 'text-field--long')}
+              /> */}
+                <_TextField
+                  sx={{
+                    width: 100,
+                    '& label': { fontSize: 14, color: '#919191', fontWeight: 'bold' },
+                    '& input': { fontWeight: 700, fontSize: '16px' },
+                  }}
+                  label="인증번호"
+                  type="search"
+                  id="otp"
+                  name="otp"
+                  variant="standard"
+                  inputProps={{
+                    maxLength: 6,
+                  }}
+                  {...registerOtp('otp')}
+                  error={errorsOtp.otp ? true : false}
+                  helperText={errorsOtp.otp?.message}
+                />
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row-reverse',
+                    alignItems: 'center',
+                    p: 1,
+                    m: 1,
+                    bgcolor: 'background.paper',
+                    borderRadius: 1,
+                    marginRight: 0,
+                    paddingRight: 0,
+                    marginBottom: '-5px',
+                  }}
+                >
+                  <Button
+                    color="primary"
+                    disabled={isDisabledOtp}
+                    onClick={() => handleSubmitOtp(onSubmitOtp)}
+                    className={cx('change-button')}
+                  >
+                    {phoneEditMode ? '인증하기' : '변경'}
+                  </Button>
+                  <Typography variant="h6" sx={{ fontWeight: '600', color: 'black', mr: 2 }}>
+                    {min}:{sec < 10 ? `0${sec}` : sec}
+                  </Typography>
+                  {/* </div> */}
+                </Box>
+              </div>
+            </form>
+          )}
+
+          <div className={cx('member-info')}>
+            <Textfield
+              label="유튜브 링크"
+              type="email"
+              isUnderline={true}
+              width={400}
+              onChange={handleYoutube}
+              value={youtubeUrl || ''}
+              readOnly={false}
+              className={cx('text-field', 'text-field--long')}
+            />
+          </div>
+          <div className={cx('member-info')}>
+            <Textfield
+              label="페이스북 링크"
+              type="email"
+              isUnderline={true}
+              width={400}
+              onChange={handleFacebook}
+              readOnly={false}
+              value={facebookUrl || ''}
+              className={cx('text-field', 'text-field--long')}
+            />
+          </div>
+          <div className={cx('member-info')}>
+            <Textfield
+              label="인스타그램 주소"
+              type="email"
+              isUnderline={true}
+              width={400}
+              onChange={handleInstgram}
+              value={instagramUrl || ''}
+              className={cx('text-field', 'text-field--long')}
+            />
+          </div>
+          <div className={cx('member-info')}>
+            <Textfield
+              label="트위터 링크"
+              type="email"
+              isUnderline={true}
+              width={400}
+              onChange={handleTwitter}
+              value={twitterUrl || ''}
+              className={cx('text-field', 'text-field--long')}
+            />
+          </div>
+          <div className={cx('member-info')}>
+            <Textfield
+              label="링크드인 링크"
+              type="email"
+              isUnderline={true}
+              width={400}
+              onChange={handleLinked}
+              value={linkedUrl || ''}
+              className={cx('text-field', 'text-field--long')}
+            />
+          </div>
+          <div className={cx('member-info')}>
+            <Textfield
+              label="기타 SNS링크"
+              type="email"
+              isUnderline={true}
+              width={400}
+              onChange={handleSns}
+              value={snsUrl || ''}
+              className={cx('text-field', 'text-field--long')}
+            />
+          </div>
+        </div>
+      </div>
+      <div className={cx('sub-content')}>
+        <div className={cx('choice-title')}>
+          <h4>마케팅 수신동의 (선택)</h4>
+          {/*TODO 약관 2차 오픈*/}
+          {/*<Button type="button" color="secondary">*/}
+          {/*  약관보기*/}
+          {/*</Button>*/}
+        </div>
+        <div className={cx('choice-content')}>
+          <span className={cx('checkbox-title')}>이메일 수신</span>
+          <div className={cx('alarm')}>
+            <Toggle
+              key="email-y"
+              label="동의합니다."
+              name="동의"
+              value="true"
+              variant="small"
+              type="checkBox"
+              checked={emailReceiveYn}
+              isActive
+              onChange={handleEmailYn}
+              className={cx('check-box')}
+            />
+            <Toggle
+              key="email-n"
+              label="동의하지 않습니다."
+              name="미동의"
+              value="false"
+              variant="small"
+              type="checkBox"
+              checked={!emailReceiveYn}
+              isActive
+              onChange={handleEmailYn}
+              className={cx('check-box')}
+            />
+          </div>
+        </div>
+        <div className={cx('choice-content')}>
+          <span className={cx('checkbox-title')}>문자 수신</span>
+          <div className={cx('alarm')}>
+            <Toggle
+              key="sms-y"
+              label="동의합니다."
+              name="동의"
+              value="true"
+              variant="small"
+              type="checkBox"
+              checked={smsReceiveYn}
+              isActive
+              onChange={handleSmsYn}
+              className={cx('check-box')}
+            />
+            <Toggle
+              key="sms-n"
+              label="동의하지 않습니다."
+              name="미동의"
+              value="false"
+              variant="small"
+              type="checkBox"
+              checked={!smsReceiveYn}
+              isActive
+              onChange={handleSmsYn}
+              className={cx('check-box')}
+            />
+          </div>
+        </div>
+        <div className={cx('choice-content')}>
+          <span className={cx('checkbox-title')}>카카오톡 수신</span>
+          <div className={cx('alarm')}>
+            <Toggle
+              key="kakao-y"
+              label="동의합니다."
+              name="동의"
+              value="true"
+              variant="small"
+              type="checkBox"
+              checked={kakaoReceiveYn}
+              isActive
+              onChange={handleKakaoYn}
+              className={cx('check-box')}
+            />
+            <Toggle
+              key="kakao-n"
+              label="동의하지 않습니다."
+              name="미동의"
+              value="false"
+              variant="small"
+              type="checkBox"
+              checked={!kakaoReceiveYn}
+              isActive
+              onChange={handleKakaoYn}
+              className={cx('check-box')}
+            />
+          </div>
+        </div>
+      </div>
+      <div className="row justify-content-center">
+        {/*<div className="col-md-6 mt-lg-5">*/}
+        <Button size="my-page" type="submit" onClick={() => handleSubmit()} className={cx('footer-button', 'mb-5')}>
+          수정완료
+        </Button>
+      </div>
+      <div className="text-center">
+        <Chip label="계정삭제하기" variant="outlined" onClick={() => setIsModalOpen(true)} />
+      </div>
+      <Modal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)} title="회원탈퇴 신청" maxWidth="700px">
+        <div className={cx('seminar-check-popup')}>
+          <div className={cx('mb-5')}>
+            <span className={cx('text-bold')}>회원탈퇴를 원하신다면 </span>
+            아래 탈퇴하기 버튼을 눌러주세요.
+            <br />
+            <span>세미나 신청 취소를 해야만 탈퇴할 수 있습니다.</span>
+          </div>
+          <div>
+            <Button
+              color="primary"
+              label="탈퇴하기"
+              size="modal"
+              className={cx('mr-2')}
+              onClick={() => handleDeleteSubmit()}
+            />
+            <Button color="secondary" label="취소" size="modal" onClick={() => setIsModalOpen(false)} />
+          </div>
+        </div>
+      </Modal>
+    </div>
+  );
+}
+
+export default MemberEditTemplate;

@@ -1,0 +1,76 @@
+@use 'src/stories/assets/styles/abstracts/font';
+@use 'src/stories/assets/styles/abstracts/palette';
+
+.herder-title {
+  color: palette.$Primary-Blue900;
+  font-weight: 700 !important;
+}
+
+.nav-custom {
+  align-items: center;
+}
+
+.custom-item {
+  padding-left: 15px !important;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  min-width: 1240px;
+  min-height: 100vh;
+  .main {
+    flex-grow: 1;
+    //&.bg {
+    //  background-color: palette.$Grayscale-Gray50;
+    //}
+    .content {
+      &.column {
+        display: flex;
+        justify-content: space-between;
+        & > div {
+          flex: 1;
+        }
+        .column--left {
+          flex: none;
+          width: 1030px;
+        }
+        .column--right {
+          position: relative;
+          margin-left: 20px;
+
+          &.sticky {
+            aside {
+              position: sticky;
+              top: 20px;
+            }
+          }
+        }
+      }
+      &.margin-default {
+        margin: 56px auto 120px;
+      }
+      &:not(.margin-default) {
+        //margin: 56px auto 0;
+      }
+      &.no-margin {
+        margin: 0 auto !important;
+      }
+      &.resolution--1240 {
+        width: 1240px;
+      }
+      &.resolution--1030 {
+        width: 1030px;
+      }
+      &.resolution--960 {
+        width: 960px;
+      }
+      &.resolution--752 {
+        width: 752px;
+      }
+      &.resolution--610 {
+        width: 610px;
+      }
+    }
+  }
+}

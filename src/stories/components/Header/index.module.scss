@@ -1,0 +1,29 @@
+@use 'src/stories/assets/styles/abstracts/font';
+@use 'src/stories/assets/styles/abstracts/palette';
+
+.header-link {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+//.herder-title {
+//  cursor: pointer;
+//  color: palette.$Primary-Blue900;
+//  font-weight: 700 !important;
+//}
+
+.nav-custom {
+  align-items: start;
+}
+
+.custom-item {
+  padding-left: 15px !important;
+  @media (min-width: 320px) and (max-width: 992px) {
+    padding-left: 5px !important;
+  }
+}
+
+.image-logo {
+  margin-right: 12px;
+}

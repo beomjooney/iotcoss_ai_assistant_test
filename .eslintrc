@@ -1,0 +1,39 @@
+{
+  "settings": {
+    "import/resolver": {
+      "typescript": {}
+    }
+  },
+  "rules": {
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "ts": "never",
+        "tsx": "never",
+        "js": "never",
+        "jsx": "never"
+      }
+    ],
+    "prefer-const": "off",
+    "no-prototype-builtins": "off",
+    "no-case-declarations": "off",
+    "react/react-in-jsx-scope": "off",
+    "react/prop-types": "off",
+    "react/no-unescaped-entities": "off",
+    "react/display-name": "off",
+    "react-hooks/rules-of-hooks": "off",
+    "react-hooks/exhaustive-deps": "off",
+    "import/no-anonymous-default-export": "off",
+    "jsx-a11y/role-supports-aria-props": "off",
+    "@next/next/no-img-element": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/no-unused-vars": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "no-restricted-globals": "off",
+    "@typescript-eslint/no-loss-of-precision": "off"
+  },
+  "extends": ["next", "plugin:prettier/recommended", "plugin:@typescript-eslint/recommended"]
+}
+

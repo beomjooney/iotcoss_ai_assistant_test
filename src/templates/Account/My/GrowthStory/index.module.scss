@@ -1,0 +1,35 @@
+@use 'src/stories/assets/styles/abstracts/font';
+@use 'src/stories/assets/styles/abstracts/palette';
+@use 'src/stories/assets/styles/abstracts/mixin';
+
+.growth-story-container {
+  margin-top: 159px;
+  margin-bottom: 173px;
+  @include mixin.initMyPageFotterButton;
+
+  .content {
+    p {
+      padding-left: 0 !important;
+    }
+
+    text-align: center;
+
+    &--not-found {
+      //margin: 60px 0;
+      height: 84px;
+      left: 296px;
+      top: 221px;
+      font-weight: 700;
+      font-size: 16px;
+      font-size: font.$font-size-24 !important;
+    }
+
+    button {
+      width: 200px;
+      height: 42px;
+      font-weight: 700;
+      font-size: font.$font-size-14 !important;
+      line-height: 21px;
+    }
+  }
+}

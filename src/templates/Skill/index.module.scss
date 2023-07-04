@@ -1,0 +1,178 @@
+.business-container {
+  $self: #{&};
+  .mt-92 {
+    margin-top: 92px;
+  }
+
+  section {
+    .business-card {
+      width: 1120px;
+      height: 600px;
+      position: relative;
+
+      .object-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      @media (min-width: 320px) and (max-width: 992px) {
+        width: 100%;
+        height: 350px;
+      }
+
+      .business-img-height {
+        @media (min-width: 320px) and (max-width: 992px) {
+          height: 800px;
+        }
+      }
+
+      .business-text {
+        position: absolute;
+        width: 532px;
+        height: 218px;
+        left: 64px;
+        top: 54px;
+
+        @media (min-width: 320px) and (max-width: 992px) {
+          width: 100%;
+          height: 500px;
+          padding: 30px;
+          left: 0px;
+          top: 0px;
+        }
+      }
+    }
+
+    .business-cm3 {
+      width: 1120px;
+      height: 600px;
+      position: relative;
+
+      .object-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      @media (min-width: 320px) and (max-width: 992px) {
+        width: 100%;
+        height: 390px;
+      }
+
+      .business-text-cm3 {
+        position: absolute;
+        width: 439px;
+        height: 218px;
+        left: 640px;
+        top: 59px;
+
+        @media (min-width: 320px) and (max-width: 992px) {
+          width: 100%;
+          height: 500px;
+          padding: 30px;
+          left: 0px;
+          top: 0px;
+        }
+      }
+    }
+
+    .business-cm2 {
+      width: 1120px;
+      height: 600px;
+      position: relative;
+
+      .object-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      @media (min-width: 320px) and (max-width: 992px) {
+        width: 100%;
+        height: 390px;
+      }
+
+      .business-text-cm2 {
+        position: absolute;
+        width: 565px;
+        height: 218px;
+        left: 64px;
+        top: 343px;
+
+        @media (min-width: 320px) and (max-width: 992px) {
+          width: 100%;
+          height: 500px;
+          padding: 30px;
+          left: 0px;
+          top: 0px;
+        }
+      }
+    }
+  }
+
+  :global {
+    #{$self}__override {
+      color: #000000;
+      margin-bottom: 28px;
+    }
+  }
+}
+
+.Tabs {
+  width: 66%;
+  height: auto;
+  min-height: 400px;
+  background: #e8f0f2;
+  margin: 3.5rem auto 1.5rem;
+  padding: 2rem 1rem;
+  color: #000000;
+  border-radius: 2rem;
+  @media (max-width: 769px) {
+    padding: 2rem 0;
+  }
+}
+ul.nav {
+  width: 60%;
+  margin: 0 auto 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #39a2db;
+  border-radius: 2rem;
+  padding-left: 0px;
+  @media (max-width: 768px) {
+    width: 90%;
+  }
+}
+ul.nav li {
+  width: 50%;
+  padding: 1rem;
+  list-style: none;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.7s;
+}
+
+ul.nav li:first-child {
+  border-bottom-left-radius: 2rem;
+  border-top-left-radius: 2rem;
+}
+
+ul.nav li:last-child {
+  border-bottom-right-radius: 2rem;
+  border-top-right-radius: 2rem;
+}
+ul.nav li:hover {
+  background: rgba(50, 224, 196, 0.15);
+}
+ul.nav li.active {
+  background: #39a2db;
+}
+
+.items {
+  height: 30;
+  border: 1px solid #39a2db;
+  margin: 6;
+  padding: 8;
+}

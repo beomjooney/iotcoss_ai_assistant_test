@@ -1,0 +1,46 @@
+@use 'src/stories/assets/styles/abstracts/font';
+@use 'src/stories/assets/styles/abstracts/palette';
+@use 'src/stories/assets/styles/abstracts/mixin';
+
+$size: 35px;
+
+.pagination-container {
+  .pagination {
+    @include mixin.initFlexWrap(10px);
+
+    &__item {
+      width: $size;
+      height: $size;
+      text-align: center;
+      border: 1px solid palette.$Primary-Gray500;
+      border-radius: 5px;
+      color: palette.$Primary-Gray800;
+      cursor: pointer;
+
+      a {
+        line-height: $size;
+        font-size: font.$font-size-16;
+      }
+
+      &--active {
+        border: none;
+        background: palette.$Primary-Blue900;
+        color: white;
+      }
+
+      &--next {
+        font-weight: bold;
+      }
+
+      &--dots {
+        cursor: none;
+        font-weight: bold;
+      }
+
+      &--more {
+        border: none;
+        cursor: none;
+      }
+    }
+  }
+}

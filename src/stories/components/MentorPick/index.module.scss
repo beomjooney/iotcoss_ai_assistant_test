@@ -1,0 +1,80 @@
+@use 'src/stories/assets/styles/abstracts/font';
+@use 'src/stories/assets/styles/abstracts/palette';
+
+$profile-area-width: 120px;
+$area-space: 40px;
+
+.mento-pick {
+  min-width: 544px;
+  position: relative;
+
+  &__profile {
+    position: relative;
+    width: $profile-area-width;
+
+    > div {
+      width: $profile-area-width;
+    }
+  }
+
+  .profile-area {
+    width: $profile-area-width;
+    &__image {
+      height: $profile-area-width;
+    }
+
+    &__chips {
+      width: 100%;
+      text-align: center;
+      margin-top: 16px;
+    }
+  }
+
+  .content-area {
+    position: absolute;
+    width: calc(100% - #{$profile-area-width} - #{$area-space});
+    margin-left: $profile-area-width;
+    padding-left: $area-space;
+    top: 0;
+    bottom: 0;
+
+    &__wrap {
+      height: 100%;
+      position: relative;
+      text-align: left;
+      padding-top: 16px;
+    }
+
+    &__title {
+      font-weight: Bold;
+      font-size: font.$font-size-20 !important;
+    }
+
+    &__desc {
+      color: palette.$Primary-Gray800;
+      font-weight: Bold;
+      font-size: font.$font-size-14 !important;
+    }
+
+    &__buttons {
+      position: absolute;
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      bottom: 32px;
+
+      button:not(:last-child) {
+        margin-right: 8px;
+      }
+    }
+
+    &__heart {
+      font-size: font.$font-size-24;
+      color: palette.$Primary-Blue900;
+      font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto;
+      right: 0;
+      position: absolute;
+      top: 0;
+    }
+  }
+}

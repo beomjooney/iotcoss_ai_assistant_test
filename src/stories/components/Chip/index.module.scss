@@ -1,0 +1,80 @@
+@use 'sass:math';
+@use 'src/stories/assets/styles/abstracts/font';
+@use 'src/stories/assets/styles/abstracts/palette';
+
+/* color */
+$primary: palette.$Primary-Blue900;
+$gray: palette.$Primary-Gray600;
+$black: palette.$Primary-Gray900;
+$plan: palette.$Primary-Plan900;
+$design: palette.$Primary-Design900;
+$develop: palette.$Primary-Develop900;
+$engineering: palette.$Primary-Engineering900;
+
+$chip-all-colors: 'primary' $primary palette.$Primary-Gray900, 'gray' $gray palette.$Primary-Gray900,
+  'black' $black transparentize($black, 0.95), 'plan' $plan palette.$Primary-Plan900,
+  'design' $design palette.$Primary-Design900, 'develop' $develop palette.$Primary-Develop900,
+  'engineering' $engineering palette.$Primary-Engineering900;
+
+.filled {
+  @each $name, $color in $chip-all-colors {
+    &.#{$name} {
+      background-color: $color;
+      .content {
+        color: #fff;
+      }
+    }
+  }
+}
+.light-filled {
+  @each $name, $color, $light-color in $chip-all-colors {
+    &.#{$name} {
+      background-color: $light-color;
+      .content {
+        color: $color;
+      }
+    }
+  }
+}
+.outlined {
+  @each $name, $color, $light-color in $chip-all-colors {
+    &.#{$name} {
+      border-color: $color;
+      background-color: #fff;
+      .content {
+        color: $color;
+      }
+    }
+  }
+}
+
+$radius: 4, 8, 15, 28;
+@each $number in $radius {
+  .radius#{$number} {
+    border-radius: #{$number}px;
+  }
+}
+
+.chip {
+  $self: #{&};
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  border: 1px solid transparent;
+  height: 24px;
+  min-height: 24px;
+  text-align: center;
+
+  :global {
+    #{$self}-content {
+      font-size: font.toRem(12px);
+      line-height: 1rem;
+      font-weight: 700;
+      box-sizing: border-box;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+}

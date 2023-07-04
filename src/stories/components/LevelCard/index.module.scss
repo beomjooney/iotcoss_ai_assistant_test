@@ -1,0 +1,54 @@
+@use 'src/stories/assets/styles/abstracts/font';
+@use 'src/stories/assets/styles/abstracts/palette';
+
+.level-card {
+  width: 212px;
+  .circle-group {
+    display: flex;
+    justify-content: center;
+  }
+
+  .circle {
+    width: font.toRem(160px);
+    height: font.toRem(160px);
+    background: palette.$Primary-Gray400;
+    border-radius: 50%;
+
+    &__center {
+      color: palette.$Primary-Gray500;
+      margin-top: 40%;
+    }
+
+    &__level {
+      color: palette.$Primary-Gray900;
+    }
+  }
+
+  .active {
+    background: palette.$Primary-Blue900 !important;
+    color: palette.$Primary-Withe !important;
+
+    hr {
+      border-color: palette.$Primary-Withe !important;
+    }
+
+    h5 {
+      color: palette.$Primary-Withe !important;
+    }
+  }
+
+  :global {
+    .card.single-promo-card:hover {
+      background: palette.$Primary-Blue900 !important;
+      color: palette.$Primary-Withe;
+
+      hr {
+        border-color: palette.$Primary-Withe !important;
+      }
+    }
+
+    [class*='card'] {
+      border: 0;
+    }
+  }
+}

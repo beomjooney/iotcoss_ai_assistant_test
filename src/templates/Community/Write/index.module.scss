@@ -1,0 +1,96 @@
+@use 'src/stories/assets/styles/abstracts/font';
+@use 'src/stories/assets/styles/abstracts/palette';
+@use 'src/stories/assets/styles/abstracts/mixin';
+
+$gap-space: 20px;
+
+.community-write-container {
+  article {
+    border: 1px solid palette.$Primary-Gray500;
+    margin: 60px 0;
+    padding: 40px;
+
+    .mentoring-button__group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .mentor-list {
+      display: flex;
+      align-items: center;
+
+      button {
+        margin-right: 10px;
+      }
+    }
+
+    .right{
+      margin-left:auto;
+    }
+
+    .fixed-width {
+      width: 120px;
+      font-size: font.$font-size-14;
+    }
+
+    .filter-area {
+      padding: 5px 0 32px 0;
+
+      border-bottom: 1px solid palette.$Primary-Gray500;
+
+      .mentoring-button__group {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+      }
+    }
+
+    .filter {
+      &-area {
+        display: flex;
+        margin-bottom: $gap-space;
+
+        &__title {
+          font-size: font.$font-size-14 !important;
+          color: palette.$Primary-Gray600;
+          font-weight: bold;
+          line-height: 42px;
+        }
+      }
+    }
+
+    .tag-area {
+      margin: $gap-space 0;
+
+      &__tags {
+        @include mixin.setTagsStyle;
+
+        ul {
+          margin-bottom: $gap-space;
+        }
+      }
+    }
+
+    .image-area {
+      display: flex;
+      gap: 10px;
+    }
+  }
+
+  .fixed-width {
+    width: 120px;
+    font-size: font.$font-size-14;
+  }
+
+  hr {
+    border: 1px solid palette.$Primary-Gray500;
+  }
+
+  button {
+    width: 140px;
+    height: 42px;
+    font-weight: 700;
+    font-size: font.$font-size-16 !important;
+    line-height: 21px;
+  }
+}

@@ -1,0 +1,15 @@
+@use 'src/stories/assets/styles/abstracts/font';
+@use 'src/stories/assets/styles/abstracts/palette';
+
+.herder-title {
+  color: palette.$Primary-Blue900;
+  font-weight: 700 !important;
+}
+
+.nav-custom {
+  align-items: center;
+}
+
+.custom-item {
+  padding-left: 15px !important;
+}

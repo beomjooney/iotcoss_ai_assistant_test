@@ -1,0 +1,30 @@
+@use 'src/stories/assets/styles/abstracts/font';
+@use 'src/stories/assets/styles/abstracts/palette';
+@use 'src/stories/assets/styles/abstracts/mixin';
+
+.editor-container {
+  @include mixin.initEditorContent;
+}
+
+.seminar-editor {
+  div[role=textbox] {
+    padding: 0 calc(32px + 0.6em);
+
+    h2 {
+      transform: translateX(-32px);
+    }
+
+    h3 {
+      &::before {
+        width: 24px;
+        height: 24px;
+        line-height: 24px;
+        display: inline-block;
+        transform: translate(-32px, -2px);
+        position: absolute;
+        content: "";
+        background-image: url("../../../../public/assets/images/icons/seminar-check.svg");
+      }
+    }
+  }
+}

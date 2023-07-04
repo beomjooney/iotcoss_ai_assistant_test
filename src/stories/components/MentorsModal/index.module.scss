@@ -1,0 +1,12 @@
+@use 'src/stories/assets/styles/abstracts/font';
+@use 'src/stories/assets/styles/abstracts/palette';
+
+.closable {
+  text-align: right;
+  padding: 1rem 1rem;
+}
+.content {
+  padding: 1rem 1rem;
+  overflow: auto;
+  height: 90%;
+}

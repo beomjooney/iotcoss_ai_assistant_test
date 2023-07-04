@@ -1,0 +1,138 @@
+@use 'src/stories/assets/styles/abstracts/font';
+@use 'src/stories/assets/styles/abstracts/palette';
+
+.mentoring-detail-mobile {
+  .detail-group {
+    gap: 30px;
+    padding-top: 50px;
+  }
+
+  .detail-bottom {
+    display: flex;
+    padding-top: 64px;
+  }
+
+  .borderRadius {
+    border-radius: 5px !important;
+    margin-bottom: 32px !important;
+  }
+
+  &__mentoring-profile {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    height: 620px;
+    padding: 40px;
+    border: 1px solid palette.$Primary-Gray500;
+  }
+
+  &__info {
+    margin-bottom: 52px;
+    overflow-x: auto;
+  }
+
+  .desc {
+    display: flex;
+    flex-flow: row wrap;
+    gap: 12px;
+    padding: 10px;
+    width: 100%;
+    color: palette.$Primary-Gray800;
+    font-weight: 700;
+    white-space: pre-wrap;
+  }
+
+  .desc-story {
+    //display: flex;
+    //gap: 12px;
+    //padding: 10px;
+    width: 1120px;
+  }
+
+  .sns-group {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 40px;
+
+    .circle {
+      width: 35px;
+      height: 35px;
+      border: 1px solid rgba(45, 40, 78, 0.2);
+      border-radius: 119px;
+    }
+  }
+
+  .text-lite {
+    font-weight: 400 !important;
+  }
+  //display: flex;
+}
+
+.mentoring-detail {
+  .detail-group {
+    display: flex;
+    gap: 30px;
+    padding-top: 104px;
+  }
+
+  .detail-bottom {
+    display: flex;
+    padding-top: 64px;
+  }
+
+  .borderRadius {
+    border-radius: 5px !important;
+    margin-bottom: 32px !important;
+  }
+
+  &__mentoring-profile {
+    width: 352px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    height: 620px;
+    padding: 40px;
+    border: 1px solid palette.$Primary-Gray500;
+  }
+
+  &__info {
+    margin-bottom: 52px;
+  }
+
+  .desc {
+    display: flex;
+    flex-flow: row wrap;
+    gap: 12px;
+    padding: 10px;
+    width: 100%;
+    color: palette.$Primary-Gray800;
+    font-weight: 700;
+    white-space: pre-wrap;
+  }
+
+  .desc-story {
+    //display: flex;
+    //gap: 12px;
+    //padding: 10px;
+    width: 1120px;
+  }
+
+  .sns-group {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 40px;
+
+    .circle {
+      width: 35px;
+      height: 35px;
+      border: 3px solid rgba(45, 40, 78, 0.2);
+      border-radius: 119px;
+    }
+  }
+
+  .text-lite {
+    font-weight: 400 !important;
+  }
+  //display: flex;
+}

@@ -1,0 +1,102 @@
+@use 'src/stories/assets/styles/abstracts/font';
+@use 'src/stories/assets/styles/abstracts/palette';
+@use 'src/stories/assets/styles/abstracts/mixin';
+
+$plan-bg: palette.$Primary-Plan800;
+$design-bg: palette.$Primary-Design800;
+$develop-bg: palette.$Primary-Develop800;
+$engineering-bg: palette.$Primary-Engineering800;
+$plan-text: palette.$Primary-Plan900;
+$design-text: palette.$Primary-Design900;
+$develop-text: palette.$Primary-Develop900;
+$engineering-text: palette.$Primary-Engineering900;
+
+$card-all-colors: 'plan' $plan-bg $plan-text, 'design' $design-bg $design-text, 'develop' $develop-bg $develop-text,
+  'engineering' $engineering-bg $engineering-text;
+
+@mixin initGrowthFieldCardType($color-bg, $color-text) {
+  h5 {
+    color: $color-text;
+    margin: 12px 0;
+  }
+
+  p {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .icon {
+    background-color: $color-bg;
+  }
+
+  &:hover {
+    background-color: $color-bg !important;
+
+    .icon-area {
+      .icon {
+        color: $color-text !important;
+      }
+    }
+  }
+}
+
+.growth-filed-card {
+  width: 352px;
+  height: 260px;
+  text-align: center;
+  border-radius: 0.5rem !important;
+  padding: 28px 68px 8px 68px;
+
+  &:hover {
+    .icon {
+      background-color: palette.$Primary-Withe !important;
+    }
+  }
+
+  .card-body {
+    padding: 0;
+  }
+
+  .icon-area {
+    height: 60px;
+    .icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      padding: 1rem;
+      color: palette.$Primary-Withe;
+    }
+  }
+
+  .link-area {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 16px 0;
+
+    a {
+      @include mixin.initLinkText(black);
+      font-style: normal;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 24px;
+
+      &:hover {
+        color: palette.$Primary-Withe !important;
+      }
+    }
+
+    span {
+      font-size: small;
+      margin-left: 0.5rem;
+    }
+  }
+
+  @each $name, $color-bg, $color-text in $card-all-colors {
+    &--#{$name} {
+      @include initGrowthFieldCardType($color-bg, $color-text);
+    }
+  }
+}
