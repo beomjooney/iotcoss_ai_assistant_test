@@ -62,7 +62,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children, isFooter = true }
       <Mobile>
         <Header darkBg={darkBg} classOption={classOption} title={title} menuItem={menuItemMobile} />
       </Mobile>
-      <section className="hero-section hero-section-3 ptb-100">{children}</section>
+      <section className="hero-section ptb-100">{children}</section>
       {isFooter && <Footer />}
     </>
   );

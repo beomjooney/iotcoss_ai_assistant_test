@@ -1,5 +1,5 @@
 {
-  "name": "appco-react",
+  "name": "invincible-x",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -16,6 +16,7 @@
     "@projectstorm/react-diagrams-core": "^6.7.4",
     "@shopify/polaris": "latest",
     "@shopify/polaris-icons": "latest",
+    "@tailwindcss/line-clamp": "^0.4.4",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
@@ -131,6 +132,7 @@
     "@types/react-dom": "^17.0.17",
     "@typescript-eslint/eslint-plugin": "^5.36.0",
     "@typescript-eslint/parser": "^5.36.0",
+    "autoprefixer": "^10.4.14",
     "babel-plugin-named-exports-order": "^0.0.2",
     "eslint": "8.7.0",
     "eslint-config-next": "^12.2.5",
@@ -141,9 +143,11 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-react-hooks": "^4.3.0",
+    "postcss": "^8.4.25",
     "prettier": "^2.7.1",
     "prop-types": "^15.8.1",
     "sass": "^1.54.6",
+    "tailwindcss": "^3.3.2",
     "webpack": "^5.74.0"
   }
 }

@@ -65,9 +65,45 @@ export function HomeTemplate({ logged = false, hasUserResumeStory = false, userT
   };
 
   return (
-    <div className={cx('career-main')}>
-      <section className={cx('top-banner', 'hero-section', 'hero-section-3')}>
-        <div>
+    <div className={cx('career-main', 'tw-px-[396px]')}>
+      <div className="tw-w-full tw-bg-white tw-border-solid tw-border  tw-rounded-2xl overflow-hidden">
+        <div className="flex justify-center">
+          <img
+            className={cx('top-banner__image')}
+            // className="h-40 w-full object-cover"
+            src="/assets/images/banner/top_banner_main.png"
+            alt="Card"
+          />
+        </div>
+        <div className="py-4 px-6">
+          <div className="row align-items-center">
+            <div className="col-12 col-md-9 col-lg-7 col-xl-6">
+              <div className="hero-content section-title text-center text-lg-left tw-p-10 mt-lg-0">
+                {/*<Typography type="B1" tag="div" weight="bold" extendClass={cx('mb-5')}>*/}
+                {/*  WELCOME TO CAREERMENTORS!*/}
+                {/*</Typography>*/}
+                <Typography type="A1" extendClass={cx('title')}>
+                  함께 성장하는 공간,
+                </Typography>
+                <Typography type="A2" weight="bold" extendClass={cx('title--highlight')}>
+                  커리어멘토스
+                </Typography>
+                <Typography type="H3" tag="div" extendClass={cx('mt-5', 'title__desc')}>
+                  세상은 넓고, 할일은 많습니다. 그리고 사람은 다양합니다.
+                  <br />
+                  커리어멘토스는 단순한 멘토-멘티 매칭 서비스가 아닙니다.
+                  <br />
+                  성향과 역량에 맞는 목표 모델과 최적의 루트를 찾아드립니다.
+                  <br />
+                  지금 성장 스토리를 입력하시고 새롭게 시작해보세요!
+                </Typography>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* <section className={cx('top-banner', 'hero-section')}>
+        <div className="tw-p-0">
           <img
             src="/assets/images/banner/top_banner_main.png"
             alt="main_background"
@@ -77,10 +113,7 @@ export function HomeTemplate({ logged = false, hasUserResumeStory = false, userT
             <div className="row align-items-center">
               <div className="col-12 col-md-9 col-lg-7 col-xl-6">
                 <div className="hero-content section-title text-center text-lg-left my-5 mt-lg-0">
-                  {/*<Typography type="B1" tag="div" weight="bold" extendClass={cx('mb-5')}>*/}
-                  {/*  WELCOME TO CAREERMENTORS!*/}
-                  {/*</Typography>*/}
-                  <Typography type="A2" extendClass={cx('title')}>
+                  <Typography type="A1" extendClass={cx('title')}>
                     함께 성장하는 공간,
                   </Typography>
                   <Typography type="A2" weight="bold" extendClass={cx('title--highlight')}>
@@ -107,7 +140,7 @@ export function HomeTemplate({ logged = false, hasUserResumeStory = false, userT
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
       <div className={cx('main-container', 'container')}>
         <section className={cx('job-group-area', 'border-bottom')}>
           <div className={cx('justify-content-center', 'ptb-100', 'job-group__wrap')}>
