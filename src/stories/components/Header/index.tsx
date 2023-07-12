@@ -211,7 +211,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                 />
               </Mobile>
               <Desktop>
-                <img src="/assets/images/cm_CI_co_1000x225.png" width={147} alt="logo" className={cx('image-logo')} />
+                <div className="tw-text-2xl tw-font-bold">인빈서블X</div>
               </Desktop>
             </div>
             <Mobile>
@@ -256,7 +256,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
               className={cx('collapse navbar-collapse main-menu', 'navbar-mobile', isShowMenu ? 'show' : '')}
               id="navbarSupportedContent"
             >
-              <ul className={cx('nav-custom', 'navbar-custom-mobile', 'navbar-nav ml-auto')}>
+              <ul className={cx('nav-custom', 'navbar-custom-mobile', 'navbar-nav ml-auto', 'tw-text-lg')}>
                 {menuItem?.map(item => {
                   return (
                     <li key={item.no} className={item.option}>

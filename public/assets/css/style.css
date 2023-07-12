@@ -608,10 +608,10 @@ span.sub-title {
 }
 .main-menu ul > li a {
   margin: 0 0 0 20px;
-  font-size: 14px;
-  color: #363232;
+  font-size: 16px;
+  color: #000;
   display: block;
-  font-weight: 400;
+  font-weight: 600;
   background-color: transparent;
   border-radius: 0;
   padding: 0;
@@ -682,7 +682,7 @@ span.sub-title {
   font-size: inherit;
   height: auto;
   padding: 0;
-  margin-bottom: -8px;
+  /* margin-bottom: -8px; */
 }
 .navbar-toggler {
   background: transparent;
@@ -2841,6 +2841,9 @@ span.sub-title {
 }
 .border-gray-light {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+.footer-bottom{
+      border-top: 1px solid rgba(153, 153, 153, 0.342);
 }
 .footer-bottom p,
 .footer-bottom ul li a {

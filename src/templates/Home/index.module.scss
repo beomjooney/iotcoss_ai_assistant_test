@@ -22,10 +22,29 @@
       gap: 32px;
     }
   }
+  .user-wrap {
+    width: 100%;
+    margin: 10px auto;
+    position: relative;
+  }
+  .user-wrap img {
+    width: 100%;
+    vertical-align: middle;
+  }
+  .user-text {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    width: 100%;
+    transform: translate( -50%, -50% );
+      font-size: 20px;
+      font-family: 'ypseo';
+      text-align:center;
+  }
 
   .title {
     @media (min-width: 320px) and (max-width: 992px) {
-      color: palette.$Primary-Gray900;
+      // color: palette.$Primary-Gray900;
       line-height: 72px;
       font-size: 2em;
       display: inline-block;
@@ -45,17 +64,18 @@
       line-height: 72px;
     }
     &__desc {
-      font-weight: 400;
-      font-size: 16px;
+      font-weight: 600;
+      font-size: 15px;
       line-height: 24px;
-      color: palette.$Primary-Gray800;
+      color: black;
     }
   }
 
   @media (min-width: 1200px) {
     .action-btn {
       position: absolute;
-      bottom: 68px;
+      width:300px;
+      bottom: -88px;
     }
   }
 
@@ -93,6 +113,9 @@
     }
   }
 
+  .absolute-content {
+    position: absolute !important;
+  }
   .fit-content {
     width: fit-content;
     @media (min-width: 320px) and (max-width: 992px) {
@@ -120,9 +143,10 @@
   .job-group-area {
     @media (min-width: 1200px) {
       .job-group__wrap {
-        width: 736px;
+        width: 1000px;
         margin: 0 auto;
       }
     }
   }
+
 }

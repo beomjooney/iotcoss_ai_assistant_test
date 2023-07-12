@@ -15,7 +15,7 @@ const Footer = () => {
             <div className="container">
               <div className="row justify-content-start">
                 <div className="col-lg-3 mb-3 mb-lg-0">
-                  <div className="footer-nav-wrap text-white" style={{ marginLeft: 5 }}>
+                  <div className="footer-nav-wrap" style={{ marginLeft: 5 }}>
                     <ul className={cx('list-text-ul', 'list-unstyled')}>
                       <li className="mb-2 d-flex align-items-center">
                         <a href="#">
@@ -57,7 +57,7 @@ const Footer = () => {
                 </div>
                 <Divider sx={{ bgcolor: '#9a9ea7' }} component="li" />
                 <div className="col-lg-2 mb-3 mb-lg-0">
-                  <div className="footer-nav-wrap text-white" style={{ marginLeft: 5 }}>
+                  <div className="footer-nav-wrap " style={{ marginLeft: 5 }}>
                     <ul className={cx('list-text', 'list-unstyled')}>
                       <li className="mb-2 d-flex align-items-center">
                         <Typography type="B1">회사명 : 라이프멘토스(주)</Typography>
@@ -91,21 +91,19 @@ const Footer = () => {
               </div>
             </div>
           </div>
-          <div
-            className="pt-3 pb-3 footer-nav-wrap text-white"
-            style={{ textAlign: 'center', backgroundColor: '#757f8f' }}
-          >
+          <div className="pt-3 pb-3 footer-nav-wrap " style={{ textAlign: 'center', backgroundColor: '#757f8f' }}>
             <Typography type="B1">© 2023 커리어멘토스</Typography>
           </div>
         </footer>
       </Mobile>
       <Desktop>
+        <div className="footer-bottom footer-border"></div>
         <footer className={cx('footer-section')}>
           <div className="footer-top pt-5 pb-5 background-img-2">
             <div className="container">
               <div className="row justify-content-start">
                 <div className="col-lg-4 mb-3 mb-lg-0">
-                  <div className="footer-nav-wrap text-white">
+                  <div className="footer-nav-wrap ">
                     <Typography type="B1" weight="bold">
                       COMPANY
                     </Typography>
@@ -130,7 +128,7 @@ const Footer = () => {
                   </div>
                 </div>
                 <div className="col-lg-3 mb-3 mb-lg-0">
-                  <div className="footer-nav-wrap text-white">
+                  <div className="footer-nav-wrap ">
                     <Typography type="B1" weight="bold">
                       ETC
                     </Typography>
@@ -174,7 +172,7 @@ const Footer = () => {
                   </div>
                 </div>
                 <div className="col-lg-2 mb-3 mb-lg-0">
-                  <div className="footer-nav-wrap text-white">
+                  <div className="footer-nav-wrap ">
                     <Typography type="B1" weight="bold">
                       CONTACT
                     </Typography>
@@ -203,16 +201,14 @@ const Footer = () => {
               </div>
             </div>
           </div>
-          <div className="footer-bottom container text-white">
-            <div className={cx('footer-section__container')}>
-              <div className={cx('footer-border', 'text-left justify-content-start')}>
-                <div className="col-md-6 col-lg-5" style={{ padding: 0 }}>
-                  <p className="copyright-text pb-0 mb-0">
-                    <Typography type="C1">
-                      Copyright {new Date().getFullYear()}. LifeMentors Co., Ltd. all rights reserved.
-                    </Typography>
-                  </p>
-                </div>
+          <div className="footer-bottom">
+            <div className={cx('footer-section__container ')}>
+              <div className={cx('footer-border', 'text-center justify-content-start')}>
+                <p className="copyright-text pb-0 mb-0 ">
+                  <Typography type="C1">
+                    Copyright {new Date().getFullYear()}. LifeMentors Co., Ltd. all rights reserved.
+                  </Typography>
+                </p>
               </div>
             </div>
           </div>
