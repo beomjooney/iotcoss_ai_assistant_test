@@ -63,8 +63,8 @@ function CustomApp({ Component, pageProps = {}, session }: AppPropsWithLayout) {
   return (
     <>
       <Head>
-        <title>커리어멘토스</title>
-        <meta name="description" content="커리어멘토링" />
+        <title>인빈서블X</title>
+        <meta name="description" content="인빈서블X" />
         <meta
           name="keywords"
           content="커리어멘토스, 커멘, 커멘토링, 커리어, 멘토링, 커리어서비스, 멘토링 서비스, camen, careermentors"
