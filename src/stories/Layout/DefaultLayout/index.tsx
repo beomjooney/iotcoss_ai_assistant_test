@@ -16,7 +16,7 @@ export interface DefaultLayoutProps {
 
 const DefaultLayout = ({ darkBg, classOption, title, children, isFooter = true }: DefaultLayoutProps) => {
   const menuItem = [
-    { no: 0, option: 'nav-item', title: '성장퀴즈', link: '/', dropdown: [] },
+    { no: 0, option: 'nav-item', title: '성장퀴즈', link: '/quiz', dropdown: [] },
     { no: 0, option: 'nav-item', title: '라운지', link: '/', dropdown: [] },
     { no: 0, option: 'nav-item', title: '나의학습방', link: '/', dropdown: [] },
     // { no: 0, option: 'nav-item', title: '커멘소개', link: '/business', dropdown: [] },
