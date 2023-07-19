@@ -65,47 +65,34 @@ export function HomeTemplate({ logged = false, hasUserResumeStory = false, userT
   };
 
   return (
-    <div className={cx('career-main', 'tw-px-[450px]')}>
+    <div className={cx('career-main')}>
       <div className="tw-w-full tw-bg-white tw-border-solid tw-rounded-2xl overflow-hidden">
-        <div className="flex justify-center">
+        <div className="tw-flex tw-justify-center">
           <img
             // className={cx('top-banner__image')}
             className="h-40 w-full object-cover"
             src="/assets/images/banner/banner_bg.png"
             alt="Card"
           />
-        </div>
-        <div className="row align-items-center">
-          <div className="col-12 col-md-9 col-lg-7 col-xl-6">
-            <div
-              className={cx(
-                'absolute-content',
-                'tw-bottom-52',
-                'tw-left-24',
-                'hero-content',
-                'section-title',
-                'text-left',
-              )}
-            >
-              <Typography type="H1" tag="div" extendClass={cx('title__desc')}>
-                매일 새로운 기술과 쏱아져 나오는데
-                <br />
-                상위 10%의 개발자들은 어떻게 학습하고
-                <br />
-                어떻게 트렌드를 따라가는거죠?
-              </Typography>
-              <div className="tw-font-bold tw-text-3xl tw-text-black tw-tracking-tight tw-mt-8">
-                성장 가속 서비스 인빈서블X
-              </div>
+          <div className={cx('absolute-content', 'tw-top-[230px]', 'tw-left-[450px]')}>
+            <Typography type="H1" tag="div" extendClass={cx('title__desc')}>
+              매일 새로운 기술과 쏱아져 나오는데
+              <br />
+              상위 10%의 개발자들은 어떻게 학습하고
+              <br />
+              어떻게 트렌드를 따라가는거죠?
+            </Typography>
+            <div className="tw-font-bold tw-text-3xl tw-text-black tw-tracking-tight tw-mt-8">
+              성장 가속 서비스 인빈서블X
+            </div>
 
-              <div className={cx('fit-content', 'action-btn')}>
-                <Button size="main" onClick={handleUserResumeButton} className="tw-w-72 tw-h-12">
-                  <Typography type="B1" tag="div" weight="bold">
-                    지금 시작하기!
-                    {/* {hasUserResumeStory ? '수정' : '입력'}하러 가기 */}
-                  </Typography>
-                </Button>
-              </div>
+            <div className={cx('fit-content', 'action-btn')}>
+              <Button size="main" onClick={handleUserResumeButton} className="tw-w-72 tw-h-12">
+                <Typography type="B1" tag="div" weight="bold">
+                  지금 시작하기!
+                  {/* {hasUserResumeStory ? '수정' : '입력'}하러 가기 */}
+                </Typography>
+              </Button>
             </div>
           </div>
         </div>

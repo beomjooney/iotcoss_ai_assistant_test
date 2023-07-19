@@ -69,7 +69,7 @@ export default function SecondTabs({ tabs }: { tabs: BoardListItemType[]; setArt
                 label={tab.name}
                 value={tab.id.toString()}
                 key={tab.id}
-                sx={{ fontWeight: '600', fontSize: '15px' }}
+                className="tw-text-black tw-font-bold tw-text-base"
               />
             );
           })}

@@ -1,21 +1,21 @@
 import './index.module.scss';
-import { SeminarDetailTemplate } from 'src/templates';
+import { QuizDetailTemplate } from 'src/templates';
 import { useSessionStore } from 'src/store/session';
 import { useRouter } from 'next/router';
 import { NextPageContext } from 'next';
 import { dehydrate } from 'react-query';
 import { fetchSeminar } from '../../../src/services/seminars/seminars.queries';
 
-export function SeminarDetailPage() {
+export function QuizDetailPage() {
   const router = useRouter();
   const id = router.query['id'].toString();
 
-  return <SeminarDetailTemplate id={id} />;
+  return <QuizDetailTemplate id={id} />;
 }
 
-export default SeminarDetailPage;
+export default QuizDetailPage;
 
-SeminarDetailPage.LayoutProps = {
+QuizDetailPage.LayoutProps = {
   darkBg: false,
   classOption: 'custom-header',
   title: '커리어 멘토스',

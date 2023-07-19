@@ -23,6 +23,7 @@ export * from './Service/index';
 export * from './Contents/index';
 export * from './Seminar/index';
 export * from './Quiz/index';
+export * from './Quiz/Detail/index';
 export * from './Seminar/Detail/index';
 export * from './Skill/index';
 export * from './Community/index';

@@ -23,6 +23,10 @@ import SecondTabs from 'src/stories/components/Tab/SecondTab';
 import ListItemtag from 'src/stories/components/QuizItemCard/ListItemTag';
 import SecondTechLogCard from 'src/stories/components/QuizItemCard/SecondTechLogCard';
 import Card6 from 'src/stories/components/QuizItemCard/Card6';
+import TextField from '@mui/material/TextField';
+import SearchIcon from '@mui/icons-material/Search';
+import Divider from '@mui/material/Divider';
+import Link from 'next/link';
 
 interface BoardListItemType {
   id: number;
@@ -49,7 +53,37 @@ const testBoards: BoardListItemType[] = [
   },
   {
     id: 2,
-    name: '묻고 답하기',
+    name: '개발',
+    boardType: 'techlog',
+    status: 'ACTIVE',
+    layoutType: 'LIST',
+    enableHashtag: true,
+    enableReply: true,
+    index: 2,
+  },
+  {
+    id: 3,
+    name: '엔지니어링',
+    boardType: 'techlog',
+    status: 'ACTIVE',
+    layoutType: 'LIST',
+    enableHashtag: true,
+    enableReply: true,
+    index: 2,
+  },
+  {
+    id: 4,
+    name: '기획/PM/PO',
+    boardType: 'techlog',
+    status: 'ACTIVE',
+    layoutType: 'LIST',
+    enableHashtag: true,
+    enableReply: true,
+    index: 2,
+  },
+  {
+    id: 5,
+    name: '디자인',
     boardType: 'techlog',
     status: 'ACTIVE',
     layoutType: 'LIST',
@@ -97,7 +131,7 @@ const Articles = [
     id: '9f1739eb-8f00-4c99-97f4-63544b6a2d12',
     featuredImage:
       'https://images.unsplash.com/photo-1504992963429-56f2d62fbff0?ixid=MnwxMjA3fDB8MHxzZWFyY2h8ODN8fHRlY2hub2xvZ3l8ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
-    title: 'Mind games: How gaming can play a positive role in mental health',
+    title: '백엔드 개발자 오세요.',
     desc: 'Duis bibendum, felis sed interdum venenatis, turpis enim blandit mi, in porttitor pede justo eu massa. Donec dapibus. Duis at velit eu est congue elementum.',
     date: 'May 20, 2021',
     href: '/single-audio/this-is-single-slug',
@@ -140,7 +174,7 @@ const Articles = [
     id: '0991ab0b-696f-4d7f-afe7-9c624eb8c050',
     featuredImage:
       'https://images.unsplash.com/photo-1465310477141-6fb93167a273?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1950&q=80',
-    title: 'Microsoft announces a five-year commitment to create bigger opportunities for people with disabilities',
+    title: '고급 프론트엔드와 성장퀴즈',
     desc: 'Duis bibendum. Morbi non quam nec dui luctus rutrum. Nulla tellus.',
     date: 'May 20, 2021',
     href: '/single/this-is-single-slug',
@@ -182,7 +216,217 @@ const Articles = [
     id: 'eae0e85d-db11-44fa-ac32-6c192f687e0c',
     featuredImage:
       'https://images.unsplash.com/photo-1581122584612-713f89daa8eb?ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDIwfHx8ZW58MHx8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
-    title: '360-degree video: How Microsoft deployed a datacenter to the bottom of the ocean',
+    title: '고급 프론트엔드 성장퀴즈',
+    desc: 'We’re an online magazine dedicated to covering the best in international product design. We started as a little blog back in 2002 covering student work and over time',
+    date: 'May 20, 2021',
+    href: '/single/this-is-single-slug',
+    commentCount: 14,
+    viewdCount: 2378,
+    readingTime: 6,
+    bookmark: { count: 3502, isBookmarked: false },
+    like: { count: 773, isLiked: true },
+    author: {
+      id: 1,
+      firstName: 'Alric',
+      lastName: 'Truelock',
+      displayName: 'Truelock Alric',
+      email: 'atruelock0@skype.com',
+      gender: 'Bigender',
+      avatar: 'https://robohash.org/doloremaliquidquia.png?size=150x150&set=set1',
+      bgImage:
+        'https://images.pexels.com/photos/912410/pexels-photo-912410.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+      count: 40,
+      href: '/author/the-demo-author-slug',
+      desc: 'There’s no stopping the tech giant. Apple now opens its 100th store in China.There’s no stopping the tech giant.',
+      jobName: 'Author Job',
+    },
+    categories: [
+      {
+        id: 3,
+        name: 'Industrial',
+        href: '/archive/the-demo-archive-slug',
+        thumbnail:
+          'https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80',
+        count: 15,
+        color: 'yellow',
+      },
+    ],
+    postType: 'standard',
+  },
+  {
+    index: 10,
+    id: 'eae0e85d-db11-44fa-ac32-6c192f687e0c',
+    featuredImage:
+      'https://images.unsplash.com/photo-1581122584612-713f89daa8eb?ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDIwfHx8ZW58MHx8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
+    title: '개발공부 이모저모',
+    desc: 'We’re an online magazine dedicated to covering the best in international product design. We started as a little blog back in 2002 covering student work and over time',
+    date: 'May 20, 2021',
+    href: '/single/this-is-single-slug',
+    commentCount: 14,
+    viewdCount: 2378,
+    readingTime: 6,
+    bookmark: { count: 3502, isBookmarked: false },
+    like: { count: 773, isLiked: true },
+    author: {
+      id: 1,
+      firstName: 'Alric',
+      lastName: 'Truelock',
+      displayName: 'Truelock Alric',
+      email: 'atruelock0@skype.com',
+      gender: 'Bigender',
+      avatar: 'https://robohash.org/doloremaliquidquia.png?size=150x150&set=set1',
+      bgImage:
+        'https://images.pexels.com/photos/912410/pexels-photo-912410.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+      count: 40,
+      href: '/author/the-demo-author-slug',
+      desc: 'There’s no stopping the tech giant. Apple now opens its 100th store in China.There’s no stopping the tech giant.',
+      jobName: 'Author Job',
+    },
+    categories: [
+      {
+        id: 3,
+        name: 'Industrial',
+        href: '/archive/the-demo-archive-slug',
+        thumbnail:
+          'https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80',
+        count: 15,
+        color: 'yellow',
+      },
+    ],
+    postType: 'standard',
+  },
+  {
+    index: 10,
+    id: 'eae0e85d-db11-44fa-ac32-6c192f687e0c',
+    featuredImage:
+      'https://images.unsplash.com/photo-1581122584612-713f89daa8eb?ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDIwfHx8ZW58MHx8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
+    title: '개발공부 이모저모',
+    desc: 'We’re an online magazine dedicated to covering the best in international product design. We started as a little blog back in 2002 covering student work and over time',
+    date: 'May 20, 2021',
+    href: '/single/this-is-single-slug',
+    commentCount: 14,
+    viewdCount: 2378,
+    readingTime: 6,
+    bookmark: { count: 3502, isBookmarked: false },
+    like: { count: 773, isLiked: true },
+    author: {
+      id: 1,
+      firstName: 'Alric',
+      lastName: 'Truelock',
+      displayName: 'Truelock Alric',
+      email: 'atruelock0@skype.com',
+      gender: 'Bigender',
+      avatar: 'https://robohash.org/doloremaliquidquia.png?size=150x150&set=set1',
+      bgImage:
+        'https://images.pexels.com/photos/912410/pexels-photo-912410.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+      count: 40,
+      href: '/author/the-demo-author-slug',
+      desc: 'There’s no stopping the tech giant. Apple now opens its 100th store in China.There’s no stopping the tech giant.',
+      jobName: 'Author Job',
+    },
+    categories: [
+      {
+        id: 3,
+        name: 'Industrial',
+        href: '/archive/the-demo-archive-slug',
+        thumbnail:
+          'https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80',
+        count: 15,
+        color: 'yellow',
+      },
+    ],
+    postType: 'standard',
+  },
+  {
+    index: 10,
+    id: 'eae0e85d-db11-44fa-ac32-6c192f687e0c',
+    featuredImage:
+      'https://images.unsplash.com/photo-1581122584612-713f89daa8eb?ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDIwfHx8ZW58MHx8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
+    title: '개발공부 이모저모',
+    desc: 'We’re an online magazine dedicated to covering the best in international product design. We started as a little blog back in 2002 covering student work and over time',
+    date: 'May 20, 2021',
+    href: '/single/this-is-single-slug',
+    commentCount: 14,
+    viewdCount: 2378,
+    readingTime: 6,
+    bookmark: { count: 3502, isBookmarked: false },
+    like: { count: 773, isLiked: true },
+    author: {
+      id: 1,
+      firstName: 'Alric',
+      lastName: 'Truelock',
+      displayName: 'Truelock Alric',
+      email: 'atruelock0@skype.com',
+      gender: 'Bigender',
+      avatar: 'https://robohash.org/doloremaliquidquia.png?size=150x150&set=set1',
+      bgImage:
+        'https://images.pexels.com/photos/912410/pexels-photo-912410.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+      count: 40,
+      href: '/author/the-demo-author-slug',
+      desc: 'There’s no stopping the tech giant. Apple now opens its 100th store in China.There’s no stopping the tech giant.',
+      jobName: 'Author Job',
+    },
+    categories: [
+      {
+        id: 3,
+        name: 'Industrial',
+        href: '/archive/the-demo-archive-slug',
+        thumbnail:
+          'https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80',
+        count: 15,
+        color: 'yellow',
+      },
+    ],
+    postType: 'standard',
+  },
+  {
+    index: 10,
+    id: 'eae0e85d-db11-44fa-ac32-6c192f687e0c',
+    featuredImage:
+      'https://images.unsplash.com/photo-1581122584612-713f89daa8eb?ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDIwfHx8ZW58MHx8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
+    title: '개발공부 이모저모',
+    desc: 'We’re an online magazine dedicated to covering the best in international product design. We started as a little blog back in 2002 covering student work and over time',
+    date: 'May 20, 2021',
+    href: '/single/this-is-single-slug',
+    commentCount: 14,
+    viewdCount: 2378,
+    readingTime: 6,
+    bookmark: { count: 3502, isBookmarked: false },
+    like: { count: 773, isLiked: true },
+    author: {
+      id: 1,
+      firstName: 'Alric',
+      lastName: 'Truelock',
+      displayName: 'Truelock Alric',
+      email: 'atruelock0@skype.com',
+      gender: 'Bigender',
+      avatar: 'https://robohash.org/doloremaliquidquia.png?size=150x150&set=set1',
+      bgImage:
+        'https://images.pexels.com/photos/912410/pexels-photo-912410.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+      count: 40,
+      href: '/author/the-demo-author-slug',
+      desc: 'There’s no stopping the tech giant. Apple now opens its 100th store in China.There’s no stopping the tech giant.',
+      jobName: 'Author Job',
+    },
+    categories: [
+      {
+        id: 3,
+        name: 'Industrial',
+        href: '/archive/the-demo-archive-slug',
+        thumbnail:
+          'https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80',
+        count: 15,
+        color: 'yellow',
+      },
+    ],
+    postType: 'standard',
+  },
+  {
+    index: 10,
+    id: 'eae0e85d-db11-44fa-ac32-6c192f687e0c',
+    featuredImage:
+      'https://images.unsplash.com/photo-1581122584612-713f89daa8eb?ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDIwfHx8ZW58MHx8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
+    title: '개발공부 이모저모',
     desc: 'We’re an online magazine dedicated to covering the best in international product design. We started as a little blog back in 2002 covering student work and over time',
     date: 'May 20, 2021',
     href: '/single/this-is-single-slug',
@@ -327,58 +571,153 @@ export function QuizTemplate() {
       {/* <Banner title="커리어멘토스 세미나" subTitle="커멘세미나" /> */}
 
       <div className={cx('container')}>
-        <Grid container spacing={2}>
-          <Grid item xs={2}>
-            성장퀴즈
+        <div className="tw-py-5">
+          <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
+            <Grid item xs={2} className="tw-font-bold tw-text-3xl tw-text-black">
+              성장퀴즈
+            </Grid>
+            <Grid item xs={7} className="tw-font-semi tw-text-base tw-text-black">
+              관심 주제별로 성장 퀴즈를 풀고 네트워킹 할 수 있는 클럽을 만나보세요!
+            </Grid>
+            <Grid item xs={3} justifyContent="flex-end" className="tw-flex">
+              <button
+                type="button"
+                className="tw-text-white tw-bg-blue-500 hover:tw-bg-blue-800 tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5  dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
+              >
+                성장퀴즈 클럽 개설하기 +
+              </button>
+            </Grid>
           </Grid>
-          <Grid item xs={8}>
-            관심 주제별로 성장 퀴즈를 풀고 네트워킹 할 수 있는 클럽을 만나보세요!
+        </div>
+        <Box sx={{ width: '100%', typography: 'body1', marginTop: '20px', marginBottom: '20px' }}>
+          <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
+            <Grid item xs={8} className="tw-font-bold tw-text-3xl tw-text-black">
+              <SecondTabs tabs={testBoards} />
+            </Grid>
+            <Grid item xs={4} className="tw-font-semi tw-text-base tw-text-black">
+              <TextField
+                fullWidth
+                id="outlined-basic"
+                label=""
+                variant="outlined"
+                InputProps={{
+                  style: { height: '43px' },
+                  startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
+                }}
+              />
+            </Grid>
           </Grid>
-          <Grid item xs={2}>
-            성장퀴즈
-          </Grid>
-        </Grid>
-
-        <Box sx={{ width: '100%', typography: 'body1' }}>
-          <SecondTabs tabs={testBoards} />
         </Box>
+
+        <Divider className="tw-mb-6 tw-border tw-bg-['#efefef']" />
+
+        <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
+          <span className="tw-font-bold tw-text-base tw-text-black tw-mr-4">직무</span>
+          <span className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded tw-dark:bg-gray-700 tw-dark:text-gray-300">
+            모든직무
+          </span>
+          <span className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded tw-dark:bg-gray-700 tw-dark:text-gray-300">
+            백엔드개발자
+          </span>
+          <span className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded tw-dark:bg-gray-700 tw-dark:text-gray-300">
+            프론트개발자
+          </span>
+          <span className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded tw-dark:bg-gray-700 tw-dark:text-gray-300">
+            모바일개발자
+          </span>
+          <span className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded tw-dark:bg-gray-700 tw-dark:text-gray-300">
+            AI개발자
+          </span>
+        </div>
+
+        <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
+          <span className="tw-font-bold tw-text-base tw-text-black tw-mr-4">레벨</span>
+          <span className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded tw-dark:bg-gray-700 tw-dark:text-gray-300">
+            모든레벨
+          </span>
+          <span className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded tw-dark:bg-gray-700 tw-dark:text-gray-300">
+            레벨0
+          </span>
+          <span className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded tw-dark:bg-gray-700 tw-dark:text-gray-300">
+            레벨1
+          </span>
+          <span className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded tw-dark:bg-gray-700 tw-dark:text-gray-300">
+            레벨2
+          </span>
+          <span className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded tw-dark:bg-gray-700 tw-dark:text-gray-300">
+            레벨3
+          </span>
+        </div>
+
         <article>
-          <div className={cx('filter-area', 'top-filter')}>
+          {/* <div className={cx('filter-area', 'top-filter')}>
             <div className={cx('seminar-button__group')}></div>
-          </div>
+          </div> */}
+
           <div className={cx('content-area')}>
             <section className={cx('content', 'flex-wrap-container')}>
-              {/* <div className="flex items-center">
-                {boardTags && boardTags.length > 0 ? (
-                  boardTags?.map((hashtag: string, index: number) => {
-                    return (
-                      <ListItemtag
-                        key={index}
-                        hashtag={hashtag}
-                        backgroundClass={'bg-gray-200'}
-                        sizeClass={'h-6'}
-                        fontClass={'text-neutral-250'}
-                        marginClass={'mr-2'}
-                        fontSize={12}
-                      />
-                    );
-                  })
-                ) : (
-                  <></>
-                )}
-              </div> */}
-
-              <div className="grid dark:divide-neutral-700">
+              <Grid
+                container
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
+                rowSpacing={3}
+                columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+              >
                 {Articles &&
                   Articles.map((item, index) => (
-                    // <></>
-                    // <div key={index}>{item.categoriesId}</div>
-                    <Card6 key={index} post={item} />
-                    // <div key={item.articleId} className="mb-4">
-                    //   {item.articleId}
-                    // </div>
+                    <Grid key={index} item xs={6}>
+                      <a
+                        href={'/quiz/' + `${index}`}
+                        className="tw-flex tw-flex-col tw-items-center tw-bg-white tw-border tw-border-gray-200 tw-rounded-lg tw-shadow md:tw-flex-row md:tw-max-w-xl hover:tw-bg-gray-100 dark:tw-border-gray-700 dark:tw-bg-gray-800 dark:hover:tw-bg-gray-700"
+                      >
+                        <img
+                          className="tw-object-cover tw-w-[220px] tw-rounded-t-lg tw-h-[245px] md:tw-h-[245px] md:tw-w-[220px] md:tw-rounded-none md:tw-rounded-l-lg"
+                          src="/assets/images/banner/Rectangle1.png"
+                          alt=""
+                        />
+                        <div className="tw-flex tw-flex-col tw-justify-between tw-p-4 tw-leading-normal">
+                          <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
+                            <span className="tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-0.5 tw-rounded tw-dark:bg-blue-900 tw-dark:text-blue-300">
+                              개발
+                            </span>
+                            <span className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-0.5 tw-rounded tw-dark:bg-gray-700 tw-dark:text-gray-300">
+                              레벨1
+                            </span>
+                            <span className="tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-0.5 tw-rounded tw-dark:bg-red-900 tw-dark:text-red-300">
+                              백엔드개발자
+                            </span>
+                          </div>
+                          <div className="tw-mb-3 tw-text-sm tw-font-semibold tw-text-gray-500 dark:tw-text-gray-400">
+                            모집마감일 : {item.date}
+                          </div>
+                          <h6 className="tw-mb-2 tw-text-2xl tw-font-bold tw-tracking-tight tw-text-gray-900 dark:tw-text-white">
+                            {item.title}
+                          </h6>
+                          <p className="tw-line-clamp-2 tw-mb-3 tw-font-normal tw-text-gray-700 dark:tw-text-gray-400">
+                            Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse
+                            chronological order.
+                          </p>
+
+                          <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-400 dark:tw-text-gray-400">
+                            화, 수, 목 | 12 주 | 학습 36회
+                          </div>
+
+                          <div className="tw-flex tw-items-center tw-space-x-4">
+                            <img
+                              className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full"
+                              src={item?.author?.avatar}
+                              alt=""
+                            />
+                            <div className="tw-text-sm tw-font-semibold tw-text-black dark:tw-text-white">
+                              <div>{item?.author?.displayName}</div>
+                            </div>
+                          </div>
+                        </div>
+                      </a>
+                    </Grid>
                   ))}
-              </div>
+              </Grid>
               {/* {isContentFetched &&
                 (contents.length > 0 ? (
                   contents.map((item, i) => {

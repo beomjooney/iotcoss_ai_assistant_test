@@ -4,9 +4,9 @@
 
 $banner-height: 216px;
 $aside-width: 352px;
-$article-width: 736px;
-$navbar-space: 77px;
-$top-space: $navbar-space + 30px;
+$article-width: 100%;
+$navbar-space: 0px;
+$top-space: $navbar-space + 0px;
 
 .text-bold {
   font-weight: bold !important;
@@ -18,7 +18,7 @@ $top-space: $navbar-space + 30px;
   padding-bottom: 0px !important;
 }
 
-.seminar-detail-container-mobile{
+.seminar-detail-container-mobile {
   position: relative;
 
   .sticky {
@@ -41,15 +41,15 @@ $top-space: $navbar-space + 30px;
           top: 10px;
         }
         button {
-          width: 20%;
-          border-bottom: 0.5px solid palette.$Primary-Gray600;
+          width: 30%;
+          border: 1px solid palette.$Primary-Gray600;
           font-weight: 400;
           font-size: font.$font-size-14;
           line-height: 21px;
           color: palette.$Primary-Gray600;
           padding-bottom: 8px !important;
 
-          &[aria-selected="true"] {
+          &[aria-selected='true'] {
             color: palette.$Primary-Gray900;
             font-size: font.$font-size-14;
           }
@@ -89,8 +89,8 @@ $top-space: $navbar-space + 30px;
               display: inline-block;
               transform: translate(-32px, -2px);
               position: absolute;
-              content: "";
-              background-image: url("../../../../public/assets/images/icons/seminar-check.svg");
+              content: '';
+              background-image: url('../../../../public/assets/images/icons/seminar-check.svg');
             }
           }
         }
@@ -176,7 +176,6 @@ $top-space: $navbar-space + 30px;
       }
     }
 
-
     .top-area {
       float: left;
       padding-right: 25px;
@@ -259,14 +258,13 @@ $top-space: $navbar-space + 30px;
       &__price {
         position: absolute;
         right: 0;
-        margin-right:5px;
+        margin-right: 5px;
       }
     }
   }
 }
 
-
-.seminar-detail-container{
+.seminar-detail-container {
   position: relative;
 
   .sticky {
@@ -290,16 +288,17 @@ $top-space: $navbar-space + 30px;
         }
         button {
           width: 20%;
-          border-bottom: 0.5px solid palette.$Primary-Gray600;
-          font-weight: 400;
-          font-size: font.$font-size-14;
+          border: 1px solid palette.$Primary-Gray600;
+          border-radius: 10px 10px 0px 0px;
+          font-weight: 600;
+          font-size: font.$font-size-16;
           line-height: 21px;
           color: palette.$Primary-Gray600;
           padding-bottom: 8px !important;
 
-          &[aria-selected="true"] {
+          &[aria-selected='true'] {
             color: palette.$Primary-Gray900;
-            font-size: font.$font-size-14;
+            font-size: font.$font-size-16;
           }
         }
       }
@@ -311,7 +310,7 @@ $top-space: $navbar-space + 30px;
       .seminar-tabpanel {
         position: relative;
         color: black;
-        padding: 60px 64px;
+        padding: 20px 20px;
         &:not(.seminar-tabpanel-4) {
           border-bottom: 0.5px solid palette.$Primary-Gray600;
         }
@@ -337,8 +336,8 @@ $top-space: $navbar-space + 30px;
               display: inline-block;
               transform: translate(-32px, -2px);
               position: absolute;
-              content: "";
-              background-image: url("../../../../public/assets/images/icons/seminar-check.svg");
+              content: '';
+              background-image: url('../../../../public/assets/images/icons/seminar-check.svg');
             }
           }
         }
@@ -425,7 +424,6 @@ $top-space: $navbar-space + 30px;
       }
     }
 
-
     .top-area {
       float: left;
       padding-right: 25px;
@@ -508,7 +506,7 @@ $top-space: $navbar-space + 30px;
       &__price {
         position: absolute;
         right: 0;
-        margin-right:5px;
+        margin-right: 5px;
       }
     }
   }
