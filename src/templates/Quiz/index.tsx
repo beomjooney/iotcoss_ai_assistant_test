@@ -584,7 +584,9 @@ export function QuizTemplate() {
                 type="button"
                 className="tw-text-white tw-bg-blue-500 hover:tw-bg-blue-800 tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5  dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
               >
-                성장퀴즈 클럽 개설하기 +
+                <Link href="/quiz/open" className="nav-link">
+                  성장퀴즈 클럽 개설하기 +
+                </Link>
               </button>
             </Grid>
           </Grid>
