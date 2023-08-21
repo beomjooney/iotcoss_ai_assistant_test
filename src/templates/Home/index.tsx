@@ -21,7 +21,7 @@ export interface HomeProps {
   userType: any; // 0001 멘티
 }
 
-export function HomeTemplate({ logged = false, hasUserResumeStory = false, userType }: HomeProps) {
+export function HomeTemplate({ logged = false, userType }: HomeProps) {
   const router = useRouter();
   const { memberId } = useSessionStore.getState();
   const { jobGroups, setJobGroups } = useStore();
@@ -29,18 +29,18 @@ export function HomeTemplate({ logged = false, hasUserResumeStory = false, userT
   const [topicList, setTopicList] = useState([]);
   const [mentorList, setMentorList] = useState([]);
 
-  const { isFetched: isJobGroupFetched } = useJobGroups(data => setJobGroups(data));
-  const { isFetched: isVodFetched } = useRecommendContents(
-    PAGE_NAME,
-    { contentsType: ArticleEnum.VOD, size: 8 },
-    data => setVodList(data.data),
-  );
-  const { isFetched: isTopicFetched } = useRecommendContents(
-    PAGE_NAME,
-    { contentsType: ArticleEnum.ARTICLE, size: 8 },
-    data => setTopicList(data.data),
-  );
-  const { isFetched: isMentorFetched } = useMentorList(data => setMentorList(data));
+  // const { isFetched: isJobGroupFetched } = useJobGroups(data => setJobGroups(data));
+  // const { isFetched: isVodFetched } = useRecommendContents(
+  //   PAGE_NAME,
+  //   { contentsType: ArticleEnum.VOD, size: 8 },
+  //   data => setVodList(data.data),
+  // );
+  // const { isFetched: isTopicFetched } = useRecommendContents(
+  //   PAGE_NAME,
+  //   { contentsType: ArticleEnum.ARTICLE, size: 8 },
+  //   data => setTopicList(data.data),
+  // );
+  // const { isFetched: isMentorFetched } = useMentorList(data => setMentorList(data));
   const handleUserResumeButton = async () => {
     // if (!logged) {
     //   if (confirm('로그인이 필요한 페이지 입니다.\n로그인 페이지로 이동하시겠습니까?')) {

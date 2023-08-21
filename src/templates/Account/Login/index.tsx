@@ -80,9 +80,9 @@ export function LoginTemplate({ onSubmitLogin }: LoginTemplateProps) {
             <Typography sx={{ fontWeight: '600', fontSize: 16 }}>카카오 1초 로그인/회원가입</Typography>
           </Button>
         </div>
-        <Divider className={cx('sign-color')}>또는 이메일 로그인</Divider>
+        {/* <Divider className={cx('sign-color')}>또는 이메일 로그인</Divider> */}
       </div>
-      <form onSubmit={handleSubmit(onSubmit, onError)}>
+      {/* <form onSubmit={handleSubmit(onSubmit, onError)}>
         <TextField
           required
           id="username"
@@ -162,7 +162,7 @@ export function LoginTemplate({ onSubmitLogin }: LoginTemplateProps) {
       </form>
       <Button size="medium" onClick={() => router.push('/account/signup')}>
         <Typography sx={{ fontWeight: '600', fontSize: 14 }}>이메일로 회원가입</Typography>
-      </Button>
+      </Button> */}
     </div>
   );
 }

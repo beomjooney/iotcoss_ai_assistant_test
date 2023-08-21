@@ -49,9 +49,13 @@ export const saveGrowthStory = async (params: any) => {
 };
 
 export const getMentor = async (mentorId: string) => {
-  const { data } = await axiosGeneralAPI().get(`/mentoring/${mentorId}`);
+  const { data } = await axiosGeneralAPI().get(`/api/v1/members/profile`);
   return data;
 };
+// export const getMentor = async (mentorId: string) => {
+//   const { data } = await axiosGeneralAPI().get(`/mentoring/${mentorId}`);
+//   return data;
+// };
 
 export const getMentorUri = async (mentorId: string) => {
   const { data } = await axiosGeneralAPI().get(`/mentoring/uri/${mentorId}`);

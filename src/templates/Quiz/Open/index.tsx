@@ -771,6 +771,10 @@ export function QuizOpenTemplate() {
     return skipped.has(step);
   };
 
+  const handleCancel = () => {
+    console.log('next');
+    router.push('/quiz');
+  };
   const handleNext = () => {
     console.log('next');
     let newSkipped = skipped;
@@ -851,6 +855,45 @@ export function QuizOpenTemplate() {
             );
           })}
         </Stepper>
+        {activeStep === 0 && (
+          <div>
+            <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10 tw-text-center">개설전 약속해요</div>
+            <div className={cx('content-area', ' tw-text-center')}>
+              모두의 성장을 돕는 좋은 클럽이 되도록 노력해주실거죠?
+            </div>
+            <div className={cx('content-area', ' tw-text-center')}>
+              모두가 퀴즈클럽를 통해 성장할 수 있도록 공정한 관리를 부탁드릴게요!
+            </div>
+            <div className="tw-container tw-py-10 tw-px-10 tw-mx-0 tw-min-w-full tw-flex tw-flex-col tw-items-center">
+              <div className="tw-grid tw-grid-rows-3 tw-grid-flow-col tw-gap-4">
+                <div className="tw-row-span-2">
+                  {isStepOptional(activeStep) && (
+                    <button
+                      color="inherit"
+                      disabled={activeStep === 0}
+                      onClick={handleBack}
+                      className="tw-w-[300px] btn-outline-secondary tw-outline-blue-500 tw-bg-white tw-mr-5 tw-text-black tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded"
+                    >
+                      {activeStep === steps.length - 1 ? '성장퀴즈 클럽 개설하기 >' : '다음'}
+                    </button>
+                  )}
+                  <button
+                    onClick={handleCancel}
+                    className="tw-w-[300px] btn-outline-secondary tw-outline-blue-500 tw-bg-white tw-mr-5 tw-text-black tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded"
+                  >
+                    취소하기
+                  </button>
+                  <button
+                    className="tw-w-[300px] tw-bg-[#2474ED] tw-text-white tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded"
+                    onClick={handleNext}
+                  >
+                    약속할께요
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
         {activeStep === 1 && (
           <article>
             <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">클럽 정보입력</div>
@@ -1065,35 +1108,35 @@ export function QuizOpenTemplate() {
                 />
               </div>
             </div>
+            <div className="tw-container tw-py-10 tw-px-10 tw-mx-0 tw-min-w-full tw-flex tw-flex-col tw-items-center">
+              <div className="tw-grid tw-grid-rows-3 tw-grid-flow-col tw-gap-4">
+                <div className="tw-row-span-2">
+                  {/* {isStepOptional(activeStep) && (
+                    <button
+                      color="inherit"
+                      disabled={activeStep === 0}
+                      onClick={handleBack}
+                      className="tw-w-[300px] btn-outline-secondary tw-outline-blue-500 tw-bg-white tw-mr-5 tw-text-black tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded"
+                    >
+                      {activeStep === steps.length - 1 ? '성장퀴즈 클럽 개설하기 >' : '다음'}
+                    </button>
+                  )} */}
+                  <button className="tw-w-[300px] btn-outline-secondary tw-outline-blue-500 tw-bg-white tw-mr-5 tw-text-black tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded">
+                    임시 저장하기
+                  </button>
+                  <button
+                    className="tw-w-[300px] tw-bg-[#2474ED] tw-text-white tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded"
+                    onClick={handleNext}
+                  >
+                    {activeStep === steps.length - 1 ? '성장퀴즈 클럽 개설하기 >' : '다음'}
+                  </button>
+                </div>
+              </div>
+            </div>
           </article>
         )}
 
         {activeStep === 2 && <>2</>}
-        <div className="tw-container tw-py-10 tw-px-10 tw-mx-0 tw-min-w-full tw-flex tw-flex-col tw-items-center">
-          <div className="tw-grid tw-grid-rows-3 tw-grid-flow-col tw-gap-4">
-            <div className="tw-row-span-2">
-              {isStepOptional(activeStep) && (
-                <button
-                  color="inherit"
-                  disabled={activeStep === 0}
-                  onClick={handleBack}
-                  className="tw-w-[300px] btn-outline-secondary tw-outline-blue-500 tw-bg-white tw-mr-5 tw-text-black tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded"
-                >
-                  이전
-                </button>
-              )}
-              <button className="tw-w-[300px] btn-outline-secondary tw-outline-blue-500 tw-bg-white tw-mr-5 tw-text-black tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded">
-                임시 저장하기
-              </button>
-              <button
-                className="tw-w-[300px] tw-bg-[#2474ED] tw-text-white tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded"
-                onClick={handleNext}
-              >
-                {activeStep === steps.length - 1 ? '성장퀴즈 클럽 개설하기 >' : '다음'}
-              </button>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

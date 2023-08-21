@@ -6,7 +6,13 @@ export const codeDetailList = async groupId => {
     const { data } = await axiosGeneralAPI().get(`/code/group/${groupId}/details`);
     return data;
   } else {
-    const { data } = await axiosGeneralAPI().get(`/code/group`);
+    let params = JSON.parse(
+      JSON.stringify({
+        page: 0,
+        size: 100,
+      }),
+    );
+    const { data } = await axiosGeneralAPI().get(`/api/internal/v1/code/group`, { params });
     return data;
   }
 };
