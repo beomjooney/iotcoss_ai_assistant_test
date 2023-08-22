@@ -1,6 +1,6 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import { Pagination, Typography } from 'src/stories/components';
+import { MentorsModal, Pagination, Typography } from 'src/stories/components';
 import React, { useEffect, useState } from 'react';
 import { RecommendContent, SeminarImages } from 'src/models/recommend';
 import { useSeminarList, paramProps, useSeminarImageList } from 'src/services/seminars/seminars.queries';
@@ -469,9 +469,30 @@ export function QuizOpenTemplate() {
     to: '23:59:00.000',
   };
   const [today, setToday] = React.useState<Dayjs | null>(dayjs());
-  const onChangeHandleFromToDate = date => {
+  const [todayEnd, setTodayEnd] = React.useState<Dayjs | null>(dayjs());
+  const onChangeHandleFromToStartDate = date => {
     let formattedDate = date?.format('YYYY-MM-DD');
     setToday(formattedDate);
+    console.log(formattedDate);
+    // if (!formattedDate) {
+    //   let time = timeValues[item?.dateType] || '00:00:00.000';
+    //   let datetime = `${formattedDate} ${time}`;
+    //   setSearchParams({
+    //     ...searchParams,
+    //     [item?.name]: '',
+    //   });
+    // } else {
+    //   let time = timeValues[item?.dateType] || '00:00:00.000';
+    //   let datetime = `${formattedDate} ${time}`;
+    //   setSearchParams({
+    //     ...searchParams,
+    //     [item?.name]: datetime,
+    //   });
+    // }
+  };
+  const onChangeHandleFromToEndDate = date => {
+    let formattedDate = date?.format('YYYY-MM-DD');
+    setTodayEnd(formattedDate);
     console.log(formattedDate);
     // if (!formattedDate) {
     //   let time = timeValues[item?.dateType] || '00:00:00.000';
@@ -500,6 +521,7 @@ export function QuizOpenTemplate() {
   const [params, setParams] = useState<paramProps>({ page });
   const [contents, setContents] = useState<RecommendContent[]>([]);
   const [images, setSeminarImages] = useState<any[]>([]);
+  const [introductionMessage, setIntroductionMessage] = useState<string>('');
 
   const { isFetched: isJobGroupFetched } = useJobGroups(data => setJobGroups(data || []));
 
@@ -511,6 +533,14 @@ export function QuizOpenTemplate() {
   const { isFetched: isContentImageFetched } = useSeminarImageList(data => {
     setSeminarImages(data || []);
   });
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+  const handleAddClick = () => {
+    // onGetJobsData && onGetJobsData();
+    console.log('modal ');
+    setIsModalOpen(true);
+    // setChapterNo(chapterNo);
+  };
 
   const seminarType = [
     {
@@ -896,19 +926,19 @@ export function QuizOpenTemplate() {
     console.log('next');
     const params = {
       jobGroup: jobGroup,
-      // level: activeLevel,
-      // growthStories: paramsGrowthStories,
       clubName: clubName,
       studyCycle: studyCycle,
-      // skillIds: skillIds,
-      // experienceIds: experienceIds,
       recommendJobGroups: recommendJobGroups,
-      // customExperienceNames: customExperienceList,
-      customExperiences: undefined,
-      customSkills: undefined,
-      experiences: undefined,
-
-      skills: undefined,
+      recommendLevels: recommendLevels,
+      startAt: today.format('YYYY-MM-DD') + ' 00:00:00.000',
+      endAt: todayEnd.format('YYYY-MM-DD') + ' 00:00:00.000',
+      description: introductionMessage,
+      relatedSkills: ['string'],
+      relatedExperiences: ['string'],
+      studyWeekCount: 0,
+      recruitMemberCount: 0,
+      publicYn: 'Y',
+      participationCode: '',
     };
     console.log(params);
 
@@ -922,14 +952,14 @@ export function QuizOpenTemplate() {
       return;
     }
 
-    // let newSkipped = skipped;
-    // if (isStepSkipped(activeStep)) {
-    //   newSkipped = new Set(newSkipped.values());
-    //   newSkipped.delete(activeStep);
-    // }
+    let newSkipped = skipped;
+    if (isStepSkipped(activeStep)) {
+      newSkipped = new Set(newSkipped.values());
+      newSkipped.delete(activeStep);
+    }
 
-    // setActiveStep(prevActiveStep => prevActiveStep + 1);
-    // setSkipped(newSkipped);
+    setActiveStep(prevActiveStep => prevActiveStep + 1);
+    setSkipped(newSkipped);
   };
 
   const handleBack = () => {
@@ -938,6 +968,11 @@ export function QuizOpenTemplate() {
 
   const handleInputChange = event => {
     setClubName(event.target.value);
+  };
+
+  const onMessageChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, no?: number) => {
+    const { name, value } = event.currentTarget;
+    setIntroductionMessage(value);
   };
 
   const handleSkip = () => {
@@ -1244,13 +1279,13 @@ export function QuizOpenTemplate() {
 
                 <div className="tw-grid tw-grid-cols-2 tw-gap-4 tw-content-start">
                   <div>
-                    <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">클럽 모집 마감일</div>
+                    <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">퀴즈클럽 시작일</div>
 
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <DesktopDatePicker
                         inputFormat="YYYY-MM-DD"
                         value={today}
-                        onChange={e => onChangeHandleFromToDate(e)}
+                        onChange={e => onChangeHandleFromToStartDate(e)}
                         renderInput={params => <TextField {...params} variant="standard" />}
                       />
                     </LocalizationProvider>
@@ -1258,7 +1293,14 @@ export function QuizOpenTemplate() {
                   </div>
                   <div>
                     <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">클럽 모집 마감일</div>
-                    <TextField size="small" fullWidth label={'관련경험을 입력해주세요. ex) UX'} id="margin-none" />
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DesktopDatePicker
+                        inputFormat="YYYY-MM-DD"
+                        value={todayEnd}
+                        onChange={e => onChangeHandleFromToEndDate(e)}
+                        renderInput={params => <TextField {...params} variant="standard" />}
+                      />
+                    </LocalizationProvider>
                     <div className="tw-text-sm tw-text-black tw-mt-2 tw-my-0">
                       *스펙업 시작일보다 이른 날짜만 설정이 가능합니다.
                     </div>
@@ -1270,6 +1312,8 @@ export function QuizOpenTemplate() {
                   id="margin-none"
                   multiline
                   rows={6}
+                  onChange={onMessageChange}
+                  value={introductionMessage}
                   defaultValue="클럽 소개 내용을 입력해주세요."
                 />
               </div>
@@ -1302,8 +1346,41 @@ export function QuizOpenTemplate() {
           </article>
         )}
 
-        {activeStep === 2 && <>2</>}
+        {activeStep === 2 && (
+          <>
+            <article>
+              <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">퀴즈 등록하기</div>
+              <Grid item xs={3} justifyContent="flex-end" className="tw-flex">
+                <button
+                  type="button"
+                  onClick={() => handleAddClick()}
+                  className="tw-text-white tw-bg-blue-500 hover:tw-bg-blue-800 tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5  dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
+                >
+                  퀴즈 등록하기 +
+                </button>
+              </Grid>
+            </article>
+          </>
+        )}
       </div>
+      <MentorsModal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
+        <div className={cx('mentoring-register-container__card-nodes')}>
+          <div>asdfsdafasda</div>
+          {/* {jobs?.map((item, index) => {
+            return (
+              <NodeCard
+                index={index}
+                key={`jobs-${index}`}
+                title={`레벨 ${item.level}`}
+                content={item.description}
+                jobCode={item.jobGroup}
+                onClickNode={handleNodeCard}
+                chapterNo={chapterNo}
+              />
+            );
+          })} */}
+        </div>
+      </MentorsModal>
     </div>
   );
 }
