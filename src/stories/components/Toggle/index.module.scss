@@ -2,7 +2,6 @@
 @use 'src/stories/assets/styles/abstracts/palette';
 
 .container {
-
   &[data-icon='true'] {
     width: 86px;
   }
@@ -23,10 +22,10 @@
     flex-grow: 1;
   }
 
-  &[data-tab-button="true"] {
+  &[data-tab-button='true'] {
     width: 120px;
     height: 40px;
-    font-size: font.$font-size-14;
+    font-size: font.$font-size-18;
   }
 
   &--toggle {
@@ -34,7 +33,7 @@
     cursor: pointer;
     position: relative;
     user-select: none;
-    height: 42px;
+    height: 30px;
 
     input {
       position: absolute;
@@ -98,8 +97,8 @@
     }
 
     input:checked ~ .active {
-      border-color: palette.$Primary-Blue900;
-      background: palette.$Primary-Blue900;
+      border-color: #000;
+      background: #000;
       color: palette.$Primary-Withe;
       z-index: 1;
     }
@@ -126,24 +125,24 @@
   }
 
   &--checkbox {
-    input[type="checkbox"] {
+    input[type='checkbox'] {
       display: none;
     }
     span {
-      font-size: font.$font-size-16 !important;
+      font-size: font.$font-size-18 !important;
     }
-    input[type=checkbox] + span {
+    input[type='checkbox'] + span {
       cursor: pointer;
       padding-left: 23px;
       background-repeat: no-repeat;
       background-image: url('../../../../public/assets/images/icons/unchecked.svg');
       color: palette.$Primary-Gray600;
     }
-    input[type=checkbox]:checked + span {
+    input[type='checkbox']:checked + span {
       background-image: url('../../../../public/assets/images/icons/checked.svg');
       color: palette.$Primary-Gray900;
     }
-    input[type=checkbox]:disabled + span {
+    input[type='checkbox']:disabled + span {
       //background-image: url('../../../../public/assets/images/icons/unchecked.svg');
       color: palette.$Primary-Gray600;
     }

@@ -1,6 +1,6 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import { Toggle, Pagination, Typography } from 'src/stories/components';
+import { Toggle, Pagination, Typography, Chip } from 'src/stories/components';
 import React, { useEffect, useState } from 'react';
 import { RecommendContent, SeminarImages } from 'src/models/recommend';
 import { useSeminarList, paramProps, useSeminarImageList } from 'src/services/seminars/seminars.queries';
@@ -27,6 +27,7 @@ import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
 import Divider from '@mui/material/Divider';
 import Link from 'next/link';
+import { jobColorKey } from 'src/config/colors';
 
 interface BoardListItemType {
   id: number;
@@ -473,7 +474,9 @@ export function QuizTemplate() {
   const { jobGroups, setJobGroups, contentTypes, setContentTypes } = useStore();
 
   const router = useRouter();
-  const [page, setPage] = useState(1);
+  const [skillIds, setSkillIds] = useState<any[]>([]);
+  const [skillIdsClk, setSkillIdsClk] = useState<any[]>([1, 2, 3, 4, 5]);
+  const [page, setPage] = useState(0);
   const [totalPage, setTotalPage] = useState(1);
   const [jobGroupsFilter, setJobGroupsFilter] = useState([]);
   const [levelsFilter, setLevelsFilter] = useState([]);
@@ -485,13 +488,43 @@ export function QuizTemplate() {
   const { isFetched: isJobGroupFetched } = useJobGroups(data => setJobGroups(data || []));
 
   const { isFetched: isContentFetched } = useSeminarList(params, data => {
-    setContents(data.data || []);
-    setTotalPage(data.totalPage);
+    console.log('quiz club : ', data.data.data.contents);
+    setContents(data.data.data.contents || []);
+    setTotalPage(data.data.totalPage);
   });
+
+  useEffect(() => {
+    console.log(skillIds);
+  }, [skillIds]);
 
   const { isFetched: isContentImageFetched } = useSeminarImageList(data => {
     setSeminarImages(data || []);
   });
+
+  const handleToggleAll = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, checked } = event.currentTarget;
+    console.log(value, checked);
+    if (checked) {
+      setSkillIds([1, 2, 3, 4, 5]);
+    } else {
+      setSkillIds([]);
+    }
+    console.log(skillIds);
+  };
+
+  const handleToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.currentTarget;
+    const result = [...skillIds];
+
+    if (result.indexOf(value) > -1) {
+      result.splice(result.indexOf(value), 1);
+    } else {
+      result.push(value);
+    }
+    setSkillIds(result);
+    console.log(skillIds);
+    // setJobGroup(value);
+  };
 
   const seminarType = [
     {
@@ -523,9 +556,9 @@ export function QuizTemplate() {
     setParams({
       ...params,
       page,
-      recommendJobGroups: jobGroupsFilter.join(','),
-      recommendLevels: levelsFilter.join(','),
-      seminarStatus: seminarFilter.join(','),
+      // recommendJobGroups: jobGroupsFilter.join(','),
+      // recommendLevels: levelsFilter.join(','),
+      // seminarStatus: seminarFilter.join(','),
     });
   }, [page, jobGroupsFilter, levelsFilter, seminarFilter]);
 
@@ -634,6 +667,36 @@ export function QuizTemplate() {
 
         <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
           <span className="tw-font-bold tw-text-base tw-text-black tw-mr-4">레벨</span>
+          <Toggle
+            className="tw-mr-3 tw-text-black"
+            key={`custom-skill-13`}
+            label={'모든 레벨'}
+            name="skillIds"
+            value={13}
+            onChange={handleToggleAll}
+            variant="small"
+            type="multiple"
+            isActive
+            defaultChecked={false}
+          />
+          {skillIdsClk?.map((item, index) => {
+            return (
+              <Toggle
+                className="tw-mr-3 tw-text-black"
+                key={`custom-skill-${index}`}
+                label={item + ' 레벨'}
+                name={item}
+                value={item}
+                onChange={handleToggle}
+                variant="small"
+                type="multiple"
+                isActive
+                // defaultChecked={!!skillIds?.find(_ => _ === item)}
+                defaultChecked={skillIds.includes(item)}
+              />
+            );
+          })}
+          {/* <span className="tw-font-bold tw-text-base tw-text-black tw-mr-4">레벨</span>
           <span className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded tw-dark:bg-gray-700 tw-dark:text-gray-300">
             모든레벨
           </span>
@@ -648,7 +711,7 @@ export function QuizTemplate() {
           </span>
           <span className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded tw-dark:bg-gray-700 tw-dark:text-gray-300">
             레벨3
-          </span>
+          </span> */}
         </div>
 
         <article>
@@ -661,63 +724,93 @@ export function QuizTemplate() {
               <Grid
                 container
                 direction="row"
-                justifyContent="center"
+                justifyContent="left"
                 alignItems="center"
                 rowSpacing={3}
                 columnSpacing={{ xs: 1, sm: 2, md: 3 }}
               >
-                {Articles &&
-                  Articles.map((item, index) => (
-                    <Grid key={index} item xs={6}>
-                      <a
-                        href={'/quiz/' + `${index}`}
-                        className="tw-flex tw-flex-col tw-items-center tw-bg-white tw-border tw-border-gray-200 tw-rounded-lg tw-shadow md:tw-flex-row md:tw-max-w-xl hover:tw-bg-gray-100 dark:tw-border-gray-700 dark:tw-bg-gray-800 dark:hover:tw-bg-gray-700"
-                      >
-                        <img
-                          className="tw-object-cover tw-w-[220px] tw-rounded-t-lg tw-h-[245px] md:tw-h-[245px] md:tw-w-[220px] md:tw-rounded-none md:tw-rounded-l-lg"
-                          src="/assets/images/banner/Rectangle1.png"
-                          alt=""
-                        />
-                        <div className="tw-flex tw-flex-col tw-justify-between tw-p-4 tw-leading-normal">
-                          <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
-                            <span className="tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-0.5 tw-rounded tw-dark:bg-blue-900 tw-dark:text-blue-300">
-                              개발
-                            </span>
-                            <span className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-0.5 tw-rounded tw-dark:bg-gray-700 tw-dark:text-gray-300">
-                              레벨1
-                            </span>
-                            <span className="tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-0.5 tw-rounded tw-dark:bg-red-900 tw-dark:text-red-300">
-                              백엔드개발자
-                            </span>
-                          </div>
-                          <div className="tw-mb-3 tw-text-sm tw-font-semibold tw-text-gray-500 dark:tw-text-gray-400">
-                            모집마감일 : {item.date}
-                          </div>
-                          <h6 className="tw-mb-2 tw-text-2xl tw-font-bold tw-tracking-tight tw-text-gray-900 dark:tw-text-white">
-                            {item.title}
-                          </h6>
-                          <p className="tw-line-clamp-2 tw-mb-3 tw-font-normal tw-text-gray-700 dark:tw-text-gray-400">
-                            Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse
-                            chronological order.
-                          </p>
-
-                          <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-400 dark:tw-text-gray-400">
-                            화, 수, 목 | 12 주 | 학습 36회
-                          </div>
-
-                          <div className="tw-flex tw-items-center tw-space-x-4">
+                {isContentFetched &&
+                  (contents.length > 0 ? (
+                    contents.map((item, index) => {
+                      return (
+                        <Grid key={index} item xs={6}>
+                          <a
+                            href={'/quiz/' + `${index}`}
+                            className="tw-flex tw-flex-col tw-items-center tw-bg-white tw-border tw-border-gray-200 tw-rounded-lg tw-shadow md:tw-flex-row md:tw-max-w-xl hover:tw-bg-gray-100 dark:tw-border-gray-700 dark:tw-bg-gray-800 dark:hover:tw-bg-gray-700"
+                          >
                             <img
-                              className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full"
-                              src={item?.author?.avatar}
+                              className="tw-object-cover tw-w-[220px] tw-rounded-t-lg tw-h-[245px] md:tw-h-[245px] md:tw-w-[220px] md:tw-rounded-none md:tw-rounded-l-lg"
+                              src="/assets/images/banner/Rectangle1.png"
                               alt=""
                             />
-                            <div className="tw-text-sm tw-font-semibold tw-text-black dark:tw-text-white">
-                              <div>{item?.author?.displayName}</div>
+                            <div className="tw-flex tw-flex-col tw-justify-between tw-p-4 tw-leading-normal">
+                              <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
+                                {item?.recommendJobGroups.map((name, i) => (
+                                  <Chip
+                                    key={`job_${i}`}
+                                    chipColor={jobColorKey(item?.recommendJobGroups[i])}
+                                    radius={4}
+                                    variant="outlined"
+                                  >
+                                    {name}
+                                  </Chip>
+                                ))}
+                              </div>
+                              <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
+                                {item?.relatedExperiences.map((name, i) => (
+                                  <Chip
+                                    key={`job_${i}`}
+                                    chipColor={jobColorKey(item?.relatedExperiences[i])}
+                                    radius={4}
+                                    variant="outlined"
+                                  >
+                                    {name}
+                                  </Chip>
+                                ))}
+                              </div>
+                              <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
+                                <Chip chipColor="primary" radius={4} variant="filled">
+                                  {item?.recommendLevels.sort().join(',')}레벨
+                                </Chip>
+                              </div>
+                              <div className="tw-mb-3 tw-text-sm tw-font-semibold tw-text-gray-500 dark:tw-text-gray-400">
+                                모집마감일 : {item.endAt}
+                              </div>
+                              <h6 className="tw-mb-2 tw-text-2xl tw-font-bold tw-tracking-tight tw-text-gray-900 dark:tw-text-white">
+                                {item.name}
+                              </h6>
+                              <p className="tw-line-clamp-2 tw-mb-3 tw-font-normal tw-text-gray-700 dark:tw-text-gray-400">
+                                {item.description}
+                              </p>
+
+                              <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-400 dark:tw-text-gray-400">
+                                {item.studyCycle.toString()} | {item.studyWeekCount} 주 | 학습 {item.recruitMemberCount}
+                                회
+                              </div>
+
+                              <div className="tw-flex tw-items-center tw-space-x-4">
+                                <img
+                                  className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full"
+                                  src={item?.author?.avatar}
+                                  alt=""
+                                />
+                                <div className="tw-text-sm tw-font-semibold tw-text-black dark:tw-text-white">
+                                  <div>{item?.author?.displayName}</div>
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                        </div>
-                      </a>
-                    </Grid>
+                          </a>
+                        </Grid>
+                        // <ArticleCard
+                        //   uiType={ArticleEnum.MENTOR_SEMINAR}
+                        //   content={item}
+                        //   key={i}
+                        //   className={cx('container__item')}
+                        // />
+                      );
+                    })
+                  ) : (
+                    <div className={cx('content--empty')}>데이터가 없습니다.</div>
                   ))}
               </Grid>
               {/* {isContentFetched &&

@@ -17,10 +17,11 @@ export function IndexPage() {
   useMemberInfo(memberId, data1 => setUser({ user: data1 }));
   // TODO 멘티용 API 따로 생기면 셋팅 필요
   // 홈 화면에 성장스토리 여부에 따라 버튼 명칭 달라져서 로그인 시 호출
-  const { data: userResumeStory } = useMentor(logged ? memberId : null, data => setHasResumeStory(!!data));
-
+  const { data: userResumeStory } = useMentor(logged ? memberId : null);
+  console.log(userResumeStory);
   console.log(`memberType: ${memberType}, memberId: ${memberId}, name: ${name}, logged: ${logged}`);
 
+  // return <HomeTemplate logged={logged} userType={userResumeStory?.type} />;
   return <HomeTemplate logged={logged} hasUserResumeStory={!!userResumeStory} userType={userResumeStory?.type} />;
 }
 

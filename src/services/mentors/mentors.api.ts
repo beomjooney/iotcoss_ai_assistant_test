@@ -50,7 +50,7 @@ export const saveGrowthStory = async (params: any) => {
 
 export const getMentor = async (mentorId: string) => {
   const { data } = await axiosGeneralAPI().get(`/api/v1/members/profile`);
-  return data;
+  return data.data;
 };
 // export const getMentor = async (mentorId: string) => {
 //   const { data } = await axiosGeneralAPI().get(`/mentoring/${mentorId}`);

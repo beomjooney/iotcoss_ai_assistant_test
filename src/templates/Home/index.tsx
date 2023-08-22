@@ -21,7 +21,7 @@ export interface HomeProps {
   userType: any; // 0001 멘티
 }
 
-export function HomeTemplate({ logged = false, userType }: HomeProps) {
+export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: HomeProps) {
   const router = useRouter();
   const { memberId } = useSessionStore.getState();
   const { jobGroups, setJobGroups } = useStore();
@@ -90,7 +90,7 @@ export function HomeTemplate({ logged = false, userType }: HomeProps) {
               <Button size="main" onClick={handleUserResumeButton} className="tw-w-72 tw-h-12">
                 <Typography type="B1" tag="div" weight="bold">
                   지금 시작하기!
-                  {/* {hasUserResumeStory ? '수정' : '입력'}하러 가기 */}
+                  {hasUserResumeStory ? '수정' : '입력'}하러 가기
                 </Typography>
               </Button>
             </div>

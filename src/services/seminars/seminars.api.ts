@@ -2,7 +2,8 @@ import { axiosGeneralAPI } from '../index';
 
 // 세미나 목록 조회
 export const seminarList = async params => {
-  const { data, headers } = await axiosGeneralAPI().get('/seminars', { params });
+  const { data, headers } = await axiosGeneralAPI().get('/api/v1/clubs', { params });
+  // const { data, headers } = await axiosGeneralAPI().get('/seminars', { params });
   const totalPage = Number(headers['page-count']);
 
   return { data: data || [], nextPage: params.page + 1, totalPage };

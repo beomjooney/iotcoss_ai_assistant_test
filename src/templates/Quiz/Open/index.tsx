@@ -30,10 +30,9 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import ToggleButton from 'src/stories/components/ToggleButton';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { DesktopDatePicker } from '@mui/x-date-pickers';
-import AdapterDateFns from '@mui/lab/AdapterDateFns'; // Import the date adapter
+import dayjs, { Dayjs } from 'dayjs';
+
+import { DateTimePicker, DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 
 interface BoardListItemType {
   id: number;
@@ -447,11 +446,56 @@ const cx = classNames.bind(styles);
 export function QuizOpenTemplate() {
   const { jobGroups, setJobGroups, contentTypes, setContentTypes } = useStore();
 
+  const [searchParams, setSearchParams] = useState({});
+
+  const onChangeKeyword = event => {
+    const { name, value } = event.currentTarget;
+
+    setSearchParams({
+      ...searchParams,
+      [name]: value,
+    });
+  };
+
+  const onChange = (name, value) => {
+    setSearchParams({
+      ...searchParams,
+      [name]: value,
+    });
+  };
+
+  const timeValues = {
+    from: '00:00:00.000',
+    to: '23:59:00.000',
+  };
+  const [today, setToday] = React.useState<Dayjs | null>(dayjs());
+  const onChangeHandleFromToDate = date => {
+    let formattedDate = date?.format('YYYY-MM-DD');
+    setToday(formattedDate);
+    console.log(formattedDate);
+    // if (!formattedDate) {
+    //   let time = timeValues[item?.dateType] || '00:00:00.000';
+    //   let datetime = `${formattedDate} ${time}`;
+    //   setSearchParams({
+    //     ...searchParams,
+    //     [item?.name]: '',
+    //   });
+    // } else {
+    //   let time = timeValues[item?.dateType] || '00:00:00.000';
+    //   let datetime = `${formattedDate} ${time}`;
+    //   setSearchParams({
+    //     ...searchParams,
+    //     [item?.name]: datetime,
+    //   });
+    // }
+  };
+
   const router = useRouter();
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [jobGroupsFilter, setJobGroupsFilter] = useState([]);
   const [levelsFilter, setLevelsFilter] = useState([]);
+
   const [seminarFilter, setSeminarFilter] = useState(['0002']);
   const [params, setParams] = useState<paramProps>({ page });
   const [contents, setContents] = useState<RecommendContent[]>([]);
@@ -510,6 +554,65 @@ export function QuizOpenTemplate() {
     else newState.push(id);
     return newState;
   };
+  const [jobGroup, setJobGroup] = useState([]);
+  const [studyCycle, setStudyCycle] = useState([]);
+  const [recommendJobGroups, setRecommendJobGroups] = useState([]);
+  const [recommendLevels, setRecommendLevels] = useState([]);
+  const [clubName, setClubName] = useState<string>('');
+
+  const [selectedDate, setSelectedDate] = useState(null);
+
+  const handleDateChange = date => {
+    setSelectedDate(date);
+  };
+
+  const handleToggleDay = event => {
+    const { name, value } = event.currentTarget;
+    setStudyCycle([]);
+    const result = [...studyCycle];
+    if (result.indexOf(value) > -1) {
+      result.splice(result.indexOf(value), 1);
+    } else {
+      result.push(value);
+    }
+    setStudyCycle(result);
+  };
+
+  const handleToggle = event => {
+    const { name, value } = event.currentTarget;
+    setJobGroup([]);
+    const result = [...jobGroup];
+    if (result.indexOf(value) > -1) {
+      result.splice(result.indexOf(value), 1);
+    } else {
+      result.push(value);
+    }
+    setJobGroup(result);
+  };
+
+  const handleToggleRecommandJobGroup = event => {
+    const { name, value } = event.currentTarget;
+    setRecommendJobGroups([]);
+    const result = [...recommendJobGroups];
+    if (result.indexOf(value) > -1) {
+      result.splice(result.indexOf(value), 1);
+    } else {
+      result.push(value);
+    }
+    setRecommendJobGroups(result);
+  };
+
+  const handleToggleRecommandLevels = event => {
+    const { name, value } = event.currentTarget;
+    setRecommendLevels([]);
+    const result = [...recommendJobGroups];
+    if (result.indexOf(value) > -1) {
+      result.splice(result.indexOf(value), 1);
+    } else {
+      result.push(value);
+    }
+    setRecommendJobGroups(result);
+  };
 
   const toggleFilter = (id, type: 'jobGroup' | 'level' | 'status') => {
     if (type === 'jobGroup') {
@@ -538,7 +641,7 @@ export function QuizOpenTemplate() {
     'Step4. 개설한 성장 미리보기',
   ];
 
-  const jobGroup = [
+  const jobGroupIdx = [
     {
       id: '0100',
       groupId: '0001',
@@ -745,6 +848,7 @@ export function QuizOpenTemplate() {
       groupId: '0001',
       name: '공개',
       description: '공개',
+      active: true,
       order: 1,
       createdAt: '2022-10-14 15:46:30.123',
       updatedAt: '2022-10-14 15:46:30.123',
@@ -754,6 +858,7 @@ export function QuizOpenTemplate() {
       groupId: '0001',
       name: '비공개',
       description: '비공개',
+      active: false,
       order: 2,
       createdAt: '2022-10-14 15:46:30.123',
       updatedAt: '2022-10-14 15:46:30.123',
@@ -787,8 +892,52 @@ export function QuizOpenTemplate() {
     setSkipped(newSkipped);
   };
 
+  const handleNextOne = () => {
+    console.log('next');
+    const params = {
+      jobGroup: jobGroup,
+      // level: activeLevel,
+      // growthStories: paramsGrowthStories,
+      clubName: clubName,
+      studyCycle: studyCycle,
+      // skillIds: skillIds,
+      // experienceIds: experienceIds,
+      recommendJobGroups: recommendJobGroups,
+      // customExperienceNames: customExperienceList,
+      customExperiences: undefined,
+      customSkills: undefined,
+      experiences: undefined,
+
+      skills: undefined,
+    };
+    console.log(params);
+
+    if (params.jobGroup.length === 0) {
+      alert('등록을 원하는 분야를 선택해주세요.');
+      return;
+    }
+
+    if (params.clubName === '') {
+      alert('클럽 이름을 입력해주세요.');
+      return;
+    }
+
+    // let newSkipped = skipped;
+    // if (isStepSkipped(activeStep)) {
+    //   newSkipped = new Set(newSkipped.values());
+    //   newSkipped.delete(activeStep);
+    // }
+
+    // setActiveStep(prevActiveStep => prevActiveStep + 1);
+    // setSkipped(newSkipped);
+  };
+
   const handleBack = () => {
     setActiveStep(prevActiveStep => prevActiveStep - 1);
+  };
+
+  const handleInputChange = event => {
+    setClubName(event.target.value);
   };
 
   const handleSkip = () => {
@@ -899,7 +1048,15 @@ export function QuizOpenTemplate() {
             <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">클럽 정보입력</div>
             <div className={cx('content-area')}>
               <div className="tw-font-semibold tw-text-sm tw-text-black tw-mb-2">클럽명</div>
-              <TextField size="small" fullWidth label={'클럽명을 입력해주세요.'} id="margin-none" />
+              <TextField
+                size="small"
+                fullWidth
+                label={'클럽명을 입력해주세요.'}
+                onChange={handleInputChange}
+                id="margin-none"
+                value={clubName}
+                name="clubName"
+              />
               <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-my-2">클럽 이미지 선택</div>
 
               <div className="tw-grid tw-grid-flow-col tw-gap-0 tw-content-end">
@@ -979,7 +1136,7 @@ export function QuizOpenTemplate() {
                 <div className="tw-grid tw-grid-cols-2 tw-gap-4 tw-content-start">
                   <div>
                     <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천 직군</div>
-                    {jobGroup?.map(item => (
+                    {jobGroupIdx?.map(item => (
                       <ToggleButton
                         label={item.name}
                         name="jobGroup"
@@ -989,7 +1146,7 @@ export function QuizOpenTemplate() {
                         isActive
                         className={cx('fixed-width')}
                         // register={register}
-                        // onChange={handleToggle}
+                        onChange={handleToggle}
                         type="tabRadio"
                         weight="bold"
                         // checked={item.id === jobGroup}
@@ -1024,14 +1181,14 @@ export function QuizOpenTemplate() {
                       <ToggleButton
                         label={item.name}
                         name="levelGroup"
-                        value={item.id}
+                        value={item.name}
                         key={item.id}
                         variant="small"
                         isActive
                         className={cx('fixed-width')}
                         // register={register}
-                        // onChange={handleToggle}
-                        type="tabRadio"
+                        onChange={handleToggleDay}
+                        type="multiple"
                         weight="bold"
                         // checked={item.id === jobGroup}
                       />
@@ -1050,7 +1207,7 @@ export function QuizOpenTemplate() {
                           isActive
                           className={cx('fixed-width')}
                           // register={register}
-                          // onChange={handleToggle}
+                          onChange={handleToggleRecommandJobGroup}
                           type="tabRadio"
                           weight="bold"
                           // checked={item.id === jobGroup}
@@ -1058,7 +1215,7 @@ export function QuizOpenTemplate() {
                       ))}
 
                       <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">공개/비공개 설정</div>
-                      {privateGroup?.map(item => (
+                      {privateGroup?.map((item, index) => (
                         <ToggleButton
                           label={item.name}
                           name="privateGroup"
@@ -1069,9 +1226,10 @@ export function QuizOpenTemplate() {
                           className={cx('fixed-width')}
                           // register={register}
                           // onChange={handleToggle}
+                          // onChange={handleToggleRecommandLevels}
                           type="tabRadio"
                           weight="bold"
-                          // checked={item.id === jobGroup}
+                          // checked={item.active}
                         />
                       ))}
                       <TextField size="small" disabled label={'입장코드를 설정해주세요.'} id="margin-none" />
@@ -1087,7 +1245,15 @@ export function QuizOpenTemplate() {
                 <div className="tw-grid tw-grid-cols-2 tw-gap-4 tw-content-start">
                   <div>
                     <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">클럽 모집 마감일</div>
-                    <TextField size="small" fullWidth label={'관련경험을 입력해주세요. ex) UX'} id="margin-none" />
+
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DesktopDatePicker
+                        inputFormat="YYYY-MM-DD"
+                        value={today}
+                        onChange={e => onChangeHandleFromToDate(e)}
+                        renderInput={params => <TextField {...params} variant="standard" />}
+                      />
+                    </LocalizationProvider>
                     <div className="tw-text-sm tw-text-black tw-mt-2 tw-my-0">* 스펙업 주기는 기본 12주 입니다.</div>
                   </div>
                   <div>
@@ -1126,7 +1292,7 @@ export function QuizOpenTemplate() {
                   </button>
                   <button
                     className="tw-w-[300px] tw-bg-[#2474ED] tw-text-white tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded"
-                    onClick={handleNext}
+                    onClick={handleNextOne}
                   >
                     {activeStep === steps.length - 1 ? '성장퀴즈 클럽 개설하기 >' : '다음'}
                   </button>

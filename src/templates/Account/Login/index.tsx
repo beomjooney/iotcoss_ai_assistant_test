@@ -69,9 +69,9 @@ export function LoginTemplate({ onSubmitLogin }: LoginTemplateProps) {
   return (
     <div className={cx('login-container')}>
       <div className={cx('logo-area')}>
-        <img src="/assets/images/cm_CI_co_1000x225.png" alt="footer logo" width={162} className="img-fluid mb-3" />
+        {/* <img src="/assets/images/cm_CI_co_1000x225.png" alt="footer logo" width={162} className="img-fluid mb-3" /> */}
         <p className={cx('logo-area__text')}>
-          커리어 멘토스에<br></br> 오신 것을 환영합니다!
+          데브어스에<br></br> 오신 것을 환영합니다!
           <br />
         </p>
         <div className={cx('button-area')}>
