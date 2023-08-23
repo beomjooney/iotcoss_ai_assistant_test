@@ -6,7 +6,8 @@ import { useBanners } from '../../../../src/services/admin/banner/banner.queries
 import { useSaveBanner } from '../../../../src/services/admin/banner/banner.mutations';
 
 export function BannerPage() {
-  const { data: bannerList }: UseQueryResult<any> = useBanners();
+  // const { data: bannerList }: UseQueryResult<any> = useBanners();
+  const bannerList = [];
   const { mutate: onSave } = useSaveBanner();
 
   const onSaveBanner = (data: any) => {

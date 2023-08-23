@@ -497,9 +497,9 @@ export function QuizTemplate() {
     console.log(skillIds);
   }, [skillIds]);
 
-  const { isFetched: isContentImageFetched } = useSeminarImageList(data => {
-    setSeminarImages(data || []);
-  });
+  // const { isFetched: isContentImageFetched } = useSeminarImageList(data => {
+  //   setSeminarImages(data || []);
+  // });
 
   const handleToggleAll = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked } = event.currentTarget;

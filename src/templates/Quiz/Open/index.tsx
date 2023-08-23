@@ -414,9 +414,9 @@ export function QuizOpenTemplate() {
     setTotalPage(data.totalPage);
   });
 
-  const { isFetched: isContentImageFetched } = useSeminarImageList(data => {
-    setSeminarImages(data || []);
-  });
+  // const { isFetched: isContentImageFetched } = useSeminarImageList(data => {
+  //   setSeminarImages(data || []);
+  // });
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const handleAddClick = () => {
