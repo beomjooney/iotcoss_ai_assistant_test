@@ -2,7 +2,7 @@ import { axiosGeneralAPI } from '../index';
 
 // 경험 목록 조회
 export const experienceList = async () => {
-  const { data } = await axiosGeneralAPI().get('/experience');
+  const { data } = await axiosGeneralAPI().get('/api/v1/experiences');
   return data;
 };
 

@@ -1,7 +1,7 @@
 import { axiosGeneralAPI } from '../index';
 
 export const skillList = async () => {
-  const { data } = await axiosGeneralAPI().get('/skills');
+  const { data } = await axiosGeneralAPI().get('/api/v1/skills');
   return data;
 };
 

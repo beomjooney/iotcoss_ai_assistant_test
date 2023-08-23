@@ -27,6 +27,7 @@
         gap: 10px;
         align-items: center;
         justify-content: center;
+        text-align: center;
         //width: 6rem;
       }
     }
@@ -43,6 +44,7 @@
     }
   }
   .fixed-width {
+    text-align: center;
     width: 255px;
     font-size: font.$font-size-14;
   }
@@ -51,6 +53,8 @@
     display: flex;
     flex-wrap: wrap;
     gap: 36px;
+    display: flex;
+    justify-content: center;
   }
 
   .custom-skill {

@@ -1,6 +1,6 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import { MentorsModal, Pagination, Typography } from 'src/stories/components';
+import { MentorsModal, Pagination, Toggle, Typography } from 'src/stories/components';
 import React, { useEffect, useState } from 'react';
 import { RecommendContent, SeminarImages } from 'src/models/recommend';
 import { useSeminarList, paramProps, useSeminarImageList } from 'src/services/seminars/seminars.queries';
@@ -28,429 +28,275 @@ import Link from 'next/link';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
-import ToggleButton from 'src/stories/components/ToggleButton';
+// import ToggleButton from 'src/stories/components/ToggleButton';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
-
+import { UseQueryResult } from 'react-query';
+import { useSkills } from '../../../../src/services/skill/skill.queries';
+import { SkillResponse } from '../../../../src/models/skills';
 import { DateTimePicker, DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { ExperiencesResponse } from 'src/models/experiences';
+import { useExperiences } from 'src/services/experiences/experiences.queries';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import ToggleButton from '@mui/material/ToggleButton';
+import { useRecommendContents } from 'src/services/contents/contents.queries';
+import { useJobs } from 'src/services/jobs/jobs.queries';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 
-interface BoardListItemType {
-  id: number;
-  name: string;
-  boardType?: string;
-  status: 'ACTIVE' | 'DEACTIVATED';
-  layoutType: 'LIST' | 'IMAGE_TEXT' | 'IMAGE';
-  enableHashtag: boolean;
-  enableReply: boolean;
-  index: number;
-  articleCnt?: number;
-}
+const dayGroup = [
+  {
+    id: '0100',
+    groupId: '0001',
+    name: '월',
+    description: '월',
+    order: 1,
+    createdAt: '2022-10-14 15:46:30.123',
+    updatedAt: '2022-10-14 15:46:30.123',
+  },
+  {
+    id: '0200',
+    groupId: '0001',
+    name: '화',
+    description: '화',
+    order: 2,
+    createdAt: '2022-10-14 15:46:30.123',
+    updatedAt: '2022-10-14 15:46:30.123',
+  },
+  {
+    id: '0300',
+    groupId: '0001',
+    name: '수',
+    description: '수',
+    order: 3,
+    createdAt: '2022-10-14 15:46:30.123',
+    updatedAt: '2022-10-14 15:46:30.123',
+  },
+  {
+    id: '0301',
+    groupId: '0001',
+    name: '목',
+    description: '목',
+    order: 3,
+    createdAt: '2022-10-14 15:46:30.123',
+    updatedAt: '2022-10-14 15:46:30.123',
+  },
+  {
+    id: '0302',
+    groupId: '0001',
+    name: '금',
+    description: '금',
+    order: 3,
+    createdAt: '2022-10-14 15:46:30.123',
+    updatedAt: '2022-10-14 15:46:30.123',
+  },
+  {
+    id: '0400',
+    groupId: '0001',
+    name: '토',
+    description: '토',
+    order: 4,
+    createdAt: '2022-10-14 15:46:30.123',
+    updatedAt: '2022-10-14 15:46:30.123',
+  },
+  {
+    id: '0401',
+    groupId: '0001',
+    name: '일',
+    description: '일',
+    order: 4,
+    createdAt: '2022-10-14 15:46:30.123',
+    updatedAt: '2022-10-14 15:46:30.123',
+  },
+];
 
-const testBoards: BoardListItemType[] = [
+const privateGroup = [
   {
-    id: 1,
-    name: '전체보기',
-    boardType: 'techlog',
-    status: 'ACTIVE',
-    layoutType: 'LIST',
-    enableHashtag: true,
-    enableReply: true,
-    index: 1,
+    id: '0100',
+    groupId: '0001',
+    name: '공개',
+    description: '공개',
+    active: true,
+    order: 1,
+    createdAt: '2022-10-14 15:46:30.123',
+    updatedAt: '2022-10-14 15:46:30.123',
   },
   {
-    id: 2,
-    name: '개발',
-    boardType: 'techlog',
-    status: 'ACTIVE',
-    layoutType: 'LIST',
-    enableHashtag: true,
-    enableReply: true,
-    index: 2,
+    id: '0200',
+    groupId: '0001',
+    name: '비공개',
+    description: '비공개',
+    active: false,
+    order: 2,
+    createdAt: '2022-10-14 15:46:30.123',
+    updatedAt: '2022-10-14 15:46:30.123',
+  },
+];
+
+const jobGroupIdx = [
+  {
+    id: '0100',
+    groupId: '0001',
+    name: '기획',
+    description: '기획',
+    order: 1,
+    createdAt: '2022-10-14 15:46:30.123',
+    updatedAt: '2022-10-14 15:46:30.123',
   },
   {
-    id: 3,
-    name: '엔지니어링',
-    boardType: 'techlog',
-    status: 'ACTIVE',
-    layoutType: 'LIST',
-    enableHashtag: true,
-    enableReply: true,
-    index: 2,
-  },
-  {
-    id: 4,
-    name: '기획/PM/PO',
-    boardType: 'techlog',
-    status: 'ACTIVE',
-    layoutType: 'LIST',
-    enableHashtag: true,
-    enableReply: true,
-    index: 2,
-  },
-  {
-    id: 5,
+    id: '0200',
+    groupId: '0001',
     name: '디자인',
-    boardType: 'techlog',
-    status: 'ACTIVE',
-    layoutType: 'LIST',
-    enableHashtag: true,
-    enableReply: true,
-    index: 2,
+    description: '디자인',
+    order: 2,
+    createdAt: '2022-10-14 15:46:30.123',
+    updatedAt: '2022-10-14 15:46:30.123',
+  },
+  {
+    id: '0300',
+    groupId: '0001',
+    name: '개발',
+    description: '개발',
+    order: 3,
+    createdAt: '2022-10-14 15:46:30.123',
+    updatedAt: '2022-10-14 15:46:30.123',
+  },
+  {
+    id: '0400',
+    groupId: '0001',
+    name: '엔지니어링',
+    description: '엔지니어링',
+    order: 4,
+    createdAt: '2022-10-14 15:46:30.123',
+    updatedAt: '2022-10-14 15:46:30.123',
   },
 ];
 
-const Articles = [
+const jobGroup1 = [
   {
-    index: 8,
-    id: '9f1739eb-8f00-4c99-97f4-63544b6a2d12',
-    featuredImage:
-      'https://images.unsplash.com/photo-1504992963429-56f2d62fbff0?ixid=MnwxMjA3fDB8MHxzZWFyY2h8ODN8fHRlY2hub2xvZ3l8ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
-    title: '백엔드 개발자 오세요.',
-    desc: 'Duis bibendum, felis sed interdum venenatis, turpis enim blandit mi, in porttitor pede justo eu massa. Donec dapibus. Duis at velit eu est congue elementum.',
-    date: 'May 20, 2021',
-    href: '/single-audio/this-is-single-slug',
-    commentCount: 18,
-    viewdCount: 3800,
-    readingTime: 5,
-    bookmark: { count: 1168, isBookmarked: false },
-    like: { count: 1255, isLiked: true },
-    author: {
-      id: 1,
-      firstName: 'Alric',
-      lastName: 'Truelock',
-      displayName: 'Truelock Alric',
-      email: 'atruelock0@skype.com',
-      gender: 'Bigender',
-      avatar: 'https://robohash.org/doloremaliquidquia.png?size=150x150&set=set1',
-      bgImage:
-        'https://images.pexels.com/photos/912410/pexels-photo-912410.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-      count: 40,
-      href: '/author/the-demo-author-slug',
-      desc: 'There’s no stopping the tech giant. Apple now opens its 100th store in China.There’s no stopping the tech giant.',
-      jobName: 'Author Job',
-    },
-    categories: [
-      {
-        id: 3,
-        name: 'Industrial',
-        href: '/archive/the-demo-archive-slug',
-        thumbnail:
-          'https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80',
-        count: 15,
-        color: 'yellow',
-      },
-    ],
-    postType: 'audio',
-    audioUrl: 'https://chisnghiax.com/ncmaz_mp3/Alan_Walker_-_AloneMP3_128K.mp3',
+    id: '0100',
+    groupId: '0001',
+    name: '프론트엔드 개발자',
+    description: '프론트엔드 개발자',
+    order: 1,
+    createdAt: '2022-10-14 15:46:30.123',
+    updatedAt: '2022-10-14 15:46:30.123',
   },
   {
-    index: 9,
-    id: '0991ab0b-696f-4d7f-afe7-9c624eb8c050',
-    featuredImage:
-      'https://images.unsplash.com/photo-1465310477141-6fb93167a273?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1950&q=80',
-    title: '고급 프론트엔드와 성장퀴즈',
-    desc: 'Duis bibendum. Morbi non quam nec dui luctus rutrum. Nulla tellus.',
-    date: 'May 20, 2021',
-    href: '/single/this-is-single-slug',
-    commentCount: 19,
-    viewdCount: 4515,
-    readingTime: 3,
-    bookmark: { count: 3463, isBookmarked: true },
-    like: { count: 2586, isLiked: false },
-    author: {
-      id: 1,
-      firstName: 'Alric',
-      lastName: 'Truelock',
-      displayName: 'Truelock Alric',
-      email: 'atruelock0@skype.com',
-      gender: 'Bigender',
-      avatar: 'https://robohash.org/doloremaliquidquia.png?size=150x150&set=set1',
-      bgImage:
-        'https://images.pexels.com/photos/912410/pexels-photo-912410.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-      count: 40,
-      href: '/author/the-demo-author-slug',
-      desc: 'There’s no stopping the tech giant. Apple now opens its 100th store in China.There’s no stopping the tech giant.',
-      jobName: 'Author Job',
-    },
-    categories: [
-      {
-        id: 3,
-        name: 'Industrial',
-        href: '/archive/the-demo-archive-slug',
-        thumbnail:
-          'https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80',
-        count: 15,
-        color: 'yellow',
-      },
-    ],
-    postType: 'standard',
+    id: '0200',
+    groupId: '0001',
+    name: '백엔드 개발자',
+    description: '백엔드 개발자',
+    order: 2,
+    createdAt: '2022-10-14 15:46:30.123',
+    updatedAt: '2022-10-14 15:46:30.123',
   },
   {
-    index: 10,
-    id: 'eae0e85d-db11-44fa-ac32-6c192f687e0c',
-    featuredImage:
-      'https://images.unsplash.com/photo-1581122584612-713f89daa8eb?ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDIwfHx8ZW58MHx8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
-    title: '고급 프론트엔드 성장퀴즈',
-    desc: 'We’re an online magazine dedicated to covering the best in international product design. We started as a little blog back in 2002 covering student work and over time',
-    date: 'May 20, 2021',
-    href: '/single/this-is-single-slug',
-    commentCount: 14,
-    viewdCount: 2378,
-    readingTime: 6,
-    bookmark: { count: 3502, isBookmarked: false },
-    like: { count: 773, isLiked: true },
-    author: {
-      id: 1,
-      firstName: 'Alric',
-      lastName: 'Truelock',
-      displayName: 'Truelock Alric',
-      email: 'atruelock0@skype.com',
-      gender: 'Bigender',
-      avatar: 'https://robohash.org/doloremaliquidquia.png?size=150x150&set=set1',
-      bgImage:
-        'https://images.pexels.com/photos/912410/pexels-photo-912410.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-      count: 40,
-      href: '/author/the-demo-author-slug',
-      desc: 'There’s no stopping the tech giant. Apple now opens its 100th store in China.There’s no stopping the tech giant.',
-      jobName: 'Author Job',
-    },
-    categories: [
-      {
-        id: 3,
-        name: 'Industrial',
-        href: '/archive/the-demo-archive-slug',
-        thumbnail:
-          'https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80',
-        count: 15,
-        color: 'yellow',
-      },
-    ],
-    postType: 'standard',
+    id: '0300',
+    groupId: '0001',
+    name: 'AI 개발',
+    description: 'AI 개발',
+    order: 3,
+    createdAt: '2022-10-14 15:46:30.123',
+    updatedAt: '2022-10-14 15:46:30.123',
   },
   {
-    index: 10,
-    id: 'eae0e85d-db11-44fa-ac32-6c192f687e0c',
-    featuredImage:
-      'https://images.unsplash.com/photo-1581122584612-713f89daa8eb?ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDIwfHx8ZW58MHx8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
-    title: '개발공부 이모저모',
-    desc: 'We’re an online magazine dedicated to covering the best in international product design. We started as a little blog back in 2002 covering student work and over time',
-    date: 'May 20, 2021',
-    href: '/single/this-is-single-slug',
-    commentCount: 14,
-    viewdCount: 2378,
-    readingTime: 6,
-    bookmark: { count: 3502, isBookmarked: false },
-    like: { count: 773, isLiked: true },
-    author: {
-      id: 1,
-      firstName: 'Alric',
-      lastName: 'Truelock',
-      displayName: 'Truelock Alric',
-      email: 'atruelock0@skype.com',
-      gender: 'Bigender',
-      avatar: 'https://robohash.org/doloremaliquidquia.png?size=150x150&set=set1',
-      bgImage:
-        'https://images.pexels.com/photos/912410/pexels-photo-912410.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-      count: 40,
-      href: '/author/the-demo-author-slug',
-      desc: 'There’s no stopping the tech giant. Apple now opens its 100th store in China.There’s no stopping the tech giant.',
-      jobName: 'Author Job',
-    },
-    categories: [
-      {
-        id: 3,
-        name: 'Industrial',
-        href: '/archive/the-demo-archive-slug',
-        thumbnail:
-          'https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80',
-        count: 15,
-        color: 'yellow',
-      },
-    ],
-    postType: 'standard',
-  },
-  {
-    index: 10,
-    id: 'eae0e85d-db11-44fa-ac32-6c192f687e0c',
-    featuredImage:
-      'https://images.unsplash.com/photo-1581122584612-713f89daa8eb?ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDIwfHx8ZW58MHx8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
-    title: '개발공부 이모저모',
-    desc: 'We’re an online magazine dedicated to covering the best in international product design. We started as a little blog back in 2002 covering student work and over time',
-    date: 'May 20, 2021',
-    href: '/single/this-is-single-slug',
-    commentCount: 14,
-    viewdCount: 2378,
-    readingTime: 6,
-    bookmark: { count: 3502, isBookmarked: false },
-    like: { count: 773, isLiked: true },
-    author: {
-      id: 1,
-      firstName: 'Alric',
-      lastName: 'Truelock',
-      displayName: 'Truelock Alric',
-      email: 'atruelock0@skype.com',
-      gender: 'Bigender',
-      avatar: 'https://robohash.org/doloremaliquidquia.png?size=150x150&set=set1',
-      bgImage:
-        'https://images.pexels.com/photos/912410/pexels-photo-912410.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-      count: 40,
-      href: '/author/the-demo-author-slug',
-      desc: 'There’s no stopping the tech giant. Apple now opens its 100th store in China.There’s no stopping the tech giant.',
-      jobName: 'Author Job',
-    },
-    categories: [
-      {
-        id: 3,
-        name: 'Industrial',
-        href: '/archive/the-demo-archive-slug',
-        thumbnail:
-          'https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80',
-        count: 15,
-        color: 'yellow',
-      },
-    ],
-    postType: 'standard',
-  },
-  {
-    index: 10,
-    id: 'eae0e85d-db11-44fa-ac32-6c192f687e0c',
-    featuredImage:
-      'https://images.unsplash.com/photo-1581122584612-713f89daa8eb?ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDIwfHx8ZW58MHx8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
-    title: '개발공부 이모저모',
-    desc: 'We’re an online magazine dedicated to covering the best in international product design. We started as a little blog back in 2002 covering student work and over time',
-    date: 'May 20, 2021',
-    href: '/single/this-is-single-slug',
-    commentCount: 14,
-    viewdCount: 2378,
-    readingTime: 6,
-    bookmark: { count: 3502, isBookmarked: false },
-    like: { count: 773, isLiked: true },
-    author: {
-      id: 1,
-      firstName: 'Alric',
-      lastName: 'Truelock',
-      displayName: 'Truelock Alric',
-      email: 'atruelock0@skype.com',
-      gender: 'Bigender',
-      avatar: 'https://robohash.org/doloremaliquidquia.png?size=150x150&set=set1',
-      bgImage:
-        'https://images.pexels.com/photos/912410/pexels-photo-912410.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-      count: 40,
-      href: '/author/the-demo-author-slug',
-      desc: 'There’s no stopping the tech giant. Apple now opens its 100th store in China.There’s no stopping the tech giant.',
-      jobName: 'Author Job',
-    },
-    categories: [
-      {
-        id: 3,
-        name: 'Industrial',
-        href: '/archive/the-demo-archive-slug',
-        thumbnail:
-          'https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80',
-        count: 15,
-        color: 'yellow',
-      },
-    ],
-    postType: 'standard',
-  },
-  {
-    index: 10,
-    id: 'eae0e85d-db11-44fa-ac32-6c192f687e0c',
-    featuredImage:
-      'https://images.unsplash.com/photo-1581122584612-713f89daa8eb?ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDIwfHx8ZW58MHx8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
-    title: '개발공부 이모저모',
-    desc: 'We’re an online magazine dedicated to covering the best in international product design. We started as a little blog back in 2002 covering student work and over time',
-    date: 'May 20, 2021',
-    href: '/single/this-is-single-slug',
-    commentCount: 14,
-    viewdCount: 2378,
-    readingTime: 6,
-    bookmark: { count: 3502, isBookmarked: false },
-    like: { count: 773, isLiked: true },
-    author: {
-      id: 1,
-      firstName: 'Alric',
-      lastName: 'Truelock',
-      displayName: 'Truelock Alric',
-      email: 'atruelock0@skype.com',
-      gender: 'Bigender',
-      avatar: 'https://robohash.org/doloremaliquidquia.png?size=150x150&set=set1',
-      bgImage:
-        'https://images.pexels.com/photos/912410/pexels-photo-912410.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-      count: 40,
-      href: '/author/the-demo-author-slug',
-      desc: 'There’s no stopping the tech giant. Apple now opens its 100th store in China.There’s no stopping the tech giant.',
-      jobName: 'Author Job',
-    },
-    categories: [
-      {
-        id: 3,
-        name: 'Industrial',
-        href: '/archive/the-demo-archive-slug',
-        thumbnail:
-          'https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80',
-        count: 15,
-        color: 'yellow',
-      },
-    ],
-    postType: 'standard',
-  },
-  {
-    index: 10,
-    id: 'eae0e85d-db11-44fa-ac32-6c192f687e0c',
-    featuredImage:
-      'https://images.unsplash.com/photo-1581122584612-713f89daa8eb?ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDIwfHx8ZW58MHx8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
-    title: '개발공부 이모저모',
-    desc: 'We’re an online magazine dedicated to covering the best in international product design. We started as a little blog back in 2002 covering student work and over time',
-    date: 'May 20, 2021',
-    href: '/single/this-is-single-slug',
-    commentCount: 14,
-    viewdCount: 2378,
-    readingTime: 6,
-    bookmark: { count: 3502, isBookmarked: false },
-    like: { count: 773, isLiked: true },
-    author: {
-      id: 1,
-      firstName: 'Alric',
-      lastName: 'Truelock',
-      displayName: 'Truelock Alric',
-      email: 'atruelock0@skype.com',
-      gender: 'Bigender',
-      avatar: 'https://robohash.org/doloremaliquidquia.png?size=150x150&set=set1',
-      bgImage:
-        'https://images.pexels.com/photos/912410/pexels-photo-912410.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-      count: 40,
-      href: '/author/the-demo-author-slug',
-      desc: 'There’s no stopping the tech giant. Apple now opens its 100th store in China.There’s no stopping the tech giant.',
-      jobName: 'Author Job',
-    },
-    categories: [
-      {
-        id: 3,
-        name: 'Industrial',
-        href: '/archive/the-demo-archive-slug',
-        thumbnail:
-          'https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80',
-        count: 15,
-        color: 'yellow',
-      },
-    ],
-    postType: 'standard',
+    id: '0400',
+    groupId: '0001',
+    name: '상관없음',
+    description: '상관없음',
+    order: 4,
+    createdAt: '2022-10-14 15:46:30.123',
+    updatedAt: '2022-10-14 15:46:30.123',
   },
 ];
 
-const boardTags: string[] = ['모든', '트렌드', '질문', '소프트웨어', '프로세스'];
+const levelGroup = [
+  {
+    id: '0100',
+    groupId: '0001',
+    name: '0',
+    description: '레벨 0',
+    order: 1,
+    createdAt: '2022-10-14 15:46:30.123',
+    updatedAt: '2022-10-14 15:46:30.123',
+  },
+  {
+    id: '0200',
+    groupId: '0001',
+    name: '1',
+    description: '레벨 1',
+    order: 2,
+    createdAt: '2022-10-14 15:46:30.123',
+    updatedAt: '2022-10-14 15:46:30.123',
+  },
+  {
+    id: '0300',
+    groupId: '0001',
+    name: '2',
+    description: '레벨 2',
+    order: 3,
+    createdAt: '2022-10-14 15:46:30.123',
+    updatedAt: '2022-10-14 15:46:30.123',
+  },
+  {
+    id: '0301',
+    groupId: '0001',
+    name: '3',
+    description: '레벨 3',
+    order: 3,
+    createdAt: '2022-10-14 15:46:30.123',
+    updatedAt: '2022-10-14 15:46:30.123',
+  },
+  {
+    id: '0302',
+    groupId: '0001',
+    name: '4',
+    description: '레벨 4',
+    order: 3,
+    createdAt: '2022-10-14 15:46:30.123',
+    updatedAt: '2022-10-14 15:46:30.123',
+  },
+];
+
+const contentQuizTypes = [
+  {
+    id: '0100',
+    groupId: '0001',
+    name: '퀴즈 검색하기',
+    description: '레벨 0',
+    order: 1,
+    createdAt: '2022-10-14 15:46:30.123',
+    updatedAt: '2022-10-14 15:46:30.123',
+  },
+  {
+    id: '0200',
+    groupId: '0001',
+    name: '퀴즈 직접 등록하기',
+    description: '레벨 1',
+    order: 2,
+    createdAt: '2022-10-14 15:46:30.123',
+    updatedAt: '2022-10-14 15:46:30.123',
+  },
+  {
+    id: '0301',
+    groupId: '0001',
+    name: '퀴즈 만들기 불러오기',
+    description: '레벨 3',
+    order: 3,
+    createdAt: '2022-10-14 15:46:30.123',
+    updatedAt: '2022-10-14 15:46:30.123',
+  },
+];
 
 const cx = classNames.bind(styles);
 
 export function QuizOpenTemplate() {
   const { jobGroups, setJobGroups, contentTypes, setContentTypes } = useStore();
-
   const [searchParams, setSearchParams] = useState({});
-
   const onChangeKeyword = event => {
     const { name, value } = event.currentTarget;
-
     setSearchParams({
       ...searchParams,
       [name]: value,
@@ -521,9 +367,47 @@ export function QuizOpenTemplate() {
   const [params, setParams] = useState<paramProps>({ page });
   const [contents, setContents] = useState<RecommendContent[]>([]);
   const [images, setSeminarImages] = useState<any[]>([]);
-  const [introductionMessage, setIntroductionMessage] = useState<string>('');
+  const [quizList, setQuizList] = useState<any[]>([]);
 
   const { isFetched: isJobGroupFetched } = useJobGroups(data => setJobGroups(data || []));
+  const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
+  const { data: experienceData }: UseQueryResult<ExperiencesResponse> = useExperiences();
+  const { data: jobsData }: UseQueryResult<any> = useJobs();
+  const [skillIds, setSkillIds] = useState<any[]>([]);
+  const [experienceIds, setExperienceIds] = useState<any[]>([]);
+  const [isPublic, setIsPublic] = useState('공개');
+  const handleFormat = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
+    setSkillIds(newFormats);
+    console.log(newFormats);
+  };
+  const handleFormatEx = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
+    setExperienceIds(newFormats);
+    console.log(newFormats);
+  };
+
+  const [introductionMessage, setIntroductionMessage] = useState<string>('');
+  const handleJobGroup = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
+    setRecommendJobGroups(newFormats);
+    console.log(newFormats);
+  };
+  const handleJobs = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
+    setJobGroup(newFormats);
+    console.log(newFormats);
+  };
+
+  const handleRecommendLevels = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
+    setRecommendLevels(newFormats);
+  };
+  const handleStudyCycle = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
+    setStudyCycle(newFormats);
+  };
+
+  const handleIsPublic = (event: React.MouseEvent<HTMLElement>, newFormats: string) => {
+    setIsPublic(newFormats);
+  };
+  const handleToggleRecommandJobGroup = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
+    setRecommendJobGroups(newFormats);
+  };
 
   const { isFetched: isContentFetched } = useSeminarList(params, data => {
     setContents(data.data || []);
@@ -537,37 +421,41 @@ export function QuizOpenTemplate() {
 
   const handleAddClick = () => {
     // onGetJobsData && onGetJobsData();
+    // getJobsList();
     console.log('modal ');
     setIsModalOpen(true);
     // setChapterNo(chapterNo);
   };
 
-  const seminarType = [
-    {
-      label: '모집중',
-      value: '0002',
-    },
-    {
-      label: '진행예정',
-      value: '0001',
-    },
-    {
-      label: '신청마감',
-      value: '0003',
-    },
-    {
-      label: '진행완료',
-      value: '0011',
-    },
-    {
-      label: '진행연기',
-      value: '0012',
-    },
-    {
-      label: '진행취소',
-      value: '0013',
-    },
-  ];
+  function getObjectsWithSequences(arr, sequenceArray) {
+    console.log(arr, sequenceArray);
+    return arr.filter(item => sequenceArray.includes(String(item.sequence)));
+  }
+
+  const handleChangeCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, checked } = event.currentTarget;
+    const quizData = jobsData?.data.content;
+    const result = [...state];
+
+    if (result.indexOf(name) > -1) {
+      result.splice(result.indexOf(name), 1);
+    } else {
+      result.push(name);
+    }
+    setState(result);
+    console.log(state, quizData, result);
+    const filteredData = getObjectsWithSequences(quizData, result);
+    console.log(filteredData);
+    setQuizList(filteredData);
+
+    // const test = jobsData?.data.content;
+    // console.log(test);
+    // setState(test[1]);
+    // const sequenceArray = [15, 16, 17, 18];
+    // const filteredData = getObjectsWithSequences(test, sequenceArray);
+    // console.log(filteredData);
+  };
+
   useEffect(() => {
     setParams({
       ...params,
@@ -589,59 +477,31 @@ export function QuizOpenTemplate() {
   const [recommendJobGroups, setRecommendJobGroups] = useState([]);
   const [recommendLevels, setRecommendLevels] = useState([]);
   const [clubName, setClubName] = useState<string>('');
-
+  const [alignment, setAlignment] = React.useState<string | null>('');
   const [selectedDate, setSelectedDate] = useState(null);
+  const [active, setActive] = useState(0);
+  const [popupParams, setPopupParams] = useState<paramProps>({
+    page,
+    size: 16,
+  });
+  const PAGE_NAME = 'contents';
+  const { isFetched: isContentListFetched, isFetching } = useRecommendContents(PAGE_NAME, params, data => {
+    setContents(data.data || []);
+    console.log(contents);
+    // setTotalPage(data.totalPage > 0 ? data.totalPage : 1);
+  });
+
+  const [state, setState] = React.useState([]);
+
+  useEffect(() => {
+    if (isFetching) return;
+    setParams({
+      ...params,
+    });
+  }, [page]);
 
   const handleDateChange = date => {
     setSelectedDate(date);
-  };
-
-  const handleToggleDay = event => {
-    const { name, value } = event.currentTarget;
-    setStudyCycle([]);
-    const result = [...studyCycle];
-    if (result.indexOf(value) > -1) {
-      result.splice(result.indexOf(value), 1);
-    } else {
-      result.push(value);
-    }
-    setStudyCycle(result);
-  };
-
-  const handleToggle = event => {
-    const { name, value } = event.currentTarget;
-    setJobGroup([]);
-    const result = [...jobGroup];
-    if (result.indexOf(value) > -1) {
-      result.splice(result.indexOf(value), 1);
-    } else {
-      result.push(value);
-    }
-    setJobGroup(result);
-  };
-
-  const handleToggleRecommandJobGroup = event => {
-    const { name, value } = event.currentTarget;
-    setRecommendJobGroups([]);
-    const result = [...recommendJobGroups];
-    if (result.indexOf(value) > -1) {
-      result.splice(result.indexOf(value), 1);
-    } else {
-      result.push(value);
-    }
-    setRecommendJobGroups(result);
-  };
-
-  const handleToggleRecommandLevels = event => {
-    const { name, value } = event.currentTarget;
-    setRecommendLevels([]);
-    const result = [...recommendJobGroups];
-    if (result.indexOf(value) > -1) {
-      result.splice(result.indexOf(value), 1);
-    } else {
-      result.push(value);
-    }
-    setRecommendJobGroups(result);
   };
 
   const toggleFilter = (id, type: 'jobGroup' | 'level' | 'status') => {
@@ -669,230 +529,6 @@ export function QuizOpenTemplate() {
     'Step2. 클럽 세부사항 설정',
     'Step3. 성장 퀴즈 선택',
     'Step4. 개설한 성장 미리보기',
-  ];
-
-  const jobGroupIdx = [
-    {
-      id: '0100',
-      groupId: '0001',
-      name: '기획',
-      description: '기획',
-      order: 1,
-      createdAt: '2022-10-14 15:46:30.123',
-      updatedAt: '2022-10-14 15:46:30.123',
-    },
-    {
-      id: '0200',
-      groupId: '0001',
-      name: '디자인',
-      description: '디자인',
-      order: 2,
-      createdAt: '2022-10-14 15:46:30.123',
-      updatedAt: '2022-10-14 15:46:30.123',
-    },
-    {
-      id: '0300',
-      groupId: '0001',
-      name: '개발',
-      description: '개발',
-      order: 3,
-      createdAt: '2022-10-14 15:46:30.123',
-      updatedAt: '2022-10-14 15:46:30.123',
-    },
-    {
-      id: '0400',
-      groupId: '0001',
-      name: '엔지니어링',
-      description: '엔지니어링',
-      order: 4,
-      createdAt: '2022-10-14 15:46:30.123',
-      updatedAt: '2022-10-14 15:46:30.123',
-    },
-  ];
-
-  const jobGroup1 = [
-    {
-      id: '0100',
-      groupId: '0001',
-      name: '프론트엔드 개발자',
-      description: '프론트엔드 개발자',
-      order: 1,
-      createdAt: '2022-10-14 15:46:30.123',
-      updatedAt: '2022-10-14 15:46:30.123',
-    },
-    {
-      id: '0200',
-      groupId: '0001',
-      name: '백엔드 개발자',
-      description: '백엔드 개발자',
-      order: 2,
-      createdAt: '2022-10-14 15:46:30.123',
-      updatedAt: '2022-10-14 15:46:30.123',
-    },
-    {
-      id: '0300',
-      groupId: '0001',
-      name: 'AI 개발',
-      description: 'AI 개발',
-      order: 3,
-      createdAt: '2022-10-14 15:46:30.123',
-      updatedAt: '2022-10-14 15:46:30.123',
-    },
-    {
-      id: '0400',
-      groupId: '0001',
-      name: '상관없음',
-      description: '상관없음',
-      order: 4,
-      createdAt: '2022-10-14 15:46:30.123',
-      updatedAt: '2022-10-14 15:46:30.123',
-    },
-  ];
-
-  const levelGroup = [
-    {
-      id: '0100',
-      groupId: '0001',
-      name: '레벨 0',
-      description: '레벨 0',
-      order: 1,
-      createdAt: '2022-10-14 15:46:30.123',
-      updatedAt: '2022-10-14 15:46:30.123',
-    },
-    {
-      id: '0200',
-      groupId: '0001',
-      name: '레벨 1',
-      description: '레벨 1',
-      order: 2,
-      createdAt: '2022-10-14 15:46:30.123',
-      updatedAt: '2022-10-14 15:46:30.123',
-    },
-    {
-      id: '0300',
-      groupId: '0001',
-      name: '레벨 2',
-      description: '레벨 2',
-      order: 3,
-      createdAt: '2022-10-14 15:46:30.123',
-      updatedAt: '2022-10-14 15:46:30.123',
-    },
-    {
-      id: '0301',
-      groupId: '0001',
-      name: '레벨 3',
-      description: '레벨 3',
-      order: 3,
-      createdAt: '2022-10-14 15:46:30.123',
-      updatedAt: '2022-10-14 15:46:30.123',
-    },
-    {
-      id: '0302',
-      groupId: '0001',
-      name: '레벨 4',
-      description: '레벨 4',
-      order: 3,
-      createdAt: '2022-10-14 15:46:30.123',
-      updatedAt: '2022-10-14 15:46:30.123',
-    },
-    {
-      id: '0400',
-      groupId: '0001',
-      name: '상관없음',
-      description: '상관없음',
-      order: 4,
-      createdAt: '2022-10-14 15:46:30.123',
-      updatedAt: '2022-10-14 15:46:30.123',
-    },
-  ];
-
-  const dayGroup = [
-    {
-      id: '0100',
-      groupId: '0001',
-      name: '월',
-      description: '월',
-      order: 1,
-      createdAt: '2022-10-14 15:46:30.123',
-      updatedAt: '2022-10-14 15:46:30.123',
-    },
-    {
-      id: '0200',
-      groupId: '0001',
-      name: '화',
-      description: '화',
-      order: 2,
-      createdAt: '2022-10-14 15:46:30.123',
-      updatedAt: '2022-10-14 15:46:30.123',
-    },
-    {
-      id: '0300',
-      groupId: '0001',
-      name: '수',
-      description: '수',
-      order: 3,
-      createdAt: '2022-10-14 15:46:30.123',
-      updatedAt: '2022-10-14 15:46:30.123',
-    },
-    {
-      id: '0301',
-      groupId: '0001',
-      name: '목',
-      description: '목',
-      order: 3,
-      createdAt: '2022-10-14 15:46:30.123',
-      updatedAt: '2022-10-14 15:46:30.123',
-    },
-    {
-      id: '0302',
-      groupId: '0001',
-      name: '금',
-      description: '금',
-      order: 3,
-      createdAt: '2022-10-14 15:46:30.123',
-      updatedAt: '2022-10-14 15:46:30.123',
-    },
-    {
-      id: '0400',
-      groupId: '0001',
-      name: '토',
-      description: '토',
-      order: 4,
-      createdAt: '2022-10-14 15:46:30.123',
-      updatedAt: '2022-10-14 15:46:30.123',
-    },
-    {
-      id: '0401',
-      groupId: '0001',
-      name: '일',
-      description: '일',
-      order: 4,
-      createdAt: '2022-10-14 15:46:30.123',
-      updatedAt: '2022-10-14 15:46:30.123',
-    },
-  ];
-
-  const privateGroup = [
-    {
-      id: '0100',
-      groupId: '0001',
-      name: '공개',
-      description: '공개',
-      active: true,
-      order: 1,
-      createdAt: '2022-10-14 15:46:30.123',
-      updatedAt: '2022-10-14 15:46:30.123',
-    },
-    {
-      id: '0200',
-      groupId: '0001',
-      name: '비공개',
-      description: '비공개',
-      active: false,
-      order: 2,
-      createdAt: '2022-10-14 15:46:30.123',
-      updatedAt: '2022-10-14 15:46:30.123',
-    },
   ];
 
   const [activeStep, setActiveStep] = React.useState(0);
@@ -928,17 +564,17 @@ export function QuizOpenTemplate() {
       jobGroup: jobGroup,
       clubName: clubName,
       studyCycle: studyCycle,
-      recommendJobGroups: recommendJobGroups,
-      recommendLevels: recommendLevels,
+      recommendJobGroups: [recommendJobGroups],
+      recommendLevels: [recommendLevels],
       startAt: today.format('YYYY-MM-DD') + ' 00:00:00.000',
       endAt: todayEnd.format('YYYY-MM-DD') + ' 00:00:00.000',
       description: introductionMessage,
-      relatedSkills: ['string'],
-      relatedExperiences: ['string'],
       studyWeekCount: 0,
       recruitMemberCount: 0,
       publicYn: 'Y',
       participationCode: '',
+      relatedSkills: skillIds,
+      relatedExperiences: experienceIds,
     };
     console.log(params);
 
@@ -964,6 +600,8 @@ export function QuizOpenTemplate() {
 
   const handleBack = () => {
     setActiveStep(prevActiveStep => prevActiveStep - 1);
+
+    console.log(activeStep);
   };
 
   const handleInputChange = event => {
@@ -973,6 +611,29 @@ export function QuizOpenTemplate() {
   const onMessageChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, no?: number) => {
     const { name, value } = event.currentTarget;
     setIntroductionMessage(value);
+  };
+
+  const onToggleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, checked } = event.currentTarget;
+    if (name === 'skillIds') {
+      const result = [...skillIds];
+
+      if (result.indexOf(value) > -1) {
+        result.splice(result.indexOf(value), 1);
+      } else {
+        result.push(value);
+      }
+      setSkillIds(result);
+    } else if (name === 'experienceIds') {
+      const result = [...experienceIds];
+
+      if (result.indexOf(value) > -1) {
+        result.splice(result.indexOf(value), 1);
+      } else {
+        result.push(value);
+      }
+      setExperienceIds(result);
+    }
   };
 
   const handleSkip = () => {
@@ -1026,9 +687,6 @@ export function QuizOpenTemplate() {
             const labelProps: {
               optional?: React.ReactNode;
             } = {};
-            if (isStepOptional(index)) {
-              labelProps.optional = <Typography variant="caption">Optional</Typography>;
-            }
             if (isStepSkipped(index)) {
               stepProps.completed = false;
             }
@@ -1171,40 +829,50 @@ export function QuizOpenTemplate() {
                 <div className="tw-grid tw-grid-cols-2 tw-gap-4 tw-content-start">
                   <div>
                     <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천 직군</div>
-                    {jobGroupIdx?.map(item => (
-                      <ToggleButton
-                        label={item.name}
-                        name="jobGroup"
-                        value={item.id}
-                        key={item.id}
-                        variant="small"
-                        isActive
-                        className={cx('fixed-width')}
-                        // register={register}
-                        onChange={handleToggle}
-                        type="tabRadio"
-                        weight="bold"
-                        // checked={item.id === jobGroup}
-                      />
-                    ))}
+                    <ToggleButtonGroup value={jobGroup} exclusive onChange={handleJobs} aria-label="text alignment">
+                      {jobGroupIdx?.map((item, index) => (
+                        <ToggleButton
+                          key={`job-${index}`}
+                          value={item.name}
+                          className="tw-ring-1 tw-ring-slate-900/10"
+                          style={{
+                            borderRadius: '5px',
+                            borderLeft: '0px',
+                            margin: '5px',
+                            height: '35px',
+                            border: '0px',
+                          }}
+                        >
+                          {item.name}
+                        </ToggleButton>
+                      ))}
+                    </ToggleButtonGroup>
 
                     <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천 레벨</div>
-                    {levelGroup?.map(item => (
-                      <ToggleButton
-                        label={item.name}
-                        name="levelGroup"
-                        value={item.id}
-                        key={item.id}
-                        variant="small"
-                        isActive
-                        className={cx('fixed-width')}
-                        // register={register}
-                        // onChange={handleToggle}
-                        type="tabRadio"
-                        weight="bold"
-                        // checked={item.id === jobGroup}
-                      />
-                    ))}
+                    <ToggleButtonGroup
+                      value={recommendLevels}
+                      exclusive
+                      onChange={handleRecommendLevels}
+                      aria-label="text alignment"
+                    >
+                      {levelGroup?.map((item, index) => (
+                        <ToggleButton
+                          key={`job-${index}`}
+                          value={item.name}
+                          aria-label="fff"
+                          className="tw-ring-1 tw-ring-slate-900/10"
+                          style={{
+                            borderRadius: '5px',
+                            borderLeft: '0px',
+                            margin: '5px',
+                            height: '35px',
+                            border: '0px',
+                          }}
+                        >
+                          레벨 {item.name}
+                        </ToggleButton>
+                      ))}
+                    </ToggleButtonGroup>
                     <div className="tw-text-sm tw-text-black tw-mt-2 tw-my-0">
                       2레벨 : 상용 서비스 개발 1인분 가능한 사람. 소규모 서비스 독자 개발 가능.
                     </div>
@@ -1212,71 +880,149 @@ export function QuizOpenTemplate() {
                     <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
                       성장퀴즈 주기 (복수 선택 가능)
                     </div>
-                    {dayGroup?.map(item => (
-                      <ToggleButton
-                        label={item.name}
-                        name="levelGroup"
-                        value={item.name}
-                        key={item.id}
-                        variant="small"
-                        isActive
-                        className={cx('fixed-width')}
-                        // register={register}
-                        onChange={handleToggleDay}
-                        type="multiple"
-                        weight="bold"
-                        // checked={item.id === jobGroup}
-                      />
-                    ))}
+                    <ToggleButtonGroup value={studyCycle} onChange={handleStudyCycle} aria-label="" color="standard">
+                      {dayGroup?.map((item, index) => (
+                        <ToggleButton
+                          key={`job1-${index}`}
+                          value={item.name}
+                          className="tw-ring-1 tw-ring-slate-900/10"
+                          style={{
+                            borderRadius: '5px',
+                            borderLeft: '0px',
+                            margin: '5px',
+                            height: '35px',
+                            border: '0px',
+                          }}
+                        >
+                          {item.name}
+                        </ToggleButton>
+                      ))}
+                    </ToggleButtonGroup>
                   </div>
                   <div>
                     <div>
                       <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천직무</div>
-                      {jobGroup1?.map(item => (
-                        <ToggleButton
-                          label={item.name}
-                          name="jobGroup1"
-                          value={item.id}
-                          key={item.id}
-                          variant="small"
-                          isActive
-                          className={cx('fixed-width')}
-                          // register={register}
-                          onChange={handleToggleRecommandJobGroup}
-                          type="tabRadio"
-                          weight="bold"
-                          // checked={item.id === jobGroup}
-                        />
-                      ))}
+
+                      <ToggleButtonGroup
+                        value={recommendJobGroups}
+                        exclusive
+                        onChange={handleJobGroup}
+                        aria-label=""
+                        color="standard"
+                      >
+                        {jobGroup1?.map((item, index) => (
+                          <ToggleButton
+                            key={`job-${index}`}
+                            value={item.name}
+                            className="tw-ring-1 tw-ring-slate-900/10"
+                            style={{
+                              borderRadius: '5px',
+                              borderLeft: '0px',
+                              margin: '5px',
+                              height: '35px',
+                              border: '0px',
+                            }}
+                          >
+                            {item.name}
+                          </ToggleButton>
+                        ))}
+                      </ToggleButtonGroup>
 
                       <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">공개/비공개 설정</div>
-                      {privateGroup?.map((item, index) => (
-                        <ToggleButton
-                          label={item.name}
-                          name="privateGroup"
-                          value={item.id}
-                          key={item.id}
-                          variant="small"
-                          isActive
-                          className={cx('fixed-width')}
-                          // register={register}
-                          // onChange={handleToggle}
-                          // onChange={handleToggleRecommandLevels}
-                          type="tabRadio"
-                          weight="bold"
-                          // checked={item.active}
-                        />
-                      ))}
-                      <TextField size="small" disabled label={'입장코드를 설정해주세요.'} id="margin-none" />
+                      <ToggleButtonGroup
+                        value={isPublic}
+                        onChange={handleIsPublic}
+                        exclusive
+                        aria-label=""
+                        color="standard"
+                      >
+                        {privateGroup?.map((item, index) => (
+                          <ToggleButton
+                            key={`job-${index}`}
+                            value={item.name}
+                            className="tw-ring-1 tw-ring-slate-900/10"
+                            style={{
+                              borderRadius: '5px',
+                              borderLeft: '0px',
+                              margin: '5px',
+                              height: '35px',
+                              border: '0px',
+                            }}
+                          >
+                            {item.name}
+                          </ToggleButton>
+                        ))}
+                      </ToggleButtonGroup>
+                      <TextField
+                        className="tw-pl-1 tw-mt-1"
+                        size="small"
+                        disabled
+                        label={'입장코드를 설정해주세요.'}
+                        id="margin-none"
+                      />
                     </div>
                   </div>
                 </div>
                 <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">관련스킬</div>
-                <TextField size="small" fullWidth label={'관련스킬을 입력해주세요. ex) JAVA'} id="margin-none" />
+
+                <ToggleButtonGroup value={skillIds} onChange={handleFormat} aria-label="" color="standard">
+                  {skillData.data.contents?.map((item, index) => {
+                    return (
+                      <ToggleButton
+                        key={`skillIds-${index}`}
+                        value={item.name}
+                        className="tw-ring-1 tw-ring-slate-900/10"
+                        style={{
+                          borderRadius: '5px',
+                          borderLeft: '0px',
+                          margin: '5px',
+                          height: '35px',
+                          border: '0px',
+                        }}
+                      >
+                        {item.name}
+                      </ToggleButton>
+                    );
+                  })}
+                </ToggleButtonGroup>
 
                 <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">관련경험</div>
-                <TextField size="small" fullWidth label={'관련경험을 입력해주세요. ex) UX'} id="margin-none" />
-
+                <ToggleButtonGroup value={experienceIds} onChange={handleFormatEx} aria-label="" color="standard">
+                  {experienceData.data.contents?.map((item, index) => {
+                    return (
+                      <ToggleButton
+                        key={`skillIds-${index}`}
+                        value={item.name}
+                        className="tw-ring-1 tw-ring-slate-900/10"
+                        style={{
+                          borderRadius: '5px',
+                          borderLeft: '0px',
+                          margin: '5px',
+                          height: '35px',
+                          border: '0px',
+                        }}
+                      >
+                        {item.name}
+                      </ToggleButton>
+                    );
+                  })}
+                </ToggleButtonGroup>
+                {/* {experienceData.data.contents?.map((item, index) => {
+                  return (
+                    <ToggleButton
+                      key={`custom-skill-${index}`}
+                      className="tw-mb-3 tw-mr-3"
+                      label={item.name}
+                      name="experienceIds"
+                      value={item.name}
+                      onChange={onToggleChange}
+                      variant="small"
+                      type="multiple"
+                      isActive
+                      isBorder
+                    />
+                  );
+                })} */}
                 <div className="tw-grid tw-grid-cols-2 tw-gap-4 tw-content-start">
                   <div>
                     <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">퀴즈클럽 시작일</div>
@@ -1359,13 +1105,75 @@ export function QuizOpenTemplate() {
                   퀴즈 등록하기 +
                 </button>
               </Grid>
+              {quizList.map((item, index) => {
+                return (
+                  <div key={index} className="">
+                    <div className="tw-flex tw-items-center tw-p-4 tw-border border mb-3 mt-3 rounded">
+                      <div className="tw-flex-auto">
+                        <div className="tw-font-medium tw-text-black">{item.content}</div>
+                      </div>
+                      <div className="">김찬영</div>
+                      <svg className="tw-ml-6 tw-h-6 tw-w-6 tw-flex-none" fill="none">
+                        <path
+                          d="M12 8v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1V8Zm0 0V7a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1ZM12 12v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1ZM12 16v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1Z"
+                          fill="#64748B"
+                        ></path>
+                      </svg>
+                    </div>
+                  </div>
+                );
+                // <ArticleCard uiType={item.contentsType} content={item} key={i} className={cx('container__item')} />
+              })}
+              <div className="tw-container tw-py-10 tw-px-10 tw-mx-0 tw-min-w-full tw-flex tw-flex-col tw-items-center">
+                <div className="tw-grid tw-grid-rows-3 tw-grid-flow-col tw-gap-4">
+                  <div className="tw-row-span-2">
+                    <button
+                      onClick={handleBack}
+                      className="tw-w-[300px] btn-outline-secondary tw-outline-blue-500 tw-bg-white tw-mr-5 tw-text-black tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded"
+                    >
+                      이전
+                    </button>
+                    <button
+                      className="tw-w-[300px] tw-bg-[#2474ED] tw-text-white tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded"
+                      onClick={handleNext}
+                    >
+                      {activeStep === steps.length - 1 ? '성장퀴즈 클럽 개설하기 >' : '미리보기'}
+                    </button>
+                  </div>
+                </div>
+              </div>
             </article>
           </>
         )}
       </div>
       <MentorsModal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
+        <div className="tw-font-bold tw-text-xl tw-text-black tw-my-5 tw-text-center">퀴즈 등록하기</div>
         <div className={cx('mentoring-register-container__card-nodes')}>
-          <div>asdfsdafasda</div>
+          {contentQuizTypes.map((item, i) => (
+            <Toggle
+              className={cx('fixed-width')}
+              key={item.id}
+              label={item.name}
+              name={item.name}
+              value={item.id}
+              variant="small"
+              checked={active === i}
+              isActive
+              type="tabButton"
+              // onChange={() => {
+              //   setActive(i);
+              //   setPopUpParams({
+              //     ...popupParams,
+              //     // contentsType: item.id,
+              //     // page: 1,
+              //     // seminarEndDateFrom:
+              //     //   item.id === ArticleEnum.SEMINAR ? moment().format('YYYY-MM-DD HH:mm:ss.SSS') : null,
+              //   });
+              //   setPage(1);
+              // }}
+            />
+          ))}
+
           {/* {jobs?.map((item, index) => {
             return (
               <NodeCard
@@ -1379,6 +1187,39 @@ export function QuizOpenTemplate() {
               />
             );
           })} */}
+        </div>
+        <div className="tw-mt-10">
+          <TextField
+            size="small"
+            fullWidth
+            label={'퀴즈 키워드를 입력하세요.'}
+            onChange={handleInputChange}
+            id="margin-none"
+            value={clubName}
+            name="clubName"
+          />
+        </div>
+        <div>
+          {jobsData?.data.content.map((item, index) => {
+            return (
+              <div key={index} className="tw-flex">
+                <Checkbox onChange={handleChangeCheck} name={item.sequence} className="tw-mr-3" />
+                <div className="tw-flex tw-w-full tw-items-center tw-p-4 tw-border border mb-3 mt-3 rounded">
+                  <div className="tw-flex-auto">
+                    <div className="tw-font-medium tw-text-black">{item.content}</div>
+                  </div>
+                  <div className="">김찬영</div>
+                  <svg className="tw-ml-6 tw-h-6 tw-w-6 tw-flex-none" fill="none">
+                    <path
+                      d="M12 8v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1V8Zm0 0V7a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1ZM12 12v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1ZM12 16v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1Z"
+                      fill="#64748B"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+            );
+            // <ArticleCard uiType={item.contentsType} content={item} key={i} className={cx('container__item')} />
+          })}
         </div>
       </MentorsModal>
     </div>

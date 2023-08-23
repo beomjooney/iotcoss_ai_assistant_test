@@ -57,7 +57,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
   }, []);
 
   useEffect(() => {
-    logged && setButtonName('마이커리어');
+    logged && setButtonName('회원정보');
     logged
       ? setLogoutButton(
           <li className={cx('custom-item')} id="logoutBtn">
@@ -70,17 +70,17 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
     !logged && setButtonName('로그인');
   }, [logged]);
 
-  useEffect(() => {
-    roles.length > 0 && roles[0] === 'ROLE_ADMIN'
-      ? setAdminButton(
-          <li className={cx('custom-item')} id="logoutBtn">
-            <Button size="small" color="primary" onClick={() => (location.href = '/admin')}>
-              관리자용
-            </Button>
-          </li>,
-        )
-      : setAdminButton(null);
-  }, [roles]);
+  // useEffect(() => {
+  //   roles.length > 0 && roles[0] === 'ROLE_ADMIN'
+  //     ? setAdminButton(
+  //         <li className={cx('custom-item')} id="logoutBtn">
+  //           <Button size="small" color="primary" onClick={() => (location.href = '/admin')}>
+  //             관리자용
+  //           </Button>
+  //         </li>,
+  //       )
+  //     : setAdminButton(null);
+  // }, [roles]);
 
   const handleScroll = () => {
     setScroll(window.scrollY);
@@ -211,7 +211,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                 />
               </Mobile>
               <Desktop>
-                <div className="tw-text-2xl tw-font-bold">인빈서블X</div>
+                <div className="tw-text-2xl tw-font-bold">데브어스</div>
               </Desktop>
             </div>
             <Mobile>
