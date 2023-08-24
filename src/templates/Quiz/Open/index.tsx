@@ -1,6 +1,6 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import { MentorsModal, Pagination, Toggle, Typography } from 'src/stories/components';
+import { Chip, MentorsModal, Pagination, Toggle, Typography } from 'src/stories/components';
 import React, { useEffect, useState } from 'react';
 import { RecommendContent, SeminarImages } from 'src/models/recommend';
 import { useSeminarList, paramProps, useSeminarImageList } from 'src/services/seminars/seminars.queries';
@@ -40,14 +40,16 @@ import { useExperiences } from 'src/services/experiences/experiences.queries';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 import { useRecommendContents } from 'src/services/contents/contents.queries';
-import { useJobs } from 'src/services/jobs/jobs.queries';
+import { useJobs, useMyJobs } from 'src/services/jobs/jobs.queries';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import { useClubQuizSave, useQuizSave } from 'src/services/quiz/quiz.mutations';
+import { jobColorKey } from 'src/config/colors';
 
 const dayGroup = [
   {
-    id: '0100',
+    id: 'MONDAY',
     groupId: '0001',
     name: '월',
     description: '월',
@@ -56,7 +58,7 @@ const dayGroup = [
     updatedAt: '2022-10-14 15:46:30.123',
   },
   {
-    id: '0200',
+    id: 'TUESDAY',
     groupId: '0001',
     name: '화',
     description: '화',
@@ -65,7 +67,7 @@ const dayGroup = [
     updatedAt: '2022-10-14 15:46:30.123',
   },
   {
-    id: '0300',
+    id: 'WEDNESDAY',
     groupId: '0001',
     name: '수',
     description: '수',
@@ -74,7 +76,7 @@ const dayGroup = [
     updatedAt: '2022-10-14 15:46:30.123',
   },
   {
-    id: '0301',
+    id: 'THURSDAY',
     groupId: '0001',
     name: '목',
     description: '목',
@@ -83,7 +85,7 @@ const dayGroup = [
     updatedAt: '2022-10-14 15:46:30.123',
   },
   {
-    id: '0302',
+    id: 'FRIDAY',
     groupId: '0001',
     name: '금',
     description: '금',
@@ -92,7 +94,7 @@ const dayGroup = [
     updatedAt: '2022-10-14 15:46:30.123',
   },
   {
-    id: '0400',
+    id: 'SATURDAY',
     groupId: '0001',
     name: '토',
     description: '토',
@@ -101,7 +103,7 @@ const dayGroup = [
     updatedAt: '2022-10-14 15:46:30.123',
   },
   {
-    id: '0401',
+    id: 'SUNDAY',
     groupId: '0001',
     name: '일',
     description: '일',
@@ -364,18 +366,25 @@ export function QuizOpenTemplate() {
   const [levelsFilter, setLevelsFilter] = useState([]);
 
   const [seminarFilter, setSeminarFilter] = useState(['0002']);
+  const [paramss, setParamss] = useState({});
   const [params, setParams] = useState<paramProps>({ page });
   const [contents, setContents] = useState<RecommendContent[]>([]);
   const [images, setSeminarImages] = useState<any[]>([]);
   const [quizList, setQuizList] = useState<any[]>([]);
+  const [quizListParam, setQuizListParam] = useState<any[]>([]);
 
   const { isFetched: isJobGroupFetched } = useJobGroups(data => setJobGroups(data || []));
   const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
   const { data: experienceData }: UseQueryResult<ExperiencesResponse> = useExperiences();
-  const { data: jobsData }: UseQueryResult<any> = useJobs();
+  const { data: jobsData, refetch }: UseQueryResult<any> = useJobs();
+  const { data: myJobsData, refetch: refetchMyJob }: UseQueryResult<any> = useMyJobs();
   const [skillIds, setSkillIds] = useState<any[]>([]);
   const [experienceIds, setExperienceIds] = useState<any[]>([]);
   const [isPublic, setIsPublic] = useState('공개');
+
+  const { mutate: onQuizSave } = useQuizSave();
+  const { mutate: onClubQuizSave } = useClubQuizSave();
+
   const handleFormat = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
     setSkillIds(newFormats);
     console.log(newFormats);
@@ -427,9 +436,52 @@ export function QuizOpenTemplate() {
     // setChapterNo(chapterNo);
   };
 
+  const handleQuizInsertClick = async () => {
+    const params = {
+      content: quizName,
+      articleUrl: quizUrl,
+      recommendJobGroups: ['0100'],
+      recommendJobs: ['0111'],
+      recommendLevels: ['0'],
+      relatedSkills: ['string'],
+      relatedExperiences: ['string'],
+      hashTags: ['string'],
+    };
+
+    setQuizUrl('');
+    setQuizName('');
+    await onQuizSave(params);
+    await refetchMyJob();
+    setActive(2);
+  };
+
   function getObjectsWithSequences(arr, sequenceArray) {
     console.log(arr, sequenceArray);
-    return arr.filter(item => sequenceArray.includes(String(item.sequence)));
+
+    return arr
+      .filter(item => sequenceArray.includes(String(item.sequence)))
+      .map(item => ({
+        ...item,
+        quizSequence: 1,
+        order: 0,
+        isRepresentative: true,
+        isPublic: true,
+        publishAt: '2023-08-22 00:00:00',
+      }));
+  }
+
+  function getObjectsWithSequencesParam(arr, sequenceArray) {
+    console.log(arr, sequenceArray);
+
+    return arr
+      .filter(item => sequenceArray.includes(String(item.sequence)))
+      .map((item, index) => ({
+        quizSequence: item.sequence,
+        order: index + 1,
+        isRepresentative: true,
+        isPublic: true,
+        publishAt: '2023-08-22 00:00:00',
+      }));
   }
 
   const handleChangeCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -445,8 +497,11 @@ export function QuizOpenTemplate() {
     setState(result);
     console.log(state, quizData, result);
     const filteredData = getObjectsWithSequences(quizData, result);
+    const filteredDataParam = getObjectsWithSequencesParam(quizData, result);
     console.log(filteredData);
+    console.log(filteredDataParam);
     setQuizList(filteredData);
+    setQuizListParam(filteredDataParam);
 
     // const test = jobsData?.data.content;
     // console.log(test);
@@ -491,6 +546,15 @@ export function QuizOpenTemplate() {
     // setTotalPage(data.totalPage > 0 ? data.totalPage : 1);
   });
 
+  useEffect(() => {
+    console.log('fasdaf');
+    if (active == 0) {
+      refetch();
+    } else if (active == 2) {
+      refetchMyJob();
+    }
+  }, [active]);
+
   const [state, setState] = React.useState([]);
 
   useEffect(() => {
@@ -504,18 +568,6 @@ export function QuizOpenTemplate() {
     setSelectedDate(date);
   };
 
-  const toggleFilter = (id, type: 'jobGroup' | 'level' | 'status') => {
-    if (type === 'jobGroup') {
-      const index = jobGroupsFilter.indexOf(id);
-      setJobGroupsFilter(prevState => setNewCheckItem(id, index, prevState));
-    } else if (type === 'level') {
-      const index = levelsFilter.indexOf(id);
-      setLevelsFilter(prevState => setNewCheckItem(id, index, prevState));
-    } else {
-      const index = seminarFilter.indexOf(id);
-      setSeminarFilter(prevState => setNewCheckItem(id, index, prevState));
-    }
-  };
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const boxWidth = 110;
@@ -533,6 +585,10 @@ export function QuizOpenTemplate() {
 
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set<number>());
+
+  const [quizUrl, setQuizUrl] = React.useState('');
+  const [quizName, setQuizName] = React.useState('');
+  const [quizSearch, setQuizSearch] = React.useState('');
 
   const isStepOptional = (step: number) => {
     return step === 1 || step === 2 || step === 3;
@@ -558,32 +614,41 @@ export function QuizOpenTemplate() {
     setSkipped(newSkipped);
   };
 
+  const handleNextLast = () => {
+    console.log(quizListParam);
+    const params = { ...paramss, clubQuizzes: quizListParam };
+    //console.log(params);
+    onClubQuizSave(params);
+    router.push('/quiz');
+  };
+
   const handleNextOne = () => {
-    console.log('next');
     const params = {
       jobGroup: jobGroup,
-      clubName: clubName,
+      name: clubName,
       studyCycle: studyCycle,
       recommendJobGroups: [recommendJobGroups],
       recommendLevels: [recommendLevels],
-      startAt: today.format('YYYY-MM-DD') + ' 00:00:00.000',
-      endAt: todayEnd.format('YYYY-MM-DD') + ' 00:00:00.000',
+      startAt: today.format('YYYY-MM-DD') + ' 00:00:00',
+      endAt: todayEnd.format('YYYY-MM-DD') + ' 00:00:00',
       description: introductionMessage,
       studyWeekCount: 0,
+      isPublic: true,
       recruitMemberCount: 0,
       publicYn: 'Y',
       participationCode: '',
       relatedSkills: skillIds,
       relatedExperiences: experienceIds,
+      clubQuizzes: quizListParam,
     };
-    console.log(params);
-
-    if (params.jobGroup.length === 0) {
+    setParamss(params);
+    console.log('next');
+    if (jobGroup.length === 0) {
       alert('등록을 원하는 분야를 선택해주세요.');
       return;
     }
 
-    if (params.clubName === '') {
+    if (clubName === '') {
       alert('클럽 이름을 입력해주세요.');
       return;
     }
@@ -606,6 +671,18 @@ export function QuizOpenTemplate() {
 
   const handleInputChange = event => {
     setClubName(event.target.value);
+  };
+
+  const handleInputQuizChange = event => {
+    setQuizName(event.target.value);
+  };
+
+  const handleInputQuizUrlChange = event => {
+    setQuizUrl(event.target.value);
+  };
+
+  const handleInputQuizSearchChange = event => {
+    setQuizSearch(event.target.value);
   };
 
   const onMessageChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, no?: number) => {
@@ -884,7 +961,8 @@ export function QuizOpenTemplate() {
                       {dayGroup?.map((item, index) => (
                         <ToggleButton
                           key={`job1-${index}`}
-                          value={item.name}
+                          value={item.id}
+                          name={item.name}
                           className="tw-ring-1 tw-ring-slate-900/10"
                           style={{
                             borderRadius: '5px',
@@ -1145,6 +1223,102 @@ export function QuizOpenTemplate() {
             </article>
           </>
         )}
+        {activeStep === 3 && (
+          <>
+            <article>
+              <div className="tw-p-10 tw-bg-gray-50">
+                <div className="tw-flex tw-flex-col tw-items-center tw-bg-white tw-border tw-border-gray-200 tw-rounded-lg tw-shadow md:tw-flex-row hover:tw-bg-gray-100 dark:tw-border-gray-700 dark:tw-bg-gray-800 dark:hover:tw-bg-gray-700">
+                  <img
+                    className="tw-object-cover tw-rounded-t-lg tw-h-[245px] md:tw-h-[245px] md:tw-w-[220px] md:tw-rounded-none md:tw-rounded-l-lg"
+                    src="/assets/images/banner/Rectangle1.png"
+                    alt=""
+                  />
+                  <div className="tw-flex tw-flex-col tw-justify-between tw-p-4 tw-leading-normal">
+                    <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
+                      {paramss.recommendJobGroups.map((name, i) => (
+                        <Chip
+                          key={`job_${i}`}
+                          chipColor={jobColorKey(recommendJobGroups[i])}
+                          radius={4}
+                          variant="outlined"
+                        >
+                          dd
+                        </Chip>
+                      ))}
+                    </div>
+                    <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
+                      {paramss.relatedExperiences.map((name, i) => (
+                        <Chip key={`job_${i}`} chipColor={jobColorKey(experienceIds[i])} radius={4} variant="outlined">
+                          dd
+                        </Chip>
+                      ))}
+                    </div>
+                    <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
+                      <Chip chipColor="primary" radius={4} variant="filled">
+                        {paramss.recommendLevels.sort().join(',')}레벨
+                      </Chip>
+                    </div>
+                    <div className="tw-mb-3 tw-text-sm tw-font-semibold tw-text-gray-500 dark:tw-text-gray-400">
+                      모집마감일 : {paramss.startAt}
+                    </div>
+                    <h6 className="tw-mb-2 tw-text-2xl tw-font-bold tw-tracking-tight tw-text-gray-900 dark:tw-text-white">
+                      {paramss.clubName}
+                    </h6>
+
+                    <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-400 dark:tw-text-gray-400">
+                      {paramss.studyCycle.toString()} | {0} 주 | 학습 {0}회
+                    </div>
+
+                    {/* <div className="tw-flex tw-items-center tw-space-x-4">
+                    <img className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full" src={item?.author?.avatar} alt="" />
+                    <div className="tw-text-sm tw-font-semibold tw-text-black dark:tw-text-white">
+                      <div>{item?.author?.displayName}</div>
+                    </div>
+                  </div> */}
+                  </div>
+                </div>
+              </div>
+              <div className="tw-text-lg tw-mt-5 tw-font-bold tw-text-black">김찬영</div>
+              <div className="tw-text-xl tw-mt-5 tw-font-bold tw-text-black">퀴즈클럽 소개</div>
+              <div className="tw-text-base tw-mt-5 tw-text-black"> {paramss.description}</div>
+              <div className="tw-text-xl tw-mt-5 tw-font-bold tw-text-black">퀴즈클럽 질문 미리보기</div>
+              <div className="tw-text-sm tw-mt-5 tw-mb-2 tw-font-bold tw-text-gray ">12주 총 학습 36회 진행</div>
+              {quizList.map((item, index) => {
+                return (
+                  <div key={index} className="">
+                    <div className="tw-flex tw-items-center tw-px-0 tw-border  mb-2 mt-0 rounded">
+                      <Chip chipColor="primary" radius={4} variant="filled">
+                        대표
+                      </Chip>
+                      <div className="tw-flex-auto tw-ml-3">
+                        <div className="tw-font-medium tw-text-black">{item.content}</div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+
+              <div className="tw-container tw-py-10 tw-px-10 tw-mx-0 tw-min-w-full tw-flex tw-flex-col tw-items-center">
+                <div className="tw-grid tw-grid-rows-3 tw-grid-flow-col tw-gap-4">
+                  <div className="tw-row-span-2">
+                    <button
+                      onClick={handleBack}
+                      className="tw-w-[300px] btn-outline-secondary tw-outline-blue-500 tw-bg-white tw-mr-5 tw-text-black tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded"
+                    >
+                      이전
+                    </button>
+                    <button
+                      className="tw-w-[300px] tw-bg-[#2474ED] tw-text-white tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded"
+                      onClick={handleNextLast}
+                    >
+                      {activeStep === steps.length - 1 ? '성장퀴즈 클럽 개설하기 >' : '미리보기'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </>
+        )}
       </div>
       <MentorsModal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
         <div className="tw-font-bold tw-text-xl tw-text-black tw-my-5 tw-text-center">퀴즈 등록하기</div>
@@ -1160,50 +1334,41 @@ export function QuizOpenTemplate() {
               checked={active === i}
               isActive
               type="tabButton"
-              // onChange={() => {
-              //   setActive(i);
-              //   setPopUpParams({
-              //     ...popupParams,
-              //     // contentsType: item.id,
-              //     // page: 1,
-              //     // seminarEndDateFrom:
-              //     //   item.id === ArticleEnum.SEMINAR ? moment().format('YYYY-MM-DD HH:mm:ss.SSS') : null,
-              //   });
-              //   setPage(1);
-              // }}
+              onChange={() => {
+                setActive(i);
+                //   setPopUpParams({
+                //     ...popupParams,
+                //     // contentsType: item.id,
+                //     // page: 1,
+                //     // seminarEndDateFrom:
+                //     //   item.id === ArticleEnum.SEMINAR ? moment().format('YYYY-MM-DD HH:mm:ss.SSS') : null,
+                //   });
+                //   setPage(1);
+              }}
             />
           ))}
-
-          {/* {jobs?.map((item, index) => {
-            return (
-              <NodeCard
-                index={index}
-                key={`jobs-${index}`}
-                title={`레벨 ${item.level}`}
-                content={item.description}
-                jobCode={item.jobGroup}
-                onClickNode={handleNodeCard}
-                chapterNo={chapterNo}
+        </div>
+        {active === 0 && (
+          <div>
+            <div className="tw-mt-10">
+              <TextField
+                size="small"
+                fullWidth
+                label={'퀴즈 키워드를 입력하세요.'}
+                onChange={handleInputQuizSearchChange}
+                id="margin-none"
+                value={quizSearch}
+                name="quizSearch"
               />
-            );
-          })} */}
-        </div>
-        <div className="tw-mt-10">
-          <TextField
-            size="small"
-            fullWidth
-            label={'퀴즈 키워드를 입력하세요.'}
-            onChange={handleInputChange}
-            id="margin-none"
-            value={clubName}
-            name="clubName"
-          />
-        </div>
-        <div>
-          {jobsData?.data.content.map((item, index) => {
-            return (
+            </div>
+            {jobsData?.data.content.map((item, index) => (
               <div key={index} className="tw-flex">
-                <Checkbox onChange={handleChangeCheck} name={item.sequence} className="tw-mr-3" />
+                <Checkbox
+                  onChange={handleChangeCheck}
+                  checked={state.includes(String(item.sequence))}
+                  name={item.sequence}
+                  className="tw-mr-3"
+                />
                 <div className="tw-flex tw-w-full tw-items-center tw-p-4 tw-border border mb-3 mt-3 rounded">
                   <div className="tw-flex-auto">
                     <div className="tw-font-medium tw-text-black">{item.content}</div>
@@ -1211,16 +1376,87 @@ export function QuizOpenTemplate() {
                   <div className="">김찬영</div>
                   <svg className="tw-ml-6 tw-h-6 tw-w-6 tw-flex-none" fill="none">
                     <path
-                      d="M12 8v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1V8Zm0 0V7a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1ZM12 12v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1ZM12 16v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1Z"
+                      d="M12 8v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1V8Zm0 0V7a1 1 0 0 0-1 1h1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1ZM12 12v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h-1a1 1 0 0 0 1 1v-1ZM12 16v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1Z"
                       fill="#64748B"
                     ></path>
                   </svg>
                 </div>
               </div>
-            );
-            // <ArticleCard uiType={item.contentsType} content={item} key={i} className={cx('container__item')} />
-          })}
-        </div>
+            ))}
+          </div>
+        )}
+        {active == 1 && (
+          <div>
+            <div className="tw-mt-10">
+              <TextField
+                size="small"
+                fullWidth
+                label={'질문을 입력하세요.'}
+                onChange={handleInputQuizChange}
+                id="margin-none"
+                value={quizName}
+                name="quizName"
+              />
+            </div>
+            <div className="tw-mt-10">
+              <TextField
+                size="small"
+                fullWidth
+                label={'아티클(질문에 대한 답변에 참고가 될 아티클 링크를 입력해주세요.'}
+                onChange={handleInputQuizUrlChange}
+                id="margin-none"
+                value={quizUrl}
+                name="quizUrl"
+              />
+            </div>
+            <div className="tw-text-center">
+              <button
+                type="button"
+                onClick={() => handleQuizInsertClick()}
+                className="tw-mt-5 tw-text-white tw-bg-blue-500 hover:tw-bg-blue-800 tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5  dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
+              >
+                퀴즈 등록하기
+              </button>
+            </div>
+          </div>
+        )}
+        {active === 2 && (
+          <div>
+            <div className="tw-mt-10">
+              <TextField
+                size="small"
+                fullWidth
+                label={'퀴즈 키워드를 입력하세요.'}
+                onChange={handleInputQuizSearchChange}
+                id="margin-none"
+                value={quizSearch}
+                name="quizSearch"
+              />
+            </div>
+            {myJobsData?.data.content.map((item, index) => (
+              <div key={index} className="tw-flex">
+                <Checkbox
+                  onChange={handleChangeCheck}
+                  checked={state.includes(String(item.sequence))}
+                  name={item.sequence}
+                  className="tw-mr-3"
+                />
+                <div className="tw-flex tw-w-full tw-items-center tw-p-4 tw-border border mb-3 mt-3 rounded">
+                  <div className="tw-flex-auto">
+                    <div className="tw-font-medium tw-text-black">{item.content}</div>
+                  </div>
+                  <div className="">김찬영</div>
+                  <svg className="tw-ml-6 tw-h-6 tw-w-6 tw-flex-none" fill="none">
+                    <path
+                      d="M12 8v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1V8Zm0 0V7a1 1 0 0 0-1 1h1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1ZM12 12v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h-1a1 1 0 0 0 1 1v-1ZM12 16v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1Z"
+                      fill="#64748B"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </MentorsModal>
     </div>
   );

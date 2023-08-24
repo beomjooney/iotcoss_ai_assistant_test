@@ -5,3 +5,9 @@ export async function getJobs() {
   const { data } = await axiosGeneralAPI().get('/api/v1/quizzes');
   return data;
 }
+
+// 직무 조회
+export async function getMyJobs() {
+  const { data } = await axiosGeneralAPI().get('/api/v1/quizzes/me');
+  return data;
+}
