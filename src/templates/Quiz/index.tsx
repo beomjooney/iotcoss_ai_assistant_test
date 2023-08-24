@@ -100,372 +100,6 @@ export type ArticleLikeUser = {
   profileImageUrl: string;
 };
 
-export type Article = {
-  articleId: number | string;
-  title: string;
-  boardId: number;
-  boardName?: string;
-  boardType?: string;
-  hashtags?: string[]; //태그 리스트
-  myLike?: boolean; // 내가 좋아요 눌렀는지 여부
-  likeCnt?: number; //좋아요숫자
-  likeUsers?: ArticleLikeUser[]; // 좋아요 유저리스트
-  replyCnt?: number;
-  viewCnt?: number;
-  group?: string;
-  name: string;
-  userId: string;
-  profileImageUrl?: string;
-  body?: string; // html
-  imageFileUrls?: string[];
-  imageFiles?: string[];
-  previewText?: string;
-  previewImageUrl?: string;
-  previewImageFilename?: string;
-  createDate?: string;
-  updateDate: string;
-};
-
-const Articles = [
-  {
-    index: 8,
-    id: '9f1739eb-8f00-4c99-97f4-63544b6a2d12',
-    featuredImage:
-      'https://images.unsplash.com/photo-1504992963429-56f2d62fbff0?ixid=MnwxMjA3fDB8MHxzZWFyY2h8ODN8fHRlY2hub2xvZ3l8ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
-    title: '백엔드 개발자 오세요.',
-    desc: 'Duis bibendum, felis sed interdum venenatis, turpis enim blandit mi, in porttitor pede justo eu massa. Donec dapibus. Duis at velit eu est congue elementum.',
-    date: 'May 20, 2021',
-    href: '/single-audio/this-is-single-slug',
-    commentCount: 18,
-    viewdCount: 3800,
-    readingTime: 5,
-    bookmark: { count: 1168, isBookmarked: false },
-    like: { count: 1255, isLiked: true },
-    author: {
-      id: 1,
-      firstName: 'Alric',
-      lastName: 'Truelock',
-      displayName: 'Truelock Alric',
-      email: 'atruelock0@skype.com',
-      gender: 'Bigender',
-      avatar: 'https://robohash.org/doloremaliquidquia.png?size=150x150&set=set1',
-      bgImage:
-        'https://images.pexels.com/photos/912410/pexels-photo-912410.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-      count: 40,
-      href: '/author/the-demo-author-slug',
-      desc: 'There’s no stopping the tech giant. Apple now opens its 100th store in China.There’s no stopping the tech giant.',
-      jobName: 'Author Job',
-    },
-    categories: [
-      {
-        id: 3,
-        name: 'Industrial',
-        href: '/archive/the-demo-archive-slug',
-        thumbnail:
-          'https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80',
-        count: 15,
-        color: 'yellow',
-      },
-    ],
-    postType: 'audio',
-    audioUrl: 'https://chisnghiax.com/ncmaz_mp3/Alan_Walker_-_AloneMP3_128K.mp3',
-  },
-  {
-    index: 9,
-    id: '0991ab0b-696f-4d7f-afe7-9c624eb8c050',
-    featuredImage:
-      'https://images.unsplash.com/photo-1465310477141-6fb93167a273?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1950&q=80',
-    title: '고급 프론트엔드와 성장퀴즈',
-    desc: 'Duis bibendum. Morbi non quam nec dui luctus rutrum. Nulla tellus.',
-    date: 'May 20, 2021',
-    href: '/single/this-is-single-slug',
-    commentCount: 19,
-    viewdCount: 4515,
-    readingTime: 3,
-    bookmark: { count: 3463, isBookmarked: true },
-    like: { count: 2586, isLiked: false },
-    author: {
-      id: 1,
-      firstName: 'Alric',
-      lastName: 'Truelock',
-      displayName: 'Truelock Alric',
-      email: 'atruelock0@skype.com',
-      gender: 'Bigender',
-      avatar: 'https://robohash.org/doloremaliquidquia.png?size=150x150&set=set1',
-      bgImage:
-        'https://images.pexels.com/photos/912410/pexels-photo-912410.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-      count: 40,
-      href: '/author/the-demo-author-slug',
-      desc: 'There’s no stopping the tech giant. Apple now opens its 100th store in China.There’s no stopping the tech giant.',
-      jobName: 'Author Job',
-    },
-    categories: [
-      {
-        id: 3,
-        name: 'Industrial',
-        href: '/archive/the-demo-archive-slug',
-        thumbnail:
-          'https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80',
-        count: 15,
-        color: 'yellow',
-      },
-    ],
-    postType: 'standard',
-  },
-  {
-    index: 10,
-    id: 'eae0e85d-db11-44fa-ac32-6c192f687e0c',
-    featuredImage:
-      'https://images.unsplash.com/photo-1581122584612-713f89daa8eb?ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDIwfHx8ZW58MHx8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
-    title: '고급 프론트엔드 성장퀴즈',
-    desc: 'We’re an online magazine dedicated to covering the best in international product design. We started as a little blog back in 2002 covering student work and over time',
-    date: 'May 20, 2021',
-    href: '/single/this-is-single-slug',
-    commentCount: 14,
-    viewdCount: 2378,
-    readingTime: 6,
-    bookmark: { count: 3502, isBookmarked: false },
-    like: { count: 773, isLiked: true },
-    author: {
-      id: 1,
-      firstName: 'Alric',
-      lastName: 'Truelock',
-      displayName: 'Truelock Alric',
-      email: 'atruelock0@skype.com',
-      gender: 'Bigender',
-      avatar: 'https://robohash.org/doloremaliquidquia.png?size=150x150&set=set1',
-      bgImage:
-        'https://images.pexels.com/photos/912410/pexels-photo-912410.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-      count: 40,
-      href: '/author/the-demo-author-slug',
-      desc: 'There’s no stopping the tech giant. Apple now opens its 100th store in China.There’s no stopping the tech giant.',
-      jobName: 'Author Job',
-    },
-    categories: [
-      {
-        id: 3,
-        name: 'Industrial',
-        href: '/archive/the-demo-archive-slug',
-        thumbnail:
-          'https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80',
-        count: 15,
-        color: 'yellow',
-      },
-    ],
-    postType: 'standard',
-  },
-  {
-    index: 10,
-    id: 'eae0e85d-db11-44fa-ac32-6c192f687e0c',
-    featuredImage:
-      'https://images.unsplash.com/photo-1581122584612-713f89daa8eb?ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDIwfHx8ZW58MHx8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
-    title: '개발공부 이모저모',
-    desc: 'We’re an online magazine dedicated to covering the best in international product design. We started as a little blog back in 2002 covering student work and over time',
-    date: 'May 20, 2021',
-    href: '/single/this-is-single-slug',
-    commentCount: 14,
-    viewdCount: 2378,
-    readingTime: 6,
-    bookmark: { count: 3502, isBookmarked: false },
-    like: { count: 773, isLiked: true },
-    author: {
-      id: 1,
-      firstName: 'Alric',
-      lastName: 'Truelock',
-      displayName: 'Truelock Alric',
-      email: 'atruelock0@skype.com',
-      gender: 'Bigender',
-      avatar: 'https://robohash.org/doloremaliquidquia.png?size=150x150&set=set1',
-      bgImage:
-        'https://images.pexels.com/photos/912410/pexels-photo-912410.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-      count: 40,
-      href: '/author/the-demo-author-slug',
-      desc: 'There’s no stopping the tech giant. Apple now opens its 100th store in China.There’s no stopping the tech giant.',
-      jobName: 'Author Job',
-    },
-    categories: [
-      {
-        id: 3,
-        name: 'Industrial',
-        href: '/archive/the-demo-archive-slug',
-        thumbnail:
-          'https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80',
-        count: 15,
-        color: 'yellow',
-      },
-    ],
-    postType: 'standard',
-  },
-  {
-    index: 10,
-    id: 'eae0e85d-db11-44fa-ac32-6c192f687e0c',
-    featuredImage:
-      'https://images.unsplash.com/photo-1581122584612-713f89daa8eb?ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDIwfHx8ZW58MHx8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
-    title: '개발공부 이모저모',
-    desc: 'We’re an online magazine dedicated to covering the best in international product design. We started as a little blog back in 2002 covering student work and over time',
-    date: 'May 20, 2021',
-    href: '/single/this-is-single-slug',
-    commentCount: 14,
-    viewdCount: 2378,
-    readingTime: 6,
-    bookmark: { count: 3502, isBookmarked: false },
-    like: { count: 773, isLiked: true },
-    author: {
-      id: 1,
-      firstName: 'Alric',
-      lastName: 'Truelock',
-      displayName: 'Truelock Alric',
-      email: 'atruelock0@skype.com',
-      gender: 'Bigender',
-      avatar: 'https://robohash.org/doloremaliquidquia.png?size=150x150&set=set1',
-      bgImage:
-        'https://images.pexels.com/photos/912410/pexels-photo-912410.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-      count: 40,
-      href: '/author/the-demo-author-slug',
-      desc: 'There’s no stopping the tech giant. Apple now opens its 100th store in China.There’s no stopping the tech giant.',
-      jobName: 'Author Job',
-    },
-    categories: [
-      {
-        id: 3,
-        name: 'Industrial',
-        href: '/archive/the-demo-archive-slug',
-        thumbnail:
-          'https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80',
-        count: 15,
-        color: 'yellow',
-      },
-    ],
-    postType: 'standard',
-  },
-  {
-    index: 10,
-    id: 'eae0e85d-db11-44fa-ac32-6c192f687e0c',
-    featuredImage:
-      'https://images.unsplash.com/photo-1581122584612-713f89daa8eb?ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDIwfHx8ZW58MHx8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
-    title: '개발공부 이모저모',
-    desc: 'We’re an online magazine dedicated to covering the best in international product design. We started as a little blog back in 2002 covering student work and over time',
-    date: 'May 20, 2021',
-    href: '/single/this-is-single-slug',
-    commentCount: 14,
-    viewdCount: 2378,
-    readingTime: 6,
-    bookmark: { count: 3502, isBookmarked: false },
-    like: { count: 773, isLiked: true },
-    author: {
-      id: 1,
-      firstName: 'Alric',
-      lastName: 'Truelock',
-      displayName: 'Truelock Alric',
-      email: 'atruelock0@skype.com',
-      gender: 'Bigender',
-      avatar: 'https://robohash.org/doloremaliquidquia.png?size=150x150&set=set1',
-      bgImage:
-        'https://images.pexels.com/photos/912410/pexels-photo-912410.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-      count: 40,
-      href: '/author/the-demo-author-slug',
-      desc: 'There’s no stopping the tech giant. Apple now opens its 100th store in China.There’s no stopping the tech giant.',
-      jobName: 'Author Job',
-    },
-    categories: [
-      {
-        id: 3,
-        name: 'Industrial',
-        href: '/archive/the-demo-archive-slug',
-        thumbnail:
-          'https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80',
-        count: 15,
-        color: 'yellow',
-      },
-    ],
-    postType: 'standard',
-  },
-  {
-    index: 10,
-    id: 'eae0e85d-db11-44fa-ac32-6c192f687e0c',
-    featuredImage:
-      'https://images.unsplash.com/photo-1581122584612-713f89daa8eb?ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDIwfHx8ZW58MHx8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
-    title: '개발공부 이모저모',
-    desc: 'We’re an online magazine dedicated to covering the best in international product design. We started as a little blog back in 2002 covering student work and over time',
-    date: 'May 20, 2021',
-    href: '/single/this-is-single-slug',
-    commentCount: 14,
-    viewdCount: 2378,
-    readingTime: 6,
-    bookmark: { count: 3502, isBookmarked: false },
-    like: { count: 773, isLiked: true },
-    author: {
-      id: 1,
-      firstName: 'Alric',
-      lastName: 'Truelock',
-      displayName: 'Truelock Alric',
-      email: 'atruelock0@skype.com',
-      gender: 'Bigender',
-      avatar: 'https://robohash.org/doloremaliquidquia.png?size=150x150&set=set1',
-      bgImage:
-        'https://images.pexels.com/photos/912410/pexels-photo-912410.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-      count: 40,
-      href: '/author/the-demo-author-slug',
-      desc: 'There’s no stopping the tech giant. Apple now opens its 100th store in China.There’s no stopping the tech giant.',
-      jobName: 'Author Job',
-    },
-    categories: [
-      {
-        id: 3,
-        name: 'Industrial',
-        href: '/archive/the-demo-archive-slug',
-        thumbnail:
-          'https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80',
-        count: 15,
-        color: 'yellow',
-      },
-    ],
-    postType: 'standard',
-  },
-  {
-    index: 10,
-    id: 'eae0e85d-db11-44fa-ac32-6c192f687e0c',
-    featuredImage:
-      'https://images.unsplash.com/photo-1581122584612-713f89daa8eb?ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDIwfHx8ZW58MHx8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
-    title: '개발공부 이모저모',
-    desc: 'We’re an online magazine dedicated to covering the best in international product design. We started as a little blog back in 2002 covering student work and over time',
-    date: 'May 20, 2021',
-    href: '/single/this-is-single-slug',
-    commentCount: 14,
-    viewdCount: 2378,
-    readingTime: 6,
-    bookmark: { count: 3502, isBookmarked: false },
-    like: { count: 773, isLiked: true },
-    author: {
-      id: 1,
-      firstName: 'Alric',
-      lastName: 'Truelock',
-      displayName: 'Truelock Alric',
-      email: 'atruelock0@skype.com',
-      gender: 'Bigender',
-      avatar: 'https://robohash.org/doloremaliquidquia.png?size=150x150&set=set1',
-      bgImage:
-        'https://images.pexels.com/photos/912410/pexels-photo-912410.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-      count: 40,
-      href: '/author/the-demo-author-slug',
-      desc: 'There’s no stopping the tech giant. Apple now opens its 100th store in China.There’s no stopping the tech giant.',
-      jobName: 'Author Job',
-    },
-    categories: [
-      {
-        id: 3,
-        name: 'Industrial',
-        href: '/archive/the-demo-archive-slug',
-        thumbnail:
-          'https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80',
-        count: 15,
-        color: 'yellow',
-      },
-    ],
-    postType: 'standard',
-  },
-];
-
 const boardTags: string[] = ['모든', '트렌드', '질문', '소프트웨어', '프로세스'];
 
 const cx = classNames.bind(styles);
@@ -484,7 +118,7 @@ export function QuizTemplate() {
   const [params, setParams] = useState<paramProps>({ page });
   const [contents, setContents] = useState<RecommendContent[]>([]);
   const [images, setSeminarImages] = useState<any[]>([]);
-
+  const [active, setActive] = useState(0);
   const { isFetched: isJobGroupFetched } = useJobGroups(data => setJobGroups(data || []));
 
   const { isFetched: isContentFetched } = useSeminarList(params, data => {
@@ -493,13 +127,15 @@ export function QuizTemplate() {
     setTotalPage(data.data.totalPage);
   });
 
-  useEffect(() => {
-    console.log(skillIds);
-  }, [skillIds]);
-
-  // const { isFetched: isContentImageFetched } = useSeminarImageList(data => {
-  //   setSeminarImages(data || []);
-  // });
+  const { isFetched: isContentTypeFetched } = useContentTypes(data => {
+    setContentTypes(data.data.contents || []);
+    const contentsType = data.length >= 0 && data[0].id;
+    console.log(data.data.contents);
+    setParams({
+      ...params,
+      contentsType,
+    });
+  });
 
   const handleToggleAll = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked } = event.currentTarget;
@@ -627,7 +263,37 @@ export function QuizTemplate() {
         <Box sx={{ width: '100%', typography: 'body1', marginTop: '20px', marginBottom: '20px' }}>
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
             <Grid item xs={8} className="tw-font-bold tw-text-3xl tw-text-black">
-              <SecondTabs tabs={testBoards} />
+              {/* <SecondTabs tabs={testBoards} /> */}
+
+              <div className={cx('filter-area')}>
+                <div className={cx('mentoring-button__group', 'gap-12', 'justify-content-center')}>
+                  {isContentTypeFetched &&
+                    contentTypes.map((item, i) => (
+                      <Toggle
+                        key={item.id}
+                        label={item.name}
+                        name={item.name}
+                        value={item.id}
+                        variant="small"
+                        checked={active === i}
+                        isActive
+                        type="tabButton"
+                        onChange={() => {
+                          setActive(i);
+                          // setParams({
+                          //   ...params,
+                          //   contentsType: item.id,
+                          //   page: 1,
+                          //   seminarEndDateFrom:
+                          //     item.id === ArticleEnum.SEMINAR ? moment().format('YYYY-MM-DD HH:mm:ss.SSS') : null,
+                          // });
+                          setPage(1);
+                        }}
+                        className={cx('fixed-width')}
+                      />
+                    ))}
+                </div>
+              </div>
             </Grid>
             <Grid item xs={4} className="tw-font-semi tw-text-base tw-text-black">
               <TextField
