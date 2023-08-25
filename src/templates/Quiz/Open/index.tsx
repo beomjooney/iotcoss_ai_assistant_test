@@ -6,7 +6,7 @@ import { RecommendContent, SeminarImages } from 'src/models/recommend';
 import { useSeminarList, paramProps, useSeminarImageList } from 'src/services/seminars/seminars.queries';
 import QuizArticleCard from 'src/stories/components/QuizArticleCard';
 import Carousel from 'nuka-carousel';
-import { useContentTypes, useJobGroups } from 'src/services/code/code.queries';
+import { useContentTypes, useJobGroups, useJobGroupss } from 'src/services/code/code.queries';
 import { useStore } from 'src/store';
 import { useRouter } from 'next/router';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -46,6 +46,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import { useClubQuizSave, useQuizSave } from 'src/services/quiz/quiz.mutations';
 import { jobColorKey } from 'src/config/colors';
+import { TagsInput } from 'react-tag-input-component';
 
 const dayGroup = [
   {
@@ -380,8 +381,10 @@ export function QuizOpenTemplate() {
   const { data: myJobsData, refetch: refetchMyJob }: UseQueryResult<any> = useMyJobs();
   const [skillIds, setSkillIds] = useState<any[]>([]);
   const [experienceIds, setExperienceIds] = useState<any[]>([]);
+  const [skillIdsPopUp, setSkillIdsPopUp] = useState<any[]>([]);
+  const [experienceIdsPopUp, setExperienceIdsPopUp] = useState<any[]>([]);
   const [isPublic, setIsPublic] = useState('공개');
-
+  const [selected, setSelected] = useState([]);
   const { mutate: onQuizSave } = useQuizSave();
   const { mutate: onClubQuizSave } = useClubQuizSave();
 
@@ -393,6 +396,14 @@ export function QuizOpenTemplate() {
     setExperienceIds(newFormats);
     console.log(newFormats);
   };
+  const handleFormatPopUp = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
+    setSkillIdsPopUp(newFormats);
+    console.log(newFormats);
+  };
+  const handleFormatExPopUp = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
+    setExperienceIdsPopUp(newFormats);
+    console.log(newFormats);
+  };
 
   const [introductionMessage, setIntroductionMessage] = useState<string>('');
   const handleJobGroup = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
@@ -402,6 +413,9 @@ export function QuizOpenTemplate() {
   const handleJobs = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
     setJobGroup(newFormats);
     console.log(newFormats);
+  };
+  const handleRecommendLevelsPopUp = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
+    setRecommendLevelsPopUp(newFormats);
   };
 
   const handleRecommendLevels = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
@@ -440,12 +454,12 @@ export function QuizOpenTemplate() {
     const params = {
       content: quizName,
       articleUrl: quizUrl,
-      recommendJobGroups: ['0100'],
-      recommendJobs: ['0111'],
-      recommendLevels: ['0'],
-      relatedSkills: ['string'],
-      relatedExperiences: ['string'],
-      hashTags: ['string'],
+      recommendJobGroups: [jobGroupPopUp],
+      recommendJobs: jobs,
+      recommendLevels: recommendLevelsPopUp,
+      relatedSkills: skillIdsPopUp,
+      relatedExperiences: experienceIdsPopUp,
+      hashTags: selected,
     };
 
     setQuizUrl('');
@@ -528,13 +542,18 @@ export function QuizOpenTemplate() {
     return newState;
   };
   const [jobGroup, setJobGroup] = useState([]);
+  const [jobGroupPopUp, setJobGroupPopUp] = useState([]);
   const [studyCycle, setStudyCycle] = useState([]);
   const [recommendJobGroups, setRecommendJobGroups] = useState([]);
   const [recommendLevels, setRecommendLevels] = useState([]);
+  const [recommendJobGroupsPopUp, setRecommendJobGroupsPopUp] = useState([]);
+  const [recommendLevelsPopUp, setRecommendLevelsPopUp] = useState([]);
   const [clubName, setClubName] = useState<string>('');
   const [alignment, setAlignment] = React.useState<string | null>('');
   const [selectedDate, setSelectedDate] = useState(null);
   const [active, setActive] = useState(0);
+  const [jobs, setJobs] = useState([]);
+  const { isFetched: isJobGroupsFetched } = useJobGroupss(data => setJobGroups(data.data.contents || []));
   const [popupParams, setPopupParams] = useState<paramProps>({
     page,
     size: 16,
@@ -711,6 +730,17 @@ export function QuizOpenTemplate() {
       }
       setExperienceIds(result);
     }
+  };
+
+  const handleJobGroups = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
+    console.log(event.currentTarget);
+    setJobGroupPopUp(newFormats);
+    console.log(newFormats);
+  };
+  const handleJobsPopUp = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
+    console.log(event.currentTarget);
+    setJobs(newFormats);
+    console.log(newFormats);
   };
 
   const handleSkip = () => {
@@ -980,7 +1010,6 @@ export function QuizOpenTemplate() {
                   <div>
                     <div>
                       <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천직무</div>
-
                       <ToggleButtonGroup
                         value={recommendJobGroups}
                         exclusive
@@ -1190,7 +1219,7 @@ export function QuizOpenTemplate() {
                       <div className="tw-flex-auto">
                         <div className="tw-font-medium tw-text-black">{item.content}</div>
                       </div>
-                      <div className="">김찬영</div>
+                      <div className="">{item.memberName}</div>
                       <svg className="tw-ml-6 tw-h-6 tw-w-6 tw-flex-none" fill="none">
                         <path
                           d="M12 8v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1V8Zm0 0V7a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1ZM12 12v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1ZM12 16v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1Z"
@@ -1278,7 +1307,7 @@ export function QuizOpenTemplate() {
                   </div>
                 </div>
               </div>
-              <div className="tw-text-lg tw-mt-5 tw-font-bold tw-text-black">김찬영</div>
+              <div className="tw-text-lg tw-mt-5 tw-font-bold tw-text-black">{item.memberName}</div>
               <div className="tw-text-xl tw-mt-5 tw-font-bold tw-text-black">퀴즈클럽 소개</div>
               <div className="tw-text-base tw-mt-5 tw-text-black"> {paramss.description}</div>
               <div className="tw-text-xl tw-mt-5 tw-font-bold tw-text-black">퀴즈클럽 질문 미리보기</div>
@@ -1373,7 +1402,7 @@ export function QuizOpenTemplate() {
                   <div className="tw-flex-auto">
                     <div className="tw-font-medium tw-text-black">{item.content}</div>
                   </div>
-                  <div className="">김찬영</div>
+                  <div className="">{item.memberName}</div>
                   <svg className="tw-ml-6 tw-h-6 tw-w-6 tw-flex-none" fill="none">
                     <path
                       d="M12 8v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1V8Zm0 0V7a1 1 0 0 0-1 1h1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1ZM12 12v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h-1a1 1 0 0 0 1 1v-1ZM12 16v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1Z"
@@ -1409,6 +1438,144 @@ export function QuizOpenTemplate() {
                 name="quizUrl"
               />
             </div>
+            <div>
+              <div className="tw-font-semibold tw-text-sm tw-text-black  tw-my-2">추천 직군</div>
+              <ToggleButtonGroup value={jobGroupPopUp} exclusive onChange={handleJobGroups} aria-label="text alignment">
+                {contentTypes?.map((item, index) => (
+                  <ToggleButton
+                    key={`job-${index}`}
+                    value={item.id}
+                    className="tw-ring-1 tw-ring-slate-900/10"
+                    style={{
+                      borderRadius: '5px',
+                      borderLeft: '0px',
+                      margin: '5px',
+                      height: '35px',
+                      border: '0px',
+                    }}
+                  >
+                    {item.name}
+                  </ToggleButton>
+                ))}
+              </ToggleButtonGroup>
+              <div className="tw-font-semibold tw-text-sm tw-text-black  tw-my-2">추천 직무</div>
+              <ToggleButtonGroup
+                style={{ display: 'inline' }}
+                value={jobs}
+                onChange={handleJobsPopUp}
+                aria-label="text alignment"
+              >
+                {jobGroups?.map((item, index) => (
+                  <ToggleButton
+                    key={`job-${index}`}
+                    value={item.id}
+                    className="tw-ring-1 tw-ring-slate-900/10"
+                    style={{
+                      borderRadius: '5px',
+                      borderLeft: '0px',
+                      margin: '5px',
+                      height: '35px',
+                      border: '0px',
+                    }}
+                  >
+                    {item.name}
+                  </ToggleButton>
+                ))}
+              </ToggleButtonGroup>
+
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천 레벨</div>
+              <ToggleButtonGroup
+                value={recommendLevelsPopUp}
+                onChange={handleRecommendLevelsPopUp}
+                aria-label="text alignment"
+              >
+                {levelGroup?.map((item, index) => (
+                  <ToggleButton
+                    key={`job-${index}`}
+                    value={item.name}
+                    aria-label="fff"
+                    className="tw-ring-1 tw-ring-slate-900/10"
+                    style={{
+                      borderRadius: '5px',
+                      borderLeft: '0px',
+                      margin: '5px',
+                      height: '35px',
+                      border: '0px',
+                    }}
+                  >
+                    레벨 {item.name}
+                  </ToggleButton>
+                ))}
+              </ToggleButtonGroup>
+              <div className="tw-text-sm tw-text-black tw-mt-2 tw-my-0">
+                2레벨 : 상용 서비스 개발 1인분 가능한 사람. 소규모 서비스 독자 개발 가능.
+              </div>
+
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">관련스킬</div>
+
+              <ToggleButtonGroup
+                style={{ display: 'inline' }}
+                value={skillIdsPopUp}
+                onChange={handleFormatPopUp}
+                aria-label=""
+                color="standard"
+              >
+                {skillData?.data?.contents?.map((item, index) => {
+                  return (
+                    <ToggleButton
+                      key={`skillIds-${index}`}
+                      value={item.name}
+                      className="tw-ring-1 tw-ring-slate-900/10"
+                      style={{
+                        borderRadius: '5px',
+                        borderLeft: '0px',
+                        margin: '5px',
+                        height: '35px',
+                        border: '0px',
+                      }}
+                    >
+                      {item.name}
+                    </ToggleButton>
+                  );
+                })}
+              </ToggleButtonGroup>
+
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">관련경험</div>
+              <ToggleButtonGroup
+                style={{ display: 'inline' }}
+                value={experienceIdsPopUp}
+                onChange={handleFormatExPopUp}
+                aria-label=""
+                color="standard"
+              >
+                {experienceData?.data?.contents?.map((item, index) => {
+                  return (
+                    <ToggleButton
+                      key={`skillIds-${index}`}
+                      value={item.name}
+                      className="tw-ring-1 tw-ring-slate-900/10"
+                      style={{
+                        borderRadius: '5px',
+                        borderLeft: '0px',
+                        margin: '5px',
+                        height: '35px',
+                        border: '0px',
+                      }}
+                    >
+                      {item.name}
+                    </ToggleButton>
+                  );
+                })}
+              </ToggleButtonGroup>
+            </div>
+            <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">해시태그</div>
+            <TagsInput
+              value={selected}
+              onChange={setSelected}
+              name="fruits"
+              placeHolder="#해쉬태그 입력 후 엔터를 쳐주세요.
+              "
+            />
             <div className="tw-text-center">
               <button
                 type="button"
@@ -1445,7 +1612,7 @@ export function QuizOpenTemplate() {
                   <div className="tw-flex-auto">
                     <div className="tw-font-medium tw-text-black">{item.content}</div>
                   </div>
-                  <div className="">김찬영</div>
+                  <div className="">{item.memberName}</div>
                   <svg className="tw-ml-6 tw-h-6 tw-w-6 tw-flex-none" fill="none">
                     <path
                       d="M12 8v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1V8Zm0 0V7a1 1 0 0 0-1 1h1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1ZM12 12v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h-1a1 1 0 0 0 1 1v-1ZM12 16v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1Z"

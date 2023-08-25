@@ -1,13 +1,12 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import { Toggle, Pagination, Typography, Chip } from 'src/stories/components';
+import { Toggle, Pagination, Typography, Chip, MentorsModal, Textfield } from 'src/stories/components';
 import React, { useEffect, useState } from 'react';
 import { RecommendContent, SeminarImages } from 'src/models/recommend';
 import { useSeminarList, paramProps, useSeminarImageList } from 'src/services/seminars/seminars.queries';
 import QuizArticleCard from 'src/stories/components/QuizArticleCard';
 import Carousel from 'nuka-carousel';
 import { ArticleEnum } from '../../config/types';
-import { useContentJobTypes, useContentTypes, useJobGroups } from 'src/services/code/code.queries';
 import Banner from '../../stories/components/Banner';
 import { useStore } from 'src/store';
 import { useRouter } from 'next/router';
@@ -36,6 +35,13 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { useQuizSave } from 'src/services/quiz/quiz.mutations';
+import { useContentJobTypes, useContentTypes, useJobGroups, useJobGroupss } from 'src/services/code/code.queries';
+import { useExperiences } from 'src/services/experiences/experiences.queries';
+import { SkillResponse } from 'src/models/skills';
+import { useSkills } from 'src/services/skill/skill.queries';
+import { ExperiencesResponse } from 'src/models/experiences';
+import { TagsInput } from 'react-tag-input-component';
 
 interface BoardListItemType {
   id: number;
@@ -161,17 +167,16 @@ export type ArticleLikeUser = {
 const cx = classNames.bind(styles);
 
 export function QuizMakeTemplate() {
-  const { jobGroups, setJobGroups, contentTypes, setContentTypes } = useStore();
+  const { contentTypes, setContentTypes } = useStore();
 
   const router = useRouter();
-  const [skillIds, setSkillIds] = useState<any[]>([]);
+  const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
+  const { data: experienceData }: UseQueryResult<ExperiencesResponse> = useExperiences();
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [skillIdsClk, setSkillIdsClk] = useState<any[]>([1, 2, 3, 4, 5]);
-  const [page, setPage] = useState(0);
-  const [totalPage, setTotalPage] = useState(1);
   const [jobGroupsFilter, setJobGroupsFilter] = useState([]);
   const [levelsFilter, setLevelsFilter] = useState([]);
   const [seminarFilter, setSeminarFilter] = useState(['0002']);
-  const [params, setParams] = useState<paramProps>({ page });
   const [contents, setContents] = useState<RecommendContent[]>([]);
   const [images, setSeminarImages] = useState<any[]>([]);
   const [recommendJobGroup, setRecommendJobGroup] = useState<any[]>([]);
@@ -179,18 +184,38 @@ export function QuizMakeTemplate() {
   const [jobGroup, setJobGroup] = useState([]);
   const [active, setActive] = useState(0);
   const [contentType, setContentType] = useState(0);
-  const { isFetched: isJobGroupFetched } = useJobGroups(data => setJobGroups(data || []));
+  const [jobGroups, setJobGroups] = useState<any[]>([]);
+  const [jobs, setJobs] = useState([]);
+  const [page, setPage] = useState(0);
+  const [totalPage, setTotalPage] = useState(1);
+  const [params, setParams] = useState<paramProps>({ page });
+  const { isFetched: isJobGroupFetched } = useJobGroupss(data => setJobGroups(data.data.contents || []));
+  console.log(jobGroups);
   const [recommendLevels, setRecommendLevels] = useState([]);
-
-  const { data: myJobsData, refetch: refetchMyJob }: UseQueryResult<any> = useMyJobs();
-
+  const [quizUrl, setQuizUrl] = React.useState('');
+  const [quizName, setQuizName] = React.useState('');
+  const { data: myJobsData, refetch: refetchMyJob }: UseQueryResult<any> = useMyJobs(params);
+  const { mutate: onQuizSave } = useQuizSave();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [skillIds, setSkillIds] = useState<any[]>([]);
+  const [experienceIds, setExperienceIds] = useState<any[]>([]);
+  const [selected, setSelected] = useState([]);
   const open = Boolean(anchorEl);
+
   const handleDropMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleFormat = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
+    setSkillIds(newFormats);
+    console.log(newFormats);
+  };
+  const handleFormatEx = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
+    setExperienceIds(newFormats);
+    console.log(newFormats);
   };
 
   const { isFetched: isContentFetched } = useSeminarList(params, data => {
@@ -213,23 +238,42 @@ export function QuizMakeTemplate() {
     setContentJobType(data.data.contents || []);
   });
 
+  const handleAddClick = () => {
+    // onGetJobsData && onGetJobsData();
+    // getJobsList();
+    console.log('modal ');
+    setQuizUrl('');
+    setQuizName('');
+    setJobGroup('');
+    setJobs([]);
+    setRecommendLevels([]);
+    setSkillIds([]);
+    setExperienceIds([]);
+    setSelected([]);
+
+    setIsModalOpen(true);
+    // setChapterNo(chapterNo);
+  };
+
   console.log(contentJobType);
 
-  const handleJobs = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
+  const handleJobGroups = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
     console.log(event.currentTarget);
     setJobGroup(newFormats);
     console.log(newFormats);
   };
+  const handleJobs = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
+    console.log(event.currentTarget);
+    setJobs(newFormats);
+    console.log(newFormats);
+  };
 
-  const handleToggleAll = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, checked } = event.currentTarget;
-    console.log(value, checked);
-    if (checked) {
-      setSkillIds([1, 2, 3, 4, 5]);
-    } else {
-      setSkillIds([]);
-    }
-    console.log(skillIds);
+  const handleInputQuizChange = event => {
+    setQuizName(event.target.value);
+  };
+
+  const handleInputQuizUrlChange = event => {
+    setQuizUrl(event.target.value);
   };
 
   const handleRecommendLevels = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
@@ -250,16 +294,16 @@ export function QuizMakeTemplate() {
     // setJobGroup(value);
   };
 
-  useEffect(() => {
-    console.log('active');
-    setParams({
-      // ...params,
-      page,
-      recommendJobGroup: contentType,
-      recommendJobs: jobGroup.join(','),
-      recommendLevels: recommendLevels.join(','),
-    });
-  }, [page, jobGroupsFilter, levelsFilter, seminarFilter, jobGroup, recommendLevels]);
+  // useEffect(() => {
+  //   console.log('active');
+  //   setParams({
+  //     // ...params,
+  //     page,
+  //     recommendJobGroup: contentType,
+  //     recommendJobs: jobGroup.join(','),
+  //     recommendLevels: recommendLevels.join(','),
+  //   });
+  // }, [page, jobGroupsFilter, levelsFilter, seminarFilter, jobGroup, recommendLevels]);
 
   const setNewCheckItem = (id, index, prevState) => {
     const newState = [...prevState];
@@ -298,6 +342,23 @@ export function QuizMakeTemplate() {
     }
   };
 
+  const handleQuizInsertClick = async () => {
+    const params = {
+      content: quizName,
+      articleUrl: quizUrl,
+      recommendJobGroups: [jobGroup],
+      recommendJobs: jobs,
+      recommendLevels: recommendLevels,
+      relatedSkills: skillIds,
+      relatedExperiences: experienceIds,
+      hashTags: selected,
+    };
+
+    setIsModalOpen(false);
+    await onQuizSave(params);
+    await refetchMyJob();
+  };
+
   return (
     <div className={cx('seminar-container')}>
       {/* <Banner title="커리어멘토스 세미나" subTitle="커멘세미나" /> */}
@@ -314,11 +375,10 @@ export function QuizMakeTemplate() {
             <Grid item xs={3} justifyContent="flex-end" className="tw-flex">
               <button
                 type="button"
+                onClick={() => handleAddClick()}
                 className="tw-text-white tw-bg-blue-500 hover:tw-bg-blue-800 tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5  dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
               >
-                <Link href="/quiz/open" className="nav-link">
-                  퀴즈 직접 등록하기
-                </Link>
+                퀴즈 직접 등록하기
               </button>
             </Grid>
           </Grid>
@@ -331,48 +391,24 @@ export function QuizMakeTemplate() {
               <div className={cx('filter-area')}>
                 <div className={cx('mentoring-button__group', 'gap-12', 'justify-content-center')}>
                   <Toggle
-                    label="전체보기"
-                    name="전체보기"
+                    label={`퀴즈목록 (` + myJobsData?.data.content.length + `)`}
+                    name="퀴즈목록"
                     value=""
                     variant="small"
                     checked={active === 0}
                     isActive
                     type="tabButton"
-                    onChange={() => {
-                      setActive(0);
-                      setParams({
-                        ...params,
-                        page,
-                        recommendJobGroup: '',
-                      });
-                      setPage(0);
-                    }}
+                    // onChange={() => {
+                    //   setActive(0);
+                    //   setParams({
+                    //     ...params,
+                    //     page,
+                    //     recommendJobGroup: '',
+                    //   });
+                    //   setPage(0);
+                    // }}
                     className={cx('fixed-width')}
                   />
-                  {isContentTypeFetched &&
-                    contentTypes.map((item, i) => (
-                      <Toggle
-                        key={item.id}
-                        label={item.name}
-                        name={item.name}
-                        value={item.id}
-                        variant="small"
-                        checked={active === i + 1}
-                        isActive
-                        type="tabButton"
-                        onChange={() => {
-                          setActive(i + 1);
-                          setContentType(item.id);
-                          setParams({
-                            ...params,
-                            recommendJobGroup: item.id,
-                            page,
-                          });
-                          setPage(0);
-                        }}
-                        className={cx('fixed-width', 'tw-ml-4')}
-                      />
-                    ))}
                 </div>
               </div>
             </Grid>
@@ -396,47 +432,88 @@ export function QuizMakeTemplate() {
           <div className={cx('content-area')}>
             <section className={cx('content', 'flex-wrap-container')}>
               {myJobsData?.data.content.map((item, index) => (
-                <div
-                  key={index}
-                  className="tw-flex tw-w-full tw-items-center tw-p-4 tw-border border mb-3 mt-3 rounded"
-                >
-                  <div className="tw-flex-auto">
-                    <div className="tw-font-medium tw-text-black">{item.content}</div>
+                <div key={index} className="tw-p-4 tw-border border tw-w-full tw-rounded-xl">
+                  <div className="tw-flex tw-w-full tw-items-center"></div>
+                  <div className="tw-flex  tw-items-center">
+                    <div className="tw-flex-auto">
+                      <div className="tw-font-medium tw-text-black">
+                        <div className="tw-p-4  tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
+                          {item?.recommendJobGroups?.map((name, i) => (
+                            <Chip
+                              key={`job_${i}`}
+                              chipColor={jobColorKey(item?.recommendJobGroups[i])}
+                              radius={4}
+                              className="tw-mr-2"
+                              variant="outlined"
+                            >
+                              {name}
+                            </Chip>
+                          ))}
+                          {item?.relatedExperiences?.map((name, i) => (
+                            <Chip
+                              key={`job_${i}`}
+                              chipColor={jobColorKey(item?.relatedExperiences[i])}
+                              radius={4}
+                              className="tw-mr-2"
+                              variant="outlined"
+                            >
+                              {name}
+                            </Chip>
+                          ))}
+                          <Chip chipColor="primary" radius={4} variant="filled">
+                            {item?.recommendLevels?.sort().join(',')}레벨
+                          </Chip>
+                        </div>
+                      </div>
+                    </div>
+                    <div>{item.createdAt}</div>
+                    <div>
+                      <IconButton
+                        aria-label="more"
+                        id="long-button"
+                        aria-controls={open ? 'long-menu' : undefined}
+                        aria-expanded={open ? 'true' : undefined}
+                        aria-haspopup="true"
+                        onClick={handleDropMenuClick}
+                      >
+                        <MoreVertIcon />
+                      </IconButton>
+                      <Menu
+                        id="long-menu"
+                        MenuListProps={{
+                          'aria-labelledby': 'long-button',
+                        }}
+                        anchorEl={anchorEl}
+                        open={open}
+                        onClose={handleClose}
+                        className="tw-border-2"
+                        PaperProps={{
+                          style: {
+                            border: '1px solid rgb(218, 226, 237)',
+                            borderRadius: '12px',
+                          },
+                        }}
+                      >
+                        {options.map(option => (
+                          <MenuItem key={option} selected={option === 'Pyxis'} onClick={handleClose}>
+                            {option}
+                          </MenuItem>
+                        ))}
+                      </Menu>
+                    </div>
                   </div>
-                  <div className="">김찬영</div>
-                  <div>
-                    <IconButton
-                      aria-label="more"
-                      id="long-button"
-                      aria-controls={open ? 'long-menu' : undefined}
-                      aria-expanded={open ? 'true' : undefined}
-                      aria-haspopup="true"
-                      onClick={handleDropMenuClick}
-                    >
-                      <MoreVertIcon />
-                    </IconButton>
-                    <Menu
-                      id="long-menu"
-                      MenuListProps={{
-                        'aria-labelledby': 'long-button',
-                      }}
-                      anchorEl={anchorEl}
-                      open={open}
-                      onClose={handleClose}
-                      className="tw-border-2"
-                      PaperProps={{
-                        style: {
-                          border: '1px solid rgb(218, 226, 237)',
-                          borderRadius: '12px',
-                        },
-                      }}
-                    >
-                      {options.map(option => (
-                        <MenuItem key={option} selected={option === 'Pyxis'} onClick={handleClose}>
-                          {option}
-                        </MenuItem>
-                      ))}
-                    </Menu>
+                  <div className="tw-flex  tw-items-center tw-p-3">
+                    <div className="tw-flex-auto">
+                      <div className="tw-font-medium tw-text-black">{item.content}</div>
+                    </div>
+                    <div className="">{item.memberName}</div>
+                  </div>
+                  <div className="tw-grid tw-grid-cols-7 tw-gap-4 tw-p-3 ">
+                    <div className="tw-col-span-1 tw-text-sm tw-font-bold tw-text-black">아티클</div>
+                    <div className="tw-col-span-5">{item.articleUrl}</div>
+                    <div className="tw-col-span-1">
+                      댓글 : {item.activeCount} 답변 : {item.answerCount}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -445,6 +522,179 @@ export function QuizMakeTemplate() {
           </div>
         </article>
       </div>
+      <MentorsModal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
+        <div className="tw-font-bold tw-text-xl tw-text-black tw-my-5 tw-text-center">퀴즈 등록하기</div>
+
+        <div>
+          <div className="tw-font-bold tw-text-sm tw-text-black tw-mt-10">필수 입력</div>
+          <div className="tw-mt-5">
+            <TextField
+              size="small"
+              fullWidth
+              label={'질문을 입력하세요.'}
+              onChange={handleInputQuizChange}
+              id="margin-none"
+              value={quizName}
+              name="quizName"
+            />
+          </div>
+          <div className="tw-mt-10">
+            <TextField
+              size="small"
+              fullWidth
+              label={'아티클(질문에 대한 답변에 참고가 될 아티클 링크를 입력해주세요.'}
+              onChange={handleInputQuizUrlChange}
+              id="margin-none"
+              value={quizUrl}
+              name="quizUrl"
+            />
+          </div>
+          <div className="tw-font-bold tw-text-sm tw-text-black tw-mt-10 tw-mb-5">선택 입력</div>
+          <div>
+            <div className="tw-font-semibold tw-text-sm tw-text-black  tw-my-2">추천 직군</div>
+            <ToggleButtonGroup value={jobGroup} exclusive onChange={handleJobGroups} aria-label="text alignment">
+              {contentTypes?.map((item, index) => (
+                <ToggleButton
+                  key={`job-${index}`}
+                  value={item.name}
+                  className="tw-ring-1 tw-ring-slate-900/10"
+                  style={{
+                    borderRadius: '5px',
+                    borderLeft: '0px',
+                    margin: '5px',
+                    height: '35px',
+                    border: '0px',
+                  }}
+                >
+                  {item.name}
+                </ToggleButton>
+              ))}
+            </ToggleButtonGroup>
+            <div className="tw-font-semibold tw-text-sm tw-text-black  tw-my-2">추천 직무</div>
+            <ToggleButtonGroup
+              style={{ display: 'inline' }}
+              value={jobs}
+              onChange={handleJobs}
+              aria-label="text alignment"
+            >
+              {jobGroups?.map((item, index) => (
+                <ToggleButton
+                  key={`job-${index}`}
+                  value={item.name}
+                  className="tw-ring-1 tw-ring-slate-900/10"
+                  style={{
+                    borderRadius: '5px',
+                    borderLeft: '0px',
+                    margin: '5px',
+                    height: '35px',
+                    border: '0px',
+                  }}
+                >
+                  {item.name}
+                </ToggleButton>
+              ))}
+            </ToggleButtonGroup>
+
+            <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천 레벨</div>
+            <ToggleButtonGroup value={recommendLevels} onChange={handleRecommendLevels} aria-label="text alignment">
+              {levelGroup?.map((item, index) => (
+                <ToggleButton
+                  key={`job-${index}`}
+                  value={item.name}
+                  aria-label="fff"
+                  className="tw-ring-1 tw-ring-slate-900/10"
+                  style={{
+                    borderRadius: '5px',
+                    borderLeft: '0px',
+                    margin: '5px',
+                    height: '35px',
+                    border: '0px',
+                  }}
+                >
+                  레벨 {item.name}
+                </ToggleButton>
+              ))}
+            </ToggleButtonGroup>
+            <div className="tw-text-sm tw-text-black tw-mt-2 tw-my-0">
+              2레벨 : 상용 서비스 개발 1인분 가능한 사람. 소규모 서비스 독자 개발 가능.
+            </div>
+
+            <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">관련스킬</div>
+
+            <ToggleButtonGroup
+              style={{ display: 'inline' }}
+              value={skillIds}
+              onChange={handleFormat}
+              aria-label=""
+              color="standard"
+            >
+              {skillData?.data?.contents?.map((item, index) => {
+                return (
+                  <ToggleButton
+                    key={`skillIds-${index}`}
+                    value={item.name}
+                    className="tw-ring-1 tw-ring-slate-900/10"
+                    style={{
+                      borderRadius: '5px',
+                      borderLeft: '0px',
+                      margin: '5px',
+                      height: '35px',
+                      border: '0px',
+                    }}
+                  >
+                    {item.name}
+                  </ToggleButton>
+                );
+              })}
+            </ToggleButtonGroup>
+
+            <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">관련경험</div>
+            <ToggleButtonGroup
+              style={{ display: 'inline' }}
+              value={experienceIds}
+              onChange={handleFormatEx}
+              aria-label=""
+              color="standard"
+            >
+              {experienceData?.data?.contents?.map((item, index) => {
+                return (
+                  <ToggleButton
+                    key={`skillIds-${index}`}
+                    value={item.name}
+                    className="tw-ring-1 tw-ring-slate-900/10"
+                    style={{
+                      borderRadius: '5px',
+                      borderLeft: '0px',
+                      margin: '5px',
+                      height: '35px',
+                      border: '0px',
+                    }}
+                  >
+                    {item.name}
+                  </ToggleButton>
+                );
+              })}
+            </ToggleButtonGroup>
+          </div>
+          <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">해시태그</div>
+          <TagsInput
+            value={selected}
+            onChange={setSelected}
+            name="fruits"
+            placeHolder="#해쉬태그 입력 후 엔터를 쳐주세요.
+              "
+          />
+          <div className="tw-text-center">
+            <button
+              type="button"
+              onClick={() => handleQuizInsertClick()}
+              className="tw-mt-5 tw-text-white tw-bg-blue-500 hover:tw-bg-blue-800 tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5  dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
+            >
+              퀴즈 등록하기
+            </button>
+          </div>
+        </div>
+      </MentorsModal>
     </div>
   );
 }

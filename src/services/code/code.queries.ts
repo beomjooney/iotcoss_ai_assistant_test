@@ -4,7 +4,7 @@ import { QUERY_KEY_FACTORY } from '../queryKeys';
 import { codeDetailList, getCodeList } from './code.api';
 
 enum CODE {
-  CODE_GROUP_GROWTH_FIELD = '0001',
+  CODE_GROUP_GROWTH_FIELD = '1102',
   CODE_GORUP_JOBS = '0002',
   CODE_GROWTH_EDGE_TYPES = '0003',
   CODE_EDGE_RECOMMEND_TYPES = '0004',
@@ -38,6 +38,10 @@ export const useContentJobTypes = (onSuccess?: (data: CodeResponse) => void, onE
 
 export const useJobGroups = (onSuccess?: (data: CodeResponse) => void, onError?: (error: Error) => void) => {
   return useCodeDetails('', onSuccess, onError);
+  return useCodeDetails(CODE.CODE_GROUP_GROWTH_FIELD, onSuccess, onError);
+};
+
+export const useJobGroupss = (onSuccess?: (data: CodeResponse) => void, onError?: (error: Error) => void) => {
   return useCodeDetails(CODE.CODE_GROUP_GROWTH_FIELD, onSuccess, onError);
 };
 
