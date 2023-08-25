@@ -20,7 +20,9 @@ enum CODE {
   CODE_RECOMMEND_LEARNING_GROWTH_TENDENCIES = '0010',
   CODE_PUSH_TYPE = '0020',
   CODE_SEND_STATUS = '0019',
+  CODE_JOB_TYPE = '1102',
 }
+
 const CODE_GROUP_GROWTH_FIELD = '0001';
 const CODE_GROUP_PATMENT_TYPES = '0006';
 const CODE_CONTENT_TYPES = '0005';
@@ -28,6 +30,10 @@ const CODE_SEMINAR_PLACE_TYPES = '0014';
 
 export const useContentTypes = (onSuccess?: (data: CodeResponse) => void, onError?: (error: Error) => void) => {
   return useCodeDetails(CODE.CODE_CONTENT_TYPES, onSuccess, onError);
+};
+
+export const useContentJobTypes = (onSuccess?: (data: CodeResponse) => void, onError?: (error: Error) => void) => {
+  return useCodeDetails(CODE.CODE_JOB_TYPE, onSuccess, onError);
 };
 
 export const useJobGroups = (onSuccess?: (data: CodeResponse) => void, onError?: (error: Error) => void) => {

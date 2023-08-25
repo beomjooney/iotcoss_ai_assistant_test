@@ -30,6 +30,8 @@ import Link from 'next/link';
 import { jobColorKey } from 'src/config/colors';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import { UseQueryResult } from 'react-query';
+import { useMyJobs } from 'src/services/jobs/jobs.queries';
 
 interface BoardListItemType {
   id: number;
@@ -154,7 +156,7 @@ const boardTags: string[] = ['모든', '트렌드', '질문', '소프트웨어',
 
 const cx = classNames.bind(styles);
 
-export function QuizTemplate() {
+export function QuizMakeTemplate() {
   const { jobGroups, setJobGroups, contentTypes, setContentTypes } = useStore();
 
   const router = useRouter();
@@ -175,6 +177,8 @@ export function QuizTemplate() {
   const [contentType, setContentType] = useState(0);
   const { isFetched: isJobGroupFetched } = useJobGroups(data => setJobGroups(data || []));
   const [recommendLevels, setRecommendLevels] = useState([]);
+
+  const { data: myJobsData, refetch: refetchMyJob }: UseQueryResult<any> = useMyJobs();
 
   const { isFetched: isContentFetched } = useSeminarList(params, data => {
     console.log('quiz club : ', data.data.data.contents);
@@ -289,10 +293,10 @@ export function QuizTemplate() {
         <div className="tw-py-5">
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
             <Grid item xs={2} className="tw-font-bold tw-text-3xl tw-text-black">
-              성장퀴즈
+              내가 만든 퀴즈
             </Grid>
             <Grid item xs={7} className="tw-font-semi tw-text-base tw-text-black">
-              관심 주제별로 성장 퀴즈를 풀고 네트워킹 할 수 있는 클럽을 만나보세요!
+              나와 크루들의 성장을 돕기위해 내가 만든 퀴즈 리스트예요!
             </Grid>
             <Grid item xs={3} justifyContent="flex-end" className="tw-flex">
               <button
@@ -300,7 +304,7 @@ export function QuizTemplate() {
                 className="tw-text-white tw-bg-blue-500 hover:tw-bg-blue-800 tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5  dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
               >
                 <Link href="/quiz/open" className="nav-link">
-                  성장퀴즈 클럽 개설하기 +
+                  퀴즈 직접 등록하기
                 </Link>
               </button>
             </Grid>
@@ -375,193 +379,26 @@ export function QuizTemplate() {
         </Box>
 
         <Divider className="tw-mb-6 tw-border tw-bg-['#efefef']" />
-        {active != 0 && (
-          <div>
-            <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
-              <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천 직군</div>
-              <ToggleButtonGroup
-                style={{ display: 'inline' }}
-                value={jobGroup}
-                onChange={handleJobs}
-                aria-label="text alignment"
-                size="small"
-              >
-                {isContentTypeJobFetched &&
-                  contentJobType.map((item, i) => (
-                    <ToggleButton
-                      key={item.id}
-                      value={item.id}
-                      className="tw-ring-1 tw-ring-slate-900/10"
-                      style={{
-                        borderRadius: '5px',
-                        borderLeft: '0px',
-                        margin: '5px',
-                        height: '30px',
-                        border: '0px',
-                      }}
-                      // value={item.id}
-                      // variant="small"
-                      // checked={active === i + 1}
-                      // isActive
-                      // type="tabButton"
-                      // onChange={() => {
-                      //   setActive(i + 1);
-                      //   setParams({
-                      //     ...params,
-                      //     recommendJobGroup: item.id,
-                      //     page,
-                      //   });
-                      //   setPage(0);
-                      // }}
-                      // className={cx('fixed-width')}
-                    >
-                      {item.name}
-                    </ToggleButton>
-                  ))}
-              </ToggleButtonGroup>
-            </div>
-
-            <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
-              <span className="tw-font-bold tw-text-base tw-text-black tw-mr-4">레벨</span>
-              <ToggleButtonGroup
-                value={recommendLevels}
-                onChange={handleRecommendLevels}
-                aria-label="text alignment"
-                size="small"
-              >
-                {levelGroup?.map((item, index) => (
-                  <ToggleButton
-                    key={`job-${index}`}
-                    value={item.name}
-                    aria-label="fff"
-                    className="tw-ring-1 tw-ring-slate-900/10"
-                    style={{
-                      borderRadius: '5px',
-                      borderLeft: '0px',
-                      margin: '5px',
-                      height: '30px',
-                      border: '0px',
-                    }}
-                  >
-                    레벨 {item.name}
-                  </ToggleButton>
-                ))}
-              </ToggleButtonGroup>
-            </div>
-          </div>
-        )}
         <article>
-          {/* <div className={cx('filter-area', 'top-filter')}>
-            <div className={cx('seminar-button__group')}></div>
-          </div> */}
-
           <div className={cx('content-area')}>
             <section className={cx('content', 'flex-wrap-container')}>
-              <Grid
-                container
-                direction="row"
-                justifyContent="left"
-                alignItems="center"
-                rowSpacing={3}
-                columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-              >
-                {isContentFetched &&
-                  (contents.length > 0 ? (
-                    contents.map((item, index) => {
-                      return (
-                        <Grid key={index} item xs={6}>
-                          <a
-                            href={'/quiz/' + `${index}`}
-                            className="tw-flex tw-flex-col tw-items-center tw-bg-white tw-border tw-border-gray-200 tw-rounded-lg tw-shadow md:tw-flex-row md:tw-max-w-xl hover:tw-bg-gray-100 dark:tw-border-gray-700 dark:tw-bg-gray-800 dark:hover:tw-bg-gray-700"
-                          >
-                            <img
-                              className="tw-object-cover tw-w-[220px] tw-rounded-t-lg tw-h-[245px] md:tw-h-[245px] md:tw-w-[220px] md:tw-rounded-none md:tw-rounded-l-lg"
-                              src="/assets/images/banner/Rectangle1.png"
-                              alt=""
-                            />
-                            <div className="tw-flex tw-flex-col tw-justify-between tw-p-4 tw-leading-normal">
-                              <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
-                                {item?.recommendJobGroups.map((name, i) => (
-                                  <Chip
-                                    key={`job_${i}`}
-                                    chipColor={jobColorKey(item?.recommendJobGroups[i])}
-                                    radius={4}
-                                    className="tw-mr-2"
-                                    variant="outlined"
-                                  >
-                                    {name}
-                                  </Chip>
-                                ))}
-                                {item?.relatedExperiences.map((name, i) => (
-                                  <Chip
-                                    key={`job_${i}`}
-                                    chipColor={jobColorKey(item?.relatedExperiences[i])}
-                                    radius={4}
-                                    className="tw-mr-2"
-                                    variant="outlined"
-                                  >
-                                    {name}
-                                  </Chip>
-                                ))}
-                                <Chip chipColor="primary" radius={4} variant="filled">
-                                  {item?.recommendLevels.sort().join(',')}레벨
-                                </Chip>
-                              </div>
-                              <div className="tw-mb-3 tw-text-sm tw-font-semibold tw-text-gray-500 dark:tw-text-gray-400">
-                                모집마감일 : {item.endAt}
-                              </div>
-                              <h6 className="tw-mb-2 tw-text-2xl tw-font-bold tw-tracking-tight tw-text-gray-900 dark:tw-text-white">
-                                {item.name}
-                              </h6>
-                              <p className="tw-line-clamp-2 tw-mb-3 tw-font-normal tw-text-gray-700 dark:tw-text-gray-400">
-                                {item.description}
-                              </p>
-
-                              <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-400 dark:tw-text-gray-400">
-                                {item.studyCycle.toString()} | {item.studyWeekCount} 주 | 학습 {item.recruitMemberCount}
-                                회
-                              </div>
-
-                              <div className="tw-flex tw-items-center tw-space-x-4">
-                                <img
-                                  className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full"
-                                  src={item?.author?.avatar}
-                                  alt=""
-                                />
-                                <div className="tw-text-sm tw-font-semibold tw-text-black dark:tw-text-white">
-                                  <div>{item?.author?.displayName}</div>
-                                </div>
-                              </div>
-                            </div>
-                          </a>
-                        </Grid>
-                        // <ArticleCard
-                        //   uiType={ArticleEnum.MENTOR_SEMINAR}
-                        //   content={item}
-                        //   key={i}
-                        //   className={cx('container__item')}
-                        // />
-                      );
-                    })
-                  ) : (
-                    <div className={cx('content--empty')}>데이터가 없습니다.</div>
-                  ))}
-              </Grid>
-              {/* {isContentFetched &&
-                (contents.length > 0 ? (
-                  contents.map((item, i) => {
-                    return (
-                      <ArticleCard
-                        uiType={ArticleEnum.MENTOR_SEMINAR}
-                        content={item}
-                        key={i}
-                        className={cx('container__item')}
-                      />
-                    );
-                  })
-                ) : (
-                  <div className={cx('content--empty')}>데이터가 없습니다.</div>
-                ))} */}
+              {myJobsData?.data.content.map((item, index) => (
+                <div
+                  key={index}
+                  className="tw-flex tw-w-full tw-items-center tw-p-4 tw-border border mb-3 mt-3 rounded"
+                >
+                  <div className="tw-flex-auto">
+                    <div className="tw-font-medium tw-text-black">{item.content}</div>
+                  </div>
+                  <div className="">김찬영</div>
+                  <svg className="tw-ml-6 tw-h-6 tw-w-6 tw-flex-none" fill="none">
+                    <path
+                      d="M12 8v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1V8Zm0 0V7a1 1 0 0 0-1 1h1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1ZM12 12v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h-1a1 1 0 0 0 1 1v-1ZM12 16v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1Z"
+                      fill="#64748B"
+                    ></path>
+                  </svg>
+                </div>
+              ))}
             </section>
             <Pagination page={page} setPage={setPage} total={totalPage} />
           </div>
@@ -571,4 +408,4 @@ export function QuizTemplate() {
   );
 }
 
-export default QuizTemplate;
+export default QuizMakeTemplate;

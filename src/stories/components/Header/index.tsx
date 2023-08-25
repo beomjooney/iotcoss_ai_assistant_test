@@ -70,6 +70,18 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
     !logged && setButtonName('로그인');
   }, [logged]);
 
+  useEffect(() => {
+    roles.length > 0 && roles[0] === 'ROLE_ADMIN'
+      ? setAdminButton(
+          <li className={cx('custom-item')} id="logoutBtn">
+            <Button size="small" color="primary" onClick={() => (location.href = '/quiz-make')}>
+              퀴즈 만들기
+            </Button>
+          </li>,
+        )
+      : setAdminButton(null);
+  }, [roles]);
+
   // useEffect(() => {
   //   roles.length > 0 && roles[0] === 'ROLE_ADMIN'
   //     ? setAdminButton(
