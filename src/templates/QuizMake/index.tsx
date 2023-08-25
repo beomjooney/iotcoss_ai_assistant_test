@@ -32,6 +32,10 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { UseQueryResult } from 'react-query';
 import { useMyJobs } from 'src/services/jobs/jobs.queries';
+import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 interface BoardListItemType {
   id: number;
@@ -146,13 +150,13 @@ const levelGroup = [
   },
 ];
 
+const options = ['퀴즈 수정하기', '삭제하기', '퀴즈 비공개'];
+
 export type ArticleLikeUser = {
   userId: string;
   name: string;
   profileImageUrl: string;
 };
-
-const boardTags: string[] = ['모든', '트렌드', '질문', '소프트웨어', '프로세스'];
 
 const cx = classNames.bind(styles);
 
@@ -179,6 +183,15 @@ export function QuizMakeTemplate() {
   const [recommendLevels, setRecommendLevels] = useState([]);
 
   const { data: myJobsData, refetch: refetchMyJob }: UseQueryResult<any> = useMyJobs();
+
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleDropMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const { isFetched: isContentFetched } = useSeminarList(params, data => {
     console.log('quiz club : ', data.data.data.contents);
@@ -391,12 +404,40 @@ export function QuizMakeTemplate() {
                     <div className="tw-font-medium tw-text-black">{item.content}</div>
                   </div>
                   <div className="">김찬영</div>
-                  <svg className="tw-ml-6 tw-h-6 tw-w-6 tw-flex-none" fill="none">
-                    <path
-                      d="M12 8v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1V8Zm0 0V7a1 1 0 0 0-1 1h1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1ZM12 12v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h-1a1 1 0 0 0 1 1v-1ZM12 16v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1Z"
-                      fill="#64748B"
-                    ></path>
-                  </svg>
+                  <div>
+                    <IconButton
+                      aria-label="more"
+                      id="long-button"
+                      aria-controls={open ? 'long-menu' : undefined}
+                      aria-expanded={open ? 'true' : undefined}
+                      aria-haspopup="true"
+                      onClick={handleDropMenuClick}
+                    >
+                      <MoreVertIcon />
+                    </IconButton>
+                    <Menu
+                      id="long-menu"
+                      MenuListProps={{
+                        'aria-labelledby': 'long-button',
+                      }}
+                      anchorEl={anchorEl}
+                      open={open}
+                      onClose={handleClose}
+                      className="tw-border-2"
+                      PaperProps={{
+                        style: {
+                          border: '1px solid rgb(218, 226, 237)',
+                          borderRadius: '12px',
+                        },
+                      }}
+                    >
+                      {options.map(option => (
+                        <MenuItem key={option} selected={option === 'Pyxis'} onClick={handleClose}>
+                          {option}
+                        </MenuItem>
+                      ))}
+                    </Menu>
+                  </div>
                 </div>
               ))}
             </section>
