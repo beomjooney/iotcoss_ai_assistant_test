@@ -5,8 +5,8 @@
   "dependencies": {
     "@bit/lubuskie.material-ui.multiple-select-chips": "^1.0.5",
     "@bootpay/client-js": "^4.2.6",
-    "@emotion/react": "^11.10.0",
-    "@emotion/styled": "^11.10.0",
+    "@emotion/react": "11.10.0",
+    "@emotion/styled": "11.10.0",
     "@hookform/resolvers": "^2.9.10",
     "@mui/icons-material": "^5.14.1",
     "@mui/lab": "^5.0.0-alpha.137",

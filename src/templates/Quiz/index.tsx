@@ -31,126 +31,38 @@ import { jobColorKey } from 'src/config/colors';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
-interface BoardListItemType {
-  id: number;
-  name: string;
-  boardType?: string;
-  status: 'ACTIVE' | 'DEACTIVATED';
-  layoutType: 'LIST' | 'IMAGE_TEXT' | 'IMAGE';
-  enableHashtag: boolean;
-  enableReply: boolean;
-  index: number;
-  articleCnt?: number;
-}
-
-const testBoards: BoardListItemType[] = [
-  {
-    id: 1,
-    name: '전체보기',
-    boardType: 'techlog',
-    status: 'ACTIVE',
-    layoutType: 'LIST',
-    enableHashtag: true,
-    enableReply: true,
-    index: 1,
-  },
-  {
-    id: 2,
-    name: '개발',
-    boardType: 'techlog',
-    status: 'ACTIVE',
-    layoutType: 'LIST',
-    enableHashtag: true,
-    enableReply: true,
-    index: 2,
-  },
-  {
-    id: 3,
-    name: '엔지니어링',
-    boardType: 'techlog',
-    status: 'ACTIVE',
-    layoutType: 'LIST',
-    enableHashtag: true,
-    enableReply: true,
-    index: 2,
-  },
-  {
-    id: 4,
-    name: '기획/PM/PO',
-    boardType: 'techlog',
-    status: 'ACTIVE',
-    layoutType: 'LIST',
-    enableHashtag: true,
-    enableReply: true,
-    index: 2,
-  },
-  {
-    id: 5,
-    name: '디자인',
-    boardType: 'techlog',
-    status: 'ACTIVE',
-    layoutType: 'LIST',
-    enableHashtag: true,
-    enableReply: true,
-    index: 2,
-  },
-];
-
 const levelGroup = [
   {
     id: '0100',
     groupId: '0001',
     name: '0',
     description: '레벨 0',
-    order: 1,
-    createdAt: '2022-10-14 15:46:30.123',
-    updatedAt: '2022-10-14 15:46:30.123',
   },
   {
     id: '0200',
     groupId: '0001',
     name: '1',
     description: '레벨 1',
-    order: 2,
-    createdAt: '2022-10-14 15:46:30.123',
-    updatedAt: '2022-10-14 15:46:30.123',
   },
   {
     id: '0300',
     groupId: '0001',
     name: '2',
     description: '레벨 2',
-    order: 3,
-    createdAt: '2022-10-14 15:46:30.123',
-    updatedAt: '2022-10-14 15:46:30.123',
   },
   {
     id: '0301',
     groupId: '0001',
     name: '3',
     description: '레벨 3',
-    order: 3,
-    createdAt: '2022-10-14 15:46:30.123',
-    updatedAt: '2022-10-14 15:46:30.123',
   },
   {
     id: '0302',
     groupId: '0001',
     name: '4',
     description: '레벨 4',
-    order: 3,
-    createdAt: '2022-10-14 15:46:30.123',
-    updatedAt: '2022-10-14 15:46:30.123',
   },
 ];
-
-export type ArticleLikeUser = {
-  userId: string;
-  name: string;
-  profileImageUrl: string;
-};
-
-const boardTags: string[] = ['모든', '트렌드', '질문', '소프트웨어', '프로세스'];
 
 const cx = classNames.bind(styles);
 
@@ -160,7 +72,7 @@ export function QuizTemplate() {
   const router = useRouter();
   const [skillIds, setSkillIds] = useState<any[]>([]);
   const [skillIdsClk, setSkillIdsClk] = useState<any[]>([1, 2, 3, 4, 5]);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [jobGroupsFilter, setJobGroupsFilter] = useState([]);
   const [levelsFilter, setLevelsFilter] = useState([]);
@@ -177,9 +89,8 @@ export function QuizTemplate() {
   const [recommendLevels, setRecommendLevels] = useState([]);
 
   const { isFetched: isContentFetched } = useSeminarList(params, data => {
-    console.log('quiz club : ', data.data.data.contents);
-    setContents(data.data.data.contents || []);
-    setTotalPage(data.data.totalPage);
+    setContents(data.data.contents || []);
+    setTotalPage(data.data.totalPages);
   });
 
   const { isFetched: isContentTypeFetched } = useContentTypes(data => {
@@ -196,7 +107,13 @@ export function QuizTemplate() {
     setContentJobType(data.data.contents || []);
   });
 
-  console.log(contentJobType);
+  useEffect(() => {
+    console.log('active');
+    setParams({
+      // ...params,
+      page,
+    });
+  }, [page]);
 
   const handleJobs = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
     console.log(event.currentTarget);
@@ -204,81 +121,8 @@ export function QuizTemplate() {
     console.log(newFormats);
   };
 
-  const handleToggleAll = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, checked } = event.currentTarget;
-    console.log(value, checked);
-    if (checked) {
-      setSkillIds([1, 2, 3, 4, 5]);
-    } else {
-      setSkillIds([]);
-    }
-    console.log(skillIds);
-  };
-
   const handleRecommendLevels = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
     setRecommendLevels(newFormats);
-  };
-
-  const handleToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.currentTarget;
-    const result = [...skillIds];
-
-    if (result.indexOf(value) > -1) {
-      result.splice(result.indexOf(value), 1);
-    } else {
-      result.push(value);
-    }
-    setSkillIds(result);
-    console.log(skillIds);
-    // setJobGroup(value);
-  };
-
-  useEffect(() => {
-    console.log('active');
-    setParams({
-      // ...params,
-      page,
-      recommendJobGroup: contentType,
-      recommendJobs: jobGroup.join(','),
-      recommendLevels: recommendLevels.join(','),
-    });
-  }, [page, jobGroupsFilter, levelsFilter, seminarFilter, jobGroup, recommendLevels]);
-
-  const setNewCheckItem = (id, index, prevState) => {
-    const newState = [...prevState];
-    if (index > -1) newState.splice(index, 1);
-    else newState.push(id);
-    return newState;
-  };
-
-  const toggleFilter = (id, type: 'jobGroup' | 'level' | 'status') => {
-    if (type === 'jobGroup') {
-      const index = jobGroupsFilter.indexOf(id);
-      setJobGroupsFilter(prevState => setNewCheckItem(id, index, prevState));
-    } else if (type === 'level') {
-      const index = levelsFilter.indexOf(id);
-      setLevelsFilter(prevState => setNewCheckItem(id, index, prevState));
-    } else {
-      const index = seminarFilter.indexOf(id);
-      setSeminarFilter(prevState => setNewCheckItem(id, index, prevState));
-    }
-  };
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const boxWidth = 110;
-  const [value, setValue] = React.useState('1');
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    setValue(newValue);
-  };
-
-  const handleClick = (article: Article) => {
-    if (window.innerWidth < 768) {
-      const paramObj = {
-        articleId: article.articleId.toString(),
-        boardId: article.boardId.toString(),
-      };
-    } else {
-    }
   };
 
   return (
@@ -324,11 +168,9 @@ export function QuizTemplate() {
                     onChange={() => {
                       setActive(0);
                       setParams({
-                        ...params,
                         page,
-                        recommendJobGroup: '',
                       });
-                      setPage(0);
+                      setPage(1);
                     }}
                     className={cx('fixed-width')}
                   />
@@ -351,7 +193,7 @@ export function QuizTemplate() {
                             recommendJobGroup: item.id,
                             page,
                           });
-                          setPage(0);
+                          setPage(1);
                         }}
                         className={cx('fixed-width', 'tw-ml-4')}
                       />

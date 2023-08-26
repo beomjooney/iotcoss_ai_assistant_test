@@ -68,12 +68,7 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
     <div className={cx('career-main')}>
       <div className="tw-w-full tw-bg-white tw-border-solid tw-rounded-2xl overflow-hidden">
         <div className="tw-flex tw-justify-center">
-          <img
-            // className={cx('top-banner__image')}
-            className="h-40 w-full object-cover"
-            src="/assets/images/banner/banner_bg.png"
-            alt="Card"
-          />
+          <img className="h-40 w-full object-cover" src="/assets/images/banner/banner_bg.png" alt="Card" />
           <div className={cx('absolute-content', 'tw-top-[230px]', 'tw-left-[450px]')}>
             <Typography type="H1" tag="div" extendClass={cx('title__desc')}>
               매일 새로운 기술과 쏱아져 나오는데
@@ -86,14 +81,14 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
               성장 가속 서비스 인빈서블X
             </div>
 
-            <div className={cx('fit-content', 'action-btn')}>
+            {/* <div className={cx('fit-content', 'action-btn')}>
               <Button size="main" onClick={handleUserResumeButton} className="tw-w-72 tw-h-12">
                 <Typography type="B1" tag="div" weight="bold">
                   지금 시작하기!
                   {hasUserResumeStory ? '수정' : '입력'}하러 가기
                 </Typography>
               </Button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -142,7 +137,7 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
             <SectionHeader title="크루님! 인빈서블X만 믿고 따라오세요!" subTitle="개발자 상위 10%의 습관과 학습비법" />
             <div className={cx('growth-area', 'pt-60', 'flex-wrap-container')}>
               <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-                <Grid item xs={2} sm={4} md={4} key={1}>
+                <Grid item xs={2} sm={4} md={4}>
                   <div className="w-1/2 bg-white shadow tw-rounded-xl overflow-hidden tw-h-[450px]">
                     <div className="tw-flex tw-justify-center tw-items-center">
                       <img
@@ -160,7 +155,7 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
                     </div>
                   </div>
                 </Grid>
-                <Grid item xs={2} sm={4} md={4} key={1}>
+                <Grid item xs={2} sm={4} md={4}>
                   <div className="w-1/2 bg-white shadow tw-rounded-xl overflow-hidden tw-h-[450px]">
                     <div className="tw-flex tw-justify-center tw-items-center">
                       <img
@@ -177,7 +172,7 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
                     </div>
                   </div>
                 </Grid>
-                <Grid item xs={2} sm={4} md={4} key={1}>
+                <Grid item xs={2} sm={4} md={4}>
                   <div className="w-1/2 bg-white shadow tw-rounded-xl overflow-hidden  tw-h-[450px]">
                     <div className="tw-flex tw-justify-center tw-items-center">
                       <img
@@ -214,7 +209,7 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
             />
             <div className={cx('growth-area', 'pt-60', 'flex-wrap-container')}>
               <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 12, sm: 8, md: 12 }}>
-                <Grid item xs={6} sm={4} md={6} key={1}>
+                <Grid item xs={6} sm={4} md={6}>
                   <div className="w-1/2 bg-white shadow tw-rounded-xl overflow-hidden tw-h-[450px]">
                     <div className="tw-flex tw-justify-center tw-items-center">
                       <img
@@ -234,7 +229,7 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
                     </div>
                   </div>
                 </Grid>
-                <Grid item xs={6} sm={4} md={6} key={1}>
+                <Grid item xs={6} sm={4} md={6}>
                   <div className="w-1/2 bg-white shadow tw-rounded-xl overflow-hidden tw-h-[450px]">
                     <div className="tw-flex tw-justify-center tw-items-center">
                       <img
@@ -262,7 +257,7 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
 
             <div className={cx('growth-area', 'pt-60', 'flex-wrap-container')}>
               <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-                <Grid item xs={2} sm={4} md={4} key={1}>
+                <Grid item xs={2} sm={4} md={4}>
                   <div className="w-1/2 bg-white shadow tw-rounded-xl overflow-hidden tw-h-[450px]">
                     <div className="tw-flex tw-justify-center tw-items-center">
                       <img
@@ -280,7 +275,7 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
                     </div>
                   </div>
                 </Grid>
-                <Grid item xs={2} sm={4} md={4} key={1}>
+                <Grid item xs={2} sm={4} md={4}>
                   <div className="w-1/2 bg-white shadow tw-rounded-xl overflow-hidden tw-h-[450px]">
                     <div className="tw-flex tw-justify-center tw-items-center">
                       <img
@@ -297,7 +292,7 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
                     </div>
                   </div>
                 </Grid>
-                <Grid item xs={2} sm={4} md={4} key={1}>
+                <Grid item xs={2} sm={4} md={4}>
                   <div className="w-1/2 bg-white shadow tw-rounded-xl overflow-hidden tw-h-[450px]">
                     <div className="tw-flex tw-justify-center tw-items-center">
                       <img
@@ -338,7 +333,7 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
             <div className={cx('flex-wrap-container', 'pt-60')}>
               {isMentorFetched &&
                 mentorList.length > 0 &&
-                mentorList.slice(0, 4).map((mentor, i) => <Profile key={i} mentorInfo={mentor} showDesc />)}
+                mentorList.slice(0, 4)  ((mentor, i) => <Profile key={i} mentorInfo={mentor} showDesc />)}
             </div>
           </div>
           <Button size="footer" label="모든 멘토 보러 가기" onClick={() => router.push('/mentoring')} />

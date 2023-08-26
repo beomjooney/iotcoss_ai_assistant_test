@@ -5,7 +5,7 @@ export const codeDetailList = async groupId => {
   if (groupId) {
     let params = JSON.parse(
       JSON.stringify({
-        page: 0,
+        page: 1,
         size: 100,
         groupId: groupId,
       }),
@@ -15,7 +15,7 @@ export const codeDetailList = async groupId => {
   } else {
     let params = JSON.parse(
       JSON.stringify({
-        page: 0,
+        page: 1,
         size: 100,
       }),
     );

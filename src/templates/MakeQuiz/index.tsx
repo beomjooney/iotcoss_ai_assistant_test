@@ -1,6 +1,6 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import { Toggle, Pagination, Typography, Chip } from 'src/stories/components';
+import { Pagination, Typography, Chip } from 'src/stories/components';
 import React, { useEffect, useState } from 'react';
 import { RecommendContent, SeminarImages } from 'src/models/recommend';
 import { useSeminarList, paramProps, useSeminarImageList } from 'src/services/seminars/seminars.queries';
@@ -196,41 +196,14 @@ export function QuizTemplate() {
     setContentJobType(data.data.contents || []);
   });
 
-  console.log(contentJobType);
-
   const handleJobs = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
     console.log(event.currentTarget);
     setJobGroup(newFormats);
     console.log(newFormats);
   };
 
-  const handleToggleAll = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, checked } = event.currentTarget;
-    console.log(value, checked);
-    if (checked) {
-      setSkillIds([1, 2, 3, 4, 5]);
-    } else {
-      setSkillIds([]);
-    }
-    console.log(skillIds);
-  };
-
   const handleRecommendLevels = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
     setRecommendLevels(newFormats);
-  };
-
-  const handleToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.currentTarget;
-    const result = [...skillIds];
-
-    if (result.indexOf(value) > -1) {
-      result.splice(result.indexOf(value), 1);
-    } else {
-      result.push(value);
-    }
-    setSkillIds(result);
-    console.log(skillIds);
-    // setJobGroup(value);
   };
 
   useEffect(() => {
@@ -251,35 +224,15 @@ export function QuizTemplate() {
     return newState;
   };
 
-  const toggleFilter = (id, type: 'jobGroup' | 'level' | 'status') => {
-    if (type === 'jobGroup') {
-      const index = jobGroupsFilter.indexOf(id);
-      setJobGroupsFilter(prevState => setNewCheckItem(id, index, prevState));
-    } else if (type === 'level') {
-      const index = levelsFilter.indexOf(id);
-      setLevelsFilter(prevState => setNewCheckItem(id, index, prevState));
-    } else {
-      const index = seminarFilter.indexOf(id);
-      setSeminarFilter(prevState => setNewCheckItem(id, index, prevState));
-    }
-  };
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const boxWidth = 110;
-  const [value, setValue] = React.useState('1');
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    setValue(newValue);
-  };
-
-  const handleClick = (article: Article) => {
-    if (window.innerWidth < 768) {
-      const paramObj = {
-        articleId: article.articleId.toString(),
-        boardId: article.boardId.toString(),
-      };
-    } else {
-    }
-  };
+  // const handleClick = (article: Article) => {
+  //   if (window.innerWidth < 768) {
+  //     const paramObj = {
+  //       articleId: article.articleId.toString(),
+  //       boardId: article.boardId.toString(),
+  //     };
+  //   } else {
+  //   }
+  // };
 
   return (
     <div className={cx('seminar-container')}>
@@ -328,7 +281,7 @@ export function QuizTemplate() {
                         page,
                         recommendJobGroup: '',
                       });
-                      setPage(0);
+                      setPage(1);
                     }}
                     className={cx('fixed-width')}
                   />
@@ -351,7 +304,7 @@ export function QuizTemplate() {
                             recommendJobGroup: item.id,
                             page,
                           });
-                          setPage(0);
+                          setPage(1);
                         }}
                         className={cx('fixed-width', 'tw-ml-4')}
                       />
@@ -451,10 +404,6 @@ export function QuizTemplate() {
           </div>
         )}
         <article>
-          {/* <div className={cx('filter-area', 'top-filter')}>
-            <div className={cx('seminar-button__group')}></div>
-          </div> */}
-
           <div className={cx('content-area')}>
             <section className={cx('content', 'flex-wrap-container')}>
               <Grid

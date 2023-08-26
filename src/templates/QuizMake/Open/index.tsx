@@ -486,7 +486,7 @@ export function QuizOpenTemplate() {
 
   const handleChangeCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked } = event.currentTarget;
-    const quizData = jobsData?.data.content;
+    const quizData = jobsData?.data.contents;
     const result = [...state];
 
     if (result.indexOf(name) > -1) {
@@ -1361,7 +1361,7 @@ export function QuizOpenTemplate() {
                 name="quizSearch"
               />
             </div>
-            {jobsData?.data.content.map((item, index) => (
+            {jobsData?.data.contents.map((item, index) => (
               <div key={index} className="tw-flex">
                 <Checkbox
                   onChange={handleChangeCheck}

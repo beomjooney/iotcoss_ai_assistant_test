@@ -27,7 +27,7 @@ export const useSeminarList = (
   onSuccess?: (data: RecommendContentsResponse) => void,
   onError?: (error: Error) => void,
 ) => {
-  const DEFAULT_SIZE = 15;
+  const DEFAULT_SIZE = 8;
   return useQuery<RecommendContentsResponse, Error>(
     QUERY_KEY_FACTORY('SEMINAR').list({ size: DEFAULT_SIZE, ...params }),
     () => seminarList({ size: DEFAULT_SIZE, ...params }),

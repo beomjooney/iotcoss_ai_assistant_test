@@ -42,6 +42,7 @@ import { SkillResponse } from 'src/models/skills';
 import { useSkills } from 'src/services/skill/skill.queries';
 import { ExperiencesResponse } from 'src/models/experiences';
 import { TagsInput } from 'react-tag-input-component';
+import { useDeletePost } from 'src/services/community/community.mutations';
 
 interface BoardListItemType {
   id: number;
@@ -55,104 +56,36 @@ interface BoardListItemType {
   articleCnt?: number;
 }
 
-const testBoards: BoardListItemType[] = [
-  {
-    id: 1,
-    name: '전체보기',
-    boardType: 'techlog',
-    status: 'ACTIVE',
-    layoutType: 'LIST',
-    enableHashtag: true,
-    enableReply: true,
-    index: 1,
-  },
-  {
-    id: 2,
-    name: '개발',
-    boardType: 'techlog',
-    status: 'ACTIVE',
-    layoutType: 'LIST',
-    enableHashtag: true,
-    enableReply: true,
-    index: 2,
-  },
-  {
-    id: 3,
-    name: '엔지니어링',
-    boardType: 'techlog',
-    status: 'ACTIVE',
-    layoutType: 'LIST',
-    enableHashtag: true,
-    enableReply: true,
-    index: 2,
-  },
-  {
-    id: 4,
-    name: '기획/PM/PO',
-    boardType: 'techlog',
-    status: 'ACTIVE',
-    layoutType: 'LIST',
-    enableHashtag: true,
-    enableReply: true,
-    index: 2,
-  },
-  {
-    id: 5,
-    name: '디자인',
-    boardType: 'techlog',
-    status: 'ACTIVE',
-    layoutType: 'LIST',
-    enableHashtag: true,
-    enableReply: true,
-    index: 2,
-  },
-];
-
 const levelGroup = [
   {
     id: '0100',
     groupId: '0001',
     name: '0',
     description: '레벨 0',
-    order: 1,
-    createdAt: '2022-10-14 15:46:30.123',
-    updatedAt: '2022-10-14 15:46:30.123',
   },
   {
     id: '0200',
     groupId: '0001',
     name: '1',
     description: '레벨 1',
-    order: 2,
-    createdAt: '2022-10-14 15:46:30.123',
-    updatedAt: '2022-10-14 15:46:30.123',
   },
   {
     id: '0300',
     groupId: '0001',
     name: '2',
     description: '레벨 2',
-    order: 3,
-    createdAt: '2022-10-14 15:46:30.123',
-    updatedAt: '2022-10-14 15:46:30.123',
   },
   {
     id: '0301',
     groupId: '0001',
     name: '3',
     description: '레벨 3',
-    order: 3,
-    createdAt: '2022-10-14 15:46:30.123',
-    updatedAt: '2022-10-14 15:46:30.123',
   },
   {
     id: '0302',
     groupId: '0001',
     name: '4',
     description: '레벨 4',
-    order: 3,
-    createdAt: '2022-10-14 15:46:30.123',
-    updatedAt: '2022-10-14 15:46:30.123',
   },
 ];
 
@@ -170,8 +103,7 @@ export function QuizMakeTemplate() {
   const { contentTypes, setContentTypes } = useStore();
 
   const router = useRouter();
-  const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
-  const { data: experienceData }: UseQueryResult<ExperiencesResponse> = useExperiences();
+
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [skillIdsClk, setSkillIdsClk] = useState<any[]>([1, 2, 3, 4, 5]);
   const [jobGroupsFilter, setJobGroupsFilter] = useState([]);
@@ -186,15 +118,12 @@ export function QuizMakeTemplate() {
   const [contentType, setContentType] = useState(0);
   const [jobGroups, setJobGroups] = useState<any[]>([]);
   const [jobs, setJobs] = useState([]);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [params, setParams] = useState<paramProps>({ page });
-  const { isFetched: isJobGroupFetched } = useJobGroupss(data => setJobGroups(data.data.contents || []));
-  console.log(jobGroups);
   const [recommendLevels, setRecommendLevels] = useState([]);
   const [quizUrl, setQuizUrl] = React.useState('');
   const [quizName, setQuizName] = React.useState('');
-  const { data: myJobsData, refetch: refetchMyJob }: UseQueryResult<any> = useMyJobs(params);
   const { mutate: onQuizSave } = useQuizSave();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [skillIds, setSkillIds] = useState<any[]>([]);
@@ -202,7 +131,20 @@ export function QuizMakeTemplate() {
   const [selected, setSelected] = useState([]);
   const open = Boolean(anchorEl);
 
+  //api call
+  const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
+  const { data: experienceData }: UseQueryResult<ExperiencesResponse> = useExperiences();
+  const { isFetched: isJobGroupFetched } = useJobGroupss(data => setJobGroups(data.data.contents || []));
+  const { data: myQuizData, refetch: refetchMyJob }: UseQueryResult<any> = useMyJobs(params, data => {
+    setTotalPage(data.totalPages);
+  });
+  //quiz delete
+  const { mutate: onDeletePost, isSuccess: deletePostSucces } = useDeletePost();
+
   const handleDropMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClickQuiz = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
@@ -218,20 +160,14 @@ export function QuizMakeTemplate() {
     console.log(newFormats);
   };
 
-  const { isFetched: isContentFetched } = useSeminarList(params, data => {
-    console.log('quiz club : ', data.data.data.contents);
-    setContents(data.data.data.contents || []);
-    setTotalPage(data.data.totalPage);
-  });
-
   const { isFetched: isContentTypeFetched } = useContentTypes(data => {
     setContentTypes(data.data.contents || []);
     const contentsType = data.length >= 0 && data[0].id;
     console.log(data.data.contents);
-    setParams({
-      ...params,
-      contentsType,
-    });
+    // setParams({
+    //   ...params,
+    //   contentsType,
+    // });
   });
 
   const { isFetched: isContentTypeJobFetched } = useContentJobTypes(data => {
@@ -244,7 +180,7 @@ export function QuizMakeTemplate() {
     console.log('modal ');
     setQuizUrl('');
     setQuizName('');
-    setJobGroup('');
+    // setJobGroup();
     setJobs([]);
     setRecommendLevels([]);
     setSkillIds([]);
@@ -254,8 +190,6 @@ export function QuizMakeTemplate() {
     setIsModalOpen(true);
     // setChapterNo(chapterNo);
   };
-
-  console.log(contentJobType);
 
   const handleJobGroups = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
     console.log(event.currentTarget);
@@ -280,67 +214,34 @@ export function QuizMakeTemplate() {
     setRecommendLevels(newFormats);
   };
 
-  const handleToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.currentTarget;
-    const result = [...skillIds];
+  useEffect(() => {
+    console.log('active');
+    setParams({
+      // ...params,
+      page,
+    });
+  }, [page]);
 
-    if (result.indexOf(value) > -1) {
-      result.splice(result.indexOf(value), 1);
-    } else {
-      result.push(value);
+  const handleMenuItemClick = (event: React.MouseEvent<HTMLElement>, index: number, removeIndex) => {
+    console.log(index, removeIndex);
+    if (index === 1) {
+      if (window.confirm('정말로 삭제하시겠습니까?')) {
+        onDeletePost(removeIndex);
+      }
     }
-    setSkillIds(result);
-    console.log(skillIds);
-    // setJobGroup(value);
+
+    setAnchorEl(null);
   };
 
-  // useEffect(() => {
-  //   console.log('active');
-  //   setParams({
-  //     // ...params,
-  //     page,
-  //     recommendJobGroup: contentType,
-  //     recommendJobs: jobGroup.join(','),
-  //     recommendLevels: recommendLevels.join(','),
-  //   });
-  // }, [page, jobGroupsFilter, levelsFilter, seminarFilter, jobGroup, recommendLevels]);
-
-  const setNewCheckItem = (id, index, prevState) => {
-    const newState = [...prevState];
-    if (index > -1) newState.splice(index, 1);
-    else newState.push(id);
-    return newState;
-  };
-
-  const toggleFilter = (id, type: 'jobGroup' | 'level' | 'status') => {
-    if (type === 'jobGroup') {
-      const index = jobGroupsFilter.indexOf(id);
-      setJobGroupsFilter(prevState => setNewCheckItem(id, index, prevState));
-    } else if (type === 'level') {
-      const index = levelsFilter.indexOf(id);
-      setLevelsFilter(prevState => setNewCheckItem(id, index, prevState));
-    } else {
-      const index = seminarFilter.indexOf(id);
-      setSeminarFilter(prevState => setNewCheckItem(id, index, prevState));
-    }
-  };
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const boxWidth = 110;
-  const [value, setValue] = React.useState('1');
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    setValue(newValue);
-  };
-
-  const handleClick = (article: Article) => {
-    if (window.innerWidth < 768) {
-      const paramObj = {
-        articleId: article.articleId.toString(),
-        boardId: article.boardId.toString(),
-      };
-    } else {
-    }
-  };
+  // const handleClick = (article: Article) => {
+  //   if (window.innerWidth < 768) {
+  //     const paramObj = {
+  //       articleId: article.articleId.toString(),
+  //       boardId: article.boardId.toString(),
+  //     };
+  //   } else {
+  //   }
+  // };
 
   const handleQuizInsertClick = async () => {
     const params = {
@@ -391,22 +292,22 @@ export function QuizMakeTemplate() {
               <div className={cx('filter-area')}>
                 <div className={cx('mentoring-button__group', 'gap-12', 'justify-content-center')}>
                   <Toggle
-                    label={`퀴즈목록 (` + myJobsData?.data.content.length + `)`}
+                    label={`퀴즈목록 (` + myQuizData?.contents?.length + `)`}
                     name="퀴즈목록"
-                    value=""
+                    value="퀴즈목록"
                     variant="small"
                     checked={active === 0}
                     isActive
                     type="tabButton"
-                    // onChange={() => {
-                    //   setActive(0);
-                    //   setParams({
-                    //     ...params,
-                    //     page,
-                    //     recommendJobGroup: '',
-                    //   });
-                    //   setPage(0);
-                    // }}
+                    onChange={() => {
+                      setActive(0);
+                      // setParams({
+                      //   ...params,
+                      //   page,
+                      //   recommendJobGroup: '',
+                      // });
+                      // setPage(0);
+                    }}
                     className={cx('fixed-width')}
                   />
                 </div>
@@ -431,14 +332,14 @@ export function QuizMakeTemplate() {
         <article>
           <div className={cx('content-area')}>
             <section className={cx('content', 'flex-wrap-container')}>
-              {myJobsData?.data.content.map((item, index) => (
+              {myQuizData?.contents?.map((item, index) => (
                 <div key={index} className="tw-p-4 tw-border border tw-w-full tw-rounded-xl">
                   <div className="tw-flex tw-w-full tw-items-center"></div>
                   <div className="tw-flex  tw-items-center">
                     <div className="tw-flex-auto">
                       <div className="tw-font-medium tw-text-black">
                         <div className="tw-p-4  tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
-                          {item?.recommendJobGroups?.map((name, i) => (
+                          {item?.recommendJobGroupNames?.map((name, i) => (
                             <Chip
                               key={`job_${i}`}
                               chipColor={jobColorKey(item?.recommendJobGroups[i])}
@@ -479,23 +380,22 @@ export function QuizMakeTemplate() {
                         <MoreVertIcon />
                       </IconButton>
                       <Menu
-                        id="long-menu"
-                        MenuListProps={{
-                          'aria-labelledby': 'long-button',
-                        }}
+                        id="lock-menu"
                         anchorEl={anchorEl}
                         open={open}
                         onClose={handleClose}
-                        className="tw-border-2"
-                        PaperProps={{
+                        MenuListProps={{
+                          'aria-labelledby': 'lock-button',
+                          role: 'listbox',
                           style: {
                             border: '1px solid rgb(218, 226, 237)',
+                            boxShadow: '0px 0px 0px 0px',
                             borderRadius: '12px',
                           },
                         }}
                       >
-                        {options.map(option => (
-                          <MenuItem key={option} selected={option === 'Pyxis'} onClick={handleClose}>
+                        {options.map((option, index) => (
+                          <MenuItem key={option} onClick={event => handleMenuItemClick(event, index, item.sequence)}>
                             {option}
                           </MenuItem>
                         ))}
@@ -556,7 +456,7 @@ export function QuizMakeTemplate() {
               {contentTypes?.map((item, index) => (
                 <ToggleButton
                   key={`job-${index}`}
-                  value={item.name}
+                  value={item.id}
                   className="tw-ring-1 tw-ring-slate-900/10"
                   style={{
                     borderRadius: '5px',
@@ -580,7 +480,7 @@ export function QuizMakeTemplate() {
               {jobGroups?.map((item, index) => (
                 <ToggleButton
                   key={`job-${index}`}
-                  value={item.name}
+                  value={item.id}
                   className="tw-ring-1 tw-ring-slate-900/10"
                   style={{
                     borderRadius: '5px',

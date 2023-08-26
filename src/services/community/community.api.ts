@@ -57,7 +57,7 @@ export const deleteReply = async (params: any) => {
 
 export const deletePost = async (params: any) => {
   console.log('deletePost : ', params);
-  await axiosGeneralAPI().delete(`/posts/${params.postNo}`);
+  await axiosGeneralAPI().delete(`/api/v1/quizzes/${params.postNo}`);
 };
 
 // 글쓰기 생성

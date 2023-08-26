@@ -378,7 +378,10 @@ export function QuizOpenTemplate() {
   const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
   const { data: experienceData }: UseQueryResult<ExperiencesResponse> = useExperiences();
   const { data: jobsData, refetch }: UseQueryResult<any> = useJobs();
-  const { data: myJobsData, refetch: refetchMyJob }: UseQueryResult<any> = useMyJobs();
+  const { data: myJobsData, refetch: refetchMyJob }: UseQueryResult<any> = useMyJobs(params);
+
+  console.log('myJobsData popyp', myJobsData);
+
   const [skillIds, setSkillIds] = useState<any[]>([]);
   const [experienceIds, setExperienceIds] = useState<any[]>([]);
   const [skillIdsPopUp, setSkillIdsPopUp] = useState<any[]>([]);
@@ -1390,7 +1393,7 @@ export function QuizOpenTemplate() {
                 name="quizSearch"
               />
             </div>
-            {jobsData?.data.content.map((item, index) => (
+            {jobsData?.data.contents.map((item, index) => (
               <div key={index} className="tw-flex">
                 <Checkbox
                   onChange={handleChangeCheck}
@@ -1600,7 +1603,7 @@ export function QuizOpenTemplate() {
                 name="quizSearch"
               />
             </div>
-            {myJobsData?.data.content.map((item, index) => (
+            {myJobsData?.contents.map((item, index) => (
               <div key={index} className="tw-flex">
                 <Checkbox
                   onChange={handleChangeCheck}

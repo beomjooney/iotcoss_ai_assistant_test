@@ -22,6 +22,7 @@ export function IndexPage() {
   console.log(`memberType: ${memberType}, memberId: ${memberId}, name: ${name}, logged: ${logged}`);
 
   // return <HomeTemplate logged={logged} userType={userResumeStory?.type} />;
+  // return <HomeTemplate logged={logged} hasUserResumeStory={!!userResumeStory} userType={userResumeStory?.type} />;
   return <HomeTemplate logged={logged} hasUserResumeStory={!!userResumeStory} userType={userResumeStory?.type} />;
 }
 

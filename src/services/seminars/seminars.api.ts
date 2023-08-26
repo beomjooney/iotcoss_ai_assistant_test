@@ -6,7 +6,7 @@ export const seminarList = async params => {
   // const { data, headers } = await axiosGeneralAPI().get('/seminars', { params });
   const totalPage = Number(headers['page-count']);
 
-  return { data: data || [], nextPage: params.page + 1, totalPage };
+  return { data: data.data || [], nextPage: params.page + 1, totalPage };
 };
 
 // 세미나 이미지 목록 조회

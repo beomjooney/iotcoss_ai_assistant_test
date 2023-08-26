@@ -154,7 +154,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
       <Divider variant="inset" component="li" />
       {menuItem?.map((item, index) => {
         return (
-          <>
+          <div key={index}>
             <Link href={item.link} className="nav-link">
               <ListItem
                 key={item.no}
@@ -190,7 +190,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
               </ListItem>
             </Link>
             <Divider variant="inset" component="li" />
-          </>
+          </div>
         );
       })}
       <ListItemButton>
@@ -240,20 +240,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                 <MenuIcon />
               </IconButton>
             </Mobile>
-            {/* <button
-              className="navbar-toggler"
-              type="button"
-              data-toggle="collapse"
-              data-target="#navbarSupportedContent"
-              aria-controls="navbarSupportedContent"
-              aria-expanded="false"
-              aria-label="Toggle navigation"
-              // onClick={() => setIsShowMenu(!isShowMenu)}
-              onClick={handleOpenMenu}
-            >
-              <span className="ti-menu"></span>
-            </button> */}
-            <SwipeableDrawer
+            {/* <SwipeableDrawer
               anchor={'right'}
               open={menuOpen}
               onClose={handleCloseMenu}
@@ -263,15 +250,15 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
               }}
             >
               {list(menuItem)}
-            </SwipeableDrawer>
+            </SwipeableDrawer> */}
             <div
               className={cx('collapse navbar-collapse main-menu', 'navbar-mobile', isShowMenu ? 'show' : '')}
               id="navbarSupportedContent"
             >
               <ul className={cx('nav-custom', 'navbar-custom-mobile', 'navbar-nav ml-auto', 'tw-text-lg')}>
-                {menuItem?.map(item => {
+                {menuItem?.map((item, index) => {
                   return (
-                    <li key={item.no} className={item.option}>
+                    <li key={`item-` + index} className={item.option}>
                       <Link href={item.link} className="nav-link">
                         <a
                           onClick={() => {
@@ -282,9 +269,9 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                         </a>
                       </Link>
                       <div className="dropdown-menu submenu" aria-labelledby="navbarDropdownHome">
-                        {item.dropdown.map(menu => {
+                        {item.dropdown.map((menu, index) => {
                           return (
-                            <Link key={menu.no} href={menu.link} className="dropdown-item">
+                            <Link key={`menu-` + index} href={menu.link} className="dropdown-item">
                               <a
                                 onClick={() => {
                                   setIsShowMenu(!isShowMenu);

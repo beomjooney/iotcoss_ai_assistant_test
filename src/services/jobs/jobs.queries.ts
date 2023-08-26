@@ -15,7 +15,7 @@ export const useMyJobs = (
   onSuccess?: (data: RecommendContentsResponse) => void,
   onError?: (error: Error) => void,
 ) => {
-  const DEFAULT_SIZE = 100;
+  const DEFAULT_SIZE = 10;
   return useQuery<RecommendContentsResponse, Error>(
     QUERY_KEY_FACTORY('ACCOUNT_MEMBER_MY_LOGIN').list({ size: DEFAULT_SIZE, ...params }),
     () => getMyJobs({ size: DEFAULT_SIZE, ...params }),
