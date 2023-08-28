@@ -46,6 +46,7 @@ export interface BannerProps {
   /** 제목 */
   title: string;
   /** 클래스 */
+  data: object;
   className?: string;
   subTitle?: string;
 }
@@ -53,7 +54,7 @@ export interface BannerProps {
 const cx = classNames.bind(styles);
 
 // const Banner = ({ imageName = 'top_banner_seminar.jpg', title, subTitle, className }: BannerProps) => {
-const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className }: BannerProps) => {
+const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className, data }: BannerProps) => {
   return (
     <div className={cx('content-area', className, 'tw-bg-[#FFFAF1]')}>
       <div className="container tw-p-4 tw-leading-normal tw-text-black tw-font-bold tw-text-xl tw-pt-10 tw-pb-10">
@@ -67,23 +68,39 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
             src="/assets/images/banner/Rectangle1.png"
             alt=""
           />
-          <div className="tw-flex tw-flex-col tw-justify-between tw-p-4 tw-leading-normal">
+          <div className="tw-flex tw-w-full tw-flex-col tw-justify-between tw-px-10 tw-leading-normal">
             <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
               <Grid item xs={8} className="tw-font-bold tw-text-3xl tw-text-black">
                 <div className="tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
-                  <span className="tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-0.5 tw-rounded tw-dark:bg-blue-900 tw-dark:text-blue-300">
-                    개발
-                  </span>
-                  <span className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-0.5 tw-rounded tw-dark:bg-gray-700 tw-dark:text-gray-300">
-                    레벨1
-                  </span>
-                  <span className="tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-0.5 tw-rounded tw-dark:bg-red-900 tw-dark:text-red-300">
-                    백엔드개발자
-                  </span>
+                  {data?.recommendJobGroupNames.map((name, i) => (
+                    <span
+                      key={i}
+                      className="tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-0.5 tw-rounded tw-dark:bg-blue-900 tw-dark:text-blue-300"
+                    >
+                      {name}
+                    </span>
+                  ))}
+
+                  {data?.recommendLevels.map((name, i) => (
+                    <span
+                      key={i}
+                      className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-0.5 tw-rounded tw-dark:bg-gray-700 tw-dark:text-gray-300"
+                    >
+                      {name} 레벨
+                    </span>
+                  ))}
+                  {data?.recommendJobNames.map((name, i) => (
+                    <span
+                      key={i}
+                      className="tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-0.5 tw-rounded tw-dark:bg-red-900 tw-dark:text-red-300"
+                    >
+                      {name}
+                    </span>
+                  ))}
                 </div>
               </Grid>
               <Grid item xs={4} justifyContent="center" alignItems="center" className="tw-flex">
-                모집마감일 : {item.date}
+                모집마감일 : {data?.recruitDeadlineAt.split(' ')[0]}
                 <div>
                   <IconButton aria-label="Bookmark">
                     <BookmarkBorderIcon />
@@ -94,19 +111,21 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
 
             <div className="tw-mb-3 tw-text-sm tw-font-semibold tw-text-gray-500 dark:tw-text-gray-400"></div>
             <h6 className="tw-mb-2 tw-text-2xl tw-font-bold tw-tracking-tight tw-text-gray-900 dark:tw-text-white">
-              {item.title}
+              {data?.name}
             </h6>
             <p className="tw-line-clamp-2 tw-mb-3 tw-font-normal tw-text-gray-700 dark:tw-text-gray-400">
-              Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.
+              {data?.description}
             </p>
 
             <div className="tw-text-base tw-font-bold tw-text-black dark:tw-text-gray-400">
-              성장퀴즈 주수 : 12주 | 학습 36회 (2023.06.01~2023.08.31)
+              성장퀴즈 주수 : {data?.studyWeekCount}주 | 학습 {data?.studyTotalCount}회 ({data?.startAt}~{data?.endAt})
             </div>
             <div className="tw-text-base tw-font-bold tw-text-black dark:tw-text-gray-400">
-              성장퀴즈 주기 : 월, 수, 금
+              성장퀴즈 주기 : {data?.studyCycle.toString()}
             </div>
-            <div className="tw-mb-3 tw-text-base tw-font-bold tw-text-black dark:tw-text-gray-400">모집인원 : 00명</div>
+            <div className="tw-mb-3 tw-text-base tw-font-bold tw-text-black dark:tw-text-gray-400">
+              모집인원 : {data?.recruitMemberCount}명
+            </div>
             <div className="tw-mb-3 tw-text-base tw-font-semibold tw-text-gray-400 dark:tw-text-gray-400">
               #프론트엔드 #JAVA #HTML
             </div>

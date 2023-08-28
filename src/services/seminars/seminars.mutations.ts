@@ -66,7 +66,7 @@ export const useParticipantSeminar = (): UseMutationResult => {
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('SEMINAR').all),
     onSuccess: async () => {
-      alert('세미나 신청이 완료되었습니다.');
+      alert('클럽 신청이 완료되었습니다.');
     },
   });
 };

@@ -61,6 +61,9 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
     logged
       ? setLogoutButton(
           <li className={cx('custom-item')} id="logoutBtn">
+            <Button className="tw-mr-4" size="small" color="primary" onClick={() => (location.href = '/quiz-make')}>
+              퀴즈 만들기
+            </Button>
             <Button size="small" color="primary" onClick={handleLogout}>
               로그아웃
             </Button>

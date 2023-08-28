@@ -43,6 +43,7 @@ import { useSkills } from 'src/services/skill/skill.queries';
 import { ExperiencesResponse } from 'src/models/experiences';
 import { TagsInput } from 'react-tag-input-component';
 import { useDeletePost } from 'src/services/community/community.mutations';
+import useDidMountEffect from 'src/hooks/useDidMountEffect';
 
 interface BoardListItemType {
   id: number;
@@ -124,7 +125,6 @@ export function QuizMakeTemplate() {
   const [recommendLevels, setRecommendLevels] = useState([]);
   const [quizUrl, setQuizUrl] = React.useState('');
   const [quizName, setQuizName] = React.useState('');
-  const { mutate: onQuizSave } = useQuizSave();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [skillIds, setSkillIds] = useState<any[]>([]);
   const [experienceIds, setExperienceIds] = useState<any[]>([]);
@@ -140,6 +140,7 @@ export function QuizMakeTemplate() {
   });
   //quiz delete
   const { mutate: onDeletePost, isSuccess: deletePostSucces } = useDeletePost();
+  const { mutate: onQuizSave, isSuccess: postSucces } = useQuizSave();
 
   const handleDropMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -159,6 +160,11 @@ export function QuizMakeTemplate() {
     setExperienceIds(newFormats);
     console.log(newFormats);
   };
+
+  useDidMountEffect(() => {
+    console.log('delete 1 !!!', params, page);
+    refetchMyJob();
+  }, [deletePostSucces, postSucces]);
 
   const { isFetched: isContentTypeFetched } = useContentTypes(data => {
     setContentTypes(data.data.contents || []);
@@ -226,7 +232,9 @@ export function QuizMakeTemplate() {
     console.log(index, removeIndex);
     if (index === 1) {
       if (window.confirm('정말로 삭제하시겠습니까?')) {
-        onDeletePost(removeIndex);
+        onDeletePost({
+          postNo: removeIndex,
+        });
       }
     }
 
@@ -256,8 +264,7 @@ export function QuizMakeTemplate() {
     };
 
     setIsModalOpen(false);
-    await onQuizSave(params);
-    await refetchMyJob();
+    onQuizSave(params);
   };
 
   return (

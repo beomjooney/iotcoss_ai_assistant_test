@@ -17,8 +17,8 @@ export const seminarImageList = async () => {
 
 // 세미나 상세 조회
 export const seminarDetail = async id => {
-  const { data } = await axiosGeneralAPI().get(`/seminars/${id}`);
-  return data;
+  const { data } = await axiosGeneralAPI().get(`/api/v1/clubs/detail/${id}`);
+  return data.data;
 };
 
 // 세미나 생성
@@ -44,7 +44,7 @@ export const encoreSeminar = async (params: any) =>
 
 // 세미나 참가
 export const participantSeminar = async (params: any) =>
-  await axiosGeneralAPI().post(`/seminars/${params.seminarId}/participants`, { memberId: params.memberId });
+  await axiosGeneralAPI().post(`/api/v1/club/crew-requests`, params);
 
 // 세미나 취소
 export const participantCancelSeminar = async (params: any) =>
