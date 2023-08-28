@@ -47,6 +47,7 @@ import Checkbox from '@mui/material/Checkbox';
 import { useClubQuizSave, useQuizSave } from 'src/services/quiz/quiz.mutations';
 import { jobColorKey } from 'src/config/colors';
 import { TagsInput } from 'react-tag-input-component';
+import useDidMountEffect from 'src/hooks/useDidMountEffect';
 
 const dayGroup = [
   {
@@ -388,7 +389,7 @@ export function QuizOpenTemplate() {
   const [experienceIdsPopUp, setExperienceIdsPopUp] = useState<any[]>([]);
   const [isPublic, setIsPublic] = useState('공개');
   const [selected, setSelected] = useState([]);
-  const { mutate: onQuizSave } = useQuizSave();
+  const { mutate: onQuizSave, isSuccess: postSucces } = useQuizSave();
   const { mutate: onClubQuizSave } = useClubQuizSave();
 
   const handleFormat = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
@@ -435,6 +436,11 @@ export function QuizOpenTemplate() {
     setRecommendJobGroups(newFormats);
   };
 
+  useDidMountEffect(() => {
+    console.log('delete 1 !!!', params, page);
+    refetchMyJob();
+  }, [postSucces]);
+
   const { isFetched: isContentFetched } = useSeminarList(params, data => {
     setContents(data.data || []);
     setTotalPage(data.totalPage);
@@ -453,7 +459,7 @@ export function QuizOpenTemplate() {
     // setChapterNo(chapterNo);
   };
 
-  const handleQuizInsertClick = async () => {
+  const handleQuizInsertClick = () => {
     const params = {
       content: quizName,
       articleUrl: quizUrl,
@@ -467,8 +473,7 @@ export function QuizOpenTemplate() {
 
     setQuizUrl('');
     setQuizName('');
-    await onQuizSave(params);
-    await refetchMyJob();
+    onQuizSave(params);
     setActive(2);
   };
 
@@ -503,7 +508,7 @@ export function QuizOpenTemplate() {
 
   const handleChangeCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked } = event.currentTarget;
-    const quizData = jobsData?.data.content;
+    const quizData = jobsData?.data.contents;
     const result = [...state];
 
     if (result.indexOf(name) > -1) {
@@ -572,6 +577,15 @@ export function QuizOpenTemplate() {
     console.log('fasdaf');
     if (active == 0) {
       refetch();
+    } else if (active == 1) {
+      console.log('mmiddle');
+      setQuizUrl('');
+      setQuizName('');
+      setJobGroupPopUp([]);
+      setRecommendLevelsPopUp([]);
+      setSkillIdsPopUp([]);
+      setExperienceIdsPopUp([]);
+      setSelected([]);
     } else if (active == 2) {
       refetchMyJob();
     }
@@ -1274,20 +1288,26 @@ export function QuizOpenTemplate() {
                           radius={4}
                           variant="outlined"
                         >
-                          dd
+                          {name}
                         </Chip>
                       ))}
                     </div>
                     <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
-                      {paramss.relatedExperiences.map((name, i) => (
-                        <Chip key={`job_${i}`} chipColor={jobColorKey(experienceIds[i])} radius={4} variant="outlined">
-                          dd
+                      {paramss?.relatedExperiences.map((name, i) => (
+                        <Chip
+                          className="tw-mr-2"
+                          key={`job_${i}`}
+                          chipColor={jobColorKey(experienceIds[i])}
+                          radius={4}
+                          variant="outlined"
+                        >
+                          {name}
                         </Chip>
                       ))}
                     </div>
                     <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
                       <Chip chipColor="primary" radius={4} variant="filled">
-                        {paramss.recommendLevels.sort().join(',')}레벨
+                        {paramss?.recommendLevels.sort().join(',')}레벨
                       </Chip>
                     </div>
                     <div className="tw-mb-3 tw-text-sm tw-font-semibold tw-text-gray-500 dark:tw-text-gray-400">
@@ -1310,7 +1330,7 @@ export function QuizOpenTemplate() {
                   </div>
                 </div>
               </div>
-              <div className="tw-text-lg tw-mt-5 tw-font-bold tw-text-black">{item.memberName}</div>
+              <div className="tw-text-lg tw-mt-5 tw-font-bold tw-text-black">{paramss.memberName}</div>
               <div className="tw-text-xl tw-mt-5 tw-font-bold tw-text-black">퀴즈클럽 소개</div>
               <div className="tw-text-base tw-mt-5 tw-text-black"> {paramss.description}</div>
               <div className="tw-text-xl tw-mt-5 tw-font-bold tw-text-black">퀴즈클럽 질문 미리보기</div>

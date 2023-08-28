@@ -62,6 +62,13 @@ const levelGroup = [
     name: '4',
     description: '레벨 4',
   },
+  ,
+  {
+    id: '0303',
+    groupId: '0001',
+    name: '5',
+    description: '레벨 5',
+  },
 ];
 
 const cx = classNames.bind(styles);
@@ -99,7 +106,7 @@ export function QuizTemplate() {
     console.log(data.data.contents);
     setParams({
       ...params,
-      contentsType,
+      // contentsType,
     });
   });
 
@@ -116,13 +123,28 @@ export function QuizTemplate() {
   }, [page]);
 
   const handleJobs = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
-    console.log(event.currentTarget);
+    console.log('job', event.currentTarget, newFormats);
     setJobGroup(newFormats);
+
+    setParams({
+      ...params,
+      recommendJobGroups: contentType,
+      recommendJobs: newFormats.join(','),
+      page,
+    });
+    setPage(1);
     console.log(newFormats);
   };
 
   const handleRecommendLevels = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
     setRecommendLevels(newFormats);
+
+    setParams({
+      ...params,
+      recommendJobGroups: contentType,
+      recommendLevels: newFormats.join(','),
+      page,
+    });
   };
 
   return (
@@ -140,11 +162,12 @@ export function QuizTemplate() {
             </Grid>
             <Grid item xs={3} justifyContent="flex-end" className="tw-flex">
               <button
-                onClick={() => (location.href = '/quiz/open')}
                 type="button"
                 className="tw-text-white tw-bg-blue-500 hover:tw-bg-blue-800 tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5  dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
               >
-                성장퀴즈 클럽 개설하기 +
+                <Link href="/quiz/open" className="nav-link">
+                  성장퀴즈 클럽 개설하기 +
+                </Link>
               </button>
             </Grid>
           </Grid>
@@ -189,7 +212,7 @@ export function QuizTemplate() {
                           setContentType(item.id);
                           setParams({
                             ...params,
-                            recommendJobGroup: item.id,
+                            recommendJobGroups: item.id,
                             page,
                           });
                           setPage(1);
@@ -246,10 +269,10 @@ export function QuizTemplate() {
                       // isActive
                       // type="tabButton"
                       // onChange={() => {
-                      //   setActive(i + 1);
+                      //   // setActive(i + 1);
                       //   setParams({
                       //     ...params,
-                      //     recommendJobGroup: item.id,
+                      //     recommendJobGroups: item.id,
                       //     page,
                       //   });
                       //   setPage(0);
@@ -322,7 +345,18 @@ export function QuizTemplate() {
                             />
                             <div className="tw-flex tw-flex-col tw-justify-between tw-p-4 tw-leading-normal">
                               <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
-                                {item?.recommendJobGroups.map((name, i) => (
+                                {item?.recommendJobGroupNames.map((name, i) => (
+                                  <Chip
+                                    key={`job_${i}`}
+                                    chipColor={jobColorKey(item?.recommendJobGroups[i])}
+                                    radius={4}
+                                    className="tw-mr-2"
+                                    variant="outlined"
+                                  >
+                                    {name}
+                                  </Chip>
+                                ))}
+                                {item?.recommendJobNames.map((name, i) => (
                                   <Chip
                                     key={`job_${i}`}
                                     chipColor={jobColorKey(item?.recommendJobGroups[i])}
