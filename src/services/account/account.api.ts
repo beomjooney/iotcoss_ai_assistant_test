@@ -19,7 +19,13 @@ export async function memberLogin() {
 export async function memberInfo(memberId: string) {
   const { data } = await axiosGeneralAPI().get(`/api/v1/members/profile`);
   // const { data } = await axiosGeneralAPI().get(`/members/${memberId}`);
-  return data;
+  return data.data;
+}
+// 회원 섬머리 조회
+export async function memberSummaryInfo() {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/members/activity/summary`);
+  // const { data } = await axiosGeneralAPI().get(`/members/${memberId}`);
+  return data.data;
 }
 
 // 회원 정보 수정

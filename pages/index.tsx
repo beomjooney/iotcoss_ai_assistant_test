@@ -14,7 +14,7 @@ export function IndexPage() {
   }));
 
   const { setUser, setHasResumeStory } = useStore();
-  useMemberInfo(memberId, data1 => setUser({ user: data1 }));
+  useMemberInfo(memberId, data => setUser({ user: data }));
   // TODO 멘티용 API 따로 생기면 셋팅 필요
   // 홈 화면에 성장스토리 여부에 따라 버튼 명칭 달라져서 로그인 시 호출
   const { data: userResumeStory } = useMentor(logged ? memberId : null);
