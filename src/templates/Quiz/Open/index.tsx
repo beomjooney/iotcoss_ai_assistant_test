@@ -6,7 +6,7 @@ import { RecommendContent, SeminarImages } from 'src/models/recommend';
 import { useSeminarList, paramProps, useSeminarImageList } from 'src/services/seminars/seminars.queries';
 import QuizArticleCard from 'src/stories/components/QuizArticleCard';
 import Carousel from 'nuka-carousel';
-import { useContentTypes, useJobGroups, useJobGroupss } from 'src/services/code/code.queries';
+import { useContentJobTypes, useContentTypes, useJobGroups, useJobGroupss } from 'src/services/code/code.queries';
 import { useStore } from 'src/store';
 import { useRouter } from 'next/router';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -297,7 +297,7 @@ const contentQuizTypes = [
 const cx = classNames.bind(styles);
 
 export function QuizOpenTemplate() {
-  const { jobGroups, setJobGroups, contentTypes, setContentTypes } = useStore();
+  const { contentTypes, setContentTypes } = useStore();
   const [searchParams, setSearchParams] = useState({});
   const onChangeKeyword = event => {
     const { name, value } = event.currentTarget;
@@ -366,7 +366,7 @@ export function QuizOpenTemplate() {
   const [totalPage, setTotalPage] = useState(1);
   const [jobGroupsFilter, setJobGroupsFilter] = useState([]);
   const [levelsFilter, setLevelsFilter] = useState([]);
-
+  const [jobGroups, setJobGroups] = useState<any[]>([]);
   const [seminarFilter, setSeminarFilter] = useState(['0002']);
   const [paramss, setParamss] = useState({});
   const [params, setParams] = useState<paramProps>({ page });
@@ -375,12 +375,13 @@ export function QuizOpenTemplate() {
   const [quizList, setQuizList] = useState<any[]>([]);
   const [quizListParam, setQuizListParam] = useState<any[]>([]);
 
-  const { isFetched: isJobGroupFetched } = useJobGroups(data => setJobGroups(data || []));
+  const { isFetched: isJobGroupFetched } = useJobGroups(data => setJobGroups(data.data.contents || []));
   const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
   const { data: experienceData }: UseQueryResult<ExperiencesResponse> = useExperiences();
   const { data: jobsData, refetch }: UseQueryResult<any> = useJobs();
   const { data: myJobsData, refetch: refetchMyJob }: UseQueryResult<any> = useMyJobs(params);
 
+  console.log('jobsData popyp', jobsData);
   console.log('myJobsData popyp', myJobsData);
 
   const [skillIds, setSkillIds] = useState<any[]>([]);
