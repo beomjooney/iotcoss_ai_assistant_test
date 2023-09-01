@@ -73,11 +73,7 @@ function createAxios(requestConfig: RequestConfig): AxiosInstance {
           token: process.env['NEXT_PUBLIC_GUEST_TOKEN'],
           roles: userData.sub !== 'Guest' ? userData.roles : [],
         });
-<<<<<<< HEAD
         // setCookie('access_token', process.env['NEXT_PUBLIC_GUEST_TOKEN']);
-=======
-        //setCookie('access_token', process.env['NEXT_PUBLIC_GUEST_TOKEN']);
->>>>>>> f36d69e053a92afeef1c24bd7e0aa037778593d9
         if (data.code === 'CO4007') throw new LoginError();
         throw new AuthError();
       }
