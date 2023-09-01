@@ -5,7 +5,7 @@
 .my-career-mobile {
   position: relative;
   margin-top: 20px;
-  padding:20px;
+  padding: 20px;
   // display: flex;
   // flex-direction: row;
 
@@ -17,7 +17,7 @@
       font-size: font.$font-size-16 !important;
       // line-height: 2.5rem;
       // margin-bottom: 20px;
-      padding:5px;
+      padding: 5px;
     }
 
     .lnb-content {
@@ -70,7 +70,6 @@
   }
 
   .page-area-mobile {
-
     &__container {
       padding: 20px;
       padding-bottom: 48px;
@@ -106,7 +105,7 @@
 
 .my-career {
   position: relative;
-  margin-top: 104px;
+  margin-top: 50px;
   display: flex;
   flex-direction: row;
 
@@ -179,8 +178,6 @@
     &__container {
       padding: 32px;
       padding-bottom: 48px;
-      border-radius: 5px;
-      border: 0.5px solid palette.$Primary-Gray600;
 
       > h3 {
         //margin-bottom: 90px;

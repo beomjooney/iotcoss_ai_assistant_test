@@ -1,5 +1,5 @@
 import { useQuery } from 'react-query';
-import { login, memberInfo, memberLogin, termsInfo } from './account.api';
+import { login, memberInfo, memberLogin, memberSummaryInfo, termsInfo } from './account.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 import { User } from 'src/models/user';
 import { Terms, Token } from 'src/models/account';
@@ -10,6 +10,14 @@ export const useTestData = () =>
     enabled: false,
   });
 
+export const useMemberSummaryInfo = (onSuccess?: (data: User) => void, onError?: (error: Error) => void) =>
+  useQuery<User, Error>(QUERY_KEY_FACTORY('MEMBER').details(), () => memberSummaryInfo(), {
+    onSuccess,
+    onError,
+    refetchOnWindowFocus: false,
+    // enabled: !!memberId && memberId !== 'Guest',
+    // staleTime: 10 * 60 * 1000, // 10분 유지
+  });
 export const useMemberInfo = (memberId: any, onSuccess?: (data: User) => void, onError?: (error: Error) => void) =>
   useQuery<User, Error>(QUERY_KEY_FACTORY('MEMBER').details(), () => memberInfo(memberId), {
     onSuccess,

@@ -7,7 +7,14 @@ import {
   SeminarParticipant,
 } from 'src/models/recommend';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
-import { mySeminarList, seminarDetail, seminarImageList, seminarList, seminarParticipantList } from './seminars.api';
+import {
+  mySeminarList,
+  seminarDetail,
+  seminarImageList,
+  seminarList,
+  seminarMeList,
+  seminarParticipantList,
+} from './seminars.api';
 
 export interface paramProps {
   seminarType?: string;
@@ -31,6 +38,22 @@ export const useSeminarList = (
   return useQuery<RecommendContentsResponse, Error>(
     QUERY_KEY_FACTORY('SEMINAR').list({ size: DEFAULT_SIZE, ...params }),
     () => seminarList({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: true,
+    },
+  );
+};
+export const useSeminarMeList = (
+  params?: paramProps,
+  onSuccess?: (data: RecommendContentsResponse) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 10;
+  return useQuery<RecommendContentsResponse, Error>(
+    QUERY_KEY_FACTORY('SEMINAR').list({ size: DEFAULT_SIZE, ...params }),
+    () => seminarMeList({ size: DEFAULT_SIZE, ...params }),
     {
       onSuccess,
       onError,
