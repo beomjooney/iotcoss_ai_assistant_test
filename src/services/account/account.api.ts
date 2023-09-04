@@ -36,7 +36,7 @@ export const deleteMember = async memberId => await axiosGeneralAPI().delete(`/m
 
 // 서비스 이용 약관 조회
 export async function termsInfo(params: any) {
-  const { data } = await axiosGeneralAPI().get(`/terms?type=${params.type}`);
+  const { data } = await axiosGeneralAPI().get(`/api/v1/terms?typeCode=${params.type}`);
   return data;
 }
 

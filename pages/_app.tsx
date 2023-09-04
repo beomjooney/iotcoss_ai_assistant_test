@@ -65,12 +65,9 @@ function CustomApp({ Component, pageProps = {}, session }: AppPropsWithLayout) {
       <Head>
         <title>데브어스</title>
         <meta name="description" content="데브어스" />
-        <meta
-          name="keywords"
-          content="커리어멘토스, 커멘, 커멘토링, 커리어, 멘토링, 커리어서비스, 멘토링 서비스, camen, careermentors"
-        />
-        <meta name="application-name" content="커리어멘토스" />
-        <meta name="application-mobile-web-app-title" content="커리어멘토스" />
+        <meta name="keywords" content="데브어스, devus" />
+        <meta name="application-name" content="데브어스" />
+        <meta name="application-mobile-web-app-title" content="데브어스" />
         {/* <meta name="viewport" content="width=1200" /> */}
         <link rel="shortcut icon" href="#" />
         <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/icons/favicon-16x16.png" />

@@ -11,7 +11,7 @@ import {
 } from 'src/services/account/account.mutations';
 import Image from 'next/image';
 import { useUploadImage } from 'src/services/image/image.mutations';
-import { useMemberInfo } from 'src/services/account/account.queries';
+import { useMemberInfo, useTermsList } from 'src/services/account/account.queries';
 import { useSessionStore } from 'src/store/session';
 import { User } from 'src/models/user';
 import Chip from '@mui/material/Chip';
@@ -23,10 +23,27 @@ import * as Yup from 'yup';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import isURL from 'validator/lib/isURL';
-
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import Link from '@mui/material/Link';
+import CheckIcon from '@mui/icons-material/Check';
+import Divider from '@mui/material/Divider';
+import Dialog, { DialogProps } from '@mui/material/Dialog';
+import { UseQueryResult } from 'react-query';
+import DialogTitle from '@mui/material/DialogTitle';
+import IconButton from '@mui/material/IconButton';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import CloseIcon from '@mui/icons-material/Close';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
 const cx = classNames.bind(styles);
 
 export function MemberEditTemplate() {
+  const [open, setOpen] = React.useState(false);
   const { user, setUser } = useStore();
   const { memberId } = useSessionStore.getState();
   const [userInfo, setUserInfo] = useState<User>(user);
@@ -46,6 +63,7 @@ export function MemberEditTemplate() {
   const [isDisabledPhone, setIsDisabledPhone] = useState<boolean>(false);
   const [isDisabledOtp, setIsDisabledOtp] = useState<boolean>(true);
   const [isDisabledTimer, setIsDisabledTimer] = useState<boolean>(true);
+  const [termsParams, setTermsParams] = useState<any>({ type: '0001' });
 
   // ** SNS URL
   const [youtubeUrl, setYoutubeUrl] = useState('');
@@ -58,6 +76,21 @@ export function MemberEditTemplate() {
   // ** Timer
   const [min, setMin] = useState(0);
   const [sec, setSec] = useState(0);
+  const [CheckList, setCheckList] = useState([]);
+  const [CheckMarketingList, setCheckMarketingList] = useState([]);
+  const [IdList, setIdList] = useState(['serviceTerms', 'privateTerms', 'marketing']);
+  const [marketingList, setMarketingList] = useState(['email', 'sms', 'kakao']);
+  const [allTerm, setAllTerm] = useState<boolean>(false);
+  const [serviceTerm, setServiceTerm] = useState<boolean>(false);
+  const [privateTerm, setPrivateTerm] = useState<boolean>(false);
+  const [marketing, setMarketing] = useState<boolean>(false);
+  const [email, setEmail] = useState<boolean>(false);
+  const [kakao, setKakao] = useState<boolean>(false);
+  const [snsFlag, setSnsFlag] = useState(false);
+  const [sms, setSms] = useState<boolean>(false);
+  const [urlError, setUrlError] = useState('');
+  const [scroll, setScroll] = React.useState<DialogProps['scroll']>('paper');
+
   useMemberInfo(memberId, user => {
     setUserInfo(user);
   });
@@ -90,6 +123,93 @@ export function MemberEditTemplate() {
   const focusFacebook_Ref = useRef(null);
   const focusInstargram_Ref = useRef(null);
   const focusSns_Ref = useRef(null);
+  const checkboxref = useRef(null);
+
+  // 약관 조회
+  const {
+    data: termList,
+    isLoading: termListLoading,
+    refetch,
+  }: UseQueryResult<any> = useTermsList(
+    paramsWithDefault({
+      ...termsParams,
+    }),
+  );
+
+  useEffect(() => {
+    refetch();
+  }, [termsParams]);
+
+  const onReply = function (typeCode: string, scrollType: DialogProps['scroll']) {
+    setTermsParams({ type: typeCode });
+    setOpen(true);
+    setScroll(scrollType);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const descriptionElementRef = React.useRef<HTMLElement>(null);
+  const onChangeMarketingEach = (e, id) => {
+    console.log(id, e.target.checked);
+    if (id === 'email') {
+      setEmail(e.target.checked);
+    } else if (id === 'sms') {
+      setSms(e.target.checked);
+    } else if (id === 'kakao') {
+      setKakao(e.target.checked);
+    }
+    if (e.target.checked) {
+      setCheckMarketingList([...CheckMarketingList, id]);
+    } else {
+      setCheckMarketingList(CheckMarketingList.filter(checkedId => checkedId !== id));
+    }
+  };
+
+  const onChangeMarketingAll = (e, id) => {
+    setEmail(e.target.checked);
+    setSms(e.target.checked);
+    setKakao(e.target.checked);
+    if (e.target.checked) {
+      setCheckList([...CheckList, id]);
+      // 체크 해제할 시 CheckList에서 해당 id값이 `아닌` 값만 배열에 넣기
+    } else {
+      setCheckList(CheckList.filter(checkedId => checkedId !== id));
+    }
+    setCheckMarketingList(e.target.checked ? marketingList : []);
+  };
+
+  const onChangeEach = (e, id) => {
+    console.log(id, e.target.checked);
+    if (id === 'serviceTerms') {
+      setServiceTerm(e.target.checked);
+    } else if (id === 'privateTerms') {
+      setPrivateTerm(e.target.checked);
+    } else if (id === 'marketing') {
+      setMarketing(e.target.checked);
+    }
+
+    // 체크할 시 CheckList에 id값 넣기
+    if (e.target.checked) {
+      setCheckList([...CheckList, id]);
+      // 체크 해제할 시 CheckList에서 해당 id값이 `아닌` 값만 배열에 넣기
+    } else {
+      setCheckList(CheckList.filter(checkedId => checkedId !== id));
+    }
+  };
+
+  const onChangeAll = e => {
+    setCheckList(e.target.checked ? IdList : []);
+    setCheckMarketingList(e.target.checked ? marketingList : []);
+    setAllTerm(e.target.checked);
+    setServiceTerm(e.target.checked);
+    setPrivateTerm(e.target.checked);
+    setMarketing(e.target.checked);
+    setEmail(e.target.checked);
+    setSms(e.target.checked);
+    setKakao(e.target.checked);
+  };
 
   const handleSubmit = () => {
     if (nicknameEditMode || phoneEditMode) {
@@ -489,12 +609,8 @@ export function MemberEditTemplate() {
         </div>
       </div>
       <div className={cx('sub-content')}>
-        <div className={cx('choice-title')}>
+        {/* <div className={cx('choice-title')}>
           <h4>마케팅 수신동의 (선택)</h4>
-          {/*TODO 약관 2차 오픈*/}
-          {/*<Button type="button" color="secondary">*/}
-          {/*  약관보기*/}
-          {/*</Button>*/}
         </div>
         <div className={cx('choice-content')}>
           <span className={cx('checkbox-title')}>이메일 수신</span>
@@ -582,8 +698,251 @@ export function MemberEditTemplate() {
               className={cx('check-box')}
             />
           </div>
-        </div>
+        </div> */}
+
+        <Grid container direction="row" justifyContent="space-between" alignItems="center">
+          <Grid item xs={10}>
+            <Box display="flex" justifyContent="flex-start">
+              <FormGroup sx={{ fontWeight: 'bold' }}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      value="ALL"
+                      onChange={onChangeAll}
+                      checked={CheckList.length === IdList.length}
+                      icon={<CheckBoxOutlinedIcon />}
+                      checkedIcon={<CheckBoxOutlinedIcon />}
+                      sx={{
+                        color: '#c7c7c7',
+                        '& .MuiSvgIcon-root': { fontSize: 24 },
+                      }}
+                    />
+                  }
+                  label={
+                    <Typography variant="h6" sx={{ fontWeight: '600', color: 'black' }}>
+                      전체 동의하기
+                    </Typography>
+                  }
+                />
+              </FormGroup>
+            </Box>
+          </Grid>
+          <Box sx={{ marginLeft: 4, fontSize: 14, color: 'black' }}>
+            전체동의는 선택목적에 대한 동의를 포함하고 있으며, 선택목적에 대한 동의를 거부해도 서비스 이용이 가능합니다.
+          </Box>
+        </Grid>
+        <Divider variant="middle" sx={{ borderColor: 'rgba(0, 0, 0, 0.9);', margin: '20px 0px 10px 0px' }} />
+        <Grid container direction="row" justifyContent="space-between" alignItems="center">
+          <Grid item xs={10}>
+            <Box display="flex" justifyContent="flex-start">
+              <FormGroup sx={{ fontWeight: 'bold' }}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      onChange={e => onChangeEach(e, IdList[0])}
+                      checked={CheckList.includes(IdList[0])}
+                      value={IdList[0]}
+                      icon={<CheckBoxOutlinedIcon />}
+                      checkedIcon={<CheckBoxOutlinedIcon />}
+                      ref={checkboxref}
+                      sx={{
+                        color: '#c7c7c7',
+                        '& .MuiSvgIcon-root': { fontSize: 24 },
+                      }}
+                    />
+                  }
+                  label={
+                    <Typography sx={{ fontSize: 14, color: 'black', fontWeight: 'bold' }}>
+                      (필수) 서비스
+                      <Link
+                        href="#"
+                        underline="always"
+                        onClick={() => {
+                          onReply('0001', 'paper');
+                        }}
+                      >
+                        <span className="tw-underline">이용약관</span>
+                      </Link>{' '}
+                      동의
+                    </Typography>
+                  }
+                />
+              </FormGroup>
+            </Box>
+          </Grid>
+        </Grid>
+
+        <Grid container direction="row" justifyContent="space-between" alignItems="center">
+          <Grid item xs={10}>
+            <Box display="flex" justifyContent="flex-start">
+              <FormGroup sx={{ fontWeight: 'bold' }}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      onChange={e => onChangeEach(e, IdList[1])}
+                      checked={CheckList.includes(IdList[1])}
+                      value={IdList[1]}
+                      icon={<CheckBoxOutlinedIcon />}
+                      checkedIcon={<CheckBoxOutlinedIcon />}
+                      sx={{
+                        color: '#c7c7c7',
+                        '& .MuiSvgIcon-root': { fontSize: 24 },
+                      }}
+                    />
+                  }
+                  label={
+                    <Typography sx={{ fontSize: 14, color: 'black', fontWeight: 'bold' }}>
+                      (필수){' '}
+                      <Link
+                        href="#"
+                        underline="always"
+                        onClick={() => {
+                          onReply('0001', 'paper');
+                        }}
+                      >
+                        <span className="tw-underline">개인정보 처리 방침</span>
+                      </Link>
+                      에 동의
+                    </Typography>
+                  }
+                />
+              </FormGroup>
+            </Box>
+          </Grid>
+        </Grid>
+
+        <Divider variant="middle" sx={{ borderColor: 'rgba(0, 0, 0, 0.9);', margin: '10px 0px 10px 0px' }} />
+
+        <Grid container direction="row" justifyContent="space-between" alignItems="center">
+          <Grid item xs={10}>
+            <Box display="flex" justifyContent="flex-start">
+              <FormGroup sx={{ fontWeight: 'bold' }}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      onChange={e => onChangeMarketingAll(e, IdList[2])}
+                      checked={CheckMarketingList.length >= 1}
+                      value={IdList[2]}
+                      icon={<CheckBoxOutlinedIcon />}
+                      checkedIcon={<CheckBoxOutlinedIcon />}
+                      sx={{
+                        color: '#c7c7c7',
+                        '& .MuiSvgIcon-root': { fontSize: 24 },
+                      }}
+                    />
+                  }
+                  label={
+                    <Typography sx={{ fontSize: 14, color: 'black', fontWeight: 'bold' }}>
+                      [선택] 이벤트 등 프로모션 알림 수신
+                    </Typography>
+                  }
+                />
+              </FormGroup>
+            </Box>
+          </Grid>
+          <Grid item xs={2}></Grid>
+        </Grid>
+
+        <Grid container direction="row" alignItems="center" sx={{ marginLeft: 4 }}>
+          <Grid item xs={3}>
+            <Box display="flex">
+              <FormGroup sx={{ fontWeight: 'bold' }}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      onChange={e => onChangeMarketingEach(e, marketingList[0])}
+                      checked={CheckMarketingList.includes(marketingList[0])}
+                      value={marketingList[0]}
+                      icon={<CheckBoxOutlinedIcon />}
+                      checkedIcon={<CheckBoxOutlinedIcon />}
+                      sx={{
+                        color: '#c7c7c7',
+                        '& .MuiSvgIcon-root': { fontSize: 24 },
+                      }}
+                    />
+                  }
+                  label={<Typography sx={{ fontSize: 14, color: 'black', fontWeight: 'bold' }}>이메일 수신</Typography>}
+                />
+              </FormGroup>
+            </Box>
+          </Grid>
+          <Grid item xs={3}>
+            <Box display="flex" justifyContent="flex-start" sx={{ fontWeight: 'bold' }}>
+              <FormGroup sx={{ fontWeight: 'bold' }}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      onChange={e => onChangeMarketingEach(e, marketingList[1])}
+                      checked={CheckMarketingList.includes(marketingList[1])}
+                      value={marketingList[1]}
+                      icon={<CheckBoxOutlinedIcon />}
+                      checkedIcon={<CheckBoxOutlinedIcon />}
+                      sx={{
+                        color: '#c7c7c7',
+                        '& .MuiSvgIcon-root': { fontSize: 24 },
+                      }}
+                    />
+                  }
+                  label={<Typography sx={{ fontSize: 14, color: 'black', fontWeight: 'bold' }}>문자 수신</Typography>}
+                />
+              </FormGroup>
+            </Box>
+          </Grid>
+          <Grid item xs={4}>
+            <Box display="flex" justifyContent="flex-start" sx={{ fontWeight: 'bold' }}>
+              <FormGroup sx={{ fontWeight: 'bold' }}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      onChange={e => onChangeMarketingEach(e, marketingList[2])}
+                      checked={CheckMarketingList.includes(marketingList[2])}
+                      value={marketingList[2]}
+                      icon={<CheckBoxOutlinedIcon />}
+                      checkedIcon={<CheckBoxOutlinedIcon />}
+                      sx={{
+                        color: '#c7c7c7',
+                        '& .MuiSvgIcon-root': { fontSize: 24 },
+                      }}
+                    />
+                  }
+                  label={<Typography sx={{ fontSize: 14, color: 'black', fontWeight: 'bold' }}>카카오 수신</Typography>}
+                />
+              </FormGroup>
+            </Box>
+          </Grid>
+        </Grid>
       </div>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        scroll={scroll}
+        aria-labelledby="scroll-dialog-title"
+        aria-describedby="scroll-dialog-description"
+        sx={{ maxHeight: '60vh', top: '22%', left: '0', overflowY: 'auto' }}
+      >
+        <DialogTitle id="scroll-dialog-title" sx={{ m: 0, p: 2, textAlign: 'center' }}>
+          <Typography sx={{ fontWeight: 'bold', fontSize: '15px' }}>이용약관</Typography>
+          {handleClose ? (
+            <IconButton
+              aria-label="close"
+              onClick={handleClose}
+              sx={{
+                position: 'absolute',
+                right: 8,
+                top: 8,
+                color: theme => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+          ) : null}
+        </DialogTitle>
+        <DialogContent dividers={scroll === 'paper'}>
+          <DialogContentText id="scroll-dialog-description" ref={descriptionElementRef} tabIndex={-1}>
+            <div dangerouslySetInnerHTML={{ __html: termList?.data?.content }}></div>
+          </DialogContentText>
+        </DialogContent>
+      </Dialog>
       <div className="row justify-content-center">
         {/*<div className="col-md-6 mt-lg-5">*/}
         <Button size="my-page" type="submit" onClick={() => handleSubmit()} className={cx('footer-button', 'mb-5')}>
@@ -618,3 +977,12 @@ export function MemberEditTemplate() {
 }
 
 export default MemberEditTemplate;
+const paramsWithDefault = (params: any) => {
+  const defaultParams: any = {
+    type: '0001',
+  };
+  return {
+    ...defaultParams,
+    ...params,
+  };
+};

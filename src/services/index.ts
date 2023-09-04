@@ -77,11 +77,11 @@ function createAxios(requestConfig: RequestConfig): AxiosInstance {
         // setCookie('access_token', process.env['NEXT_PUBLIC_GUEST_TOKEN']);
         console.log(data.code);
         if (data.code === 'CO4007') {
-          // deleteCookie('access_token');
-          // localStorage.removeItem('auth-store');
-          // localStorage.removeItem('app-storage');
-          // window.location.href = '/account/login';
-          // throw new LoginError();
+          deleteCookie('access_token');
+          localStorage.removeItem('auth-store');
+          localStorage.removeItem('app-storage');
+          window.location.href = '/account/login';
+          throw new LoginError();
         }
         throw new AuthError();
       }

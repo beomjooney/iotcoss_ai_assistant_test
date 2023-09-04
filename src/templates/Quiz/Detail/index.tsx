@@ -40,6 +40,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
   const [isModalCancelOpen, setIsModalCancelOpen] = useState<boolean>(false);
   const [myParticipation, setMyParticipation] = useState(null);
   const [restTime, setRestTime] = useState(0);
+  const [clubStatus, setClubStatus] = useState('0000');
   const [applicationButton, setApplicationButton] = useState<ReactNode>(null);
   const { memberId, logged } = useSessionStore.getState();
 
@@ -53,7 +54,8 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
   //   },
   // );
 
-  const { data } = useSeminarDetail(id, data => {
+  const { data, refetch } = useSeminarDetail(id, data => {
+    setClubStatus(data?.clubStatus);
     // setRestTime(moment(data?.seminarRegistrationEndDate, 'YYYY-MM-DD HH:mm:ss').diff(moment(), 'hours'));
   });
 
@@ -91,6 +93,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
     // }
 
     onParticipant({ clubSequence: id });
+    setClubStatus('0000');
     //setIsModalOpen(false);
     //setIsModalCancelOpen(false);
     // setApplicationButton(<Button color="lite-gray" label="승인 대기 중" size="large" />);
@@ -326,25 +329,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                   </TabPanel>
                 </div>
               )}
-              {data?.isJoined ? (
-                <button
-                  type="button"
-                  className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
-                >
-                  <Link href="/quiz/solution" className="nav-link">
-                    퀴즈풀러가기
-                  </Link>
-                </button>
-              ) : null}
-              {data?.isJoined === false && data?.isLeader === false && data?.clubStatus === '0003' ? (
-                <button
-                  type="button"
-                  className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
-                  // onClick={() => handleParticipant()}
-                >
-                  참여예정
-                </button>
-              ) : (
+              {clubStatus === '0006' ? (
                 <button
                   type="button"
                   className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
@@ -352,7 +337,47 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                 >
                   참여하기
                 </button>
-              )}
+              ) : clubStatus === '0004' ? (
+                <div>
+                  {/* 추가 조건 */}
+                  {data?.isJoined === true ? (
+                    <button
+                      type="button"
+                      className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
+                    >
+                      퀴즈클럽에 가입되었습니다.
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
+                    >
+                      클럽스터디 시작, 퀴즈풀러가기
+                    </button>
+                  )}
+                </div>
+              ) : clubStatus === '0000' ? (
+                <button
+                  type="button"
+                  className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
+                >
+                  퀴즈클럽에 가입되었습니다.
+                </button>
+              ) : clubStatus === '0005' ? (
+                <button
+                  type="button"
+                  className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
+                >
+                  클럽스터디 완료
+                </button>
+              ) : clubStatus === '0007' ? (
+                <button
+                  type="button"
+                  className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
+                >
+                  모집기간 끝
+                </button>
+              ) : null}
             </div>
           </div>
         </div>

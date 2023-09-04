@@ -74,7 +74,7 @@ export function LoginTemplate({ onSubmitLogin }: LoginTemplateProps) {
           데브어스에<br></br> 오신 것을 환영합니다!
           <br />
         </p>
-        <div className={cx('button-area')}>
+        <div className={cx('button-area', 'tw-mt-10')}>
           <Button type="submit" color="kakao" size="medium" onClick={handleLogin}>
             <img src="/assets/images/account/kakao.svg" alt="카카오 로그인" className={cx('image-login')} />
             <Typography sx={{ fontWeight: '600', fontSize: 16 }}>카카오 1초 로그인/회원가입</Typography>
