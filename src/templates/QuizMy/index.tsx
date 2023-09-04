@@ -90,7 +90,7 @@ export function QuizMyTemplate() {
   const [jobGroupsFilter, setJobGroupsFilter] = useState([]);
   const [levelsFilter, setLevelsFilter] = useState([]);
   const [seminarFilter, setSeminarFilter] = useState(['0002']);
-  const [params, setParams] = useState<paramProps>({ page, clubStatus:'0004' });
+  const [params, setParams] = useState<paramProps>({ page, clubStatus: '0004' });
   const [contents, setContents] = useState<RecommendContent[]>([]);
   const [images, setSeminarImages] = useState<any[]>([]);
   const [recommendJobGroup, setRecommendJobGroup] = useState<any[]>([]);
@@ -108,7 +108,6 @@ export function QuizMyTemplate() {
     setContents(data.data.contents || []);
     setTotalPage(data.data.totalPages);
   });
-
 
   const { isFetched: isContentTypeFetched } = useContentTypes(data => {
     setContentTypes(data.data.contents || []);
@@ -165,7 +164,7 @@ export function QuizMyTemplate() {
         <div className="tw-py-5">
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
             <Grid item xs={4} className="tw-font-bold tw-text-3xl tw-text-black">
-              퀴즈클럽 > 내가 만든 클럽
+              퀴즈클럽 &gt 내가 만든 클럽
             </Grid>
             <Grid item xs={5} className="tw-font-semi tw-text-base tw-text-black">
               내가 만든 클럽 페이지에 관한 간단한 설명란
@@ -205,44 +204,44 @@ export function QuizMyTemplate() {
                     }}
                     className={cx('fixed-width')}
                   />
-                      <Toggle
+                  <Toggle
                     label="진행예정"
                     name="진행예정"
                     value=""
                     variant="small"
                     checked={active === 1}
-                        isActive
-                        type="tabButton"
-                        onChange={() => {
-                          setActive(1);
-                          setParams({
-                            ...params,
-                            clubStatus: "0003",
-                            page,
-                          });
-                          setPage(1);
-                        }}
-                        className={cx('fixed-width', 'tw-ml-4')}
-                      />
-                      <Toggle
+                    isActive
+                    type="tabButton"
+                    onChange={() => {
+                      setActive(1);
+                      setParams({
+                        ...params,
+                        clubStatus: '0003',
+                        page,
+                      });
+                      setPage(1);
+                    }}
+                    className={cx('fixed-width', 'tw-ml-4')}
+                  />
+                  <Toggle
                     label="종료"
                     name="종료"
                     value=""
                     variant="small"
                     checked={active === 2}
-                        isActive
-                        type="tabButton"
-                        onChange={() => {
-                          setActive(2);
-   setParams({
-                            ...params,
-                            clubStatus: "0005",
-                            page,
-                          });
-                          setPage(1);
-                        }}
-                        className={cx('fixed-width', 'tw-ml-4')}
-                      />
+                    isActive
+                    type="tabButton"
+                    onChange={() => {
+                      setActive(2);
+                      setParams({
+                        ...params,
+                        clubStatus: '0005',
+                        page,
+                      });
+                      setPage(1);
+                    }}
+                    className={cx('fixed-width', 'tw-ml-4')}
+                  />
                 </div>
               </div>
             </Grid>

@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@bit/lubuskie.material-ui.multiple-select-chips": "^1.0.5",
     "@bootpay/client-js": "^4.2.6",
     "@emotion/react": "11.10.0",
     "@emotion/styled": "11.10.0",

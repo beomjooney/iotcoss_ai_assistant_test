@@ -8,6 +8,7 @@ interface Props extends Partial<Omit<HTMLImageElement, 'style'>> {
 
 const Image: FC<Props> = ({ fill = false, className, alt = '', style, onLoadingComplete, ...args }) => {
   return (
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //   @ts-ignore
     <img
       {...args}
