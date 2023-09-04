@@ -335,17 +335,24 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                   className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
                   onClick={() => handleParticipant()}
                 >
-                  참여하기
+                  클럽 참여하기
                 </button>
               ) : clubStatus === '0004' ? (
                 <div>
                   {/* 추가 조건 */}
-                  {data?.isJoined === true ? (
+                  {data?.clubMemberStatus === '0001' ? (
                     <button
                       type="button"
                       className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
                     >
-                      퀴즈클럽에 가입되었습니다.
+                      퀴즈클럽에 승인 요청중입니다.
+                    </button>
+                  ) : data?.clubMemberStatus === '0002' ? (
+                    <button
+                      type="button"
+                      className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
+                    >
+                      클럽스터디 승인 완료
                     </button>
                   ) : (
                     <button
@@ -361,7 +368,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                   type="button"
                   className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
                 >
-                  퀴즈클럽에 가입되었습니다.
+                  퀴즈클럽에 승인 요청중입니다.
                 </button>
               ) : clubStatus === '0005' ? (
                 <button
