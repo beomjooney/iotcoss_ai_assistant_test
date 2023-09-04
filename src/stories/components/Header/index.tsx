@@ -9,7 +9,6 @@ import { deleteCookie } from 'cookies-next';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import Box from '@mui/material/Box';
 import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -25,6 +24,15 @@ import AddLinkIcon from '@mui/icons-material/AddLink';
 import { Typography } from '../index';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 import ListItem from '@mui/material/ListItem';
+import Tooltip from '@mui/material/Tooltip';
+import Avatar from '@mui/material/Avatar';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import PersonAdd from '@mui/icons-material/PersonAdd';
+import Settings from '@mui/icons-material/Settings';
+import Logout from '@mui/icons-material/Logout';
+import { useStore } from 'src/store';
 export interface NavbarProps {
   /** 테마 색상 */
   darkBg?: boolean;
@@ -41,7 +49,18 @@ const cx = classNames.bind(styles);
 const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
   const { logged, roles } = useSessionStore.getState();
 
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClicks = (event: React.MouseEvent<HTMLElement>) => {
+    console.log('kimcy', event.currentTarget);
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   const router = useRouter();
+  const { user, setUser } = useStore();
   const [scroll, setScroll] = useState(0);
   const [headerTop, setHeaderTop] = useState(0);
   const [buttonName, setButtonName] = useState<string>('로그인');
@@ -64,9 +83,9 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
             <Button className="tw-mr-4" size="small" color="primary" onClick={() => (location.href = '/quiz-make')}>
               퀴즈 만들기
             </Button>
-            <Button size="small" color="primary" onClick={handleLogout}>
+            {/* <Button size="small" color="primary" onClick={handleLogout}>
               로그아웃
-            </Button>
+            </Button> */}
           </li>,
         )
       : setLogoutButton(null);
@@ -104,7 +123,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
   const handleClick = async () => {
     setMenuOpen(false);
     if (logged) {
-      await router.push('/account/my/growth-story');
+      await router.push('/account/my/club-waiting');
     } else {
       await router.push('/account/login');
     }
@@ -198,9 +217,9 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
       })}
       <ListItemButton>
         <li className={cx('custom-item', 'pt-3')}>
-          <Button size="small" color="primary" onClick={handleClick}>
+          {/* <Button size="small" color="primary" onClick={handleClick}>
             {buttonName}
-          </Button>
+          </Button> */}
         </li>
         <li className={cx('custom-item', 'pt-3')}>{adminButton}</li>
         <li className={cx('custom-item', 'pt-3')}>{logoutButton}</li>
@@ -280,7 +299,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                                   setIsShowMenu(!isShowMenu);
                                 }}
                               >
-                                {menu.title}
+                                <div className="tw-text-base tw-font-light">{menu.title}</div>
                               </a>
                             </Link>
                           );
@@ -289,13 +308,82 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                     </li>
                   );
                 })}
-                <li className={cx('custom-item')}>
+                {/* <li className={cx('custom-item')}>
                   <Button size="small" color="primary" onClick={handleClick}>
                     {buttonName}
                   </Button>
-                </li>
+                </li> */}
                 {adminButton}
                 {logoutButton}
+                {logged && (
+                  <li className={cx('nav-item')}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
+                      <Tooltip title="Account settings">
+                        <IconButton
+                          onClick={handleClicks}
+                          size="small"
+                          sx={{ ml: 1, p: 0 }}
+                          aria-controls={open ? 'account-menu' : undefined}
+                          aria-haspopup="true"
+                          aria-expanded={open ? 'true' : undefined}
+                        >
+                          <Avatar sx={{ width: 32, height: 32 }} src={user?.profileImageUrl}>
+                            M
+                          </Avatar>
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                    <Menu
+                      anchorEl={anchorEl}
+                      id="account-menu"
+                      open={open}
+                      onClose={handleClose}
+                      onClick={handleClose}
+                      PaperProps={{
+                        elevation: 0,
+                        sx: {
+                          overflow: 'visible',
+                          filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                          mt: 1.5,
+                          '& .MuiAvatar-root': {
+                            width: 32,
+                            height: 32,
+                            ml: -0.5,
+                            mr: 1,
+                          },
+                          '&:before': {
+                            content: '""',
+                            display: 'block',
+                            position: 'absolute',
+                            top: 0,
+                            right: 14,
+                            width: 10,
+                            height: 10,
+                            bgcolor: 'background.paper',
+                            transform: 'translateY(-50%) rotate(45deg)',
+                            zIndex: 0,
+                          },
+                        },
+                      }}
+                      transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                      anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                    >
+                      <MenuItem onClick={handleClose}>
+                        <Avatar /> Profile
+                      </MenuItem>
+                      <MenuItem onClick={handleClick}>
+                        <Avatar /> My account
+                      </MenuItem>
+                      <Divider />
+                      <MenuItem onClick={handleLogout}>
+                        <ListItemIcon>
+                          <Logout fontSize="small" />
+                        </ListItemIcon>
+                        Logout
+                      </MenuItem>
+                    </Menu>
+                  </li>
+                )}
               </ul>
             </div>
           </div>

@@ -44,6 +44,7 @@ import { ExperiencesResponse } from 'src/models/experiences';
 import { TagsInput } from 'react-tag-input-component';
 import { useDeletePost } from 'src/services/community/community.mutations';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
+import { makeStyles } from '@material-ui/core';
 
 interface BoardListItemType {
   id: number;
@@ -90,7 +91,7 @@ const levelGroup = [
   },
 ];
 
-const options = ['퀴즈 수정하기', '삭제하기', '퀴즈 비공개'];
+const options = ['삭제하기', '퀴즈 비공개'];
 
 export type ArticleLikeUser = {
   userId: string;
@@ -130,6 +131,7 @@ export function QuizMakeTemplate() {
   const [experienceIds, setExperienceIds] = useState<any[]>([]);
   const [selected, setSelected] = useState([]);
   const open = Boolean(anchorEl);
+  const [keyWorld, setKeyWorld] = useState('');
 
   //api call
   const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
@@ -186,7 +188,7 @@ export function QuizMakeTemplate() {
     console.log('modal ');
     setQuizUrl('');
     setQuizName('');
-    // setJobGroup();
+    setJobGroup([]);
     setJobs([]);
     setRecommendLevels([]);
     setSkillIds([]);
@@ -225,12 +227,19 @@ export function QuizMakeTemplate() {
     setParams({
       // ...params,
       page,
+      keyword: keyWorld,
     });
-  }, [page]);
+  }, [page, keyWorld]);
+
+  function searchKeyworld(value) {
+    let _keyworld = value.replace('#', '');
+    if (_keyworld == '') _keyworld = null;
+    setKeyWorld(_keyworld);
+  }
 
   const handleMenuItemClick = (event: React.MouseEvent<HTMLElement>, index: number, removeIndex) => {
     console.log(index, removeIndex);
-    if (index === 1) {
+    if (index === 0) {
       if (window.confirm('정말로 삭제하시겠습니까?')) {
         onDeletePost({
           postNo: removeIndex,
@@ -240,16 +249,6 @@ export function QuizMakeTemplate() {
 
     setAnchorEl(null);
   };
-
-  // const handleClick = (article: Article) => {
-  //   if (window.innerWidth < 768) {
-  //     const paramObj = {
-  //       articleId: article.articleId.toString(),
-  //       boardId: article.boardId.toString(),
-  //     };
-  //   } else {
-  //   }
-  // };
 
   const handleQuizInsertClick = async () => {
     const params = {
@@ -267,6 +266,14 @@ export function QuizMakeTemplate() {
     onQuizSave(params);
   };
 
+  const useStyles = makeStyles(theme => ({
+    root: {
+      '& .MuiPaper-root': {
+        boxShadow: '0px 0px 0px 0px rgba(0,0,0,0.75);',
+      },
+    },
+  }));
+  const classes = useStyles();
   return (
     <div className={cx('seminar-container')}>
       {/* <Banner title="커리어멘토스 세미나" subTitle="커멘세미나" /> */}
@@ -278,13 +285,13 @@ export function QuizMakeTemplate() {
               내가 만든 퀴즈
             </Grid>
             <Grid item xs={7} className="tw-font-semi tw-text-base tw-text-black">
-              나와 크루들의 성장을 돕기위해 내가 만든 퀴즈 리스트예요!
+              <div className="tw-ml-10">나와 크루들의 성장을 돕기위해 내가 만든 퀴즈 리스트예요!</div>
             </Grid>
             <Grid item xs={3} justifyContent="flex-end" className="tw-flex">
               <button
                 type="button"
                 onClick={() => handleAddClick()}
-                className="tw-text-white tw-bg-blue-500 hover:tw-bg-blue-800 tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5  dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
+                className="tw-text-white tw-bg-blue-500 tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5  dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
               >
                 퀴즈 직접 등록하기
               </button>
@@ -294,31 +301,7 @@ export function QuizMakeTemplate() {
         <Box sx={{ width: '100%', typography: 'body1', marginTop: '20px', marginBottom: '20px' }}>
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
             <Grid item xs={8} className="tw-font-bold tw-text-3xl tw-text-black">
-              {/* <SecondTabs tabs={testBoards} /> */}
-
-              <div className={cx('filter-area')}>
-                <div className={cx('mentoring-button__group', 'gap-12', 'justify-content-center')}>
-                  <Toggle
-                    label={`퀴즈목록 (` + myQuizData?.contents?.length + `)`}
-                    name="퀴즈목록"
-                    value="퀴즈목록"
-                    variant="small"
-                    checked={active === 0}
-                    isActive
-                    type="tabButton"
-                    onChange={() => {
-                      setActive(0);
-                      // setParams({
-                      //   ...params,
-                      //   page,
-                      //   recommendJobGroup: '',
-                      // });
-                      // setPage(0);
-                    }}
-                    className={cx('fixed-width')}
-                  />
-                </div>
-              </div>
+              <div className="tw-text-xl">퀴즈목록 ({myQuizData?.contents?.length})</div>
             </Grid>
             <Grid item xs={4} className="tw-font-semi tw-text-base tw-text-black">
               <TextField
@@ -330,12 +313,17 @@ export function QuizMakeTemplate() {
                   style: { height: '43px' },
                   startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
                 }}
+                onKeyPress={e => {
+                  if (e.key === 'Enter') {
+                    searchKeyworld((e.target as HTMLInputElement).value);
+                  }
+                }}
               />
             </Grid>
           </Grid>
         </Box>
 
-        <Divider className="tw-mb-6 tw-border tw-bg-['#efefef']" />
+        <Divider className="tw-mb-3 tw-border tw-bg-['#efefef']" />
         <article>
           <div className={cx('content-area')}>
             <section className={cx('content', 'flex-wrap-container')}>
@@ -345,19 +333,35 @@ export function QuizMakeTemplate() {
                   <div className="tw-flex  tw-items-center">
                     <div className="tw-flex-auto">
                       <div className="tw-font-medium tw-text-black">
-                        <div className="tw-p-4  tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
+                        <div className="tw-p-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
                           {item?.recommendJobGroupNames?.map((name, i) => (
-                            <Chip
-                              key={`job_${i}`}
-                              chipColor={jobColorKey(item?.recommendJobGroups[i])}
-                              radius={4}
-                              className="tw-mr-2"
-                              variant="outlined"
+                            <span
+                              key={i}
+                              className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600"
                             >
                               {name}
-                            </Chip>
+                            </span>
                           ))}
-                          {item?.relatedExperiences?.map((name, i) => (
+                          <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
+                            {item?.recommendLevels?.sort().join(',')}레벨
+                          </span>
+                          {item?.recommendJobNames?.map((name, i) => (
+                            <span
+                              key={i}
+                              className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-100 tw-text-sm tw-font-light tw-text-gray-600"
+                            >
+                              {name}
+                            </span>
+                          ))}
+                          {item?.hashTags?.map((name, i) => (
+                            <span
+                              key={i}
+                              className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-gray-700"
+                            >
+                              {name}
+                            </span>
+                          ))}
+                          {/* {item?.relatedExperiences?.map((name, i) => (
                             <Chip
                               key={`job_${i}`}
                               chipColor={jobColorKey(item?.relatedExperiences[i])}
@@ -367,14 +371,11 @@ export function QuizMakeTemplate() {
                             >
                               {name}
                             </Chip>
-                          ))}
-                          <Chip chipColor="primary" radius={4} variant="filled">
-                            {item?.recommendLevels?.sort().join(',')}레벨
-                          </Chip>
+                          ))} */}
                         </div>
                       </div>
                     </div>
-                    <div>{item.createdAt}</div>
+                    <div className="tw-text-gray-400 tw-text-sm tw-mr-5">{item.createdAt}</div>
                     <div>
                       <IconButton
                         aria-label="more"
@@ -386,39 +387,42 @@ export function QuizMakeTemplate() {
                       >
                         <MoreVertIcon />
                       </IconButton>
-                      <Menu
-                        id="lock-menu"
-                        anchorEl={anchorEl}
-                        open={open}
-                        onClose={handleClose}
-                        MenuListProps={{
-                          'aria-labelledby': 'lock-button',
-                          role: 'listbox',
-                          style: {
-                            border: '1px solid rgb(218, 226, 237)',
-                            boxShadow: '0px 0px 0px 0px',
-                            borderRadius: '12px',
-                          },
-                        }}
-                      >
-                        {options.map((option, index) => (
-                          <MenuItem key={option} onClick={event => handleMenuItemClick(event, index, item.sequence)}>
-                            {option}
-                          </MenuItem>
-                        ))}
-                      </Menu>
+                      <div>
+                        <Menu
+                          id="lock-menu"
+                          anchorEl={anchorEl}
+                          open={open}
+                          onClose={handleClose}
+                          className={classes.root}
+                          MenuListProps={{
+                            'aria-labelledby': 'lock-button',
+                            role: 'listbox',
+                            style: {
+                              border: '1px solid rgb(218, 226, 237)',
+                              boxShadow: 'none !important',
+                              borderRadius: '12px',
+                            },
+                          }}
+                        >
+                          {options.map((option, index) => (
+                            <MenuItem key={index} onClick={event => handleMenuItemClick(event, index, item.sequence)}>
+                              {option}
+                            </MenuItem>
+                          ))}
+                        </Menu>
+                      </div>
                     </div>
                   </div>
                   <div className="tw-flex  tw-items-center tw-p-3">
                     <div className="tw-flex-auto">
-                      <div className="tw-font-medium tw-text-black">{item.content}</div>
+                      <div className="tw-font-medium tw-text-black tw-text-base">{item.content}</div>
                     </div>
-                    <div className="">{item.memberName}</div>
+                    {/* <div className="">{item.memberName}</div> */}
                   </div>
-                  <div className="tw-grid tw-grid-cols-7 tw-gap-4 tw-p-3 ">
+                  <div className="tw-grid tw-grid-cols-12 tw-gap-4 tw-p-3 ">
                     <div className="tw-col-span-1 tw-text-sm tw-font-bold tw-text-black">아티클</div>
-                    <div className="tw-col-span-5">{item.articleUrl}</div>
-                    <div className="tw-col-span-1">
+                    <div className="tw-col-span-9 tw-text-sm tw-text-gray-600">{item.articleUrl}</div>
+                    <div className="tw-col-span-2 tw-text-sm tw-text-right">
                       댓글 : {item.activeCount} 답변 : {item.answerCount}
                     </div>
                   </div>
@@ -430,7 +434,12 @@ export function QuizMakeTemplate() {
         </article>
       </div>
       <MentorsModal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
-        <div className="tw-font-bold tw-text-xl tw-text-black tw-my-5 tw-text-center">퀴즈 등록하기</div>
+        <div className="tw-font-bold tw-text-xl tw-text-black tw-my-5 tw-mb-2 tw-text-left tw-mt-0">
+          퀴즈 직접 등록하기
+        </div>
+        <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-5 tw-text-left tw-mt-0">
+          내가 공부하고 싶거나 크루들과 공유하고 싶은 주제 & 아티클로 퀴즈를 만들어요!
+        </div>
 
         <div>
           <div className="tw-font-bold tw-text-sm tw-text-black tw-mt-10">필수 입력</div>
@@ -503,7 +512,12 @@ export function QuizMakeTemplate() {
             </ToggleButtonGroup>
 
             <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천 레벨</div>
-            <ToggleButtonGroup value={recommendLevels} onChange={handleRecommendLevels} aria-label="text alignment">
+            <ToggleButtonGroup
+              exclusive
+              value={recommendLevels}
+              onChange={handleRecommendLevels}
+              aria-label="text alignment"
+            >
               {levelGroup?.map((item, index) => (
                 <ToggleButton
                   key={`job-${index}`}
@@ -522,9 +536,36 @@ export function QuizMakeTemplate() {
                 </ToggleButton>
               ))}
             </ToggleButtonGroup>
-            <div className="tw-text-sm tw-text-black tw-mt-2 tw-my-0">
-              2레벨 : 상용 서비스 개발 1인분 가능한 사람. 소규모 서비스 독자 개발 가능.
-            </div>
+            {recommendLevels.toString() === '0' && (
+              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                0레벨 : 직무스킬(개발언어/프레임워크 등) 학습 중. 상용서비스 개발 경험 없음.
+              </div>
+            )}
+            {recommendLevels.toString() === '1' && (
+              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                1레벨 : 상용서비스 단위모듈 수준 개발 가능. 서비스 개발 리딩 시니어 필요.
+              </div>
+            )}
+            {recommendLevels.toString() === '2' && (
+              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                2레벨 : 상용 서비스 개발 1인분 가능한 사람. 소규모 서비스 독자 개발 가능.
+              </div>
+            )}
+            {recommendLevels.toString() === '3' && (
+              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                3레벨 : 상용서비스 개발 리더. 담당직무분야 N명 업무가이드 및 리딩 가능.
+              </div>
+            )}
+            {recommendLevels.toString() === '4' && (
+              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                4레벨 : 다수 상용서비스 개발 리더. 수십명 혹은 수백명 수준의 개발자 총괄 리더.
+              </div>
+            )}
+            {recommendLevels.toString() === '5' && (
+              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                5레벨 : 본인 오픈소스/방법론 등이 범용적 사용, 수백명이상 다수 직군 리딩.
+              </div>
+            )}
 
             <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">관련스킬</div>
 

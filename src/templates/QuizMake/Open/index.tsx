@@ -40,7 +40,7 @@ import { useExperiences } from 'src/services/experiences/experiences.queries';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 import { useRecommendContents } from 'src/services/contents/contents.queries';
-import { useJobs, useMyJobs } from 'src/services/jobs/jobs.queries';
+import { useJobs, useMyJobs, useQuizzList } from 'src/services/jobs/jobs.queries';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
@@ -376,8 +376,10 @@ export function QuizOpenTemplate() {
   const { isFetched: isJobGroupFetched } = useJobGroups(data => setJobGroups(data || []));
   const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
   const { data: experienceData }: UseQueryResult<ExperiencesResponse> = useExperiences();
-  const { data: jobsData, refetch }: UseQueryResult<any> = useJobs();
+
+  const { data: jobsData, refetch }: UseQueryResult<any> = useQuizzList();
   const { data: myJobsData, refetch: refetchMyJob }: UseQueryResult<any> = useMyJobs();
+
   const [skillIds, setSkillIds] = useState<any[]>([]);
   const [experienceIds, setExperienceIds] = useState<any[]>([]);
   const [isPublic, setIsPublic] = useState('공개');
@@ -486,7 +488,7 @@ export function QuizOpenTemplate() {
 
   const handleChangeCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked } = event.currentTarget;
-    const quizData = jobsData?.data.contents;
+    const quizData = jobsData?.contents;
     const result = [...state];
 
     if (result.indexOf(name) > -1) {
@@ -950,9 +952,36 @@ export function QuizOpenTemplate() {
                         </ToggleButton>
                       ))}
                     </ToggleButtonGroup>
-                    <div className="tw-text-sm tw-text-black tw-mt-2 tw-my-0">
-                      2레벨 : 상용 서비스 개발 1인분 가능한 사람. 소규모 서비스 독자 개발 가능.
-                    </div>
+                    {recommendLevels.toString() === '0' && (
+                      <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                        0레벨 : 직무스킬(개발언어/프레임워크 등) 학습 중. 상용서비스 개발 경험 없음.
+                      </div>
+                    )}
+                    {recommendLevels.toString() === '1' && (
+                      <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                        1레벨 : 상용서비스 단위모듈 수준 개발 가능. 서비스 개발 리딩 시니어 필요.
+                      </div>
+                    )}
+                    {recommendLevels.toString() === '2' && (
+                      <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                        2레벨 : 상용 서비스 개발 1인분 가능한 사람. 소규모 서비스 독자 개발 가능.
+                      </div>
+                    )}
+                    {recommendLevels.toString() === '3' && (
+                      <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                        3레벨 : 상용서비스 개발 리더. 담당직무분야 N명 업무가이드 및 리딩 가능.
+                      </div>
+                    )}
+                    {recommendLevels.toString() === '4' && (
+                      <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                        4레벨 : 다수 상용서비스 개발 리더. 수십명 혹은 수백명 수준의 개발자 총괄 리더.
+                      </div>
+                    )}
+                    {recommendLevels.toString() === '5' && (
+                      <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                        5레벨 : 본인 오픈소스/방법론 등이 범용적 사용, 수백명이상 다수 직군 리딩.
+                      </div>
+                    )}
 
                     <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
                       성장퀴즈 주기 (복수 선택 가능)
@@ -1361,7 +1390,7 @@ export function QuizOpenTemplate() {
                 name="quizSearch"
               />
             </div>
-            {jobsData?.data.contents.map((item, index) => (
+            {jobsData?.contents.map((item, index) => (
               <div key={index} className="tw-flex">
                 <Checkbox
                   onChange={handleChangeCheck}
@@ -1433,7 +1462,7 @@ export function QuizOpenTemplate() {
                 name="quizSearch"
               />
             </div>
-            {myJobsData?.data.content.map((item, index) => (
+            {myJobsData?.content.map((item, index) => (
               <div key={index} className="tw-flex">
                 <Checkbox
                   onChange={handleChangeCheck}

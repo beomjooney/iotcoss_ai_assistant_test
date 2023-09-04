@@ -27,6 +27,8 @@ export * from './Pagination/index';
 export { default as Pagination } from './Pagination/index';
 export * from './Toggle/index';
 export { default as Toggle } from './Toggle/index';
+export * from './ClubCard/index';
+export { default as ClubCard } from './ClubCard/index';
 export * from './CommunityCard/index';
 export { default as CommunityCard } from './CommunityCard/index';
 export * from './CommunityCardReply/index';

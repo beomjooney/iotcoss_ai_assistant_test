@@ -8,11 +8,14 @@ import {
 } from 'src/models/recommend';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 import {
+  clubMyList,
   mySeminarList,
   seminarDetail,
   seminarImageList,
   seminarList,
+  seminarMeFavoriteList,
   seminarMeList,
+  seminarMeWaitList,
   seminarParticipantList,
 } from './seminars.api';
 
@@ -28,6 +31,23 @@ export interface paramProps {
   enabled?: boolean;
   lecturerMemberId?: string;
 }
+
+export const useMyClubList = (
+  params?: paramProps,
+  onSuccess?: (data: RecommendContentsResponse) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 8;
+  return useQuery<RecommendContentsResponse, Error>(
+    QUERY_KEY_FACTORY('SEMINAR').list({ size: DEFAULT_SIZE, ...params }),
+    () => clubMyList({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: true,
+    },
+  );
+};
 
 export const useSeminarList = (
   params?: paramProps,
@@ -45,6 +65,22 @@ export const useSeminarList = (
     },
   );
 };
+export const useSeminarMeWaitList = (
+  params?: paramProps,
+  onSuccess?: (data: RecommendContentsResponse) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 10;
+  return useQuery<RecommendContentsResponse, Error>(
+    QUERY_KEY_FACTORY('SEMINAR').list({ size: DEFAULT_SIZE, ...params }),
+    () => seminarMeWaitList({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: true,
+    },
+  );
+};
 export const useSeminarMeList = (
   params?: paramProps,
   onSuccess?: (data: RecommendContentsResponse) => void,
@@ -54,6 +90,23 @@ export const useSeminarMeList = (
   return useQuery<RecommendContentsResponse, Error>(
     QUERY_KEY_FACTORY('SEMINAR').list({ size: DEFAULT_SIZE, ...params }),
     () => seminarMeList({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: true,
+    },
+  );
+};
+
+export const useSeminarMeFavoriteList = (
+  params?: paramProps,
+  onSuccess?: (data: RecommendContentsResponse) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 10;
+  return useQuery<RecommendContentsResponse, Error>(
+    QUERY_KEY_FACTORY('SEMINAR').list({ size: DEFAULT_SIZE, ...params }),
+    () => seminarMeFavoriteList({ size: DEFAULT_SIZE, ...params }),
     {
       onSuccess,
       onError,

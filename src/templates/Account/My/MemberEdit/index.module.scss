@@ -1,17 +1,15 @@
 @use 'src/stories/assets/styles/abstracts/font';
 @use 'src/stories/assets/styles/abstracts/palette';
 
-
 .text-bold {
   font-weight: bold !important;
 }
 
 .member-edit-container {
-  margin-top: 32px;
+  margin-top: 0px;
 
   .sub-content {
-    padding: 60px 32px;
-
+    padding: 30px 30px;
     @media (min-width: 320px) and (max-width: 992px) {
       padding: 20px 0px;
     }
@@ -152,8 +150,8 @@
   }
 
   .check-box {
-    input[type=checkbox]:checked + span {
-      background-image: url("../../../../../public/assets/images/icons/check_round_fill.svg") !important;
+    input[type='checkbox']:checked + span {
+      background-image: url('../../../../../public/assets/images/icons/check_round_fill.svg') !important;
     }
     span {
       font-style: normal;

@@ -466,7 +466,7 @@ export function QuizOpenTemplate() {
         order: 0,
         isRepresentative: true,
         isPublic: true,
-        publishAt: '2023-08-22 00:00:00',
+        // publishAt: '2023-08-22 00:00:00',
       }));
   }
 
@@ -502,13 +502,6 @@ export function QuizOpenTemplate() {
     console.log(filteredDataParam);
     setQuizList(filteredData);
     setQuizListParam(filteredDataParam);
-
-    // const test = jobsData?.data.content;
-    // console.log(test);
-    // setState(test[1]);
-    // const sequenceArray = [15, 16, 17, 18];
-    // const filteredData = getObjectsWithSequences(test, sequenceArray);
-    // console.log(filteredData);
   };
 
   useEffect(() => {
@@ -950,9 +943,36 @@ export function QuizOpenTemplate() {
                         </ToggleButton>
                       ))}
                     </ToggleButtonGroup>
-                    <div className="tw-text-sm tw-text-black tw-mt-2 tw-my-0">
-                      2레벨 : 상용 서비스 개발 1인분 가능한 사람. 소규모 서비스 독자 개발 가능.
-                    </div>
+                    {recommendLevels.toString() === '0' && (
+                      <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                        0레벨 : 직무스킬(개발언어/프레임워크 등) 학습 중. 상용서비스 개발 경험 없음.
+                      </div>
+                    )}
+                    {recommendLevels.toString() === '1' && (
+                      <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                        1레벨 : 상용서비스 단위모듈 수준 개발 가능. 서비스 개발 리딩 시니어 필요.
+                      </div>
+                    )}
+                    {recommendLevels.toString() === '2' && (
+                      <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                        2레벨 : 상용 서비스 개발 1인분 가능한 사람. 소규모 서비스 독자 개발 가능.
+                      </div>
+                    )}
+                    {recommendLevels.toString() === '3' && (
+                      <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                        3레벨 : 상용서비스 개발 리더. 담당직무분야 N명 업무가이드 및 리딩 가능.
+                      </div>
+                    )}
+                    {recommendLevels.toString() === '4' && (
+                      <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                        4레벨 : 다수 상용서비스 개발 리더. 수십명 혹은 수백명 수준의 개발자 총괄 리더.
+                      </div>
+                    )}
+                    {recommendLevels.toString() === '5' && (
+                      <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                        5레벨 : 본인 오픈소스/방법론 등이 범용적 사용, 수백명이상 다수 직군 리딩.
+                      </div>
+                    )}
 
                     <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
                       성장퀴즈 주기 (복수 선택 가능)

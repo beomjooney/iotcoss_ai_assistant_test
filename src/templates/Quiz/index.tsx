@@ -1,6 +1,6 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import { Toggle, Pagination, Typography, Chip } from 'src/stories/components';
+import { Toggle, Pagination, Typography, Chip, ClubCard } from 'src/stories/components';
 import React, { useEffect, useState } from 'react';
 import { RecommendContent, SeminarImages } from 'src/models/recommend';
 import { useSeminarList, paramProps, useSeminarImageList } from 'src/services/seminars/seminars.queries';
@@ -30,6 +30,12 @@ import Link from 'next/link';
 import { jobColorKey } from 'src/config/colors';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
+import StarIcon from '@mui/icons-material/Star';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import { useSessionStore } from 'src/store/session';
+import { useDeleteLike, useSaveLike } from 'src/services/community/community.mutations';
 
 const levelGroup = [
   {
@@ -75,7 +81,7 @@ const cx = classNames.bind(styles);
 
 export function QuizTemplate() {
   const { jobGroups, setJobGroups, contentTypes, setContentTypes } = useStore();
-
+  const { logged } = useSessionStore.getState();
   const router = useRouter();
   const [skillIds, setSkillIds] = useState<any[]>([]);
   const [skillIdsClk, setSkillIdsClk] = useState<any[]>([1, 2, 3, 4, 5]);
@@ -94,11 +100,21 @@ export function QuizTemplate() {
   const [contentType, setContentType] = useState(0);
   const { isFetched: isJobGroupFetched } = useJobGroups(data => setJobGroups(data || []));
   const [recommendLevels, setRecommendLevels] = useState([]);
+  let [isLiked, setIsLiked] = useState(false);
+  const { mutate: onSaveLike, isSuccess } = useSaveLike();
+  const { mutate: onDeleteLike } = useDeleteLike();
+  const [keyWorld, setKeyWorld] = useState('');
 
-  const { isFetched: isContentFetched } = useSeminarList(params, data => {
+  const { isFetched: isContentFetched, refetch } = useSeminarList(params, data => {
     setContents(data.data.contents || []);
     setTotalPage(data.data.totalPages);
   });
+
+  function searchKeyworld(value) {
+    let _keyworld = value.replace('#', '');
+    if (_keyworld == '') _keyworld = null;
+    setKeyWorld(_keyworld);
+  }
 
   const { isFetched: isContentTypeFetched } = useContentTypes(data => {
     setContentTypes(data.data.contents || []);
@@ -119,8 +135,9 @@ export function QuizTemplate() {
     setParams({
       // ...params,
       page,
+      keyword: keyWorld,
     });
-  }, [page]);
+  }, [page, keyWorld]);
 
   const handleJobs = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
     console.log('job', event.currentTarget, newFormats);
@@ -162,12 +179,11 @@ export function QuizTemplate() {
             </Grid>
             <Grid item xs={3} justifyContent="flex-end" className="tw-flex">
               <button
+                onClick={() => (location.href = '/quiz/open')}
                 type="button"
-                className="tw-text-white tw-bg-blue-500 hover:tw-bg-blue-800 tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5  dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
+                className="tw-text-white tw-bg-blue-500  tw-focus:ring-4  tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5  dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
               >
-                <Link href="/quiz/open" className="nav-link">
-                  성장퀴즈 클럽 개설하기 +
-                </Link>
+                성장퀴즈 클럽 개설하기 +
               </button>
             </Grid>
           </Grid>
@@ -229,6 +245,11 @@ export function QuizTemplate() {
                 id="outlined-basic"
                 label=""
                 variant="outlined"
+                onKeyPress={e => {
+                  if (e.key === 'Enter') {
+                    searchKeyworld((e.target as HTMLInputElement).value);
+                  }
+                }}
                 InputProps={{
                   style: { height: '43px' },
                   startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
@@ -263,21 +284,6 @@ export function QuizTemplate() {
                         height: '30px',
                         border: '0px',
                       }}
-                      // value={item.id}
-                      // variant="small"
-                      // checked={active === i + 1}
-                      // isActive
-                      // type="tabButton"
-                      // onChange={() => {
-                      //   // setActive(i + 1);
-                      //   setParams({
-                      //     ...params,
-                      //     recommendJobGroups: item.id,
-                      //     page,
-                      //   });
-                      //   setPage(0);
-                      // }}
-                      // className={cx('fixed-width')}
                     >
                       {item.name}
                     </ToggleButton>
@@ -333,89 +339,15 @@ export function QuizTemplate() {
                   (contents.length > 0 ? (
                     contents.map((item, index) => {
                       return (
-                        <Grid key={index} item xs={6}>
-                          <a
-                            href={'/quiz/' + `${item.sequence}`}
-                            className="tw-flex tw-flex-col tw-items-center tw-bg-white tw-border tw-border-gray-200 tw-rounded-lg tw-shadow md:tw-flex-row md:tw-max-w-xl hover:tw-bg-gray-100 dark:tw-border-gray-700 dark:tw-bg-gray-800 dark:hover:tw-bg-gray-700"
-                          >
-                            <img
-                              className="tw-object-cover tw-w-[220px] tw-rounded-t-lg tw-h-[245px] md:tw-h-[245px] md:tw-w-[220px] md:tw-rounded-none md:tw-rounded-l-lg"
-                              src="/assets/images/banner/Rectangle1.png"
-                              alt=""
-                            />
-                            <div className="tw-flex tw-flex-col tw-justify-between tw-p-4 tw-leading-normal">
-                              <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
-                                {item?.recommendJobGroupNames.map((name, i) => (
-                                  <Chip
-                                    key={`job_${i}`}
-                                    chipColor={jobColorKey(item?.recommendJobGroups[i])}
-                                    radius={4}
-                                    className="tw-mr-2"
-                                    variant="outlined"
-                                  >
-                                    {name}
-                                  </Chip>
-                                ))}
-                                {item?.recommendJobNames.map((name, i) => (
-                                  <Chip
-                                    key={`job_${i}`}
-                                    chipColor={jobColorKey(item?.recommendJobGroups[i])}
-                                    radius={4}
-                                    className="tw-mr-2"
-                                    variant="outlined"
-                                  >
-                                    {name}
-                                  </Chip>
-                                ))}
-                                {item?.relatedExperiences.map((name, i) => (
-                                  <Chip
-                                    key={`job_${i}`}
-                                    chipColor={jobColorKey(item?.relatedExperiences[i])}
-                                    radius={4}
-                                    className="tw-mr-2"
-                                    variant="outlined"
-                                  >
-                                    {name}
-                                  </Chip>
-                                ))}
-                                <Chip chipColor="primary" radius={4} variant="filled">
-                                  {item?.recommendLevels.sort().join(',')}레벨
-                                </Chip>
-                              </div>
-                              <div className="tw-mb-3 tw-text-sm tw-font-semibold tw-text-gray-500 dark:tw-text-gray-400">
-                                모집마감일 : {item.endAt}
-                              </div>
-                              <h6 className="tw-mb-2 tw-text-2xl tw-font-bold tw-tracking-tight tw-text-gray-900 dark:tw-text-white">
-                                {item.name}
-                              </h6>
-                              <p className="tw-line-clamp-2 tw-mb-3 tw-font-normal tw-text-gray-700 dark:tw-text-gray-400">
-                                {item.description}
-                              </p>
-
-                              <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-400 dark:tw-text-gray-400">
-                                {item.studyCycle.toString()} | {item.studyWeekCount} 주 | 학습 {item.recruitMemberCount}
-                                회
-                              </div>
-
-                              <div className="tw-flex tw-items-center tw-space-x-4">
-                                <img
-                                  className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full"
-                                  src={item?.author?.avatar}
-                                  alt=""
-                                />
-                                <div className="tw-text-sm tw-font-semibold tw-text-black dark:tw-text-white">
-                                  <div>{item?.author?.displayName}</div>
-                                </div>
-                              </div>
-                            </div>
-                          </a>
-                        </Grid>
-                        // <ArticleCard
-                        //   uiType={ArticleEnum.MENTOR_SEMINAR}
-                        //   content={item}
-                        //   key={i}
-                        //   className={cx('container__item')}
-                        // />
+                        <ClubCard
+                          key={index}
+                          item={item}
+                          xs={6}
+                          // writer={memberSample}
+                          className={cx('reply-container__item')}
+                          // memberId={memberId}
+                          // onPostDeleteSubmit={onPostDeleteSubmit}
+                        />
                       );
                     })
                   ) : (

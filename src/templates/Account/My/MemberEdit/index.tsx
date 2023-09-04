@@ -286,9 +286,6 @@ export function MemberEditTemplate() {
   return (
     <div className={cx('member-edit-container')}>
       <div className={cx('sub-content')}>
-        <div className={cx('member-title')}>
-          <h4>기본정보</h4>
-        </div>
         <div>
           <div className={cx('image-info')}>
             <Image
@@ -489,75 +486,6 @@ export function MemberEditTemplate() {
               </div>
             </form>
           )}
-
-          <div className={cx('member-info')}>
-            <Textfield
-              label="유튜브 링크"
-              type="email"
-              isUnderline={true}
-              width={400}
-              onChange={handleYoutube}
-              value={youtubeUrl || ''}
-              readOnly={false}
-              className={cx('text-field', 'text-field--long')}
-            />
-          </div>
-          <div className={cx('member-info')}>
-            <Textfield
-              label="페이스북 링크"
-              type="email"
-              isUnderline={true}
-              width={400}
-              onChange={handleFacebook}
-              readOnly={false}
-              value={facebookUrl || ''}
-              className={cx('text-field', 'text-field--long')}
-            />
-          </div>
-          <div className={cx('member-info')}>
-            <Textfield
-              label="인스타그램 주소"
-              type="email"
-              isUnderline={true}
-              width={400}
-              onChange={handleInstgram}
-              value={instagramUrl || ''}
-              className={cx('text-field', 'text-field--long')}
-            />
-          </div>
-          <div className={cx('member-info')}>
-            <Textfield
-              label="트위터 링크"
-              type="email"
-              isUnderline={true}
-              width={400}
-              onChange={handleTwitter}
-              value={twitterUrl || ''}
-              className={cx('text-field', 'text-field--long')}
-            />
-          </div>
-          <div className={cx('member-info')}>
-            <Textfield
-              label="링크드인 링크"
-              type="email"
-              isUnderline={true}
-              width={400}
-              onChange={handleLinked}
-              value={linkedUrl || ''}
-              className={cx('text-field', 'text-field--long')}
-            />
-          </div>
-          <div className={cx('member-info')}>
-            <Textfield
-              label="기타 SNS링크"
-              type="email"
-              isUnderline={true}
-              width={400}
-              onChange={handleSns}
-              value={snsUrl || ''}
-              className={cx('text-field', 'text-field--long')}
-            />
-          </div>
         </div>
       </div>
       <div className={cx('sub-content')}>

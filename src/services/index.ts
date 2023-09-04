@@ -5,6 +5,7 @@ import { reissueToken } from './account/account.api';
 import { useSessionStore } from '../store/session';
 import { UserInfo } from '../models/account';
 import jwt_decode from 'jwt-decode';
+import { deleteCookie } from 'cookies-next';
 
 interface RequestConfig extends AxiosRequestConfig {
   suppressStatusCode?: number[];
@@ -64,17 +65,24 @@ function createAxios(requestConfig: RequestConfig): AxiosInstance {
       const originalConfig = config;
       if (status === 401) {
         const { update } = useSessionStore.getState();
-        const userData: UserInfo = jwt_decode(process.env['NEXT_PUBLIC_GUEST_TOKEN']);
-        update({
-          logged: userData.sub !== 'Guest',
-          memberType: userData.sub,
-          memberId: userData.sub,
-          memberName: userData.nickname,
-          token: process.env['NEXT_PUBLIC_GUEST_TOKEN'],
-          roles: userData.sub !== 'Guest' ? userData.roles : [],
-        });
+        // const userData: UserInfo = jwt_decode(process.env['NEXT_PUBLIC_GUEST_TOKEN']);
+        // update({
+        //   logged: userData.sub !== 'Guest',
+        //   memberType: userData.sub,
+        //   memberId: userData.sub,
+        //   memberName: userData.nickname,
+        //   token: process.env['NEXT_PUBLIC_GUEST_TOKEN'],
+        //   roles: userData.sub !== 'Guest' ? userData.roles : [],
+        // });
         // setCookie('access_token', process.env['NEXT_PUBLIC_GUEST_TOKEN']);
-        if (data.code === 'CO4007') throw new LoginError();
+        console.log(data.code);
+        if (data.code === 'CO4007') {
+          // deleteCookie('access_token');
+          // localStorage.removeItem('auth-store');
+          // localStorage.removeItem('app-storage');
+          // window.location.href = '/account/login';
+          // throw new LoginError();
+        }
         throw new AuthError();
       }
 

@@ -1,6 +1,13 @@
 import { axiosGeneralAPI } from '../index';
 
 // 세미나 목록 조회
+export const clubMyList = async params => {
+  const { data, headers } = await axiosGeneralAPI().get('/api/v1/clubs/me', { params });
+  // const { data, headers } = await axiosGeneralAPI().get('/seminars', { params });
+  const totalPage = Number(headers['page-count']);
+
+  return { data: data.data || [], nextPage: params.page + 1, totalPage };
+};
 export const seminarList = async params => {
   const { data, headers } = await axiosGeneralAPI().get('/api/v1/clubs', { params });
   // const { data, headers } = await axiosGeneralAPI().get('/seminars', { params });
@@ -8,8 +15,21 @@ export const seminarList = async params => {
 
   return { data: data.data || [], nextPage: params.page + 1, totalPage };
 };
+export const seminarMeWaitList = async params => {
+  const { data, headers } = await axiosGeneralAPI().get('/api/v1/clubs/crew-requests/me', { params });
+  const totalPage = Number(headers['page-count']);
+
+  return { data: data.data || [], nextPage: params.page + 1, totalPage };
+};
+
 export const seminarMeList = async params => {
   const { data, headers } = await axiosGeneralAPI().get('/api/v1/clubs/crew-requests/me', { params });
+  const totalPage = Number(headers['page-count']);
+
+  return { data: data.data || [], nextPage: params.page + 1, totalPage };
+};
+export const seminarMeFavoriteList = async params => {
+  const { data, headers } = await axiosGeneralAPI().get('/api/v1/favorite/clubs/me', { params });
   const totalPage = Number(headers['page-count']);
 
   return { data: data.data || [], nextPage: params.page + 1, totalPage };

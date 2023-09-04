@@ -262,7 +262,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                     <div className="tw-flex tw-items-center tw-space-x-4 tw-my-5">
                       <img
                         className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full"
-                        src="https://robohash.org/doloremaliquidquia.png?size=150x150&set=set1"
+                        src={data?.leaderProfileImageUrl}
                         alt=""
                       />
                       <div className="tw-text-base tw-font-semibold tw-text-black dark:tw-text-white">
@@ -285,24 +285,25 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                       {data?.studyWeekCount}주 총 학습 {data?.studyTotalCount}회 진행
                     </div>
 
-                    <div className="tw-text-base tw-mb-3 tw-font-normal tw-text-black dark:tw-text-gray-400">
-                      <span className="tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded tw-dark:bg-gray-700 tw-dark:text-gray-300">
-                        대표1
-                      </span>{' '}
-                      ESB와 API Gateway 차이점에 대해서 설명하세요
-                    </div>
-                    <div className="tw-text-base tw-mb-3 tw-font-normal tw-text-black dark:tw-text-gray-400">
-                      <span className="tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded tw-dark:bg-gray-700 tw-dark:text-gray-300">
-                        대표2
-                      </span>{' '}
-                      JWT 토큰 변조방지 기법에 대해서 설명하세요.
-                    </div>
-                    <div className="tw-text-base tw-mb-24 tw-font-normal tw-text-black dark:tw-text-gray-400">
-                      <span className="tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded tw-dark:bg-gray-700 tw-dark:text-gray-300">
-                        대표3
-                      </span>{' '}
-                      MySQL에서 Gap Lock의 필요성에 대해서 설명하세요.
-                    </div>
+                    {data?.clubQuizzes.map((item, index) => {
+                      if (item?.isRepresentative === true) {
+                        return (
+                          <div key={index} className="">
+                            <div className="tw-flex tw-items-center tw-px-0 tw-border mb-2 mt-0 rounded">
+                              <span className="tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded">
+                                대표 {index + 1}
+                              </span>
+                              <div className="tw-flex-auto tw-ml-3">
+                                <div className="tw-font-medium tw-text-black">{item.content}</div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      } else {
+                        // 다른 경우에는 렌더링하지 않음
+                        return null;
+                      }
+                    })}
                   </TabPanel>
                   <TabPanel value={value} index={1}>
                     {/* <Profile
@@ -335,7 +336,15 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                   </Link>
                 </button>
               ) : null}
-              {data?.isJoined === false && data?.isLeader === false ? (
+              {data?.isJoined === false && data?.isLeader === false && data?.clubStatus === '0003' ? (
+                <button
+                  type="button"
+                  className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
+                  // onClick={() => handleParticipant()}
+                >
+                  참여예정
+                </button>
+              ) : (
                 <button
                   type="button"
                   className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
@@ -343,7 +352,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                 >
                   참여하기
                 </button>
-              ) : null}
+              )}
             </div>
           </div>
         </div>

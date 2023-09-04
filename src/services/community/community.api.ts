@@ -41,8 +41,8 @@ export const popularPostSearchList = async (postNo: number) => {
   return { data: data || [] };
 };
 
-export const saveLiked = async (postNo: number) => await axiosGeneralAPI().post(`/posts/${postNo}/like`);
-export const deleteLiked = async (postId: number) => await axiosGeneralAPI().delete(`/posts/${postId}/like`);
+export const saveLiked = async (postNo: number) => await axiosGeneralAPI().post(`/api/v1/favorite/clubs/${postNo}`);
+export const deleteLiked = async (postId: number) => await axiosGeneralAPI().delete(`/api/v1/favorite/clubs/${postId}`);
 
 export const saveReply = async (params: any) => {
   console.log('saveReply : ', params);

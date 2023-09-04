@@ -38,7 +38,7 @@ export const useContentJobTypes = (onSuccess?: (data: CodeResponse) => void, onE
 
 export const useJobGroups = (onSuccess?: (data: CodeResponse) => void, onError?: (error: Error) => void) => {
   return useCodeDetails('', onSuccess, onError);
-  return useCodeDetails(CODE.CODE_GROUP_GROWTH_FIELD, onSuccess, onError);
+  // return useCodeDetails(CODE.CODE_GROUP_GROWTH_FIELD, onSuccess, onError);
 };
 
 export const useJobGroupss = (onSuccess?: (data: CodeResponse) => void, onError?: (error: Error) => void) => {

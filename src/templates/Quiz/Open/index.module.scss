@@ -2,6 +2,28 @@
 @use '../../../stories/assets/styles/abstracts/palette';
 @use '../../../stories/assets/styles/abstracts/mixin';
 
+.tabs {
+  background-color: white;
+  z-index: 100;
+  &.sticky {
+    top: 10px;
+  }
+  button {
+    width: 30%;
+    border: 1px solid palette.$Primary-Gray600;
+    font-weight: 400;
+    font-size: font.$font-size-14;
+    line-height: 21px;
+    color: palette.$Primary-Gray600;
+    padding-bottom: 8px !important;
+
+    &[aria-selected='true'] {
+      color: palette.$Primary-Gray900;
+      font-size: font.$font-size-14;
+    }
+  }
+}
+
 .mentoring-register-container {
   article {
     .filter-area-scroll::-webkit-scrollbar {
@@ -11,6 +33,7 @@
     .filter-area-scroll {
       overflow-x: auto;
     }
+
     .filter-area {
       hr {
         border-bottom: 1px solid palette.$Primary-Gray500;
@@ -43,6 +66,7 @@
       }
     }
   }
+
   .fixed-width {
     text-align: center;
     width: 255px;

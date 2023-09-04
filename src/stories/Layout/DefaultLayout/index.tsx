@@ -16,9 +16,18 @@ export interface DefaultLayoutProps {
 
 const DefaultLayout = ({ darkBg, classOption, title, children, isFooter = true }: DefaultLayoutProps) => {
   const menuItem = [
-    { no: 0, option: 'nav-item', title: '성장퀴즈', link: '/quiz', dropdown: [] },
-    { no: 0, option: 'nav-item', title: '라운지', link: '/', dropdown: [] },
-    { no: 0, option: 'nav-item', title: '나의학습방', link: '/', dropdown: [] },
+    {
+      no: 0,
+      option: 'nav-item dropdown',
+      title: '성장퀴즈',
+      link: '#',
+      dropdown: [
+        { no: 6, title: '성장퀴즈클럽', link: '/quiz' },
+        { no: 7, title: '내가 만든 클럽', link: '/quiz-my' },
+      ],
+    },
+    { no: 1, option: 'nav-item', title: '라운지', link: '/', dropdown: [] },
+    { no: 2, option: 'nav-item', title: '나의학습방', link: '/', dropdown: [] },
     // { no: 0, option: 'nav-item', title: '커멘소개', link: '/business', dropdown: [] },
     // {
     //   no: 1,
@@ -62,9 +71,9 @@ const DefaultLayout = ({ darkBg, classOption, title, children, isFooter = true }
       <Desktop>
         <Header darkBg={darkBg} classOption={classOption} title={title} menuItem={menuItem} />
       </Desktop>
-      <Mobile>
+      {/* <Mobile>
         <Header darkBg={darkBg} classOption={classOption} title={title} menuItem={menuItemMobile} />
-      </Mobile>
+      </Mobile> */}
       <section className="hero-section ptb-100">{children}</section>
       {isFooter && <Footer />}
     </>

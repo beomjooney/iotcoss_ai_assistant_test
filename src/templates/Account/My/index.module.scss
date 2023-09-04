@@ -35,7 +35,7 @@
       &__item {
         margin: 0;
         height: 56px;
-        border-bottom: 1px solid palette.$Primary-Gray500;
+        // border-bottom: 1px solid palette.$Primary-Gray500;
         position: relative;
 
         a {
@@ -111,9 +111,8 @@
 
   .lnb-area {
     font-family: font.$font-family-default;
-    width: 256px;
-    padding-right: 32px;
-    border-right: 0.5px solid palette.$Primary-Gray600;
+    width: 370px;
+    height: 905px;
 
     .lnb-title {
       font-weight: Bold;
@@ -137,7 +136,7 @@
       &__item {
         margin: 0;
         height: 56px;
-        border-bottom: 1px solid palette.$Primary-Gray500;
+        // border-bottom: 1px solid palette.$Primary-Gray500;
         position: relative;
 
         a {
