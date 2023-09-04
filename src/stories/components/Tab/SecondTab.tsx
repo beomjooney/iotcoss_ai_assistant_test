@@ -22,8 +22,6 @@ export default function SecondTabs({ tabs }: { tabs: BoardListItemType[]; setArt
 
   // const boardId = Number(params.get('boardId')) ?? 0;
 
-  const handleChange = (event: any, newValue: number) => {};
-
   //   useEffect(() => {
   //     const tabElements = document.getElementsByClassName('MuiTab-root');
 
