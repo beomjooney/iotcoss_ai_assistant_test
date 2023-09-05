@@ -14,7 +14,7 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
-    domains: ['camen.co.kr', 'careermentors.co.kr', 'k.kakaocdn.net', 'lifementors.co.kr', '3.39.99.82'],
+    domains: ['devus.co.kr', 'k.kakaocdn.net', '3.39.99.82'],
   },
   async headers() {
     return [
