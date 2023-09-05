@@ -36,6 +36,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { useSessionStore } from 'src/store/session';
 import { useDeleteLike, useSaveLike } from 'src/services/community/community.mutations';
+import ClubMiniCard from 'src/stories/components/ClubMiniCard';
 
 const levelGroup = [
   {
@@ -164,7 +165,7 @@ export function QuizMyTemplate() {
         <div className="tw-py-5">
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
             <Grid item xs={4} className="tw-font-bold tw-text-3xl tw-text-black">
-              퀴즈클럽 &gt 내가 만든 클럽
+              퀴즈클럽 {'-'} 내가 만든 클럽
             </Grid>
             <Grid item xs={5} className="tw-font-semi tw-text-base tw-text-black">
               내가 만든 클럽 페이지에 관한 간단한 설명란
@@ -281,7 +282,7 @@ export function QuizMyTemplate() {
                   (contents.length > 0 ? (
                     contents.map((item, index) => {
                       return (
-                        <ClubCard
+                        <ClubMiniCard
                           key={index}
                           item={item}
                           xs={12}

@@ -145,7 +145,7 @@ export function QuizMakeTemplate() {
   const { mutate: onDeletePost, isSuccess: deletePostSucces } = useDeletePost();
   const { mutate: onQuizSave, isSuccess: postSucces } = useQuizSave();
 
-  const handleDropMenuClick = (event: React.MouseEvent<HTMLElement>, removeIndex: number) => {
+  const handleDropMenuClick = (event: React.MouseEvent<HTMLElement>, removeIndex) => {
     setRemoveIndex(removeIndex);
     setAnchorEl(event.currentTarget);
   };
