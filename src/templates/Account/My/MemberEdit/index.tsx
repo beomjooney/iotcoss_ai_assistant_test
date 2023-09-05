@@ -40,6 +40,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
+import TextField from '@mui/material/TextField';
 const cx = classNames.bind(styles);
 
 export function MemberEditTemplate() {
@@ -405,144 +406,91 @@ export function MemberEditTemplate() {
 
   return (
     <div className={cx('member-edit-container')}>
-      <div className={cx('sub-content')}>
-        <div>
-          <div className={cx('image-info')}>
-            <Image
-              src={
-                fileImageUrl ??
-                (user?.profileImageUrl?.indexOf('http') > -1
-                  ? user?.profileImageUrl
-                  : `${process.env['NEXT_PUBLIC_GENERAL_IMAGE_URL']}/images/${user?.profileImageUrl}`)
-              }
-              alt="profile_image"
-              className={cx('rounded-circle', 'image-info__image')}
-              width="160px"
-              height="160px"
-              objectFit="cover"
-              unoptimized={true}
-            />
-            <div className={cx('image-item')}>
-              <span className={cx('image-item__file-size', 'area-desc')}>
-                * 사진은 256 X 256 사이즈로 등록해주세요.
-              </span>
-              <div className={cx('image-item__upload-wrap')}>
-                <Button type="button" color="primary" className={cx('change-button')}>
-                  <label htmlFor={`input-file`}>사진 변경</label>
-                  <input
-                    hidden
-                    id={`input-file`}
-                    accept="image/*"
-                    type="file"
-                    onChange={e => onFileChange(e.target?.files)}
-                  />
+      <div className={cx('sub-content', 'border', 'tw-rounded-lg', 'tw-mt-5', 'tw-text-center')}>
+        <div className="tw-p-10 tw-pb-0 tw-text-black tw-text-base tw-font-semibold">
+          <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-3">
+            <Grid item xs={2}></Grid>
+            <Grid item xs={2} className="tw-text-left">
+              이메일
+            </Grid>
+            <Grid item xs={8}>
+              <div className={cx('member-info')}>
+                <TextField disabled size="small" id="outlined-disabled" value={userInfo.email || ''} />
+                {/* <Textfield id="outlined-disabled" disabled type="email" width={240} /> */}
+              </div>
+            </Grid>
+          </Grid>
+          <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-3">
+            <Grid item xs={2}></Grid>
+            <Grid item xs={2} className="tw-text-left">
+              이름
+            </Grid>
+            <Grid item xs={8}>
+              <div className="tw-text-left">{userInfo.name || ''}</div>
+            </Grid>
+          </Grid>
+          <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-3">
+            <Grid item xs={2}></Grid>
+            <Grid item xs={2} className="tw-text-left">
+              닉네임
+            </Grid>
+            <Grid item xs={8}>
+              <div className={cx('member-info')}>
+                <TextField disabled size="small" id="outlined-disabled" value={nickname || ''} />
+              </div>
+            </Grid>
+          </Grid>
+          <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-3">
+            <Grid item xs={2}></Grid>
+            <Grid item xs={2} className="tw-text-left">
+              휴대전화
+            </Grid>
+            <Grid item xs={8}>
+              <div className={cx('member-info')}>
+                {phoneNumber !== userInfo.phoneNumber && !phoneEditMode && <span className={cx('change-dot')} />}
+                <TextField size="small" id="outlined-disabled" value={phoneNumber || ''} />
+                {/* <Textfield
+                  isUnderline={true}
+                  isPhoneNumber={true}
+                  width={240}
+                  required
+                  value={phoneNumber || ''}
+                  onChange={handlePhoneNumber}
+                  // readOnly={!phoneEditMode}
+                  readOnly={isDisabledPhone}
+                  className={cx('text-field', 'text-field--normal')}
+                /> */}
+                <Button
+                  type="button"
+                  color="primary"
+                  disabled={false}
+                  onClick={() => {
+                    // setPhoneEditMode(!phoneEditMode);
+                    if (phoneNumber === '') {
+                      alert('핸드폰 번호를 입력해주세요');
+                      // setPhoneEditMode(true);
+                      // setSmsFlag(false);
+                    } else {
+                      onLoginOtp({ phoneNumber: phoneNumber });
+                    }
+                  }}
+                  className={cx('change-button')}
+                >
+                  {phoneEditMode ? '인증문자 발송' : '인증 완료'}
                 </Button>
               </div>
-            </div>
-          </div>
-          <div className={cx('member-info')}>
-            <Textfield
-              label="이름"
-              type="text"
-              width={240}
-              isUnderline={true}
-              required
-              value={userInfo.name || ''}
-              readOnly
-              className={cx('text-field', 'text-field--normal')}
-            />
-          </div>
-          <div className={cx('member-info')}>
-            {' '}
-            {nickname !== userInfo.nickname && !nicknameEditMode && <span className={cx('change-dot')} />}
-            <Textfield
-              label="닉네임"
-              type="text"
-              width={240}
-              isUnderline={true}
-              required
-              value={nickname || ''}
-              onChange={handleNickname}
-              readOnly={!nicknameEditMode}
-              className={cx('text-field', 'text-field--normal')}
-            />
-            <Button
-              type="button"
-              // color={nicknameEditMode ? 'primary' : 'secondary'}
-              color="primary"
-              onClick={() => setNicknameEditMode(!nicknameEditMode)}
-              className={cx('change-button')}
-            >
-              {nicknameEditMode ? '확인' : '변경'}
-            </Button>
-          </div>
-          <div className={cx('member-info')}>
-            <Textfield
-              label="생일"
-              type="text"
-              isUnderline={true}
-              width={110}
-              required
-              readOnly
-              value={userInfo.birthday || ''}
-              className={cx('text-field', 'text-field--short')}
-            />
-            <Textfield
-              label="연령대"
-              type="text"
-              isUnderline={true}
-              width={110}
-              required
-              readOnly
-              value={userInfo.ageRange || ''}
-              className={cx('text-field', 'text-field--short')}
-            />
-          </div>
-          <div className={cx('member-info')}>
-            <Textfield
-              label="이메일"
-              type="email"
-              isUnderline={true}
-              width={240}
-              required
-              readOnly
-              value={userInfo.email || ''}
-              className={cx('text-field', 'text-field--long')}
-            />
-          </div>
-          <div className={cx('member-info')}>
-            {phoneNumber !== userInfo.phoneNumber && !phoneEditMode && <span className={cx('change-dot')} />}
-            <Textfield
-              label="휴대전화"
-              isUnderline={true}
-              isPhoneNumber={true}
-              width={240}
-              required
-              value={phoneNumber || ''}
-              onChange={handlePhoneNumber}
-              // readOnly={!phoneEditMode}
-              readOnly={isDisabledPhone}
-              className={cx('text-field', 'text-field--normal')}
-            />
-            <Button
-              type="button"
-              color="primary"
-              disabled={isDisabledPhone}
-              onClick={() => {
-                // setPhoneEditMode(!phoneEditMode);
-                if (phoneNumber === '') {
-                  alert('핸드폰 번호를 입력해주세요');
-                  // setPhoneEditMode(true);
-                  // setSmsFlag(false);
-                } else {
-                  onLoginOtp({ phoneNumber: phoneNumber });
-                }
-              }}
-              className={cx('change-button')}
-            >
-              {phoneEditMode ? '인증문자 발송' : '인증 완료'}
-            </Button>
-          </div>
+            </Grid>
+            <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-mt-10">
+              <Grid item xs={2}></Grid>
+              <Grid item xs={2} className="tw-text-left"></Grid>
+              <Grid item xs={8}>
+                <div className="tw-float-right">
+                  <Chip label="회원탈퇴" variant="outlined" onClick={() => setIsModalOpen(true)} />
+                </div>
+              </Grid>
+            </Grid>
+          </Grid>
+
           {smsFlag && (
             <form onSubmit={handleSubmitOtp(onSubmitOtp, onErrorOtp)}>
               <div className={cx('member-info-mobile', 'mb-5')}>
@@ -608,309 +556,218 @@ export function MemberEditTemplate() {
           )}
         </div>
       </div>
-      <div className={cx('sub-content')}>
-        {/* <div className={cx('choice-title')}>
-          <h4>마케팅 수신동의 (선택)</h4>
-        </div>
-        <div className={cx('choice-content')}>
-          <span className={cx('checkbox-title')}>이메일 수신</span>
-          <div className={cx('alarm')}>
-            <Toggle
-              key="email-y"
-              label="동의합니다."
-              name="동의"
-              value="true"
-              variant="small"
-              type="checkBox"
-              checked={emailReceiveYn}
-              isActive
-              onChange={handleEmailYn}
-              className={cx('check-box')}
-            />
-            <Toggle
-              key="email-n"
-              label="동의하지 않습니다."
-              name="미동의"
-              value="false"
-              variant="small"
-              type="checkBox"
-              checked={!emailReceiveYn}
-              isActive
-              onChange={handleEmailYn}
-              className={cx('check-box')}
-            />
+      <div className={cx('sub-content', 'border', 'tw-rounded-lg', 'tw-mt-5')}>
+        <div className=" tw-p-14  tw-text-center">
+          <div className="tw-text-xl tw-pb-10 tw-text-black">
+            <span className="tw-font-bold tw-text-xl">커리어멘토스</span> 이용 약관에 동의해주세요.
           </div>
-        </div>
-        <div className={cx('choice-content')}>
-          <span className={cx('checkbox-title')}>문자 수신</span>
-          <div className={cx('alarm')}>
-            <Toggle
-              key="sms-y"
-              label="동의합니다."
-              name="동의"
-              value="true"
-              variant="small"
-              type="checkBox"
-              checked={smsReceiveYn}
-              isActive
-              onChange={handleSmsYn}
-              className={cx('check-box')}
-            />
-            <Toggle
-              key="sms-n"
-              label="동의하지 않습니다."
-              name="미동의"
-              value="false"
-              variant="small"
-              type="checkBox"
-              checked={!smsReceiveYn}
-              isActive
-              onChange={handleSmsYn}
-              className={cx('check-box')}
-            />
-          </div>
-        </div>
-        <div className={cx('choice-content')}>
-          <span className={cx('checkbox-title')}>카카오톡 수신</span>
-          <div className={cx('alarm')}>
-            <Toggle
-              key="kakao-y"
-              label="동의합니다."
-              name="동의"
-              value="true"
-              variant="small"
-              type="checkBox"
-              checked={kakaoReceiveYn}
-              isActive
-              onChange={handleKakaoYn}
-              className={cx('check-box')}
-            />
-            <Toggle
-              key="kakao-n"
-              label="동의하지 않습니다."
-              name="미동의"
-              value="false"
-              variant="small"
-              type="checkBox"
-              checked={!kakaoReceiveYn}
-              isActive
-              onChange={handleKakaoYn}
-              className={cx('check-box')}
-            />
-          </div>
-        </div> */}
-
-        <Grid container direction="row" justifyContent="space-between" alignItems="center">
-          <Grid item xs={10}>
-            <Box display="flex" justifyContent="flex-start">
-              <FormGroup sx={{ fontWeight: 'bold' }}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      value="ALL"
-                      onChange={onChangeAll}
-                      checked={CheckList.length === IdList.length}
-                      icon={<CheckBoxOutlinedIcon />}
-                      checkedIcon={<CheckBoxOutlinedIcon />}
-                      sx={{
-                        color: '#c7c7c7',
-                        '& .MuiSvgIcon-root': { fontSize: 24 },
-                      }}
-                    />
-                  }
-                  label={
-                    <Typography variant="h6" sx={{ fontWeight: '600', color: 'black' }}>
-                      전체 동의하기
-                    </Typography>
-                  }
-                />
-              </FormGroup>
-            </Box>
-          </Grid>
-          <Box sx={{ marginLeft: 4, fontSize: 14, color: 'black' }}>
-            전체동의는 선택목적에 대한 동의를 포함하고 있으며, 선택목적에 대한 동의를 거부해도 서비스 이용이 가능합니다.
-          </Box>
-        </Grid>
-        <Divider variant="middle" sx={{ borderColor: 'rgba(0, 0, 0, 0.9);', margin: '20px 0px 10px 0px' }} />
-        <Grid container direction="row" justifyContent="space-between" alignItems="center">
-          <Grid item xs={10}>
-            <Box display="flex" justifyContent="flex-start">
-              <FormGroup sx={{ fontWeight: 'bold' }}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      onChange={e => onChangeEach(e, IdList[0])}
-                      checked={CheckList.includes(IdList[0])}
-                      value={IdList[0]}
-                      icon={<CheckBoxOutlinedIcon />}
-                      checkedIcon={<CheckBoxOutlinedIcon />}
-                      ref={checkboxref}
-                      sx={{
-                        color: '#c7c7c7',
-                        '& .MuiSvgIcon-root': { fontSize: 24 },
-                      }}
-                    />
-                  }
-                  label={
-                    <Typography sx={{ fontSize: 14, color: 'black', fontWeight: 'bold' }}>
-                      (필수) 서비스
-                      <Link
-                        href="#"
-                        underline="always"
-                        onClick={() => {
-                          onReply('0001', 'paper');
+          <Grid container direction="row" justifyContent="space-between" alignItems="center">
+            <Grid item xs={10}>
+              <Box display="flex" justifyContent="flex-start">
+                <FormGroup sx={{ fontWeight: 'bold' }}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        value="ALL"
+                        onChange={onChangeAll}
+                        checked={CheckList.length === IdList.length}
+                        icon={<CheckBoxOutlinedIcon />}
+                        checkedIcon={<CheckBoxOutlinedIcon />}
+                        sx={{
+                          color: '#c7c7c7',
+                          '& .MuiSvgIcon-root': { fontSize: 24 },
                         }}
-                      >
-                        <span className="tw-underline">이용약관</span>
-                      </Link>{' '}
-                      동의
-                    </Typography>
-                  }
-                />
-              </FormGroup>
-            </Box>
+                      />
+                    }
+                    label={
+                      <Typography variant="h6" sx={{ fontWeight: '600', color: 'black' }}>
+                        전체 약관 동의
+                      </Typography>
+                    }
+                  />
+                </FormGroup>
+              </Box>
+            </Grid>
           </Grid>
-        </Grid>
+          <Divider variant="middle" sx={{ borderColor: 'rgba(0, 0, 0, 0.4);', margin: '5px 0px 5px 0px' }} />
+          <FormGroup sx={{ fontWeight: 'bold', padding: '0px' }}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  onChange={e => onChangeEach(e, IdList[0])}
+                  checked={CheckList.includes(IdList[0])}
+                  value={IdList[0]}
+                  icon={<CheckBoxOutlinedIcon />}
+                  checkedIcon={<CheckBoxOutlinedIcon />}
+                  ref={checkboxref}
+                  sx={{
+                    color: '#c7c7c7',
+                    '& .MuiSvgIcon-root': { fontSize: 24 },
+                  }}
+                />
+              }
+              label={
+                <Typography sx={{ fontSize: 15, color: 'black', fontWeight: 'bold' }}>
+                  (필수) 서비스
+                  <Link
+                    href="#"
+                    underline="always"
+                    onClick={() => {
+                      onReply('0001', 'paper');
+                    }}
+                  >
+                    <span className="tw-underline">이용약관</span>
+                  </Link>{' '}
+                  동의
+                </Typography>
+              }
+            />
+          </FormGroup>
 
-        <Grid container direction="row" justifyContent="space-between" alignItems="center">
-          <Grid item xs={10}>
-            <Box display="flex" justifyContent="flex-start">
-              <FormGroup sx={{ fontWeight: 'bold' }}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      onChange={e => onChangeEach(e, IdList[1])}
-                      checked={CheckList.includes(IdList[1])}
-                      value={IdList[1]}
-                      icon={<CheckBoxOutlinedIcon />}
-                      checkedIcon={<CheckBoxOutlinedIcon />}
-                      sx={{
-                        color: '#c7c7c7',
-                        '& .MuiSvgIcon-root': { fontSize: 24 },
-                      }}
-                    />
-                  }
-                  label={
-                    <Typography sx={{ fontSize: 14, color: 'black', fontWeight: 'bold' }}>
-                      (필수){' '}
-                      <Link
-                        href="#"
-                        underline="always"
-                        onClick={() => {
-                          onReply('0001', 'paper');
+          <Grid container direction="row" justifyContent="space-between" alignItems="center">
+            <Grid item xs={10}>
+              <Box display="flex" justifyContent="flex-start">
+                <FormGroup sx={{ fontWeight: 'bold' }}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        onChange={e => onChangeEach(e, IdList[1])}
+                        checked={CheckList.includes(IdList[1])}
+                        value={IdList[1]}
+                        icon={<CheckBoxOutlinedIcon />}
+                        checkedIcon={<CheckBoxOutlinedIcon />}
+                        sx={{
+                          color: '#c7c7c7',
+                          '& .MuiSvgIcon-root': { fontSize: 24 },
                         }}
-                      >
-                        <span className="tw-underline">개인정보 처리 방침</span>
-                      </Link>
-                      에 동의
-                    </Typography>
-                  }
-                />
-              </FormGroup>
-            </Box>
+                      />
+                    }
+                    label={
+                      <Typography sx={{ fontSize: 15, color: 'black', fontWeight: 'bold' }}>
+                        (필수){' '}
+                        <Link
+                          href="#"
+                          underline="always"
+                          onClick={() => {
+                            onReply('0001', 'paper');
+                          }}
+                        >
+                          <span className="tw-underline">개인정보 처리 방침</span>
+                        </Link>
+                        에 동의
+                      </Typography>
+                    }
+                  />
+                </FormGroup>
+              </Box>
+            </Grid>
           </Grid>
-        </Grid>
 
-        <Divider variant="middle" sx={{ borderColor: 'rgba(0, 0, 0, 0.9);', margin: '10px 0px 10px 0px' }} />
+          <Divider variant="middle" sx={{ borderColor: 'rgba(0, 0, 0, 0.4);', margin: '5px 0px 5px 0px' }} />
 
-        <Grid container direction="row" justifyContent="space-between" alignItems="center">
-          <Grid item xs={10}>
-            <Box display="flex" justifyContent="flex-start">
-              <FormGroup sx={{ fontWeight: 'bold' }}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      onChange={e => onChangeMarketingAll(e, IdList[2])}
-                      checked={CheckMarketingList.length >= 1}
-                      value={IdList[2]}
-                      icon={<CheckBoxOutlinedIcon />}
-                      checkedIcon={<CheckBoxOutlinedIcon />}
-                      sx={{
-                        color: '#c7c7c7',
-                        '& .MuiSvgIcon-root': { fontSize: 24 },
-                      }}
-                    />
-                  }
-                  label={
-                    <Typography sx={{ fontSize: 14, color: 'black', fontWeight: 'bold' }}>
-                      [선택] 이벤트 등 프로모션 알림 수신
-                    </Typography>
-                  }
-                />
-              </FormGroup>
-            </Box>
+          <Grid container direction="row" justifyContent="space-between" alignItems="center">
+            <Grid item xs={10}>
+              <Box display="flex" justifyContent="flex-start">
+                <FormGroup sx={{ fontWeight: 'bold' }}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        onChange={e => onChangeMarketingAll(e, IdList[2])}
+                        checked={CheckMarketingList.length >= 1}
+                        value={IdList[2]}
+                        icon={<CheckBoxOutlinedIcon />}
+                        checkedIcon={<CheckBoxOutlinedIcon />}
+                        sx={{
+                          color: '#c7c7c7',
+                          '& .MuiSvgIcon-root': { fontSize: 24 },
+                        }}
+                      />
+                    }
+                    label={
+                      <Typography sx={{ fontSize: 15, color: 'black', fontWeight: 'bold' }}>
+                        (선택) 이벤트 등 프로모션 알림 수신
+                      </Typography>
+                    }
+                  />
+                </FormGroup>
+              </Box>
+            </Grid>
+            <Grid item xs={2}></Grid>
           </Grid>
-          <Grid item xs={2}></Grid>
-        </Grid>
 
-        <Grid container direction="row" alignItems="center" sx={{ marginLeft: 4 }}>
-          <Grid item xs={3}>
-            <Box display="flex">
-              <FormGroup sx={{ fontWeight: 'bold' }}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      onChange={e => onChangeMarketingEach(e, marketingList[0])}
-                      checked={CheckMarketingList.includes(marketingList[0])}
-                      value={marketingList[0]}
-                      icon={<CheckBoxOutlinedIcon />}
-                      checkedIcon={<CheckBoxOutlinedIcon />}
-                      sx={{
-                        color: '#c7c7c7',
-                        '& .MuiSvgIcon-root': { fontSize: 24 },
-                      }}
-                    />
-                  }
-                  label={<Typography sx={{ fontSize: 14, color: 'black', fontWeight: 'bold' }}>이메일 수신</Typography>}
-                />
-              </FormGroup>
-            </Box>
+          <Grid container direction="row" alignItems="center" sx={{ marginLeft: 4 }}>
+            <Grid item xs={3}>
+              <Box display="flex">
+                <FormGroup sx={{ fontWeight: 'bold' }}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        onChange={e => onChangeMarketingEach(e, marketingList[0])}
+                        checked={CheckMarketingList.includes(marketingList[0])}
+                        value={marketingList[0]}
+                        icon={<CheckBoxOutlinedIcon />}
+                        checkedIcon={<CheckBoxOutlinedIcon />}
+                        sx={{
+                          color: '#c7c7c7',
+                          '& .MuiSvgIcon-root': { fontSize: 24 },
+                        }}
+                      />
+                    }
+                    label={
+                      <Typography sx={{ fontSize: 15, color: 'black', fontWeight: 'bold' }}>이메일수신</Typography>
+                    }
+                  />
+                </FormGroup>
+              </Box>
+            </Grid>
+            <Grid item xs={3}>
+              <Box display="flex" justifyContent="flex-start" sx={{ fontWeight: 'bold' }}>
+                <FormGroup sx={{ fontWeight: 'bold' }}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        onChange={e => onChangeMarketingEach(e, marketingList[1])}
+                        checked={CheckMarketingList.includes(marketingList[1])}
+                        value={marketingList[1]}
+                        icon={<CheckBoxOutlinedIcon />}
+                        checkedIcon={<CheckBoxOutlinedIcon />}
+                        sx={{
+                          color: '#c7c7c7',
+                          '& .MuiSvgIcon-root': { fontSize: 24 },
+                        }}
+                      />
+                    }
+                    label={<Typography sx={{ fontSize: 15, color: 'black', fontWeight: 'bold' }}>문자 수신</Typography>}
+                  />
+                </FormGroup>
+              </Box>
+            </Grid>
+            <Grid item xs={4}>
+              <Box display="flex" justifyContent="flex-start" sx={{ fontWeight: 'bold' }}>
+                <FormGroup sx={{ fontWeight: 'bold' }}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        onChange={e => onChangeMarketingEach(e, marketingList[2])}
+                        checked={CheckMarketingList.includes(marketingList[2])}
+                        value={marketingList[2]}
+                        icon={<CheckBoxOutlinedIcon />}
+                        checkedIcon={<CheckBoxOutlinedIcon />}
+                        sx={{
+                          color: '#c7c7c7',
+                          '& .MuiSvgIcon-root': { fontSize: 24 },
+                        }}
+                      />
+                    }
+                    label={
+                      <Typography sx={{ fontSize: 15, color: 'black', fontWeight: 'bold' }}>카카오 수신</Typography>
+                    }
+                  />
+                </FormGroup>
+              </Box>
+            </Grid>
           </Grid>
-          <Grid item xs={3}>
-            <Box display="flex" justifyContent="flex-start" sx={{ fontWeight: 'bold' }}>
-              <FormGroup sx={{ fontWeight: 'bold' }}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      onChange={e => onChangeMarketingEach(e, marketingList[1])}
-                      checked={CheckMarketingList.includes(marketingList[1])}
-                      value={marketingList[1]}
-                      icon={<CheckBoxOutlinedIcon />}
-                      checkedIcon={<CheckBoxOutlinedIcon />}
-                      sx={{
-                        color: '#c7c7c7',
-                        '& .MuiSvgIcon-root': { fontSize: 24 },
-                      }}
-                    />
-                  }
-                  label={<Typography sx={{ fontSize: 14, color: 'black', fontWeight: 'bold' }}>문자 수신</Typography>}
-                />
-              </FormGroup>
-            </Box>
-          </Grid>
-          <Grid item xs={4}>
-            <Box display="flex" justifyContent="flex-start" sx={{ fontWeight: 'bold' }}>
-              <FormGroup sx={{ fontWeight: 'bold' }}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      onChange={e => onChangeMarketingEach(e, marketingList[2])}
-                      checked={CheckMarketingList.includes(marketingList[2])}
-                      value={marketingList[2]}
-                      icon={<CheckBoxOutlinedIcon />}
-                      checkedIcon={<CheckBoxOutlinedIcon />}
-                      sx={{
-                        color: '#c7c7c7',
-                        '& .MuiSvgIcon-root': { fontSize: 24 },
-                      }}
-                    />
-                  }
-                  label={<Typography sx={{ fontSize: 14, color: 'black', fontWeight: 'bold' }}>카카오 수신</Typography>}
-                />
-              </FormGroup>
-            </Box>
-          </Grid>
-        </Grid>
+        </div>
       </div>
       <Dialog
         open={open}
@@ -943,15 +800,11 @@ export function MemberEditTemplate() {
           </DialogContentText>
         </DialogContent>
       </Dialog>
-      <div className="row justify-content-center">
-        {/*<div className="col-md-6 mt-lg-5">*/}
+      {/* <div className="row justify-content-center">
         <Button size="my-page" type="submit" onClick={() => handleSubmit()} className={cx('footer-button', 'mb-5')}>
           수정완료
         </Button>
-      </div>
-      <div className="text-center">
-        <Chip label="계정삭제하기" variant="outlined" onClick={() => setIsModalOpen(true)} />
-      </div>
+      </div> */}
       <Modal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)} title="회원탈퇴 신청" maxWidth="700px">
         <div className={cx('seminar-check-popup')}>
           <div className={cx('mb-5')}>

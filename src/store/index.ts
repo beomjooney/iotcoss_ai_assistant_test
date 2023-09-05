@@ -17,31 +17,26 @@ export const useStore = create<IThemeSlice & UserSlice & CodeSlice & ExperienceS
         set as StoreApi<IThemeSlice>['setState'],
         get as StoreApi<IThemeSlice>['getState'],
         api as unknown as StoreApi<IThemeSlice>,
-        [],
       ),
       ...createUserSlice(
         set as StoreApi<UserSlice>['setState'],
         get as StoreApi<UserSlice>['getState'],
         api as unknown as StoreApi<UserSlice>,
-        [],
       ),
       ...createCodeSlice(
         set as StoreApi<CodeSlice>['setState'],
         get as StoreApi<CodeSlice>['getState'],
         api as unknown as StoreApi<CodeSlice>,
-        [],
       ),
       ...createExperienceSlice(
         set as StoreApi<ExperienceSlice>['setState'],
         get as StoreApi<ExperienceSlice>['getState'],
         api as unknown as StoreApi<ExperienceSlice>,
-        [],
       ),
       ...createSkillSlice(
         set as StoreApi<SkillSlice>['setState'],
         get as StoreApi<SkillSlice>['getState'],
         api as unknown as StoreApi<SkillSlice>,
-        [],
       ),
     }),
     {

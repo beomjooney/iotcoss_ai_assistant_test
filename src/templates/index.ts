@@ -27,6 +27,7 @@ export * from './Quiz/index';
 export * from './QuizMy/index';
 export * from './QuizMake/index';
 export * from './Quiz/Open/index';
+export * from './Quiz/Manage/index';
 export * from './Quiz/Solution/index';
 export * from './Quiz/Detail/index';
 export * from './Seminar/Detail/index';

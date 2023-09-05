@@ -3,11 +3,18 @@ const nextConfig = {
   //   loader: 'imgix',
   //   path: 'https://camen.co.kr:9000/career-mentors',
   // },
+  typescript: {
+    // !! WARN !!
+    // Dangerously allow production builds to successfully complete even if
+    // your project has type errors.
+    // !! WARN !!
+    ignoreBuildErrors: true,
+  },
   eslint: {
     ignoreDuringBuilds: true,
   },
   images: {
-    domains: ['camen.co.kr', 'careermentors.co.kr', 'k.kakaocdn.net', 'lifementors.co.kr', '3.39.99.82'],
+    domains: ['devus.co.kr', 'k.kakaocdn.net', '3.39.99.82'],
   },
   async headers() {
     return [

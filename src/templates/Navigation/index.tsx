@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import NodeDrawer from '../../components/drawer/NodeDrawer';
-import EdgeDrawer from '../../components/drawer/EdgeDrawer';
 import SectionHeader from 'src/stories/components/SectionHeader';
 import Grid from '@mui/material/Unstable_Grid2';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Banner from 'src/stories/components/Banner';
-import FlowWithProvider from '../../components/diagram/FlowRenderer';
 import _Typography from 'src/stories/components/Typography';
 import { useNode } from 'src/services/node/node.queries';
 import { useEdge } from 'src/services/edge/edge.queries';
@@ -386,13 +384,6 @@ export function NavigationTemplate(props: ListPageProps) {
                           onClick={onClickCloseNodeDrawer}
                           onClickClose={() => onClickNodeDrawer('right', false, '', '')}
                         />
-                        <EdgeDrawer
-                          drawerState={edgeDarwerState}
-                          onClick={onClickCloseDrawer}
-                          // isLoading={isLoading}
-                          pathId={pathId}
-                          onClickClose={() => onClickEdgeDrawer('right', false, '', '')}
-                        />
                         <div
                           style={{
                             height: '3%',
@@ -479,24 +470,7 @@ export function NavigationTemplate(props: ListPageProps) {
                         </Box>
                       </div>
                       &nbsp;
-                      <div style={{ ...style.title }}>
-                        <FlowWithProvider
-                          test={value}
-                          nodes={nodeData.data}
-                          // nodes={nodeData1}
-                          // nodes={nodes}
-                          // node={edgeData?.data}
-                          // edges={edgeData.data.map(edge => {
-                          //   return setPathEdge(edge);
-                          // })}
-                          edges={edgeData.data}
-                          onClickNode={onClickNodeDrawer}
-                          onClickEdge={onClickEdgeDrawer}
-                          fitViewFlag={flag}
-                          // onConnectEdge={onConnectEdge}
-                          // refetch={customRefetch}
-                        />
-                      </div>
+                      <div style={{ ...style.title }}></div>
                     </div>
                   </div>
                 )}

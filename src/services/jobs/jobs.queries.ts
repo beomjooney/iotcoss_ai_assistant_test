@@ -1,5 +1,5 @@
 import { useQuery } from 'react-query';
-import { getQuizList, getMyJobs } from './jobs.api';
+import { getQuizList, getMyJobs, getJobs } from './jobs.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 import { RecommendContentsResponse } from 'src/models/recommend';
 import { paramProps } from '../community/community.queries';
@@ -9,6 +9,12 @@ import { paramProps } from '../community/community.queries';
 //     // refetchOnWindowFocus: false,
 //     // enabled: false,
 //   });
+
+export const useJobs = () =>
+  useQuery(QUERY_KEY_FACTORY('ACCOUNT_MEMBER_LOGIN').details(), () => getJobs(), {
+    refetchOnWindowFocus: false,
+    enabled: false,
+  });
 
 export const useQuizList = (
   params?: paramProps,

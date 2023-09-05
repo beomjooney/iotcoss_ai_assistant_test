@@ -119,8 +119,8 @@ export const useCodeDetails = (
     {
       onSuccess,
       onError,
-      refetchOnWindowFocus: false,
-      staleTime: 10 * 60 * 1000, // 10분 유지
+      refetchOnWindowFocus: true,
+      // staleTime: 10 * 60 * 1000, // 10분 유지
     },
   );
 };

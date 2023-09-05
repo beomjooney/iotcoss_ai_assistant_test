@@ -569,7 +569,7 @@ export function QuizOpenTemplate() {
           quizSequence: filteredData[index].sequence,
           content: filteredData[index].content,
           memberName: filteredData[index].memberName,
-          isRepresentative: false,
+          isRepresentative: quizListCopy[index]?.isRepresentative || false,
           order: index,
         });
       } else {
@@ -990,7 +990,7 @@ export function QuizOpenTemplate() {
               성장퀴즈 &gt; 성장퀴즈 클럽 개설하기
             </Grid>
             <Grid item xs={4} className="tw-font-semi tw-text-base tw-text-black">
-              나와 쿠루들의 성장을 이끌 퀴즈 클럽을 개설해요!
+              나와 크루들의 성장을 이끌 퀴즈 클럽을 개설해요!
             </Grid>
             <Grid item xs={3} justifyContent="flex-end" className="tw-flex">
               {/* <button
