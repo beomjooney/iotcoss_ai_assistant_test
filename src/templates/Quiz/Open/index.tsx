@@ -569,7 +569,7 @@ export function QuizOpenTemplate() {
           quizSequence: filteredData[index].sequence,
           content: filteredData[index].content,
           memberName: filteredData[index].memberName,
-          isRepresentative: false,
+          isRepresentative: quizListCopy[index]?.isRepresentative || false,
           order: index,
         });
       } else {
