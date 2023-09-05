@@ -1,6 +1,12 @@
 import { axiosGeneralAPI } from '../index';
 
 // 직무 조회
+export async function getJobs() {
+  const { data } = await axiosGeneralAPI().get('/jobs');
+  return data;
+}
+
+// 직무 조회
 export const getQuizList = async params => {
   const { data } = await axiosGeneralAPI().get('/api/v1/quizzes', { params });
   return data.data;

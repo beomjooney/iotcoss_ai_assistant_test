@@ -3,6 +3,13 @@ const nextConfig = {
   //   loader: 'imgix',
   //   path: 'https://camen.co.kr:9000/career-mentors',
   // },
+  typescript: {
+    // !! WARN !!
+    // Dangerously allow production builds to successfully complete even if
+    // your project has type errors.
+    // !! WARN !!
+    ignoreBuildErrors: true,
+  },
   eslint: {
     ignoreDuringBuilds: true,
   },

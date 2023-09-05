@@ -132,6 +132,7 @@ export function QuizMakeTemplate() {
   const [selected, setSelected] = useState([]);
   const open = Boolean(anchorEl);
   const [keyWorld, setKeyWorld] = useState('');
+  const [removeIndex, setRemoveIndex] = React.useState('');
 
   //api call
   const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
@@ -144,7 +145,8 @@ export function QuizMakeTemplate() {
   const { mutate: onDeletePost, isSuccess: deletePostSucces } = useDeletePost();
   const { mutate: onQuizSave, isSuccess: postSucces } = useQuizSave();
 
-  const handleDropMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+  const handleDropMenuClick = (event: React.MouseEvent<HTMLElement>, removeIndex: number) => {
+    setRemoveIndex(removeIndex);
     setAnchorEl(event.currentTarget);
   };
   const handleClickQuiz = (event: React.MouseEvent<HTMLElement>) => {
@@ -237,7 +239,7 @@ export function QuizMakeTemplate() {
     setKeyWorld(_keyworld);
   }
 
-  const handleMenuItemClick = (event: React.MouseEvent<HTMLElement>, index: number, removeIndex) => {
+  const handleMenuItemClick = (event: React.MouseEvent<HTMLElement>, index: number) => {
     console.log(index, removeIndex);
     if (index === 0) {
       if (window.confirm('정말로 삭제하시겠습니까?')) {
@@ -256,7 +258,7 @@ export function QuizMakeTemplate() {
       articleUrl: quizUrl,
       recommendJobGroups: [jobGroup],
       recommendJobs: jobs,
-      recommendLevels: recommendLevels,
+      recommendLevels: [recommendLevels],
       relatedSkills: skillIds,
       relatedExperiences: experienceIds,
       hashTags: selected,
@@ -281,11 +283,11 @@ export function QuizMakeTemplate() {
       <div className={cx('container')}>
         <div className="tw-py-5">
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-            <Grid item xs={2} className="tw-font-bold tw-text-3xl tw-text-black">
+            <Grid item xs={3} className="tw-font-bold tw-text-3xl tw-text-black">
               내가 만든 퀴즈
             </Grid>
-            <Grid item xs={7} className="tw-font-semi tw-text-base tw-text-black">
-              <div className="tw-ml-10">나와 크루들의 성장을 돕기위해 내가 만든 퀴즈 리스트예요!</div>
+            <Grid item xs={6} className="tw-font-semi tw-text-base tw-text-black">
+              <div>나와 크루들의 성장을 돕기위해 내가 만든 퀴즈 리스트예요!</div>
             </Grid>
             <Grid item xs={3} justifyContent="flex-end" className="tw-flex">
               <button
@@ -376,41 +378,39 @@ export function QuizMakeTemplate() {
                       </div>
                     </div>
                     <div className="tw-text-gray-400 tw-text-sm tw-mr-5">{item.createdAt}</div>
+                    <IconButton
+                      aria-label="more"
+                      id="long-button"
+                      aria-controls={open ? 'long-menu' : undefined}
+                      aria-expanded={open ? 'true' : undefined}
+                      aria-haspopup="true"
+                      onClick={event => handleDropMenuClick(event, item.sequence)}
+                    >
+                      <MoreVertIcon />
+                    </IconButton>
                     <div>
-                      <IconButton
-                        aria-label="more"
-                        id="long-button"
-                        aria-controls={open ? 'long-menu' : undefined}
-                        aria-expanded={open ? 'true' : undefined}
-                        aria-haspopup="true"
-                        onClick={handleDropMenuClick}
+                      <Menu
+                        id="lock-menu"
+                        anchorEl={anchorEl}
+                        open={open}
+                        onClose={handleClose}
+                        className={classes.root}
+                        MenuListProps={{
+                          'aria-labelledby': 'lock-button',
+                          role: 'listbox',
+                          style: {
+                            border: '1px solid rgb(218, 226, 237)',
+                            boxShadow: 'none !important',
+                            borderRadius: '12px',
+                          },
+                        }}
                       >
-                        <MoreVertIcon />
-                      </IconButton>
-                      <div>
-                        <Menu
-                          id="lock-menu"
-                          anchorEl={anchorEl}
-                          open={open}
-                          onClose={handleClose}
-                          className={classes.root}
-                          MenuListProps={{
-                            'aria-labelledby': 'lock-button',
-                            role: 'listbox',
-                            style: {
-                              border: '1px solid rgb(218, 226, 237)',
-                              boxShadow: 'none !important',
-                              borderRadius: '12px',
-                            },
-                          }}
-                        >
-                          {options.map((option, index) => (
-                            <MenuItem key={index} onClick={event => handleMenuItemClick(event, index, item.sequence)}>
-                              {option}
-                            </MenuItem>
-                          ))}
-                        </Menu>
-                      </div>
+                        {options.map((option, index) => (
+                          <MenuItem key={index} onClick={event => handleMenuItemClick(event, index)}>
+                            {option}
+                          </MenuItem>
+                        ))}
+                      </Menu>
                     </div>
                   </div>
                   <div className="tw-flex  tw-items-center tw-p-3">
