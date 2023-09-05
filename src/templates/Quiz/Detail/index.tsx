@@ -80,6 +80,13 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
     }
   };
 
+  // REQUESTED("0001") -> 가입 요청
+  // CONFIRMED("0002") -> 가입 승인
+  // REJECTED("0003") -> 가입 거절
+  // BANNED("0004") -> 강퇴
+  // DELETED("0005") -> 삭제 (안보임)
+  // NONE("0006") -> 클럽과 관계없음 (가입전)
+
   const handleParticipant = () => {
     console.log('club join');
     if (!logged) {
@@ -93,7 +100,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
     // }
 
     onParticipant({ clubSequence: id });
-    setClubStatus('0000');
+    setClubStatus('0001');
     //setIsModalOpen(false);
     //setIsModalCancelOpen(false);
     // setApplicationButton(<Button color="lite-gray" label="승인 대기 중" size="large" />);

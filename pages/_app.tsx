@@ -23,6 +23,16 @@ import { Session, useSessionStore } from '../src/store/session';
 import jwt_decode from 'jwt-decode';
 import { UserInfo } from '../src/models/account';
 
+interface DefaultLayoutProps {
+  darkBg?: boolean;
+  classOption?: string;
+  title?: string;
+  children: React.ReactNode;
+  isFooter?: boolean;
+}
+
+// DefaultLayout 컴포넌트 타입을 명시적으로 지정
+
 export type NextPageWithLayout<P = Record<string, unknown>> = NextPage<P> & {
   Layout: ComponentType;
   LayoutProps: any;
@@ -56,8 +66,14 @@ function CustomApp({ Component, pageProps = {}, session }: AppPropsWithLayout) {
   }
 
   const [queryClient] = useState(() => new QueryClient());
-  const Layout = Component.Layout ?? DefaultLayout;
-  const LayoutProps = Component.LayoutProps ?? {};
+  // const Layout = Component.Layout ?? DefaultLayout;
+  const Layout:
+    | React.FC<DefaultLayoutProps>
+    | (({ darkBg, classOption, title, children, isFooter }: DefaultLayoutProps) => JSX.Element) = DefaultLayout;
+  // 이 부분에서 Layout의 타입 정의를 사용하거나 인라인으로 정의할 수 있습니다.
+  type LayoutType =
+    | ComponentType
+    | (({ darkBg, classOption, title, children, isFooter }: DefaultLayoutProps) => JSX.Element);
 
   return (
     <>
