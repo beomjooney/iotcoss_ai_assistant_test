@@ -109,11 +109,7 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
                     style={{ boxShadow: '-12px 13px 40px rgba(0, 0, 0, 0.05)' }}
                   >
                     <div className="tw-flex tw-justify-center tw-items-center">
-                      <img
-                        className="tw-h-64 tw-w-64 object-cover"
-                        src="/assets/images/icons/megaphone_icon_182174.png"
-                        alt="Card"
-                      />
+                      <img className="tw-h-64 tw-w-64 object-cover" src="/assets/images/icons/3.png" alt="Card" />
                     </div>
                     <div className="p-5">
                       <div className="text-black tw-text-xl tw-font-bold mb-4">퀴즈로 뇌를 깨워요!</div>
@@ -130,11 +126,7 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
                     style={{ boxShadow: '-12px 13px 40px rgba(0, 0, 0, 0.05)' }}
                   >
                     <div className="tw-flex tw-justify-center tw-items-center">
-                      <img
-                        className="tw-h-64 tw-w-64 tw-object-cover"
-                        src="/assets/images/icons/8202590 1.png"
-                        alt="Card"
-                      />
+                      <img className="tw-h-64 tw-w-64 tw-object-cover" src="/assets/images/icons/1.png" alt="Card" />
                     </div>
                     <div className="p-5">
                       <div className="text-black tw-text-xl tw-font-bold mb-4">나의 지식을 펼쳐봐요!</div>
@@ -150,11 +142,7 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
                     style={{ boxShadow: '-12px 13px 40px rgba(0, 0, 0, 0.05)' }}
                   >
                     <div className="tw-flex tw-justify-center tw-items-center">
-                      <img
-                        className="tw-h-64 tw-w-64 tw-object-cover"
-                        src="/assets/images/icons/bookmark-folder.png"
-                        alt="Card"
-                      />
+                      <img className="tw-h-64 tw-w-64 tw-object-cover" src="/assets/images/icons/2.png" alt="Card" />
                     </div>
                     <div className="p-5">
                       <div className="text-black tw-text-xl tw-font-bold mb-4">나새로운 지식을 흡수해요!</div>
