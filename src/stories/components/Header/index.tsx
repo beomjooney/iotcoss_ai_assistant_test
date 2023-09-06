@@ -227,19 +227,49 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
   return (
     <header className={`header ${classOption}`}>
       <nav
-        className={`navbar navbar-expand-lg fixed-top ${darkBg ? 'bg-transparent' : 'custom-nav white-bg'} ${
+        className={`navbar navbar-expand-lg tw-p-0 fixed-top ${darkBg ? 'bg-transparent' : 'custom-nav white-bg'} ${
           scroll > headerTop ? 'affix' : ''
         }`}
       >
         <div className="container" style={{ alignItems: 'center' }}>
           <div className={cx('header-link', 'navbar-brand')} onClick={handleGoHome}>
-            <div className="tw-text-2xl tw-font-bold">데브어스</div>
+            <div className="tw-text-3xl tw-font-black ">DevUs</div>
           </div>
+          <Mobile>
+            <IconButton
+              sx={{
+                padding: '0 !important',
+                '& .MuiSvgIcon-root': { color: '#000', fontSize: 28, padding: 0 },
+              }}
+              size="large"
+              aria-label="open drawer"
+              onClick={handleOpenMenu}
+              edge="start"
+            >
+              <MenuIcon />
+            </IconButton>
+          </Mobile>
+          <SwipeableDrawer
+            anchor={'right'}
+            open={menuOpen}
+            onClose={handleCloseMenu}
+            onOpen={handleOpenMenu}
+            PaperProps={{
+              sx: { width: '70%' },
+            }}
+          >
+            {list(menuItem)}
+          </SwipeableDrawer>
           <div
-            className={cx('collapse navbar-collapse main-menu', 'navbar-mobile', isShowMenu ? 'show' : '')}
+            className={cx(
+              'collapse navbar-collapse main-menu',
+              'navbar-mobile  tw-mt-2.5 tw-mb-2.5',
+              'tw-justify-between',
+              isShowMenu ? 'show' : '',
+            )}
             id="navbarSupportedContent"
           >
-            <ul className={cx('nav-custom', 'navbar-custom-mobile', 'navbar-nav ml-auto', 'tw-text-lg')}>
+            <ul className={cx('nav-custom', 'navbar-custom-mobile', 'navbar-nav', 'tw-text-lg', 'tw-text-left')}>
               {menuItem?.map((item, index) => {
                 return (
                   <li key={`item-` + index} className={item.option}>
@@ -249,7 +279,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                           if (item.dropdown.length === 0) setIsShowMenu(!isShowMenu);
                         }}
                       >
-                        {item.title}
+                        <div className="tw-mr-10 tw-text-base tw-text-black tw-font-bold">{item.title}</div>
                       </a>
                     </Link>
                     <div className="dropdown-menu submenu" aria-labelledby="navbarDropdownHome">
@@ -270,85 +300,97 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                   </li>
                 );
               })}
-              {!logged && (
-                <li className={cx('custom-item')}>
-                  <Button size="small" color="primary" onClick={handleClick}>
-                    로그인
-                  </Button>
-                </li>
-              )}
-              {adminButton}
-              {logoutButton}
-              {logged && (
-                <li className={cx('nav-item')}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
-                    <Tooltip title="Account settings">
-                      <IconButton
-                        onClick={handleClicks}
-                        size="small"
-                        sx={{ ml: 1, p: 0 }}
-                        aria-controls={open ? 'account-menu' : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={open ? 'true' : undefined}
-                      >
-                        <Avatar sx={{ width: 32, height: 32 }} src={user?.profileImageUrl}>
-                          M
-                        </Avatar>
-                      </IconButton>
-                    </Tooltip>
-                  </Box>
-                  <Menu
-                    anchorEl={anchorEl}
-                    id="account-menu"
-                    open={open}
-                    onClose={handleClose}
-                    onClick={handleClose}
-                    PaperProps={{
-                      elevation: 0,
-                      sx: {
-                        overflow: 'visible',
-                        filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-                        mt: 1.5,
-                        '& .MuiAvatar-root': {
-                          width: 32,
-                          height: 32,
-                          ml: -0.5,
-                          mr: 1,
-                        },
-                        '&:before': {
-                          content: '""',
-                          display: 'block',
-                          position: 'absolute',
-                          top: 0,
-                          right: 14,
-                          width: 10,
-                          height: 10,
-                          bgcolor: 'background.paper',
-                          transform: 'translateY(-50%) rotate(45deg)',
-                          zIndex: 0,
-                        },
-                      },
-                    }}
-                    transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                    anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-                  >
-                    <MenuItem onClick={handleClose}>
-                      <Avatar /> Profile
-                    </MenuItem>
-                    <MenuItem onClick={handleClick}>
-                      <Avatar /> My account
-                    </MenuItem>
-                    <Divider />
-                    <MenuItem onClick={handleLogout}>
-                      <ListItemIcon>
-                        <Logout fontSize="small" />
-                      </ListItemIcon>
-                      Logout
-                    </MenuItem>
-                  </Menu>
-                </li>
-              )}
             </ul>
+            {!logged && (
+              <li className={cx('custom-item')}>
+                <button
+                  className="tw-mr-2 tw-bg-[#2474ED] tw-rounded-md border tw-text-sm tw-text-white tw-font-bold tw-py-3 tw-px-5 tw-rounded"
+                  onClick={handleClick}
+                >
+                  퀴즈만들기
+                </button>
+                <button
+                  className="tw-bg-white tw-rounded-md border tw-text-sm tw-text-gray-500 tw-font-bold tw-py-3 tw-px-5 tw-rounded"
+                  onClick={handleClick}
+                >
+                  로그인
+                </button>
+                {/* <Button size="small" color="white" onClick={handleClick}>
+                    로그인
+                  </Button> */}
+              </li>
+            )}
+            {adminButton}
+            {logoutButton}
+            {logged && (
+              <li className={cx('nav-item')}>
+                <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
+                  <Tooltip title="Account settings">
+                    <IconButton
+                      onClick={handleClicks}
+                      size="small"
+                      sx={{ ml: 1, p: 0 }}
+                      aria-controls={open ? 'account-menu' : undefined}
+                      aria-haspopup="true"
+                      aria-expanded={open ? 'true' : undefined}
+                    >
+                      <Avatar sx={{ width: 32, height: 32 }} src={user?.profileImageUrl}>
+                        M
+                      </Avatar>
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+                <Menu
+                  anchorEl={anchorEl}
+                  id="account-menu"
+                  open={open}
+                  onClose={handleClose}
+                  onClick={handleClose}
+                  PaperProps={{
+                    elevation: 0,
+                    sx: {
+                      overflow: 'visible',
+                      filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                      mt: 1.5,
+                      '& .MuiAvatar-root': {
+                        width: 32,
+                        height: 32,
+                        ml: -0.5,
+                        mr: 1,
+                      },
+                      '&:before': {
+                        content: '""',
+                        display: 'block',
+                        position: 'absolute',
+                        top: 0,
+                        right: 14,
+                        width: 10,
+                        height: 10,
+                        bgcolor: 'background.paper',
+                        transform: 'translateY(-50%) rotate(45deg)',
+                        zIndex: 0,
+                      },
+                    },
+                  }}
+                  transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                  anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                >
+                  <MenuItem onClick={handleClose}>
+                    <Avatar /> Profile
+                  </MenuItem>
+                  <MenuItem onClick={handleClick}>
+                    <Avatar /> My account
+                  </MenuItem>
+                  <Divider />
+                  <MenuItem onClick={handleLogout}>
+                    <ListItemIcon>
+                      <Logout fontSize="small" />
+                    </ListItemIcon>
+                    Logout
+                  </MenuItem>
+                </Menu>
+              </li>
+            )}
           </div>
         </div>
       </nav>

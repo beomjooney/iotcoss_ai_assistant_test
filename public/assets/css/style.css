@@ -32,9 +32,6 @@
    License: none (public domain)
 */
 
-
-
-
 html,
 body,
 div,
@@ -293,6 +290,9 @@ b {
 }
 .pt-150 {
   padding-top: 150px;
+}
+.pt-300 {
+  padding-top: 300px;
 }
 .pb-100 {
   padding-bottom: 100px;
@@ -754,7 +754,7 @@ span.sub-title {
   .navbar {
     /* background: #202877 !important; */
     background: #fff !important;
-    padding: 0.95rem 1rem;
+    /* padding: 0.95rem 1rem; */
   }
   .navbar-mobile {
     position: fixed;
@@ -2842,8 +2842,8 @@ span.sub-title {
 .border-gray-light {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
-.footer-bottom{
-      border-top: 1px solid rgba(153, 153, 153, 0.342);
+.footer-bottom {
+  border-top: 1px solid rgba(153, 153, 153, 0.342);
 }
 .footer-bottom p,
 .footer-bottom ul li a {

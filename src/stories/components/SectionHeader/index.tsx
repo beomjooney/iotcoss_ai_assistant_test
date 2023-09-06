@@ -18,8 +18,8 @@ const cx = classNames.bind(styles);
 const SectionHeader = ({ title, subTitle, size = 'normal', className = '', weight = 'bold' }: SectionHeaderProps) => {
   return (
     <div className={cx('section-header', `section-header--${size}`, `section-header--${weight}`, className)}>
-      <span>{subTitle}</span>
-      <h2>{title}</h2>
+      <div className="tw-text-black tw-text-base">{subTitle}</div>
+      <h3>{title}</h3>
     </div>
   );
 };

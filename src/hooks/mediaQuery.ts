@@ -14,7 +14,7 @@ const Tablet = ({ children }: { children: JSX.Element }): JSX.Element | null => 
 
 export const Mobile = ({ children }: { children: JSX.Element }): JSX.Element | null => {
   const hydrated = useComponentHydrated();
-  const isMobile = useMediaQuery({ query: '(max-width: 767px)' }, hydrated ? undefined : { deviceWidth: 767 });
+  const isMobile = useMediaQuery({ query: '(max-width: 1024px)' }, hydrated ? undefined : { deviceWidth: 1024 });
   return isMobile ? children : null;
 };
 

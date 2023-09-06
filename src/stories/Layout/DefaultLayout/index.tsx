@@ -52,31 +52,30 @@ const DefaultLayout = ({ darkBg, classOption, title, children, isFooter = true }
   ];
 
   const menuItemMobile = [
-    { no: 0, option: 'nav-item', title: '커멘소개', link: '/business', dropdown: [] },
-    { no: 1, option: 'nav-item', title: '커멘네비', link: '/diagram', dropdown: [] },
-    { no: 2, option: 'nav-item', title: '스킬/경험 소개', link: '/skill', dropdown: [] },
     {
-      no: 3,
-      option: 'nav-item',
-      title: '커멘토',
-      link: '/mentoring',
-      dropdown: [],
+      no: 0,
+      option: 'nav-item dropdown',
+      title: '퀴즈클럽',
+      link: '#',
+      dropdown: [
+        { no: 6, title: '성장퀴즈클럽', link: '/quiz' },
+        { no: 7, title: '내가 만든 클럽', link: '/quiz-my' },
+      ],
     },
-    { no: 4, option: 'nav-item', title: '커멘세미나', link: '/seminar', dropdown: [] },
-    { no: 5, option: 'nav-item', title: '추천 커멘픽', link: '/contents', dropdown: [] },
-    { no: 6, option: 'nav-item', title: '커멘니티', link: '/community', dropdown: [] },
+    { no: 1, option: 'nav-item', title: '라운지', link: '/', dropdown: [] },
+    { no: 2, option: 'nav-item', title: '나의학습방', link: '/', dropdown: [] },
   ];
   return (
-    <>
+    <div>
       <Desktop>
         <Header darkBg={darkBg} classOption={classOption} title={title} menuItem={menuItem} />
       </Desktop>
-      {/* <Mobile>
+      <Mobile>
         <Header darkBg={darkBg} classOption={classOption} title={title} menuItem={menuItemMobile} />
-      </Mobile> */}
+      </Mobile>
       <section className="hero-section ptb-100">{children}</section>
       {isFooter && <Footer />}
-    </>
+    </div>
   );
 };
 

@@ -6,16 +6,13 @@
   width: 100%;
   text-align: center;
   padding: 10px;
-
   span {
-    // color: palette.$Primary-Blue900;
-    //font-weight: 700;
-    font-size: font.$font-size-16;
-    line-height: 24px;
+    font-size: 18 !important;
+    color: #000;
   }
 
-  h2 {
-    margin-top: 8px;
+  h3 {
+    margin-top: 10px;
     //font-weight: 700;
     font-size: font.$font-size-24;
     line-height: 36px;

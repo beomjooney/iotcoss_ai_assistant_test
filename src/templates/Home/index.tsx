@@ -66,79 +66,48 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
 
   return (
     <div className={cx('career-main')}>
-      <div className="tw-w-full tw-bg-white tw-border-solid tw-rounded-2xl overflow-hidden">
-        <div className="tw-flex tw-justify-center">
-          <img className="h-40 w-full object-cover" src="/assets/images/banner/banner_bg.png" alt="Card" />
-          <div className={cx('absolute-content', 'tw-top-[230px]', 'tw-left-[450px]')}>
-            <Typography type="H1" tag="div" extendClass={cx('title__desc')}>
-              매일 새로운 기술과 쏱아져 나오는데
-              <br />
-              상위 10%의 개발자들은 어떻게 학습하고
-              <br />
-              어떻게 트렌드를 따라가는거죠?
-            </Typography>
-            <div className="tw-font-bold tw-text-3xl tw-text-black tw-tracking-tight tw-mt-8">
-              성장 가속 서비스 인빈서블X
-            </div>
-
-            {/* <div className={cx('fit-content', 'action-btn')}>
-              <Button size="main" onClick={handleUserResumeButton} className="tw-w-72 tw-h-12">
-                <Typography type="B1" tag="div" weight="bold">
-                  지금 시작하기!
-                  {hasUserResumeStory ? '수정' : '입력'}하러 가기
-                </Typography>
-              </Button>
-            </div> */}
-          </div>
-        </div>
-      </div>
-      {/* <section className={cx('top-banner', 'hero-section')}>
-        <div className="tw-p-0">
-          <img
-            src="/assets/images/banner/top_banner_main.png"
-            alt="main_background"
-            className={cx('top-banner__image')}
-          />
-          <div className="container text-white">
-            <div className="row align-items-center">
-              <div className="col-12 col-md-9 col-lg-7 col-xl-6">
-                <div className="hero-content section-title text-center text-lg-left my-5 mt-lg-0">
-                  <Typography type="A1" extendClass={cx('title')}>
-                    함께 성장하는 공간,
-                  </Typography>
-                  <Typography type="A2" weight="bold" extendClass={cx('title--highlight')}>
-                    커리어멘토스
-                  </Typography>
-                  <Typography type="H3" tag="div" extendClass={cx('mt-5', 'title__desc')}>
-                    세상은 넓고, 할일은 많습니다. 그리고 사람은 다양합니다.
-                    <br />
-                    커리어멘토스는 단순한 멘토-멘티 매칭 서비스가 아닙니다.
-                    <br />
-                    성향과 역량에 맞는 목표 모델과 최적의 루트를 찾아드립니다.
-                    <br />
-                    지금 성장 스토리를 입력하시고 새롭게 시작해보세요!
-                  </Typography>
+      <div>
+        <img src="/assets/images/banner/banner_bg.png" alt="main_background" className={cx('top-banner__image')} />
+        <div className="container text-white">
+          <div className="row align-items-center tw-pl-24 tw-pt-24">
+            <div className="col-12 col-md-9 col-lg-7 col-xl-6">
+              <div className="hero-content section-title text-center text-lg-left my-5 tw-mt-14">
+                {/*<Typography type="B1" tag="div" weight="bold" extendClass={cx('mb-5')}>*/}
+                {/*  WELCOME TO CAREERMENTORS!*/}
+                {/*</Typography>*/}
+                <div className={cx('tw-text-black', 'tw-font-semibold', 'tw-text-xl')}>
+                  매일 새로운 기술과 쏟아져 나오는데
+                  <br />
+                  상위 10%의 개발자들은 어떻게 학습하고
+                  <br />
+                  어떻게 트렌드를 따라가는 거죠?
+                </div>
+                <div className="tw-font-bold tw-text-3xl tw-text-black tw-tracking-tight tw-mt-14">
+                  성장 가속 서비스 데브어스
+                </div>
+                <div className={cx('fit-content', 'action-btn')}>
+                  <Button size="main" onClick={handleUserResumeButton} className="tw-w-72 tw-h-12">
+                    <Typography type="B1" tag="div" weight="bold">
+                      지금 시작하기!
+                    </Typography>
+                  </Button>
                 </div>
               </div>
             </div>
-            <div className={cx('fit-content', 'action-btn')}>
-              <Button size="main" onClick={handleUserResumeButton}>
-                <Typography type="B1" tag="div" weight="bold">
-                  성장 스토리 {hasUserResumeStory ? '수정' : '입력'}하러 가기
-                </Typography>
-              </Button>
-            </div>
           </div>
         </div>
-      </section> */}
+      </div>
       <div className={cx('main-container', 'container')}>
         <section className={cx('job-group-area')}>
-          <div className={cx('justify-content-center', 'ptb-100', 'job-group__wrap')}>
+          <div className={cx('justify-content-center', 'pt-300', 'job-group__wrap')}>
             <SectionHeader title="크루님! 인빈서블X만 믿고 따라오세요!" subTitle="개발자 상위 10%의 습관과 학습비법" />
             <div className={cx('growth-area', 'pt-60', 'flex-wrap-container')}>
               <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
                 <Grid item xs={2} sm={4} md={4}>
-                  <div className="w-1/2 bg-white shadow tw-rounded-xl overflow-hidden tw-h-[450px]">
+                  <div
+                    className="w-1/2 bg-white  tw-rounded-xl overflow-hidden tw-h-[450px]"
+                    style={{ boxShadow: '-12px 13px 40px rgba(0, 0, 0, 0.05)' }}
+                  >
                     <div className="tw-flex tw-justify-center tw-items-center">
                       <img
                         className="tw-h-64 tw-w-64 object-cover"
@@ -156,7 +125,10 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
                   </div>
                 </Grid>
                 <Grid item xs={2} sm={4} md={4}>
-                  <div className="w-1/2 bg-white shadow tw-rounded-xl overflow-hidden tw-h-[450px]">
+                  <div
+                    className="w-1/2 bg-white  tw-rounded-xl overflow-hidden tw-h-[450px] "
+                    style={{ boxShadow: '-12px 13px 40px rgba(0, 0, 0, 0.05)' }}
+                  >
                     <div className="tw-flex tw-justify-center tw-items-center">
                       <img
                         className="tw-h-64 tw-w-64 tw-object-cover"
@@ -173,7 +145,10 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
                   </div>
                 </Grid>
                 <Grid item xs={2} sm={4} md={4}>
-                  <div className="w-1/2 bg-white shadow tw-rounded-xl overflow-hidden  tw-h-[450px]">
+                  <div
+                    className="w-1/2 bg-white  tw-rounded-xl overflow-hidden  tw-h-[450px]"
+                    style={{ boxShadow: '-12px 13px 40px rgba(0, 0, 0, 0.05)' }}
+                  >
                     <div className="tw-flex tw-justify-center tw-items-center">
                       <img
                         className="tw-h-64 tw-w-64 tw-object-cover"
@@ -210,7 +185,10 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
             <div className={cx('growth-area', 'pt-60', 'flex-wrap-container')}>
               <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 12, sm: 8, md: 12 }}>
                 <Grid item xs={6} sm={4} md={6}>
-                  <div className="w-1/2 bg-white shadow tw-rounded-xl overflow-hidden tw-h-[450px]">
+                  <div
+                    className="w-1/2 bg-white tw-rounded-xl overflow-hidden tw-h-[450px]"
+                    style={{ boxShadow: '-12px 13px 40px rgba(0, 0, 0, 0.05)' }}
+                  >
                     <div className="tw-flex tw-justify-center tw-items-center">
                       <img
                         className="tw-h-64 tw-object-cover"
@@ -230,7 +208,10 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
                   </div>
                 </Grid>
                 <Grid item xs={6} sm={4} md={6}>
-                  <div className="w-1/2 bg-white shadow tw-rounded-xl overflow-hidden tw-h-[450px]">
+                  <div
+                    className="w-1/2 bg-white tw-rounded-xl overflow-hidden tw-h-[450px]"
+                    style={{ boxShadow: '-12px 13px 40px rgba(0, 0, 0, 0.05)' }}
+                  >
                     <div className="tw-flex tw-justify-center tw-items-center">
                       <img
                         className="tw-h-64 tw-w-64 object-cover"
@@ -258,7 +239,10 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
             <div className={cx('growth-area', 'pt-60', 'flex-wrap-container')}>
               <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
                 <Grid item xs={2} sm={4} md={4}>
-                  <div className="w-1/2 bg-white shadow tw-rounded-xl overflow-hidden tw-h-[450px]">
+                  <div
+                    className="w-1/2 bg-white  tw-rounded-xl overflow-hidden tw-h-[450px]"
+                    style={{ boxShadow: '-12px 13px 40px rgba(0, 0, 0, 0.05)' }}
+                  >
                     <div className="tw-flex tw-justify-center tw-items-center">
                       <img
                         className="tw-h-64 tw-w-64 tw-object-cover"
@@ -276,7 +260,10 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
                   </div>
                 </Grid>
                 <Grid item xs={2} sm={4} md={4}>
-                  <div className="w-1/2 bg-white shadow tw-rounded-xl overflow-hidden tw-h-[450px]">
+                  <div
+                    className="w-1/2 bg-white  tw-rounded-xl overflow-hidden tw-h-[450px]"
+                    style={{ boxShadow: '-12px 13px 40px rgba(0, 0, 0, 0.05)' }}
+                  >
                     <div className="tw-flex tw-justify-center tw-items-center">
                       <img
                         className="tw-h-64 tw-w-64 tw-object-cover"
@@ -293,7 +280,10 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
                   </div>
                 </Grid>
                 <Grid item xs={2} sm={4} md={4}>
-                  <div className="w-1/2 bg-white shadow tw-rounded-xl overflow-hidden tw-h-[450px]">
+                  <div
+                    className="w-1/2 bg-white  tw-rounded-xl overflow-hidden tw-h-[450px]"
+                    style={{ boxShadow: '-12px 13px 40px rgba(0, 0, 0, 0.05)' }}
+                  >
                     <div className="tw-flex tw-justify-center tw-items-center">
                       <img
                         className="tw-h-64 tw-w-64 tw-object-cover"
@@ -321,7 +311,7 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
               />
               <div className="tw-w-full tw-absolute tw-top-1/2 tw-left-1/2 tw--translate-x-1/2 tw--translate-y-1/2 tw-text-center tw-transform">
                 <p className="tw-text-2xl tw-font-bold tw-text-black">
-                  인빈서블X는 크루, 리더, 메이커가 함께 성장하는 플랫폼입니다.
+                  데브어스는 크루, 리더, 메이커가 함께 성장하는 플랫폼입니다.
                 </p>
               </div>
             </div>
