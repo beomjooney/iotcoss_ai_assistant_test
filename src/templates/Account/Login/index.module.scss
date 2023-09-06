@@ -12,8 +12,7 @@
   max-width: 32rem;
   margin: auto;
   margin-top: 1.5rem;
-  padding: 3.5rem 4rem;
-  border: 1px solid #e3e3e3;
+  padding: 12rem 4rem;
   border-radius: 0.6rem;
 
   .logo-area {
@@ -21,6 +20,7 @@
     // padding: font.toRem(70px);
     // margin-top: font.toRem(300px);
     &__text {
+      text-align: center;
       padding-top: 1rem;
       padding-bottom: 1rem;
       font-weight: bold;

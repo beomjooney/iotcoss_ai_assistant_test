@@ -1026,7 +1026,7 @@ export function QuizOpenTemplate() {
 
         {activeStep === 0 && (
           <div className="tw-mb-10">
-            <div className="tw-font-bold tw-text-xl tw-text-black tw-my-20 tw-text-center">개설전 약속해요</div>
+            <div className="tw-font-bold tw-text-xl tw-text-black tw-my-20 tw-text-center">개설 전, 약속해요</div>
             <div className={cx('content-area', ' tw-text-center')}>
               모두의 성장을 돕는 좋은 클럽이 되도록 노력해주실거죠?
             </div>
@@ -1056,7 +1056,7 @@ export function QuizOpenTemplate() {
                     className="tw-w-[300px] tw-bg-[#2474ED] tw-text-white tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded"
                     onClick={handleNext}
                   >
-                    약속할께요
+                    약속할게요.
                   </button>
                 </div>
               </div>

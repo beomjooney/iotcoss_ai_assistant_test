@@ -10,6 +10,7 @@ import Grid from '@mui/material/Grid';
 import { useMemberInfo, useMemberSummaryInfo } from 'src/services/account/account.queries';
 import Button from '@mui/material/Button';
 import { deleteCookie } from 'cookies-next';
+import Image from 'next/image';
 
 const cx = classNames.bind(styles);
 
@@ -137,9 +138,7 @@ export function MyTemplate({ children }: MyTemplateProps) {
               <Grid item xs={2} className="tw-font-bold tw-text-3xl tw-text-black">
                 마이페이지
               </Grid>
-              <Grid item xs={7} className="tw-font-semi tw-text-base tw-text-black">
-                마이페이지에 관한 간단한 설명란
-              </Grid>
+              <Grid item xs={7} className="tw-font-semi tw-text-base tw-text-black"></Grid>
               <Grid item xs={3} justifyContent="flex-end" className="tw-flex"></Grid>
             </Grid>
           </div>
@@ -151,10 +150,20 @@ export function MyTemplate({ children }: MyTemplateProps) {
                   <div className="tw-p-5 tw-mb-5 tw-bg-white tw-rounded-lg">
                     <div className="tw-p-5 tw-text-center ">
                       <div className="tw-flex tw-justify-center tw-py-0">
-                        <img
+                        {/* <img
                           className="tw-w-13 tw-h-13 tw-ring-1 tw-rounded-full "
                           src={summary?.profileImageUrl}
                           alt=""
+                        /> */}
+
+                        <Image
+                          src={summary?.profileImageUrl}
+                          alt="profile_image"
+                          className={cx('rounded-circle', 'image-info__image')}
+                          width="110px"
+                          height="110px"
+                          objectFit="cover"
+                          unoptimized={true}
                         />
                       </div>
                       <div className="tw-py-3 tw-font-semibold tw-text-black tw-text-lg">{summary?.nickname}</div>
@@ -210,10 +219,25 @@ export function MyTemplate({ children }: MyTemplateProps) {
                     </div>
 
                     <div className="tw-flex tw-justify-between tw-mt-2 tw-gap-2">
-                      <Button className="tw-w-full  " variant="outlined">
+                      <Button
+                        className="tw-w-full  "
+                        variant="outlined"
+                        sx={{
+                          borderColor: 'gray',
+                          color: 'gray',
+                        }}
+                      >
                         프로필바로가기
                       </Button>
-                      <Button className="tw-w-full " variant="outlined" onClick={handleLogout}>
+                      <Button
+                        className="tw-w-full "
+                        variant="outlined"
+                        onClick={handleLogout}
+                        sx={{
+                          borderColor: 'gray',
+                          color: 'gray',
+                        }}
+                      >
                         로그아웃
                       </Button>
                     </div>

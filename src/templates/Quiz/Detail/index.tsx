@@ -88,6 +88,17 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
   // DELETED("0005") -> 삭제 (안보임)
   // NONE("0006") -> 클럽과 관계없음 (가입전)
 
+  //   TEMPORARY("0001") -> 임시저장상태
+  // REQUESTED("0002") -> 개설요청 대기중
+  // PENDING("0003") -> 개설 후 모집기간 전 (아직 이 상태는 안쓰고요)
+  // IN_PROGRESS("0004") -> 스터디진행중
+  // COMPLETE("0005") -> 스터디 완료
+  // RECRUITING("0006") -> 모집중
+  // RECRUITMENT_ENDED("0007") -> 모집완료, 시작전
+  // REJECTED("0008") -> 개설 거절
+  // APPROVAL_EXPIRED("0009") -> 개설 승인 유효기간 종료
+  // DELETED("0010") -> 삭제 (안보임)
+
   const handleParticipant = () => {
     console.log('club join');
     if (!logged) {
@@ -183,7 +194,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
               type="button"
               className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
             >
-              클럽리더는 참가 신청이 불가능합니다.
+              퀴즈풀기
             </button>,
           );
         } else {
@@ -193,7 +204,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
               onClick={() => handleParticipant()}
               className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
             >
-              클럽퀴즈 참가신청
+              참여하기
             </button>,
           );
         }
@@ -201,63 +212,69 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
         setApplicationButton(
           <button
             type="button"
+            disabled
             className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
           >
-            퀴즈클럽리더 가입요청 진행중
+            가입요청 승인중
           </button>,
         );
       } else if (data?.clubStatus == '0006' && clubMemberStatus == '0002') {
         setApplicationButton(
           <button
             type="button"
+            disabled
             className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
           >
-            퀴즈클럽 가입승인 완료
+            가입승인 완료
           </button>,
         );
       } else if (data?.clubStatus == '0006' && clubMemberStatus == '0003') {
         setApplicationButton(
           <button
             type="button"
+            disabled
             className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
           >
-            퀴즈클럽 가입거절
+            진행불가
           </button>,
         );
       } else if (data?.clubStatus == '0006' && clubMemberStatus == '0004') {
         setApplicationButton(
           <button
             type="button"
+            disabled
             className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
           >
-            퀴즈클럽 가입강퇴
+            모집완료
           </button>,
         );
       } else if (data?.clubStatus == '0007') {
         setApplicationButton(
           <button
             type="button"
+            disabled
             className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
           >
-            퀴즈클럽 모집완료
+            모집완료
           </button>,
         );
-      } else if (data?.clubStatus == '0004') {
+      } else if (data?.clubStatus == '0004' && clubMemberStatus == '0002') {
         setApplicationButton(
           <button
             type="button"
             className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
           >
-            퀴즈클럽 스터디 진행 중
+            퀴즈풀기
           </button>,
         );
       } else if (data?.clubStatus == '0005') {
         setApplicationButton(
           <button
             type="button"
+            disabled
             className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
           >
-            퀴즈클럽에 스터디 완료
+            진행 종료
           </button>,
         );
       }
@@ -268,7 +285,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
     <>
       <Desktop>
         <div className={cx('seminar-detail-container')}>
-          <BannerDetail data={data} title="성장퀴즈" subTitle="클럽 상세보기" imageName="top_banner_seminar.svg" />
+          <BannerDetail data={data} title="퀴즈클럽" subTitle="클럽 상세보기" imageName="top_banner_seminar.svg" />
           <div className={cx('container')}>
             {/*바로 밑에 자식만 sticky 적용됨*/}
             <div className={cx('content-wrap')}>
@@ -308,7 +325,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                     aria-label="basic tabs example"
                     className={cx('tabs', 'sticky')}
                   >
-                    <Tab label="성장퀴즈 소개" {...a11yProps(0)} onClick={() => handleClickTab(0)} />
+                    <Tab label="퀴즈클럽 소개" {...a11yProps(0)} onClick={() => handleClickTab(0)} />
                     <Tab label="크루활동" {...a11yProps(1)} onClick={() => handleClickTab(1)} />
                   </Tabs>
                   {/* <article> */}
@@ -325,14 +342,14 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                     </div>
 
                     <div className="tw-text-xl tw-mb-10 tw-font-bold tw-text-black dark:tw-text-gray-400">
-                      성장퀴즈 클럽 소개
+                      퀴즈클럽 소개
                     </div>
                     <div className="tw-text-base tw-mb-10 tw-font-normal tw-text-black dark:tw-text-gray-400">
                       {data?.description}
                     </div>
 
                     <div className="tw-text-xl tw-mb-10 tw-font-bold tw-text-black dark:tw-text-gray-400">
-                      성장퀴즈 질문 미리보기
+                      퀴즈클럽 질문 미리보기
                     </div>
 
                     <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-400 dark:tw-text-gray-400">

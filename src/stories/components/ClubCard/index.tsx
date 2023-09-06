@@ -162,11 +162,11 @@ ClubCardProps) => {
         className="tw-flex tw-flex-col tw-items-center tw-bg-white tw-border tw-border-gray-200 tw-rounded-lg tw-shadow md:tw-flex-row tw-w-full "
       >
         <img
-          className="tw-object-cover tw-w-[200px] tw-rounded-t-lg tw-h-[245px] md:tw-h-[245px] md:tw-w-[200px] md:tw-rounded-none md:tw-rounded-l-lg"
+          className="tw-object-cover tw-w-[220px] tw-rounded-t-lg tw-h-[240px] md:tw-h-[240px] md:tw-w-[220px] md:tw-rounded-none md:tw-rounded-l-lg"
           src={item?.clubImageUrl}
           alt=""
         />
-        <div className="tw-flex tw-w-full tw-flex-col tw-justify-between tw-p-4 tw-leading-normal">
+        <div className="tw-flex tw-w-full tw-flex-col tw-justify-between tw-p-7 tw-leading-normal">
           <Grid
             className=" tw-mb-3"
             container
@@ -230,9 +230,9 @@ ClubCardProps) => {
           <h6 className="tw-mb-2 tw-text-2xl tw-font-bold tw-tracking-tight tw-text-gray-900 dark:tw-text-white">
             {item.name}
           </h6>
-          <p className="tw-line-clamp-2 tw-mb-3 tw-font-normal tw-text-gray-700 dark:tw-text-gray-400">
+          {/* <p className="tw-line-clamp-2 tw-mb-3 tw-font-normal tw-text-gray-700 dark:tw-text-gray-400">
             {item.description}
-          </p>
+          </p> */}
 
           <div className="tw-mb-3 tw-text-sm tw-font-semibold tw-text-gray-400 dark:tw-text-gray-400">
             {item.studyCycle.toString()} | {item.studyCount} 주 | 학습 {item.weekCount}회

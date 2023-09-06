@@ -79,12 +79,12 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
     logged
       ? setLogoutButton(
           <li className={cx('custom-item')} id="logoutBtn">
-            <Button className="tw-mr-4" size="small" color="primary" onClick={() => (location.href = '/quiz-make')}>
-              퀴즈 만들기
-            </Button>
-            {/* <Button size="small" color="primary" onClick={handleLogout}>
-              로그아웃
-            </Button> */}
+            <button
+              className="tw-mr-2 tw-bg-[#2474ED] tw-rounded-md border tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
+              onClick={() => (location.href = '/quiz-make')}
+            >
+              퀴즈만들기
+            </button>
           </li>,
         )
       : setLogoutButton(null);
@@ -227,19 +227,49 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
   return (
     <header className={`header ${classOption}`}>
       <nav
-        className={`navbar navbar-expand-lg fixed-top ${darkBg ? 'bg-transparent' : 'custom-nav white-bg'} ${
+        className={`navbar navbar-expand-lg tw-p-0 fixed-top ${darkBg ? 'bg-transparent' : 'custom-nav white-bg'} ${
           scroll > headerTop ? 'affix' : ''
         }`}
       >
         <div className="container" style={{ alignItems: 'center' }}>
           <div className={cx('header-link', 'navbar-brand')} onClick={handleGoHome}>
-            <div className="tw-text-2xl tw-font-bold">데브어스</div>
+            <div className="tw-text-3xl tw-font-black ">DevUs</div>
           </div>
+          <Mobile>
+            <IconButton
+              sx={{
+                padding: '0 !important',
+                '& .MuiSvgIcon-root': { color: '#000', fontSize: 28, padding: 0 },
+              }}
+              size="large"
+              aria-label="open drawer"
+              onClick={handleOpenMenu}
+              edge="start"
+            >
+              <MenuIcon />
+            </IconButton>
+          </Mobile>
+          <SwipeableDrawer
+            anchor={'right'}
+            open={menuOpen}
+            onClose={handleCloseMenu}
+            onOpen={handleOpenMenu}
+            PaperProps={{
+              sx: { width: '70%' },
+            }}
+          >
+            {list(menuItem)}
+          </SwipeableDrawer>
           <div
-            className={cx('collapse navbar-collapse main-menu', 'navbar-mobile', isShowMenu ? 'show' : '')}
+            className={cx(
+              'collapse navbar-collapse main-menu',
+              'navbar-mobile  tw-mt-2.5 tw-mb-2.5',
+              'tw-justify-between',
+              isShowMenu ? 'show' : '',
+            )}
             id="navbarSupportedContent"
           >
-            <ul className={cx('nav-custom', 'navbar-custom-mobile', 'navbar-nav ml-auto', 'tw-text-lg')}>
+            <ul className={cx('nav-custom', 'navbar-custom-mobile', 'navbar-nav', 'tw-text-lg', 'tw-text-left')}>
               {menuItem?.map((item, index) => {
                 return (
                   <li key={`item-` + index} className={item.option}>
@@ -249,7 +279,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                           if (item.dropdown.length === 0) setIsShowMenu(!isShowMenu);
                         }}
                       >
-                        {item.title}
+                        <div className="tw-mr-10 tw-text-base tw-text-black tw-font-bold">{item.title}</div>
                       </a>
                     </Link>
                     <div className="dropdown-menu submenu" aria-labelledby="navbarDropdownHome">
@@ -270,23 +300,62 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                   </li>
                 );
               })}
-              {!logged && (
-                <li className={cx('custom-item')}>
-                  <Button size="small" color="primary" onClick={handleClick}>
-                    로그인
-                  </Button>
-                </li>
-              )}
-              {adminButton}
-              {logoutButton}
-              {logged && (
-                <li className={cx('nav-item')}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
+            </ul>
+
+            {!logged && (
+              <li className={cx('custom-item')}>
+                <button className="tw-mr-2 tw-bg-[#2474ED] tw-rounded-md border tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded">
+                  퀴즈만들기
+                </button>
+                <button
+                  className="tw-bg-white tw-rounded-md border tw-text-sm tw-text-gray-500 tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
+                  onClick={handleClick}
+                >
+                  로그인
+                </button>
+              </li>
+            )}
+            {/* {adminButton} */}
+            {logged && (
+              <div className="row tw-flex tw-items-center tw-justify-between tw-w-80">
+                <div className="col-lg-12 tw-flex tw-items-center tw-justify-start lg:tw-justify-end lg:tw-mb-0">
+                  {logoutButton}
+                  <svg
+                    className="tw-mx-5  tw-flex-none tw-text-black"
+                    fill="none"
+                    width="25"
+                    height="25"
+                    viewBox="0 0 25 25"
+                  >
+                    <path
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M8 3.464V1.1m0 2.365a5.338 5.338 0 0 1 5.133 5.368v1.8c0 2.386 1.867 2.982 1.867 4.175C15 15.4 15 16 14.462 16H1.538C1 16 1 15.4 1 14.807c0-1.193 1.867-1.789 1.867-4.175v-1.8A5.338 5.338 0 0 1 8 3.464ZM4.54 16a3.48 3.48 0 0 0 6.92 0H4.54Z"
+                    />
+                  </svg>
+                  {/* <svg
+                    className=tw-w-6 tw-h-6 tw-text-gray-800"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 16 21"
+                  >
+                    <path
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M8 3.464V1.1m0 2.365a5.338 5.338 0 0 1 5.133 5.368v1.8c0 2.386 1.867 2.982 1.867 4.175C15 15.4 15 16 14.462 16H1.538C1 16 1 15.4 1 14.807c0-1.193 1.867-1.789 1.867-4.175v-1.8A5.338 5.338 0 0 1 8 3.464ZM4.54 16a3.48 3.48 0 0 0 6.92 0H4.54Z"
+                    />
+                  </svg> */}
+                  <li className={cx('nav-item')}>
                     <Tooltip title="Account settings">
                       <IconButton
                         onClick={handleClicks}
                         size="small"
-                        sx={{ ml: 1, p: 0 }}
+                        sx={{ ml: 0, p: 0 }}
                         aria-controls={open ? 'account-menu' : undefined}
                         aria-haspopup="true"
                         aria-expanded={open ? 'true' : undefined}
@@ -296,59 +365,62 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                         </Avatar>
                       </IconButton>
                     </Tooltip>
-                  </Box>
-                  <Menu
-                    anchorEl={anchorEl}
-                    id="account-menu"
-                    open={open}
-                    onClose={handleClose}
-                    onClick={handleClose}
-                    PaperProps={{
-                      elevation: 0,
-                      sx: {
-                        overflow: 'visible',
-                        filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-                        mt: 1.5,
-                        '& .MuiAvatar-root': {
-                          width: 32,
-                          height: 32,
-                          ml: -0.5,
-                          mr: 1,
+                    <Menu
+                      anchorEl={anchorEl}
+                      id="account-menu"
+                      open={open}
+                      onClose={handleClose}
+                      onClick={handleClose}
+                      PaperProps={{
+                        elevation: 0,
+                        sx: {
+                          overflow: 'visible',
+                          filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                          mt: 1.5,
+                          width: '200px',
+                          paddingLeft: '8px',
+                          '& .MuiAvatar-root': {
+                            width: 32,
+                            height: 32,
+                            ml: -0.5,
+                            mr: 1,
+                          },
+                          '&:before': {
+                            content: '""',
+                            display: 'block',
+                            position: 'absolute',
+                            top: 0,
+                            right: 14,
+                            width: 10,
+                            height: 10,
+                            bgcolor: 'background.paper',
+                            transform: 'translateY(-50%) rotate(45deg)',
+                            zIndex: 0,
+                          },
                         },
-                        '&:before': {
-                          content: '""',
-                          display: 'block',
-                          position: 'absolute',
-                          top: 0,
-                          right: 14,
-                          width: 10,
-                          height: 10,
-                          bgcolor: 'background.paper',
-                          transform: 'translateY(-50%) rotate(45deg)',
-                          zIndex: 0,
-                        },
-                      },
-                    }}
-                    transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                    anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-                  >
-                    <MenuItem onClick={handleClose}>
-                      <Avatar /> Profile
-                    </MenuItem>
-                    <MenuItem onClick={handleClick}>
-                      <Avatar /> My account
-                    </MenuItem>
-                    <Divider />
-                    <MenuItem onClick={handleLogout}>
-                      <ListItemIcon>
-                        <Logout fontSize="small" />
-                      </ListItemIcon>
-                      Logout
-                    </MenuItem>
-                  </Menu>
-                </li>
-              )}
-            </ul>
+                      }}
+                      transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                      anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                    >
+                      <MenuItem onClick={() => (location.href = '/quiz-make')}>내가 만든 퀴즈</MenuItem>
+                      <Divider />
+                      <MenuItem>내 포인트 내역</MenuItem>
+                      <Divider />
+                      <MenuItem>내 프로필</MenuItem>
+                      <Divider />
+                      <MenuItem onClick={handleClick}>마이페이지</MenuItem>
+                      <Divider />
+                      <MenuItem onClick={handleLogout}>
+                        <ListItemIcon>
+                          <Logout fontSize="small" />
+                        </ListItemIcon>
+                        Logout
+                      </MenuItem>
+                    </Menu>
+                  </li>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </nav>

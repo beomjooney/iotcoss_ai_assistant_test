@@ -172,7 +172,7 @@ export function QuizTemplate() {
         <div className="tw-py-5">
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
             <Grid item xs={2} className="tw-font-bold tw-text-3xl tw-text-black">
-              성장퀴즈
+              퀴즈클럽
             </Grid>
             <Grid item xs={7} className="tw-font-semi tw-text-base tw-text-black">
               관심 주제별로 성장 퀴즈를 풀고 네트워킹 할 수 있는 클럽을 만나보세요!

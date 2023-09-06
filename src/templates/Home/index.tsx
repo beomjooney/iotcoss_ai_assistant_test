@@ -78,7 +78,7 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
               어떻게 트렌드를 따라가는거죠?
             </Typography>
             <div className="tw-font-bold tw-text-3xl tw-text-black tw-tracking-tight tw-mt-8">
-              성장 가속 서비스 데브어스
+              성장 가속 서비스 인빈서블X
             </div>
 
             {/* <div className={cx('fit-content', 'action-btn')}>
@@ -321,7 +321,7 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
               />
               <div className="tw-w-full tw-absolute tw-top-1/2 tw-left-1/2 tw--translate-x-1/2 tw--translate-y-1/2 tw-text-center tw-transform">
                 <p className="tw-text-2xl tw-font-bold tw-text-black">
-                  데브어스는 크루, 리더, 메이커가 함께 성장하는 플랫폼입니다.
+                  인빈서블X는 크루, 리더, 메이커가 함께 성장하는 플랫폼입니다.
                 </p>
               </div>
             </div>
