@@ -70,14 +70,11 @@ export function LoginTemplate({ onSubmitLogin }: LoginTemplateProps) {
     <div className={cx('login-container')}>
       <div className={cx('logo-area')}>
         {/* <img src="/assets/images/cm_CI_co_1000x225.png" alt="footer logo" width={162} className="img-fluid mb-3" /> */}
-        <p className={cx('logo-area__text')}>
-          데브어스에<br></br> 오신 것을 환영합니다!
-          <br />
-        </p>
+        <p className={cx('logo-area__text')}>로그인</p>
         <div className={cx('button-area', 'tw-mt-10')}>
           <Button type="submit" color="kakao" size="medium" onClick={handleLogin}>
             <img src="/assets/images/account/kakao.svg" alt="카카오 로그인" className={cx('image-login')} />
-            <Typography sx={{ fontWeight: '600', fontSize: 16 }}>카카오 1초 로그인/회원가입</Typography>
+            <Typography sx={{ fontWeight: '600', fontSize: 16 }}>카카오 3초만에 시작하기</Typography>
           </Button>
         </div>
         {/* <Divider className={cx('sign-color')}>또는 이메일 로그인</Divider> */}

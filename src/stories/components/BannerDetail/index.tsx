@@ -57,7 +57,7 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
         {/*todo url 경로에 따라 자동 셋팅 구현*/}
         <div className="tw-w-full tw-flex tw-flex-col tw-items-center tw-bg-white tw-border tw-border-gray-200 tw-rounded-lg tw-shadow md:tw-flex-row md:tw-max-w-[1100px]">
           <img
-            className="tw-object-cover tw-w-[320px] tw-rounded-t-lg tw-h-[320px] md:tw-h-[320px] md:tw-w-[320px] md:tw-rounded-none md:tw-rounded-l-lg"
+            className="tw-object-cover tw-w-[340px] tw-rounded-t-lg tw-h-[340px] md:tw-h-[340px] md:tw-w-[340px] md:tw-rounded-none md:tw-rounded-l-lg"
             src={data?.clubImageUrl}
             alt=""
           />
@@ -108,15 +108,15 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
             <h6 className="tw-mb-2 tw-text-2xl tw-font-bold tw-tracking-tight tw-text-gray-900 dark:tw-text-white">
               {data?.name}
             </h6>
-            <p className="tw-line-clamp-2 tw-mb-3 tw-font-normal tw-text-gray-700 dark:tw-text-gray-400">
+            {/* <p className="tw-line-clamp-2 tw-mb-3 tw-font-normal tw-text-gray-700 dark:tw-text-gray-400">
               {data?.description}
-            </p>
+            </p> */}
 
             <div className="tw-text-base tw-font-bold tw-text-black dark:tw-text-gray-400">
-              성장퀴즈 주수 : {data?.studyWeekCount}주 | 학습 {data?.studyTotalCount}회 ({data?.startAt}~{data?.endAt})
+              퀴즈클럽 주수 : {data?.studyWeekCount}주 | 학습 {data?.studyTotalCount}회 ({data?.startAt}~{data?.endAt})
             </div>
             <div className="tw-text-base tw-font-bold tw-text-black dark:tw-text-gray-400">
-              성장퀴즈 주기 : {data?.studyCycle.toString()}
+              퀴즈클럽 주기 : {data?.studyCycle.toString()}
             </div>
             <div className="tw-mb-3 tw-text-base tw-font-bold tw-text-black dark:tw-text-gray-400">
               모집인원 : {data?.recruitMemberCount}명
@@ -135,6 +135,12 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
                 </div>
               </Grid>
               <Grid item xs={4} justifyContent="flex-end" className="tw-flex">
+                <button
+                  type="button"
+                  className="tw-text-white tw-mr-3 tw-bg-blue-500 hover:tw-bg-blue-800 tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5  dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
+                >
+                  참여하기
+                </button>
                 <button
                   type="button"
                   className="tw-text-white tw-bg-blue-500 hover:tw-bg-blue-800 tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5  dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"

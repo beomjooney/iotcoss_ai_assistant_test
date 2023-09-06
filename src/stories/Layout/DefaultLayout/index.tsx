@@ -16,16 +16,7 @@ export interface DefaultLayoutProps {
 
 const DefaultLayout = ({ darkBg, classOption, title, children, isFooter = true }: DefaultLayoutProps) => {
   const menuItem = [
-    {
-      no: 0,
-      option: 'nav-item dropdown',
-      title: '성장퀴즈',
-      link: '#',
-      dropdown: [
-        { no: 6, title: '성장퀴즈클럽', link: '/quiz' },
-        { no: 7, title: '내가 만든 클럽', link: '/quiz-my' },
-      ],
-    },
+    { no: 0, option: 'nav-item', title: '퀴즈클럽', link: '/quiz', dropdown: [] },
     { no: 1, option: 'nav-item', title: '라운지', link: '/', dropdown: [] },
     { no: 2, option: 'nav-item', title: '나의학습방', link: '/', dropdown: [] },
     // { no: 0, option: 'nav-item', title: '커멘소개', link: '/business', dropdown: [] },
@@ -52,16 +43,17 @@ const DefaultLayout = ({ darkBg, classOption, title, children, isFooter = true }
   ];
 
   const menuItemMobile = [
-    {
-      no: 0,
-      option: 'nav-item dropdown',
-      title: '퀴즈클럽',
-      link: '#',
-      dropdown: [
-        { no: 6, title: '성장퀴즈클럽', link: '/quiz' },
-        { no: 7, title: '내가 만든 클럽', link: '/quiz-my' },
-      ],
-    },
+    // {
+    //   no: 0,
+    //   option: 'nav-item dropdown',
+    //   title: '퀴즈클럽',
+    //   link: '#',
+    //   dropdown: [
+    //     { no: 6, title: '성장퀴즈클럽', link: '/quiz' },
+    //     { no: 7, title: '내가 만든 클럽', link: '/quiz-my' },
+    //   ],
+    // },
+    { no: 0, option: 'nav-item', title: '퀴즈클럽', link: '/quiz', dropdown: [] },
     { no: 1, option: 'nav-item', title: '라운지', link: '/', dropdown: [] },
     { no: 2, option: 'nav-item', title: '나의학습방', link: '/', dropdown: [] },
   ];
