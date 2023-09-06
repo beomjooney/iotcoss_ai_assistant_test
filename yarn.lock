@@ -3092,25 +3092,25 @@
   resolved "https://registry.yarnpkg.com/@rushstack/eslint-patch/-/eslint-patch-1.3.3.tgz#16ab6c727d8c2020a5b6e4a176a243ecd88d8d69"
   integrity sha512-0xd7qez0AQ+MbHatZTlI1gu5vkG8r7MYRUJAHPAHJBmGLs16zpkrpAVLvjQKQOqaXPDUBwOiJzNc00znHSCVBw==
 
-"@shopify/polaris-icons@^7.8.1", "@shopify/polaris-icons@latest":
-  version "7.8.1"
-  resolved "https://registry.yarnpkg.com/@shopify/polaris-icons/-/polaris-icons-7.8.1.tgz#06f304a9cee40a414e87278ebc3eabb180006bcf"
-  integrity sha512-3qg3tzLEzeKzAcVcswNtdAoY+YNk0zq7Q0BUYzCQrr8InJqxMTrbihbVVxJ9209onfh/eosMacmzM2CHx3xjeQ==
+"@shopify/polaris-icons@^5.4.0":
+  version "5.4.0"
+  resolved "https://registry.yarnpkg.com/@shopify/polaris-icons/-/polaris-icons-5.4.0.tgz#99a11fa48d38657aaa63d2cc3306a4d56911d6b8"
+  integrity sha512-RzVSdwJuObO/4hS+DUCzY0jEQE0d6WFH5yFjTYqotMUGxe3tCUVdbuxxk/G1QbLVGQXYHmAvDXKbt+xSHwf+ow==
 
-"@shopify/polaris-tokens@^7.5.3":
-  version "7.5.3"
-  resolved "https://registry.yarnpkg.com/@shopify/polaris-tokens/-/polaris-tokens-7.5.3.tgz#63dfcddc6766a11dc21ca1b577601f4ea85d9344"
-  integrity sha512-7+h4t2lbd5g7eigvqKjlq0BIe+dzrZhfyoOlMQPZg/GJ1MUe8FvBdqhxlvXQ2ORXeRV2V9RTEE9NvrLG5OOVQw==
+"@shopify/polaris-tokens@^5.5.2":
+  version "5.5.2"
+  resolved "https://registry.yarnpkg.com/@shopify/polaris-tokens/-/polaris-tokens-5.5.2.tgz#679148c0565c640425b40c9c18d3052a139f5475"
+  integrity sha512-1kYnaRU5MtSV+DMcSn5Mytrnsev1IO/trORD8BtiW+s2V85K5LoNqAZ1F1rRmJnZLAfe8XwlAixkR+sCDLSYmQ==
 
-"@shopify/polaris@latest":
-  version "11.14.0"
-  resolved "https://registry.yarnpkg.com/@shopify/polaris/-/polaris-11.14.0.tgz#db667276e0abcdfae16213d1012c7172c47a447e"
-  integrity sha512-U0A2WULb9RLvTLf1S7LFleuj+S4fXnaLlm7aXvPQccFN/j1zveFmhxOlck6zSZNrUcLyHbGmh1uJhNeVlZMI7g==
+"@shopify/polaris@^9.23.1":
+  version "9.24.0"
+  resolved "https://registry.yarnpkg.com/@shopify/polaris/-/polaris-9.24.0.tgz#c7a028457f76acac5a40dc9dc6aa2044a4e394c5"
+  integrity sha512-7ca3maYnyAmG7kcz7P7s9tW/09nLGT7AQv5E98ekw4aAL7ZWGTV3hAh7n7wo0Cc7RLepkSZgqDI1jdYk99nZGQ==
   dependencies:
-    "@shopify/polaris-icons" "^7.8.1"
-    "@shopify/polaris-tokens" "^7.5.3"
-    "@types/react" "^18.2.0"
-    "@types/react-dom" "^18.2.0"
+    "@shopify/polaris-icons" "^5.4.0"
+    "@shopify/polaris-tokens" "^5.5.2"
+    "@types/react" "^17.0.2"
+    "@types/react-dom" "^17.0.2"
     "@types/react-transition-group" "^4.4.2"
     react-fast-compare "^3.2.0"
     react-transition-group "^4.4.2"
@@ -4842,19 +4842,12 @@
   resolved "https://registry.yarnpkg.com/@types/range-parser/-/range-parser-1.2.4.tgz#cd667bcfdd025213aafb7ca5915a932590acdcdc"
   integrity sha512-EEhsLsD6UsDM1yFhAvy0Cjr6VwmpMWqFBCb9w07wVugF7w9nfajxLuVmngTIpgS6svCnm6Vaw+MZhoDCKnOfsw==
 
-"@types/react-dom@<18.0.0", "@types/react-dom@^17.0.17":
+"@types/react-dom@<18.0.0", "@types/react-dom@^17.0.17", "@types/react-dom@^17.0.2":
   version "17.0.20"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-17.0.20.tgz#e0c8901469d732b36d8473b40b679ad899da1b53"
   integrity sha512-4pzIjSxDueZZ90F52mU3aPoogkHIoSIDG+oQ+wQK7Cy2B9S+MvOqY0uEA/qawKz381qrEDkvpwyt8Bm31I8sbA==
   dependencies:
     "@types/react" "^17"
-
-"@types/react-dom@^18.2.0":
-  version "18.2.7"
-  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-18.2.7.tgz#67222a08c0a6ae0a0da33c3532348277c70abb63"
-  integrity sha512-GRaAEriuT4zp9N4p1i8BDBYmEyfo+xQ3yHjJU4eiK5NDa1RmUZG+unZABUTK4/Ox/M+GaHwb6Ow8rUITrtjszA==
-  dependencies:
-    "@types/react" "*"
 
 "@types/react-is@^18.2.1":
   version "18.2.1"
@@ -4877,7 +4870,7 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@>=16.9.11", "@types/react@^18.2.0":
+"@types/react@*", "@types/react@>=16.9.11":
   version "18.2.21"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-18.2.21.tgz#774c37fd01b522d0b91aed04811b58e4e0514ed9"
   integrity sha512-neFKG/sBAwGxHgXiIxnbm3/AAVQ/cMRS93hvBpg8xYRbeQSPVABp9U2bRnPf0iI4+Ucdv3plSxKK+3CW2ENJxA==
@@ -4886,7 +4879,7 @@
     "@types/scheduler" "*"
     csstype "^3.0.2"
 
-"@types/react@^17", "@types/react@^17.0.30":
+"@types/react@^17", "@types/react@^17.0.2", "@types/react@^17.0.30":
   version "17.0.65"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.65.tgz#95f6a2ab61145ffb69129d07982d047f9e0870cd"
   integrity sha512-oxur785xZYHvnI7TRS61dXbkIhDPnGfsXKv0cNXR/0ml4SipRIFpSMzA7HMEfOywFwJ5AOnPrXYTEiTRUQeGlQ==

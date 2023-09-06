@@ -1026,7 +1026,7 @@ export function QuizOpenTemplate() {
 
         {activeStep === 0 && (
           <div className="tw-mb-10">
-            <div className="tw-font-bold tw-text-xl tw-text-black tw-my-20 tw-text-center">개설 전, 약속해요</div>
+            <div className="tw-font-bold tw-text-xl tw-text-black tw-my-20 tw-text-center">개설 전, 약속해요.</div>
             <div className={cx('content-area', ' tw-text-center')}>
               모두의 성장을 돕는 좋은 클럽이 되도록 노력해주실거죠?
             </div>
@@ -1404,12 +1404,12 @@ export function QuizOpenTemplate() {
 
         {activeStep === 2 && (
           <>
-            <article>
+            <article className="tw-mt-10">
               <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-                <Grid item xs={2} className="tw-font-bold tw-text-xl tw-text-black tw-mt-10">
+                <Grid item xs={2} className="tw-font-bold tw-text-xl tw-text-black">
                   퀴즈 등록하기 {quizList.length}
                 </Grid>
-                <Grid item xs={7} className="tw-font-bold tw-text-xl tw-text-black tw-mt-10">
+                <Grid item xs={7} className="tw-font-bold tw-text-xl tw-text-black ">
                   <div className="tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
                     {recommendJobGroupsName.map((name, i) => (
                       <span
@@ -1437,7 +1437,7 @@ export function QuizOpenTemplate() {
                     ))}
                   </div>
                 </Grid>
-                <Grid item xs={3} justifyContent="flex-end" className="tw-flex tw-mt-10">
+                <Grid item xs={3} justifyContent="flex-end" className="tw-flex">
                   <button
                     type="button"
                     onClick={handleAddClick}
@@ -1723,13 +1723,13 @@ export function QuizOpenTemplate() {
       <MentorsModal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
         <div className="tw-font-bold tw-text-xl tw-text-black tw-mt-0 tw-mb-10 tw-text-center">퀴즈 등록하기</div>
         <Box display="flex" justifyContent="center" width="100%">
-          <div
+          {/* <div
             style={{
               borderBottom: '2px solid gray',
               height: 51,
               flexGrow: 1,
             }}
-          ></div>
+          ></div> */}
           <StyledSubTabs value={value} onChange={handleChange}>
             <Tab className="tw-text-black tw-text-base tw-w-64  " label="퀴즈 검색하기" />
             <Tab
@@ -1739,13 +1739,13 @@ export function QuizOpenTemplate() {
             />
             <Tab className="tw-text-black tw-text-base tw-w-64" label="퀴즈 만들기 불러오기" />
           </StyledSubTabs>
-          <div
+          {/* <div
             style={{
               borderBottom: '2px solid gray',
               height: 51,
               flexGrow: 1,
             }}
-          ></div>
+          ></div> */}
         </Box>
         {active === 0 && (
           <div className="tw-px-36">

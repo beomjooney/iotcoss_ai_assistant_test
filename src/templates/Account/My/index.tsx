@@ -168,15 +168,21 @@ export function MyTemplate({ children }: MyTemplateProps) {
                       </div>
                       <div className="tw-py-3 tw-font-semibold tw-text-black tw-text-lg">{summary?.nickname}</div>
                       <div>
-                        <span className="tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded">
-                          {summary?.jobGroupName}
-                        </span>
-                        <span className="tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
-                          {summary?.level}레벨
-                        </span>
-                        <span className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
-                          {summary?.jobName}
-                        </span>
+                        {summary?.jobGroupName && (
+                          <span className="tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded">
+                            {summary.jobGroupName}
+                          </span>
+                        )}
+                        {summary?.level && (
+                          <span className="tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded">
+                            {summary.level}레벨
+                          </span>
+                        )}
+                        {summary?.jobName && (
+                          <span className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded">
+                            {summary.jobName}
+                          </span>
+                        )}
                       </div>
                     </div>
                     <div className="tw-text-gray-500 tw-text-sm tw-font-medium ">

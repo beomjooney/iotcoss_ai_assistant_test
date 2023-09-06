@@ -263,7 +263,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
           <div
             className={cx(
               'collapse navbar-collapse main-menu',
-              'navbar-mobile  tw-mt-2.5 tw-mb-2.5',
+              'navbar-mobile  tw-mt-2.5 tw-mb-2.5 tw-ml-16',
               'tw-justify-between',
               isShowMenu ? 'show' : '',
             )}

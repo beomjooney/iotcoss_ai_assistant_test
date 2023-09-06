@@ -112,12 +112,12 @@ const Footer = () => {
                     />
                     <ul className={cx('list-text', 'list-unstyled')}>
                       <li className="mb-2 d-flex align-items-center">
-                        <Typography type="B1" weight="medium">
+                        <Typography type="B2" weight="medium">
                           라이프멘토스(주) | 대표 : 추병조 | 서비스 문의 : support@lifementors.co.kr
                         </Typography>
                       </li>
                       <li className="mb-2 d-flex align-items-center">
-                        <Typography type="B1">
+                        <Typography type="B2">
                           서울시 강남구 테헤란로2길 27, 12층 1224호 | 사업자등록번호 : 530-86-02750
                         </Typography>
                       </li>
@@ -126,10 +126,10 @@ const Footer = () => {
                 </div>
                 <div className="col-lg-6 mb-3 mb-lg-0">
                   <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-p-0 ">
-                    <div className="tw-col-span-3 tw-text-lg tw-font-bold tw-text-gray-600">공지사항</div>
-                    <div className="tw-col-span-3 tw-text-lg tw-font-bold tw-text-gray-600">이용약관</div>
-                    <div className="tw-col-span-4 tw-text-lg tw-font-bold tw-text-gray-600">개인정보처리방침</div>
-                    <div className="tw-col-span-2 tw-text-lg tw-font-bold tw-text-gray-500">FAQ</div>
+                    <div className="tw-col-span-3 tw-text-base tw-font-bold tw-text-gray-600">공지사항</div>
+                    <div className="tw-col-span-3 tw-text-base tw-font-bold tw-text-gray-600">이용약관</div>
+                    <div className="tw-col-span-4 tw-text-base tw-font-bold tw-text-gray-600">개인정보처리방침</div>
+                    <div className="tw-col-span-2 tw-text-base tw-font-bold tw-text-gray-500">FAQ</div>
                   </div>
                 </div>
               </div>
