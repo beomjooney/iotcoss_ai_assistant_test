@@ -80,7 +80,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
       ? setLogoutButton(
           <li className={cx('custom-item')} id="logoutBtn">
             <button
-              className="tw-mr-2 tw-bg-[#2474ED] tw-rounded-md border tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
+              className="max-lg: tw-mr-2 tw-bg-[#2474ED] tw-rounded-md border tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
               onClick={() => (location.href = '/quiz-make')}
             >
               퀴즈만들기
@@ -268,7 +268,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                       d="M8 3.464V1.1m0 2.365a5.338 5.338 0 0 1 5.133 5.368v1.8c0 2.386 1.867 2.982 1.867 4.175C15 15.4 15 16 14.462 16H1.538C1 16 1 15.4 1 14.807c0-1.193 1.867-1.789 1.867-4.175v-1.8A5.338 5.338 0 0 1 8 3.464ZM4.54 16a3.48 3.48 0 0 0 6.92 0H4.54Z"
                     />
                   </svg>
-                  <li className={cx('nav-item')}>
+                  <li className={cx('nav-item', 'tw-mr-8')}>
                     <Tooltip title="Account settings">
                       <IconButton
                         onClick={handleClicks}
@@ -336,21 +336,21 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                       </MenuItem>
                     </Menu>
                   </li>
+                  <IconButton
+                    sx={{
+                      padding: '0 !important',
+                      '& .MuiSvgIcon-root': { color: '#000', fontSize: 28, padding: 0 },
+                    }}
+                    size="large"
+                    aria-label="open drawer"
+                    onClick={handleOpenMenu}
+                    edge="start"
+                  >
+                    <MenuIcon />
+                  </IconButton>
                 </div>
               </div>
             )}
-            <IconButton
-              sx={{
-                padding: '0 !important',
-                '& .MuiSvgIcon-root': { color: '#000', fontSize: 28, padding: 0 },
-              }}
-              size="large"
-              aria-label="open drawer"
-              onClick={handleOpenMenu}
-              edge="start"
-            >
-              <MenuIcon />
-            </IconButton>
           </Mobile>
           <SwipeableDrawer
             anchor={'right'}
