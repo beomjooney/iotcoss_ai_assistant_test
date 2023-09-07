@@ -162,7 +162,7 @@ ClubCardProps) => {
         className="max-lg:tw-h-[500px] tw-flex tw-flex-col tw-items-center tw-bg-white tw-border tw-border-gray-200 tw-rounded-lg tw-shadow md:tw-flex-row tw-w-full "
       >
         <img
-          className="tw-object-cover tw-w-[220px] tw-rounded-t-lg tw-h-[240px] md:tw-h-[240px] md:tw-w-[220px] md:tw-rounded-none md:tw-rounded-l-lg"
+          className="tw-object-cover max-lg:tw-h-[181px] max-lg:tw-w-[181px] tw-w-[220px] tw-rounded-t-lg tw-h-[240px] md:tw-rounded-none md:tw-rounded-l-lg"
           src={item?.clubImageUrl}
           alt=""
         />
