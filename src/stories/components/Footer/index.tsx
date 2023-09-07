@@ -91,7 +91,7 @@ const Footer = () => {
               </div>
             </div>
           </div>
-          <div className="pt-3 pb-3 footer-nav-wrap " style={{ textAlign: 'center', backgroundColor: '#757f8f' }}>
+          <div className="pt-3 pb-3 footer-nav-wrap " style={{ textAlign: 'center' }}>
             <Typography type="B1">© 2023 커리어멘토스</Typography>
           </div>
         </footer>

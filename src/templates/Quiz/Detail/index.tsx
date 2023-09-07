@@ -187,27 +187,36 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
       setApplicationButton(<Button label="로그인 후 신청 가능합니다" color="lite-gray" size="large" />);
     } else if (isParticipantListFetched) {
       console.log(1111, data?.clubStatus, clubMemberStatus);
-      if (data?.clubStatus == '0006' && clubMemberStatus == '0006') {
-        if (data?.isLeader) {
-          setApplicationButton(
-            <button
-              type="button"
-              className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
-            >
-              퀴즈풀기
-            </button>,
-          );
-        } else {
-          setApplicationButton(
-            <button
-              type="button"
-              onClick={() => handleParticipant()}
-              className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
-            >
-              참여하기
-            </button>,
-          );
-        }
+
+      if (data?.isLeader && data?.clubStatus == '0007') {
+        setApplicationButton(
+          <button
+            disabled
+            type="button"
+            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
+          >
+            모집 완료 ({data?.startAt}) 퀴즈클럽 시작
+          </button>,
+        );
+      } else if (data?.isLeader && data?.clubStatus == '0004') {
+        setApplicationButton(
+          <button
+            type="button"
+            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
+          >
+            퀴즈 풀기
+          </button>,
+        );
+      } else if (data?.clubStatus == '0006' && clubMemberStatus == '0006') {
+        setApplicationButton(
+          <button
+            type="button"
+            onClick={() => handleParticipant()}
+            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
+          >
+            참여하기
+          </button>,
+        );
       } else if (data?.clubStatus == '0006' && clubMemberStatus == '0001') {
         setApplicationButton(
           <button
@@ -265,6 +274,16 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
             className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
           >
             퀴즈풀기
+          </button>,
+        );
+      } else if (data?.clubStatus == '0004' && clubMemberStatus == '0006') {
+        setApplicationButton(
+          <button
+            disabled
+            type="button"
+            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
+          >
+            진행중 참여 불가
           </button>,
         );
       } else if (data?.clubStatus == '0005') {
