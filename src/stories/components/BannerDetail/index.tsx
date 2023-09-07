@@ -126,7 +126,7 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
             </div> */}
 
             <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-              <Grid item xs={8} className="tw-font-bold tw-text-3xl tw-text-black">
+              <Grid item xs={5} className="tw-font-bold tw-text-3xl tw-text-black">
                 <div className="tw-flex tw-items-center tw-space-x-4">
                   <img className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full" src={data?.leaderProfileImageUrl} alt="" />
                   <div className="tw-text-sm tw-font-semibold tw-text-black dark:tw-text-white">
@@ -134,7 +134,7 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
                   </div>
                 </div>
               </Grid>
-              <Grid item xs={4} justifyContent="flex-end" className="tw-flex">
+              <Grid item xs={7} justifyContent="flex-end" className="tw-flex">
                 <button
                   type="button"
                   className="tw-text-white tw-mr-3 tw-bg-blue-500 hover:tw-bg-blue-800 tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5  dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
