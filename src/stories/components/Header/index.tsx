@@ -421,7 +421,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
             {/* {adminButton} */}
             {logged && (
               <div className="row tw-flex tw-items-center tw-justify-between tw-w-80">
-                <div className="col-lg-12 tw-flex tw-items-center tw-justify-start max-lg:tw-justify-end lg:tw-mb-0">
+                <div className="col-lg-12 tw-flex tw-items-center tw-justify-end max-lg:tw-justify-end lg:tw-mb-0">
                   {logoutButton}
                   <svg
                     className="tw-mx-5  tw-flex-none tw-text-black"

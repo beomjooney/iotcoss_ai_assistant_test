@@ -159,7 +159,7 @@ ClubCardProps) => {
     <Grid item xs={xs}>
       <a
         href={'/quiz/' + `${item.sequence}`}
-        className="tw-flex tw-flex-col tw-items-center tw-bg-white tw-border tw-border-gray-200 tw-rounded-lg tw-shadow md:tw-flex-row tw-w-full "
+        className="max-lg:tw-h-[500px] tw-flex tw-flex-col tw-items-center tw-bg-white tw-border tw-border-gray-200 tw-rounded-lg tw-shadow md:tw-flex-row tw-w-full "
       >
         <img
           className="tw-object-cover tw-w-[220px] tw-rounded-t-lg tw-h-[240px] md:tw-h-[240px] md:tw-w-[220px] md:tw-rounded-none md:tw-rounded-l-lg"

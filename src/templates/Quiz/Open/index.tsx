@@ -374,7 +374,6 @@ export function QuizOpenTemplate() {
   }, [keyWorld]);
 
   useEffect(() => {
-    console.log('active');
     setMyParams({
       // ...params,
       page,
