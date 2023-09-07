@@ -237,7 +237,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
           </div>
           <Mobile>
             {!logged && (
-              <li className={cx('custom-item', 'max-lg:!tw-pl-26', 'max-lg:tw-w-3/5 max-lg:tw-text-right')}>
+              <li className={cx('custom-item', 'max-lg:!tw-pl-26')}>
                 <button className="tw-mr-2 tw-bg-[#2474ED] tw-rounded-md border tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded">
                   퀴즈만들기
                 </button>
