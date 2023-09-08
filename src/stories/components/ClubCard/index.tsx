@@ -162,11 +162,11 @@ ClubCardProps) => {
         className="tw-flex tw-flex-col tw-items-center tw-bg-white tw-border tw-border-gray-200 tw-rounded-lg tw-shadow md:tw-flex-row tw-w-full "
       >
         <img
-          className="tw-object-cover tw-w-[220px] tw-rounded-t-lg tw-h-[240px] md:tw-h-[240px] md:tw-w-[220px] md:tw-rounded-none md:tw-rounded-l-lg"
+          className="tw-object-cover tw-w-[200px] tw-rounded-t-lg tw-h-[240px] md:tw-h-[240px] md:tw-w-[200px] md:tw-rounded-none md:tw-rounded-l-lg"
           src={item?.clubImageUrl}
           alt=""
         />
-        <div className="tw-flex tw-w-full tw-flex-col tw-justify-between tw-p-7 tw-leading-normal">
+        <div className="tw-flex tw-w-full tw-flex-col tw-justify-between tw-p-5 tw-leading-normal">
           <Grid
             className=" tw-mb-3"
             container
@@ -177,30 +177,42 @@ ClubCardProps) => {
           >
             <Grid item xs={11}>
               <div className="tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
-                {item?.recommendJobGroupNames.map((name, i) => (
+                {/* {item?.recommendJobGroupNames.map((name, i) => (
                   <span
                     key={i}
                     className="tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded"
                   >
                     {name}
                   </span>
-                ))}
-                {item?.recommendLevels.map((name, i) => (
+                ))} */}
+                {/* {item?.recommendLevels.map((name, i) => (
                   <span
                     key={i}
                     className="tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
                   >
                     {name} 레벨
                   </span>
-                ))}
-                {item?.recommendJobNames.map((name, i) => (
+                ))} */}
+                {/* {item?.recommendJobNames.map((name, i) => (
                   <span
                     className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
                     key={i}
                   >
                     {name}
                   </span>
-                ))}
+                ))} */}
+                <span className="tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded">
+                  {item?.recommendJobGroupNames[0]}
+                </span>
+
+                <span className="tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
+                  {item?.recommendLevels[0]} 레벨
+                </span>
+
+                <span className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
+                  {item?.recommendJobNames[0]}
+                </span>
+
                 {/* {item?.relatedExperiences.map((name, i) => (
                   <Chip
                     key={`job_${i}`}
@@ -225,7 +237,7 @@ ClubCardProps) => {
             </Grid>
           </Grid>
           <div className="tw-mb-3 tw-text-sm tw-font-semibold tw-text-gray-500 dark:tw-text-gray-400">
-            모집마감일 : {item.endAt}
+            모집마감일 : {item?.recruitDeadlineAt}
           </div>
           <h6 className="tw-mb-2 tw-text-2xl tw-font-bold tw-tracking-tight tw-text-gray-900 dark:tw-text-white">
             {item.name}

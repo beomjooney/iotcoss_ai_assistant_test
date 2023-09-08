@@ -48,7 +48,6 @@ const cx = classNames.bind(styles);
 
 const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
   const { logged, roles } = useSessionStore.getState();
-
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClicks = (event: React.MouseEvent<HTMLElement>) => {
@@ -75,7 +74,11 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
     };
   }, []);
 
+  console.log('header');
+  console.log('login', logged, roles);
   useEffect(() => {
+    console.log('header1');
+    console.log('login1', logged, roles);
     logged
       ? setLogoutButton(
           <li className={cx('custom-item')} id="logoutBtn">
@@ -335,21 +338,6 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                       d="M8 3.464V1.1m0 2.365a5.338 5.338 0 0 1 5.133 5.368v1.8c0 2.386 1.867 2.982 1.867 4.175C15 15.4 15 16 14.462 16H1.538C1 16 1 15.4 1 14.807c0-1.193 1.867-1.789 1.867-4.175v-1.8A5.338 5.338 0 0 1 8 3.464ZM4.54 16a3.48 3.48 0 0 0 6.92 0H4.54Z"
                     />
                   </svg>
-                  {/* <svg
-                    className=tw-w-6 tw-h-6 tw-text-gray-800"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 16 21"
-                  >
-                    <path
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M8 3.464V1.1m0 2.365a5.338 5.338 0 0 1 5.133 5.368v1.8c0 2.386 1.867 2.982 1.867 4.175C15 15.4 15 16 14.462 16H1.538C1 16 1 15.4 1 14.807c0-1.193 1.867-1.789 1.867-4.175v-1.8A5.338 5.338 0 0 1 8 3.464ZM4.54 16a3.48 3.48 0 0 0 6.92 0H4.54Z"
-                    />
-                  </svg> */}
                   <li className={cx('nav-item')}>
                     <Tooltip title="Account settings">
                       <IconButton
@@ -402,12 +390,12 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                       transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                       anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                     >
-                      <MenuItem onClick={() => (location.href = '/quiz-make')}>내가 만든 퀴즈</MenuItem>
+                      {/* <MenuItem onClick={() => (location.href = '/quiz-make')}>내가 만든 퀴즈</MenuItem>
                       <Divider />
                       <MenuItem>내 포인트 내역</MenuItem>
                       <Divider />
                       <MenuItem>내 프로필</MenuItem>
-                      <Divider />
+                      <Divider /> */}
                       <MenuItem onClick={handleClick}>마이페이지</MenuItem>
                       <Divider />
                       <MenuItem onClick={handleLogout}>
