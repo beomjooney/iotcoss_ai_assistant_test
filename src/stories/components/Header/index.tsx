@@ -320,14 +320,14 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                       transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                       anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                     >
-                      <MenuItem onClick={() => (location.href = '/quiz-make')}>내가 만든 퀴즈</MenuItem>
+                      {/* <MenuItem onClick={() => (location.href = '/quiz-make')}>내가 만든 퀴즈</MenuItem>
                       <Divider />
                       <MenuItem>내 포인트 내역</MenuItem>
                       <Divider />
                       <MenuItem>내 프로필</MenuItem>
                       <Divider />
                       <MenuItem onClick={handleClick}>마이페이지</MenuItem>
-                      <Divider />
+                      <Divider /> */}
                       <MenuItem onClick={handleLogout}>
                         <ListItemIcon>
                           <Logout fontSize="small" />
@@ -490,14 +490,14 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                       transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                       anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                     >
-                      <MenuItem onClick={() => (location.href = '/quiz-make')}>내가 만든 퀴즈</MenuItem>
+                      {/* <MenuItem onClick={() => (location.href = '/quiz-make')}>내가 만든 퀴즈</MenuItem>
                       <Divider />
                       <MenuItem>내 포인트 내역</MenuItem>
                       <Divider />
                       <MenuItem>내 프로필</MenuItem>
                       <Divider />
                       <MenuItem onClick={handleClick}>마이페이지</MenuItem>
-                      <Divider />
+                      <Divider /> */}
                       <MenuItem onClick={handleLogout}>
                         <ListItemIcon>
                           <Logout fontSize="small" />

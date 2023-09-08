@@ -55,7 +55,7 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
       </div>
       <div className={cx('banner-container__wrap', ' tw-pb-20')}>
         {/*todo url 경로에 따라 자동 셋팅 구현*/}
-        <div className="tw-w-full tw-flex tw-flex-col tw-items-center tw-bg-white tw-border tw-border-gray-200 tw-rounded-lg tw-shadow md:tw-flex-row md:tw-max-w-[1100px]">
+        <div className="tw-w-full tw-flex tw-flex-col tw-items-center tw-bg-white tw-border tw-border-gray-200 max-lg:tw-p-5 tw-rounded-lg tw-shadow md:tw-flex-row md:tw-max-w-[1100px]">
           <img
             className="tw-object-cover tw-w-[340px] tw-rounded-t-lg tw-h-[340px] md:tw-h-[340px] md:tw-w-[340px] md:tw-rounded-none md:tw-rounded-l-lg"
             src={data?.clubImageUrl}
@@ -67,7 +67,7 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
                 {data?.recommendJobGroupNames.map((name, i) => (
                   <span
                     key={i}
-                    className="tw-bg-blue-100 tw-text-blue-800 tw-text-base tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded"
+                    className="tw-inline-flex tw-mb-2 tw-bg-blue-100 tw-text-blue-800 tw-text-base tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded"
                   >
                     {name}
                   </span>
@@ -76,7 +76,7 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
                 {data?.recommendLevels.map((name, i) => (
                   <span
                     key={i}
-                    className="tw-bg-gray-100 tw-text-gray-800 tw-text-base tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
+                    className="tw-inline-flex  tw-mb-2 tw-bg-gray-100 tw-text-gray-800 tw-text-base tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
                   >
                     {name} 레벨
                   </span>
@@ -84,13 +84,20 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
                 {data?.recommendJobNames.map((name, i) => (
                   <span
                     key={i}
-                    className="tw-bg-red-100 tw-text-red-800 tw-text-base tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
+                    className="tw-inline-flex tw-mb-2 tw-bg-red-100 tw-text-red-800 tw-text-base tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
                   >
                     {name}
                   </span>
                 ))}
               </Grid>
-              <Grid item xs={4} justifyContent="space-between" alignItems="center" className="tw-flex">
+              <Grid
+                item
+                xs={4}
+                className="tw-inline-flex tw-mb-2 "
+                justifyContent="space-between"
+                alignItems="center"
+                className="tw-flex"
+              >
                 <div className="tw-font-semibold">모집마감일 : {data?.recruitDeadlineAt.split(' ')[0]}</div>
                 <div>
                   <button
@@ -113,7 +120,8 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
             </p> */}
 
             <div className="tw-text-base tw-font-bold tw-text-black dark:tw-text-gray-400">
-              퀴즈클럽 주수 : {data?.studyWeekCount}주 | 학습 {data?.studyTotalCount}회 ({data?.startAt}~{data?.endAt})
+              퀴즈클럽 주수 : {data?.studyWeekCount}주 | 학습 {data?.studyTotalCount}회 ({data?.startAt.split(' ')[0]}~
+              {data?.endAt.split(' ')[0]})
             </div>
             <div className="tw-text-base tw-font-bold tw-text-black dark:tw-text-gray-400">
               퀴즈클럽 주기 : {data?.studyCycle.toString()}
@@ -135,12 +143,12 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
                 </div>
               </Grid>
               <Grid item xs={7} justifyContent="flex-end" className="tw-flex">
-                <button
+                {/* <button
                   type="button"
                   className="tw-text-white tw-mr-3 tw-bg-blue-500 hover:tw-bg-blue-800 tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5  dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
                 >
                   참여하기
-                </button>
+                </button> */}
                 <button
                   type="button"
                   className="tw-text-white tw-bg-blue-500 hover:tw-bg-blue-800 tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5  dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
