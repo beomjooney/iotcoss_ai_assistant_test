@@ -23,7 +23,12 @@ import {
 import { useSessionStore } from 'src/store/session';
 import Grid from '@mui/material/Grid';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
-import { Item } from '@shopify/polaris/build/ts/src/components/ActionList/components';
+// import { Item } from '@shopify/polaris/build/ts/src/components/ActionList/components';
+// import ReactMarkdown from 'react-markdown';
+// import remarkGfm from 'remark-gfm';
+
+// import { remark } from 'remark';
+// import html from 'remark-html';
 
 const cx = classNames.bind(styles);
 export interface QuizDetailTemplateProps {
@@ -44,7 +49,15 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
   const [clubMemberStatus, setClubMemberStatus] = useState('0001');
   const [applicationButton, setApplicationButton] = useState<ReactNode>(null);
   const { memberId, logged } = useSessionStore.getState();
+  const [contentHtml, setContentHtml] = useState('');
 
+  //이름에서 알 수 있듯, 마크다운을 HTML로 변환해주는 함수
+  // async function markdownToHtml(markdown: string) {
+  //   const result = await remark()
+  //     .use(html as any)
+  //     .process(markdown);
+  //   return result.toString();
+  // }
   // const { isFetched: isContentFetched } = useSeminarList({ size: 2, excludeSeminarIds: id }, data => {
   //   setContents(data.data || []);
   // });
@@ -57,7 +70,11 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
 
   const { isFetched: isParticipantListFetched, data } = useSeminarDetail(id, data => {
     setClubMemberStatus(data?.clubMemberStatus);
-    // setRestTime(moment(data?.seminarRegistrationEndDate, 'YYYY-MM-DD HH:mm:ss').diff(moment(), 'hours'));
+    console.log(data?.description);
+    // markdownToHtml(data?description);
+    // const processedContent = remark().use(html).process(data?.description);
+    // console.log(processedContent);
+    // setContentHtml(processedContent.toString());
   });
 
   console.log('detail : ', data);
@@ -187,27 +204,36 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
       setApplicationButton(<Button label="로그인 후 신청 가능합니다" color="lite-gray" size="large" />);
     } else if (isParticipantListFetched) {
       console.log(1111, data?.clubStatus, clubMemberStatus);
-      if (data?.clubStatus == '0006' && clubMemberStatus == '0006') {
-        if (data?.isLeader) {
-          setApplicationButton(
-            <button
-              type="button"
-              className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
-            >
-              퀴즈풀기
-            </button>,
-          );
-        } else {
-          setApplicationButton(
-            <button
-              type="button"
-              onClick={() => handleParticipant()}
-              className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
-            >
-              참여하기
-            </button>,
-          );
-        }
+
+      if (data?.isLeader && data?.clubStatus == '0007') {
+        setApplicationButton(
+          <button
+            disabled
+            type="button"
+            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
+          >
+            모집 완료 ({data?.startAt}) 퀴즈클럽 시작
+          </button>,
+        );
+      } else if (data?.isLeader && data?.clubStatus == '0004') {
+        setApplicationButton(
+          <button
+            type="button"
+            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
+          >
+            퀴즈 풀기
+          </button>,
+        );
+      } else if (data?.clubStatus == '0006' && clubMemberStatus == '0006') {
+        setApplicationButton(
+          <button
+            type="button"
+            onClick={() => handleParticipant()}
+            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
+          >
+            참여하기
+          </button>,
+        );
       } else if (data?.clubStatus == '0006' && clubMemberStatus == '0001') {
         setApplicationButton(
           <button
@@ -267,6 +293,16 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
             퀴즈풀기
           </button>,
         );
+      } else if (data?.clubStatus == '0004' && clubMemberStatus == '0006') {
+        setApplicationButton(
+          <button
+            disabled
+            type="button"
+            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
+          >
+            진행중 참여 불가
+          </button>,
+        );
       } else if (data?.clubStatus == '0005') {
         setApplicationButton(
           <button
@@ -280,104 +316,100 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
       }
     }
   }, [logged, data, clubMemberStatus]);
-
+  const youtText = '#h1 ##h2';
+  const [value1, setValue1] = useState('# A demo of `react-markdown`');
   return (
-    <>
-      <Desktop>
-        <div className={cx('seminar-detail-container')}>
-          <BannerDetail data={data} title="퀴즈클럽" subTitle="클럽 상세보기" imageName="top_banner_seminar.svg" />
-          <div className={cx('container')}>
-            {/*바로 밑에 자식만 sticky 적용됨*/}
-            <div className={cx('content-wrap')}>
-              {data?.isJoined ? (
-                <div className={cx('content')}>
-                  <div className="tw-grid tw-grid-cols-2 tw-gap-4">
-                    <div className="...">
-                      <div>나의 실행율 : {data?.myRunRate}</div>
-                      <div>
-                        나의 실행율 : {data?.myStudyCount} /{data?.studyTotalCount}
-                      </div>
-                    </div>
-                    <div className="...">
-                      <div>평균 실행율 : {data?.membersAvgRunRate}</div>
-                      <div>
-                        나의 실행율 : {data?.membersAvgStudyCount}/ {data?.studyTotalCount}
-                      </div>
-                    </div>
+    <div className={cx('seminar-detail-container')}>
+      <BannerDetail data={data} title="퀴즈클럽" subTitle="클럽 상세보기" imageName="top_banner_seminar.svg" />
+      <div className={cx('container')}>
+        {/*바로 밑에 자식만 sticky 적용됨*/}
+        <div className={cx('content-wrap')}>
+          {data?.isJoined ? (
+            <div className={cx('content')}>
+              <div className="tw-grid tw-grid-cols-2 tw-gap-4">
+                <div className="...">
+                  <div>나의 실행율 : {data?.myRunRate}</div>
+                  <div>
+                    나의 실행율 : {data?.myStudyCount} /{data?.studyTotalCount}
                   </div>
                 </div>
-              ) : (
-                <div className={cx('content')}>
-                  {data?.imageUrl3 && (
-                    <Image
-                      src={`${process.env['NEXT_PUBLIC_GENERAL_IMAGE_URL']}/images/${data?.imageUrl3}`}
-                      alt={`${data?.seminarTitle}`}
-                      layout="responsive"
-                      width="736"
-                      height="420"
-                      objectFit="fill"
-                      unoptimized={true}
-                    />
-                  )}
-                  <Tabs
-                    value={value}
-                    onChange={handleChange}
-                    aria-label="basic tabs example"
-                    className={cx('tabs', 'sticky')}
-                  >
-                    <Tab label="퀴즈클럽 소개" {...a11yProps(0)} onClick={() => handleClickTab(0)} />
-                    <Tab label="크루활동" {...a11yProps(1)} onClick={() => handleClickTab(1)} />
-                  </Tabs>
-                  {/* <article> */}
-                  <TabPanel value={value} index={0} className="tw-p-5">
-                    <div className="tw-flex tw-items-center tw-space-x-4 tw-my-5">
-                      <img
-                        className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full"
-                        src={data?.leaderProfileImageUrl}
-                        alt=""
-                      />
-                      <div className="tw-text-base tw-font-semibold tw-text-black dark:tw-text-white">
-                        <div>{data?.leaderNickname}</div>
-                      </div>
-                    </div>
+                <div className="...">
+                  <div>평균 실행율 : {data?.membersAvgRunRate}</div>
+                  <div>
+                    나의 실행율 : {data?.membersAvgStudyCount}/ {data?.studyTotalCount}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className={cx('content')}>
+              {data?.imageUrl3 && (
+                <Image
+                  src={`${process.env['NEXT_PUBLIC_GENERAL_IMAGE_URL']}/images/${data?.imageUrl3}`}
+                  alt={`${data?.seminarTitle}`}
+                  layout="responsive"
+                  width="736"
+                  height="420"
+                  objectFit="fill"
+                  unoptimized={true}
+                />
+              )}
+              <Tabs
+                value={value}
+                onChange={handleChange}
+                aria-label="basic tabs example"
+                className={cx('tabs', 'sticky')}
+              >
+                <Tab label="퀴즈클럽 소개" {...a11yProps(0)} onClick={() => handleClickTab(0)} />
+                <Tab label="크루활동" {...a11yProps(1)} onClick={() => handleClickTab(1)} />
+              </Tabs>
+              {/* <article> */}
+              <TabPanel value={value} index={0} className="tw-p-5">
+                <div className="tw-flex tw-items-center tw-space-x-4 tw-my-5">
+                  <img className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full" src={data?.leaderProfileImageUrl} alt="" />
+                  <div className="tw-text-base tw-font-semibold tw-text-black dark:tw-text-white">
+                    <div>{data?.leaderNickname}</div>
+                  </div>
+                </div>
 
-                    <div className="tw-text-xl tw-mb-10 tw-font-bold tw-text-black dark:tw-text-gray-400">
-                      퀴즈클럽 소개
-                    </div>
-                    <div className="tw-text-base tw-mb-10 tw-font-normal tw-text-black dark:tw-text-gray-400">
-                      {data?.description}
-                    </div>
+                <div className="tw-text-xl tw-mb-10 tw-font-bold tw-text-black dark:tw-text-gray-400">
+                  퀴즈클럽 소개
+                </div>
+                <div className="tw-text-base tw-mb-10 tw-font-normal tw-text-black dark:tw-text-gray-400">
+                  {/* <ReactMarkdown children={value1} remarkPlugins={[remarkGfm]} /> */}
+                  <div dangerouslySetInnerHTML={{ __html: data?.description }} />
+                </div>
 
-                    <div className="tw-text-xl tw-mb-10 tw-font-bold tw-text-black dark:tw-text-gray-400">
-                      퀴즈클럽 질문 미리보기
-                    </div>
+                <div className="tw-text-xl tw-mb-10 tw-font-bold tw-text-black dark:tw-text-gray-400">
+                  퀴즈클럽 질문 미리보기
+                </div>
 
-                    <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-400 dark:tw-text-gray-400">
-                      {data?.studyWeekCount}주 총 학습 {data?.studyTotalCount}회 진행
-                    </div>
+                <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-400 dark:tw-text-gray-400">
+                  {data?.studyWeekCount}주 총 학습 {data?.studyTotalCount}회 진행
+                </div>
 
-                    {data?.clubQuizzes.map((item, index) => {
-                      if (item?.isRepresentative === true) {
-                        return (
-                          <div key={index} className="">
-                            <div className="tw-flex tw-items-center tw-px-0 tw-border mb-2 mt-0 rounded">
-                              <span className="tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded">
-                                대표 {index + 1}
-                              </span>
-                              <div className="tw-flex-auto tw-ml-3">
-                                <div className="tw-font-medium tw-text-black">{item.content}</div>
-                              </div>
-                            </div>
+                {data?.clubQuizzes.map((item, index) => {
+                  if (item?.isRepresentative === true) {
+                    return (
+                      <div key={index} className="">
+                        <div className="tw-flex tw-items-center tw-px-0 tw-border mb-2 mt-0 rounded">
+                          <span className="tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded">
+                            대표 {index + 1}
+                          </span>
+                          <div className="tw-flex-auto tw-ml-3">
+                            <div className="tw-font-medium tw-text-black">{item.content}</div>
                           </div>
-                        );
-                      } else {
-                        // 다른 경우에는 렌더링하지 않음
-                        return null;
-                      }
-                    })}
-                  </TabPanel>
-                  <TabPanel value={value} index={1}>
-                    {/* <Profile
+                        </div>
+                      </div>
+                    );
+                  } else {
+                    // 다른 경우에는 렌더링하지 않음
+                    return null;
+                  }
+                })}
+              </TabPanel>
+              <TabPanel value={value} index={1}>
+                {/* <Profile
                       showDesc
                       mentorInfo={data?.seminarLecturer}
                       className={cx('seminar-tabpanel-1__profile', 'col-md-4')}
@@ -385,24 +417,22 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                       colorMode="primary"
                       isDetail
                     /> */}
-                  </TabPanel>
-                  <TabPanel value={value} index={2}>
-                    {/* <Typography type="H3" bold>
+              </TabPanel>
+              <TabPanel value={value} index={2}>
+                {/* <Typography type="H3" bold>
                     크루활동
                   </Typography> */}
-                    <div
-                      dangerouslySetInnerHTML={{ __html: data?.seminarCurriculum }}
-                      className={cx('seminar-tabpanel__html-content')}
-                    />
-                  </TabPanel>
-                </div>
-              )}
-              {applicationButton}
+                <div
+                  dangerouslySetInnerHTML={{ __html: data?.seminarCurriculum }}
+                  className={cx('seminar-tabpanel__html-content')}
+                />
+              </TabPanel>
             </div>
-          </div>
+          )}
+          {applicationButton}
         </div>
-      </Desktop>
-    </>
+      </div>
+    </div>
   );
 }
 

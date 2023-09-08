@@ -162,7 +162,7 @@ ClubCardProps) => {
         className="tw-flex tw-flex-col tw-items-center tw-bg-white tw-border tw-border-gray-200 tw-rounded-lg tw-shadow md:tw-flex-row tw-w-full "
       >
         <img
-          className="tw-object-cover tw-w-[200px] tw-rounded-t-lg tw-h-[240px] md:tw-h-[240px] md:tw-w-[200px] md:tw-rounded-none md:tw-rounded-l-lg"
+          className="tw-object-cover tw-w-[200px] tw-rounded-t-lg tw-h-[240px] md:tw-h-[240px] md:tw-w-[190px] md:tw-rounded-none md:tw-rounded-l-lg"
           src={item?.clubImageUrl}
           alt=""
         />
@@ -176,7 +176,7 @@ ClubCardProps) => {
             rowSpacing={0}
           >
             <Grid item xs={11}>
-              <div className="tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
+              <div className="max-lg:tw-h-[100px] tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
                 {/* {item?.recommendJobGroupNames.map((name, i) => (
                   <span
                     key={i}
@@ -201,15 +201,15 @@ ClubCardProps) => {
                     {name}
                   </span>
                 ))} */}
-                <span className="tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded">
+                <span className="tw-inline-flex tw-mb-2 tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded">
                   {item?.recommendJobGroupNames[0]}
                 </span>
 
-                <span className="tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
+                <span className="tw-inline-flex tw-mb-2 tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
                   {item?.recommendLevels[0]} 레벨
                 </span>
 
-                <span className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
+                <span className="tw-inline-flex tw-mb-2 tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
                   {item?.recommendJobNames[0]}
                 </span>
 

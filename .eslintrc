@@ -36,4 +36,3 @@
   },
   "extends": ["next", "plugin:prettier/recommended", "plugin:@typescript-eslint/recommended"]
 }
-

@@ -185,7 +185,6 @@ export function QuizTemplate() {
   const { isFetched: isContentTypeFetched } = useContentTypes(data => {
     setContentTypes(data.data.contents || []);
     const contentsType = data.length >= 0 && data[0].id;
-    console.log(data.data.contents);
     setParams({
       ...params,
       contentsType,
@@ -207,7 +206,6 @@ export function QuizTemplate() {
   };
 
   useEffect(() => {
-    console.log('active');
     setParams({
       // ...params,
       page,

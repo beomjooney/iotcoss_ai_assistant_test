@@ -67,9 +67,13 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
   return (
     <div className={cx('career-main')}>
       <div>
-        <img src="/assets/images/banner/banner_bg.png" alt="main_background" className={cx('top-banner__image')} />
+        <img
+          src="/assets/images/banner/banner_bg.png"
+          alt="main_background"
+          className={cx('top-banner__image', 'max-md:!tw-right-0')}
+        />
         <div className="container text-white">
-          <div className="row align-items-center tw-pl-24 tw-pt-24">
+          <div className="row align-items-center   max-md:tw-pt-72  lg:tw-pt-20  lg:tw-pl-24">
             <div className="col-12 col-md-9 col-lg-7 col-xl-6">
               <div className="hero-content section-title text-center text-lg-left my-5 tw-mt-14">
                 {/*<Typography type="B1" tag="div" weight="bold" extendClass={cx('mb-5')}>*/}
@@ -82,7 +86,7 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
                   <br />
                   어떻게 트렌드를 따라가는 거죠?
                 </div>
-                <div className="tw-font-bold tw-text-3xl tw-text-black tw-tracking-tight tw-mt-14">
+                <div className="tw-font-bold tw-text-3xl tw-text-black tw-tracking-tight tw-mt-14 max-md:tw-mb-5">
                   성장 가속 서비스 데브어스
                 </div>
                 <div className={cx('fit-content', 'action-btn')}>
@@ -99,17 +103,21 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
       </div>
       <div className={cx('main-container', 'container')}>
         <section className={cx('job-group-area')}>
-          <div className={cx('justify-content-center', 'pt-300', 'job-group__wrap')}>
+          <div className={cx('justify-content-center', 'pt-300', 'max-md:!tw-pt-12', 'job-group__wrap')}>
             <SectionHeader title="크루님! 데브어스만 믿고 따라오세요!" subTitle="개발자 상위 10%의 습관과 학습비법" />
             <div className={cx('growth-area', 'pt-60', 'flex-wrap-container')}>
               <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
                 <Grid item xs={2} sm={4} md={4}>
                   <div
-                    className="w-1/2 bg-white  tw-rounded-xl overflow-hidden tw-h-[450px]"
+                    className="w-1/2 bg-white  tw-rounded-xl overflow-hidden tw-h-[450px] max-md:tw-h-[500px]"
                     style={{ boxShadow: '-12px 13px 40px rgba(0, 0, 0, 0.05)' }}
                   >
                     <div className="tw-flex tw-justify-center tw-items-center">
-                      <img className="tw-h-64 tw-w-64 object-cover" src="/assets/images/icons/3.png" alt="Card" />
+                      <img
+                        className="max-lg:tw-h-40 max-lg:tw-w-40 tw-h-64 tw-w-64 object-cover"
+                        src="/assets/images/icons/3.png"
+                        alt="Card"
+                      />
                     </div>
                     <div className="p-5">
                       <div className="text-black tw-text-xl tw-font-bold mb-4">퀴즈로 뇌를 깨워요!</div>
@@ -122,11 +130,15 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
                 </Grid>
                 <Grid item xs={2} sm={4} md={4}>
                   <div
-                    className="w-1/2 bg-white  tw-rounded-xl overflow-hidden tw-h-[450px] "
+                    className="w-1/2 bg-white  tw-rounded-xl overflow-hidden tw-h-[450px]  max-md:tw-h-[500px]"
                     style={{ boxShadow: '-12px 13px 40px rgba(0, 0, 0, 0.05)' }}
                   >
                     <div className="tw-flex tw-justify-center tw-items-center">
-                      <img className="tw-h-64 tw-w-64 tw-object-cover" src="/assets/images/icons/1.png" alt="Card" />
+                      <img
+                        className="max-lg:tw-h-40 max-lg:tw-w-40  tw-h-64 tw-w-64 tw-object-cover"
+                        src="/assets/images/icons/1.png"
+                        alt="Card"
+                      />
                     </div>
                     <div className="p-5">
                       <div className="text-black tw-text-xl tw-font-bold mb-4">나의 지식을 펼쳐봐요!</div>
@@ -138,11 +150,15 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
                 </Grid>
                 <Grid item xs={2} sm={4} md={4}>
                   <div
-                    className="w-1/2 bg-white  tw-rounded-xl overflow-hidden  tw-h-[450px]"
+                    className="w-1/2 bg-white  tw-rounded-xl overflow-hidden  tw-h-[450px] max-md:tw-h-[500px]"
                     style={{ boxShadow: '-12px 13px 40px rgba(0, 0, 0, 0.05)' }}
                   >
                     <div className="tw-flex tw-justify-center tw-items-center">
-                      <img className="tw-h-64 tw-w-64 tw-object-cover" src="/assets/images/icons/2.png" alt="Card" />
+                      <img
+                        className="max-lg:tw-h-40 max-lg:tw-w-40 tw-h-64 tw-w-64 tw-object-cover"
+                        src="/assets/images/icons/2.png"
+                        alt="Card"
+                      />
                     </div>
                     <div className="p-5">
                       <div className="text-black tw-text-xl tw-font-bold mb-4">나새로운 지식을 흡수해요!</div>
@@ -174,12 +190,12 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
               <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 12, sm: 8, md: 12 }}>
                 <Grid item xs={6} sm={4} md={6}>
                   <div
-                    className="w-1/2 bg-white tw-rounded-xl overflow-hidden tw-h-[450px]"
+                    className="w-1/2 bg-white tw-rounded-xl overflow-hidden tw-h-[450px] max-md:tw-h-[500px]"
                     style={{ boxShadow: '-12px 13px 40px rgba(0, 0, 0, 0.05)' }}
                   >
                     <div className="tw-flex tw-justify-center tw-items-center">
                       <img
-                        className="tw-h-64 tw-object-cover"
+                        className="max-lg:tw-h-40 max-lg:tw-w-40 tw-h-64 tw-object-cover"
                         src="/assets/images/icons/3d-render-hand-high-five-gesture-team-work-clap 1.png"
                         alt="Card"
                       />
@@ -197,12 +213,12 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
                 </Grid>
                 <Grid item xs={6} sm={4} md={6}>
                   <div
-                    className="w-1/2 bg-white tw-rounded-xl overflow-hidden tw-h-[450px]"
+                    className="w-1/2 bg-white tw-rounded-xl overflow-hidden tw-h-[450px] max-md:tw-h-[500px]"
                     style={{ boxShadow: '-12px 13px 40px rgba(0, 0, 0, 0.05)' }}
                   >
                     <div className="tw-flex tw-justify-center tw-items-center">
                       <img
-                        className="tw-h-64 tw-w-64 object-cover"
+                        className="max-lg:tw-h-40 max-lg:tw-w-40 tw-h-64 tw-w-64 object-cover"
                         src="/assets/images/icons/7911246 1.png"
                         alt="Card"
                       />
@@ -228,12 +244,12 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
               <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
                 <Grid item xs={2} sm={4} md={4}>
                   <div
-                    className="w-1/2 bg-white  tw-rounded-xl overflow-hidden tw-h-[450px]"
+                    className="w-1/2 bg-white  tw-rounded-xl overflow-hidden tw-h-[450px] max-md:tw-h-[500px]"
                     style={{ boxShadow: '-12px 13px 40px rgba(0, 0, 0, 0.05)' }}
                   >
                     <div className="tw-flex tw-justify-center tw-items-center">
                       <img
-                        className="tw-h-64 tw-w-64 tw-object-cover"
+                        className="max-lg:tw-h-40 max-lg:tw-w-40 tw-h-64 tw-w-64 tw-object-cover"
                         src="/assets/images/icons/megaphone_icon_182174.png"
                         alt="Card"
                       />
@@ -249,12 +265,12 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
                 </Grid>
                 <Grid item xs={2} sm={4} md={4}>
                   <div
-                    className="w-1/2 bg-white  tw-rounded-xl overflow-hidden tw-h-[450px]"
+                    className="w-1/2 bg-white  tw-rounded-xl overflow-hidden tw-h-[450px] max-md:tw-h-[500px]"
                     style={{ boxShadow: '-12px 13px 40px rgba(0, 0, 0, 0.05)' }}
                   >
                     <div className="tw-flex tw-justify-center tw-items-center">
                       <img
-                        className="tw-h-64 tw-w-64 tw-object-cover"
+                        className="max-lg:tw-h-40 max-lg:tw-w-40 tw-h-64 tw-w-64 tw-object-cover"
                         src="/assets/images/icons/8202590 1.png"
                         alt="Card"
                       />
@@ -269,12 +285,12 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
                 </Grid>
                 <Grid item xs={2} sm={4} md={4}>
                   <div
-                    className="w-1/2 bg-white  tw-rounded-xl overflow-hidden tw-h-[450px]"
+                    className="w-1/2 bg-white  tw-rounded-xl overflow-hidden tw-h-[450px] max-md:tw-h-[500px]"
                     style={{ boxShadow: '-12px 13px 40px rgba(0, 0, 0, 0.05)' }}
                   >
                     <div className="tw-flex tw-justify-center tw-items-center">
                       <img
-                        className="tw-h-64 tw-w-64 tw-object-cover"
+                        className="max-lg:tw-h-40 max-lg:tw-w-40 tw-h-64 tw-w-64 tw-object-cover"
                         src="/assets/images/icons/bookmark-folder.png"
                         alt="Card"
                       />

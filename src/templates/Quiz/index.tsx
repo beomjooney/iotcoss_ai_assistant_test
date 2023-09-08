@@ -119,7 +119,6 @@ export function QuizTemplate() {
   const { isFetched: isContentTypeFetched } = useContentTypes(data => {
     setContentTypes(data.data.contents || []);
     const contentsType = data.length >= 0 && data[0].id;
-    console.log(data.data.contents);
     setParams({
       ...params,
       // contentsType,
@@ -131,7 +130,6 @@ export function QuizTemplate() {
   });
 
   useEffect(() => {
-    console.log('active');
     setParams({
       // ...params,
       page,
@@ -171,10 +169,10 @@ export function QuizTemplate() {
       <div className={cx('container')}>
         <div className="tw-py-5">
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-            <Grid item xs={2} className="tw-font-bold tw-text-3xl tw-text-black">
+            <Grid item xs={2} className="tw-font-bold tw-text-3xl tw-text-black max-lg:!tw-text-base">
               퀴즈클럽
             </Grid>
-            <Grid item xs={7} className="tw-font-semi tw-text-base tw-text-black">
+            <Grid item xs={7} className="max-lg:tw-p-2 tw-font-semi tw-text-base tw-text-black  max-lg:!tw-text-sm">
               관심 주제별로 성장 퀴즈를 풀고 네트워킹 할 수 있는 클럽을 만나보세요!
             </Grid>
             <Grid item xs={3} justifyContent="flex-end" className="tw-flex">
@@ -183,7 +181,7 @@ export function QuizTemplate() {
                 type="button"
                 className="tw-text-white tw-bg-blue-500  tw-focus:ring-4  tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5  dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
               >
-                성장퀴즈 클럽 개설하기 +
+                퀴즈클럽 개설하기
               </button>
             </Grid>
           </Grid>
@@ -233,7 +231,7 @@ export function QuizTemplate() {
                           });
                           setPage(1);
                         }}
-                        className={cx('fixed-width', 'tw-ml-4')}
+                        className={cx('fixed-width', 'tw-ml-4', 'max-lg:!tw-hidden')}
                       />
                     ))}
                 </div>
