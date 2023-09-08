@@ -237,9 +237,9 @@ ClubCardProps) => {
             </Grid>
           </Grid>
           <div className="tw-mb-3 tw-text-sm tw-font-semibold tw-text-gray-500 dark:tw-text-gray-400">
-            모집마감일 : {item?.recruitDeadlineAt}
+            모집마감일 : {item?.recruitDeadlineAt.split(' ')[0]}
           </div>
-          <h6 className="tw-mb-2 tw-text-2xl tw-font-bold tw-tracking-tight tw-text-gray-900 dark:tw-text-white">
+          <h6 className="max-lg:tw-h-[112px] tw-mb-2 tw-text-2xl tw-font-bold tw-tracking-tight tw-text-gray-900 dark:tw-text-white">
             {item.name}
           </h6>
           {/* <p className="tw-line-clamp-2 tw-mb-3 tw-font-normal tw-text-gray-700 dark:tw-text-gray-400">
