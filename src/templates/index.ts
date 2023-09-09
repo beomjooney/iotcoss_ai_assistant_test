@@ -24,6 +24,7 @@ export * from './Service/index';
 export * from './Contents/index';
 export * from './Seminar/index';
 export * from './Quiz/index';
+export * from './StudyRoom/index';
 export * from './QuizMy/index';
 export * from './QuizMake/index';
 export * from './Quiz/Open/index';

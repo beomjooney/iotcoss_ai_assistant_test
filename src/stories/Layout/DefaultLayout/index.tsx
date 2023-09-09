@@ -18,7 +18,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children, isFooter = true }
   const menuItem = [
     { no: 0, option: 'nav-item', title: '퀴즈클럽', link: '/quiz', dropdown: [] },
     // { no: 1, option: 'nav-item', title: '라운지', link: '/', dropdown: [] },
-    // { no: 2, option: 'nav-item', title: '나의학습방', link: '/', dropdown: [] },
+    { no: 2, option: 'nav-item', title: '나의학습방', link: '/studyroom', dropdown: [] },
     // { no: 0, option: 'nav-item', title: '커멘소개', link: '/business', dropdown: [] },
     // {
     //   no: 1,
@@ -55,7 +55,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children, isFooter = true }
     // },
     { no: 0, option: 'nav-item', title: '퀴즈클럽', link: '/quiz', dropdown: [] },
     // { no: 1, option: 'nav-item', title: '라운지', link: '/', dropdown: [] },
-    // { no: 2, option: 'nav-item', title: '나의학습방', link: '/', dropdown: [] },
+    { no: 2, option: 'nav-item', title: '나의학습방', link: '/studyroom', dropdown: [] },
   ];
   return (
     <div>
