@@ -23,6 +23,7 @@ import {
 import { useSessionStore } from 'src/store/session';
 import Grid from '@mui/material/Grid';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
+import router from 'next/router';
 // import { Item } from '@shopify/polaris/build/ts/src/components/ActionList/components';
 // import ReactMarkdown from 'react-markdown';
 // import remarkGfm from 'remark-gfm';
@@ -208,9 +209,10 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
       if (data?.isLeader && data?.clubStatus == '0007') {
         setApplicationButton(
           <button
-            disabled
+            // disabled
             type="button"
             className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
+            // onClick={() => router.push('/quiz/solution')}
           >
             모집 완료 ({data?.startAt}) 퀴즈클럽 시작
           </button>,
@@ -397,7 +399,12 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                             대표 {index + 1}
                           </span>
                           <div className="tw-flex-auto tw-ml-3">
-                            <div className="tw-font-medium tw-text-black">{item.content}</div>
+                            <div
+                              onClick={() => router.push('/quiz/solution/' + `${item.sequence}`)}
+                              className="tw-font-medium tw-text-black"
+                            >
+                              {item.content}
+                            </div>
                           </div>
                         </div>
                       </div>

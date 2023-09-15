@@ -28,6 +28,12 @@ export const saveReply = async body =>
 export const deleteReply = async body =>
   await axiosGeneralAPI().delete(`/posts/${body.parentPostNo}/${body.postReplyNo}`);
 
+// 세미나 상세 조회
+export const quizSolutionDetail = async id => {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/club/quizzes/${id}`);
+  return data.data;
+};
+
 export async function getReplies(args: CamenityProps) {
   let params = JSON.parse(JSON.stringify(args));
   let postNo = params.postNo;
