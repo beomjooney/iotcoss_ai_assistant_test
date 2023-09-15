@@ -32,6 +32,10 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import Collapse from '@mui/material/Collapse';
+import IconButton from '@mui/material/IconButton';
 
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css'; // css import
@@ -73,7 +77,7 @@ export function StudyRoomTemplate() {
   const [quizTotalPage, setQuizTotalPage] = useState(1);
   const [jobGroupsFilter, setJobGroupsFilter] = useState([]);
   const [levelsFilter, setLevelsFilter] = useState([]);
-  const [viewFilter, setViewFilter] = useState('0001');
+  const [viewFilter, setViewFilter] = useState('0002');
   const [params, setParams] = useState<paramProps>({ page, viewFilter });
   const [contents, setContents] = useState<RecommendContent[]>([]);
   const [quizList, setQuizList] = useState<RecommendContent[]>([]);
@@ -92,6 +96,7 @@ export function StudyRoomTemplate() {
   const day = moment(value).format('YYYY-MM-DD');
   const currDate = new Date();
   const currDateTime = moment(currDate).format('MM-DD');
+  const [open, setOpen] = React.useState(false);
 
   const mark = ['2023-9-10', '2023-9-11', '2023-9-12'];
 
@@ -271,44 +276,103 @@ export function StudyRoomTemplate() {
                 columnSpacing={{ xs: 1, sm: 2, md: 3 }}
               >
                 <Grid item xs={8}>
-                  {isContentFetched && (
-                    <TableContainer component={Paper} className=" tw-mb-5">
-                      <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                        <TableHead>
-                          <TableRow>
-                            <StyledTableCell>클럽명</StyledTableCell>
-                            <StyledTableCell align="right">리더</StyledTableCell>
-                            <StyledTableCell align="right">참가자</StyledTableCell>
-                            <StyledTableCell align="right">학습시작일</StyledTableCell>
-                            <StyledTableCell align="right">학습주기</StyledTableCell>
-                            <StyledTableCell align="right">상세보기</StyledTableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {contents.map(row => (
-                            <StyledTableRow key={row.clubName}>
-                              <StyledTableCell component="th" scope="row">
-                                {row.clubName}
-                              </StyledTableCell>
-                              <StyledTableCell align="right">{row.leaderNickname}</StyledTableCell>
-                              <StyledTableCell align="right">{row.recruitedMemberCount}</StyledTableCell>
-                              <StyledTableCell align="right">{row.startAt.split(' ')[0]}</StyledTableCell>
-                              <StyledTableCell align="right">
-                                {row.studyCycle.toString()},{row.studyWeekCount}
-                              </StyledTableCell>
-                              <StyledTableCell align="right">
-                                <span className="tw-bg-gray-300 tw-text-white tw-text-xs tw-font-medium tw-mr-2 tw-px-2.5 tw-py-3 tw-rounded">
-                                  오픈예정
-                                </span>
-                              </StyledTableCell>
-                            </StyledTableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
+                  {isContentFetched && active === 0 && (
+                    <div>
+                      <TableContainer component={Paper} className=" tw-mb-5">
+                        <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                          <TableHead>
+                            <TableRow>
+                              <StyledTableCell>클럽명</StyledTableCell>
+                              <StyledTableCell align="right">리더</StyledTableCell>
+                              <StyledTableCell align="right">참가자</StyledTableCell>
+                              <StyledTableCell align="right">학습시작일</StyledTableCell>
+                              <StyledTableCell align="right">학습주기</StyledTableCell>
+                              <StyledTableCell align="right">상세보기</StyledTableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {contents.map(row => (
+                              <StyledTableRow key={row.clubName}>
+                                <StyledTableCell component="th" scope="row">
+                                  {row.clubName}
+                                </StyledTableCell>
+                                <StyledTableCell align="right">{row.leaderNickname}</StyledTableCell>
+                                <StyledTableCell align="right">{row.recruitedMemberCount}</StyledTableCell>
+                                <StyledTableCell align="right">{row.startAt.split(' ')[0]}</StyledTableCell>
+                                <StyledTableCell align="right">
+                                  {row.studyCycle.toString()},{row.studyWeekCount}회
+                                </StyledTableCell>
+                                <StyledTableCell align="right">
+                                  <span className="tw-bg-gray-300 tw-text-white tw-text-xs tw-font-medium tw-mr-2 tw-px-2.5 tw-py-3 tw-rounded">
+                                    오픈예정
+                                  </span>
+                                </StyledTableCell>
+                              </StyledTableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                      <Pagination page={page} setPage={setPage} total={totalPage} />
+                    </div>
                   )}
-
-                  <Pagination page={page} setPage={setPage} total={totalPage} />
+                  {isContentFetched && active === 1 && (
+                    <div>
+                      <TableContainer component={Paper} className=" tw-mb-5">
+                        <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                          <TableHead>
+                            <TableRow>
+                              <StyledTableCell></StyledTableCell>
+                              <StyledTableCell>클럽명</StyledTableCell>
+                              <StyledTableCell align="right">리더</StyledTableCell>
+                              <StyledTableCell align="right">참가자</StyledTableCell>
+                              <StyledTableCell align="right">학습시작일</StyledTableCell>
+                              <StyledTableCell align="right">학습주기</StyledTableCell>
+                              <StyledTableCell align="right">학습현황</StyledTableCell>
+                              <StyledTableCell align="right">상세보기</StyledTableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {contents.map(row => (
+                              <React.Fragment key={row.clubName}>
+                                <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+                                  <TableCell>
+                                    <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+                                      {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                                    </IconButton>
+                                  </TableCell>
+                                  <TableCell>{row.clubName}</TableCell>
+                                  <TableCell align="right">{row.leaderNickname}</TableCell>
+                                  <TableCell align="right">{row.recruitedMemberCount}</TableCell>
+                                  <TableCell align="right">{row.startAt.split(' ')[0]}</TableCell>
+                                  <TableCell align="right">{row.studyWeekCount}회</TableCell>
+                                  <TableCell align="right">{row.clubRunRate}%</TableCell>
+                                  <TableCell align="right">
+                                    <span className="tw-bg-blue-500 tw-text-white tw-text-xs tw-font-medium tw-mr-2 tw-px-2.5 tw-py-3 tw-rounded">
+                                      입장하기
+                                    </span>
+                                  </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                  <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+                                    <Collapse in={open} timeout="auto" unmountOnExit>
+                                      <Box sx={{ margin: 1 }}>
+                                        <Typography variant="h5" gutterBottom component="div">
+                                          클럽생성일 : {row.clubCreatedAt} 클럽가입일 : {row.clubJoinedAt} 학습진행 :{' '}
+                                          {row.studyCount} / {row.studyTotalCount} 회
+                                        </Typography>
+                                      </Box>
+                                    </Collapse>
+                                  </TableCell>
+                                </TableRow>
+                              </React.Fragment>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                      <Pagination page={page} setPage={setPage} total={totalPage} />
+                    </div>
+                  )}
+                  {active === 4 && <div>sdfasdfdsfdd</div>}
                 </Grid>
                 <Grid item xs={4}>
                   <div className="tw-bg-gray-50 tw-rounded-md tw-h-[400px] tw-p-5 tw-text-black ">
