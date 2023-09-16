@@ -5,7 +5,7 @@ import BannerDetail from 'src/stories/components/BannerDetail';
 import { jobColorKey } from 'src/config/colors';
 import Chip from 'src/stories/components/Chip';
 import { useStore } from 'src/store';
-import { Button, Typography, Profile, Modal, ArticleCard } from 'src/stories/components';
+import { Button, Typography, Profile, Modal, ArticleCard, Pagination } from 'src/stories/components';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import { useMySeminarList, useSeminarDetail, useSeminarList } from 'src/services/seminars/seminars.queries';
@@ -24,6 +24,11 @@ import { useSessionStore } from 'src/store/session';
 import Grid from '@mui/material/Grid';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 import router from 'next/router';
+import { useClubDetailQuizList } from 'src/services/quiz/quiz.queries';
+import Divider from '@mui/material/Divider';
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
+import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
+
 // import { Item } from '@shopify/polaris/build/ts/src/components/ActionList/components';
 // import ReactMarkdown from 'react-markdown';
 // import remarkGfm from 'remark-gfm';
@@ -42,6 +47,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
   const [value, setValue] = React.useState(0);
   const [isBookmark, setIsBookmark] = useState(true);
   const [contents, setContents] = useState<RecommendContent[]>([]);
+  const [quizList, setQuizList] = useState<RecommendContent[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isModalCancelOpen, setIsModalCancelOpen] = useState<boolean>(false);
   const [myParticipation, setMyParticipation] = useState(null);
@@ -51,34 +57,19 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
   const [applicationButton, setApplicationButton] = useState<ReactNode>(null);
   const { memberId, logged } = useSessionStore.getState();
   const [contentHtml, setContentHtml] = useState('');
-
-  //이름에서 알 수 있듯, 마크다운을 HTML로 변환해주는 함수
-  // async function markdownToHtml(markdown: string) {
-  //   const result = await remark()
-  //     .use(html as any)
-  //     .process(markdown);
-  //   return result.toString();
-  // }
-  // const { isFetched: isContentFetched } = useSeminarList({ size: 2, excludeSeminarIds: id }, data => {
-  //   setContents(data.data || []);
-  // });
-  // const { isFetched: isParticipantListFetched } = useMySeminarList(
-  //   { enabled: logged && user?.roles?.indexOf('ROLE_USER') >= 0 && user?.roles?.indexOf('ROLE_ADMIN') < 0 },
-  //   data => {
-  //     setMyParticipation(data.find(item => item.seminarId === id)?.myParticipant);
-  //   },
-  // );
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
+  const [params, setParams] = useState<paramProps>({ id, page });
+  let [isLiked, setIsLiked] = useState(false);
 
   const { isFetched: isParticipantListFetched, data } = useSeminarDetail(id, data => {
     setClubMemberStatus(data?.clubMemberStatus);
-    console.log(data?.description);
-    // markdownToHtml(data?description);
-    // const processedContent = remark().use(html).process(data?.description);
-    // console.log(processedContent);
-    // setContentHtml(processedContent.toString());
+  });
+  const { isFetched: isQuizListFetched } = useClubDetailQuizList(params, data => {
+    setQuizList(data?.contents);
+    setTotalPage(data?.totalPages);
   });
 
-  console.log('detail : ', data);
   const { mutate: onParticipant } = useParticipantSeminar();
   const { mutate: onCancelParticipant } = useParticipantCancelSeminar();
   const { mutate: onEncoreSeminar } = useEncoreSeminar();
@@ -106,7 +97,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
   // DELETED("0005") -> 삭제 (안보임)
   // NONE("0006") -> 클럽과 관계없음 (가입전)
 
-  //   TEMPORARY("0001") -> 임시저장상태
+  // TEMPORARY("0001") -> 임시저장상태
   // REQUESTED("0002") -> 개설요청 대기중
   // PENDING("0003") -> 개설 후 모집기간 전 (아직 이 상태는 안쓰고요)
   // IN_PROGRESS("0004") -> 스터디진행중
@@ -201,6 +192,14 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
   };
 
   useEffect(() => {
+    setParams({
+      // ...params,
+      id,
+      page,
+    });
+  }, [page]);
+
+  useEffect(() => {
     if (!logged) {
       setApplicationButton(<Button label="로그인 후 신청 가능합니다" color="lite-gray" size="large" />);
     } else if (isParticipantListFetched) {
@@ -212,7 +211,6 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
             // disabled
             type="button"
             className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
-            // onClick={() => router.push('/quiz/solution')}
           >
             모집 완료 ({data?.startAt}) 퀴즈클럽 시작
           </button>,
@@ -223,7 +221,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
             type="button"
             className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
           >
-            퀴즈 풀기
+            오늘의 퀴즈 풀기
           </button>,
         );
       } else if (data?.clubStatus == '0006' && clubMemberStatus == '0006') {
@@ -290,9 +288,10 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
         setApplicationButton(
           <button
             type="button"
+            // onClick={() => router.push('/quiz/solution/' + `${item.sequence}`)}
             className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
           >
-            퀴즈풀기
+            오늘의 퀴즈 풀기
           </button>,
         );
       } else if (data?.clubStatus == '0004' && clubMemberStatus == '0006') {
@@ -318,17 +317,15 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
       }
     }
   }, [logged, data, clubMemberStatus]);
-  const youtText = '#h1 ##h2';
-  const [value1, setValue1] = useState('# A demo of `react-markdown`');
   return (
     <div className={cx('seminar-detail-container')}>
       <BannerDetail data={data} title="퀴즈클럽" subTitle="클럽 상세보기" imageName="top_banner_seminar.svg" />
       <div className={cx('container')}>
         {/*바로 밑에 자식만 sticky 적용됨*/}
         <div className={cx('content-wrap')}>
-          {data?.isJoined ? (
+          {data?.clubStatus == '0004' && clubMemberStatus == '0002' ? (
             <div className={cx('content')}>
-              <div className="tw-grid tw-grid-cols-2 tw-gap-4">
+              <div className="tw-grid tw-grid-cols-2 tw-gap-4 tw-p-10">
                 <div className="...">
                   <div>나의 실행율 : {data?.myRunRate}</div>
                   <div>
@@ -342,6 +339,74 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                   </div>
                 </div>
               </div>
+              <Grid container direction="row" justifyContent="space-between" alignItems="center" rowSpacing={3}>
+                <Grid item xs={10} className="tw-text-lg tw-text-black tw-font-bold">
+                  퀴즈목록 {quizList?.length}
+                </Grid>
+                <Grid item xs={2} style={{ textAlign: 'right' }}>
+                  <Pagination page={page} setPage={setPage} total={totalPage} />
+                </Grid>
+              </Grid>
+              <Divider className="tw-my-5 tw-border tw-bg-['#efefef']" />
+              {quizList.map((item, index) => {
+                return (
+                  <Grid key={index} container direction="row" justifyContent="left" alignItems="center" rowSpacing={3}>
+                    <Grid item xs={1}>
+                      <div className="tw-flex-auto tw-text-center tw-text-black tw-font-bold">Q{index + 1}.</div>
+                      <div className="tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold">
+                        {item?.weekNumber} 주차 ({item?.dayOfWeek})
+                      </div>
+                    </Grid>
+                    <Grid item xs={11}>
+                      <div className="tw-bg-zinc-50 tw-flex tw-items-center tw-p-4  tw-py-6 tw-mb-5 tw-rounded-xl">
+                        {item?.isRepresentative === true && (
+                          <button
+                            type="button"
+                            data-tooltip-target="tooltip-default"
+                            className="tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded"
+                          >
+                            대표
+                          </button>
+                        )}
+                        <div className="tw-flex-auto">
+                          <div className="tw-font-medium tw-text-black">{item?.content}</div>
+                        </div>
+
+                        <div className="tw-mr-8">
+                          <button
+                            onClick={() => {
+                              // onChangeLike(data?.sequence, data?.isFavorite);
+                            }}
+                          >
+                            {isLiked ? <ThumbUpAltIcon color="primary" /> : <ThumbUpOffAltIcon color="disabled" />}
+                          </button>
+                        </div>
+
+                        <div className="">
+                          <button
+                            onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
+                            type="button"
+                            data-tooltip-target="tooltip-default"
+                            className="tw-bg-blue-500 tw-text-white tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded"
+                          >
+                            퀴즈 풀러가기 {'>'}
+                          </button>
+                        </div>
+                        {/* <div className="">
+                          <button
+                            type="button"
+                            data-tooltip-target="tooltip-default"
+                            className="tw-bg-red-300 tw-text-white tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded"
+                          >
+                            전체 답변보기
+                          </button>
+                        </div> */}
+                      </div>
+                    </Grid>
+                  </Grid>
+                );
+                // <ArticleCard uiType={item.contentsType} content={item} key={i} className={cx('container__item')} />
+              })}
             </div>
           ) : (
             <div className={cx('content')}>
@@ -399,12 +464,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                             대표 {index + 1}
                           </span>
                           <div className="tw-flex-auto tw-ml-3">
-                            <div
-                              onClick={() => router.push('/quiz/solution/' + `${item.sequence}`)}
-                              className="tw-font-medium tw-text-black"
-                            >
-                              {item.content}
-                            </div>
+                            <div className="tw-font-medium tw-text-black">{item.content}</div>
                           </div>
                         </div>
                       </div>
@@ -436,7 +496,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
               </TabPanel>
             </div>
           )}
-          {applicationButton}
+          <div className="tw-mt-10">{applicationButton}</div>
         </div>
       </div>
     </div>

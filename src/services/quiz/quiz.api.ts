@@ -34,6 +34,12 @@ export const quizSolutionDetail = async id => {
   return data.data;
 };
 
+// 세미나 상세 조회
+export const clubDetailQuizList = async params => {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/clubs/${params.id}/quizzes/my-answers`, { params });
+  return data.data;
+};
+
 export async function getReplies(args: CamenityProps) {
   let params = JSON.parse(JSON.stringify(args));
   let postNo = params.postNo;

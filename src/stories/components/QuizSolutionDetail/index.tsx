@@ -156,7 +156,7 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
               ))}
             </div>
           </Grid>
-          <Grid item xs={2} className="tw-text-base tw-font-semibold">
+          <Grid item xs={2} className="tw-text-base tw-font-semibold  tw-text-left">
             <div>{data?.activeCount}명 참가 완료</div>
           </Grid>
         </Grid>
@@ -184,7 +184,7 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
           </div>
           <div className="tw-flex tw-items-center tw-space-x-4 tw-mb-8 ">
             <img className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full" src={data?.clubLeaderProfileImageUrl} alt="" />
-            <div className="tw-text-lg tw-font-semibold tw-text-black">
+            <div className="tw-text-lg tw-font-semibold tw-text-black tw-text-left">
               <div>
                 <span className="tw-text-blue-500">Q1.</span> {data?.content}
               </div>
