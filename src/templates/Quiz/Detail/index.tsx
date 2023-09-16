@@ -350,7 +350,15 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
               <Divider className="tw-my-5 tw-border tw-bg-['#efefef']" />
               {quizList.map((item, index) => {
                 return (
-                  <Grid key={index} container direction="row" justifyContent="left" alignItems="center" rowSpacing={3}>
+                  <Grid
+                    className="tw-mb-5"
+                    key={index}
+                    container
+                    direction="row"
+                    justifyContent="left"
+                    alignItems="center"
+                    rowSpacing={3}
+                  >
                     <Grid item xs={1}>
                       <div className="tw-flex-auto tw-text-center tw-text-black tw-font-bold">Q{index + 1}.</div>
                       <div className="tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold">
@@ -358,12 +366,16 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                       </div>
                     </Grid>
                     <Grid item xs={11}>
-                      <div className="tw-bg-zinc-50 tw-flex tw-items-center tw-p-4  tw-py-6 tw-mb-5 tw-rounded-xl">
+                      <div
+                        className={`tw-bg-zinc-50 tw-flex tw-items-center tw-p-4  tw-py-6  ${
+                          item?.answer ? 'tw-rounded-tl-xl tw-rounded-tr-xl' : 'tw-rounded-xl'
+                        }`}
+                      >
                         {item?.isRepresentative === true && (
                           <button
                             type="button"
                             data-tooltip-target="tooltip-default"
-                            className="tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded"
+                            className="tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-bold tw-mr-2 tw-px-3 tw-py-1 tw-rounded"
                           >
                             대표
                           </button>
@@ -372,7 +384,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                           <div className="tw-font-medium tw-text-black">{item?.content}</div>
                         </div>
 
-                        <div className="tw-mr-8">
+                        <div className="tw-mr-5">
                           <button
                             onClick={() => {
                               // onChangeLike(data?.sequence, data?.isFavorite);
@@ -381,27 +393,50 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                             {isLiked ? <ThumbUpAltIcon color="primary" /> : <ThumbUpOffAltIcon color="disabled" />}
                           </button>
                         </div>
-
-                        <div className="">
-                          <button
-                            onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
-                            type="button"
-                            data-tooltip-target="tooltip-default"
-                            className="tw-bg-blue-500 tw-text-white tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded"
-                          >
-                            퀴즈 풀러가기 {'>'}
-                          </button>
-                        </div>
-                        {/* <div className="">
-                          <button
-                            type="button"
-                            data-tooltip-target="tooltip-default"
-                            className="tw-bg-red-300 tw-text-white tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded"
-                          >
-                            전체 답변보기
-                          </button>
-                        </div> */}
+                        {item?.answer ? (
+                          <div className="">
+                            <button
+                              type="button"
+                              data-tooltip-target="tooltip-default"
+                              className="tw-bg-red-300 tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                            >
+                              전체 답변보기 {'>'}
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="">
+                            <button
+                              onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
+                              type="button"
+                              data-tooltip-target="tooltip-default"
+                              className="tw-bg-blue-500 tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                            >
+                              퀴즈 풀러가기 {'>'}
+                            </button>
+                          </div>
+                        )}
                       </div>
+                      {item?.answer ? (
+                        <div className="tw-bg-white tw-flex tw-items-center tw-p-4 border  tw-py-6 tw-rounded-bl-xl tw-rounded-br-xl">
+                          <div className="tw-flex-auto">
+                            <div className="tw-font-medium tw-text-gray-500 tw-text-sm">{item?.answer?.text}</div>
+                          </div>
+                          <div className="">
+                            <div className="tw-font-medium tw-text-black">
+                              <button
+                                onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
+                                type="button"
+                                data-tooltip-target="tooltip-default"
+                                className="tw-bg-white tw-text-gray-500 tw-text-sm tw-font-right tw-px-3 tw-py-1 tw-rounded"
+                              >
+                                자세히보기
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <div></div>
+                      )}
                     </Grid>
                   </Grid>
                 );
