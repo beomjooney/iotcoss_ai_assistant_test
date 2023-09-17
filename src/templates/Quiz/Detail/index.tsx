@@ -397,6 +397,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                           <div className="">
                             <button
                               type="button"
+                              onClick={() => router.push('/quiz/answers/' + `${item?.clubQuizSequence}`)}
                               data-tooltip-target="tooltip-default"
                               className="tw-bg-red-300 tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
                             >

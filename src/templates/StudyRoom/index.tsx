@@ -165,6 +165,49 @@ export function StudyRoomTemplate() {
     },
   }));
 
+  function Row(props: { row: ReturnType<typeof createData> }) {
+    const { row } = props;
+    const [open, setOpen] = React.useState(false);
+
+    return (
+      <React.Fragment>
+        <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+          <TableCell>
+            <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+              {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+            </IconButton>
+          </TableCell>
+          <TableCell>{row.clubName}</TableCell>
+          <TableCell align="right">{row.leaderNickname}</TableCell>
+          <TableCell align="right">{row.recruitedMemberCount}</TableCell>
+          <TableCell align="right">{row.startAt.split(' ')[0]}</TableCell>
+          <TableCell align="right">{row.studyWeekCount}회</TableCell>
+          <TableCell align="right">{parseInt(row.clubRunRate)}%</TableCell>
+          <TableCell align="right">
+            <button
+              onClick={() => (location.href = '/quiz/' + `${row.clubSequence}`)}
+              className="tw-bg-blue-500 tw-text-white tw-text-xs tw-font-medium tw-mr-2 tw-px-2.5 tw-py-3 tw-rounded"
+            >
+              입장하기
+            </button>
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12}>
+            <Collapse in={open} timeout="auto" unmountOnExit>
+              <Box sx={{ margin: 1 }}>
+                <Typography variant="h5" gutterBottom component="div">
+                  클럽생성일 : {row.clubCreatedAt} 클럽가입일 : {row.clubJoinedAt} 학습진행 : {row.studyCount} /{' '}
+                  {row.studyTotalCount} 회
+                </Typography>
+              </Box>
+            </Collapse>
+          </TableCell>
+        </TableRow>
+      </React.Fragment>
+    );
+  }
+
   function createData(name: string, calories: number, fat: number, carbs: number, protein: number) {
     return { name, calories, fat, carbs, protein };
   }
@@ -316,61 +359,27 @@ export function StudyRoomTemplate() {
                     </div>
                   )}
                   {isContentFetched && active === 1 && (
-                    <div>
-                      <TableContainer component={Paper} className=" tw-mb-5">
-                        <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                          <TableHead>
-                            <TableRow>
-                              <StyledTableCell></StyledTableCell>
-                              <StyledTableCell>클럽명</StyledTableCell>
-                              <StyledTableCell align="right">리더</StyledTableCell>
-                              <StyledTableCell align="right">참가자</StyledTableCell>
-                              <StyledTableCell align="right">학습시작일</StyledTableCell>
-                              <StyledTableCell align="right">학습주기</StyledTableCell>
-                              <StyledTableCell align="right">학습현황</StyledTableCell>
-                              <StyledTableCell align="right">상세보기</StyledTableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {contents.map(row => (
-                              <React.Fragment key={row.clubName}>
-                                <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-                                  <TableCell>
-                                    <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
-                                      {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                                    </IconButton>
-                                  </TableCell>
-                                  <TableCell>{row.clubName}</TableCell>
-                                  <TableCell align="right">{row.leaderNickname}</TableCell>
-                                  <TableCell align="right">{row.recruitedMemberCount}</TableCell>
-                                  <TableCell align="right">{row.startAt.split(' ')[0]}</TableCell>
-                                  <TableCell align="right">{row.studyWeekCount}회</TableCell>
-                                  <TableCell align="right">{row.clubRunRate}%</TableCell>
-                                  <TableCell align="right">
-                                    <span className="tw-bg-blue-500 tw-text-white tw-text-xs tw-font-medium tw-mr-2 tw-px-2.5 tw-py-3 tw-rounded">
-                                      입장하기
-                                    </span>
-                                  </TableCell>
-                                </TableRow>
-                                <TableRow>
-                                  <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-                                    <Collapse in={open} timeout="auto" unmountOnExit>
-                                      <Box sx={{ margin: 1 }}>
-                                        <Typography variant="h5" gutterBottom component="div">
-                                          클럽생성일 : {row.clubCreatedAt} 클럽가입일 : {row.clubJoinedAt} 학습진행 :{' '}
-                                          {row.studyCount} / {row.studyTotalCount} 회
-                                        </Typography>
-                                      </Box>
-                                    </Collapse>
-                                  </TableCell>
-                                </TableRow>
-                              </React.Fragment>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                      <Pagination page={page} setPage={setPage} total={totalPage} />
-                    </div>
+                    <TableContainer component={Paper} className=" tw-mb-5">
+                      <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                        <TableHead>
+                          <TableRow>
+                            <StyledTableCell></StyledTableCell>
+                            <StyledTableCell>클럽명</StyledTableCell>
+                            <StyledTableCell align="right">리더</StyledTableCell>
+                            <StyledTableCell align="right">참가자</StyledTableCell>
+                            <StyledTableCell align="right">학습시작일</StyledTableCell>
+                            <StyledTableCell align="right">학습주기</StyledTableCell>
+                            <StyledTableCell align="right">학습현황</StyledTableCell>
+                            <StyledTableCell align="right">상세보기</StyledTableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {contents.map(row => (
+                            <Row key={row.clubName} row={row} />
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
                   )}
                   {active === 4 && <div>sdfasdfdsfdd</div>}
                 </Grid>
