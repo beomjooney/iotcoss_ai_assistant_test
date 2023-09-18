@@ -139,7 +139,7 @@ export function StudyRoomTemplate() {
   const currDateTime = moment(currDate).format('MM-DD');
   const [open, setOpen] = React.useState(false);
   const [highlightedDays, setHighlightedDays] = React.useState([
-    { date: '2023-09-01', count: 3 },
+    { date: '2023-09-01', count: 2 },
     { date: '2023-09-23', count: 2 },
   ]); // 년월일 형식의 문자열로 변경
 
@@ -437,6 +437,7 @@ export function StudyRoomTemplate() {
                     <div className="tw-bg-white">
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DateCalendar
+                          showDaysOutsideCurrentMonth
                           slots={{
                             day: ServerDay,
                           }}
