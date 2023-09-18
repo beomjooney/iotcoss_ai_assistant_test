@@ -9,6 +9,7 @@ import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import { useEffect, useState } from 'react';
 import {
   useAnswerSave,
+  useAnswerUpdate,
   useComprehensionSave,
   useDeleteLike,
   useDeleteReply,
@@ -35,6 +36,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormLabel from '@mui/material/FormLabel';
 import Radio from '@mui/material/Radio';
 import router from 'next/router';
+import Avatar from '@mui/material/Avatar';
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -101,6 +103,7 @@ const quizSolutionDetail = ({ imageName = 'seminar_bg.png', title, subTitle, cla
   const { mutate: onSaveLike, isSuccess } = useSaveLike();
   const { mutate: onDeleteLike } = useDeleteLike();
   const { mutate: onAnswerSave, isSuccess: isAnswerSave } = useAnswerSave();
+  const { mutate: onAnswerUpdate, isSuccess: isAnswerUpdate } = useAnswerUpdate();
   const { mutate: onComprehensionSave, isSuccess: isComprehensionSave } = useComprehensionSave();
 
   const isStepSkipped = (step: number) => {
@@ -128,12 +131,18 @@ const quizSolutionDetail = ({ imageName = 'seminar_bg.png', title, subTitle, cla
     }
     if (activeStep === 0) {
       setActiveStep(prevActiveStep => prevActiveStep + 1);
-    }
-    if (activeStep === 2) {
       onAnswerSave({
         data: {
           clubQuizSequence: data?.clubQuizSequence,
           preAnswer: introductionMessage,
+        },
+      });
+    }
+    if (activeStep === 2) {
+      onAnswerUpdate({
+        data: {
+          clubQuizSequence: data?.clubQuizSequence,
+          postAnswer: introductionMessage,
         },
       });
 

@@ -12,6 +12,7 @@ import {
   comprehensionSave,
   saveQuizLiked,
   deleteQuizLiked,
+  answerUpdate,
 } from './community.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 
@@ -92,6 +93,20 @@ export const useAnswerSave = (): UseMutationResult => {
   const queryClient = useQueryClient();
   // TODO : any 타입 변경
   return useMutation<any, any, any>(requestBody => answerSave(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('REPLY').all),
+    onSuccess: async data => {
+      console.log('return data', data);
+    },
+  });
+};
+export const useAnswerUpdate = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  // TODO : any 타입 변경
+  return useMutation<any, any, any>(requestBody => answerUpdate(requestBody), {
     onError: (error, variables, context) => {
       const { code, message } = error;
       alert(`mutation error : [${code}] ${message}`);

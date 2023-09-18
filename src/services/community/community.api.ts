@@ -59,9 +59,14 @@ export const answerSave = async (params: any) => {
   const { data } = await axiosGeneralAPI().post(`/api/v1/club/quizzes/preanswer`, params.data);
   return { data: data || [] };
 };
+export const answerUpdate = async (params: any) => {
+  console.log('answerSave : ', params);
+  const { data } = await axiosGeneralAPI().put(`/api/v1/club/quizzes/postanswer`, params.data);
+  return { data: data || [] };
+};
 export const comprehensionSave = async (params: any) => {
   console.log('comprehensionSave : ', params);
-  const { data } = await axiosGeneralAPI().post(`/api/v1/club/quizzes/comprehension`, params.data);
+  const { data } = await axiosGeneralAPI().put(`/api/v1/club/quizzes/comprehension`, params.data);
   return { data: data || [] };
 };
 

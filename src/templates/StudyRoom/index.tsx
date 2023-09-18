@@ -65,8 +65,6 @@ const studyStatus = [
   },
 ];
 
-const cx = classNames.bind(styles);
-
 const useStyles = makeStyles(theme => ({
   root: {
     '& > *': {
@@ -80,30 +78,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function ServerDay(props: PickersDayProps<Dayjs> & { highlightedDays?: string[] }) {
-  const classes = useStyles();
-  const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
-  const isSelected = highlightedDays.some(item => item.date === props.day.format('YYYY-MM-DD'));
-  const count = highlightedDays.find(item => item.date === props.day.format('YYYY-MM-DD'))?.count || 0;
-
-  const dots = Array.from({ length: count }, (_, index) => (
-    <span key={index} className="tw-mr-0.5">
-      <CircleIcon className="tw-w-[6px] tw-h-[6px]" color="primary"></CircleIcon>
-    </span>
-  ));
-  return (
-    <Badge
-      classes={{
-        badge: classes.font1,
-      }}
-      key={props.day.toString()}
-      overlap="circular"
-      badgeContent={isSelected ? dots : undefined}
-    >
-      <PickersDay {...other} outsideCurrentMonth={outsideCurrentMonth} day={day} />
-    </Badge>
-  );
-}
+const cx = classNames.bind(styles);
 
 export function StudyRoomTemplate() {
   const { jobGroups, setJobGroups, contentTypes, setContentTypes } = useStore();
@@ -143,6 +118,31 @@ export function StudyRoomTemplate() {
     { date: '2023-09-23', count: 2 },
   ]); // 년월일 형식의 문자열로 변경
 
+  const classes = useStyles();
+
+  function ServerDay(props: PickersDayProps<Dayjs> & { highlightedDays?: string[] }) {
+    const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
+    const isSelected = highlightedDays.some(item => item.date === props.day.format('YYYY-MM-DD'));
+    const count = highlightedDays.find(item => item.date === props.day.format('YYYY-MM-DD'))?.count || 0;
+
+    const dots = Array.from({ length: count }, (_, index) => (
+      <span key={index} className="tw-mr-0.5">
+        <CircleIcon className="tw-w-[6px] tw-h-[6px]" color="primary"></CircleIcon>
+      </span>
+    ));
+    return (
+      <Badge
+        classes={{
+          badge: classes.font1,
+        }}
+        key={props.day.toString()}
+        overlap="circular"
+        badgeContent={isSelected ? dots : undefined}
+      >
+        <PickersDay {...other} outsideCurrentMonth={outsideCurrentMonth} day={day} />
+      </Badge>
+    );
+  }
   const { isFetched: isContentFetched, refetch: refetch } = useStudyRoomList(params, data => {
     setContents(data.data.contents || []);
     setTotalPage(data.data.totalPages);
