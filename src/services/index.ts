@@ -82,7 +82,7 @@ function createAxios(requestConfig: RequestConfig): AxiosInstance {
         //   window.location.href = '/account/login';
         //   throw new LoginError();
         // }
-        throw new AuthError();
+        // throw new AuthError();
       }
 
       if (status === 404) {

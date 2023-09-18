@@ -44,9 +44,24 @@ export const popularPostSearchList = async (postNo: number) => {
 export const saveLiked = async (postNo: number) => await axiosGeneralAPI().post(`/api/v1/favorite/clubs/${postNo}`);
 export const deleteLiked = async (postId: number) => await axiosGeneralAPI().delete(`/api/v1/favorite/clubs/${postId}`);
 
+export const saveQuizLiked = async (postNo: number) =>
+  await axiosGeneralAPI().post(`/api/v1/club/quizzes/${postNo}/like`);
+export const deleteQuizLiked = async (postId: number) =>
+  await axiosGeneralAPI().delete(`/api/v1/club/quizzes/${postNo}/like`);
+
 export const saveReply = async (params: any) => {
   console.log('saveReply : ', params);
   const { data } = await axiosGeneralAPI().post(`/posts/${params.postNo}/replies`, params.data);
+  return { data: data || [] };
+};
+export const answerSave = async (params: any) => {
+  console.log('answerSave : ', params);
+  const { data } = await axiosGeneralAPI().post(`/api/v1/club/quizzes/preanswer`, params.data);
+  return { data: data || [] };
+};
+export const comprehensionSave = async (params: any) => {
+  console.log('comprehensionSave : ', params);
+  const { data } = await axiosGeneralAPI().post(`/api/v1/club/quizzes/comprehension`, params.data);
   return { data: data || [] };
 };
 

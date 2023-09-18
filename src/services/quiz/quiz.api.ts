@@ -33,6 +33,17 @@ export const quizSolutionDetail = async id => {
   const { data } = await axiosGeneralAPI().get(`/api/v1/club/quizzes/${id}`);
   return data.data;
 };
+// 세미나 상세 조회
+export const quizGrowthDetail = async id => {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/clubs/${id}/growth/summary`);
+  return data.data;
+};
+
+// 세미나 상세 조회
+export const quizAnswerDetail = async id => {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/club/quizzes/${id}/answers`);
+  return data.data;
+};
 
 // 세미나 상세 조회
 export const clubDetailQuizList = async params => {

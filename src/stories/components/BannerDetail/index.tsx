@@ -149,12 +149,12 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
                 >
                   참여하기
                 </button> */}
-                <button
+                {/* <button
                   type="button"
                   className="tw-text-white tw-bg-blue-500 hover:tw-bg-blue-800 tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5  dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
                 >
                   친구초대
-                </button>
+                </button> */}
               </Grid>
             </Grid>
           </div>

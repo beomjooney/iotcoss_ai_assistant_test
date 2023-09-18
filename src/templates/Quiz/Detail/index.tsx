@@ -28,6 +28,7 @@ import { useClubDetailQuizList } from 'src/services/quiz/quiz.queries';
 import Divider from '@mui/material/Divider';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
+import { useQuizDeleteLike, useQuizLike, useSaveLike } from 'src/services/community/community.mutations';
 
 // import { Item } from '@shopify/polaris/build/ts/src/components/ActionList/components';
 // import ReactMarkdown from 'react-markdown';
@@ -73,20 +74,21 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
   const { mutate: onParticipant } = useParticipantSeminar();
   const { mutate: onCancelParticipant } = useParticipantCancelSeminar();
   const { mutate: onEncoreSeminar } = useEncoreSeminar();
+  const { mutate: onSaveLike, isSuccess } = useQuizLike();
+  const { mutate: onDeleteLike } = useQuizDeleteLike();
 
   let tabPannelRefs = [];
 
-  const onOpenSeminarFnc = () => {
+  const onChangeLike = function (postNo: number) {
     if (logged) {
-      if (confirm('세미나 앵콜 신청을 하시겠습니까?')) {
-        onEncoreSeminar({
-          seminarId: id,
-          memberId: memberId,
-          mentorId: data?.seminarLecturer?.memberId,
-        });
+      setIsLiked(!isLiked);
+      if (isLiked) {
+        onDeleteLike(postNo);
+      } else {
+        onSaveLike(postNo);
       }
     } else {
-      alert('로그인 세미나 앵콜 신청을 할 수 있습니다.');
+      alert('로그인 후 좋아요를 클릭 할 수 있습니다.');
     }
   };
 
@@ -187,8 +189,9 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
     setValue(newValue);
   };
 
-  const lectureName = () => {
-    return data?.seminarLecturer?.nickname ?? data?.seminarLecturer?.name;
+  const handlerTodayQuizSolution = () => {
+    const firstItemWithNullAnswer = quizList.find(item => item.answer === null);
+    router.push('/quiz/solution/' + `${firstItemWithNullAnswer.clubQuizSequence}`);
   };
 
   useEffect(() => {
@@ -219,6 +222,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
         setApplicationButton(
           <button
             type="button"
+            onClick={handlerTodaySolution}
             className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
           >
             오늘의 퀴즈 풀기
@@ -288,7 +292,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
         setApplicationButton(
           <button
             type="button"
-            // onClick={() => router.push('/quiz/solution/' + `${item.sequence}`)}
+            onClick={handlerTodayQuizSolution}
             className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
           >
             오늘의 퀴즈 풀기
@@ -387,10 +391,14 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                         <div className="tw-mr-5">
                           <button
                             onClick={() => {
-                              // onChangeLike(data?.sequence, data?.isFavorite);
+                              onChangeLike(item?.clubQuizSequence);
                             }}
                           >
-                            {isLiked ? <ThumbUpAltIcon color="primary" /> : <ThumbUpOffAltIcon color="disabled" />}
+                            {data?.isLiked ? (
+                              <ThumbUpAltIcon color="primary" />
+                            ) : (
+                              <ThumbUpOffAltIcon color="disabled" />
+                            )}
                           </button>
                         </div>
                         {item?.answer ? (
@@ -425,7 +433,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                           <div className="">
                             <div className="tw-font-medium tw-text-black">
                               <button
-                                onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
+                                onClick={() => router.push('/quiz/answers/' + `${item?.clubQuizSequence}`)}
                                 type="button"
                                 data-tooltip-target="tooltip-default"
                                 className="tw-bg-white tw-text-gray-500 tw-text-sm tw-font-right tw-px-3 tw-py-1 tw-rounded"

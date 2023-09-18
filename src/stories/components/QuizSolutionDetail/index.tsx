@@ -7,7 +7,14 @@ import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import { useEffect, useState } from 'react';
-import { useDeleteLike, useDeleteReply, useSaveLike, useSaveReply } from 'src/services/community/community.mutations';
+import {
+  useAnswerSave,
+  useComprehensionSave,
+  useDeleteLike,
+  useDeleteReply,
+  useSaveLike,
+  useSaveReply,
+} from 'src/services/community/community.mutations';
 import { useSessionStore } from 'src/store/session';
 const { logged } = useSessionStore.getState();
 import StarBorderIcon from '@mui/icons-material/StarBorder';
@@ -22,6 +29,12 @@ import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector
 import { StepIconProps } from '@mui/material/StepIcon';
 import styled from '@emotion/styled';
 import MuiTabs from '@material-ui/core/Tabs';
+import FormControl from '@mui/material/FormControl';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormLabel from '@mui/material/FormLabel';
+import Radio from '@mui/material/Radio';
+import router from 'next/router';
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -76,44 +89,70 @@ export interface BannerProps {
 
 const cx = classNames.bind(styles);
 // const Banner = ({ imageName = 'top_banner_seminar.jpg', title, subTitle, className }: BannerProps) => {
-const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className, data }: BannerProps) => {
+const quizSolutionDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className, data }: BannerProps) => {
   const steps = ['Step1. 답변 입력', 'Step2. 아티클 읽기', 'Step3. 답변 수정(선택)'];
 
   let [isLiked, setIsLiked] = useState(false);
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set<number>());
+  const [type, setType] = React.useState('0001'); // 초기값 설정
+  const [introductionMessage, setIntroductionMessage] = useState<string>('');
 
   const { mutate: onSaveLike, isSuccess } = useSaveLike();
   const { mutate: onDeleteLike } = useDeleteLike();
-
-  const isStepOptional = (step: number) => {
-    return step === 1 || step === 2 || step === 3;
-  };
+  const { mutate: onAnswerSave, isSuccess: isAnswerSave } = useAnswerSave();
+  const { mutate: onComprehensionSave, isSuccess: isComprehensionSave } = useComprehensionSave();
 
   const isStepSkipped = (step: number) => {
     return skipped.has(step);
+  };
+
+  const handleTypeChange = event => {
+    setType(event.target.value); // 라디오 버튼의 값을 상태에 업데이트
+    console.log(event.target.value);
   };
 
   useEffect(() => {
     setIsLiked(data?.isFavorite);
   }, [data]);
 
-  const onChangeLike = function (postNo: number) {
-    event.preventDefault();
-    if (logged) {
-      setIsLiked(!isLiked);
-      if (isLiked) {
-        onDeleteLike(postNo);
-      } else {
-        onSaveLike(postNo);
-      }
-    } else {
-      alert('로그인 후 좋아요를 클릭 할 수 있습니다.');
+  const onMessageChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, no?: number) => {
+    const { name, value } = event.currentTarget;
+    setIntroductionMessage(value);
+  };
+
+  const handleNext = () => {
+    if (introductionMessage === '') {
+      alert('답변을 입력해주세요.');
+      return;
     }
+    if (activeStep === 0) {
+      setActiveStep(prevActiveStep => prevActiveStep + 1);
+    }
+    if (activeStep === 2) {
+      onAnswerSave({
+        data: {
+          clubQuizSequence: data?.clubQuizSequence,
+          preAnswer: introductionMessage,
+        },
+      });
+
+      router.push(`/quiz/growth/${data?.clubSequence}`);
+    }
+  };
+
+  const handleComprehension = () => {
+    onComprehensionSave({
+      data: {
+        clubQuizSequence: data?.clubQuizSequence,
+        comprehensionStatus: type,
+      },
+    });
+    setActiveStep(prevActiveStep => prevActiveStep + 1);
   };
   return (
     <div className={cx('content-area', className, 'tw-bg-gray-100')}>
-      <div className="container tw-p-52 tw-leading-normal tw-text-black tw-text-xl tw-pt-10 tw-pb-10">
+      <div className="container tw-p-40 tw-leading-normal tw-text-black tw-text-xl tw-pt-10 tw-pb-10">
         <div className="tw-py-1 tw-text-base">{data?.publishDate}</div>
         <div className="tw-py-1 tw-font-bold">{data?.clubName}</div>
 
@@ -182,36 +221,86 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
               })}
             </Stepper>
           </div>
-          <div className="tw-flex tw-items-center tw-space-x-4 tw-mb-8 ">
-            <img className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full" src={data?.clubLeaderProfileImageUrl} alt="" />
-            <div className="tw-text-lg tw-font-semibold tw-text-black tw-text-left">
-              <div>
-                <span className="tw-text-blue-500">Q1.</span> {data?.content}
+          {(activeStep === 0 || activeStep === 2) && (
+            <div>
+              <div className="tw-flex tw-items-center tw-space-x-4 tw-mb-8 ">
+                <img className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full" src={data?.clubLeaderProfileImageUrl} alt="" />
+                <div className="tw-text-lg tw-font-semibold tw-text-black tw-text-left">
+                  <div>
+                    <span className="tw-text-blue-500">Q1.</span> {data?.content}
+                  </div>
+                </div>
               </div>
+
+              <TextareaAutosize
+                aria-label="minimum height"
+                minRows={9}
+                placeholder="답변을 25자 이상 입력해주세요."
+                style={{
+                  width: '100%',
+                  backgroundColor: '#f8f9fa',
+                  border: '0px solid #B0B7C1',
+                  borderRadius: '15px',
+                  padding: 12,
+                  resize: 'none',
+                  maxHeight: '350px', // 최대 높이 설정 (스크롤을 표시하려면 설정)
+                  overflowY: 'scroll', // 세로 스크롤 활성화
+                }}
+                name="introductionMessage"
+                onChange={onMessageChange}
+                value={introductionMessage}
+              />
+              <button
+                type="button"
+                onClick={handleNext}
+                className=" tw-text-white tw-w-[300px] tw-bg-blue-500 tw-mt-5 tw-focus:ring-4  tw-font-medium tw-rounded tw-text-base tw-px-7 tw-py-3 "
+              >
+                {activeStep === 0 ? '답변입력 및 아티클 읽기' : '수정완료 및 답변 제출하기'}
+              </button>
             </div>
-          </div>
-          <TextareaAutosize
-            aria-label="minimum height"
-            minRows={9}
-            placeholder="답변을 25자 이상 입력해주세요."
-            style={{
-              width: '100%',
-              backgroundColor: '#f8f9fa',
-              border: '0px solid #B0B7C1',
-              borderRadius: '15px',
-              padding: 12,
-              resize: 'none',
-            }}
-            name="introductionMessage"
-            // onChange={onMessageChange}
-            // value={introductionMessage}
-          />
-          <button
-            type="button"
-            className=" tw-text-white tw-bg-gray-300 tw-mt-5 tw-focus:ring-4  tw-font-medium tw-rounded tw-text-base tw-px-7 tw-py-3 "
-          >
-            답변입력 및 아티클 읽기
-          </button>
+          )}
+
+          {activeStep === 1 && (
+            <div>
+              <iframe
+                className="border tw-rounded-lg"
+                width="100%"
+                height="600px"
+                src={data?.articleUrl}
+                title="YouTube video player"
+                allow="accelerometer;
+                    autoplay;
+                    clipboard-write;
+                    encrypted-media;
+                    gyroscope;
+                    picture-in-picture"
+              ></iframe>
+              <div className="border tw-rounded-lg tw-p-5 tw-mt-5">
+                <div className="tw-text-xl tw-font-bold tw-py-5">오늘의 퀴즈는 알고 있었던 내용이었나요?</div>
+                <FormControl className="tw-py-5">
+                  <RadioGroup
+                    aria-labelledby="demo-radio-buttons-group-label"
+                    value={type} // 현재 선택된 값 설정
+                    onChange={handleTypeChange} // 라디오 버튼 클릭 이벤트 처리
+                    name="radio-buttons-group"
+                  >
+                    <FormControlLabel value="0001" control={<Radio />} label="처음 물어본 내용이다." />
+                    <FormControlLabel value="0002" control={<Radio />} label="물어본 적은 있지만 잘 모른다." />
+                    <FormControlLabel value="0003" control={<Radio />} label="적용 경험은 없지만, 원리는 알고 있다." />
+                    <FormControlLabel value="0004" control={<Radio />} label="적용 경험이 있고, 설명할 수 있다." />
+                    <FormControlLabel value="0005" control={<Radio />} label="적세미나에서 설명할 수 있을 것 같다." />
+                  </RadioGroup>
+                </FormControl>
+              </div>
+              <button
+                type="button"
+                onClick={handleComprehension}
+                className=" tw-text-white tw-w-[300px] tw-bg-blue-500 tw-mt-5 tw-focus:ring-4  tw-font-medium tw-rounded tw-text-base tw-px-7 tw-py-3 "
+              >
+                읽기완료
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -225,4 +314,4 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
   );
 };
 
-export default BannerDetail;
+export default quizSolutionDetail;

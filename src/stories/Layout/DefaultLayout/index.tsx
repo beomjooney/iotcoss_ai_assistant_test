@@ -1,6 +1,8 @@
 import React, { ReactNode, useEffect, useState } from 'react';
 import { Footer, Header } from '../../components';
 import { Mobile, Desktop } from 'src/hooks/mediaQuery';
+import { useSessionStore } from 'src/store/session';
+
 export interface DefaultLayoutProps {
   /** 테마 색상 */
   darkBg?: boolean;
@@ -15,10 +17,11 @@ export interface DefaultLayoutProps {
 }
 
 const DefaultLayout = ({ darkBg, classOption, title, children, isFooter = true }: DefaultLayoutProps) => {
+  const { memberId, logged } = useSessionStore.getState();
   const menuItem = [
-    { no: 0, option: 'nav-item', title: '퀴즈클럽', link: '/quiz', dropdown: [] },
+    { no: 0, option: 'nav-item', title: '퀴즈클럽', link: '/quiz', dropdown: [], login: true },
     // { no: 1, option: 'nav-item', title: '라운지', link: '/', dropdown: [] },
-    { no: 2, option: 'nav-item', title: '나의학습방', link: '/studyroom', dropdown: [] },
+    { no: 2, option: 'nav-item', title: '나의 학습방', link: '/studyroom', dropdown: [], login: logged },
     // { no: 0, option: 'nav-item', title: '커멘소개', link: '/business', dropdown: [] },
     // {
     //   no: 1,
@@ -55,7 +58,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children, isFooter = true }
     // },
     { no: 0, option: 'nav-item', title: '퀴즈클럽', link: '/quiz', dropdown: [] },
     // { no: 1, option: 'nav-item', title: '라운지', link: '/', dropdown: [] },
-    { no: 2, option: 'nav-item', title: '나의학습방', link: '/studyroom', dropdown: [] },
+    { no: 2, option: 'nav-item', title: '나의 학습방', link: '/studyroom', dropdown: [] },
   ];
   return (
     <div>

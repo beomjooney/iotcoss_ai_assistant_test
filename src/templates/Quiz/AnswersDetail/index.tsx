@@ -24,11 +24,15 @@ import { useSessionStore } from 'src/store/session';
 import Grid from '@mui/material/Grid';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 import router from 'next/router';
-import { useClubDetailQuizList, useQuizSolutionDetail } from 'src/services/quiz/quiz.queries';
+import { useClubDetailQuizList, useQuizAnswerDetail, useQuizSolutionDetail } from 'src/services/quiz/quiz.queries';
 import Divider from '@mui/material/Divider';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
-
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
+import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
+import TextField from '@mui/material/TextField';
+import SearchIcon from '@mui/icons-material/Search';
 // import { Item } from '@shopify/polaris/build/ts/src/components/ActionList/components';
 // import ReactMarkdown from 'react-markdown';
 // import remarkGfm from 'remark-gfm';
@@ -47,6 +51,7 @@ export function QuizAnswersDetailTemplate({ id }: QuizAnswersDetailTemplateProps
   const [value, setValue] = React.useState(0);
   const [isBookmark, setIsBookmark] = useState(true);
   const [contents, setContents] = useState<RecommendContent[]>([]);
+  const [answerContents, setAnswerContents] = useState<RecommendContent[]>([]);
   const [quizList, setQuizList] = useState<RecommendContent[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isModalCancelOpen, setIsModalCancelOpen] = useState<boolean>(false);
@@ -64,6 +69,9 @@ export function QuizAnswersDetailTemplate({ id }: QuizAnswersDetailTemplateProps
 
   const { isFetched: isParticipantListFetched, data } = useQuizSolutionDetail(id, data => {
     setContents(data);
+  });
+  const { isFetched: isQuizAnswerListFetched } = useQuizAnswerDetail(id, data => {
+    setAnswerContents(data);
   });
 
   // const { isFetched: isParticipantListFetched, data } = useSeminarDetail(id, data => {
@@ -269,7 +277,7 @@ export function QuizAnswersDetailTemplate({ id }: QuizAnswersDetailTemplateProps
           columnSpacing={{ xs: 1, sm: 2, md: 3 }}
         >
           <Grid item xs={8}>
-            <div className="tw-bg-gray-50 tw-rounded-lg tw-p-5 tw-text-black ">
+            <div className="tw-bg-gray-50 tw-rounded-lg tw-p-7 tw-text-black ">
               <div className="tw-flex tw-items-center tw-space-x-4 tw-my-5">
                 <img
                   className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full"
@@ -302,17 +310,50 @@ export function QuizAnswersDetailTemplate({ id }: QuizAnswersDetailTemplateProps
               <div className="tw-text-center tw-py-3">
                 <span className="tw-font-right tw-text-base tw-text-gray-400">#123 #1231</span>
               </div>
-              <div className="tw-text-left tw-py-3">
-                <span className="tw-font-bold tw-text-base tw-text-black">active {contents?.activeCount}</span>
-                <span className="tw-font-bold tw-text-base tw-text-black">like {contents?.likeCount}</span>
-                <span className="tw-font-bold tw-text-base tw-text-black">answers {contents?.answerCount}</span>
+              <div className="tw-text-left tw-py-3 tw-flex tw-items-center tw-gap-4">
+                <span>
+                  <AssignmentOutlinedIcon className="tw-mr-1 tw-w-5" />
+                  {contents?.activeCount}
+                </span>
+                <span>
+                  <FavoriteBorderIcon className="tw-mr-1  tw-w-5" />
+                  <span>{contents?.likeCount}</span>
+                </span>
+                <span>
+                  <ContentCopyOutlinedIcon className="tw-mr-1  tw-w-5" />
+                  <span>{contents?.answerCount}</span>
+                </span>
+              </div>
+            </div>
+            <div>
+              <div className="tw-grid tw-grid-cols-5 tw-gap-4 tw-py-4 tw-mt-5">
+                <div className="tw-col-span-3">
+                  <div className="tw-text-black tw-font-bold tw-text-2xl">퀴즈답변</div>
+                </div>
+                <div className="tw-col-span-2">
+                  <TextField
+                    fullWidth
+                    id="outlined-basic"
+                    label=""
+                    variant="outlined"
+                    onKeyPress={e => {
+                      if (e.key === 'Enter') {
+                        searchKeyworld((e.target as HTMLInputElement).value);
+                      }
+                    }}
+                    InputProps={{
+                      style: { height: '43px' },
+                      startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </Grid>
           <Grid item xs={4}>
             <div className="tw-bg-gray-50 tw-rounded-lg tw-h-[400px] tw-p-5 tw-text-black ">
               <div className="tw-font-bold tw-text-base tw-pb-5">이달의 메이커</div>
-              <div className="tw-bg-white">ㅇㅇ</div>
+              <div>빨리 개발좀해라.</div>
             </div>
           </Grid>
         </Grid>

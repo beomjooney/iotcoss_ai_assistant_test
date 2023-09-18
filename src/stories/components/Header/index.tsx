@@ -78,14 +78,14 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
   useEffect(() => {
     logged
       ? setLogoutButton(
-          <li className={cx('custom-item')} id="logoutBtn">
+          <div className={cx('custom-item')} id="logoutBtn">
             <button
               className="max-lg: tw-mr-2 tw-bg-[#2474ED] tw-rounded-md border tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
               onClick={() => (location.href = '/quiz-make')}
             >
               퀴즈만들기
             </button>
-          </li>,
+          </div>,
         )
       : setLogoutButton(null);
   }, [logged]);
@@ -262,9 +262,9 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                   >
                     <path
                       stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
                       d="M8 3.464V1.1m0 2.365a5.338 5.338 0 0 1 5.133 5.368v1.8c0 2.386 1.867 2.982 1.867 4.175C15 15.4 15 16 14.462 16H1.538C1 16 1 15.4 1 14.807c0-1.193 1.867-1.789 1.867-4.175v-1.8A5.338 5.338 0 0 1 8 3.464ZM4.54 16a3.48 3.48 0 0 0 6.92 0H4.54Z"
                     />
                   </svg>
@@ -375,32 +375,34 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
             <ul className={cx('nav-custom', 'navbar-custom-mobile', 'navbar-nav', 'tw-text-lg', 'tw-text-left')}>
               {menuItem?.map((item, index) => {
                 return (
-                  <li key={`item-` + index} className={item.option}>
-                    <Link href={item.link} className="nav-link">
-                      <a
-                        onClick={() => {
-                          if (item.dropdown.length === 0) setIsShowMenu(!isShowMenu);
-                        }}
-                      >
-                        <div className="tw-mr-10 tw-text-base tw-text-black tw-font-bold">{item.title}</div>
-                      </a>
-                    </Link>
-                    <div className="dropdown-menu submenu" aria-labelledby="navbarDropdownHome">
-                      {item.dropdown.map((menu, index) => {
-                        return (
-                          <Link key={`menu-` + index} href={menu.link} className="dropdown-item">
-                            <a
-                              onClick={() => {
-                                setIsShowMenu(!isShowMenu);
-                              }}
-                            >
-                              <div className="tw-text-base tw-font-light">{menu.title}</div>
-                            </a>
-                          </Link>
-                        );
-                      })}
-                    </div>
-                  </li>
+                  item?.login && (
+                    <li key={`item-` + index} className={item.option}>
+                      <Link href={item.link} className="nav-link">
+                        <a
+                          onClick={() => {
+                            if (item.dropdown.length === 0) setIsShowMenu(!isShowMenu);
+                          }}
+                        >
+                          <div className="tw-mr-10 tw-text-base tw-text-black tw-font-bold">{item.title}</div>
+                        </a>
+                      </Link>
+                      <div className="dropdown-menu submenu" aria-labelledby="navbarDropdownHome">
+                        {item.dropdown.map((menu, index) => {
+                          return (
+                            <Link key={`menu-` + index} href={menu.link} className="dropdown-item">
+                              <a
+                                onClick={() => {
+                                  setIsShowMenu(!isShowMenu);
+                                }}
+                              >
+                                <div className="tw-text-base tw-font-light">{menu.title}</div>
+                              </a>
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    </li>
+                  )
                 );
               })}
             </ul>
@@ -432,13 +434,13 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                   >
                     <path
                       stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
                       d="M8 3.464V1.1m0 2.365a5.338 5.338 0 0 1 5.133 5.368v1.8c0 2.386 1.867 2.982 1.867 4.175C15 15.4 15 16 14.462 16H1.538C1 16 1 15.4 1 14.807c0-1.193 1.867-1.789 1.867-4.175v-1.8A5.338 5.338 0 0 1 8 3.464ZM4.54 16a3.48 3.48 0 0 0 6.92 0H4.54Z"
                     />
                   </svg>
-                  <li className={cx('nav-item')}>
+                  <div className={cx('nav-item')}>
                     <Tooltip title="Account settings">
                       <IconButton
                         onClick={handleClicks}
@@ -505,7 +507,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                         Logout
                       </MenuItem>
                     </Menu>
-                  </li>
+                  </div>
                 </div>
               </div>
             )}

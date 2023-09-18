@@ -12,6 +12,7 @@ import {
 import QuizArticleCard from 'src/stories/components/QuizArticleCard';
 import Carousel from 'nuka-carousel';
 import { ArticleEnum } from '../../config/types';
+import CircleIcon from '@mui/icons-material/Circle';
 import { useContentJobTypes, useContentTypes, useJobGroups } from 'src/services/code/code.queries';
 import Banner from '../../stories/components/Banner';
 import { useStore } from 'src/store';
@@ -25,6 +26,7 @@ import Divider from '@mui/material/Divider';
 import { useSessionStore } from 'src/store/session';
 import { useDeleteLike, useSaveLike } from 'src/services/community/community.mutations';
 import { styled } from '@mui/material/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
@@ -36,17 +38,17 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
-
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css'; // css import
 import moment from 'moment';
+import { PickersDay, PickersDayProps } from '@mui/x-date-pickers/PickersDay';
+import dayjs, { Dayjs } from 'dayjs';
 
 // import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
+import Badge from '@mui/material/Badge';
 
 const studyStatus = [
   {
@@ -65,6 +67,44 @@ const studyStatus = [
 
 const cx = classNames.bind(styles);
 
+const useStyles = makeStyles(theme => ({
+  root: {
+    '& > *': {
+      margin: theme.spacing(0),
+    },
+  },
+  font1: {
+    top: '90%',
+    width: '100%',
+    right: '50%',
+  },
+}));
+
+function ServerDay(props: PickersDayProps<Dayjs> & { highlightedDays?: string[] }) {
+  const classes = useStyles();
+  const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
+  const isSelected = highlightedDays.some(item => item.date === props.day.format('YYYY-MM-DD'));
+  const count = highlightedDays.find(item => item.date === props.day.format('YYYY-MM-DD'))?.count || 0;
+
+  const dots = Array.from({ length: count }, (_, index) => (
+    <span key={index} className="tw-mr-0.5">
+      <CircleIcon className="tw-w-[6px] tw-h-[6px]" color="primary"></CircleIcon>
+    </span>
+  ));
+  return (
+    <Badge
+      classes={{
+        badge: classes.font1,
+      }}
+      key={props.day.toString()}
+      overlap="circular"
+      badgeContent={isSelected ? dots : undefined}
+    >
+      <PickersDay {...other} outsideCurrentMonth={outsideCurrentMonth} day={day} />
+    </Badge>
+  );
+}
+
 export function StudyRoomTemplate() {
   const { jobGroups, setJobGroups, contentTypes, setContentTypes } = useStore();
   const { logged } = useSessionStore.getState();
@@ -79,6 +119,7 @@ export function StudyRoomTemplate() {
   const [levelsFilter, setLevelsFilter] = useState([]);
   const [viewFilter, setViewFilter] = useState('0002');
   const [params, setParams] = useState<paramProps>({ page, viewFilter });
+  const [quizParams, setQuizParams] = useState<paramProps>({ page });
   const [contents, setContents] = useState<RecommendContent[]>([]);
   const [quizList, setQuizList] = useState<RecommendContent[]>([]);
   const [images, setSeminarImages] = useState<any[]>([]);
@@ -97,14 +138,16 @@ export function StudyRoomTemplate() {
   const currDate = new Date();
   const currDateTime = moment(currDate).format('MM-DD');
   const [open, setOpen] = React.useState(false);
-
-  const mark = ['2023-9-10', '2023-9-11', '2023-9-12'];
+  const [highlightedDays, setHighlightedDays] = React.useState([
+    { date: '2023-09-01', count: 3 },
+    { date: '2023-09-23', count: 2 },
+  ]); // 년월일 형식의 문자열로 변경
 
   const { isFetched: isContentFetched, refetch: refetch } = useStudyRoomList(params, data => {
     setContents(data.data.contents || []);
     setTotalPage(data.data.totalPages);
   });
-  const { isFetched: isQuizFetched, refetch: QuizRefetch } = useStudyQuizList(params, data => {
+  const { isFetched: isQuizFetched, refetch: QuizRefetch } = useStudyQuizList(quizParams, data => {
     setQuizList(data.data.contents || []);
     setQuizTotalPage(data.data.totalPages);
   });
@@ -129,6 +172,13 @@ export function StudyRoomTemplate() {
       viewFilter,
     });
   }, [page]);
+
+  useEffect(() => {
+    setQuizParams({
+      // ...params,
+      page: quizPage,
+    });
+  }, [quizPage]);
 
   const handleJobs = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
     console.log('job', event.currentTarget, newFormats);
@@ -157,8 +207,8 @@ export function StudyRoomTemplate() {
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
-      backgroundColor: theme.palette.common.black,
-      color: theme.palette.common.white,
+      backgroundColor: '#f9f9f9',
+      color: '#000',
     },
     [`&.${tableCellClasses.body}`]: {
       fontSize: 14,
@@ -213,9 +263,7 @@ export function StudyRoomTemplate() {
   }
 
   const StyledTableRow = styled(TableRow)(({ theme }) => ({
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
+    '&:nth-of-type(odd)': {},
     // hide last border
     '&:last-child td, &:last-child th': {
       border: 0,
@@ -387,12 +435,21 @@ export function StudyRoomTemplate() {
                   <div className="tw-bg-gray-50 tw-rounded-md tw-h-[400px] tw-p-5 tw-text-black ">
                     <div className="tw-font-bold tw-text-base tw-pb-5">나의 학습 갤린더</div>
                     <div className="tw-bg-white">
-                      <LocalizationProvider dateAdapter={AdapterDateFns}>
-                        <DateCalendar />
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DateCalendar
+                          slots={{
+                            day: ServerDay,
+                          }}
+                          slotProps={{
+                            day: {
+                              highlightedDays,
+                            } as any,
+                          }}
+                        />
                       </LocalizationProvider>
                     </div>
                   </div>
-                  <div className="tw-bg-gray-50 tw-rounded-md tw-h-[400px] tw-p-5 tw-text-black ">
+                  <div className="tw-bg-gray-50 tw-rounded-md tw-h-[430px] tw-p-5 tw-text-black ">
                     <div className="tw-font-bold tw-text-base tw-pb-5">내가 풀어야 할 퀴즈</div>
                     {/* {isQuizFetched && (
                         {quizList.map((item,i)=> (
@@ -413,12 +470,16 @@ export function StudyRoomTemplate() {
                             <div> Q. {item.quizContent}</div>
                           </div>
                           <div className="tw-col-span-1">
-                            <div className="tw-text-center tw-bg-blue-500 tw-text-white tw-text-blue-800 tw-text-xs tw-font-medium tw-px-0 tw-py-1 tw-rounded">
+                            <button
+                              onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
+                              className="tw-text-center tw-bg-blue-500 tw-text-white tw-text-blue-800 tw-text-xs tw-font-medium tw-px-3 tw-py-2 tw-rounded"
+                            >
                               GO {'>'}
-                            </div>
+                            </button>
                           </div>
                         </div>
                       ))}
+                    <Pagination showCount={5} page={quizPage} setPage={setQuizPage} total={quizTotalPage} />
                   </div>
                 </Grid>
               </Grid>
