@@ -146,7 +146,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
     setMenuOpen(true);
   };
 
-  const list = (menuItem: any) => (
+  const mobileList = (menuItem: any) => (
     <Box role="presentation">
       <div
         className="pt-3 pb-3 footer-nav-wrap text-white"
@@ -361,7 +361,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
               sx: { width: '70%' },
             }}
           >
-            {list(menuItem)}
+            {mobileList(menuItem)}
           </SwipeableDrawer>
           <div
             className={cx(

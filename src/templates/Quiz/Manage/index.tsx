@@ -43,7 +43,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
   const [contents, setContents] = useState<RecommendContent[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isModalCancelOpen, setIsModalCancelOpen] = useState<boolean>(false);
-  const [myParticipation, setMyParticipation] = useState(null);
+  const [totalElements, setTotalElements] = useState(0);
   const [restTime, setRestTime] = useState(0);
   const [clubStatus, setClubStatus] = useState('0000');
   const [applicationButton, setApplicationButton] = useState<ReactNode>(null);
@@ -60,18 +60,14 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
   // );
 
   const { data, refetch } = useClubQuizManage(id, data => {
-    // setClubStatus(data?.clubStatus);
-    // console.log(data);
-    setContents(data?.contents || []);
-    // setRestTime(moment(data?.seminarRegistrationEndDate, 'YYYY-MM-DD HH:mm:ss').diff(moment(), 'hours'));
+    setContents(data || []);
+    setTotalElements(data?.quizPage?.totalElements);
   });
 
   console.log('detail : ', data);
   const { mutate: onParticipant } = useParticipantSeminar();
   const { mutate: onCancelParticipant } = useParticipantCancelSeminar();
   const { mutate: onEncoreSeminar } = useEncoreSeminar();
-
-  let tabPannelRefs = [];
 
   const onOpenSeminarFnc = () => {
     if (logged) {
@@ -111,9 +107,41 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
             </Grid>
           </Grid>
         </div>
-        <div className="tw-text-sm tw-font-semibold">총 {contents.length} 개 등록</div>
-
-        {contents.map((item, index) => {
+        <div className="tw-flex tw-items-center">
+          <div className="tw-text-base tw-font-right tw-mr-5 tw-text-black">
+            총 {totalElements}개 중 {totalElements}개 등록
+          </div>
+          <div className="tw-p-0 tw-text-sm tw-font-normal tw-text-gray-500 ">
+            {contents?.recommendJobGroupNames?.map((name, i) => (
+              <span
+                key={i}
+                className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600"
+              >
+                {name}
+              </span>
+            ))}
+            <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
+              {contents?.recommendLevels?.sort().join(',')}레벨
+            </span>
+            {contents?.recommendJobNames?.map((name, i) => (
+              <span
+                key={i}
+                className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-100 tw-text-sm tw-font-light tw-text-gray-600"
+              >
+                {name}
+              </span>
+            ))}
+            {contents?.hashTags?.map((name, i) => (
+              <span
+                key={i}
+                className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-gray-700"
+              >
+                {name}
+              </span>
+            ))}
+          </div>
+        </div>
+        {contents?.quizPage?.contents?.map((item, index) => {
           return (
             <Grid key={index} container direction="row" justifyContent="left" alignItems="center" rowSpacing={3}>
               <Grid item xs={1}>

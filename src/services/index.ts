@@ -66,14 +66,14 @@ function createAxios(requestConfig: RequestConfig): AxiosInstance {
       if (status === 401) {
         const { update } = useSessionStore.getState();
         const userData: UserInfo = jwt_decode(process.env['NEXT_PUBLIC_GUEST_TOKEN']);
-        update({
-          logged: userData.sub !== 'Guest',
-          memberType: userData.sub,
-          memberId: userData.sub,
-          memberName: userData.nickname,
-          token: process.env['NEXT_PUBLIC_GUEST_TOKEN'],
-          roles: userData.sub !== 'Guest' ? userData.roles : [],
-        });
+        // update({
+        //   logged: userData.sub !== 'Guest',
+        //   memberType: userData.sub,
+        //   memberId: userData.sub,
+        //   memberName: userData.nickname,
+        //   token: process.env['NEXT_PUBLIC_GUEST_TOKEN'],
+        //   roles: userData.sub !== 'Guest' ? userData.roles : [],
+        // });
         // setCookie('access_token', process.env['NEXT_PUBLIC_GUEST_TOKEN']);
         // if (data.code === 'CO4007') {
         //   deleteCookie('access_token');

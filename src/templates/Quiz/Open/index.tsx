@@ -258,27 +258,14 @@ export function QuizOpenTemplate() {
     to: '23:59:00.000',
   };
   const [today, setToday] = React.useState<Dayjs | null>(dayjs());
-  const [todayEnd, setTodayEnd] = React.useState<Dayjs | null>(dayjs());
+  // const [todayEnd, setTodayEnd] = React.useState<Dayjs | null>(dayjs());
+  const [todayEnd, setTodayEnd] = useState(dayjs().add(1, 'month'));
+
   const onChangeHandleFromToStartDate = date => {
     let formattedDate = date?.format('YYYY-MM-DD');
     setToday(formattedDate);
-    console.log(formattedDate);
-    // if (!formattedDate) {
-    //   let time = timeValues[item?.dateType] || '00:00:00.000';
-    //   let datetime = `${formattedDate} ${time}`;
-    //   setSearchParams({
-    //     ...searchParams,
-    //     [item?.name]: '',
-    //   });
-    // } else {
-    //   let time = timeValues[item?.dateType] || '00:00:00.000';
-    //   let datetime = `${formattedDate} ${time}`;
-    //   setSearchParams({
-    //     ...searchParams,
-    //     [item?.name]: datetime,
-    //   });
-    // }
   };
+
   const onChangeHandleFromToEndDate = date => {
     let formattedDate = date?.format('YYYY-MM-DD');
     setTodayEnd(formattedDate);
@@ -552,35 +539,52 @@ export function QuizOpenTemplate() {
 
     // "sequence"가 71인 객체를 제외하고 새로운 배열 생성
     const filteredData = quizList.filter(item => item.sequence !== quizSequence);
-    // const filteredData = getObjectsWithSequences(quizList, [quizSequence]);
-    // const filteredDataParam = getObjectsWithSequencesParam(quizList, [quizSequence]);
     console.log('filteredData', filteredData);
-    // console.log(filteredDataParam);
+    console.log('quizListCopy', quizListCopy);
+    console.log('quizListOrigin', quizListOrigin);
 
     const resultArray1 = [];
     console.log('resultArray1 ', resultArray1);
-    quizListOrigin.map((item, index) => {
-      if (index < filteredData.length) {
-        resultArray1.push({
-          ...item,
-          // key: filteredData[index].quizSequence.toString(),
-          // test: filteredData[index].order,
-          quizSequence: filteredData[index].sequence,
-          content: filteredData[index].content,
-          memberName: filteredData[index].memberName,
-          isRepresentative: quizListCopy[index]?.isRepresentative || false,
-          order: index,
-        });
-      } else {
-        resultArray1.push(item);
+    // quizListOrigin.map((item, index) => {
+    //   console.log(' filteredData[index]', quizListCopy[index]);
+    //   if (index < quizListCopy.length) {
+    //     resultArray1.push({
+    //       ...item,
+    //       quizSequence: quizListCopy[index].sequence,
+    //       content: quizListCopy[index].content,
+    //       memberName: quizListCopy[index].memberName,
+    //       isRepresentative: quizListCopy[index]?.isRepresentative,
+    //       order: index,
+    //     });
+    //   } else {
+    //     resultArray1.push(item);
+    //   }
+    // });
+
+    // filter 메서드를 사용하여 특정 quizSequence를 가진 요소를 제거하고 키 제거
+    // map 메서드를 사용하여 targetSequence에 해당하는 요소만 수정
+    const modifiedArray = quizListCopy.map(item => {
+      if (item.quizSequence === quizSequence) {
+        const { isRepresentative, memberName, order, quizSequence, content, ...rest } = item;
+        return rest;
       }
+      return item;
     });
-    // "23"을 제외한 새로운 배열 생성
-    console.log('filteredArray1', state, quizSequence);
-    const filteredArray = state.filter(item => item !== quizSequence.toString());
+
+    console.log('modifiedArray', modifiedArray);
+
+    console.log('filteredArray1', state, quizSequence, resultArray1);
+    const filteredArray = state.filter(item => {
+      if (quizSequence !== undefined) {
+        return item !== quizSequence.toString();
+      }
+      // 만약 quizSequence가 undefined이면 여기서 필터링을 하지 않고 모든 아이템을 유지합니다.
+      return true;
+    });
+
     console.log('filteredArray2', filteredArray);
     setState(filteredArray);
-    setQuizListCopy(resultArray1);
+    setQuizListCopy(modifiedArray);
     setQuizList(filteredData);
   }
   function handleClickQuiz(quizSequence, flag) {
@@ -1442,7 +1446,7 @@ export function QuizOpenTemplate() {
                     onClick={handleAddClick}
                     className="tw-text-white tw-bg-blue-500 tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5  dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
                   >
-                    성장퀴즈 클럽 개설하기 +
+                    성장퀴즈 클럽 개설하기
                   </button>
                 </Grid>
               </Grid>
