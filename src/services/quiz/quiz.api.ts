@@ -40,8 +40,8 @@ export const quizGrowthDetail = async id => {
 };
 
 // 세미나 상세 조회
-export const quizAnswerDetail = async id => {
-  const { data } = await axiosGeneralAPI().get(`/api/v1/club/quizzes/${id}/answers`);
+export const quizAnswerDetail = async params => {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/club/quizzes/${params.id}/answers`, { params });
   return data.data;
 };
 

@@ -49,13 +49,17 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
     }
   };
   return (
-    <div className={cx('content-area', className, 'tw-bg-[#FFFAF1]')}>
+    <div
+      className={cx('content-area', className, {
+        'tw-bg-[#FFFAF1]': data?.clubStatus != '0004' && data?.clubMemberStatus != '0002', // isSpecial이 true일 때만 클래스가 적용됩니다.
+      })}
+    >
       <div className="container tw-p-4 tw-leading-normal tw-text-black tw-font-bold tw-text-xl tw-pt-10 tw-pb-10">
         {title} {'>'} {subTitle}
       </div>
-      <div className={cx('banner-container__wrap', ' tw-pb-20')}>
+      <div className={cx('banner-container__wrap', ' tw-pb-10')}>
         {/*todo url 경로에 따라 자동 셋팅 구현*/}
-        <div className="tw-w-full tw-flex tw-flex-col tw-items-center tw-bg-white tw-border tw-border-gray-200 max-lg:tw-p-5 tw-rounded-lg tw-shadow md:tw-flex-row md:tw-max-w-[1100px]">
+        <div className="tw-w-full tw-flex tw-flex-col tw-items-center tw-bg-white tw-border tw-border-gray-200 max-lg:tw-p-5 tw-rounded-lg border md:tw-flex-row md:tw-max-w-[1100px]">
           <img
             className="tw-object-cover tw-w-[340px] tw-rounded-t-lg tw-h-[340px] md:tw-h-[340px] md:tw-w-[340px] md:tw-rounded-none md:tw-rounded-l-lg"
             src={data?.clubImageUrl}
@@ -63,7 +67,7 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
           />
           <div className="tw-flex tw-w-full tw-flex-col tw-justify-between tw-px-10 tw-leading-normal">
             <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-              <Grid item xs={8}>
+              <Grid item xs={7}>
                 {data?.recommendJobGroupNames.map((name, i) => (
                   <span
                     key={i}
@@ -84,37 +88,32 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
                 {data?.recommendJobNames.map((name, i) => (
                   <span
                     key={i}
-                    className="tw-inline-flex tw-mb-2 tw-bg-red-100 tw-text-red-800 tw-text-base tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
+                    className="tw-inline-flex  tw-bg-red-100 tw-text-red-800 tw-text-base tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
                   >
                     {name}
                   </span>
                 ))}
               </Grid>
-              <Grid
-                item
-                xs={4}
-                className="tw-inline-flex tw-mb-2 "
-                justifyContent="space-between"
-                alignItems="center"
-                className="tw-flex"
-              >
-                <div className="tw-font-semibold">모집마감일 : {data?.recruitDeadlineAt.split(' ')[0]}</div>
-                <div>
-                  <button
-                    onClick={() => {
-                      onChangeLike(data?.sequence, data?.isFavorite);
-                    }}
-                  >
-                    {isLiked ? <StarIcon color="primary" /> : <StarBorderIcon color="disabled" />}
-                  </button>
-                </div>
+              <Grid item xs={4} className="tw-inline-flex  " justifyContent="flex-end" alignItems="center">
+                {data?.clubStatus !== '0004' && data?.clubMemberStatus !== '0002' && (
+                  <div className="tw-font-semibold">모집마감일 : {data?.recruitDeadlineAt.split(' ')[0]}</div>
+                )}
+              </Grid>
+              <Grid item xs={1} className="tw-inline-flex" justifyContent="flex-end" alignItems="center">
+                <button
+                  onClick={() => {
+                    onChangeLike(data?.sequence, data?.isFavorite);
+                  }}
+                >
+                  {isLiked ? <StarIcon color="primary" /> : <StarBorderIcon color="disabled" />}
+                </button>
               </Grid>
             </Grid>
 
             <div className="tw-mb-3 tw-text-sm tw-font-semibold tw-text-gray-500 dark:tw-text-gray-400"></div>
-            <h6 className="tw-mb-2 tw-text-2xl tw-font-bold tw-tracking-tight tw-text-gray-900 dark:tw-text-white">
+            <h5 className="tw-mb-2 tw-text-3xl tw-font-bold tw-tracking-tight tw-text-gray-900 dark:tw-text-white">
               {data?.name}
-            </h6>
+            </h5>
             {/* <p className="tw-line-clamp-2 tw-mb-3 tw-font-normal tw-text-gray-700 dark:tw-text-gray-400">
               {data?.description}
             </p> */}

@@ -25,6 +25,7 @@ import Grid from '@mui/material/Grid';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 import router from 'next/router';
 import { useQuizGrowthDetail } from 'src/services/quiz/quiz.queries';
+import Divider from '@mui/material/Divider';
 
 const cx = classNames.bind(styles);
 export interface QuizGrowthTemplateProps {
@@ -48,7 +49,7 @@ export function QuizGrowthTemplate({ id }: QuizGrowthTemplateProps) {
 
   // setClubMemberStatus(data?.clubMemberStatus);
   const { isFetched: isParticipantListFetched, data } = useQuizGrowthDetail(id, data => {
-    console.log(data?.description);
+    setContents(data);
   });
 
   console.log('detail : ', data);
@@ -77,7 +78,67 @@ export function QuizGrowthTemplate({ id }: QuizGrowthTemplateProps) {
             <Grid item xs={3} justifyContent="flex-end" className="tw-flex"></Grid>
           </Grid>
         </div>
-        <div className="tw-text-center tw-p-54">ㅇㅇ</div>
+        <Divider className="tw-mt-8 tw-border tw-bg-['#efefef']" />
+        <div className="tw-text-center tw-pt-40">
+          <div className="tw-font-bold tw-text-2xl tw-text-black">오늘퀴즈로 이만큼이나 성장하셨네요!</div>
+          <div className="progress-title tw-mx-[300px] tw-mt-10">
+            <h6>
+              퀴즈 진행률
+              <span className="float-right">
+                <span className="progress-number">{parseInt(contents?.progressPercentage)}%</span>
+              </span>
+            </h6>
+          </div>
+          <div className="mt-3 tw-mx-[300px] tw-mt-20">
+            <div className="progress-item">
+              <div className="progress p-0">
+                <span style={{ width: `${parseInt(contents?.progressPercentage)}%` }}>
+                  <span className="progress-line"></span>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div className="tw-grid tw-grid-cols-8 tw-gap-4 tw-mt-20 tw-text-sm tw-font-bold tw-text-black">
+            <div className="tw-col-span-2"></div>
+            <div className="tw-col-span-2 border tw-rounded-sm tw-py-3">
+              <div className="tw-grid tw-grid-cols-2">
+                <div className="tw-col-span-1">푼 퀴즈</div>
+                <div className="tw-col-span-1">{contents?.completedQuizCount}</div>
+              </div>
+            </div>
+            <div className="tw-col-span-2  border tw-rounded-sm tw-py-3">
+              {' '}
+              <div className="tw-grid tw-grid-cols-2">
+                <div className="tw-col-span-1">총 퀴즈</div>
+                <div className="tw-col-span-1">{contents?.totalQuizCount}</div>
+              </div>
+            </div>
+            <div className="tw-col-span-2"></div>
+          </div>
+          <div className="tw-grid tw-grid-cols-8 tw-gap-4 tw-mt-5 tw-text-sm tw-font-bold tw-text-black">
+            <div className="tw-col-span-2"></div>
+            <div className="tw-col-span-2 border tw-rounded-sm tw-py-3">
+              <div className="tw-grid tw-grid-cols-2">
+                <div className="tw-col-span-1">획득 경험치</div>
+                <div className="tw-col-span-1">+{contents?.increaseExperiencePoints}</div>
+              </div>
+            </div>
+            <div className=" tw-col-span-2 border tw-rounded-sm tw-py-3 ">
+              <div className="tw-grid tw-grid-cols-2 ">
+                <div className="tw-col-span-1">획득 배지</div>
+                <div className="tw-col-span-1">+{contents?.achievedBadgeCount}</div>
+              </div>
+            </div>
+            <div className="tw-col-span-2"></div>
+          </div>
+
+          <button
+            onClick={() => (location.href = '/quiz/' + `${id}`)}
+            className="tw-mt-20 tw-bg-blue-500 tw-text-white tw-text-base tw-font-bold tw-mr-2 tw-px-16 tw-py-3 tw-rounded"
+          >
+            퀴즈 답변 확인하기
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -5,7 +5,7 @@ import BannerDetail from 'src/stories/components/BannerDetail';
 import { jobColorKey } from 'src/config/colors';
 import Chip from 'src/stories/components/Chip';
 import { useStore } from 'src/store';
-import { Button, Typography, Profile, Modal, ArticleCard, Pagination } from 'src/stories/components';
+import { Button, CommunityCard } from 'src/stories/components';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import { useMySeminarList, useSeminarDetail, useSeminarList } from 'src/services/seminars/seminars.queries';
@@ -28,17 +28,19 @@ import { useClubDetailQuizList, useQuizAnswerDetail, useQuizSolutionDetail } fro
 import Divider from '@mui/material/Divider';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
+import TextField from '@mui/material/TextField';
+import SearchIcon from '@mui/icons-material/Search';
+
+/** import icon */
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
-import TextField from '@mui/material/TextField';
-import SearchIcon from '@mui/icons-material/Search';
-// import { Item } from '@shopify/polaris/build/ts/src/components/ActionList/components';
-// import ReactMarkdown from 'react-markdown';
-// import remarkGfm from 'remark-gfm';
 
-// import { remark } from 'remark';
-// import html from 'remark-html';
+/** import pagenation */
+import Pagination from '@mui/material/Pagination';
+import PaginationItem from '@mui/material/PaginationItem';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 const cx = classNames.bind(styles);
 export interface QuizAnswersDetailTemplateProps {
@@ -70,17 +72,11 @@ export function QuizAnswersDetailTemplate({ id }: QuizAnswersDetailTemplateProps
   const { isFetched: isParticipantListFetched, data } = useQuizSolutionDetail(id, data => {
     setContents(data);
   });
-  const { isFetched: isQuizAnswerListFetched } = useQuizAnswerDetail(id, data => {
-    setAnswerContents(data);
+  const { isFetched: isQuizAnswerListFetched } = useQuizAnswerDetail(params, data => {
+    console.log(data);
+    setAnswerContents(data?.contents);
+    setTotalPage(data?.totalPages);
   });
-
-  // const { isFetched: isParticipantListFetched, data } = useSeminarDetail(id, data => {
-  //   setClubMemberStatus(data?.clubMemberStatus);
-  // });
-  // const { isFetched: isQuizListFetched } = useClubDetailQuizList(params, data => {
-  //   setQuizList(data?.contents);
-  //   setTotalPage(data?.totalPages);
-  // });
 
   const { mutate: onParticipant } = useParticipantSeminar();
   const { mutate: onCancelParticipant } = useParticipantCancelSeminar();
@@ -88,56 +84,8 @@ export function QuizAnswersDetailTemplate({ id }: QuizAnswersDetailTemplateProps
 
   let tabPannelRefs = [];
 
-  const onOpenSeminarFnc = () => {
-    if (logged) {
-      if (confirm('세미나 앵콜 신청을 하시겠습니까?')) {
-        onEncoreSeminar({
-          seminarId: id,
-          memberId: memberId,
-          mentorId: data?.seminarLecturer?.memberId,
-        });
-      }
-    } else {
-      alert('로그인 세미나 앵콜 신청을 할 수 있습니다.');
-    }
-  };
-
-  // REQUESTED("0001") -> 가입 요청
-  // CONFIRMED("0002") -> 가입 승인
-  // REJECTED("0003") -> 가입 거절
-  // BANNED("0004") -> 강퇴
-  // DELETED("0005") -> 삭제 (안보임)
-  // NONE("0006") -> 클럽과 관계없음 (가입전)
-
-  // TEMPORARY("0001") -> 임시저장상태
-  // REQUESTED("0002") -> 개설요청 대기중
-  // PENDING("0003") -> 개설 후 모집기간 전 (아직 이 상태는 안쓰고요)
-  // IN_PROGRESS("0004") -> 스터디진행중
-  // COMPLETE("0005") -> 스터디 완료
-  // RECRUITING("0006") -> 모집중
-  // RECRUITMENT_ENDED("0007") -> 모집완료, 시작전
-  // REJECTED("0008") -> 개설 거절
-  // APPROVAL_EXPIRED("0009") -> 개설 승인 유효기간 종료
-  // DELETED("0010") -> 삭제 (안보임)
-
-  const handleParticipant = () => {
-    console.log('club join');
-    if (!logged) {
-      alert('로그인이 필요합니다.');
-      return;
-    }
-
-    // if (!user?.phoneNumber || user?.phoneNumber?.length === 0) {
-    //   alert('마이커리어>회원정보에 휴대전화 등록 후 신청 가능 합니다.');
-    //   return;
-    // }
-
-    onParticipant({ clubSequence: id });
-    setClubMemberStatus('0001');
-
-    //setIsModalOpen(false);
-    //setIsModalCancelOpen(false);
-    // setApplicationButton(<Button color="lite-gray" label="승인 대기 중" size="large" />);
+  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
   };
 
   const handleCancelParticipant = () => {
@@ -277,10 +225,10 @@ export function QuizAnswersDetailTemplate({ id }: QuizAnswersDetailTemplateProps
           columnSpacing={{ xs: 1, sm: 2, md: 3 }}
         >
           <Grid item xs={8}>
-            <div className="tw-bg-gray-50 tw-rounded-lg tw-p-7 tw-text-black ">
-              <div className="tw-flex tw-items-center tw-space-x-4 tw-my-5">
+            <div className="tw-bg-gray-50 tw-rounded-lg tw-px-8 tw-py-5 tw-text-black ">
+              <div className="tw-flex tw-items-center tw-space-x-4 tw-my-2">
                 <img
-                  className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full"
+                  className="tw-w-12 tw-h-12 tw-ring-1 tw-rounded-full"
                   src={contents?.clubLeaderProfileImageUrl}
                   alt=""
                 />
@@ -288,11 +236,9 @@ export function QuizAnswersDetailTemplate({ id }: QuizAnswersDetailTemplateProps
                   <div>{contents?.clubLeaderNickname}</div>
                 </div>
               </div>
-              <div className="tw-text-center tw-space-x-4 tw-my-5">
-                <div className="tw-text-sm tw-font-semibold tw-text-black">
-                  <div>
-                    Q{contents?.order}. {contents?.weekNumber}주차 {contents?.studyDay}요일
-                  </div>
+              <div className="tw-text-center tw-space-x-4 tw-my-3">
+                <div className="tw-text-base tw-font-semibold tw-text-gray-600">
+                  Q{contents?.order}. {contents?.weekNumber}주차 {contents?.studyDay}요일
                 </div>
               </div>
               <div className="tw-text-center">
@@ -307,10 +253,10 @@ export function QuizAnswersDetailTemplate({ id }: QuizAnswersDetailTemplateProps
                 )}
                 <span className="tw-font-bold tw-text-xl tw-text-black">{contents?.content}</span>
               </div>
-              <div className="tw-text-center tw-py-3">
+              <div className="tw-text-center tw-pt-2">
                 <span className="tw-font-right tw-text-base tw-text-gray-400">#123 #1231</span>
               </div>
-              <div className="tw-text-left tw-py-3 tw-flex tw-items-center tw-gap-4">
+              <div className="tw-text-left tw-pt-3 tw-flex tw-items-center tw-gap-4">
                 <span>
                   <AssignmentOutlinedIcon className="tw-mr-1 tw-w-5" />
                   {contents?.activeCount}
@@ -326,7 +272,7 @@ export function QuizAnswersDetailTemplate({ id }: QuizAnswersDetailTemplateProps
               </div>
             </div>
             <div>
-              <div className="tw-grid tw-grid-cols-5 tw-gap-4 tw-py-4 tw-mt-5">
+              <div className="tw-grid tw-grid-cols-5 tw-gap-4 tw-pt-4 tw-mt-5">
                 <div className="tw-col-span-3">
                   <div className="tw-text-black tw-font-bold tw-text-2xl">퀴즈답변</div>
                 </div>
@@ -347,6 +293,22 @@ export function QuizAnswersDetailTemplate({ id }: QuizAnswersDetailTemplateProps
                     }}
                   />
                 </div>
+              </div>
+              {answerContents.map((item, index) => {
+                return (
+                  <CommunityCard
+                    key={index}
+                    board={item}
+                    // writer={memberSample}
+                    className={cx('reply-container__item')}
+                    // memberId={memberId}
+                    // onPostDeleteSubmit={onPostDeleteSubmit}
+                  />
+                );
+              })}
+
+              <div className="tw-flex tw-justify-center tw-mt-10">
+                <Pagination count={totalPage} page={page} onChange={handlePageChange} />
               </div>
             </div>
           </Grid>

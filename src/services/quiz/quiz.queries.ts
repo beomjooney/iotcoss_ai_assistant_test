@@ -45,15 +45,20 @@ export const useQuizGrowthDetail = (id, onSuccess?: (data: any) => void, onError
   });
 };
 
-export const useQuizAnswerDetail = (id, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
+export const useQuizAnswerDetail = (params, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
   // return useQuery<SeminarContent, Error>(QUERY_KEY_FACTORY('SEMINAR').detail(id), () => seminarDetail(id), {
   // TODO : 수정 해주세요. 타입에러 나요. -> 세미나 상세 Profile 컴포넌트에 셋 할때 발생
-  return useQuery<any, Error>(QUERY_KEY_FACTORY('QUIZ').detail(id), () => quizAnswerDetail(id), {
-    onSuccess,
-    onError,
-    refetchOnWindowFocus: true,
-    enabled: !!id,
-  });
+  const DEFAULT_SIZE = 10;
+  return useQuery<any, Error>(
+    QUERY_KEY_FACTORY('QUIZ').detail({ size: DEFAULT_SIZE, ...params }),
+    () => quizAnswerDetail({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: true,
+      enabled: true,
+    },
+  );
 };
 
 export const useClubDetailQuizList = (params, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {

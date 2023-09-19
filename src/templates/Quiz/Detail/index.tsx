@@ -5,7 +5,7 @@ import BannerDetail from 'src/stories/components/BannerDetail';
 import { jobColorKey } from 'src/config/colors';
 import Chip from 'src/stories/components/Chip';
 import { useStore } from 'src/store';
-import { Button, Typography, Profile, Modal, ArticleCard, Pagination } from 'src/stories/components';
+import { Button, Typography, Profile, Modal, ArticleCard } from 'src/stories/components';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import { useMySeminarList, useSeminarDetail, useSeminarList } from 'src/services/seminars/seminars.queries';
@@ -30,12 +30,15 @@ import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import { useQuizDeleteLike, useQuizLike, useSaveLike } from 'src/services/community/community.mutations';
 
-// import { Item } from '@shopify/polaris/build/ts/src/components/ActionList/components';
-// import ReactMarkdown from 'react-markdown';
-// import remarkGfm from 'remark-gfm';
+/** rc progress */
+import { Line, Circle } from 'rc-progress';
 
-// import { remark } from 'remark';
-// import html from 'remark-html';
+/** import pagenation */
+import Pagination from '@mui/material/Pagination';
+import PaginationItem from '@mui/material/PaginationItem';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import Stack from '@mui/material/Stack';
 
 const cx = classNames.bind(styles);
 export interface QuizDetailTemplateProps {
@@ -60,29 +63,32 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
   const [contentHtml, setContentHtml] = useState('');
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
+  const [totalElements, setTotalElements] = useState(0);
   const [params, setParams] = useState<paramProps>({ id, page });
   let [isLiked, setIsLiked] = useState(false);
 
-  const { isFetched: isParticipantListFetched, data } = useSeminarDetail(id, data => {
+  const { isFetched: isParticipantListFetched, isLoading } = useSeminarDetail(id, data => {
     setClubMemberStatus(data?.clubMemberStatus);
+    console.log(data);
+    setContents(data);
   });
-  const { isFetched: isQuizListFetched } = useClubDetailQuizList(params, data => {
+  const { isFetched: isQuizListFetched, refetch } = useClubDetailQuizList(params, data => {
     setQuizList(data?.contents);
     setTotalPage(data?.totalPages);
+    setTotalElements(data?.totalElements);
   });
 
   const { mutate: onParticipant } = useParticipantSeminar();
-  const { mutate: onCancelParticipant } = useParticipantCancelSeminar();
-  const { mutate: onEncoreSeminar } = useEncoreSeminar();
-  const { mutate: onSaveLike, isSuccess } = useQuizLike();
-  const { mutate: onDeleteLike } = useQuizDeleteLike();
+  const { mutate: onSaveLike, isSuccess: isSuccessLike } = useQuizLike();
+  const { mutate: onDeleteLike, isSuccess: isSuccessDelete } = useQuizDeleteLike();
 
   let tabPannelRefs = [];
 
-  const onChangeLike = function (postNo: number) {
+  const onChangeLike = function (postNo: number, isLikes: boolean) {
+    console.log(postNo, isLikes);
     if (logged) {
-      setIsLiked(!isLiked);
-      if (isLiked) {
+      setIsLiked(!isLikes);
+      if (isLikes) {
         onDeleteLike(postNo);
       } else {
         onSaveLike(postNo);
@@ -116,37 +122,8 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
       alert('로그인이 필요합니다.');
       return;
     }
-
-    // if (!user?.phoneNumber || user?.phoneNumber?.length === 0) {
-    //   alert('마이커리어>회원정보에 휴대전화 등록 후 신청 가능 합니다.');
-    //   return;
-    // }
-
     onParticipant({ clubSequence: id });
     setClubMemberStatus('0001');
-
-    //setIsModalOpen(false);
-    //setIsModalCancelOpen(false);
-    // setApplicationButton(<Button color="lite-gray" label="승인 대기 중" size="large" />);
-  };
-
-  const handleCancelParticipant = () => {
-    if (!logged) {
-      alert('로그인이 필요합니다.');
-      return;
-    }
-
-    if (!user?.phoneNumber || user?.phoneNumber?.length === 0) {
-      alert('마이커리어>회원정보에 휴대전화 등록 후 취소 가능 합니다.');
-      return;
-    }
-
-    onCancelParticipant({ seminarId: id, memberId });
-    setIsModalOpen(false);
-    setIsModalCancelOpen(false);
-    setApplicationButton(
-      <Button label="멘토 세미나 참여 신청하기" size="large" onClick={() => setIsModalOpen(true)} />,
-    );
   };
 
   const handleClickTab = index => {
@@ -191,7 +168,11 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
 
   const handlerTodayQuizSolution = () => {
     const firstItemWithNullAnswer = quizList.find(item => item.answer === null);
-    router.push('/quiz/solution/' + `${firstItemWithNullAnswer.clubQuizSequence}`);
+    router.push('/quiz/solution/' + `${firstItemWithNullAnswer?.clubQuizSequence}`);
+  };
+
+  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
   };
 
   useEffect(() => {
@@ -203,324 +184,399 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
   }, [page]);
 
   useEffect(() => {
+    refetch();
+  }, [isSuccessLike, isSuccessDelete]);
+
+  useEffect(() => {
     if (!logged) {
       setApplicationButton(<Button label="로그인 후 신청 가능합니다" color="lite-gray" size="large" />);
     } else if (isParticipantListFetched) {
-      console.log(1111, data?.clubStatus, clubMemberStatus);
+      console.log(1111, contents?.clubStatus, clubMemberStatus);
 
-      if (data?.isLeader && data?.clubStatus == '0007') {
+      if (contents?.isLeader && contents?.clubStatus == '0007') {
         setApplicationButton(
           <button
             // disabled
             type="button"
-            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
+            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
           >
-            모집 완료 ({data?.startAt}) 퀴즈클럽 시작
+            모집 완료 ({contents?.startAt}) 퀴즈클럽 시작
           </button>,
         );
-      } else if (data?.isLeader && data?.clubStatus == '0004') {
-        setApplicationButton(
-          <button
-            type="button"
-            onClick={handlerTodaySolution}
-            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
-          >
-            오늘의 퀴즈 풀기
-          </button>,
-        );
-      } else if (data?.clubStatus == '0006' && clubMemberStatus == '0006') {
-        setApplicationButton(
-          <button
-            type="button"
-            onClick={() => handleParticipant()}
-            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
-          >
-            참여하기
-          </button>,
-        );
-      } else if (data?.clubStatus == '0006' && clubMemberStatus == '0001') {
-        setApplicationButton(
-          <button
-            type="button"
-            disabled
-            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
-          >
-            가입요청 승인중
-          </button>,
-        );
-      } else if (data?.clubStatus == '0006' && clubMemberStatus == '0002') {
-        setApplicationButton(
-          <button
-            type="button"
-            disabled
-            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
-          >
-            가입승인 완료
-          </button>,
-        );
-      } else if (data?.clubStatus == '0006' && clubMemberStatus == '0003') {
-        setApplicationButton(
-          <button
-            type="button"
-            disabled
-            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
-          >
-            진행불가
-          </button>,
-        );
-      } else if (data?.clubStatus == '0006' && clubMemberStatus == '0004') {
-        setApplicationButton(
-          <button
-            type="button"
-            disabled
-            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
-          >
-            모집완료
-          </button>,
-        );
-      } else if (data?.clubStatus == '0007') {
-        setApplicationButton(
-          <button
-            type="button"
-            disabled
-            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
-          >
-            모집완료
-          </button>,
-        );
-      } else if (data?.clubStatus == '0004' && clubMemberStatus == '0002') {
+      } else if (contents?.isLeader && contents?.clubStatus == '0004') {
         setApplicationButton(
           <button
             type="button"
             onClick={handlerTodayQuizSolution}
-            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
+            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
           >
             오늘의 퀴즈 풀기
           </button>,
         );
-      } else if (data?.clubStatus == '0004' && clubMemberStatus == '0006') {
+      } else if (contents?.clubStatus == '0006' && clubMemberStatus == '0006') {
+        setApplicationButton(
+          <button
+            type="button"
+            onClick={() => handleParticipant()}
+            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
+          >
+            참여하기
+          </button>,
+        );
+      } else if (contents?.clubStatus == '0006' && clubMemberStatus == '0001') {
+        setApplicationButton(
+          <button
+            type="button"
+            disabled
+            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
+          >
+            가입요청 승인중
+          </button>,
+        );
+      } else if (contents?.clubStatus == '0006' && clubMemberStatus == '0002') {
+        setApplicationButton(
+          <button
+            type="button"
+            disabled
+            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
+          >
+            가입승인 완료
+          </button>,
+        );
+      } else if (contents?.clubStatus == '0006' && clubMemberStatus == '0003') {
+        setApplicationButton(
+          <button
+            type="button"
+            disabled
+            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
+          >
+            진행불가
+          </button>,
+        );
+      } else if (contents?.clubStatus == '0006' && clubMemberStatus == '0004') {
+        setApplicationButton(
+          <button
+            type="button"
+            disabled
+            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
+          >
+            모집완료
+          </button>,
+        );
+      } else if (contents?.clubStatus == '0007') {
+        setApplicationButton(
+          <button
+            type="button"
+            disabled
+            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
+          >
+            모집완료
+          </button>,
+        );
+      } else if (contents?.clubStatus == '0004' && clubMemberStatus == '0002') {
+        setApplicationButton(
+          <button
+            type="button"
+            onClick={handlerTodayQuizSolution}
+            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
+          >
+            오늘의 퀴즈 풀기
+          </button>,
+        );
+      } else if (contents?.clubStatus == '0004' && clubMemberStatus == '0006') {
         setApplicationButton(
           <button
             disabled
             type="button"
-            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
+            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
           >
             진행중 참여 불가
           </button>,
         );
-      } else if (data?.clubStatus == '0005') {
+      } else if (contents?.clubStatus == '0005') {
         setApplicationButton(
           <button
             type="button"
             disabled
-            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-base tw-px-5 tw-py-5 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
+            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
           >
             진행 종료
           </button>,
         );
       }
     }
-  }, [logged, data, clubMemberStatus]);
+  }, [logged, contents, clubMemberStatus]);
   return (
     <div className={cx('seminar-detail-container')}>
-      <BannerDetail data={data} title="퀴즈클럽" subTitle="클럽 상세보기" imageName="top_banner_seminar.svg" />
-      <div className={cx('container')}>
-        {/*바로 밑에 자식만 sticky 적용됨*/}
-        <div className={cx('content-wrap')}>
-          {data?.clubStatus == '0004' && clubMemberStatus == '0002' ? (
-            <div className={cx('content')}>
-              <div className="tw-grid tw-grid-cols-2 tw-gap-4 tw-p-10">
-                <div className="...">
-                  <div>나의 실행율 : {data?.myRunRate}</div>
-                  <div>
-                    나의 실행율 : {data?.myStudyCount} /{data?.studyTotalCount}
-                  </div>
-                </div>
-                <div className="...">
-                  <div>평균 실행율 : {data?.membersAvgRunRate}</div>
-                  <div>
-                    나의 실행율 : {data?.membersAvgStudyCount}/ {data?.studyTotalCount}
+      {isParticipantListFetched &&
+        (contents?.clubStatus == '0004' && contents?.clubMemberStatus == '0002' ? (
+          <div>
+            <BannerDetail
+              data={contents}
+              title="퀴즈클럽"
+              subTitle="클럽 상세보기"
+              imageName="top_banner_seminar.svg"
+            />
+            {/*바로 밑에 자식만 sticky 적용됨*/}
+            <div className={cx('content-wrap')}>
+              <div className="tw-bg-[#F2F9FF]">
+                <div className={cx('container')}>
+                  <div className="tw-leading-normal tw-text-black tw-font-bold tw-text-xl tw-pt-10">실행율</div>
+                  <div className="tw-grid tw-grid-cols-4 tw-gap-4 tw-pb-5 tw-font-bold tw-text-black">
+                    <div className="tw-span-cols-1"></div>
+                    <div className="tw-span-cols-1 tw-text-center">
+                      <div className="tw-text-center tw-flex tw-justify-center tw-items-center">
+                        <Circle
+                          className="tw-h-[150px] tw-mb-5 "
+                          trailWidth={8}
+                          trailColor="#DADADA"
+                          percent={contents?.progress?.myRunRate}
+                          strokeWidth={8}
+                          strokeColor="#2474ED"
+                        />
+                      </div>
+                      <div className="tw-mt-5">
+                        나의 실행률{' '}
+                        <span className="tw-font-bold tw-text-blue-500">{parseInt(contents?.progress?.myRunRate)}</span>
+                        %
+                      </div>
+                      <div>
+                        <span className="tw-font-bold tw-text-blue-500">{contents?.progress?.myStudyCount}</span>회 /{' '}
+                        <span className="tw-font-bold tw-text-gray-400">{contents?.studyTotalCount}회</span>
+                      </div>
+                    </div>
+                    <div className="tw-span-cols-1 tw-text-center">
+                      <div className="tw-text-center tw-flex tw-justify-center tw-items-center">
+                        <Circle
+                          className="tw-h-[150px] tw-mb-5"
+                          trailWidth={8}
+                          trailColor="#DADADA"
+                          percent={contents?.progress?.myRunRate}
+                          strokeWidth={8}
+                          strokeColor="#9A9A9A"
+                        />
+                      </div>
+                      <div className="tw-mt-5">
+                        평균 실행률 :{' '}
+                        <span className="tw-font-bold tw-text-gray-400">
+                          {parseInt(contents?.progress?.averageRunRate)}
+                        </span>
+                        %
+                      </div>
+                      <div>
+                        {contents?.progress?.averageStudyCount}회 /
+                        <span className="tw-font-bold tw-text-gray-400">{contents?.studyTotalCount}회</span>
+                      </div>
+                    </div>
+                    <div className="tw-span-cols-1"></div>
                   </div>
                 </div>
               </div>
-              <Grid container direction="row" justifyContent="space-between" alignItems="center" rowSpacing={3}>
-                <Grid item xs={10} className="tw-text-lg tw-text-black tw-font-bold">
-                  퀴즈목록 {quizList?.length}
+              <div className={cx('container', 'tw-mt-10')}>
+                <Grid container direction="row" alignItems="center" rowSpacing={0}>
+                  <Grid container justifyContent="flex-start" xs={10} className="tw-text-xl tw-text-black tw-font-bold">
+                    퀴즈목록 {totalElements}
+                  </Grid>
+                  <Grid container justifyContent="flex-end" xs={2} style={{ textAlign: 'right' }}>
+                    {/* <Pagination page={page} setPage={setPage} total={totalPage} /> */}
+                    <Pagination
+                      count={totalPage}
+                      size="small"
+                      siblingCount={0}
+                      page={page}
+                      renderItem={item => (
+                        <PaginationItem slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }} {...item} />
+                      )}
+                      onChange={handlePageChange}
+                    />
+                  </Grid>
                 </Grid>
-                <Grid item xs={2} style={{ textAlign: 'right' }}>
-                  <Pagination page={page} setPage={setPage} total={totalPage} />
-                </Grid>
-              </Grid>
-              <Divider className="tw-my-5 tw-border tw-bg-['#efefef']" />
-              {quizList.map((item, index) => {
-                return (
-                  <Grid
-                    className="tw-mb-5"
-                    key={index}
-                    container
-                    direction="row"
-                    justifyContent="left"
-                    alignItems="center"
-                    rowSpacing={3}
-                  >
-                    <Grid item xs={1}>
-                      <div className="tw-flex-auto tw-text-center tw-text-black tw-font-bold">Q{index + 1}.</div>
-                      <div className="tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold">
-                        {item?.weekNumber} 주차 ({item?.dayOfWeek})
-                      </div>
-                    </Grid>
-                    <Grid item xs={11}>
-                      <div
-                        className={`tw-bg-zinc-50 tw-flex tw-items-center tw-p-4  tw-py-6  ${
-                          item?.answer ? 'tw-rounded-tl-xl tw-rounded-tr-xl' : 'tw-rounded-xl'
-                        }`}
-                      >
-                        {item?.isRepresentative === true && (
-                          <button
-                            type="button"
-                            data-tooltip-target="tooltip-default"
-                            className="tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-bold tw-mr-2 tw-px-3 tw-py-1 tw-rounded"
-                          >
-                            대표
-                          </button>
-                        )}
-                        <div className="tw-flex-auto">
-                          <div className="tw-font-medium tw-text-black">{item?.content}</div>
+                <Divider className="tw-my-5 tw-border tw-bg-['#efefef']" />
+                {quizList.map((item, index) => {
+                  return (
+                    <Grid
+                      className="tw-mb-5"
+                      key={index}
+                      container
+                      direction="row"
+                      justifyContent="left"
+                      alignItems="center"
+                      rowSpacing={3}
+                    >
+                      <Grid item xs={1}>
+                        <div className="tw-flex-auto tw-text-center tw-text-black tw-font-bold">Q{index + 1}.</div>
+                        <div className="tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold">
+                          {item?.weekNumber}주차 ({item?.dayOfWeek})
                         </div>
-
-                        <div className="tw-mr-5">
-                          <button
-                            onClick={() => {
-                              onChangeLike(item?.clubQuizSequence);
-                            }}
-                          >
-                            {data?.isLiked ? (
-                              <ThumbUpAltIcon color="primary" />
-                            ) : (
-                              <ThumbUpOffAltIcon color="disabled" />
-                            )}
-                          </button>
-                        </div>
-                        {item?.answer ? (
-                          <div className="">
+                      </Grid>
+                      <Grid item xs={11}>
+                        <div
+                          className={`tw-bg-zinc-50 tw-flex tw-items-center tw-p-4  tw-py-6  ${
+                            item?.answer ? 'tw-rounded-tl-xl tw-rounded-tr-xl' : 'tw-rounded-xl'
+                          }`}
+                        >
+                          {item?.isRepresentative === true && (
                             <button
                               type="button"
-                              onClick={() => router.push('/quiz/answers/' + `${item?.clubQuizSequence}`)}
                               data-tooltip-target="tooltip-default"
-                              className="tw-bg-red-300 tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                              className="tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-bold tw-mr-2 tw-px-3 tw-py-1 tw-rounded"
                             >
-                              전체 답변보기 {'>'}
+                              대표
                             </button>
-                          </div>
-                        ) : (
-                          <div className="">
-                            <button
-                              onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
-                              type="button"
-                              data-tooltip-target="tooltip-default"
-                              className="tw-bg-blue-500 tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
-                            >
-                              퀴즈 풀러가기 {'>'}
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                      {item?.answer ? (
-                        <div className="tw-bg-white tw-flex tw-items-center tw-p-4 border  tw-py-6 tw-rounded-bl-xl tw-rounded-br-xl">
+                          )}
                           <div className="tw-flex-auto">
-                            <div className="tw-font-medium tw-text-gray-500 tw-text-sm">{item?.answer?.text}</div>
+                            <div className="tw-font-medium tw-text-black">{item?.content}</div>
                           </div>
-                          <div className="">
-                            <div className="tw-font-medium tw-text-black">
+
+                          <div className="tw-mr-5">
+                            <button
+                              onClick={() => {
+                                onChangeLike(item?.clubQuizSequence, item?.isLiked);
+                              }}
+                            >
+                              {item?.isLiked ? (
+                                <ThumbUpAltIcon color="primary" />
+                              ) : (
+                                <ThumbUpOffAltIcon color="disabled" />
+                              )}
+                            </button>
+                          </div>
+                          {item?.answer ? (
+                            <div className="">
                               <button
-                                onClick={() => router.push('/quiz/answers/' + `${item?.clubQuizSequence}`)}
                                 type="button"
+                                onClick={() => router.push('/quiz/answers/' + `${item?.clubQuizSequence}`)}
                                 data-tooltip-target="tooltip-default"
-                                className="tw-bg-white tw-text-gray-500 tw-text-sm tw-font-right tw-px-3 tw-py-1 tw-rounded"
+                                className="tw-bg-red-300 tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
                               >
-                                자세히보기
+                                전체 답변보기 {'>'}
                               </button>
                             </div>
-                          </div>
+                          ) : (
+                            <div className="">
+                              <button
+                                onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
+                                type="button"
+                                data-tooltip-target="tooltip-default"
+                                className="tw-bg-blue-500 tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                              >
+                                퀴즈 풀러가기 {'>'}
+                              </button>
+                            </div>
+                          )}
                         </div>
-                      ) : (
-                        <div></div>
-                      )}
+                        {item?.answer ? (
+                          <div className="tw-bg-white tw-flex tw-items-center tw-p-4 border  tw-py-6 tw-rounded-bl-xl tw-rounded-br-xl">
+                            <div className="tw-flex-auto">
+                              <div className="tw-font-medium tw-text-gray-500 tw-text-sm">{item?.answer?.text}</div>
+                            </div>
+                            <div className="">
+                              <div className="tw-font-medium tw-text-black">
+                                <button
+                                  onClick={() => router.push('/quiz/answers/' + `${item?.clubQuizSequence}`)}
+                                  type="button"
+                                  data-tooltip-target="tooltip-default"
+                                  className="tw-bg-white tw-text-gray-500 tw-text-sm tw-font-right tw-px-3 tw-py-1 tw-rounded"
+                                >
+                                  자세히보기
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <div></div>
+                        )}
+                      </Grid>
                     </Grid>
-                  </Grid>
-                );
-                // <ArticleCard uiType={item.contentsType} content={item} key={i} className={cx('container__item')} />
-              })}
-            </div>
-          ) : (
-            <div className={cx('content')}>
-              {data?.imageUrl3 && (
-                <Image
-                  src={`${process.env['NEXT_PUBLIC_GENERAL_IMAGE_URL']}/images/${data?.imageUrl3}`}
-                  alt={`${data?.seminarTitle}`}
-                  layout="responsive"
-                  width="736"
-                  height="420"
-                  objectFit="fill"
-                  unoptimized={true}
-                />
-              )}
-              <Tabs
-                value={value}
-                onChange={handleChange}
-                aria-label="basic tabs example"
-                className={cx('tabs', 'sticky')}
-              >
-                <Tab label="퀴즈클럽 소개" {...a11yProps(0)} onClick={() => handleClickTab(0)} />
-                <Tab label="크루활동" {...a11yProps(1)} onClick={() => handleClickTab(1)} />
-              </Tabs>
-              {/* <article> */}
-              <TabPanel value={value} index={0} className="tw-p-5">
-                <div className="tw-flex tw-items-center tw-space-x-4 tw-my-5">
-                  <img className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full" src={data?.leaderProfileImageUrl} alt="" />
-                  <div className="tw-text-base tw-font-semibold tw-text-black dark:tw-text-white">
-                    <div>{data?.leaderNickname}</div>
-                  </div>
-                </div>
-
-                <div className="tw-text-xl tw-mb-10 tw-font-bold tw-text-black dark:tw-text-gray-400">
-                  퀴즈클럽 소개
-                </div>
-                <div className="tw-text-base tw-mb-10 tw-font-normal tw-text-black dark:tw-text-gray-400">
-                  {/* <ReactMarkdown children={value1} remarkPlugins={[remarkGfm]} /> */}
-                  <div dangerouslySetInnerHTML={{ __html: data?.description }} />
-                </div>
-
-                <div className="tw-text-xl tw-mb-10 tw-font-bold tw-text-black dark:tw-text-gray-400">
-                  퀴즈클럽 질문 미리보기
-                </div>
-
-                <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-400 dark:tw-text-gray-400">
-                  {data?.studyWeekCount}주 총 학습 {data?.studyTotalCount}회 진행
-                </div>
-
-                {data?.clubQuizzes.map((item, index) => {
-                  if (item?.isRepresentative === true) {
-                    return (
-                      <div key={index} className="">
-                        <div className="tw-flex tw-items-center tw-px-0 tw-border mb-2 mt-0 rounded">
-                          <span className="tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded">
-                            대표 {index + 1}
-                          </span>
-                          <div className="tw-flex-auto tw-ml-3">
-                            <div className="tw-font-medium tw-text-black">{item.content}</div>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  } else {
-                    // 다른 경우에는 렌더링하지 않음
-                    return null;
-                  }
+                  );
+                  // <ArticleCard uiType={item.contentsType} content={item} key={i} className={cx('container__item')} />
                 })}
-              </TabPanel>
-              <TabPanel value={value} index={1}>
-                {/* <Profile
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div>
+            <BannerDetail
+              data={contents}
+              title="퀴즈클럽"
+              subTitle="클럽 상세보기"
+              imageName="top_banner_seminar.svg"
+            />
+            <div className={cx('container')}>
+              {/*바로 밑에 자식만 sticky 적용됨*/}
+              <div className={cx('content-wrap')}>
+                <div className={cx('content')}>
+                  {contents?.imageUrl3 && (
+                    <Image
+                      src={`${process.env['NEXT_PUBLIC_GENERAL_IMAGE_URL']}/images/${contents?.imageUrl3}`}
+                      alt={`${contents?.seminarTitle}`}
+                      layout="responsive"
+                      width="736"
+                      height="420"
+                      objectFit="fill"
+                      unoptimized={true}
+                    />
+                  )}
+                  <Tabs
+                    value={value}
+                    onChange={handleChange}
+                    aria-label="basic tabs example"
+                    className={cx('tabs', 'sticky')}
+                  >
+                    <Tab label="퀴즈클럽 소개" {...a11yProps(0)} onClick={() => handleClickTab(0)} />
+                    <Tab label="크루활동" {...a11yProps(1)} onClick={() => handleClickTab(1)} />
+                  </Tabs>
+                  {/* <article> */}
+                  <TabPanel value={value} index={0} className="tw-p-5">
+                    <div className="tw-flex tw-items-center tw-space-x-4 tw-my-5">
+                      <img
+                        className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full"
+                        src={contents?.leaderProfileImageUrl}
+                        alt=""
+                      />
+                      <div className="tw-text-base tw-font-semibold tw-text-black dark:tw-text-white">
+                        <div>{contents?.leaderNickname}</div>
+                      </div>
+                    </div>
+
+                    <div className="tw-text-xl tw-mb-10 tw-font-bold tw-text-black dark:tw-text-gray-400">
+                      퀴즈클럽 소개
+                    </div>
+                    <div className="tw-text-base tw-mb-10 tw-font-normal tw-text-black dark:tw-text-gray-400">
+                      {/* <ReactMarkdown children={value1} remarkPlugins={[remarkGfm]} /> */}
+                      <div dangerouslySetInnerHTML={{ __html: contents?.description }} />
+                    </div>
+
+                    <div className="tw-text-xl tw-mb-10 tw-font-bold tw-text-black dark:tw-text-gray-400">
+                      퀴즈클럽 질문 미리보기
+                    </div>
+
+                    <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-400 dark:tw-text-gray-400">
+                      {contents?.studyWeekCount}주 총 학습 {contents?.studyTotalCount}회 진행
+                    </div>
+
+                    {contents?.clubQuizzes.map((item, index) => {
+                      if (item?.isRepresentative === true) {
+                        return (
+                          <div key={index} className="">
+                            <div className="tw-flex tw-items-center tw-px-0 tw-border mb-2 mt-0 rounded">
+                              <span className="tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded">
+                                대표 {index + 1}
+                              </span>
+                              <div className="tw-flex-auto tw-ml-3">
+                                <div className="tw-font-medium tw-text-black">{item.content}</div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      } else {
+                        // 다른 경우에는 렌더링하지 않음
+                        return null;
+                      }
+                    })}
+                  </TabPanel>
+                  <TabPanel value={value} index={1}>
+                    {/* <Profile
                       showDesc
                       mentorInfo={data?.seminarLecturer}
                       className={cx('seminar-tabpanel-1__profile', 'col-md-4')}
@@ -528,21 +584,22 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                       colorMode="primary"
                       isDetail
                     /> */}
-              </TabPanel>
-              <TabPanel value={value} index={2}>
-                {/* <Typography type="H3" bold>
+                  </TabPanel>
+                  <TabPanel value={value} index={2}>
+                    {/* <Typography type="H3" bold>
                     크루활동
                   </Typography> */}
-                <div
-                  dangerouslySetInnerHTML={{ __html: data?.seminarCurriculum }}
-                  className={cx('seminar-tabpanel__html-content')}
-                />
-              </TabPanel>
+                    <div
+                      dangerouslySetInnerHTML={{ __html: contents?.seminarCurriculum }}
+                      className={cx('seminar-tabpanel__html-content')}
+                    />
+                  </TabPanel>
+                </div>
+              </div>
             </div>
-          )}
-          <div className="tw-mt-10">{applicationButton}</div>
-        </div>
-      </div>
+          </div>
+        ))}
+      <div className="tw-mt-10">{applicationButton}</div>
     </div>
   );
 }

@@ -41,7 +41,7 @@ const Pagination = ({ total = 1, showCount = 8, page = 1, onChange, className, s
         className={cx({ pagination__item: true, 'pagination__item--active': page === i })}
         onClick={() => changePage(i)}
       >
-        <a>{i}</a>
+        <a className="tw-text-sm">{i}</a>
       </li>
     );
   };

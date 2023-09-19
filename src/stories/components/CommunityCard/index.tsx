@@ -3,7 +3,6 @@ import styles from './index.module.scss';
 import { BoardType, ReplyType } from 'src/config/entities';
 import Chip from '../Chip';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import React, { useEffect, useRef, useState } from 'react';
@@ -25,6 +24,15 @@ import Grid from '@mui/material/Grid';
 import Tooltip from '../Tooltip';
 import { useRouter } from 'next/router';
 
+/** import textarea */
+import TextareaAutosize from '@mui/material/TextareaAutosize';
+
+/** import icon */
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
+import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
+import StarIcon from '@mui/icons-material/Star';
 export interface CommunityCardProps {
   /** 게시판 object */
   board: BoardType;
@@ -50,8 +58,6 @@ const CommunityCard = ({
   onPostDeleteSubmit,
 }: // eslint-disable-next-line @typescript-eslint/no-empty-function
 CommunityCardProps) => {
-  const { jobGroupName, jobGroup } = writer;
-  const chipColor = jobColorKey(jobGroup);
   const { mutate: onSaveLike, isSuccess } = useSaveLike();
   const { mutate: onDeleteLike } = useDeleteLike();
 
@@ -64,13 +70,13 @@ CommunityCardProps) => {
   let [repliesList, setRepliesList] = useState([]);
   const { mutate: onSaveReply, isSuccess: replyReplySucces } = useSaveReply();
   const { mutate: onDeleteReply, isSuccess: deleteReplySucces } = useDeleteReply();
-  const { isFetched: isReplyFetched, refetch } = useRepliesList(postNo, data => {
-    setRepliesList(data.data);
-  });
+  // const { isFetched: isReplyFetched, refetch } = useRepliesList(postNo, data => {
+  //   setRepliesList(data.data);
+  // });
 
-  useEffect(() => {
-    refetch();
-  }, [postNo, replyReplySucces, deleteReplySucces]);
+  // useEffect(() => {
+  //   refetch();
+  // }, [postNo, replyReplySucces, deleteReplySucces]);
 
   useEffect(() => {
     setIsLiked(board?.liked);
@@ -182,87 +188,31 @@ CommunityCardProps) => {
 
   const router = useRouter();
   return (
-    <div className={cx('community-board-container', className)}>
+    <div className={cx('community-board-container tw-p-2', className)}>
       <div className={cx('main-container')}>
         <div className={cx('board-header', 'row')}>
-          <div className={cx('profile-wrap', 'col-md-10')}>
+          <div className="tw-flex tw-items-center tw-space-x-4 tw-my-5 tw-gap-2">
             {/* {board.postNo} */}
             <img
               src={
-                board.author?.profileImageUrl.indexOf('http') > -1
-                  ? board.author?.profileImageUrl
-                  : `${process.env['NEXT_PUBLIC_GENERAL_API_URL']}/images/${board.author?.profileImageUrl}`
+                board?.profileImageUrl.indexOf('http') > -1
+                  ? board?.profileImageUrl
+                  : `${process.env['NEXT_PUBLIC_GENERAL_API_URL']}/images/${board?.profileImageUrl}`
               }
-              alt={`${writer.jobGroupName} ${board.author.nickname}`}
-              className={cx('rounded-circle', 'profile-image', 'mr-4')}
+              alt={'image'}
+              className={cx('rounded-circle', 'profile-image', 'tw-h-12')}
             />
-            <div className={cx('profile-area')}>
-              {board.author?.jobGroupName && (
-                <Chip chipColor={chipColor} radius={4} variant="outlined">
-                  {board.author.jobGroupName}
-                </Chip>
-              )}
-              {board.author?.level && (
-                <Chip chipColor={chipColor} radius={4} className="ml-2">
-                  {board.author.level} 레벨
-                </Chip>
-              )}
-              <div>
-                <h5 className={cx('profile-desc__name', 'mt-2')}>
-                  <Grid container spacing={0} direction="row" justifyContent="flex-start" alignItems="flex-start">
-                    <Grid item xs="auto" className="mr-2">
-                      {board.author.nickname} {board.author.typeName === '0001' ? '멘티' : '멘토'}
-                    </Grid>
-                    <Grid item xs="auto">
-                      <Tooltip
-                        content={board?.author.authenticatedYn ? '인증 멘토입니다.' : '일반 멘토입니다.'}
-                        placement="bottom"
-                        trigger="mouseEnter"
-                        warpClassName={cx('icon-height')}
-                        bgColor="lite-gray"
-                      >
-                        {board?.author.authenticatedYn ? (
-                          <img src="/assets/images/icons/certified.svg" alt="인증멘토" />
-                        ) : (
-                          <img src="/assets/images/icons/uncertified.svg" alt="일반멘토" />
-                        )}
-                      </Tooltip>
-                    </Grid>
-                    <Grid item xs="auto">
-                      <Tooltip content={board.author.typeName} placement="bottom" trigger="mouseEnter">
-                        {board.author?.type === '0002' && (
-                          <img src="/assets/images/level/Mento_lev1.svg" alt={board.author?.typeName} />
-                        )}
-                      </Tooltip>
-                      <Tooltip content={board.author?.typeName} placement="bottom" trigger="mouseEnter">
-                        {board.author?.type === '0003' && (
-                          <img src="/assets/images/level/Mento_lev2.svg" alt={board.author?.typeName} />
-                        )}
-                      </Tooltip>
-                      <Tooltip content={board.author?.typeName} placement="bottom" trigger="mouseEnter">
-                        {board.author?.type === '0004' && (
-                          <img src="/assets/images/level/Mento_lev3.svg" alt={board.author?.typeName} />
-                        )}
-                      </Tooltip>
-                      <Tooltip content={board.author?.typeName} placement="bottom" trigger="mouseEnter">
-                        {board.author?.type === '0005' && (
-                          <img src="/assets/images/level/Mento_lev4.svg" alt={board.author?.typeName} />
-                        )}
-                      </Tooltip>
-                    </Grid>
-                  </Grid>
-                </h5>
-
-                {/*TODO 원래 job(직업)임*/}
-                <h6 className={cx('profile-desc__job')}>{writer.jobGroupName}</h6>
-              </div>
+            <div>
+              {/*TODO 원래 job(직업)임*/}
+              <div className="tw-font-bold tw-text-lg tw-text-black">{board?.nickname}</div>
             </div>
+            <div>
+              <div className="tw-text-sm">{board.createdAt.toString().split(' ')[0]}</div>
+            </div>
+            <div>{/* <div className="tw-text-sm">{timeForToday(board.createdAt)}</div> */}</div>
           </div>
           <div className={cx('date-area', 'col-md-2')}>
-            <p className={cx('date-area__write-date')}>{board.createdAt.toString().split(' ')[0]}</p>
-            {/*todo 데이터 전달되는 타입 보고 날짜 계산 필요*/}
-            <p className={cx('date-area__cal-date')}>{timeForToday(board.createdAt)}</p>
-            {memberId == board.author.memberId ? (
+            {/* {memberId == board.author.memberId ? (
               <div>
                 <Chip
                   className="mr-2"
@@ -284,40 +234,54 @@ CommunityCardProps) => {
               </div>
             ) : (
               <div></div>
-            )}
+            )} */}
           </div>
         </div>
-        <div className={cx('h6 mt-4')}>{board.title}</div>
-        <div dangerouslySetInnerHTML={{ __html: board?.body }} className={cx('board-content')} />
-        <div className={cx('post-meta mb-2', 'board-tags')}>
-          <ul className="list-inline meta-list">
-            {board?.keywords.map(tag => (
-              <li className="list-inline-item" key={tag}>
-                #{tag}
-              </li>
-            ))}
-          </ul>
-        </div>
+        <TextareaAutosize
+          aria-label="minimum height"
+          minRows={9}
+          placeholder="답변을 25자 이상 입력해주세요."
+          style={{
+            width: '100%',
+            // backgroundColor: '#F9F9F9',
+            border: '2px solid #EFEFEF',
+            borderRadius: '15px',
+            padding: 12,
+            resize: 'none',
+            maxHeight: '320px', // 최대 높이 설정 (스크롤을 표시하려면 설정)
+          }}
+          name="introductionMessage"
+          value={board?.postAnswer}
+        />
 
-        <Grid container direction="row" justifyContent="left" alignItems="center">
-          <div className={cx('post-meta mb-2', 'board-tags')}>
-            <ul className="list-inline meta-list">
-              {board?.relatedJobGroupNames &&
-                board?.relatedJobGroupNames.map((tag, index) => (
-                  <SkillSelectPage key={index} name={tag}></SkillSelectPage>
-                ))}
-            </ul>
+        <div className="tw-grid tw-items-center tw-grid-cols-6 tw-py-3 tw-mt-2">
+          <div className="tw-col-span-2">
+            <div className="tw-flex tw-items-center tw-gap-4">
+              <span>
+                <AssignmentOutlinedIcon className="tw-mr-1 tw-w-5" />
+                {board?.replyCount}
+              </span>
+              <span>
+                <StarBorderIcon className="tw-mr-1  tw-w-5" />
+                <span>{board?.onePickCount}</span>
+              </span>
+              <span>
+                <FavoriteBorderIcon className="tw-mr-1  tw-w-5" />
+                <span>{board?.likeCount}</span>
+              </span>
+            </div>
           </div>
-          <div className={cx('post-meta mb-2', 'board-tags')}>
-            {board?.relatedLevels &&
-              board?.relatedLevels.map(tag => (
-                <Chip key={tag} chipColor={chipColor} variant="filled" radius={4}>
-                  {tag}레벨
-                </Chip>
-              ))}
+          <div className="tw-col-span-4 tw-flex tw-justify-end">
+            <Textfield width={400} defaultValue="" placeholder="댓글을 입력해주세요." ref={textInput} />
+            <button
+              className="tw-bg-black tw-text-white px-4  tw-ml-2 tw-rounded-md"
+              onClick={() => onReplySubmit(board.postNo, textInput.current.value)}
+            >
+              입력
+            </button>
           </div>
-        </Grid>
-        <div className={cx('board-footer')}>
+        </div>
+        {/* <div className={cx('board-footer')}>
           <span className={cx('board-footer__reaction')}>
             <button
               onClick={() => {
@@ -336,7 +300,7 @@ CommunityCardProps) => {
           >
             댓글 {replyCount}개{isOpen ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
           </button>
-        </div>
+        </div> */}
       </div>
       {isOpen && (
         <div className={cx('reply-container')}>

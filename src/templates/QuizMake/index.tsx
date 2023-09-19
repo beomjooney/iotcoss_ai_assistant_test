@@ -291,7 +291,7 @@ export function QuizMakeTemplate() {
               <button
                 type="button"
                 onClick={() => handleAddClick()}
-                className="tw-text-white tw-bg-blue-500 tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5  dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
+                className="tw-text-white tw-bg-blue-500 tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
               >
                 퀴즈 직접 등록하기
               </button>

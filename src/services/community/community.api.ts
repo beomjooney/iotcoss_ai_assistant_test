@@ -46,7 +46,8 @@ export const deleteLiked = async (postId: number) => await axiosGeneralAPI().del
 
 export const saveQuizLiked = async (postNo: number) =>
   await axiosGeneralAPI().post(`/api/v1/club/quizzes/${postNo}/like`);
-export const deleteQuizLiked = async (postId: number) =>
+
+export const deleteQuizLiked = async (postNo: number) =>
   await axiosGeneralAPI().delete(`/api/v1/club/quizzes/${postNo}/like`);
 
 export const saveReply = async (params: any) => {

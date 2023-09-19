@@ -559,7 +559,7 @@ export function MemberEditTemplate() {
       <div className={cx('sub-content', 'border', 'tw-rounded-lg', 'tw-mt-5')}>
         <div className=" tw-p-14  tw-text-center">
           <div className="tw-text-xl tw-pb-10 tw-text-black">
-            <span className="tw-font-bold tw-text-xl">커리어멘토스</span> 이용 약관에 동의해주세요.
+            <span className="tw-font-bold tw-text-xl">데브어스</span> 이용 약관에 동의해주세요.
           </div>
           <Grid container direction="row" justifyContent="space-between" alignItems="center">
             <Grid item xs={10}>

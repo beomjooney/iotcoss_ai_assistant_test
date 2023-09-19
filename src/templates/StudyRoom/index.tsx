@@ -3,12 +3,7 @@ import classNames from 'classnames/bind';
 import { Toggle, Pagination, Typography, Chip, ClubCard } from 'src/stories/components';
 import React, { useEffect, useState } from 'react';
 import { RecommendContent, SeminarImages } from 'src/models/recommend';
-import {
-  useStudyRoomList,
-  paramProps,
-  useSeminarImageList,
-  useStudyQuizList,
-} from 'src/services/studyroom/studyroom.queries';
+import { useStudyRoomList, paramProps, useStudyQuizList } from 'src/services/studyroom/studyroom.queries';
 import QuizArticleCard from 'src/stories/components/QuizArticleCard';
 import Carousel from 'nuka-carousel';
 import { ArticleEnum } from '../../config/types';
@@ -17,8 +12,6 @@ import { useContentJobTypes, useContentTypes, useJobGroups } from 'src/services/
 import Banner from '../../stories/components/Banner';
 import { useStore } from 'src/store';
 import { useRouter } from 'next/router';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import Grid from '@mui/material/Grid';
 import Icon from '@mui/material/Icon';
 import Box from '@mui/system/Box';
@@ -38,17 +31,22 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
+
+/** import galendar  */
 import moment from 'moment';
 import { PickersDay, PickersDayProps } from '@mui/x-date-pickers/PickersDay';
 import dayjs, { Dayjs } from 'dayjs';
-
-// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-
 import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import Badge from '@mui/material/Badge';
+
+/** import pagenation */
+import _Pagination from '@mui/material/Pagination';
+import PaginationItem from '@mui/material/PaginationItem';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import Stack from '@mui/material/Stack';
 
 const studyStatus = [
   {
@@ -119,6 +117,10 @@ export function StudyRoomTemplate() {
   ]); // 년월일 형식의 문자열로 변경
 
   const classes = useStyles();
+
+  const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setQuizPage(value);
+  };
 
   function ServerDay(props: PickersDayProps<Dayjs> & { highlightedDays?: string[] }) {
     const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
@@ -212,6 +214,7 @@ export function StudyRoomTemplate() {
     },
     [`&.${tableCellClasses.body}`]: {
       fontSize: 14,
+      padding: '15px',
     },
   }));
 
@@ -222,37 +225,54 @@ export function StudyRoomTemplate() {
     return (
       <React.Fragment>
         <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-          <TableCell>
+          <StyledTableCell style={{ padding: 8 }}>
             <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
               {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
             </IconButton>
-          </TableCell>
-          <TableCell>{row.clubName}</TableCell>
-          <TableCell align="right">{row.leaderNickname}</TableCell>
-          <TableCell align="right">{row.recruitedMemberCount}</TableCell>
-          <TableCell align="right">{row.startAt.split(' ')[0]}</TableCell>
-          <TableCell align="right">{row.studyWeekCount}회</TableCell>
-          <TableCell align="right">{parseInt(row.clubRunRate)}%</TableCell>
-          <TableCell align="right">
+          </StyledTableCell>
+          <StyledTableCell style={{ padding: 8, fontWeight: 600 }}>{row.clubName}</StyledTableCell>
+          <StyledTableCell style={{ padding: 8 }} align="right">
+            {row.leaderNickname}
+          </StyledTableCell>
+          <StyledTableCell style={{ padding: 8 }} align="right">
+            {row.recruitedMemberCount}
+          </StyledTableCell>
+          <StyledTableCell style={{ padding: 8 }} align="right">
+            {row.startAt.split(' ')[0]}
+          </StyledTableCell>
+          <StyledTableCell style={{ padding: 8 }} align="right">
+            {row.studyWeekCount}회
+          </StyledTableCell>
+          <StyledTableCell style={{ padding: 8 }} align="right">
+            <div className="progress tw-rounded tw-h-2 tw-p-0">
+              <span style={{ width: `${parseInt(row.clubRunRate)}%` }}>
+                <span className="progress-line"></span>
+              </span>
+            </div>
+          </StyledTableCell>
+          <StyledTableCell style={{ padding: 8 }} align="right">
             <button
               onClick={() => (location.href = '/quiz/' + `${row.clubSequence}`)}
               className="tw-bg-blue-500 tw-text-white tw-text-xs tw-font-medium tw-mr-2 tw-px-2.5 tw-py-3 tw-rounded"
             >
               입장하기
             </button>
-          </TableCell>
+          </StyledTableCell>
         </TableRow>
-        <TableRow>
-          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12}>
+        <TableRow className=" tw-bg-blue-50">
+          <StyledTableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12}>
             <Collapse in={open} timeout="auto" unmountOnExit>
-              <Box sx={{ margin: 1 }}>
-                <Typography variant="h5" gutterBottom component="div">
-                  클럽생성일 : {row.clubCreatedAt} 클럽가입일 : {row.clubJoinedAt} 학습진행 : {row.studyCount} /{' '}
-                  {row.studyTotalCount} 회
-                </Typography>
-              </Box>
+              <div className="tw-p-3 tw-pl-14">
+                <div className="tw-text-sm tw-grid tw-grid-cols-8 tw-gap-4 tw-text-gray-500">
+                  <div className="tw-col-span-2">클럽생성일 | {row.clubCreatedAt.split(' ')[0]}</div>
+                  <div className="tw-col-span-2"> 클럽가입일 | {row.clubJoinedAt?.split(' ')[0]}</div>
+                  <div className="tw-col-span-2">
+                    학습횟수 : {row.studyCount} / {row.studyTotalCount} 회
+                  </div>
+                </div>
+              </div>
             </Collapse>
-          </TableCell>
+          </StyledTableCell>
         </TableRow>
       </React.Fragment>
     );
@@ -369,7 +389,7 @@ export function StudyRoomTemplate() {
                 <Grid item xs={8}>
                   {isContentFetched && active === 0 && (
                     <div>
-                      <TableContainer component={Paper} className=" tw-mb-5">
+                      <TableContainer component={Paper} className=" tw-mb-5" elevation={0}>
                         <Table sx={{ minWidth: 700 }} aria-label="customized table">
                           <TableHead>
                             <TableRow>
@@ -403,11 +423,12 @@ export function StudyRoomTemplate() {
                           </TableBody>
                         </Table>
                       </TableContainer>
+                      {/* <Pagination count={totalPage} page={page} onChange={handleChange} /> */}
                       <Pagination page={page} setPage={setPage} total={totalPage} />
                     </div>
                   )}
                   {isContentFetched && active === 1 && (
-                    <TableContainer component={Paper} className=" tw-mb-5">
+                    <TableContainer component={Paper} className=" tw-mb-5" elevation={0}>
                       <Table sx={{ minWidth: 700 }} aria-label="customized table">
                         <TableHead>
                           <TableRow>
@@ -459,28 +480,42 @@ export function StudyRoomTemplate() {
                     </div>
                               ))}
                       )} */}
-                    {isQuizFetched &&
-                      quizList.map((item, i) => (
-                        <div
-                          key={i}
-                          className="tw-flex tw-items-center tw-rounded-md tw-grid tw-grid-cols-6 tw-gap-0  tw-bg-white tw-text-sm  tw-p-4 tw-mb-5"
-                        >
-                          <div className="tw-col-span-5 ">
-                            <div> {item.clubName}</div>
-                            <div className="tw-font-bold"> 3회차</div>
-                            <div> Q. {item.quizContent}</div>
+                    <div className="tw-mb-5">
+                      {isQuizFetched &&
+                        quizList.map((item, i) => (
+                          <div
+                            key={i}
+                            className="tw-flex tw-items-center tw-rounded-md tw-grid tw-grid-cols-6 tw-gap-0  tw-bg-white tw-text-sm  tw-p-4 tw-mb-5"
+                          >
+                            <div className="tw-col-span-5 ">
+                              <div> {item.clubName}</div>
+                              <div className="tw-font-bold"> 3회차</div>
+                              <div> Q. {item.quizContent}</div>
+                            </div>
+                            <div className="tw-col-span-1">
+                              <button
+                                onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
+                                className="tw-text-center tw-bg-blue-500 tw-text-white tw-text-blue-800 tw-text-xs tw-font-medium tw-px-3 tw-py-2 tw-rounded"
+                              >
+                                GO {'>'}
+                              </button>
+                            </div>
                           </div>
-                          <div className="tw-col-span-1">
-                            <button
-                              onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
-                              className="tw-text-center tw-bg-blue-500 tw-text-white tw-text-blue-800 tw-text-xs tw-font-medium tw-px-3 tw-py-2 tw-rounded"
-                            >
-                              GO {'>'}
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    <Pagination showCount={5} page={quizPage} setPage={setQuizPage} total={quizTotalPage} />
+                        ))}
+                    </div>
+                    <Stack spacing={2} className="tw-items-center">
+                      <_Pagination
+                        count={quizTotalPage}
+                        size="small"
+                        siblingCount={0}
+                        page={quizPage}
+                        renderItem={item => (
+                          <PaginationItem slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }} {...item} />
+                        )}
+                        onChange={handleChange}
+                      />
+                    </Stack>
+                    {/* <Pagination showCount={5} page={quizPage} setPage={setQuizPage} total={quizTotalPage} /> */}
                   </div>
                 </Grid>
               </Grid>
