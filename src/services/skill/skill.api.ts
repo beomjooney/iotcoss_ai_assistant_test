@@ -2,7 +2,7 @@ import { axiosGeneralAPI } from '../index';
 
 export const skillList = async () => {
   const { data } = await axiosGeneralAPI().get('/api/v1/skills');
-  return data;
+  return data.data;
 };
 
 export const mySkillList = async memberId => {

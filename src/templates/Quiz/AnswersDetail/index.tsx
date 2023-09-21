@@ -187,7 +187,7 @@ export function QuizAnswersDetailTemplate({ id }: QuizAnswersDetailTemplateProps
             </Grid>
           </Grid>
 
-          <Divider className="tw-py-4 tw-border tw-bg-['#efefef']" />
+          <Divider className="tw-py-2" />
 
           <div className="tw-py-4 tw-text-sm tw-font-normal tw-text-gray-500 ">
             {contents?.recommendJobGroupNames?.map((name, i) => (

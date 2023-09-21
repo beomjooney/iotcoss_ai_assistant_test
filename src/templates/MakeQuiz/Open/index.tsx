@@ -1064,7 +1064,7 @@ export function QuizOpenTemplate() {
                 <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">관련스킬</div>
 
                 <ToggleButtonGroup value={skillIds} onChange={handleFormat} aria-label="" color="standard">
-                  {skillData.data.contents?.map((item, index) => {
+                  {skillData?.data?.contents?.map((item, index) => {
                     return (
                       <ToggleButton
                         key={`skillIds-${index}`}
@@ -1127,6 +1127,7 @@ export function QuizOpenTemplate() {
 
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <DesktopDatePicker
+                        slotProps={{ textField: { size: 'small' } }}
                         inputFormat="YYYY-MM-DD"
                         value={today}
                         onChange={e => onChangeHandleFromToStartDate(e)}
