@@ -285,7 +285,7 @@ export function SeminarDetailTemplate({ id }: SeminarDetailTemplateProps) {
           <div className={cx('container')}>
             <aside className={cx('sticky')}>
               <div className={cx('top-area')}>
-                {data?.recommendJobGroupNames.map((name, i) => (
+                {data?.recommendJobGroupNames?.map((name, i) => (
                   <Chip
                     key={`job_${i}`}
                     chipColor={jobColorKey(data?.recommendJobGroups[i])}
@@ -510,7 +510,7 @@ export function SeminarDetailTemplate({ id }: SeminarDetailTemplateProps) {
             {/*바로 밑에 자식만 sticky 적용됨*/}
             <aside className={cx('sticky')}>
               <div className={cx('top-area')}>
-                {data?.recommendJobGroupNames.map((name, i) => (
+                {data?.recommendJobGroupNames?.map((name, i) => (
                   <Chip
                     key={`job_${i}`}
                     chipColor={jobColorKey(data?.recommendJobGroups[i])}

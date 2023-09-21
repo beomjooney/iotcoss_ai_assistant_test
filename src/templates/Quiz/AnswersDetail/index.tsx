@@ -24,10 +24,13 @@ import { useSessionStore } from 'src/store/session';
 import Grid from '@mui/material/Grid';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 import router from 'next/router';
-import { useClubDetailQuizList, useQuizAnswerDetail, useQuizSolutionDetail } from 'src/services/quiz/quiz.queries';
+import {
+  useClubDetailQuizList,
+  useQuizAnswerDetail,
+  useQuizRankDetail,
+  useQuizSolutionDetail,
+} from 'src/services/quiz/quiz.queries';
 import Divider from '@mui/material/Divider';
-import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
-import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -35,6 +38,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
 
 /** import pagenation */
 import Pagination from '@mui/material/Pagination';
@@ -53,6 +57,7 @@ export function QuizAnswersDetailTemplate({ id }: QuizAnswersDetailTemplateProps
   const [value, setValue] = React.useState(0);
   const [isBookmark, setIsBookmark] = useState(true);
   const [contents, setContents] = useState<RecommendContent[]>([]);
+  const [rankContents, setRankContents] = useState<RecommendContent[]>([]);
   const [answerContents, setAnswerContents] = useState<RecommendContent[]>([]);
   const [quizList, setQuizList] = useState<RecommendContent[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -76,6 +81,9 @@ export function QuizAnswersDetailTemplate({ id }: QuizAnswersDetailTemplateProps
     console.log(data);
     setAnswerContents(data?.contents);
     setTotalPage(data?.totalPages);
+  });
+  const { isFetched: isQuizRankListFetched } = useQuizRankDetail(data => {
+    setRankContents(data);
   });
 
   const { mutate: onParticipant } = useParticipantSeminar();
@@ -179,9 +187,9 @@ export function QuizAnswersDetailTemplate({ id }: QuizAnswersDetailTemplateProps
             </Grid>
           </Grid>
 
-          <Divider className="tw-my-7 tw-border tw-bg-['#efefef']" />
+          <Divider className="tw-py-4 tw-border tw-bg-['#efefef']" />
 
-          <div className="tw-p-0 tw-text-sm tw-font-normal tw-text-gray-500 ">
+          <div className="tw-py-4 tw-text-sm tw-font-normal tw-text-gray-500 ">
             {contents?.recommendJobGroupNames?.map((name, i) => (
               <span
                 key={i}
@@ -213,13 +221,10 @@ export function QuizAnswersDetailTemplate({ id }: QuizAnswersDetailTemplateProps
           <div className="tw-text-black tw-font-bold tw-text-2xl tw-py-4">{contents?.clubName}</div>
         </div>
 
-        <Divider className="tw-my-1 tw-border tw-bg-['#efefef']" />
-
         <Grid
           container
           direction="row"
           justifyContent="left"
-          className="tw-mt-2"
           // alignItems="center"
           rowSpacing={3}
           columnSpacing={{ xs: 1, sm: 2, md: 3 }}
@@ -272,7 +277,7 @@ export function QuizAnswersDetailTemplate({ id }: QuizAnswersDetailTemplateProps
               </div>
             </div>
             <div>
-              <div className="tw-grid tw-grid-cols-5 tw-gap-4 tw-pt-4 tw-mt-5">
+              <div className="tw-grid tw-grid-cols-5 tw-gap-4 tw-pt-4 tw-mt-5 tw-items-center tw-justify-center">
                 <div className="tw-col-span-3">
                   <div className="tw-text-black tw-font-bold tw-text-2xl">퀴즈답변</div>
                 </div>
@@ -313,9 +318,116 @@ export function QuizAnswersDetailTemplate({ id }: QuizAnswersDetailTemplateProps
             </div>
           </Grid>
           <Grid item xs={4}>
-            <div className="tw-bg-gray-50 tw-rounded-lg tw-h-[400px] tw-p-5 tw-text-black ">
-              <div className="tw-font-bold tw-text-base tw-pb-5">이달의 메이커</div>
-              <div>빨리 개발좀해라.</div>
+            <div className="tw-bg-gray-50 tw-rounded-lg tw-h-[1260px] tw-p-5 tw-text-black ">
+              <div>
+                <div className="tw-font-bold tw-text-base tw-pb-5">이달의 메이커</div>
+                <div className="tw-bg-white tw-p-5 tw-rounded-md">
+                  <div className="tw-grid tw-grid-cols-4 tw-gap-4 ">
+                    <div className="tw-col-span-1  tw-flex tw-flex-col tw-items-center tw-justify-center">
+                      <img
+                        className="tw-w-12 tw-h-12 tw-ring-1 tw-rounded-full"
+                        src={rankContents?.maker?.profileImageUrl}
+                        alt=""
+                      />
+                      <div className="tw-py-3 tw-text-base tw-font-semibold tw-text-black">
+                        <div>{rankContents?.maker?.nickname}</div>
+                      </div>
+                    </div>
+                    <div className="tw-col-span-3 tw-font-bold tw-text-black tw-flex tw-flex-col tw-items-center tw-justify-center">
+                      <div>
+                        이번달 등록 질문 수 :{' '}
+                        <span className="tw-text-blue-600">{rankContents?.maker?.madeQuizCount}개</span>
+                      </div>
+                      <div>
+                        받은 총 좋아요 수 :{' '}
+                        <span className="tw-text-blue-600">{rankContents?.maker?.receivedLikeCount}개</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    {rankContents?.maker?.quizzes?.map((item, index) => {
+                      return (
+                        <div key={index} className="tw-py-3 tw-text-sm">
+                          <div>
+                            {index + 1}. {item?.content}
+                          </div>
+                          <div className="tw-flex tw-items-center tw-gap-4">
+                            <span>
+                              <AssignmentOutlinedIcon className="tw-mr-1 tw-w-5" />
+                              {item?.answerCount}
+                            </span>
+                            <span>
+                              <StarBorderIcon className="tw-mr-1  tw-w-5" />
+                              <span>{item?.likeCount}</span>
+                            </span>
+                            <span>
+                              <FavoriteBorderIcon className="tw-mr-1  tw-w-5" />
+                              <span>{item?.activeCount}</span>
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div className="tw-font-bold tw-text-base tw-py-5">이달의 퀴즈</div>
+                <div className="tw-bg-white tw-p-5 tw-py-2 tw-rounded-md">
+                  {rankContents?.quizzes?.map((item, index) => {
+                    return (
+                      <div key={index} className="tw-py-3 tw-text-sm">
+                        <div>
+                          {index + 1}. {item?.content}
+                        </div>
+                        <div className="tw-flex tw-items-center tw-gap-4">
+                          <span>
+                            <AssignmentOutlinedIcon className="tw-mr-1 tw-w-5" />
+                            {item?.answerCount}
+                          </span>
+                          <span>
+                            <StarBorderIcon className="tw-mr-1  tw-w-5" />
+                            <span>{item?.likeCount}</span>
+                          </span>
+                          <span>
+                            <FavoriteBorderIcon className="tw-mr-1  tw-w-5" />
+                            <span>{item?.activeCount}</span>
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+              <div>
+                <div className="tw-font-bold tw-text-base tw-py-5">이달의 클럽</div>
+                <div className="tw-bg-white tw-p-5 tw-py-2 tw-rounded-md">
+                  {rankContents?.clubs?.map((item, index) => {
+                    return (
+                      <div key={index} className="tw-py-3 tw-text-sm ">
+                        <div className="tw-grid tw-grid-cols-4 tw-gap-4 tw-flex tw-items-center tw-justify-center">
+                          <div className="tw-col-span-1  tw-flex tw-flex-col ">
+                            <img className="tw-w-12 tw-h-12 tw-rounded-md" src={item?.clubImageUrl} alt="" />
+                          </div>
+                          <div className="tw-col-span-3  tw-text-black ">
+                            <div>
+                              <span className="tw-text-gray-400">{item?.recommendJobNames?.toString()}</span>
+                            </div>
+                            <div>
+                              <span className="tw-font-bold">{item?.clubName}</span>
+                            </div>
+                            <div>
+                              <span className=" tw-text-sm">
+                                {item?.clubLeaderNickname} | 평균실행률 : {item?.averageProgressPercentage}%
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
           </Grid>
         </Grid>

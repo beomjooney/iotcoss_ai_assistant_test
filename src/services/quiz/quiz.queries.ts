@@ -5,6 +5,7 @@ import {
   getReplies,
   quizAnswerDetail,
   quizGrowthDetail,
+  quizRanking,
   quizSolutionDetail,
 } from './quiz.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
@@ -32,6 +33,14 @@ export const useQuizSolutionDetail = (id, onSuccess?: (data: any) => void, onErr
     onError,
     refetchOnWindowFocus: true,
     enabled: !!id,
+  });
+};
+
+export const useQuizRankDetail = (onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
+  return useQuery<any, Error>(QUERY_KEY_FACTORY('QUIZ').lists(), () => quizRanking(), {
+    onSuccess,
+    onError,
+    // refetchOnWindowFocus: false,
   });
 };
 

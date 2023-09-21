@@ -68,7 +68,7 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
           <div className="tw-flex tw-w-full tw-flex-col tw-justify-between tw-px-10 tw-leading-normal">
             <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
               <Grid item xs={7}>
-                {data?.recommendJobGroupNames.map((name, i) => (
+                {data?.recommendJobGroupNames?.map((name, i) => (
                   <span
                     key={i}
                     className="tw-inline-flex tw-mb-2 tw-bg-blue-100 tw-text-blue-800 tw-text-base tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded"
@@ -77,7 +77,7 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
                   </span>
                 ))}
 
-                {data?.recommendLevels.map((name, i) => (
+                {data?.recommendLevels?.map((name, i) => (
                   <span
                     key={i}
                     className="tw-inline-flex  tw-mb-2 tw-bg-gray-100 tw-text-gray-800 tw-text-base tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
@@ -85,7 +85,7 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
                     {name} 레벨
                   </span>
                 ))}
-                {data?.recommendJobNames.map((name, i) => (
+                {data?.recommendJobNames?.map((name, i) => (
                   <span
                     key={i}
                     className="tw-inline-flex  tw-bg-red-100 tw-text-red-800 tw-text-base tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
@@ -96,7 +96,7 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
               </Grid>
               <Grid item xs={4} className="tw-inline-flex  " justifyContent="flex-end" alignItems="center">
                 {data?.clubStatus !== '0004' && data?.clubMemberStatus !== '0002' && (
-                  <div className="tw-font-semibold">모집마감일 : {data?.recruitDeadlineAt.split(' ')[0]}</div>
+                  <div className="tw-font-semibold">모집마감일 : {data?.recruitDeadlineAt?.split(' ')[0]}</div>
                 )}
               </Grid>
               <Grid item xs={1} className="tw-inline-flex" justifyContent="flex-end" alignItems="center">
@@ -119,11 +119,11 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
             </p> */}
 
             <div className="tw-text-base tw-font-bold tw-text-black dark:tw-text-gray-400">
-              퀴즈클럽 주수 : {data?.studyWeekCount}주 | 학습 {data?.studyTotalCount}회 ({data?.startAt.split(' ')[0]}~
-              {data?.endAt.split(' ')[0]})
+              퀴즈클럽 주수 : {data?.studyWeekCount}주 | 학습 {data?.studyTotalCount}회 ({data?.startAt?.split(' ')[0]}~
+              {data?.endAt?.split(' ')[0]})
             </div>
             <div className="tw-text-base tw-font-bold tw-text-black dark:tw-text-gray-400">
-              퀴즈클럽 주기 : {data?.studyCycle.toString()}
+              퀴즈클럽 주기 : {data?.studyCycle?.toString()}
             </div>
             <div className="tw-mb-3 tw-text-base tw-font-bold tw-text-black dark:tw-text-gray-400">
               모집인원 : {data?.recruitMemberCount}명

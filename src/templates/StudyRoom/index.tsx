@@ -90,7 +90,7 @@ export function StudyRoomTemplate() {
   const [quizTotalPage, setQuizTotalPage] = useState(1);
   const [jobGroupsFilter, setJobGroupsFilter] = useState([]);
   const [levelsFilter, setLevelsFilter] = useState([]);
-  const [viewFilter, setViewFilter] = useState('0002');
+  const [viewFilter, setViewFilter] = useState('0001');
   const [params, setParams] = useState<paramProps>({ page, viewFilter });
   const [quizParams, setQuizParams] = useState<paramProps>({ page });
   const [contents, setContents] = useState<RecommendContent[]>([]);

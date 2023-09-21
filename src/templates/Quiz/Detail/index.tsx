@@ -555,7 +555,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                       {contents?.studyWeekCount}주 총 학습 {contents?.studyTotalCount}회 진행
                     </div>
 
-                    {contents?.clubQuizzes.map((item, index) => {
+                    {contents?.clubQuizzes?.map((item, index) => {
                       if (item?.isRepresentative === true) {
                         return (
                           <div key={index} className="">

@@ -178,7 +178,7 @@ const quizSolutionDetail = ({ imageName = 'seminar_bg.png', title, subTitle, cla
               <span className="tw-bg-black tw-text-white tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded">
                 진행중
               </span>
-              {data?.recommendJobGroupNames.map((name, i) => (
+              {data?.recommendJobGroupNames?.map((name, i) => (
                 <span
                   key={i}
                   className="tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded"
