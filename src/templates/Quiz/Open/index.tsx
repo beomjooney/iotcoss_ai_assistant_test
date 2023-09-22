@@ -308,11 +308,8 @@ export function QuizOpenTemplate() {
   const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
   const { data: experienceData }: UseQueryResult<ExperiencesResponse> = useExperiences();
 
-  const { data: jobsData, refetch }: UseQueryResult<any> = useQuizList(params);
-  const { data: myJobsData, refetch: refetchMyJob }: UseQueryResult<any> = useMyJobs(myParams);
-
-  // console.log('jobsData popyp', jobsData);
-  // console.log('myJobsData popyp', myJobsData);
+  const { data: quizListData, refetch }: UseQueryResult<any> = useQuizList(params);
+  const { data: myQuizListData, refetch: refetchMyJob }: UseQueryResult<any> = useMyJobs(myParams);
 
   const [skillIds, setSkillIds] = useState<any[]>([]);
   const [experienceIds, setExperienceIds] = useState<any[]>([]);
@@ -475,9 +472,6 @@ export function QuizOpenTemplate() {
     setTotalPage(data.totalPage);
   });
 
-  // const { isFetched: isContentImageFetched } = useSeminarImageList(data => {
-  //   setSeminarImages(data || []);
-  // });
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const handleAddClick = () => {
@@ -605,7 +599,7 @@ export function QuizOpenTemplate() {
 
   const handleChangeCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked } = event.currentTarget;
-    const quizData = jobsData?.contents;
+    const quizData = quizListData?.contents;
     const result = [...state];
 
     console.log('name', name);
@@ -1278,11 +1272,11 @@ export function QuizOpenTemplate() {
                 <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">관련스킬</div>
 
                 <ToggleButtonGroup
+                  style={{ display: 'inline' }}
                   value={skillIds}
                   onChange={handleFormat}
                   aria-label=""
                   color="standard"
-                  orientation="horizontal"
                 >
                   {skillData?.map((item, index) => {
                     return (
@@ -1420,7 +1414,7 @@ export function QuizOpenTemplate() {
                   퀴즈 등록하기 {quizList.length}
                 </Grid>
                 <Grid item xs={7} className="tw-font-bold tw-text-xl tw-text-black ">
-                  <div className="tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
+                  <div className="tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500">
                     {recommendJobGroupsName.map((name, i) => (
                       <span
                         key={i}
@@ -1451,9 +1445,9 @@ export function QuizOpenTemplate() {
                   <button
                     type="button"
                     onClick={handleAddClick}
-                    className="tw-text-white tw-bg-blue-500 tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5  dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
+                    className="tw-text-white tw-bg-blue-500 tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5 "
                   >
-                    성장퀴즈 클럽 개설하기
+                    성장퀴즈 추가하기
                   </button>
                 </Grid>
               </Grid>
@@ -1495,7 +1489,7 @@ export function QuizOpenTemplate() {
                           </div>
                         </Grid>
                         <Grid item xs={10}>
-                          <div className="tw-flex tw-items-center tw-p-4 tw-border border mb-3 mt-3 rounded">
+                          <div className="tw-flex tw-items-center tw-h-16 tw-p-4 tw-border border mb-3 mt-3 rounded">
                             <div className="tw-flex-auto">
                               <div className="tw-font-medium tw-text-black">{item.content}</div>
                             </div>
@@ -1548,7 +1542,7 @@ export function QuizOpenTemplate() {
                           </div>
                         </Grid>
                         <Grid item xs={10}>
-                          <div className="tw-flex tw-items-center tw-p-4 tw-border border mb-3 mt-3 rounded">
+                          <div className="tw-flex tw-items-center  tw-h-16 tw-p-4 tw-border border mb-3 mt-3 rounded">
                             <div className="tw-flex-auto">
                               <div className="tw-font-medium tw-text-black">{item?.content}</div>
                             </div>
@@ -1628,7 +1622,7 @@ export function QuizOpenTemplate() {
                     alt=""
                   />
                   <div className="tw-flex tw-flex-col tw-justify-between tw-p-4 tw-leading-normal">
-                    <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
+                    <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-500">
                       {recommendJobGroupsName.map((name, i) => (
                         <span
                           key={i}
@@ -1658,18 +1652,16 @@ export function QuizOpenTemplate() {
                     <h6 className="tw-mb-2 tw-text-2xl tw-font-bold tw-tracking-tight tw-text-gray-900 dark:tw-text-white">
                       {paramss.name}
                     </h6>
-                    <p className="tw-line-clamp-2 tw-mb-3 tw-font-normal tw-text-gray-700 dark:tw-text-gray-400">
-                      {paramss.description}
-                    </p>
+                    <p className="tw-line-clamp-2 tw-mb-3 tw-font-normal tw-text-gray-700">{paramss.description}</p>
 
-                    <div className="tw-mb-3 tw-text-sm tw-font-semibold tw-text-gray-500 dark:tw-text-gray-400">
+                    <div className="tw-mb-3 tw-text-sm tw-font-semibold tw-text-gray-500">
                       모집마감일 : {paramss.startAt}
                     </div>
                     <h6 className="tw-mb-2 tw-text-2xl tw-font-bold tw-tracking-tight tw-text-gray-900 dark:tw-text-white">
                       {paramss.clubName}
                     </h6>
 
-                    <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-400 dark:tw-text-gray-400">
+                    <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-400">
                       {paramss.studyCycle.toString()} | {paramss.studyWeekCount} 주 | 학습 {paramss.recruitMemberCount}
                       회
                     </div>
@@ -1732,7 +1724,7 @@ export function QuizOpenTemplate() {
       </div>
       <MentorsModal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
         <div className="tw-font-bold tw-text-xl tw-text-black tw-mt-0 tw-mb-10 tw-text-center">퀴즈 등록하기</div>
-        <Box display="flex" justifyContent="center" width="100%">
+        <Box width="100%" sx={{ borderBottom: '1px solid LightGray' }}>
           {/* <div
             style={{
               borderBottom: '2px solid gray',
@@ -1740,15 +1732,18 @@ export function QuizOpenTemplate() {
               flexGrow: 1,
             }}
           ></div> */}
-          <StyledSubTabs value={value} onChange={handleChange}>
-            <Tab className="tw-text-black tw-text-base tw-w-64  " label="퀴즈 검색하기" />
+          <Tabs value={value} onChange={handleChange}>
+            {/* <StyledSubTabs value={value} onChange={handleChange}> */}
+            <Tab disableRipple className="tw-text-black tw-text-base" label="퀴즈 검색하기" />
             <Tab
-              style={{ marginRight: '-1px', marginLeft: '-1px' }}
-              className="tw-text-black tw-text-base tw-w-64 tw-mr-0"
+              disableRipple
+              // style={{ marginRight: '-1px', marginLeft: '-1px' }}
+              className="tw-text-black tw-text-base "
               label="퀴즈 직접 등록하기"
             />
-            <Tab className="tw-text-black tw-text-base tw-w-64" label="퀴즈 만들기 불러오기" />
-          </StyledSubTabs>
+            <Tab disableRipple className="tw-text-black tw-text-base" label="퀴즈 만들기 불러오기" />
+          </Tabs>
+          {/* </StyledSubTabs> */}
           {/* <div
             style={{
               borderBottom: '2px solid gray',
@@ -1758,8 +1753,8 @@ export function QuizOpenTemplate() {
           ></div> */}
         </Box>
         {active === 0 && (
-          <div className="tw-px-36">
-            <div className="tw-mt-10">
+          <div className="">
+            <div className="tw-mt-10 tw-mb-8">
               <TextField
                 size="small"
                 fullWidth
@@ -1769,7 +1764,7 @@ export function QuizOpenTemplate() {
                 value={quizSearch}
                 name="quizSearch"
                 InputProps={{
-                  style: { height: '50px' },
+                  style: { height: '45px' },
                   startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
                 }}
                 onKeyPress={e => {
@@ -1779,32 +1774,73 @@ export function QuizOpenTemplate() {
                 }}
               />
             </div>
-            {jobsData?.contents.map((item, index) => (
-              <div key={`admin-menu-${index}`} className="tw-flex">
+            {quizListData?.contents.map((item, index) => (
+              <div key={`admin-menu-${index}`} className="tw-flex tw-pb-5">
                 <Checkbox
+                  disableRipple
                   onChange={handleChangeCheck}
                   checked={state.includes(String(item.sequence))}
                   name={item.sequence}
                   className="tw-mr-3"
                 />
-                <div className="tw-grid tw-grid-cols-12 tw-flex tw-w-full tw-items-center tw-p-4 tw-border border mb-3 mt-3 rounded">
-                  <div className="tw-col-span-10">
-                    <div className="tw-font-medium tw-text-black tw-text-base">{item.content}</div>
+                <div className="tw-p-4 tw-border border tw-w-full tw-rounded-lg">
+                  <div className="tw-flex tw-w-full tw-items-center"></div>
+                  <div className="tw-flex  tw-items-center">
+                    <div className="tw-flex-auto">
+                      <div className="tw-font-medium tw-text-black">
+                        <div className="tw-text-sm tw-font-normal tw-text-gray-500">
+                          {item?.recommendJobGroupNames?.map((name, i) => (
+                            <span
+                              key={i}
+                              className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600"
+                            >
+                              {name}
+                            </span>
+                          ))}
+                          <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
+                            {item?.recommendLevels?.sort().join(',')}레벨
+                          </span>
+                          {item?.recommendJobNames?.map((name, i) => (
+                            <span
+                              key={i}
+                              className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-100 tw-text-sm tw-font-light tw-text-gray-600"
+                            >
+                              {name}
+                            </span>
+                          ))}
+                          {item?.hashTags?.map((name, i) => (
+                            <span
+                              key={i}
+                              className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-gray-700"
+                            >
+                              {name}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="tw-text-gray-400 tw-text-sm ">{item.createdAt}</div>
                   </div>
-                  <div className="tw-col-span-1 tw-text-right tw-text-sm tw-text-gray-400">{item.memberName}</div>
-                  <svg className="tw-col-span-1 tw-ml-6 tw-h-6 tw-w-6 tw-flex-none" fill="none">
-                    <path
-                      d="M12 8v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1V8Zm0 0V7a1 1 0 0 0-1 1h1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1ZM12 12v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h-1a1 1 0 0 0 1 1v-1ZM12 16v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1Z"
-                      fill="#64748B"
-                    ></path>
-                  </svg>
+                  <div className="tw-flex  tw-items-center py-2">
+                    <div className="tw-flex-auto">
+                      <div className="tw-font-medium tw-text-black tw-text-base tw-line-clamp-1">{item.content}</div>
+                    </div>
+                    {/* <div className="">{item.memberName}</div> */}
+                  </div>
+                  <div className="tw-grid tw-grid-cols-12 tw-gap-4">
+                    <div className="tw-col-span-1 tw-text-sm tw-font-bold tw-text-black">아티클</div>
+                    <div className="tw-col-span-9 tw-text-sm tw-text-gray-600  tw-line-clamp-1">{item.articleUrl}</div>
+                    <div className="tw-col-span-2 tw-text-sm tw-text-right">
+                      댓글 : {item.activeCount} 답변 : {item.answerCount}
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         )}
         {active == 1 && (
-          <div className="tw-px-36">
+          <div className="">
             <div className="tw-mt-10">
               <TextField
                 size="small"
@@ -1816,11 +1852,11 @@ export function QuizOpenTemplate() {
                 name="quizName"
               />
             </div>
-            <div className="tw-mt-10">
+            <div className="tw-my-5">
               <TextField
                 size="small"
                 fullWidth
-                label={'아티클(질문에 대한 답변에 참고가 될 아티클 링크를 입력해주세요.'}
+                label={'아티클 (질문에 대한 답변에 참고가 될 아티클 링크를 입력해주세요.)'}
                 onChange={handleInputQuizUrlChange}
                 id="margin-none"
                 value={quizUrl}
@@ -1828,7 +1864,7 @@ export function QuizOpenTemplate() {
               />
             </div>
             <div>
-              <div className="tw-font-semibold tw-text-sm tw-text-black  tw-my-2">추천 직군</div>
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-3">추천 직군</div>
               <ToggleButtonGroup value={jobGroupPopUp} exclusive onChange={handleJobGroups} aria-label="text alignment">
                 {contentTypes?.map((item, index) => (
                   <ToggleButton
@@ -1847,7 +1883,7 @@ export function QuizOpenTemplate() {
                   </ToggleButton>
                 ))}
               </ToggleButtonGroup>
-              <div className="tw-font-semibold tw-text-sm tw-text-black  tw-my-2">추천 직무</div>
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-3">추천 직무</div>
               <ToggleButtonGroup
                 style={{ display: 'inline' }}
                 value={jobs}
@@ -1872,7 +1908,7 @@ export function QuizOpenTemplate() {
                 ))}
               </ToggleButtonGroup>
 
-              <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천 레벨</div>
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-3">추천 레벨</div>
               <ToggleButtonGroup
                 exclusive
                 value={recommendLevelsPopUp}
@@ -1928,7 +1964,7 @@ export function QuizOpenTemplate() {
                 </div>
               )}
 
-              <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">관련스킬</div>
+              <div className="tw-font-semibold tw-text-sm tw-text-black  tw-my-3">관련스킬</div>
 
               <ToggleButtonGroup
                 style={{ display: 'inline' }}
@@ -1936,7 +1972,6 @@ export function QuizOpenTemplate() {
                 onChange={handleFormatPopUp}
                 aria-label=""
                 color="standard"
-                orientation="horizontal"
               >
                 {skillData?.map((item, index) => {
                   return (
@@ -1958,7 +1993,7 @@ export function QuizOpenTemplate() {
                 })}
               </ToggleButtonGroup>
 
-              <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">관련경험</div>
+              <div className="tw-font-semibold tw-text-sm tw-text-black  tw-my-3">관련경험</div>
               <ToggleButtonGroup
                 style={{ display: 'inline' }}
                 value={experienceIdsPopUp}
@@ -1986,7 +2021,7 @@ export function QuizOpenTemplate() {
                 })}
               </ToggleButtonGroup>
             </div>
-            <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">해시태그</div>
+            <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-3">해시태그</div>
             <TagsInput
               value={selected}
               onChange={setSelected}
@@ -1994,11 +2029,11 @@ export function QuizOpenTemplate() {
               placeHolder="#해쉬태그 입력 후 엔터를 쳐주세요.
               "
             />
-            <div className="tw-text-center">
+            <div className="tw-text-center tw-mt-5">
               <button
                 type="button"
                 onClick={() => handleQuizInsertClick()}
-                className="tw-mt-5 tw-text-white tw-bg-blue-500 hover:tw-bg-blue-800 tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5  dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
+                className="tw-mt-5 tw-text-white tw-bg-blue-500  tw-font-medium tw-rounded-md tw-text-base tw-px-5 tw-py-2.5"
               >
                 퀴즈 등록하기
               </button>
@@ -2006,8 +2041,8 @@ export function QuizOpenTemplate() {
           </div>
         )}
         {active === 2 && (
-          <div className="tw-px-36">
-            <div className="tw-mt-10">
+          <div>
+            <div className="tw-mt-10 tw-mb-8">
               <TextField
                 size="small"
                 fullWidth
@@ -2016,6 +2051,10 @@ export function QuizOpenTemplate() {
                 id="margin-none"
                 // value={quizSearch}
                 name="quizSearch"
+                InputProps={{
+                  style: { height: '45px' },
+                  startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
+                }}
                 onKeyPress={e => {
                   if (e.key === 'Enter') {
                     searchMyKeyworld((e.target as HTMLInputElement).value);
@@ -2023,25 +2062,66 @@ export function QuizOpenTemplate() {
                 }}
               />
             </div>
-            {myJobsData?.contents.map((item, index) => (
-              <div key={index} className="tw-flex">
+            {myQuizListData?.contents.map((item, index) => (
+              <div key={`admin-quiz-${index}`} className="tw-flex tw-pb-5">
                 <Checkbox
+                  disableRipple
                   onChange={handleChangeCheck}
                   checked={state.includes(String(item.sequence))}
                   name={item.sequence}
                   className="tw-mr-3"
                 />
-                <div className="tw-flex tw-w-full tw-items-center tw-p-4 tw-border border mb-3 mt-3 rounded">
-                  <div className="tw-flex-auto">
-                    <div className="tw-font-medium tw-text-black">{item.content}</div>
+                <div className="tw-p-4 tw-border border tw-w-full tw-rounded-lg">
+                  <div className="tw-flex tw-w-full tw-items-center"></div>
+                  <div className="tw-flex  tw-items-center">
+                    <div className="tw-flex-auto">
+                      <div className="tw-font-medium tw-text-black">
+                        <div className="tw-text-sm tw-font-normal tw-text-gray-500">
+                          {item?.recommendJobGroupNames?.map((name, i) => (
+                            <span
+                              key={i}
+                              className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600"
+                            >
+                              {name}
+                            </span>
+                          ))}
+                          <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
+                            {item?.recommendLevels?.sort().join(',')}레벨
+                          </span>
+                          {item?.recommendJobNames?.map((name, i) => (
+                            <span
+                              key={i}
+                              className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-100 tw-text-sm tw-font-light tw-text-gray-600"
+                            >
+                              {name}
+                            </span>
+                          ))}
+                          {item?.hashTags?.map((name, i) => (
+                            <span
+                              key={i}
+                              className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-gray-700"
+                            >
+                              {name}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="tw-text-gray-400 tw-text-sm ">{item.createdAt}</div>
                   </div>
-                  <div className="">{item.memberName}</div>
-                  <svg className="tw-ml-6 tw-h-6 tw-w-6 tw-flex-none" fill="none">
-                    <path
-                      d="M12 8v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1V8Zm0 0V7a1 1 0 0 0-1 1h1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1ZM12 12v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h-1a1 1 0 0 0 1 1v-1ZM12 16v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1Z"
-                      fill="#64748B"
-                    ></path>
-                  </svg>
+                  <div className="tw-flex  tw-items-center py-2">
+                    <div className="tw-flex-auto">
+                      <div className="tw-font-medium tw-text-black tw-text-base tw-line-clamp-1">{item.content}</div>
+                    </div>
+                    {/* <div className="">{item.memberName}</div> */}
+                  </div>
+                  <div className="tw-grid tw-grid-cols-12 tw-gap-4">
+                    <div className="tw-col-span-1 tw-text-sm tw-font-bold tw-text-black">아티클</div>
+                    <div className="tw-col-span-9 tw-text-sm tw-text-gray-600  tw-line-clamp-1">{item.articleUrl}</div>
+                    <div className="tw-col-span-2 tw-text-sm tw-text-right">
+                      댓글 : {item.activeCount} 답변 : {item.answerCount}
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}

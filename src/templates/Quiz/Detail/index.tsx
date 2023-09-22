@@ -391,11 +391,11 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                     />
                   </Grid>
                 </Grid>
-                <Divider className="tw-my-5 tw-border tw-bg-['#efefef']" />
+                <Divider className="tw-py-3 tw-mb-3" />
                 {quizList.map((item, index) => {
                   return (
                     <Grid
-                      className="tw-mb-5"
+                      className="tw-pt-5"
                       key={index}
                       container
                       direction="row"

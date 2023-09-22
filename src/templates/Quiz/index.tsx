@@ -179,7 +179,7 @@ export function QuizTemplate() {
               <button
                 onClick={() => (location.href = '/quiz/open')}
                 type="button"
-                className="tw-text-white tw-bg-blue-500  tw-focus:ring-4  tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5  dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
+                className="tw-text-white tw-bg-blue-500 tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
               >
                 퀴즈클럽 개설하기
               </button>

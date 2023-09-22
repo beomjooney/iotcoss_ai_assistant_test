@@ -128,8 +128,8 @@ export function StudyRoomTemplate() {
     const count = highlightedDays.find(item => item.date === props.day.format('YYYY-MM-DD'))?.count || 0;
 
     const dots = Array.from({ length: count }, (_, index) => (
-      <span key={index} className="tw-mr-0.5">
-        <CircleIcon className="tw-w-[6px] tw-h-[6px]" color="primary"></CircleIcon>
+      <span key={index} className="tw-mr-0.5 tw-font-bold tw-text-2xl tw-text-blue-500">
+        .
       </span>
     ));
     return (
@@ -361,10 +361,6 @@ export function StudyRoomTemplate() {
                     type="tabButton"
                     onChange={() => {
                       setActive(4);
-                      setParams({
-                        page,
-                      });
-                      setPage(1);
                     }}
                     className={cx('fixed-width')}
                   />

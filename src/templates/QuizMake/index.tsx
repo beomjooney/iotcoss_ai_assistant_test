@@ -361,17 +361,6 @@ export function QuizMakeTemplate() {
                               {name}
                             </span>
                           ))}
-                          {/* {item?.relatedExperiences?.map((name, i) => (
-                            <Chip
-                              key={`job_${i}`}
-                              chipColor={jobColorKey(item?.relatedExperiences[i])}
-                              radius={4}
-                              className="tw-mr-2"
-                              variant="outlined"
-                            >
-                              {name}
-                            </Chip>
-                          ))} */}
                         </div>
                       </div>
                     </div>
