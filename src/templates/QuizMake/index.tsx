@@ -563,7 +563,7 @@ export function QuizMakeTemplate() {
               aria-label=""
               color="standard"
             >
-              {skillData?.data?.contents?.map((item, index) => {
+              {skillData?.map((item, index) => {
                 return (
                   <ToggleButton
                     key={`skillIds-${index}`}

@@ -18,9 +18,16 @@ export const studyRoomList = async params => {
 
 export const studyQuizList = async params => {
   const { data, headers } = await axiosGeneralAPI().get('/api/v1/studyroom/quizzes', { params });
-  // const { data, headers } = await axiosGeneralAPI().get('/seminars', { params });
   const totalPage = Number(headers['page-count']);
-
+  return { data: data.data || [], nextPage: params.page + 1, totalPage };
+};
+export const studyQuizBadgeList = async params => {
+  const { data } = await axiosGeneralAPI().get('/api/v1/badges/me', { params });
+  return { data: data.data };
+};
+export const studyQuizCalendarList = async params => {
+  const { data, headers } = await axiosGeneralAPI().get('/api/v1/studyroom/calendar', { params });
+  const totalPage = Number(headers['page-count']);
   return { data: data.data || [], nextPage: params.page + 1, totalPage };
 };
 export const seminarMeWaitList = async params => {

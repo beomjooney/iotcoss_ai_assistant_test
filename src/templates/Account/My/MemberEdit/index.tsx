@@ -460,7 +460,7 @@ export function MemberEditTemplate() {
                   readOnly={isDisabledPhone}
                   className={cx('text-field', 'text-field--normal')}
                 /> */}
-                <Button
+                {/* <Button
                   type="button"
                   color="primary"
                   disabled={false}
@@ -477,16 +477,16 @@ export function MemberEditTemplate() {
                   className={cx('change-button')}
                 >
                   {phoneEditMode ? '인증문자 발송' : '인증 완료'}
-                </Button>
+                </Button> */}
               </div>
             </Grid>
             <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-mt-10">
               <Grid item xs={2}></Grid>
               <Grid item xs={2} className="tw-text-left"></Grid>
               <Grid item xs={8}>
-                <div className="tw-float-right">
+                {/* <div className="tw-float-right">
                   <Chip label="회원탈퇴" variant="outlined" onClick={() => setIsModalOpen(true)} />
-                </div>
+                </div> */}
               </Grid>
             </Grid>
           </Grid>

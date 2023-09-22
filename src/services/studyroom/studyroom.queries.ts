@@ -19,11 +19,14 @@ import {
   seminarMeWaitList,
   seminarParticipantList,
   studyQuizList,
+  studyQuizCalendarList,
+  studyQuizBadgeList,
 } from './studyroom.api';
 
 export interface paramProps {
   viewFilter?: string;
   seminarType?: string;
+  pageCalendar?: number;
   page?: number;
   size?: number;
   seminarStatus?: string; // 0001   진행예정 / 0002   완료 / 0003   연기 / 0004   취소
@@ -33,6 +36,7 @@ export interface paramProps {
   excludeSeminarIds?: any; // 콤마(,)로 구분
   enabled?: boolean;
   lecturerMemberId?: string;
+  calendarYearMonth?: string;
 }
 
 export const useMyClubList = (
@@ -77,6 +81,39 @@ export const useStudyQuizList = (
   return useQuery<RecommendContentsResponse, Error>(
     QUERY_KEY_FACTORY('SEMINAR').list({ size: DEFAULT_SIZE, ...params }),
     () => studyQuizList({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: true,
+    },
+  );
+};
+export const useStudyQuizBadgeList = (
+  params?: paramProps,
+  onSuccess?: (data: RecommendContentsResponse) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 100;
+  return useQuery<RecommendContentsResponse, Error>(
+    QUERY_KEY_FACTORY('QUIZ').list({ size: DEFAULT_SIZE, ...params }),
+    () => studyQuizBadgeList({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+      enabled: true,
+    },
+  );
+};
+export const useStudyQuizCalendarList = (
+  params?: paramProps,
+  onSuccess?: (data: RecommendContentsResponse) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 3;
+  return useQuery<RecommendContentsResponse, Error>(
+    QUERY_KEY_FACTORY('QUIZ').list({ size: DEFAULT_SIZE, ...params }),
+    () => studyQuizCalendarList({ size: DEFAULT_SIZE, ...params }),
     {
       onSuccess,
       onError,

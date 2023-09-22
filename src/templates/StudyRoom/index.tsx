@@ -3,7 +3,13 @@ import classNames from 'classnames/bind';
 import { Toggle, Pagination, Typography, Chip, ClubCard } from 'src/stories/components';
 import React, { useEffect, useState } from 'react';
 import { RecommendContent, SeminarImages } from 'src/models/recommend';
-import { useStudyRoomList, paramProps, useStudyQuizList } from 'src/services/studyroom/studyroom.queries';
+import {
+  useStudyRoomList,
+  paramProps,
+  useStudyQuizList,
+  useStudyQuizCalendarList,
+  useStudyQuizBadgeList,
+} from 'src/services/studyroom/studyroom.queries';
 import QuizArticleCard from 'src/stories/components/QuizArticleCard';
 import Carousel from 'nuka-carousel';
 import { ArticleEnum } from '../../config/types';
@@ -85,15 +91,21 @@ export function StudyRoomTemplate() {
   const [skillIds, setSkillIds] = useState<any[]>([]);
   const [skillIdsClk, setSkillIdsClk] = useState<any[]>([1, 2, 3, 4, 5]);
   const [page, setPage] = useState(1);
+  const [pageCalendar, setPageCalendar] = useState(1);
+  const [badgePage, setBadgePage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [quizPage, setQuizPage] = useState(1);
   const [quizTotalPage, setQuizTotalPage] = useState(1);
   const [jobGroupsFilter, setJobGroupsFilter] = useState([]);
   const [levelsFilter, setLevelsFilter] = useState([]);
   const [viewFilter, setViewFilter] = useState('0001');
+  const [calendarYearMonth, setCalendarYearMonth] = useState(new Date().toISOString().split('T')[0]);
   const [params, setParams] = useState<paramProps>({ page, viewFilter });
+  const [calendarParams, setCalendarParams] = useState<paramProps>({ pageCalendar, calendarYearMonth });
   const [quizParams, setQuizParams] = useState<paramProps>({ page });
+  const [badgeParams, setBadgeParams] = useState<paramProps>({ page: badgePage, isAchieved: true });
   const [contents, setContents] = useState<RecommendContent[]>([]);
+  const [badgeContents, setBadgeContents] = useState<RecommendContent[]>([]);
   const [quizList, setQuizList] = useState<RecommendContent[]>([]);
   const [images, setSeminarImages] = useState<any[]>([]);
   const [recommendJobGroup, setRecommendJobGroup] = useState<any[]>([]);
@@ -153,6 +165,19 @@ export function StudyRoomTemplate() {
     setQuizList(data.data.contents || []);
     setQuizTotalPage(data.data.totalPages);
   });
+  // const { isFetched: isQuizCalendarFetched, refetch: QuizRefetchCalendar } = useStudyQuizCalendarList(
+  //   calendarParams,
+  //   data => {
+  //     // setQuizList(data.data.contents || []);
+  //     // setQuizTotalPage(data.data.totalPages);
+  //   },
+  // );
+
+  const { isFetched: isQuizbadgeFetched, refetch: QuizRefetchBadge } = useStudyQuizBadgeList(badgeParams, data => {
+    setBadgeContents(data.data.contents);
+    // setQuizList(data.data.contents || []);
+    // setQuizTotalPage(data.data.totalPages);
+  });
 
   const { isFetched: isContentTypeFetched } = useContentTypes(data => {
     setContentTypes(data.data.contents || []);
@@ -181,31 +206,6 @@ export function StudyRoomTemplate() {
       page: quizPage,
     });
   }, [quizPage]);
-
-  const handleJobs = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
-    console.log('job', event.currentTarget, newFormats);
-    setJobGroup(newFormats);
-
-    setParams({
-      ...params,
-      recommendJobGroups: contentType,
-      recommendJobs: newFormats.join(','),
-      page,
-    });
-    setPage(1);
-    console.log(newFormats);
-  };
-
-  const handleRecommendLevels = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
-    setRecommendLevels(newFormats);
-
-    setParams({
-      ...params,
-      recommendJobGroups: contentType,
-      recommendLevels: newFormats.join(','),
-      page,
-    });
-  };
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -446,7 +446,26 @@ export function StudyRoomTemplate() {
                       </Table>
                     </TableContainer>
                   )}
-                  {active === 4 && <div>sdfasdfdsfdd</div>}
+                  {active === 4 && (
+                    <div>
+                      <div className="tw-grid tw-grid-cols-7 tw-gap-4">
+                        {badgeContents.map((item, index) => (
+                          <div key={index} className="tw-text-center">
+                            <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
+                              <img
+                                className="tw-object-cover tw-h-15 "
+                                src={`${process.env.NEXT_PUBLIC_GENERAL_URL}/assets/images/badge/${item?.badgeId}.png`}
+                                alt=""
+                              />
+                            </div>
+                            <div className="tw-text-sm tw-text-black tw-font-bold">{item?.name}</div>
+                            <div className="tw-text-sm tw-text-black tw-line-clamp-1">{item?.description}</div>
+                            <div className="tw-text-sm tw-text-black">{item?.achievementAt?.split(' ')[0]}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </Grid>
                 <Grid item xs={4}>
                   <div className="tw-bg-gray-50 tw-rounded-md tw-h-[400px] tw-p-5 tw-text-black ">
