@@ -221,8 +221,6 @@ const levelGroup = [
     name: '0',
     description: '레벨 0',
     order: 1,
-    createdAt: '2022-10-14 15:46:30.123',
-    updatedAt: '2022-10-14 15:46:30.123',
   },
   {
     id: '0200',
@@ -230,8 +228,6 @@ const levelGroup = [
     name: '1',
     description: '레벨 1',
     order: 2,
-    createdAt: '2022-10-14 15:46:30.123',
-    updatedAt: '2022-10-14 15:46:30.123',
   },
   {
     id: '0300',
@@ -239,8 +235,6 @@ const levelGroup = [
     name: '2',
     description: '레벨 2',
     order: 3,
-    createdAt: '2022-10-14 15:46:30.123',
-    updatedAt: '2022-10-14 15:46:30.123',
   },
   {
     id: '0301',
@@ -248,8 +242,6 @@ const levelGroup = [
     name: '3',
     description: '레벨 3',
     order: 3,
-    createdAt: '2022-10-14 15:46:30.123',
-    updatedAt: '2022-10-14 15:46:30.123',
   },
   {
     id: '0302',
@@ -257,8 +249,6 @@ const levelGroup = [
     name: '4',
     description: '레벨 4',
     order: 3,
-    createdAt: '2022-10-14 15:46:30.123',
-    updatedAt: '2022-10-14 15:46:30.123',
   },
 ];
 

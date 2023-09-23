@@ -496,7 +496,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                       <Divider />
                       <MenuItem>내 포인트 내역</MenuItem>
                       <Divider />
-                      <MenuItem>내 프로필</MenuItem>
+                      <MenuItem onClick={() => (location.href = '/profile')}>내 프로필</MenuItem>
                       <Divider />
                       <MenuItem onClick={handleClick}>마이페이지</MenuItem>
                       <Divider />
