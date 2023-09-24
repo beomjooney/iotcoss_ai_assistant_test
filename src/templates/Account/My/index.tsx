@@ -215,7 +215,7 @@ export function MyTemplate({ children }: MyTemplateProps) {
                         </div>
                         <div className="tw-flex tw-justify-between">
                           <div> 내가 쓴 댓글 </div>
-                          <div>{summary?.answerCount}</div>
+                          <div>{summary?.replyCount}</div>
                         </div>
                         <div className="tw-flex tw-justify-between">
                           <div> 내가 참여한 클럽 </div>

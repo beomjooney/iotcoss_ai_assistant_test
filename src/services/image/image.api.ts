@@ -11,5 +11,5 @@ export const postImage = async file => {
 
   console.log(data);
 
-  return data?.imageKey;
+  return data?.imageUrl;
 };

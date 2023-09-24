@@ -68,8 +68,10 @@ export function ProfileTemplate() {
   const { user, setUser } = useStore();
   const [userInfo, setUserInfo] = useState<User>(user);
   const { memberId } = useSessionStore.getState();
-  useMemberInfo(memberId, user => {
+  console.log('memberId', memberId);
+  const { isFetched: isUserInfo } = useMemberInfo(memberId, user => {
     setUserInfo(user);
+    console.log(user);
   });
 
   // const { isFetched: isContentFetched, refetch } = useSeminarList(params, data => {
@@ -143,52 +145,61 @@ export function ProfileTemplate() {
           </Grid>
         </div>
       </div>
-      <div className={cx('content-wrap')}>
-        <div className="tw-bg-gray-100">
-          <div className={cx('container')}>
-            <div className="tw-grid tw-grid-cols-12 tw-gap-4 tw-py-10 tw-font-bold tw-text-black">
-              <div className="tw-col-span-2">
-                <img className="tw-w-32 tw-h-32 tw-ring-1 tw-rounded-full" src={userInfo?.profileImageUrl} alt="" />
-              </div>
-              <div className="tw-col-span-10 tw-text-left  tw-flex tw-flex-col  tw-justify-start">
-                <div className=" tw-text-black">
-                  <div className="tw-font-bold tw-text-xl">
-                    {userInfo?.nickname} 님
-                    <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600">
-                      {userInfo?.jobGroupName}
-                    </span>
-                    <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
-                      {userInfo?.level} 레벨
-                    </span>
-                    <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-100 tw-text-sm tw-font-light tw-text-gray-600">
-                      {userInfo?.jobName}
-                    </span>
+      {isUserInfo && (
+        <div className={cx('content-wrap')}>
+          <div className="tw-bg-gray-100">
+            <div className={cx('container')}>
+              <div className="tw-grid tw-grid-cols-12 tw-gap-4 tw-py-10 tw-font-bold tw-text-black">
+                <div className="tw-col-span-2">
+                  <img className="tw-w-32 tw-h-32 tw-ring-1 tw-rounded-full" src={userInfo?.profileImageUrl} alt="" />
+                </div>
+                <div className="tw-col-span-10 tw-text-left  tw-flex tw-flex-col  tw-justify-start">
+                  <div className=" tw-text-black">
+                    <div className="tw-font-bold tw-text-xl">
+                      {userInfo?.nickname} 님
+                      <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600">
+                        {userInfo?.jobGroupName}
+                      </span>
+                      <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
+                        {userInfo?.level} 레벨
+                      </span>
+                      <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-300 tw-text-sm tw-font-light tw-text-gray-600">
+                        {userInfo?.jobName}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="tw-font-bold tw-text-base tw-text-black tw-mt-5">
+                    {userInfo?.careers?.[userInfo?.careers?.length - 1].companyName} |
+                    {userInfo?.careers?.[userInfo?.careers?.length - 1].job}
+                  </div>
+                  <div className="tw-py-2">
+                    {userInfo?.customSkills?.map((name, i) => (
+                      <span
+                        key={i}
+                        className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-bg-black tw-text-white"
+                      >
+                        {name}
+                      </span>
+                    ))}
+                    {/* {userInfo?.customExperiences?.map((name, i) => (
+                      <span
+                        key={i}
+                        className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-gray-700"
+                      >
+                        {name}
+                      </span>
+                    ))} */}
+                  </div>
+
+                  <div className="tw-mt-3 tw-font-light tw-text-base tw-text-gray-500">
+                    {userInfo?.introductionMessage}
                   </div>
                 </div>
-                <div>
-                  {userInfo?.customSkills?.map((name, i) => (
-                    <span
-                      key={i}
-                      className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-gray-700"
-                    >
-                      {name}
-                    </span>
-                  ))}
-                  {userInfo?.customExperiences?.map((name, i) => (
-                    <span
-                      key={i}
-                      className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-gray-700"
-                    >
-                      {name}
-                    </span>
-                  ))}
-                </div>
-                <div>{userInfo?.introductionMessage}</div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
       <div className={cx('container')}>
         <Box sx={{ width: '100%', typography: 'body1', marginTop: '20px', marginBottom: '20px' }}>
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>

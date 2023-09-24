@@ -23,7 +23,8 @@ export const useMemberInfo = (memberId: any, onSuccess?: (data: User) => void, o
     onSuccess,
     onError,
     refetchOnWindowFocus: false,
-    enabled: !!memberId && memberId !== 'Guest',
+    enabled: true,
+    // enabled: !!memberId && memberId !== 'Guest',
     // staleTime: 10 * 60 * 1000, // 10분 유지
   });
 

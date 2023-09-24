@@ -29,6 +29,9 @@ export async function memberSummaryInfo() {
 }
 
 // 회원 정보 수정
+export const saveProfile = async body => await axiosGeneralAPI().put(`/api/v1/members/profile`, body);
+
+// 회원 정보 수정
 export const editInfo = async (memberId, body) => await axiosGeneralAPI().put(`/members/${memberId}`, body);
 
 // 회원 정보 수정
