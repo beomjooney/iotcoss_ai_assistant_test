@@ -105,9 +105,9 @@ const Footer = () => {
                 <div className="col-lg-6 mb-3 mb-lg-0">
                   <div className="footer-nav-wrap tw-text-gray-800 tw-font-semibold">
                     <img
-                      src="/assets/images/cm_CI_co_1000x225.png"
+                      src="/assets/images/devus_footer.png"
                       alt="footer logo"
-                      width={142}
+                      width={103}
                       className="img-fluid mb-5"
                     />
                     <ul className={cx('list-text', 'list-unstyled')}>

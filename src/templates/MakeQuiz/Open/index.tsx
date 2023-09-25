@@ -40,7 +40,7 @@ import { useExperiences } from 'src/services/experiences/experiences.queries';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 import { useRecommendContents } from 'src/services/contents/contents.queries';
-import { useJobs, useMyJobs } from 'src/services/jobs/jobs.queries';
+import { useJobs, useMyQuiz } from 'src/services/jobs/jobs.queries';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
@@ -367,7 +367,7 @@ export function QuizOpenTemplate() {
   const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
   const { data: experienceData }: UseQueryResult<ExperiencesResponse> = useExperiences();
   const { data: jobsData, refetch }: UseQueryResult<any> = useJobs();
-  const { data: myJobsData, refetch: refetchMyJob }: UseQueryResult<any> = useMyJobs();
+  const { data: myJobsData, refetch: refetchMyJob }: UseQueryResult<any> = useMyQuiz();
   const [skillIds, setSkillIds] = useState<any[]>([]);
   const [experienceIds, setExperienceIds] = useState<any[]>([]);
   const [isPublic, setIsPublic] = useState('공개');

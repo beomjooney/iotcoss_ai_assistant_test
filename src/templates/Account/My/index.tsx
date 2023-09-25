@@ -232,6 +232,7 @@ export function MyTemplate({ children }: MyTemplateProps) {
                           borderColor: 'gray',
                           color: 'gray',
                         }}
+                        onClick={() => (location.href = '/profile')}
                       >
                         프로필바로가기
                       </Button>

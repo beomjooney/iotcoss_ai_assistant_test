@@ -13,7 +13,12 @@ export const getQuizList = async params => {
 };
 
 // 직무 조회
-export const getMyJobs = async params => {
+export const getMyQuiz = async params => {
   const { data } = await axiosGeneralAPI().get('/api/v1/quizzes/me', { params });
+  return data.data;
+};
+// 직무 조회
+export const getMyQuizReply = async params => {
+  const { data } = await axiosGeneralAPI().get('/api/v1/replies/me', { params });
   return data.data;
 };

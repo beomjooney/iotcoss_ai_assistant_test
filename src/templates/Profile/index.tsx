@@ -38,7 +38,8 @@ import { useSessionStore } from 'src/store/session';
 import { useDeleteLike, useSaveLike } from 'src/services/community/community.mutations';
 import { useMemberInfo } from 'src/services/account/account.queries';
 import { User } from 'src/models/user';
-
+import { useStudyQuizBadgeList } from 'src/services/studyroom/studyroom.queries';
+import { useMyQuiz, useMyQuizReply } from 'src/services/jobs/jobs.queries';
 const cx = classNames.bind(styles);
 
 export function ProfileTemplate() {
@@ -47,9 +48,7 @@ export function ProfileTemplate() {
   const router = useRouter();
   const [skillIds, setSkillIds] = useState<any[]>([]);
   const [skillIdsClk, setSkillIdsClk] = useState<any[]>([1, 2, 3, 4, 5]);
-  const [page, setPage] = useState(1);
-  const [totalPage, setTotalPage] = useState(1);
-  const [params, setParams] = useState<paramProps>({ page });
+
   const [contents, setContents] = useState<RecommendContent[]>([]);
   const [images, setSeminarImages] = useState<any[]>([]);
   const [recommendJobGroup, setRecommendJobGroup] = useState<any[]>([]);
@@ -74,51 +73,41 @@ export function ProfileTemplate() {
     console.log(user);
   });
 
-  // const { isFetched: isContentFetched, refetch } = useSeminarList(params, data => {
-  //   setContents(data.data.contents || []);
-  //   setTotalPage(data.data.totalPages);
-  // });
+  /** get badge */
+  const [badgePage, setBadgePage] = useState(1);
+  const [badgeParams, setBadgeParams] = useState<paramProps>({ page: badgePage, isAchieved: true });
+  const [badgeContents, setBadgeContents] = useState<RecommendContent[]>([]);
+  const { isFetched: isQuizbadgeFetched, refetch: QuizRefetchBadge } = useStudyQuizBadgeList(badgeParams, data => {
+    setBadgeContents(data.data.contents);
+  });
 
-  function searchKeyworld(value) {
-    let _keyworld = value.replace('#', '');
-    if (_keyworld == '') _keyworld = null;
-    setKeyWorld(_keyworld);
-  }
+  /** my quiz */
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
+  const [myParams, setMyParams] = useState<paramProps>({ page });
+  const { data: myQuizListData, refetch: refetchMyJob }: UseQueryResult<any> = useMyQuiz(myParams, data => {
+    setTotalPage(data.totalPage);
+  });
 
-  // const { isFetched: isContentTypeFetched } = useContentTypes(data => {
-  //   setContentTypes(data.data.contents || []);
-  //   const contentsType = data.length >= 0 && data[0].id;
-  //   setParams({
-  //     ...params,
-  //     // contentsType,
-  //   });
-  // });
-
-  // const { isFetched: isContentTypeJobFetched } = useContentJobTypes(data => {
-  //   setContentJobType(data.data.contents || []);
-  // });
+  /** my quiz replies */
+  const [quizPage, setQuizPage] = useState(1);
+  const [quizTotalPage, setQuizTotalPage] = useState(1);
+  const [myQuizParams, setMyQuizParams] = useState<paramProps>({ page: quizPage });
+  const { data: myQuizReplyData }: UseQueryResult<any> = useMyQuizReply(myQuizParams, data => {
+    setQuizTotalPage(data.totalPage);
+  });
 
   useEffect(() => {
-    setParams({
-      // ...params,
-      page,
-      keyword: keyWorld,
-    });
-  }, [page, keyWorld]);
-
-  const handleJobs = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
-    console.log('job', event.currentTarget, newFormats);
-    setJobGroup(newFormats);
-
-    setParams({
-      ...params,
-      recommendJobGroups: contentType,
-      recommendJobs: newFormats.join(','),
+    setMyParams({
       page,
     });
-    setPage(1);
-    console.log(newFormats);
-  };
+  }, [page]);
+
+  useEffect(() => {
+    setMyQuizParams({
+      quizPage,
+    });
+  }, [quizPage]);
 
   return (
     <div className={cx('seminarseminar-container')}>
@@ -133,15 +122,7 @@ export function ProfileTemplate() {
             <Grid item xs={7} className="max-lg:tw-p-2 tw-font-semi tw-text-base tw-text-black  max-lg:!tw-text-sm">
               나의 프로필을 완성하고 다양한 크루들과 교류해보세요.
             </Grid>
-            <Grid item xs={3} justifyContent="flex-end" className="tw-flex">
-              <button
-                onClick={() => (location.href = '/quiz/open')}
-                type="button"
-                className="tw-text-white tw-bg-blue-500 tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
-              >
-                나의 프로필을 완성하고 다양한 크루들과 교류해보세요.
-              </button>
-            </Grid>
+            <Grid item xs={3} justifyContent="flex-end" className="tw-flex"></Grid>
           </Grid>
         </div>
       </div>
@@ -201,84 +182,141 @@ export function ProfileTemplate() {
         </div>
       )}
       <div className={cx('container')}>
-        <Box sx={{ width: '100%', typography: 'body1', marginTop: '20px', marginBottom: '20px' }}>
-          <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-            <Grid item xs={8} className="tw-font-bold tw-text-3xl tw-text-black">
-              {/* <SecondTabs tabs={testBoards} /> */}
+        <div className="tw-py-10 tw-text-xl tw-text-black tw-font-bold">나의 보유포인트 : {userInfo?.points} point</div>
+        <Box sx={{ width: '100%', typography: 'body1' }}>
+          {/* <SecondTabs tabs={testBoards} /> */}
 
-              <div className={cx('filter-area')}>
-                <div className={cx('mentoring-button__group', 'gap-12', 'justify-content-center')}>
-                  <Toggle
-                    label="전체보기"
-                    name="전체보기"
-                    value=""
-                    variant="small"
-                    checked={active === 0}
-                    isActive
-                    type="tabButton"
-                    onChange={() => {
-                      setActive(0);
-                      setParams({
-                        page,
-                      });
-                      setPage(1);
-                    }}
-                    className={cx('fixed-width')}
-                  />
-                </div>
-              </div>
-            </Grid>
-            <Grid item xs={4} className="tw-font-semi tw-text-base tw-text-black">
-              <TextField
-                fullWidth
-                id="outlined-basic"
-                label=""
-                variant="outlined"
-                onKeyPress={e => {
-                  if (e.key === 'Enter') {
-                    searchKeyworld((e.target as HTMLInputElement).value);
-                  }
-                }}
-                InputProps={{
-                  style: { height: '43px' },
-                  startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
-                }}
-              />
-            </Grid>
-          </Grid>
+          <div className="tw-flex tw-gap-5">
+            <Toggle
+              label="보유배지"
+              name="보유배지"
+              value=""
+              variant="small"
+              checked={active === 0}
+              isActive
+              type="tabButton"
+              onChange={() => {
+                setActive(0);
+              }}
+              className={cx('fixed-width')}
+            />
+            <Toggle
+              label="만든퀴즈"
+              name="만든퀴즈"
+              value=""
+              variant="small"
+              checked={active === 1}
+              isActive
+              type="tabButton"
+              onChange={() => {
+                setActive(1);
+                setMyParams({
+                  page,
+                });
+                setPage(1);
+              }}
+              className={cx('fixed-width')}
+            />
+            <Toggle
+              label="작성글"
+              name="작성글"
+              value=""
+              variant="small"
+              checked={active === 2}
+              isActive
+              type="tabButton"
+              onChange={() => {
+                setActive(2);
+                setMyQuizParams({
+                  quizPage,
+                });
+                setQuizPage(1);
+              }}
+              className={cx('fixed-width')}
+            />
+          </div>
         </Box>
 
-        <Divider className="tw-mb-6 tw-border tw-bg-['#efefef']" />
-        {active != 0 && (
+        <Divider className="tw-my-10 tw-border tw-bg-['#efefef']" />
+        {active == 0 && (
           <div>
-            <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
-              <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천 직군</div>
-              <ToggleButtonGroup
-                style={{ display: 'inline' }}
-                value={jobGroup}
-                onChange={handleJobs}
-                aria-label="text alignment"
-                size="small"
-              >
-                {isContentTypeJobFetched &&
-                  contentJobType.map((item, i) => (
-                    <ToggleButton
-                      key={item.id}
-                      value={item.id}
-                      className="tw-ring-1 tw-ring-slate-900/10"
-                      style={{
-                        borderRadius: '5px',
-                        borderLeft: '0px',
-                        margin: '5px',
-                        height: '30px',
-                        border: '0px',
-                      }}
-                    >
-                      {item.name}
-                    </ToggleButton>
-                  ))}
-              </ToggleButtonGroup>
+            <div className="tw-grid tw-grid-cols-8 tw-gap-4">
+              {badgeContents.map((item, index) => (
+                <div key={index} className="tw-text-center">
+                  <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
+                    <img
+                      className="tw-object-cover tw-h-15 "
+                      src={`${process.env.NEXT_PUBLIC_GENERAL_URL}/assets/images/badge/${item?.badgeId}.png`}
+                      alt=""
+                    />
+                  </div>
+                  <div className="tw-text-sm tw-text-black tw-font-bold">{item?.name}</div>
+                  <div className="tw-text-sm tw-text-black tw-line-clamp-1">{item?.description}</div>
+                  <div className="tw-text-sm tw-text-black">{item?.achievementAt?.split(' ')[0]}</div>
+                </div>
+              ))}
             </div>
+          </div>
+        )}
+        {active == 1 && (
+          <div>
+            {myQuizListData?.contents.map((item, index) => (
+              <div key={`admin-quiz-${index}`} className="tw-flex tw-pb-5">
+                <div className="tw-p-4 tw-border border tw-w-full tw-rounded-lg">
+                  <div className="tw-flex tw-w-full tw-items-center"></div>
+                  <div className="tw-flex  tw-items-center">
+                    <div className="tw-flex-auto">
+                      <div className="tw-font-medium tw-text-black">
+                        <div className="tw-text-sm tw-font-normal tw-text-gray-500">
+                          {item?.recommendJobGroupNames?.map((name, i) => (
+                            <span
+                              key={i}
+                              className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600"
+                            >
+                              {name}
+                            </span>
+                          ))}
+                          <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
+                            {item?.recommendLevels?.sort().join(',')}레벨
+                          </span>
+                          {item?.recommendJobNames?.map((name, i) => (
+                            <span
+                              key={i}
+                              className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-100 tw-text-sm tw-font-light tw-text-gray-600"
+                            >
+                              {name}
+                            </span>
+                          ))}
+                          {item?.hashTags?.map((name, i) => (
+                            <span
+                              key={i}
+                              className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-gray-700"
+                            >
+                              {name}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="tw-text-gray-400 tw-text-sm ">{item.createdAt}</div>
+                  </div>
+                  <div className="tw-flex  tw-items-center py-2">
+                    <div className="tw-flex-auto">
+                      <div className="tw-font-medium tw-text-black tw-text-base tw-line-clamp-1">{item.content}</div>
+                    </div>
+                    {/* <div className="">{item.memberName}</div> */}
+                  </div>
+                  <div className="tw-grid tw-grid-cols-12 tw-gap-4">
+                    <div className="tw-col-span-1 tw-text-sm tw-font-bold tw-text-black">아티클</div>
+                    <div className="tw-col-span-9 tw-text-sm tw-text-gray-600  tw-line-clamp-1">{item.articleUrl}</div>
+                    <div className="tw-col-span-2 tw-text-sm tw-text-right">
+                      댓글 : {item.activeCount} 답변 : {item.answerCount}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+            <Pagination page={page} setPage={setPage} total={totalPage} />
           </div>
         )}
         <article>
@@ -312,7 +350,6 @@ export function ProfileTemplate() {
                   <div className={cx('content--empty')}>데이터가 없습니다.</div>
                 ))} */}
             </section>
-            <Pagination page={page} setPage={setPage} total={totalPage} />
           </div>
         </article>
       </div>

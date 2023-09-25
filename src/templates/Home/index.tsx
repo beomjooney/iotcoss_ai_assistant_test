@@ -105,7 +105,7 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
   const [vodList, setVodList] = useState([]);
   const [topicList, setTopicList] = useState([]);
   const [mentorList, setMentorList] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(true);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(logged ? true : false);
 
   /**skill data */
   const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
@@ -227,7 +227,7 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
     console.log(profileImageKey);
     const params = {
       nickname: nickName,
-      careers: formFields,
+      careers: formFields[0].companyName ? formFields : [],
       jobGroupType: recommendJobGroups,
       level: recommendLevels,
       customSkills: selectedSkills,
@@ -936,7 +936,7 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
                     rows={3}
                     onChange={onMessageChange}
                     value={introductionMessage}
-                    defaultValue="클럽 소개 내용을 입력해주세요."
+                    // defaultValue="클럽 소개 내용을 입력해주세요."
                   />
                 </dd>
               </div>

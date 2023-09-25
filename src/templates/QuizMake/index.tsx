@@ -30,7 +30,7 @@ import { jobColorKey } from 'src/config/colors';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { UseQueryResult } from 'react-query';
-import { useMyJobs } from 'src/services/jobs/jobs.queries';
+import { useMyQuiz } from 'src/services/jobs/jobs.queries';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -138,7 +138,7 @@ export function QuizMakeTemplate() {
   const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
   const { data: experienceData }: UseQueryResult<ExperiencesResponse> = useExperiences();
   const { isFetched: isJobGroupFetched } = useJobGroupss(data => setJobGroups(data.data.contents || []));
-  const { data: myQuizData, refetch: refetchMyJob }: UseQueryResult<any> = useMyJobs(params, data => {
+  const { data: myQuizData, refetch: refetchMyJob }: UseQueryResult<any> = useMyQuiz(params, data => {
     setTotalPage(data.totalPages);
   });
   //quiz delete

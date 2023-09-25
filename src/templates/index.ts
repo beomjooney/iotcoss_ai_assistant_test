@@ -33,6 +33,7 @@ export * from './Quiz/Manage/index';
 export * from './Quiz/Solution/index';
 export * from './Quiz/Growth/index';
 export * from './Quiz/AnswersDetail/index';
+export * from './Quiz/AnswersRoundDetail/index';
 export * from './Quiz/Detail/index';
 export * from './Seminar/Detail/index';
 export * from './Skill/index';
