@@ -213,7 +213,7 @@ export function QuizAnswersDetailTemplate({ id }: QuizAnswersDetailTemplateProps
         </div>
 
         <div>
-          <div className="tw-bg-gray-50 tw-rounded-lg tw-px-8 tw-py-5 tw-text-black tw-grid tw-grid-cols-9">
+          <div className="tw-bg-gray-50 tw-rounded-lg tw-px-8 tw-py-5 tw-text-black tw-grid tw-grid-cols-12">
             <div className="tw-col-span-1">
               <div className="tw-flex-auto tw-text-center tw-text-black tw-font-bold">Q{contents?.order}.</div>
               <div className="tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold">
@@ -242,10 +242,10 @@ export function QuizAnswersDetailTemplate({ id }: QuizAnswersDetailTemplateProps
                 )}
               </div>
             </div>
-            <div className="tw-col-span-6 tw-flex tw-items-center ">
+            <div className="tw-col-span-8 tw-flex tw-items-center ">
               <span className="tw-font-right tw-text-base tw-text-black">{contents?.content}</span>
             </div>
-            <div className="tw-col-span-1  tw-flex tw-items-center ">
+            <div className="tw-col-span-2  tw-flex tw-items-center ">
               <div className="tw-flex tw-items-center tw-gap-4">
                 <span>
                   <AssignmentOutlinedIcon className="tw-mr-1 tw-w-5" />
@@ -269,10 +269,6 @@ export function QuizAnswersDetailTemplate({ id }: QuizAnswersDetailTemplateProps
               </div>
               <div className="tw-col-span-2"></div>
             </div>
-
-            <div className="tw-flex tw-justify-center tw-mt-10">
-              <Pagination count={totalPage} page={page} onChange={handlePageChange} />
-            </div>
           </div>
 
           {answerContents.map((item, index) => {
@@ -287,6 +283,9 @@ export function QuizAnswersDetailTemplate({ id }: QuizAnswersDetailTemplateProps
               />
             );
           })}
+        </div>
+        <div className="tw-flex tw-justify-center tw-mt-10">
+          <Pagination count={totalPage} page={page} onChange={handlePageChange} />
         </div>
       </div>
     </div>

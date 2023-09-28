@@ -8,7 +8,7 @@ import { useStore } from 'src/store';
 import { Button, Typography, Profile, Modal, ArticleCard } from 'src/stories/components';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
-import { useMySeminarList, useSeminarDetail, useSeminarList } from 'src/services/seminars/seminars.queries';
+import { paramProps, useMySeminarList, useSeminarDetail, useSeminarList } from 'src/services/seminars/seminars.queries';
 import { RecommendContent } from 'src/models/recommend';
 import { ArticleEnum } from 'src/config/types';
 import Image from 'next/image';
@@ -167,7 +167,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
   };
 
   const handlerTodayQuizSolution = () => {
-    const firstItemWithNullAnswer = quizList.find(item => item.answer === null);
+    const firstItemWithNullAnswer = quizList.find(item => item.answer.answerStatus === '0000');
     router.push('/quiz/solution/' + `${firstItemWithNullAnswer?.clubQuizSequence}`);
   };
 
@@ -441,26 +441,48 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                               )}
                             </button>
                           </div>
-                          {item?.answer ? (
+
+                          {item?.answer?.answerStatus === '0000' ? (
                             <div className="">
                               <button
                                 type="button"
-                                onClick={() => router.push('/quiz/round-answers/' + `${item?.clubQuizSequence}`)}
+                                onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
                                 data-tooltip-target="tooltip-default"
-                                className="tw-bg-red-300 tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                className="tw-bg-blue-300 tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
                               >
-                                전체 답변보기 {'>'}
+                                퀴즈 풀러가기 {'>'}
+                              </button>
+                            </div>
+                          ) : item?.answer?.answerStatus === '0001' ? (
+                            <div className="">
+                              <button
+                                type="button"
+                                data-tooltip-target="tooltip-default"
+                                className="tw-bg-gray-300 tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                              >
+                                1차답변 입력완료
+                              </button>
+                            </div>
+                          ) : item?.answer?.answerStatus === '0002' ? (
+                            <div className="">
+                              <button
+                                type="button"
+                                data-tooltip-target="tooltip-default"
+                                className="tw-bg-gray-300 tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                              >
+                                이해도 입력완료
                               </button>
                             </div>
                           ) : (
                             <div className="">
                               <button
-                                onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
+                                // onClick={() => router.push('/quiz/round-answers/' + `${item?.clubQuizSequence}`)}
+
                                 type="button"
                                 data-tooltip-target="tooltip-default"
-                                className="tw-bg-blue-500 tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                className="tw-bg-red-300 tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
                               >
-                                퀴즈 풀러가기 {'>'}
+                                전체 답변보기 {'>'}
                               </button>
                             </div>
                           )}
@@ -468,18 +490,20 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                         {item?.answer ? (
                           <div className="tw-bg-white tw-flex tw-items-center tw-p-4 border  tw-py-6 tw-rounded-bl-xl tw-rounded-br-xl">
                             <div className="tw-flex-auto">
-                              <div className="tw-font-medium tw-text-gray-500 tw-text-sm">{item?.answer?.text}</div>
+                              <div className="tw-font-medium tw-text-gray-500 tw-text-sm tw-line-clamp-2">
+                                {item?.answer?.text}
+                              </div>
                             </div>
                             <div className="">
-                              <div className="tw-font-medium tw-text-black">
-                                <button
+                              <div className="tw-font-medium tw-text-black ">
+                                {/* <button
                                   onClick={() => router.push('/quiz/answers/' + `${item?.clubQuizSequence}`)}
                                   type="button"
                                   data-tooltip-target="tooltip-default"
                                   className="tw-bg-white tw-text-gray-500 tw-text-sm tw-font-right tw-px-3 tw-py-1 tw-rounded"
                                 >
                                   자세히보기
-                                </button>
+                                </button> */}
                               </div>
                             </div>
                           </div>

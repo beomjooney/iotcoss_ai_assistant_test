@@ -1,6 +1,20 @@
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
-import { addPosts, deletePost, savePost, saveReply, deleteReply, saveClubQuizPost } from './quiz.api';
+import { addPosts, deletePost, savePost, saveReply, deleteReply, saveClubQuizPost, quizOrder } from './quiz.api';
+
+export const useQuizOrder = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => quizOrder(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('QUIZ').all),
+    onSuccess: async data => {
+      // alert('수정이 완료되었습니다.');
+    },
+  });
+};
 
 export const useSavePost = (): UseMutationResult => {
   const queryClient = useQueryClient();

@@ -179,13 +179,15 @@ export function ProfileTemplate() {
               </div>
             </div>
           </div>
+          <div className={cx('container')}>
+            <div className="tw-py-10 tw-text-xl tw-text-black tw-font-bold">
+              나의 보유포인트 : {userInfo?.points} point
+            </div>
+          </div>
         </div>
       )}
       <div className={cx('container')}>
-        <div className="tw-py-10 tw-text-xl tw-text-black tw-font-bold">나의 보유포인트 : {userInfo?.points} point</div>
         <Box sx={{ width: '100%', typography: 'body1' }}>
-          {/* <SecondTabs tabs={testBoards} /> */}
-
           <div className="tw-flex tw-gap-5">
             <Toggle
               label="보유배지"

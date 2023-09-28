@@ -28,7 +28,10 @@ export const saveReply = async body =>
 export const deleteReply = async body =>
   await axiosGeneralAPI().delete(`/posts/${body.parentPostNo}/${body.postReplyNo}`);
 
-// 세미나 상세 조회
+// 퀴즈 순서변경
+export const quizOrder = async body => await axiosGeneralAPI().put(`/api/v1/club/quizzes/order`, body);
+
+// 퀴즈 상세 조회
 export const quizSolutionDetail = async id => {
   const { data } = await axiosGeneralAPI().get(`/api/v1/club/quizzes/${id}`);
   return data.data;
@@ -39,19 +42,19 @@ export const quizRanking = async () => {
   return data.data;
 };
 
-// 세미나 상세 조회
+// 퀴즈 요약
 export const quizGrowthDetail = async id => {
   const { data } = await axiosGeneralAPI().get(`/api/v1/clubs/${id}/growth/summary`);
   return data.data;
 };
 
-// 세미나 상세 조회
+// 퀴즈 답변
 export const quizAnswerDetail = async params => {
   const { data } = await axiosGeneralAPI().get(`/api/v1/club/quizzes/${params.id}/answers`, { params });
   return data.data;
 };
 
-// 세미나 상세 조회
+// 내 퀴즈 답변
 export const clubDetailQuizList = async params => {
   const { data } = await axiosGeneralAPI().get(`/api/v1/clubs/${params.id}/quizzes/my-answers`, { params });
   return data.data;

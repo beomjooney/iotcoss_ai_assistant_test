@@ -288,12 +288,12 @@ ClubMiniCardProps) => {
             alignItems="center"
             rowSpacing={0}
           >
-            <Grid item xs={11}>
+            <Grid item xs={9}>
               <div className="tw-mb-3 tw-text-sm tw-font-semibold tw-text-gray-400 dark:tw-text-gray-400">
                 {item.studyCycle.toString()} | {item.studyCount} 주 | 학습 {item.weekCount}회
               </div>
             </Grid>
-            <Grid item xs={1} className="tw-text-right">
+            <Grid item xs={3} className="tw-text-right">
               <div>{item?.leaderNickname}</div>
             </Grid>
           </Grid>

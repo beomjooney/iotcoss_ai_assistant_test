@@ -475,9 +475,6 @@ export function QuizOpenTemplate() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const handleAddClick = () => {
-    // onGetJobsData && onGetJobsData();
-    // getJobsList();
-    console.log('modal ');
     setIsModalOpen(true);
   };
 

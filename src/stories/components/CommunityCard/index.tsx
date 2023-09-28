@@ -272,13 +272,13 @@ CommunityCardProps) => {
             </div>
           </div>
           <div className="tw-col-span-4 tw-flex tw-justify-end">
-            <Textfield width={400} defaultValue="" placeholder="댓글을 입력해주세요." ref={textInput} />
+            {/* <Textfield width={400} defaultValue="" placeholder="댓글을 입력해주세요." ref={textInput} />
             <button
               className="tw-bg-black tw-text-white px-4  tw-ml-2 tw-rounded-md"
               onClick={() => onReplySubmit(board.postNo, textInput.current.value)}
             >
               입력
-            </button>
+            </button> */}
           </div>
         </div>
         {/* <div className={cx('board-footer')}>
