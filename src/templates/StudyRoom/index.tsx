@@ -76,9 +76,11 @@ const useStyles = makeStyles(theme => ({
     },
   },
   font1: {
-    top: '90%',
+    // top: '0%',
+    marginTop: '10px',
     width: '100%',
     right: '50%',
+    pointerEvents: 'none', // Make the element non-interactive
   },
 }));
 
@@ -91,7 +93,6 @@ export function StudyRoomTemplate() {
   const [skillIds, setSkillIds] = useState<any[]>([]);
   const [skillIdsClk, setSkillIdsClk] = useState<any[]>([1, 2, 3, 4, 5]);
   const [page, setPage] = useState(1);
-  const [pageCalendar, setPageCalendar] = useState(1);
   const [badgePage, setBadgePage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [quizPage, setQuizPage] = useState(1);
@@ -99,9 +100,7 @@ export function StudyRoomTemplate() {
   const [jobGroupsFilter, setJobGroupsFilter] = useState([]);
   const [levelsFilter, setLevelsFilter] = useState([]);
   const [viewFilter, setViewFilter] = useState('0001');
-  const [calendarYearMonth, setCalendarYearMonth] = useState(new Date().toISOString().split('T')[0]);
   const [params, setParams] = useState<paramProps>({ page, viewFilter });
-  const [calendarParams, setCalendarParams] = useState<paramProps>({ pageCalendar, calendarYearMonth });
   const [quizParams, setQuizParams] = useState<paramProps>({ page });
   const [badgeParams, setBadgeParams] = useState<paramProps>({ page: badgePage, isAchieved: true });
   const [contents, setContents] = useState<RecommendContent[]>([]);
@@ -123,10 +122,11 @@ export function StudyRoomTemplate() {
   const currDate = new Date();
   const currDateTime = moment(currDate).format('MM-DD');
   const [open, setOpen] = React.useState(false);
-  const [highlightedDays, setHighlightedDays] = React.useState([
-    { date: '2023-09-01', count: 2 },
-    { date: '2023-09-23', count: 2 },
-  ]); // 년월일 형식의 문자열로 변경
+
+  /**calendar param */
+  const [calendarYearMonth, setCalendarYearMonth] = useState(new Date().toISOString().split('T')[0].slice(0, 7));
+  const [highlightedDays, setHighlightedDays] = React.useState([]); // 년월일 형식의 문자열로 변경
+  const [calendarParams, setCalendarParams] = useState<paramProps>({ calendarYearMonth });
 
   const classes = useStyles();
 
@@ -140,7 +140,7 @@ export function StudyRoomTemplate() {
     const count = highlightedDays.find(item => item.date === props.day.format('YYYY-MM-DD'))?.count || 0;
 
     const dots = Array.from({ length: count }, (_, index) => (
-      <span key={index} className="tw-mr-0.5 tw-font-bold tw-text-2xl tw-text-blue-500">
+      <span key={index} className="tw-font-bold tw-text-2xl tw-text-blue-500 tw-h-[10px]">
         .
       </span>
     ));
@@ -165,18 +165,19 @@ export function StudyRoomTemplate() {
     setQuizList(data.data.contents || []);
     setQuizTotalPage(data.data.totalPages);
   });
-  // const { isFetched: isQuizCalendarFetched, refetch: QuizRefetchCalendar } = useStudyQuizCalendarList(
-  //   calendarParams,
-  //   data => {
-  //     // setQuizList(data.data.contents || []);
-  //     // setQuizTotalPage(data.data.totalPages);
-  //   },
-  // );
+  const { isFetched: isQuizCalendarFetched, refetch: QuizRefetchCalendar } = useStudyQuizCalendarList(
+    calendarParams,
+    data => {
+      const newData = data?.map(item => ({
+        date: item.date,
+        count: Math.min(item.clubs.length, 3), // Limit to a maximum of 3
+      }));
+      setHighlightedDays(newData);
+    },
+  );
 
   const { isFetched: isQuizbadgeFetched, refetch: QuizRefetchBadge } = useStudyQuizBadgeList(badgeParams, data => {
     setBadgeContents(data.data.contents);
-    // setQuizList(data.data.contents || []);
-    // setQuizTotalPage(data.data.totalPages);
   });
 
   const { isFetched: isContentTypeFetched } = useContentTypes(data => {
@@ -206,6 +207,11 @@ export function StudyRoomTemplate() {
       page: quizPage,
     });
   }, [quizPage]);
+
+  useEffect(() => {
+    console.log(calendarYearMonth);
+    setCalendarParams({ calendarYearMonth });
+  }, [calendarYearMonth]);
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -289,6 +295,12 @@ export function StudyRoomTemplate() {
       border: 0,
     },
   }));
+
+  const handleMonthChange = (date: Dayjs) => {
+    // Extract year and month in 'YYYY-MM' format
+    const yearMonth = date.format('YYYY-MM');
+    setCalendarYearMonth(yearMonth);
+  };
 
   return (
     <div className={cx('seminar-container')}>
@@ -473,6 +485,7 @@ export function StudyRoomTemplate() {
                     <div className="tw-bg-white">
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DateCalendar
+                          onMonthChange={handleMonthChange}
                           showDaysOutsideCurrentMonth
                           slots={{
                             day: ServerDay,

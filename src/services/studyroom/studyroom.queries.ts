@@ -110,10 +110,9 @@ export const useStudyQuizCalendarList = (
   onSuccess?: (data: RecommendContentsResponse) => void,
   onError?: (error: Error) => void,
 ) => {
-  const DEFAULT_SIZE = 3;
   return useQuery<RecommendContentsResponse, Error>(
-    QUERY_KEY_FACTORY('QUIZ').list({ size: DEFAULT_SIZE, ...params }),
-    () => studyQuizCalendarList({ size: DEFAULT_SIZE, ...params }),
+    QUERY_KEY_FACTORY('QUIZ').list({ ...params }),
+    () => studyQuizCalendarList({ ...params }),
     {
       onSuccess,
       onError,
