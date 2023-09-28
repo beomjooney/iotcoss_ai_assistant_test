@@ -13,6 +13,7 @@ import Chip from '@mui/material/Chip';
 import { jobColorKey } from 'src/config/colors';
 import ClubCard from 'src/stories/components/ClubCard';
 import { useMemberActiveSummaryInfo } from 'src/services/account/account.queries';
+import router from 'next/router';
 
 const cx = classNames.bind(styles);
 
@@ -60,7 +61,10 @@ export function MyActivityTemplate() {
                   </div>
                   <div>학습예정</div>
                   <div className="tw-py-5">
-                    <button className="tw-bg-[#2474ED] tw-rounded-md tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-14 tw-rounded">
+                    <button
+                      onClick={() => router.push('/studyroom')}
+                      className="tw-bg-[#2474ED] tw-rounded-md tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-14 tw-rounded"
+                    >
                       나의학습방
                     </button>
                   </div>
@@ -84,7 +88,10 @@ export function MyActivityTemplate() {
                     </div>
                   </div>
                   <div className="tw-py-5">
-                    <button className="tw-bg-[#c1a876] tw-rounded-md tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-14 tw-rounded">
+                    <button
+                      onClick={() => router.push('/profile')}
+                      className="tw-bg-[#c1a876] tw-rounded-md tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-14 tw-rounded"
+                    >
                       배지 전체보기
                     </button>
                   </div>

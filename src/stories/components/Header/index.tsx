@@ -121,7 +121,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
   const handleClick = async () => {
     setMenuOpen(false);
     if (logged) {
-      await router.push('/account/my/club-waiting');
+      await router.push('/account/my/activity');
     } else {
       await router.push('/account/login');
     }

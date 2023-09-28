@@ -150,8 +150,8 @@ export function ProfileTemplate() {
                     </div>
                   </div>
                   <div className="tw-font-bold tw-text-base tw-text-black tw-mt-5">
-                    {userInfo?.careers?.[userInfo?.careers?.length - 1].companyName} |
-                    {userInfo?.careers?.[userInfo?.careers?.length - 1].job}
+                    {userInfo?.careers?.[userInfo?.careers?.length - 1]?.companyName} |
+                    {userInfo?.careers?.[userInfo?.careers?.length - 1]?.job}
                   </div>
                   <div className="tw-py-2">
                     {userInfo?.customSkills?.map((name, i) => (
@@ -247,7 +247,7 @@ export function ProfileTemplate() {
                 <div key={index} className="tw-text-center">
                   <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
                     <img
-                      className="tw-object-cover tw-h-15 "
+                      className="tw-object-cover tw-h-[80px] "
                       src={`${process.env.NEXT_PUBLIC_GENERAL_URL}/assets/images/badge/${item?.badgeId}.png`}
                       alt=""
                     />
