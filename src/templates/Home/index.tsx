@@ -105,7 +105,6 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
   const [vodList, setVodList] = useState([]);
   const [topicList, setTopicList] = useState([]);
   const [mentorList, setMentorList] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(logged ? true : false);
 
   /**skill data */
   const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
@@ -133,7 +132,7 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
   /** job & level */
   const [jobGroup, setJobGroup] = useState([]);
   const [recommendJobGroups, setRecommendJobGroups] = useState([]);
-  const [recommendLevels, setRecommendLevels] = useState('0');
+  const [recommendLevels, setRecommendLevels] = useState('');
   const { isFetched: isContentTypeFetched } = useContentTypes(data => {
     setJobGroup(data.data.contents || []);
   });
@@ -158,44 +157,11 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
     setUserInfo(user);
     setNickName(user?.nickname);
   });
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(logged ? (userInfo.jobGroup ? false : true) : false);
 
   /**save profile */
   const { mutate: onSave } = useSaveProfile();
-
-  // const { isFetched: isJobGroupFetched } = useJobGroups(data => setJobGroups(data));
-  // const { isFetched: isVodFetched } = useRecommendContents(
-  //   PAGE_NAME,
-  //   { contentsType: ArticleEnum.VOD, size: 8 },
-  //   data => setVodList(data.data),
-  // );
-  // const { isFetched: isTopicFetched } = useRecommendContents(
-  //   PAGE_NAME,
-  //   { contentsType: ArticleEnum.ARTICLE, size: 8 },
-  //   data => setTopicList(data.data),
-  // );
-  // const { isFetched: isMentorFetched } = useMentorList(data => setMentorList(data));
-  const handleUserResumeButton = async () => {
-    // if (!logged) {
-    //   if (confirm('로그인이 필요한 페이지 입니다.\n로그인 페이지로 이동하시겠습니까?')) {
-    //     await router.push('/account/login');
-    //     return;
-    //   }
-    // } else {
-    //   if (hasUserResumeStory) {
-    //     // 정보가 있을 경우 멘티 멘토 구분하여 파라미터 세팅
-    //     await router.push(
-    //       {
-    //         pathname: `/growth-story/${memberId}`,
-    //         query: { prevPath: '/', type: userType === '0001' ? 'MENTEE' : 'MENTOR' },
-    //       },
-    //       `/growth-story/${memberId}`,
-    //     );
-    //   } else {
-    //     // 메인에서 신청할 경우는 무조건 멘토
-    //     await router.push({ pathname: '/growth-story', query: { type: 'MENTEE' } }, '/growth-story');
-    //   }
-    // }
-  };
+  const handleUserResumeButton = async () => {};
 
   const handleRecommendLevels = (event: React.MouseEvent<HTMLElement>, newFormats: string) => {
     setRecommendLevels(newFormats);
@@ -221,6 +187,15 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
     console.log(imageUrl);
     console.log(fileImageUrl);
 
+    if (recommendJobGroups.length === 0) {
+      alert('직군을 입력해주세요.');
+      return 0;
+    }
+
+    if (recommendLevels === '') {
+      alert('레벨을 입력해주세요.');
+      return 0;
+    }
     // fileImageUrl이 null인 경우 imageUrl을 사용하도록 조건문 추가
     const profileImageKey = imageUrl || user?.profileImageUrl;
 
@@ -332,11 +307,11 @@ export function HomeTemplate({ logged = false, hasUserResumeStory, userType }: H
                   성장 가속 서비스 데브어스
                 </div>
                 <div className={cx('fit-content', 'action-btn')}>
-                  <Button size="main" onClick={handleUserResumeButton} className="tw-w-72 tw-h-12">
+                  {/* <Button size="main" onClick={handleUserResumeButton} className="tw-w-72 tw-h-12">
                     <Typography type="B1" tag="div" weight="bold">
                       지금 시작하기!
                     </Typography>
-                  </Button>
+                  </Button> */}
                 </div>
               </div>
             </div>

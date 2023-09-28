@@ -28,11 +28,8 @@ export function MyTemplate({ children }: MyTemplateProps) {
   const [summary, setSummary] = useState({});
   const [showMenu, setShowMenu] = useState<ReactNode>(null);
   const [showMenuMobile, setShowMenuMobile] = useState<ReactNode>(null);
-
   const [isShowMentorBtn, setIsShowMentorBtn] = useState<boolean>(false);
   const { isFetched: isUserFetched } = useMemberSummaryInfo(data => setSummary(data));
-
-  console.log('summary', summary);
 
   const showMentorChangeBtn = () => {
     let isUserRole = user?.roles?.find(_ => _ === 'ROLE_USER');
@@ -45,15 +42,15 @@ export function MyTemplate({ children }: MyTemplateProps) {
   const currentPath = router.pathname;
   // TODO 위에 타이틀 보여지게 하기 - menus에 다 넣고 옵션 값에 따라 role 맞춰 보여주기
   const menus = [
-    // { no: 0, title: '레벨&성향 테스트', link: '/test' , role: 'all' },
-    { no: 0, title: '가입승인 대기 클럽목록', link: '/club-waiting', role: 'all' },
-    { no: 1, title: '개설신청 대기 클럽목록', link: '/admin-club', role: 'all' },
+    { no: 0, title: '나의 활동', link: '/activity', role: 'all' },
+    { no: 1, title: '가입승인 대기 클럽목록', link: '/club-waiting', role: 'all' },
+    { no: 2, title: '개설신청 대기 클럽목록', link: '/admin-club', role: 'all' },
+    { no: 3, title: '즐겨찾기', link: '/favorites', role: 'all' },
+    { no: 4, title: '개인정보관리', link: '/member-edit', role: 'all' },
     // { no: 1, title: 'MY 레벨&성향', link: '/level-tendency', role: 'all' },
     // { no: 1, title: 'MY 학습 픽', link: '/learning' , role: 'all' },
-    { no: 2, title: '즐겨찾기', link: '/favorites', role: 'all' },
     // { no: 3, title: '세미나 신청 내역', link: '/seminar-applications', role: 'all' },
     // { no: 4, title: '참여중인 그룹 스터디', link: '/study' , role: 'all' },
-    { no: 5, title: '개인정보관리', link: '/member-edit', role: 'all' },
     // { no: 6, title: 'MY 멘토 프로필', link: '/growth-story', role: 'mentor' },
     // { no: 7, title: 'MY 멘토 픽', link: '/mentor', role: 'mentor' },
     // { no: 8, title: '새로운 세미나 개설하기', link: '/register-seminar', role: 'admin' },

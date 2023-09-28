@@ -1,0 +1,103 @@
+import classNames from 'classnames/bind';
+import styles from './index.module.scss';
+import MentorPick from 'src/stories/components/MentorPick';
+import Button from 'src/stories/components/Button';
+import { useMyMentorList } from 'src/services/mentors/mentors.queries';
+import React, { useState } from 'react';
+import { useSessionStore } from 'src/store/session';
+import Link from 'next/link';
+import Pagination from 'src/stories/components/Pagination';
+import Grid from '@mui/material/Grid';
+import { useSeminarMeFavoriteList } from 'src/services/seminars/seminars.queries';
+import Chip from '@mui/material/Chip';
+import { jobColorKey } from 'src/config/colors';
+import ClubCard from 'src/stories/components/ClubCard';
+import { useMemberActiveSummaryInfo } from 'src/services/account/account.queries';
+
+const cx = classNames.bind(styles);
+
+export function MyActivityTemplate() {
+  const { memberId } = useSessionStore.getState();
+
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
+  const [params, setParams] = useState<paramProps>({ page });
+  const [contents, setContents] = useState<RecommendContent[]>([]);
+
+  const [summary, setSummary] = useState({});
+  const { isFetched: isUserFetched } = useMemberActiveSummaryInfo(data => setSummary(data));
+  console.log('summary3333', summary);
+  return (
+    <div className={cx('member-edit-container')}>
+      <section className={cx('content')}>
+        <div className={cx('content--not-found')}>
+          {isUserFetched && (
+            <div>
+              <div className="tw-grid tw-grid-cols-3 tw-gap-0 tw-p-5 border tw-flex tw-items-center tw-justify-between">
+                <div className="tw-col-span-1 tw-text-base tw-font-bold tw-text-gray-600 tw-text-center">
+                  <div className="tw-text-xl tw-py-3 tw-text-gray-400">
+                    {summary?.myStudyRoomStatus?.scheduledCount}
+                  </div>
+                  <div>학습예정</div>
+                </div>
+                <div className="tw-col-span-1 tw-text-base tw-font-bold tw-text-gray-600 tw-text-center">
+                  <div className="tw-text-xl tw-py-3 tw-text-blue-500">
+                    {summary?.myStudyRoomStatus?.inProgressCount}
+                  </div>
+                  <div>학습 중</div>
+                </div>
+                <div className="tw-col-span-1 tw-text-base tw-font-bold tw-text-gray-600 tw-text-center">
+                  <div className="tw-text-xl tw-py-3 tw-text-black">{summary?.myStudyRoomStatus?.completeCount}</div>
+                  <div>학습완료</div>
+                </div>
+              </div>
+              <div className="tw-font-bold tw-text-xl tw-text-black tw-py-10">나의 활동내역</div>
+              <div className="tw-grid tw-grid-cols-5 tw-gap-0 tw-p-5 tw-flex tw-items-center tw-justify-between tw-gap-5">
+                <div className="tw-h-[300px] border-3 border-primary tw-border-indigo-500 tw-col-span-3 tw-text-base tw-font-bold tw-text-gray-600 tw-text-center tw-p-5">
+                  <div className="tw-text-xl tw-py-4 tw-text-blue-500">Today</div>
+                  <div className="tw-text-xl tw-py-2 tw-text-gray-400">
+                    {summary?.activityHistory?.todayDate} ({summary?.activityHistory?.dayOfWeek})
+                  </div>
+                  <div>학습예정</div>
+                  <div className="tw-py-5">
+                    <button className="tw-bg-[#2474ED] tw-rounded-md tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-14 tw-rounded">
+                      나의학습방
+                    </button>
+                  </div>
+                </div>
+                <div className="tw-h-[300px] border  tw-col-span-2 tw-text-base tw-font-bold tw-text-gray-600 tw-text-center  tw-rounded-md  tw-p-5">
+                  <div className="tw-text-xl tw-py-4 tw-text-black">최근 획득한 배지</div>
+                  <div className="tw-text-center">
+                    <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
+                      <img
+                        className="tw-object-cover tw-h-[80px] "
+                        src={`${process.env.NEXT_PUBLIC_GENERAL_URL}/assets/images/badge/${summary?.lastAchievedBadge?.badgeId}.png`}
+                        alt=""
+                      />
+                    </div>
+                    <div className="tw-text-sm tw-text-black tw-font-bold">{summary?.lastAchievedBadge?.name}</div>
+                    <div className="tw-text-sm tw-text-black tw-line-clamp-1">
+                      {summary?.lastAchievedBadge?.description}
+                    </div>
+                    <div className="tw-text-sm tw-text-black">
+                      {summary?.lastAchievedBadge?.achievementAt?.split(' ')[0]}
+                    </div>
+                  </div>
+                  <div className="tw-py-5">
+                    <button className="tw-bg-[#c1a876] tw-rounded-md tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-14 tw-rounded">
+                      배지 전체보기
+                    </button>
+                  </div>
+                </div>
+                <div className="tw-font-bold tw-text-xl tw-text-black tw-py-10">나의 활동로그</div>
+              </div>
+            </div>
+          )}
+          <div className="tw-mt-10">
+            <Pagination page={page} setPage={setPage} total={totalPage} />
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}

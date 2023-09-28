@@ -19,7 +19,6 @@ interface GrowthStoryTemplateProps {
 
 export function GrowthStoryAdminTemplate({ hasInfoData, userType }: GrowthStoryTemplateProps) {
   const { memberId } = useSessionStore.getState();
-
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [params, setParams] = useState<paramProps>({ page, status: '0002' });
@@ -32,18 +31,6 @@ export function GrowthStoryAdminTemplate({ hasInfoData, userType }: GrowthStoryT
   });
 
   const router = useRouter();
-
-  const onGrowthStory = async () => {
-    if (hasInfoData) {
-      await router.push(
-        { pathname: `/growth-story/${memberId}`, query: { type: userType === '0001' ? 'MENTEE' : 'MENTOR' } },
-        `/growth-story/${memberId}`,
-      );
-    } else {
-      // 여기서 신청은 무조건 멘티
-      await router.push({ pathname: '/growth-story', query: { type: 'MENTEE' } }, '/growth-story');
-    }
-  };
 
   return (
     <div className={cx('member-edit-container')}>

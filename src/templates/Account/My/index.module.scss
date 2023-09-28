@@ -112,7 +112,7 @@
   .lnb-area {
     font-family: font.$font-family-default;
     width: 370px;
-    height: 905px;
+    height: 100%;
 
     .lnb-title {
       font-weight: Bold;
@@ -131,7 +131,7 @@
       top: 0px;
       left: 0px;
       overflow: hidden;
-      margin-bottom: 40px;
+      margin-bottom: 10px;
 
       &__item {
         margin: 0;

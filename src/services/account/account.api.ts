@@ -21,9 +21,17 @@ export async function memberInfo(memberId: string) {
   // const { data } = await axiosGeneralAPI().get(`/members/${memberId}`);
   return data.data;
 }
-// 회원 섬머리 조회
+
+// 회원 요약 조회
 export async function memberSummaryInfo() {
   const { data } = await axiosGeneralAPI().get(`/api/v1/members/activity/summary`);
+  // const { data } = await axiosGeneralAPI().get(`/members/${memberId}`);
+  return data.data;
+}
+
+// 회원 활동 조회
+export async function memberActiveSummaryInfo() {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/activity/summary`);
   // const { data } = await axiosGeneralAPI().get(`/members/${memberId}`);
   return data.data;
 }

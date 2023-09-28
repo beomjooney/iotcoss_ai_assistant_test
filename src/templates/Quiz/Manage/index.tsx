@@ -29,15 +29,15 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
   const [isBookmark, setIsBookmark] = useState(true);
   const [contents, setContents] = useState<RecommendContent[]>([]);
   const [quizList, setQuizList] = useState<RecommendContent[]>([]);
+  const [quizOriginList, setQuizOriginList] = useState<RecommendContent[]>([]);
   const [isModalCancelOpen, setIsModalCancelOpen] = useState<boolean>(false);
-  const [totalElements, setTotalElements] = useState(0);
   const { memberId, logged } = useSessionStore.getState();
   const [itemList, setItemList] = useState<any[]>([]);
 
   const { data, refetch } = useClubQuizManage(id, data => {
     setContents(data || []);
-    setQuizList(data?.quizPage?.contents || []);
-    setTotalElements(data?.quizPage?.totalElements);
+    setQuizList(data?.quizzes || []);
+    setQuizOriginList(data?.quizzes.map(item => item.clubQuizSequence));
   });
 
   /** quiz */
@@ -56,12 +56,17 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
 
   const handleAddClick = () => {
     console.log(itemList);
+    console.log(quizOriginList);
+    if (itemList.length === 0) {
+      alert('퀴즈 순서를 변경해주세요.');
+      return 0;
+    }
     // Transforming the data into an array of objects with "clubQuizSequence" and "order" properties
     const transformedData = {
       clubSequence: contents?.clubSequence, // Add the "clubSequence" property with a value of 2
-      clubQuizOrders: itemList.map(item => ({
-        clubQuizSequence: item.clubQuizSequence,
-        order: item.order,
+      clubQuizOrders: quizOriginList.map((item, index) => ({
+        clubQuizSequence: item,
+        order: itemList[index].order,
       })),
     };
     console.log(transformedData);
@@ -151,9 +156,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
         <div className="tw-flex tw-items-center tw-mb-6">
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
             <Grid item xs={2} className="tw-font-bold tw-text-xl tw-text-black">
-              <div className="tw-text-base tw-font-right tw-mr-5 tw-text-black">
-                총 {totalElements}개 중 {totalElements}개 등록
-              </div>
+              <div className="tw-text-base tw-font-right tw-mr-5 tw-text-black">총 {quizList.length}개</div>
             </Grid>
 
             <Grid item xs={7} className="tw-font-bold tw-text-xl tw-text-black ">
@@ -226,7 +229,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
               <div>
                 <ReactDragList
                   dataSource={quizList}
-                  rowKey="content"
+                  rowKey="order"
                   row={dragList}
                   handles={false}
                   className="simple-drag"
@@ -247,30 +250,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
                       rowSpacing={3}
                     >
                       <Grid item xs={1}>
-                        <div className="tw-flex-auto tw-text-center">
-                          {/* <button
-                            type="button"
-                            // onClick={() => handleDeleteQuiz(item.quizSequence)}
-                            className="tw-text-blue-700 border tw-border-blue-700 tw-font-medium tw-rounded-lg tw-text-sm tw-p-2.5 tw-text-center tw-inline-flex tw-items-center tw-mr-2"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="tw-w-6 tw-h-6 tw-text-black"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-                              />
-                            </svg>
-
-                            <span className="sr-only">Icon description</span>
-                          </button> */}
-                        </div>
+                        <div className="tw-flex-auto tw-text-center"></div>
                       </Grid>
                       <Grid item xs={11}>
                         <div className="tw-flex tw-items-center tw-p-4 tw-border border mb-3 mt-3 rounded  tw-h-[60px]">

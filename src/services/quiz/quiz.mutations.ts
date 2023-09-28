@@ -11,7 +11,7 @@ export const useQuizOrder = (): UseMutationResult => {
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('QUIZ').all),
     onSuccess: async data => {
-      // alert('수정이 완료되었습니다.');
+      alert('수정이 완료되었습니다.');
     },
   });
 };
