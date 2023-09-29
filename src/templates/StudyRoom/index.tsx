@@ -126,6 +126,8 @@ export function StudyRoomTemplate() {
   /**calendar param */
   const [calendarYearMonth, setCalendarYearMonth] = useState(new Date().toISOString().split('T')[0].slice(0, 7));
   const [highlightedDays, setHighlightedDays] = React.useState([]); // 년월일 형식의 문자열로 변경
+  const [calendarList, setCalendarList] = React.useState([]);
+  const [quizStatusList, setQuizStatusList] = React.useState([]);
   const [calendarParams, setCalendarParams] = useState<paramProps>({ calendarYearMonth });
 
   const classes = useStyles();
@@ -172,6 +174,7 @@ export function StudyRoomTemplate() {
         date: item.date,
         count: Math.min(item.clubs.length, 3), // Limit to a maximum of 3
       }));
+      setCalendarList(data);
       setHighlightedDays(newData);
     },
   );
@@ -300,6 +303,16 @@ export function StudyRoomTemplate() {
     // Extract year and month in 'YYYY-MM' format
     const yearMonth = date.format('YYYY-MM');
     setCalendarYearMonth(yearMonth);
+  };
+  const handleDayChange = (date: Dayjs) => {
+    // Extract year and month in 'YYYY-MM' format
+    const yearMonth = date.format('YYYY-MM-DD');
+
+    // 해당 날짜의 clubs 리스트 찾기
+    const clubsForTargetDate = calendarList.find(item => item.date === yearMonth)?.clubs || [];
+    console.log(yearMonth, clubsForTargetDate);
+    setQuizStatusList(clubsForTargetDate);
+    // setCalendarYearMonth(yearMonth);
   };
 
   return (
@@ -486,6 +499,7 @@ export function StudyRoomTemplate() {
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DateCalendar
                           onMonthChange={handleMonthChange}
+                          onChange={handleDayChange}
                           showDaysOutsideCurrentMonth
                           slots={{
                             day: ServerDay,
@@ -499,6 +513,35 @@ export function StudyRoomTemplate() {
                       </LocalizationProvider>
                     </div>
                   </div>
+
+                  {quizStatusList.length > 0 && (
+                    <div className="tw-bg-gray-50 tw-rounded-md tw-p-5 tw-text-black ">
+                      <div className="tw-font-bold tw-text-base tw-pb-5">퀴즈 상태</div>
+                      {quizStatusList.map((item, i) => {
+                        return (
+                          // TODO API Response 보고 댓글 작성자로 수정 필요
+                          <div
+                            key={i}
+                            className="tw-flex tw-items-center tw-rounded-md tw-grid tw-grid-cols-6 tw-gap-0  tw-bg-white tw-text-sm  tw-p-4 tw-mb-5"
+                          >
+                            <div className="tw-col-span-4 ">
+                              <div> {item.clubName}</div>
+                            </div>
+                            <div className="tw-col-span-2 tw-text-right">
+                              <button
+                                disabled
+                                className={`tw-w-[60px] tw-text-center tw-text-white tw-text-blue-800 tw-text-xs tw-font-medium tw-px-3 tw-py-2 tw-rounded ${
+                                  item.isComplete ? 'tw-bg-gray-400' : 'tw-bg-blue-500'
+                                }`}
+                              >
+                                {item.isComplete ? '완료 ' : '미완료'}
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
                   <div className="tw-bg-gray-50 tw-rounded-md tw-h-[430px] tw-p-5 tw-text-black ">
                     <div className="tw-font-bold tw-text-base tw-pb-5">내가 풀어야 할 퀴즈</div>
                     {/* {isQuizFetched && (
