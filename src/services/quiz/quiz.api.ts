@@ -37,6 +37,12 @@ export const quizSolutionDetail = async id => {
   return data.data;
 };
 
+// 퀴즈 상태 조회
+export const quizSolutionDetailStatus = async id => {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/club/quizzes/${id}/answer/me`);
+  return data.data;
+};
+
 export const quizRanking = async () => {
   const { data } = await axiosGeneralAPI().get(`/api/v1/monthly/ranking`);
   return data.data;

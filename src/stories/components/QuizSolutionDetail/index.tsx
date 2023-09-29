@@ -87,11 +87,19 @@ export interface BannerProps {
   data: object;
   className?: string;
   subTitle?: string;
+  quizStatus: object;
 }
 
 const cx = classNames.bind(styles);
 // const Banner = ({ imageName = 'top_banner_seminar.jpg', title, subTitle, className }: BannerProps) => {
-const quizSolutionDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className, data }: BannerProps) => {
+const quizSolutionDetail = ({
+  imageName = 'seminar_bg.png',
+  title,
+  subTitle,
+  className,
+  data,
+  quizStatus,
+}: BannerProps) => {
   const steps = ['Step1. 답변 입력', 'Step2. 아티클 읽기', 'Step3. 답변 수정(선택)'];
 
   let [isLiked, setIsLiked] = useState(false);
@@ -105,6 +113,18 @@ const quizSolutionDetail = ({ imageName = 'seminar_bg.png', title, subTitle, cla
   const { mutate: onAnswerSave, isSuccess: isAnswerSave } = useAnswerSave();
   const { mutate: onAnswerUpdate, isSuccess: isAnswerUpdate } = useAnswerUpdate();
   const { mutate: onComprehensionSave, isSuccess: isComprehensionSave } = useComprehensionSave();
+
+  console.log('status', quizStatus);
+
+  useEffect(() => {
+    if (quizStatus?.answerStatus === '0001') {
+      setIntroductionMessage(quizStatus?.preAnswer);
+      setActiveStep(1);
+    } else if (quizStatus?.answerStatus === '0002') {
+      setIntroductionMessage(quizStatus?.preAnswer);
+      setActiveStep(2);
+    }
+  }, [quizStatus]);
 
   const isStepSkipped = (step: number) => {
     return skipped.has(step);

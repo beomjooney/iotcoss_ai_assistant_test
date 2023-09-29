@@ -14,15 +14,15 @@ export function IndexPage() {
     logged: state.logged,
     job: state.job,
   }));
-  const { setUser, setHasResumeStory, user } = useStore();
+  // const { setUser, setHasResumeStory, user } = useStore();
   // const { data } = useMemberInfo(memberId, data => {
   //   console.log('inputData', data);
   //   setUser({ user: data });
   // });
 
+  // TODO 로그인 수정 변경
   // console.log(user, data, user.jobGroup, !!user?.jobGroup);
-  // TODO 멘티용 API 따로 생기면 셋팅 필요
-  // 홈 화면에 성장스토리 여부에 따라 버튼 명칭 달라져서 로그인 시 호출
+  // 홈 화면에 추가 입력 로그인 시 호출
   // const { data: userResumeStory } = useMentor(logged ? memberId : null);
   // console.log(userResumeStory, data, !!userResumeStory);
   // console.log(`memberType: ${memberType}, memberId: ${memberId}, name: ${name}, logged: ${logged}`);

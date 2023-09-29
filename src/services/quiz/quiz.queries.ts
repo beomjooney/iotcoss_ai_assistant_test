@@ -8,6 +8,7 @@ import {
   quizPoint,
   quizRanking,
   quizSolutionDetail,
+  quizSolutionDetailStatus,
 } from './quiz.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 import { User } from 'src/models/user';
@@ -31,6 +32,16 @@ export const useQuizSolutionDetail = (id, onSuccess?: (data: any) => void, onErr
   // return useQuery<SeminarContent, Error>(QUERY_KEY_FACTORY('SEMINAR').detail(id), () => seminarDetail(id), {
   // TODO : 수정 해주세요. 타입에러 나요. -> 세미나 상세 Profile 컴포넌트에 셋 할때 발생
   return useQuery<any, Error>(QUERY_KEY_FACTORY('SEMINAR').detail(id), () => quizSolutionDetail(id), {
+    onSuccess,
+    onError,
+    refetchOnWindowFocus: true,
+    enabled: !!id,
+  });
+};
+export const useQuizSolutionDetailStatus = (id, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
+  // return useQuery<SeminarContent, Error>(QUERY_KEY_FACTORY('SEMINAR').detail(id), () => seminarDetail(id), {
+  // TODO : 수정 해주세요. 타입에러 나요. -> 세미나 상세 Profile 컴포넌트에 셋 할때 발생
+  return useQuery<any, Error>(QUERY_KEY_FACTORY('QUIZ').detail(id), () => quizSolutionDetailStatus(id), {
     onSuccess,
     onError,
     refetchOnWindowFocus: true,

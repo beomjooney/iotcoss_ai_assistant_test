@@ -25,7 +25,7 @@ import Grid from '@mui/material/Grid';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 import router from 'next/router';
 import QuizSolutionDetail from 'src/stories/components/QuizSolutionDetail';
-import { useQuizSolutionDetail } from 'src/services/quiz/quiz.queries';
+import { useQuizSolutionDetail, useQuizSolutionDetailStatus } from 'src/services/quiz/quiz.queries';
 // import { Item } from '@shopify/polaris/build/ts/src/components/ActionList/components';
 // import ReactMarkdown from 'react-markdown';
 // import remarkGfm from 'remark-gfm';
@@ -53,12 +53,9 @@ export function QuizSolutionTemplate({ id }: QuizSolutionTemplateProps) {
   const [applicationButton, setApplicationButton] = useState<ReactNode>(null);
   const { memberId, logged } = useSessionStore.getState();
 
-  const { isFetched: isParticipantListFetched, data } = useQuizSolutionDetail(id, data => {
-    // setClubMemberStatus(data?.clubMemberStatus);
-    console.log(data?.description);
-  });
+  const { isFetched: isParticipantListFetched, data } = useQuizSolutionDetail(id);
+  const { isFetched: isParticipantListStatusFetched, data: quizSolutionDetailStatus } = useQuizSolutionDetailStatus(id);
 
-  console.log('detail : ', data);
   const { mutate: onParticipant } = useParticipantSeminar();
   const { mutate: onCancelParticipant } = useParticipantCancelSeminar();
   const { mutate: onEncoreSeminar } = useEncoreSeminar();
@@ -317,6 +314,7 @@ export function QuizSolutionTemplate({ id }: QuizSolutionTemplateProps) {
       </div>
       <QuizSolutionDetail
         data={data}
+        quizStatus={quizSolutionDetailStatus}
         title="퀴즈풀기"
         subTitle="퀴즈클럽 풀고 천하무적 커리어를 만들어요!"
         imageName="top_banner_seminar.svg"

@@ -69,7 +69,9 @@ export function ProfileTemplate() {
   const { user, setUser } = useStore();
   const [userInfo, setUserInfo] = useState<User>(user);
   const { memberId } = useSessionStore.getState();
-  console.log('memberId', memberId);
+
+  // console.log('memberId', memberId);
+
   const { isFetched: isUserInfo } = useMemberInfo(memberId, user => {
     setUserInfo(user);
     console.log(user);
