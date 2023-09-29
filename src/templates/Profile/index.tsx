@@ -143,10 +143,10 @@ export function ProfileTemplate() {
                           {userInfo?.jobName}
                         </span>
                       </div>
-                      <div className="tw-col-span-2">
+                      <div className="tw-col-span-2 tw-text-right">
                         <span className="tw-inline-flex tw-item-right">
                           <div className="tw-flex tw-justify-between tw-mt-2 tw-gap-2">
-                            <Button
+                            {/* <Button
                               className="tw-w-full tw-bg-white "
                               variant="outlined"
                               sx={{
@@ -156,7 +156,7 @@ export function ProfileTemplate() {
                               onClick={() => (location.href = '/profile')}
                             >
                               수정하기
-                            </Button>
+                            </Button> */}
                             <Button
                               className="tw-w-full tw-bg-white"
                               variant="outlined"
