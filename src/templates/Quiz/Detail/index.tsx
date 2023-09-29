@@ -585,11 +585,13 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                       if (item?.isRepresentative === true) {
                         return (
                           <div key={index} className="">
-                            <div className="tw-flex tw-items-center tw-px-0 tw-border mb-2 mt-0 rounded">
-                              <span className="tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded">
-                                대표 {index + 1}
-                              </span>
-                              <div className="tw-flex-auto tw-ml-3">
+                            <div className="tw-grid  tw-grid-cols-12 tw-flex tw-items-center tw-px-0 tw-border mb-2 mt-0 rounded">
+                              <div className="tw-col-span-1 ">
+                                <div className="tw-mx-3 tw-py-2 tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-medium tw-text-center  tw-rounded">
+                                  대표 {index + 1}
+                                </div>
+                              </div>
+                              <div className="tw-col-span-11 ">
                                 <div className="tw-font-medium tw-text-black">{item.content}</div>
                               </div>
                             </div>
