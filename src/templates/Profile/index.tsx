@@ -11,29 +11,12 @@ import { useContentJobTypes, useContentTypes, useJobGroups } from 'src/services/
 import Banner from '../../stories/components/Banner';
 import { useStore } from 'src/store';
 import { useRouter } from 'next/router';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import Grid from '@mui/material/Grid';
 import Icon from '@mui/material/Icon';
 import Box from '@mui/system/Box';
-import Image from 'next/image';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import SecondTabs from 'src/stories/components/Tab/SecondTab';
-import ListItemtag from 'src/stories/components/QuizItemCard/ListItemTag';
-import SecondTechLogCard from 'src/stories/components/QuizItemCard/SecondTechLogCard';
-import Card6 from 'src/stories/components/QuizItemCard/Card6';
-import TextField from '@mui/material/TextField';
-import SearchIcon from '@mui/icons-material/Search';
 import Divider from '@mui/material/Divider';
-import Link from 'next/link';
-import { jobColorKey } from 'src/config/colors';
-import ToggleButton from '@mui/material/ToggleButton';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import StarBorderIcon from '@mui/icons-material/StarBorder';
-import StarIcon from '@mui/icons-material/Star';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import Button from '@mui/material/Button';
+
 import { useSessionStore } from 'src/store/session';
 import { useDeleteLike, useSaveLike } from 'src/services/community/community.mutations';
 import { useMemberInfo } from 'src/services/account/account.queries';
@@ -42,15 +25,13 @@ import { useStudyQuizBadgeList } from 'src/services/studyroom/studyroom.queries'
 import { useMyQuiz, useMyQuizReply } from 'src/services/jobs/jobs.queries';
 import { UseQueryResult } from 'react-query';
 import QuizMyReply from 'src/stories/components/QuizMyReply';
+import { deleteCookie } from 'cookies-next';
 const cx = classNames.bind(styles);
 
 export function ProfileTemplate() {
   const { jobGroups, setJobGroups, contentTypes, setContentTypes } = useStore();
   const { logged } = useSessionStore.getState();
   const router = useRouter();
-  const [skillIds, setSkillIds] = useState<any[]>([]);
-  const [skillIdsClk, setSkillIdsClk] = useState<any[]>([1, 2, 3, 4, 5]);
-
   const [contents, setContents] = useState<RecommendContent[]>([]);
   const [images, setSeminarImages] = useState<any[]>([]);
   const [recommendJobGroup, setRecommendJobGroup] = useState<any[]>([]);
@@ -76,6 +57,14 @@ export function ProfileTemplate() {
     setUserInfo(user);
     console.log(user);
   });
+
+  /**logout */
+  const handleLogout = async () => {
+    deleteCookie('access_token');
+    localStorage.removeItem('auth-store');
+    localStorage.removeItem('app-storage');
+    location.href = '/';
+  };
 
   /** get badge */
   const [badgePage, setBadgePage] = useState(1);
@@ -141,17 +130,47 @@ export function ProfileTemplate() {
                 </div>
                 <div className="tw-col-span-10 tw-text-left  tw-flex tw-flex-col  tw-justify-start">
                   <div className=" tw-text-black">
-                    <div className="tw-font-bold tw-text-xl">
-                      {userInfo?.nickname} 님
-                      <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600">
-                        {userInfo?.jobGroupName}
-                      </span>
-                      <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
-                        {userInfo?.level} 레벨
-                      </span>
-                      <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-300 tw-text-sm tw-font-light tw-text-gray-600">
-                        {userInfo?.jobName}
-                      </span>
+                    <div className="tw-font-bold tw-text-xl tw-grid tw-items-center tw-grid-cols-6">
+                      <div className="tw-col-span-4">
+                        {userInfo?.nickname} 님
+                        <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600">
+                          {userInfo?.jobGroupName}
+                        </span>
+                        <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
+                          {userInfo?.level} 레벨
+                        </span>
+                        <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-300 tw-text-sm tw-font-light tw-text-gray-600">
+                          {userInfo?.jobName}
+                        </span>
+                      </div>
+                      <div className="tw-col-span-2">
+                        <span className="tw-inline-flex tw-item-right">
+                          <div className="tw-flex tw-justify-between tw-mt-2 tw-gap-2">
+                            <Button
+                              className="tw-w-full tw-bg-white "
+                              variant="outlined"
+                              sx={{
+                                borderColor: 'gray',
+                                color: 'gray',
+                              }}
+                              onClick={() => (location.href = '/profile')}
+                            >
+                              수정하기
+                            </Button>
+                            <Button
+                              className="tw-w-full tw-bg-white"
+                              variant="outlined"
+                              onClick={handleLogout}
+                              sx={{
+                                borderColor: 'gray',
+                                color: 'gray',
+                              }}
+                            >
+                              로그아웃
+                            </Button>
+                          </div>
+                        </span>
+                      </div>
                     </div>
                   </div>
                   <div className="tw-font-bold tw-text-base tw-text-black tw-mt-5">
