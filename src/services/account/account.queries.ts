@@ -30,7 +30,7 @@ export const useMemberInfo = (memberId: any, onSuccess?: (data: User) => void, o
   useQuery<User, Error>(QUERY_KEY_FACTORY('MEMBER').details(), () => memberInfo(memberId), {
     onSuccess,
     onError,
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
     enabled: !!memberId,
     retry: false,
   });

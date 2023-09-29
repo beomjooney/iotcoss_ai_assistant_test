@@ -26,37 +26,101 @@ import { useMyQuiz, useMyQuizReply } from 'src/services/jobs/jobs.queries';
 import { UseQueryResult } from 'react-query';
 import QuizMyReply from 'src/stories/components/QuizMyReply';
 import { deleteCookie } from 'cookies-next';
+/**import Popup */
+import ProfileModal from 'src/stories/components/ProfileModal';
+import TextField from '@mui/material/TextField';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import ToggleButton from '@mui/material/ToggleButton';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import Autocomplete from '@mui/material/Autocomplete';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs, { Dayjs } from 'dayjs';
+import { useSkills } from 'src/services/skill/skill.queries';
+import { SkillResponse } from 'src/models/skills';
+import { useUploadImage } from 'src/services/image/image.mutations';
+import { useSaveProfile } from 'src/services/account/account.mutations';
+
 const cx = classNames.bind(styles);
 
+const levelGroup = [
+  {
+    name: '0',
+    description: '레벨 0',
+  },
+  {
+    name: '1',
+    description: '레벨 1',
+  },
+  {
+    name: '2',
+    description: '레벨 2',
+  },
+  {
+    name: '3',
+    description: '레벨 3',
+  },
+  {
+    name: '4',
+    description: '레벨 4',
+  },
+  {
+    name: '5',
+    description: '레벨 5',
+  },
+];
+
 export function ProfileTemplate() {
-  const { jobGroups, setJobGroups, contentTypes, setContentTypes } = useStore();
+  const { jobGroups, contentTypes, setContentTypes } = useStore();
   const { logged } = useSessionStore.getState();
   const router = useRouter();
   const [contents, setContents] = useState<RecommendContent[]>([]);
   const [images, setSeminarImages] = useState<any[]>([]);
-  const [recommendJobGroup, setRecommendJobGroup] = useState<any[]>([]);
-  const [contentJobType, setContentJobType] = useState<any[]>([]);
-  const [jobGroup, setJobGroup] = useState([]);
   const [active, setActive] = useState(0);
   const [contentType, setContentType] = useState(0);
-  const { isFetched: isJobGroupFetched } = useJobGroups(data => setJobGroups(data || []));
-  const [recommendLevels, setRecommendLevels] = useState([]);
   let [isLiked, setIsLiked] = useState(false);
   const { mutate: onSaveLike, isSuccess } = useSaveLike();
   const { mutate: onDeleteLike } = useDeleteLike();
   const [keyWorld, setKeyWorld] = useState('');
 
+  /**image */
+  const { mutate: onSaveImage, data: imageUrl, isSuccess: imageSuccess } = useUploadImage();
+
+  /**save profile */
+  const { mutate: onSave, isSuccess: onSuccess } = useSaveProfile();
+
+  /**file image  */
+  const [file, setFile] = useState(null);
+  const [fileImageUrl, setFileImageUrl] = useState(null);
+
   /** get profile */
   const { user, setUser } = useStore();
   const [userInfo, setUserInfo] = useState<User>(user);
   const { memberId } = useSessionStore.getState();
+  const [customSkills, setCustomSkills] = useState([]);
 
-  // console.log('memberId', memberId);
+  const [formFields, setFormFields] = useState([
+    { companyName: '', startDate: '', endDate: '', isCurrent: false, isFreelance: false, isDelete: false },
+  ]);
 
-  const { isFetched: isUserInfo } = useMemberInfo(memberId, user => {
+  const { isFetched: isUserInfo, refetch } = useMemberInfo(memberId, user => {
     setUserInfo(user);
     console.log(user);
+    const jsonArray = user.customSkills.map(item => ({ name: item }));
+    console.log(jsonArray);
+    setCustomSkills(jsonArray);
+    setRecommendLevels(user.level.toString());
+    setRecommendJobGroups(user.jobGroup);
+    setNickName(user.nickname);
+    setIntroductionMessage(user.introductionMessage);
+    setFormFields(user.careers);
   });
+
+  useEffect(() => {
+    refetch();
+  }, [onSuccess]);
 
   /**logout */
   const handleLogout = async () => {
@@ -90,6 +154,132 @@ export function ProfileTemplate() {
     console.log(data);
     setQuizTotalPage(data.totalPages);
   });
+
+  /**work start end */
+  const [startDate, setStartDate] = React.useState<Dayjs | null>(null);
+  const [endDate, setEndDatealue] = React.useState<Dayjs | null>(null);
+
+  /** job */
+  const [contentJobType, setContentJobType] = useState<any[]>([]);
+  const { isFetched: isContentTypeJobFetched } = useContentJobTypes(data => {
+    setContentJobType(data.data.contents || []);
+  });
+
+  /**skill data */
+  const [jobGroup, setJobGroup] = useState([]);
+  const { isFetched: isContentTypeFetched } = useContentTypes(data => {
+    setJobGroup(data.data.contents || []);
+  });
+  const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
+  const fixedOptions = [];
+  const [selectedSkills, setSelectedSkills] = useState([]);
+
+  /**popup */
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [recommendJobGroups, setRecommendJobGroups] = useState([]);
+  const [recommendLevels, setRecommendLevels] = useState('');
+
+  /** introduce message */
+  const [introductionMessage, setIntroductionMessage] = useState<string>('');
+  const [nickName, setNickName] = useState<string>('');
+  const onMessageChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, no?: number) => {
+    const { name, value } = event.currentTarget;
+    setIntroductionMessage(value);
+  };
+  const onNickNameChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, no?: number) => {
+    const { name, value } = event.currentTarget;
+    setNickName(value);
+  };
+  const handleRecommendLevels = (event: React.MouseEvent<HTMLElement>, newFormats: string) => {
+    setRecommendLevels(newFormats);
+  };
+
+  const handleJobGroups = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
+    setRecommendJobGroups(newFormats);
+  };
+
+  const handleAddFields = () => {
+    const values = [
+      ...formFields,
+      { companyName: '', startDate: '', endDate: '', isCurrent: false, isFreelance: false, isDelete: false },
+    ];
+    setFormFields(values);
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log(formFields);
+  };
+
+  const handleSkillsChange = (event, newValue) => {
+    // newValue 배열에서 각 객체의 name 속성을 추출하여 새로운 배열을 만듭니다.
+    const selectedSkillNames = newValue.map(option => option.name);
+    setSelectedSkills(selectedSkillNames);
+    const jsonArray = selectedSkillNames.map(item => ({ name: item }));
+    const json = { ...selectedSkillNames, jsonArray };
+    setCustomSkills(json.jsonArray);
+  };
+  const handleJobChange = (index, event, newValue) => {
+    handleInputChange(index, event, 'job', newValue.id);
+  };
+
+  const handleInputChange = (index: number, e: React.ChangeEvent<HTMLInputElement>, key, id) => {
+    const values = [...formFields];
+    if (key === 'text') {
+      if (e.target.name === 'companyName') {
+        values[index].companyName = e.target.value;
+      }
+    } else if (key === 'startDate' || key === 'endDate') {
+      const datetime = e.format('YYYY-MM-DD');
+      values[index][key] = datetime;
+    } else if (key === 'isFreelance') {
+      values[index][key] = !values[index][key];
+      // setIsFreelance(!isFreelance);
+    } else if (key === 'job') {
+      // 이 부분을 수정하여 id를 사용하도록 변경
+      values[index][key] = id;
+    } else {
+      values[index][key] = !values[index][key];
+      // setIsCurrent(!isCurrent);
+    }
+    // values[index].sequence = index + 1;
+    setFormFields(values);
+  };
+
+  const handleProfileSave = async () => {
+    // fileImageUrl이 null인 경우 imageUrl을 사용하도록 조건문 추가
+    const profileImageKey = imageUrl || user?.profileImageUrl;
+
+    console.log(profileImageKey);
+    const params = {
+      nickname: nickName,
+      careers: formFields[0].companyName ? formFields : [],
+      jobGroupType: recommendJobGroups,
+      level: recommendLevels,
+      customSkills: selectedSkills,
+      introductionMessage: introductionMessage,
+      profileImageUrl: profileImageKey,
+    };
+    console.log(params);
+    onSave(params);
+    setIsModalOpen(false);
+  };
+
+  useEffect(() => {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const image = e.target.result;
+      setFileImageUrl(image);
+    };
+    reader.readAsDataURL(file);
+    onSaveImage(file);
+  }, [file]);
+
+  const onFileChange = files => {
+    if (!files || files.length === 0) return;
+    setFile(files[0]);
+  };
 
   useEffect(() => {
     setMyParams({
@@ -146,17 +336,17 @@ export function ProfileTemplate() {
                       <div className="tw-col-span-2 tw-text-right">
                         <span className="tw-inline-flex tw-item-right">
                           <div className="tw-flex tw-justify-between tw-mt-2 tw-gap-2">
-                            {/* <Button
+                            <Button
                               className="tw-w-full tw-bg-white "
                               variant="outlined"
                               sx={{
                                 borderColor: 'gray',
                                 color: 'gray',
                               }}
-                              onClick={() => (location.href = '/profile')}
+                              onClick={() => setIsModalOpen(true)}
                             >
                               수정하기
-                            </Button> */}
+                            </Button>
                             <Button
                               className="tw-w-full tw-bg-white"
                               variant="outlined"
@@ -262,7 +452,6 @@ export function ProfileTemplate() {
             />
           </div>
         </Box>
-
         <Divider className="tw-my-10 tw-border tw-bg-['#efefef']" />
         {active == 0 && (
           <div>
@@ -395,6 +584,365 @@ export function ProfileTemplate() {
             </section>
           </div>
         </article>
+        {isUserInfo && (
+          <ProfileModal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
+            <div className="tw-font-bold tw-text-xl tw-text-black tw-mt-0 tw-mb-5 tw-text-center">
+              {user?.name}님 데브어스에 오신 것을 환영합니다!
+            </div>
+            <div className="tw-font-semibold tw-text-base tw-text-black tw-mt-0  tw-text-center">
+              직군 및 레벨을 설정하시면 님께
+            </div>
+            <div className="tw-font-semibold tw-text-base  tw-text-black tw-mt-0 tw-mb-10 tw-text-center">
+              꼭 맞는커멘 서비스를 추천받으실 수 있습니다!
+            </div>
+
+            <div className="border tw-p-7 tw-rounded-xl">
+              <div className="tw-font-bold tw-text-base tw-text-black">개인정보</div>
+
+              <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
+                <img
+                  className="tw-w-32 tw-h-32 tw-ring-1 tw-rounded-full"
+                  src={fileImageUrl ?? userInfo?.profileImageUrl}
+                  alt=""
+                />
+              </div>
+              <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
+                <button color="primary" className="tw-bg-blue-500 tw-px-5 tw-py-2 tw-rounded-md">
+                  <label htmlFor={`input-file`} className="tw-text-white tw-text-sm">
+                    사진 변경
+                  </label>
+                  <input
+                    hidden
+                    id={`input-file`}
+                    accept="image/*"
+                    type="file"
+                    onChange={e => onFileChange(e.target?.files)}
+                  />
+                </button>
+              </div>
+              <div className="tw-mt-2 tw-border-t tw-border-gray-100">
+                <dl className="tw-divide-y tw-divide-gray-100">
+                  <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
+                    <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">이메일</dt>
+                    <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                      {user?.email}
+                    </dd>
+                  </div>
+                  <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
+                    <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">이름</dt>
+                    <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                      {user?.name}
+                    </dd>
+                  </div>
+                  <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
+                    <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">닉네임</dt>
+                    <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                      <TextField
+                        size="small"
+                        fullWidth
+                        id="outlined-basic"
+                        label=""
+                        name="companyName"
+                        variant="outlined"
+                        onChange={onNickNameChange}
+                        value={nickName}
+                      />
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+            </div>
+            <div className="border tw-p-7 tw-rounded-xl tw-mt-5">
+              <div className="tw-font-bold tw-text-base tw-text-black">필수 | 직군 및 레벨</div>
+
+              <dl className="tw-divide-y tw-divide-gray-100 tw-py-5">
+                <div className="tw-px-4 tw-pt-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                  <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">(*) 직군선택</dt>
+                  <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                    <ToggleButtonGroup
+                      value={recommendJobGroups}
+                      exclusive
+                      onChange={handleJobGroups}
+                      aria-label="text alignment"
+                    >
+                      {jobGroup?.map((item, index) => (
+                        <ToggleButton
+                          key={`job-${index}`}
+                          value={item.id}
+                          aria-label="fff"
+                          className="tw-ring-1 tw-ring-slate-900/10"
+                          style={{
+                            borderRadius: '5px',
+                            borderLeft: '0px',
+                            margin: '5px',
+                            height: '35px',
+                            border: '0px',
+                          }}
+                        >
+                          {item.name}
+                        </ToggleButton>
+                      ))}
+                    </ToggleButtonGroup>
+                  </dd>
+                </div>
+
+                <div className="tw-px-4 tw-pt-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                  <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">(*) 레벨선택</dt>
+                  <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                    <ToggleButtonGroup
+                      value={recommendLevels}
+                      exclusive
+                      onChange={handleRecommendLevels}
+                      aria-label="text alignment"
+                    >
+                      {levelGroup?.map((item, index) => (
+                        <ToggleButton
+                          key={`job-${index}`}
+                          value={item.name}
+                          aria-label="fff"
+                          className="tw-ring-1 tw-ring-slate-900/10"
+                          style={{
+                            borderRadius: '5px',
+                            borderLeft: '0px',
+                            margin: '5px',
+                            height: '35px',
+                            border: '0px',
+                          }}
+                        >
+                          레벨 {item.name}
+                        </ToggleButton>
+                      ))}
+                    </ToggleButtonGroup>
+                  </dd>
+                </div>
+                <div className="tw-px-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0">
+                  <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900"></dt>
+                  <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                    {recommendLevels?.toString() === '0' && (
+                      <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                        0레벨 : 직무스킬(개발언어/프레임워크 등) 학습 중. 상용서비스 개발 경험 없음.
+                      </div>
+                    )}
+                    {recommendLevels?.toString() === '1' && (
+                      <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                        1레벨 : 상용서비스 단위모듈 수준 개발 가능. 서비스 개발 리딩 시니어 필요.
+                      </div>
+                    )}
+                    {recommendLevels?.toString() === '2' && (
+                      <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                        2레벨 : 상용 서비스 개발 1인분 가능한 사람. 소규모 서비스 독자 개발 가능.
+                      </div>
+                    )}
+                    {recommendLevels?.toString() === '3' && (
+                      <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                        3레벨 : 상용서비스 개발 리더. 담당직무분야 N명 업무가이드 및 리딩 가능.
+                      </div>
+                    )}
+                    {recommendLevels?.toString() === '4' && (
+                      <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                        4레벨 : 다수 상용서비스 개발 리더. 수십명 혹은 수백명 수준의 개발자 총괄 리더.
+                      </div>
+                    )}
+                    {recommendLevels?.toString() === '5' && (
+                      <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                        5레벨 : 본인 오픈소스/방법론 등이 범용적 사용, 수백명이상 다수 직군 리딩.
+                      </div>
+                    )}
+                  </dd>
+                </div>
+              </dl>
+            </div>
+            <div className="border tw-p-7 tw-rounded-xl tw-mt-5 ">
+              <div className="tw-font-bold tw-text-base tw-text-black">선택 | 경력사항</div>
+              <div className="tw-mt-2 tw-border-t tw-border-gray-100">
+                <form onSubmit={handleSubmit} style={{ padding: '2%' }}>
+                  {formFields.map((field, index) => (
+                    <div key={index} style={{ marginBottom: 5 }} className="">
+                      <dl className="tw-divide-y tw-divide-gray-100">
+                        <div className="tw-px-4 tw-pt-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                          <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">회사명</dt>
+                          <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-4 tw-mt-0">
+                            <TextField
+                              size="small"
+                              id="outlined-basic"
+                              label=""
+                              name="companyName"
+                              variant="outlined"
+                              value={field.companyName}
+                              onChange={e => handleInputChange(index, e, 'text')}
+                              style={{ marginRight: 10 }}
+                            />
+                          </dd>
+                          <dt className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-1 tw-flex tw-justify-end">
+                            <button
+                              className="tw-text-sm tw-bg-black tw-text-white tw-py-2 tw-px-4 tw-rounded"
+                              type="button"
+                              onClick={() => handleRemoveFields(index)}
+                            >
+                              삭제
+                            </button>
+                          </dt>
+                        </div>
+                        <div className="tw-px-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                          <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900"></dt>
+                          <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                            <div className="tw-flex tw-items-center tw-gap-1">
+                              <FormControlLabel
+                                control={
+                                  <Checkbox
+                                    checked={field.isFreelance}
+                                    onChange={e => handleInputChange(index, e, 'isFreelance')}
+                                    name="jason"
+                                  />
+                                }
+                                label="프리랜서의 경우 체크해주세요."
+                              />
+                            </div>
+                          </dd>
+                        </div>
+                        <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                          <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">직무</dt>
+                          <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                            <div className="tw-grid tw-grid-cols-2 tw-flex tw-justify-center tw-items-center">
+                              <div className="tw-col-span-1 ">
+                                <Autocomplete
+                                  fullWidth
+                                  limitTags={2}
+                                  size="small"
+                                  id="checkboxes-tags-demo"
+                                  getOptionLabel={option => option.name || []}
+                                  options={contentJobType || []}
+                                  onChange={(e, v) => handleJobChange(index, e, v)}
+                                  renderInput={params => (
+                                    <TextField {...params} label="" placeholder="직무를 변경해주세요." />
+                                  )}
+                                />
+                              </div>
+
+                              <div className="tw-col-span-1 tw-text-base tw-px-2 tw-font-bold">
+                                현재직무: {field.jobName}
+                              </div>
+                            </div>
+                          </dd>
+                        </div>
+
+                        <div className="tw-px-4 tw-pt-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                          <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">근무기간</dt>
+                          <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                            <div className="tw-flex tw-justify-center tw-items-center tw-gap-1">
+                              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker
+                                  format="YYYY-MM-DD"
+                                  slotProps={{ textField: { size: 'small' } }}
+                                  value={dayjs(field.startDate)}
+                                  onChange={e => handleInputChange(index, e, 'startDate')}
+                                />
+                                <DatePicker
+                                  format="YYYY-MM-DD"
+                                  slotProps={{ textField: { size: 'small' } }}
+                                  value={dayjs(field.endDate)}
+                                  onChange={e => handleInputChange(index, e, 'endDate')}
+                                />
+                              </LocalizationProvider>
+                            </div>
+                          </dd>
+                        </div>
+                        <div className="tw-px-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                          <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900"></dt>
+                          <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                            <div className="tw-flex tw-items-center tw-gap-1">
+                              <FormControlLabel
+                                control={
+                                  <Checkbox
+                                    // checked={isCurrent}
+                                    checked={field.isCurrent}
+                                    onChange={e => handleInputChange(index, e, 'isCurrent')}
+                                    // onChange={() => setMarketingAgree(!marketingAgree)}
+                                    name="jason"
+                                  />
+                                }
+                                label="재직중 경우 체크 해주세요."
+                              />
+                            </div>
+                          </dd>
+                        </div>
+                        <div className="tw-flex tw-justify-center tw-items-center"></div>
+                        <Divider className="tw-border tw-bg-['#efefef']" />
+                      </dl>
+                    </div>
+                  ))}
+
+                  <div className="tw-text-center tw-flex tw-justify-end tw-items-center">
+                    <button
+                      type="button"
+                      onClick={() => handleAddFields()}
+                      className="tw-text-sm tw-bg-black tw-text-white tw-py-2 tw-px-4 tw-rounded"
+                    >
+                      경력 추가하기
+                    </button>
+                  </div>
+                  {/* <button type="submit">Submit</button> */}
+                </form>
+              </div>
+            </div>
+            <div className="border tw-p-7 tw-rounded-xl tw-mt-5">
+              <div className="tw-font-bold tw-text-base tw-text-black">선택 | 보유스킬</div>
+              <div className="tw-mt-2 tw-border-t tw-border-gray-100">
+                <dl className="tw-divide-y tw-divide-gray-100">
+                  <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
+                    <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">보유스킬</dt>
+                    <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                      <Autocomplete
+                        fullWidth
+                        multiple
+                        limitTags={2}
+                        size="small"
+                        id="checkboxes-tags-demo"
+                        value={customSkills}
+                        getOptionLabel={option => option.name || []}
+                        options={skillData || []}
+                        onChange={handleSkillsChange} // onchange 이벤트 핸들러 추가
+                        renderInput={params => (
+                          <TextField {...params} label="보유스킬을 입력해주세요." placeholder="스킬" />
+                        )}
+                      />
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+            </div>
+            <div className="border tw-p-7 tw-rounded-xl tw-mt-5 ">
+              <div className="tw-font-bold tw-text-base tw-text-black">선택 | 자기소개</div>
+              <div className="tw-mt-2 tw-border-t tw-border-gray-100">
+                <dl className="tw-divide-y tw-divide-gray-100">
+                  <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 ">
+                    <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">한줄소개</dt>
+                    <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                      <TextField
+                        fullWidth
+                        id="margin-none"
+                        multiline
+                        rows={3}
+                        onChange={onMessageChange}
+                        value={introductionMessage}
+                        // defaultValue="클럽 소개 내용을 입력해주세요."
+                      />
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+            </div>
+            <div className="tw-p-3 tw-rounded-xl tw-mt-5 tw-text-center">
+              <button
+                type="button"
+                onClick={() => handleProfileSave()}
+                className="tw-text-sm tw-bg-black tw-text-white tw-py-2 tw-px-4 tw-rounded"
+              >
+                수정하기
+              </button>
+            </div>
+          </ProfileModal>
+        )}
       </div>
     </div>
   );
