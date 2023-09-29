@@ -6,6 +6,7 @@ export * from './Account/Join/index';
 export * from './Account/My/index';
 export * from './Account/My/MentorPick/index';
 export * from './Account/My/Activity/index';
+export * from './Account/My/Point/index';
 export * from './Account/My/LearningPick/index';
 export * from './Account/My/LevelTendency/index';
 export * from './Account/My/Test/index';

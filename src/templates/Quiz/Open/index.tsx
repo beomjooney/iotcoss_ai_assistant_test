@@ -9,18 +9,12 @@ import Carousel from 'nuka-carousel';
 import { useContentJobTypes, useContentTypes, useJobGroups, useJobGroupss } from 'src/services/code/code.queries';
 import { useStore } from 'src/store';
 import { useRouter } from 'next/router';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import Grid from '@mui/material/Grid';
 import Icon from '@mui/material/Icon';
 import Box from '@mui/system/Box';
 import Image from 'next/image';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import SecondTabs from 'src/stories/components/Tab/SecondTab';
-import ListItemtag from 'src/stories/components/QuizItemCard/ListItemTag';
-import SecondTechLogCard from 'src/stories/components/QuizItemCard/SecondTechLogCard';
-import Card6 from 'src/stories/components/QuizItemCard/Card6';
 import TextField, { TextFieldProps } from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
 import Divider from '@mui/material/Divider';
@@ -34,7 +28,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import { UseQueryResult } from 'react-query';
 import { useSkills } from '../../../../src/services/skill/skill.queries';
 import { SkillResponse } from '../../../../src/models/skills';
-import { DateTimePicker, DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { DatePicker, DateTimePicker, DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { ExperiencesResponse } from 'src/models/experiences';
 import { useExperiences } from 'src/services/experiences/experiences.queries';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
@@ -103,8 +97,6 @@ const dayGroup = [
     name: '월',
     description: '월',
     order: 1,
-    createdAt: '2022-10-14 15:46:30.123',
-    updatedAt: '2022-10-14 15:46:30.123',
   },
   {
     id: '화',
@@ -112,8 +104,6 @@ const dayGroup = [
     name: '화',
     description: '화',
     order: 2,
-    createdAt: '2022-10-14 15:46:30.123',
-    updatedAt: '2022-10-14 15:46:30.123',
   },
   {
     id: '수',
@@ -121,8 +111,6 @@ const dayGroup = [
     name: '수',
     description: '수',
     order: 3,
-    createdAt: '2022-10-14 15:46:30.123',
-    updatedAt: '2022-10-14 15:46:30.123',
   },
   {
     id: '목',
@@ -130,8 +118,6 @@ const dayGroup = [
     name: '목',
     description: '목',
     order: 3,
-    createdAt: '2022-10-14 15:46:30.123',
-    updatedAt: '2022-10-14 15:46:30.123',
   },
   {
     id: '금',
@@ -139,8 +125,6 @@ const dayGroup = [
     name: '금',
     description: '금',
     order: 3,
-    createdAt: '2022-10-14 15:46:30.123',
-    updatedAt: '2022-10-14 15:46:30.123',
   },
   {
     id: '토',
@@ -148,8 +132,6 @@ const dayGroup = [
     name: '토',
     description: '토',
     order: 4,
-    createdAt: '2022-10-14 15:46:30.123',
-    updatedAt: '2022-10-14 15:46:30.123',
   },
   {
     id: '일',
@@ -157,8 +139,6 @@ const dayGroup = [
     name: '일',
     description: '일',
     order: 4,
-    createdAt: '2022-10-14 15:46:30.123',
-    updatedAt: '2022-10-14 15:46:30.123',
   },
 ];
 
@@ -170,8 +150,6 @@ const privateGroup = [
     description: '공개',
     active: true,
     order: 1,
-    createdAt: '2022-10-14 15:46:30.123',
-    updatedAt: '2022-10-14 15:46:30.123',
   },
   {
     id: '0200',
@@ -180,56 +158,29 @@ const privateGroup = [
     description: '비공개',
     active: false,
     order: 2,
-    createdAt: '2022-10-14 15:46:30.123',
-    updatedAt: '2022-10-14 15:46:30.123',
   },
 ];
 
 const levelGroup = [
   {
-    id: '0100',
-    groupId: '0001',
     name: '0',
     description: '레벨 0',
-    order: 1,
-    createdAt: '2022-10-14 15:46:30.123',
-    updatedAt: '2022-10-14 15:46:30.123',
   },
   {
-    id: '0200',
-    groupId: '0001',
     name: '1',
     description: '레벨 1',
-    order: 2,
-    createdAt: '2022-10-14 15:46:30.123',
-    updatedAt: '2022-10-14 15:46:30.123',
   },
   {
-    id: '0300',
-    groupId: '0001',
     name: '2',
     description: '레벨 2',
-    order: 3,
-    createdAt: '2022-10-14 15:46:30.123',
-    updatedAt: '2022-10-14 15:46:30.123',
   },
   {
-    id: '0301',
-    groupId: '0001',
     name: '3',
     description: '레벨 3',
-    order: 3,
-    createdAt: '2022-10-14 15:46:30.123',
-    updatedAt: '2022-10-14 15:46:30.123',
   },
   {
-    id: '0302',
-    groupId: '0001',
     name: '4',
     description: '레벨 4',
-    order: 3,
-    createdAt: '2022-10-14 15:46:30.123',
-    updatedAt: '2022-10-14 15:46:30.123',
   },
 ];
 
@@ -253,10 +204,6 @@ export function QuizOpenTemplate() {
     });
   };
 
-  const timeValues = {
-    from: '00:00:00.000',
-    to: '23:59:00.000',
-  };
   const [today, setToday] = React.useState<Dayjs | null>(dayjs());
   // const [todayEnd, setTodayEnd] = React.useState<Dayjs | null>(dayjs());
   const [todayEnd, setTodayEnd] = useState(dayjs().add(1, 'month'));
@@ -269,22 +216,6 @@ export function QuizOpenTemplate() {
   const onChangeHandleFromToEndDate = date => {
     let formattedDate = date?.format('YYYY-MM-DD');
     setTodayEnd(formattedDate);
-    console.log(formattedDate);
-    // if (!formattedDate) {
-    //   let time = timeValues[item?.dateType] || '00:00:00.000';
-    //   let datetime = `${formattedDate} ${time}`;
-    //   setSearchParams({
-    //     ...searchParams,
-    //     [item?.name]: '',
-    //   });
-    // } else {
-    //   let time = timeValues[item?.dateType] || '00:00:00.000';
-    //   let datetime = `${formattedDate} ${time}`;
-    //   setSearchParams({
-    //     ...searchParams,
-    //     [item?.name]: datetime,
-    //   });
-    // }
   };
 
   const router = useRouter();
@@ -682,11 +613,9 @@ export function QuizOpenTemplate() {
   });
 
   useEffect(() => {
-    console.log('fasdaf');
     if (active == 0) {
       refetch();
     } else if (active == 1) {
-      console.log('mmiddle');
       setQuizUrl('');
       setQuizName('');
       setJobGroupPopUp([]);
@@ -713,10 +642,6 @@ export function QuizOpenTemplate() {
       ...params,
     });
   }, [page]);
-
-  const handleDateChange = date => {
-    setSelectedDate(date);
-  };
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
@@ -1339,11 +1264,11 @@ export function QuizOpenTemplate() {
                     <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">퀴즈클럽 시작일</div>
 
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DesktopDatePicker
-                        inputFormat="YYYY-MM-DD"
+                      <DatePicker
+                        format="YYYY-MM-DD"
+                        slotProps={{ textField: { size: 'small' } }}
                         value={today}
                         onChange={e => onChangeHandleFromToStartDate(e)}
-                        renderInput={params => <TextField {...params} variant="standard" />}
                       />
                     </LocalizationProvider>
                     <div className="tw-text-sm tw-text-black tw-mt-2 tw-my-0">* 스펙업 주기는 기본 12주 입니다.</div>
@@ -1351,11 +1276,11 @@ export function QuizOpenTemplate() {
                   <div>
                     <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">클럽 모집 마감일</div>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DesktopDatePicker
-                        inputFormat="YYYY-MM-DD"
+                      <DatePicker
+                        format="YYYY-MM-DD"
+                        slotProps={{ textField: { size: 'small' } }}
                         value={todayEnd}
                         onChange={e => onChangeHandleFromToEndDate(e)}
-                        renderInput={params => <TextField {...params} variant="standard" />}
                       />
                     </LocalizationProvider>
                     <div className="tw-text-sm tw-text-black tw-mt-2 tw-my-0">

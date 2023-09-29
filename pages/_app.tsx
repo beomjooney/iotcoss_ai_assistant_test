@@ -35,13 +35,14 @@ export type AppPropsWithLayout<P = Record<string, unknown>> = AppProps<P> & {
 };
 
 function CustomApp({ Component, pageProps = {}, session }: AppPropsWithLayout) {
-  const { update, memberId, memberType, token, logged } = useSessionStore.getState();
+  const { update, memberId, job, memberType, token, logged } = useSessionStore.getState();
   const accessToken = getCookie('access_token');
   if (!accessToken && accessToken === '') {
     update({
       token: process.env['NEXT_PUBLIC_GUEST_TOKEN'],
       memberType: 'Guest',
       memberId: undefined,
+      job: undefined,
       memberName: undefined,
       logged: false,
       roles: [],
@@ -124,6 +125,7 @@ CustomApp.getStaticProps = async ({ Component, ctx }: AppContext) => {
     session = {
       logged: userData.sub !== 'Guest',
       memberType: userData.sub,
+      job: userData.sub,
       memberId: userData.sub,
       memberName: userData.nickname,
       userAgent: userAgent,

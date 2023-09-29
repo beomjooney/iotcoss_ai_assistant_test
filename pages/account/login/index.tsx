@@ -30,6 +30,7 @@ export function LoginPage(props: LoginPageProps) {
       memberId: userData.sub,
       memberName: userData.nickname,
       roles: userData.roles,
+      job: userData.sub,
       token: token,
     });
 
@@ -42,13 +43,14 @@ export function LoginPage(props: LoginPageProps) {
   const authLoginUpdate = async () => {
     const { update } = useSessionStore.getState();
     const userData: UserInfo = jwt_decode(String(getCookie('access_token')));
-    console.log(userData);
+    console.log('userData', userData);
 
     update({
       logged: userData.sub !== 'Guest',
       memberType: userData.sub,
       memberId: userData.sub,
       memberName: userData.nickname,
+      job: userData.sub,
       roles: userData.roles,
       token: token,
     });

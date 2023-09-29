@@ -80,7 +80,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
       ? setLogoutButton(
           <div className={cx('custom-item')} id="logoutBtn">
             <button
-              className="max-lg: tw-mr-2 tw-bg-[#2474ED] tw-rounded-md border tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
+              className="max-lg: tw-mr-2 tw-bg-[#2474ED] tw-rounded-md tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
               onClick={() => (location.href = '/quiz-make')}
             >
               퀴즈만들기
@@ -239,11 +239,11 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
           <Mobile>
             {!logged && (
               <li className={cx('custom-item', 'max-lg:!tw-pl-26')}>
-                <button className="tw-mr-2 tw-bg-[#2474ED] tw-rounded-md border tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded">
+                <button className="tw-mr-2 tw-bg-[#2474ED] tw-rounded-md tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded">
                   퀴즈만들기
                 </button>
                 <button
-                  className="tw-bg-white tw-rounded-md border tw-text-sm tw-text-gray-500 tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
+                  className="tw-bg-white tw-rounded-md tw-text-sm tw-text-gray-500 tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
                   onClick={handleClick}
                 >
                   로그인
@@ -410,7 +410,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
 
             {!logged && (
               <li className={cx('custom-item')}>
-                <button className="tw-mr-2 tw-bg-[#2474ED] tw-rounded-md border tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded">
+                <button className="tw-mr-2 tw-bg-[#2474ED] tw-rounded-md tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded">
                   퀴즈만들기
                 </button>
                 <button
@@ -495,7 +495,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                     >
                       <MenuItem onClick={() => (location.href = '/quiz-make')}>내가 만든 퀴즈</MenuItem>
                       <Divider />
-                      <MenuItem>내 포인트 내역</MenuItem>
+                      <MenuItem onClick={() => (location.href = '/account/my/point')}>내 포인트 내역</MenuItem>
                       <Divider />
                       <MenuItem onClick={() => (location.href = '/profile')}>내 프로필</MenuItem>
                       <Divider />

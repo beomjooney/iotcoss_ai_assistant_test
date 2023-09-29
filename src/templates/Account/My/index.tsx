@@ -7,7 +7,7 @@ import { Modal } from 'src/stories/components';
 import { useStore } from 'src/store';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 import Grid from '@mui/material/Grid';
-import { useMemberInfo, useMemberSummaryInfo } from 'src/services/account/account.queries';
+import { useMemberSummaryInfo } from 'src/services/account/account.queries';
 import Button from '@mui/material/Button';
 import { deleteCookie } from 'cookies-next';
 import Image from 'next/image';
@@ -46,7 +46,8 @@ export function MyTemplate({ children }: MyTemplateProps) {
     { no: 1, title: '가입승인 대기 클럽목록', link: '/club-waiting', role: 'all' },
     { no: 2, title: '개설신청 대기 클럽목록', link: '/admin-club', role: 'all' },
     { no: 3, title: '즐겨찾기', link: '/favorites', role: 'all' },
-    { no: 4, title: '개인정보관리', link: '/member-edit', role: 'all' },
+    { no: 4, title: '포인트 적립 내역', link: '/point', role: 'all' },
+    { no: 5, title: '개인정보관리', link: '/member-edit', role: 'all' },
     // { no: 1, title: 'MY 레벨&성향', link: '/level-tendency', role: 'all' },
     // { no: 1, title: 'MY 학습 픽', link: '/learning' , role: 'all' },
     // { no: 3, title: '세미나 신청 내역', link: '/seminar-applications', role: 'all' },
@@ -72,7 +73,7 @@ export function MyTemplate({ children }: MyTemplateProps) {
   }, []);
 
   useEffect(() => {
-    console.log('user', user);
+    // console.log('user', user);
     setNickname(user.nickname);
     setShowMenu(
       menus.map(menu => {

@@ -101,7 +101,7 @@ const Footer = () => {
         <footer className={cx('footer-section')}>
           <div className="footer-top pt-5 pb-5 background-img-2">
             <div className="container ">
-              <div className="row tw-flex tw- tw-items-center">
+              <div className="row tw-flex tw-items-center">
                 <div className="col-lg-6 mb-3 mb-lg-0">
                   <div className="footer-nav-wrap tw-text-gray-800 tw-font-semibold">
                     <img

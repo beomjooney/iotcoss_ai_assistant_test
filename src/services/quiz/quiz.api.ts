@@ -60,6 +60,12 @@ export const clubDetailQuizList = async params => {
   return data.data;
 };
 
+// 포인트 조회
+export async function quizPoint() {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/points/histories`);
+  return data.data;
+}
+
 export async function getReplies(args: CamenityProps) {
   let params = JSON.parse(JSON.stringify(args));
   let postNo = params.postNo;

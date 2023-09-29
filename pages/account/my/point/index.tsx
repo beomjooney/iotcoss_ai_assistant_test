@@ -1,4 +1,4 @@
-import { MyTemplate, GrowthStoryTemplate } from 'src/templates';
+import { MyTemplate, MyPointTemplate } from 'src/templates';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useSessionStore } from '../../../../src/store/session';
@@ -9,7 +9,7 @@ export interface GrowthStoryPageProps {
   error: boolean;
 }
 
-export function GrowthStoryPage({ error }: GrowthStoryPageProps) {
+export function MyPointPage({ error }: GrowthStoryPageProps) {
   const { logged, memberId } = useSessionStore.getState();
   const { user } = useStore(); // 성장 스토리 수정 시 무조건 업데이트 한다는 전제하에 가져옴
   const { data: userResumeStory } = useMentor(logged ? memberId : null);
@@ -25,16 +25,16 @@ export function GrowthStoryPage({ error }: GrowthStoryPageProps) {
     <>
       {!error && (
         <MyTemplate>
-          <GrowthStoryTemplate hasInfoData={userResumeStory} userType={user?.type} />
+          <MyPointTemplate />
         </MyTemplate>
       )}
     </>
   );
 }
 
-export default GrowthStoryPage;
+export default MyPointPage;
 
-GrowthStoryPage.LayoutProps = {
+MyPointPage.LayoutProps = {
   darkBg: false,
   classOption: 'custom-header',
   title: '데브어스',

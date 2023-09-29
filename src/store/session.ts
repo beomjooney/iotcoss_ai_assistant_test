@@ -6,6 +6,7 @@ export interface Session {
   token?: string;
   memberType: string;
   memberId?: string;
+  job?: string;
   memberName?: string;
   userAgent?: string;
   logged: boolean;
@@ -17,6 +18,7 @@ export interface SessionStore {
   memberType?: string;
   memberId?: string;
   memberName?: string;
+  job?: string;
   logged?: boolean;
   roles?: any[];
   update: (session: Session) => void;
@@ -30,6 +32,7 @@ const useSessionStore = create<any>(
       memberType: 'Guest',
       memberId: undefined,
       memberName: undefined,
+      job: undefined,
       logged: false,
       roles: [],
       update(session) {

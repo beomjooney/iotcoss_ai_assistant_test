@@ -13,5 +13,5 @@ export default NavigationPage;
 NavigationPage.LayoutProps = {
   darkBg: false,
   classOption: 'custom-header',
-  title: '커리어 멘토스',
+  title: '데브어스',
 };

@@ -25,5 +25,5 @@ BannerPage.Layout = AdminLayout;
 BannerPage.LayoutProps = {
   darkBg: false,
   classOption: 'custom-header',
-  title: '커리어 멘토스 관리자',
+  title: '데브어스 관리자',
 };

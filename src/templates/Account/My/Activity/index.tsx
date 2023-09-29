@@ -96,13 +96,41 @@ export function MyActivityTemplate() {
                     </button>
                   </div>
                 </div>
-                <div className="tw-font-bold tw-text-xl tw-text-black tw-py-10">나의 활동로그</div>
+              </div>
+              <div className="tw-font-bold tw-text-xl tw-text-black tw-py-10">나의 활동로그</div>
+              <div className="border tw-rounded-md">
+                {summary?.eventsByDate?.map((item, index) => {
+                  return (
+                    // TODO API Response 보고 댓글 작성자로 수정 필요
+                    <div key={index} role="tw-list" className=" tw-divide-y tw-divide-gray-100 border-bottom">
+                      <div className="tw-justify-between  ">
+                        <div className="tw-min-w-0 tw-p-3 tw-font-semibold">{item?.date}</div>
+                        {item?.events.map((items, index) => {
+                          return (
+                            <div key={index} className="border-top tw-p-3 tw-text-black">
+                              {items?.message}
+                            </div>
+                          );
+                        })}
+                        {/* <div className="flex min-w-0 gap-x-4">
+                          <div className="min-w-0 flex-auto">
+                            <p className="text-sm font-semibold leading-6 text-gray-900">Leslie Alexander</p>
+                            <p className="mt-1 truncate text-xs leading-5 text-gray-500">
+                              leslie.alexander@example.com
+                            </p>
+                          </div>
+                        </div>
+                        <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
+                          <p className="text-sm leading-6 text-gray-900">Co-Founder / CEO</p>
+                        </div>*/}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}
-          <div className="tw-mt-10">
-            <Pagination page={page} setPage={setPage} total={totalPage} />
-          </div>
+          <div className="tw-mt-10">{/* <Pagination page={page} setPage={setPage} total={totalPage} /> */}</div>
         </div>
       </section>
     </div>

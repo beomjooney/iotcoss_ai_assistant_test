@@ -18,7 +18,6 @@ export async function memberLogin() {
 // 회원 정보 조회
 export async function memberInfo(memberId: string) {
   const { data } = await axiosGeneralAPI().get(`/api/v1/members/profile`);
-  // const { data } = await axiosGeneralAPI().get(`/members/${memberId}`);
   return data.data;
 }
 
@@ -36,13 +35,13 @@ export async function memberActiveSummaryInfo() {
   return data.data;
 }
 
-// 회원 정보 수정
+// 회원 정보 저장
 export const saveProfile = async body => await axiosGeneralAPI().put(`/api/v1/members/profile`, body);
 
 // 회원 정보 수정
 export const editInfo = async (memberId, body) => await axiosGeneralAPI().put(`/members/${memberId}`, body);
 
-// 회원 정보 수정
+// 회원 정보 삭제
 export const deleteMember = async memberId => await axiosGeneralAPI().delete(`/members/${memberId}`);
 
 // 서비스 이용 약관 조회

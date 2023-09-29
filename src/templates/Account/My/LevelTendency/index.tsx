@@ -21,7 +21,7 @@ export function LevelTendencyTemplate() {
   const [experiences, setExperiences] = useState([]);
   const [skills, setSkills] = useState([]);
 
-  const { isFetched: isUserFetched } = useMemberInfo(memberId, data => setUser(data));
+  // const { isFetched: isUserFetched } = useMemberInfo(memberId, data => setUser(data));
   useMyExperiences(memberId, data => setExperiences(data || []));
   useMySkills(memberId, data => setSkills(data || []));
 

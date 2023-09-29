@@ -1,6 +1,6 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import { Toggle, Pagination, Typography, Chip, ClubCard } from 'src/stories/components';
+import { Toggle, Pagination, Typography, Chip, ClubCard, CommunityCard } from 'src/stories/components';
 import React, { useEffect, useState } from 'react';
 import { RecommendContent, SeminarImages } from 'src/models/recommend';
 import { useSeminarList, paramProps, useSeminarImageList } from 'src/services/seminars/seminars.queries';
@@ -40,6 +40,8 @@ import { useMemberInfo } from 'src/services/account/account.queries';
 import { User } from 'src/models/user';
 import { useStudyQuizBadgeList } from 'src/services/studyroom/studyroom.queries';
 import { useMyQuiz, useMyQuizReply } from 'src/services/jobs/jobs.queries';
+import { UseQueryResult } from 'react-query';
+import QuizMyReply from 'src/stories/components/QuizMyReply';
 const cx = classNames.bind(styles);
 
 export function ProfileTemplate() {
@@ -94,7 +96,8 @@ export function ProfileTemplate() {
   const [quizTotalPage, setQuizTotalPage] = useState(1);
   const [myQuizParams, setMyQuizParams] = useState<paramProps>({ page: quizPage });
   const { data: myQuizReplyData }: UseQueryResult<any> = useMyQuizReply(myQuizParams, data => {
-    setQuizTotalPage(data.totalPage);
+    console.log(data);
+    setQuizTotalPage(data.totalPages);
   });
 
   useEffect(() => {
@@ -318,6 +321,23 @@ export function ProfileTemplate() {
                 </div>
               </div>
             ))}
+            <Pagination page={page} setPage={setPage} total={totalPage} />
+          </div>
+        )}
+        {active == 2 && (
+          <div>
+            {myQuizReplyData?.contents?.map((item, index) => {
+              return (
+                <QuizMyReply
+                  key={index}
+                  board={item}
+                  // writer={memberSample}
+                  className={cx('reply-container__item')}
+                  // memberId={memberId}
+                  // onPostDeleteSubmit={onPostDeleteSubmit}
+                />
+              );
+            })}
             <Pagination page={page} setPage={setPage} total={totalPage} />
           </div>
         )}

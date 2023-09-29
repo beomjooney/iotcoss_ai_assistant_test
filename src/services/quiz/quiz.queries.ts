@@ -5,10 +5,12 @@ import {
   getReplies,
   quizAnswerDetail,
   quizGrowthDetail,
+  quizPoint,
   quizRanking,
   quizSolutionDetail,
 } from './quiz.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
+import { User } from 'src/models/user';
 
 export const useCamenities = params =>
   useQuery([QUERY_KEY_FACTORY('ADMIN_CAMENITY').list(params)], () => getCamenities(params));
@@ -85,3 +87,12 @@ export const useClubDetailQuizList = (params, onSuccess?: (data: any) => void, o
     },
   );
 };
+
+export const useQuizPoint = (onSuccess?: (data: User) => void, onError?: (error: Error) => void) =>
+  useQuery<User, Error>(QUERY_KEY_FACTORY('QUIZ').details(), () => quizPoint(), {
+    onSuccess,
+    onError,
+    refetchOnWindowFocus: false,
+    // enabled: !!memberId && memberId !== 'Guest',
+    // staleTime: 10 * 60 * 1000, // 10분 유지
+  });

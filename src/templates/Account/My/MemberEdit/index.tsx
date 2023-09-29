@@ -53,7 +53,7 @@ export function MemberEditTemplate() {
   const [otpNumber, setOtpNumber] = useState('');
   const [nicknameEditMode, setNicknameEditMode] = useState(false);
   const [phoneEditMode, setPhoneEditMode] = useState(false);
-  const [emailReceiveYn, setEmailReceiveYn] = useState(true);
+  const [emailReceiveYn, setEmailReceiveYn] = useState(false);
   const [smsReceiveYn, setSmsReceiveYn] = useState(true);
   const [kakaoReceiveYn, setKakaoReceiveYn] = useState(true);
   const [edting, setEditing] = useState(false);
@@ -113,9 +113,16 @@ export function MemberEditTemplate() {
 
   const handlePhoneNumber = e => setPhoneNumber(e.target.value);
   const handleOtpNumber = e => setOtpNumber(e.target.value);
-  const handleKakaoYn = e => setKakaoReceiveYn(e.target.value === 'true');
-  const handleEmailYn = e => setEmailReceiveYn(e.target.value === 'true');
-  const handleSmsYn = e => setSmsReceiveYn(e.target.value === 'true');
+
+  const handleEmailYn = e => {
+    setEmailReceiveYn(!emailReceiveYn); // Toggle the value of emailReceiveYn
+  };
+  const handleKakaoYn = e => {
+    setKakaoReceiveYn(!handleKakaoYn); // Toggle the value of emailReceiveYn
+  };
+  const handleSmsYn = e => {
+    setSmsReceiveYn(!smsReceiveYn); // Toggle the value of emailReceiveYn
+  };
 
   //** Fouse */
   const focusYoutube_Ref = useRef(null);
@@ -443,12 +450,12 @@ export function MemberEditTemplate() {
           <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-3">
             <Grid item xs={2}></Grid>
             <Grid item xs={2} className="tw-text-left">
-              휴대전화
+              {/* 휴대전화 */}
             </Grid>
             <Grid item xs={8}>
               <div className={cx('member-info')}>
                 {phoneNumber !== userInfo.phoneNumber && !phoneEditMode && <span className={cx('change-dot')} />}
-                <TextField size="small" id="outlined-disabled" value={phoneNumber || ''} />
+                {/* <TextField size="small" id="outlined-disabled" value={phoneNumber || ''} /> */}
                 {/* <Textfield
                   isUnderline={true}
                   isPhoneNumber={true}
@@ -564,7 +571,7 @@ export function MemberEditTemplate() {
           <Grid container direction="row" justifyContent="space-between" alignItems="center">
             <Grid item xs={10}>
               <Box display="flex" justifyContent="flex-start">
-                <FormGroup sx={{ fontWeight: 'bold' }}>
+                {/* <FormGroup sx={{ fontWeight: 'bold' }}>
                   <FormControlLabel
                     control={
                       <Checkbox
@@ -585,7 +592,7 @@ export function MemberEditTemplate() {
                       </Typography>
                     }
                   />
-                </FormGroup>
+                </FormGroup> */}
               </Box>
             </Grid>
           </Grid>
@@ -668,7 +675,7 @@ export function MemberEditTemplate() {
           <Grid container direction="row" justifyContent="space-between" alignItems="center">
             <Grid item xs={10}>
               <Box display="flex" justifyContent="flex-start">
-                <FormGroup sx={{ fontWeight: 'bold' }}>
+                {/* <FormGroup sx={{ fontWeight: 'bold' }}>
                   <FormControlLabel
                     control={
                       <Checkbox
@@ -689,7 +696,7 @@ export function MemberEditTemplate() {
                       </Typography>
                     }
                   />
-                </FormGroup>
+                </FormGroup> */}
               </Box>
             </Grid>
             <Grid item xs={2}></Grid>
@@ -702,9 +709,8 @@ export function MemberEditTemplate() {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        onChange={e => onChangeMarketingEach(e, marketingList[0])}
-                        checked={CheckMarketingList.includes(marketingList[0])}
-                        value={marketingList[0]}
+                        onChange={handleEmailYn}
+                        checked={emailReceiveYn} // Use emailReceiveYn as the checked state
                         icon={<CheckBoxOutlinedIcon />}
                         checkedIcon={<CheckBoxOutlinedIcon />}
                         sx={{
@@ -726,9 +732,8 @@ export function MemberEditTemplate() {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        onChange={e => onChangeMarketingEach(e, marketingList[1])}
-                        checked={CheckMarketingList.includes(marketingList[1])}
-                        value={marketingList[1]}
+                        onChange={handleSmsYn}
+                        checked={smsReceiveYn} // Use emailReceiveYn as the checked state
                         icon={<CheckBoxOutlinedIcon />}
                         checkedIcon={<CheckBoxOutlinedIcon />}
                         sx={{
@@ -748,9 +753,8 @@ export function MemberEditTemplate() {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        onChange={e => onChangeMarketingEach(e, marketingList[2])}
-                        checked={CheckMarketingList.includes(marketingList[2])}
-                        value={marketingList[2]}
+                        onChange={handleKakaoYn}
+                        checked={kakaoReceiveYn} // Use emailReceiveYn as the checked state
                         icon={<CheckBoxOutlinedIcon />}
                         checkedIcon={<CheckBoxOutlinedIcon />}
                         sx={{
