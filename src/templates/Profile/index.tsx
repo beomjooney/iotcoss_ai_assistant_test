@@ -115,7 +115,11 @@ export function ProfileTemplate() {
     setRecommendJobGroups(user.jobGroup);
     setNickName(user.nickname);
     setIntroductionMessage(user.introductionMessage);
-    setFormFields(user.careers);
+    setFormFields(
+      user.careers || [
+        { companyName: '', startDate: '', endDate: '', isCurrent: false, isFreelance: false, isDelete: false },
+      ],
+    );
   });
 
   useEffect(() => {
@@ -221,6 +225,15 @@ export function ProfileTemplate() {
   };
   const handleJobChange = (index, event, newValue) => {
     handleInputChange(index, event, 'job', newValue.id);
+  };
+
+  const handleRemoveFields = (index: number) => {
+    if (formFields.length === 1) {
+      alert('At least one form must remain');
+      return;
+    }
+    const values = [...formFields].splice(index, 1);
+    setFormFields(values);
   };
 
   const handleInputChange = (index: number, e: React.ChangeEvent<HTMLInputElement>, key, id) => {
