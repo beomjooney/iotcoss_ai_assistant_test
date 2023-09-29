@@ -42,7 +42,6 @@ function CustomApp({ Component, pageProps = {}, session }: AppPropsWithLayout) {
       token: process.env['NEXT_PUBLIC_GUEST_TOKEN'],
       memberType: 'Guest',
       memberId: undefined,
-      job: undefined,
       memberName: undefined,
       logged: false,
       roles: [],
@@ -125,7 +124,6 @@ CustomApp.getStaticProps = async ({ Component, ctx }: AppContext) => {
     session = {
       logged: userData.sub !== 'Guest',
       memberType: userData.sub,
-      job: userData.sub,
       memberId: userData.sub,
       memberName: userData.nickname,
       userAgent: userAgent,

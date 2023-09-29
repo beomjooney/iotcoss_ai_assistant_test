@@ -32,7 +32,6 @@ const useSessionStore = create<any>(
       memberType: 'Guest',
       memberId: undefined,
       memberName: undefined,
-      job: undefined,
       logged: false,
       roles: [],
       update(session) {

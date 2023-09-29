@@ -30,7 +30,6 @@ export function LoginPage(props: LoginPageProps) {
       memberId: userData.sub,
       memberName: userData.nickname,
       roles: userData.roles,
-      job: userData.sub,
       token: token,
     });
 
@@ -50,7 +49,6 @@ export function LoginPage(props: LoginPageProps) {
       memberType: userData.sub,
       memberId: userData.sub,
       memberName: userData.nickname,
-      job: userData.sub,
       roles: userData.roles,
       token: token,
     });

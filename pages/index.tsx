@@ -12,7 +12,6 @@ export function IndexPage() {
     memberId: state.memberId,
     name: state.name,
     logged: state.logged,
-    job: state.job,
   }));
   // const { setUser, setHasResumeStory, user } = useStore();
   // const { data } = useMemberInfo(memberId, data => {
