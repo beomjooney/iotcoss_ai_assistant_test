@@ -116,9 +116,9 @@ export function ProfileTemplate() {
     setNickName(user.nickname);
     setIntroductionMessage(user.introductionMessage);
     setFormFields(
-      user.careers || [
-        { companyName: '', startDate: '', endDate: '', isCurrent: false, isFreelance: false, isDelete: false },
-      ],
+      user.careers.length > 0
+        ? user.careers
+        : [{ companyName: '', startDate: '', endDate: '', isCurrent: false, isFreelance: false, isDelete: false }],
     );
   });
 
