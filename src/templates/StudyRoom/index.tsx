@@ -525,7 +525,7 @@ export function StudyRoomTemplate() {
                             className="tw-flex tw-items-center tw-rounded-md tw-grid tw-grid-cols-6 tw-gap-0  tw-bg-white tw-text-sm  tw-p-4 tw-mb-5"
                           >
                             <div className="tw-col-span-4 ">
-                              <div> {item.clubName}</div>
+                              <div className="tw-line-clamp-2"> {item.clubName}</div>
                             </div>
                             <div className="tw-col-span-2 tw-text-right">
                               <button
@@ -558,10 +558,10 @@ export function StudyRoomTemplate() {
                             key={i}
                             className="tw-flex tw-items-center tw-rounded-md tw-grid tw-grid-cols-6 tw-gap-0  tw-bg-white tw-text-sm  tw-p-4 tw-mb-5"
                           >
-                            <div className="tw-col-span-5 ">
-                              <div> {item.clubName}</div>
+                            <div className="tw-col-span-5 tw-pr-3">
+                              <div className="tw-line-clamp-1"> {item.clubName}</div>
                               <div className="tw-font-bold"> 3회차</div>
-                              <div> Q. {item.quizContent}</div>
+                              <div className="tw-line-clamp-1"> Q. {item.quizContent}</div>
                             </div>
                             <div className="tw-col-span-1">
                               <button
