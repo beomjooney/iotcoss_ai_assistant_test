@@ -177,6 +177,11 @@ ClubMiniCardProps) => {
     router.push('/quiz-manage/' + removeIndex);
     setAnchorEl(null);
   };
+  const handleMenuItemCrewClick = (event: React.MouseEvent<HTMLElement>) => {
+    console.log(removeIndex);
+    router.push('/crew-manage/' + removeIndex);
+    setAnchorEl(null);
+  };
   const useStyles = makeStyles(theme => ({
     root: {
       '& .MuiPaper-root': {
@@ -264,7 +269,7 @@ ClubMiniCardProps) => {
                   }}
                 >
                   <MenuItem onClick={event => handleMenuItemClick(event)}>퀴즈관리하기</MenuItem>
-                  <MenuItem onClick={event => handleMenuItemClick(event)}>크루관리하기</MenuItem>
+                  <MenuItem onClick={event => handleMenuItemCrewClick(event)}>크루관리하기</MenuItem>
                 </Menu>
               </div>
               {/* <button

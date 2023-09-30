@@ -9,6 +9,7 @@ import {
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 import {
   clubMyList,
+  clubQuizCrewManage,
   clubQuizManage,
   mySeminarList,
   seminarDetail,
@@ -131,13 +132,25 @@ export const useClubQuizManage = (id, onSuccess?: (data: any) => void, onError?:
     onSuccess,
     onError,
     refetchOnWindowFocus: true,
-    enabled: !!id,
+    enabled: true,
   });
+};
+
+export const useClubQuizCrewManage = (params, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
+  const DEFAULT_SIZE = 10;
+  return useQuery<RecommendContentsResponse, Error>(
+    QUERY_KEY_FACTORY('SEMINAR').list({ size: DEFAULT_SIZE, ...params }),
+    () => clubQuizCrewManage({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: true,
+    },
+  );
 };
 
 export const useSeminarDetail = (id, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
   // return useQuery<SeminarContent, Error>(QUERY_KEY_FACTORY('SEMINAR').detail(id), () => seminarDetail(id), {
-  // TODO : 수정 해주세요. 타입에러 나요. -> 세미나 상세 Profile 컴포넌트에 셋 할때 발생
   return useQuery<any, Error>(QUERY_KEY_FACTORY('SEMINAR').detail(id), () => seminarDetail(id), {
     onSuccess,
     onError,

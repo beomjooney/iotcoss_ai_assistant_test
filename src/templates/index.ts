@@ -33,6 +33,7 @@ export * from './StudyRoom/index';
 export * from './QuizMy/index';
 export * from './QuizMake/index';
 export * from './Quiz/Open/index';
+export * from './Quiz/Crew/index';
 export * from './Quiz/Manage/index';
 export * from './Quiz/Solution/index';
 export * from './Quiz/Growth/index';

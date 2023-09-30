@@ -157,7 +157,7 @@ export function MyTemplate({ children }: MyTemplateProps) {
                         /> */}
 
                         <Image
-                          src={summary?.profileImageUrl}
+                          src={summary?.profileImageUrl || 'D'}
                           alt="profile_image"
                           className={cx('rounded-circle', 'image-info__image')}
                           width="110px"

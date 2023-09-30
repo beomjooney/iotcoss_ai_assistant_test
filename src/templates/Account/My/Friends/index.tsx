@@ -6,16 +6,11 @@ import Pagination from 'src/stories/components/Pagination';
 import { paramProps, useSeminarMeFavoriteList } from 'src/services/seminars/seminars.queries';
 import { useQuizFriends } from 'src/services/quiz/quiz.queries';
 import { RecommendContent } from 'src/models/recommend';
-
-/** import table */
-import Paper from '@mui/material/Paper';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
+import {
+  useFriendAcceptPost,
+  useFriendRejectPost,
+  useFriendsDeletePost,
+} from 'src/services/admin/friends/friends.mutations';
 
 const cx = classNames.bind(styles);
 
@@ -28,11 +23,46 @@ export function MyFriendsTemplate() {
   const [contents, setContents] = useState<RecommendContent[]>([]);
   const [summary, setSummary] = useState({});
 
-  const { isFetched } = useQuizFriends(data => {
+  const { mutate: onFriendsDelete, isSuccess: isDeleteSuccess } = useFriendsDeletePost();
+  const { mutate: onFriendsAccept, isSuccess: isAcceptSuccess } = useFriendAcceptPost();
+  const { mutate: onFriendsReject, isSuccess: isRejectSuccess } = useFriendRejectPost();
+
+  const { isFetched, refetch } = useQuizFriends(data => {
     console.log(data);
     setContents(data?.contents);
     // setTotalPoint(data?.total);
   });
+
+  const handleFriendDelete = async (sequence: number) => {
+    if (confirm('친구를 삭제하시겠습니까?')) {
+      let params = {
+        memberFriendSequence: sequence.toString(),
+      };
+      onFriendsDelete({ data: params });
+      await refetch();
+    }
+  };
+  const handleFriendAccept = async (sequence: number) => {
+    if (confirm('친구수락을 하시겠습니까?')) {
+      let params = {
+        memberFriendRequestSequence: sequence.toString(),
+        isAccept: true,
+      };
+      onFriendsAccept(params);
+      await refetch();
+    }
+  };
+
+  const handleFriendReject = async (sequence: number) => {
+    if (confirm('거절을 하시겠습니까?')) {
+      let params = {
+        memberFriendRequestSequence: sequence.toString(),
+        isAccept: false,
+      };
+      onFriendsReject(params);
+      await refetch();
+    }
+  };
 
   return (
     <div className={cx('member-edit-container')}>
@@ -45,23 +75,29 @@ export function MyFriendsTemplate() {
                   key={index}
                   className="tw-p-3 center tw-grid tw-grid-cols-6 border-bottom tw-flex tw-items-center tw-space-x-4"
                 >
-                  <div className="tw-col-span-1 tw-flex  tw-items-center ">
+                  <div className="tw-col-span-2 tw-flex  tw-items-center ">
                     <img
                       src={item?.imageUrl}
                       alt={'image'}
-                      className={cx('rounded-circle', 'profile-image', 'tw-h-12')}
+                      className={cx('rounded-circle', 'profile-image', 'tw-h-12', 'tw-w-12')}
                     />
                     {/*TODO 원래 job(직업)임*/}
                     <div className="tw-pl-5 tw-font-bold tw-text-lg tw-text-black">{item.nickname}</div>
                   </div>
-                  <div className="tw-col-span-5 tw-text-right">
+                  <div className="tw-col-span-4 tw-text-right">
                     {item.memberFriendStatus === '0001' && (
                       <div>
-                        <button className="tw-mr-3 tw-bg-gray-500 tw-text-white tw-text-sm tw-font-right tw-px-4  tw-py-3 tw-rounded">
-                          수락하기
+                        <button
+                          onClick={() => handleFriendAccept(item.sequence)}
+                          className="tw-mr-3 tw-bg-gray-500 tw-text-white tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
+                        >
+                          친구수락하기
                         </button>
-                        <button className="tw-bg-white tw-text-black border tw-text-sm tw-font-right tw-px-4  tw-py-3 tw-rounded">
-                          거절하기
+                        <button
+                          onClick={() => handleFriendReject(item.sequence)}
+                          className="tw-bg-white tw-text-black border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
+                        >
+                          친구거절하기
                         </button>
                       </div>
                     )}
@@ -69,19 +105,42 @@ export function MyFriendsTemplate() {
                       <div className="">
                         <button
                           onClick={() => (location.href = '/profile/' + `${item.friendMemberUUID}`)}
-                          className="tw-bg-gray-500 tw-mr-3 tw-text-white tw-text-sm tw-font-right tw-px-4  tw-py-3 tw-rounded"
+                          className="tw-bg-gray-500 tw-mr-3 tw-text-white tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
                         >
                           프로필보기
                         </button>
-                        <button className="tw-bg-white tw-text-black border tw-text-sm tw-font-right tw-px-4  tw-py-3 tw-rounded">
+                        <button
+                          onClick={() => handleFriendDelete(item.sequence)}
+                          className="tw-bg-white tw-text-black border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
+                        >
                           삭제하기
                         </button>
                       </div>
                     )}
                     {item.memberFriendStatus === '0003' && (
                       <div className="">
-                        <button className="tw-bg-gray-500  tw-text-white tw-text-sm tw-font-right tw-px-4  tw-py-3 tw-rounded">
-                          친구 거절
+                        <button className="tw-bg-gray-500  tw-text-white tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded">
+                          내가 친구 거절한 요청
+                        </button>
+                      </div>
+                    )}
+                    {item.memberFriendStatus === '0004' && (
+                      <div className="">
+                        <button
+                          disabled
+                          className="tw-bg-gray-500  tw-text-white tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
+                        >
+                          친구 승인 대기중
+                        </button>
+                      </div>
+                    )}
+                    {item.memberFriendStatus === '0005' && (
+                      <div className="">
+                        <button
+                          disabled
+                          className="tw-bg-gray-500  tw-text-white tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
+                        >
+                          상대방이 친구 거절
                         </button>
                       </div>
                     )}

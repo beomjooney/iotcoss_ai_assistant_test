@@ -12,14 +12,14 @@ import {
 } from 'src/services/seminars/seminars.mutations';
 import { useSessionStore } from 'src/store/session';
 import { useMemberInfo } from 'src/services/account/account.queries';
-import { useStudyQuizBadgeList, useStudyQuizOpponentBadgeList } from 'src/services/studyroom/studyroom.queries';
+import { useStudyQuizOpponentBadgeList } from 'src/services/studyroom/studyroom.queries';
 
 /** import pagenation */
 import Pagination from '@mui/material/Pagination';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
-import { useMyQuiz, useMyQuizReply } from 'src/services/jobs/jobs.queries';
+import { useMyQuiz, useQuizList, useQuizReply } from 'src/services/jobs/jobs.queries';
 import { UseQueryResult } from 'react-query';
 
 const cx = classNames.bind(styles);
@@ -30,9 +30,8 @@ export interface OpponentProfileTemplateProps {
 
 export function OpponentProfileTemplate({ id }: OpponentProfileTemplateProps) {
   const { user } = useStore();
-  const [page, setPage] = useState(1);
+
   const { memberId, logged } = useSessionStore.getState();
-  const [params, setParams] = useState<paramProps>({ id, page });
   let [isLiked, setIsLiked] = useState(false);
   const [userInfo, setUserInfo] = useState<User>(user);
   const [active, setActive] = useState(0);
@@ -52,17 +51,19 @@ export function OpponentProfileTemplate({ id }: OpponentProfileTemplateProps) {
   );
 
   /** my quiz */
+  const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
-  const [myParams, setMyParams] = useState<paramProps>({ page });
-  const { data: myQuizListData, refetch: refetchMyJob }: UseQueryResult<any> = useMyQuiz(myParams, data => {
-    setTotalPage(data.totalPage);
+  const [myParams, setMyParams] = useState<paramProps>({ page, memberUUID: id });
+  const { data: myQuizListData, refetch: refetchMyJob }: UseQueryResult<any> = useQuizList(myParams, data => {
+    setTotalPage(data.totalPages);
   });
+  console.log(myQuizListData);
 
   /** my quiz replies */
   const [quizPage, setQuizPage] = useState(1);
   const [quizTotalPage, setQuizTotalPage] = useState(1);
-  const [myQuizParams, setMyQuizParams] = useState<paramProps>({ page: quizPage });
-  const { data: myQuizReplyData }: UseQueryResult<any> = useMyQuizReply(myQuizParams, data => {
+  const [myQuizParams, setMyQuizParams] = useState<paramProps>({ page: quizPage, memberUUID: id });
+  const { data: myQuizReplyData }: UseQueryResult<any> = useQuizReply(myQuizParams, data => {
     console.log(data);
     setQuizTotalPage(data.totalPages);
   });
@@ -171,6 +172,7 @@ export function OpponentProfileTemplate({ id }: OpponentProfileTemplateProps) {
                 setActive(1);
                 setMyParams({
                   page,
+                  memberUUID: id,
                 });
                 setPage(1);
               }}
@@ -187,7 +189,8 @@ export function OpponentProfileTemplate({ id }: OpponentProfileTemplateProps) {
               onChange={() => {
                 setActive(2);
                 setMyQuizParams({
-                  quizPage,
+                  page: quizPage,
+                  memberUUID: id,
                 });
                 setQuizPage(1);
               }}
@@ -274,7 +277,9 @@ export function OpponentProfileTemplate({ id }: OpponentProfileTemplateProps) {
                 </div>
               </div>
             ))}
-            <Pagination page={page} setPage={setPage} total={totalPage} />
+            <div className="tw-flex tw-justify-center">
+              <Pagination page={page} setPage={setPage} total={totalPage} />
+            </div>
           </div>
         )}
         {active == 2 && (
@@ -291,7 +296,9 @@ export function OpponentProfileTemplate({ id }: OpponentProfileTemplateProps) {
                 />
               );
             })}
-            <Pagination page={page} setPage={setPage} total={totalPage} />
+            <div className="tw-flex tw-justify-center">
+              <Pagination page={quizPage} setPage={setQuizPage} total={quizTotalPage} />
+            </div>
           </div>
         )}
         <article>

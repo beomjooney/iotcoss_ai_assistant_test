@@ -41,9 +41,15 @@ export const seminarImageList = async () => {
   return data || [];
 };
 
-// 세미나 상세 조회
+// 클럽 퀴즈 목록 조회
 export const clubQuizManage = async id => {
   const { data } = await axiosGeneralAPI().get(`/api/v1/clubs/${id}/quizzes/me`);
+  return data.data;
+};
+
+// 클럽 크루 목록 조회
+export const clubQuizCrewManage = async (params: any) => {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/club/members/me`, { params });
   return data.data;
 };
 
