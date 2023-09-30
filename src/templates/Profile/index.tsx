@@ -565,10 +565,6 @@ export function ProfileTemplate() {
           </div>
         )}
         <article>
-          {/* <div className={cx('filter-area', 'top-filter')}>
-            <div className={cx('seminar-button__group')}></div>
-          </div> */}
-
           <div className={cx('content-area')}>
             <section className={cx('content', 'flex-wrap-container')}>
               <Grid

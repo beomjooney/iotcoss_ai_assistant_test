@@ -48,6 +48,12 @@ export const quizRanking = async () => {
   return data.data;
 };
 
+// 나의 친구 조회
+export const quizFriends = async () => {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/member/friends`);
+  return data.data;
+};
+
 // 퀴즈 요약
 export const quizGrowthDetail = async id => {
   const { data } = await axiosGeneralAPI().get(`/api/v1/clubs/${id}/growth/summary`);

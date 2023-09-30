@@ -17,7 +17,7 @@ export async function memberLogin() {
 
 // 회원 정보 조회
 export async function memberInfo(memberId: string) {
-  const { data } = await axiosGeneralAPI().get(`/api/v1/members/profile`);
+  const { data } = await axiosGeneralAPI().get(`/api/v1/members/profile/${memberId}`);
   return data.data;
 }
 

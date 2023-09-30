@@ -21,6 +21,7 @@ import {
   studyQuizList,
   studyQuizCalendarList,
   studyQuizBadgeList,
+  studyQuizOpponentBadgeList,
 } from './studyroom.api';
 
 export interface paramProps {
@@ -97,6 +98,23 @@ export const useStudyQuizBadgeList = (
   return useQuery<RecommendContentsResponse, Error>(
     QUERY_KEY_FACTORY('QUIZ').list({ size: DEFAULT_SIZE, ...params }),
     () => studyQuizBadgeList({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+      enabled: true,
+    },
+  );
+};
+export const useStudyQuizOpponentBadgeList = (
+  params?: paramProps,
+  onSuccess?: (data: RecommendContentsResponse) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 100;
+  return useQuery<RecommendContentsResponse, Error>(
+    QUERY_KEY_FACTORY('QUIZ').list({ size: DEFAULT_SIZE, ...params }),
+    () => studyQuizOpponentBadgeList({ size: DEFAULT_SIZE, ...params }),
     {
       onSuccess,
       onError,

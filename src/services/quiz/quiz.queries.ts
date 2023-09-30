@@ -4,6 +4,7 @@ import {
   getCamenities,
   getReplies,
   quizAnswerDetail,
+  quizFriends,
   quizGrowthDetail,
   quizPoint,
   quizRanking,
@@ -51,6 +52,14 @@ export const useQuizSolutionDetailStatus = (id, onSuccess?: (data: any) => void,
 
 export const useQuizRankDetail = (onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
   return useQuery<any, Error>(QUERY_KEY_FACTORY('QUIZ').lists(), () => quizRanking(), {
+    onSuccess,
+    onError,
+    // refetchOnWindowFocus: false,
+  });
+};
+
+export const useQuizFriends = (onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
+  return useQuery<any, Error>(QUERY_KEY_FACTORY('QUIZ').lists(), () => quizFriends(), {
     onSuccess,
     onError,
     // refetchOnWindowFocus: false,
