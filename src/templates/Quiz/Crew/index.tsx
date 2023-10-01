@@ -73,19 +73,19 @@ export function QuizCrewManageTemplate({ id }: QuizCrewManageTemplateProps) {
   const handleCrewAccept = async (sequence: string) => {
     if (confirm('승인을 하시겠습니까?')) {
       let params = {
-        memberFriendRequestSequence: sequence,
+        clubMemberSequence: sequence,
         isAccept: true,
       };
-      onCrewReject({ data: params });
+      onCrewAccept(params);
     }
   };
   const handleCrewReject = async (sequence: string) => {
     if (confirm('거절 하시겠습니까?')) {
       let params = {
-        memberFriendRequestSequence: sequence,
+        clubMemberSequence: sequence,
         isAccept: false,
       };
-      onCrewAccept(params);
+      onCrewReject(params);
     }
   };
   const handleCrewBan = async (sequence: string) => {
@@ -156,13 +156,13 @@ export function QuizCrewManageTemplate({ id }: QuizCrewManageTemplateProps) {
                         <div>
                           <button
                             onClick={() => handleCrewAccept(row.clubMemberSequence)}
-                            className="tw-bg-white tw-text-black border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
+                            className="tw-mr-3 tw-bg-white tw-text-black border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
                           >
                             승인하기
                           </button>
                           <button
                             onClick={() => handleCrewReject(row.clubMemberSequence)}
-                            className="border-danger tw-bg-white tw-text-red-500 border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
+                            className="tw-mr-3 border-danger tw-bg-white tw-text-red-500 border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
                           >
                             거절하기
                           </button>
