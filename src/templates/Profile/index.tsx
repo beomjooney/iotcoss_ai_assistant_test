@@ -106,7 +106,6 @@ export function ProfileTemplate() {
   ]);
 
   const { isFetched: isUserInfo, refetch } = useMemberInfo(memberId, user => {
-    setUserInfo(user);
     console.log(user);
     const jsonArray = user.customSkills.map(item => ({ name: item }));
     console.log(jsonArray);
@@ -120,6 +119,7 @@ export function ProfileTemplate() {
         ? user.careers
         : [{ companyName: '', startDate: '', endDate: '', isCurrent: false, isFreelance: false, isDelete: false }],
     );
+    setUserInfo(user);
   });
 
   useEffect(() => {

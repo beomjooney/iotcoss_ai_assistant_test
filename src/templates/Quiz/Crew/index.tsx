@@ -29,6 +29,7 @@ import TableRow from '@mui/material/TableRow';
 /** drag list */
 import ReactDragList from 'react-drag-list';
 import { useQuizOrder } from 'src/services/quiz/quiz.mutations';
+import { useCrewAcceptPost, useCrewBanDelete, useCrewRejectPost } from 'src/services/admin/friends/friends.mutations';
 
 const cx = classNames.bind(styles);
 export interface QuizCrewManageTemplateProps {
@@ -52,37 +53,45 @@ export function QuizCrewManageTemplate({ id }: QuizCrewManageTemplateProps) {
   const [params, setParams] = useState<paramProps>({ page, clubSequence: parseInt(id) });
 
   console.log(params);
-  const { data, refetch } = useClubQuizCrewManage(params, data => {
+  const { refetch } = useClubQuizCrewManage(params, data => {
     setContents(data.contents || []);
+    setTotalPage(data.totalPages);
   });
 
   /**save profile */
   const { mutate: onQuizOrder } = useQuizOrder();
 
-  // 드래그해서 변경된 리스트를 브라우저상에 나타나게 만드는것
-  const handleUpdate = (evt: any, updated: any) => {
-    console.log(evt); // tslint:disable-line
-    console.log(updated); // tslint:disable-line
-    setItemList([...updated]);
-  };
+  /** crew accept, reject */
+  const { mutate: onCrewAccept, isSuccess: isAcceptSuccess } = useCrewAcceptPost();
+  const { mutate: onCrewReject, isSuccess: isRejectSuccess } = useCrewRejectPost();
+  const { mutate: onCrewBan, isSuccess: isBanSuccess } = useCrewBanDelete();
 
-  const handleAddClick = () => {
-    console.log(itemList);
-    console.log(quizOriginList);
-    if (itemList.length === 0) {
-      alert('퀴즈 순서를 변경해주세요.');
-      return 0;
+  useEffect(() => {
+    refetch();
+  }, [isAcceptSuccess, isRejectSuccess, isBanSuccess]);
+
+  const handleCrewAccept = async (sequence: string) => {
+    if (confirm('승인을 하시겠습니까?')) {
+      let params = {
+        memberFriendRequestSequence: sequence,
+        isAccept: true,
+      };
+      onCrewReject({ data: params });
     }
-    // Transforming the data into an array of objects with "clubQuizSequence" and "order" properties
-    const transformedData = {
-      clubSequence: contents?.clubSequence, // Add the "clubSequence" property with a value of 2
-      clubQuizOrders: quizOriginList.map((item, index) => ({
-        clubQuizSequence: item,
-        order: itemList[index].order,
-      })),
-    };
-    console.log(transformedData);
-    onQuizOrder(transformedData);
+  };
+  const handleCrewReject = async (sequence: string) => {
+    if (confirm('거절 하시겠습니까?')) {
+      let params = {
+        memberFriendRequestSequence: sequence,
+        isAccept: false,
+      };
+      onCrewAccept(params);
+    }
+  };
+  const handleCrewBan = async (sequence: string) => {
+    if (confirm('강퇴 하시겠습니까?')) {
+      onCrewBan(sequence);
+    }
   };
 
   useEffect(() => {
@@ -92,64 +101,6 @@ export function QuizCrewManageTemplate({ id }: QuizCrewManageTemplateProps) {
     });
   }, [page]);
 
-  const dragList = (item: any, index: any) => (
-    <Grid key={'drag-' + index} container direction="row" justifyContent="left" alignItems="center" rowSpacing={3}>
-      <Grid item xs={1}>
-        <div className="tw-flex-auto tw-text-center">
-          <button
-            type="button"
-            // onClick={() => handleDeleteQuiz(item.quizSequence)}
-            className="tw-text-blue-700 border tw-border-blue-700 tw-font-medium tw-rounded-lg tw-text-sm tw-p-2.5 tw-text-center tw-inline-flex tw-items-center tw-mr-2"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="tw-w-6 tw-h-6 tw-text-black"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-            </svg>
-
-            <span className="sr-only">Icon description</span>
-          </button>
-        </div>
-      </Grid>
-      <Grid item xs={11}>
-        <div className="tw-flex tw-items-center tw-p-4 tw-border border mb-3 mt-3 rounded  tw-h-[60px]">
-          <div className="tw-flex-auto">
-            <div className="tw-font-medium tw-text-black">{item?.content}</div>
-          </div>
-
-          <div className="">
-            {item?.isRepresentative === true && (
-              // <div onClick={() => handleClickQuiz(item?.quizSequence, item?.isRepresentative)}>
-              <button
-                type="button"
-                data-tooltip-target="tooltip-default"
-                className="tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded"
-              >
-                대표
-              </button>
-              // </div>
-            )}
-            {item?.isRepresentative === false && (
-              // <div onClick={() => handleClickQuiz(item?.quizSequence, item?.isRepresentative)}>
-              <button
-                type="button"
-                data-tooltip-target="tooltip-default"
-                className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded"
-              >
-                대표
-              </button>
-              // </div>
-            )}
-          </div>
-        </div>
-      </Grid>
-    </Grid>
-  );
   return (
     <div className={cx('seminar-detail-container')}>
       <div className={cx('container')}>
@@ -161,15 +112,7 @@ export function QuizCrewManageTemplate({ id }: QuizCrewManageTemplateProps) {
             <Grid item xs={5} className="tw-font-semi tw-text-base tw-text-black">
               나의 퀴즈클럽 클럽 페이지에 관련 간단한 설명
             </Grid>
-            <Grid item xs={3} justifyContent="flex-end" className="tw-flex">
-              <button
-                type="button"
-                onClick={handleAddClick}
-                className="tw-text-white tw-bg-blue-500 tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5 "
-              >
-                성장퀴즈 추가하기
-              </button>
-            </Grid>
+            <Grid item xs={3} justifyContent="flex-end" className="tw-flex"></Grid>
           </Grid>
         </div>
         <TableContainer component={Paper}>
@@ -211,17 +154,32 @@ export function QuizCrewManageTemplate({ id }: QuizCrewManageTemplateProps) {
                       </button>
                       {row.clubMemberStatus === '0001' && (
                         <div>
-                          <button className="tw-bg-white tw-text-black border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded">
+                          <button
+                            onClick={() => handleCrewAccept(row.clubMemberSequence)}
+                            className="tw-bg-white tw-text-black border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
+                          >
                             승인하기
                           </button>
-                          <button className="border-danger tw-bg-white tw-text-red-500 border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded">
+                          <button
+                            onClick={() => handleCrewReject(row.clubMemberSequence)}
+                            className="border-danger tw-bg-white tw-text-red-500 border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
+                          >
+                            거절하기
+                          </button>
+                          <button
+                            onClick={() => handleCrewBan(row.clubMemberSequence)}
+                            className="border-danger tw-bg-white tw-text-red-500 border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
+                          >
                             강퇴하기
                           </button>
                         </div>
                       )}
                       {row.clubMemberStatus === '0002' && (
                         <div>
-                          <button className="border-danger tw-bg-white tw-text-red-500 border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded">
+                          <button
+                            onClick={() => handleCrewBan(row.clubMemberSequence)}
+                            className="border-danger tw-bg-white tw-text-red-500 border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
+                          >
                             강퇴하기
                           </button>
                         </div>

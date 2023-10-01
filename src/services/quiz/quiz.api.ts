@@ -29,7 +29,7 @@ export const deleteReply = async body =>
   await axiosGeneralAPI().delete(`/posts/${body.parentPostNo}/${body.postReplyNo}`);
 
 // 퀴즈 순서변경
-export const quizOrder = async body => await axiosGeneralAPI().put(`/api/v1/club/quizzes/order`, body);
+export const quizOrder = async body => await axiosGeneralAPI().put(`/api/v1/club/quizzes`, body);
 
 // 퀴즈 상세 조회
 export const quizSolutionDetail = async id => {

@@ -1,7 +1,56 @@
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import { QUERY_KEY_FACTORY } from '../../queryKeys';
-import { addPosts, deletePost, savePost, saveReply, deleteReply, rejectPost } from './friends.api';
+import {
+  addPosts,
+  deletePost,
+  savePost,
+  saveReply,
+  deleteReply,
+  rejectPost,
+  crewAcceptPost,
+  crewRejectPost,
+  crewBan,
+} from './friends.api';
 
+export const useCrewBanDelete = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => crewBan(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CAMENITY').all),
+    onSuccess: async data => {
+      //alert(',친구 수락이 되었습니다.');
+    },
+  });
+};
+export const useCrewAcceptPost = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => crewAcceptPost(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CAMENITY').all),
+    onSuccess: async data => {
+      //alert(',친구 수락이 되었습니다.');
+    },
+  });
+};
+export const useCrewRejectPost = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => crewRejectPost(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CAMENITY').all),
+    onSuccess: async data => {
+      //alert(',친구 수락이 되었습니다.');
+    },
+  });
+};
 export const useFriendAcceptPost = (): UseMutationResult => {
   const queryClient = useQueryClient();
   return useMutation<any, any, any>(requestBody => savePost(requestBody), {
@@ -11,7 +60,7 @@ export const useFriendAcceptPost = (): UseMutationResult => {
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CAMENITY').all),
     onSuccess: async data => {
-      // alert('완료되었습니다.');
+      alert(',친구 수락이 되었습니다.');
     },
   });
 };
@@ -24,7 +73,7 @@ export const useFriendRejectPost = (): UseMutationResult => {
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CAMENITY').all),
     onSuccess: async data => {
-      // alert('완료되었습니다.');
+      alert('친구 거절이 되었습니다.');
     },
   });
 };

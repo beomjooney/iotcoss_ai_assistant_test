@@ -53,7 +53,7 @@ export const useClubQuizSave = (): UseMutationResult => {
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CAMENITY').all),
     onSuccess: async data => {
-      // alert('수정이 완료되었습니다.');
+      alert('클럽이 개설 되었습니다.\n관리자가 클럽 승인대기 중입니다.');
     },
   });
 };

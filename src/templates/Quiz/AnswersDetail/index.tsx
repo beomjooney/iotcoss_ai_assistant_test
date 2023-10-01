@@ -27,9 +27,9 @@ import router from 'next/router';
 import { useQuizAnswerDetail, useQuizSolutionDetail } from 'src/services/quiz/quiz.queries';
 import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
-import SearchIcon from '@mui/icons-material/Search';
 
 /** import icon */
+import SearchIcon from '@mui/icons-material/Search';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
@@ -64,6 +64,7 @@ export function QuizAnswersDetailTemplate({ id }: QuizAnswersDetailTemplateProps
   const { memberId, logged } = useSessionStore.getState();
   const [contentHtml, setContentHtml] = useState('');
   const [page, setPage] = useState(1);
+  const [keyWorld, setKeyWorld] = useState('');
   const [totalPage, setTotalPage] = useState(1);
   const [params, setParams] = useState<paramProps>({ id, page });
   let [isLiked, setIsLiked] = useState(false);
@@ -150,13 +151,20 @@ export function QuizAnswersDetailTemplate({ id }: QuizAnswersDetailTemplateProps
     return data?.seminarLecturer?.nickname ?? data?.seminarLecturer?.name;
   };
 
+  function searchKeyworld(value) {
+    let _keyworld = value.replace('#', '');
+    if (_keyworld == '') _keyworld = null;
+    setKeyWorld(_keyworld);
+  }
+
   useEffect(() => {
     setParams({
       // ...params,
       id,
       page,
+      keyword: keyWorld,
     });
-  }, [page]);
+  }, [page, keyWorld]);
 
   return (
     <div className={cx('seminar-detail-container')}>
@@ -267,10 +275,27 @@ export function QuizAnswersDetailTemplate({ id }: QuizAnswersDetailTemplateProps
               <div className="tw-col-span-3">
                 <div className="tw-text-black tw-font-bold tw-text-2xl">퀴즈답변</div>
               </div>
-              <div className="tw-col-span-2"></div>
+              <div className="tw-col-span-2 tw-text-right">
+                <TextField
+                  sx={{
+                    width: 400,
+                  }}
+                  id="outlined-search"
+                  label=""
+                  type="search"
+                  InputProps={{
+                    style: { height: '45px' },
+                    startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
+                  }}
+                  onKeyPress={e => {
+                    if (e.key === 'Enter') {
+                      searchKeyworld((e.target as HTMLInputElement).value);
+                    }
+                  }}
+                />
+              </div>
             </div>
           </div>
-
           {answerContents.map((item, index) => {
             return (
               <CommunityCard

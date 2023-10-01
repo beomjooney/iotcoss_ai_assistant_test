@@ -182,6 +182,10 @@ const levelGroup = [
     name: '4',
     description: '레벨 4',
   },
+  {
+    name: '5',
+    description: '레벨 5',
+  },
 ];
 
 const cx = classNames.bind(styles);
@@ -204,9 +208,8 @@ export function QuizOpenTemplate() {
     });
   };
 
-  const [today, setToday] = React.useState<Dayjs | null>(dayjs());
-  // const [todayEnd, setTodayEnd] = React.useState<Dayjs | null>(dayjs());
-  const [todayEnd, setTodayEnd] = useState(dayjs().add(1, 'month'));
+  const [todayEnd, setTodayEnd] = React.useState<Dayjs | null>(dayjs());
+  const [today, setToday] = useState(dayjs().add(1, 'month'));
 
   const onChangeHandleFromToStartDate = date => {
     let formattedDate = date?.format('YYYY-MM-DD');
@@ -234,12 +237,18 @@ export function QuizOpenTemplate() {
   const [quizListCopy, setQuizListCopy] = useState<any[]>([]);
   const [quizListOrigin, setQuizListOrigin] = useState<any[]>([]);
   const [quizListParam, setQuizListParam] = useState<any[]>([]);
+  const [quizListData, setQuizListData] = useState<any[]>([]);
 
   const { isFetched: isJobGroupFetched } = useJobGroups(data => setJobGroups(data.data.contents || []));
   const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
   const { data: experienceData }: UseQueryResult<ExperiencesResponse> = useExperiences();
 
-  const { data: quizListData, refetch }: UseQueryResult<any> = useQuizList(params);
+  // const { data: quizListData, refetch }: UseQueryResult<any> = useQuizList(params);
+  const { isFetched: isQuizData, refetch } = useQuizList(params, data => {
+    //console.log('kimcy2', data);
+    setQuizListData(data.contents || []);
+    setTotalPage(data.totalPages);
+  });
   const { data: myQuizListData, refetch: refetchMyJob }: UseQueryResult<any> = useMyQuiz(myParams);
 
   const [skillIds, setSkillIds] = useState<any[]>([]);
@@ -281,12 +290,13 @@ export function QuizOpenTemplate() {
   });
 
   useEffect(() => {
+    if (isQuizData) return;
     setParams({
       // ...params,
       page,
       keyword: keyWorld,
     });
-  }, [keyWorld]);
+  }, [page, keyWorld]);
 
   useEffect(() => {
     setMyParams({
@@ -332,7 +342,7 @@ export function QuizOpenTemplate() {
   }
 
   const handleImageClick = async image => {
-    console.log('image select', `${process.env['NEXT_PUBLIC_GENERAL_URL']}` + image);
+    //console.log('image select', `${process.env['NEXT_PUBLIC_GENERAL_URL']}` + image);
     setSelectedImage(image);
     // if (!image || image.length === 0) return;
     // let imageUrl = `${process.env['NEXT_PUBLIC_GENERAL_URL']}` + image;
@@ -346,40 +356,48 @@ export function QuizOpenTemplate() {
 
   const handleFormat = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
     setSkillIds(newFormats);
-    console.log(newFormats);
+    //console.log(newFormats);
   };
   const handleFormatEx = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
     setExperienceIds(newFormats);
-    console.log(newFormats);
+    //console.log(newFormats);
   };
   const handleFormatPopUp = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
     setSkillIdsPopUp(newFormats);
-    console.log(newFormats);
+    //console.log(newFormats);
   };
   const handleFormatExPopUp = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
     setExperienceIdsPopUp(newFormats);
-    console.log(newFormats);
+    //console.log(newFormats);
   };
 
   const [introductionMessage, setIntroductionMessage] = useState<string>('');
   const handleJobGroup = (event: React.MouseEvent<HTMLElement>, newFormats: { id: string; name: string }[]) => {
-    setRecommendJobGroups(newFormats.id);
-    setRecommendJobGroupsName([newFormats.name]);
-    setRecommendJobGroupsObject(newFormats);
-    console.log(newFormats);
+    if (newFormats) {
+      setRecommendJobGroups(newFormats.id);
+      setRecommendJobGroupsName([newFormats.name]);
+      setRecommendJobGroupsObject(newFormats);
+      //console.log(newFormats);
+    }
   };
   const handleJobs = (event: React.MouseEvent<HTMLElement>, newFormats: { id: string; name: string }[]) => {
-    setJobGroupName([newFormats.name]);
-    setJobGroup(newFormats.id);
-    setJobGroupObject(newFormats);
-    console.log(newFormats.id);
+    if (newFormats) {
+      setJobGroupName([newFormats.name]);
+      setJobGroup(newFormats.id);
+      setJobGroupObject(newFormats);
+    }
+    //console.log(newFormats.id);
   };
   const handleRecommendLevelsPopUp = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
-    setRecommendLevelsPopUp(newFormats);
+    if (newFormats) {
+      setRecommendLevelsPopUp(newFormats);
+    }
   };
 
   const handleRecommendLevels = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
-    setRecommendLevels(newFormats);
+    if (newFormats) {
+      setRecommendLevels(newFormats);
+    }
   };
 
   const handleStudyCycle = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
@@ -394,14 +412,14 @@ export function QuizOpenTemplate() {
   };
 
   useDidMountEffect(() => {
-    console.log('delete 1 !!!', params, page);
+    //console.log('delete 1 !!!', params, page);
     refetchMyJob();
   }, [postSucces]);
 
-  const { isFetched: isContentFetched } = useSeminarList(params, data => {
-    setContents(data.data || []);
-    setTotalPage(data.totalPage);
-  });
+  // const { isFetched: isContentFetched } = useSeminarList(params, data => {
+  //   setContents(data.data || []);
+  //   setTotalPage(data.totalPage);
+  // });
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -428,7 +446,7 @@ export function QuizOpenTemplate() {
   };
 
   function getObjectsWithSequences(arr, sequenceArray) {
-    console.log(arr, sequenceArray);
+    //console.log(arr, sequenceArray);
 
     return arr
       .filter(item => sequenceArray.includes(String(item.sequence)))
@@ -442,33 +460,19 @@ export function QuizOpenTemplate() {
       }));
   }
 
-  function getObjectsWithSequencesParam(arr, sequenceArray) {
-    console.log(arr, sequenceArray);
-
-    return arr
-      .filter(item => sequenceArray.includes(String(item.sequence)))
-      .map((item, index) => ({
-        quizSequence: item.sequence,
-        order: index + 1,
-        isRepresentative: false,
-        // isPublic: true,
-        // publishAt: '2023-08-22 00:00:00',
-      }));
-  }
-
   function handleDeleteQuiz(quizSequence) {
-    console.log('delete', quizSequence);
+    //console.log('delete', quizSequence);
 
     // "sequence"가 71인 객체를 제외하고 새로운 배열 생성
-    const filteredData = quizList.filter(item => item.sequence !== quizSequence);
-    console.log('filteredData', filteredData);
-    console.log('quizListCopy', quizListCopy);
-    console.log('quizListOrigin', quizListOrigin);
+    const filteredData = quizListOrigin.filter(item => item.sequence !== quizSequence);
+    //console.log('filteredData', filteredData);
+    //console.log('quizListCopy', quizListCopy);
+    //console.log('quizListOrigin', quizListOrigin);
 
     const resultArray1 = [];
-    console.log('resultArray1 ', resultArray1);
+    //console.log('resultArray1 ', resultArray1);
     // quizListOrigin.map((item, index) => {
-    //   console.log(' filteredData[index]', quizListCopy[index]);
+    //   //console.log(' filteredData[index]', quizListCopy[index]);
     //   if (index < quizListCopy.length) {
     //     resultArray1.push({
     //       ...item,
@@ -485,7 +489,7 @@ export function QuizOpenTemplate() {
 
     // filter 메서드를 사용하여 특정 quizSequence를 가진 요소를 제거하고 키 제거
     // map 메서드를 사용하여 targetSequence에 해당하는 요소만 수정
-    const modifiedArray = quizListCopy.map(item => {
+    const modifiedArray = quizListOrigin.map(item => {
       if (item.quizSequence === quizSequence) {
         const { isRepresentative, memberName, order, quizSequence, content, ...rest } = item;
         return rest;
@@ -493,9 +497,9 @@ export function QuizOpenTemplate() {
       return item;
     });
 
-    console.log('modifiedArray', modifiedArray);
+    //console.log('modifiedArray', modifiedArray);
 
-    console.log('filteredArray1', state, quizSequence, resultArray1);
+    //console.log('filteredArray1', state, quizSequence, resultArray1);
     const filteredArray = state.filter(item => {
       if (quizSequence !== undefined) {
         return item !== quizSequence.toString();
@@ -504,15 +508,18 @@ export function QuizOpenTemplate() {
       return true;
     });
 
-    console.log('filteredArray2', filteredArray);
+    //console.log('filteredArray', filteredArray);
+    //console.log('filtmodifiedArrayeredArray2', modifiedArray);
+    //console.log('filteredData', filteredData);
     setState(filteredArray);
     setQuizListCopy(modifiedArray);
-    setQuizList(filteredData);
+    setQuizList(filteredArray);
+    setQuizListOrigin(modifiedArray);
   }
   function handleClickQuiz(quizSequence, flag) {
-    console.log(quizSequence, flag);
+    //console.log(quizSequence, flag);
     // "quizSequence"가 83인 객체를 찾아서 "isRepresentative" 값을 변경
-    const updatedData = quizListCopy.map(item => {
+    const updatedData = quizListOrigin.map(item => {
       if (item.quizSequence === quizSequence) {
         return {
           ...item,
@@ -521,16 +528,36 @@ export function QuizOpenTemplate() {
       }
       return item;
     });
-    console.log(updatedData);
-    setQuizListCopy(updatedData);
+    //console.log(updatedData);
+    // "isRepresentative" 값이 true인 개수를 세기 위한 변수
+    let countIsRepresentative = 0;
+
+    // 데이터를 순회하면서 "isRepresentative" 값이 true인 경우 카운트 증가
+    updatedData.forEach(quiz => {
+      if (quiz.isRepresentative === true) {
+        countIsRepresentative++;
+      }
+    });
+
+    // "isRepresentative" 값이 4개 이상인 경우 알림 창 표시
+    if (countIsRepresentative >= 4) {
+      alert('대표 퀴즈는 3개입니다.');
+    } else {
+      setQuizListOrigin(updatedData);
+    }
   }
 
   const handleChangeCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked } = event.currentTarget;
-    const quizData = quizListData?.contents;
+    const quizData = quizListData;
     const result = [...state];
 
-    console.log('name', name);
+    if (result.length >= quizListOrigin.length) {
+      alert('더이상 퀴즈를 선택할수 없습니다.');
+      return;
+    }
+
+    //console.log('name -------------', name, result, quizData, quizListCopy);
 
     if (result.indexOf(name) > -1) {
       result.splice(result.indexOf(name), 1);
@@ -538,33 +565,60 @@ export function QuizOpenTemplate() {
       result.push(name);
     }
     setState(result);
-    console.log(state, quizData, result);
+    //console.log(state, quizData, result);
     const filteredData = getObjectsWithSequences(quizData, result);
-    const filteredDataParam = getObjectsWithSequencesParam(quizData, result);
+    const valueData = getObjectsWithSequences(quizData, [name]);
 
+    //console.log('filteredData------', filteredData, quizListOrigin);
     //studyCycle 로직추가
-    setQuizListCopy(quizListOrigin);
+    //setQuizListCopy(quizListOrigin);
 
     const resultArray1 = [];
-    console.log('resultArray1 ', resultArray1);
-    quizListOrigin.map((item, index) => {
-      if (index < filteredData.length) {
-        resultArray1.push({
-          ...item,
-          quizSequence: filteredData[index].sequence,
-          content: filteredData[index].content,
-          memberName: filteredData[index].memberName,
-          isRepresentative: quizListCopy[index]?.isRepresentative || false,
-          order: index,
-        });
-      } else {
-        resultArray1.push(item);
-      }
-    });
+    //console.log('quizListCopy ', quizListCopy);
+    //console.log('quizListOrigin ', quizListOrigin);
+    //console.log('resultArray1 ', resultArray1);
+    const flag = true;
+    if (checked) {
+      //console.log('add', quizListOrigin);
+      quizListOrigin.map((item, index) => {
+        // //console.log(item);
+        if (typeof item.order === 'undefined' && flag === true) {
+          //console.log('undefind');
+          resultArray1.push({
+            ...item,
+            quizSequence: valueData[0].sequence,
+            content: valueData[0].content,
+            memberName: valueData[0].memberName,
+            isRepresentative: false,
+            order: index,
+          });
+          flag = false;
+        } else {
+          //console.log('mmn');
+          resultArray1.push(item);
+        }
+      });
+      setQuizListCopy(resultArray1);
+      setQuizListOrigin(resultArray1);
+    } else {
+      //console.log('remove', valueData);
+      const modifiedArray = quizListOrigin.map(item => {
+        if (item.quizSequence === valueData[0].sequence) {
+          const { isRepresentative, memberName, order, quizSequence, content, ...rest } = item;
+          return rest;
+        }
+        return item;
+      });
+      //console.log('remove', modifiedArray);
+      setQuizListCopy(modifiedArray);
+      setQuizListOrigin(modifiedArray);
+      setQuizList(modifiedArray);
+    }
 
-    console.log(resultArray1);
-    setQuizListCopy(resultArray1);
-    setQuizList(filteredData);
+    setQuizList(result);
+    //console.log(resultArray1);
+    // setQuizListCopy(resultArray1);
+    // setQuizList(filteredData);
     // setQuizListParam(filteredDataParam);
   };
 
@@ -608,7 +662,7 @@ export function QuizOpenTemplate() {
   const PAGE_NAME = 'contents';
   const { isFetched: isContentListFetched, isFetching } = useRecommendContents(PAGE_NAME, params, data => {
     setContents(data.data || []);
-    console.log(contents);
+    //console.log(contents);
     // setTotalPage(data.totalPage > 0 ? data.totalPage : 1);
   });
 
@@ -636,12 +690,12 @@ export function QuizOpenTemplate() {
 
   const [state, setState] = React.useState([]);
 
-  useEffect(() => {
-    if (isFetching) return;
-    setParams({
-      ...params,
-    });
-  }, [page]);
+  // useEffect(() => {
+  //   if (isFetching) return;
+  //   setParams({
+  //     ...params,
+  //   });
+  // }, [page]);
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
@@ -649,7 +703,7 @@ export function QuizOpenTemplate() {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newIndex) => {
-    console.log('SubTab - index', newIndex, event);
+    //console.log('SubTab - index', newIndex, event);
     setActive(newIndex);
     setValue(newIndex);
   };
@@ -677,19 +731,41 @@ export function QuizOpenTemplate() {
   };
 
   const handleCancel = () => {
-    console.log('next');
+    //console.log('next');
     router.push('/quiz');
   };
   const handleNext = () => {
-    console.log('next');
+    //console.log('next');
     let newSkipped = skipped;
     if (isStepSkipped(activeStep)) {
       newSkipped = new Set(newSkipped.values());
       newSkipped.delete(activeStep);
     }
+    if (activeStep === 2) {
+      //console.log(quizListOrigin.length, quizList.length);
+      if (quizListOrigin.length !== quizList.length) {
+        alert('퀴즈를 추가해주세요');
+        return 0;
+      }
 
+      // "isRepresentative" 값이 true인 개수를 세기 위한 변수
+      let countIsRepresentative = 0;
+
+      // 데이터를 순회하면서 "isRepresentative" 값이 true인 경우 카운트 증가
+      quizListOrigin.forEach(quiz => {
+        if (quiz.isRepresentative === true) {
+          countIsRepresentative++;
+        }
+      });
+      //console.log(countIsRepresentative);
+      // "isRepresentative" 값이 3개가 아닌 경우 알림 창 표시
+      if (countIsRepresentative !== 3) {
+        alert('대표 퀴즈는 3개로 설정 해주세요.');
+        return 0;
+      }
+    }
     // 필터링하여 새로운 배열 생성
-    const filteredData = quizListCopy
+    const filteredData = quizListOrigin
       .filter(
         item => item.quizSequence !== undefined && item.isRepresentative !== undefined && item.order !== undefined,
       )
@@ -698,16 +774,16 @@ export function QuizOpenTemplate() {
         isRepresentative: item.isRepresentative,
         order: item.order,
       }));
-    // console.log(filteredData);
+    // //console.log(filteredData);
     setQuizListParam(filteredData);
     setActiveStep(prevActiveStep => prevActiveStep + 1);
     setSkipped(newSkipped);
   };
 
   const handleNextLast = () => {
-    console.log(quizListParam);
+    //console.log(quizListParam);
     const params = { ...paramss, clubQuizzes: quizListParam };
-    //console.log(params);
+    ////console.log(params);
     onClubQuizSave(params);
   };
 
@@ -727,7 +803,7 @@ export function QuizOpenTemplate() {
 
   const handleNextOne = () => {
     window.scrollTo(0, 0);
-    console.log('imageUrl key', imageUrl);
+    //console.log('imageUrl key', imageUrl);
     //요일 정렬
 
     const params = {
@@ -750,7 +826,7 @@ export function QuizOpenTemplate() {
       clubQuizzes: quizListParam,
     };
     setParamss(params);
-    console.log('next');
+    //console.log('next');
     if (jobGroup.length === 0) {
       alert('등록을 원하는 분야를 선택해주세요.');
       return;
@@ -758,6 +834,11 @@ export function QuizOpenTemplate() {
 
     if (clubName === '') {
       alert('클럽 이름을 입력해주세요.');
+      return;
+    }
+
+    if (studyCycle.length === 0) {
+      alert('요일을 입력해주세요.');
       return;
     }
 
@@ -789,7 +870,7 @@ export function QuizOpenTemplate() {
     const combinedArray = [].concat(...modifiedArray);
     const sortedData = combinedArray.sort(sortByWeek);
     // 정렬된 결과
-    console.log(sortedData); // 정렬된 JSON 데이터 출력
+    //console.log(sortedData); // 정렬된 JSON 데이터 출력
     setQuizListOrigin(sortedData);
 
     setActiveStep(prevActiveStep => prevActiveStep + 1);
@@ -799,7 +880,7 @@ export function QuizOpenTemplate() {
   const handleBack = () => {
     setActiveStep(prevActiveStep => prevActiveStep - 1);
 
-    console.log(activeStep);
+    //console.log(activeStep);
   };
 
   const handleInputChange = event => {
@@ -824,14 +905,14 @@ export function QuizOpenTemplate() {
   };
 
   const handleJobGroups = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
-    console.log(event.currentTarget);
+    //console.log(event.currentTarget);
     setJobGroupPopUp(newFormats);
-    console.log(newFormats);
+    //console.log(newFormats);
   };
   const handleJobsPopUp = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
-    console.log(event.currentTarget);
+    //console.log(event.currentTarget);
     setJobs(newFormats);
-    console.log(newFormats);
+    //console.log(newFormats);
   };
 
   const handleSkip = () => {
@@ -1427,7 +1508,7 @@ export function QuizOpenTemplate() {
                       </Grid>
                     );
                   })
-                : quizListCopy.map((item, index) => {
+                : quizListOrigin.map((item, index) => {
                     return (
                       <Grid
                         key={index}
@@ -1602,7 +1683,7 @@ export function QuizOpenTemplate() {
               <div className="tw-text-base tw-mt-5 tw-text-black"> {paramss.description}</div>
               <div className="tw-text-xl tw-mt-5 tw-font-bold tw-text-black">퀴즈클럽 질문 미리보기</div>
               <div className="tw-text-sm tw-mt-5 tw-mb-2 tw-font-bold tw-text-gray ">12주 총 학습 36회 진행</div>
-              {quizListCopy.map((item, index) => {
+              {quizListOrigin.map((item, index) => {
                 if (item?.isRepresentative === true) {
                   return (
                     <div key={index} className="">
@@ -1696,7 +1777,7 @@ export function QuizOpenTemplate() {
                 }}
               />
             </div>
-            {quizListData?.contents.map((item, index) => (
+            {quizListData.map((item, index) => (
               <div key={`admin-menu-${index}`} className="tw-flex tw-pb-5">
                 <Checkbox
                   disableRipple
@@ -1710,7 +1791,7 @@ export function QuizOpenTemplate() {
                   <div className="tw-flex  tw-items-center">
                     <div className="tw-flex-auto">
                       <div className="tw-font-medium tw-text-black">
-                        <div className="tw-text-sm tw-font-normal tw-text-gray-500">
+                        <div className="tw-text-sm tw-font-normal tw-text-gray-500  tw-line-clamp-1">
                           {item?.recommendJobGroupNames?.map((name, i) => (
                             <span
                               key={i}
@@ -1741,7 +1822,7 @@ export function QuizOpenTemplate() {
                         </div>
                       </div>
                     </div>
-                    <div className="tw-text-gray-400 tw-text-sm ">{item.createdAt}</div>
+                    <div className="tw-text-gray-400 tw-text-sm  tw-line-clamp-1">{item.createdAt}</div>
                   </div>
                   <div className="tw-flex  tw-items-center py-2">
                     <div className="tw-flex-auto">
@@ -1759,6 +1840,7 @@ export function QuizOpenTemplate() {
                 </div>
               </div>
             ))}
+            <Pagination page={page} setPage={setPage} total={totalPage} />
           </div>
         )}
         {active == 1 && (

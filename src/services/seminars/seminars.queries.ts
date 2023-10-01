@@ -131,7 +131,7 @@ export const useClubQuizManage = (id, onSuccess?: (data: any) => void, onError?:
   return useQuery<any, Error>(QUERY_KEY_FACTORY('SEMINAR').detail(id), () => clubQuizManage(id), {
     onSuccess,
     onError,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
     enabled: true,
   });
 };
