@@ -94,6 +94,14 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
   const [quizListData, setQuizListData] = useState<any[]>([]);
   const [keyWorld, setKeyWorld] = useState('');
   const [myKeyWorld, setMyKeyWorld] = useState('');
+
+  /**quiz insert */
+  const [skillIdsClk, setSkillIdsClk] = useState<any[]>([1, 2, 3, 4, 5]);
+  const [jobGroup, setJobGroup] = useState([]);
+  const [recommendLevels, setRecommendLevels] = useState([]);
+  const [skillIds, setSkillIds] = useState<any[]>([]);
+  const [experienceIds, setExperienceIds] = useState<any[]>([]);
+
   /** get quiz data */
   const { isFetched: isQuizData } = useQuizList(params, data => {
     //console.log('kimcy2', data);
@@ -423,6 +431,22 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
       setQuizListCopy(updatedData);
     }
   }
+
+  const handleQuizInsertClick = async () => {
+    const params = {
+      content: quizName,
+      articleUrl: quizUrl,
+      recommendJobGroups: [jobGroup],
+      recommendJobs: jobs,
+      recommendLevels: [recommendLevels],
+      relatedSkills: skillIds,
+      relatedExperiences: experienceIds,
+      hashTags: selected,
+    };
+
+    setIsModalOpen(false);
+    onQuizSave(params);
+  };
 
   const dragList = (item: any, index: any) => (
     <Grid
@@ -1097,3 +1121,15 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
 }
 
 export default QuizManageTemplate;
+function onQuizSave(params: {
+  content: string;
+  articleUrl: string;
+  recommendJobGroups: any[];
+  recommendJobs: any[];
+  recommendLevels: any[];
+  relatedSkills: any;
+  relatedExperiences: any;
+  hashTags: any[];
+}) {
+  throw new Error('Function not implemented.');
+}

@@ -378,7 +378,7 @@ export function ProfileTemplate() {
                   </div>
                   <div className="tw-font-bold tw-text-base tw-text-black tw-mt-5">
                     {userInfo?.careers?.[userInfo?.careers?.length - 1]?.companyName} |
-                    {userInfo?.careers?.[userInfo?.careers?.length - 1]?.job}
+                    {userInfo?.careers?.[userInfo?.careers?.length - 1]?.jobName}
                   </div>
                   <div className="tw-py-2">
                     {userInfo?.customSkills?.map((name, i) => (

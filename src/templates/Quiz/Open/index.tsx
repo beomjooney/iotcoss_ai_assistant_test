@@ -447,7 +447,7 @@ export function QuizOpenTemplate() {
       articleUrl: quizUrl,
       recommendJobGroups: [jobGroupPopUp],
       recommendJobs: jobs,
-      recommendLevels: recommendLevelsPopUp,
+      recommendLevels: [recommendLevelsPopUp],
       relatedSkills: skillIdsPopUp,
       relatedExperiences: experienceIdsPopUp,
       hashTags: selected,
@@ -756,9 +756,9 @@ export function QuizOpenTemplate() {
       newSkipped.delete(activeStep);
     }
     if (activeStep === 2) {
-      //console.log(quizListOrigin.length, quizList.length);
-      if (quizListOrigin.length !== quizList.length) {
-        alert('퀴즈를 추가해주세요');
+      console.log(quizListOrigin.length, quizList.length);
+      if (quizList.length < 3) {
+        alert('퀴즈를 3개 이상 추가해주세요');
         return 0;
       }
 
