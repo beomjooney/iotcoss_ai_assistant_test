@@ -208,17 +208,31 @@ export function QuizOpenTemplate() {
     });
   };
 
-  const [todayEnd, setTodayEnd] = React.useState<Dayjs | null>(dayjs());
-  const [today, setToday] = useState(dayjs().add(1, 'month'));
+  const [startDay, setStartDay] = React.useState<Dayjs | null>(dayjs());
+  const [endDay, setEndDay] = React.useState<Dayjs | null>(dayjs());
+  // const [today, setToday] = useState(dayjs().add(1, 'month'));
 
   const onChangeHandleFromToStartDate = date => {
-    let formattedDate = date?.format('YYYY-MM-DD');
-    setToday(formattedDate);
+    if (date) {
+      // Convert date to a Dayjs object
+      const formattedDate = dayjs(date);
+      // Format the date as 'YYYY-MM-DD'
+      const formattedDateString = formattedDate.format('YYYY-MM-DD');
+      // Set both today and todayEnd
+      setStartDay(formattedDate);
+    }
   };
 
   const onChangeHandleFromToEndDate = date => {
-    let formattedDate = date?.format('YYYY-MM-DD');
-    setTodayEnd(formattedDate);
+    if (date) {
+      // Convert date to a Dayjs object
+      const formattedDate = dayjs(date);
+      // Format the date as 'YYYY-MM-DD'
+      const formattedDateString = formattedDate.format('YYYY-MM-DD');
+
+      // Set both today and todayEnd
+      setEndDay(formattedDate); // You can also format this if needed
+    }
   };
 
   const router = useRouter();
@@ -813,8 +827,8 @@ export function QuizOpenTemplate() {
       studyCycle: studyCycle.sort(sortByDay),
       recommendJobGroups: [jobGroup],
       recommendLevels: [recommendLevels],
-      startAt: today.format('YYYY-MM-DD') + ' 00:00:00',
-      recruitDeadlineAt: todayEnd.format('YYYY-MM-DD') + ' 00:00:00',
+      startAt: startDay.format('YYYY-MM-DD') + ' 00:00:00',
+      recruitDeadlineAt: endDay.format('YYYY-MM-DD') + ' 00:00:00',
       description: introductionMessage,
       studyWeekCount: studyCycle.length * 12,
       isPublic: true,
@@ -826,7 +840,7 @@ export function QuizOpenTemplate() {
       clubQuizzes: quizListParam,
     };
     setParamss(params);
-    //console.log('next');
+    console.log('next', params);
     if (jobGroup.length === 0) {
       alert('등록을 원하는 분야를 선택해주세요.');
       return;
@@ -870,7 +884,6 @@ export function QuizOpenTemplate() {
     const combinedArray = [].concat(...modifiedArray);
     const sortedData = combinedArray.sort(sortByWeek);
     // 정렬된 결과
-    //console.log(sortedData); // 정렬된 JSON 데이터 출력
     setQuizListOrigin(sortedData);
 
     setActiveStep(prevActiveStep => prevActiveStep + 1);
@@ -1348,7 +1361,7 @@ export function QuizOpenTemplate() {
                       <DatePicker
                         format="YYYY-MM-DD"
                         slotProps={{ textField: { size: 'small' } }}
-                        value={today}
+                        value={startDay}
                         onChange={e => onChangeHandleFromToStartDate(e)}
                       />
                     </LocalizationProvider>
@@ -1360,7 +1373,7 @@ export function QuizOpenTemplate() {
                       <DatePicker
                         format="YYYY-MM-DD"
                         slotProps={{ textField: { size: 'small' } }}
-                        value={todayEnd}
+                        value={endDay}
                         onChange={e => onChangeHandleFromToEndDate(e)}
                       />
                     </LocalizationProvider>
