@@ -16,6 +16,7 @@ import Icon from '@mui/material/Icon';
 import Box from '@mui/system/Box';
 import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
+import moment from 'moment';
 
 import { useSessionStore } from 'src/store/session';
 import { useDeleteLike, useSaveLike } from 'src/services/community/community.mutations';
@@ -106,9 +107,9 @@ export function ProfileTemplate() {
   ]);
 
   const { isFetched: isUserInfo, refetch } = useMemberInfo(memberId, user => {
-    console.log(user);
+    //console.log(user);
     const jsonArray = user.customSkills.map(item => ({ name: item }));
-    console.log(jsonArray);
+    //console.log(jsonArray);
     setCustomSkills(jsonArray);
     setRecommendLevels(user.level.toString());
     setRecommendJobGroups(user.jobGroup);
@@ -155,7 +156,7 @@ export function ProfileTemplate() {
   const [quizTotalPage, setQuizTotalPage] = useState(1);
   const [myQuizParams, setMyQuizParams] = useState<paramProps>({ page: quizPage });
   const { data: myQuizReplyData }: UseQueryResult<any> = useMyQuizReply(myQuizParams, data => {
-    console.log(data);
+    //console.log(data);
     setQuizTotalPage(data.totalPages);
   });
 
@@ -205,14 +206,14 @@ export function ProfileTemplate() {
   const handleAddFields = () => {
     const values = [
       ...formFields,
-      { companyName: '', startDate: '', endDate: '', isCurrent: false, isFreelance: false, isDelete: false },
+      { companyName: '', startDate: today, endDate: today, isCurrent: false, isFreelance: false, isDelete: false },
     ];
     setFormFields(values);
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(formFields);
+    //console.log(formFields);
   };
 
   const handleSkillsChange = (event, newValue) => {
@@ -263,7 +264,6 @@ export function ProfileTemplate() {
     // fileImageUrl이 null인 경우 imageUrl을 사용하도록 조건문 추가
     const profileImageKey = imageUrl || user?.profileImageUrl;
 
-    console.log(profileImageKey);
     const params = {
       nickname: nickName,
       careers: formFields[0].companyName ? formFields : [],
@@ -273,10 +273,26 @@ export function ProfileTemplate() {
       introductionMessage: introductionMessage,
       profileImageUrl: profileImageKey,
     };
-    console.log(params);
     onSave(params);
     setIsModalOpen(false);
   };
+
+  const dateNow = new Date();
+  const today = dateNow.toISOString().slice(0, 10);
+  
+  const initStartDate = userInfo?.careers?.reduce((curr, prev) => {
+    return new Date(prev.startDate);
+  });
+
+  const careersResult = userInfo?.careers?.map((data, key) => {
+      if(data.isCurrent == true) {
+        const lastEndDate = new Date(moment(data.endDate).format('YYYY-MM-DD'));
+        const diffTime = (lastEndDate.getTime() - initStartDate) / (1000*60*60*24*30*12);
+
+        return <div key={data.sequence}>{data.companyName} | {data.jobName} | {Math.floor(diffTime)}년차</div>;
+      }
+    }
+  );
 
   useEffect(() => {
     if (!file) return;
@@ -377,8 +393,9 @@ export function ProfileTemplate() {
                     </div>
                   </div>
                   <div className="tw-font-bold tw-text-base tw-text-black tw-mt-5">
-                    {userInfo?.careers?.[userInfo?.careers?.length - 1]?.companyName} |
-                    {userInfo?.careers?.[userInfo?.careers?.length - 1]?.jobName}
+                    {careersResult}
+                    {/* {userInfo?.careers?.[userInfo?.careers?.length - 1]?.companyName} |
+                    {userInfo?.careers?.[userInfo?.careers?.length - 1]?.jobName} */}
                   </div>
                   <div className="tw-py-2">
                     {userInfo?.customSkills?.map((name, i) => (
@@ -602,7 +619,7 @@ export function ProfileTemplate() {
               직군 및 레벨을 설정하시면 님께
             </div>
             <div className="tw-font-semibold tw-text-base  tw-text-black tw-mt-0 tw-mb-10 tw-text-center">
-              꼭 맞는커멘 서비스를 추천받으실 수 있습니다!
+              꼭 맞는 커멘 서비스를 추천받으실 수 있습니다!
             </div>
 
             <div className="border tw-p-7 tw-rounded-xl">
@@ -870,7 +887,7 @@ export function ProfileTemplate() {
                                     name="jason"
                                   />
                                 }
-                                label="재직중 경우 체크 해주세요."
+                                label="재직 중인 경우, 체크 해주세요."
                               />
                             </div>
                           </dd>
