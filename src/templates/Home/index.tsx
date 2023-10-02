@@ -534,7 +534,7 @@ export function HomeTemplate({ logged = false }: HomeProps) {
           // onAfterClose={() => setIsModalOpen(false)}
         >
           <div className="tw-font-bold tw-text-xl tw-text-black tw-mt-0 tw-mb-5 tw-text-center">
-            {user?.name}님 데브어스에 오신 것을 환영합니다!
+            {user?.name || user?.nickname}님 데브어스에 오신 것을 환영합니다!
           </div>
           <div className="tw-font-semibold tw-text-base tw-text-black tw-mt-0  tw-text-center">
             직군 및 레벨을 설정하시면 님께
