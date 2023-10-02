@@ -304,7 +304,6 @@ export function QuizOpenTemplate() {
   });
 
   useEffect(() => {
-    if (isQuizData) return;
     setParams({
       // ...params,
       page,
