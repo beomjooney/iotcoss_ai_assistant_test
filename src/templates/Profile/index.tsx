@@ -821,7 +821,7 @@ export function ProfileTemplate() {
                                     name="jason"
                                   />
                                 }
-                                label="프리랜서의 경우 체크해주세요."
+                                label="프리랜서의 경우, 체크해주세요."
                               />
                             </div>
                           </dd>
