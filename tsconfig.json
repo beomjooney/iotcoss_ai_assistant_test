@@ -17,7 +17,7 @@
     "allowJs": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "types": ["node", "jest"],
+    "types": ["node", "jest", "@types/gtag.js"],
     "strict": false,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,

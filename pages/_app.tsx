@@ -13,7 +13,7 @@ import '../public/globals.css';
 import Head from 'next/head';
 import { Hydrate, QueryClient, QueryClientProvider } from 'react-query';
 import { DefaultLayout } from '../src/stories/Layout';
-import { ComponentType, useState } from 'react';
+import { ComponentType, useEffect, useState } from 'react';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { axiosSetHeader } from '../src/services';
 import { getCookie, setCookie } from 'cookies-next';
@@ -23,6 +23,11 @@ import { AuthError, ForbiddenError, NotFoundError } from '../src/services/error'
 import { Session, useSessionStore } from '../src/store/session';
 import jwt_decode from 'jwt-decode';
 import { UserInfo } from '../src/models/account';
+
+/** import gtag */
+import * as gtag from 'src/lib/gtag';
+import Script from 'next/script';
+import { useRouter } from 'next/router';
 
 export type NextPageWithLayout<P = Record<string, unknown>> = NextPage<P> & {
   Layout: ComponentType;
@@ -60,8 +65,38 @@ function CustomApp({ Component, pageProps = {}, session }: AppPropsWithLayout) {
   const Layout = Component.Layout ?? DefaultLayout;
   const LayoutProps = Component.LayoutProps ?? {};
 
+  /**gtag */
+  const router = useRouter();
+
+  useEffect(() => {
+    const handleRouteChange = (url: URL) => {
+      gtag.pageview(url);
+    };
+    router.events.on('routeChangeComplete', handleRouteChange);
+    router.events.on('hashChangeComplete', handleRouteChange);
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange);
+      router.events.off('hashChangeComplete', handleRouteChange);
+    };
+  }, [router.events]);
+
   return (
     <>
+      <Script strategy="afterInteractive" src={`https://www.googletagmanager.com/gtag/js?id=${gtag.GA_TRACKING_ID}`} />
+      <Script
+        id="gtag-init"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${gtag.GA_TRACKING_ID}', {
+              page_path: window.location.pathname,
+            });
+          `,
+        }}
+      />
       <Head>
         <title>데브어스</title>
         <meta name="description" content="데브어스" />
@@ -72,6 +107,7 @@ function CustomApp({ Component, pageProps = {}, session }: AppPropsWithLayout) {
         <link rel="shortcut icon" href="#" />
         <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/icons/favicon-16x16.png" />
         {/* <script src="https://js.bootpay.co.kr/bootpay-4.2.6.min.js" type="application/javascript"></script> */}
+        {/* Global Site Tag (gtag.js) - Google Analytics */}
       </Head>
       <main className="app">
         <QueryClientProvider client={queryClient}>
