@@ -167,15 +167,15 @@ export function QuizTemplate() {
       {/* <Banner title="커리어멘토스 세미나" subTitle="커멘세미나" /> */}
 
       <div className={cx('container')}>
-        <div className="tw-py-5">
+        <div className="tw-py-[60px]">
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
             <Grid item xs={2} className="tw-font-bold tw-text-3xl tw-text-black max-lg:!tw-text-base">
               퀴즈클럽
             </Grid>
-            <Grid item xs={7} className="max-lg:tw-p-2 tw-font-semi tw-text-base tw-text-black  max-lg:!tw-text-sm">
+            <Grid item xs={8} className="max-lg:tw-p-2 tw-font-semi tw-text-base tw-text-black  max-lg:!tw-text-sm">
               관심 주제별로 성장 퀴즈를 풀고 네트워킹 할 수 있는 클럽을 만나보세요!
             </Grid>
-            <Grid item xs={3} justifyContent="flex-end" className="tw-flex">
+            <Grid item xs={2} justifyContent="flex-end" className="tw-flex">
               <button
                 onClick={() => (location.href = '/quiz/open')}
                 type="button"
@@ -186,11 +186,9 @@ export function QuizTemplate() {
             </Grid>
           </Grid>
         </div>
-        <Box sx={{ width: '100%', typography: 'body1', marginTop: '20px', marginBottom: '20px' }}>
+        <Box sx={{ width: '100%', typography: 'body1', marginBottom: '20px' }}>
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-            <Grid item xs={8} className="tw-font-bold tw-text-3xl tw-text-black">
-              {/* <SecondTabs tabs={testBoards} /> */}
-
+            <Grid item xs={9} className="tw-font-bold tw-text-3xl tw-text-black">
               <div className={cx('filter-area')}>
                 <div className={cx('mentoring-button__group', 'gap-12', 'justify-content-center')}>
                   <Toggle
@@ -237,7 +235,7 @@ export function QuizTemplate() {
                 </div>
               </div>
             </Grid>
-            <Grid item xs={4} className="tw-font-semi tw-text-base tw-text-black">
+            <Grid item xs={3} className="tw-font-semi tw-text-base tw-text-black">
               <TextField
                 fullWidth
                 id="outlined-basic"
@@ -319,56 +317,37 @@ export function QuizTemplate() {
           </div>
         )}
         <article>
-          {/* <div className={cx('filter-area', 'top-filter')}>
-            <div className={cx('seminar-button__group')}></div>
-          </div> */}
-
           <div className={cx('content-area')}>
-            <section className={cx('content', 'flex-wrap-container')}>
-              <Grid
-                container
-                direction="row"
-                justifyContent="left"
-                alignItems="center"
-                rowSpacing={3}
-                columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-              >
-                {isContentFetched &&
-                  (contents.length > 0 ? (
-                    contents.map((item, index) => {
-                      return (
-                        <ClubCard
-                          key={index}
-                          item={item}
-                          xs={6}
-                          // writer={memberSample}
-                          className={cx('reply-container__item')}
-                          // memberId={memberId}
-                          // onPostDeleteSubmit={onPostDeleteSubmit}
-                        />
-                      );
-                    })
-                  ) : (
-                    <div className={cx('content--empty')}>데이터가 없습니다.</div>
-                  ))}
-              </Grid>
-              {/* {isContentFetched &&
+            <Grid
+              container
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+              rowSpacing={4}
+              columnSpacing={{ xs: 1, sm: 2, md: 4 }}
+            >
+              {isContentFetched &&
                 (contents.length > 0 ? (
-                  contents.map((item, i) => {
+                  contents.map((item, index) => {
                     return (
-                      <ArticleCard
-                        uiType={ArticleEnum.MENTOR_SEMINAR}
-                        content={item}
-                        key={i}
-                        className={cx('container__item')}
+                      <ClubCard
+                        key={index}
+                        item={item}
+                        xs={6}
+                        // writer={memberSample}
+                        className={cx('reply-container__item')}
+                        // memberId={memberId}
+                        // onPostDeleteSubmit={onPostDeleteSubmit}
                       />
                     );
                   })
                 ) : (
                   <div className={cx('content--empty')}>데이터가 없습니다.</div>
-                ))} */}
-            </section>
-            <Pagination page={page} setPage={setPage} total={totalPage} />
+                ))}
+            </Grid>
+            <div className="tw-mt-10">
+              <Pagination page={page} setPage={setPage} total={totalPage} />
+            </div>
           </div>
         </article>
       </div>
