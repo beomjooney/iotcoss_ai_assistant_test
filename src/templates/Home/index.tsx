@@ -174,14 +174,14 @@ export function HomeTemplate({ logged = false }: HomeProps) {
   const handleAddFields = () => {
     const values = [
       ...formFields,
-      { companyName: '', startDate: '', endDate: '', isCurrent: false, isFreelance: false, isDelete: false },
+      { companyName: '', startDate: today, endDate: today, isCurrent: false, isFreelance: false, isDelete: false },
     ];
     setFormFields(values);
   };
 
   const handleProfileSave = async () => {
-    console.log(imageUrl);
-    console.log(fileImageUrl);
+    //console.log(imageUrl);
+    //console.log(fileImageUrl);
 
     if (recommendJobGroups.length === 0) {
       alert('직군을 입력해주세요.');
@@ -195,7 +195,7 @@ export function HomeTemplate({ logged = false }: HomeProps) {
     // fileImageUrl이 null인 경우 imageUrl을 사용하도록 조건문 추가
     const profileImageKey = imageUrl || user?.profileImageUrl;
 
-    console.log(profileImageKey);
+    //console.log(profileImageKey);
     const params = {
       nickname: nickName,
       careers: formFields[0].companyName ? formFields : [],
@@ -205,7 +205,7 @@ export function HomeTemplate({ logged = false }: HomeProps) {
       introductionMessage: introductionMessage,
       profileImageUrl: profileImageKey,
     };
-    console.log(params);
+    //console.log(params);
     onSave(params);
     if (data !== null && data !== undefined) {
       data.jobGroup = '0000';
@@ -248,7 +248,7 @@ export function HomeTemplate({ logged = false }: HomeProps) {
     // newValue 배열에서 각 객체의 name 속성을 추출하여 새로운 배열을 만듭니다.
     const selectedSkillNames = newValue.map(option => option.name);
     setSelectedSkills(selectedSkillNames);
-    console.log(selectedSkillNames);
+    //console.log(selectedSkillNames);
     // 여기에서 선택된 값(newValue)을 처리하거나 원하는 작업을 수행할 수 있습니다.
   };
   const handleJobChange = (index, event, newValue) => {
@@ -256,8 +256,11 @@ export function HomeTemplate({ logged = false }: HomeProps) {
   };
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(formFields);
+    //console.log(formFields);
   };
+
+  const dateNow = new Date();
+  const today = dateNow.toISOString().slice(0, 10);
 
   useEffect(() => {
     if (!file) return;
@@ -750,7 +753,7 @@ export function HomeTemplate({ logged = false }: HomeProps) {
                                   name="jason"
                                 />
                               }
-                              label="프리랜서의 경우 체크해주세요."
+                              label="프리랜서의 경우, 체크해주세요."
                             />
                           </div>
                         </dd>
@@ -808,7 +811,7 @@ export function HomeTemplate({ logged = false }: HomeProps) {
                                   name="jason"
                                 />
                               }
-                              label="재직중 경우 체크 해주세요."
+                              label="재직 중인 경우, 체크 해주세요."
                             />
                           </div>
                         </dd>
