@@ -300,7 +300,7 @@ export function QuizSolutionTemplate({ id }: QuizSolutionTemplateProps) {
   return (
     <div className={cx('seminar-detail-container')}>
       <div className={cx('container')}>
-        <div className="tw-py-5">
+        <div className="tw-py-[60px]">
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
             <Grid item xs={2} className="tw-font-bold tw-text-3xl tw-text-black max-lg:!tw-text-base">
               퀴즈클럽

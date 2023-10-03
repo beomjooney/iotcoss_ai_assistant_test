@@ -358,7 +358,7 @@ export function ProfileTemplate() {
     let careerTimeDiffView: number;
     let careerTimeDiff = diffTimeCalc(data.startDate, data.endDate);
 
-    if(!isNaN(careerTimeDiff) && careerTimeDiff > 0 && careerTimeDiff != undefined) {
+    if (!isNaN(careerTimeDiff) && careerTimeDiff > 0 && careerTimeDiff != undefined) {
       careerTimeDiffView = careerTimeDiff;
     }
 
@@ -426,7 +426,7 @@ export function ProfileTemplate() {
       {/* <Banner title="커리어멘토스 세미나" subTitle="커멘세미나" /> */}
 
       <div className={cx('container')}>
-        <div className="tw-py-5">
+        <div className="tw-py-[60px]">
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
             <Grid item xs={2} className="tw-font-bold tw-text-3xl tw-text-black max-lg:!tw-text-base">
               프로필
@@ -974,11 +974,7 @@ export function ProfileTemplate() {
                                   onChange={e => handleInputChange(index, e, 'endDate')}
                                 />
                               </LocalizationProvider>
-                              {careerTimes[index] && (
-                                <div className="tw-px-2">
-                                  {careerTimes[index]}년차
-                                </div>
-                              )}
+                              {careerTimes[index] && <div className="tw-px-2">{careerTimes[index]}년차</div>}
                             </div>
                           </dd>
                         </div>

@@ -254,24 +254,24 @@ export function QuizMakeTemplate() {
   };
 
   const handleQuizInsertClick = async () => {
-    if(quizName === '') {
+    if (quizName === '') {
       alert('질문을 입력해주세요.');
       quizRef.current.focus();
       return;
     }
 
-    if(quizUrl === '') {
+    if (quizUrl === '') {
       alert('아티클을 입력해주세요.');
       quizUrlRef.current.focus();
       return;
     }
 
-    if(jobGroup?.length === 0 || jobGroup?.length === undefined) {
+    if (jobGroup?.length === 0 || jobGroup?.length === undefined) {
       alert('추천 직군을 선택해주세요.');
       return;
     }
 
-    if(recommendLevels?.length === 0 || recommendLevels?.length === undefined) {
+    if (recommendLevels?.length === 0 || recommendLevels?.length === undefined) {
       alert('추천 레벨을 선택해주세요.');
       return;
     }
@@ -304,7 +304,7 @@ export function QuizMakeTemplate() {
       {/* <Banner title="커리어멘토스 세미나" subTitle="커멘세미나" /> */}
 
       <div className={cx('container')}>
-        <div className="tw-py-5">
+        <div className="tw-py-[60px]">
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
             <Grid item xs={3} className="tw-font-bold tw-text-3xl tw-text-black">
               내가 만든 퀴즈
