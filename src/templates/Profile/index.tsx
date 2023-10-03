@@ -237,26 +237,38 @@ export function ProfileTemplate() {
     setFormFields(values);
   };
 
+  const [careersInfo, setCareersInfo] = useState([]);
+
   const handleInputChange = (index: number, e: React.ChangeEvent<HTMLInputElement>, key, id) => {
     const values = [...formFields];
-    if (key === 'text') {
-      if (e.target.name === 'companyName') {
-        values[index].companyName = e.target.value;
-      }
-    } else if (key === 'startDate' || key === 'endDate') {
-      const datetime = e.format('YYYY-MM-DD');
-      values[index][key] = datetime;
-    } else if (key === 'isFreelance') {
-      values[index][key] = !values[index][key];
-      // setIsFreelance(!isFreelance);
-    } else if (key === 'job') {
-      // 이 부분을 수정하여 id를 사용하도록 변경
-      values[index][key] = id;
-    } else {
-      values[index][key] = !values[index][key];
-      // setIsCurrent(!isCurrent);
+
+    let datetime:string;
+
+    switch(key) {
+      case 'text':
+        if (e.target.name === 'companyName') {
+          values[index].companyName = e.target.value;
+        }
+        break;
+      case 'startDate':
+      case 'endDate':
+        datetime = e.format('YYYY-MM-DD');
+        values[index][key] = datetime;
+        break;
+      case 'isFreelance':
+        values[index][key] = !values[index][key];
+        // setIsFreelance(!isFreelance);
+        break;
+      case 'job':
+        values[index][key] = id;
+        break;
+      default :
+        values[index][key] = !values[index][key];
+        // setIsCurrent(!isCurrent);
+        break;
     }
-    // values[index].sequence = index + 1;
+
+    setCareersInfo(values);
     setFormFields(values);
   };
 
@@ -279,20 +291,36 @@ export function ProfileTemplate() {
 
   const dateNow = new Date();
   const today = dateNow.toISOString().slice(0, 10);
-  
+    
   const initStartDate = userInfo?.careers?.reduce((curr, prev) => {
-    return new Date(prev.startDate);
+    return prev.startDate;
   });
 
-  const careersResult = userInfo?.careers?.map((data, key) => {
-      if(data.isCurrent == true) {
-        const lastEndDate = new Date(moment(data.endDate).format('YYYY-MM-DD'));
-        const diffTime = (lastEndDate.getTime() - initStartDate) / (1000*60*60*24*30*12);
+  const diffTimeCalc = (startDate, endDate) => {
+    let diffStartDate = new Date(moment(startDate).format('YYYY-MM-DD'));
+    let diffEndDate = new Date(moment(endDate).format('YYYY-MM-DD'));
 
-        return <div key={data.sequence}>{data.companyName} | {data.jobName} | {Math.floor(diffTime)}년차</div>;
+    const diffTime = (Number(diffEndDate) - Number(diffStartDate)) / (1000*60*60*24*30*12);
+
+    return Math.floor(diffTime);
+  }
+
+  const careersViewResult = userInfo?.careers?.map((data, key) => {
+      if(data.isCurrent == true) {
+        const lastEndDate = data.endDate;
+        const diffTime = diffTimeCalc(initStartDate, lastEndDate);
+
+        return <div key={data.sequence}>{data.companyName} | {data.jobName} | {diffTime}년차</div>;
       }
     }
   );
+
+  const careerTimes = careersInfo?.map((data, index) => {
+    const result = [];
+    const careerTimeDiff = diffTimeCalc(data.startDate, data.endDate);
+
+    return result[index] = careerTimeDiff;
+  });
 
   useEffect(() => {
     if (!file) return;
@@ -321,6 +349,10 @@ export function ProfileTemplate() {
       quizPage,
     });
   }, [quizPage]);
+
+  useEffect(() => {
+    setCareersInfo(formFields);
+  }, [formFields])
 
   return (
     <div className={cx('seminarseminar-container')}>
@@ -393,7 +425,7 @@ export function ProfileTemplate() {
                     </div>
                   </div>
                   <div className="tw-font-bold tw-text-base tw-text-black tw-mt-5">
-                    {careersResult}
+                    {careersViewResult}
                     {/* {userInfo?.careers?.[userInfo?.careers?.length - 1]?.companyName} |
                     {userInfo?.careers?.[userInfo?.careers?.length - 1]?.jobName} */}
                   </div>
@@ -855,7 +887,7 @@ export function ProfileTemplate() {
                         <div className="tw-px-4 tw-pt-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
                           <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">근무기간</dt>
                           <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
-                            <div className="tw-flex tw-justify-center tw-items-center tw-gap-1">
+                            <div className="tw-grid tw-grid-cols-3 tw-flex tw-justify-center tw-items-center tw-gap-1">
                               <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DatePicker
                                   format="YYYY-MM-DD"
@@ -870,6 +902,9 @@ export function ProfileTemplate() {
                                   onChange={e => handleInputChange(index, e, 'endDate')}
                                 />
                               </LocalizationProvider>
+                              <div className="tw-px-2">
+                                {`${careerTimes[index]}년차`}
+                              </div>
                             </div>
                           </dd>
                         </div>
