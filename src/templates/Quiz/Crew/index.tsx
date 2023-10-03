@@ -133,58 +133,58 @@ export function QuizCrewManageTemplate({ id }: QuizCrewManageTemplateProps) {
                 <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                   <TableCell align="left">
                     <div className="tw-flex tw-gap-4 tw-items-center">
-                      <img className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full" src={row.profileImageUrl} alt="" />
-                      <div>{row.nickName}</div>
+                      <img className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full" src={row?.profileImageUrl} alt="" />
+                      <div>{row?.nickName}</div>
                     </div>
                   </TableCell>
-                  <TableCell align="center">{row.approvedAt.split(' ')[0]}</TableCell>
+                  <TableCell align="center">{row?.approvedAt.split(' ')[0]}</TableCell>
                   <TableCell align="center">
                     <div>
-                      {row.studyCount} / {row.totalStudyCount}
+                      {row?.studyCount} / {row?.totalStudyCount}
                     </div>
                   </TableCell>
-                  <TableCell align="center">{row.totalStudyCount}</TableCell>
+                  <TableCell align="center">{row?.totalStudyCount}</TableCell>
                   <TableCell align="right">
                     <div className="tw-flex tw-items-center tw-justify-end">
                       <button
-                        onClick={() => (location.href = '/profile/' + `${row.memberUUID}`)}
+                        onClick={() => (location.href = '/profile/' + `${row?.memberUUID}`)}
                         className="tw-bg-white tw-text-black border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded tw-mr-3 "
                       >
                         프로필 보기
                       </button>
-                      {row.clubMemberStatus === '0001' && (
+                      {row?.clubMemberStatus === '0001' && (
                         <div>
                           <button
-                            onClick={() => handleCrewAccept(row.clubMemberSequence)}
+                            onClick={() => handleCrewAccept(row?.clubMemberSequence)}
                             className="tw-mr-3 tw-bg-white tw-text-black border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
                           >
                             승인하기
                           </button>
                           <button
-                            onClick={() => handleCrewReject(row.clubMemberSequence)}
+                            onClick={() => handleCrewReject(row?.clubMemberSequence)}
                             className="tw-mr-3 border-danger tw-bg-white tw-text-red-500 border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
                           >
                             거절하기
                           </button>
                           <button
-                            onClick={() => handleCrewBan(row.clubMemberSequence)}
+                            onClick={() => handleCrewBan(row?.clubMemberSequence)}
                             className="border-danger tw-bg-white tw-text-red-500 border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
                           >
                             강퇴하기
                           </button>
                         </div>
                       )}
-                      {row.clubMemberStatus === '0002' && (
+                      {row?.clubMemberStatus === '0002' && (
                         <div>
                           <button
-                            onClick={() => handleCrewBan(row.clubMemberSequence)}
+                            onClick={() => handleCrewBan(row?.clubMemberSequence)}
                             className="border-danger tw-bg-white tw-text-red-500 border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
                           >
                             강퇴하기
                           </button>
                         </div>
                       )}
-                      {row.clubMemberStatus === '0003' && (
+                      {row?.clubMemberStatus === '0003' && (
                         <div>
                           <button
                             disabled
@@ -194,7 +194,7 @@ export function QuizCrewManageTemplate({ id }: QuizCrewManageTemplateProps) {
                           </button>
                         </div>
                       )}
-                      {row.clubMemberStatus === '0004' && (
+                      {row?.clubMemberStatus === '0004' && (
                         <div>
                           <button
                             disabled
