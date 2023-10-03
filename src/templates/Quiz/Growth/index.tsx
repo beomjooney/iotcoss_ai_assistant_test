@@ -133,7 +133,7 @@ export function QuizGrowthTemplate({ id }: QuizGrowthTemplateProps) {
           </div>
 
           <button
-            onClick={() => (location.href = '/quiz/' + `${id}`)}
+            onClick={() => (location.href = '/quiz/answers/' + `${id}`)}
             className="tw-mt-20 tw-bg-blue-500 tw-text-white tw-text-base tw-font-bold tw-mr-2 tw-px-16 tw-py-3 tw-rounded"
           >
             퀴즈 답변 확인하기
