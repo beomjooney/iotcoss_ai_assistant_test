@@ -123,7 +123,8 @@ export function ProfileTemplate() {
     const jsonArray = user.customSkills.map(item => ({ name: item }));
     //console.log(jsonArray);
     setCustomSkills(jsonArray);
-    console.log(user.level, user.jobGroup);
+    setSelectedSkills(user.customSkills);
+    //console.log(user.level, user.jobGroup);
     setRecommendLevels(user.level.toString());
     setRecommendJobGroups(user.jobGroup || []);
     setNickName(user.nickname);
@@ -937,10 +938,11 @@ export function ProfileTemplate() {
                                   )}
                                 />
                               </div>
-
-                              <div className="tw-col-span-1 tw-text-base tw-px-2 tw-font-bold">
-                                현재직무: {field.jobName}
-                              </div>
+                              {field.jobName && (
+                                <div className="tw-col-span-1 tw-text-base tw-px-2 tw-font-bold tw-pl-5">
+                                  현재직무 : {field.jobName}
+                                </div>
+                              )}
                             </div>
                           </dd>
                         </div>
