@@ -1,7 +1,7 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import { Toggle, Pagination, Typography, Chip, MentorsModal, Textfield } from 'src/stories/components';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { RecommendContent, SeminarImages } from 'src/models/recommend';
 import { useSeminarList, paramProps, useSeminarImageList } from 'src/services/seminars/seminars.queries';
 import QuizArticleCard from 'src/stories/components/QuizArticleCard';
@@ -134,6 +134,9 @@ export function QuizMakeTemplate() {
   const [keyWorld, setKeyWorld] = useState('');
   const [removeIndex, setRemoveIndex] = React.useState('');
 
+  const quizRef = useRef(null);
+  const quizUrlRef = useRef(null);
+
   //api call
   const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
   const { data: experienceData }: UseQueryResult<ExperiencesResponse> = useExperiences();
@@ -158,15 +161,15 @@ export function QuizMakeTemplate() {
 
   const handleFormat = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
     setSkillIds(newFormats);
-    console.log(newFormats);
+    //console.log(newFormats);
   };
   const handleFormatEx = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
     setExperienceIds(newFormats);
-    console.log(newFormats);
+    //console.log(newFormats);
   };
 
   useDidMountEffect(() => {
-    console.log('delete 1 !!!', params, page);
+    //console.log('delete 1 !!!', params, page);
     refetchMyJob();
   }, [deletePostSucces, postSucces]);
 
@@ -186,7 +189,7 @@ export function QuizMakeTemplate() {
   const handleAddClick = () => {
     // onGetJobsData && onGetJobsData();
     // getJobsList();
-    console.log('modal ');
+    //console.log('modal ');
     setQuizUrl('');
     setQuizName('');
     setJobGroup([]);
@@ -201,14 +204,14 @@ export function QuizMakeTemplate() {
   };
 
   const handleJobGroups = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
-    console.log(event.currentTarget);
+    //console.log(event.currentTarget);
     setJobGroup(newFormats);
-    console.log(newFormats);
+    //console.log(newFormats);
   };
   const handleJobs = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
-    console.log(event.currentTarget);
+    //console.log(event.currentTarget);
     setJobs(newFormats);
-    console.log(newFormats);
+    //console.log(newFormats);
   };
 
   const handleInputQuizChange = event => {
@@ -238,7 +241,7 @@ export function QuizMakeTemplate() {
   }
 
   const handleMenuItemClick = (event: React.MouseEvent<HTMLElement>, index: number) => {
-    console.log(index, removeIndex);
+    //console.log(index, removeIndex);
     if (index === 0) {
       if (window.confirm('정말로 삭제하시겠습니까?')) {
         onDeletePost({
@@ -251,6 +254,28 @@ export function QuizMakeTemplate() {
   };
 
   const handleQuizInsertClick = async () => {
+    if(quizName === '') {
+      alert('질문을 입력해주세요.');
+      quizRef.current.focus();
+      return;
+    }
+
+    if(quizUrl === '') {
+      alert('아티클을 입력해주세요.');
+      quizUrlRef.current.focus();
+      return;
+    }
+
+    if(jobGroup?.length === 0 || jobGroup?.length === undefined) {
+      alert('추천 직군을 선택해주세요.');
+      return;
+    }
+
+    if(recommendLevels?.length === 0 || recommendLevels?.length === undefined) {
+      alert('추천 레벨을 선택해주세요.');
+      return;
+    }
+
     const params = {
       content: quizName,
       articleUrl: quizUrl,
@@ -429,7 +454,7 @@ export function QuizMakeTemplate() {
         </div>
 
         <div>
-          <div className="tw-font-bold tw-text-sm tw-text-black tw-mt-10">필수 입력</div>
+          <div className="tw-font-bold tw-text-base tw-text-black">필수 입력</div>
           <div className="tw-mt-5">
             <TextField
               size="small"
@@ -438,6 +463,7 @@ export function QuizMakeTemplate() {
               onChange={handleInputQuizChange}
               id="margin-none"
               value={quizName}
+              ref={quizRef}
               name="quizName"
             />
           </div>
@@ -449,6 +475,7 @@ export function QuizMakeTemplate() {
               onChange={handleInputQuizUrlChange}
               id="margin-none"
               value={quizUrl}
+              ref={quizUrlRef}
               name="quizUrl"
             />
           </div>
@@ -523,32 +550,32 @@ export function QuizMakeTemplate() {
                 </ToggleButton>
               ))}
             </ToggleButtonGroup>
-            {recommendLevels.toString() === '0' && (
+            {recommendLevels?.toString() === '0' && (
               <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
                 0레벨 : 직무스킬(개발언어/프레임워크 등) 학습 중. 상용서비스 개발 경험 없음.
               </div>
             )}
-            {recommendLevels.toString() === '1' && (
+            {recommendLevels?.toString() === '1' && (
               <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
                 1레벨 : 상용서비스 단위모듈 수준 개발 가능. 서비스 개발 리딩 시니어 필요.
               </div>
             )}
-            {recommendLevels.toString() === '2' && (
+            {recommendLevels?.toString() === '2' && (
               <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
                 2레벨 : 상용 서비스 개발 1인분 가능한 사람. 소규모 서비스 독자 개발 가능.
               </div>
             )}
-            {recommendLevels.toString() === '3' && (
+            {recommendLevels?.toString() === '3' && (
               <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
                 3레벨 : 상용서비스 개발 리더. 담당직무분야 N명 업무가이드 및 리딩 가능.
               </div>
             )}
-            {recommendLevels.toString() === '4' && (
+            {recommendLevels?.toString() === '4' && (
               <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
                 4레벨 : 다수 상용서비스 개발 리더. 수십명 혹은 수백명 수준의 개발자 총괄 리더.
               </div>
             )}
-            {recommendLevels.toString() === '5' && (
+            {recommendLevels?.toString() === '5' && (
               <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
                 5레벨 : 본인 오픈소스/방법론 등이 범용적 사용, 수백명이상 다수 직군 리딩.
               </div>
