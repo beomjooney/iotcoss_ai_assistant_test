@@ -103,7 +103,7 @@ export function ProfileTemplate() {
   const [customSkills, setCustomSkills] = useState([]);
 
   const [formFields, setFormFields] = useState([
-    { companyName: '', startDate: '', endDate: '', isCurrent: false, isFreelance: false, isDelete: false },
+    { sequence: '', jobName: '', companyName: '', startDate: '', endDate: '', isCurrent: false, isFreelance: false, isDelete: false },
   ]);
 
   const { isFetched: isUserInfo, refetch } = useMemberInfo(memberId, user => {
@@ -111,14 +111,14 @@ export function ProfileTemplate() {
     const jsonArray = user.customSkills.map(item => ({ name: item }));
     //console.log(jsonArray);
     setCustomSkills(jsonArray);
-    setRecommendLevels(user.level.toString());
+    setRecommendLevels(user.level);
     setRecommendJobGroups(user.jobGroup);
     setNickName(user.nickname);
     setIntroductionMessage(user.introductionMessage);
     setFormFields(
       user.careers.length > 0
         ? user.careers
-        : [{ companyName: '', startDate: '', endDate: '', isCurrent: false, isFreelance: false, isDelete: false }],
+        : [{ sequence: '', jobName: '', companyName: '', startDate: '', endDate: '', isCurrent: false, isFreelance: false, isDelete: false }],
     );
     setUserInfo(user);
   });
@@ -206,7 +206,7 @@ export function ProfileTemplate() {
   const handleAddFields = () => {
     const values = [
       ...formFields,
-      { companyName: '', startDate: today, endDate: today, isCurrent: false, isFreelance: false, isDelete: false },
+      { sequence: '', jobName: '', companyName: '', startDate: today, endDate: today, isCurrent: false, isFreelance: false, isDelete: false },
     ];
     setFormFields(values);
   };
@@ -293,8 +293,8 @@ export function ProfileTemplate() {
 
   const dateNow = new Date();
   const today = dateNow.toISOString().slice(0, 10);
-    
-  const initStartDate = userInfo?.careers?.reduce((curr, prev) => {
+
+  const initStartDate = formFields?.reduce((curr, prev) => {
     return prev.startDate;
   });
 
@@ -307,15 +307,21 @@ export function ProfileTemplate() {
     return Math.floor(diffTime);
   }
 
-  const careersViewResult = userInfo?.careers?.map((data, key) => {
+  const careersViewResult = formFields?.map((data, key) => {
+    if(initStartDate) {
       if(data.isCurrent == true) {
+        let diffTimeView:string;
         const lastEndDate = data.endDate;
-        const diffTime = diffTimeCalc(initStartDate, lastEndDate);
-
-        return <div key={data.sequence}>{data.companyName} | {data.jobName} | {diffTime}년차</div>;
+        let diffTime = diffTimeCalc(initStartDate, lastEndDate);
+  
+        if(!isNaN(diffTime) && diffTime > 0) {
+          diffTimeView = `${diffTime}년차`;
+        }
+  
+        return <div key={data.sequence}>{data.companyName} | {data.jobName} | {diffTimeView}</div>;
       }
     }
-  );
+  });
 
   const careerTimes = careersInfo?.map((data, index) => {
     const result = [];
@@ -427,7 +433,7 @@ export function ProfileTemplate() {
                     </div>
                   </div>
                   <div className="tw-font-bold tw-text-base tw-text-black tw-mt-5">
-                    {careersViewResult}
+                    {careersViewResult ?? careersViewResult }
                     {/* {userInfo?.careers?.[userInfo?.careers?.length - 1]?.companyName} |
                     {userInfo?.careers?.[userInfo?.careers?.length - 1]?.jobName} */}
                   </div>
@@ -905,7 +911,7 @@ export function ProfileTemplate() {
                                 />
                               </LocalizationProvider>
                               <div className="tw-px-2">
-                                {`${careerTimes[index]}년차`}
+                                {careerTimes && (`${careerTimes[index]}년차`)}
                               </div>
                             </div>
                           </dd>
