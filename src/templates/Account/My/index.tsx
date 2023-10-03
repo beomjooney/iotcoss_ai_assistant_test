@@ -169,26 +169,33 @@ export function MyTemplate({ children }: MyTemplateProps) {
                       <div className="tw-py-3 tw-font-semibold tw-text-black tw-text-lg">{summary?.nickname}</div>
                       <div>
                         {summary?.jobGroupName && (
-                          <span className="tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded">
+                          <span className="tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-[5px] tw-rounded">
                             {summary.jobGroupName}
                           </span>
                         )}
                         {summary?.level && (
-                          <span className="tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded">
+                          <span className="tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-[5px] tw-rounded">
                             {summary.level}레벨
                           </span>
                         )}
                         {summary?.jobName && (
-                          <span className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded">
+                          <span className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-[5px] tw-rounded">
                             {summary.jobName}
                           </span>
                         )}
                       </div>
                     </div>
-                    <div className="tw-text-gray-500 tw-text-sm tw-font-medium ">
+                    <div className="tw-text-gray-600 tw-text-sm tw-font-medium tw-p-5 tw-pt-0">
                       <div className="tw-py-5 tw-flex tw-justify-between">
-                        <div> 보유 포인트 </div>
-                        <div>{summary?.points}</div>
+                        <div className="tw-flex tw-items-center">
+                          <div className="tw-pr-2">
+                            <img src="/assets/images/icons/point.png" alt="포인트" />
+                          </div>
+                          <div className="tw-text-base tw-font-bold">보유포인트 </div>
+                        </div>
+                        <div className="tw-text-base tw-font-bold tw-text-blue-500">
+                          {summary?.points?.toLocaleString()}P
+                        </div>
                       </div>
                       <div className="tw-flex tw-justify-between">
                         <div> 가입일 </div>
@@ -196,30 +203,30 @@ export function MyTemplate({ children }: MyTemplateProps) {
                       </div>
                       <div className="tw-flex tw-justify-between">
                         <div> 방문횟수 </div>
-                        <div>{summary?.visitCount}</div>
+                        <div>{summary?.visitCount || 0} 회</div>
                       </div>
                       <div className="tw-py-3 ">
                         <div className="tw-flex tw-justify-between">
                           <div> 내가 만든 퀴즈 </div>
-                          <div>{summary?.createdQuizCount}</div>
+                          <div>{summary?.createdQuizCount || 0}개</div>
                         </div>
                         <div className="tw-flex tw-justify-between">
                           <div> 내가 만든 클럽 </div>
-                          <div>{summary?.createdClubCount}</div>
+                          <div>{summary?.createdClubCount || 0}개</div>
                         </div>
                       </div>
                       <div className="tw-py-3 ">
                         <div className="tw-flex tw-justify-between">
                           <div> 내가 푼 퀴즈 </div>
-                          <div>{summary?.solvedQuizCount}</div>
+                          <div>{summary?.solvedQuizCount || 0}개</div>
                         </div>
                         <div className="tw-flex tw-justify-between">
                           <div> 내가 쓴 댓글 </div>
-                          <div>{summary?.replyCount}</div>
+                          <div>{summary?.replyCount || 0}개</div>
                         </div>
                         <div className="tw-flex tw-justify-between">
                           <div> 내가 참여한 클럽 </div>
-                          <div>{summary?.joinedClubCount}</div>
+                          <div>{summary?.joinedClubCount || 0}개</div>
                         </div>
                       </div>
                     </div>
@@ -234,7 +241,7 @@ export function MyTemplate({ children }: MyTemplateProps) {
                         }}
                         onClick={() => (location.href = '/profile')}
                       >
-                        프로필바로가기
+                        프로필 바로가기
                       </Button>
                       <Button
                         className="tw-w-full "

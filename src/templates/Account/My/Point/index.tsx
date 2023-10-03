@@ -74,7 +74,10 @@ export function MyPointTemplate() {
           {isQuizPointFetched && (
             <div>
               <div className="tw-grid tw-items-center tw-grid-cols-2 tw-py-6 tw-mt-2 tw-p-5 tw-bg-gray-100 tw-rounded-md tw-my-5 tw-py-10">
-                <div className="tw-col-span-1 tw-font-bold">보유포인트 :</div>
+                <div className="tw-col-span-1 tw-font-bold tw-flex tw-items-center ">
+                  <img className="tw-pr-2" src="/assets/images/icons/point.png" alt="포인트" />
+                  보유포인트 :
+                </div>
                 <div className="tw-col-span-1 tw-text-right tw-text-lg tw-font-bold tw-text-blue-500">
                   {totalPoint}P
                 </div>
