@@ -234,32 +234,34 @@ export function StudyRoomTemplate() {
     return (
       <React.Fragment>
         <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-          <StyledTableCell style={{ padding: 8 }}>
+          <StyledTableCell style={{ padding: 8 }} align="center">
             <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
               {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
             </IconButton>
           </StyledTableCell>
-          <StyledTableCell style={{ padding: 8, fontWeight: 600 }}>{row.clubName}</StyledTableCell>
-          <StyledTableCell style={{ padding: 8 }} align="right">
+          <StyledTableCell style={{ padding: 8, fontWeight: 600 }} align="center">
+            {row.clubName}
+          </StyledTableCell>
+          <StyledTableCell style={{ padding: 8 }} align="center">
             {row.leaderNickname}
           </StyledTableCell>
-          <StyledTableCell style={{ padding: 8 }} align="right">
+          <StyledTableCell style={{ padding: 8 }} align="center">
             {row.recruitedMemberCount}
           </StyledTableCell>
-          <StyledTableCell style={{ padding: 8 }} align="right">
+          <StyledTableCell style={{ padding: 8 }} align="center">
             {row.startAt.split(' ')[0]}
           </StyledTableCell>
-          <StyledTableCell style={{ padding: 8 }} align="right">
+          <StyledTableCell style={{ padding: 8 }} align="center">
             {row.studyWeekCount}회
           </StyledTableCell>
-          <StyledTableCell style={{ padding: 8 }} align="right">
+          <StyledTableCell style={{ padding: 8 }} align="center">
             <div className="progress tw-rounded tw-h-2 tw-p-0">
               <span style={{ width: `${parseInt(row.clubRunRate)}%` }}>
                 <span className="progress-line"></span>
               </span>
             </div>
           </StyledTableCell>
-          <StyledTableCell style={{ padding: 8 }} align="right">
+          <StyledTableCell style={{ padding: 8 }} align="center">
             <button
               onClick={() => (location.href = '/quiz/' + `${row.clubSequence}`)}
               className="tw-bg-blue-500 tw-text-white tw-text-xs tw-font-medium tw-mr-2 tw-px-2.5 tw-py-3 tw-rounded"
@@ -332,16 +334,16 @@ export function StudyRoomTemplate() {
               <button
                 onClick={() => (location.href = '/quiz-my')}
                 type="button"
-                className="tw-text-white tw-bg-blue-500 tw-mr-3 tw-focus:ring-4  tw-font-medium tw-rounded tw-text-sm tw-px-5 tw-py-2.5 "
+                className="tw-text-blue-600 tw-bg-white border border-primary tw-mr-3  tw-font-bold tw-rounded tw-text-sm tw-px-5 tw-py-2.5 "
               >
                 내가 만든 클럽 {'>'}
               </button>
               <button
                 onClick={() => (location.href = '/quiz-make')}
                 type="button"
-                className="tw-text-white tw-bg-gray-400  tw-focus:ring-4  tw-font-medium tw-rounded tw-text-sm tw-px-5 tw-py-2.5  "
+                className="tw-text-blue-600 tw-bg-white border border-primary tw-font-bold tw-rounded tw-text-sm tw-px-5 tw-py-2.5  "
               >
-                내가 만든 퀴즈 관리하기 {'>'}
+                내가 만든 퀴즈 {'>'}
               </button>
             </Grid>
           </Grid>
@@ -414,27 +416,27 @@ export function StudyRoomTemplate() {
                         <Table sx={{ minWidth: 700 }} aria-label="customized table">
                           <TableHead>
                             <TableRow>
-                              <StyledTableCell>클럽명</StyledTableCell>
-                              <StyledTableCell align="right">리더</StyledTableCell>
-                              <StyledTableCell align="right">참가자</StyledTableCell>
-                              <StyledTableCell align="right">학습시작일</StyledTableCell>
-                              <StyledTableCell align="right">학습주기</StyledTableCell>
-                              <StyledTableCell align="right">상세보기</StyledTableCell>
+                              <StyledTableCell align="center">클럽명</StyledTableCell>
+                              <StyledTableCell align="center">리더</StyledTableCell>
+                              <StyledTableCell align="center">참가자</StyledTableCell>
+                              <StyledTableCell align="center">학습시작일</StyledTableCell>
+                              <StyledTableCell align="center">학습주기</StyledTableCell>
+                              <StyledTableCell align="center">상세보기</StyledTableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>
                             {contents.map(row => (
                               <StyledTableRow key={row.clubName}>
-                                <StyledTableCell component="th" scope="row">
+                                <StyledTableCell component="th" scope="row" align="center">
                                   {row.clubName}
                                 </StyledTableCell>
-                                <StyledTableCell align="right">{row.leaderNickname}</StyledTableCell>
-                                <StyledTableCell align="right">{row.recruitedMemberCount}</StyledTableCell>
-                                <StyledTableCell align="right">{row.startAt.split(' ')[0]}</StyledTableCell>
-                                <StyledTableCell align="right">
+                                <StyledTableCell align="center">{row.leaderNickname}</StyledTableCell>
+                                <StyledTableCell align="center">{row.recruitedMemberCount}</StyledTableCell>
+                                <StyledTableCell align="center">{row.startAt.split(' ')[0]}</StyledTableCell>
+                                <StyledTableCell align="center">
                                   {row.studyCycle.toString()},{row.studyWeekCount}회
                                 </StyledTableCell>
-                                <StyledTableCell align="right">
+                                <StyledTableCell align="center">
                                   <span className="tw-bg-gray-300 tw-text-white tw-text-xs tw-font-medium tw-mr-2 tw-px-2.5 tw-py-3 tw-rounded">
                                     오픈예정
                                   </span>
@@ -454,13 +456,13 @@ export function StudyRoomTemplate() {
                         <TableHead>
                           <TableRow>
                             <StyledTableCell></StyledTableCell>
-                            <StyledTableCell>클럽명</StyledTableCell>
-                            <StyledTableCell align="right">리더</StyledTableCell>
-                            <StyledTableCell align="right">참가자</StyledTableCell>
-                            <StyledTableCell align="right">학습시작일</StyledTableCell>
-                            <StyledTableCell align="right">학습주기</StyledTableCell>
-                            <StyledTableCell align="right">학습현황</StyledTableCell>
-                            <StyledTableCell align="right">상세보기</StyledTableCell>
+                            <StyledTableCell align="center">클럽명</StyledTableCell>
+                            <StyledTableCell align="center">리더</StyledTableCell>
+                            <StyledTableCell align="center">참가자</StyledTableCell>
+                            <StyledTableCell align="center">학습시작일</StyledTableCell>
+                            <StyledTableCell align="center">학습주기</StyledTableCell>
+                            <StyledTableCell align="center">학습현황</StyledTableCell>
+                            <StyledTableCell align="center">상세보기</StyledTableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
@@ -552,7 +554,7 @@ export function StudyRoomTemplate() {
                               ))}
                       )} */}
                     <div className="tw-mb-5">
-                      {isQuizFetched &&
+                      {isQuizFetched && quizList.length > 0 ? (
                         quizList.map((item, i) => (
                           <div
                             key={i}
@@ -572,7 +574,12 @@ export function StudyRoomTemplate() {
                               </button>
                             </div>
                           </div>
-                        ))}
+                        ))
+                      ) : (
+                        <div className="tw-flex tw-items-center tw-rounded-md tw-gap-0  tw-bg-white tw-text-sm  tw-p-4 tw-mb-5">
+                          오늘은 풀어야 할 퀴즈가 없어요.
+                        </div>
+                      )}
                     </div>
                     <Stack spacing={2} className="tw-items-center">
                       <_Pagination
