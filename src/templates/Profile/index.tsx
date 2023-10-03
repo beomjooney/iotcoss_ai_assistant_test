@@ -1,7 +1,7 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import { Toggle, Pagination, Typography, Chip, ClubCard, CommunityCard } from 'src/stories/components';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { RecommendContent, SeminarImages } from 'src/models/recommend';
 import { useSeminarList, paramProps, useSeminarImageList } from 'src/services/seminars/seminars.queries';
 import QuizArticleCard from 'src/stories/components/QuizArticleCard';
@@ -102,6 +102,9 @@ export function ProfileTemplate() {
   const { memberId } = useSessionStore.getState();
   const [customSkills, setCustomSkills] = useState([]);
 
+  const recommendLevelsRef = useRef(null);
+  const jobGroupRef = useRef(null);
+
   const [formFields, setFormFields] = useState([
     {
       sequence: '',
@@ -120,8 +123,9 @@ export function ProfileTemplate() {
     const jsonArray = user.customSkills.map(item => ({ name: item }));
     //console.log(jsonArray);
     setCustomSkills(jsonArray);
-    setRecommendLevels(user.level);
-    setRecommendJobGroups(user.jobGroup);
+    console.log(user.level, user.jobGroup);
+    setRecommendLevels(user.level.toString());
+    setRecommendJobGroups(user.jobGroup || []);
     setNickName(user.nickname);
     setIntroductionMessage(user.introductionMessage);
     setFormFields(
@@ -306,6 +310,18 @@ export function ProfileTemplate() {
   const handleProfileSave = async () => {
     // fileImageUrl이 null인 경우 imageUrl을 사용하도록 조건문 추가
     const profileImageKey = imageUrl || user?.profileImageUrl;
+
+    if (recommendJobGroups.length === 0) {
+      alert('직군 필수 입력값을 선택해주세요.');
+      jobGroupRef.current.focus();
+      return 0;
+    }
+
+    if (recommendLevels === '') {
+      alert('레벨 필수 입력값을 선택해주세요.');
+      recommendLevelsRef.current.focus();
+      return 0;
+    }
 
     const params = {
       nickname: nickName,
@@ -688,7 +704,7 @@ export function ProfileTemplate() {
         {isUserInfo && (
           <ProfileModal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
             <div className="tw-font-bold tw-text-xl tw-text-black tw-mt-0 tw-mb-5 tw-text-center">
-              {user?.name}님 데브어스에 오신 것을 환영합니다!
+              {user?.name || user?.nickname}님 데브어스에 오신 것을 환영합니다!
             </div>
             <div className="tw-font-semibold tw-text-base tw-text-black tw-mt-0  tw-text-center">
               직군 및 레벨을 설정하시면 님께
@@ -768,6 +784,7 @@ export function ProfileTemplate() {
                     >
                       {jobGroup?.map((item, index) => (
                         <ToggleButton
+                          ref={jobGroupRef} // ref를 할당합니다.
                           key={`job-${index}`}
                           value={item.id}
                           aria-label="fff"
@@ -798,6 +815,7 @@ export function ProfileTemplate() {
                     >
                       {levelGroup?.map((item, index) => (
                         <ToggleButton
+                          ref={recommendLevelsRef} // ref를 할당합니다.
                           key={`job-${index}`}
                           value={item.name}
                           aria-label="fff"
