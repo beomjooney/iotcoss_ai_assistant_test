@@ -125,7 +125,7 @@ export function ProfileTemplate() {
     setCustomSkills(jsonArray);
     setSelectedSkills(user.customSkills);
     //console.log(user.level, user.jobGroup);
-    setRecommendLevels(user.level.toString());
+    setRecommendLevels(user?.level?.toString());
     setRecommendJobGroups(user.jobGroup || []);
     setNickName(user.nickname);
     setIntroductionMessage(user.introductionMessage);
@@ -353,6 +353,22 @@ export function ProfileTemplate() {
     return Math.floor(diffTime);
   };
 
+  const careerTimes = careersInfo?.map((data, index) => {
+    const result = [];
+    let careerTimeDiffView: number;
+    let careerTimeDiff = diffTimeCalc(data.startDate, data.endDate);
+
+    if(!isNaN(careerTimeDiff) && careerTimeDiff > 0 && careerTimeDiff != undefined) {
+      careerTimeDiffView = careerTimeDiff;
+    }
+
+    return (result[index] = careerTimeDiffView);
+  });
+
+  const totalCareerYear = careerTimes.reduce(function add(sum, currValue) {
+    return sum + currValue;
+  }, 0);
+
   const careersViewResult = formFields?.map((data, key) => {
     if (initStartDate) {
       if (data.isCurrent == true) {
@@ -360,24 +376,17 @@ export function ProfileTemplate() {
         const lastEndDate = data.endDate;
         let diffTime = diffTimeCalc(initStartDate, lastEndDate);
 
-        if (!isNaN(diffTime) && diffTime > 0) {
+        if (!isNaN(diffTime) && diffTime > 0 && diffTime != undefined) {
           diffTimeView = `${diffTime}년차`;
         }
 
         return (
           <div key={data.sequence}>
-            {data.companyName} | {data.jobName} | {diffTimeView}
+            {data.companyName} | {data.jobName} | {totalCareerYear}년차
           </div>
         );
       }
     }
-  });
-
-  const careerTimes = careersInfo?.map((data, index) => {
-    const result = [];
-    const careerTimeDiff = diffTimeCalc(data.startDate, data.endDate);
-
-    return (result[index] = careerTimeDiff);
   });
 
   useEffect(() => {
@@ -965,7 +974,11 @@ export function ProfileTemplate() {
                                   onChange={e => handleInputChange(index, e, 'endDate')}
                                 />
                               </LocalizationProvider>
-                              <div className="tw-px-2">{careerTimes && `${careerTimes[index]}년차`}</div>
+                              {careerTimes[index] && (
+                                <div className="tw-px-2">
+                                  {careerTimes[index]}년차
+                                </div>
+                              )}
                             </div>
                           </dd>
                         </div>
@@ -983,7 +996,7 @@ export function ProfileTemplate() {
                                     name="jason"
                                   />
                                 }
-                                label="재직 중인 경우, 체크 해주세요."
+                                label="재직 중인 경우, 체크해 주세요."
                               />
                             </div>
                           </dd>
