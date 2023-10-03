@@ -103,7 +103,7 @@ const Footer = () => {
             <div className="container ">
               <div className="row tw-flex tw-items-center">
                 <div className="col-lg-6 mb-3 mb-lg-0">
-                  <div className="footer-nav-wrap tw-text-gray-800 tw-font-semibold">
+                  <div className="footer-nav-wrap tw-text-gray-900 tw-font-semibold">
                     <img
                       src="/assets/images/devus_footer.png"
                       alt="footer logo"
@@ -118,7 +118,7 @@ const Footer = () => {
                       </li>
                       <li className="mb-2 d-flex align-items-center">
                         <Typography type="B2">
-                          서울시 강남구 테헤란로2길 27, 12층 1224호 | 사업자등록번호 : 530-86-02750
+                          서울시 마포구 마포대로8길 35, 흥전빌딩 401호 | 사업자등록번호 : 530-86-02750
                         </Typography>
                       </li>
                     </ul>
