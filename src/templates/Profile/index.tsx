@@ -103,7 +103,16 @@ export function ProfileTemplate() {
   const [customSkills, setCustomSkills] = useState([]);
 
   const [formFields, setFormFields] = useState([
-    { sequence: '', jobName: '', companyName: '', startDate: '', endDate: '', isCurrent: false, isFreelance: false, isDelete: false },
+    {
+      sequence: '',
+      jobName: '',
+      companyName: '',
+      startDate: '',
+      endDate: '',
+      isCurrent: false,
+      isFreelance: false,
+      isDelete: false,
+    },
   ]);
 
   const { isFetched: isUserInfo, refetch } = useMemberInfo(memberId, user => {
@@ -118,7 +127,18 @@ export function ProfileTemplate() {
     setFormFields(
       user.careers.length > 0
         ? user.careers
-        : [{ sequence: '', jobName: '', companyName: '', startDate: '', endDate: '', isCurrent: false, isFreelance: false, isDelete: false }],
+        : [
+            {
+              sequence: '',
+              jobName: '',
+              companyName: '',
+              startDate: '',
+              endDate: '',
+              isCurrent: false,
+              isFreelance: false,
+              isDelete: false,
+            },
+          ],
     );
     setUserInfo(user);
   });
@@ -206,7 +226,16 @@ export function ProfileTemplate() {
   const handleAddFields = () => {
     const values = [
       ...formFields,
-      { sequence: '', jobName: '', companyName: '', startDate: today, endDate: today, isCurrent: false, isFreelance: false, isDelete: false },
+      {
+        sequence: '',
+        jobName: '',
+        companyName: '',
+        startDate: today,
+        endDate: today,
+        isCurrent: false,
+        isFreelance: false,
+        isDelete: false,
+      },
     ];
     setFormFields(values);
   };
@@ -244,9 +273,9 @@ export function ProfileTemplate() {
   const handleInputChange = (index: number, e: React.ChangeEvent<HTMLInputElement>, key, id) => {
     const values = [...formFields];
 
-    let datetime:string;
+    let datetime: string;
 
-    switch(key) {
+    switch (key) {
       case 'text':
         if (e.target.name === 'companyName') {
           values[index].companyName = e.target.value;
@@ -264,7 +293,7 @@ export function ProfileTemplate() {
       case 'job':
         values[index][key] = id;
         break;
-      default :
+      default:
         values[index][key] = !values[index][key];
         // setIsCurrent(!isCurrent);
         break;
@@ -302,23 +331,27 @@ export function ProfileTemplate() {
     let diffStartDate = new Date(moment(startDate).format('YYYY-MM-DD'));
     let diffEndDate = new Date(moment(endDate).format('YYYY-MM-DD'));
 
-    const diffTime = (Number(diffEndDate) - Number(diffStartDate)) / (1000*60*60*24*30*12);
+    const diffTime = (Number(diffEndDate) - Number(diffStartDate)) / (1000 * 60 * 60 * 24 * 30 * 12);
 
     return Math.floor(diffTime);
-  }
+  };
 
   const careersViewResult = formFields?.map((data, key) => {
-    if(initStartDate) {
-      if(data.isCurrent == true) {
-        let diffTimeView:string;
+    if (initStartDate) {
+      if (data.isCurrent == true) {
+        let diffTimeView: string;
         const lastEndDate = data.endDate;
         let diffTime = diffTimeCalc(initStartDate, lastEndDate);
-  
-        if(!isNaN(diffTime) && diffTime > 0) {
+
+        if (!isNaN(diffTime) && diffTime > 0) {
           diffTimeView = `${diffTime}년차`;
         }
-  
-        return <div key={data.sequence}>{data.companyName} | {data.jobName} | {diffTimeView}</div>;
+
+        return (
+          <div key={data.sequence}>
+            {data.companyName} | {data.jobName} | {diffTimeView}
+          </div>
+        );
       }
     }
   });
@@ -327,7 +360,7 @@ export function ProfileTemplate() {
     const result = [];
     const careerTimeDiff = diffTimeCalc(data.startDate, data.endDate);
 
-    return result[index] = careerTimeDiff;
+    return (result[index] = careerTimeDiff);
   });
 
   useEffect(() => {
@@ -360,7 +393,7 @@ export function ProfileTemplate() {
 
   useEffect(() => {
     setCareersInfo(formFields);
-  }, [formFields])
+  }, [formFields]);
 
   return (
     <div className={cx('seminarseminar-container')}>
@@ -398,9 +431,11 @@ export function ProfileTemplate() {
                         <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
                           {userInfo?.level} 레벨
                         </span>
-                        <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-300 tw-text-sm tw-font-light tw-text-gray-600">
-                          {userInfo?.jobName}
-                        </span>
+                        {userInfo?.jobName && (
+                          <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-300 tw-text-sm tw-font-light tw-text-gray-600">
+                            {userInfo.jobName}
+                          </span>
+                        )}
                       </div>
                       <div className="tw-col-span-2 tw-text-right">
                         <span className="tw-inline-flex tw-item-right">
@@ -433,7 +468,7 @@ export function ProfileTemplate() {
                     </div>
                   </div>
                   <div className="tw-font-bold tw-text-base tw-text-black tw-mt-5">
-                    {careersViewResult ?? careersViewResult }
+                    {careersViewResult ?? careersViewResult}
                     {/* {userInfo?.careers?.[userInfo?.careers?.length - 1]?.companyName} |
                     {userInfo?.careers?.[userInfo?.careers?.length - 1]?.jobName} */}
                   </div>
@@ -910,9 +945,7 @@ export function ProfileTemplate() {
                                   onChange={e => handleInputChange(index, e, 'endDate')}
                                 />
                               </LocalizationProvider>
-                              <div className="tw-px-2">
-                                {careerTimes && (`${careerTimes[index]}년차`)}
-                              </div>
+                              <div className="tw-px-2">{careerTimes && `${careerTimes[index]}년차`}</div>
                             </div>
                           </dd>
                         </div>
