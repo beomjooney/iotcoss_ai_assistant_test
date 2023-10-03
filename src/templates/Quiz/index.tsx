@@ -255,7 +255,8 @@ export function QuizTemplate() {
           </Grid>
         </Box>
 
-        <Divider className="tw-mb-6 tw-border tw-bg-['#efefef']" />
+        {/* <Divider className="tw-mb-6 tw-border tw-bg-['#efefef']" /> */}
+        <hr className="tw-y-14 tw-my-5 tw-h-[1px] tw-border-t tw-bg-gray-300 " />
         {active != 0 && (
           <div>
             <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
