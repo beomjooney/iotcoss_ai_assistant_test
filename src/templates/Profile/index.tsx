@@ -145,6 +145,7 @@ export function ProfileTemplate() {
             },
           ],
     );
+    setExperienceYears(user.experienceYears);
     setUserInfo(user);
   });
 
@@ -208,6 +209,7 @@ export function ProfileTemplate() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [recommendJobGroups, setRecommendJobGroups] = useState([]);
   const [recommendLevels, setRecommendLevels] = useState('');
+  const [experienceYears, setExperienceYears] = useState(0);
 
   /** introduce message */
   const [introductionMessage, setIntroductionMessage] = useState<string>('');
@@ -365,9 +367,9 @@ export function ProfileTemplate() {
     return (result[index] = careerTimeDiffView);
   });
 
-  const totalCareerYear = careerTimes.reduce(function add(sum, currValue) {
-    return sum + currValue;
-  }, 0);
+  // const totalCareerYear = careerTimes.reduce(function add(sum, currValue) {
+  //   return sum + currValue;
+  // }, 0);
 
   const careersViewResult = formFields?.map((data, key) => {
     if (initStartDate) {
@@ -382,7 +384,7 @@ export function ProfileTemplate() {
 
         return (
           <div key={data.sequence}>
-            {data.companyName} | {data.jobName} | {totalCareerYear}년차
+            {data.companyName} | {data.jobName} | {experienceYears}년차
           </div>
         );
       }
