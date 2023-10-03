@@ -147,7 +147,17 @@ export function HomeTemplate({ logged = false }: HomeProps) {
 
   /**save profile */
   const { mutate: onSave } = useSaveProfile();
-  const handleUserResumeButton = async () => {};
+
+  // 클릭 이벤트 핸들러를 정의합니다.
+  const handleUserButton = async () => {
+    if (logged) {
+      // 조건에 따라 원하는 동작을 수행합니다.
+      router.push('/quiz');
+    } else {
+      // 다른 조건에 대한 동작을 수행할 수 있습니다.
+      router.push('/account/login');
+    }
+  };
 
   const handleRecommendLevels = (event: React.MouseEvent<HTMLElement>, newFormats: string) => {
     setRecommendLevels(newFormats);
@@ -295,11 +305,11 @@ export function HomeTemplate({ logged = false }: HomeProps) {
                   성장 가속 서비스 데브어스
                 </div>
                 <div className={cx('fit-content', 'action-btn')}>
-                  {/* <Button size="main" onClick={handleUserResumeButton} className="tw-w-72 tw-h-12">
+                  <Button size="main" onClick={handleUserButton} className="tw-w-72 tw-h-12">
                     <Typography type="B1" tag="div" weight="bold">
                       지금 시작하기!
                     </Typography>
-                  </Button> */}
+                  </Button>
                 </div>
               </div>
             </div>
