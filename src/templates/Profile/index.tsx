@@ -233,7 +233,9 @@ export function ProfileTemplate() {
       alert('At least one form must remain');
       return;
     }
-    const values = [...formFields].splice(index, 1);
+
+    const values = [...formFields];
+    values.splice(index, 1);
     setFormFields(values);
   };
 
