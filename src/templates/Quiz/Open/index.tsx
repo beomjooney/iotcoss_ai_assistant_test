@@ -253,7 +253,7 @@ export function QuizOpenTemplate() {
   const [quizListParam, setQuizListParam] = useState<any[]>([]);
   const [quizListData, setQuizListData] = useState<any[]>([]);
 
-  const { isFetched: isJobGroupFetched } = useJobGroups(data => setJobGroups(data.data.contents || []));
+  // const { isFetched: isJobGroupFetched } = useJobGroups(data => setJobGroups(data.data.contents || []));
   const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
   const { data: experienceData }: UseQueryResult<ExperiencesResponse> = useExperiences();
 
