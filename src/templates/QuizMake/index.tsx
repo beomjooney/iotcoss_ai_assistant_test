@@ -291,19 +291,19 @@ export function QuizMakeTemplate() {
               <button
                 type="button"
                 onClick={() => handleAddClick()}
-                className="tw-text-white tw-bg-blue-500 tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
+                className="tw-text-blue-600 tw-bg-white border border-primary tw-font-bold tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
               >
-                퀴즈 직접 등록하기
+                퀴즈 직접 등록하기 +
               </button>
             </Grid>
           </Grid>
         </div>
         <Box sx={{ width: '100%', typography: 'body1', marginTop: '20px', marginBottom: '20px' }}>
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-            <Grid item xs={8} className="tw-font-bold tw-text-3xl tw-text-black">
+            <Grid item xs={9} className="tw-font-bold tw-text-3xl tw-text-black">
               <div className="tw-text-xl">퀴즈목록 ({myQuizData?.contents?.length})</div>
             </Grid>
-            <Grid item xs={4} className="tw-font-semi tw-text-base tw-text-black">
+            <Grid item xs={3} className="tw-font-semi tw-text-base tw-text-black">
               <TextField
                 fullWidth
                 id="outlined-basic"
