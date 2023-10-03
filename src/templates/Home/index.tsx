@@ -11,7 +11,7 @@ import {
 import classNames from 'classnames/bind';
 import SectionHeader from 'src/stories/components/SectionHeader';
 import { useContentJobTypes, useContentTypes, useJobGroups, useJobGroupss } from 'src/services/code/code.queries';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ArticleEnum } from 'src/config/types';
 import { useRecommendContents } from 'src/services/contents/contents.queries';
 import { useStore } from 'src/store';
@@ -92,6 +92,9 @@ export function HomeTemplate({ logged = false }: HomeProps) {
   const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
   const fixedOptions = [];
   const [selectedSkills, setSelectedSkills] = useState([]);
+
+  const recommendLevelsRef = useRef(null);
+  const jobGroupRef = useRef(null);
 
   /** introduce message */
   const [introductionMessage, setIntroductionMessage] = useState<string>('');
@@ -184,12 +187,14 @@ export function HomeTemplate({ logged = false }: HomeProps) {
     //console.log(fileImageUrl);
 
     if (recommendJobGroups.length === 0) {
-      alert('직군을 입력해주세요.');
+      alert('직군 필수 입력값을 선택해주세요.');
+      jobGroupRef.current.focus();
       return 0;
     }
 
     if (recommendLevels === '') {
-      alert('레벨을 입력해주세요.');
+      alert('레벨 필수 입력값을 선택해주세요.');
+      recommendLevelsRef.current.focus();
       return 0;
     }
     // fileImageUrl이 null인 경우 imageUrl을 사용하도록 조건문 추가
@@ -625,6 +630,7 @@ export function HomeTemplate({ logged = false }: HomeProps) {
                   >
                     {jobGroup?.map((item, index) => (
                       <ToggleButton
+                        ref={jobGroupRef} // ref를 할당합니다.
                         key={`job-${index}`}
                         value={item.id}
                         aria-label="fff"
@@ -655,6 +661,7 @@ export function HomeTemplate({ logged = false }: HomeProps) {
                   >
                     {levelGroup?.map((item, index) => (
                       <ToggleButton
+                        ref={recommendLevelsRef} // ref를 할당합니다.
                         key={`job-${index}`}
                         value={item.name}
                         aria-label="fff"
