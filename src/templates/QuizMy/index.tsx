@@ -3,162 +3,41 @@ import classNames from 'classnames/bind';
 import { Toggle, Pagination, Typography, Chip, ClubCard } from 'src/stories/components';
 import React, { useEffect, useState } from 'react';
 import { RecommendContent, SeminarImages } from 'src/models/recommend';
-import { useSeminarList, paramProps, useSeminarImageList, useMyClubList } from 'src/services/seminars/seminars.queries';
-import QuizArticleCard from 'src/stories/components/QuizArticleCard';
-import Carousel from 'nuka-carousel';
-import { ArticleEnum } from '../../config/types';
-import { useContentJobTypes, useContentTypes, useJobGroups } from 'src/services/code/code.queries';
-import Banner from '../../stories/components/Banner';
+import { paramProps, useMyClubList } from 'src/services/seminars/seminars.queries';
 import { useStore } from 'src/store';
 import { useRouter } from 'next/router';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import Grid from '@mui/material/Grid';
-import Icon from '@mui/material/Icon';
 import Box from '@mui/system/Box';
-import Image from 'next/image';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import SecondTabs from 'src/stories/components/Tab/SecondTab';
-import ListItemtag from 'src/stories/components/QuizItemCard/ListItemTag';
-import SecondTechLogCard from 'src/stories/components/QuizItemCard/SecondTechLogCard';
-import Card6 from 'src/stories/components/QuizItemCard/Card6';
-import TextField from '@mui/material/TextField';
-import SearchIcon from '@mui/icons-material/Search';
 import Divider from '@mui/material/Divider';
-import Link from 'next/link';
-import { jobColorKey } from 'src/config/colors';
-import ToggleButton from '@mui/material/ToggleButton';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import StarBorderIcon from '@mui/icons-material/StarBorder';
-import StarIcon from '@mui/icons-material/Star';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import { useSessionStore } from 'src/store/session';
 import { useDeleteLike, useSaveLike } from 'src/services/community/community.mutations';
+import { useSessionStore } from 'src/store/session';
 import ClubMiniCard from 'src/stories/components/ClubMiniCard';
-
-const levelGroup = [
-  {
-    id: '0100',
-    groupId: '0001',
-    name: '0',
-    description: '레벨 0',
-  },
-  {
-    id: '0200',
-    groupId: '0001',
-    name: '1',
-    description: '레벨 1',
-  },
-  {
-    id: '0300',
-    groupId: '0001',
-    name: '2',
-    description: '레벨 2',
-  },
-  {
-    id: '0301',
-    groupId: '0001',
-    name: '3',
-    description: '레벨 3',
-  },
-  {
-    id: '0302',
-    groupId: '0001',
-    name: '4',
-    description: '레벨 4',
-  },
-  ,
-  {
-    id: '0303',
-    groupId: '0001',
-    name: '5',
-    description: '레벨 5',
-  },
-];
 
 const cx = classNames.bind(styles);
 
 export function QuizMyTemplate() {
-  const { jobGroups, setJobGroups, contentTypes, setContentTypes } = useStore();
-  const { logged } = useSessionStore.getState();
-  const router = useRouter();
-  const [skillIds, setSkillIds] = useState<any[]>([]);
-  const [skillIdsClk, setSkillIdsClk] = useState<any[]>([1, 2, 3, 4, 5]);
-  const [page, setPage] = useState(1);
-  const [totalPage, setTotalPage] = useState(1);
-  const [jobGroupsFilter, setJobGroupsFilter] = useState([]);
-  const [levelsFilter, setLevelsFilter] = useState([]);
-  const [seminarFilter, setSeminarFilter] = useState(['0002']);
-  const [params, setParams] = useState<paramProps>({ page, clubStatus: '0004' });
   const [contents, setContents] = useState<RecommendContent[]>([]);
-  const [images, setSeminarImages] = useState<any[]>([]);
-  const [recommendJobGroup, setRecommendJobGroup] = useState<any[]>([]);
-  const [contentJobType, setContentJobType] = useState<any[]>([]);
-  const [jobGroup, setJobGroup] = useState([]);
   const [active, setActive] = useState(0);
   const [contentType, setContentType] = useState(0);
-  const { isFetched: isJobGroupFetched } = useJobGroups(data => setJobGroups(data || []));
   const [recommendLevels, setRecommendLevels] = useState([]);
-  let [isLiked, setIsLiked] = useState(false);
-  const { mutate: onSaveLike, isSuccess } = useSaveLike();
-  const { mutate: onDeleteLike } = useDeleteLike();
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
+  const [params, setParams] = useState<paramProps>({ page, clubStatus: '0004' });
 
   const { isFetched: isContentFetched, refetch } = useMyClubList(params, data => {
     setContents(data.data.contents || []);
     setTotalPage(data.data.totalPages);
   });
 
-  const { isFetched: isContentTypeFetched } = useContentTypes(data => {
-    setContentTypes(data.data.contents || []);
-    const contentsType = data.length >= 0 && data[0].id;
-    setParams({
-      ...params,
-      // contentsType,
-    });
-  });
-
-  const { isFetched: isContentTypeJobFetched } = useContentJobTypes(data => {
-    setContentJobType(data.data.contents || []);
-  });
-
   useEffect(() => {
     setParams({
-      // ...params,
+      ...params,
       page,
     });
   }, [page]);
 
-  const handleJobs = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
-    console.log('job', event.currentTarget, newFormats);
-    setJobGroup(newFormats);
-
-    setParams({
-      ...params,
-      recommendJobGroups: contentType,
-      recommendJobs: newFormats.join(','),
-      page,
-    });
-    setPage(1);
-    console.log(newFormats);
-  };
-
-  const handleRecommendLevels = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
-    setRecommendLevels(newFormats);
-
-    setParams({
-      ...params,
-      recommendJobGroups: contentType,
-      recommendLevels: newFormats.join(','),
-      page,
-    });
-  };
-
   return (
     <div className={cx('seminar-container')}>
-      {/* <Banner title="커리어멘토스 세미나" subTitle="커멘세미나" /> */}
-
       <div className={cx('container')}>
         <div className="tw-py-[60px]">
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
@@ -198,6 +77,7 @@ export function QuizMyTemplate() {
                       setActive(0);
                       setParams({
                         page,
+                        clubStatus: '0004',
                       });
                       setPage(1);
                     }}
