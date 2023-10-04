@@ -59,114 +59,16 @@ const ClubMiniCard = ({
   onPostDeleteSubmit,
 }: // eslint-disable-next-line @typescript-eslint/no-empty-function
 ClubMiniCardProps) => {
-  // const { jobGroupName, jobGroup } = writer;
-  // const chipColor = jobColorKey(jobGroup);
-  const { mutate: onSaveLike, isSuccess } = useSaveLike();
-  const { mutate: onDeleteLike } = useDeleteLike();
-
   // TODO 좋아요 여부 필드 수정 필요
-  let [isLiked, setIsLiked] = useState(false);
-  let [isOpen, setIsOpened] = useState(false);
-  let [likeCount, setLikeCount] = useState(0);
-  let [replyCount, setReplyCount] = useState(0);
-  let [postNo, setPostNo] = useState(0);
-  let [repliesList, setRepliesList] = useState([]);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const [removeIndex, setRemoveIndex] = React.useState('');
-
-  const { mutate: onSaveReply, isSuccess: replyReplySucces } = useSaveReply();
-  const { mutate: onDeleteReply, isSuccess: deleteReplySucces } = useDeleteReply();
-  // const { isFetched: isReplyFetched, refetch } = useRepliesList(postNo, data => {
-  //   setRepliesList(data.data);
-  // });
-
-  // useEffect(() => {
-  //   refetch();
-  // }, [postNo, replyReplySucces, deleteReplySucces]);
-
-  useEffect(() => {
-    setIsLiked(item?.isFavorite);
-    // setLikeCount(item?.likeReactionCount);
-    // setReplyCount(item?.replyCount);
-  }, [item]);
-
   const textInput = useRef(null);
-
-  const onReplySubmit = (postNo: number, text: string) => {
-    console.log('text : ', text, postNo);
-    if (logged) {
-      onSaveReply({
-        postNo: postNo,
-        data: {
-          body: text,
-        },
-      });
-      textInput.current.value = '';
-      setReplyCount(replyCount => replyCount + 1);
-    } else {
-      alert('로그인 후 댓글을 입력할 수 있습니다.');
-    }
-  };
-
-  const onReplyDeleteSubmit = (postReplyNo: number, parentPostNo: number) => {
-    console.log('delete post', postReplyNo, parentPostNo);
-    if (window.confirm('정말로 삭제하시겠습니까?')) {
-      onDeleteReply({
-        postReplyNo: postReplyNo,
-        parentPostNo: parentPostNo,
-      });
-      setReplyCount(replyCount => replyCount - 1);
-    }
-  };
-
-  const onChangeLike = function (postNo: number) {
-    event.preventDefault();
-    if (logged) {
-      setIsLiked(!isLiked);
-      if (isLiked) {
-        onDeleteLike(postNo);
-      } else {
-        onSaveLike(postNo);
-      }
-    } else {
-      alert('로그인 후 좋아요를 클릭 할 수 있습니다.');
-    }
-  };
 
   const handleDropMenuClick = (event: React.MouseEvent<HTMLElement>, removeIndex) => {
     setRemoveIndex(removeIndex);
     setAnchorEl(event.currentTarget);
   };
-
-  const onReply = function (postNo: number) {
-    console.log('onReplay click. ', postNo);
-    setPostNo(postNo);
-    setIsOpened(!isOpen);
-  };
-
-  function timeForToday(value) {
-    const today = new Date();
-    const timeValue = new Date(value);
-
-    const betweenTime = Math.floor((today.getTime() - timeValue.getTime()) / 1000 / 60);
-    if (betweenTime < 1) return '방금 전';
-    if (betweenTime < 60) {
-      return `${betweenTime}분 전`;
-    }
-
-    const betweenTimeHour = Math.floor(betweenTime / 60);
-    if (betweenTimeHour < 24) {
-      return `${betweenTimeHour}시간 전`;
-    }
-
-    const betweenTimeDay = Math.floor(betweenTime / 60 / 24);
-    if (betweenTimeDay < 365) {
-      return `${betweenTimeDay}일 전`;
-    }
-
-    return `${Math.floor(betweenTimeDay / 365)}년전`;
-  }
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -190,6 +92,30 @@ ClubMiniCardProps) => {
     },
   }));
 
+  function ClubStatus({ status }) {
+    let statusText;
+    let statusClass;
+    statusClass =
+      'tw-bg-black tw-text-white tw-text-sm tw-font-medium tw-mr-1 tw-px-2.5 tw-py-[5px] tw-py-1 tw-rounded';
+
+    switch (status) {
+      case '0004':
+        statusText = '진행중';
+        break;
+      case '0003':
+        statusText = '진행예정';
+        break;
+      case '0005':
+        statusText = '진행완료';
+        break;
+      default:
+        // 기본값 처리
+        break;
+    }
+
+    return <span className={statusClass}>{statusText}</span>;
+  }
+
   const router = useRouter();
   const classes = useStyles();
   return (
@@ -211,13 +137,11 @@ ClubMiniCardProps) => {
           >
             <Grid item xs={11}>
               <div className="tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
-                <span className="tw-bg-black tw-text-white tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded">
-                  진행중
-                </span>
+                <ClubStatus status={item?.clubStatus} /> {/* 진행중 */}
                 {item?.recommendJobGroupNames.map((name, i) => (
                   <span
                     key={i}
-                    className="tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded"
+                    className="tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-[5px]  tw-rounded"
                   >
                     {name}
                   </span>
@@ -225,14 +149,14 @@ ClubMiniCardProps) => {
                 {item?.recommendLevels.map((name, i) => (
                   <span
                     key={i}
-                    className="tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
+                    className="tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-[5px]  tw-rounded "
                   >
                     {name} 레벨
                   </span>
                 ))}
                 {item?.recommendJobNames.map((name, i) => (
                   <span
-                    className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
+                    className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-[5px]  tw-rounded "
                     key={i}
                   >
                     {name}

@@ -18,8 +18,6 @@ const cx = classNames.bind(styles);
 export function QuizMyTemplate() {
   const [contents, setContents] = useState<RecommendContent[]>([]);
   const [active, setActive] = useState(0);
-  const [contentType, setContentType] = useState(0);
-  const [recommendLevels, setRecommendLevels] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [params, setParams] = useState<paramProps>({ page, clubStatus: '0004' });
