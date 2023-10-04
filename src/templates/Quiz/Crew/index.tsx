@@ -137,7 +137,7 @@ export function QuizCrewManageTemplate({ id }: QuizCrewManageTemplateProps) {
                       <div>{row?.nickName}</div>
                     </div>
                   </TableCell>
-                  <TableCell align="center">{row?.approvedAt.split(' ')[0]}</TableCell>
+                  <TableCell align="center">{row?.approvedAt ? row.approvedAt.split(' ')[0] : ''}</TableCell>
                   <TableCell align="center">
                     <div>
                       {row?.studyCount} / {row?.totalStudyCount}
