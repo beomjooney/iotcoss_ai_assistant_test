@@ -22,17 +22,26 @@ export interface BannerProps {
   data: object;
   className?: string;
   subTitle?: string;
+  onClick?: (no: number) => void;
 }
 
 const cx = classNames.bind(styles);
 // const Banner = ({ imageName = 'top_banner_seminar.jpg', title, subTitle, className }: BannerProps) => {
-const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className, data }: BannerProps) => {
+const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className, data, onClick }: BannerProps) => {
   let [isLiked, setIsLiked] = useState(false);
+  const [clubMemberStatus, setClubMemberStatus] = useState('0001');
+  const [clubStatus, setClubStatus] = useState('');
+  const [isLeader, setIsLeader] = useState('');
+  const [applicationButton, setApplicationButton] = useState<ReactNode>(null);
+  const { logged } = useSessionStore.getState();
   const { mutate: onSaveLike, isSuccess } = useSaveLike();
   const { mutate: onDeleteLike } = useDeleteLike();
 
   useEffect(() => {
     setIsLiked(data?.isFavorite);
+    setClubMemberStatus(data?.clubMemberStatus);
+    setClubStatus(data?.clubStatus);
+    setIsLeader(data?.isLeader);
   }, [data]);
 
   const onChangeLike = function (postNo: number) {
@@ -59,19 +68,19 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
       </div>
       <div className={cx('banner-container__wrap', ' tw-pb-10')}>
         {/*todo url 경로에 따라 자동 셋팅 구현*/}
-        <div className="tw-w-full tw-flex tw-flex-col tw-items-center tw-bg-white tw-border tw-border-gray-200 max-lg:tw-p-5 tw-rounded-lg border md:tw-flex-row md:tw-max-w-[1100px]">
+        <div className="tw-w-full tw-flex tw-flex-col tw-bg-white tw-border tw-border-gray-200 max-lg:tw-p-5 tw-rounded-lg border md:tw-flex-row md:tw-max-w-[1100px]">
           <img
             className="tw-object-cover tw-w-[340px] tw-rounded-t-lg tw-h-[340px] md:tw-h-[340px] md:tw-w-[340px] md:tw-rounded-none md:tw-rounded-l-lg"
             src={data?.clubImageUrl}
             alt=""
           />
-          <div className="tw-flex tw-w-full tw-flex-col tw-justify-between tw-px-10 tw-leading-normal">
+          <div className="tw-flex tw-w-full tw-flex-col tw-p-8">
             <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
               <Grid item xs={7}>
                 {data?.recommendJobGroupNames?.map((name, i) => (
                   <span
                     key={i}
-                    className="tw-inline-flex tw-mb-2 tw-bg-blue-100 tw-text-blue-800 tw-text-base tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded"
+                    className="tw-inline-flex tw-mb-2 tw-bg-blue-200 tw-text-blue-800 tw-text-base tw-font-right tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded"
                   >
                     {name}
                   </span>
@@ -80,15 +89,15 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
                 {data?.recommendLevels?.map((name, i) => (
                   <span
                     key={i}
-                    className="tw-inline-flex  tw-mb-2 tw-bg-gray-100 tw-text-gray-800 tw-text-base tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
+                    className="tw-inline-flex  tw-mb-2 tw-bg-red-200 tw-text-red-800 tw-text-base tw-font-right tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
                   >
-                    {name} 레벨
+                    레벨 {name}
                   </span>
                 ))}
                 {data?.recommendJobNames?.map((name, i) => (
                   <span
                     key={i}
-                    className="tw-inline-flex  tw-bg-red-100 tw-text-red-800 tw-text-base tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
+                    className="tw-inline-flex  tw-bg-gray-200 tw-text-gray-800 tw-text-base tw-font-right tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
                   >
                     {name}
                   </span>
@@ -110,25 +119,20 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
               </Grid>
             </Grid>
 
-            <div className="tw-mb-3 tw-text-sm tw-font-semibold tw-text-gray-500 dark:tw-text-gray-400"></div>
-            <h5 className="tw-mb-2 tw-text-3xl tw-font-bold tw-tracking-tight tw-text-gray-900 dark:tw-text-white">
+            <div className="tw-mb-3 tw-text-sm tw-font-semibold tw-text-gray-500 "></div>
+            <h5 className="tw-text-3xl tw-font-bold tw-tracking-tight tw-text-gray-900 dark:tw-text-white">
               {data?.name}
             </h5>
-            {/* <p className="tw-line-clamp-2 tw-mb-3 tw-font-normal tw-text-gray-700 dark:tw-text-gray-400">
-              {data?.description}
-            </p> */}
 
-            <div className="tw-text-base tw-font-bold tw-text-black dark:tw-text-gray-400">
-              퀴즈클럽 주수 : {data?.studyWeekCount}주 | 학습 {data?.studyTotalCount}회 ({data?.startAt?.split(' ')[0]}~
-              {data?.endAt?.split(' ')[0]})
+            <div className="tw-py-5 tw-text-[16px] tw-font-medium tw-text-black tw-mb-5">
+              <div className="">
+                퀴즈클럽 주수 : {data?.studyWeekCount}주 | 학습 {data?.studyTotalCount}회 (
+                {data?.startAt?.split(' ')[0]}~{data?.endAt?.split(' ')[0]})
+              </div>
+              <div className=" ">퀴즈클럽 주기 : {data?.studyCycle?.toString()}</div>
+              <div className="">모집인원 : {data?.recruitMemberCount}명</div>
             </div>
-            <div className="tw-text-base tw-font-bold tw-text-black dark:tw-text-gray-400">
-              퀴즈클럽 주기 : {data?.studyCycle?.toString()}
-            </div>
-            <div className="tw-mb-3 tw-text-base tw-font-bold tw-text-black dark:tw-text-gray-400">
-              모집인원 : {data?.recruitMemberCount}명
-            </div>
-            {/* <div className="tw-mb-3 tw-text-base tw-font-semibold tw-text-gray-400 dark:tw-text-gray-400">
+            {/* <div className="tw-mb-3 tw-text-base tw-font-semibold tw-text-gray-400 ">
               #프론트엔드 #JAVA #HTML
             </div> */}
 
@@ -142,12 +146,60 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
                 </div>
               </Grid>
               <Grid item xs={7} justifyContent="flex-end" className="tw-flex">
-                {/* <button
-                  type="button"
-                  className="tw-text-white tw-mr-3 tw-bg-blue-500 hover:tw-bg-blue-800 tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5  dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
-                >
-                  참여하기
-                </button> */}
+                {clubStatus === '0006' && clubMemberStatus === '0006' && (
+                  <button
+                    type="button"
+                    onClick={onClick} // 이 부분도 함수를 호출하도록 수정
+                    className="tw-text-white tw-mr-3 tw-bg-blue-500 tw-font-medium tw-rounded-md tw-text-base tw-px-5 tw-py-2.5"
+                  >
+                    참여하기
+                  </button>
+                )}
+                {clubStatus === '0007' && isLeader && (
+                  <button
+                    type="button"
+                    disabled
+                    className="tw-text-white tw-mr-3 tw-bg-blue-500 tw-font-medium tw-rounded-md tw-text-base tw-px-5 tw-py-2.5"
+                  >
+                    모집완료
+                  </button>
+                )}
+                {clubStatus === '0006' && clubMemberStatus == '0004' && (
+                  <button
+                    type="button"
+                    disabled
+                    className="tw-text-white tw-mr-3 tw-bg-blue-500 tw-font-medium tw-rounded-md tw-text-base tw-px-5 tw-py-2.5"
+                  >
+                    모집완료
+                  </button>
+                )}
+                {clubStatus === '0007' && (
+                  <button
+                    type="button"
+                    disabled
+                    className="tw-text-white tw-mr-3 tw-bg-blue-500 tw-font-medium tw-rounded-md tw-text-base tw-px-5 tw-py-2.5"
+                  >
+                    모집완료
+                  </button>
+                )}
+                {clubStatus === '0006' && clubMemberStatus == '0002' && (
+                  <button
+                    type="button"
+                    disabled
+                    className="tw-text-white tw-mr-3 tw-bg-blue-500 tw-font-medium tw-rounded-md tw-text-base tw-px-5 tw-py-2.5"
+                  >
+                    가입승인 완료
+                  </button>
+                )}
+                {clubStatus === '0006' && clubMemberStatus == '0001' && (
+                  <button
+                    type="button"
+                    disabled
+                    className="tw-text-white tw-mr-3 tw-bg-blue-500 tw-font-medium tw-rounded-md tw-text-base tw-px-5 tw-py-2.5"
+                  >
+                    가입요청 승인중
+                  </button>
+                )}
                 {/* <button
                   type="button"
                   className="tw-text-white tw-bg-blue-500 hover:tw-bg-blue-800 tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5  dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
