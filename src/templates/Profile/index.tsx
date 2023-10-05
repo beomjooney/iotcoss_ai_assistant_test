@@ -104,6 +104,7 @@ export function ProfileTemplate() {
 
   const recommendLevelsRef = useRef(null);
   const jobGroupRef = useRef(null);
+  const endDateRef = useRef<any>([]);
 
   const [formFields, setFormFields] = useState([
     {
@@ -277,9 +278,13 @@ export function ProfileTemplate() {
 
   const [careersInfo, setCareersInfo] = useState([]);
 
-  const handleInputChange = (index: number, e: React.ChangeEvent<HTMLInputElement>, key, id) => {
+  const handleInputChange = (
+    index: number, 
+    e: React.ChangeEvent<HTMLInputElement>, 
+    key, 
+    id,
+  ) => {
     const values = [...formFields];
-
     let datetime: string;
 
     switch (key) {
@@ -297,6 +302,12 @@ export function ProfileTemplate() {
         values[index][key] = !values[index][key];
         // setIsFreelance(!isFreelance);
         break;
+      case 'isCurrent':
+        if(!values[index][key] === true) {
+          values[index]['endDate'] = null;
+        }
+        values[index][key] = !values[index][key];
+        break;
       case 'job':
         values[index][key] = id;
         break;
@@ -313,6 +324,7 @@ export function ProfileTemplate() {
   const handleProfileSave = async () => {
     // fileImageUrl이 null인 경우 imageUrl을 사용하도록 조건문 추가
     const profileImageKey = imageUrl || user?.profileImageUrl;
+    const isCurrentCount = formFields.filter((data) => data.isCurrent === true).map((data, index) => {}).length;
 
     if (recommendJobGroups.length === 0) {
       alert('직군 필수 입력값을 선택해주세요.');
@@ -326,6 +338,11 @@ export function ProfileTemplate() {
       return 0;
     }
 
+    if(isCurrentCount > 1) {
+      alert('재직 경력은 1개만 선택해주세요.');
+      return 0;
+    }
+
     const params = {
       nickname: nickName,
       careers: formFields[0].companyName ? formFields : [],
@@ -335,6 +352,7 @@ export function ProfileTemplate() {
       introductionMessage: introductionMessage,
       profileImageUrl: profileImageKey,
     };
+    
     onSave(params);
     setIsModalOpen(false);
   };
@@ -970,10 +988,15 @@ export function ProfileTemplate() {
                                   onChange={e => handleInputChange(index, e, 'startDate')}
                                 />
                                 <DatePicker
+                                  disabled={field.isCurrent}
                                   format="YYYY-MM-DD"
                                   slotProps={{ textField: { size: 'small' } }}
                                   value={dayjs(field.endDate)}
                                   onChange={e => handleInputChange(index, e, 'endDate')}
+                                  key={index}
+                                  inputRef={(element) => {
+                                    endDateRef.current[index] = element;
+                                  }}
                                 />
                               </LocalizationProvider>
                               {careerTimes[index] && <div className="tw-px-2">{careerTimes[index]}년차</div>}
@@ -987,11 +1010,9 @@ export function ProfileTemplate() {
                               <FormControlLabel
                                 control={
                                   <Checkbox
-                                    // checked={isCurrent}
                                     checked={field.isCurrent}
                                     onChange={e => handleInputChange(index, e, 'isCurrent')}
-                                    // onChange={() => setMarketingAgree(!marketingAgree)}
-                                    name="jason"
+                                    name="isCurrent"
                                   />
                                 }
                                 label="재직 중인 경우, 체크해 주세요."
