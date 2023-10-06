@@ -498,18 +498,18 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                                   {item?.answer?.text}
                                 </div>
                               </div>
-                              {/* <div className="">
+                              <div className="">
                                 <div className="tw-font-medium tw-text-black ">
-                                  <button
-                                    onClick={() => router.push('/quiz/round-answers/' + `${item?.clubQuizSequence}`)}
-                                    type="button"
-                                    data-tooltip-target="tooltip-default"
-                                    className="tw-bg-white tw-text-gray-500 tw-text-sm tw-font-right tw-px-3 tw-py-1 tw-rounded"
-                                  >
-                                    자세히보기
-                                  </button>
+                                  {/* <button
+                                  onClick={() => router.push('/quiz/answers/' + `${item?.clubQuizSequence}`)}
+                                  type="button"
+                                  data-tooltip-target="tooltip-default"
+                                  className="tw-bg-white tw-text-gray-500 tw-text-sm tw-font-right tw-px-3 tw-py-1 tw-rounded"
+                                >
+                                  자세히보기
+                                </button> */}
                                 </div>
-                              </div> */}
+                              </div>
                             </div>
                           ) : (
                             <div></div>

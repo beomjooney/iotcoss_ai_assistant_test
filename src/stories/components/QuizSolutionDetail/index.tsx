@@ -166,7 +166,7 @@ const quizSolutionDetail = ({
         },
       });
 
-      router.push(`/quiz/growth/${data?.clubSequence}`);
+      router.push(`/quiz/growth/${data?.clubQuizSequence}`);
     }
   };
 

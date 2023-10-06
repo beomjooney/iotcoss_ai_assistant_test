@@ -31,7 +31,7 @@ export const communityList = async params => {
 
 // 댓글 조회
 export const repliesList = async (postNo: number) => {
-  const { data } = await axiosGeneralAPI().get(`/posts/${postNo}/replies`);
+  const { data } = await axiosGeneralAPI().get(`/api/v1/answers/${postNo}/replies`);
   return { data: data || [] };
 };
 
@@ -51,8 +51,7 @@ export const deleteQuizLiked = async (postNo: number) =>
   await axiosGeneralAPI().delete(`/api/v1/club/quizzes/${postNo}/like`);
 
 export const saveReply = async (params: any) => {
-  console.log('saveReply : ', params);
-  const { data } = await axiosGeneralAPI().post(`/posts/${params.postNo}/replies`, params.data);
+  const { data } = await axiosGeneralAPI().post(`/api/v1/replies`, params);
   return { data: data || [] };
 };
 export const answerSave = async (params: any) => {

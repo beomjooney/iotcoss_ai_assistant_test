@@ -70,13 +70,13 @@ CommunityCardProps) => {
   let [repliesList, setRepliesList] = useState([]);
   const { mutate: onSaveReply, isSuccess: replyReplySucces } = useSaveReply();
   const { mutate: onDeleteReply, isSuccess: deleteReplySucces } = useDeleteReply();
-  // const { isFetched: isReplyFetched, refetch } = useRepliesList(postNo, data => {
-  //   setRepliesList(data.data);
-  // });
+  const { isFetched: isReplyFetched, refetch } = useRepliesList(postNo, data => {
+    setRepliesList(data.data);
+  });
 
-  // useEffect(() => {
-  //   refetch();
-  // }, [postNo, replyReplySucces, deleteReplySucces]);
+  useEffect(() => {
+    if (postNo > 0) refetch();
+  }, [postNo, replyReplySucces]);
 
   useEffect(() => {
     setIsLiked(board?.liked);
@@ -90,10 +90,8 @@ CommunityCardProps) => {
     console.log('text : ', text, postNo);
     if (logged) {
       onSaveReply({
-        postNo: postNo,
-        data: {
-          body: text,
-        },
+        clubQuizAnswerSequence: postNo,
+        body: text,
       });
       textInput.current.value = '';
       setReplyCount(replyCount => replyCount + 1);
@@ -188,7 +186,7 @@ CommunityCardProps) => {
 
   const router = useRouter();
   return (
-    <div className={cx('community-board-container tw-p-2', className)}>
+    <div className={cx('community-board-container', className)}>
       <div className={cx('main-container')}>
         <div className={cx('board-header', 'row')}>
           <div className="tw-flex tw-items-center tw-space-x-4 tw-my-5 tw-gap-2">
@@ -254,7 +252,7 @@ CommunityCardProps) => {
           value={board?.postAnswer}
         />
 
-        <div className="tw-grid tw-items-center tw-grid-cols-6 tw-py-3 tw-mt-2">
+        <div className="tw-grid tw-items-center tw-grid-cols-6 tw-py-3 tw-mt-1">
           <div className="tw-col-span-2">
             <div className="tw-flex tw-items-center tw-gap-4">
               <span>
@@ -272,37 +270,37 @@ CommunityCardProps) => {
             </div>
           </div>
           <div className="tw-col-span-4 tw-flex tw-justify-end">
-            {/* <Textfield width={400} defaultValue="" placeholder="댓글을 입력해주세요." ref={textInput} />
+            <Textfield width={400} defaultValue="" placeholder="댓글을 입력해주세요." ref={textInput} />
             <button
               className="tw-bg-black tw-text-white px-4  tw-ml-2 tw-rounded-md"
-              onClick={() => onReplySubmit(board.postNo, textInput.current.value)}
+              onClick={() => onReplySubmit(board?.clubQuizAnswerSequence, textInput.current.value)}
             >
               입력
-            </button> */}
+            </button>
           </div>
         </div>
-        {/* <div className={cx('board-footer')}>
+        <div className={cx('board-footer')}>
           <span className={cx('board-footer__reaction')}>
-            <button
+            {/* <button
               onClick={() => {
                 onChangeLike(board.postNo);
               }}
             >
               {isLiked ? <FavoriteIcon color="primary" /> : <FavoriteBorderIcon color="disabled" />}
-            </button>
+            </button> */}
             <span className={cx('reaction__count', { 'reaction__count--active': isLiked })}>{likeCount}</span>
           </span>
           <button
             className={cx('board-footer__reply')}
             onClick={() => {
-              onReply(board.postNo);
+              onReply(board.clubQuizAnswerSequence);
             }}
           >
             댓글 {replyCount}개{isOpen ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
           </button>
-        </div> */}
+        </div>
       </div>
-      {isOpen && (
+      {/* {isOpen && (
         <div className={cx('reply-container')}>
           <div className={cx('reply-container__content')}>
             {repliesList.map((reply, i) => {
@@ -320,7 +318,6 @@ CommunityCardProps) => {
           </div>
           <div className={cx('reply-container__form', 'row')}>
             <div className={cx('form-input', 'col-md-11')}>
-              {/*TODO value를 onReplySubmit에 전달?*/}
               <Textfield defaultValue="" placeholder="댓글을 입력하세요." ref={textInput} />
             </div>
             <div className={cx('form-button', 'col-md-1')}>
@@ -328,7 +325,7 @@ CommunityCardProps) => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
