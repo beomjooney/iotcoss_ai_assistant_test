@@ -168,7 +168,6 @@ export function QuizAnswersDetailTemplate({ id }: QuizAnswersDetailTemplateProps
 
   return (
     <div className={cx('seminar-detail-container')}>
-      {/* <BannerDetail data={data} title="퀴즈클럽" subTitle="클럽 상세보기" imageName="top_banner_seminar.svg" /> */}
       <div className={cx('container')}>
         <div className="tw-py-[60px]">
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
