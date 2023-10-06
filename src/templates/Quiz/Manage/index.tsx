@@ -117,6 +117,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
   const [contentTypes, setContentTypes] = useState<any[]>([]);
   const [jobGroups, setJobGroups] = useState<any[]>([]);
   const [recommendLevelsPopUp, setRecommendLevelsPopUp] = useState([]);
+  const [publishedData, setPublishedData] = useState([]);
 
   const { isFetched: isContentTypeJobFetched } = useContentJobTypes(data => {
     setContentJobType(data.data.contents || []);
@@ -136,8 +137,17 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
   /** include quiz */
   const { isFetched: isQuizListFetch } = useClubQuizManage(id, data => {
     setContents(data || []);
-    setQuizListCopy(data.quizzes || []);
-    setTotal(data.quizzes.length);
+
+    const publishedData = data.quizzes.filter(item => item.isPublished);
+    const unpublishedData = data.quizzes.filter(item => !item.isPublished);
+
+    console.log('Published Data:', publishedData);
+    console.log('Unpublished Data:', unpublishedData);
+    console.log(' Data size:', data.weekCount * data.studyCycle.length);
+
+    setPublishedData(publishedData);
+    setQuizListCopy(unpublishedData || []);
+    setTotal(data.weekCount * data.studyCycle.length);
     setQuizListOrigin(data.quizzes);
     setQuizList(data.quizzes);
     const quizSequenceArray = data.quizzes.map(item => item.quizSequence.toString());
@@ -205,7 +215,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
       return;
     }
 
-    //console.log('name -------------', name, quizData, quizListCopy);
+    console.log('name -------------', name, quizData, quizListCopy);
 
     if (result.indexOf(name) > -1) {
       result.splice(result.indexOf(name), 1);
@@ -297,7 +307,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
           isRepresentative,
           memberName,
           order,
-          // quizSequence,
+          quizSequence,
           content,
           publishDate,
           // studyDay,
@@ -379,18 +389,14 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
   };
 
   const handleAddClick = () => {
-    //console.log(itemList, quizList.length, total);
-
-    if (quizList.length < total) {
-      alert('퀴즈를 선택해 주세요.');
-      return;
-    }
+    const arrayList = [...publishedData, ...quizListCopy];
 
     // Transforming the data into an array of objects with "clubQuizSequence" and "order" properties
-    //console.log(quizListCopy);
+    console.log(quizListCopy);
+
     const transformedData = {
       clubSequence: contents?.clubSequence, // Add the "clubSequence" property with a value of 2
-      clubQuizzes: quizListCopy.map((item, index) => ({
+      clubQuizzes: arrayList.map((item, index) => ({
         quizSequence: item.quizSequence,
         isRepresentative: item.isRepresentative,
         // order: index,
@@ -401,8 +407,9 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
   };
 
   function handleClickQuiz(quizSequence, flag) {
-    //console.log(quizSequence, flag);
+    console.log(quizSequence, flag);
     // "quizSequence"가 83인 객체를 찾아서 "isRepresentative" 값을 변경
+    console.log(quizListCopy);
     const updatedData = quizListCopy.map(item => {
       if (item.quizSequence === quizSequence) {
         return {
@@ -413,19 +420,19 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
       return item;
     });
     //console.log(updatedData);
-
+    const arrayList = [...publishedData, ...quizListCopy];
     // "isRepresentative" 값이 true인 개수를 세기 위한 변수
     let countIsRepresentative = 0;
 
     // 데이터를 순회하면서 "isRepresentative" 값이 true인 경우 카운트 증가
-    updatedData.forEach(quiz => {
+    arrayList.forEach(quiz => {
       if (quiz.isRepresentative === true) {
         countIsRepresentative++;
       }
     });
-
+    console.log(countIsRepresentative);
     // "isRepresentative" 값이 3개가 아닌 경우 알림 창 표시
-    if (countIsRepresentative >= 4) {
+    if (countIsRepresentative >= 3) {
       alert('대표 퀴즈는 3개입니다.');
     } else {
       setQuizListCopy(updatedData);
@@ -564,7 +571,9 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
         <div className="tw-flex tw-items-center tw-mb-6">
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
             <Grid item xs={2} className="tw-font-bold tw-text-xl tw-text-black">
-              <div className="tw-text-base tw-font-right tw-mr-5 tw-text-black">총 {quizList.length}개</div>
+              <div className="tw-text-base tw-font-right tw-mr-5 tw-text-black">
+                총 {quizList.length}/{total}개
+              </div>
             </Grid>
 
             <Grid item xs={7} className="tw-font-bold tw-text-xl tw-text-black ">
@@ -599,33 +608,33 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
               </div>
             </Grid>
             <Grid item xs={3} justifyContent="flex-end" className="tw-flex">
-              {contents?.isBeforeOpening ? (
-                <div className="">
-                  <button
-                    type="button"
-                    onClick={handleAddClick}
-                    className="tw-mr-4 tw-text-black tw-bg-white border tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5 "
-                  >
-                    퀴즈 수정하기
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleQuizAdd}
-                    className="tw-text-white tw-bg-blue-500 tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5 "
-                  >
-                    성장퀴즈 추가하기
-                  </button>
-                </div>
-              ) : (
+              {/* {contents?.isBeforeOpening ? ( */}
+              <div className="">
+                <button
+                  type="button"
+                  onClick={handleAddClick}
+                  className="tw-mr-4 tw-text-black tw-bg-white border tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5 "
+                >
+                  퀴즈 수정하기
+                </button>
+                <button
+                  type="button"
+                  onClick={handleQuizAdd}
+                  className="tw-text-white tw-bg-blue-500 tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5 "
+                >
+                  성장퀴즈 추가하기
+                </button>
+              </div>
+              {/* ) : (
                 <div></div>
-              )}
+              )} */}
             </Grid>
           </Grid>
         </div>
         <Grid container direction="row" justifyContent="left" alignItems="center">
           <Grid item xs={1}>
             {isQuizListFetch &&
-              quizListCopy.map((item, index) => {
+              publishedData.map((item, index) => {
                 return (
                   <Grid key={index} container direction="row" justifyContent="left" alignItems="center" rowSpacing={3}>
                     <Grid item xs={10}>
@@ -641,21 +650,83 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
                   </Grid>
                 );
               })}
+            {isQuizListFetch &&
+              quizListCopy.map((item, index) => {
+                return (
+                  <Grid key={index} container direction="row" justifyContent="left" alignItems="center" rowSpacing={3}>
+                    <Grid item xs={10}>
+                      <div className="tw-flex-auto tw-text-center tw-text-black tw-font-bold">Q{item?.weekNumber}.</div>
+                      <div className="tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold">
+                        {item?.weekNumber} 주차 ({item?.studyDay})
+                      </div>
+                    </Grid>
+                    <Grid item xs={1}></Grid>
+                    <Grid item xs={1} className="">
+                      <div className=" tw-p-4 tw-border mb-3 mt-3 tw-h-[60px] "></div>
+                    </Grid>
+                  </Grid>
+                );
+              })}
           </Grid>
           <Grid item xs={11}>
-            {contents?.isBeforeOpening ? (
-              <div>
-                <ReactDragList
-                  dataSource={quizListCopy}
-                  rowKey="order"
-                  row={dragList}
-                  handles={false}
-                  className="simple-drag"
-                  rowClassName="simple-drag-row"
-                  onUpdate={handleUpdate}
-                />
-              </div>
-            ) : (
+            {/* {contents?.isBeforeOpening ? ( */}
+            <div>
+              {publishedData.map((item, index) => {
+                return (
+                  <Grid
+                    key={'drag444-' + index}
+                    container
+                    direction="row"
+                    justifyContent="left"
+                    alignItems="center"
+                    rowSpacing={3}
+                  >
+                    <Grid item xs={12}>
+                      <div className="tw-flex tw-items-center tw-p-4 tw-border border mb-3 mt-3 rounded  tw-h-[60px]">
+                        <div className="tw-flex-auto">
+                          <div className="tw-font-medium tw-text-black">{item?.content}</div>
+                        </div>
+
+                        <div className="">
+                          {item?.isRepresentative === true && (
+                            <div>
+                              <button
+                                type="button"
+                                data-tooltip-target="tooltip-default"
+                                className="tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded"
+                              >
+                                대표
+                              </button>
+                            </div>
+                          )}
+                          {item?.isRepresentative === false && (
+                            // <div onClick={() => handleClickQuiz(item?.quizSequence, item?.isRepresentative)}>
+                            <button
+                              type="button"
+                              data-tooltip-target="tooltip-default"
+                              className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded"
+                            >
+                              대표
+                            </button>
+                            // </div>
+                          )}
+                        </div>
+                      </div>
+                    </Grid>
+                  </Grid>
+                );
+              })}
+              <ReactDragList
+                dataSource={quizListCopy}
+                rowKey="order"
+                row={dragList}
+                handles={false}
+                className="simple-drag"
+                rowClassName="simple-drag-row"
+                onUpdate={handleUpdate}
+              />
+            </div>
+            {/* ) : (
               <div>
                 {quizListOrigin.map((item, index) => {
                   return (
@@ -706,7 +777,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
                   );
                 })}
               </div>
-            )}
+            )} */}
           </Grid>
         </Grid>
       </div>

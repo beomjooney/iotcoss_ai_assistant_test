@@ -71,7 +71,7 @@ CommunityCardProps) => {
   const { mutate: onSaveReply, isSuccess: replyReplySucces } = useSaveReply();
   const { mutate: onDeleteReply, isSuccess: deleteReplySucces } = useDeleteReply();
   const { isFetched: isReplyFetched, refetch } = useRepliesList(postNo, data => {
-    setRepliesList(data.data);
+    setRepliesList(data.data.data.clubQuizReplies.contents);
   });
 
   useEffect(() => {
@@ -300,7 +300,7 @@ CommunityCardProps) => {
           </button>
         </div>
       </div>
-      {/* {isOpen && (
+      {isOpen && isReplyFetched && (
         <div className={cx('reply-container')}>
           <div className={cx('reply-container__content')}>
             {repliesList.map((reply, i) => {
@@ -309,8 +309,8 @@ CommunityCardProps) => {
                 <CommunityCardReply
                   key={i}
                   reply={reply}
-                  writer={writer}
-                  memberId={memberId}
+                  // writer={writer}
+                  // memberId={memberId}
                   onReplyDeleteSubmit={onReplyDeleteSubmit}
                 />
               );
@@ -325,7 +325,7 @@ CommunityCardProps) => {
             </div>
           </div>
         </div>
-      )} */}
+      )}
     </div>
   );
 };

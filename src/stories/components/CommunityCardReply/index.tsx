@@ -21,21 +21,33 @@ export interface CommunityCardReplyProps {
 const cx = classNames.bind(styles);
 
 const CommunityCardReply = ({ reply, writer, className, memberId, onReplyDeleteSubmit }: CommunityCardReplyProps) => {
-  const { jobGroupName, jobGroup } = writer;
-  const chipColor = jobColorKey(jobGroup);
+  // const { jobGroupName, jobGroup } = writer;
+  // const chipColor = jobColorKey(jobGroup);
 
   // TODO 좋아요 여부 필드 수정 필요
 
   return (
     <div className={cx('community-board-reply-container', 'row', className)}>
-      <div className={cx('profile-wrap', 'col-md-1')}>
+      <div className="tw-flex tw-items-center tw-space-x-4 tw-my-5 tw-gap-2">
+        {/* {board.postNo} */}
+        <img src={reply?.profileImageUrl} alt={'image'} className={cx('rounded-circle', 'profile-image', 'tw-h-12')} />
+        <div>
+          {/*TODO 원래 job(직업)임*/}
+          <div className="tw-font-bold tw-text-lg tw-text-black">{reply?.nickname}</div>
+        </div>
+        <div>
+          <div className="tw-text-sm">{reply.createAt.toString().split(' ')[0]}</div>
+        </div>
+        <div>{/* <div className="tw-text-sm">{timeForToday(board.createdAt)}</div> */}</div>
+      </div>
+      {/* <div className={cx('profile-wrap', 'col-md-1')}>
         <img
           src={`${process.env['NEXT_PUBLIC_GENERAL_IMAGE_URL']}/images/${reply.author?.profileImageUrl}`}
           alt={`${writer.jobGroupName} ${reply.author.nickname}`}
           className={cx('rounded-circle', 'profile-image')}
         />
-      </div>
-      <div className={cx('profile-wrap', 'col-md-20')}>
+      </div> */}
+      {/* <div className={cx('profile-wrap', 'col-md-20')}>
         <div className={cx('profile-desc')}>
           <Chip chipColor={chipColor} radius={4} variant="outlined">
             {reply.author.jobGroupName}
@@ -77,14 +89,12 @@ const CommunityCardReply = ({ reply, writer, className, memberId, onReplyDeleteS
               </Grid>
             </h5>
 
-            {/*TODO 원래 job(직업)임*/}
             <h6 className={cx('profile-desc__job')}>{writer.jobGroupName}</h6>
           </div>
-          {/* <h5 className={cx('profile-desc__name', 'mb-0')}>{reply.author.nickname}</h5> */}
         </div>
-      </div>
+      </div> */}
       <div className={cx('reply-wrap', 'col-md-7')}>{reply.body}</div>
-      <div className={cx('reply-wrap', 'col-md-1')}>
+      {/* <div className={cx('reply-wrap', 'col-md-1')}>
         {memberId == reply.author.memberId ? (
           <Chip
             chipColor={chipColor}
@@ -97,7 +107,7 @@ const CommunityCardReply = ({ reply, writer, className, memberId, onReplyDeleteS
         ) : (
           <div></div>
         )}
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -221,17 +221,21 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                   Q{contents?.order}. {contents?.weekNumber}주차 {contents?.studyDay}요일
                 </div>
               </div>
-              <div className="tw-flex tw-item-center">
-                {contents?.isRepresentative === true && (
-                  <span
-                    type="button"
-                    data-tooltip-target="tooltip-default"
-                    className="tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-bold tw-mr-2 tw-px-3 tw-py-1 tw-rounded"
-                  >
-                    대표
-                  </span>
-                )}
-                <span className="tw-font-bold tw-text-[18px] tw-text-black">{contents?.content}</span>
+              <div className="tw-grid tw-grid-cols-12">
+                <div className="tw-col-span-1">
+                  {contents?.isRepresentative === true && (
+                    <span
+                      type="button"
+                      data-tooltip-target="tooltip-default"
+                      className="tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-bold tw-px-3 tw-py-1 tw-rounded"
+                    >
+                      대표
+                    </span>
+                  )}
+                </div>
+                <div className="tw-col-span-11">
+                  <span className="tw-font-bold tw-text-[18px] tw-text-black">{contents?.content}</span>
+                </div>
               </div>
 
               <div className="tw-text-center tw-pt-2">
@@ -258,7 +262,7 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                 </span>
               </div>
             </div>
-            <Divider className="tw-my-9" />
+            <div className="tw-my-9" />
             <div>
               <div className="tw-grid tw-grid-cols-6 tw-gap-4 tw-items-center tw-justify-center">
                 <div className="tw-col-span-4">

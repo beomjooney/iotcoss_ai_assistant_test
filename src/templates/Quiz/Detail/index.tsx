@@ -38,6 +38,8 @@ import Pagination from '@mui/material/Pagination';
 import PaginationItem from '@mui/material/PaginationItem';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+
+import PersonIcon from '@mui/icons-material/Person';
 import Stack from '@mui/material/Stack';
 
 const cx = classNames.bind(styles);
@@ -369,7 +371,10 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                         <span className="tw-font-bold tw-text-gray-400">{contents?.studyTotalCount}회</span>
                       </div>
                     </div>
-                    <div className="tw-span-cols-1"></div>
+                    <div className="tw-font-medium tw-span-cols-1 tw-flex tw-items-end">
+                      <PersonIcon className="tw-mr-1  tw-w-5" />
+                      {contents?.recruitedMemberCount}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -411,12 +416,115 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                         </div>
                       </Grid>
                       <Grid item xs={11}>
-                        <div className="border tw-rounded-xl">
-                          <div
-                            className={`tw-bg-zinc-50 tw-flex tw-items-center tw-p-4  tw-py-6 ${
-                              item?.answer ? 'tw-rounded-tl-xl tw-rounded-tr-xl' : 'tw-rounded-xl'
-                            }`}
-                          >
+                        {item?.isPublished ? (
+                          <div className="border tw-rounded-xl">
+                            <div
+                              className={`tw-bg-zinc-50 tw-flex tw-items-center tw-p-4  tw-py-6 ${
+                                item?.answer ? 'tw-rounded-tl-xl tw-rounded-tr-xl' : 'tw-rounded-xl'
+                              }`}
+                            >
+                              {item?.isRepresentative === true && (
+                                <button
+                                  type="button"
+                                  data-tooltip-target="tooltip-default"
+                                  className="tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-bold tw-mr-2 tw-px-3 tw-py-1 tw-rounded"
+                                >
+                                  대표
+                                </button>
+                              )}
+                              <div className="tw-flex-auto">
+                                <div className="tw-font-medium tw-text-black">{item?.content}</div>
+                              </div>
+
+                              <div className="tw-mr-5">
+                                <button
+                                  onClick={() => {
+                                    onChangeLike(item?.clubQuizSequence, item?.isLiked);
+                                  }}
+                                >
+                                  {item?.isLiked ? (
+                                    <ThumbUpAltIcon color="primary" />
+                                  ) : (
+                                    <ThumbUpOffAltIcon color="disabled" />
+                                  )}
+                                </button>
+                              </div>
+
+                              {item?.answer?.answerStatus === '0000' ? (
+                                <div>
+                                  <button
+                                    type="button"
+                                    onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
+                                    data-tooltip-target="tooltip-default"
+                                    className="tw-bg-blue-300 tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                  >
+                                    퀴즈 풀러가기 {'>'}
+                                  </button>
+                                </div>
+                              ) : item?.answer?.answerStatus === '0001' ? (
+                                <div className="">
+                                  <button
+                                    type="button"
+                                    onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
+                                    data-tooltip-target="tooltip-default"
+                                    className="tw-bg-gray-300 tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                  >
+                                    1차답변 입력완료
+                                  </button>
+                                </div>
+                              ) : item?.answer?.answerStatus === '0002' ? (
+                                <div className="">
+                                  <button
+                                    type="button"
+                                    onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
+                                    data-tooltip-target="tooltip-default"
+                                    className="tw-bg-gray-300 tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                  >
+                                    이해도 입력완료
+                                  </button>
+                                </div>
+                              ) : (
+                                <div className="">
+                                  <button
+                                    // onClick={() => router.push('/quiz/round-answers/' + `${item?.clubQuizSequence}`)}
+                                    onClick={() => router.push('/quiz/answers/' + `${item?.clubQuizSequence}`)}
+                                    type="button"
+                                    data-tooltip-target="tooltip-default"
+                                    className="tw-bg-red-300 tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                  >
+                                    전체 답변보기 {'>'}
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                            {item?.answer ? (
+                              <div className="tw-bg-white tw-flex tw-items-center tw-p-4  tw-py-6 tw-rounded-bl-xl tw-rounded-br-xl">
+                                <div className="tw-flex-auto">
+                                  <div className="tw-font-medium tw-text-gray-500 tw-text-sm tw-line-clamp-2">
+                                    {item?.answer?.text}
+                                  </div>
+                                </div>
+                                {/* <div className="">
+                                <div className="tw-font-medium tw-text-black ">
+                                  <button
+                                    onClick={() => router.push('/quiz/round-answers/' + `${item?.clubQuizSequence}`)}
+                                    // onClick={() => router.push('/quiz/answers/' + `${item?.clubQuizSequence}`)}
+                                    type="button"
+                                    data-tooltip-target="tooltip-default"
+                                    className="tw-bg-white tw-text-gray-500 tw-text-sm tw-font-right tw-px-3 tw-py-1 tw-rounded"
+                                  >
+                                    자세히보기
+                                  </button>
+                                </div>
+                              </div> */}
+                              </div>
+                            ) : (
+                              <div></div>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="border tw-rounded-xl p-4">
+                            {' '}
                             {item?.isRepresentative === true && (
                               <button
                                 type="button"
@@ -426,95 +534,9 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                                 대표
                               </button>
                             )}
-                            <div className="tw-flex-auto">
-                              <div className="tw-font-medium tw-text-black">{item?.content}</div>
-                            </div>
-
-                            <div className="tw-mr-5">
-                              <button
-                                onClick={() => {
-                                  onChangeLike(item?.clubQuizSequence, item?.isLiked);
-                                }}
-                              >
-                                {item?.isLiked ? (
-                                  <ThumbUpAltIcon color="primary" />
-                                ) : (
-                                  <ThumbUpOffAltIcon color="disabled" />
-                                )}
-                              </button>
-                            </div>
-
-                            {item?.answer?.answerStatus === '0000' ? (
-                              <div>
-                                <button
-                                  type="button"
-                                  onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
-                                  data-tooltip-target="tooltip-default"
-                                  className="tw-bg-blue-300 tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
-                                >
-                                  퀴즈 풀러가기 {'>'}
-                                </button>
-                              </div>
-                            ) : item?.answer?.answerStatus === '0001' ? (
-                              <div className="">
-                                <button
-                                  type="button"
-                                  onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
-                                  data-tooltip-target="tooltip-default"
-                                  className="tw-bg-gray-300 tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
-                                >
-                                  1차답변 입력완료
-                                </button>
-                              </div>
-                            ) : item?.answer?.answerStatus === '0002' ? (
-                              <div className="">
-                                <button
-                                  type="button"
-                                  onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
-                                  data-tooltip-target="tooltip-default"
-                                  className="tw-bg-gray-300 tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
-                                >
-                                  이해도 입력완료
-                                </button>
-                              </div>
-                            ) : (
-                              <div className="">
-                                <button
-                                  // onClick={() => router.push('/quiz/round-answers/' + `${item?.clubQuizSequence}`)}
-                                  onClick={() => router.push('/quiz/answers/' + `${item?.clubQuizSequence}`)}
-                                  type="button"
-                                  data-tooltip-target="tooltip-default"
-                                  className="tw-bg-red-300 tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
-                                >
-                                  전체 답변보기 {'>'}
-                                </button>
-                              </div>
-                            )}
+                            {item?.publishDate} 질문공개
                           </div>
-                          {item?.answer ? (
-                            <div className="tw-bg-white tw-flex tw-items-center tw-p-4  tw-py-6 tw-rounded-bl-xl tw-rounded-br-xl">
-                              <div className="tw-flex-auto">
-                                <div className="tw-font-medium tw-text-gray-500 tw-text-sm tw-line-clamp-2">
-                                  {item?.answer?.text}
-                                </div>
-                              </div>
-                              <div className="">
-                                <div className="tw-font-medium tw-text-black ">
-                                  {/* <button
-                                  onClick={() => router.push('/quiz/answers/' + `${item?.clubQuizSequence}`)}
-                                  type="button"
-                                  data-tooltip-target="tooltip-default"
-                                  className="tw-bg-white tw-text-gray-500 tw-text-sm tw-font-right tw-px-3 tw-py-1 tw-rounded"
-                                >
-                                  자세히보기
-                                </button> */}
-                                </div>
-                              </div>
-                            </div>
-                          ) : (
-                            <div></div>
-                          )}
-                        </div>
+                        )}
                       </Grid>
                     </Grid>
                   );
