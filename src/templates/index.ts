@@ -46,3 +46,5 @@ export * from './Community/index';
 export * from './Community/Write/index';
 export * from './Navigation/index';
 export * from './Admin/Seminar/index';
+export * from './Monthly/Quiz/index';
+export * from './Monthly/Maker/index';
