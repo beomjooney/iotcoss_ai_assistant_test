@@ -431,7 +431,7 @@ export function QuizMakeTemplate() {
                     </div>
                     {/* <div className="">{item.memberName}</div> */}
                   </div>
-                  <div className="tw-grid tw-grid-cols-12 tw-gap-4 tw-p-3 ">
+                  <div className="tw-grid tw-grid-cols-12 tw-gap-4 tw-p-3">
                     <div className="tw-col-span-1 tw-text-sm tw-font-bold tw-text-black">아티클</div>
                     <div className="tw-col-span-9 tw-text-sm tw-text-gray-600">{item.articleUrl}</div>
                     <div className="tw-col-span-2 tw-text-sm tw-text-right">
@@ -455,11 +455,12 @@ export function QuizMakeTemplate() {
 
         <div>
           <div className="tw-font-bold tw-text-base tw-text-black">필수 입력</div>
-          <div className="tw-mt-5">
+          <div>
+            <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2 tw-mt-5">* 질문</div>
             <TextField
               size="small"
               fullWidth
-              label={'질문을 입력하세요.'}
+              placeholder="ex) Github Actions와 기존 Github의 차이점에 대해 설명하세요."
               onChange={handleInputQuizChange}
               id="margin-none"
               value={quizName}
@@ -467,11 +468,14 @@ export function QuizMakeTemplate() {
               name="quizName"
             />
           </div>
-          <div className="tw-mt-10">
+          <div>
+            <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2 tw-mt-5">
+              * 아티클 (질문에 대한 답변에 참고가 될 아티클 링크를 입력해주세요.)
+            </div>
             <TextField
               size="small"
               fullWidth
-              label={'아티클(질문에 대한 답변에 참고가 될 아티클 링크를 입력해주세요.'}
+              placeholder="http://"
               onChange={handleInputQuizUrlChange}
               id="margin-none"
               value={quizUrl}
@@ -479,9 +483,8 @@ export function QuizMakeTemplate() {
               name="quizUrl"
             />
           </div>
-          <div className="tw-font-bold tw-text-sm tw-text-black tw-mt-10 tw-mb-5">선택 입력</div>
           <div>
-            <div className="tw-font-semibold tw-text-sm tw-text-black  tw-my-2">추천 직군</div>
+            <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2 tw-mt-5">추천 직군</div>
             <ToggleButtonGroup value={jobGroup} exclusive onChange={handleJobGroups} aria-label="text alignment">
               {contentTypes?.map((item, index) => (
                 <ToggleButton
@@ -500,7 +503,7 @@ export function QuizMakeTemplate() {
                 </ToggleButton>
               ))}
             </ToggleButtonGroup>
-            <div className="tw-font-semibold tw-text-sm tw-text-black  tw-my-2">추천 직무</div>
+            <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2 tw-mt-5">* 추천 직무</div>
             <ToggleButtonGroup
               style={{ display: 'inline' }}
               value={jobs}
@@ -525,7 +528,7 @@ export function QuizMakeTemplate() {
               ))}
             </ToggleButtonGroup>
 
-            <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천 레벨</div>
+            <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2 tw-mt-5">* 추천 레벨</div>
             <ToggleButtonGroup
               exclusive
               value={recommendLevels}
@@ -581,7 +584,9 @@ export function QuizMakeTemplate() {
               </div>
             )}
 
-            <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">관련스킬</div>
+            <div className="tw-font-bold tw-text-base tw-text-black tw-pt-10">선택 입력</div>
+
+            <div className="tw-font-semibold tw-text-sm tw-text-black tw-mb-2 tw-mt-5">관련스킬</div>
 
             <ToggleButtonGroup
               style={{ display: 'inline' }}
@@ -610,7 +615,7 @@ export function QuizMakeTemplate() {
               })}
             </ToggleButtonGroup>
 
-            <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">관련경험</div>
+            <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-mb-2">관련경험</div>
             <ToggleButtonGroup
               style={{ display: 'inline' }}
               value={experienceIds}
@@ -638,7 +643,7 @@ export function QuizMakeTemplate() {
               })}
             </ToggleButtonGroup>
           </div>
-          <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">해시태그</div>
+          <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-mb-2">해시태그</div>
           <TagsInput
             value={selected}
             onChange={setSelected}
