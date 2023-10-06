@@ -71,6 +71,7 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
   const [contentHtml, setContentHtml] = useState('');
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
+  const [totalElements, setTotalElements] = useState(0);
   const [params, setParams] = useState<paramProps>({ id, page });
   let [isLiked, setIsLiked] = useState(false);
 
@@ -80,6 +81,7 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
   const { isFetched: isQuizAnswerListFetched } = useQuizAnswerDetail(params, data => {
     console.log(data);
     setAnswerContents(data?.contents);
+    setTotalElements(data?.totalElements);
     setTotalPage(data?.totalPages);
   });
   const { isFetched: isQuizRankListFetched } = useQuizRankDetail(data => {
@@ -94,25 +96,6 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
-  };
-
-  const handleCancelParticipant = () => {
-    if (!logged) {
-      alert('로그인이 필요합니다.');
-      return;
-    }
-
-    if (!user?.phoneNumber || user?.phoneNumber?.length === 0) {
-      alert('마이커리어>회원정보에 휴대전화 등록 후 취소 가능 합니다.');
-      return;
-    }
-
-    onCancelParticipant({ seminarId: id, memberId });
-    setIsModalOpen(false);
-    setIsModalCancelOpen(false);
-    setApplicationButton(
-      <Button label="멘토 세미나 참여 신청하기" size="large" onClick={() => setIsModalOpen(true)} />,
-    );
   };
 
   const handleClickTab = index => {
@@ -170,12 +153,15 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
   return (
     <div className={cx('seminar-detail-container')}>
       <div className={cx('container')}>
-        <div className="tw-py-5">
-          <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-            <Grid item xs={9} className="tw-font-bold tw-text-3xl tw-text-black">
-              퀴즈클럽 {'>'} 클럽 상세보기 {'>'} 답변 전체보기
+        <div className="tw-py-[60px]">
+          <Grid container direction="row" justifyContent="space-between" alignItems="center" rowSpacing={0}>
+            <Grid item xs={2} className="tw-font-bold tw-text-3xl tw-text-black">
+              라운지
             </Grid>
-            <Grid item xs={3} justifyContent="flex-end" className="tw-flex">
+            <Grid item xs={8} className="max-lg:tw-p-2 tw-font-semi tw-text-base tw-text-black  max-lg:!tw-text-sm">
+              모든 퀴즈클럽과 답변을 한 곳에서 볼 수 있고, 한달동안 우수한 성장을 이룬 클럽/메이커/리더를 발표해요!
+            </Grid>
+            <Grid item xs={2} justifyContent="flex-end" className="tw-flex">
               <button
                 onClick={() => router.back()}
                 type="button"
@@ -186,9 +172,7 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
             </Grid>
           </Grid>
 
-          <Divider className="tw-py-2" />
-
-          <div className="tw-py-4 tw-text-sm tw-font-normal tw-text-gray-500 ">
+          {/* <div className="tw-py-4 tw-text-sm tw-font-normal tw-text-gray-500 ">
             {contents?.recommendJobGroupNames?.map((name, i) => (
               <span
                 key={i}
@@ -208,16 +192,8 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                 {name}
               </span>
             ))}
-            {contents?.hashTags?.map((name, i) => (
-              <span
-                key={i}
-                className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-gray-700"
-              >
-                {name}
-              </span>
-            ))}
           </div>
-          <div className="tw-text-black tw-font-bold tw-text-2xl tw-py-4">{contents?.clubName}</div>
+          <div className="tw-text-black tw-font-bold tw-text-2xl tw-py-4">{contents?.clubName}</div> */}
         </div>
 
         <Grid
@@ -245,7 +221,7 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                   Q{contents?.order}. {contents?.weekNumber}주차 {contents?.studyDay}요일
                 </div>
               </div>
-              <div className="tw-text-center">
+              <div className="tw-flex tw-item-center">
                 {contents?.isRepresentative === true && (
                   <span
                     type="button"
@@ -255,11 +231,18 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                     대표
                   </span>
                 )}
-                <span className="tw-font-bold tw-text-xl tw-text-black">{contents?.content}</span>
+                <span className="tw-font-bold tw-text-[18px] tw-text-black">{contents?.content}</span>
               </div>
+
               <div className="tw-text-center tw-pt-2">
-                <span className="tw-font-right tw-text-base tw-text-gray-400">#123 #1231</span>
+                {contents?.hashTags?.map((name, i) => (
+                  <span key={i} className="tw-font-right tw-text-base tw-text-gray-400">
+                    {' '}
+                    #{name}
+                  </span>
+                ))}
               </div>
+
               <div className="tw-text-left tw-pt-3 tw-flex tw-items-center tw-gap-4">
                 <span>
                   <AssignmentOutlinedIcon className="tw-mr-1 tw-w-5" />
@@ -275,10 +258,11 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                 </span>
               </div>
             </div>
+            <Divider className="tw-my-9" />
             <div>
-              <div className="tw-grid tw-grid-cols-5 tw-gap-4 tw-pt-4 tw-mt-5 tw-items-center tw-justify-center">
-                <div className="tw-col-span-3">
-                  <div className="tw-text-black tw-font-bold tw-text-2xl">퀴즈답변</div>
+              <div className="tw-grid tw-grid-cols-6 tw-gap-4 tw-items-center tw-justify-center">
+                <div className="tw-col-span-4">
+                  <div className="tw-text-black tw-font-bold tw-text-2xl">퀴즈답변 {totalElements}</div>
                 </div>
                 <div className="tw-col-span-2">
                   <TextField
@@ -298,6 +282,7 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                   />
                 </div>
               </div>
+
               {answerContents.map((item, index) => {
                 return (
                   <CommunityCard
@@ -321,28 +306,32 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
               <div>
                 <div className="tw-font-bold tw-text-base tw-pb-5">이달의 메이커</div>
                 <div className="tw-bg-white tw-p-5 tw-rounded-md">
-                  <div className="tw-grid tw-grid-cols-4 tw-gap-4 ">
-                    <div className="tw-col-span-1  tw-flex tw-flex-col tw-items-center tw-justify-center">
-                      <img
-                        className="tw-w-12 tw-h-12 tw-ring-1 tw-rounded-full"
-                        src={rankContents?.maker?.profileImageUrl}
-                        alt=""
-                      />
-                      <div className="tw-py-3 tw-text-base tw-font-semibold tw-text-black">
-                        <div>{rankContents?.maker?.nickname}</div>
+                  {rankContents?.maker ? (
+                    <div className="tw-grid tw-grid-cols-4 tw-gap-4 ">
+                      <div className="tw-col-span-1  tw-flex tw-flex-col tw-items-center tw-justify-center">
+                        <img
+                          className="tw-w-12 tw-h-12 tw-ring-1 tw-rounded-full"
+                          src={rankContents?.maker?.profileImageUrl}
+                          alt=""
+                        />
+                        <div className="tw-py-3 tw-text-base tw-font-semibold tw-text-black">
+                          <div>{rankContents?.maker?.nickname}</div>
+                        </div>
+                      </div>
+                      <div className="tw-col-span-3 tw-font-bold tw-text-black tw-flex tw-flex-col tw-items-center tw-justify-center">
+                        <div>
+                          이번달 등록 질문 수 :{' '}
+                          <span className="tw-text-blue-600">{rankContents?.maker?.madeQuizCount}개</span>
+                        </div>
+                        <div>
+                          받은 총 좋아요 수 :{' '}
+                          <span className="tw-text-blue-600">{rankContents?.maker?.receivedLikeCount}개</span>
+                        </div>
                       </div>
                     </div>
-                    <div className="tw-col-span-3 tw-font-bold tw-text-black tw-flex tw-flex-col tw-items-center tw-justify-center">
-                      <div>
-                        이번달 등록 질문 수 :{' '}
-                        <span className="tw-text-blue-600">{rankContents?.maker?.madeQuizCount}개</span>
-                      </div>
-                      <div>
-                        받은 총 좋아요 수 :{' '}
-                        <span className="tw-text-blue-600">{rankContents?.maker?.receivedLikeCount}개</span>
-                      </div>
-                    </div>
-                  </div>
+                  ) : (
+                    <div>데이터가 없습니다.</div>
+                  )}
                   <div>
                     {rankContents?.maker?.quizzes?.map((item, index) => {
                       return (

@@ -239,16 +239,16 @@ CommunityCardProps) => {
         </div>
         <TextareaAutosize
           aria-label="minimum height"
-          minRows={9}
+          minRows={8}
           placeholder="답변을 25자 이상 입력해주세요."
           style={{
             width: '100%',
             // backgroundColor: '#F9F9F9',
-            border: '2px solid #EFEFEF',
-            borderRadius: '15px',
+            border: '1px solid #EFEFEF',
+            borderRadius: 10,
             padding: 12,
             resize: 'none',
-            maxHeight: '320px', // 최대 높이 설정 (스크롤을 표시하려면 설정)
+            maxHeight: '300px', // 최대 높이 설정 (스크롤을 표시하려면 설정)
           }}
           name="introductionMessage"
           value={board?.postAnswer}

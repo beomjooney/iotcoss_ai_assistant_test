@@ -313,11 +313,11 @@ const quizSolutionDetail = ({
                     onChange={handleTypeChange} // 라디오 버튼 클릭 이벤트 처리
                     name="radio-buttons-group"
                   >
-                    <FormControlLabel value="0001" control={<Radio />} label="처음 물어본 내용이다." />
-                    <FormControlLabel value="0002" control={<Radio />} label="물어본 적은 있지만 잘 모른다." />
+                    <FormControlLabel value="0001" control={<Radio />} label="처음 들어본 내용이다." />
+                    <FormControlLabel value="0002" control={<Radio />} label="들어본 적은 있지만 잘 모른다." />
                     <FormControlLabel value="0003" control={<Radio />} label="적용 경험은 없지만, 원리는 알고 있다." />
                     <FormControlLabel value="0004" control={<Radio />} label="적용 경험이 있고, 설명할 수 있다." />
-                    <FormControlLabel value="0005" control={<Radio />} label="적세미나에서 설명할 수 있을 것 같다." />
+                    <FormControlLabel value="0005" control={<Radio />} label="세미나에서 설명할 수 있을 것 같다." />
                   </RadioGroup>
                 </FormControl>
               </div>
