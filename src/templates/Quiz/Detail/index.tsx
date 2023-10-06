@@ -191,7 +191,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
     if (!logged) {
       setApplicationButton(<Button label="로그인 후 신청 가능합니다" color="lite-gray" size="large" />);
     } else if (isParticipantListFetched) {
-      console.log(1111, contents?.clubStatus, clubMemberStatus);
+      // console.log(1111, contents?.clubStatus, clubMemberStatus);
 
       if (contents?.isLeader && contents?.clubStatus == '0007') {
         setApplicationButton(
