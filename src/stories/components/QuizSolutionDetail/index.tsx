@@ -166,7 +166,7 @@ const quizSolutionDetail = ({
         },
       });
 
-      router.push(`/quiz/growth/${data?.clubQuizSequence}`);
+      router.push(`/quiz/growth/${data?.clubSequence}`);
     }
   };
 
@@ -282,6 +282,10 @@ const quizSolutionDetail = ({
               <button
                 type="button"
                 onClick={handleNext}
+                수정완료
+                및
+                답변
+                제출하기
                 className=" tw-text-white tw-w-[300px] tw-bg-blue-500 tw-mt-5 tw-focus:ring-4  tw-font-medium tw-rounded tw-text-base tw-px-7 tw-py-3 "
               >
                 {activeStep === 0 ? '답변입력 및 아티클 읽기' : '수정완료 및 답변 제출하기'}
