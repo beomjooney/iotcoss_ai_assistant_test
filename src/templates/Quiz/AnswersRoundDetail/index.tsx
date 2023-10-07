@@ -276,11 +276,16 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
           <Grid item xs={4}>
             <div className="tw-bg-gray-50 tw-rounded-lg tw-h-[1260px] tw-p-5 tw-text-black ">
               <div>
-                <div className="tw-font-bold tw-text-base tw-pb-5">이달의 메이커</div>
+                <div className="tw-flex tw-items-center tw-pb-5 tw-gap-2">
+                  <div>
+                    <img src="/assets/images/icons/maker.png" className="tw-w-4" alt="메이커" />
+                  </div>
+                  <div className="tw-font-bold tw-text-[16px]">이달의 메이커</div>
+                </div>
                 <div className="tw-bg-white tw-p-5 tw-rounded-md">
                   {rankContents?.maker ? (
-                    <div className="tw-grid tw-grid-cols-4 tw-gap-4 ">
-                      <div className="tw-col-span-1  tw-flex tw-flex-col tw-items-center tw-justify-center">
+                    <div className="tw-grid tw-grid-cols-7 tw-gap-2  ">
+                      <div className="tw-col-span-2  tw-flex tw-flex-col tw-items-center tw-justify-center">
                         <img
                           className="tw-w-12 tw-h-12 tw-ring-1 tw-rounded-full"
                           src={rankContents?.maker?.profileImageUrl}
@@ -290,28 +295,36 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                           <div>{rankContents?.maker?.nickname}</div>
                         </div>
                       </div>
-                      <div className="tw-col-span-3 tw-font-bold tw-text-black tw-flex tw-flex-col tw-items-center tw-justify-center">
-                        <div>
-                          이번달 등록 질문 수 :{' '}
-                          <span className="tw-text-blue-600">{rankContents?.maker?.madeQuizCount}개</span>
+
+                      <div className="tw-col-span-5 tw-px-5 tw-font-bold tw-text-[12px] tw-text-black tw-flex tw-flex-col tw-justify-center">
+                        <div className="tw-flex tw-justify-between">
+                          <div> 이번달 등록 질문 수 </div>
+                          <div className="tw-text-blue-600">
+                            {rankContents?.maker?.madeQuizCount.toLocaleString()}개
+                          </div>
                         </div>
-                        <div>
-                          받은 총 좋아요 수 :{' '}
-                          <span className="tw-text-blue-600">{rankContents?.maker?.receivedLikeCount}개</span>
+                        <div className="tw-flex tw-justify-between">
+                          <div> 받은 총 좋아요 수 </div>
+                          <div className="tw-text-blue-600">
+                            {rankContents?.maker?.receivedLikeCount.toLocaleString()}개
+                          </div>
                         </div>
                       </div>
                     </div>
                   ) : (
-                    <div>데이터가 없습니다.</div>
+                    <div className={cx('content--empty')}>데이터가 없습니다.</div>
                   )}
                   <div>
                     {rankContents?.maker?.quizzes?.map((item, index) => {
                       return (
-                        <div key={index} className="tw-py-3 tw-text-sm">
-                          <div>
-                            {index + 1}. {item?.content}
+                        <div key={index} className="tw-py-1 tw-text-sm">
+                          <div className="tw-flex tw-items-center tw-gap-2 tw-py-2">
+                            <div className="tw-rounded-full tw-bg-gray-400 tw-text-white tw-w-[19px] tw-text-center">
+                              {index + 1}
+                            </div>
+                            <div className="tw-line-clamp-2 tw-text-sm tw-font-medium">{item?.content}</div>
                           </div>
-                          <div className="tw-flex tw-items-center tw-gap-4">
+                          <div className="tw-flex tw-items-center tw-gap-4 tw-pl-7">
                             <span>
                               <AssignmentOutlinedIcon className="tw-mr-1 tw-w-5" />
                               {item?.answerCount}
@@ -332,60 +345,81 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                 </div>
               </div>
               <div>
-                <div className="tw-font-bold tw-text-base tw-py-5">이달의 퀴즈</div>
+                <div className="tw-flex tw-items-center tw-py-5 tw-gap-2">
+                  <div>
+                    <img src="/assets/images/icons/quiz.png" className="tw-w-4" alt="메이커" />
+                  </div>
+                  <div className="tw-font-bold tw-text-[16px]">이달의 퀴즈</div>
+                </div>
                 <div className="tw-bg-white tw-p-5 tw-py-2 tw-rounded-md">
-                  {rankContents?.quizzes?.map((item, index) => {
-                    return (
-                      <div key={index} className="tw-py-3 tw-text-sm">
-                        <div>
-                          {index + 1}. {item?.content}
+                  {rankContents?.quizzes?.length === 0 ? (
+                    <div className={cx('content--empty', 'tw-py-3')}>데이터가 없습니다.</div>
+                  ) : (
+                    rankContents?.quizzes?.map((item, index) => {
+                      return (
+                        <div key={index} className="tw-py-1 tw-text-sm">
+                          <div className="tw-flex tw-items-center tw-gap-2 tw-py-2">
+                            <div className="tw-rounded-full tw-bg-gray-400 tw-text-white tw-w-[19px] tw-text-center">
+                              {index + 1}
+                            </div>
+                            <div className="tw-line-clamp-2 tw-text-sm tw-font-medium">{item?.content}</div>
+                          </div>
+                          <div className="tw-flex tw-items-center tw-gap-4 tw-pl-7">
+                            <span>
+                              <AssignmentOutlinedIcon className="tw-mr-1 tw-w-5" />
+                              {item?.answerCount}
+                            </span>
+                            <span>
+                              <StarBorderIcon className="tw-mr-1  tw-w-5" />
+                              <span>{item?.likeCount}</span>
+                            </span>
+                            <span>
+                              <FavoriteBorderIcon className="tw-mr-1  tw-w-5" />
+                              <span>{item?.activeCount}</span>
+                            </span>
+                          </div>
                         </div>
-                        <div className="tw-flex tw-items-center tw-gap-4">
-                          <span>
-                            <AssignmentOutlinedIcon className="tw-mr-1 tw-w-5" />
-                            {item?.answerCount}
-                          </span>
-                          <span>
-                            <StarBorderIcon className="tw-mr-1  tw-w-5" />
-                            <span>{item?.likeCount}</span>
-                          </span>
-                          <span>
-                            <FavoriteBorderIcon className="tw-mr-1  tw-w-5" />
-                            <span>{item?.activeCount}</span>
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })
+                  )}
                 </div>
               </div>
               <div>
-                <div className="tw-font-bold tw-text-base tw-py-5">이달의 클럽</div>
+                <div className="tw-flex tw-items-center tw-py-5 tw-gap-2">
+                  <div>
+                    <img src="/assets/images/icons/club.png" className="tw-w-4" alt="메이커" />
+                  </div>
+                  <div className="tw-font-bold tw-text-[16px]">이달의 클럽</div>
+                </div>
                 <div className="tw-bg-white tw-p-5 tw-py-2 tw-rounded-md">
-                  {rankContents?.clubs?.map((item, index) => {
-                    return (
-                      <div key={index} className="tw-py-3 tw-text-sm ">
-                        <div className="tw-grid tw-grid-cols-4 tw-gap-4 tw-flex tw-items-center tw-justify-center">
-                          <div className="tw-col-span-1  tw-flex tw-flex-col ">
-                            <img className="tw-w-12 tw-h-12 tw-rounded-md" src={item?.clubImageUrl} alt="" />
-                          </div>
-                          <div className="tw-col-span-3  tw-text-black ">
-                            <div>
-                              <span className="tw-text-gray-400">{item?.recommendJobNames?.toString()}</span>
+                  {rankContents?.clubs?.length === 0 ? (
+                    <div className={cx('content--empty', 'tw-py-3')}>데이터가 없습니다.</div>
+                  ) : (
+                    rankContents?.clubs?.map((item, index) => {
+                      return (
+                        <div key={index} className="tw-py-3 tw-text-sm ">
+                          <div className="tw-grid tw-grid-cols-4 tw-gap-4 tw-flex tw-items-center tw-justify-center">
+                            <div className="tw-col-span-1  tw-flex tw-flex-col ">
+                              <img className="tw-w-12 tw-h-12 tw-rounded-md" src={item?.clubImageUrl} alt="" />
                             </div>
-                            <div>
-                              <span className="tw-font-bold">{item?.clubName}</span>
-                            </div>
-                            <div>
-                              <span className=" tw-text-sm">
-                                {item?.clubLeaderNickname} | 평균실행률 : {item?.averageProgressPercentage}%
-                              </span>
+                            <div className="tw-col-span-3  tw-text-black ">
+                              <div>
+                                <span className="tw-text-gray-400">{item?.recommendJobNames?.toString()}</span>
+                              </div>
+                              <div>
+                                <span className="tw-font-bold">{item?.clubName}</span>
+                              </div>
+                              <div>
+                                <span className=" tw-text-sm">
+                                  {item?.clubLeaderNickname} | 평균실행률 : {item?.averageProgressPercentage}%
+                                </span>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })
+                  )}
                 </div>
               </div>
             </div>

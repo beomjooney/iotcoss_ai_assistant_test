@@ -276,7 +276,11 @@ export function LoungeTemplate() {
                       return (
                         <div key={index} className="tw-mb-10">
                           <div className="tw-flex tw-items-center tw-space-x-4 ">
-                            <img className="tw-w-10 tw-h-10 tw-rounded-full" src={item?.profileImageUrl} alt="" />
+                            <img
+                              className="tw-w-10 tw-h-10 tw-rounded-full tw-ring-1"
+                              src={item?.profileImageUrl}
+                              alt=""
+                            />
                             <div className="tw-text-base tw-font-semibold tw-text-black">
                               <div>{item?.clubLeaderNickname}</div>
                             </div>

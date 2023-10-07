@@ -69,83 +69,90 @@ export function MyFriendsTemplate() {
         <div className={cx('content--not-found')}>
           {isFetched && (
             <div>
-              {contents?.map((item, index) => (
-                <div
-                  key={index}
-                  className="tw-p-3 center tw-grid tw-grid-cols-6 border-bottom tw-flex tw-items-center tw-space-x-4"
-                >
-                  <div className="tw-col-span-2 tw-flex  tw-items-center ">
-                    <img
-                      src={item?.imageUrl}
-                      alt={'image'}
-                      className={cx('rounded-circle', 'profile-image', 'tw-h-12', 'tw-w-12')}
-                    />
-                    {/*TODO 원래 job(직업)임*/}
-                    <div className="tw-pl-5 tw-font-bold tw-text-lg tw-text-black">{item.nickname}</div>
+              {contents.length > 0 ? (
+                contents.map((item, index) => (
+                  <div
+                    key={index}
+                    className="tw-p-3 center tw-grid tw-grid-cols-6 border-bottom tw-flex tw-items-center tw-space-x-4"
+                  >
+                    <div className="tw-col-span-2 tw-flex  tw-items-center ">
+                      <img
+                        src={item?.imageUrl}
+                        alt="image"
+                        className={cx('rounded-circle', 'profile-image', 'tw-h-12', 'tw-w-12')}
+                      />
+                      <div className="tw-pl-5 tw-font-bold tw-text-lg tw-text-black">{item.nickname}</div>
+                    </div>
+                    <div className="tw-col-span-4 tw-text-right">
+                      {item.memberFriendStatus === '0001' && (
+                        <div>
+                          <button
+                            onClick={() => handleFriendAccept(item.sequence)}
+                            className="tw-mr-3 tw-bg-gray-500 tw-text-white tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
+                          >
+                            친구수락하기
+                          </button>
+                          <button
+                            onClick={() => handleFriendReject(item.sequence)}
+                            className="tw-bg-white tw-text-black border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
+                          >
+                            친구거절하기
+                          </button>
+                        </div>
+                      )}
+                      {item.memberFriendStatus === '0002' && (
+                        <div className="">
+                          <button
+                            onClick={() => (window.location.href = '/profile/' + `${item.friendMemberUUID}`)}
+                            className="tw-bg-gray-500 tw-mr-3 tw-text-white tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
+                          >
+                            프로필보기
+                          </button>
+                          <button
+                            onClick={() => handleFriendDelete(item.sequence)}
+                            className="tw-bg-white tw-text-black border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
+                          >
+                            삭제하기
+                          </button>
+                        </div>
+                      )}
+                      {item.memberFriendStatus === '0003' && (
+                        <div className="">
+                          <button className="tw-bg-gray-500  tw-text-white tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded">
+                            내가 친구 거절한 요청
+                          </button>
+                        </div>
+                      )}
+                      {item.memberFriendStatus === '0004' && (
+                        <div className="">
+                          <button
+                            disabled
+                            className="tw-bg-gray-500  tw-text-white tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
+                          >
+                            친구 승인 대기중
+                          </button>
+                        </div>
+                      )}
+                      {item.memberFriendStatus === '0005' && (
+                        <div className="">
+                          <button
+                            disabled
+                            className="tw-bg-gray-500  tw-text-white tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
+                          >
+                            상대방이 친구 거절
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <div className="tw-col-span-4 tw-text-right">
-                    {item.memberFriendStatus === '0001' && (
-                      <div>
-                        <button
-                          onClick={() => handleFriendAccept(item.sequence)}
-                          className="tw-mr-3 tw-bg-gray-500 tw-text-white tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
-                        >
-                          친구수락하기
-                        </button>
-                        <button
-                          onClick={() => handleFriendReject(item.sequence)}
-                          className="tw-bg-white tw-text-black border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
-                        >
-                          친구거절하기
-                        </button>
-                      </div>
-                    )}
-                    {item.memberFriendStatus === '0002' && (
-                      <div className="">
-                        <button
-                          onClick={() => (location.href = '/profile/' + `${item.friendMemberUUID}`)}
-                          className="tw-bg-gray-500 tw-mr-3 tw-text-white tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
-                        >
-                          프로필보기
-                        </button>
-                        <button
-                          onClick={() => handleFriendDelete(item.sequence)}
-                          className="tw-bg-white tw-text-black border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
-                        >
-                          삭제하기
-                        </button>
-                      </div>
-                    )}
-                    {item.memberFriendStatus === '0003' && (
-                      <div className="">
-                        <button className="tw-bg-gray-500  tw-text-white tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded">
-                          내가 친구 거절한 요청
-                        </button>
-                      </div>
-                    )}
-                    {item.memberFriendStatus === '0004' && (
-                      <div className="">
-                        <button
-                          disabled
-                          className="tw-bg-gray-500  tw-text-white tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
-                        >
-                          친구 승인 대기중
-                        </button>
-                      </div>
-                    )}
-                    {item.memberFriendStatus === '0005' && (
-                      <div className="">
-                        <button
-                          disabled
-                          className="tw-bg-gray-500  tw-text-white tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
-                        >
-                          상대방이 친구 거절
-                        </button>
-                      </div>
-                    )}
+                ))
+              ) : (
+                <div className="tw-text-center  tw-w-full border tw-rounded-md">
+                  <div className="tw-p-10  tw-mb-5">
+                    <div className="tw-p-10">친구 관리에 친구가 없습니다.</div>
                   </div>
                 </div>
-              ))}
+              )}
             </div>
           )}
           <div className="tw-mt-10">{/* <Pagination page={page} setPage={setPage} total={totalPage} /> */}</div>

@@ -49,7 +49,11 @@ export function MyMentorPickTemplate() {
                   );
                 })
               ) : (
-                <div className={cx('content--empty')}>데이터가 없습니다.</div>
+                <div className="tw-text-center  tw-w-full border tw-rounded-md">
+                  <div className="tw-p-10  tw-mb-5">
+                    <div className="tw-p-10">즐겨찾기가 없습니다.</div>
+                  </div>
+                </div>
               ))}
           </Grid>
           <div className="tw-mt-10">

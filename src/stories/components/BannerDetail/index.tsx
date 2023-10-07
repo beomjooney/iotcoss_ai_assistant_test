@@ -72,7 +72,7 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
   return (
     <div
       className={cx('content-area', className, {
-        'tw-bg-[#FFFAF1]': (data?.clubStatus != '0004' && data?.clubMemberStatus != '0002') || !logged, // isSpecial이 true일 때만 클래스가 적용됩니다.
+        'tw-bg-[#FFFAF1]': data?.clubStatus != '0004' || !logged, // isSpecial이 true일 때만 클래스가 적용됩니다.
       })}
     >
       <div className="container tw-p-4 tw-leading-normal tw-text-black tw-font-bold tw-text-xl tw-pt-10 tw-pb-10">
@@ -177,15 +177,6 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
                   </button>
                 )}
                 {clubStatus === '0006' && clubMemberStatus == '0004' && (
-                  <button
-                    type="button"
-                    disabled
-                    className="tw-text-white tw-mr-3 tw-bg-blue-500 tw-font-medium tw-rounded-md tw-text-base tw-px-5 tw-py-2.5"
-                  >
-                    모집완료
-                  </button>
-                )}
-                {clubStatus === '0007' && (
                   <button
                     type="button"
                     disabled
