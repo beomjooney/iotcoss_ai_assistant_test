@@ -456,7 +456,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                                     type="button"
                                     onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
                                     data-tooltip-target="tooltip-default"
-                                    className="tw-bg-blue-300 tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                    className="tw-bg-[#2474ED] tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
                                   >
                                     퀴즈 풀러가기 {'>'}
                                   </button>
@@ -490,7 +490,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                                     onClick={() => router.push('/quiz/answers/' + `${item?.clubQuizSequence}`)}
                                     type="button"
                                     data-tooltip-target="tooltip-default"
-                                    className="tw-bg-red-300 tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                    className="tw-bg-[#FF8D8D] tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
                                   >
                                     전체 답변보기 {'>'}
                                   </button>

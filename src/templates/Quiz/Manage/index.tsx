@@ -112,7 +112,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
     setTotalPage(data.totalPages);
   });
 
-  const { data: myQuizListData, refetch: refetchMyJob }: UseQueryResult<any> = useMyQuiz(myParams);
+  const { data: myQuizListData }: UseQueryResult<any> = useMyQuiz(myParams);
   const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
   const { data: experienceData }: UseQueryResult<ExperiencesResponse> = useExperiences();
 
@@ -130,6 +130,14 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
     setContentTypes(data.data.contents || []);
   });
 
+  /**save profile */
+  const { mutate: onQuizOrder, isSuccess: isSuccessOrder } = useQuizOrder();
+
+  useEffect(() => {
+    console.log('refetch');
+    refetchQuizList();
+  }, [isSuccessOrder]);
+
   useEffect(() => {
     setParams({
       page,
@@ -138,7 +146,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
   }, [page, keyWorld]);
 
   /** include quiz */
-  const { isFetched: isQuizListFetch } = useClubQuizManage(id, data => {
+  const { isFetched: isQuizListFetch, refetch: refetchQuizList } = useClubQuizManage(id, data => {
     setContents(data || []);
 
     const publishedData = data.quizzes.filter(item => item.isPublished);
@@ -375,9 +383,6 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
     setQuizList(filteredData);
   }
 
-  /**save profile */
-  const { mutate: onQuizOrder } = useQuizOrder();
-
   // 드래그해서 변경된 리스트를 브라우저상에 나타나게 만드는것
   const handleFormatExPopUp = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
     setExperienceIdsPopUp(newFormats);
@@ -423,7 +428,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
     setQuizUrl(event.target.value);
   };
 
-  const handleAddClick = () => {
+  const handleAddClick = async () => {
     const arrayList = [...publishedData, ...quizListCopy];
 
     // Transforming the data into an array of objects with "clubQuizSequence" and "order" properties
@@ -455,7 +460,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
       })),
     };
     //console.log(transformedData);
-    onQuizOrder(transformedData);
+    await onQuizOrder(transformedData);
   };
 
   function handleClickQuiz(quizSequence, flag) {

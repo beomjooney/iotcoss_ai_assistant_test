@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useSessionStore } from '../../../../src/store/session';
 import { useStore } from '../../../../src/store';
-import { useMentor } from '../../../../src/services/mentors/mentors.queries';
+import { useMentor } from 'src/services/mentors/mentors.queries';
 
 export interface GrowthStoryAdminPageProps {
   error: boolean;

@@ -66,14 +66,16 @@ export function GrowthStoryTemplate({ hasInfoData, userType }: GrowthStoryTempla
                   );
                 })
               ) : (
-                <div className="tw-align-center">
-                  <div className={cx('content--empty')}>아직 가입하신 클럽이 없습니다.</div>
-                  <button
-                    onClick={() => (location.href = '/quiz')}
-                    className="tw-mr-2 tw-bg-[#2474ED] tw-rounded-md border tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
-                  >
-                    클럽 가입하러가기
-                  </button>
+                <div className="tw-text-center  tw-w-full border tw-rounded-md">
+                  <div className="tw-p-10  tw-mb-5">
+                    <div className="tw-p-10">아직 가입하신 클럽이 없습니다.</div>
+                    <button
+                      onClick={() => (location.href = '/quiz')}
+                      className="tw-mr-2 tw-bg-[#2474ED] tw-rounded-md border tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
+                    >
+                      클럽 가입하러가기
+                    </button>
+                  </div>
                 </div>
               ))}
           </Grid>

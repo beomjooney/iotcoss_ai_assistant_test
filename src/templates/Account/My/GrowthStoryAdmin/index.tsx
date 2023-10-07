@@ -25,6 +25,7 @@ export function GrowthStoryAdminTemplate({ hasInfoData, userType }: GrowthStoryT
   const [contents, setContents] = useState<RecommendContent[]>([]);
 
   const { isFetched: isContentFetched } = useSeminarMeWaitList(params, data => {
+    console.log('quiz club : ', data.data);
     console.log('quiz club : ', data.data.contents);
     setContents(data.data.contents || []);
     setTotalPage(data.data.totalPage);
@@ -53,7 +54,11 @@ export function GrowthStoryAdminTemplate({ hasInfoData, userType }: GrowthStoryT
                   );
                 })
               ) : (
-                <div className={cx('content--empty')}>데이터가 없습니다.</div>
+                <div className="tw-text-center  tw-w-full border tw-rounded-md">
+                  <div className="tw-p-10  tw-mb-5">
+                    <div className="tw-p-10">개설신청 대기 클럽목록이 없습니다.</div>
+                  </div>
+                </div>
               ))}
           </Grid>
           <div className="tw-mt-10">
