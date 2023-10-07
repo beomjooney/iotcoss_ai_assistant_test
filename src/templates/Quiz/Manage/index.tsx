@@ -95,6 +95,9 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
   const [keyWorld, setKeyWorld] = useState('');
   const [myKeyWorld, setMyKeyWorld] = useState('');
 
+  const quizRef = useRef(null);
+  const quizUrlRef = useRef(null);
+
   /**quiz insert */
   const [skillIdsClk, setSkillIdsClk] = useState<any[]>([1, 2, 3, 4, 5]);
   const [jobGroup, setJobGroup] = useState([]);
@@ -450,6 +453,28 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
       relatedExperiences: experienceIds,
       hashTags: selected,
     };
+
+    if (quizName === '') {
+      alert('질문을 입력해주세요.');
+      quizRef.current.focus();
+      return;
+    }
+
+    if (quizUrl === '') {
+      alert('아티클을 입력해주세요.');
+      quizUrlRef.current.focus();
+      return;
+    }
+
+    if (jobGroup?.length === 0 || jobGroup?.length === undefined) {
+      alert('추천 직군을 선택해주세요.');
+      return;
+    }
+
+    if (recommendLevels?.length === 0 || recommendLevels?.length === undefined) {
+      alert('추천 레벨을 선택해주세요.');
+      return;
+    }
 
     setIsModalOpen(false);
     onQuizSave(params);
@@ -899,31 +924,38 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
           </div>
         )}
         {active == 1 && (
-          <div className="">
-            <div className="tw-mt-10">
+          <div>
+            <div className="tw-font-bold tw-text-base tw-text-black">필수 입력</div>
+            <div>
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2 tw-mt-5">* 질문</div>
               <TextField
                 size="small"
                 fullWidth
-                label={'질문을 입력하세요.'}
+                placeholder="ex) Github Actions와 기존 Github의 차이점에 대해 설명하세요."
                 onChange={handleInputQuizChange}
                 id="margin-none"
                 value={quizName}
+                ref={quizRef}
                 name="quizName"
               />
             </div>
-            <div className="tw-my-5">
+            <div>
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2 tw-mt-5">
+                * 아티클 (질문에 대한 답변에 참고가 될 아티클 링크를 입력해주세요.)
+              </div>
               <TextField
                 size="small"
                 fullWidth
-                label={'아티클 (질문에 대한 답변에 참고가 될 아티클 링크를 입력해주세요.)'}
+                placeholder="http://"
                 onChange={handleInputQuizUrlChange}
                 id="margin-none"
                 value={quizUrl}
+                ref={quizUrlRef}
                 name="quizUrl"
               />
             </div>
             <div>
-              <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-3">추천 직군</div>
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2 tw-mt-5">추천 직군</div>
               <ToggleButtonGroup value={jobGroupPopUp} exclusive onChange={handleJobGroups} aria-label="text alignment">
                 {contentTypes?.map((item, index) => (
                   <ToggleButton
@@ -942,7 +974,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
                   </ToggleButton>
                 ))}
               </ToggleButtonGroup>
-              <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-3">추천 직무</div>
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2 tw-mt-5">* 추천 직무</div>
               <ToggleButtonGroup
                 style={{ display: 'inline' }}
                 value={jobs}
@@ -967,7 +999,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
                 ))}
               </ToggleButtonGroup>
 
-              <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-3">추천 레벨</div>
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2 tw-mt-5">* 추천 레벨</div>
               <ToggleButtonGroup
                 exclusive
                 value={recommendLevelsPopUp}
@@ -1023,7 +1055,9 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
                 </div>
               )}
 
-              <div className="tw-font-semibold tw-text-sm tw-text-black  tw-my-3">관련스킬</div>
+              <div className="tw-font-bold tw-text-base tw-text-black tw-pt-10">선택 입력</div>
+
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-mb-2 tw-mt-5">관련스킬</div>
 
               <ToggleButtonGroup
                 style={{ display: 'inline' }}
@@ -1052,7 +1086,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
                 })}
               </ToggleButtonGroup>
 
-              <div className="tw-font-semibold tw-text-sm tw-text-black  tw-my-3">관련경험</div>
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-mb-2">관련경험</div>
               <ToggleButtonGroup
                 style={{ display: 'inline' }}
                 value={experienceIdsPopUp}
@@ -1080,7 +1114,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
                 })}
               </ToggleButtonGroup>
             </div>
-            <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-3">해시태그</div>
+            <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-mb-2">해시태그</div>
             <TagsInput
               value={selected}
               onChange={setSelected}
