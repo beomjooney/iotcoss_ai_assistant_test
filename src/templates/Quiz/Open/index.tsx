@@ -1,7 +1,7 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import { Button, Chip, MentorsModal, Pagination, Toggle, Typography } from 'src/stories/components';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { RecommendContent, SeminarImages } from 'src/models/recommend';
 import { useSeminarList, paramProps, useSeminarImageList } from 'src/services/seminars/seminars.queries';
 import QuizArticleCard from 'src/stories/components/QuizArticleCard';
@@ -279,6 +279,9 @@ export function QuizOpenTemplate() {
   const { mutate: onQuizSave, isSuccess: postSucces } = useQuizSave();
   const { mutate: onClubQuizSave, isError, isSuccess: clubSuccess } = useClubQuizSave();
 
+  const quizRef = useRef(null);
+  const quizUrlRef = useRef(null);
+
   const [selectedImage, setSelectedImage] = useState('/assets/images/banner/Rectangle_190.png');
 
   const images = [
@@ -451,6 +454,28 @@ export function QuizOpenTemplate() {
       relatedExperiences: experienceIdsPopUp,
       hashTags: selected,
     };
+
+    if (quizName === '') {
+      alert('질문을 입력해주세요.');
+      quizRef.current.focus();
+      return;
+    }
+
+    if (quizUrl === '') {
+      alert('아티클을 입력해주세요.');
+      quizUrlRef.current.focus();
+      return;
+    }
+
+    if (jobGroup?.length === 0 || jobGroup?.length === undefined) {
+      alert('추천 직군을 선택해주세요.');
+      return;
+    }
+
+    if (recommendLevels?.length === 0 || recommendLevels?.length === undefined) {
+      alert('추천 레벨을 선택해주세요.');
+      return;
+    }
 
     setQuizUrl('');
     setQuizName('');
@@ -1856,31 +1881,37 @@ export function QuizOpenTemplate() {
           </div>
         )}
         {active == 1 && (
-          <div className="">
-            <div className="tw-mt-10">
+          <div>
+            <div>
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2 tw-mt-5">* 질문</div>
               <TextField
                 size="small"
                 fullWidth
-                label={'질문을 입력하세요.'}
+                placeholder="ex) Github Actions와 기존 Github의 차이점에 대해 설명하세요."
                 onChange={handleInputQuizChange}
                 id="margin-none"
                 value={quizName}
+                ref={quizRef}
                 name="quizName"
               />
             </div>
-            <div className="tw-my-5">
+            <div>
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2 tw-mt-5">
+                * 아티클 (질문에 대한 답변에 참고가 될 아티클 링크를 입력해주세요.)
+              </div>
               <TextField
                 size="small"
                 fullWidth
-                label={'아티클 (질문에 대한 답변에 참고가 될 아티클 링크를 입력해주세요.)'}
+                placeholder="http://"
                 onChange={handleInputQuizUrlChange}
                 id="margin-none"
                 value={quizUrl}
+                ref={quizUrlRef}
                 name="quizUrl"
               />
             </div>
             <div>
-              <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-3">추천 직군</div>
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2 tw-mt-5">추천 직군</div>
               <ToggleButtonGroup value={jobGroupPopUp} exclusive onChange={handleJobGroups} aria-label="text alignment">
                 {contentTypes?.map((item, index) => (
                   <ToggleButton
@@ -1899,7 +1930,7 @@ export function QuizOpenTemplate() {
                   </ToggleButton>
                 ))}
               </ToggleButtonGroup>
-              <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-3">추천 직무</div>
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2 tw-mt-5">* 추천 직무</div>
               <ToggleButtonGroup
                 style={{ display: 'inline' }}
                 value={jobs}
@@ -1924,7 +1955,7 @@ export function QuizOpenTemplate() {
                 ))}
               </ToggleButtonGroup>
 
-              <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-3">추천 레벨</div>
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2 tw-mt-5">* 추천 레벨</div>
               <ToggleButtonGroup
                 exclusive
                 value={recommendLevelsPopUp}
@@ -1980,7 +2011,7 @@ export function QuizOpenTemplate() {
                 </div>
               )}
 
-              <div className="tw-font-semibold tw-text-sm tw-text-black  tw-my-3">관련스킬</div>
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-mb-2 tw-mt-5">관련스킬</div>
 
               <ToggleButtonGroup
                 style={{ display: 'inline' }}
@@ -2009,7 +2040,7 @@ export function QuizOpenTemplate() {
                 })}
               </ToggleButtonGroup>
 
-              <div className="tw-font-semibold tw-text-sm tw-text-black  tw-my-3">관련경험</div>
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-mb-2">관련경험</div>
               <ToggleButtonGroup
                 style={{ display: 'inline' }}
                 value={experienceIdsPopUp}
@@ -2037,7 +2068,7 @@ export function QuizOpenTemplate() {
                 })}
               </ToggleButtonGroup>
             </div>
-            <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-3">해시태그</div>
+            <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-mb-2">해시태그</div>
             <TagsInput
               value={selected}
               onChange={setSelected}
