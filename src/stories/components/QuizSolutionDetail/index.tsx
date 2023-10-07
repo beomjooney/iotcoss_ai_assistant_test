@@ -270,17 +270,18 @@ const quizSolutionDetail = ({
 
               <TextareaAutosize
                 aria-label="minimum height"
-                minRows={9}
+                minRows={15}
                 placeholder="답변을 25자 이상 입력해주세요."
                 style={{
                   width: '100%',
                   backgroundColor: '#f8f9fa',
                   border: '0px solid #B0B7C1',
                   borderRadius: '15px',
+                  fontSize: '15px',
                   padding: 12,
                   resize: 'none',
                   maxHeight: '350px', // 최대 높이 설정 (스크롤을 표시하려면 설정)
-                  overflowY: 'scroll', // 세로 스크롤 활성화
+                  overflow: 'auto',
                 }}
                 name="introductionMessage"
                 onChange={onMessageChange}
@@ -289,10 +290,6 @@ const quizSolutionDetail = ({
               <button
                 type="button"
                 onClick={handleNext}
-                수정완료
-                및
-                답변
-                제출하기
                 className=" tw-text-white tw-w-[300px] tw-bg-blue-500 tw-mt-5 tw-focus:ring-4  tw-font-medium tw-rounded tw-text-base tw-px-7 tw-py-3 "
               >
                 {activeStep === 0 ? '답변입력 및 아티클 읽기' : '수정완료 및 답변 제출하기'}

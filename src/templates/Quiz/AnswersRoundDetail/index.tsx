@@ -171,14 +171,7 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
           <div className="tw-text-black tw-font-bold tw-text-2xl tw-py-4">{contents?.clubName}</div> */}
         </div>
 
-        <Grid
-          container
-          direction="row"
-          justifyContent="left"
-          // alignItems="center"
-          rowSpacing={3}
-          columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-        >
+        <Grid container direction="row" justifyContent="left" rowSpacing={3} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={8}>
             <div className="tw-bg-gray-50 tw-rounded-lg tw-px-8 tw-py-5 tw-text-black ">
               <div className="tw-flex tw-items-center tw-space-x-4 tw-my-2">

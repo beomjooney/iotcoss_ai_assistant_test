@@ -36,7 +36,11 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { useSessionStore } from 'src/store/session';
 import { useDeleteLike, useSaveLike } from 'src/services/community/community.mutations';
-import { useQuizRoungeDetail } from 'src/services/quiz/quiz.queries';
+import { useQuizRankDetail, useQuizRoungeDetail } from 'src/services/quiz/quiz.queries';
+
+/** import icon */
+import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
+import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
 
 const levelGroup = [
   {
@@ -93,6 +97,8 @@ export function LoungeTemplate() {
   const [recommendLevels, setRecommendLevels] = useState([]);
   const [keyWorld, setKeyWorld] = useState('');
   const [contents, setContents] = useState<RecommendContent[]>([]);
+  const [rankContents, setRankContents] = useState<RecommendContent[]>([]);
+  const [totalElements, setTotalElements] = useState(0);
 
   const { isFetched: isQuizAnswerListFetched } = useQuizRoungeDetail(params, data => {
     //console.log(data);
@@ -100,6 +106,12 @@ export function LoungeTemplate() {
     setTotalElements(data?.totalElements);
     setTotalPage(data?.totalPages);
   });
+
+  const { isFetched: isQuizRankListFetched } = useQuizRankDetail(data => {
+    setRankContents(data);
+  });
+
+  //  <hr className="tw-y-14 tw-my-5 tw-h-[1px] tw-border-t tw-bg-gray-300 " />;
 
   function searchKeyworld(value) {
     let _keyworld = value.replace('#', '');
@@ -162,127 +174,119 @@ export function LoungeTemplate() {
             <Grid item xs={8} className="max-lg:tw-p-2 tw-font-semi tw-text-base tw-text-black  max-lg:!tw-text-sm">
               모든 퀴즈클럽과 답변을 한 곳에서 볼 수 있고, 한달동안 우수한 성장을 이룬 클럽/메이커/리더를 발표해요!
             </Grid>
-            <Grid item xs={2} justifyContent="flex-end" className="tw-flex">
-              <button
-                onClick={() => (location.href = '/quiz/open')}
-                type="button"
-                className="tw-text-white tw-bg-blue-500 tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
-              >
-                퀴즈클럽 개설하기
-              </button>
-            </Grid>
+            <Grid item xs={2} justifyContent="flex-end" className="tw-flex"></Grid>
           </Grid>
         </div>
-        <Box sx={{ width: '100%', typography: 'body1', marginBottom: '20px' }}>
-          <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-            <Grid item xs={9} className="tw-font-bold tw-text-3xl tw-text-black">
-              <div className={cx('filter-area')}>
-                <div className={cx('mentoring-button__group', 'gap-12', 'justify-content-center')}>
-                  <Toggle
-                    label="전체보기"
-                    name="전체보기"
-                    value=""
-                    variant="small"
-                    checked={active === 0}
-                    isActive
-                    type="tabButton"
-                    onChange={() => {
-                      setActive(0);
-                      setParams({
-                        page,
-                      });
-                      setPage(1);
-                    }}
-                    className={cx('fixed-width')}
-                  />
-                  {isContentTypeFetched &&
-                    contentTypes.map((item, i) => (
+        <Grid container direction="row" justifyContent="left" rowSpacing={3} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+          <Grid item xs={8}>
+            <Box sx={{ width: '100%', typography: 'body1', marginBottom: '20px' }}>
+              <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
+                <Grid item xs={9} className="tw-font-bold tw-text-3xl tw-text-black">
+                  <div className={cx('filter-area')}>
+                    <div className={cx('mentoring-button__group', 'gap-12', 'justify-content-center')}>
                       <Toggle
-                        key={item.id}
-                        label={item.name}
-                        name={item.name}
-                        value={item.id}
+                        label="전체직군"
+                        name="전체보기"
+                        value=""
                         variant="small"
-                        checked={active === i + 1}
+                        checked={active === 0}
                         isActive
                         type="tabButton"
                         onChange={() => {
-                          setActive(i + 1);
-                          setContentType(item.id);
+                          setActive(0);
                           setParams({
-                            ...params,
-                            recommendJobGroups: item.id,
                             page,
                           });
                           setPage(1);
                         }}
-                        className={cx('fixed-width', 'tw-ml-4', 'max-lg:!tw-hidden')}
+                        className="tw-w-10"
                       />
-                    ))}
-                </div>
-              </div>
-            </Grid>
-            <Grid item xs={3} className="tw-font-semi tw-text-base tw-text-black">
-              <TextField
-                fullWidth
-                id="outlined-basic"
-                label=""
-                variant="outlined"
-                onKeyPress={e => {
-                  if (e.key === 'Enter') {
-                    searchKeyworld((e.target as HTMLInputElement).value);
-                  }
-                }}
-                InputProps={{
-                  style: { height: '43px' },
-                  startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
-                }}
-              />
-            </Grid>
-          </Grid>
-        </Box>
-
-        <hr className="tw-y-14 tw-my-5 tw-h-[1px] tw-border-t tw-bg-gray-300 " />
-        <div>
-          <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
-            <span className="tw-font-bold tw-text-base tw-text-black tw-mr-4">레벨</span>
-            <ToggleButtonGroup
-              value={recommendLevels}
-              onChange={handleRecommendLevels}
-              aria-label="text alignment"
-              size="small"
-            >
-              {levelGroup?.map((item, index) => (
-                <ToggleButton
-                  key={`job-${index}`}
-                  value={item.name}
-                  aria-label="fff"
-                  className="tw-ring-1 tw-ring-slate-900/10"
-                  style={{
-                    borderRadius: '5px',
-                    borderLeft: '0px',
-                    margin: '5px',
-                    height: '30px',
-                    border: '0px',
-                  }}
+                      {isContentTypeFetched &&
+                        contentTypes.map((item, i) => (
+                          <Toggle
+                            key={item.id}
+                            label={item.name}
+                            name={item.name}
+                            value={item.id}
+                            variant="small"
+                            checked={active === i + 1}
+                            isActive
+                            type="tabButton"
+                            onChange={() => {
+                              setActive(i + 1);
+                              setContentType(item.id);
+                              setParams({
+                                ...params,
+                                recommendJobGroups: item.id,
+                                page,
+                              });
+                              setPage(1);
+                            }}
+                            className={cx('fixed-width', 'tw-ml-4', 'max-lg:!tw-hidden')}
+                          />
+                        ))}
+                    </div>
+                  </div>
+                </Grid>
+                <Grid item xs={3} className="tw-font-semi tw-text-base tw-text-black">
+                  <TextField
+                    fullWidth
+                    id="outlined-basic"
+                    label=""
+                    variant="outlined"
+                    onKeyPress={e => {
+                      if (e.key === 'Enter') {
+                        searchKeyworld((e.target as HTMLInputElement).value);
+                      }
+                    }}
+                    InputProps={{
+                      style: { height: '43px' },
+                      startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
+                    }}
+                  />
+                </Grid>
+              </Grid>
+            </Box>
+            <div>
+              <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
+                <span className="tw-font-bold tw-text-base tw-text-black tw-mr-4">레벨</span>
+                <ToggleButtonGroup
+                  value={recommendLevels}
+                  onChange={handleRecommendLevels}
+                  aria-label="text alignment"
+                  size="small"
                 >
-                  레벨 {item.name}
-                </ToggleButton>
-              ))}
-            </ToggleButtonGroup>
-          </div>
-        </div>
-        <article>
-          <div className={cx('content-area')}>
-            <Grid
-              container
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
-              rowSpacing={4}
-              columnSpacing={{ xs: 1, sm: 2, md: 4 }}
-            >
-              {/* {isContentFetched &&
+                  {levelGroup?.map((item, index) => (
+                    <ToggleButton
+                      key={`job-${index}`}
+                      value={item.name}
+                      aria-label="fff"
+                      className="tw-ring-1 tw-ring-slate-900/10"
+                      style={{
+                        borderRadius: '5px',
+                        borderLeft: '0px',
+                        margin: '5px',
+                        height: '30px',
+                        border: '0px',
+                      }}
+                    >
+                      레벨 {item.name}
+                    </ToggleButton>
+                  ))}
+                </ToggleButtonGroup>
+              </div>
+            </div>
+            <article>
+              <div className={cx('content-area')}>
+                <Grid
+                  container
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  rowSpacing={4}
+                  columnSpacing={{ xs: 1, sm: 2, md: 4 }}
+                >
+                  {/* {isContentFetched &&
                 (contents.length > 0 ? (
                   contents.map((item, index) => {
                     return (
@@ -300,12 +304,131 @@ export function LoungeTemplate() {
                 ) : (
                   <div className={cx('content--empty')}>데이터가 없습니다.</div>
                 ))} */}
-            </Grid>
-            <div className="tw-mt-10">
-              <Pagination page={page} setPage={setPage} total={totalPage} />
+                </Grid>
+                <div className="tw-mt-10">
+                  <Pagination page={page} setPage={setPage} total={totalPage} />
+                </div>
+              </div>
+            </article>
+          </Grid>
+          <Grid item xs={4}>
+            <div className="tw-bg-gray-50 tw-rounded-lg tw-h-[1260px] tw-p-5 tw-text-black ">
+              <div>
+                <div className="tw-font-bold tw-text-base tw-pb-5">이달의 메이커</div>
+                <div className="tw-bg-white tw-p-5 tw-rounded-md">
+                  {rankContents?.maker ? (
+                    <div className="tw-grid tw-grid-cols-4 tw-gap-4 ">
+                      <div className="tw-col-span-1  tw-flex tw-flex-col tw-items-center tw-justify-center">
+                        <img
+                          className="tw-w-12 tw-h-12 tw-ring-1 tw-rounded-full"
+                          src={rankContents?.maker?.profileImageUrl}
+                          alt=""
+                        />
+                        <div className="tw-py-3 tw-text-base tw-font-semibold tw-text-black">
+                          <div>{rankContents?.maker?.nickname}</div>
+                        </div>
+                      </div>
+                      <div className="tw-col-span-3 tw-font-bold tw-text-black tw-flex tw-flex-col tw-items-center tw-justify-center">
+                        <div>
+                          이번달 등록 질문 수 :{' '}
+                          <span className="tw-text-blue-600">{rankContents?.maker?.madeQuizCount}개</span>
+                        </div>
+                        <div>
+                          받은 총 좋아요 수 :{' '}
+                          <span className="tw-text-blue-600">{rankContents?.maker?.receivedLikeCount}개</span>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div>데이터가 없습니다.</div>
+                  )}
+                  <div>
+                    {rankContents?.maker?.quizzes?.map((item, index) => {
+                      return (
+                        <div key={index} className="tw-py-3 tw-text-sm">
+                          <div>
+                            {index + 1}. {item?.content}
+                          </div>
+                          <div className="tw-flex tw-items-center tw-gap-4">
+                            <span>
+                              <AssignmentOutlinedIcon className="tw-mr-1 tw-w-5" />
+                              {item?.answerCount}
+                            </span>
+                            <span>
+                              <StarBorderIcon className="tw-mr-1  tw-w-5" />
+                              <span>{item?.likeCount}</span>
+                            </span>
+                            <span>
+                              <FavoriteBorderIcon className="tw-mr-1  tw-w-5" />
+                              <span>{item?.activeCount}</span>
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div className="tw-font-bold tw-text-base tw-py-5">이달의 퀴즈</div>
+                <div className="tw-bg-white tw-p-5 tw-py-2 tw-rounded-md">
+                  {rankContents?.quizzes?.map((item, index) => {
+                    return (
+                      <div key={index} className="tw-py-3 tw-text-sm">
+                        <div>
+                          {index + 1}. {item?.content}
+                        </div>
+                        <div className="tw-flex tw-items-center tw-gap-4">
+                          <span>
+                            <AssignmentOutlinedIcon className="tw-mr-1 tw-w-5" />
+                            {item?.answerCount}
+                          </span>
+                          <span>
+                            <StarBorderIcon className="tw-mr-1  tw-w-5" />
+                            <span>{item?.likeCount}</span>
+                          </span>
+                          <span>
+                            <FavoriteBorderIcon className="tw-mr-1  tw-w-5" />
+                            <span>{item?.activeCount}</span>
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+              <div>
+                <div className="tw-font-bold tw-text-base tw-py-5">이달의 클럽</div>
+                <div className="tw-bg-white tw-p-5 tw-py-2 tw-rounded-md">
+                  {rankContents?.clubs?.map((item, index) => {
+                    return (
+                      <div key={index} className="tw-py-3 tw-text-sm ">
+                        <div className="tw-grid tw-grid-cols-4 tw-gap-4 tw-flex tw-items-center tw-justify-center">
+                          <div className="tw-col-span-1  tw-flex tw-flex-col ">
+                            <img className="tw-w-12 tw-h-12 tw-rounded-md" src={item?.clubImageUrl} alt="" />
+                          </div>
+                          <div className="tw-col-span-3  tw-text-black ">
+                            <div>
+                              <span className="tw-text-gray-400">{item?.recommendJobNames?.toString()}</span>
+                            </div>
+                            <div>
+                              <span className="tw-font-bold">{item?.clubName}</span>
+                            </div>
+                            <div>
+                              <span className=" tw-text-sm">
+                                {item?.clubLeaderNickname} | 평균실행률 : {item?.averageProgressPercentage}%
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
-          </div>
-        </article>
+          </Grid>
+        </Grid>
       </div>
     </div>
   );

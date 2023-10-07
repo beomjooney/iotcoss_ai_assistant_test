@@ -37,8 +37,8 @@ export const quizSolutionDetail = async id => {
   return data.data;
 };
 // 라운지 상세 조회
-export const quizRoungeDetail = async id => {
-  const { data } = await axiosGeneralAPI().get(`/api/v1/quizzes/lounge`);
+export const quizRoungeDetail = async params => {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/club/quizzes/lounge`, { params });
   return data.data;
 };
 

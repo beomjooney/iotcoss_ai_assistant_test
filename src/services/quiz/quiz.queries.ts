@@ -96,7 +96,7 @@ export const useQuizRoungeDetail = (params, onSuccess?: (data: any) => void, onE
   // TODO : 수정 해주세요. 타입에러 나요. -> 세미나 상세 Profile 컴포넌트에 셋 할때 발생
   const DEFAULT_SIZE = 10;
   return useQuery<any, Error>(
-    QUERY_KEY_FACTORY('QUIZ').detail({ size: DEFAULT_SIZE, ...params }),
+    QUERY_KEY_FACTORY('TERMS').detail({ size: DEFAULT_SIZE, ...params }),
     () => quizRoungeDetail({ size: DEFAULT_SIZE, ...params }),
     {
       onSuccess,
