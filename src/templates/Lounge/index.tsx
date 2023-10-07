@@ -16,13 +16,6 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import Grid from '@mui/material/Grid';
 import Icon from '@mui/material/Icon';
 import Box from '@mui/system/Box';
-import Image from 'next/image';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import SecondTabs from 'src/stories/components/Tab/SecondTab';
-import ListItemtag from 'src/stories/components/QuizItemCard/ListItemTag';
-import SecondTechLogCard from 'src/stories/components/QuizItemCard/SecondTechLogCard';
-import Card6 from 'src/stories/components/QuizItemCard/Card6';
 import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
 import Divider from '@mui/material/Divider';
@@ -37,6 +30,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { useSessionStore } from 'src/store/session';
 import { useDeleteLike, useSaveLike } from 'src/services/community/community.mutations';
 import { useQuizRankDetail, useQuizRoungeDetail } from 'src/services/quiz/quiz.queries';
+import { CommunityCard } from 'src/stories/components';
 
 /** import icon */
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
@@ -100,9 +94,9 @@ export function LoungeTemplate() {
   const [rankContents, setRankContents] = useState<RecommendContent[]>([]);
   const [totalElements, setTotalElements] = useState(0);
 
-  const { isFetched: isQuizAnswerListFetched } = useQuizRoungeDetail(params, data => {
-    //console.log(data);
-    // setContents(data?.contents);
+  const { isFetched: isContentFetched } = useQuizRoungeDetail(params, data => {
+    console.log(data?.contents);
+    setContents(data?.contents);
     setTotalElements(data?.totalElements);
     setTotalPage(data?.totalPages);
   });
@@ -110,8 +104,6 @@ export function LoungeTemplate() {
   const { isFetched: isQuizRankListFetched } = useQuizRankDetail(data => {
     setRankContents(data);
   });
-
-  //  <hr className="tw-y-14 tw-my-5 tw-h-[1px] tw-border-t tw-bg-gray-300 " />;
 
   function searchKeyworld(value) {
     let _keyworld = value.replace('#', '');
@@ -278,33 +270,54 @@ export function LoungeTemplate() {
             </div>
             <article>
               <div className={cx('content-area')}>
-                <Grid
-                  container
-                  direction="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  rowSpacing={4}
-                  columnSpacing={{ xs: 1, sm: 2, md: 4 }}
-                >
-                  {/* {isContentFetched &&
-                (contents.length > 0 ? (
-                  contents.map((item, index) => {
-                    return (
-                      <ClubCard
-                        key={index}
-                        item={item}
-                        xs={6}
-                        // writer={memberSample}
-                        className={cx('reply-container__item')}
-                        // memberId={memberId}
-                        // onPostDeleteSubmit={onPostDeleteSubmit}
-                      />
-                    );
-                  })
-                ) : (
-                  <div className={cx('content--empty')}>데이터가 없습니다.</div>
-                ))} */}
-                </Grid>
+                {isContentFetched &&
+                  (contents.length > 0 ? (
+                    contents.map((item, index) => {
+                      return (
+                        <div key={index} className="tw-mb-10">
+                          <div className="tw-flex tw-items-center tw-space-x-4 ">
+                            <img className="tw-w-10 tw-h-10 tw-rounded-full" src={item?.profileImageUrl} alt="" />
+                            <div className="tw-text-base tw-font-semibold tw-text-black">
+                              <div>{item?.clubLeaderNickname}</div>
+                            </div>
+                          </div>
+
+                          <div className="tw-px-0 tw-py-0  border tw-rounded-lg tw-my-4">
+                            <div className="tw-text-black tw-px-5 tw-py-4">
+                              <div className="tw-pb-4 tw-text-gray-500 tw-text-sm tw-font-bold">[퀴즈클럽]</div>
+                              <hr className="tw-y-1 tw-mb-4 tw-h-[0px] tw-border-t tw-bg-gray-300 " />
+                              <div className="tw-p-7 tw-bg-gray-50 tw-rounded-lg">
+                                <span className="tw-font-bold tw-text-[16px] tw-text-black">{item?.content}</span>
+                              </div>
+                              <div className="tw-py-7 ">
+                                {item?.hashTags?.map((name, i) => (
+                                  <span key={i} className="tw-text-base tw-text-gray-400">
+                                    #{name}
+                                  </span>
+                                ))}
+                              </div>
+                              <div className="tw-text-left tw-pt-3 tw-flex tw-items-center tw-gap-4">
+                                <span>
+                                  <AssignmentOutlinedIcon className="tw-mr-1 tw-w-5" />
+                                  {item?.activeCount}
+                                </span>
+                                <span>
+                                  <FavoriteBorderIcon className="tw-mr-1  tw-w-5" />
+                                  <span>{item?.likeCount}</span>
+                                </span>
+                                <span>
+                                  <ContentCopyOutlinedIcon className="tw-mr-1  tw-w-5" />
+                                  <span>{item?.answerCount}</span>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <div className={cx('content--empty')}>데이터가 없습니다.</div>
+                  ))}
                 <div className="tw-mt-10">
                   <Pagination page={page} setPage={setPage} total={totalPage} />
                 </div>

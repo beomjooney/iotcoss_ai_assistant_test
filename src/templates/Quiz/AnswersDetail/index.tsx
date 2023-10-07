@@ -253,7 +253,7 @@ export function QuizAnswersDetailTemplate({ id }: QuizAnswersDetailTemplateProps
             <div className="tw-col-span-8 tw-flex tw-items-center ">
               <span className="tw-font-right tw-text-base tw-text-black">{contents?.content}</span>
             </div>
-            <div className="tw-col-span-2  tw-flex tw-items-center ">
+            <div className="tw-col-span-2 tw-flex tw-items-center tw-justify-end">
               <div className="tw-flex tw-items-center tw-gap-4">
                 <span>
                   <AssignmentOutlinedIcon className="tw-mr-1 tw-w-5" />
