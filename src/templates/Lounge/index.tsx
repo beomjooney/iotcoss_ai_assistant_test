@@ -189,7 +189,7 @@ export function LoungeTemplate() {
           <Grid item xs={8}>
             <Box sx={{ width: '100%', typography: 'body1', marginBottom: '20px' }}>
               <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-                <Grid item xs={9} className="tw-font-bold tw-text-3xl tw-text-black">
+                <Grid item xs={8} className="tw-font-bold tw-text-3xl tw-text-black">
                   <div className={cx('filter-area')}>
                     <div className="tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
                       <span className="tw-font-bold tw-text-base tw-text-black tw-mr-4">전체직군</span>
@@ -249,7 +249,7 @@ export function LoungeTemplate() {
                     </div>
                   </div>
                 </Grid>
-                <Grid item xs={3} className="tw-font-semi tw-text-base tw-text-black">
+                <Grid item xs={4} className="tw-font-semi tw-text-base tw-text-black">
                   <TextField
                     fullWidth
                     id="outlined-basic"
@@ -399,7 +399,7 @@ export function LoungeTemplate() {
                       </div>
                     </div>
                   ) : (
-                    <div>데이터가 없습니다.</div>
+                    <div className={cx('content--empty')}>데이터가 없습니다.</div>
                   )}
                   <div>
                     {rankContents?.maker?.quizzes?.map((item, index) => {
@@ -439,32 +439,36 @@ export function LoungeTemplate() {
                   <div className="tw-font-bold tw-text-[16px]">이달의 퀴즈</div>
                 </div>
                 <div className="tw-bg-white tw-p-5 tw-py-2 tw-rounded-md">
-                  {rankContents?.quizzes?.map((item, index) => {
-                    return (
-                      <div key={index} className="tw-py-1 tw-text-sm">
-                        <div className="tw-flex tw-items-center tw-gap-2 tw-py-2">
-                          <div className="tw-rounded-full tw-bg-gray-400 tw-text-white tw-w-[19px] tw-text-center">
-                            {index + 1}
+                  {rankContents?.quizzes?.length === 0 ? (
+                    <div className={cx('content--empty', 'tw-py-3')}>데이터가 없습니다.</div>
+                  ) : (
+                    rankContents?.quizzes?.map((item, index) => {
+                      return (
+                        <div key={index} className="tw-py-1 tw-text-sm">
+                          <div className="tw-flex tw-items-center tw-gap-2 tw-py-2">
+                            <div className="tw-rounded-full tw-bg-gray-400 tw-text-white tw-w-[19px] tw-text-center">
+                              {index + 1}
+                            </div>
+                            <div className="tw-line-clamp-2 tw-text-sm tw-font-medium">{item?.content}</div>
                           </div>
-                          <div className="tw-line-clamp-2 tw-text-sm tw-font-medium">{item?.content}</div>
+                          <div className="tw-flex tw-items-center tw-gap-4 tw-pl-7">
+                            <span>
+                              <AssignmentOutlinedIcon className="tw-mr-1 tw-w-5" />
+                              {item?.answerCount}
+                            </span>
+                            <span>
+                              <StarBorderIcon className="tw-mr-1  tw-w-5" />
+                              <span>{item?.likeCount}</span>
+                            </span>
+                            <span>
+                              <FavoriteBorderIcon className="tw-mr-1  tw-w-5" />
+                              <span>{item?.activeCount}</span>
+                            </span>
+                          </div>
                         </div>
-                        <div className="tw-flex tw-items-center tw-gap-4 tw-pl-7">
-                          <span>
-                            <AssignmentOutlinedIcon className="tw-mr-1 tw-w-5" />
-                            {item?.answerCount}
-                          </span>
-                          <span>
-                            <StarBorderIcon className="tw-mr-1  tw-w-5" />
-                            <span>{item?.likeCount}</span>
-                          </span>
-                          <span>
-                            <FavoriteBorderIcon className="tw-mr-1  tw-w-5" />
-                            <span>{item?.activeCount}</span>
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })
+                  )}
                 </div>
               </div>
               <div>
@@ -475,30 +479,34 @@ export function LoungeTemplate() {
                   <div className="tw-font-bold tw-text-[16px]">이달의 클럽</div>
                 </div>
                 <div className="tw-bg-white tw-p-5 tw-py-2 tw-rounded-md">
-                  {rankContents?.clubs?.map((item, index) => {
-                    return (
-                      <div key={index} className="tw-py-3 tw-text-sm ">
-                        <div className="tw-grid tw-grid-cols-4 tw-gap-4 tw-flex tw-items-center tw-justify-center">
-                          <div className="tw-col-span-1  tw-flex tw-flex-col ">
-                            <img className="tw-w-12 tw-h-12 tw-rounded-md" src={item?.clubImageUrl} alt="" />
-                          </div>
-                          <div className="tw-col-span-3  tw-text-black ">
-                            <div>
-                              <span className="tw-text-gray-400">{item?.recommendJobNames?.toString()}</span>
+                  {rankContents?.clubs?.length === 0 ? (
+                    <div className={cx('content--empty', 'tw-py-3')}>데이터가 없습니다.</div>
+                  ) : (
+                    rankContents?.clubs?.map((item, index) => {
+                      return (
+                        <div key={index} className="tw-py-3 tw-text-sm ">
+                          <div className="tw-grid tw-grid-cols-4 tw-gap-4 tw-flex tw-items-center tw-justify-center">
+                            <div className="tw-col-span-1  tw-flex tw-flex-col ">
+                              <img className="tw-w-12 tw-h-12 tw-rounded-md" src={item?.clubImageUrl} alt="" />
                             </div>
-                            <div>
-                              <span className="tw-font-bold">{item?.clubName}</span>
-                            </div>
-                            <div>
-                              <span className=" tw-text-sm">
-                                {item?.clubLeaderNickname} | 평균실행률 : {item?.averageProgressPercentage}%
-                              </span>
+                            <div className="tw-col-span-3  tw-text-black ">
+                              <div>
+                                <span className="tw-text-gray-400">{item?.recommendJobNames?.toString()}</span>
+                              </div>
+                              <div>
+                                <span className="tw-font-bold">{item?.clubName}</span>
+                              </div>
+                              <div>
+                                <span className=" tw-text-sm">
+                                  {item?.clubLeaderNickname} | 평균실행률 : {item?.averageProgressPercentage}%
+                                </span>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })
+                  )}
                 </div>
               </div>
             </div>

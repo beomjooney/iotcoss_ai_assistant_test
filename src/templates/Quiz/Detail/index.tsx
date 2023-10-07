@@ -14,12 +14,7 @@ import { ArticleEnum } from 'src/config/types';
 import Image from 'next/image';
 import moment from 'moment';
 import Link from 'next/link';
-import {
-  useEncoreSeminar,
-  useOpenSeminar,
-  useParticipantCancelSeminar,
-  useParticipantSeminar,
-} from 'src/services/seminars/seminars.mutations';
+import { useParticipantSeminar } from 'src/services/seminars/seminars.mutations';
 import { useSessionStore } from 'src/store/session';
 import Grid from '@mui/material/Grid';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
@@ -191,7 +186,15 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
 
   useEffect(() => {
     if (!logged) {
-      setApplicationButton(<Button label="로그인 후 신청 가능합니다" color="lite-gray" size="large" />);
+      setApplicationButton(
+        <button
+          disabled
+          type="button"
+          className="tw-w-full tw-text-white tw-bg-gray-400   tw-font-semibold tw-text-xl tw-px-5 tw-py-5"
+        >
+          로그인 후 신청 가능합니다.
+        </button>,
+      );
     } else if (isParticipantListFetched) {
       // console.log(1111, contents?.clubStatus, clubMemberStatus);
 
@@ -200,7 +203,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
           <button
             // disabled
             type="button"
-            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
+            className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
           >
             모집 완료 ({contents?.startAt}) 퀴즈클럽 시작
           </button>,
@@ -210,7 +213,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
           <button
             type="button"
             onClick={handlerTodayQuizSolution}
-            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
+            className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
           >
             오늘의 퀴즈 풀기
           </button>,
@@ -220,7 +223,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
           <button
             type="button"
             onClick={() => handleParticipant()}
-            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
+            className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
           >
             참여하기
           </button>,
@@ -230,7 +233,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
           <button
             type="button"
             disabled
-            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
+            className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
           >
             가입요청 승인중
           </button>,
@@ -240,7 +243,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
           <button
             type="button"
             disabled
-            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
+            className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
           >
             가입승인 완료
           </button>,
@@ -250,7 +253,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
           <button
             type="button"
             disabled
-            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
+            className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
           >
             진행불가
           </button>,
@@ -260,7 +263,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
           <button
             type="button"
             disabled
-            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
+            className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
           >
             모집완료
           </button>,
@@ -270,7 +273,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
           <button
             type="button"
             disabled
-            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
+            className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
           >
             모집완료
           </button>,
@@ -280,7 +283,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
           <button
             type="button"
             onClick={handlerTodayQuizSolution}
-            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
+            className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
           >
             오늘의 퀴즈 풀기
           </button>,
@@ -290,7 +293,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
           <button
             disabled
             type="button"
-            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
+            className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
           >
             진행중 참여 불가
           </button>,
@@ -300,7 +303,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
           <button
             type="button"
             disabled
-            className="tw-w-full tw-text-white tw-bg-[#555555] hover:tw-bg-[#555555] tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
+            className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
           >
             진행 종료
           </button>,

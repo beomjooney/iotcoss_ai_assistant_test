@@ -12,6 +12,7 @@ import { useSessionStore } from 'src/store/session';
 const { logged } = useSessionStore.getState();
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import StarIcon from '@mui/icons-material/Star';
+import { useParticipantSeminar } from 'src/services/seminars/seminars.mutations';
 
 export interface BannerProps {
   /** 배경 이미지 */
@@ -22,7 +23,7 @@ export interface BannerProps {
   data: object;
   className?: string;
   subTitle?: string;
-  onClick?: (no: number) => void;
+  onClick?: () => void;
 }
 
 const cx = classNames.bind(styles);
@@ -36,6 +37,7 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
   const { logged } = useSessionStore.getState();
   const { mutate: onSaveLike, isSuccess } = useSaveLike();
   const { mutate: onDeleteLike } = useDeleteLike();
+  const { mutate: onParticipant } = useParticipantSeminar();
 
   useEffect(() => {
     setIsLiked(data?.isFavorite);
@@ -43,6 +45,16 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
     setClubStatus(data?.clubStatus);
     setIsLeader(data?.isLeader);
   }, [data]);
+
+  const handleParticipant = clubId => {
+    console.log('club join');
+    if (!logged) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
+    onParticipant({ clubSequence: clubId });
+    setClubMemberStatus('0001');
+  };
 
   const onChangeLike = function (postNo: number) {
     event.preventDefault();
@@ -60,7 +72,7 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
   return (
     <div
       className={cx('content-area', className, {
-        'tw-bg-[#FFFAF1]': data?.clubStatus != '0004' && data?.clubMemberStatus != '0002', // isSpecial이 true일 때만 클래스가 적용됩니다.
+        'tw-bg-[#FFFAF1]': (data?.clubStatus != '0004' && data?.clubMemberStatus != '0002') || !logged, // isSpecial이 true일 때만 클래스가 적용됩니다.
       })}
     >
       <div className="container tw-p-4 tw-leading-normal tw-text-black tw-font-bold tw-text-xl tw-pt-10 tw-pb-10">
@@ -149,7 +161,7 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
                 {clubStatus === '0006' && clubMemberStatus === '0006' && (
                   <button
                     type="button"
-                    onClick={onClick} // 이 부분도 함수를 호출하도록 수정
+                    onClick={() => handleParticipant(data?.sequence)}
                     className="tw-text-white tw-mr-3 tw-bg-blue-500 tw-font-medium tw-rounded-md tw-text-base tw-px-5 tw-py-2.5"
                   >
                     참여하기
