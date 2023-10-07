@@ -77,35 +77,26 @@ export function MonthlyMakerTemplate() {
       <div className={cx('content-wrap')}>
         <div className="tw-bg-gray-100">
           <div className={cx('container')}>
-            <div className="tw-grid tw-grid-cols-12 tw-gap-4 tw-py-10 tw-font-bold tw-text-black">
-              <div className="tw-col-span-2">
+            <div className="tw-flex tw-gap-4 tw-py-10 tw-font-bold tw-text-black">
+              <div className="tw-w-1/6">
                 <img
                   className="tw-w-32 tw-h-32 tw-ring-1 tw-rounded-full"
                   src="http://3.39.99.82:18081/images/202310/img_86729fb0b9ab4ba391c651fa3c3a378f.jpg"
                   alt=""
                 />
               </div>
-              <div className="tw-col-span-10 tw-text-left  tw-flex tw-flex-col  tw-justify-start">
-                <div className=" tw-text-black">
-                  <div className="tw-font-bold tw-text-xl tw-grid tw-items-center tw-grid-cols-6">
-                    <div className="tw-col-span-4">
-                      개발열공러님
-                      <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600">
-                        개발
-                      </span>
-                      <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
-                        레벨 3
-                      </span>
-                      <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-300 tw-text-sm tw-font-light tw-text-gray-600">
-                        모바일개발자
-                      </span>
-                    </div>
-                    <div className="tw-col-span-2 tw-text-right">
-                      <span className="tw-inline-flex tw-item-right">
-                        <div className="tw-flex tw-justify-between tw-mt-2 tw-gap-2"></div>
-                      </span>
-                    </div>
-                  </div>
+              <div className="tw-w-3/4">
+                <div>
+                  개발열공러님
+                  <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600">
+                    개발
+                  </span>
+                  <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
+                    레벨 3
+                  </span>
+                  <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-300 tw-text-sm tw-font-light tw-text-gray-600">
+                    모바일개발자
+                  </span>
                 </div>
                 <div className="tw-font-bold tw-text-base tw-text-black tw-mt-5">다이버 | 모바일개발자 | 21년차</div>
                 <div className="tw-py-2">
@@ -116,8 +107,29 @@ export function MonthlyMakerTemplate() {
                     Spring
                   </span>
                 </div>
-
-                <div className="tw-mt-3 tw-font-light tw-text-base tw-text-gray-500">안녕하세요</div>
+                <div className="tw-mt-3 tw-font-light tw-text-base tw-text-gray-500">
+                  안녕하세요 Lorem ipsum dolor sit amet consectetur, adipisicing elit. Repudiandae obcaecati, corporis
+                  eaque dignissimos iure minima dicta eligendi ullam harum, praesentium facere veritatis fugiat. Animi
+                  quaerat id explicabo cupiditate quam laborum? Lorem ipsum dolor, sit amet consectetur adipisicing
+                  elit. Dolores, non eum explicabo, dolorem sed nam molestias adipisci perspiciatis delectus unde
+                  tenetur optio expedita aperiam quisquam debitis odit accusantium aspernatur? Cupiditate!
+                </div>
+              </div>
+              <div className="tw-w-1/4">
+                <div className="tw-col-span-2 tw-text-right">
+                  <div>
+                    <span className="tw-inline-block p-2 tw-bg-white tw-rounded-lg tw-w-[200px]">
+                      <div className="tw-border-4 tw-text-base tw-pr-10">이번달 등록 질문 수</div>
+                      <div className="tw-leading-9 tw-text-blue-600 tw-text-lg tw-text-right">52개</div>
+                    </span>
+                  </div>
+                  <div className="tw-pt-2">
+                    <span className="tw-inline-block p-2 tw-bg-white tw-rounded-lg tw-w-[200px]">
+                      <div className="tw-border-4 tw-text-base tw-pr-10">받은 총 좋아요 수</div>
+                      <div className="tw-leading-9 tw-text-blue-600 tw-text-lg tw-text-right">342개</div>
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
