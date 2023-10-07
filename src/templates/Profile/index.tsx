@@ -278,12 +278,7 @@ export function ProfileTemplate() {
 
   const [careersInfo, setCareersInfo] = useState([]);
 
-  const handleInputChange = (
-    index: number, 
-    e: React.ChangeEvent<HTMLInputElement>, 
-    key, 
-    id,
-  ) => {
+  const handleInputChange = (index: number, e: React.ChangeEvent<HTMLInputElement>, key, id) => {
     const values = [...formFields];
     let datetime: string;
 
@@ -303,7 +298,7 @@ export function ProfileTemplate() {
         // setIsFreelance(!isFreelance);
         break;
       case 'isCurrent':
-        if(!values[index][key] === true) {
+        if (!values[index][key] === true) {
           values[index]['endDate'] = null;
         }
         values[index][key] = !values[index][key];
@@ -324,7 +319,7 @@ export function ProfileTemplate() {
   const handleProfileSave = async () => {
     // fileImageUrl이 null인 경우 imageUrl을 사용하도록 조건문 추가
     const profileImageKey = imageUrl || user?.profileImageUrl;
-    const isCurrentCount = formFields.filter((data) => data.isCurrent === true).map((data, index) => {}).length;
+    const isCurrentCount = formFields.filter(data => data.isCurrent === true).map((data, index) => {}).length;
 
     if (recommendJobGroups.length === 0) {
       alert('직군 필수 입력값을 선택해주세요.');
@@ -338,7 +333,7 @@ export function ProfileTemplate() {
       return 0;
     }
 
-    if(isCurrentCount > 1) {
+    if (isCurrentCount > 1) {
       alert('재직 경력은 1개만 선택해주세요.');
       return 0;
     }
@@ -352,7 +347,7 @@ export function ProfileTemplate() {
       introductionMessage: introductionMessage,
       profileImageUrl: profileImageKey,
     };
-    
+
     onSave(params);
     setIsModalOpen(false);
   };
@@ -546,7 +541,7 @@ export function ProfileTemplate() {
           </div>
           <div className={cx('container')}>
             <div className="tw-py-10 tw-text-xl tw-text-black tw-font-bold">
-              나의 보유포인트 : {userInfo?.points} point
+              나의 보유포인트 : {userInfo?.points?.toLocaleString()} point
             </div>
           </div>
         </div>
@@ -994,7 +989,7 @@ export function ProfileTemplate() {
                                   value={dayjs(field.endDate)}
                                   onChange={e => handleInputChange(index, e, 'endDate')}
                                   key={index}
-                                  inputRef={(element) => {
+                                  inputRef={element => {
                                     endDateRef.current[index] = element;
                                   }}
                                 />

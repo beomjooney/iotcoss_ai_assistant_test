@@ -64,7 +64,6 @@ export function OpponentProfileTemplate({ id }: OpponentProfileTemplateProps) {
   const [quizTotalPage, setQuizTotalPage] = useState(1);
   const [myQuizParams, setMyQuizParams] = useState<paramProps>({ page: quizPage, memberUUID: id });
   const { data: myQuizReplyData }: UseQueryResult<any> = useQuizReply(myQuizParams, data => {
-    console.log(data);
     setQuizTotalPage(data.totalPages);
   });
 
@@ -139,7 +138,7 @@ export function OpponentProfileTemplate({ id }: OpponentProfileTemplateProps) {
           </div>
           <div className={cx('container')}>
             <div className="tw-py-10 tw-text-xl tw-text-black tw-font-bold">
-              나의 보유포인트 : {userInfo?.points} point
+              나의 보유포인트 : {userInfo?.points?.toLocaleString()} point
             </div>
           </div>
         </div>

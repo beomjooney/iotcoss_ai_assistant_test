@@ -15,15 +15,15 @@ export const seminarList = async params => {
 
   return { data: data.data || [], nextPage: params.page + 1, totalPage };
 };
-export const seminarMeWaitList = async params => {
-  const { data, headers } = await axiosGeneralAPI().get('/api/v1/clubs/crew-requests/me', { params });
+export const clubMeWaitList = async params => {
+  const { data, headers } = await axiosGeneralAPI().get('/api/v1/club/crew-requests/me', { params });
   const totalPage = Number(headers['page-count']);
 
   return { data: data.data || [], nextPage: params.page + 1, totalPage };
 };
 
 export const seminarMeList = async params => {
-  const { data, headers } = await axiosGeneralAPI().get('/api/v1/clubs/crew-requests/me', { params });
+  const { data, headers } = await axiosGeneralAPI().get('/api/v1/club/crew-requests/me', { params });
   const totalPage = Number(headers['page-count']);
 
   return { data: data.data || [], nextPage: params.page + 1, totalPage };

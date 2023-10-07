@@ -6,7 +6,12 @@ import { Chip, ClubCard, Pagination, Typography } from 'src/stories/components';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useSessionStore } from '../../../../store/session';
-import { useSeminarList, useSeminarMeList, useSeminarMeWaitList } from 'src/services/seminars/seminars.queries';
+import {
+  useClubMeWaitList,
+  useSeminarList,
+  useSeminarMeList,
+  useSeminarMeWaitList,
+} from 'src/services/seminars/seminars.queries';
 import Grid from '@mui/material/Grid';
 import { jobColorKey } from 'src/config/colors';
 
@@ -24,9 +29,7 @@ export function GrowthStoryAdminTemplate({ hasInfoData, userType }: GrowthStoryT
   const [params, setParams] = useState<paramProps>({ page, status: '0002' });
   const [contents, setContents] = useState<RecommendContent[]>([]);
 
-  const { isFetched: isContentFetched } = useSeminarMeWaitList(params, data => {
-    console.log('quiz club : ', data.data);
-    console.log('quiz club : ', data.data.contents);
+  const { isFetched: isContentFetched } = useClubMeWaitList(params, data => {
     setContents(data.data.contents || []);
     setTotalPage(data.data.totalPage);
   });

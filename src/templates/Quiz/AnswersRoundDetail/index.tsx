@@ -1,29 +1,12 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
-import BannerDetail from 'src/stories/components/BannerDetail';
-import { jobColorKey } from 'src/config/colors';
-import Chip from 'src/stories/components/Chip';
 import { useStore } from 'src/store';
 import { Button, CommunityCard } from 'src/stories/components';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import { useMySeminarList, useSeminarDetail, useSeminarList } from 'src/services/seminars/seminars.queries';
 import { RecommendContent } from 'src/models/recommend';
-import { ArticleEnum } from 'src/config/types';
-import Image from 'next/image';
-import moment from 'moment';
-import Link from 'next/link';
-import {
-  useEncoreSeminar,
-  useOpenSeminar,
-  useParticipantCancelSeminar,
-  useParticipantSeminar,
-} from 'src/services/seminars/seminars.mutations';
-import { useSessionStore } from 'src/store/session';
-import Grid from '@mui/material/Grid';
-import { Desktop, Mobile } from 'src/hooks/mediaQuery';
-import router from 'next/router';
 import {
   useClubDetailQuizList,
   useQuizAnswerDetail,
@@ -41,9 +24,6 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 
 /** import pagenation */
 import Pagination from '@mui/material/Pagination';
-import PaginationItem from '@mui/material/PaginationItem';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 const cx = classNames.bind(styles);
 export interface QuizAnswersRoundDetailTemplateProps {
@@ -86,10 +66,6 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
   const { isFetched: isQuizRankListFetched } = useQuizRankDetail(data => {
     setRankContents(data);
   });
-
-  const { mutate: onParticipant } = useParticipantSeminar();
-  const { mutate: onCancelParticipant } = useParticipantCancelSeminar();
-  const { mutate: onEncoreSeminar } = useEncoreSeminar();
 
   let tabPannelRefs = [];
 

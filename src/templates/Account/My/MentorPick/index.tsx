@@ -24,7 +24,6 @@ export function MyMentorPickTemplate() {
   const [contents, setContents] = useState<RecommendContent[]>([]);
 
   const { isFetched: isContentFetched } = useSeminarMeFavoriteList(params, data => {
-    console.log('quiz club : ', data.data.contents);
     setContents(data.data.contents || []);
     setTotalPage(data.data.totalPage);
   });

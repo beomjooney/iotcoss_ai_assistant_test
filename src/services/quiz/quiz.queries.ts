@@ -8,6 +8,7 @@ import {
   quizGrowthDetail,
   quizPoint,
   quizRanking,
+  quizRoungeDetail,
   quizSolutionDetail,
   quizSolutionDetailStatus,
 } from './quiz.api';
@@ -83,6 +84,20 @@ export const useQuizAnswerDetail = (params, onSuccess?: (data: any) => void, onE
   return useQuery<any, Error>(
     QUERY_KEY_FACTORY('QUIZ').detail({ size: DEFAULT_SIZE, ...params }),
     () => quizAnswerDetail({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: true,
+      enabled: true,
+    },
+  );
+};
+export const useQuizRoungeDetail = (params, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
+  // TODO : 수정 해주세요. 타입에러 나요. -> 세미나 상세 Profile 컴포넌트에 셋 할때 발생
+  const DEFAULT_SIZE = 10;
+  return useQuery<any, Error>(
+    QUERY_KEY_FACTORY('QUIZ').detail({ size: DEFAULT_SIZE, ...params }),
+    () => quizRoungeDetail({ size: DEFAULT_SIZE, ...params }),
     {
       onSuccess,
       onError,

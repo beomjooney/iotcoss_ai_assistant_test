@@ -165,7 +165,9 @@ export function ProfileTemplate() {
         </div>
       )}
       <div className={cx('container')}>
-        <div className="tw-py-10 tw-text-xl tw-text-black tw-font-bold">나의 보유포인트 : {userInfo?.point} point</div>
+        <div className="tw-py-10 tw-text-xl tw-text-black tw-font-bold">
+          나의 보유포인트 : {userInfo?.point?.toLocaleString()} point
+        </div>
         <Box sx={{ width: '100%', typography: 'body1' }}>
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
             <Grid item xs={8} className="tw-font-bold tw-text-3xl tw-text-black">

@@ -383,7 +383,6 @@ export function MemberEditTemplate() {
   });
 
   const onSubmitOtp = data => {
-    console.log(data);
     onLoginOtpVerification({ phoneNumber: phoneNumber, otpNumber: data.otp });
   };
 

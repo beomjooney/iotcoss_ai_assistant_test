@@ -28,7 +28,6 @@ export function MyFriendsTemplate() {
   const { mutate: onFriendsReject, isSuccess: isRejectSuccess } = useFriendRejectPost();
 
   const { isFetched, refetch } = useQuizFriends(data => {
-    console.log(data);
     setContents(data?.contents);
     // setTotalPoint(data?.total);
   });

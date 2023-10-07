@@ -26,7 +26,6 @@ export function GrowthStoryTemplate({ hasInfoData, userType }: GrowthStoryTempla
   const [contents, setContents] = useState<RecommendContent[]>([]);
 
   const { isFetched: isContentFetched } = useSeminarMeList(params, data => {
-    console.log('quiz club : ', data.data.contents);
     setContents(data.data.contents || []);
     setTotalPage(data.data.totalPage);
   });

@@ -177,7 +177,6 @@ export function QuizTemplate() {
   const [recommendLevels, setRecommendLevels] = useState([]);
 
   const { isFetched: isContentFetched } = useSeminarList(params, data => {
-    console.log('quiz club : ', data.data.data.contents);
     setContents(data.data.data.contents || []);
     setTotalPage(data.data.totalPage);
   });

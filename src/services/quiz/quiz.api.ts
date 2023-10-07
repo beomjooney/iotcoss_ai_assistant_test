@@ -36,6 +36,11 @@ export const quizSolutionDetail = async id => {
   const { data } = await axiosGeneralAPI().get(`/api/v1/club/quizzes/${id}`);
   return data.data;
 };
+// 라운지 상세 조회
+export const quizRoungeDetail = async id => {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/quizzes/lounge`);
+  return data.data;
+};
 
 // 퀴즈 상태 조회
 export const quizSolutionDetailStatus = async id => {

@@ -8,6 +8,7 @@ import {
 } from 'src/models/recommend';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 import {
+  clubMeWaitList,
   clubMyList,
   clubQuizCrewManage,
   clubQuizManage,
@@ -67,7 +68,7 @@ export const useSeminarList = (
     },
   );
 };
-export const useSeminarMeWaitList = (
+export const useClubMeWaitList = (
   params?: paramProps,
   onSuccess?: (data: RecommendContentsResponse) => void,
   onError?: (error: Error) => void,
@@ -75,7 +76,7 @@ export const useSeminarMeWaitList = (
   const DEFAULT_SIZE = 10;
   return useQuery<RecommendContentsResponse, Error>(
     QUERY_KEY_FACTORY('SEMINAR').list({ size: DEFAULT_SIZE, ...params }),
-    () => seminarMeWaitList({ size: DEFAULT_SIZE, ...params }),
+    () => clubMeWaitList({ size: DEFAULT_SIZE, ...params }),
     {
       onSuccess,
       onError,

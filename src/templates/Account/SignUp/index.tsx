@@ -329,7 +329,6 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
     resolver: yupResolver(validationSchemaOtp),
   });
   const onSubmitOtp = data => {
-    console.log(data);
     onLoginOtpVerification({ phoneNumber: phone, otpNumber: data.otp });
   };
 

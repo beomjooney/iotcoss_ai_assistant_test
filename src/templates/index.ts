@@ -27,6 +27,7 @@ export * from './Service/index';
 export * from './Contents/index';
 export * from './Seminar/index';
 export * from './Quiz/index';
+export * from './Lounge/index';
 export * from './Profile/index';
 export * from './Profile/Opponent/index';
 export * from './StudyRoom/index';

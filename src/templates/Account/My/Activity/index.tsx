@@ -27,7 +27,6 @@ export function MyActivityTemplate() {
 
   const [summary, setSummary] = useState({});
   const { isFetched: isUserFetched } = useMemberActiveSummaryInfo(data => setSummary(data));
-  console.log('summary3333', summary);
   return (
     <div className={cx('member-edit-container')}>
       <section className={cx('content')}>
