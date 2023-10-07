@@ -5,6 +5,8 @@ import { UseQueryResult } from 'react-query';
 import { SkillResponse } from 'src/models/skills';
 import { useSkills } from 'src/services/skill/skill.queries';
 import { useRouter } from 'next/router';
+import { useStore } from 'src/store';
+import { User } from 'src/models/user';
 
 import { Toggle, Pagination, Typography, Chip, ClubCard, CommunityCard } from 'src/stories/components';
 import { useSeminarList, paramProps, useSeminarImageList } from 'src/services/seminars/seminars.queries';
@@ -30,6 +32,8 @@ export function MonthlyMakerTemplate() {
   const [totalPage, setTotalPage] = useState(1);
   const [params, setParams] = useState<paramProps>({ page });
   const [keyWord, setKeyWord] = useState('');
+  const { user, setUser } = useStore();
+  const [userInfo, setUserInfo] = useState<User>(user);
 
   //api call
   const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
@@ -56,7 +60,7 @@ export function MonthlyMakerTemplate() {
               라운지 {'>'} 이달의 메이커
             </Grid>
             <Grid item xs={6} className="tw-font-semi tw-text-base tw-text-black">
-              <div>이달에 가장 사랑을 받은 퀴즈에요!</div>
+              <div>이달에 질문을 가장 많이 만들어 성장 동력을 제공한 메이커에요!</div>
             </Grid>
             <Grid item xs={3} justifyContent="flex-end" className="tw-flex">
               <button
@@ -68,14 +72,64 @@ export function MonthlyMakerTemplate() {
               </button>
             </Grid>
           </Grid>
-          <Divider className="tw-my-10 tw-border tw-bg-['#efefef']" />
         </div>
+      </div>
+      <div className={cx('content-wrap')}>
+        <div className="tw-bg-gray-100">
+          <div className={cx('container')}>
+            <div className="tw-grid tw-grid-cols-12 tw-gap-4 tw-py-10 tw-font-bold tw-text-black">
+              <div className="tw-col-span-2">
+                <img
+                  className="tw-w-32 tw-h-32 tw-ring-1 tw-rounded-full"
+                  src="http://3.39.99.82:18081/images/202310/img_86729fb0b9ab4ba391c651fa3c3a378f.jpg"
+                  alt=""
+                />
+              </div>
+              <div className="tw-col-span-10 tw-text-left  tw-flex tw-flex-col  tw-justify-start">
+                <div className=" tw-text-black">
+                  <div className="tw-font-bold tw-text-xl tw-grid tw-items-center tw-grid-cols-6">
+                    <div className="tw-col-span-4">
+                      개발열공러님
+                      <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600">
+                        개발
+                      </span>
+                      <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
+                        레벨 3
+                      </span>
+                      <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-300 tw-text-sm tw-font-light tw-text-gray-600">
+                        모바일개발자
+                      </span>
+                    </div>
+                    <div className="tw-col-span-2 tw-text-right">
+                      <span className="tw-inline-flex tw-item-right">
+                        <div className="tw-flex tw-justify-between tw-mt-2 tw-gap-2"></div>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className="tw-font-bold tw-text-base tw-text-black tw-mt-5">다이버 | 모바일개발자 | 21년차</div>
+                <div className="tw-py-2">
+                  <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-bg-black tw-text-white">
+                    GO
+                  </span>
+                  <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-bg-black tw-text-white">
+                    Spring
+                  </span>
+                </div>
 
+                <div className="tw-mt-3 tw-font-light tw-text-base tw-text-gray-500">안녕하세요</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className={cx('container')}>
         <Box sx={{ width: '100%', typography: 'body1' }}>
-          <div className="tw-flex tw-gap-5">
+          <div className="tw-flex tw-gap-5 tw-pt-10">
             <Toggle
-              label="HOT1"
-              name="HOT1"
+              label="퀴즈 1"
+              name="퀴즈 1"
               value=""
               variant="small"
               checked={active === 0}
@@ -88,8 +142,8 @@ export function MonthlyMakerTemplate() {
               className={cx('fixed-width')}
             />
             <Toggle
-              label="HOT2"
-              name="HOT2"
+              label="퀴즈 2"
+              name="퀴즈 2"
               value=""
               variant="small"
               checked={active === 1}
@@ -102,8 +156,8 @@ export function MonthlyMakerTemplate() {
               className={cx('fixed-width')}
             />
             <Toggle
-              label="HOT3"
-              name="HOT3"
+              label="퀴즈 3"
+              name="퀴즈 3"
               value=""
               variant="small"
               checked={active === 2}
@@ -111,34 +165,6 @@ export function MonthlyMakerTemplate() {
               type="tabButton"
               onChange={() => {
                 setActive(2);
-                setPage(1);
-              }}
-              className={cx('fixed-width')}
-            />
-            <Toggle
-              label="HOT4"
-              name="HOT4"
-              value=""
-              variant="small"
-              checked={active === 3}
-              isActive
-              type="tabButton"
-              onChange={() => {
-                setActive(3);
-                setPage(1);
-              }}
-              className={cx('fixed-width')}
-            />
-            <Toggle
-              label="HOT5"
-              name="HOT5"
-              value=""
-              variant="small"
-              checked={active === 4}
-              isActive
-              type="tabButton"
-              onChange={() => {
-                setActive(4);
                 setPage(1);
               }}
               className={cx('fixed-width')}
@@ -162,11 +188,11 @@ export function MonthlyMakerTemplate() {
             <div className={cx('content-wrap tw-font-bold')}>
               <div className="tw-flex p-3 tw-m-1 tw-px-3 tw-py-0.5 tw-rounded tw-bg-gray-100">
                 <div className="tw-w-3/4">
-                  <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-red-600 tw-border-red-600">
-                    HOT 1
+                  <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-blue-600 tw-border-blue-600">
+                    메이커의 퀴즈 1
                   </span>
                   <span className="tw-flex-auto tw-pl-10 tw-text-black tw-col-span-9">
-                    React에서 Vitual Dom에 대해 설명하시오.
+                    React에서 불변성에 대해 설명하시오.
                   </span>
                 </div>
                 <div className="tw-w-1/4 tw-text-right">
