@@ -2,14 +2,20 @@ import React, { useEffect, useState, useRef } from 'react';
 import classNames from 'classnames/bind';
 import styles from './index.module.scss';
 import { UseQueryResult } from 'react-query';
-import { SkillResponse } from 'src/models/skills';
-import { useSkills } from 'src/services/skill/skill.queries';
 import { useRouter } from 'next/router';
 import { useStore } from 'src/store';
 import { User } from 'src/models/user';
+import { RecommendContent } from 'src/models/recommend';
+import {
+  useMonthlyRanking,
+  useMonthlyQuizzes,
+  useMonthlyMaker,
+  useMonthlyMakerQuizzes,
+  useMonthlyClubs,
+} from 'src/services/monthly/monthly.queries';
 
-import { Toggle, Pagination, Typography, Chip, ClubCard, CommunityCard } from 'src/stories/components';
-import { useSeminarList, paramProps, useSeminarImageList } from 'src/services/seminars/seminars.queries';
+import { Toggle } from 'src/stories/components';
+import { paramProps } from 'src/services/seminars/seminars.queries';
 import { useMyQuiz } from 'src/services/jobs/jobs.queries';
 
 import Grid from '@mui/material/Grid';
@@ -34,9 +40,12 @@ export function MonthlyMakerTemplate() {
   const [keyWord, setKeyWord] = useState('');
   const { user, setUser } = useStore();
   const [userInfo, setUserInfo] = useState<User>(user);
+  const [rankContents, setRankContents] = useState<RecommendContent[]>([]);
 
   //api call
-  const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
+  const { isFetched: isQuizRankListFetched } = useMonthlyRanking(data => {
+    setRankContents(data);
+  });
   const { data: myQuizData, refetch: refetchMyJob }: UseQueryResult<any> = useMyQuiz(params, data => {
     setTotalPage(data.totalPages);
   });
@@ -48,6 +57,8 @@ export function MonthlyMakerTemplate() {
       keyword: keyWord,
     });
   }, [page, keyWord]);
+
+  //console.log(rankContents);
 
   const handleIconButton = (event: React.MouseEvent<HTMLElement>) => {};
 
@@ -66,7 +77,7 @@ export function MonthlyMakerTemplate() {
               <button
                 className="white border bordtw-text-blue-600 tw-bg-er-primary tw-font-bold tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
                 type="button"
-                onClick={() => router.push('/account/my/activity')}
+                onClick={() => router.back()}
               >
                 뒤로가기
               </button>
@@ -74,20 +85,20 @@ export function MonthlyMakerTemplate() {
           </Grid>
         </div>
       </div>
-      <div className={cx('content-wrap')}>
+      <div className="content-wrap">
         <div className="tw-bg-gray-100">
-          <div className={cx('container')}>
+          <div className="container">
             <div className="tw-flex tw-gap-4 tw-py-10 tw-font-bold tw-text-black">
               <div className="tw-w-1/6">
                 <img
                   className="tw-w-32 tw-h-32 tw-ring-1 tw-rounded-full"
-                  src="http://3.39.99.82:18081/images/202310/img_86729fb0b9ab4ba391c651fa3c3a378f.jpg"
+                  src={rankContents?.maker?.profileImageUrl}
                   alt=""
                 />
               </div>
               <div className="tw-w-3/4">
                 <div>
-                  개발열공러님
+                  {rankContents?.maker?.nickname}님
                   <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600">
                     개발
                   </span>
@@ -120,13 +131,17 @@ export function MonthlyMakerTemplate() {
                   <div>
                     <span className="tw-inline-block p-2 tw-bg-white tw-rounded-lg tw-w-[200px]">
                       <div className="tw-border-4 tw-text-base tw-pr-10">이번달 등록 질문 수</div>
-                      <div className="tw-leading-9 tw-text-blue-600 tw-text-lg tw-text-right">52개</div>
+                      <div className="tw-leading-9 tw-text-blue-600 tw-text-lg tw-text-right">
+                        {rankContents?.maker?.madeQuizCount}개
+                      </div>
                     </span>
                   </div>
                   <div className="tw-pt-2">
                     <span className="tw-inline-block p-2 tw-bg-white tw-rounded-lg tw-w-[200px]">
                       <div className="tw-border-4 tw-text-base tw-pr-10">받은 총 좋아요 수</div>
-                      <div className="tw-leading-9 tw-text-blue-600 tw-text-lg tw-text-right">342개</div>
+                      <div className="tw-leading-9 tw-text-blue-600 tw-text-lg tw-text-right">
+                        {rankContents?.maker?.receivedLikeCount}개
+                      </div>
                     </span>
                   </div>
                 </div>
@@ -139,48 +154,23 @@ export function MonthlyMakerTemplate() {
       <div className={cx('container')}>
         <Box sx={{ width: '100%', typography: 'body1' }}>
           <div className="tw-flex tw-gap-5 tw-pt-10">
-            <Toggle
-              label="퀴즈 1"
-              name="퀴즈 1"
-              value=""
-              variant="small"
-              checked={active === 0}
-              isActive
-              type="tabButton"
-              onChange={() => {
-                setActive(0);
-                setPage(1);
-              }}
-              className={cx('fixed-width')}
-            />
-            <Toggle
-              label="퀴즈 2"
-              name="퀴즈 2"
-              value=""
-              variant="small"
-              checked={active === 1}
-              isActive
-              type="tabButton"
-              onChange={() => {
-                setActive(1);
-                setPage(1);
-              }}
-              className={cx('fixed-width')}
-            />
-            <Toggle
-              label="퀴즈 3"
-              name="퀴즈 3"
-              value=""
-              variant="small"
-              checked={active === 2}
-              isActive
-              type="tabButton"
-              onChange={() => {
-                setActive(2);
-                setPage(1);
-              }}
-              className={cx('fixed-width')}
-            />
+            {rankContents?.maker?.quizzes?.map((values, index) => (
+              <Toggle
+                name={`퀴즈 ${index + 1}`}
+                label={`퀴즈 ${index + 1}`}
+                key={values.quizSequence}
+                value=""
+                variant="small"
+                type="tabButton"
+                checked={active === index}
+                isActive
+                onChange={() => {
+                  setActive(index);
+                  setPage(1);
+                }}
+                className={cx('fixed-width')}
+              />
+            ))}
           </div>
         </Box>
         <div className="tw-pt-10">
