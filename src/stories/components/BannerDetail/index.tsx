@@ -72,7 +72,7 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
   return (
     <div
       className={cx('content-area', className, {
-        'tw-bg-[#FFFAF1]': data?.clubMemberStatus != '0006', // isSpecial이 true일 때만 클래스가 적용됩니다.
+        'tw-bg-[#FFFAF1]': data?.clubMemberStatus === '0006', // isSpecial이 true일 때만 클래스가 적용됩니다.
       })}
     >
       <div className="container tw-p-4 tw-leading-normal tw-text-black tw-font-bold tw-text-xl tw-pt-10 tw-pb-10">
