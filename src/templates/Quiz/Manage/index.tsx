@@ -264,7 +264,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
         }
       });
 
-      if (result.length <= total) {
+      if (result.length <= total && flag === true) {
         resultArray1.push({
           clubQuizSequence: valueData[0].clubQuizSequence,
           clubSequence: parseInt(id),
@@ -351,7 +351,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
       return item;
     });
 
-    //console.log('modifiedArray', modifiedArray);
+    console.log('modifiedArray', modifiedArray);
     //console.log('filteredArray1', state, quizSequence, resultArray1);
     const filteredArray = state.filter(item => {
       if (quizSequence !== undefined) {
@@ -361,8 +361,11 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
     });
     //퀴즈가 클럽에 등록이 안되어있는경우. 등록 삭제일때 문제 발생.
     // "weekNumber"가 undefined인 항목을 필터링하여 새로운 배열 생성
-    const filteredDataRemove = modifiedArray.filter(item => item.content !== undefined);
-    //console.log(filteredDataRemove);
+    // const filteredDataRemove = modifiedArray.filter(item => item.content !== undefined);
+    // "weekNumber"가 undefined이거나 "content"가 null인 항목을 필터링하여 새로운 배열 생성
+    const filteredDataRemove = modifiedArray.filter(item => item.activeCount !== null);
+
+    console.log(filteredDataRemove);
 
     //console.log('filteredArray', filteredArray);
     //console.log('filtmodifiedArrayeredArray2', modifiedArray);
@@ -424,13 +427,25 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
     const arrayList = [...publishedData, ...quizListCopy];
 
     // Transforming the data into an array of objects with "clubQuizSequence" and "order" properties
-    //console.log(quizListCopy);
+    //"isRepresentative" 값이 true인 개수를 세기 위한 변수
+    let countIsRepresentative = 0;
+
+    //데이터를 순회하면서 "isRepresentative" 값이 true인 경우 카운트 증가
+    arrayList.forEach(quiz => {
+      if (quiz.isRepresentative === true) {
+        countIsRepresentative++;
+      }
+    });
+    console.log(countIsRepresentative);
+    //"isRepresentative" 값이 3개가 아닌 경우 알림 창 표시
+    if (countIsRepresentative !== 3) {
+      alert('대표 퀴즈는 3개입니다.');
+      return;
+    }
 
     // 빈 객체를 제거한 새로운 배열 생성
     // "content" 필드가 있는 항목만 필터링
     const filteredData = arrayList.filter(item => item.hasOwnProperty('content'));
-    //console.log(filteredData);
-
     const transformedData = {
       clubSequence: contents?.clubSequence, // Add the "clubSequence" property with a value of 2
       clubQuizzes: filteredData.map((item, index) => ({
@@ -457,23 +472,24 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
       return item;
     });
     //console.log(updatedData);
-    const arrayList = [...publishedData, ...quizListCopy];
+    // const arrayList = [...publishedData, ...quizListCopy];
     // "isRepresentative" 값이 true인 개수를 세기 위한 변수
-    let countIsRepresentative = 0;
+    // let countIsRepresentative = 0;
 
     // 데이터를 순회하면서 "isRepresentative" 값이 true인 경우 카운트 증가
-    arrayList.forEach(quiz => {
-      if (quiz.isRepresentative === true) {
-        countIsRepresentative++;
-      }
-    });
+    // arrayList.forEach(quiz => {
+    //   if (quiz.isRepresentative === true) {
+    //     countIsRepresentative++;
+    //   }
+    // });
     //console.log(countIsRepresentative);
     // "isRepresentative" 값이 3개가 아닌 경우 알림 창 표시
-    if (countIsRepresentative >= 3) {
-      alert('대표 퀴즈는 3개입니다.');
-    } else {
-      setQuizListCopy(updatedData);
-    }
+    // if (countIsRepresentative >= 3) {
+    //   alert('대표 퀴즈는 3개입니다.');
+    // } else {
+    //   setQuizListCopy(updatedData);
+    // }
+    setQuizListCopy(updatedData);
   }
 
   const handleQuizInsertClick = async () => {

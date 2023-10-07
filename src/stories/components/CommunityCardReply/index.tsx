@@ -28,17 +28,32 @@ const CommunityCardReply = ({ reply, writer, className, memberId, onReplyDeleteS
 
   return (
     <div className={cx('community-board-reply-container', 'row', className)}>
-      <div className="tw-flex tw-items-center tw-space-x-4 tw-my-5 tw-gap-2">
+      <div className="tw-grid  tw-grid-cols-12  tw-flex tw-justify-content-center tw-items-center tw-space-x-4 tw-my-2 tw-gap-2">
         {/* {board.postNo} */}
-        <img src={reply?.profileImageUrl} alt={'image'} className={cx('rounded-circle', 'profile-image', 'tw-h-12')} />
-        <div>
-          {/*TODO 원래 job(직업)임*/}
+        <div className="tw-col-span-1 tw-flex tw-items-end tw-justify-end">
+          <img src={reply?.imageUrl} alt={'image'} className={cx('rounded-circle', 'profile-image', 'tw-h-10')} />
+        </div>
+        <div className="tw-col-span-1">
           <div className="tw-font-bold tw-text-lg tw-text-black">{reply?.nickname}</div>
         </div>
-        <div>
+        <div className="tw-col-span-10">
           <div className="tw-text-sm">{reply.createAt.toString().split(' ')[0]}</div>
         </div>
-        <div>{/* <div className="tw-text-sm">{timeForToday(board.createdAt)}</div> */}</div>
+      </div>
+
+      <div className="tw-grid tw-grid-cols-12 tw-gap-4 tw-items-start tw-justify-center">
+        <div className="tw-col-span-1"></div>
+        <div className="tw-col-span-11">
+          <div className={cx('reply-wrap', 'col-md-7', 'tw-text-sm')}>{reply.body}</div>
+        </div>
+        <div className="tw-col-span-1"></div>
+      </div>
+      <div className="tw-grid tw-grid-cols-12 tw-gap-4 tw-items-start tw-justify-center">
+        <div className="tw-col-span-1"></div>
+        <div className="tw-col-span-11">
+          <div className={cx('reply-wrap', 'col-md-7', 'tw-text-[12px]', 'tw-text-gray-400')}>댓글쓰기</div>
+        </div>
+        <div className="tw-col-span-1"></div>
       </div>
       {/* <div className={cx('profile-wrap', 'col-md-1')}>
         <img
@@ -93,7 +108,7 @@ const CommunityCardReply = ({ reply, writer, className, memberId, onReplyDeleteS
           </div>
         </div>
       </div> */}
-      <div className={cx('reply-wrap', 'col-md-7')}>{reply.body}</div>
+
       {/* <div className={cx('reply-wrap', 'col-md-1')}>
         {memberId == reply.author.memberId ? (
           <Chip

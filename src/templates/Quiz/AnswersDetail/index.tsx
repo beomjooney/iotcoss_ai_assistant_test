@@ -66,6 +66,7 @@ export function QuizAnswersDetailTemplate({ id }: QuizAnswersDetailTemplateProps
   const [page, setPage] = useState(1);
   const [keyWorld, setKeyWorld] = useState('');
   const [totalPage, setTotalPage] = useState(1);
+  const [totalElements, setTotalElements] = useState(0);
   const [params, setParams] = useState<paramProps>({ id, page });
   let [isLiked, setIsLiked] = useState(false);
 
@@ -73,8 +74,9 @@ export function QuizAnswersDetailTemplate({ id }: QuizAnswersDetailTemplateProps
     setContents(data);
   });
   const { isFetched: isQuizAnswerListFetched } = useQuizAnswerDetail(params, data => {
-    console.log(data);
+    //console.log(data);
     setAnswerContents(data?.contents);
+    setTotalElements(data?.totalElements);
     setTotalPage(data?.totalPages);
   });
 
@@ -184,40 +186,39 @@ export function QuizAnswersDetailTemplate({ id }: QuizAnswersDetailTemplateProps
               </button>
             </Grid>
           </Grid>
-
-          <Divider className="tw-py-2" />
-
-          <div className="tw-py-4 tw-text-sm tw-font-normal tw-text-gray-500 ">
-            {contents?.recommendJobGroupNames?.map((name, i) => (
-              <span
-                key={i}
-                className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600"
-              >
-                {name}
-              </span>
-            ))}
-            <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
-              {contents?.recommendLevels?.sort().join(',')}레벨
-            </span>
-            {contents?.recommendJobNames?.map((name, i) => (
-              <span
-                key={i}
-                className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-100 tw-text-sm tw-font-light tw-text-gray-600"
-              >
-                {name}
-              </span>
-            ))}
-            {contents?.hashTags?.map((name, i) => (
-              <span
-                key={i}
-                className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-gray-700"
-              >
-                {name}
-              </span>
-            ))}
-          </div>
-          <div className="tw-text-black tw-font-bold tw-text-2xl tw-py-4">{contents?.clubName}</div>
         </div>
+        <Divider className="tw-py-2" />
+
+        <div className="tw-py-4 tw-text-sm tw-font-normal tw-text-gray-500 ">
+          {contents?.recommendJobGroupNames?.map((name, i) => (
+            <span
+              key={i}
+              className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600"
+            >
+              {name}
+            </span>
+          ))}
+          <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
+            {contents?.recommendLevels?.sort().join(',')}레벨
+          </span>
+          {contents?.recommendJobNames?.map((name, i) => (
+            <span
+              key={i}
+              className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-100 tw-text-sm tw-font-light tw-text-gray-600"
+            >
+              {name}
+            </span>
+          ))}
+          {contents?.hashTags?.map((name, i) => (
+            <span
+              key={i}
+              className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-gray-700"
+            >
+              {name}
+            </span>
+          ))}
+        </div>
+        <div className="tw-text-black tw-font-bold tw-text-2xl tw-py-4">{contents?.clubName}</div>
 
         <div>
           <div className="tw-bg-gray-50 tw-rounded-lg tw-px-8 tw-py-5 tw-text-black tw-grid tw-grid-cols-12">
@@ -270,26 +271,24 @@ export function QuizAnswersDetailTemplate({ id }: QuizAnswersDetailTemplateProps
             </div>
           </div>
           <div>
-            <div className="tw-grid tw-grid-cols-5 tw-gap-4 tw-pt-4 tw-mt-5 tw-items-center tw-justify-center">
-              <div className="tw-col-span-3">
-                <div className="tw-text-black tw-font-bold tw-text-2xl">퀴즈답변</div>
+            <div className="tw-mt-9 tw-grid tw-grid-cols-6 tw-gap-4 tw-items-center tw-justify-center">
+              <div className="tw-col-span-4">
+                <div className="tw-text-black tw-font-bold tw-text-2xl">퀴즈답변 {totalElements}</div>
               </div>
-              <div className="tw-col-span-2 tw-text-right">
+              <div className="tw-col-span-2">
                 <TextField
-                  sx={{
-                    width: 400,
-                  }}
-                  id="outlined-search"
+                  fullWidth
+                  id="outlined-basic"
                   label=""
-                  type="search"
-                  InputProps={{
-                    style: { height: '45px' },
-                    startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
-                  }}
+                  variant="outlined"
                   onKeyPress={e => {
                     if (e.key === 'Enter') {
                       searchKeyworld((e.target as HTMLInputElement).value);
                     }
+                  }}
+                  InputProps={{
+                    style: { height: '43px' },
+                    startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
                   }}
                 />
               </div>

@@ -6,13 +6,12 @@ $profile-size: 52px;
 $space-size: 24px;
 
 .community-board-reply-container {
-  padding: 12px 0;
+  padding: 0px 0;
   .col-md-20 {
     flex: 0 0 21.033333%;
     max-width: 21.033333%;
   }
   .profile-wrap {
-
     .profile-image {
       width: $profile-size;
       height: $profile-size;

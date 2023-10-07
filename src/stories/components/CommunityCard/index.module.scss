@@ -78,9 +78,6 @@ $space-size: 5px;
 
   .board-footer {
     font-size: font.$font-size-14 !important;
-    margin-top: $space-size;
-    margin-bottom: 13px;
-
     button {
       background: none;
       border: none;
@@ -95,7 +92,6 @@ $space-size: 5px;
       .reaction__count {
         color: palette.$Primary-Gray600;
         margin-left: 4px;
-        line-height: 22.5px;
 
         &--active {
           color: palette.$Primary-Blue900;

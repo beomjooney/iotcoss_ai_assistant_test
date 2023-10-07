@@ -30,7 +30,6 @@ import {
   useQuizRankDetail,
   useQuizSolutionDetail,
 } from 'src/services/quiz/quiz.queries';
-import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -79,7 +78,7 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
     setContents(data);
   });
   const { isFetched: isQuizAnswerListFetched } = useQuizAnswerDetail(params, data => {
-    console.log(data);
+    //console.log(data);
     setAnswerContents(data?.contents);
     setTotalElements(data?.totalElements);
     setTotalPage(data?.totalPages);

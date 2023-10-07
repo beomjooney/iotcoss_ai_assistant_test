@@ -252,7 +252,7 @@ CommunityCardProps) => {
           value={board?.postAnswer}
         />
 
-        <div className="tw-grid tw-items-center tw-grid-cols-6 tw-py-3 tw-mt-1">
+        <div className="tw-grid tw-items-center tw-grid-cols-10 tw-py-3 tw-mt-1">
           <div className="tw-col-span-2">
             <div className="tw-flex tw-items-center tw-gap-4">
               <span>
@@ -269,13 +269,23 @@ CommunityCardProps) => {
               </span>
             </div>
           </div>
-          <div className="tw-col-span-4 tw-flex tw-justify-end">
+          <div className="tw-col-span-7 tw-flex tw-justify-end">
             <Textfield width={400} defaultValue="" placeholder="댓글을 입력해주세요." ref={textInput} />
             <button
               className="tw-bg-black tw-text-white px-4  tw-ml-2 tw-rounded-md"
               onClick={() => onReplySubmit(board?.clubQuizAnswerSequence, textInput.current.value)}
             >
               입력
+            </button>
+          </div>
+          <div className="tw-col-span-1 tw-flex tw-justify-end">
+            <button
+              className={cx('board-footer__reply')}
+              onClick={() => {
+                onReply(board.clubQuizAnswerSequence);
+              }}
+            >
+              댓글 {replyCount}개{isOpen ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
             </button>
           </div>
         </div>
@@ -290,14 +300,6 @@ CommunityCardProps) => {
             </button> */}
             <span className={cx('reaction__count', { 'reaction__count--active': isLiked })}>{likeCount}</span>
           </span>
-          {/* <button
-            className={cx('board-footer__reply')}
-            onClick={() => {
-              onReply(board.clubQuizAnswerSequence);
-            }}
-          >
-            댓글 {replyCount}개{isOpen ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
-          </button> */}
         </div>
       </div>
       {isOpen && isReplyFetched && (
@@ -316,14 +318,15 @@ CommunityCardProps) => {
               );
             })}
           </div>
-          <div className={cx('reply-container__form', 'row')}>
-            <div className={cx('form-input', 'col-md-11')}>
-              <Textfield defaultValue="" placeholder="댓글을 입력하세요." ref={textInput} />
+          {/* <div className="tw-grid tw-grid-cols-12 tw-gap-4 tw-items-start tw-justify-center">
+            <div className="tw-col-span-1"></div>
+            <div className="tw-col-span-11">
+              <Textfield defaultValue="" width={300} placeholder="댓글을 입력하세요." ref={textInput} />
             </div>
-            <div className={cx('form-button', 'col-md-1')}>
+            <div className="tw-col-span-1">
               <Button color="gray" label="버튼" onClick={() => onReplySubmit(board.postNo, textInput.current.value)} />
             </div>
-          </div>
+          </div> */}
         </div>
       )}
     </div>
