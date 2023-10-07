@@ -166,7 +166,14 @@ const quizSolutionDetail = ({
         },
       });
 
-      router.push(`/quiz/growth/${data?.clubSequence}`);
+      // router.push(`/quiz/growth/${data?.clubSequence}`);
+      router.push(
+        {
+          pathname: `/quiz/growth/${data?.clubSequence}`,
+          query: { qid: data?.clubQuizSequence },
+        },
+        `/quiz/growth/${data?.clubSequence}`,
+      );
     }
   };
 

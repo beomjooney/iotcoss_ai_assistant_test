@@ -23,7 +23,7 @@ import {
 import { useSessionStore } from 'src/store/session';
 import Grid from '@mui/material/Grid';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
-import router from 'next/router';
+import router, { useRouter } from 'next/router';
 import { useQuizGrowthDetail } from 'src/services/quiz/quiz.queries';
 import Divider from '@mui/material/Divider';
 
@@ -63,6 +63,9 @@ export function QuizGrowthTemplate({ id }: QuizGrowthTemplateProps) {
     value: number;
     className?: any;
   }
+
+  const router = useRouter();
+  console.log(router.query);
 
   return (
     <div className={cx('seminar-detail-container')}>
@@ -133,7 +136,7 @@ export function QuizGrowthTemplate({ id }: QuizGrowthTemplateProps) {
           </div>
 
           <button
-            onClick={() => (location.href = '/quiz/answers/' + `${id}`)}
+            onClick={() => (location.href = '/quiz/answers/' + `${router.query.qid}`)}
             className="tw-mt-20 tw-bg-blue-500 tw-text-white tw-text-base tw-font-bold tw-mr-2 tw-px-16 tw-py-3 tw-rounded"
           >
             퀴즈 답변 확인하기
