@@ -302,7 +302,7 @@ const quizSolutionDetail = ({
 
           {activeStep === 1 && (
             <div>
-              <iframe
+              {/* <iframe
                 className="border tw-rounded-lg"
                 width="100%"
                 height="600px"
@@ -314,8 +314,19 @@ const quizSolutionDetail = ({
                     encrypted-media;
                     gyroscope;
                     picture-in-picture"
-              ></iframe>
-              <div className="border tw-rounded-lg tw-p-5 tw-mt-5">
+              ></iframe> */}
+              <div className="border tw-rounded-lg tw-p-5 tw-my-5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    window.open(data?.articleUrl, '_blank'); // data?.articleUrl을 새 탭으로 열기
+                  }}
+                  className=" tw-text-white tw-w-[150px] tw-bg-blue-500 tw-my-8 tw-text-sm  tw-font-medium tw-rounded tw-text-base tw-px-7 tw-py-3 "
+                >
+                  아티클 보기
+                </button>
+              </div>
+              <div className="border tw-rounded-lg tw-p-5 tw-mt-14">
                 <div className="tw-text-xl tw-font-bold tw-py-5">오늘의 퀴즈는 알고 있었던 내용이었나요?</div>
                 <FormControl className="tw-py-5">
                   <RadioGroup
@@ -335,7 +346,7 @@ const quizSolutionDetail = ({
               <button
                 type="button"
                 onClick={handleComprehension}
-                className=" tw-text-white tw-w-[300px] tw-bg-blue-500 tw-mt-5 tw-focus:ring-4  tw-font-medium tw-rounded tw-text-base tw-px-7 tw-py-3 "
+                className=" tw-text-white tw-w-[300px] tw-bg-blue-500 tw-text-sm tw-mt-5 tw-focus:ring-4  tw-font-medium tw-rounded tw-text-base tw-px-7 tw-py-3 "
               >
                 읽기완료
               </button>
