@@ -320,6 +320,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
               data={contents}
               title="퀴즈클럽"
               subTitle="클럽 상세보기"
+              className="tw-bg-[#fffff]"
               imageName="top_banner_seminar.svg"
               onClick={() => handleParticipant()}
             />
@@ -555,6 +556,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
               title="퀴즈클럽"
               subTitle="클럽 상세보기"
               imageName="top_banner_seminar.svg"
+              className="tw-bg-[#FFFAF1]"
             />
             <div className="tw-bg-[#FFFAF1]">
               <div className="container">
