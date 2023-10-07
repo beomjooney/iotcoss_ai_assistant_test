@@ -52,7 +52,7 @@ export function QuizGrowthTemplate({ id }: QuizGrowthTemplateProps) {
     setContents(data);
   });
 
-  console.log('detail : ', data);
+  //console.log('detail : ', data);
   const { mutate: onParticipant } = useParticipantSeminar();
   const { mutate: onCancelParticipant } = useParticipantCancelSeminar();
   const { mutate: onEncoreSeminar } = useEncoreSeminar();
@@ -65,7 +65,7 @@ export function QuizGrowthTemplate({ id }: QuizGrowthTemplateProps) {
   }
 
   const router = useRouter();
-  console.log(router.query);
+  //console.log(router.query);
 
   return (
     <div className={cx('seminar-detail-container')}>
