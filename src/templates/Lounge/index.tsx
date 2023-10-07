@@ -93,6 +93,7 @@ export function LoungeTemplate() {
   const [contents, setContents] = useState<RecommendContent[]>([]);
   const [rankContents, setRankContents] = useState<RecommendContent[]>([]);
   const [totalElements, setTotalElements] = useState(0);
+  const [jobGroup, setJobGroup] = useState([]);
 
   const { isFetched: isContentFetched } = useQuizRoungeDetail(params, data => {
     console.log(data?.contents);
@@ -109,6 +110,7 @@ export function LoungeTemplate() {
     let _keyworld = value.replace('#', '');
     if (_keyworld == '') _keyworld = null;
     setKeyWorld(_keyworld);
+    setPage(1);
   }
 
   const { isFetched: isContentTypeFetched } = useContentTypes(data => {
@@ -129,13 +131,10 @@ export function LoungeTemplate() {
   }, [page, keyWorld]);
 
   const handleJobs = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
-    console.log('job', event.currentTarget, newFormats);
     setJobGroup(newFormats);
-
     setParams({
-      ...params,
-      recommendJobGroups: contentType,
-      recommendJobs: newFormats.join(','),
+      recommendJobGroups: newFormats.join(','),
+      recommendLevels: recommendLevels.join(','),
       page,
     });
     setPage(1);
@@ -144,14 +143,31 @@ export function LoungeTemplate() {
 
   const handleRecommendLevels = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
     setRecommendLevels(newFormats);
-
     setParams({
-      ...params,
-      recommendJobGroups: contentType,
+      recommendJobGroups: jobGroup.join(','),
       recommendLevels: newFormats.join(','),
       page,
     });
+    setPage(1);
   };
+
+  // 아래 함수는 clubQuizStatusType에 따라 이미지 URL을 반환합니다.
+  function getImage(clubQuizStatusType) {
+    let imageUrl = '';
+
+    switch (clubQuizStatusType) {
+      case '0002':
+        imageUrl = '/assets/images/icons/new.png'; // NEW 이미지 URL
+        break;
+      case '0003':
+        imageUrl = '/assets/images/icons/hot.png'; // HOT 이미지 URL
+        break;
+      default:
+        imageUrl = ''; // 상태 없음이나 다른 경우 이미지 없음
+    }
+
+    return imageUrl ? <img src={imageUrl} className="tw-w-[30px]" alt={clubQuizStatusType} /> : null;
+  }
 
   return (
     <div className={cx('seminar-container')}>
@@ -175,48 +191,61 @@ export function LoungeTemplate() {
               <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
                 <Grid item xs={9} className="tw-font-bold tw-text-3xl tw-text-black">
                   <div className={cx('filter-area')}>
-                    <div className={cx('mentoring-button__group', 'gap-12', 'justify-content-center')}>
-                      <Toggle
-                        label="전체직군"
-                        name="전체보기"
-                        value=""
-                        variant="small"
-                        checked={active === 0}
-                        isActive
-                        type="tabButton"
-                        onChange={() => {
-                          setActive(0);
-                          setParams({
-                            page,
-                          });
-                          setPage(1);
-                        }}
-                        className="tw-w-10"
-                      />
-                      {isContentTypeFetched &&
-                        contentTypes.map((item, i) => (
-                          <Toggle
-                            key={item.id}
-                            label={item.name}
-                            name={item.name}
-                            value={item.id}
-                            variant="small"
-                            checked={active === i + 1}
-                            isActive
-                            type="tabButton"
-                            onChange={() => {
-                              setActive(i + 1);
-                              setContentType(item.id);
-                              setParams({
-                                ...params,
-                                recommendJobGroups: item.id,
-                                page,
-                              });
-                              setPage(1);
+                    <div className="tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
+                      <span className="tw-font-bold tw-text-base tw-text-black tw-mr-4">전체직군</span>
+                      <ToggleButtonGroup
+                        style={{ display: 'inline' }}
+                        value={jobGroup}
+                        onChange={handleJobs}
+                        aria-label="text alignment"
+                        size="small"
+                      >
+                        {isContentTypeFetched &&
+                          contentTypes?.map((item, index) => (
+                            <ToggleButton
+                              key={`job-${index}`}
+                              value={item.id}
+                              aria-label="fff"
+                              className="tw-ring-1 tw-ring-slate-900/10"
+                              style={{
+                                borderRadius: '5px',
+                                borderLeft: '0px',
+                                margin: '5px',
+                                height: '30px',
+                                border: '0px',
+                              }}
+                            >
+                              {item.name}
+                            </ToggleButton>
+                          ))}
+                      </ToggleButtonGroup>
+                    </div>
+                    <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
+                      <span className="tw-font-bold tw-text-base tw-text-black tw-mr-4">전체레벨</span>
+                      <ToggleButtonGroup
+                        value={recommendLevels}
+                        onChange={handleRecommendLevels}
+                        aria-label="text alignment"
+                        size="small"
+                      >
+                        {levelGroup?.map((item, index) => (
+                          <ToggleButton
+                            key={`job-${index}`}
+                            value={item.name}
+                            aria-label="fff"
+                            className="tw-ring-1 tw-ring-slate-900/10"
+                            style={{
+                              borderRadius: '5px',
+                              borderLeft: '0px',
+                              margin: '5px',
+                              height: '30px',
+                              border: '0px',
                             }}
-                            className={cx('fixed-width', 'tw-ml-4', 'max-lg:!tw-hidden')}
-                          />
+                          >
+                            레벨 {item.name}
+                          </ToggleButton>
                         ))}
+                      </ToggleButtonGroup>
                     </div>
                   </div>
                 </Grid>
@@ -239,35 +268,6 @@ export function LoungeTemplate() {
                 </Grid>
               </Grid>
             </Box>
-            <div>
-              <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
-                <span className="tw-font-bold tw-text-base tw-text-black tw-mr-4">레벨</span>
-                <ToggleButtonGroup
-                  value={recommendLevels}
-                  onChange={handleRecommendLevels}
-                  aria-label="text alignment"
-                  size="small"
-                >
-                  {levelGroup?.map((item, index) => (
-                    <ToggleButton
-                      key={`job-${index}`}
-                      value={item.name}
-                      aria-label="fff"
-                      className="tw-ring-1 tw-ring-slate-900/10"
-                      style={{
-                        borderRadius: '5px',
-                        borderLeft: '0px',
-                        margin: '5px',
-                        height: '30px',
-                        border: '0px',
-                      }}
-                    >
-                      레벨 {item.name}
-                    </ToggleButton>
-                  ))}
-                </ToggleButtonGroup>
-              </div>
-            </div>
             <article>
               <div className={cx('content-area')}>
                 {isContentFetched &&
@@ -284,10 +284,25 @@ export function LoungeTemplate() {
 
                           <div className="tw-px-0 tw-py-0  border tw-rounded-lg tw-my-4">
                             <div className="tw-text-black tw-px-5 tw-py-4">
-                              <div className="tw-pb-4 tw-text-gray-500 tw-text-sm tw-font-bold">[퀴즈클럽]</div>
+                              <div className="tw-flex tw-items-center tw-justify-between">
+                                <div className="tw-pb-4 tw-text-gray-500 tw-text-sm tw-font-bold tw-flex tw-items-center">
+                                  <div>[퀴즈클럽]</div>
+                                  <div className="tw-pl-2">
+                                    {item?.clubQuizStatusType && <div>{getImage(item.clubQuizStatusType)}</div>}
+                                  </div>
+                                </div>
+                                <div className="tw-pb-4 tw-text-gray-500 tw-text-sm tw-font-medium">
+                                  {item?.publishDate}
+                                </div>
+                              </div>
                               <hr className="tw-y-1 tw-mb-4 tw-h-[0px] tw-border-t tw-bg-gray-300 " />
-                              <div className="tw-p-7 tw-bg-gray-50 tw-rounded-lg">
-                                <span className="tw-font-bold tw-text-[16px] tw-text-black">{item?.content}</span>
+                              <div className="tw-py-7 tw-px-5 tw-bg-gray-50 tw-rounded-lg">
+                                <div className="tw-grid tw-grid-cols-12 tw-gap-2">
+                                  <div className="tw-col-span-1 tw-flex tw-flex-col tw-items-center tw-justify-center tw-pr-2">
+                                    <img src="/assets/images/icons/quiz.png" className="tw-w-5 tw-h-5" alt="메이커" />
+                                  </div>
+                                  <div className="tw-col-span-11">{item?.content} </div>
+                                </div>
                               </div>
                               <div className="tw-py-7 ">
                                 {item?.hashTags?.map((name, i) => (
@@ -296,19 +311,40 @@ export function LoungeTemplate() {
                                   </span>
                                 ))}
                               </div>
-                              <div className="tw-text-left tw-pt-3 tw-flex tw-items-center tw-gap-4">
-                                <span>
-                                  <AssignmentOutlinedIcon className="tw-mr-1 tw-w-5" />
-                                  {item?.activeCount}
-                                </span>
-                                <span>
-                                  <FavoriteBorderIcon className="tw-mr-1  tw-w-5" />
-                                  <span>{item?.likeCount}</span>
-                                </span>
-                                <span>
-                                  <ContentCopyOutlinedIcon className="tw-mr-1  tw-w-5" />
-                                  <span>{item?.answerCount}</span>
-                                </span>
+                              <div className="tw-text-left tw-pt-3 tw-flex tw-items-center tw-gap-5 tw-flex tw-items-center tw-justify-between">
+                                <div>
+                                  <span className="tw-pr-3">
+                                    <AssignmentOutlinedIcon className="tw-mr-2 tw-w-5" />
+                                    {item?.activeCount}
+                                  </span>
+                                  <span className="tw-pr-3">
+                                    <FavoriteBorderIcon className="tw-mr-2  tw-w-5" />
+                                    <span>{item?.likeCount}</span>
+                                  </span>
+                                  <span className="tw-pr-3">
+                                    <ContentCopyOutlinedIcon className="tw-mr-2  tw-w-5" />
+                                    <span>{item?.answerCount}</span>
+                                  </span>
+                                </div>
+                                <div className="tw-text-sm">
+                                  {item?.isAnswered ? (
+                                    <button
+                                      className="tw-font-bold"
+                                      onClick={() => router.push('/quiz/answers/' + `${item?.clubQuizSequence}`)}
+                                    >
+                                      답변완료
+                                    </button>
+                                  ) : item?.isClubMember ? (
+                                    <button
+                                      onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
+                                      className="tw-text-blue-500 tw-font-bold"
+                                    >
+                                      퀴즈풀러가기
+                                    </button>
+                                  ) : (
+                                    <></>
+                                  )}
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -327,11 +363,16 @@ export function LoungeTemplate() {
           <Grid item xs={4}>
             <div className="tw-bg-gray-50 tw-rounded-lg tw-h-[1260px] tw-p-5 tw-text-black ">
               <div>
-                <div className="tw-font-bold tw-text-base tw-pb-5">이달의 메이커</div>
+                <div className="tw-flex tw-items-center tw-pb-5 tw-gap-2">
+                  <div>
+                    <img src="/assets/images/icons/maker.png" className="tw-w-4" alt="메이커" />
+                  </div>
+                  <div className="tw-font-bold tw-text-[16px]">이달의 메이커</div>
+                </div>
                 <div className="tw-bg-white tw-p-5 tw-rounded-md">
                   {rankContents?.maker ? (
-                    <div className="tw-grid tw-grid-cols-4 tw-gap-4 ">
-                      <div className="tw-col-span-1  tw-flex tw-flex-col tw-items-center tw-justify-center">
+                    <div className="tw-grid tw-grid-cols-7 tw-gap-2  ">
+                      <div className="tw-col-span-2  tw-flex tw-flex-col tw-items-center tw-justify-center">
                         <img
                           className="tw-w-12 tw-h-12 tw-ring-1 tw-rounded-full"
                           src={rankContents?.maker?.profileImageUrl}
@@ -341,14 +382,19 @@ export function LoungeTemplate() {
                           <div>{rankContents?.maker?.nickname}</div>
                         </div>
                       </div>
-                      <div className="tw-col-span-3 tw-font-bold tw-text-black tw-flex tw-flex-col tw-items-center tw-justify-center">
-                        <div>
-                          이번달 등록 질문 수 :{' '}
-                          <span className="tw-text-blue-600">{rankContents?.maker?.madeQuizCount}개</span>
+
+                      <div className="tw-col-span-5 tw-px-5 tw-font-bold tw-text-[12px] tw-text-black tw-flex tw-flex-col tw-justify-center">
+                        <div className="tw-flex tw-justify-between">
+                          <div> 이번달 등록 질문 수 </div>
+                          <div className="tw-text-blue-600">
+                            {rankContents?.maker?.madeQuizCount.toLocaleString()}개
+                          </div>
                         </div>
-                        <div>
-                          받은 총 좋아요 수 :{' '}
-                          <span className="tw-text-blue-600">{rankContents?.maker?.receivedLikeCount}개</span>
+                        <div className="tw-flex tw-justify-between">
+                          <div> 받은 총 좋아요 수 </div>
+                          <div className="tw-text-blue-600">
+                            {rankContents?.maker?.receivedLikeCount.toLocaleString()}개
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -358,11 +404,14 @@ export function LoungeTemplate() {
                   <div>
                     {rankContents?.maker?.quizzes?.map((item, index) => {
                       return (
-                        <div key={index} className="tw-py-3 tw-text-sm">
-                          <div>
-                            {index + 1}. {item?.content}
+                        <div key={index} className="tw-py-1 tw-text-sm">
+                          <div className="tw-flex tw-items-center tw-gap-2 tw-py-2">
+                            <div className="tw-rounded-full tw-bg-gray-400 tw-text-white tw-w-[19px] tw-text-center">
+                              {index + 1}
+                            </div>
+                            <div className="tw-line-clamp-2 tw-text-sm tw-font-medium">{item?.content}</div>
                           </div>
-                          <div className="tw-flex tw-items-center tw-gap-4">
+                          <div className="tw-flex tw-items-center tw-gap-4 tw-pl-7">
                             <span>
                               <AssignmentOutlinedIcon className="tw-mr-1 tw-w-5" />
                               {item?.answerCount}
@@ -383,15 +432,23 @@ export function LoungeTemplate() {
                 </div>
               </div>
               <div>
-                <div className="tw-font-bold tw-text-base tw-py-5">이달의 퀴즈</div>
+                <div className="tw-flex tw-items-center tw-py-5 tw-gap-2">
+                  <div>
+                    <img src="/assets/images/icons/quiz.png" className="tw-w-4" alt="메이커" />
+                  </div>
+                  <div className="tw-font-bold tw-text-[16px]">이달의 퀴즈</div>
+                </div>
                 <div className="tw-bg-white tw-p-5 tw-py-2 tw-rounded-md">
                   {rankContents?.quizzes?.map((item, index) => {
                     return (
-                      <div key={index} className="tw-py-3 tw-text-sm">
-                        <div>
-                          {index + 1}. {item?.content}
+                      <div key={index} className="tw-py-1 tw-text-sm">
+                        <div className="tw-flex tw-items-center tw-gap-2 tw-py-2">
+                          <div className="tw-rounded-full tw-bg-gray-400 tw-text-white tw-w-[19px] tw-text-center">
+                            {index + 1}
+                          </div>
+                          <div className="tw-line-clamp-2 tw-text-sm tw-font-medium">{item?.content}</div>
                         </div>
-                        <div className="tw-flex tw-items-center tw-gap-4">
+                        <div className="tw-flex tw-items-center tw-gap-4 tw-pl-7">
                           <span>
                             <AssignmentOutlinedIcon className="tw-mr-1 tw-w-5" />
                             {item?.answerCount}
@@ -411,7 +468,12 @@ export function LoungeTemplate() {
                 </div>
               </div>
               <div>
-                <div className="tw-font-bold tw-text-base tw-py-5">이달의 클럽</div>
+                <div className="tw-flex tw-items-center tw-py-5 tw-gap-2">
+                  <div>
+                    <img src="/assets/images/icons/club.png" className="tw-w-4" alt="메이커" />
+                  </div>
+                  <div className="tw-font-bold tw-text-[16px]">이달의 클럽</div>
+                </div>
                 <div className="tw-bg-white tw-p-5 tw-py-2 tw-rounded-md">
                   {rankContents?.clubs?.map((item, index) => {
                     return (

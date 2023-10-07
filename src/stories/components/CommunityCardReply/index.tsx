@@ -76,7 +76,11 @@ const CommunityCardReply = ({ reply, writer, className, memberId, onReplyDeleteS
       <div className="tw-grid  tw-grid-cols-12  tw-flex tw-items-center  tw-mt-2 tw-gap-2">
         {/* {board.postNo} */}
         <div className="tw-col-span-1 tw-flex tw-items-end tw-justify-center">
-          <img src={reply?.imageUrl} alt={'image'} className={cx('rounded-circle', 'profile-image', 'tw-h-10')} />
+          <img
+            src={reply?.imageUrl}
+            alt={'image'}
+            className={cx('rounded-circle', 'profile-image', 'tw-h-10', 'tw-w-10')}
+          />
         </div>
         <div className="tw-col-span-3 tw-text-left tw-flex tw-items-center">
           <div className="tw-font-bold tw-text-lg tw-text-black">{reply?.nickname} </div>

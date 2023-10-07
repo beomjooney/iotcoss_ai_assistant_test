@@ -198,7 +198,7 @@ CommunityCardProps) => {
                   : `${process.env['NEXT_PUBLIC_GENERAL_API_URL']}/images/${board?.profileImageUrl}`
               }
               alt={'image'}
-              className={cx('rounded-circle', 'profile-image', 'tw-h-12')}
+              className={cx('rounded-circle', 'profile-image', 'tw-h-12', 'tw-w-12')}
             />
             <div>
               {/*TODO 원래 job(직업)임*/}
@@ -272,7 +272,7 @@ CommunityCardProps) => {
           <div className="tw-col-span-7 tw-flex tw-justify-end">
             <Textfield width={400} defaultValue="" placeholder="댓글을 입력해주세요." ref={textInput} />
             <button
-              className="tw-bg-black tw-text-white px-4  tw-ml-2 tw-rounded-md"
+              className="tw-bg-black tw-text-sm tw-text-white tw-px-5 tw-ml-2 tw-rounded-md"
               onClick={() => onReplySubmit(board?.clubQuizAnswerSequence, textInput.current.value)}
             >
               입력

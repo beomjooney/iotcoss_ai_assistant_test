@@ -108,7 +108,7 @@ $space-size: 5px;
 
   .reply-container {
     border-top: 1px solid palette.$Primary-Gray500;
-
+    border-bottom: 1px solid palette.$Primary-Gray500;
     &__content {
       padding-top: 13px;
     }

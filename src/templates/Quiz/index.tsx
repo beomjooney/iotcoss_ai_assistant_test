@@ -160,6 +160,7 @@ export function QuizTemplate() {
       recommendLevels: newFormats.join(','),
       page,
     });
+    setPage(1);
   };
 
   return (

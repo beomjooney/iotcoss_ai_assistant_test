@@ -18,11 +18,11 @@ $space-size: 5px;
         width: $header-size;
         height: $header-size;
         float: left;
-        border: 0.5px solid #d2d8dd !important
+        border: 0.5px solid #d2d8dd !important;
       }
 
       .profile-area {
-        width:70%;
+        width: 70%;
         margin-left: $space-size;
         height: $header-size;
         position: relative;
@@ -94,7 +94,6 @@ $space-size: 5px;
     }
 
     &__reaction {
-
       .reaction__count {
         color: palette.$Primary-Gray600;
         margin-left: 4px;
@@ -115,7 +114,7 @@ $space-size: 5px;
 
   .reply-container {
     border-top: 1px solid palette.$Primary-Gray500;
-
+    border-bottom: 1px solid palette.$Primary-Gray500;
     &__content {
       padding-top: 13px;
     }
