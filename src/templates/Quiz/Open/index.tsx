@@ -1882,6 +1882,7 @@ export function QuizOpenTemplate() {
         )}
         {active == 1 && (
           <div>
+            <div className="tw-font-bold tw-text-base tw-text-black tw-pt-10">필수 입력</div>
             <div>
               <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2 tw-mt-5">* 질문</div>
               <TextField
@@ -2010,6 +2011,8 @@ export function QuizOpenTemplate() {
                   5레벨 : 본인 오픈소스/방법론 등이 범용적 사용, 수백명이상 다수 직군 리딩.
                 </div>
               )}
+
+              <div className="tw-font-bold tw-text-base tw-text-black tw-pt-10">선택 입력</div>
 
               <div className="tw-font-semibold tw-text-sm tw-text-black tw-mb-2 tw-mt-5">관련스킬</div>
 

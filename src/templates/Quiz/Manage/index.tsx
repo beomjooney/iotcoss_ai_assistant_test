@@ -988,7 +988,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
         )}
         {active == 1 && (
           <div>
-            <div className="tw-font-bold tw-text-base tw-text-black">필수 입력</div>
+            <div className="tw-font-bold tw-text-base tw-text-black tw-pt-10">필수 입력</div>
             <div>
               <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2 tw-mt-5">* 질문</div>
               <TextField
