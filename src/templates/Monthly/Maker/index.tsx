@@ -22,7 +22,7 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/system/Box';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
@@ -58,7 +58,7 @@ export function MonthlyMakerTemplate() {
     });
   }, [page, keyWord]);
 
-  //console.log(rankContents);
+  console.log(rankContents);
 
   const handleIconButton = (event: React.MouseEvent<HTMLElement>) => {};
 
@@ -205,7 +205,7 @@ export function MonthlyMakerTemplate() {
                     aria-haspopup="true"
                     onClick={e => handleIconButton(e)}
                   >
-                    <ChatBubbleOutlineIcon />
+                    <AssignmentOutlinedIcon />
                   </IconButton>
                   <IconButton
                     aria-label="more"
@@ -255,7 +255,7 @@ export function MonthlyMakerTemplate() {
                     aria-haspopup="true"
                     onClick={e => handleIconButton(e)}
                   >
-                    <ChatBubbleOutlineIcon />
+                    <AssignmentOutlinedIcon />
                   </IconButton>
                   <IconButton
                     aria-label="more"
