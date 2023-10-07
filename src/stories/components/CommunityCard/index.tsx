@@ -290,14 +290,14 @@ CommunityCardProps) => {
             </button> */}
             <span className={cx('reaction__count', { 'reaction__count--active': isLiked })}>{likeCount}</span>
           </span>
-          <button
+          {/* <button
             className={cx('board-footer__reply')}
             onClick={() => {
               onReply(board.clubQuizAnswerSequence);
             }}
           >
             댓글 {replyCount}개{isOpen ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
-          </button>
+          </button> */}
         </div>
       </div>
       {isOpen && isReplyFetched && (

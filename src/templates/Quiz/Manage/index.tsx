@@ -141,9 +141,9 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
     const publishedData = data.quizzes.filter(item => item.isPublished);
     const unpublishedData = data.quizzes.filter(item => !item.isPublished);
 
-    console.log('Published Data:', publishedData);
-    console.log('Unpublished Data:', unpublishedData);
-    console.log(' Data size:', data.weekCount * data.studyCycle.length);
+    //console.log('Published Data:', publishedData);
+    //console.log('Unpublished Data:', unpublishedData);
+    //console.log(' Data size:', data.weekCount * data.studyCycle.length);
 
     setPublishedData(publishedData);
     setQuizListCopy(unpublishedData || []);
@@ -211,7 +211,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
     const result = [...state];
 
     if (result.length >= total) {
-      alert('더이상 퀴즈를 선택할수 없습니다.');
+      alert('더이상 퀴즈를 선택할수 없습니다. \n퀴즈를 지우고 추가해주세요.');
       return;
     }
 
@@ -227,8 +227,8 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
     const filteredData = getObjectsWithSequences(quizData, [result]);
     const valueData = getObjectsWithSequences(quizData, [name]);
 
-    //console.log('filteredData------', filteredData);
-    //console.log('filteredData------', valueData);
+    console.log('filteredData------', filteredData);
+    console.log('filteredData------', valueData);
     //studyCycle 로직추가
     //setQuizListCopy(quizListOrigin);
 
@@ -236,12 +236,17 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
     //console.log('quizListCopy ', quizListCopy);
     //console.log('quizListOrigin ', quizListOrigin);
     const flag = true;
+    const flag1 = true;
     if (checked) {
       //console.log('add');
       quizListCopy.map((item, index) => {
         // //console.log(item);
+        console.log('flag', flag);
+        console.log(' total', total);
+        console.log('length', result.length);
+        // console.log('item', item);
         if (typeof item.order === 'undefined' && flag === true) {
-          //console.log('undefind');
+          console.log('undefind');
           resultArray1.push({
             ...item,
             quizSequence: valueData[0].sequence,
@@ -255,6 +260,26 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
           resultArray1.push(item);
         }
       });
+
+      if (result.length <= total) {
+        resultArray1.push({
+          clubQuizSequence: valueData[0].clubQuizSequence,
+          clubSequence: parseInt(id),
+          quizSequence: valueData[0].sequence,
+          content: valueData[0].content,
+          memberName: valueData[0].memberName,
+          activeCount: valueData[0].activeCount,
+          answerCount: valueData[0].answerCount,
+          isPublished: valueData[0].isPublished,
+          likeCount: valueData[0].likeCount,
+          publishDate: valueData[0].publishDate,
+          studyDay: valueData[0].studyDay,
+          weekNumber: valueData[0].weekNumber,
+          isRepresentative: false,
+          order: result.length,
+        });
+      }
+
       setQuizListCopy(resultArray1);
     } else {
       //console.log('remove', valueData);
@@ -282,7 +307,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
       setQuizListCopy(modifiedArray);
     }
 
-    //console.log(resultArray1);
+    console.log(resultArray1);
     setQuizList(filteredData);
     setQuizList(result); //퀴즈카운트용
   };
@@ -331,12 +356,16 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
       }
       return true;
     });
+    //퀴즈가 클럽에 등록이 안되어있는경우. 등록 삭제일때 문제 발생.
+    // "weekNumber"가 undefined인 항목을 필터링하여 새로운 배열 생성
+    const filteredDataRemove = modifiedArray.filter(item => item.content !== undefined);
+    //console.log(filteredDataRemove);
 
     //console.log('filteredArray', filteredArray);
     //console.log('filtmodifiedArrayeredArray2', modifiedArray);
     //console.log('filteredData', filteredData);
     setState(filteredArray);
-    setQuizListCopy(modifiedArray);
+    setQuizListCopy(filteredDataRemove);
     setQuizList(filteredData);
   }
 
@@ -392,11 +421,16 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
     const arrayList = [...publishedData, ...quizListCopy];
 
     // Transforming the data into an array of objects with "clubQuizSequence" and "order" properties
-    console.log(quizListCopy);
+    //console.log(quizListCopy);
+
+    // 빈 객체를 제거한 새로운 배열 생성
+    // "content" 필드가 있는 항목만 필터링
+    const filteredData = arrayList.filter(item => item.hasOwnProperty('content'));
+    //console.log(filteredData);
 
     const transformedData = {
       clubSequence: contents?.clubSequence, // Add the "clubSequence" property with a value of 2
-      clubQuizzes: arrayList.map((item, index) => ({
+      clubQuizzes: filteredData.map((item, index) => ({
         quizSequence: item.quizSequence,
         isRepresentative: item.isRepresentative,
         // order: index,
@@ -407,9 +441,9 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
   };
 
   function handleClickQuiz(quizSequence, flag) {
-    console.log(quizSequence, flag);
+    //console.log(quizSequence, flag);
     // "quizSequence"가 83인 객체를 찾아서 "isRepresentative" 값을 변경
-    console.log(quizListCopy);
+    //console.log(quizListCopy);
     const updatedData = quizListCopy.map(item => {
       if (item.quizSequence === quizSequence) {
         return {
@@ -430,7 +464,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
         countIsRepresentative++;
       }
     });
-    console.log(countIsRepresentative);
+    //console.log(countIsRepresentative);
     // "isRepresentative" 값이 3개가 아닌 경우 알림 창 표시
     if (countIsRepresentative >= 3) {
       alert('대표 퀴즈는 3개입니다.');
@@ -655,10 +689,18 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
                 return (
                   <Grid key={index} container direction="row" justifyContent="left" alignItems="center" rowSpacing={3}>
                     <Grid item xs={10}>
-                      <div className="tw-flex-auto tw-text-center tw-text-black tw-font-bold">Q{item?.weekNumber}.</div>
-                      <div className="tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold">
-                        {item?.weekNumber} 주차 ({item?.studyDay})
-                      </div>
+                      {item?.weekNumber ? (
+                        <div>
+                          <div className="tw-flex-auto tw-text-center tw-text-black tw-font-bold">
+                            Q{item?.weekNumber}.
+                          </div>
+                          <div className="tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold">
+                            {item?.weekNumber} 주차 ({item?.studyDay})
+                          </div>
+                        </div>
+                      ) : (
+                        <></> // 아무것도 렌더링하지 않음
+                      )}
                     </Grid>
                     <Grid item xs={1}></Grid>
                     <Grid item xs={1} className="">

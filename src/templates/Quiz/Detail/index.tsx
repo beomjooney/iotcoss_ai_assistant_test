@@ -71,7 +71,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
 
   const { isFetched: isParticipantListFetched, isLoading } = useSeminarDetail(id, data => {
     setClubMemberStatus(data?.clubMemberStatus);
-    console.log(data);
+    //console.log(data);
     setContents(data);
   });
   const { isFetched: isQuizListFetched, refetch } = useClubDetailQuizList(params, data => {
