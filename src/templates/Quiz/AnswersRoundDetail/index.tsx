@@ -24,7 +24,8 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 
 /** import pagenation */
 import Pagination from '@mui/material/Pagination';
-
+import { useSessionStore } from 'src/store/session';
+import Grid from '@mui/material/Grid';
 const cx = classNames.bind(styles);
 export interface QuizAnswersRoundDetailTemplateProps {
   /** 세미나 아이디 */
@@ -176,7 +177,7 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
             <div className="tw-bg-gray-50 tw-rounded-lg tw-px-8 tw-py-5 tw-text-black ">
               <div className="tw-flex tw-items-center tw-space-x-4 tw-my-2">
                 <img
-                  className="tw-w-12 tw-h-12 tw-ring-1 tw-rounded-full"
+                  className="tw-w-9 tw-h-9 tw-ring-1 tw-rounded-full"
                   src={contents?.clubLeaderProfileImageUrl}
                   alt=""
                 />
@@ -201,15 +202,17 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                     </span>
                   )}
                 </div>
-                <div className="tw-col-span-11">
-                  <span className="tw-font-bold tw-text-[18px] tw-text-black">{contents?.content}</span>
+                <div className="tw-col-span-11 tw-flex tw-items-center tw-justify-center">
+                  <div className="tw-col-span-1 tw-flex tw-flex-col tw-items-center tw-pr-2">
+                    <img src="/assets/images/icons/quiz.png" className="tw-w-5 tw-h-5" alt="메이커" />
+                  </div>
+                  <span className="tw-font-bold tw-text-[18px] tw-text-black ">{contents?.content}</span>
                 </div>
               </div>
 
               <div className="tw-text-center tw-pt-2">
                 {contents?.hashTags?.map((name, i) => (
-                  <span key={i} className="tw-font-right tw-text-base tw-text-gray-400">
-                    {' '}
+                  <span key={i} className="tw-font-right tw-text-base tw-text-gray-400 tw-px-1">
                     #{name}
                   </span>
                 ))}
@@ -274,7 +277,7 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
             </div>
           </Grid>
           <Grid item xs={4}>
-            <div className="tw-bg-gray-50 tw-rounded-lg tw-h-[1260px] tw-p-5 tw-text-black ">
+            <div className="tw-bg-gray-50 tw-rounded-lg tw-p-5 tw-text-black ">
               <div>
                 <div className="tw-flex tw-items-center tw-pb-5 tw-gap-2">
                   <div>

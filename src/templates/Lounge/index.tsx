@@ -6,31 +6,21 @@ import { RecommendContent, SeminarImages } from 'src/models/recommend';
 import { useSeminarList, paramProps, useSeminarImageList } from 'src/services/seminars/seminars.queries';
 import QuizArticleCard from 'src/stories/components/QuizArticleCard';
 import Carousel from 'nuka-carousel';
-import { ArticleEnum } from '../../config/types';
-import { useContentJobTypes, useContentTypes, useJobGroups } from 'src/services/code/code.queries';
-import Banner from '../../stories/components/Banner';
+import { useContentTypes, useJobGroups } from 'src/services/code/code.queries';
 import { useStore } from 'src/store';
 import { useRouter } from 'next/router';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import Grid from '@mui/material/Grid';
 import Icon from '@mui/material/Icon';
 import Box from '@mui/system/Box';
 import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
-import Divider from '@mui/material/Divider';
-import Link from 'next/link';
-import { jobColorKey } from 'src/config/colors';
-import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
-import StarIcon from '@mui/icons-material/Star';
-import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { useSessionStore } from 'src/store/session';
-import { useDeleteLike, useSaveLike } from 'src/services/community/community.mutations';
 import { useQuizRankDetail, useQuizRoungeDetail } from 'src/services/quiz/quiz.queries';
-import { CommunityCard } from 'src/stories/components';
+import MuiToggleButton from '@mui/material/ToggleButton';
+import { styled } from '@mui/material/styles';
 
 /** import icon */
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
@@ -38,41 +28,22 @@ import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
 
 const levelGroup = [
   {
-    id: '0100',
-    groupId: '0001',
     name: '0',
-    description: '레벨 0',
   },
   {
-    id: '0200',
-    groupId: '0001',
     name: '1',
-    description: '레벨 1',
   },
   {
-    id: '0300',
-    groupId: '0001',
     name: '2',
-    description: '레벨 2',
   },
   {
-    id: '0301',
-    groupId: '0001',
     name: '3',
-    description: '레벨 3',
   },
   {
-    id: '0302',
-    groupId: '0001',
     name: '4',
-    description: '레벨 4',
   },
-  ,
   {
-    id: '0303',
-    groupId: '0001',
     name: '5',
-    description: '레벨 5',
   },
 ];
 
@@ -94,6 +65,8 @@ export function LoungeTemplate() {
   const [rankContents, setRankContents] = useState<RecommendContent[]>([]);
   const [totalElements, setTotalElements] = useState(0);
   const [jobGroup, setJobGroup] = useState([]);
+  const [view, setView] = React.useState('list');
+  const [viewLevel, setViewLevel] = React.useState('list');
 
   const { isFetched: isContentFetched } = useQuizRoungeDetail(params, data => {
     console.log(data?.contents);
@@ -138,7 +111,55 @@ export function LoungeTemplate() {
       page,
     });
     setPage(1);
+    setView(null);
     console.log(newFormats);
+  };
+
+  const handleAllJobs = (event: React.MouseEvent<HTMLElement>, newFormats: string) => {
+    setView(newFormats);
+
+    if (newFormats !== null) {
+      const idList = contentTypes.map(item => item.id);
+      setJobGroup(idList);
+
+      setParams({
+        recommendJobGroups: idList.join(','),
+        recommendLevels: recommendLevels.join(','),
+        page,
+      });
+    } else {
+      setParams({
+        recommendJobGroups: '',
+        recommendLevels: recommendLevels.join(','),
+        page,
+      });
+      setJobGroup([]);
+    }
+
+    setPage(1);
+  };
+
+  const handleAllLevel = (event: React.MouseEvent<HTMLElement>, newFormats: string) => {
+    setViewLevel(newFormats);
+    if (newFormats !== null) {
+      const idList = levelGroup.map(item => item.name);
+      setRecommendLevels(idList);
+
+      setParams({
+        recommendJobGroups: jobGroup.join(','),
+        recommendLevels: idList.join(','),
+        page,
+      });
+    } else {
+      setParams({
+        recommendJobGroups: jobGroup.join(','),
+        recommendLevels: '',
+        page,
+      });
+      setRecommendLevels([]);
+    }
+
+    setPage(1);
   };
 
   const handleRecommendLevels = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
@@ -149,6 +170,7 @@ export function LoungeTemplate() {
       page,
     });
     setPage(1);
+    setViewLevel(null);
   };
 
   // 아래 함수는 clubQuizStatusType에 따라 이미지 URL을 반환합니다.
@@ -168,6 +190,15 @@ export function LoungeTemplate() {
 
     return imageUrl ? <img src={imageUrl} className="tw-w-[30px]" alt={clubQuizStatusType} /> : null;
   }
+
+  const ToggleButton = styled(MuiToggleButton)({
+    '&.Mui-selected, &.Mui-selected:hover': {
+      color: 'black',
+      fontWeight: 'bold',
+      fontSize: '16px',
+      backgroundColor: 'white',
+    },
+  });
 
   return (
     <div className={cx('seminar-container')}>
@@ -189,10 +220,30 @@ export function LoungeTemplate() {
           <Grid item xs={8}>
             <Box sx={{ width: '100%', typography: 'body1', marginBottom: '20px' }}>
               <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-                <Grid item xs={8} className="tw-font-bold tw-text-3xl tw-text-black">
+                <Grid item xs={12} className="tw-font-bold tw-text-3xl tw-text-black">
                   <div className={cx('filter-area')}>
                     <div className="tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
-                      <span className="tw-font-bold tw-text-base tw-text-black tw-mr-4">전체직군</span>
+                      <ToggleButtonGroup
+                        style={{ display: 'inline' }}
+                        value={view}
+                        onChange={handleAllJobs}
+                        aria-label="text alignment"
+                        size="small"
+                        exclusive
+                      >
+                        <ToggleButton
+                          value="list"
+                          aria-label="fff"
+                          style={{
+                            fontSize: '16px',
+                            margin: '5px',
+                            height: '30px',
+                            border: '0px',
+                          }}
+                        >
+                          전체직군
+                        </ToggleButton>
+                      </ToggleButtonGroup>
                       <ToggleButtonGroup
                         style={{ display: 'inline' }}
                         value={jobGroup}
@@ -206,10 +257,9 @@ export function LoungeTemplate() {
                               key={`job-${index}`}
                               value={item.id}
                               aria-label="fff"
-                              className="tw-ring-1 tw-ring-slate-900/10"
+                              className="tw-px-4"
                               style={{
-                                borderRadius: '5px',
-                                borderLeft: '0px',
+                                fontSize: '16px',
                                 margin: '5px',
                                 height: '30px',
                                 border: '0px',
@@ -221,7 +271,28 @@ export function LoungeTemplate() {
                       </ToggleButtonGroup>
                     </div>
                     <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
-                      <span className="tw-font-bold tw-text-base tw-text-black tw-mr-4">전체레벨</span>
+                      <ToggleButtonGroup
+                        style={{ display: 'inline' }}
+                        value={viewLevel}
+                        onChange={handleAllLevel}
+                        aria-label="text alignment"
+                        size="small"
+                        exclusive
+                      >
+                        <ToggleButton
+                          value="list"
+                          aria-label="fff"
+                          style={{
+                            fontSize: '16px',
+                            margin: '5px',
+                            height: '30px',
+                            border: '0px',
+                          }}
+                        >
+                          전체레벨
+                        </ToggleButton>
+                      </ToggleButtonGroup>
+
                       <ToggleButtonGroup
                         value={recommendLevels}
                         onChange={handleRecommendLevels}
@@ -232,39 +303,21 @@ export function LoungeTemplate() {
                           <ToggleButton
                             key={`job-${index}`}
                             value={item.name}
+                            className="tw-px-4"
                             aria-label="fff"
-                            className="tw-ring-1 tw-ring-slate-900/10"
                             style={{
-                              borderRadius: '5px',
-                              borderLeft: '0px',
+                              fontSize: '16px',
                               margin: '5px',
                               height: '30px',
                               border: '0px',
                             }}
                           >
-                            레벨 {item.name}
+                            레벨{item.name}
                           </ToggleButton>
                         ))}
                       </ToggleButtonGroup>
                     </div>
                   </div>
-                </Grid>
-                <Grid item xs={4} className="tw-font-semi tw-text-base tw-text-black">
-                  <TextField
-                    fullWidth
-                    id="outlined-basic"
-                    label=""
-                    variant="outlined"
-                    onKeyPress={e => {
-                      if (e.key === 'Enter') {
-                        searchKeyworld((e.target as HTMLInputElement).value);
-                      }
-                    }}
-                    InputProps={{
-                      style: { height: '43px' },
-                      startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
-                    }}
-                  />
                 </Grid>
               </Grid>
             </Box>
@@ -334,7 +387,7 @@ export function LoungeTemplate() {
                                   {item?.isAnswered ? (
                                     <button
                                       className="tw-font-bold"
-                                      onClick={() => router.push('/quiz/answers/' + `${item?.clubQuizSequence}`)}
+                                      onClick={() => router.push('/quiz/round-answers/' + `${item?.clubQuizSequence}`)}
                                     >
                                       답변완료
                                     </button>
@@ -365,7 +418,22 @@ export function LoungeTemplate() {
             </article>
           </Grid>
           <Grid item xs={4}>
-            <div className="tw-bg-gray-50 tw-rounded-lg tw-h-[1260px] tw-p-5 tw-text-black ">
+            <TextField
+              fullWidth
+              id="outlined-basic"
+              label=""
+              variant="outlined"
+              onKeyPress={e => {
+                if (e.key === 'Enter') {
+                  searchKeyworld((e.target as HTMLInputElement).value);
+                }
+              }}
+              InputProps={{
+                style: { height: '43px' },
+                startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
+              }}
+            />
+            <div className="tw-bg-gray-50 tw-rounded-lg tw-mt-10 tw-p-5 tw-text-black ">
               <div>
                 <div className="tw-flex tw-items-center tw-pb-5 tw-gap-2">
                   <div>

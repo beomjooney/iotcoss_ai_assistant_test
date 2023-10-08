@@ -30,9 +30,7 @@ import TextareaAutosize from '@mui/material/TextareaAutosize';
 /** import icon */
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
-import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
-import StarIcon from '@mui/icons-material/Star';
 export interface CommunityCardProps {
   /** 게시판 object */
   board: BoardType;
@@ -252,8 +250,8 @@ CommunityCardProps) => {
           value={board?.postAnswer}
         />
 
-        <div className="tw-grid tw-items-center tw-grid-cols-10 tw-py-3 tw-mt-1">
-          <div className="tw-col-span-2">
+        <div className="tw-grid tw-items-center tw-grid-cols-12 tw-py-3 tw-mt-1">
+          <div className="tw-col-span-3">
             <div className="tw-flex tw-items-center tw-gap-4">
               <span>
                 <AssignmentOutlinedIcon className="tw-mr-1 tw-w-5" />
@@ -269,7 +267,7 @@ CommunityCardProps) => {
               </span>
             </div>
           </div>
-          <div className="tw-col-span-7 tw-flex tw-justify-end">
+          <div className="tw-col-span-9 tw-flex tw-justify-end ">
             <Textfield width={400} defaultValue="" placeholder="댓글을 입력해주세요." ref={textInput} />
             <button
               className="tw-bg-black tw-text-sm tw-text-white tw-px-5 tw-ml-2 tw-rounded-md"
@@ -277,10 +275,9 @@ CommunityCardProps) => {
             >
               입력
             </button>
-          </div>
-          <div className="tw-col-span-1 tw-flex tw-justify-end">
+
             <button
-              className={cx('board-footer__reply')}
+              className={cx('board-footer__reply', 'tw-text-[14px] tw-pl-4')}
               onClick={() => {
                 onReply(board.clubQuizAnswerSequence);
               }}
