@@ -22,13 +22,41 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/system/Box';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import Avatar from '@mui/material/Avatar';
 
 const cx = classNames.bind(styles);
+
+interface quizzes {
+  quizSequence: number;
+  activeCount: number;
+  answerCount: number;
+  likeCount: number;
+  content: string;
+}
+
+export interface IGetMonthlyRankingProps {
+  clubs: {
+    averageProgressPercentage: number;
+    clubSequence: number;
+    clubName: string;
+    clubImageUrl: string;
+    clubLeaderNickname: string;
+    recommendJobNames: [];
+    recommendJobs: [];
+  };
+  maker: {
+    madeQuizCount: number;
+    receivedLikeCount: number;
+    nickname: string;
+    profileImageUrl: string;
+    quizzes: quizzes[];
+  };
+  quizzes: quizzes[];
+}
 
 export function MonthlyMakerTemplate() {
   const router = useRouter();
@@ -40,25 +68,41 @@ export function MonthlyMakerTemplate() {
   const [keyWord, setKeyWord] = useState('');
   const { user, setUser } = useStore();
   const [userInfo, setUserInfo] = useState<User>(user);
-  const [rankContents, setRankContents] = useState<RecommendContent[]>([]);
+  const [monthlyRankingContents, setMonthlyRankingContents] = useState<IGetMonthlyRankingProps>();
+  const [monthlyQuizzesContents, setMonthlyQuizzesContents] = useState<IGetMonthlyRankingProps>();
+  const [monthlyMakerContents, setMonthlyMakerContents] = useState<IGetMonthlyRankingProps>();
+  const [monthlyMakerQuizzesContents, setMonthlyMakerQuizzesContents] = useState<IGetMonthlyRankingProps>();
+  const [monthlyClubsContents, setMonthlyClubsContents] = useState<IGetMonthlyRankingProps>();
 
   //api call
-  const { isFetched: isQuizRankListFetched } = useMonthlyRanking(data => {
-    setRankContents(data);
+  const { isFetched: isMonthlyRankingFetched } = useMonthlyRanking(data => {
+    setMonthlyRankingContents(data);
   });
-  const { data: myQuizData, refetch: refetchMyJob }: UseQueryResult<any> = useMyQuiz(params, data => {
-    setTotalPage(data.totalPages);
+
+  const { isFetched: isMonthlyQuizzesFetched } = useMonthlyQuizzes(data => {
+    setMonthlyQuizzesContents(data);
   });
+
+  const { isFetched: isMonthlyMakerFetched } = useMonthlyMaker(data => {
+    setMonthlyMakerContents(data);
+  });
+
+  const { isFetched: isMonthlyMakerQuizzesFetched } = useMonthlyMakerQuizzes(data => {
+    setMonthlyMakerQuizzesContents(data);
+  });
+
+  const { isFetched: isMonthlyClubsFetched } = useMonthlyClubs(data => {
+    setMonthlyClubsContents(data);
+  });
+
+  console.log(monthlyMakerQuizzesContents);
 
   useEffect(() => {
     setParams({
-      //...params,
       page,
       keyword: keyWord,
     });
   }, [page, keyWord]);
-
-  //console.log(rankContents);
 
   const handleIconButton = (event: React.MouseEvent<HTMLElement>) => {};
 
@@ -92,13 +136,13 @@ export function MonthlyMakerTemplate() {
               <div className="tw-w-1/6">
                 <img
                   className="tw-w-32 tw-h-32 tw-ring-1 tw-rounded-full"
-                  src={rankContents?.maker?.profileImageUrl}
+                  src={monthlyRankingContents?.maker?.profileImageUrl}
                   alt=""
                 />
               </div>
               <div className="tw-w-3/4">
                 <div>
-                  {rankContents?.maker?.nickname}님
+                  {monthlyRankingContents?.maker?.nickname}님
                   <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600">
                     개발
                   </span>
@@ -132,7 +176,7 @@ export function MonthlyMakerTemplate() {
                     <span className="tw-inline-block p-2 tw-bg-white tw-rounded-lg tw-w-[200px]">
                       <div className="tw-border-4 tw-text-base tw-pr-10">이번달 등록 질문 수</div>
                       <div className="tw-leading-9 tw-text-blue-600 tw-text-lg tw-text-right">
-                        {rankContents?.maker?.madeQuizCount}개
+                        {monthlyRankingContents?.maker?.madeQuizCount}개
                       </div>
                     </span>
                   </div>
@@ -140,7 +184,7 @@ export function MonthlyMakerTemplate() {
                     <span className="tw-inline-block p-2 tw-bg-white tw-rounded-lg tw-w-[200px]">
                       <div className="tw-border-4 tw-text-base tw-pr-10">받은 총 좋아요 수</div>
                       <div className="tw-leading-9 tw-text-blue-600 tw-text-lg tw-text-right">
-                        {rankContents?.maker?.receivedLikeCount}개
+                        {monthlyRankingContents?.maker?.receivedLikeCount}개
                       </div>
                     </span>
                   </div>
@@ -154,7 +198,7 @@ export function MonthlyMakerTemplate() {
       <div className={cx('container')}>
         <Box sx={{ width: '100%', typography: 'body1' }}>
           <div className="tw-flex tw-gap-5 tw-pt-10">
-            {rankContents?.maker?.quizzes?.map((values, index) => (
+            {monthlyRankingContents?.maker?.quizzes?.map((values, index) => (
               <Toggle
                 name={`퀴즈 ${index + 1}`}
                 label={`퀴즈 ${index + 1}`}
@@ -205,7 +249,7 @@ export function MonthlyMakerTemplate() {
                     aria-haspopup="true"
                     onClick={e => handleIconButton(e)}
                   >
-                    <ChatBubbleOutlineIcon />
+                    <AssignmentOutlinedIcon />
                   </IconButton>
                   <IconButton
                     aria-label="more"
@@ -255,7 +299,7 @@ export function MonthlyMakerTemplate() {
                     aria-haspopup="true"
                     onClick={e => handleIconButton(e)}
                   >
-                    <ChatBubbleOutlineIcon />
+                    <AssignmentOutlinedIcon />
                   </IconButton>
                   <IconButton
                     aria-label="more"
