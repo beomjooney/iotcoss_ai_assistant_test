@@ -130,6 +130,8 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
     setContentTypes(data.data.contents || []);
   });
 
+  const { isFetched: isJobGroupsFetched } = useJobGroupss(data => setJobGroups(data.data.contents || []));
+
   /**save profile */
   const { mutate: onQuizOrder, isSuccess: isSuccessOrder } = useQuizOrder();
 
