@@ -89,12 +89,10 @@ export function CommunityTemplate() {
   useDidMountEffect(() => {
     setPage(0);
     setAfterCursor(null);
-    console.log('delete 1 !!!', params, page);
     refetch();
   }, [deletePostSucces]);
 
   useDidMountEffect(() => {
-    console.log('delete 2 !!!');
     popularPostSearchRefetch();
   }, [postNo]);
 
@@ -105,7 +103,6 @@ export function CommunityTemplate() {
       relatedJobGroups: jobGroupsFilter.join(','),
       recommendLevels: levelsFilter.join(','),
     });
-    console.log('after, :', afterCursor, jobGroupsFilter, levelsFilter);
   }, [jobGroupsFilter, levelsFilter]);
 
   useDidMountEffect(() => {
@@ -115,11 +112,9 @@ export function CommunityTemplate() {
       relatedJobGroups: jobGroupsFilter.join(','),
       recommendLevels: levelsFilter.join(','),
     });
-    console.log(afterCursor, jobGroupsFilter, levelsFilter);
   }, [page]);
 
   const onPostDeleteSubmit = (postNo: number) => {
-    console.log('delete post', postNo);
     if (window.confirm('정말로 삭제하시겠습니까?')) {
       window.scrollTo(0, 0);
       onDeletePost({
@@ -165,7 +160,6 @@ export function CommunityTemplate() {
   };
 
   const fetchMoreData = () => {
-    console.log('fetchMoreData : ');
     if (!communityData?.nextCursor) {
       setHasMore(false);
       return;

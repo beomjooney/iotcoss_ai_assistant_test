@@ -52,7 +52,6 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClicks = (event: React.MouseEvent<HTMLElement>) => {
-    console.log('kimcy', event.currentTarget);
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {

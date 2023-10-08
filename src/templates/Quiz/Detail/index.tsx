@@ -82,7 +82,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
   let tabPannelRefs = [];
 
   const onChangeLike = function (postNo: number, isLikes: boolean) {
-    console.log(postNo, isLikes);
+    //console.log(postNo, isLikes);
     if (logged) {
       setIsLiked(!isLikes);
       if (isLikes) {
@@ -114,7 +114,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
   // DELETED("0010") -> 삭제 (안보임)
 
   const handleParticipant = () => {
-    console.log('club join');
+    //console.log('club join');
     if (!logged) {
       alert('로그인이 필요합니다.');
       return;

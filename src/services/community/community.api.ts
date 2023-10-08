@@ -55,28 +55,23 @@ export const saveReply = async (params: any) => {
   return { data: data || [] };
 };
 export const answerSave = async (params: any) => {
-  console.log('answerSave : ', params);
   const { data } = await axiosGeneralAPI().post(`/api/v1/club/quizzes/preanswer`, params.data);
   return { data: data || [] };
 };
 export const answerUpdate = async (params: any) => {
-  console.log('answerSave : ', params);
   const { data } = await axiosGeneralAPI().put(`/api/v1/club/quizzes/postanswer`, params.data);
   return { data: data || [] };
 };
 export const comprehensionSave = async (params: any) => {
-  console.log('comprehensionSave : ', params);
   const { data } = await axiosGeneralAPI().put(`/api/v1/club/quizzes/comprehension`, params.data);
   return { data: data || [] };
 };
 
 export const deleteReply = async (params: any) => {
-  console.log('deleteReply : ', params);
   await axiosGeneralAPI().delete(`/posts/${params.parentPostNo}/replies/${params.postReplyNo}`);
 };
 
 export const deletePost = async (params: any) => {
-  console.log('deletePost : ', params);
   await axiosGeneralAPI().delete(`/api/v1/quizzes/${params.postNo}`);
 };
 
@@ -84,7 +79,6 @@ export const deletePost = async (params: any) => {
 export const saveCommunity = async (params: any) => await axiosGeneralAPI().post('/posts', params);
 // 글쓰기 수정
 export const modifyCommunity = async (params: any) => {
-  console.log('modifyCommunity : ', params);
   await axiosGeneralAPI().put(`/posts/${params.postNo}`, {
     title: params.title,
     body: params.body,

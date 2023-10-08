@@ -36,7 +36,6 @@ CommunityPage.LayoutProps = {
 };
 
 export async function getServerSideProps({ req }) {
-  console.log(req.headers.referer);
   if (!req.headers.referer) {
     return { props: { error: true } };
   }

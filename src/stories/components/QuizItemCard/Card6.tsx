@@ -15,7 +15,6 @@ export interface Card6Props {
 
 const Card6: FC<Card6Props> = ({ className = 'h-full', post }) => {
   const { title, href, readingTime, featuredImage, categories, postType } = post;
-  console.log(categories);
 
   return (
     <div

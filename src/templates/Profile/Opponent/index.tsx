@@ -57,7 +57,6 @@ export function OpponentProfileTemplate({ id }: OpponentProfileTemplateProps) {
   const { data: myQuizListData, refetch: refetchMyJob }: UseQueryResult<any> = useQuizList(myParams, data => {
     setTotalPage(data.totalPages);
   });
-  console.log(myQuizListData);
 
   /** my quiz replies */
   const [quizPage, setQuizPage] = useState(1);

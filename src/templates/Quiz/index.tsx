@@ -138,7 +138,7 @@ export function QuizTemplate() {
   }, [page, keyWorld]);
 
   const handleJobs = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
-    console.log('job', event.currentTarget, newFormats);
+    //console.log('job', event.currentTarget, newFormats);
     setJobGroup(newFormats);
 
     setParams({
@@ -148,7 +148,7 @@ export function QuizTemplate() {
       page,
     });
     setPage(1);
-    console.log(newFormats);
+    //console.log(newFormats);
   };
 
   const handleRecommendLevels = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {

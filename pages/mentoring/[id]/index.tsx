@@ -35,7 +35,6 @@ MentoringDetailPage.LayoutProps = {
 
 export async function getServerSideProps(ctx: NextPageContext) {
   const { query } = ctx;
-  console.log(query);
   const queryClient = await fetchMentor(String(query));
   return {
     props: { ...query, dehydratedState: JSON.parse(JSON.stringify(dehydrate(queryClient))) },

@@ -102,7 +102,6 @@ export default function SessionList() {
   };
 
   const handleCheckboxLevelClick = e => {
-    console.log('handleCheckboxLevelClick : ', e);
     const { value, checked } = e.target;
     const valueCheckName = value;
     if (checked) {

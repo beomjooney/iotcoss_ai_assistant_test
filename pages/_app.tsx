@@ -150,7 +150,6 @@ CustomApp.getStaticProps = async ({ Component, ctx }: AppContext) => {
   }
 
   try {
-    console.log('_app');
     const token = String(getCookie('access_token'));
     let userData: UserInfo;
     if (token) {
@@ -166,7 +165,6 @@ CustomApp.getStaticProps = async ({ Component, ctx }: AppContext) => {
     };
   } catch (error) {
     const { message, redirectUrl } = error;
-    console.log('kimcy : ', error);
     if (error instanceof AuthError) {
       const location = `${redirectUrl}?redirect_url=${encodeURIComponent(`/${currentUrl}`)}`;
       if (res) {

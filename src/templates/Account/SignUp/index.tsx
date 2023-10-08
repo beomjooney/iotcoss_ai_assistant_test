@@ -119,7 +119,6 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
   const checkboxref = useRef(null);
 
   const onChangeEach = (e, id) => {
-    console.log(id, e.target.checked);
     if (id === 'serviceTerms') {
       setServiceTerm(e.target.checked);
     } else if (id === 'privateTerms') {
@@ -138,7 +137,6 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
   };
 
   const onChangeMarketingEach = (e, id) => {
-    console.log(id, e.target.checked);
     if (id === 'email') {
       setEmail(e.target.checked);
     } else if (id === 'sms') {

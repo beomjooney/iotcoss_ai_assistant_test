@@ -111,7 +111,6 @@ export function GrowthStoryTemplate({
   const onChangeStory = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = event.currentTarget;
 
-    console.log(name, value);
     let data = {};
     const growthStories = [...mentorStory.growthStories];
 
@@ -121,7 +120,6 @@ export function GrowthStoryTemplate({
       };
     } else {
       const reuslt = (growthStories[tabValue - 2][name] = value);
-      console.log(reuslt);
       data = {
         growthStories,
       };

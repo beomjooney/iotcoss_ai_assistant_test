@@ -69,7 +69,6 @@ export function LoungeTemplate() {
   const [viewLevel, setViewLevel] = React.useState('list');
 
   const { isFetched: isContentFetched } = useQuizRoungeDetail(params, data => {
-    console.log(data?.contents);
     setContents(data?.contents);
     setTotalElements(data?.totalElements);
     setTotalPage(data?.totalPages);
@@ -112,7 +111,6 @@ export function LoungeTemplate() {
     });
     setPage(1);
     setView(null);
-    console.log(newFormats);
   };
 
   const handleAllJobs = (event: React.MouseEvent<HTMLElement>, newFormats: string) => {

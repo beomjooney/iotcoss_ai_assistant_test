@@ -212,7 +212,7 @@ export function StudyRoomTemplate() {
   }, [quizPage]);
 
   useEffect(() => {
-    console.log(calendarYearMonth);
+    //console.log(calendarYearMonth);
     setCalendarParams({ calendarYearMonth });
   }, [calendarYearMonth]);
 
@@ -312,7 +312,7 @@ export function StudyRoomTemplate() {
 
     // 해당 날짜의 clubs 리스트 찾기
     const clubsForTargetDate = calendarList.find(item => item.date === yearMonth)?.clubs || [];
-    console.log(yearMonth, clubsForTargetDate);
+    //console.log(yearMonth, clubsForTargetDate);
     setQuizStatusList(clubsForTargetDate);
     // setCalendarYearMonth(yearMonth);
   };

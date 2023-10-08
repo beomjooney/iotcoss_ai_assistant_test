@@ -134,7 +134,6 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
   const { mutate: onQuizOrder, isSuccess: isSuccessOrder } = useQuizOrder();
 
   useEffect(() => {
-    console.log('refetch');
     refetchQuizList();
   }, [isSuccessOrder]);
 

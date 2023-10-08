@@ -93,7 +93,6 @@ export function CommunityWriteTemplate({ postData }: PostDetailTemplateProps) {
       allLevelGroup = levelsFilter;
     }
 
-    console.log(allJobGroup);
     const param = {
       // ...data,
       postCategory: '0001',
@@ -122,7 +121,6 @@ export function CommunityWriteTemplate({ postData }: PostDetailTemplateProps) {
       allLevelGroup = levelsFilter;
     }
 
-    console.log(allJobGroup);
     const param = {
       // ...data,
       postNo: postNo,
@@ -133,7 +131,6 @@ export function CommunityWriteTemplate({ postData }: PostDetailTemplateProps) {
       relatedJobGroups: allJobGroup,
       relatedLevels: allLevelGroup,
     };
-    console.log(param);
     onModifyCommunity(param);
   };
 

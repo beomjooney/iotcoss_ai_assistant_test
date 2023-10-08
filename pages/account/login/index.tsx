@@ -13,7 +13,6 @@ interface LoginPageProps {}
 export function LoginPage(props: LoginPageProps) {
   const router = useRouter();
   const token = router.query['token'];
-  console.log(token);
 
   useEffect(() => {
     token && authUpdate();
@@ -22,7 +21,6 @@ export function LoginPage(props: LoginPageProps) {
   const authUpdate = async () => {
     const { update } = useSessionStore.getState();
     const userData: UserInfo = jwt_decode(String(token));
-    console.log(userData);
 
     update({
       logged: userData.sub !== 'Guest',
@@ -42,7 +40,6 @@ export function LoginPage(props: LoginPageProps) {
   const authLoginUpdate = async () => {
     const { update } = useSessionStore.getState();
     const userData: UserInfo = jwt_decode(String(getCookie('access_token')));
-    console.log('userData', userData);
 
     update({
       logged: userData.sub !== 'Guest',
@@ -57,7 +54,6 @@ export function LoginPage(props: LoginPageProps) {
   };
 
   const onSubmitLogin = async () => {
-    console.log('submit');
     authLoginUpdate();
   };
 

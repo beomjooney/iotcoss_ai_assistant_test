@@ -95,8 +95,6 @@ export function MonthlyMakerTemplate() {
     setMonthlyClubsContents(data);
   });
 
-  console.log(monthlyMakerQuizzesContents);
-
   useEffect(() => {
     setParams({
       page,

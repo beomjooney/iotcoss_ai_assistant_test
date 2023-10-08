@@ -47,7 +47,6 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
   }, [data]);
 
   const handleParticipant = clubId => {
-    console.log('club join');
     if (!logged) {
       alert('로그인이 필요합니다.');
       return;

@@ -29,7 +29,6 @@ export function MyPointTemplate() {
 
   const [summary, setSummary] = useState({});
   const { isFetched: isQuizPointFetched, data } = useQuizPoint(data => {
-    console.log(data);
     setPointList(data?.pointHistory?.contents);
     setTotalPoint(data?.total);
   });

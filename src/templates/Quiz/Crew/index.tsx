@@ -52,7 +52,6 @@ export function QuizCrewManageTemplate({ id }: QuizCrewManageTemplateProps) {
   const [totalPage, setTotalPage] = useState(1);
   const [params, setParams] = useState<paramProps>({ page, clubSequence: parseInt(id) });
 
-  console.log(params);
   const { refetch } = useClubQuizCrewManage(params, data => {
     setContents(data.contents || []);
     setTotalPage(data.totalPages);

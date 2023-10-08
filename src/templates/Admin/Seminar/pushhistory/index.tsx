@@ -69,7 +69,6 @@ export function ReceiverTemplate({ onSearch, setParams, params, pageProps, pushH
       fieldNames: ['sendDateFrom', 'sendDateTo'],
     },
   ];
-  console.log(pushTypes);
   return (
     <div className="content">
       <h2 className="tit-type1">메세지발송이력</h2>

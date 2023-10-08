@@ -75,12 +75,10 @@ ClubMiniCardProps) => {
   };
 
   const handleMenuItemClick = (event: React.MouseEvent<HTMLElement>) => {
-    console.log(removeIndex);
     router.push('/quiz-manage/' + removeIndex);
     setAnchorEl(null);
   };
   const handleMenuItemCrewClick = (event: React.MouseEvent<HTMLElement>) => {
-    console.log(removeIndex);
     router.push('/crew-manage/' + removeIndex);
     setAnchorEl(null);
   };

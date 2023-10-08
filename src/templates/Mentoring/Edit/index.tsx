@@ -325,7 +325,7 @@ export function MentoringEditTemplate({
       experiences: undefined,
       skills: undefined,
     };
-    console.log(params);
+    //console.log(params);
 
     if (params.jobGroup === '') {
       alert('등록을 원하는 분야를 선택해주세요.');

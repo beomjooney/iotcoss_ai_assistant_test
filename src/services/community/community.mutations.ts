@@ -83,9 +83,7 @@ export const useSaveReply = (): UseMutationResult => {
       alert(`mutation error : [${code}] ${message}`);
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('REPLY').all),
-    onSuccess: async data => {
-      console.log('return data', data);
-    },
+    onSuccess: async data => {},
   });
 };
 
@@ -98,9 +96,7 @@ export const useAnswerSave = (): UseMutationResult => {
       alert(`mutation error : [${code}] ${message}`);
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('REPLY').all),
-    onSuccess: async data => {
-      console.log('return data', data);
-    },
+    onSuccess: async data => {},
   });
 };
 export const useAnswerUpdate = (): UseMutationResult => {
@@ -112,9 +108,7 @@ export const useAnswerUpdate = (): UseMutationResult => {
       alert(`mutation error : [${code}] ${message}`);
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('REPLY').all),
-    onSuccess: async data => {
-      console.log('return data', data);
-    },
+    onSuccess: async data => {},
   });
 };
 export const useComprehensionSave = (): UseMutationResult => {
@@ -126,9 +120,7 @@ export const useComprehensionSave = (): UseMutationResult => {
       alert(`mutation error : [${code}] ${message}`);
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('REPLY').all),
-    onSuccess: async data => {
-      console.log('return data', data);
-    },
+    onSuccess: async data => {},
   });
 };
 
@@ -141,9 +133,7 @@ export const useDeleteReply = (): UseMutationResult => {
       alert(`mutation error : [${code}] ${message}`);
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('REPLY').all),
-    onSuccess: async data => {
-      console.log('useDeleteReply return data', data);
-    },
+    onSuccess: async data => {},
   });
 };
 
@@ -156,9 +146,7 @@ export const useDeletePost = (): UseMutationResult => {
       alert(`mutation error : [${code}] ${message}`);
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('REPLY').all),
-    onSuccess: async data => {
-      console.log('useDeletePost return data', data);
-    },
+    onSuccess: async data => {},
   });
 };
 

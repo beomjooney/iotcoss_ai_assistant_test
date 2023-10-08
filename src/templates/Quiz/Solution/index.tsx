@@ -95,7 +95,7 @@ export function QuizSolutionTemplate({ id }: QuizSolutionTemplateProps) {
   // DELETED("0010") -> 삭제 (안보임)
 
   const handleParticipant = () => {
-    console.log('club join');
+    //console.log('club join');
     if (!logged) {
       alert('로그인이 필요합니다.');
       return;
@@ -181,8 +181,6 @@ export function QuizSolutionTemplate({ id }: QuizSolutionTemplateProps) {
     if (!logged) {
       setApplicationButton(<Button label="로그인 후 신청 가능합니다" color="lite-gray" size="large" />);
     } else if (isParticipantListFetched) {
-      console.log(1111, data?.clubStatus, clubMemberStatus);
-
       if (data?.isLeader && data?.clubStatus == '0007') {
         setApplicationButton(
           <button

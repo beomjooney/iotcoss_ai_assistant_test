@@ -119,7 +119,6 @@ export function HomeTemplate({ logged = false }: HomeProps) {
   const [recommendJobGroups, setRecommendJobGroups] = useState([]);
   const [recommendLevels, setRecommendLevels] = useState('');
   const { isFetched: isContentTypeFetched } = useContentTypes(data => {
-    console.log('data', data);
     setJobGroup(data.data.contents || []);
   });
   /**image */

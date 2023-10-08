@@ -87,7 +87,6 @@ QuizMyReplyProps) => {
   const textInput = useRef(null);
 
   const onReplySubmit = (postNo: number, text: string) => {
-    console.log('text : ', text, postNo);
     if (logged) {
       onSaveReply({
         postNo: postNo,
@@ -103,7 +102,6 @@ QuizMyReplyProps) => {
   };
 
   const onReplyDeleteSubmit = (postReplyNo: number, parentPostNo: number) => {
-    console.log('delete post', postReplyNo, parentPostNo);
     if (window.confirm('정말로 삭제하시겠습니까?')) {
       onDeleteReply({
         postReplyNo: postReplyNo,
@@ -129,7 +127,6 @@ QuizMyReplyProps) => {
   };
 
   const onReply = function (postNo: number) {
-    console.log('onReplay click. ', postNo);
     setPostNo(postNo);
     setIsOpened(!isOpen);
   };

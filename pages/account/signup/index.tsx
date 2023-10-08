@@ -22,8 +22,6 @@ export function SignUpPage(props: SignUpPageProps) {
     const { update } = useSessionStore.getState();
     const userData: UserInfo = jwt_decode(String(token));
 
-    console.log(userData);
-
     update({
       logged: userData.sub !== 'Guest',
       memberType: userData.sub,
@@ -39,9 +37,7 @@ export function SignUpPage(props: SignUpPageProps) {
     location.href = '/';
   };
 
-  const onSubmitLogin = async () => {
-    console.log('submit');
-  };
+  const onSubmitLogin = async () => {};
 
   return <SignUpTemplate onSubmitLogin={onSubmitLogin} />;
 }

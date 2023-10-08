@@ -44,10 +44,8 @@ export function ProfileTemplate() {
   const { user, setUser } = useStore();
   const [userInfo, setUserInfo] = useState<User>(user);
   const { memberId } = useSessionStore.getState();
-  console.log('memberId', memberId);
   const { isFetched: isUserInfo } = useMemberInfo1(memberId, user => {
     setUserInfo(user);
-    console.log(user);
   });
 
   /** get badge */
@@ -71,7 +69,6 @@ export function ProfileTemplate() {
   }, [page, keyWorld]);
 
   const handleJobs = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
-    console.log('job', event.currentTarget, newFormats);
     setJobGroup(newFormats);
 
     setParams({
@@ -81,7 +78,6 @@ export function ProfileTemplate() {
       page,
     });
     setPage(1);
-    console.log(newFormats);
   };
 
   return (
