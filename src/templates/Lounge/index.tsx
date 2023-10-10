@@ -382,22 +382,31 @@ export function LoungeTemplate() {
                                   </span>
                                 </div>
                                 <div className="tw-text-sm">
-                                  {item?.isAnswered ? (
-                                    <button
-                                      className="tw-font-bold"
-                                      onClick={() => router.push('/quiz/round-answers/' + `${item?.clubQuizSequence}`)}
-                                    >
-                                      답변완료
-                                    </button>
-                                  ) : item?.isClubMember ? (
-                                    <button
-                                      onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
-                                      className="tw-text-blue-500 tw-font-bold"
-                                    >
-                                      퀴즈풀러가기
-                                    </button>
+                                  {item?.isClubMember ? (
+                                    item?.isAnswered ? (
+                                      <button
+                                        className="tw-font-bold"
+                                        onClick={() =>
+                                          router.push('/quiz/round-answers/' + `${item?.clubQuizSequence}`)
+                                        }
+                                      >
+                                        답변완료
+                                      </button>
+                                    ) : (
+                                      <button
+                                        onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
+                                        className="tw-text-blue-500 tw-font-bold"
+                                      >
+                                        퀴즈풀러가기
+                                      </button>
+                                    )
                                   ) : (
-                                    <></>
+                                    <button
+                                      onClick={() => router.push('/quiz/round-answers/' + `${item?.clubQuizSequence}`)}
+                                      className="tw-font-bold"
+                                    >
+                                      답변 보러가기
+                                    </button>
                                   )}
                                 </div>
                               </div>
