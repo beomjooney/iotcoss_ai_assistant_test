@@ -25,6 +25,7 @@ import { styled } from '@mui/material/styles';
 /** import icon */
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
+import useDidMountEffect from 'src/hooks/useDidMountEffect';
 
 const levelGroup = [
   {
@@ -94,7 +95,7 @@ export function LoungeTemplate() {
     });
   });
 
-  useEffect(() => {
+  useDidMountEffect(() => {
     setParams({
       // ...params,
       page,
