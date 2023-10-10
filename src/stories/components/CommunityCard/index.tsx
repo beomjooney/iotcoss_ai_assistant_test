@@ -239,8 +239,11 @@ CommunityCardProps) => {
             // backgroundColor: '#F9F9F9',
             border: '1px solid #EFEFEF',
             borderRadius: 10,
-            padding: 12,
+            fontSize: '14px',
+            color: 'black',
+            padding: 25,
             resize: 'none',
+            overflow: 'auto',
             maxHeight: '300px', // 최대 높이 설정 (스크롤을 표시하려면 설정)
           }}
           name="introductionMessage"
