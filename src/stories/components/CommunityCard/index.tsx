@@ -244,7 +244,7 @@ CommunityCardProps) => {
             padding: 25,
             resize: 'none',
             overflow: 'auto',
-            maxHeight: '300px', // 최대 높이 설정 (스크롤을 표시하려면 설정)
+            maxHeight: '320px', // 최대 높이 설정 (스크롤을 표시하려면 설정)
           }}
           name="introductionMessage"
           value={board?.postAnswer}
