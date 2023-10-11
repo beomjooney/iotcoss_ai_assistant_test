@@ -6,31 +6,31 @@ interface CamenityProps {
 }
 
 // 이달의 메이커, 퀴즈, 클럽 조회
-export const monthlyRanking = async () => {
+export const getMonthlyRanking = async () => {
   const { data } = await axiosGeneralAPI().get(`/api/v1/monthly/ranking`);
   return data.data;
 };
 
 // 이달의 퀴즈 랭킹 목록 조회
-export const monthlyQuizzes = async () => {
+export const getMonthlyQuizzes = async () => {
   const { data } = await axiosGeneralAPI().get(`/api/v1/monthly/quizzes`);
   return data.data;
 };
 
 // 이달의 메이커 랭킹 목록 조회
-export const monthlyMaker = async () => {
+export const getMonthlyMaker = async () => {
   const { data } = await axiosGeneralAPI().get(`/api/v1/monthly/maker`);
   return data.data;
 };
 
 // 이달의 메이커 퀴즈 목록 조회
-export const monthlyMakerQuizzes = async () => {
-  const { data } = await axiosGeneralAPI().get(`/api/v1/monthly/maker/quizzes`);
-  return data.data;
+export const getMonthlyMakerQuizzes = async params => {
+  const { data, headers } = await axiosGeneralAPI().get('/api/v1/monthly/maker/quizzes', { params });
+  return { data: data };
 };
 
 // 이달의 클럽 랭킹 목록 조회
-export const monthlyClubs = async () => {
+export const getMonthlyClubs = async () => {
   const { data } = await axiosGeneralAPI().get(`/api/v1/monthly/clubs`);
   return data.data;
 };

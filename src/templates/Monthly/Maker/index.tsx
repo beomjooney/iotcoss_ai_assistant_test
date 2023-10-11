@@ -6,17 +6,12 @@ import { useRouter } from 'next/router';
 import { useStore } from 'src/store';
 import { User } from 'src/models/user';
 import { RecommendContent } from 'src/models/recommend';
-import {
-  useMonthlyRanking,
-  useMonthlyQuizzes,
-  useMonthlyMaker,
-  useMonthlyMakerQuizzes,
-  useMonthlyClubs,
-} from 'src/services/monthly/monthly.queries';
+import { useMonthlyMakerQuizzes, monthlyMakerParamProps } from 'src/services/monthly/monthly.queries';
 
 import { Toggle } from 'src/stories/components';
 import { paramProps } from 'src/services/seminars/seminars.queries';
 import { useMyQuiz } from 'src/services/jobs/jobs.queries';
+import { MonthlyMakerQuizzesResponse } from 'src/models/monthly';
 
 import Grid from '@mui/material/Grid';
 import Box from '@mui/system/Box';
@@ -69,31 +64,24 @@ export function MonthlyMakerTemplate() {
   const { user, setUser } = useStore();
   const [userInfo, setUserInfo] = useState<User>(user);
   const [monthlyRankingContents, setMonthlyRankingContents] = useState<IGetMonthlyRankingProps>();
-  const [monthlyQuizzesContents, setMonthlyQuizzesContents] = useState<IGetMonthlyRankingProps>();
-  const [monthlyMakerContents, setMonthlyMakerContents] = useState<IGetMonthlyRankingProps>();
-  const [monthlyMakerQuizzesContents, setMonthlyMakerQuizzesContents] = useState<IGetMonthlyRankingProps>();
-  const [monthlyClubsContents, setMonthlyClubsContents] = useState<IGetMonthlyRankingProps>();
+  const [monthlyMakerQuizzesContents, setMonthlyMakerQuizzesContents] = useState<MonthlyMakerQuizzesResponse>();
 
-  //api call
-  const { isFetched: isMonthlyRankingFetched } = useMonthlyRanking(data => {
-    setMonthlyRankingContents(data);
+  const [monthlyMakerParams, setMonthlyMakerParams] = useState<monthlyMakerParamProps>({
+    statType: '0002',
+    statDate: 202310,
+    page,
+    size: 3,
   });
 
-  const { isFetched: isMonthlyQuizzesFetched } = useMonthlyQuizzes(data => {
-    setMonthlyQuizzesContents(data);
+  const {
+    data: monthlyMakerQuizzesData,
+    isFetched: isContentFetched,
+    refetch,
+  }: UseQueryResult<MonthlyMakerQuizzesResponse> = useMonthlyMakerQuizzes(monthlyMakerParams, data => {
+    setMonthlyMakerQuizzesContents(monthlyMakerQuizzesData);
   });
 
-  const { isFetched: isMonthlyMakerFetched } = useMonthlyMaker(data => {
-    setMonthlyMakerContents(data);
-  });
-
-  const { isFetched: isMonthlyMakerQuizzesFetched } = useMonthlyMakerQuizzes(data => {
-    setMonthlyMakerQuizzesContents(data);
-  });
-
-  const { isFetched: isMonthlyClubsFetched } = useMonthlyClubs(data => {
-    setMonthlyClubsContents(data);
-  });
+  console.log(monthlyMakerQuizzesContents);
 
   useEffect(() => {
     setParams({
@@ -134,13 +122,13 @@ export function MonthlyMakerTemplate() {
               <div className="tw-w-1/6">
                 <img
                   className="tw-w-32 tw-h-32 tw-ring-1 tw-rounded-full"
-                  src={monthlyRankingContents?.maker?.profileImageUrl}
+                  src={monthlyMakerQuizzesContents?.data?.data?.profileImageUrl}
                   alt=""
                 />
               </div>
               <div className="tw-w-3/4">
                 <div>
-                  {monthlyRankingContents?.maker?.nickname}님
+                  {monthlyMakerQuizzesContents?.data?.data?.nickname}님
                   <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600">
                     개발
                   </span>
@@ -174,7 +162,7 @@ export function MonthlyMakerTemplate() {
                     <span className="tw-inline-block p-2 tw-bg-white tw-rounded-lg tw-w-[200px]">
                       <div className="tw-border-4 tw-text-base tw-pr-10">이번달 등록 질문 수</div>
                       <div className="tw-leading-9 tw-text-blue-600 tw-text-lg tw-text-right">
-                        {monthlyRankingContents?.maker?.madeQuizCount}개
+                        {monthlyMakerQuizzesContents?.data?.data?.madeQuizCount}개
                       </div>
                     </span>
                   </div>
@@ -182,7 +170,7 @@ export function MonthlyMakerTemplate() {
                     <span className="tw-inline-block p-2 tw-bg-white tw-rounded-lg tw-w-[200px]">
                       <div className="tw-border-4 tw-text-base tw-pr-10">받은 총 좋아요 수</div>
                       <div className="tw-leading-9 tw-text-blue-600 tw-text-lg tw-text-right">
-                        {monthlyRankingContents?.maker?.receivedLikeCount}개
+                        {monthlyMakerQuizzesContents?.data?.data?.receivedLikeCount}개
                       </div>
                     </span>
                   </div>
@@ -196,7 +184,7 @@ export function MonthlyMakerTemplate() {
       <div className={cx('container')}>
         <Box sx={{ width: '100%', typography: 'body1' }}>
           <div className="tw-flex tw-gap-5 tw-pt-10">
-            {monthlyRankingContents?.maker?.quizzes?.map((values, index) => (
+            {monthlyMakerQuizzesContents?.data?.data?.quizzes?.map((values, index) => (
               <Toggle
                 name={`퀴즈 ${index + 1}`}
                 label={`퀴즈 ${index + 1}`}
