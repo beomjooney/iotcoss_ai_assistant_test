@@ -35,6 +35,14 @@ export const getMonthlyClubs = async () => {
   return data.data;
 };
 
+// 퀴즈 관련 모든 응답 조회
+export const getQuizzesAnswers = async (quizSequence: number) => {
+  console.log(quizSequence);
+
+  const { data } = await axiosGeneralAPI().get(`/api/v1/quizzes/${quizSequence}/answers`);
+  return { data: data || [] };
+};
+
 export async function getCamenities(args: CamenityProps) {
   let params = JSON.parse(JSON.stringify(args));
   Object.keys(params).forEach(key => {

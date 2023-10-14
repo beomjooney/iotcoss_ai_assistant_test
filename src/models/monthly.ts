@@ -10,20 +10,20 @@ export interface MonthlyRankingResponse extends MonthlyRsponse {
 }
 
 export interface MonthlyRankingData {
-  maker: maker[];
-  quizzes: quizzes[];
-  clubs: clubs[];
+  maker: Maker[];
+  quizzes: Quizzes[];
+  clubs: Clubs[];
 }
 
-interface maker {
+export interface Maker {
   nickname: string;
   profileImageUrl: string;
   madeQuizCount: number;
   receivedLikeCount: number;
-  quizzes: quizzes[];
+  quizzes: Quizzes[];
 }
 
-interface quizzes {
+export interface Quizzes {
   quizSequence: number;
   content: string;
   answerCount: number;
@@ -31,7 +31,7 @@ interface quizzes {
   activeCount: number;
 }
 
-interface clubs {
+export interface Clubs {
   clubSequence: number;
   clubName: string;
   clubLeaderNickname: string;
@@ -54,7 +54,7 @@ export interface MonthlyQuizzesData {
   contents: MonthlyQuizzesContents[];
 }
 
-interface MonthlyQuizzesContents {
+export interface MonthlyQuizzesContents {
   statType: string;
   statDate: number;
   quizRank: number;
@@ -75,7 +75,7 @@ export interface MonthlyMakerData {
   contents: MonthlyMakerContents[];
 }
 
-interface MonthlyMakerContents {
+export interface MonthlyMakerContents {
   statType: string;
   statDate: number;
   makerRank: number;
@@ -89,7 +89,7 @@ export interface MonthlyMakerQuizzesResponse extends MonthlyRsponse {
 }
 
 export interface MonthlyMakerQuizzesData {
-  data: maker[];
+  data: Maker[];
 }
 
 // monthly/clubs
@@ -105,10 +105,35 @@ export interface MonthlyClubData {
   contents: MonthlyClubContents[];
 }
 
-interface MonthlyClubContents {
+export interface MonthlyClubContents {
   statType: string;
   statDate: number;
   clubRank: number;
   clubSequence: number;
   clubRunRate: number;
+}
+
+// quizzes/{quizSequence}/answers
+export interface QuizzesAnswersResponse extends MonthlyRsponse {
+  data: QuizzesAnswers[];
+}
+
+export interface QuizzesAnswers {
+  page: number;
+  pageSize: number;
+  totalPages: number;
+  totalElements: number;
+  contents: [
+    clubQuizAnswerSequence: number,
+    clubQuizSequence: number,
+    nickname: string,
+    profileImageUrl: string,
+    answerStatus: string,
+    preAnswer: string,
+    postAnswer: string,
+    likeCount: number,
+    replyCount: number,
+    onePickCount: number,
+    createdAt: string,
+  ];
 }

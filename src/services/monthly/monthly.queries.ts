@@ -5,6 +5,7 @@ import {
   getMonthlyMaker,
   getMonthlyMakerQuizzes,
   getMonthlyClubs,
+  getQuizzesAnswers,
   getCamenities,
 } from './monthly.api';
 import {
@@ -13,6 +14,7 @@ import {
   MonthlyMakerResponse,
   MonthlyMakerQuizzesResponse,
   MonthlyClubsResponse,
+  QuizzesAnswersResponse,
 } from 'src/models/monthly';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 
@@ -24,6 +26,11 @@ export interface monthlyMakerParamProps {
   */
   statType: string;
   statDate: number;
+  page?: number;
+  size?: number;
+}
+
+export interface quizzesAnswersParamProps {
   page?: number;
   size?: number;
 }
@@ -78,4 +85,21 @@ export const useMonthlyClubs = (onSuccess?: (data: any) => void, onError?: (erro
     onError,
     // refetchOnWindowFocus: false,
   });
+};
+
+export const useQuizzesAnswers = (
+  quizSequence: number,
+  onSuccess?: (data: QuizzesAnswersResponse) => void,
+  onError?: (error: Error) => void,
+) => {
+  return useQuery<QuizzesAnswersResponse, Error>(
+    QUERY_KEY_FACTORY('COMMUNITY').list({ quizSequence }),
+    () => getQuizzesAnswers(quizSequence),
+    {
+      enabled: false,
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+    },
+  );
 };
