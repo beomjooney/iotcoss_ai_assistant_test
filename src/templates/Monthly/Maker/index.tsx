@@ -14,11 +14,12 @@ import {
   monthlyMakerParamProps,
   quizzesAnswersParamProps,
 } from 'src/services/monthly/monthly.queries';
+import { useContentTypes, useJobGroupss } from 'src/services/code/code.queries';
 
 import { Toggle } from 'src/stories/components';
 import { paramProps } from 'src/services/seminars/seminars.queries';
 import { useMyQuiz } from 'src/services/jobs/jobs.queries';
-import { MonthlyMakerQuizzesResponse, QuizzesAnswersResponse } from 'src/models/monthly';
+import { MonthlyMakerQuizzesResponse, MonthlyRankingResponse, QuizzesAnswersResponse } from 'src/models/monthly';
 
 import Grid from '@mui/material/Grid';
 import Box from '@mui/system/Box';
@@ -32,37 +33,32 @@ import Avatar from '@mui/material/Avatar';
 
 const cx = classNames.bind(styles);
 
-interface quizzes {
-  quizSequence: number;
-  activeCount: number;
-  answerCount: number;
-  likeCount: number;
-  content: string;
-}
-
-export interface IGetMonthlyRankingProps {
-  clubs: {
-    averageProgressPercentage: number;
-    clubSequence: number;
-    clubName: string;
-    clubImageUrl: string;
-    clubLeaderNickname: string;
-    recommendJobNames: [];
-    recommendJobs: [];
-  };
-  maker: {
-    madeQuizCount: number;
-    receivedLikeCount: number;
-    nickname: string;
-    profileImageUrl: string;
-    quizzes: quizzes[];
-  };
-  quizzes: quizzes[];
-}
+// 레벨
+const levels = [
+  {
+    id: '0',
+    name: '레벨 0',
+  },
+  {
+    id: '1',
+    name: '레벨 1',
+  },
+  {
+    id: '2',
+    name: '레벨 2',
+  },
+  {
+    id: '3',
+    name: '레벨 3',
+  },
+  {
+    id: '4',
+    name: '레벨 4',
+  },
+];
 
 export function MonthlyMakerTemplate() {
   const router = useRouter();
-
   const [active, setActive] = useState(0);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
@@ -70,39 +66,51 @@ export function MonthlyMakerTemplate() {
   const [keyWord, setKeyWord] = useState('');
   const { user, setUser } = useStore();
   const [userInfo, setUserInfo] = useState<User>(user);
-  const [monthlyRankingContents, setMonthlyRankingContents] = useState<IGetMonthlyRankingProps>();
+  const [monthlyRankingContents, setMonthlyRankingContents] = useState<MonthlyRankingResponse>();
   const [monthlyMakerQuizzesContents, setMonthlyMakerQuizzesContents] = useState<MonthlyMakerQuizzesResponse>();
   let [makerQuizSequence, setMakerQuizSequence] = useState<number>(0);
   let [quizzesAnswersContents, setQuizzesAnswersContents] = useState<quizzesAnswersParamProps>();
 
+  // 직군
+  const [jobGroup, setJobGroup] = useState<any[]>([]);
+  const { isFetched: isJobGroupFetched } = useContentTypes(data => setJobGroup(data.data.contents || []));
+
+  // 직무
+  const [job, setJob] = useState<any[]>([]);
+  const { isFetched: isJobFetched } = useJobGroupss(data => setJob(data.data.contents || []));
+
+  // 메이커 데이터
   const { isFetched: isMonthlyRankingFetched } = useMonthlyRanking(data => {
     setMonthlyRankingContents(data);
   });
 
-  const [monthlyMakerParams, setMonthlyMakerParams] = useState<monthlyMakerParamProps>({
-    statType: '0002',
-    statDate: 202310,
-    page,
-    size: 3,
-  });
+  console.log(monthlyRankingContents);
+  console.log(jobGroup);
 
-  const {
-    data: monthlyMakerQuizzesData,
-    isFetched: isMonthlyMakerQuizzesFetched,
-    refetch,
-  }: UseQueryResult<MonthlyMakerQuizzesResponse> = useMonthlyMakerQuizzes(monthlyMakerParams, data => {
-    setMonthlyMakerQuizzesContents(monthlyMakerQuizzesData);
-  });
+  // const [monthlyMakerParams, setMonthlyMakerParams] = useState<monthlyMakerParamProps>({
+  //   statType: '0002',
+  //   statDate: 202310,
+  //   page,
+  //   size: 3,
+  // });
+
+  // const {
+  //   data: monthlyMakerQuizzesData,
+  //   isFetched: isMonthlyMakerQuizzesFetched,
+  //   refetch,
+  // }: UseQueryResult<MonthlyMakerQuizzesResponse> = useMonthlyMakerQuizzes(monthlyMakerParams, data => {
+  //   setMonthlyMakerQuizzesContents(monthlyMakerQuizzesData);
+  // });
 
   const { isFetched: isQuizzesAnswersFetched }: UseQueryResult<QuizzesAnswersResponse> = useQuizzesAnswers(
     makerQuizSequence,
     data => {
-      console.log(data);
+      //console.log(data);
       //setQuizzesAnswersContents(data.data.data.clubQuizReplies.contents);
     },
   );
 
-  console.log(monthlyRankingContents);
+  //console.log(monthlyRankingContents);
 
   useEffect(() => {
     setParams({
@@ -143,13 +151,13 @@ export function MonthlyMakerTemplate() {
               <div className="tw-w-1/6">
                 <img
                   className="tw-w-32 tw-h-32 tw-ring-1 tw-rounded-full"
-                  src={monthlyMakerQuizzesContents?.data?.data?.profileImageUrl}
+                  src={monthlyRankingContents?.maker?.profileImageUrl}
                   alt=""
                 />
               </div>
               <div className="tw-w-3/4">
                 <div>
-                  {monthlyMakerQuizzesContents?.data?.data?.nickname}님
+                  {monthlyRankingContents?.maker?.nickname}님
                   <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600">
                     개발
                   </span>
@@ -170,11 +178,7 @@ export function MonthlyMakerTemplate() {
                   </span>
                 </div>
                 <div className="tw-mt-3 tw-font-light tw-text-base tw-text-gray-500">
-                  안녕하세요 Lorem ipsum dolor sit amet consectetur, adipisicing elit. Repudiandae obcaecati, corporis
-                  eaque dignissimos iure minima dicta eligendi ullam harum, praesentium facere veritatis fugiat. Animi
-                  quaerat id explicabo cupiditate quam laborum? Lorem ipsum dolor, sit amet consectetur adipisicing
-                  elit. Dolores, non eum explicabo, dolorem sed nam molestias adipisci perspiciatis delectus unde
-                  tenetur optio expedita aperiam quisquam debitis odit accusantium aspernatur? Cupiditate!
+                  {monthlyRankingContents?.maker?.introductionMessage}
                 </div>
               </div>
               <div className="tw-w-1/4">
@@ -183,7 +187,7 @@ export function MonthlyMakerTemplate() {
                     <span className="tw-inline-block p-2 tw-bg-white tw-rounded-lg tw-w-[200px]">
                       <div className="tw-border-4 tw-text-base tw-pr-10">이번달 등록 질문 수</div>
                       <div className="tw-leading-9 tw-text-blue-600 tw-text-lg tw-text-right">
-                        {monthlyMakerQuizzesContents?.data?.data?.madeQuizCount}개
+                        {monthlyRankingContents?.maker?.madeQuizCount}개
                       </div>
                     </span>
                   </div>
@@ -191,7 +195,7 @@ export function MonthlyMakerTemplate() {
                     <span className="tw-inline-block p-2 tw-bg-white tw-rounded-lg tw-w-[200px]">
                       <div className="tw-border-4 tw-text-base tw-pr-10">받은 총 좋아요 수</div>
                       <div className="tw-leading-9 tw-text-blue-600 tw-text-lg tw-text-right">
-                        {monthlyMakerQuizzesContents?.data?.data?.receivedLikeCount}개
+                        {monthlyRankingContents?.maker?.receivedLikeCount}개
                       </div>
                     </span>
                   </div>
@@ -205,12 +209,12 @@ export function MonthlyMakerTemplate() {
       <div className={cx('container')}>
         <Box sx={{ width: '100%', typography: 'body1' }}>
           <div className="tw-flex tw-gap-5 tw-pt-10">
-            {monthlyMakerQuizzesContents?.data?.data?.quizzes?.map((values, index) => (
+            {monthlyRankingContents?.maker?.quizzes?.map((values, index) => (
               <Toggle
                 name={`퀴즈 ${index + 1}`}
                 label={`퀴즈 ${index + 1}`}
-                key={values.quizSequence}
-                value={values.quizSequence}
+                key={values?.quizSequence}
+                value={values?.quizSequence}
                 variant="small"
                 type="tabButton"
                 checked={active === index}
@@ -225,24 +229,49 @@ export function MonthlyMakerTemplate() {
             ))}
           </div>
         </Box>
-        <div className="tw-pt-10">
-          <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600">
-            개발
-          </span>
-          <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
-            레벨 1
-          </span>
-          <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-300 tw-text-sm tw-font-light tw-text-gray-600">
-            프론트개발자
-          </span>
-        </div>
 
-        {monthlyMakerQuizzesContents?.data?.data?.quizzes?.map(
+        {monthlyRankingContents?.maker?.quizzes?.map(
           (values, index: number) =>
             active === index && (
               <div>
+                <div className="tw-pt-10">
+                  {isJobGroupFetched &&
+                    jobGroup
+                      ?.filter(jobGroupValues => jobGroupValues.id === values.recommendJobGroups[index])
+                      ?.map((jobGroupValues, jobGroupIndex: number) => (
+                        <span
+                          key={jobGroupValues.id}
+                          className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600"
+                        >
+                          {jobGroupValues.name}
+                        </span>
+                      ))}
+
+                  {levels
+                    ?.filter(levelsValues => levelsValues.id === values.recommendJobs[index])
+                    ?.map((levelsValues, lvelsIndex: number) => (
+                      <span
+                        key={levelsValues.id}
+                        className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600"
+                      >
+                        {levelsValues.name}
+                      </span>
+                    ))}
+                  {isJobFetched &&
+                    job
+                      ?.filter(jobValues => jobValues.id === values.recommendLevels[index])
+                      ?.map((jobValues, jobIndex: number) => (
+                        <span
+                          key={jobValues.id}
+                          className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-300 tw-text-sm tw-font-light tw-text-gray-600"
+                        >
+                          {jobValues.name}
+                        </span>
+                      ))}
+                </div>
+
                 <article>
-                  <div className={cx('quiz-area tw-pt-5')} key={values.quizSequence}>
+                  <div className={cx('quiz-area tw-pt-5')} key={values?.quizSequence}>
                     <div className={cx('content-wrap tw-font-bold')}>
                       <div className="tw-flex p-3 tw-m-1 tw-px-3 tw-py-0.5 tw-rounded tw-bg-gray-100">
                         <div className="tw-w-3/4">
@@ -259,7 +288,8 @@ export function MonthlyMakerTemplate() {
                             aria-haspopup="true"
                             onClick={e => handleIconButton(e)}
                           >
-                            <AssignmentOutlinedIcon />
+                            <AssignmentOutlinedIcon className="tw-mr-1 tw-w-5" />
+                            <span className="tw-text-sm">{values?.answerCount ?? 0}</span>
                           </IconButton>
                           <IconButton
                             aria-label="more"
@@ -268,7 +298,8 @@ export function MonthlyMakerTemplate() {
                             aria-haspopup="true"
                             onClick={e => handleIconButton(e)}
                           >
-                            <FavoriteBorderIcon />
+                            <FavoriteBorderIcon className="tw-mr-1 tw-w-5" />
+                            <span className="tw-text-sm">{values?.likeCount ?? 0}</span>
                           </IconButton>
 
                           <IconButton
@@ -278,7 +309,8 @@ export function MonthlyMakerTemplate() {
                             aria-haspopup="true"
                             onClick={e => handleIconButton(e)}
                           >
-                            <ContentCopyIcon />
+                            <ContentCopyIcon className="tw-mr-1 tw-w-5" />
+                            <span className="tw-text-sm">{values?.activeCount ?? 0}</span>
                           </IconButton>
                         </div>
                       </div>
@@ -313,7 +345,7 @@ export function MonthlyMakerTemplate() {
                       aria-haspopup="true"
                       onClick={e => handleIconButton(e)}
                     >
-                      <AssignmentOutlinedIcon />
+                      <AssignmentOutlinedIcon className="tw-mr-1 tw-w-5" />
                     </IconButton>
                     <IconButton
                       aria-label="more"
@@ -322,7 +354,7 @@ export function MonthlyMakerTemplate() {
                       aria-haspopup="true"
                       onClick={e => handleIconButton(e)}
                     >
-                      <StarBorderIcon />
+                      <StarBorderIcon className="tw-mr-1 tw-w-5" />
                     </IconButton>
 
                     <IconButton
@@ -332,7 +364,7 @@ export function MonthlyMakerTemplate() {
                       aria-haspopup="true"
                       onClick={e => handleIconButton(e)}
                     >
-                      <ContentCopyIcon />
+                      <ContentCopyIcon className="tw-mr-1 tw-w-5" />
                     </IconButton>
                   </div>
                 </div>

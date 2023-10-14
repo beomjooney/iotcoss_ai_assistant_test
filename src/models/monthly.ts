@@ -6,18 +6,17 @@ export interface MonthlyRsponse {
 
 // monthly/ranking
 export interface MonthlyRankingResponse extends MonthlyRsponse {
-  data: MonthlyRankingData[];
-}
-
-export interface MonthlyRankingData {
-  maker: Maker[];
-  quizzes: Quizzes[];
-  clubs: Clubs[];
+  maker: Maker;
+  quizzes: Quizzes;
+  clubs: Clubs;
 }
 
 export interface Maker {
   nickname: string;
   profileImageUrl: string;
+  introductionMessage: string;
+  jobGroupType: string;
+  jobType: string;
   madeQuizCount: number;
   receivedLikeCount: number;
   quizzes: Quizzes[];
@@ -29,6 +28,9 @@ export interface Quizzes {
   answerCount: number;
   likeCount: number;
   activeCount: number;
+  recommendJobGroups: string[];
+  recommendJobs: string[];
+  recommendLevels: string[];
 }
 
 export interface Clubs {
@@ -89,7 +91,7 @@ export interface MonthlyMakerQuizzesResponse extends MonthlyRsponse {
 }
 
 export interface MonthlyMakerQuizzesData {
-  data: Maker[];
+  data: Maker;
 }
 
 // monthly/clubs
