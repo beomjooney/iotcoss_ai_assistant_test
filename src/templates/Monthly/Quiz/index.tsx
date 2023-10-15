@@ -76,7 +76,7 @@ export function MonthlyQuizTemplate() {
               <button
                 className="white border bordtw-text-blue-600 tw-bg-er-primary tw-font-bold tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
                 type="button"
-                onClick={() => router.push('/account/my/activity')}
+                onClick={() => router.back()}
               >
                 뒤로가기
               </button>
