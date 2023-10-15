@@ -2,13 +2,11 @@ import React, { useEffect, useState, useRef } from 'react';
 import classNames from 'classnames/bind';
 import styles from './index.module.scss';
 import { UseQueryResult } from 'react-query';
-import { SkillResponse } from 'src/models/skills';
-import { useSkills } from 'src/services/skill/skill.queries';
 import { useRouter } from 'next/router';
 
-import { Toggle, Pagination, Typography, Chip, ClubCard, CommunityCard } from 'src/stories/components';
-import { useSeminarList, paramProps, useSeminarImageList } from 'src/services/seminars/seminars.queries';
-import { useMyQuiz } from 'src/services/jobs/jobs.queries';
+import { Toggle } from 'src/stories/components';
+import { paramProps } from 'src/services/seminars/seminars.queries';
+import { useMonthlyRanking, useQuizzesAnswers, quizzesAnswersParamProps } from 'src/services/monthly/monthly.queries';
 
 import Grid from '@mui/material/Grid';
 import Box from '@mui/system/Box';
@@ -19,31 +17,47 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import Avatar from '@mui/material/Avatar';
+import { MonthlyQuizzesResponse, MonthlyRankingResponse } from 'src/models/monthly';
 
 const cx = classNames.bind(styles);
 
 export function MonthlyQuizTemplate() {
   const router = useRouter();
-
   const [active, setActive] = useState(0);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [params, setParams] = useState<paramProps>({ page });
-  const [keyWord, setKeyWord] = useState('');
+  const [monthlyQuizzesContents, setMonthlyQuizzesContents] = useState<MonthlyQuizzesResponse>();
+  const [monthlyRankingContents, setMonthlyRankingContents] = useState<MonthlyRankingResponse>();
+  const [totalElements, setTotalElements] = useState(0);
+  let [quizzesAnswersContents, setQuizzesAnswersContents] = useState<quizzesAnswersParamProps>();
+  let [quizSequence, setQuizSequence] = useState<number>(0);
 
-  //api call
-  const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
-  const { data: myQuizData, refetch: refetchMyJob }: UseQueryResult<any> = useMyQuiz(params, data => {
-    setTotalPage(data.totalPages);
+  // 퀴즈 데이터
+  const { isFetched: isMonthlyRankingFetched } = useMonthlyRanking(data => {
+    setMonthlyRankingContents(data);
+    setQuizSequence(data.quizzes[0].quizSequence);
   });
+
+  // 답변 데이터
+  const { isFetched: isQuizzesAnswersFetched, refetch } = useQuizzesAnswers(quizSequence, data => {
+    setQuizzesAnswersContents(data?.contents);
+    setTotalElements(data?.totalElements);
+    setTotalPage(data?.totalPages);
+  });
+
+  console.log(quizzesAnswersContents);
 
   useEffect(() => {
     setParams({
       //...params,
       page,
-      keyword: keyWord,
     });
-  }, [page, keyWord]);
+  }, [page]);
+
+  useEffect(() => {
+    if (quizSequence > 0) refetch();
+  }, [quizSequence]);
 
   const handleIconButton = (event: React.MouseEvent<HTMLElement>) => {};
 
@@ -73,136 +87,93 @@ export function MonthlyQuizTemplate() {
 
         <Box sx={{ width: '100%', typography: 'body1' }}>
           <div className="tw-flex tw-gap-5">
-            <Toggle
-              label="HOT1"
-              name="HOT1"
-              value=""
-              variant="small"
-              checked={active === 0}
-              isActive
-              type="tabButton"
-              onChange={() => {
-                setActive(0);
-                setPage(1);
-              }}
-              className={cx('fixed-width')}
-            />
-            <Toggle
-              label="HOT2"
-              name="HOT2"
-              value=""
-              variant="small"
-              checked={active === 1}
-              isActive
-              type="tabButton"
-              onChange={() => {
-                setActive(1);
-                setPage(1);
-              }}
-              className={cx('fixed-width')}
-            />
-            <Toggle
-              label="HOT3"
-              name="HOT3"
-              value=""
-              variant="small"
-              checked={active === 2}
-              isActive
-              type="tabButton"
-              onChange={() => {
-                setActive(2);
-                setPage(1);
-              }}
-              className={cx('fixed-width')}
-            />
-            <Toggle
-              label="HOT4"
-              name="HOT4"
-              value=""
-              variant="small"
-              checked={active === 3}
-              isActive
-              type="tabButton"
-              onChange={() => {
-                setActive(3);
-                setPage(1);
-              }}
-              className={cx('fixed-width')}
-            />
-            <Toggle
-              label="HOT5"
-              name="HOT5"
-              value=""
-              variant="small"
-              checked={active === 4}
-              isActive
-              type="tabButton"
-              onChange={() => {
-                setActive(4);
-                setPage(1);
-              }}
-              className={cx('fixed-width')}
-            />
+            {monthlyRankingContents?.quizzes?.map((values, index) => (
+              <Toggle
+                name={`HOT ${index + 1}`}
+                label={`HOT ${index + 1}`}
+                key={values?.quizSequence}
+                value={values?.quizSequence}
+                variant="small"
+                type="tabButton"
+                checked={active === index}
+                isActive
+                onChange={() => {
+                  setActive(index);
+                  setQuizSequence(values.quizSequence);
+                  setPage(1);
+                }}
+                className={cx('fixed-width')}
+              />
+            ))}
           </div>
         </Box>
-        <div className="tw-pt-10">
-          <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600">
-            개발
-          </span>
-          <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
-            레벨 1
-          </span>
-          <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-300 tw-text-sm tw-font-light tw-text-gray-600">
-            프론트개발자
-          </span>
-        </div>
 
-        <article>
-          <div className={cx('quiz-area tw-pt-5')}>
-            <div className={cx('content-wrap tw-font-bold')}>
-              <div className="tw-flex p-3 tw-m-1 tw-px-3 tw-py-0.5 tw-rounded tw-bg-gray-100">
-                <div className="tw-w-3/4">
-                  <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-red-600 tw-border-red-600">
-                    HOT 1
+        {monthlyRankingContents?.quizzes?.map(
+          (values, index: number) =>
+            active === index && (
+              <div key={values.quizSequence}>
+                <div className="tw-pt-10">
+                  <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600">
+                    개발
                   </span>
-                  <span className="tw-flex-auto tw-pl-10 tw-text-black tw-col-span-9">
-                    React에서 Vitual Dom에 대해 설명하시오.
+                  <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
+                    레벨 1
+                  </span>
+                  <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-300 tw-text-sm tw-font-light tw-text-gray-600">
+                    프론트개발자
                   </span>
                 </div>
-                <div className="tw-w-1/4 tw-text-right">
-                  <IconButton
-                    aria-label="more"
-                    id="long-button"
-                    size="small"
-                    aria-haspopup="true"
-                    onClick={e => handleIconButton(e)}
-                  >
-                    <AssignmentOutlinedIcon />
-                  </IconButton>
-                  <IconButton
-                    aria-label="more"
-                    id="long-button"
-                    size="small"
-                    aria-haspopup="true"
-                    onClick={e => handleIconButton(e)}
-                  >
-                    <FavoriteBorderIcon />
-                  </IconButton>
 
-                  <IconButton
-                    aria-label="more"
-                    id="long-button"
-                    size="small"
-                    aria-haspopup="true"
-                    onClick={e => handleIconButton(e)}
-                  >
-                    <ContentCopyIcon />
-                  </IconButton>
-                </div>
+                <article>
+                  <div className={cx('quiz-area tw-pt-5')}>
+                    <div className={cx('content-wrap tw-font-bold')}>
+                      <div className="tw-flex p-3 tw-m-1 tw-px-3 tw-py-0.5 tw-rounded tw-bg-gray-100">
+                        <div className="tw-w-3/4">
+                          <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-red-600 tw-border-red-600">
+                            HOT {index + 1}
+                          </span>
+                          <span className="tw-flex-auto tw-pl-10 tw-text-black tw-col-span-9">{values?.content}</span>
+                        </div>
+                        <div className="tw-w-1/4 tw-text-right">
+                          <IconButton
+                            aria-label="more"
+                            id="long-button"
+                            size="small"
+                            aria-haspopup="true"
+                            onClick={e => handleIconButton(e)}
+                          >
+                            <AssignmentOutlinedIcon className="tw-mr-1 tw-w-5" />
+                            <span className="tw-text-sm">{values?.answerCount ?? 0}</span>
+                          </IconButton>
+                          <IconButton
+                            aria-label="more"
+                            id="long-button"
+                            size="small"
+                            aria-haspopup="true"
+                            onClick={e => handleIconButton(e)}
+                          >
+                            <FavoriteBorderIcon className="tw-mr-1 tw-w-5" />
+                            <span className="tw-text-sm">{values?.likeCount ?? 0}</span>
+                          </IconButton>
+
+                          <IconButton
+                            aria-label="more"
+                            id="long-button"
+                            size="small"
+                            aria-haspopup="true"
+                            onClick={e => handleIconButton(e)}
+                          >
+                            <ContentCopyIcon className="tw-mr-1 tw-w-5" />
+                            <span className="tw-text-sm">{values?.activeCount ?? 0}</span>
+                          </IconButton>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </article>
               </div>
-            </div>
-          </div>
-        </article>
+            ),
+        )}
 
         <article>
           <div className={cx('answer-area tw-pt-5')}>

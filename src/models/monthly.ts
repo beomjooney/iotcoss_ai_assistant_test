@@ -7,7 +7,7 @@ export interface MonthlyRsponse {
 // monthly/ranking
 export interface MonthlyRankingResponse extends MonthlyRsponse {
   maker: Maker;
-  quizzes: Quizzes;
+  quizzes: Quizzes[];
   clubs: Clubs;
 }
 
@@ -45,7 +45,7 @@ export interface Clubs {
 
 // monthly/quizzes
 export interface MonthlyQuizzesResponse extends MonthlyRsponse {
-  data: MonthlyQuizzesData[];
+  data: MonthlyQuizzesData;
 }
 
 export interface MonthlyQuizzesData {
@@ -53,7 +53,7 @@ export interface MonthlyQuizzesData {
   pageSize: number;
   totalPages: number;
   totalElements: number;
-  contents: MonthlyQuizzesContents[];
+  contents: MonthlyQuizzesContents;
 }
 
 export interface MonthlyQuizzesContents {

@@ -12,9 +12,9 @@ export const getMonthlyRanking = async () => {
 };
 
 // 이달의 퀴즈 랭킹 목록 조회
-export const getMonthlyQuizzes = async () => {
-  const { data } = await axiosGeneralAPI().get(`/api/v1/monthly/quizzes`);
-  return data.data;
+export const getMonthlyQuizzes = async params => {
+  const { data, headers } = await axiosGeneralAPI().get('/api/v1/monthly/quizzes', { params });
+  return data;
 };
 
 // 이달의 메이커 랭킹 목록 조회
@@ -36,12 +36,15 @@ export const getMonthlyClubs = async () => {
 };
 
 // 퀴즈 관련 모든 응답 조회
-export const getQuizzesAnswers = async (quizSequence: number) => {
-  console.log(quizSequence);
-
-  const { data } = await axiosGeneralAPI().get(`/api/v1/quizzes/${quizSequence}/answers`);
+export const getQuizzesAnswers = async (quizSequence: number, params) => {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/quizzes/${quizSequence}/answers`, { params });
   return { data: data || [] };
 };
+
+// export const getQuizzesAnswers = async params => {
+//   const { data } = await axiosGeneralAPI().get(`/api/v1/quizzes/${params.id}/answers`, { params });
+//   return data.data;
+// };
 
 export async function getCamenities(args: CamenityProps) {
   let params = JSON.parse(JSON.stringify(args));

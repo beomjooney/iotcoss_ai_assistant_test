@@ -70,6 +70,7 @@ export function MonthlyMakerTemplate() {
   const [monthlyMakerQuizzesContents, setMonthlyMakerQuizzesContents] = useState<MonthlyMakerQuizzesResponse>();
   let [makerQuizSequence, setMakerQuizSequence] = useState<number>(0);
   let [quizzesAnswersContents, setQuizzesAnswersContents] = useState<quizzesAnswersParamProps>();
+  const [totalElements, setTotalElements] = useState(0);
 
   // 직군
   const [jobGroup, setJobGroup] = useState<any[]>([]);
@@ -79,45 +80,33 @@ export function MonthlyMakerTemplate() {
   const [job, setJob] = useState<any[]>([]);
   const { isFetched: isJobFetched } = useJobGroupss(data => setJob(data.data.contents || []));
 
-  // 메이커 데이터
+  // 퀴즈 데이터
   const { isFetched: isMonthlyRankingFetched } = useMonthlyRanking(data => {
     setMonthlyRankingContents(data);
+    setMakerQuizSequence(data.maker.quizzes[0].quizSequence);
   });
 
-  console.log(monthlyRankingContents);
-  console.log(jobGroup);
-
-  // const [monthlyMakerParams, setMonthlyMakerParams] = useState<monthlyMakerParamProps>({
-  //   statType: '0002',
-  //   statDate: 202310,
-  //   page,
-  //   size: 3,
-  // });
-
-  // const {
-  //   data: monthlyMakerQuizzesData,
-  //   isFetched: isMonthlyMakerQuizzesFetched,
-  //   refetch,
-  // }: UseQueryResult<MonthlyMakerQuizzesResponse> = useMonthlyMakerQuizzes(monthlyMakerParams, data => {
-  //   setMonthlyMakerQuizzesContents(monthlyMakerQuizzesData);
-  // });
-
-  const { isFetched: isQuizzesAnswersFetched }: UseQueryResult<QuizzesAnswersResponse> = useQuizzesAnswers(
-    makerQuizSequence,
-    data => {
-      //console.log(data);
-      //setQuizzesAnswersContents(data.data.data.clubQuizReplies.contents);
-    },
-  );
-
-  //console.log(monthlyRankingContents);
+  // 답변 데이터
+  const { isFetched: isQuizzesAnswersFetched, refetch } = useQuizzesAnswers(makerQuizSequence, data => {
+    setQuizzesAnswersContents(data?.contents);
+    setTotalElements(data?.totalElements);
+    setTotalPage(data?.totalPages);
+  });
 
   useEffect(() => {
     setParams({
       page,
-      keyword: keyWord,
     });
-  }, [page, keyWord]);
+  }, [page]);
+
+  useEffect(() => {
+    if (makerQuizSequence > 0) refetch();
+  }, [makerQuizSequence]);
+
+  console.log(quizzesAnswersContents);
+  //console.log(totalElements);
+  //console.log(totalPage);
+  //console.log(monthlyRankingContents);
 
   const handleIconButton = (event: React.MouseEvent<HTMLElement>) => {};
 
@@ -233,7 +222,7 @@ export function MonthlyMakerTemplate() {
         {monthlyRankingContents?.maker?.quizzes?.map(
           (values, index: number) =>
             active === index && (
-              <div>
+              <div key={values.quizSequence}>
                 <div className="tw-pt-10">
                   {isJobGroupFetched &&
                     jobGroup

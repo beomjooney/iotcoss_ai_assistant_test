@@ -46,12 +46,21 @@ export const useMonthlyRanking = (onSuccess?: (data: any) => void, onError?: (er
   });
 };
 
-export const useMonthlyQuizzes = (onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
-  return useQuery<any, Error>(QUERY_KEY_FACTORY('QUIZ').lists(), () => getMonthlyQuizzes(), {
-    onSuccess,
-    onError,
-    // refetchOnWindowFocus: false,
-  });
+export const useMonthlyQuizzes = (
+  params?: monthlyMakerParamProps,
+  onSuccess?: (data: MonthlyMakerQuizzesResponse) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 8;
+  return useQuery<MonthlyMakerQuizzesResponse, Error>(
+    QUERY_KEY_FACTORY('QUIZ').list({ size: DEFAULT_SIZE, ...params }),
+    () => getMonthlyQuizzes({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: true,
+    },
+  );
 };
 
 export const useMonthlyMaker = (onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
@@ -89,12 +98,14 @@ export const useMonthlyClubs = (onSuccess?: (data: any) => void, onError?: (erro
 
 export const useQuizzesAnswers = (
   quizSequence: number,
+  params?: quizzesAnswersParamProps,
   onSuccess?: (data: QuizzesAnswersResponse) => void,
   onError?: (error: Error) => void,
 ) => {
+  const DEFAULT_SIZE = 10;
   return useQuery<QuizzesAnswersResponse, Error>(
-    QUERY_KEY_FACTORY('COMMUNITY').list({ quizSequence }),
-    () => getQuizzesAnswers(quizSequence),
+    QUERY_KEY_FACTORY('QUIZ').list({ quizSequence, size: DEFAULT_SIZE, ...params }),
+    () => getQuizzesAnswers(quizSequence, { size: DEFAULT_SIZE, ...params }),
     {
       enabled: false,
       onSuccess,
