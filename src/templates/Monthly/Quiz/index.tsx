@@ -1,12 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
 import classNames from 'classnames/bind';
 import styles from './index.module.scss';
-import { UseQueryResult } from 'react-query';
 import { useRouter } from 'next/router';
-
 import { Toggle } from 'src/stories/components';
 import { paramProps } from 'src/services/seminars/seminars.queries';
 import { useMonthlyRanking, useQuizzesAnswers, quizzesAnswersParamProps } from 'src/services/monthly/monthly.queries';
+import { MonthlyQuizzesResponse, MonthlyRankingResponse } from 'src/models/monthly';
 
 import Grid from '@mui/material/Grid';
 import Box from '@mui/system/Box';
@@ -17,7 +16,6 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import Avatar from '@mui/material/Avatar';
-import { MonthlyQuizzesResponse, MonthlyRankingResponse } from 'src/models/monthly';
 
 const cx = classNames.bind(styles);
 
@@ -46,8 +44,6 @@ export function MonthlyQuizTemplate() {
     setTotalPage(data?.totalPages);
   });
 
-  console.log(quizzesAnswersContents);
-
   useEffect(() => {
     setParams({
       //...params,
@@ -58,6 +54,8 @@ export function MonthlyQuizTemplate() {
   useEffect(() => {
     if (quizSequence > 0) refetch();
   }, [quizSequence]);
+
+  console.log(quizzesAnswersContents);
 
   const handleIconButton = (event: React.MouseEvent<HTMLElement>) => {};
 
@@ -113,15 +111,21 @@ export function MonthlyQuizTemplate() {
             active === index && (
               <div key={values.quizSequence}>
                 <div className="tw-pt-10">
-                  <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600">
-                    개발
-                  </span>
-                  <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
-                    레벨 1
-                  </span>
-                  <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-300 tw-text-sm tw-font-light tw-text-gray-600">
-                    프론트개발자
-                  </span>
+                  {values?.recommendJobGroupNames?.map(jobGroupNamesValues => (
+                    <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600">
+                      {jobGroupNamesValues}
+                    </span>
+                  ))}
+                  {values?.recommendLevels?.map(recommendLevelsValues => (
+                    <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
+                      레벨 {recommendLevelsValues}
+                    </span>
+                  ))}
+                  {values?.recommendJobNames?.map(recommendJobNamesValues => (
+                    <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-300 tw-text-sm tw-font-light tw-text-gray-600">
+                      {recommendJobNamesValues}
+                    </span>
+                  ))}
                 </div>
 
                 <article>

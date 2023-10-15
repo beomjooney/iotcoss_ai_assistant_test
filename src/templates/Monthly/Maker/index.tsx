@@ -1,24 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
 import classNames from 'classnames/bind';
 import styles from './index.module.scss';
-import { UseQueryResult } from 'react-query';
 import { useRouter } from 'next/router';
 import { useStore } from 'src/store';
 import { User } from 'src/models/user';
-import { RecommendContent } from 'src/models/recommend';
-import {
-  useMonthlyRanking,
-  useMonthlyMakerQuizzes,
-  useMonthlyQuizzes,
-  useQuizzesAnswers,
-  monthlyMakerParamProps,
-  quizzesAnswersParamProps,
-} from 'src/services/monthly/monthly.queries';
-import { useContentTypes, useJobGroupss } from 'src/services/code/code.queries';
-
+import { useMonthlyRanking, useQuizzesAnswers, quizzesAnswersParamProps } from 'src/services/monthly/monthly.queries';
 import { Toggle } from 'src/stories/components';
 import { paramProps } from 'src/services/seminars/seminars.queries';
-import { useMyQuiz } from 'src/services/jobs/jobs.queries';
 import { MonthlyMakerQuizzesResponse, MonthlyRankingResponse, QuizzesAnswersResponse } from 'src/models/monthly';
 
 import Grid from '@mui/material/Grid';
@@ -32,30 +20,6 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import Avatar from '@mui/material/Avatar';
 
 const cx = classNames.bind(styles);
-
-// 레벨
-const levels = [
-  {
-    id: '0',
-    name: '레벨 0',
-  },
-  {
-    id: '1',
-    name: '레벨 1',
-  },
-  {
-    id: '2',
-    name: '레벨 2',
-  },
-  {
-    id: '3',
-    name: '레벨 3',
-  },
-  {
-    id: '4',
-    name: '레벨 4',
-  },
-];
 
 export function MonthlyMakerTemplate() {
   const router = useRouter();
@@ -71,14 +35,6 @@ export function MonthlyMakerTemplate() {
   let [makerQuizSequence, setMakerQuizSequence] = useState<number>(0);
   let [quizzesAnswersContents, setQuizzesAnswersContents] = useState<quizzesAnswersParamProps>();
   const [totalElements, setTotalElements] = useState(0);
-
-  // 직군
-  const [jobGroup, setJobGroup] = useState<any[]>([]);
-  const { isFetched: isJobGroupFetched } = useContentTypes(data => setJobGroup(data.data.contents || []));
-
-  // 직무
-  const [job, setJob] = useState<any[]>([]);
-  const { isFetched: isJobFetched } = useJobGroupss(data => setJob(data.data.contents || []));
 
   // 퀴즈 데이터
   const { isFetched: isMonthlyRankingFetched } = useMonthlyRanking(data => {
@@ -157,15 +113,22 @@ export function MonthlyMakerTemplate() {
                     모바일개발자
                   </span>
                 </div>
-                <div className="tw-font-bold tw-text-base tw-text-black tw-mt-5">다이버 | 모바일개발자 | 21년차</div>
-                <div className="tw-py-2">
-                  <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-bg-black tw-text-white">
-                    GO
-                  </span>
-                  <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-bg-black tw-text-white">
-                    Spring
-                  </span>
-                </div>
+                {monthlyRankingContents?.maker?.jobGroupTypeName && (
+                  <div className="tw-font-bold tw-text-base tw-text-black tw-mt-5">
+                    {monthlyRankingContents?.maker?.jobGroupTypeName} | {monthlyRankingContents?.maker?.jobTypeName} |
+                    21년차
+                  </div>
+                )}
+                {monthlyRankingContents?.maker?.jobGroupTypeName && (
+                  <div className="tw-py-2">
+                    <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-bg-black tw-text-white">
+                      GO
+                    </span>
+                    <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-bg-black tw-text-white">
+                      Spring
+                    </span>
+                  </div>
+                )}
                 <div className="tw-mt-3 tw-font-light tw-text-base tw-text-gray-500">
                   {monthlyRankingContents?.maker?.introductionMessage}
                 </div>
@@ -222,41 +185,25 @@ export function MonthlyMakerTemplate() {
         {monthlyRankingContents?.maker?.quizzes?.map(
           (values, index: number) =>
             active === index && (
-              <div key={values.quizSequence}>
-                <div className="tw-pt-10">
-                  {isJobGroupFetched &&
-                    jobGroup
-                      ?.filter(jobGroupValues => jobGroupValues.id === values.recommendJobGroups[index])
-                      ?.map((jobGroupValues, jobGroupIndex: number) => (
-                        <span
-                          key={jobGroupValues.id}
-                          className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600"
-                        >
-                          {jobGroupValues.name}
-                        </span>
-                      ))}
+              <div>
+                <div className="tw-pt-10" key={values.quizSequence}>
+                  {values?.recommendJobGroupNames?.map(jobGroupNamesValues => (
+                    <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600">
+                      {jobGroupNamesValues}
+                    </span>
+                  ))}
 
-                  {levels
-                    ?.filter(levelsValues => levelsValues.id === values.recommendJobs[index])
-                    ?.map((levelsValues, lvelsIndex: number) => (
-                      <span
-                        key={levelsValues.id}
-                        className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600"
-                      >
-                        {levelsValues.name}
-                      </span>
-                    ))}
-                  {isJobFetched &&
-                    job
-                      ?.filter(jobValues => jobValues.id === values.recommendLevels[index])
-                      ?.map((jobValues, jobIndex: number) => (
-                        <span
-                          key={jobValues.id}
-                          className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-300 tw-text-sm tw-font-light tw-text-gray-600"
-                        >
-                          {jobValues.name}
-                        </span>
-                      ))}
+                  {values?.recommendLevels?.map(recommendLevelsValues => (
+                    <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
+                      레벨 {recommendLevelsValues}
+                    </span>
+                  ))}
+
+                  {values?.recommendJobNames?.map(recommendJobNamesValues => (
+                    <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-300 tw-text-sm tw-font-light tw-text-gray-600">
+                      {recommendJobNamesValues}
+                    </span>
+                  ))}
                 </div>
 
                 <article>

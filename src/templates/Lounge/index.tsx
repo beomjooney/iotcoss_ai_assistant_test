@@ -79,6 +79,8 @@ export function LoungeTemplate() {
     setRankContents(data);
   });
 
+  console.log(rankContents);
+
   function searchKeyworld(value) {
     let _keyworld = value.replace('#', '');
     if (_keyworld == '') _keyworld = null;

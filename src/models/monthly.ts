@@ -16,7 +16,9 @@ export interface Maker {
   profileImageUrl: string;
   introductionMessage: string;
   jobGroupType: string;
+  jobGroupTypeName: string;
   jobType: string;
+  jobTypeName: string;
   madeQuizCount: number;
   receivedLikeCount: number;
   quizzes: Quizzes[];
@@ -29,7 +31,9 @@ export interface Quizzes {
   likeCount: number;
   activeCount: number;
   recommendJobGroups: string[];
+  recommendJobGroupNames: string[];
   recommendJobs: string[];
+  recommendJobNames: string[];
   recommendLevels: string[];
 }
 
