@@ -39,6 +39,8 @@ export function MonthlyQuizTemplate() {
 
   // 답변 데이터
   const { isFetched: isQuizzesAnswersFetched, refetch } = useQuizzesAnswers(quizSequence, data => {
+    console.log(data);
+
     setQuizzesAnswersContents(data?.contents);
     setTotalElements(data?.totalElements);
     setTotalPage(data?.totalPages);
@@ -109,8 +111,8 @@ export function MonthlyQuizTemplate() {
         {monthlyRankingContents?.quizzes?.map(
           (values, index: number) =>
             active === index && (
-              <div key={values.quizSequence}>
-                <div className="tw-pt-10">
+              <div>
+                <div className="tw-pt-10" key={values.quizSequence}>
                   {values?.recommendJobGroupNames?.map(jobGroupNamesValues => (
                     <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600">
                       {jobGroupNamesValues}

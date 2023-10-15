@@ -36,6 +36,8 @@ export function MonthlyMakerTemplate() {
   let [quizzesAnswersContents, setQuizzesAnswersContents] = useState<quizzesAnswersParamProps>();
   const [totalElements, setTotalElements] = useState(0);
 
+  makerQuizSequence = 17;
+
   // 퀴즈 데이터
   const { isFetched: isMonthlyRankingFetched } = useMonthlyRanking(data => {
     setMonthlyRankingContents(data);
@@ -43,10 +45,10 @@ export function MonthlyMakerTemplate() {
   });
 
   // 답변 데이터
-  const { isFetched: isQuizzesAnswersFetched, refetch } = useQuizzesAnswers(makerQuizSequence, data => {
+  const { isFetched: isQuizzesAnswersFetched, refetch } = useQuizzesAnswers(makerQuizSequence, params, data => {
     setQuizzesAnswersContents(data?.contents);
-    setTotalElements(data?.totalElements);
     setTotalPage(data?.totalPages);
+    setTotalElements(data?.totalElements);
   });
 
   useEffect(() => {
@@ -116,7 +118,7 @@ export function MonthlyMakerTemplate() {
                 {monthlyRankingContents?.maker?.jobGroupTypeName && (
                   <div className="tw-font-bold tw-text-base tw-text-black tw-mt-5">
                     {monthlyRankingContents?.maker?.jobGroupTypeName} | {monthlyRankingContents?.maker?.jobTypeName} |
-                    21년차
+                    {monthlyRankingContents?.maker?.experienceYears}년차
                   </div>
                 )}
                 {monthlyRankingContents?.maker?.jobGroupTypeName && (

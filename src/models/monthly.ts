@@ -21,6 +21,7 @@ export interface Maker {
   jobTypeName: string;
   madeQuizCount: number;
   receivedLikeCount: number;
+  experienceYears: number;
   quizzes: Quizzes[];
 }
 
@@ -121,7 +122,7 @@ export interface MonthlyClubContents {
 
 // quizzes/{quizSequence}/answers
 export interface QuizzesAnswersResponse extends MonthlyRsponse {
-  data: QuizzesAnswers[];
+  data: QuizzesAnswers;
 }
 
 export interface QuizzesAnswers {

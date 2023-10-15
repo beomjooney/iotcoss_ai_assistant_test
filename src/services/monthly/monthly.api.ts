@@ -38,12 +38,15 @@ export const getMonthlyClubs = async () => {
 // 퀴즈 관련 모든 응답 조회
 export const getQuizzesAnswers = async (quizSequence: number, params) => {
   const { data } = await axiosGeneralAPI().get(`/api/v1/quizzes/${quizSequence}/answers`, { params });
-  return { data: data || [] };
+  return data.data;
 };
 
-// export const getQuizzesAnswers = async params => {
-//   const { data } = await axiosGeneralAPI().get(`/api/v1/quizzes/${params.id}/answers`, { params });
-//   return data.data;
+// export const getQuizzesAnswers = async (quizSequence: number, params) => {
+//   const { data } = await axiosGeneralAPI().get(`/api/v1/quizzes/${quizSequence}/answers`, { params });
+
+//   console.log(data);
+
+//   return data;
 // };
 
 export async function getCamenities(args: CamenityProps) {
