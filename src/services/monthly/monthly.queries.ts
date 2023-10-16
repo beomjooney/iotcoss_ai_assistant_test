@@ -99,18 +99,36 @@ export const useMonthlyClubs = (onSuccess?: (data: any) => void, onError?: (erro
 export const useQuizzesAnswers = (
   quizSequence: number,
   params,
-  onSuccess?: (data: any) => void,
+  onSuccess?: (data: QuizzesAnswersResponse) => void,
   onError?: (error: Error) => void,
 ) => {
   const DEFAULT_SIZE = 10;
-  return useQuery<any, Error>(
-    QUERY_KEY_FACTORY('QUIZ').detail({ size: DEFAULT_SIZE, ...params }),
+  return useQuery<QuizzesAnswersResponse, Error>(
+    QUERY_KEY_FACTORY('QUIZ').list({ size: DEFAULT_SIZE, ...params }),
     () => getQuizzesAnswers(quizSequence, { size: DEFAULT_SIZE, ...params }),
     {
       onSuccess,
       onError,
       refetchOnWindowFocus: true,
-      enabled: true,
     },
   );
 };
+
+// export const useQuizzesAnswers = (
+//   quizSequence: number,
+//   params,
+//   onSuccess?: (data: QuizzesAnswersResponse) => void,
+//   onError?: (error: Error) => void,
+// ) => {
+//   const DEFAULT_SIZE = 10;
+//   return useQuery<any, Error>(
+//     QUERY_KEY_FACTORY('QUIZ').list({ size: DEFAULT_SIZE, ...params }),
+//     () => getQuizzesAnswers(quizSequence, { size: DEFAULT_SIZE, ...params }),
+//     {
+//       onSuccess,
+//       onError,
+//       refetchOnWindowFocus: true,
+//       enabled: true,
+//     },
+//   );
+// };

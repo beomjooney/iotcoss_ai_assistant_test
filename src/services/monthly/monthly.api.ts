@@ -41,14 +41,6 @@ export const getQuizzesAnswers = async (quizSequence: number, params) => {
   return data.data;
 };
 
-// export const getQuizzesAnswers = async (quizSequence: number, params) => {
-//   const { data } = await axiosGeneralAPI().get(`/api/v1/quizzes/${quizSequence}/answers`, { params });
-
-//   console.log(data);
-
-//   return data;
-// };
-
 export async function getCamenities(args: CamenityProps) {
   let params = JSON.parse(JSON.stringify(args));
   Object.keys(params).forEach(key => {

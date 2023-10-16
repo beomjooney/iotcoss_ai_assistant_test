@@ -122,25 +122,23 @@ export interface MonthlyClubContents {
 
 // quizzes/{quizSequence}/answers
 export interface QuizzesAnswersResponse extends MonthlyRsponse {
-  data: QuizzesAnswers;
+  page: number;
+  pageSize: number;
+  totalElements: number;
+  totalPages: number;
+  contents: QuizzesAnswers[];
 }
 
 export interface QuizzesAnswers {
-  page: number;
-  pageSize: number;
-  totalPages: number;
-  totalElements: number;
-  contents: [
-    clubQuizAnswerSequence: number,
-    clubQuizSequence: number,
-    nickname: string,
-    profileImageUrl: string,
-    answerStatus: string,
-    preAnswer: string,
-    postAnswer: string,
-    likeCount: number,
-    replyCount: number,
-    onePickCount: number,
-    createdAt: string,
-  ];
+  clubQuizAnswerSequence: number;
+  clubQuizSequence: number;
+  nickname: string;
+  profileImageUrl: string;
+  answerStatus: string;
+  preAnswer: string;
+  postAnswer: string;
+  likeCount: number;
+  replyCount: number;
+  onePickCount: number;
+  createdAt: string;
 }

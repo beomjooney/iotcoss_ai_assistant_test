@@ -31,6 +31,8 @@ export function MonthlyQuizTemplate() {
   let [quizzesAnswersContents, setQuizzesAnswersContents] = useState<quizzesAnswersParamProps>();
   let [quizSequence, setQuizSequence] = useState<number>(0);
 
+  quizSequence = 17;
+
   // 퀴즈 데이터
   const { isFetched: isMonthlyRankingFetched } = useMonthlyRanking(data => {
     setMonthlyRankingContents(data);
@@ -38,12 +40,10 @@ export function MonthlyQuizTemplate() {
   });
 
   // 답변 데이터
-  const { isFetched: isQuizzesAnswersFetched, refetch } = useQuizzesAnswers(quizSequence, data => {
-    console.log(data);
-
+  const { isFetched: isQuizzesAnswersFetched, refetch } = useQuizzesAnswers(quizSequence, params, data => {
     setQuizzesAnswersContents(data?.contents);
-    setTotalElements(data?.totalElements);
     setTotalPage(data?.totalPages);
+    setTotalElements(data?.totalElements);
   });
 
   useEffect(() => {
