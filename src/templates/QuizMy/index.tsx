@@ -20,7 +20,7 @@ export function QuizMyTemplate() {
   const [active, setActive] = useState(0);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
-  const [params, setParams] = useState<paramProps>({ page, clubStatus: '0004' });
+  const [params, setParams] = useState<paramProps>({ page, viewFilter: '0002' });
 
   const { isFetched: isContentFetched, refetch } = useMyClubList(params, data => {
     setContents(data.data.contents || []);
@@ -75,7 +75,7 @@ export function QuizMyTemplate() {
                       setActive(0);
                       setParams({
                         page,
-                        clubStatus: '0004',
+                        viewFilter: '0002',
                       });
                       setPage(1);
                     }}
@@ -93,7 +93,7 @@ export function QuizMyTemplate() {
                       setActive(1);
                       setParams({
                         ...params,
-                        clubStatus: '0003',
+                        viewFilter: '0001',
                         page,
                       });
                       setPage(1);
@@ -112,7 +112,7 @@ export function QuizMyTemplate() {
                       setActive(2);
                       setParams({
                         ...params,
-                        clubStatus: '0005',
+                        viewFilter: '0003',
                         page,
                       });
                       setPage(1);
