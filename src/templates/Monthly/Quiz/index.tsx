@@ -2,10 +2,16 @@ import React, { useEffect, useState, useRef } from 'react';
 import classNames from 'classnames/bind';
 import styles from './index.module.scss';
 import { useRouter } from 'next/router';
-import { Toggle, Pagination } from 'src/stories/components';
+import { Toggle, Textfield, Pagination } from 'src/stories/components';
 import { paramProps } from 'src/services/seminars/seminars.queries';
-import { useMonthlyRanking, useQuizzesAnswers } from 'src/services/monthly/monthly.queries';
-import { MonthlyQuizzesResponse, MonthlyRankingResponse, QuizzesAnswersResponse } from 'src/models/monthly';
+import { useMonthlyRanking, useQuizzesAnswers, useAnswersReplies } from 'src/services/monthly/monthly.queries';
+import {
+  MonthlyQuizzesResponse,
+  MonthlyRankingResponse,
+  QuizzesAnswersResponse,
+  AnswerRepliesResponse,
+} from 'src/models/monthly';
+import { useRepliesList } from 'src/services/community/community.queries';
 
 import Grid from '@mui/material/Grid';
 import Box from '@mui/system/Box';
@@ -15,11 +21,14 @@ import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import Avatar from '@mui/material/Avatar';
+import { event } from 'src/lib/gtag';
 
 const cx = classNames.bind(styles);
 
 export function MonthlyQuizTemplate() {
+  const textInput = useRef(null);
   const router = useRouter();
   const [active, setActive] = useState(0);
   const [page, setPage] = useState(1);
@@ -28,21 +37,40 @@ export function MonthlyQuizTemplate() {
   const [monthlyRankingContents, setMonthlyRankingContents] = useState<MonthlyRankingResponse>();
   const [totalPage, setTotalPage] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
   let [quizzesAnswersContents, setQuizzesAnswersContents] = useState<QuizzesAnswersResponse>();
+  let [answersRepliesContents, setAnswersRepliesContents] = useState<AnswerRepliesResponse>();
   let [quizSequence, setQuizSequence] = useState<number>(0);
+  let [quizAnswerSequence, setQuizAnswerSequence] = useState<number>();
+
+  let [replyCount, setReplyCount] = useState(0);
+  let [postNo, setPostNo] = useState(0);
+
+  //quizSequence = 17;
+  //quizAnswerSequence = 11;
 
   // 퀴즈 데이터
-  const { isFetched: isMonthlyRankingFetched } = useMonthlyRanking(data => {
+  const { isFetched: isMonthlyRankingFetched, refetch: refetchMonthlyRanking } = useMonthlyRanking(data => {
     setMonthlyRankingContents(data);
     setQuizSequence(data.quizzes[0].quizSequence);
   });
 
   // 답변 데이터
-  const { isFetched: isQuizzesAnswersFetched, refetch } = useQuizzesAnswers(quizSequence, params, data => {
+  const { isFetched: isQuizzesAnswersFetched } = useQuizzesAnswers(quizSequence, params, data => {
     setQuizzesAnswersContents(data);
     setTotalPage(data?.totalPages);
     setTotalElements(data?.totalElements);
   });
+
+  // 댓글 데이터
+  const { isFetched: isAnswerRepliesFetched, refetch: refetchAnswerReplies } = useAnswersReplies(
+    quizAnswerSequence,
+    params,
+    data => {
+      setAnswersRepliesContents(data);
+    },
+  );
 
   useEffect(() => {
     setParams({
@@ -51,10 +79,17 @@ export function MonthlyQuizTemplate() {
   }, [page]);
 
   useEffect(() => {
-    if (quizSequence > 0) refetch();
-  }, [quizSequence]);
+    refetchAnswerReplies();
+  }, [quizAnswerSequence, refetchAnswerReplies, refetchMonthlyRanking]);
 
   const handleIconButton = (event: React.MouseEvent<HTMLElement>) => {};
+
+  const handleReplyDisplayButton = (clubQuizAnswerSequence: number) => {
+    if (clubQuizAnswerSequence > 0) {
+      setIsOpen(!isOpen);
+      setQuizAnswerSequence(clubQuizAnswerSequence);
+    }
+  };
 
   return (
     <div className={cx('seminar-container')}>
@@ -211,9 +246,11 @@ export function MonthlyQuizTemplate() {
                               id="long-button"
                               size="small"
                               aria-haspopup="true"
-                              onClick={e => handleIconButton(e)}
+                              onClick={() => {
+                                handleReplyDisplayButton(values.clubQuizAnswerSequence);
+                              }}
                             >
-                              <AssignmentOutlinedIcon className="tw-mr-1 tw-w-5" />
+                              <ChatBubbleOutlineIcon className="tw-mr-1 tw-w-5" />
                               <span className="tw-text-sm">{values?.replyCount ?? 0}</span>
                             </IconButton>
                             <IconButton
@@ -240,8 +277,63 @@ export function MonthlyQuizTemplate() {
                           </div>
                         </div>
                         <div className="tw-flex p-3 tw-m-1 tw-px-3 tw-py-0.5">
-                          <span className="tw-flex tw-text-black tw-text-sm tw-pl-[120px]">{values?.postAnswer}</span>
+                          <span className="tw-flex tw-text-black tw-text-md tw-pl-[120px]">{values?.postAnswer}</span>
                         </div>
+                        <div className="tw-ml-[140px] tw-mr-[140px]">
+                          <div>
+                            <Divider className="tw-mb-7 tw-mt-5 tw-bg-['#efefef'] tw-border-x-8" />
+                          </div>
+
+                          {isOpen &&
+                            isAnswerRepliesFetched &&
+                            values?.clubQuizAnswerSequence === quizAnswerSequence &&
+                            answersRepliesContents?.data.clubQuizReplies?.contents?.map(
+                              (quizRepliesValues, index: number) => (
+                                <div className="tw-mb-10" key={`replies-${index}`}>
+                                  <div className="tw-w-3/4">
+                                    <span className="tw-flex tw-text-black tw-text-sm">
+                                      <Avatar sx={{ width: 32, height: 32 }} src={quizRepliesValues?.imageUrl}></Avatar>
+                                      <span className="tw-leading-9 tw-pl-2 tw-font-bold">
+                                        {quizRepliesValues?.nickname}
+                                      </span>
+                                    </span>
+                                  </div>
+                                  <div className="tw-flex tw-m-1 tw-px-3 tw-py-0.5">
+                                    <span className="tw-text-gray-500 tw-text-sm tw-pl-[20px]">
+                                      {quizRepliesValues?.body}
+                                    </span>
+                                  </div>
+                                </div>
+                              ),
+                            )}
+                        </div>
+
+                        {/* <div className="tw-col-span-9 tw-flex tw-items-center tw-justify-end ">
+                          <Textfield
+                            width={400}
+                            defaultValue=""
+                            placeholder="댓글을 입력해주세요."
+                            ref={textInput}
+                            onKeyPress={e => {
+                              if (e.key === 'Enter') {
+                                onReplySubmit(board?.clubQuizAnswerSequence, textInput.current.value);
+                              }
+                            }}
+                          />
+                          <button
+                            className="tw-bg-gray-400 tw-text-sm tw-text-white tw-px-5 tw-ml-2 tw-rounded-md tw-h-10"
+                            onClick={() => onReplySubmit(board?.clubQuizAnswerSequence, textInput.current.value)}
+                          >
+                            입력
+                          </button>
+
+                          <button
+                            className={cx('board-footer__reply', 'tw-text-[14px] tw-pl-4')}
+                            onClick={() => {
+                              onButtonReply(board.clubQuizAnswerSequence);
+                            }}
+                          ></button>
+                        </div> */}
                       </div>
                     </div>
                   </div>

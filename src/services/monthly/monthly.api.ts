@@ -41,6 +41,12 @@ export const getQuizzesAnswers = async (quizSequence: number, params) => {
   return data.data;
 };
 
+// 퀴즈 응답 댓글 조회
+export const getAnswersReplies = async (quizAnswerSequence: number, params) => {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/answers/${quizAnswerSequence}/replies`, { params });
+  return data;
+};
+
 export async function getCamenities(args: CamenityProps) {
   let params = JSON.parse(JSON.stringify(args));
   Object.keys(params).forEach(key => {

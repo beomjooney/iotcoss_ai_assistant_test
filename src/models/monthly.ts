@@ -142,3 +142,47 @@ export interface QuizzesAnswers {
   onePickCount: number;
   createdAt: string;
 }
+
+// answers/{quizAnswersSequence}/replies
+export interface AnswerRepliesResponse extends MonthlyRsponse {
+  data: ReplisesData;
+}
+
+export interface ReplisesData {
+  answer: AnswerData;
+  clubQuizReplies: ClubQuizReplies;
+}
+
+export interface AnswerData {
+  clubQuizAnswerSequence: number;
+  clubQuizSequence: number;
+  likeCount: number;
+  replyCount: number;
+  onePickCount: number;
+  nickname: string;
+  profileImageUrl: string;
+  answerStatus: string;
+  preAnswer: string;
+  postAnswer: string;
+  createdAt: string;
+}
+
+export interface ClubQuizReplies {
+  page: number;
+  pageSize: number;
+  totalElements: number;
+  totalPages: number;
+  contents: ClubQuizRepliesContents[];
+}
+
+export interface ClubQuizRepliesContents {
+  sequence: number;
+  clubQuizAnswerSequence: number;
+  parentReplySequence: number;
+  nickname: string;
+  imageUrl: string;
+  createAt: string;
+  body: string;
+  postReplyStatus: string;
+  replies: string[];
+}
