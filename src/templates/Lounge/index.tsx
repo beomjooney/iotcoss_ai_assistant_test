@@ -99,7 +99,6 @@ export function LoungeTemplate() {
 
   useDidMountEffect(() => {
     setParams({
-      // ...params,
       page,
       keyword: keyWorld,
     });

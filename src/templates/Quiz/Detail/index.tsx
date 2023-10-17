@@ -528,7 +528,6 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                           </div>
                         ) : (
                           <div className="border tw-rounded-xl p-4">
-                            {' '}
                             {item?.isRepresentative === true && (
                               <button
                                 type="button"

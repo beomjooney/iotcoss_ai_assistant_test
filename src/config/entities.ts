@@ -87,6 +87,7 @@ export interface BoardType {
 // }
 
 export interface ReplyType {
+  replies: any;
   postReplyNo: number;
   parentPostNo: number;
   body: string;
@@ -94,7 +95,6 @@ export interface ReplyType {
   createdAt: Date;
   updatedAt: Date;
 }
-
 export interface authorType {
   memberId: string;
   name: string;

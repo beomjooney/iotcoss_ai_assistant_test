@@ -51,6 +51,7 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
   const [contentHtml, setContentHtml] = useState('');
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
+  const [keyWorld, setKeyWorld] = useState('');
   const [totalElements, setTotalElements] = useState(0);
   const [params, setParams] = useState<paramProps>({ id, page });
   let [isLiked, setIsLiked] = useState(false);
@@ -83,6 +84,12 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
     index: number;
     value: number;
     className?: any;
+  }
+
+  function searchKeyworld(value) {
+    let _keyworld = value.replace('#', '');
+    if (_keyworld == '') _keyworld = null;
+    setKeyWorld(_keyworld);
   }
 
   function TabPanel(props: TabPanelProps) {
@@ -120,11 +127,11 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
 
   useEffect(() => {
     setParams({
-      // ...params,
       id,
       page,
+      keyword: keyWorld,
     });
-  }, [page]);
+  }, [page, keyWorld]);
 
   return (
     <div className={cx('seminar-detail-container')}>
@@ -191,21 +198,19 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                 </div>
               </div>
               <div className="tw-grid tw-grid-cols-12">
-                <div className="tw-col-span-1">
+                <div className="tw-col-span-2 tw-flex tw-items-center tw-justify-center tw-gap-3">
+                  <img src="/assets/images/icons/quiz.png" className="tw-w-5 tw-h-5" alt="메이커" />
                   {contents?.isRepresentative === true && (
                     <span
                       type="button"
                       data-tooltip-target="tooltip-default"
-                      className="tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-bold tw-px-3 tw-py-1 tw-rounded"
+                      className="tw-bg-green-100 tw-text-green-800 tw-text-center tw-px-3 tw-py-1 tw-text-sm tw-font-bold tw-rounded-md"
                     >
                       대표
                     </span>
                   )}
                 </div>
-                <div className="tw-col-span-11 tw-flex tw-items-center tw-justify-center">
-                  <div className="tw-col-span-1 tw-flex tw-flex-col tw-items-center tw-pr-2">
-                    <img src="/assets/images/icons/quiz.png" className="tw-w-5 tw-h-5" alt="메이커" />
-                  </div>
+                <div className="tw-col-span-10 tw-flex tw-items-center tw-justify-center">
                   <span className="tw-font-bold tw-text-[18px] tw-text-black ">{contents?.content}</span>
                 </div>
               </div>

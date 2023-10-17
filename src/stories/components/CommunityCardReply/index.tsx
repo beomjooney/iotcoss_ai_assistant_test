@@ -7,19 +7,19 @@ import { User } from 'src/models/user';
 import Tooltip from '../Tooltip';
 import Grid from '@mui/material/Grid';
 import { Textfield, Button } from 'src/stories/components';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSessionStore } from 'src/store/session';
+import { useSaveReReply } from 'src/services/community/community.mutations';
+import CommunityCardReReply from '../CommunityCardReReply';
 const { logged } = useSessionStore.getState();
 
 export interface CommunityCardReplyProps {
   /** 댓글 */
   reply: ReplyType;
   /** 작성자 */
-  writer: User;
   /** className */
   className?: string;
-  memberId: string;
-  onReplyDeleteSubmit: (...args: any[]) => any;
+  refetch: (...args: any[]) => any;
 }
 
 const cx = classNames.bind(styles);
@@ -47,26 +47,34 @@ function timeForToday(value) {
   return `${Math.floor(betweenTimeDay / 365)}년전`;
 }
 
-const CommunityCardReply = ({ reply, writer, className, memberId, onReplyDeleteSubmit }: CommunityCardReplyProps) => {
-  // const { jobGroupName, jobGroup } = writer;
-  // const chipColor = jobColorKey(jobGroup);
+const CommunityCardReply = ({ reply, className, refetch }: CommunityCardReplyProps) => {
   const textInput = useRef(null);
   let [isOpen, setIsOpened] = useState(false);
 
-  const onReplySubmit = () => {
+  console.log(reply);
+  const { mutate: onSaveReReply, isSuccess: replyReplySucces } = useSaveReReply();
+
+  const replyOpen = () => {
     setIsOpened(!isOpen);
-    // if (logged) {
-    //   onSaveReply({
-    //     postNo: postNo,
-    //     data: {
-    //       body: text,
-    //     },
-    //   });
-    //   textInput.current.value = '';
-    //   setReplyCount(replyCount => replyCount + 1);
-    // } else {
-    //   alert('로그인 후 댓글을 입력할 수 있습니다.');
-    // }
+  };
+
+  useEffect(() => {
+    refetch();
+  }, [replyReplySucces]);
+
+  const onReplySubmit = (postNo: number, text: string) => {
+    setIsOpened(!isOpen);
+    if (logged) {
+      onSaveReReply({
+        clubQuizAnswerReplySequence: postNo,
+        body: text,
+      });
+      textInput.current.value = '';
+      // setReplyCount(replyCount => replyCount + 1);
+      setIsOpened(true);
+    } else {
+      alert('로그인 후 댓글을 입력할 수 있습니다.');
+    }
   };
 
   // TODO 좋아요 여부 필드 수정 필요
@@ -96,28 +104,45 @@ const CommunityCardReply = ({ reply, writer, className, memberId, onReplyDeleteS
         </div>
         <div className="tw-col-span-1"></div>
       </div>
-      {/* <div className="tw-grid tw-grid-cols-12 tw-items-start tw-justify-center">
+      <div className="tw-grid tw-grid-cols-12 tw-items-start tw-justify-center">
         <div className="tw-col-span-1"></div>
-        <div className="tw-col-span-11 tw-py-3">
-          <button className={cx('tw-text-[12px]', 'tw-text-gray-400')} onClick={() => onReplySubmit()}>
-            댓글쓰기
+        <div className="tw-col-span-11 tw-pt-0 tw-pb-3">
+          <button className={cx('tw-text-[12px]', 'tw-text-gray-400')} onClick={() => replyOpen()}>
+            답글쓰기
           </button>
         </div>
         <div className="tw-col-span-1"></div>
-      </div> */}
+      </div>
+      <div className="tw-grid tw-grid-cols-12 tw-items-start tw-justify-center">
+        <div className="tw-col-span-1"></div>
+        <div className="tw-col-span-11 tw-pt-0 tw-pb-3">
+          {reply?.replies.map((reply, i) => {
+            return <CommunityCardReReply key={i} reply={reply} />;
+          })}
+        </div>
+      </div>
+
       {isOpen && (
-        <div className="tw-grid tw-grid-cols-12 tw-items-center tw-justify-center">
+        <div className="tw-grid tw-grid-cols-12 tw-items-center tw-justify-center tw-pb-4">
           <div className="tw-col-span-1"></div>
-          <div className="tw-col-span-10">
-            <div className={cx('tw-text-[12px]', 'tw-text-gray-400')}>
-              <Textfield defaultValue="" placeholder="댓글을 입력하세요." ref={textInput} />
-            </div>
-          </div>
-          <div className="tw-col-span-1">
-            <div>
+          <div className="tw-col-span-11 ">
+            <div className="tw-flex tw-justify-start tw-items-center">
+              <div className={cx('tw-text-[12px]', 'tw-text-gray-400')}>
+                <Textfield
+                  width={600}
+                  defaultValue=""
+                  placeholder="댓글을 입력해주세요."
+                  ref={textInput}
+                  onKeyPress={e => {
+                    if (e.key === 'Enter') {
+                      onReplySubmit(reply.sequence, textInput.current.value);
+                    }
+                  }}
+                />
+              </div>
               <button
-                className="tw-bg-gray-400 tw-text-white tw-py-[10px] tw-px-6  tw-ml-2 tw-rounded-md tw-text-sm"
-                onClick={() => onReplySubmit(reply.postNo, textInput.current.value)}
+                className="tw-bg-gray-400 tw-text-white tw-h-10 tw-px-6  tw-ml-2 tw-rounded-md tw-text-sm"
+                onClick={() => onReplySubmit(reply.sequence, textInput.current.value)}
               >
                 입력
               </button>
@@ -125,75 +150,6 @@ const CommunityCardReply = ({ reply, writer, className, memberId, onReplyDeleteS
           </div>
         </div>
       )}
-
-      {/* <div className={cx('profile-wrap', 'col-md-1')}>
-        <img
-          src={`${process.env['NEXT_PUBLIC_GENERAL_IMAGE_URL']}/images/${reply.author?.profileImageUrl}`}
-          alt={`${writer.jobGroupName} ${reply.author.nickname}`}
-          className={cx('rounded-circle', 'profile-image')}
-        />
-      </div> */}
-      {/* <div className={cx('profile-wrap', 'col-md-20')}>
-        <div className={cx('profile-desc')}>
-          <Chip chipColor={chipColor} radius={4} variant="outlined">
-            {reply.author.jobGroupName}
-          </Chip>
-          <Chip chipColor={chipColor} radius={4} className="ml-2">
-            {reply.author.level}레벨
-          </Chip>{' '}
-          <div>
-            <h5 className={cx('profile-desc__name', 'mt-2')}>
-              <Grid container spacing={1}>
-                <Grid item xs="auto">
-                  {reply.author.nickname}
-                </Grid>
-                <Grid item xs="auto">
-                  {reply.author.typeName === '0001' ? '멘티' : '멘토'}
-                </Grid>
-                <Grid item xs="auto">
-                  <Tooltip content={reply.author.typeName} placement="bottom" trigger="mouseEnter">
-                    {reply.author?.type === '0002' && (
-                      <img src="/assets/images/level/Mento_lev1.svg" alt={reply.author?.typeName} />
-                    )}
-                  </Tooltip>
-                  <Tooltip content={reply.author?.typeName} placement="bottom" trigger="mouseEnter">
-                    {reply.author?.type === '0003' && (
-                      <img src="/assets/images/level/Mento_lev2.svg" alt={reply.author?.typeName} />
-                    )}
-                  </Tooltip>
-                  <Tooltip content={reply.author?.typeName} placement="bottom" trigger="mouseEnter">
-                    {reply.author?.type === '0004' && (
-                      <img src="/assets/images/level/Mento_lev3.svg" alt={reply.author?.typeName} />
-                    )}
-                  </Tooltip>
-                  <Tooltip content={reply.author?.typeName} placement="bottom" trigger="mouseEnter">
-                    {reply.author?.type === '0005' && (
-                      <img src="/assets/images/level/Mento_lev4.svg" alt={reply.author?.typeName} />
-                    )}
-                  </Tooltip>
-                </Grid>
-              </Grid>
-            </h5>
-
-            <h6 className={cx('profile-desc__job')}>{writer.jobGroupName}</h6>
-          </div>
-        </div>
-      </div> */}
-
-      {/* <div className={cx('reply-wrap', 'col-md-1')}>
-        {memberId == reply.author.memberId ? (
-          <Chip
-            chipColor={chipColor}
-            radius={4}
-            variant="outlined"
-            onClick={() => onReplyDeleteSubmit(reply.postReplyNo, reply.parentPostNo)}
-          >
-            삭제
-          </Chip>
-        ) : (
-          <div></div>
-        )}
-      </div> */}
     </div>
   );
 };

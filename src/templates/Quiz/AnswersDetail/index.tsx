@@ -295,16 +295,7 @@ export function QuizAnswersDetailTemplate({ id }: QuizAnswersDetailTemplateProps
             </div>
           </div>
           {answerContents.map((item, index) => {
-            return (
-              <CommunityCard
-                key={index}
-                board={item}
-                // writer={memberSample}
-                className={cx('reply-container__item')}
-                // memberId={memberId}
-                // onPostDeleteSubmit={onPostDeleteSubmit}
-              />
-            );
+            return <CommunityCard key={index} board={item} className={cx('reply-container__item')} />;
           })}
         </div>
         <div className="tw-flex tw-justify-center tw-mt-10">

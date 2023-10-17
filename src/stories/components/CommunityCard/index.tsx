@@ -68,13 +68,19 @@ CommunityCardProps) => {
   let [repliesList, setRepliesList] = useState([]);
   const { mutate: onSaveReply, isSuccess: replyReplySucces } = useSaveReply();
   const { mutate: onDeleteReply, isSuccess: deleteReplySucces } = useDeleteReply();
-  const { isFetched: isReplyFetched, refetch } = useRepliesList(postNo, data => {
+  const {
+    isFetched: isReplyFetched,
+    refetch,
+    isSuccess: replayListSuccess,
+  } = useRepliesList(postNo, data => {
     setRepliesList(data.data.data.clubQuizReplies.contents);
   });
 
   useEffect(() => {
-    if (postNo > 0) refetch();
-  }, [postNo, replyReplySucces]);
+    if (postNo > 0) {
+      refetch();
+    }
+  }, [postNo]);
 
   useEffect(() => {
     setIsLiked(board?.liked);
@@ -92,6 +98,7 @@ CommunityCardProps) => {
       });
       textInput.current.value = '';
       setReplyCount(replyCount => replyCount + 1);
+      onReply(board.clubQuizAnswerSequence);
     } else {
       alert('로그인 후 댓글을 입력할 수 있습니다.');
     }
@@ -123,6 +130,10 @@ CommunityCardProps) => {
   };
 
   const onReply = function (postNo: number) {
+    setPostNo(postNo);
+    setIsOpened(true);
+  };
+  const onButtonReply = function (postNo: number) {
     setPostNo(postNo);
     setIsOpened(!isOpen);
   };
@@ -267,10 +278,20 @@ CommunityCardProps) => {
               </span>
             </div>
           </div>
-          <div className="tw-col-span-9 tw-flex tw-justify-end ">
-            <Textfield width={400} defaultValue="" placeholder="댓글을 입력해주세요." ref={textInput} />
+          <div className="tw-col-span-9 tw-flex tw-items-center tw-justify-end ">
+            <Textfield
+              width={400}
+              defaultValue=""
+              placeholder="댓글을 입력해주세요."
+              ref={textInput}
+              onKeyPress={e => {
+                if (e.key === 'Enter') {
+                  onReplySubmit(board?.clubQuizAnswerSequence, textInput.current.value);
+                }
+              }}
+            />
             <button
-              className="tw-bg-black tw-text-sm tw-text-white tw-px-5 tw-ml-2 tw-rounded-md"
+              className="tw-bg-gray-400 tw-text-sm tw-text-white tw-px-5 tw-ml-2 tw-rounded-md tw-h-10"
               onClick={() => onReplySubmit(board?.clubQuizAnswerSequence, textInput.current.value)}
             >
               입력
@@ -279,7 +300,7 @@ CommunityCardProps) => {
             <button
               className={cx('board-footer__reply', 'tw-text-[14px] tw-pl-4')}
               onClick={() => {
-                onReply(board.clubQuizAnswerSequence);
+                onButtonReply(board.clubQuizAnswerSequence);
               }}
             >
               댓글 {replyCount}개{isOpen ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
@@ -299,31 +320,16 @@ CommunityCardProps) => {
           </span>
         </div>
       </div>
-      {isOpen && isReplyFetched && (
+      {isReplyFetched && isOpen && (
         <div className={cx('reply-container')}>
           <div className={cx('reply-container__content')}>
             {repliesList.map((reply, i) => {
               return (
                 // TODO API Response 보고 댓글 작성자로 수정 필요
-                <CommunityCardReply
-                  key={i}
-                  reply={reply}
-                  // writer={writer}
-                  // memberId={memberId}
-                  onReplyDeleteSubmit={onReplyDeleteSubmit}
-                />
+                <CommunityCardReply key={i} reply={reply} refetch={refetch} />
               );
             })}
           </div>
-          {/* <div className="tw-grid tw-grid-cols-12 tw-gap-4 tw-items-start tw-justify-center">
-            <div className="tw-col-span-1"></div>
-            <div className="tw-col-span-11">
-              <Textfield defaultValue="" width={300} placeholder="댓글을 입력하세요." ref={textInput} />
-            </div>
-            <div className="tw-col-span-1">
-              <Button color="gray" label="버튼" onClick={() => onReplySubmit(board.postNo, textInput.current.value)} />
-            </div>
-          </div> */}
         </div>
       )}
     </div>

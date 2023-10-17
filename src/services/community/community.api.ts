@@ -54,6 +54,10 @@ export const saveReply = async (params: any) => {
   const { data } = await axiosGeneralAPI().post(`/api/v1/replies`, params);
   return { data: data || [] };
 };
+export const saveReReply = async (params: any) => {
+  const { data } = await axiosGeneralAPI().post(`/api/v1/re-replies`, params);
+  return { data: data || [] };
+};
 export const answerSave = async (params: any) => {
   const { data } = await axiosGeneralAPI().post(`/api/v1/club/quizzes/preanswer`, params.data);
   return { data: data || [] };
