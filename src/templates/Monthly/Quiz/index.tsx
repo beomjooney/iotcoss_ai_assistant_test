@@ -24,6 +24,7 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import Avatar from '@mui/material/Avatar';
 import { event } from 'src/lib/gtag';
+import CommunityCardReReply from 'src/stories/components/CommunityCardReReply';
 
 const cx = classNames.bind(styles);
 
@@ -42,7 +43,7 @@ export function MonthlyQuizTemplate() {
   let [quizzesAnswersContents, setQuizzesAnswersContents] = useState<QuizzesAnswersResponse>();
   let [answersRepliesContents, setAnswersRepliesContents] = useState<AnswerRepliesResponse>();
   let [quizSequence, setQuizSequence] = useState<number>(0);
-  let [quizAnswerSequence, setQuizAnswerSequence] = useState<number>();
+  let [quizAnswerSequence, setQuizAnswerSequence] = useState<number>(0);
 
   let [replyCount, setReplyCount] = useState(0);
   let [postNo, setPostNo] = useState(0);
@@ -287,6 +288,13 @@ export function MonthlyQuizTemplate() {
                           {isOpen &&
                             isAnswerRepliesFetched &&
                             values?.clubQuizAnswerSequence === quizAnswerSequence &&
+                            answersRepliesContents?.data.clubQuizReplies?.contents?.map((reply, i) => {
+                              return <CommunityCardReReply key={i} reply={reply} />;
+                            })}
+
+                          {/* {isOpen &&
+                            isAnswerRepliesFetched &&
+                            values?.clubQuizAnswerSequence === quizAnswerSequence &&
                             answersRepliesContents?.data.clubQuizReplies?.contents?.map(
                               (quizRepliesValues, index: number) => (
                                 <div className="tw-mb-10" key={`replies-${index}`}>
@@ -305,7 +313,7 @@ export function MonthlyQuizTemplate() {
                                   </div>
                                 </div>
                               ),
-                            )}
+                            )} */}
                         </div>
 
                         {/* <div className="tw-col-span-9 tw-flex tw-items-center tw-justify-end ">
