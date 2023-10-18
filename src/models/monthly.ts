@@ -141,6 +141,8 @@ export interface QuizzesAnswers {
   replyCount: number;
   onePickCount: number;
   createdAt: string;
+  isLiked: boolean;
+  isOnePicked: boolean;
 }
 
 // answers/{quizAnswersSequence}/replies

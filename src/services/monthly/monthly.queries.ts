@@ -115,18 +115,17 @@ export const useQuizzesAnswers = (
 
 export const useAnswersReplies = (
   quizAnswerSequence: number,
-  params,
   onSuccess?: (data: AnswerRepliesResponse) => void,
   onError?: (error: Error) => void,
 ) => {
-  const DEFAULT_SIZE = 10;
   return useQuery<AnswerRepliesResponse, Error>(
-    QUERY_KEY_FACTORY('COMMUNITY').list({ size: DEFAULT_SIZE, ...params }),
-    () => getAnswersReplies(quizAnswerSequence, { size: DEFAULT_SIZE, ...params }),
+    QUERY_KEY_FACTORY('COMMUNITY').list({ quizAnswerSequence }),
+    () => getAnswersReplies(quizAnswerSequence),
     {
+      enabled: false,
       onSuccess,
       onError,
-      refetchOnWindowFocus: true,
+      refetchOnWindowFocus: false,
     },
   );
 };

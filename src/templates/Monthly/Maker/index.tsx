@@ -37,7 +37,7 @@ export function MonthlyMakerTemplate() {
   let [quizzesAnswersContents, setQuizzesAnswersContents] = useState<QuizzesAnswersResponse>();
 
   // 퀴즈 데이터
-  const { isFetched: isMonthlyRankingFetched } = useMonthlyRanking(data => {
+  const { isFetched: isMonthlyRankingFetched, refetch: refetchMonthlyRanking } = useMonthlyRanking(data => {
     setMonthlyRankingContents(data);
     setMakerQuizSequence(data.maker.quizzes[0].quizSequence);
   });
@@ -56,8 +56,8 @@ export function MonthlyMakerTemplate() {
   }, [page]);
 
   useEffect(() => {
-    if (makerQuizSequence > 0) refetch();
-  }, [makerQuizSequence]);
+    refetchMonthlyRanking();
+  }, [refetchMonthlyRanking]);
 
   //console.log(quizzesAnswersContents);
   //console.log(totalElements);
