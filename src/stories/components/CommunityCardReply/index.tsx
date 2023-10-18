@@ -50,12 +50,15 @@ function timeForToday(value) {
 const CommunityCardReply = ({ reply, className, refetch }: CommunityCardReplyProps) => {
   const textInput = useRef(null);
   let [isOpen, setIsOpened] = useState(false);
-
   const { mutate: onSaveReReply, isSuccess: replyReplySucces } = useSaveReReply();
 
   const replyOpen = () => {
     setIsOpened(!isOpen);
   };
+
+  useEffect(() => {
+    setIsOpened(false);
+  }, [reply]);
 
   useEffect(() => {
     refetch();
@@ -70,7 +73,7 @@ const CommunityCardReply = ({ reply, className, refetch }: CommunityCardReplyPro
       });
       textInput.current.value = '';
       // setReplyCount(replyCount => replyCount + 1);
-      setIsOpened(true);
+      setIsOpened(false);
     } else {
       alert('로그인 후 댓글을 입력할 수 있습니다.');
     }
