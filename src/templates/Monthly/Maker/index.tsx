@@ -13,6 +13,7 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/system/Box';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -35,6 +36,8 @@ export function MonthlyMakerTemplate() {
   const [totalElements, setTotalElements] = useState(0);
   let [makerQuizSequence, setMakerQuizSequence] = useState<number>(0);
   let [quizzesAnswersContents, setQuizzesAnswersContents] = useState<QuizzesAnswersResponse>();
+
+  //makerQuizSequence = 17;
 
   // 퀴즈 데이터
   const { isFetched: isMonthlyRankingFetched, refetch: refetchMonthlyRanking } = useMonthlyRanking(data => {
@@ -106,9 +109,9 @@ export function MonthlyMakerTemplate() {
                   <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600">
                     {monthlyRankingContents?.maker?.jobGroupTypeName}
                   </span>
-                  <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
+                  {/* <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
                     레벨 3
-                  </span>
+                  </span> */}
                   <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-300 tw-text-sm tw-font-light tw-text-gray-600">
                     {monthlyRankingContents?.maker?.jobTypeName}
                   </span>
@@ -294,7 +297,7 @@ export function MonthlyMakerTemplate() {
                               aria-haspopup="true"
                               onClick={e => handleIconButton(e)}
                             >
-                              <AssignmentOutlinedIcon className="tw-mr-1 tw-w-5" />
+                              <ChatBubbleOutlineIcon className="tw-mr-1 tw-w-5" />
                               <span className="tw-text-sm">{values?.replyCount ?? 0}</span>
                             </IconButton>
                             <IconButton
