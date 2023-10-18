@@ -14,6 +14,7 @@ import {
 import { User } from 'src/models/user';
 
 export interface paramProps {
+  [x: string]: any;
   /** 조회 개수 */
   size?: number;
   /** 추천 직군 타입 필터링 */
@@ -52,6 +53,20 @@ export const useCommunityList = (
   );
 };
 
+export const useRepliesList = (
+  params?: paramProps,
+  onSuccess?: (data: RepliesResponse) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 6;
+  return useQuery<RepliesResponse, Error>(QUERY_KEY_FACTORY('COMMUNITY').list(params), () => repliesList(params), {
+    enabled: false,
+    onSuccess,
+    onError,
+    refetchOnWindowFocus: false,
+  });
+};
+
 export const usePopularPostSearchList = (
   postNo: number,
   onSuccess?: (data: RepliesResponse) => void,
@@ -83,19 +98,6 @@ export const useGetPost = (
       retry: false,
     },
   );
-};
-
-export const useRepliesList = (
-  postNo: number,
-  onSuccess?: (data: RepliesResponse) => void,
-  onError?: (error: Error) => void,
-) => {
-  return useQuery<RepliesResponse, Error>(QUERY_KEY_FACTORY('COMMUNITY').list({ postNo }), () => repliesList(postNo), {
-    enabled: false,
-    onSuccess,
-    onError,
-    refetchOnWindowFocus: false,
-  });
 };
 
 export const usePopularKeyWorldList = (

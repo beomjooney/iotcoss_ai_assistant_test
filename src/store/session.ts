@@ -6,6 +6,7 @@ export interface Session {
   token?: string;
   memberType: string;
   memberId?: string;
+  beforeOnePick?: string;
   job?: string;
   memberName?: string;
   userAgent?: string;
@@ -18,6 +19,7 @@ export interface SessionStore {
   memberType?: string;
   memberId?: string;
   memberName?: string;
+  beforeOnePick?: string;
   job?: string;
   logged?: boolean;
   roles?: any[];
@@ -32,6 +34,7 @@ const useSessionStore = create<any>(
       memberType: 'Guest',
       memberId: undefined,
       memberName: undefined,
+      beforeOnePick: undefined,
       logged: false,
       roles: [],
       update(session) {

@@ -4,7 +4,7 @@ import { BoardType, ReplyType } from 'src/config/entities';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import React, { useEffect, useRef, useState } from 'react';
-import { CommunityCardReply, Textfield, Button } from 'src/stories/components';
+import { CommunityCardReply, Textfield, Button, Pagination } from 'src/stories/components';
 import { User } from 'src/models/user';
 
 import { useRepliesList } from 'src/services/community/community.queries';
@@ -33,12 +33,12 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import StarIcon from '@mui/icons-material/Star';
+import useDidMountEffect from 'src/hooks/useDidMountEffect';
 export interface CommunityCardProps {
   /** 게시판 object */
   board: BoardType;
   /** 작성자 */
   writer: User;
-  beforeOnePick?: number;
   /** className */
   className?: string;
   /** 댓글 작성 버튼 클릭 이벤트 */
@@ -47,7 +47,6 @@ export interface CommunityCardProps {
   onChangeLike?: (boolean) => void;
   memberId: string;
   onPostDeleteSubmit: (...args: any[]) => any;
-  setBeforeOnePick: (...args: any[]) => any;
 }
 
 const cx = classNames.bind(styles);
@@ -57,22 +56,22 @@ const CommunityCard = ({
   writer,
   className,
   memberId,
-  beforeOnePick,
-  setBeforeOnePick,
   onPostDeleteSubmit,
 }: // eslint-disable-next-line @typescript-eslint/no-empty-function
 CommunityCardProps) => {
+  const { beforeOnePick, update } = useSessionStore.getState();
   // TODO 좋아요 여부 필드 수정 필요
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
+  const [postNo, setPostNo] = useState(0);
   let [isLiked, setIsLiked] = useState(false);
   let [isOnePick, setIsOnePick] = useState(false);
   let [isOpen, setIsOpened] = useState(false);
   let [likeCount, setLikeCount] = useState(0);
   let [onePickCount, setOnePickCount] = useState(0);
   let [replyCount, setReplyCount] = useState(0);
-  let [postNo, setPostNo] = useState(0);
   let [repliesList, setRepliesList] = useState([]);
   let [beforeOnePickInner, setBeforeOnePickInner] = useState(0);
-
   /** one pick */
   const { mutate: onSaveLike } = useQuizLike();
   const { mutate: onDeleteLike } = useQuizDeleteLike();
@@ -85,31 +84,43 @@ CommunityCardProps) => {
   const { mutate: onSaveReply, isSuccess: replyReplySucces } = useSaveReply();
   const { mutate: onDeleteReply, isSuccess: deleteReplySucces } = useDeleteReply();
 
+  const [params, setParams] = useState<any>({ postNo, page, size: 10 });
+
   /** 댓글 리스트 */
   const {
     isFetched: isReplyFetched,
     refetch,
     isSuccess: replayListSuccess,
-  } = useRepliesList(postNo, data => {
+  } = useRepliesList(params, data => {
     setRepliesList(data.data.data.clubQuizReplies.contents);
+    setTotalPage(data.data.data.clubQuizReplies.totalPages);
   });
 
-  useEffect(() => {
-    console.log('ddd', beforeOnePick);
-  }, [beforeOnePick]);
+  useDidMountEffect(() => {
+    refetch();
+  }, [replyReplySucces]);
+
+  useDidMountEffect(() => {
+    if (page) {
+      setParams({
+        postNo: postNo,
+        page,
+        size: 10,
+      });
+    }
+  }, [page]);
+
+  useDidMountEffect(() => {
+    if (params) refetch();
+  }, [params]);
+
+  // useDidMountEffect(() => {
+  //   refetch();
+  // }, [replayListSuccess]);
 
   useEffect(() => {
     if (isError) {
-      console.log(beforeOnePickInner);
-      if (confirm(`원픽은 하나만 선택할 수 있어요.\n기존 원픽을 취소 하시겠습니까?`)) {
-        console.log('dddd', beforeOnePick, beforeOnePickInner, board?.clubQuizAnswerSequence);
-        onDeleteOnePick(beforeOnePick);
-        setIsOnePick(false);
-        // onePickCount가 0보다 클 때만 감소시킵니다.
-        if (onePickCount > 0) {
-          setOnePickCount(onePickCount - 1);
-        }
-      }
+      alert(`원픽은 하나만 선택할 수 있어요.\n기존 원픽을 취소해 주세요.`);
     }
   }, [isError]);
   useEffect(() => {
@@ -126,16 +137,16 @@ CommunityCardProps) => {
     if (isSuccess) {
       setIsOnePick(true);
       setOnePickCount(onePickCount + 1);
-      setBeforeOnePick(postNo);
+      update({
+        beforeOnePick: beforeOnePickInner,
+      });
     }
   }, [isSuccess]);
 
   // refetch();
-  useEffect(() => {
-    if (postNo > 0) {
-      refetch();
-    }
-  }, [postNo]);
+  // useDidMountEffect(() => {
+  //   refetch();
+  // }, [postNo]);
 
   useEffect(() => {
     setIsLiked(board?.isLiked);
@@ -155,7 +166,12 @@ CommunityCardProps) => {
       });
       textInput.current.value = '';
       setReplyCount(replyCount => replyCount + 1);
-      onReply(board.clubQuizAnswerSequence);
+      setParams({
+        postNo: postNo,
+        page,
+        size: 10,
+      });
+      setIsOpened(true);
     } else {
       alert('로그인 후 댓글을 입력할 수 있습니다.');
     }
@@ -176,8 +192,8 @@ CommunityCardProps) => {
       setIsLiked(!isLiked);
       if (isLiked) {
         // onePickCount가 0보다 클 때만 감소시킵니다.
-        if (onePickCount > 0) {
-          setOnePickCount(onePickCount - 1);
+        if (likeCount > 0) {
+          setLikeCount(likeCount - 1);
         }
         onDeleteLike(postNo);
       } else {
@@ -192,6 +208,7 @@ CommunityCardProps) => {
   const onChangeOnePick = function (postNo: number) {
     if (logged) {
       onSaveOnePick(postNo);
+      setBeforeOnePickInner(postNo);
     } else {
       alert('로그인 후 원픽을 클릭 할 수 있습니다.');
     }
@@ -204,12 +221,12 @@ CommunityCardProps) => {
     }
   };
 
-  const onReply = function (postNo: number) {
-    setPostNo(postNo);
-    setIsOpened(true);
-  };
-
   const onButtonReply = function (postNo: number) {
+    setParams({
+      postNo: postNo,
+      page,
+      size: 10,
+    });
     setPostNo(postNo);
     setIsOpened(!isOpen);
   };
@@ -373,6 +390,9 @@ CommunityCardProps) => {
                 <CommunityCardReply key={i} reply={reply} refetch={refetch} />
               );
             })}
+          </div>
+          <div className="tw-flex tw-justify-center tw-my-5">
+            <Pagination page={page} setPage={setPage} total={totalPage} />
           </div>
         </div>
       )}
