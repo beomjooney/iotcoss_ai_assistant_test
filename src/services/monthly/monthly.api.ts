@@ -42,9 +42,9 @@ export const getQuizzesAnswers = async (quizSequence: number, params) => {
 };
 
 // 퀴즈 응답 댓글 조회
-export const getAnswersReplies = async (quizAnswerSequence: number, params) => {
-  const { data } = await axiosGeneralAPI().get(`/api/v1/answers/${quizAnswerSequence}/replies`, { params });
-  return data;
+export const getAnswersReplies = async (quizAnswerSequence: number) => {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/answers/${quizAnswerSequence}/replies`);
+  return { data: data || [] };
 };
 
 export async function getCamenities(args: CamenityProps) {

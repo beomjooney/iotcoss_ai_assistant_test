@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import classNames from 'classnames/bind';
 import styles from './index.module.scss';
 import { useRouter } from 'next/router';
-import { Toggle, Textfield, Pagination } from 'src/stories/components';
+import { Toggle, Pagination } from 'src/stories/components';
 import { paramProps } from 'src/services/seminars/seminars.queries';
 import { useMonthlyRanking, useQuizzesAnswers, useAnswersReplies } from 'src/services/monthly/monthly.queries';
 import {
@@ -11,7 +11,7 @@ import {
   QuizzesAnswersResponse,
   AnswerRepliesResponse,
 } from 'src/models/monthly';
-import { useRepliesList } from 'src/services/community/community.queries';
+import QuizAnswerCardMaster from 'src/stories/components/QuizAnswerCardMaster';
 
 import Grid from '@mui/material/Grid';
 import Box from '@mui/system/Box';
@@ -20,11 +20,6 @@ import IconButton from '@mui/material/IconButton';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import StarBorderIcon from '@mui/icons-material/StarBorder';
-import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
-import Avatar from '@mui/material/Avatar';
-import { event } from 'src/lib/gtag';
-import CommunityCardReReply from 'src/stories/components/CommunityCardReReply';
 
 const cx = classNames.bind(styles);
 
@@ -49,7 +44,6 @@ export function MonthlyQuizTemplate() {
   let [postNo, setPostNo] = useState(0);
 
   //quizSequence = 17;
-  //quizAnswerSequence = 11;
 
   // 퀴즈 데이터
   const { isFetched: isMonthlyRankingFetched, refetch: refetchMonthlyRanking } = useMonthlyRanking(data => {
@@ -65,13 +59,13 @@ export function MonthlyQuizTemplate() {
   });
 
   // 댓글 데이터
-  const { isFetched: isAnswerRepliesFetched, refetch: refetchAnswerReplies } = useAnswersReplies(
-    quizAnswerSequence,
-    params,
-    data => {
-      setAnswersRepliesContents(data);
-    },
-  );
+  // const { isFetched: isAnswerRepliesFetched, refetch: refetchAnswerReplies } = useAnswersReplies(
+  //   quizAnswerSequence,
+  //   params,
+  //   data => {
+  //     setAnswersRepliesContents(data);
+  //   },
+  // );
 
   useEffect(() => {
     setParams({
@@ -80,8 +74,8 @@ export function MonthlyQuizTemplate() {
   }, [page]);
 
   useEffect(() => {
-    refetchAnswerReplies();
-  }, [quizAnswerSequence, refetchAnswerReplies, refetchMonthlyRanking]);
+    refetchMonthlyRanking();
+  }, [quizAnswerSequence, refetchMonthlyRanking]);
 
   const handleIconButton = (event: React.MouseEvent<HTMLElement>) => {};
 
@@ -222,138 +216,17 @@ export function MonthlyQuizTemplate() {
         )}
 
         <article>
-          {isQuizzesAnswersFetched &&
-            (quizzesAnswersContents?.contents.length > 0 ? (
-              quizzesAnswersContents?.contents.map((values, index: number) => {
-                return (
-                  <div key={`content-${index}`}>
-                    <div className={cx('answer-area tw-pt-5')}>
-                      <div className={cx('content-wrap tw-rounded tw-bg-white border')}>
-                        <div className="tw-flex p-3 tw-m-1 tw-px-3 tw-py-0.5">
-                          <div className="tw-w-1/6">
-                            <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-text-sm tw-font-light">
-                              {values?.createdAt.slice(2, 10)}
-                            </span>
-                          </div>
-                          <div className="tw-w-3/4">
-                            <span className="tw-flex tw-text-black tw-text-sm">
-                              <Avatar sx={{ width: 32, height: 32 }} src={values?.profileImageUrl}></Avatar>
-                              <span className="tw-leading-9 tw-pl-2 tw-font-bold">{values?.nickname}</span>
-                            </span>
-                          </div>
-                          <div className="tw-w-3/4 tw-text-right">
-                            <IconButton
-                              aria-label="more"
-                              id="long-button"
-                              size="small"
-                              aria-haspopup="true"
-                              onClick={() => {
-                                handleReplyDisplayButton(values.clubQuizAnswerSequence);
-                              }}
-                            >
-                              <ChatBubbleOutlineIcon className="tw-mr-1 tw-w-5" />
-                              <span className="tw-text-sm">{values?.replyCount ?? 0}</span>
-                            </IconButton>
-                            <IconButton
-                              aria-label="more"
-                              id="long-button"
-                              size="small"
-                              aria-haspopup="true"
-                              onClick={e => handleIconButton(e)}
-                            >
-                              <StarBorderIcon className="tw-mr-1 tw-w-5" />
-                              <span className="tw-text-sm">{values?.onePickCount ?? 0}</span>
-                            </IconButton>
-
-                            <IconButton
-                              aria-label="more"
-                              id="long-button"
-                              size="small"
-                              aria-haspopup="true"
-                              onClick={e => handleIconButton(e)}
-                            >
-                              <FavoriteBorderIcon className="tw-mr-1 tw-w-5" />
-                              <span className="tw-text-sm">{values?.likeCount ?? 0}</span>
-                            </IconButton>
-                          </div>
-                        </div>
-                        <div className="tw-flex p-3 tw-m-1 tw-px-3 tw-py-0.5">
-                          <span className="tw-flex tw-text-black tw-text-md tw-pl-[120px]">{values?.postAnswer}</span>
-                        </div>
-                        <div className="tw-ml-[140px] tw-mr-[140px]">
-                          <div>
-                            <Divider className="tw-mb-7 tw-mt-5 tw-bg-['#efefef'] tw-border-x-8" />
-                          </div>
-
-                          {isOpen &&
-                            isAnswerRepliesFetched &&
-                            values?.clubQuizAnswerSequence === quizAnswerSequence &&
-                            answersRepliesContents?.data.clubQuizReplies?.contents?.map((reply, i) => {
-                              return <CommunityCardReReply key={i} reply={reply} />;
-                            })}
-
-                          {/* {isOpen &&
-                            isAnswerRepliesFetched &&
-                            values?.clubQuizAnswerSequence === quizAnswerSequence &&
-                            answersRepliesContents?.data.clubQuizReplies?.contents?.map(
-                              (quizRepliesValues, index: number) => (
-                                <div className="tw-mb-10" key={`replies-${index}`}>
-                                  <div className="tw-w-3/4">
-                                    <span className="tw-flex tw-text-black tw-text-sm">
-                                      <Avatar sx={{ width: 32, height: 32 }} src={quizRepliesValues?.imageUrl}></Avatar>
-                                      <span className="tw-leading-9 tw-pl-2 tw-font-bold">
-                                        {quizRepliesValues?.nickname}
-                                      </span>
-                                    </span>
-                                  </div>
-                                  <div className="tw-flex tw-m-1 tw-px-3 tw-py-0.5">
-                                    <span className="tw-text-gray-500 tw-text-sm tw-pl-[20px]">
-                                      {quizRepliesValues?.body}
-                                    </span>
-                                  </div>
-                                </div>
-                              ),
-                            )} */}
-                        </div>
-
-                        {/* <div className="tw-col-span-9 tw-flex tw-items-center tw-justify-end ">
-                          <Textfield
-                            width={400}
-                            defaultValue=""
-                            placeholder="댓글을 입력해주세요."
-                            ref={textInput}
-                            onKeyPress={e => {
-                              if (e.key === 'Enter') {
-                                onReplySubmit(board?.clubQuizAnswerSequence, textInput.current.value);
-                              }
-                            }}
-                          />
-                          <button
-                            className="tw-bg-gray-400 tw-text-sm tw-text-white tw-px-5 tw-ml-2 tw-rounded-md tw-h-10"
-                            onClick={() => onReplySubmit(board?.clubQuizAnswerSequence, textInput.current.value)}
-                          >
-                            입력
-                          </button>
-
-                          <button
-                            className={cx('board-footer__reply', 'tw-text-[14px] tw-pl-4')}
-                            onClick={() => {
-                              onButtonReply(board.clubQuizAnswerSequence);
-                            }}
-                          ></button>
-                        </div> */}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })
-            ) : (
-              <div>
-                <div className={cx('answer-area tw-p-[100px] tw-text-center')}>
-                  <span className="tw-font-bold tw-text-black">해당 퀴즈를 풀고 답변을 확인해보세요!</span>
-                </div>
+          {quizzesAnswersContents?.contents?.length > 0 ? (
+            quizzesAnswersContents?.contents?.map((values, index: number) => {
+              return <QuizAnswerCardMaster key={quizzesAnswersContents?.contents?.length} contents={values} />;
+            })
+          ) : (
+            <div>
+              <div className={cx('answer-area tw-p-[100px] tw-text-center')}>
+                <span className="tw-font-bold tw-text-black">해당 퀴즈를 풀고 답변을 확인해보세요!</span>
               </div>
-            ))}
+            </div>
+          )}
           <div className="tw-mt-10">
             <Pagination page={page} setPage={setPage} total={totalPage} />
           </div>

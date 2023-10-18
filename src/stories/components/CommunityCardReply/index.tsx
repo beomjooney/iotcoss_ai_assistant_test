@@ -51,7 +51,6 @@ const CommunityCardReply = ({ reply, className, refetch }: CommunityCardReplyPro
   const textInput = useRef(null);
   let [isOpen, setIsOpened] = useState(false);
 
-  console.log(reply);
   const { mutate: onSaveReReply, isSuccess: replyReplySucces } = useSaveReReply();
 
   const replyOpen = () => {
