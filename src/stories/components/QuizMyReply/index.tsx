@@ -2,9 +2,6 @@ import classNames from 'classnames/bind';
 import styles from './index.module.scss';
 import { BoardType, ReplyType } from 'src/config/entities';
 import Chip from '../Chip';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import React, { useEffect, useRef, useState } from 'react';
 import { QuizMyReplyReply, Textfield, Button } from 'src/stories/components';
 import { jobColorKey } from 'src/config/colors';
@@ -16,12 +13,8 @@ import {
   useDeleteReply,
   useDeletePost,
 } from 'src/services/community/community.mutations';
-import { useRepliesList } from 'src/services/community/community.queries';
-import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import { useSessionStore } from 'src/store/session';
 const { logged } = useSessionStore.getState();
-import Grid from '@mui/material/Grid';
-import Tooltip from '../Tooltip';
 import { useRouter } from 'next/router';
 
 /** import textarea */
@@ -30,9 +23,7 @@ import TextareaAutosize from '@mui/material/TextareaAutosize';
 /** import icon */
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
-import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
-import StarIcon from '@mui/icons-material/Star';
 export interface QuizMyReplyProps {
   /** 게시판 object */
   board: BoardType;
@@ -260,36 +251,7 @@ QuizMyReplyProps) => {
               </span>
             </div>
           </div>
-          <div className="tw-col-span-4 tw-flex tw-justify-end">
-            {/* <Textfield width={400} defaultValue="" placeholder="댓글을 입력해주세요." ref={textInput} />
-            <button
-              className="tw-bg-black tw-text-white px-4  tw-ml-2 tw-rounded-md"
-              onClick={() => onReplySubmit(board.postNo, textInput.current.value)}
-            >
-              입력
-            </button> */}
-          </div>
         </div>
-        {/* <div className={cx('board-footer')}>
-          <span className={cx('board-footer__reaction')}>
-            <button
-              onClick={() => {
-                onChangeLike(board.postNo);
-              }}
-            >
-              {isLiked ? <FavoriteIcon color="primary" /> : <FavoriteBorderIcon color="disabled" />}
-            </button>
-            <span className={cx('reaction__count', { 'reaction__count--active': isLiked })}>{likeCount}</span>
-          </span>
-          <button
-            className={cx('board-footer__reply')}
-            onClick={() => {
-              onReply(board.postNo);
-            }}
-          >
-            댓글 {replyCount}개{isOpen ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
-          </button>
-        </div> */}
       </div>
       {isOpen && (
         <div className={cx('reply-container')}>

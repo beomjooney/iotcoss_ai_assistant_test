@@ -1,30 +1,11 @@
 import classNames from 'classnames/bind';
 import styles from './index.module.scss';
 import { BoardType, ReplyType } from 'src/config/entities';
-import Chip from '../Chip';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import React, { useEffect, useRef, useState } from 'react';
-import { ClubCardReply, Textfield, Button } from 'src/stories/components';
-import { jobColorKey } from 'src/config/colors';
 import { User } from 'src/models/user';
-import {
-  useSaveLike,
-  useDeleteLike,
-  useSaveReply,
-  useDeleteReply,
-  useDeletePost,
-} from 'src/services/community/community.mutations';
-import { useRepliesList } from 'src/services/community/community.queries';
-import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import { useSessionStore } from 'src/store/session';
 const { logged } = useSessionStore.getState();
 import Grid from '@mui/material/Grid';
-import Tooltip from '../Tooltip';
-import StarBorderIcon from '@mui/icons-material/StarBorder';
-import StarIcon from '@mui/icons-material/Star';
 import { useRouter } from 'next/router';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';

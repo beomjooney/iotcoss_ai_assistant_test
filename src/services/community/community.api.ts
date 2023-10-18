@@ -45,10 +45,16 @@ export const saveLiked = async (postNo: number) => await axiosGeneralAPI().post(
 export const deleteLiked = async (postId: number) => await axiosGeneralAPI().delete(`/api/v1/favorite/clubs/${postId}`);
 
 export const saveQuizLiked = async (postNo: number) =>
-  await axiosGeneralAPI().post(`/api/v1/club/quizzes/${postNo}/like`);
+  await axiosGeneralAPI().post(`/api/v1/club/quiz/answers/${postNo}/like`);
 
 export const deleteQuizLiked = async (postNo: number) =>
-  await axiosGeneralAPI().delete(`/api/v1/club/quizzes/${postNo}/like`);
+  await axiosGeneralAPI().delete(`/api/v1/club/quiz/answers/${postNo}/like`);
+
+export const saveQuizOnePick = async (postNo: number) =>
+  await axiosGeneralAPI().post(`/api/v1/club/quiz/answers/${postNo}/onepick`);
+
+export const deleteQuizOnePick = async (postNo: number) =>
+  await axiosGeneralAPI().delete(`/api/v1/club/quiz/answers/${postNo}/onepick`);
 
 export const saveReply = async (params: any) => {
   const { data } = await axiosGeneralAPI().post(`/api/v1/replies`, params);

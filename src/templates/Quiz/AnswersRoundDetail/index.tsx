@@ -1,18 +1,9 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
-import { useStore } from 'src/store';
-import { Button, CommunityCard } from 'src/stories/components';
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
-import { useMySeminarList, useSeminarDetail, useSeminarList } from 'src/services/seminars/seminars.queries';
+import React, { useEffect, useRef, useState } from 'react';
+import { CommunityCard } from 'src/stories/components';
 import { RecommendContent } from 'src/models/recommend';
-import {
-  useClubDetailQuizList,
-  useQuizAnswerDetail,
-  useQuizRankDetail,
-  useQuizSolutionDetail,
-} from 'src/services/quiz/quiz.queries';
+import { useQuizAnswerDetail, useQuizRankDetail, useQuizSolutionDetail } from 'src/services/quiz/quiz.queries';
 import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -24,7 +15,6 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 
 /** import pagenation */
 import Pagination from '@mui/material/Pagination';
-import { useSessionStore } from 'src/store/session';
 import Grid from '@mui/material/Grid';
 const cx = classNames.bind(styles);
 export interface QuizAnswersRoundDetailTemplateProps {
@@ -33,24 +23,12 @@ export interface QuizAnswersRoundDetailTemplateProps {
 }
 
 export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTemplateProps) {
-  const { user } = useStore();
-  const [value, setValue] = React.useState(0);
-  const [isBookmark, setIsBookmark] = useState(true);
   const [contents, setContents] = useState<RecommendContent[]>([]);
   const [rankContents, setRankContents] = useState<RecommendContent[]>([]);
   const [answerContents, setAnswerContents] = useState<RecommendContent[]>([]);
-  const [quizList, setQuizList] = useState<RecommendContent[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [isModalCancelOpen, setIsModalCancelOpen] = useState<boolean>(false);
-  const [myParticipation, setMyParticipation] = useState(null);
-  const [restTime, setRestTime] = useState(0);
-  const [clubStatus, setClubStatus] = useState('0000');
-  const [clubMemberStatus, setClubMemberStatus] = useState('0001');
-  const [applicationButton, setApplicationButton] = useState<ReactNode>(null);
-  const { memberId, logged } = useSessionStore.getState();
-  const [contentHtml, setContentHtml] = useState('');
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
+  const [beforeOnePick, setBeforeOnePick] = useState(1);
   const [keyWorld, setKeyWorld] = useState('');
   const [totalElements, setTotalElements] = useState(0);
   const [params, setParams] = useState<paramProps>({ id, page });
@@ -64,6 +42,9 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
     setAnswerContents(data?.contents);
     setTotalElements(data?.totalElements);
     setTotalPage(data?.totalPages);
+    // isOnePicked가 true인 객체를 찾고 그 객체의 clubQuizAnswerSequence 값을 가져옵니다.
+    console.log(data?.contents.find(item => item.isOnePicked === true)?.clubQuizAnswerSequence);
+    setBeforeOnePick(data?.contents.find(item => item.isOnePicked === true)?.clubQuizAnswerSequence);
   });
   const { isFetched: isQuizRankListFetched } = useQuizRankDetail(data => {
     setRankContents(data);
@@ -75,55 +56,15 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
     setPage(value);
   };
 
-  const handleClickTab = index => {
-    tabPannelRefs[index].current?.scrollIntoView({ block: 'center' });
-  };
-
-  interface TabPanelProps {
-    children?: React.ReactNode;
-    index: number;
-    value: number;
-    className?: any;
-  }
-
   function searchKeyworld(value) {
     let _keyworld = value.replace('#', '');
     if (_keyworld == '') _keyworld = null;
     setKeyWorld(_keyworld);
   }
 
-  function TabPanel(props: TabPanelProps) {
-    const { children, value, index, className, ...other } = props;
-    tabPannelRefs[index] = useRef();
-
-    return (
-      <div
-        role="tabpanel"
-        id={`seminar-tabpanel-${index}`}
-        className={cx(`seminar-tabpanel-${index}`, 'seminar-tabpanel', className)}
-        aria-labelledby={`simple-tab-${index}`}
-        ref={tabPannelRefs[index]}
-        {...other}
-      >
-        {children}
-      </div>
-    );
-  }
-
-  function a11yProps(index: number) {
-    return {
-      id: `simple-tab-${index}`,
-      'aria-controls': `simple-tabpanel-${index}`,
-    };
-  }
-
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-  };
-
-  const lectureName = () => {
-    return data?.seminarLecturer?.nickname ?? data?.seminarLecturer?.name;
-  };
+  useEffect(() => {
+    console.log(beforeOnePick);
+  }, [beforeOnePick]);
 
   useEffect(() => {
     setParams({
@@ -198,19 +139,17 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                 </div>
               </div>
               <div className="tw-grid tw-grid-cols-12">
-                <div className="tw-col-span-2 tw-flex tw-items-center tw-justify-center tw-gap-3">
-                  <img src="/assets/images/icons/quiz.png" className="tw-w-5 tw-h-5" alt="메이커" />
+                <div className="tw-col-span-12 tw-flex tw-items-center tw-justify-center">
+                  <img src="/assets/images/icons/quiz.png" className="tw-w-5 tw-h-5 tw-mr-3" alt="메이커" />
                   {contents?.isRepresentative === true && (
                     <span
                       type="button"
                       data-tooltip-target="tooltip-default"
-                      className="tw-bg-green-100 tw-text-green-800 tw-text-center tw-px-3 tw-py-1 tw-text-sm tw-font-bold tw-rounded-md"
+                      className="tw-bg-green-100 tw-text-green-800 tw-text-center tw-px-3 tw-py-1 tw-text-sm tw-font-bold tw-rounded-md tw-mr-3"
                     >
                       대표
                     </span>
                   )}
-                </div>
-                <div className="tw-col-span-10 tw-flex tw-items-center tw-justify-center">
                   <span className="tw-font-bold tw-text-[18px] tw-text-black ">{contents?.content}</span>
                 </div>
               </div>
@@ -262,19 +201,28 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                   />
                 </div>
               </div>
-
-              {answerContents.map((item, index) => {
-                return (
-                  <CommunityCard
-                    key={index}
-                    board={item}
-                    // writer={memberSample}
-                    className={cx('reply-container__item')}
-                    // memberId={memberId}
-                    // onPostDeleteSubmit={onPostDeleteSubmit}
-                  />
-                );
-              })}
+              {answerContents.length === 0 ? (
+                <div className="tw-text-center  tw-w-full border tw-rounded-md tw-my-10">
+                  <div className="tw-p-10  tw-mb-5">
+                    <div className="tw-p-10">데이터가 없습니다.</div>
+                  </div>
+                </div>
+              ) : (
+                answerContents.map((item, index) => {
+                  return (
+                    <CommunityCard
+                      key={index}
+                      board={item}
+                      // writer={memberSample}
+                      className={cx('reply-container__item')}
+                      beforeOnePick={beforeOnePick}
+                      setBeforeOnePick={setBeforeOnePick}
+                      // memberId={memberId}
+                      // onPostDeleteSubmit={onPostDeleteSubmit}
+                    />
+                  );
+                })
+              )}
 
               <div className="tw-flex tw-justify-center tw-mt-10">
                 <Pagination count={totalPage} page={page} onChange={handlePageChange} />

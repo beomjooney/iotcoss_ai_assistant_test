@@ -1,23 +1,13 @@
 import classNames from 'classnames/bind';
 import styles from './index.module.scss';
 import { BoardType, ReplyType } from 'src/config/entities';
-import Chip from '../Chip';
-import FavoriteIcon from '@mui/icons-material/Favorite';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import React, { useEffect, useRef, useState } from 'react';
 import { CommunityCardReply, Textfield, Button } from 'src/stories/components';
-import { jobColorKey } from 'src/config/colors';
 import { User } from 'src/models/user';
-import {
-  useSaveLike,
-  useDeleteLike,
-  useSaveReply,
-  useDeleteReply,
-  useDeletePost,
-} from 'src/services/community/community.mutations';
+
 import { useRepliesList } from 'src/services/community/community.queries';
-import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import { useSessionStore } from 'src/store/session';
 const { logged } = useSessionStore.getState();
 import Grid from '@mui/material/Grid';
@@ -27,15 +17,28 @@ import { useRouter } from 'next/router';
 /** import textarea */
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 
+/** like */
+import {
+  useSaveReply,
+  useDeleteReply,
+  useQuizLike,
+  useQuizDeleteLike,
+  useQuizOnePick,
+  useQuizDeleteOnePick,
+} from 'src/services/community/community.mutations';
+
 /** import icon */
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
+import StarIcon from '@mui/icons-material/Star';
 export interface CommunityCardProps {
   /** 게시판 object */
   board: BoardType;
   /** 작성자 */
   writer: User;
+  beforeOnePick?: number;
   /** className */
   className?: string;
   /** 댓글 작성 버튼 클릭 이벤트 */
@@ -44,6 +47,7 @@ export interface CommunityCardProps {
   onChangeLike?: (boolean) => void;
   memberId: string;
   onPostDeleteSubmit: (...args: any[]) => any;
+  setBeforeOnePick: (...args: any[]) => any;
 }
 
 const cx = classNames.bind(styles);
@@ -53,21 +57,35 @@ const CommunityCard = ({
   writer,
   className,
   memberId,
+  beforeOnePick,
+  setBeforeOnePick,
   onPostDeleteSubmit,
 }: // eslint-disable-next-line @typescript-eslint/no-empty-function
 CommunityCardProps) => {
-  const { mutate: onSaveLike, isSuccess } = useSaveLike();
-  const { mutate: onDeleteLike } = useDeleteLike();
-
   // TODO 좋아요 여부 필드 수정 필요
   let [isLiked, setIsLiked] = useState(false);
+  let [isOnePick, setIsOnePick] = useState(false);
   let [isOpen, setIsOpened] = useState(false);
   let [likeCount, setLikeCount] = useState(0);
+  let [onePickCount, setOnePickCount] = useState(0);
   let [replyCount, setReplyCount] = useState(0);
   let [postNo, setPostNo] = useState(0);
   let [repliesList, setRepliesList] = useState([]);
+  let [beforeOnePickInner, setBeforeOnePickInner] = useState(0);
+
+  /** one pick */
+  const { mutate: onSaveLike } = useQuizLike();
+  const { mutate: onDeleteLike } = useQuizDeleteLike();
+
+  const { mutate: onSaveOnePick, isError, isSuccess } = useQuizOnePick();
+  const { mutate: onDeleteOnePick, isSuccess: isDeleteOnePick } = useQuizDeleteOnePick();
+  const { mutate: onDeleteOnePickCallBack, isSuccess: isDeleteOnePickCallBack } = useQuizDeleteOnePick();
+
+  /** 댓글 */
   const { mutate: onSaveReply, isSuccess: replyReplySucces } = useSaveReply();
   const { mutate: onDeleteReply, isSuccess: deleteReplySucces } = useDeleteReply();
+
+  /** 댓글 리스트 */
   const {
     isFetched: isReplyFetched,
     refetch,
@@ -77,15 +95,54 @@ CommunityCardProps) => {
   });
 
   useEffect(() => {
+    console.log('ddd', beforeOnePick);
+  }, [beforeOnePick]);
+
+  useEffect(() => {
+    if (isError) {
+      console.log(beforeOnePickInner);
+      if (confirm(`원픽은 하나만 선택할 수 있어요.\n기존 원픽을 취소 하시겠습니까?`)) {
+        console.log('dddd', beforeOnePick, beforeOnePickInner, board?.clubQuizAnswerSequence);
+        onDeleteOnePick(beforeOnePick);
+        setIsOnePick(false);
+        // onePickCount가 0보다 클 때만 감소시킵니다.
+        if (onePickCount > 0) {
+          setOnePickCount(onePickCount - 1);
+        }
+      }
+    }
+  }, [isError]);
+  useEffect(() => {
+    if (isDeleteOnePick) {
+      setIsOnePick(false);
+      // onePickCount가 0보다 클 때만 감소시킵니다.
+      if (onePickCount > 0) {
+        setOnePickCount(onePickCount - 1);
+      }
+    }
+  }, [isDeleteOnePick]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      setIsOnePick(true);
+      setOnePickCount(onePickCount + 1);
+      setBeforeOnePick(postNo);
+    }
+  }, [isSuccess]);
+
+  // refetch();
+  useEffect(() => {
     if (postNo > 0) {
       refetch();
     }
   }, [postNo]);
 
   useEffect(() => {
-    setIsLiked(board?.liked);
-    setLikeCount(board?.likeReactionCount);
+    setIsLiked(board?.isLiked);
+    setIsOnePick(board?.isOnePicked);
+    setLikeCount(board?.likeCount);
     setReplyCount(board?.replyCount);
+    setOnePickCount(board?.onePickCount);
   }, [board]);
 
   const textInput = useRef(null);
@@ -118,7 +175,10 @@ CommunityCardProps) => {
     if (logged) {
       setIsLiked(!isLiked);
       if (isLiked) {
-        setLikeCount(likeCount => likeCount - 1);
+        // onePickCount가 0보다 클 때만 감소시킵니다.
+        if (onePickCount > 0) {
+          setOnePickCount(onePickCount - 1);
+        }
         onDeleteLike(postNo);
       } else {
         setLikeCount(likeCount => likeCount + 1);
@@ -129,10 +189,26 @@ CommunityCardProps) => {
     }
   };
 
+  const onChangeOnePick = function (postNo: number) {
+    if (logged) {
+      onSaveOnePick(postNo);
+    } else {
+      alert('로그인 후 원픽을 클릭 할 수 있습니다.');
+    }
+  };
+  const onChangeDeleteOnePick = async function (postNo: number) {
+    if (logged) {
+      await onDeleteOnePick(postNo);
+    } else {
+      alert('로그인 후 원픽을 클릭 할 수 있습니다.');
+    }
+  };
+
   const onReply = function (postNo: number) {
     setPostNo(postNo);
     setIsOpened(true);
   };
+
   const onButtonReply = function (postNo: number) {
     setPostNo(postNo);
     setIsOpened(!isOpen);
@@ -161,35 +237,6 @@ CommunityCardProps) => {
     return `${Math.floor(betweenTimeDay / 365)}년전`;
   }
 
-  function SkillSelectPage(probs) {
-    switch (probs.name) {
-      case '개발':
-        return (
-          <Chip chipColor="develop" variant="outlined" radius={4} className="mr-2">
-            {probs.name}
-          </Chip>
-        );
-      case '디자인':
-        return (
-          <Chip chipColor="design" variant="outlined" radius={4} className="mr-2">
-            {probs.name}
-          </Chip>
-        );
-      case '기획':
-        return (
-          <Chip chipColor="plan" variant="outlined" radius={4} className="mr-2">
-            {probs.name}
-          </Chip>
-        );
-      default:
-        return (
-          <Chip chipColor="engineering" variant="outlined" radius={4} className="mr-2">
-            {probs.name}
-          </Chip>
-        );
-    }
-  }
-
   const router = useRouter();
   return (
     <div className={cx('community-board-container', className)}>
@@ -207,7 +254,6 @@ CommunityCardProps) => {
               className={cx('rounded-circle', 'profile-image', 'tw-h-12', 'tw-w-12')}
             />
             <div>
-              {/*TODO 원래 job(직업)임*/}
               <div className="tw-font-bold tw-text-lg tw-text-black">{board?.nickname}</div>
             </div>
             <div>
@@ -215,31 +261,7 @@ CommunityCardProps) => {
             </div>
             <div>{/* <div className="tw-text-sm">{timeForToday(board.createdAt)}</div> */}</div>
           </div>
-          <div className={cx('date-area', 'col-md-2')}>
-            {/* {memberId == board.author.memberId ? (
-              <div>
-                <Chip
-                  className="mr-2"
-                  chipColor="black"
-                  radius={4}
-                  variant="outlined"
-                  onClick={() => onPostDeleteSubmit(board.postNo)}
-                >
-                  삭제
-                </Chip>
-                <Chip
-                  chipColor="black"
-                  radius={4}
-                  variant="outlined"
-                  onClick={() => router.push(`/community/write/${board.postNo}`)}
-                >
-                  수정
-                </Chip>
-              </div>
-            ) : (
-              <div></div>
-            )} */}
-          </div>
+          <div className={cx('date-area', 'col-md-2')}></div>
         </div>
         <TextareaAutosize
           aria-label="minimum height"
@@ -264,17 +286,51 @@ CommunityCardProps) => {
         <div className="tw-grid tw-items-center tw-grid-cols-12 tw-py-3 tw-mt-1">
           <div className="tw-col-span-3">
             <div className="tw-flex tw-items-center tw-gap-4">
-              <span>
+              <span className="tw-flex tw-items-center">
                 <AssignmentOutlinedIcon className="tw-mr-1 tw-w-5" />
                 {board?.replyCount}
               </span>
-              <span>
-                <StarBorderIcon className="tw-mr-1  tw-w-5" />
-                <span>{board?.onePickCount}</span>
+              <span className="tw-flex tw-items-center">
+                {/* <button
+                  className="tw-flex tw-items-center"
+                  onClick={() => {
+                    onChangeOnePick(board?.clubQuizAnswerSequence, board?.isOnePick);
+                  }}
+                > */}
+                {isOnePick ? (
+                  <button
+                    onClick={() => {
+                      onChangeDeleteOnePick(board?.clubQuizAnswerSequence, board?.isOnePick);
+                    }}
+                  >
+                    <StarIcon color="primary" className="tw-mr-1" />
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => {
+                      onChangeOnePick(board?.clubQuizAnswerSequence, board?.isOnePick);
+                    }}
+                  >
+                    <StarBorderIcon color="disabled" className="tw-mr-1" />
+                  </button>
+                )}
+                <span>{onePickCount}</span>
+                {/* </button> */}
               </span>
               <span>
-                <FavoriteBorderIcon className="tw-mr-1  tw-w-5" />
-                <span>{board?.likeCount}</span>
+                <button
+                  className="tw-flex tw-items-center"
+                  onClick={() => {
+                    onChangeLike(board?.clubQuizAnswerSequence, board?.isLiked);
+                  }}
+                >
+                  {isLiked ? (
+                    <FavoriteIcon color="primary" className="tw-mr-1 tw-w-5" />
+                  ) : (
+                    <FavoriteBorderIcon color="disabled" className="tw-mr-1 tw-w-5" />
+                  )}
+                  <span>{likeCount}</span>
+                </button>
               </span>
             </div>
           </div>
@@ -306,18 +362,6 @@ CommunityCardProps) => {
               댓글 {replyCount}개{isOpen ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
             </button>
           </div>
-        </div>
-        <div className={cx('board-footer')}>
-          <span className={cx('board-footer__reaction')}>
-            {/* <button
-              onClick={() => {
-                onChangeLike(board.postNo);
-              }}
-            >
-              {isLiked ? <FavoriteIcon color="primary" /> : <FavoriteBorderIcon color="disabled" />}
-            </button> */}
-            <span className={cx('reaction__count', { 'reaction__count--active': isLiked })}>{likeCount}</span>
-          </span>
         </div>
       </div>
       {isReplyFetched && isOpen && (
