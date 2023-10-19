@@ -486,9 +486,13 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                         aria-label="show 17 new notifications"
                         color="inherit"
                       >
-                        <Badge badgeContent={contents?.totalElements} color="error" className="tw-px-0">
+                        {contents?.totalElements !== 0 ? (
+                          <Badge badgeContent={contents?.totalElements} color="error" className="tw-px-0">
+                            <NotificationsNoneIcon sx={{ fontSize: 30 }} />
+                          </Badge>
+                        ) : (
                           <NotificationsNoneIcon sx={{ fontSize: 30 }} />
-                        </Badge>
+                        )}
                       </IconButton>
                       <Popover
                         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
