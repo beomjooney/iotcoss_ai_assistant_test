@@ -71,6 +71,12 @@ export const quizAnswerDetail = async params => {
   return data.data;
 };
 
+// 알람 히스토리
+export const quizAlarmHistory = async params => {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/events`, { params });
+  return data.data;
+};
+
 // 내 퀴즈 답변
 export const clubDetailQuizList = async params => {
   const { data } = await axiosGeneralAPI().get(`/api/v1/clubs/${params.id}/quizzes/my-answers`, { params });

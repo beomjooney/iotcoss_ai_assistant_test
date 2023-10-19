@@ -3,6 +3,7 @@ import {
   clubDetailQuizList,
   getCamenities,
   getReplies,
+  quizAlarmHistory,
   quizAnswerDetail,
   quizFriends,
   quizGrowthDetail,
@@ -75,6 +76,20 @@ export const useQuizGrowthDetail = (id, onSuccess?: (data: any) => void, onError
     onError,
     refetchOnWindowFocus: true,
   });
+};
+
+export const useQuizAlarmHistory = (params, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
+  const DEFAULT_SIZE = 10;
+  return useQuery<any, Error>(
+    QUERY_KEY_FACTORY('QUIZ').detail({ size: DEFAULT_SIZE, ...params }),
+    () => quizAlarmHistory({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: true,
+      enabled: true,
+    },
+  );
 };
 
 export const useQuizAnswerDetail = (params, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {

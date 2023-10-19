@@ -9,7 +9,6 @@ import { deleteCookie } from 'cookies-next';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import Box from '@mui/material/Box';
 import ListItemButton from '@mui/material/ListItemButton';
-import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import AdUnitsIcon from '@mui/icons-material/AdUnits';
@@ -23,16 +22,26 @@ import AddLinkIcon from '@mui/icons-material/AddLink';
 
 import { Typography } from '../index';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
-import ListItem from '@mui/material/ListItem';
 import Tooltip from '@mui/material/Tooltip';
 import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import PersonAdd from '@mui/icons-material/PersonAdd';
-import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import { useStore } from 'src/store';
+
+/**alarm */
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+import Badge from '@mui/material/Badge';
+import Popover from '@mui/material/Popover';
+// import Button from '@mui/material/Button';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import Divider from '@mui/material/Divider';
+import { useStudyRoomList } from 'src/services/studyroom/studyroom.queries';
+import { useQuizAlarmHistory } from 'src/services/quiz/quiz.queries';
+
 export interface NavbarProps {
   /** 테마 색상 */
   darkBg?: boolean;
@@ -48,14 +57,24 @@ const cx = classNames.bind(styles);
 
 const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
   const { logged, roles } = useSessionStore.getState();
-
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [anchorElAlarm, setAnchorElAlarm] = useState(null);
+  const [contents, setContents] = useState<RecommendContent[]>([]);
+  const [page, setPage] = useState(1);
+  const [params, setParams] = useState<paramProps>({ page });
   const open = Boolean(anchorEl);
   const handleClicks = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+  const handleCloseAlarm = () => {
+    setAnchorElAlarm(null);
+  };
+
+  const handleIconClick = event => {
+    setAnchorElAlarm(event.currentTarget);
   };
 
   const router = useRouter();
@@ -66,6 +85,11 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
   const [logoutButton, setLogoutButton] = useState<ReactNode>(null);
   const [adminButton, setAdminButton] = useState<ReactNode>(null);
   const [isShowMenu, setIsShowMenu] = useState<boolean>(false);
+
+  //**alarm */
+  const { isFetched: isContentFetched, refetch: refetch } = useQuizAlarmHistory(params, data => {
+    setContents(data);
+  });
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
@@ -79,7 +103,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
       ? setLogoutButton(
           <div className={cx('custom-item')} id="logoutBtn">
             <button
-              className="max-lg: tw-mr-2 tw-bg-[#2474ED] tw-rounded-md tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
+              className="max-lg: tw-mr-1 tw-bg-[#2474ED] tw-rounded-md tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
               onClick={() => (location.href = '/quiz-make')}
             >
               퀴즈만들기
@@ -253,21 +277,49 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
               <div className="row tw-flex tw-items-center tw-justify-between tw-w-80">
                 <div className="col-lg-12 tw-flex tw-items-center tw-justify-start max-lg:tw-justify-end lg:tw-mb-0">
                   {logoutButton}
-                  <svg
-                    className="tw-mx-5  tw-flex-none tw-text-black"
-                    fill="none"
-                    width="25"
-                    height="25"
-                    viewBox="0 0 25 25"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M8 3.464V1.1m0 2.365a5.338 5.338 0 0 1 5.133 5.368v1.8c0 2.386 1.867 2.982 1.867 4.175C15 15.4 15 16 14.462 16H1.538C1 16 1 15.4 1 14.807c0-1.193 1.867-1.789 1.867-4.175v-1.8A5.338 5.338 0 0 1 8 3.464ZM4.54 16a3.48 3.48 0 0 0 6.92 0H4.54Z"
-                    />
-                  </svg>
+                  <Tooltip title="Alarm">
+                    <div className="tw-px-4">
+                      <IconButton
+                        onClick={handleIconClick}
+                        size="large"
+                        aria-label="show 17 new notifications"
+                        color="inherit"
+                      >
+                        <Badge badgeContent={17} color="error" className="tw-px-0">
+                          <NotificationsNoneIcon sx={{ fontSize: 30 }} />
+                        </Badge>
+                      </IconButton>
+                      <Popover
+                        anchorEl={anchorElAlarm}
+                        open={Boolean(anchorElAlarm)}
+                        onClose={handleCloseAlarm}
+                        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                      >
+                        <List>
+                          <ListItem button onClick={() => (location.href = '/quiz-make')}>
+                            <ListItemText primary="내가 만든 퀴즈" />
+                          </ListItem>
+                          <Divider />
+                          <ListItem button onClick={() => (location.href = '/account/my/point')}>
+                            <ListItemText primary="내 포인트 내역" />
+                          </ListItem>
+                          <Divider />
+                          <ListItem button onClick={() => (location.href = '/profile')}>
+                            <ListItemText primary="내 프로필" />
+                          </ListItem>
+                          <Divider />
+                          <ListItem button onClick={handleClick}>
+                            <ListItemText primary="마이페이지" />
+                          </ListItem>
+                          <Divider />
+                          <ListItem button onClick={handleLogout}>
+                            <ListItemText primary="Logout" />
+                          </ListItem>
+                        </List>
+                      </Popover>
+                    </div>
+                  </Tooltip>
                   <li className={cx('nav-item', 'tw-mr-8')}>
                     <Tooltip title="Account settings">
                       <IconButton
@@ -425,23 +477,53 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
               <div className="row tw-flex tw-items-center tw-justify-between tw-w-80">
                 <div className="col-lg-12 tw-flex tw-items-center tw-justify-end max-lg:tw-justify-end lg:tw-mb-0">
                   {logoutButton}
-                  <svg
-                    className="tw-mx-5  tw-flex-none tw-text-black"
-                    fill="none"
-                    width="25"
-                    height="25"
-                    viewBox="0 0 25 25"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M8 3.464V1.1m0 2.365a5.338 5.338 0 0 1 5.133 5.368v1.8c0 2.386 1.867 2.982 1.867 4.175C15 15.4 15 16 14.462 16H1.538C1 16 1 15.4 1 14.807c0-1.193 1.867-1.789 1.867-4.175v-1.8A5.338 5.338 0 0 1 8 3.464ZM4.54 16a3.48 3.48 0 0 0 6.92 0H4.54Z"
-                    />
-                  </svg>
+
+                  <Tooltip title="">
+                    <div className="tw-px-4">
+                      <IconButton
+                        onClick={handleIconClick}
+                        size="large"
+                        aria-label="show 17 new notifications"
+                        color="inherit"
+                      >
+                        <Badge badgeContent={17} color="error" className="tw-px-0">
+                          <NotificationsNoneIcon sx={{ fontSize: 30 }} />
+                        </Badge>
+                      </IconButton>
+                      <Popover
+                        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                        anchorEl={anchorElAlarm}
+                        open={Boolean(anchorElAlarm)}
+                        onClose={handleCloseAlarm}
+                        disableScrollLock={true}
+                      >
+                        <List>
+                          <ListItem button onClick={() => (location.href = '/quiz-make')}>
+                            <ListItemText primary="내가 만든 퀴즈" />
+                          </ListItem>
+                          <Divider />
+                          <ListItem button onClick={() => (location.href = '/account/my/point')}>
+                            <ListItemText primary="내 포인트 내역" />
+                          </ListItem>
+                          <Divider />
+                          <ListItem button onClick={() => (location.href = '/profile')}>
+                            <ListItemText primary="내 프로필" />
+                          </ListItem>
+                          <Divider />
+                          <ListItem button onClick={handleClick}>
+                            <ListItemText primary="마이페이지" />
+                          </ListItem>
+                          <Divider />
+                          <ListItem button onClick={handleLogout}>
+                            <ListItemText primary="Logout" />
+                          </ListItem>
+                        </List>
+                      </Popover>
+                    </div>
+                  </Tooltip>
                   <div className={cx('nav-item')}>
-                    <Tooltip title="Account settings">
+                    <Tooltip title="">
                       <IconButton
                         onClick={handleClicks}
                         size="small"
@@ -456,6 +538,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                       </IconButton>
                     </Tooltip>
                     <Menu
+                      disableScrollLock={true}
                       anchorEl={anchorEl}
                       id="account-menu"
                       open={open}
