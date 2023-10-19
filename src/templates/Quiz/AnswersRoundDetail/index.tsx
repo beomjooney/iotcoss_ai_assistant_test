@@ -16,10 +16,6 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 /** import pagenation */
 import Pagination from '@mui/material/Pagination';
 import Grid from '@mui/material/Grid';
-import { useSessionStore } from 'src/store/session';
-
-/** */
-
 const cx = classNames.bind(styles);
 export interface QuizAnswersRoundDetailTemplateProps {
   /** 세미나 아이디 */
@@ -27,12 +23,12 @@ export interface QuizAnswersRoundDetailTemplateProps {
 }
 
 export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTemplateProps) {
-  const { update, beforeOnePick } = useSessionStore.getState();
   const [contents, setContents] = useState<RecommendContent[]>([]);
   const [rankContents, setRankContents] = useState<RecommendContent[]>([]);
   const [answerContents, setAnswerContents] = useState<RecommendContent[]>([]);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
+  const [beforeOnePick, setBeforeOnePick] = useState(1);
   const [keyWorld, setKeyWorld] = useState('');
   const [totalElements, setTotalElements] = useState(0);
   const [params, setParams] = useState<paramProps>({ id, page });
@@ -42,13 +38,13 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
     setContents(data);
   });
   const { isFetched: isQuizAnswerListFetched } = useQuizAnswerDetail(params, data => {
+    //console.log(data);
     setAnswerContents(data?.contents);
     setTotalElements(data?.totalElements);
     setTotalPage(data?.totalPages);
     // isOnePicked가 true인 객체를 찾고 그 객체의 clubQuizAnswerSequence 값을 가져옵니다.
-    update({
-      beforeOnePick: data?.contents.find(item => item.isOnePicked === true)?.clubQuizAnswerSequence,
-    });
+    console.log(data?.contents.find(item => item.isOnePicked === true)?.clubQuizAnswerSequence);
+    setBeforeOnePick(data?.contents.find(item => item.isOnePicked === true)?.clubQuizAnswerSequence);
   });
   const { isFetched: isQuizRankListFetched } = useQuizRankDetail(data => {
     setRankContents(data);
@@ -65,6 +61,10 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
     if (_keyworld == '') _keyworld = null;
     setKeyWorld(_keyworld);
   }
+
+  useEffect(() => {
+    console.log(beforeOnePick);
+  }, [beforeOnePick]);
 
   useEffect(() => {
     setParams({
@@ -210,18 +210,23 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
               ) : (
                 answerContents.map((item, index) => {
                   return (
-                    <div key={index}>
-                      <CommunityCard
-                        board={item}
-                        // writer={memberSample}
-                        className={cx('reply-container__item')}
-                        // memberId={memberId}
-                        // onPostDeleteSubmit={onPostDeleteSubmit}
-                      />
-                    </div>
+                    <CommunityCard
+                      key={index}
+                      board={item}
+                      // writer={memberSample}
+                      className={cx('reply-container__item')}
+                      beforeOnePick={beforeOnePick}
+                      setBeforeOnePick={setBeforeOnePick}
+                      // memberId={memberId}
+                      // onPostDeleteSubmit={onPostDeleteSubmit}
+                    />
                   );
                 })
               )}
+
+              <div className="tw-flex tw-justify-center tw-mt-10">
+                <Pagination count={totalPage} page={page} onChange={handlePageChange} />
+              </div>
             </div>
           </Grid>
           <Grid item xs={4}>

@@ -2,6 +2,7 @@ import { JwtPayload } from 'jwt-decode';
 
 export interface UserInfo extends JwtPayload {
   nickname?: string;
+  phoneNumber?: string;
   roles: any[];
 }
 

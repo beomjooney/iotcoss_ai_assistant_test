@@ -87,6 +87,7 @@ export function HomeTemplate({ logged = false }: HomeProps) {
   const [vodList, setVodList] = useState([]);
   const [topicList, setTopicList] = useState([]);
   const [mentorList, setMentorList] = useState([]);
+  const [phone, setPhone] = useState<string>('');
 
   /**skill data */
   const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
@@ -95,6 +96,7 @@ export function HomeTemplate({ logged = false }: HomeProps) {
 
   const recommendLevelsRef = useRef(null);
   const jobGroupRef = useRef(null);
+  const phoneRef = useRef(null);
 
   /** introduce message */
   const [introductionMessage, setIntroductionMessage] = useState<string>('');
@@ -106,6 +108,11 @@ export function HomeTemplate({ logged = false }: HomeProps) {
   const onNickNameChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, no?: number) => {
     const { name, value } = event.currentTarget;
     setNickName(value);
+  };
+
+  const onPhoneChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, no?: number) => {
+    const { name, value } = event.currentTarget;
+    setPhone(value);
   };
 
   /**work start end */
@@ -142,6 +149,7 @@ export function HomeTemplate({ logged = false }: HomeProps) {
   const { isFetched: isUser, data } = useMemberInfo(memberId, user => {
     setUser(user);
     setNickName(user?.nickname);
+    setPhone(user?.phoneNumber || '');
   });
 
   // console.log('profileList', isUser, data?.jobGroup, !!!data?.jobGroup);
@@ -186,6 +194,16 @@ export function HomeTemplate({ logged = false }: HomeProps) {
     //console.log(imageUrl);
     //console.log(fileImageUrl);
 
+    console.log(phone);
+    // 전화번호 유효성 검사
+    const regex = /^01(?:0|1|[6-9])-(?:\d{3}|\d{4})-\d{4}$/;
+    if (!regex.test(phone) || phone === '') {
+      alert('유효하지 않은 전화번호입니다.');
+      setPhone('');
+      phoneRef.current.focus();
+      return 0;
+    }
+
     if (recommendJobGroups.length === 0) {
       alert('직군 필수 입력값을 선택해주세요.');
       jobGroupRef.current.focus();
@@ -203,6 +221,7 @@ export function HomeTemplate({ logged = false }: HomeProps) {
     //console.log(profileImageKey);
     const params = {
       nickname: nickName,
+      phoneNumber: phone,
       careers: formFields[0].companyName ? formFields : [],
       jobGroupType: recommendJobGroups,
       level: recommendLevels,
@@ -609,6 +628,32 @@ export function HomeTemplate({ logged = false }: HomeProps) {
                       variant="outlined"
                       onChange={onNickNameChange}
                       value={nickName}
+                      inputProps={{
+                        style: {
+                          height: '20px',
+                        },
+                      }}
+                    />
+                  </dd>
+                </div>
+                <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
+                  <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">(*) 전화번호</dt>
+                  <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                    <TextField
+                      inputRef={phoneRef} // ref를 할당합니다.
+                      size="small"
+                      id="outlined-basic"
+                      label=""
+                      name="companyName"
+                      variant="outlined"
+                      onChange={onPhoneChange}
+                      value={phone}
+                      inputProps={{
+                        maxLength: 13,
+                        style: {
+                          height: '20px',
+                        },
+                      }}
                     />
                   </dd>
                 </div>

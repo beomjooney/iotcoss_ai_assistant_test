@@ -13,6 +13,7 @@ const { logged } = useSessionStore.getState();
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import StarIcon from '@mui/icons-material/Star';
 import { useParticipantSeminar } from 'src/services/seminars/seminars.mutations';
+import router from 'next/router';
 
 export interface BannerProps {
   /** 배경 이미지 */
@@ -70,8 +71,15 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
   };
   return (
     <div className={cx('content-area', className)}>
-      <div className="container tw-p-4 tw-leading-normal tw-text-black tw-font-bold tw-text-xl tw-pt-10 tw-pb-10">
+      <div className="tw-flex tw-items-center tw-justify-between container tw-p-4 tw-leading-normal tw-text-black tw-font-bold tw-text-xl tw-pt-10 tw-pb-10">
         {title} {'>'} {subTitle}
+        <button
+          onClick={() => router.push('/quiz')}
+          type="button"
+          className="tw-text-white tw-bg-gray-900 tw-font-medium tw-rounded tw-text-sm tw-px-5 tw-py-2.5"
+        >
+          뒤로가기
+        </button>
       </div>
       <div className={cx('banner-container__wrap', ' tw-pb-10')}>
         {/*todo url 경로에 따라 자동 셋팅 구현*/}

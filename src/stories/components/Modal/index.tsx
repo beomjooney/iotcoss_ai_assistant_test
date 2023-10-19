@@ -49,8 +49,8 @@ function Modal({
           position: 'absolute',
           maxWidth,
           maxHeight,
-          minWidth: '350px',
-          minHeight: '250px',
+          minWidth: '800px',
+          minHeight: '450px',
           border: 'none',
           background: '#fff',
           overflow: 'hidden',
@@ -68,8 +68,8 @@ function Modal({
       }}
     >
       {closable && (
-        <div className={cx('modal-header', 'closable')} onClick={() => setIsShow(false)}>
-          {title && <span className={cx('modal-header__title')}>{title}</span>}
+        <div className={cx('closable', 'tw-bg-white')} onClick={() => setIsShow(false)}>
+          {/* {title && <span className={cx('modal-header__title')}>{title}</span>} */}
           <span className="ti-close" />
         </div>
       )}

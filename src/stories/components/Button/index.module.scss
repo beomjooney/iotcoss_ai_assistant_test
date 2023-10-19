@@ -45,12 +45,12 @@
   }
 
   &.modal {
-    height: 40px;
+    height: 44px;
     padding: 10px 24px;
     font-weight: 700;
     font-size: font.toRem(14px);
     line-height: 21px;
-    width: auto !important;
+    width: 190px !important;
     border-radius: 5px;
 
     &.secondary {

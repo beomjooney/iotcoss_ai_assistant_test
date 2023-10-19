@@ -1,18 +1,13 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import { Toggle, Pagination, Typography, Chip, ClubCard, CommunityCard } from 'src/stories/components';
+import { Toggle, Pagination } from 'src/stories/components';
 import React, { useEffect, useRef, useState } from 'react';
-import { RecommendContent, SeminarImages } from 'src/models/recommend';
-import { useSeminarList, paramProps, useSeminarImageList } from 'src/services/seminars/seminars.queries';
-import QuizArticleCard from 'src/stories/components/QuizArticleCard';
-import Carousel from 'nuka-carousel';
-import { ArticleEnum } from '../../config/types';
+import { RecommendContent } from 'src/models/recommend';
+import { paramProps } from 'src/services/seminars/seminars.queries';
 import { useContentJobTypes, useContentTypes, useJobGroups } from 'src/services/code/code.queries';
-import Banner from '../../stories/components/Banner';
 import { useStore } from 'src/store';
 import { useRouter } from 'next/router';
 import Grid from '@mui/material/Grid';
-import Icon from '@mui/material/Icon';
 import Box from '@mui/system/Box';
 import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
@@ -27,6 +22,7 @@ import { useMyQuiz, useMyQuizReply } from 'src/services/jobs/jobs.queries';
 import { UseQueryResult } from 'react-query';
 import QuizMyReply from 'src/stories/components/QuizMyReply';
 import { deleteCookie } from 'cookies-next';
+
 /**import Popup */
 import ProfileModal from 'src/stories/components/ProfileModal';
 import TextField from '@mui/material/TextField';
@@ -43,6 +39,7 @@ import { useSkills } from 'src/services/skill/skill.queries';
 import { SkillResponse } from 'src/models/skills';
 import { useUploadImage } from 'src/services/image/image.mutations';
 import { useSaveProfile } from 'src/services/account/account.mutations';
+import useDidMountEffect from 'src/hooks/useDidMountEffect';
 
 const cx = classNames.bind(styles);
 
@@ -104,6 +101,7 @@ export function ProfileTemplate() {
 
   const recommendLevelsRef = useRef(null);
   const jobGroupRef = useRef(null);
+  const phoneRef = useRef(null);
   const endDateRef = useRef<any>([]);
 
   const [formFields, setFormFields] = useState([
@@ -129,6 +127,7 @@ export function ProfileTemplate() {
     setRecommendLevels(user?.level?.toString());
     setRecommendJobGroups(user.jobGroup || []);
     setNickName(user.nickname);
+    setPhone(user.phoneNumber || '');
     setIntroductionMessage(user.introductionMessage);
     setFormFields(
       user.careers.length > 0
@@ -150,7 +149,10 @@ export function ProfileTemplate() {
     setUserInfo(user);
   });
 
-  useEffect(() => {
+  useDidMountEffect(() => {
+    if (router.query.isOpenModal) {
+      router.push(`/quiz/${router.query.beforeQuizSequence}`);
+    }
     refetch();
   }, [onSuccess]);
 
@@ -212,9 +214,14 @@ export function ProfileTemplate() {
   const [recommendLevels, setRecommendLevels] = useState('');
   const [experienceYears, setExperienceYears] = useState(0);
 
+  useEffect(() => {
+    setIsModalOpen(router.query.isOpenModal);
+  }, [router.query.isOpenModal]);
+
   /** introduce message */
   const [introductionMessage, setIntroductionMessage] = useState<string>('');
   const [nickName, setNickName] = useState<string>('');
+  const [phone, setPhone] = useState<string>('');
   const onMessageChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, no?: number) => {
     const { name, value } = event.currentTarget;
     setIntroductionMessage(value);
@@ -222,6 +229,10 @@ export function ProfileTemplate() {
   const onNickNameChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, no?: number) => {
     const { name, value } = event.currentTarget;
     setNickName(value);
+  };
+  const onPhoneChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, no?: number) => {
+    const { name, value } = event.currentTarget;
+    setPhone(value);
   };
   const handleRecommendLevels = (event: React.MouseEvent<HTMLElement>, newFormats: string) => {
     setRecommendLevels(newFormats);
@@ -316,10 +327,19 @@ export function ProfileTemplate() {
     setFormFields(values);
   };
 
-  const handleProfileSave = async () => {
+  const handleProfileSave = () => {
     // fileImageUrl이 null인 경우 imageUrl을 사용하도록 조건문 추가
     const profileImageKey = imageUrl || user?.profileImageUrl;
     const isCurrentCount = formFields.filter(data => data.isCurrent === true).map((data, index) => {}).length;
+    console.log(phone);
+    // 전화번호 유효성 검사
+    const regex = /^01(?:0|1|[6-9])-(?:\d{3}|\d{4})-\d{4}$/;
+    if (!regex.test(phone) || phone === '') {
+      alert('유효하지 않은 전화번호입니다.');
+      setPhone('');
+      phoneRef.current.focus();
+      return 0;
+    }
 
     if (recommendJobGroups.length === 0) {
       alert('직군 필수 입력값을 선택해주세요.');
@@ -340,6 +360,7 @@ export function ProfileTemplate() {
 
     const params = {
       nickname: nickName,
+      phoneNumber: phone,
       careers: formFields[0].companyName ? formFields : [],
       jobGroupType: recommendJobGroups,
       level: recommendLevels,
@@ -348,6 +369,7 @@ export function ProfileTemplate() {
       profileImageUrl: profileImageKey,
     };
 
+    console.log(params);
     onSave(params);
     setIsModalOpen(false);
   };
@@ -435,6 +457,14 @@ export function ProfileTemplate() {
   useEffect(() => {
     setCareersInfo(formFields);
   }, [formFields]);
+
+  useEffect(() => {
+    if (phone.length === 11) {
+      setPhone(phone.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3'));
+    } else if (phone.length === 13) {
+      setPhone(phone.replace(/-/g, '').replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3'));
+    }
+  }, [phone]);
 
   return (
     <div className={cx('seminarseminar-container')}>
@@ -772,22 +802,45 @@ export function ProfileTemplate() {
                   </div>
                   <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
                     <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">이름</dt>
-                    <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
-                      {user?.name}
-                    </dd>
+                    <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">{user?.name}</dd>
                   </div>
                   <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
                     <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">닉네임</dt>
-                    <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                    <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
                       <TextField
                         size="small"
-                        fullWidth
                         id="outlined-basic"
                         label=""
                         name="companyName"
                         variant="outlined"
                         onChange={onNickNameChange}
                         value={nickName}
+                        inputProps={{
+                          style: {
+                            height: '20px',
+                          },
+                        }}
+                      />
+                    </dd>
+                  </div>
+                  <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
+                    <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">(*) 전화번호</dt>
+                    <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                      <TextField
+                        inputRef={phoneRef} // ref를 할당합니다.
+                        size="small"
+                        id="outlined-basic"
+                        label=""
+                        name="companyName"
+                        variant="outlined"
+                        onChange={onPhoneChange}
+                        value={phone}
+                        inputProps={{
+                          maxLength: 13,
+                          style: {
+                            height: '20px',
+                          },
+                        }}
                       />
                     </dd>
                   </div>

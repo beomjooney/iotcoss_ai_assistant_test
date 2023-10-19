@@ -18,7 +18,6 @@ import { useParticipantSeminar } from 'src/services/seminars/seminars.mutations'
 import { useSessionStore } from 'src/store/session';
 import Grid from '@mui/material/Grid';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
-import router from 'next/router';
 import { useClubDetailQuizList } from 'src/services/quiz/quiz.queries';
 import Divider from '@mui/material/Divider';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
@@ -36,6 +35,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 import PersonIcon from '@mui/icons-material/Person';
 import Stack from '@mui/material/Stack';
+import router from 'next/router';
 
 const cx = classNames.bind(styles);
 export interface QuizDetailTemplateProps {
@@ -119,8 +119,13 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
       alert('로그인이 필요합니다.');
       return;
     }
-    onParticipant({ clubSequence: id });
-    setClubMemberStatus('0001');
+
+    if (user.phoneNumber === null) {
+      setIsModalOpen(true);
+    } else {
+      onParticipant({ clubSequence: id });
+      setClubMemberStatus('0001');
+    }
   };
 
   const handleClickTab = index => {
@@ -164,8 +169,13 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
   };
 
   const handlerTodayQuizSolution = () => {
-    const firstItemWithNullAnswer = quizList.find(item => item.answer.answerStatus === '0000');
-    router.push('/quiz/solution/' + `${firstItemWithNullAnswer?.clubQuizSequence}`);
+    console.log(user.nickname, user.phoneNumber);
+    if (user.phoneNumber === null) {
+      setIsModalOpen(true);
+    } else {
+      const firstItemWithNullAnswer = quizList.find(item => item.answer.answerStatus === '0000');
+      router.push('/quiz/solution/' + `${firstItemWithNullAnswer?.clubQuizSequence}`);
+    }
   };
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
@@ -458,7 +468,13 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                                 <div>
                                   <button
                                     type="button"
-                                    onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
+                                    onClick={() => {
+                                      if (user.phoneNumber === null) {
+                                        setIsModalOpen(true);
+                                      } else {
+                                        router.push('/quiz/solution/' + `${item?.clubQuizSequence}`);
+                                      }
+                                    }}
                                     data-tooltip-target="tooltip-default"
                                     className="tw-bg-[#2474ED] tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
                                   >
@@ -678,6 +694,42 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
           </div>
         ))}
       <div className="tw-mt-10">{applicationButton}</div>
+      <Modal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)} title="퀴즈풀러가기" maxWidth="900px">
+        <div className={cx('seminar-check-popup')}>
+          <div className={cx('mb-5')}>
+            <span className={cx('text-bold', 'tw-text-xl', 'tw-font-bold')}>퀴즈 클럽 가입에 연락처가 필요합니다.</span>
+          </div>
+          <div>효과적이고 원활한 퀴즈 클럽 진행을 위해,</div>
+          <div>클럽 소통 채널을 개설할 예정입니다.</div>
+          <br></br>
+          <div>프로필로 이동하여, 연락처를 기입해주세요.</div>
+          <div>연라거는 클럽 활동 외에 다른 용도로 사용되지 않습니다.</div>
+          <br></br>
+          <div className="tw-mt-5">
+            <Button
+              className="tw-mr-5"
+              color="lite-gray"
+              label="취소"
+              size="modal"
+              onClick={() => setIsModalOpen(false)}
+            />
+            <Button
+              color="primary"
+              label="연락처 입력하러가기"
+              size="modal"
+              onClick={() =>
+                router.push(
+                  {
+                    pathname: '/profile',
+                    query: { isOpenModal: true, beforeQuizSequence: id },
+                  },
+                  '/profile',
+                )
+              }
+            />
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
