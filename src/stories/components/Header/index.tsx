@@ -486,7 +486,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                         aria-label="show 17 new notifications"
                         color="inherit"
                       >
-                        <Badge badgeContent={17} color="error" className="tw-px-0">
+                        <Badge badgeContent={contents?.totalElements} color="error" className="tw-px-0">
                           <NotificationsNoneIcon sx={{ fontSize: 30 }} />
                         </Badge>
                       </IconButton>
@@ -498,7 +498,34 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                         onClose={handleCloseAlarm}
                         disableScrollLock={true}
                       >
-                        <List>
+                        <div className="popover-content tw-w-[370px]" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                          <div className="tw-bg-gray-100 tw-text-gray-500 tw-py-4 tw-text-center tw-text-sm">
+                            최근 30일동안의 알림만 보관되며,이후 자동삭제됩니다.
+                          </div>
+                          {contents?.eventsByDate?.map((item, index) => {
+                            return (
+                              // TODO API Response 보고 댓글 작성자로 수정 필요
+                              <div key={index} role="tw-list" className=" tw-divide-y tw-divide-gray-100 border-bottom">
+                                <div className="tw-justify-between  ">
+                                  <div className="tw-min-w-0 tw-p-3 tw-font-semibold">
+                                    {item?.date} {item?.dayOfWeek}
+                                  </div>
+                                  {item?.events.map((items, index) => {
+                                    return (
+                                      <div key={index} className="border-top tw-p-3 tw-text-black tw-text-sm">
+                                        {!items?.isChecked && (
+                                          <div className="tw-bottom-auto tw-left-auto tw-right-0 tw-top-0 tw-z-10 tw-inline-block tw-rounded-full tw-bg-red-600 tw-p-[3px] tw-text-sm tw-mx-2 tw-mr-3"></div>
+                                        )}
+                                        {items?.message}
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                        {/* <List>
                           <ListItem button onClick={() => (location.href = '/quiz-make')}>
                             <ListItemText primary="내가 만든 퀴즈" />
                           </ListItem>
@@ -518,7 +545,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                           <ListItem button onClick={handleLogout}>
                             <ListItemText primary="Logout" />
                           </ListItem>
-                        </List>
+                        </List> */}
                       </Popover>
                     </div>
                   </Tooltip>

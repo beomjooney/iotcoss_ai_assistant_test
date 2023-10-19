@@ -169,7 +169,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
   };
 
   const handlerTodayQuizSolution = () => {
-    console.log(user.nickname, user.phoneNumber);
+    console.log(user);
     if (user.phoneNumber === null) {
       setIsModalOpen(true);
     } else {
@@ -333,6 +333,9 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
               className="tw-bg-[#fffff]"
               imageName="top_banner_seminar.svg"
               onClick={() => handleParticipant()}
+              setIsModalOpen={function (file: boolean): void {
+                throw new Error('Function not implemented.');
+              }}
             />
             {/*바로 밑에 자식만 sticky 적용됨*/}
             <div className={cx('content-wrap')}>
@@ -469,7 +472,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                                   <button
                                     type="button"
                                     onClick={() => {
-                                      if (user.phoneNumber === null) {
+                                      if (user.phoneNumber === null || user.phoneNumber === '') {
                                         setIsModalOpen(true);
                                       } else {
                                         router.push('/quiz/solution/' + `${item?.clubQuizSequence}`);
@@ -572,6 +575,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
               subTitle="클럽 상세보기"
               imageName="top_banner_seminar.svg"
               className="tw-bg-[#FFFAF1]"
+              setIsModalOpen={setIsModalOpen}
             />
             <div className="tw-bg-[#FFFAF1]">
               <div className="container">

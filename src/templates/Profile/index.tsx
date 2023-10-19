@@ -147,6 +147,7 @@ export function ProfileTemplate() {
     );
     setExperienceYears(user.experienceYears);
     setUserInfo(user);
+    setUser(user);
   });
 
   useDidMountEffect(() => {
@@ -327,7 +328,7 @@ export function ProfileTemplate() {
     setFormFields(values);
   };
 
-  const handleProfileSave = () => {
+  const handleProfileSave = async => {
     // fileImageUrl이 null인 경우 imageUrl을 사용하도록 조건문 추가
     const profileImageKey = imageUrl || user?.profileImageUrl;
     const isCurrentCount = formFields.filter(data => data.isCurrent === true).map((data, index) => {}).length;

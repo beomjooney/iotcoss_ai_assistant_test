@@ -269,7 +269,15 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
     <>
       <Desktop>
         <div className={cx('seminar-detail-container')}>
-          <BannerDetail title="성장퀴즈" subTitle="클럽 상세보기" imageName="top_banner_seminar.svg" />
+          <BannerDetail
+            title="성장퀴즈"
+            subTitle="클럽 상세보기"
+            imageName="top_banner_seminar.svg"
+            data={undefined}
+            setIsModalOpen={function (file: boolean): void {
+              throw new Error('Function not implemented.');
+            }}
+          />
           <div className={cx('container')}>
             {/*바로 밑에 자식만 sticky 적용됨*/}
             <div className={cx('content-wrap')}>

@@ -37,7 +37,7 @@ export const useQuizSolutionDetail = (id, onSuccess?: (data: any) => void, onErr
   return useQuery<any, Error>(QUERY_KEY_FACTORY('SEMINAR').detail(id), () => quizSolutionDetail(id), {
     onSuccess,
     onError,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
     enabled: !!id,
   });
 };
@@ -47,7 +47,8 @@ export const useQuizSolutionDetailStatus = (id, onSuccess?: (data: any) => void,
   return useQuery<any, Error>(QUERY_KEY_FACTORY('QUIZ').detail(id), () => quizSolutionDetailStatus(id), {
     onSuccess,
     onError,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
+    retry: false,
     enabled: !!id,
   });
 };

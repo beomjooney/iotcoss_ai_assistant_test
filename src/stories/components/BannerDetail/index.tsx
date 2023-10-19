@@ -14,6 +14,7 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import StarIcon from '@mui/icons-material/Star';
 import { useParticipantSeminar } from 'src/services/seminars/seminars.mutations';
 import router from 'next/router';
+import { useStore } from 'src/store';
 
 export interface BannerProps {
   /** 배경 이미지 */
@@ -25,11 +26,21 @@ export interface BannerProps {
   className?: string;
   subTitle?: string;
   onClick?: () => void;
+  setIsModalOpen: (file: boolean) => void;
 }
 
 const cx = classNames.bind(styles);
 // const Banner = ({ imageName = 'top_banner_seminar.jpg', title, subTitle, className }: BannerProps) => {
-const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className, data, onClick }: BannerProps) => {
+const BannerDetail = ({
+  imageName = 'seminar_bg.png',
+  title,
+  subTitle,
+  className,
+  data,
+  onClick,
+  setIsModalOpen,
+}: BannerProps) => {
+  const { user } = useStore();
   let [isLiked, setIsLiked] = useState(false);
   const [clubMemberStatus, setClubMemberStatus] = useState('0001');
   const [clubStatus, setClubStatus] = useState('');
@@ -52,8 +63,16 @@ const BannerDetail = ({ imageName = 'seminar_bg.png', title, subTitle, className
       alert('로그인이 필요합니다.');
       return;
     }
-    onParticipant({ clubSequence: clubId });
-    setClubMemberStatus('0001');
+
+    console.log('phone null', user.phoneNumber);
+
+    if (user.phoneNumber === null || user.phoneNumber === '') {
+      console.log('phone null');
+      setIsModalOpen(true);
+    } else {
+      onParticipant({ clubSequence: clubId });
+      setClubMemberStatus('0001');
+    }
   };
 
   const onChangeLike = function (postNo: number) {

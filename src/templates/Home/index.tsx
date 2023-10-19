@@ -147,6 +147,7 @@ export function HomeTemplate({ logged = false }: HomeProps) {
   const { memberId } = useSessionStore.getState();
   const [hasuser, setHasuser] = useState('');
   const { isFetched: isUser, data } = useMemberInfo(memberId, user => {
+    console.log(data);
     setUser(user);
     setNickName(user?.nickname);
     setPhone(user?.phoneNumber || '');
@@ -621,7 +622,6 @@ export function HomeTemplate({ logged = false }: HomeProps) {
                   <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
                     <TextField
                       size="small"
-                      fullWidth
                       id="outlined-basic"
                       label=""
                       name="companyName"
