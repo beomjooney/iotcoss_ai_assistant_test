@@ -36,7 +36,7 @@ export function MonthlyMakerTemplate() {
   let [makerQuizSequence, setMakerQuizSequence] = useState<number>(0);
   let [quizzesAnswersContents, setQuizzesAnswersContents] = useState<QuizzesAnswersResponse>();
 
-  makerQuizSequence = 17;
+  //makerQuizSequence = 17;
 
   // 퀴즈 데이터
   const { isFetched: isMonthlyRankingFetched, refetch: refetchMonthlyRanking } = useMonthlyRanking(data => {
