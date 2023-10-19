@@ -33,7 +33,6 @@ export function MonthlyQuizTemplate() {
   const [monthlyRankingContents, setMonthlyRankingContents] = useState<MonthlyRankingResponse>();
   const [totalPage, setTotalPage] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   let [quizzesAnswersContents, setQuizzesAnswersContents] = useState<QuizzesAnswersResponse>();
   let [answersRepliesContents, setAnswersRepliesContents] = useState<AnswerRepliesResponse>();
@@ -78,13 +77,6 @@ export function MonthlyQuizTemplate() {
   }, [quizAnswerSequence, refetchMonthlyRanking]);
 
   const handleIconButton = (event: React.MouseEvent<HTMLElement>) => {};
-
-  const handleReplyDisplayButton = (clubQuizAnswerSequence: number) => {
-    if (clubQuizAnswerSequence > 0) {
-      setIsOpen(!isOpen);
-      setQuizAnswerSequence(clubQuizAnswerSequence);
-    }
-  };
 
   return (
     <div className={cx('seminar-container')}>
@@ -218,7 +210,7 @@ export function MonthlyQuizTemplate() {
         <article>
           {quizzesAnswersContents?.contents?.length > 0 ? (
             quizzesAnswersContents?.contents?.map((values, index: number) => {
-              return <QuizAnswerCardMaster key={quizzesAnswersContents?.contents?.length} contents={values} />;
+              return <QuizAnswerCardMaster key={index} contents={values} />;
             })
           ) : (
             <div>

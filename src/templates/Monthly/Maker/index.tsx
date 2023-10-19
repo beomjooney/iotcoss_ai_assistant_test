@@ -8,16 +8,15 @@ import { useMonthlyRanking, useQuizzesAnswers, quizzesAnswersParamProps } from '
 import { Pagination, Toggle } from 'src/stories/components';
 import { paramProps } from 'src/services/seminars/seminars.queries';
 import { MonthlyMakerQuizzesResponse, MonthlyRankingResponse, QuizzesAnswersResponse } from 'src/models/monthly';
+import QuizAnswerCardMaster from 'src/stories/components/QuizAnswerCardMaster';
 
 import Grid from '@mui/material/Grid';
 import Box from '@mui/system/Box';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import StarBorderIcon from '@mui/icons-material/StarBorder';
 import Avatar from '@mui/material/Avatar';
 
 const cx = classNames.bind(styles);
@@ -37,7 +36,7 @@ export function MonthlyMakerTemplate() {
   let [makerQuizSequence, setMakerQuizSequence] = useState<number>(0);
   let [quizzesAnswersContents, setQuizzesAnswersContents] = useState<QuizzesAnswersResponse>();
 
-  //makerQuizSequence = 17;
+  makerQuizSequence = 17;
 
   // 퀴즈 데이터
   const { isFetched: isMonthlyRankingFetched, refetch: refetchMonthlyRanking } = useMonthlyRanking(data => {
@@ -50,7 +49,15 @@ export function MonthlyMakerTemplate() {
     setQuizzesAnswersContents(data);
     setTotalPage(data?.totalPages);
     setTotalElements(data?.totalElements);
+
+    // if (data?.contents.length > 0) {
+    //   data?.contents.map(function (quizzesAnswersValues, index: number) {
+    //     console.log(quizzesAnswersValues);
+    //   });
+    // }
   });
+
+  const handleIconButton = (event: React.MouseEvent<HTMLElement>) => {};
 
   useEffect(() => {
     setParams({
@@ -66,8 +73,6 @@ export function MonthlyMakerTemplate() {
   //console.log(totalElements);
   //console.log(totalPage);
   //console.log(monthlyRankingContents);
-
-  const handleIconButton = (event: React.MouseEvent<HTMLElement>) => {};
 
   return (
     <div className={cx('seminar-container')}>
@@ -273,63 +278,7 @@ export function MonthlyMakerTemplate() {
           {isQuizzesAnswersFetched &&
             (quizzesAnswersContents?.contents.length > 0 ? (
               quizzesAnswersContents?.contents.map((values, index: number) => {
-                return (
-                  <div key={`content-${index}`}>
-                    <div className={cx('answer-area tw-pt-5')}>
-                      <div className={cx('content-wrap tw-rounded tw-bg-white border')}>
-                        <div className="tw-flex p-3 tw-m-1 tw-px-3 tw-py-0.5">
-                          <div className="tw-w-1/6">
-                            <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-text-sm tw-font-light">
-                              {values?.createdAt.slice(2, 10)}
-                            </span>
-                          </div>
-                          <div className="tw-w-3/4">
-                            <span className="tw-flex tw-text-black tw-text-sm">
-                              <Avatar sx={{ width: 32, height: 32 }} src={values?.profileImageUrl}></Avatar>
-                              <span className="tw-leading-9 tw-pl-2 tw-font-bold">{values?.nickname}</span>
-                            </span>
-                          </div>
-                          <div className="tw-w-3/4 tw-text-right">
-                            <IconButton
-                              aria-label="more"
-                              id="long-button"
-                              size="small"
-                              aria-haspopup="true"
-                              onClick={e => handleIconButton(e)}
-                            >
-                              <ChatBubbleOutlineIcon className="tw-mr-1 tw-w-5" />
-                              <span className="tw-text-sm">{values?.replyCount ?? 0}</span>
-                            </IconButton>
-                            <IconButton
-                              aria-label="more"
-                              id="long-button"
-                              size="small"
-                              aria-haspopup="true"
-                              onClick={e => handleIconButton(e)}
-                            >
-                              <StarBorderIcon className="tw-mr-1 tw-w-5" />
-                              <span className="tw-text-sm">{values?.onePickCount ?? 0}</span>
-                            </IconButton>
-
-                            <IconButton
-                              aria-label="more"
-                              id="long-button"
-                              size="small"
-                              aria-haspopup="true"
-                              onClick={e => handleIconButton(e)}
-                            >
-                              <FavoriteBorderIcon className="tw-mr-1 tw-w-5" />
-                              <span className="tw-text-sm">{values?.likeCount ?? 0}</span>
-                            </IconButton>
-                          </div>
-                        </div>
-                        <div className="tw-flex p-3 tw-m-1 tw-px-3 tw-py-0.5">
-                          <span className="tw-flex tw-text-black tw-text-sm tw-pl-[120px]">{values?.postAnswer}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                );
+                return <QuizAnswerCardMaster key={index} contents={values} />;
               })
             ) : (
               <div>

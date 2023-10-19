@@ -47,6 +47,22 @@ export const getAnswersReplies = async (quizAnswerSequence: number) => {
   return { data: data || [] };
 };
 
+// 퀴즈 답변 원픽 저장
+export const setSaveOnePick = async (clubQuizAnswerSequence: number) =>
+  await axiosGeneralAPI().post(`/api/v1/club/quiz/answers/${clubQuizAnswerSequence}/onepick`);
+
+// 퀴즈 답변 원픽 삭제
+export const setDeleteOnePick = async (clubQuizAnswerSequence: number) =>
+  await axiosGeneralAPI().delete(`/api/v1/club/quiz/answers/${clubQuizAnswerSequence}/onepick`);
+
+// 퀴즈 답변 좋아요 저장
+export const setSaveLiked = async (clubQuizAnswerSequence: number) =>
+  await axiosGeneralAPI().post(`/api/v1/club/quiz/answers/${clubQuizAnswerSequence}/like`);
+
+// 퀴즈 답변 좋아요 삭제
+export const setDeleteLiked = async (clubQuizAnswerSequence: number) =>
+  await axiosGeneralAPI().delete(`/api/v1/club/quiz/answers/${clubQuizAnswerSequence}/like`);
+
 export async function getCamenities(args: CamenityProps) {
   let params = JSON.parse(JSON.stringify(args));
   Object.keys(params).forEach(key => {
