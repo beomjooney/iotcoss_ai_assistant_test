@@ -1,21 +1,10 @@
 import styles from './index.module.scss';
-import {
-  Button,
-  GrowthFieldCard,
-  ArticleCard,
-  Profile,
-  Typography,
-  MentorsModal,
-  Toggle,
-} from 'src/stories/components';
+import { Button, Typography } from 'src/stories/components';
 import classNames from 'classnames/bind';
 import SectionHeader from 'src/stories/components/SectionHeader';
 import { useContentJobTypes, useContentTypes, useJobGroups, useJobGroupss } from 'src/services/code/code.queries';
 import { useEffect, useRef, useState } from 'react';
-import { ArticleEnum } from 'src/config/types';
-import { useRecommendContents } from 'src/services/contents/contents.queries';
 import { useStore } from 'src/store';
-import { useMentorList } from 'src/services/mentors/mentors.queries';
 import { useRouter } from 'next/router';
 import { useSessionStore } from '../../store/session';
 import Grid from '@mui/material/Grid';
@@ -40,13 +29,12 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { useSkills } from 'src/services/skill/skill.queries';
 import { SkillResponse } from 'src/models/skills';
 import { UseQueryResult } from 'react-query';
-import Chip from '@mui/material/Chip';
 import { Divider } from 'antd';
 import { useUploadImage } from 'src/services/image/image.mutations';
 import { useSaveProfile } from 'src/services/account/account.mutations';
+import useDidMountEffect from 'src/hooks/useDidMountEffect';
 
 const cx = classNames.bind(styles);
-const PAGE_NAME = 'main';
 
 const levelGroup = [
   {
@@ -88,6 +76,7 @@ export function HomeTemplate({ logged = false }: HomeProps) {
   const [topicList, setTopicList] = useState([]);
   const [mentorList, setMentorList] = useState([]);
   const [phone, setPhone] = useState<string>('');
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   /**skill data */
   const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
@@ -143,15 +132,15 @@ export function HomeTemplate({ logged = false }: HomeProps) {
 
   /** get profile */
   const { user, setUser } = useStore();
-  // const [user, setuser] = useState<User>(user);
   const { memberId } = useSessionStore.getState();
-  const [hasuser, setHasuser] = useState('');
   const { isFetched: isUser, data } = useMemberInfo(memberId, user => {
-    console.log(data);
+    //console.log(data);
     setUser(user);
     setNickName(user?.nickname);
     setPhone(user?.phoneNumber || '');
   });
+
+  console.log(data?.jobGroup);
 
   // console.log('profileList', isUser, data?.jobGroup, !!!data?.jobGroup);
   // console.log('data', data);
@@ -230,11 +219,18 @@ export function HomeTemplate({ logged = false }: HomeProps) {
       introductionMessage: introductionMessage,
       profileImageUrl: profileImageKey,
     };
-    //console.log(params);
     onSave(params);
-    if (data !== null && data !== undefined) {
-      data.jobGroup = '0000';
-    }
+    // if (data !== null && data !== undefined) {
+    //   data.jobGroup = '0000';
+    // }
+    setIsOpen(false);
+    console.log(
+      'ㅇㅇ',
+      data.jobGroup,
+      !!!data.jobGroup,
+      data?.jobGroup === undefined ? false : true,
+      !!!data.jobGroup && data?.jobGroup === undefined ? false : true,
+    );
   };
 
   const handleRemoveFields = (index: number) => {
@@ -287,6 +283,19 @@ export function HomeTemplate({ logged = false }: HomeProps) {
   const dateNow = new Date();
   const today = dateNow.toISOString().slice(0, 10);
 
+  useDidMountEffect(() => {
+    console.log('useEffect', data?.jobGroup);
+    if (data?.jobGroup === undefined || data?.jobGroup === '') {
+      console.log('useEffect 1');
+      setIsOpen(false);
+    } else if (data?.jobGroup === null) {
+      console.log('useEffect 2');
+      setIsOpen(true);
+    } else {
+      setIsOpen(false);
+    }
+  }, [data]);
+
   useEffect(() => {
     if (!file) return;
     const reader = new FileReader();
@@ -302,10 +311,6 @@ export function HomeTemplate({ logged = false }: HomeProps) {
     if (!files || files.length === 0) return;
     setFile(files[0]);
   };
-
-  // useEffect(() => {
-  //   console.log('formFields changed:', formFields);
-  // }, [formFields]);
 
   return (
     <div className={cx('career-main')}>
@@ -568,7 +573,8 @@ export function HomeTemplate({ logged = false }: HomeProps) {
 
       {isUser && (
         <ProfileModal
-          isOpen={!!!data?.jobGroup}
+          // isOpen={!!!data?.jobGroup && data?.jobGroup === undefined ? false : true}
+          isOpen={isOpen}
           // onAfterClose={() => setIsModalOpen(false)}
         >
           <div className="tw-font-bold tw-text-xl tw-text-black tw-mt-0 tw-mb-5 tw-text-center">

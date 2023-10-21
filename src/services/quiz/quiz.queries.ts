@@ -80,7 +80,7 @@ export const useQuizGrowthDetail = (id, onSuccess?: (data: any) => void, onError
 };
 
 export const useQuizAlarmHistory = (params, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
-  const DEFAULT_SIZE = 10;
+  const DEFAULT_SIZE = 100;
   return useQuery<any, Error>(
     QUERY_KEY_FACTORY('QUIZ').detail({ size: DEFAULT_SIZE, ...params }),
     () => quizAlarmHistory({ size: DEFAULT_SIZE, ...params }),

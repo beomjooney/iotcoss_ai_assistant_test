@@ -109,6 +109,7 @@ export function StudyRoomTemplate() {
   const currDate = new Date();
   const currDateTime = moment(currDate).format('MM-DD');
   const [open, setOpen] = React.useState(false);
+  const [contentJobType, setContentJobType] = useState<any[]>([]);
 
   /**calendar param */
   const [calendarYearMonth, setCalendarYearMonth] = useState(new Date().toISOString().split('T')[0].slice(0, 7));
@@ -403,7 +404,9 @@ export function StudyRoomTemplate() {
                         <Table sx={{ minWidth: 700 }} aria-label="customized table">
                           <TableHead>
                             <TableRow>
-                              <StyledTableCell align="center">클럽명</StyledTableCell>
+                              <StyledTableCell align="center" sx={{ width: '28%' }}>
+                                클럽명
+                              </StyledTableCell>
                               <StyledTableCell align="center">리더</StyledTableCell>
                               <StyledTableCell align="center">참가자</StyledTableCell>
                               <StyledTableCell align="center">학습시작일</StyledTableCell>
@@ -443,7 +446,9 @@ export function StudyRoomTemplate() {
                         <TableHead>
                           <TableRow>
                             <StyledTableCell></StyledTableCell>
-                            <StyledTableCell align="center">클럽명</StyledTableCell>
+                            <StyledTableCell align="center" sx={{ width: '25%' }}>
+                              클럽명
+                            </StyledTableCell>
                             <StyledTableCell align="center">리더</StyledTableCell>
                             <StyledTableCell align="center">참가자</StyledTableCell>
                             <StyledTableCell align="center">학습시작일</StyledTableCell>

@@ -170,7 +170,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
 
   const handlerTodayQuizSolution = () => {
     console.log(user);
-    if (user.phoneNumber === null) {
+    if (user.phoneNumber === null || user.phoneNumber === '') {
       setIsModalOpen(true);
     } else {
       const firstItemWithNullAnswer = quizList.find(item => item.answer.answerStatus === '0000');
@@ -436,7 +436,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                         {item?.isPublished ? (
                           <div className="border tw-rounded-xl">
                             <div
-                              className={`tw-bg-zinc-50 tw-flex tw-items-center tw-p-4  tw-py-6 ${
+                              className={`tw-bg-zinc-50 tw-flex tw-items-center tw-p-4  tw-py-6   ${
                                 item?.answer ? 'tw-rounded-tl-xl tw-rounded-tr-xl' : 'tw-rounded-xl'
                               }`}
                             >
@@ -444,16 +444,16 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                                 <button
                                   type="button"
                                   data-tooltip-target="tooltip-default"
-                                  className="tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-bold tw-mr-2 tw-px-3 tw-py-1 tw-rounded"
+                                  className="tw-w-[60px] tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-bold tw-mr-2 tw-px-3 tw-py-1 tw-rounded"
                                 >
                                   대표
                                 </button>
                               )}
-                              <div className="tw-flex-auto">
+                              <div className="tw-flex-auto tw-px-5">
                                 <div className="tw-font-medium tw-text-black">{item?.content}</div>
                               </div>
 
-                              <div className="tw-mr-5">
+                              <div className="tw-mr-7">
                                 <button
                                   onClick={() => {
                                     onChangeLike(item?.clubQuizSequence, item?.isLiked);
@@ -479,7 +479,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                                       }
                                     }}
                                     data-tooltip-target="tooltip-default"
-                                    className="tw-bg-[#2474ED] tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                    className="tw-w-[120px] tw-bg-[#2474ED] tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
                                   >
                                     퀴즈 풀러가기 {'>'}
                                   </button>
