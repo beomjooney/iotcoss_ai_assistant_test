@@ -111,15 +111,21 @@ export function MonthlyMakerTemplate() {
               <div className="tw-w-3/4">
                 <div>
                   {monthlyRankingContents?.maker?.nickname}님
-                  <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600">
-                    {monthlyRankingContents?.maker?.jobGroupTypeName}
-                  </span>
-                  {/* <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
-                    레벨 3
-                  </span> */}
-                  <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-300 tw-text-sm tw-font-light tw-text-gray-600">
-                    {monthlyRankingContents?.maker?.jobTypeName}
-                  </span>
+                  {monthlyRankingContents?.maker?.jobGroupTypeName && (
+                    <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600">
+                      {monthlyRankingContents?.maker?.jobGroupTypeName}
+                    </span>
+                  )}
+                  {monthlyRankingContents?.maker?.levelType && (
+                    <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
+                      레벨 {monthlyRankingContents?.maker?.levelType}
+                    </span>
+                  )}
+                  {monthlyRankingContents?.maker?.jobTypeName && (
+                    <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-300 tw-text-sm tw-font-light tw-text-gray-600">
+                      {monthlyRankingContents?.maker?.jobTypeName}
+                    </span>
+                  )}
                 </div>
                 {monthlyRankingContents?.maker?.jobGroupTypeName && (
                   <div className="tw-font-bold tw-text-base tw-text-black tw-mt-5">
@@ -127,16 +133,16 @@ export function MonthlyMakerTemplate() {
                     {monthlyRankingContents?.maker?.experienceYears}년차
                   </div>
                 )}
-                {monthlyRankingContents?.maker?.jobGroupTypeName && (
-                  <div className="tw-py-2">
-                    <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-bg-black tw-text-white">
-                      GO
-                    </span>
-                    <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-bg-black tw-text-white">
-                      Spring
-                    </span>
-                  </div>
-                )}
+
+                {isMonthlyRankingFetched &&
+                  monthlyRankingContents?.maker?.customSkills?.map((values, index: number) => {
+                    <div className="tw-py-2">
+                      <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-bg-black tw-text-white">
+                        {values}
+                      </span>
+                    </div>;
+                  })}
+
                 <div className="tw-mt-3 tw-font-light tw-text-base tw-text-gray-500">
                   {monthlyRankingContents?.maker?.introductionMessage}
                 </div>
@@ -147,7 +153,7 @@ export function MonthlyMakerTemplate() {
                     <span className="tw-inline-block p-2 tw-bg-white tw-rounded-lg tw-w-[200px]">
                       <div className="tw-border-4 tw-text-base tw-pr-10">이번달 등록 질문 수</div>
                       <div className="tw-leading-9 tw-text-blue-600 tw-text-lg tw-text-right">
-                        {monthlyRankingContents?.maker?.madeQuizCount}개
+                        {monthlyRankingContents?.maker?.madeQuizCount ?? 0}개
                       </div>
                     </span>
                   </div>
@@ -155,7 +161,7 @@ export function MonthlyMakerTemplate() {
                     <span className="tw-inline-block p-2 tw-bg-white tw-rounded-lg tw-w-[200px]">
                       <div className="tw-border-4 tw-text-base tw-pr-10">받은 총 좋아요 수</div>
                       <div className="tw-leading-9 tw-text-blue-600 tw-text-lg tw-text-right">
-                        {monthlyRankingContents?.maker?.receivedLikeCount}개
+                        {monthlyRankingContents?.maker?.receivedLikeCount ?? 0}개
                       </div>
                     </span>
                   </div>

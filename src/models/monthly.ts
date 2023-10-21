@@ -22,6 +22,8 @@ export interface Maker {
   madeQuizCount: number;
   receivedLikeCount: number;
   experienceYears: number;
+  levelType: number;
+  customSkills: string[];
   quizzes: Quizzes[];
 }
 
