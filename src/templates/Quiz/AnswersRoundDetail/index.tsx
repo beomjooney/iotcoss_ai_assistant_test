@@ -6,6 +6,7 @@ import { RecommendContent } from 'src/models/recommend';
 import { useQuizAnswerDetail, useQuizRankDetail, useQuizSolutionDetail } from 'src/services/quiz/quiz.queries';
 import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
+import { useRouter } from 'next/router';
 
 /** import icon */
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -23,6 +24,7 @@ export interface QuizAnswersRoundDetailTemplateProps {
 }
 
 export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTemplateProps) {
+  const router = useRouter();
   const [contents, setContents] = useState<RecommendContent[]>([]);
   const [rankContents, setRankContents] = useState<RecommendContent[]>([]);
   const [answerContents, setAnswerContents] = useState<RecommendContent[]>([]);
@@ -89,7 +91,7 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
               <button
                 onClick={() => router.back()}
                 type="button"
-                className="tw-text-white tw-bg-blue-500  tw-focus:ring-4  tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5  dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
+                className="tw-text-white tw-bg-blue-500 tw-font-medium tw-rounded tw-text-sm tw-px-5 tw-py-2.5"
               >
                 뒤로가기
               </button>
@@ -145,7 +147,7 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                     <span
                       type="button"
                       data-tooltip-target="tooltip-default"
-                      className="tw-bg-green-100 tw-text-green-800 tw-text-center tw-px-3 tw-py-1 tw-text-sm tw-font-bold tw-rounded-md tw-mr-3"
+                      className="tw-w-[75px] tw-bg-green-100 tw-text-green-800 tw-text-center tw-px-3 tw-py-1 tw-text-sm tw-font-bold tw-rounded-md tw-mr-3"
                     >
                       대표
                     </span>

@@ -363,7 +363,7 @@ export function LoungeTemplate() {
                               </div>
                               <div className="tw-py-7 ">
                                 {item?.hashTags?.map((name, i) => (
-                                  <span key={i} className="tw-text-base tw-text-gray-400">
+                                  <span key={i} className="tw-text-base tw-text-gray-400 tw-pr-2">
                                     #{name}
                                   </span>
                                 ))}
