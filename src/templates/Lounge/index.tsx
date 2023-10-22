@@ -79,7 +79,7 @@ export function LoungeTemplate() {
     setRankContents(data);
   });
 
-  console.log(rankContents);
+  //console.log(rankContents);
 
   function searchKeyworld(value) {
     let _keyworld = value.replace('#', '');
@@ -343,7 +343,7 @@ export function LoungeTemplate() {
                             <div className="tw-text-black tw-px-5 tw-py-4">
                               <div className="tw-flex tw-items-center tw-justify-between">
                                 <div className="tw-pb-4 tw-text-gray-500 tw-text-sm tw-font-bold tw-flex tw-items-center">
-                                  <div>[퀴즈클럽]</div>
+                                  <div>{item?.clubName}</div>
                                   <div className="tw-pl-2">
                                     {item?.clubQuizStatusType && <div>{getImage(item.clubQuizStatusType)}</div>}
                                   </div>

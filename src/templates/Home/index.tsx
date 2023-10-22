@@ -140,8 +140,6 @@ export function HomeTemplate({ logged = false }: HomeProps) {
     setPhone(user?.phoneNumber || '');
   });
 
-  console.log(data?.jobGroup);
-
   // console.log('profileList', isUser, data?.jobGroup, !!!data?.jobGroup);
   // console.log('data', data);
   // const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
