@@ -148,7 +148,7 @@ export function MyTemplate({ children }: MyTemplateProps) {
                 <div className="tw-p-5">
                   <div className="tw-text-lg tw-pb-4 tw-font-semibold tw-text-black">안녕하세요! {nickname}님</div>
                   <div className="tw-p-5 tw-mb-5 tw-bg-white tw-rounded-lg">
-                    <div className="tw-p-5 tw-text-center ">
+                    <div className="tw-py-5 tw-px-0 tw-text-center ">
                       <div className="tw-flex tw-justify-center tw-py-0">
                         {/* <img
                           className="tw-w-13 tw-h-13 tw-ring-1 tw-rounded-full "
@@ -167,19 +167,19 @@ export function MyTemplate({ children }: MyTemplateProps) {
                         />
                       </div>
                       <div className="tw-py-3 tw-font-semibold tw-text-black tw-text-lg">{summary?.nickname}</div>
-                      <div>
+                      <div className="">
                         {summary?.jobGroupName && (
-                          <span className="tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-[5px] tw-rounded">
+                          <span className=" tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-[5px] tw-rounded">
                             {summary.jobGroupName}
                           </span>
                         )}
                         {summary?.level && (
-                          <span className="tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-[5px] tw-rounded">
+                          <span className=" tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-[5px] tw-rounded">
                             {summary.level}레벨
                           </span>
                         )}
                         {summary?.jobName && (
-                          <span className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-[5px] tw-rounded">
+                          <span className=" tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-[5px] tw-rounded">
                             {summary.jobName}
                           </span>
                         )}
@@ -191,7 +191,7 @@ export function MyTemplate({ children }: MyTemplateProps) {
                           <div className="tw-pr-2">
                             <img src="/assets/images/icons/point.png" alt="포인트" />
                           </div>
-                          <div className="tw-text-base tw-font-bold">보유포인트 </div>
+                          <div className="tw-text-base tw-font-bold">보유포인트</div>
                         </div>
                         <div className="tw-text-base tw-font-bold tw-text-blue-500">
                           {summary?.points?.toLocaleString()}P

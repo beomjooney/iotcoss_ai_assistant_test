@@ -507,24 +507,6 @@ export function QuizOpenTemplate() {
     //console.log('quizListCopy', quizListCopy);
     //console.log('quizListOrigin', quizListOrigin);
 
-    const resultArray1 = [];
-    //console.log('resultArray1 ', resultArray1);
-    // quizListOrigin.map((item, index) => {
-    //   //console.log(' filteredData[index]', quizListCopy[index]);
-    //   if (index < quizListCopy.length) {
-    //     resultArray1.push({
-    //       ...item,
-    //       quizSequence: quizListCopy[index].sequence,
-    //       content: quizListCopy[index].content,
-    //       memberName: quizListCopy[index].memberName,
-    //       isRepresentative: quizListCopy[index]?.isRepresentative,
-    //       order: index,
-    //     });
-    //   } else {
-    //     resultArray1.push(item);
-    //   }
-    // });
-
     // filter 메서드를 사용하여 특정 quizSequence를 가진 요소를 제거하고 키 제거
     // map 메서드를 사용하여 targetSequence에 해당하는 요소만 수정
     const modifiedArray = quizListOrigin.map(item => {
@@ -670,12 +652,6 @@ export function QuizOpenTemplate() {
     });
   }, [page, jobGroupsFilter, levelsFilter, seminarFilter]);
 
-  const setNewCheckItem = (id, index, prevState) => {
-    const newState = [...prevState];
-    if (index > -1) newState.splice(index, 1);
-    else newState.push(id);
-    return newState;
-  };
   const [jobGroup, setJobGroup] = useState([]);
   const [jobGroupName, setJobGroupName] = useState([]);
   const [jobGroupObject, setJobGroupObject] = useState([]);
@@ -711,6 +687,7 @@ export function QuizOpenTemplate() {
       setQuizUrl('');
       setQuizName('');
       setJobGroupPopUp([]);
+      setJobs([]);
       setRecommendLevelsPopUp([]);
       setSkillIdsPopUp([]);
       setExperienceIdsPopUp([]);
@@ -916,8 +893,6 @@ export function QuizOpenTemplate() {
 
   const handleBack = () => {
     setActiveStep(prevActiveStep => prevActiveStep - 1);
-
-    //console.log(activeStep);
   };
 
   const handleInputChange = event => {

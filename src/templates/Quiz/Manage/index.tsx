@@ -31,7 +31,7 @@ import { UseQueryResult } from 'react-query';
 import { useSkills } from 'src/services/skill/skill.queries';
 import { useExperiences } from 'src/services/experiences/experiences.queries';
 import { TagsInput } from 'react-tag-input-component';
-import { boolean } from 'yup';
+import { useQuizSave } from 'src/services/quiz/quiz.mutations';
 
 const cx = classNames.bind(styles);
 export interface QuizManageTemplateProps {
@@ -66,12 +66,8 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
   const { user } = useStore();
   const [page, setPage] = useState(1);
   const [value, setValue] = React.useState(0);
-  const [isBookmark, setIsBookmark] = useState(true);
   const [contents, setContents] = useState<RecommendContent[]>([]);
   const [quizList, setQuizList] = useState<RecommendContent[]>([]);
-  const [quizOriginList, setQuizOriginList] = useState<RecommendContent[]>([]);
-  const [isModalCancelOpen, setIsModalCancelOpen] = useState<boolean>(false);
-  const { memberId, logged } = useSessionStore.getState();
   const [itemList, setItemList] = useState<any[]>([]);
   const [active, setActive] = useState(0);
   const [quizUrl, setQuizUrl] = React.useState('');
@@ -106,13 +102,13 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
   const [experienceIds, setExperienceIds] = useState<any[]>([]);
 
   /** get quiz data */
-  const { isFetched: isQuizData } = useQuizList(params, data => {
+  const { isFetched: isQuizData, refetch } = useQuizList(params, data => {
     //console.log('kimcy2', data);
     setQuizListData(data.contents || []);
     setTotalPage(data.totalPages);
   });
 
-  const { data: myQuizListData }: UseQueryResult<any> = useMyQuiz(myParams);
+  const { data: myQuizListData, refetch: refetchMyJob }: UseQueryResult<any> = useMyQuiz(myParams);
   const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
   const { data: experienceData }: UseQueryResult<ExperiencesResponse> = useExperiences();
 
@@ -121,6 +117,9 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
   const [jobGroups, setJobGroups] = useState<any[]>([]);
   const [recommendLevelsPopUp, setRecommendLevelsPopUp] = useState([]);
   const [publishedData, setPublishedData] = useState([]);
+
+  /** quiz save */
+  const { mutate: onQuizSave, isSuccess: postSucces } = useQuizSave();
 
   const { isFetched: isContentTypeJobFetched } = useContentJobTypes(data => {
     setContentJobType(data.data.contents || []);
@@ -145,6 +144,23 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
       keyword: keyWorld,
     });
   }, [page, keyWorld]);
+
+  useEffect(() => {
+    if (active == 0) {
+      refetch();
+    } else if (active == 1) {
+      setQuizUrl('');
+      setQuizName('');
+      setJobGroupPopUp([]);
+      setJobs([]);
+      setRecommendLevelsPopUp([]);
+      setSkillIdsPopUp([]);
+      setExperienceIdsPopUp([]);
+      setSelected([]);
+    } else if (active == 2) {
+      refetchMyJob();
+    }
+  }, [active]);
 
   /** include quiz */
   const { isFetched: isQuizListFetch, refetch: refetchQuizList } = useClubQuizManage(id, data => {
@@ -227,7 +243,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
       return;
     }
 
-    console.log('name -------------', name, quizData, quizListCopy);
+    //console.log('name -------------', name, quizData, quizListCopy);
 
     if (result.indexOf(name) > -1) {
       result.splice(result.indexOf(name), 1);
@@ -239,8 +255,8 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
     const filteredData = getObjectsWithSequences(quizData, [result]);
     const valueData = getObjectsWithSequences(quizData, [name]);
 
-    console.log('filteredData------', filteredData);
-    console.log('filteredData------', valueData);
+    //console.log('filteredData------', filteredData);
+    //console.log('filteredData------', valueData);
     //studyCycle 로직추가
     //setQuizListCopy(quizListOrigin);
 
@@ -253,12 +269,12 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
       //console.log('add');
       quizListCopy.map((item, index) => {
         // //console.log(item);
-        console.log('flag', flag);
-        console.log(' total', total);
-        console.log('length', result.length);
+        //console.log('flag', flag);
+        //console.log(' total', total);
+        //console.log('length', result.length);
         // console.log('item', item);
         if (typeof item.order === 'undefined' && flag === true) {
-          console.log('undefind');
+          //console.log('undefind');
           resultArray1.push({
             ...item,
             quizSequence: valueData[0].sequence,
@@ -319,7 +335,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
       setQuizListCopy(modifiedArray);
     }
 
-    console.log(resultArray1);
+    //console.log(resultArray1);
     setQuizList(filteredData);
     setQuizList(result); //퀴즈카운트용
   };
@@ -360,7 +376,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
       return item;
     });
 
-    console.log('modifiedArray', modifiedArray);
+    //console.log('modifiedArray', modifiedArray);
     //console.log('filteredArray1', state, quizSequence, resultArray1);
     const filteredArray = state.filter(item => {
       if (quizSequence !== undefined) {
@@ -374,7 +390,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
     // "weekNumber"가 undefined이거나 "content"가 null인 항목을 필터링하여 새로운 배열 생성
     const filteredDataRemove = modifiedArray.filter(item => item.activeCount !== null);
 
-    console.log(filteredDataRemove);
+    //console.log(filteredDataRemove);
 
     //console.log('filteredArray', filteredArray);
     //console.log('filtmodifiedArrayeredArray2', modifiedArray);
@@ -387,11 +403,12 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
   // 드래그해서 변경된 리스트를 브라우저상에 나타나게 만드는것
   const handleFormatExPopUp = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
     setExperienceIdsPopUp(newFormats);
-    //console.log(newFormats);
   };
 
   const handleRecommendLevelsPopUp = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
-    setRecommendLevelsPopUp(newFormats);
+    if (newFormats) {
+      setRecommendLevelsPopUp(newFormats);
+    }
   };
 
   const handleFormatPopUp = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
@@ -442,7 +459,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
         countIsRepresentative++;
       }
     });
-    console.log(countIsRepresentative);
+    //console.log(countIsRepresentative);
     //"isRepresentative" 값이 3개가 아닌 경우 알림 창 표시
     if (countIsRepresentative !== 3) {
       alert('대표 퀴즈는 3개입니다.');
@@ -502,9 +519,9 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
     const params = {
       content: quizName,
       articleUrl: quizUrl,
-      recommendJobGroups: [jobGroup],
+      recommendJobGroups: [jobGroupPopUp],
       recommendJobs: jobs,
-      recommendLevels: [recommendLevels],
+      recommendLevels: [recommendLevelsPopUp],
       relatedSkills: skillIds,
       relatedExperiences: experienceIds,
       hashTags: selected,
@@ -522,18 +539,21 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
       return;
     }
 
-    if (jobGroup?.length === 0 || jobGroup?.length === undefined) {
+    //console.log(jobs, jobGroup);
+
+    if (jobGroupPopUp?.length === 0 || jobGroupPopUp?.length === undefined) {
       alert('추천 직군을 선택해주세요.');
       return;
     }
 
-    if (recommendLevels?.length === 0 || recommendLevels?.length === undefined) {
+    if (recommendLevelsPopUp?.length === 0 || recommendLevelsPopUp?.length === undefined) {
       alert('추천 레벨을 선택해주세요.');
       return;
     }
 
-    setIsModalOpen(false);
     onQuizSave(params);
+    setActive(2);
+    setValue(2);
   };
 
   const dragList = (item: any, index: any) => (
@@ -922,7 +942,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
                 }}
               />
             </div>
-            {quizListData?.map((item, index) => (
+            {quizListData.map((item, index) => (
               <div key={`admin-menu-${index}`} className="tw-flex tw-pb-5">
                 <Checkbox
                   disableRipple
@@ -936,7 +956,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
                   <div className="tw-flex  tw-items-center">
                     <div className="tw-flex-auto">
                       <div className="tw-font-medium tw-text-black">
-                        <div className="tw-text-sm tw-font-normal tw-text-gray-500 tw-line-clamp-1">
+                        <div className="tw-text-sm tw-font-normal tw-text-gray-500  tw-line-clamp-1">
                           {item?.recommendJobGroupNames?.map((name, i) => (
                             <span
                               key={i}
@@ -973,6 +993,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
                     <div className="tw-flex-auto">
                       <div className="tw-font-medium tw-text-black tw-text-base tw-line-clamp-1">{item.content}</div>
                     </div>
+                    {/* <div className="">{item.memberName}</div> */}
                   </div>
                   <div className="tw-grid tw-grid-cols-12 tw-gap-4">
                     <div className="tw-col-span-1 tw-text-sm tw-font-bold tw-text-black">아티클</div>
@@ -1290,15 +1311,3 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
 }
 
 export default QuizManageTemplate;
-function onQuizSave(params: {
-  content: string;
-  articleUrl: string;
-  recommendJobGroups: any[];
-  recommendJobs: any[];
-  recommendLevels: any[];
-  relatedSkills: any;
-  relatedExperiences: any;
-  hashTags: any[];
-}) {
-  throw new Error('Function not implemented.');
-}
