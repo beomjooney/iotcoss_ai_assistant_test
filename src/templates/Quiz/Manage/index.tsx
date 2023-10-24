@@ -135,9 +135,11 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
   /**save profile */
   const { mutate: onQuizOrder, isSuccess: isSuccessOrder } = useQuizOrder();
 
-  // useDidMountEffect(() => {
-  //   refetchQuizList();
-  // }, [isSuccessOrder]);
+  useEffect(() => {
+    if (isSuccessOrder) {
+      refetchQuizList();
+    }
+  }, [isSuccessOrder]);
 
   useEffect(() => {
     setParams({
