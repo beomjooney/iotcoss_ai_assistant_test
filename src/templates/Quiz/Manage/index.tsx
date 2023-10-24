@@ -32,6 +32,7 @@ import { useSkills } from 'src/services/skill/skill.queries';
 import { useExperiences } from 'src/services/experiences/experiences.queries';
 import { TagsInput } from 'react-tag-input-component';
 import { useQuizSave } from 'src/services/quiz/quiz.mutations';
+import useDidMountEffect from 'src/hooks/useDidMountEffect';
 
 const cx = classNames.bind(styles);
 export interface QuizManageTemplateProps {
@@ -134,9 +135,9 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
   /**save profile */
   const { mutate: onQuizOrder, isSuccess: isSuccessOrder } = useQuizOrder();
 
-  useEffect(() => {
-    refetchQuizList();
-  }, [isSuccessOrder]);
+  // useDidMountEffect(() => {
+  //   refetchQuizList();
+  // }, [isSuccessOrder]);
 
   useEffect(() => {
     setParams({
@@ -145,7 +146,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
     });
   }, [page, keyWorld]);
 
-  useEffect(() => {
+  useDidMountEffect(() => {
     if (active == 0) {
       refetch();
     } else if (active == 1) {
@@ -477,8 +478,8 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
         // order: index,
       })),
     };
-    //console.log(transformedData);
-    await onQuizOrder(transformedData);
+    console.log(transformedData);
+    onQuizOrder(transformedData);
   };
 
   function handleClickQuiz(quizSequence, flag) {
