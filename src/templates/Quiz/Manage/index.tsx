@@ -64,7 +64,6 @@ const levelGroup = [
 ];
 
 export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
-  const { user } = useStore();
   const [page, setPage] = useState(1);
   const [value, setValue] = React.useState(0);
   const [contents, setContents] = useState<RecommendContent[]>([]);
@@ -76,7 +75,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
   const [total, setTotal] = React.useState(0);
   const [quizSearch, setQuizSearch] = React.useState('');
   const [params, setParams] = useState<paramProps>({ page });
-  const [myParams, setMyParams] = useState<paramProps>({ page });
+
   const [state, setState] = React.useState([]);
   const [jobGroupPopUp, setJobGroupPopUp] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -89,11 +88,13 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
   const [quizListCopy, setQuizListCopy] = useState<any[]>([]);
   const [quizListOrigin, setQuizListOrigin] = useState<any[]>([]);
   const [quizListData, setQuizListData] = useState<any[]>([]);
+  const [myQuizListData, setMyQuizListData] = useState<any[]>([]);
   const [keyWorld, setKeyWorld] = useState('');
   const [myKeyWorld, setMyKeyWorld] = useState('');
 
   const quizRef = useRef(null);
   const quizUrlRef = useRef(null);
+  const quizStartPos = useRef(null);
 
   /**quiz insert */
   const [skillIdsClk, setSkillIdsClk] = useState<any[]>([1, 2, 3, 4, 5]);
@@ -104,12 +105,23 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
 
   /** get quiz data */
   const { isFetched: isQuizData, refetch } = useQuizList(params, data => {
-    //console.log('kimcy2', data);
     setQuizListData(data.contents || []);
     setTotalPage(data.totalPages);
   });
 
-  const { data: myQuizListData, refetch: refetchMyJob }: UseQueryResult<any> = useMyQuiz(myParams);
+  /** my quiz replies */
+  const [quizPage, setQuizPage] = useState(1);
+  const [quizTotalPage, setQuizTotalPage] = useState(1);
+  const [myParams, setMyParams] = useState<paramProps>({ quizPage });
+  // const { data: myQuizListData, refetch: refetchMyQuiz }: UseQueryResult<any> = useMyQuiz(myParams, data => {
+  // });
+
+  /** get quiz data */
+  const { isFetched: isMyQuizData, refetch: refetchMyQuiz } = useMyQuiz(myParams, data => {
+    setMyQuizListData(data || []);
+    setQuizTotalPage(data.totalPages);
+  });
+
   const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
   const { data: experienceData }: UseQueryResult<ExperiencesResponse> = useExperiences();
 
@@ -136,12 +148,19 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
   const { mutate: onQuizOrder, isSuccess: isSuccessOrder } = useQuizOrder();
 
   useEffect(() => {
+    if (postSucces) {
+      refetchMyQuiz();
+      quizStartPos.current.scrollTop = 0;
+    }
+  }, [postSucces]);
+
+  useEffect(() => {
     if (isSuccessOrder) {
       refetchQuizList();
     }
   }, [isSuccessOrder]);
 
-  useEffect(() => {
+  useDidMountEffect(() => {
     setParams({
       page,
       keyword: keyWorld,
@@ -149,8 +168,16 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
   }, [page, keyWorld]);
 
   useDidMountEffect(() => {
+    setMyParams({
+      page: quizPage,
+      keyword: myKeyWorld,
+    });
+  }, [quizPage, myKeyWorld]);
+
+  useDidMountEffect(() => {
+    setKeyWorld('');
+    setMyKeyWorld('');
     if (active == 0) {
-      refetch();
     } else if (active == 1) {
       setQuizUrl('');
       setQuizName('');
@@ -161,7 +188,6 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
       setExperienceIdsPopUp([]);
       setSelected([]);
     } else if (active == 2) {
-      refetchMyJob();
     }
   }, [active]);
 
@@ -195,10 +221,6 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
     if (_keyworld == '') _keyworld = null;
     setMyKeyWorld(_keyworld);
   }
-
-  const handleInputQuizSearchChange = event => {
-    setQuizSearch(event.target.value);
-  };
 
   const handleChange = (event, newIndex) => {
     //console.log('SubTab - index', newIndex, event);
@@ -532,14 +554,13 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
 
     if (quizName === '') {
       alert('질문을 입력해주세요.');
-      quizRef.current.focus();
+      quizRef.current.scrollTop = 0;
       return;
     }
 
     if (quizUrl === '') {
       alert('아티클을 입력해주세요.');
-      quizUrlRef.current.focus();
-      return;
+      quizUrlRef.current.scrollTop = 0;
     }
 
     //console.log(jobs, jobGroup);
@@ -930,9 +951,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
                 size="small"
                 fullWidth
                 label={'퀴즈 키워드를 입력하세요.'}
-                onChange={handleInputQuizSearchChange}
                 id="margin-none"
-                value={quizSearch}
                 name="quizSearch"
                 InputProps={{
                   style: { height: '45px' },
@@ -1222,13 +1241,12 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
           </div>
         )}
         {active === 2 && (
-          <div>
+          <div ref={quizStartPos}>
             <div className="tw-mt-10 tw-mb-8">
               <TextField
                 size="small"
                 fullWidth
                 label={'내 퀴즈 키워드를 입력하세요.'}
-                onChange={handleInputQuizSearchChange}
                 id="margin-none"
                 // value={quizSearch}
                 name="quizSearch"
@@ -1306,6 +1324,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
                 </div>
               </div>
             ))}
+            <Pagination page={quizPage} setPage={setQuizPage} total={quizTotalPage} />
           </div>
         )}
       </MentorsModal>

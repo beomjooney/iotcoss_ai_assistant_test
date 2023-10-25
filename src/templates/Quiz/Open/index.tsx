@@ -259,7 +259,6 @@ export function QuizOpenTemplate() {
 
   // const { data: quizListData, refetch }: UseQueryResult<any> = useQuizList(params);
   const { isFetched: isQuizData, refetch } = useQuizList(params, data => {
-    //console.log('kimcy2', data);
     setQuizListData(data.contents || []);
     setTotalPage(data.totalPages);
   });
