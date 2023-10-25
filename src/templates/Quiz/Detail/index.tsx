@@ -325,7 +325,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
     <div className={cx('seminar-detail-container')}>
       {isParticipantListFetched &&
         (contents?.clubStatus == '0004' && contents?.clubMemberStatus == '0002' ? (
-          <div>
+          <div className="max-lg:tw-mt-5">
             <BannerDetail
               data={contents}
               title="퀴즈클럽"
@@ -343,7 +343,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                 <div className={cx('container')}>
                   <div className="tw-leading-normal tw-text-black tw-font-bold tw-text-xl tw-pt-10">실행율</div>
                   <div className="tw-grid tw-grid-cols-4 tw-gap-4 tw-pb-5 tw-font-bold tw-text-black">
-                    <div className="tw-span-cols-1"></div>
+                    <div className="tw-span-cols-1 "></div>
                     <div className="tw-span-cols-1 tw-text-center">
                       <div className="tw-text-center tw-flex tw-justify-center tw-items-center">
                         <Circle
@@ -397,10 +397,16 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
               </div>
               <div className={cx('container', 'tw-mt-10')}>
                 <Grid container direction="row" alignItems="center" rowSpacing={0}>
-                  <Grid container justifyContent="flex-start" xs={10} className="tw-text-xl tw-text-black tw-font-bold">
+                  <Grid
+                    container
+                    justifyContent="flex-start"
+                    xs={6}
+                    sm={10}
+                    className="tw-text-xl tw-text-black tw-font-bold"
+                  >
                     퀴즈목록 {totalElements}
                   </Grid>
-                  <Grid container justifyContent="flex-end" xs={2} style={{ textAlign: 'right' }}>
+                  <Grid container justifyContent="flex-end" xs={6} sm={2} style={{ textAlign: 'right' }}>
                     {/* <Pagination page={page} setPage={setPage} total={totalPage} /> */}
                     <Pagination
                       count={totalPage}
@@ -426,17 +432,17 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                       alignItems="center"
                       rowSpacing={3}
                     >
-                      <Grid item xs={1}>
+                      <Grid item xs={12} sm={1}>
                         <div className="tw-flex-auto tw-text-center tw-text-black tw-font-bold">Q{index + 1}.</div>
                         <div className="tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold">
                           {item?.weekNumber}주차 ({item?.dayOfWeek})
                         </div>
                       </Grid>
-                      <Grid item xs={11}>
+                      <Grid item xs={12} sm={11}>
                         {item?.isPublished ? (
                           <div className="border tw-rounded-xl">
                             <div
-                              className={`tw-bg-zinc-50 tw-flex tw-items-center tw-p-4  tw-py-6   ${
+                              className={`tw-bg-zinc-50 tw-flex tw-items-center tw-p-4 max-lg:tw-p-3 tw-py-6   ${
                                 item?.answer ? 'tw-rounded-tl-xl tw-rounded-tr-xl' : 'tw-rounded-xl'
                               }`}
                             >
@@ -444,7 +450,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                                 <button
                                   type="button"
                                   data-tooltip-target="tooltip-default"
-                                  className="tw-w-[60px] tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-bold tw-mr-2 tw-px-3 tw-py-1 tw-rounded"
+                                  className="tw-w-[60px] tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-bold tw-px-3 tw-py-1 tw-rounded"
                                 >
                                   대표
                                 </button>
@@ -479,7 +485,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                                       }
                                     }}
                                     data-tooltip-target="tooltip-default"
-                                    className="tw-w-[120px] tw-bg-[#2474ED] tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                    className="max-lg:tw-w-[60px] tw-w-[120px] tw-bg-[#2474ED] tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
                                   >
                                     퀴즈 풀러가기 {'>'}
                                   </button>
@@ -490,7 +496,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                                     type="button"
                                     onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
                                     data-tooltip-target="tooltip-default"
-                                    className="tw-bg-gray-300 tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                    className="max-lg:tw-w-[60px]  tw-bg-gray-300 tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
                                   >
                                     1차답변 입력완료
                                   </button>
@@ -501,7 +507,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                                     type="button"
                                     onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
                                     data-tooltip-target="tooltip-default"
-                                    className="tw-bg-gray-300 tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                    className="max-lg:tw-w-[60px] tw-bg-gray-300 tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
                                   >
                                     이해도 입력완료
                                   </button>
@@ -513,7 +519,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                                     onClick={() => router.push('/quiz/answers/' + `${item?.clubQuizSequence}`)}
                                     type="button"
                                     data-tooltip-target="tooltip-default"
-                                    className="tw-bg-[#FF8D8D] tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                    className="max-lg:tw-w-[60px] tw-bg-[#FF8D8D] tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
                                   >
                                     전체 답변보기 {'>'}
                                   </button>

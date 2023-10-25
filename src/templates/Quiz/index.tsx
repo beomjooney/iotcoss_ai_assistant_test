@@ -143,15 +143,20 @@ export function QuizTemplate() {
       {/* <Banner title="커리어멘토스 세미나" subTitle="커멘세미나" /> */}
 
       <div className={cx('container')}>
-        <div className="tw-py-[60px]">
+        <div className="tw-py-[60px] max-lg:tw-py-[50px]">
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-            <Grid item xs={2} className="tw-font-bold tw-text-3xl tw-text-black max-lg:!tw-text-base">
+            <Grid item xs={12} sm={2} className="tw-font-bold tw-text-3xl tw-text-black max-lg:!tw-text-2xl">
               퀴즈클럽
             </Grid>
-            <Grid item xs={8} className="max-lg:tw-p-2 tw-font-semi tw-text-base tw-text-black  max-lg:!tw-text-sm">
+            <Grid
+              item
+              xs={12}
+              sm={8}
+              className="max-lg:tw-py-2 tw-font-semi tw-text-base tw-text-black  max-lg:!tw-text-base"
+            >
               관심 주제별로 성장 퀴즈를 풀고 네트워킹 할 수 있는 클럽을 만나보세요!
             </Grid>
-            <Grid item xs={2} justifyContent="flex-end" className="tw-flex">
+            <Grid item xs={12} sm={2} justifyContent="flex-end" className="tw-flex">
               <button
                 onClick={() => (location.href = '/quiz/open')}
                 type="button"
@@ -164,7 +169,7 @@ export function QuizTemplate() {
         </div>
         <Box sx={{ width: '100%', typography: 'body1', marginBottom: '20px' }}>
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-            <Grid item xs={9} className="tw-font-bold tw-text-3xl tw-text-black">
+            <Grid item xs={6} sm={9} className="tw-font-bold tw-text-3xl tw-text-black">
               <div className={cx('filter-area')}>
                 <div className={cx('mentoring-button__group', 'gap-12', 'justify-content-center')}>
                   <Toggle
@@ -211,7 +216,7 @@ export function QuizTemplate() {
                 </div>
               </div>
             </Grid>
-            <Grid item xs={3} className="tw-font-semi tw-text-base tw-text-black">
+            <Grid item xs={6} sm={3} className="tw-font-semi tw-text-base tw-text-black">
               <TextField
                 fullWidth
                 id="outlined-basic"

@@ -304,15 +304,15 @@ export function QuizMakeTemplate() {
       {/* <Banner title="커리어멘토스 세미나" subTitle="커멘세미나" /> */}
 
       <div className={cx('container')}>
-        <div className="tw-py-[60px]">
+        <div className="xl:tw-py-[60px] tw-pt-[50px]">
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-            <Grid item xs={3} className="tw-font-bold tw-text-3xl tw-text-black">
+            <Grid item xs={12} sm={3} className="tw-font-bold sm:tw-text-3xl tw-text-2xl tw-text-black">
               내가 만든 퀴즈
             </Grid>
-            <Grid item xs={6} className="tw-font-semi tw-text-base tw-text-black">
+            <Grid item xs={12} sm={6} className="tw-font-semi tw-text-base tw-text-black sm:tw-pt-5">
               <div>나와 크루들의 성장을 돕기위해 내가 만든 퀴즈 리스트예요!</div>
             </Grid>
-            <Grid item xs={3} justifyContent="flex-end" className="tw-flex">
+            <Grid item xs={12} sm={3} justifyContent="flex-end" className="tw-flex">
               <button
                 type="button"
                 onClick={() => handleAddClick()}
@@ -325,10 +325,10 @@ export function QuizMakeTemplate() {
         </div>
         <Box sx={{ width: '100%', typography: 'body1', marginTop: '20px', marginBottom: '20px' }}>
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-            <Grid item xs={9} className="tw-font-bold tw-text-3xl tw-text-black">
+            <Grid item xs={6} sm={9} className="tw-font-bold tw-text-3xl tw-text-black">
               <div className="tw-text-xl">퀴즈목록 ({myQuizData?.contents?.length})</div>
             </Grid>
-            <Grid item xs={3} className="tw-font-semi tw-text-base tw-text-black">
+            <Grid item xs={6} sm={3} className="tw-font-semi tw-text-base tw-text-black">
               <TextField
                 fullWidth
                 id="outlined-basic"

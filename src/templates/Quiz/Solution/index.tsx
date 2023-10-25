@@ -298,15 +298,20 @@ export function QuizSolutionTemplate({ id }: QuizSolutionTemplateProps) {
   return (
     <div className={cx('seminar-detail-container')}>
       <div className={cx('container')}>
-        <div className="tw-py-[60px]">
+        <div className="tw-py-[60px] max-lg:tw-py-[50px] max-lg:tw-pb-[20px]">
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-            <Grid item xs={2} className="tw-font-bold tw-text-3xl tw-text-black max-lg:!tw-text-base">
+            <Grid item xs={12} sm={2} className="tw-font-bold tw-text-3xl tw-text-black max-lg:!tw-text-2xl">
               퀴즈클럽
             </Grid>
-            <Grid item xs={7} className="max-lg:tw-p-2 tw-font-semi tw-text-base tw-text-black  max-lg:!tw-text-sm">
+            <Grid
+              item
+              xs={12}
+              sm={7}
+              className="tw-font-semi tw-text-base tw-text-black  max-lg:!tw-text-base max-lg:tw-py-2 "
+            >
               관심 주제별로 성장 퀴즈를 풀고 네트워킹 할 수 있는 클럽을 만나보세요!
             </Grid>
-            <Grid item xs={3} justifyContent="flex-end" className="tw-flex"></Grid>
+            <Grid item xs={12} sm={3} justifyContent="flex-end" className="tw-flex"></Grid>
           </Grid>
         </div>
       </div>

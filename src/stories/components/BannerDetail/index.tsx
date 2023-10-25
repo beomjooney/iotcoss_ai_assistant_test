@@ -100,11 +100,11 @@ const BannerDetail = ({
           뒤로가기
         </button>
       </div>
-      <div className={cx('banner-container__wrap', ' tw-pb-10')}>
+      <div className={cx('banner-container__wrap', 'tw-pb-10')}>
         {/*todo url 경로에 따라 자동 셋팅 구현*/}
         <div className="tw-w-full tw-flex tw-flex-col tw-bg-white tw-border tw-border-gray-200 max-lg:tw-p-5 tw-rounded-lg border md:tw-flex-row md:tw-max-w-[1100px]">
           <img
-            className="tw-object-cover tw-w-[340px] tw-rounded-t-lg tw-h-[340px] md:tw-h-[340px] md:tw-w-[340px] md:tw-rounded-none md:tw-rounded-l-lg"
+            className="tw-object-cover max-lg:tw-w-full tw-w-[340px] tw-rounded-t-lg tw-h-[340px] md:tw-h-[340px] md:tw-w-[340px] md:tw-rounded-none md:tw-rounded-l-lg"
             src={data?.clubImageUrl}
             alt=""
           />
