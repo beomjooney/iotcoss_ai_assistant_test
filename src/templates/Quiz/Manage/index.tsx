@@ -181,6 +181,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
     setKeyWorld('');
     setMyKeyWorld('');
     if (active == 0) {
+      setTabQuizListData(quizListData);
     } else if (active == 1) {
       setQuizUrl('');
       setQuizName('');
@@ -191,6 +192,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
       setExperienceIdsPopUp([]);
       setSelected([]);
     } else if (active == 2) {
+      setTabQuizListData(myQuizListData);
     }
   }, [active]);
 
@@ -379,7 +381,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
     // "sequence"가 71인 객체를 제외하고 새로운 배열 생성
     const filteredData = quizList.filter(item => item.quizSequence !== quizSequence);
     //console.log('filteredData', filteredData);
-    //console.log('quizListCopy', quizListCopy);
+    console.log('Delete quizListCopy', quizListCopy);
     //console.log('quizListOrigin', quizListOrigin);
 
     const resultArray1 = [];
@@ -409,7 +411,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
       return item;
     });
 
-    //console.log('modifiedArray', modifiedArray);
+    console.log('Deleted modifiedArray', modifiedArray);
     //console.log('filteredArray1', state, quizSequence, resultArray1);
     const filteredArray = state.filter(item => {
       if (quizSequence !== undefined) {
