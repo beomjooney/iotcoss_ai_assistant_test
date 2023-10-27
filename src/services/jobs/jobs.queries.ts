@@ -28,7 +28,7 @@ export const useQuizList = (
     {
       onSuccess,
       onError,
-      refetchOnWindowFocus: true,
+      refetchOnWindowFocus: false,
     },
   );
 };
@@ -45,7 +45,7 @@ export const useMyQuiz = (
     {
       onSuccess,
       onError,
-      refetchOnWindowFocus: true,
+      refetchOnWindowFocus: false,
     },
   );
 };

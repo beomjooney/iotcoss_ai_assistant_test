@@ -107,7 +107,6 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
   /** get quiz data */
   const { isFetched: isQuizData, refetch } = useQuizList(params, data => {
     setQuizListData(data.contents || []);
-    setTabQuizListData(data.contents || []);
     setTotalPage(data.totalPages);
   });
 
@@ -120,8 +119,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
 
   /** get quiz data */
   const { isFetched: isMyQuizData, refetch: refetchMyQuiz } = useMyQuiz(myParams, data => {
-    setMyQuizListData(data || []);
-    setTabQuizListData(data.contents || []);
+    setMyQuizListData(data.contents || []);
     setQuizTotalPage(data.totalPages);
   });
 
@@ -181,7 +179,6 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
     setKeyWorld('');
     setMyKeyWorld('');
     if (active == 0) {
-      setTabQuizListData(quizListData);
     } else if (active == 1) {
       setQuizUrl('');
       setQuizName('');
@@ -192,7 +189,6 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
       setExperienceIdsPopUp([]);
       setSelected([]);
     } else if (active == 2) {
-      setTabQuizListData(myQuizListData);
     }
   }, [active]);
 
@@ -265,7 +261,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
 
   const handleChangeCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked } = event.currentTarget;
-    const quizData = tabQuizListData;
+    const quizData = quizListData;
     const result = [...state];
 
     if (result.length >= total) {
@@ -281,10 +277,10 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
       result.push(name);
     }
     setState(result);
-    console.log('state', state);
-    console.log('quizData', quizData);
-    console.log('result', result);
-    console.log('name', name);
+    //console.log('state', state);
+    //console.log('quizData', quizData);
+    //console.log('result', result);
+    //console.log('name', name);
     const filteredData = getObjectsWithSequences(quizData, [result]);
     const valueData = getObjectsWithSequences(quizData, [name]);
 
@@ -322,7 +318,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
         }
       });
 
-      console.log(valueData[0]);
+      //console.log(valueData[0]);
 
       if (result.length <= total && flag === true) {
         resultArray1.push({
@@ -374,6 +370,94 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
     setQuizList(filteredData);
     setQuizList(result); //퀴즈카운트용
   };
+  const handleChangeMyCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, checked } = event.currentTarget;
+    const quizData = myQuizListData;
+    const result = [...state];
+
+    if (result.length >= total) {
+      alert('더이상 퀴즈를 선택할수 없습니다. \n퀴즈를 지우고 추가해주세요.');
+      return;
+    }
+    if (result.indexOf(name) > -1) {
+      result.splice(result.indexOf(name), 1);
+    } else {
+      result.push(name);
+    }
+    setState(result);
+    const filteredData = getObjectsWithSequences(quizData, [result]);
+    const valueData = getObjectsWithSequences(quizData, [name]);
+    const resultArray1 = [];
+    const flag = true;
+    const flag1 = true;
+    if (checked) {
+      //console.log('add');
+      quizListCopy.map((item, index) => {
+        if (typeof item.order === 'undefined' && flag === true) {
+          //console.log('undefind');
+          resultArray1.push({
+            ...item,
+            quizSequence: valueData[0].sequence,
+            content: valueData[0].content,
+            memberName: valueData[0].memberName,
+            isRepresentative: false,
+            order: index,
+          });
+          flag = false;
+        } else {
+          resultArray1.push(item);
+        }
+      });
+
+      //console.log(valueData[0]);
+
+      if (result.length <= total && flag === true) {
+        resultArray1.push({
+          clubQuizSequence: valueData[0].clubQuizSequence,
+          clubSequence: parseInt(id),
+          quizSequence: valueData[0].sequence,
+          content: valueData[0].content,
+          memberName: valueData[0].memberName,
+          activeCount: valueData[0].activeCount,
+          answerCount: valueData[0].answerCount,
+          isPublished: valueData[0].isPublished,
+          likeCount: valueData[0].likeCount,
+          publishDate: valueData[0].publishDate,
+          studyDay: valueData[0].studyDay,
+          weekNumber: valueData[0].weekNumber,
+          isRepresentative: false,
+          order: result.length,
+        });
+      }
+
+      setQuizListCopy(resultArray1);
+    } else {
+      const modifiedArray = quizListCopy.map(item => {
+        if (item.quizSequence === valueData[0].sequence) {
+          const {
+            isRepresentative,
+            memberName,
+            order,
+            // quizSequence,
+            content,
+            publishDate,
+            // studyDay,
+            // weekNumber,
+            likeCount,
+            isPublished,
+            answerCount,
+            activeCount,
+            ...rest
+          } = item;
+          return rest;
+        }
+        return item;
+      });
+      setQuizListCopy(modifiedArray);
+    }
+    setQuizList(filteredData);
+    setQuizList(result); //퀴즈카운트용
+  };
 
   function handleDeleteQuiz(quizSequence) {
     //console.log('delete', quizSequence);
@@ -381,7 +465,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
     // "sequence"가 71인 객체를 제외하고 새로운 배열 생성
     const filteredData = quizList.filter(item => item.quizSequence !== quizSequence);
     //console.log('filteredData', filteredData);
-    console.log('Delete quizListCopy', quizListCopy);
+    //console.log('Delete quizListCopy', quizListCopy);
     //console.log('quizListOrigin', quizListOrigin);
 
     const resultArray1 = [];
@@ -411,7 +495,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
       return item;
     });
 
-    console.log('Deleted modifiedArray', modifiedArray);
+    //console.log('Deleted modifiedArray', modifiedArray);
     //console.log('filteredArray1', state, quizSequence, resultArray1);
     const filteredArray = state.filter(item => {
       if (quizSequence !== undefined) {
@@ -512,7 +596,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
         // order: index,
       })),
     };
-    console.log(transformedData);
+    //console.log(transformedData);
     onQuizOrder(transformedData);
   };
 
@@ -1271,11 +1355,11 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
                 }}
               />
             </div>
-            {myQuizListData?.contents.map((item, index) => (
+            {myQuizListData?.map((item, index) => (
               <div key={`admin-quiz-${index}`} className="tw-flex tw-pb-5">
                 <Checkbox
                   disableRipple
-                  onChange={handleChangeCheck}
+                  onChange={handleChangeMyCheck}
                   checked={state.includes(String(item.sequence))}
                   name={item.sequence}
                   className="tw-mr-3"
