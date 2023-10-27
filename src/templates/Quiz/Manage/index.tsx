@@ -89,6 +89,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
   const [quizListOrigin, setQuizListOrigin] = useState<any[]>([]);
   const [quizListData, setQuizListData] = useState<any[]>([]);
   const [myQuizListData, setMyQuizListData] = useState<any[]>([]);
+  const [tabQuizListData, setTabQuizListData] = useState<any[]>([]);
   const [keyWorld, setKeyWorld] = useState('');
   const [myKeyWorld, setMyKeyWorld] = useState('');
 
@@ -106,6 +107,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
   /** get quiz data */
   const { isFetched: isQuizData, refetch } = useQuizList(params, data => {
     setQuizListData(data.contents || []);
+    setTabQuizListData(data.contents || []);
     setTotalPage(data.totalPages);
   });
 
@@ -119,6 +121,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
   /** get quiz data */
   const { isFetched: isMyQuizData, refetch: refetchMyQuiz } = useMyQuiz(myParams, data => {
     setMyQuizListData(data || []);
+    setTabQuizListData(data.contents || []);
     setQuizTotalPage(data.totalPages);
   });
 
@@ -260,7 +263,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
 
   const handleChangeCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked } = event.currentTarget;
-    const quizData = quizListData;
+    const quizData = tabQuizListData;
     const result = [...state];
 
     if (result.length >= total) {
@@ -276,7 +279,10 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
       result.push(name);
     }
     setState(result);
-    //console.log(state, quizData, result);
+    console.log('state', state);
+    console.log('quizData', quizData);
+    console.log('result', result);
+    console.log('name', name);
     const filteredData = getObjectsWithSequences(quizData, [result]);
     const valueData = getObjectsWithSequences(quizData, [name]);
 
@@ -313,6 +319,8 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
           resultArray1.push(item);
         }
       });
+
+      console.log(valueData[0]);
 
       if (result.length <= total && flag === true) {
         resultArray1.push({
