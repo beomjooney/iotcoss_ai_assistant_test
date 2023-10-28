@@ -312,261 +312,192 @@ export function HomeTemplate({ logged = false }: HomeProps) {
 
   return (
     <div className={cx('career-main')}>
-      <div>
-        <img
-          src="/assets/images/banner/banner_bg.png"
-          alt="main_background"
-          className={cx('top-banner__image', 'max-md:!tw-right-0')}
-        />
-        <div className="container text-white">
-          <div className="row align-items-center   max-md:tw-pt-72  lg:tw-pt-20  lg:tw-pl-24">
-            <div className="col-12 col-md-9 col-lg-7 col-xl-6">
-              <div className="hero-content section-title text-center text-lg-left my-5 tw-mt-14">
-                {/*<Typography type="B1" tag="div" weight="bold" extendClass={cx('mb-5')}>*/}
-                {/*  WELCOME TO CAREERMENTORS!*/}
-                {/*</Typography>*/}
-                <div className={cx('tw-text-black', 'tw-font-semibold', 'tw-text-xl')}>
-                  매일 새로운 기술과 쏟아져 나오는데
-                  <br />
-                  상위 10%의 개발자들은 어떻게 학습하고
-                  <br />
-                  어떻게 트렌드를 따라가는 거죠?
-                </div>
-                <div className="tw-font-bold tw-text-3xl tw-text-black tw-tracking-tight tw-mt-14 max-md:tw-mb-5">
-                  성장 가속 서비스 데브어스
-                </div>
-                <div className={cx('fit-content', 'action-btn')}>
-                  <Button size="main" onClick={handleUserButton} className="tw-w-72 tw-h-12">
-                    <Typography type="B1" tag="div" weight="bold">
-                      지금 시작하기!
-                    </Typography>
-                  </Button>
-                </div>
-              </div>
+      <section className={cx('top-banner', 'hero-section', 'hero-section-3')}>
+        <div>
+          <img src="/assets/images/main_1.png" alt="main_background" className={cx('top-banner__image')} />
+          {/* <div className="container text-white">
+            <div className={cx('fit-content', 'action-btn')}>
+              <button
+                className="tw-w-[240px] tw-h-[48px]  tw-bg-white tw-text-blue-500  tw-rounded-full"
+                onClick={handleUserButton}
+              >
+                <Typography type="B1" tag="div" weight="bold">
+                  지금 시작하기!
+                </Typography>
+              </button>
             </div>
-          </div>
+          </div> */}
         </div>
+      </section>
+      <div className="tw-h-20 tw-text-center tw-bg-[#fafafa] tw-flex tw-items-center tw-justify-center">
+        <button className="tw-w-[240px] tw-h-[48px] tw-bg-black tw-text-white tw-rounded-md" onClick={handleUserButton}>
+          <Typography type="B1" tag="div" weight="bold">
+            지금 시작하기!
+          </Typography>
+        </button>
       </div>
-      <div className={cx('main-container', 'container')}>
-        <section className={cx('job-group-area')}>
-          <div className={cx('justify-content-center', 'pt-300', 'max-md:!tw-pt-12', 'job-group__wrap')}>
-            <SectionHeader title="크루님! 데브어스만 믿고 따라오세요!" subTitle="개발자 상위 10%의 습관과 학습비법" />
+      <img src="/assets/images/main_2.png" />
+      <img src="/assets/images/main_3.png" alt="main_background" />
+      <div className={cx('main-container', 'tw-bg-[#fafafa]')}>
+        <section className={cx('job-group-area', 'container', 'tw-pb-1')}>
+          <div className={cx('justify-content-center', 'tw-pt-[80px]', 'max-md:!tw-pt-12', 'job-group__wrap')}>
+            <SectionHeader
+              title="누구나 ‘크루’, ‘리더’, ‘메이커’가 될 수 있어요!"
+              subTitle="데브어스에서 다음과 같은 역할을 맡아 나만의 성장루틴을 만들어보세요."
+            />
             <div className={cx('growth-area', 'pt-60', 'flex-wrap-container')}>
               <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
                 <Grid item xs={2} sm={4} md={4}>
                   <div
-                    className="w-1/2 bg-white  tw-rounded-xl overflow-hidden tw-h-[450px] max-md:tw-h-[500px]"
+                    className="w-1/2 bg-white  tw-rounded-xl overflow-hidden tw-h-[680px] max-md:tw-h-[680px] tw-px-[55px] "
                     style={{ boxShadow: '-12px 13px 40px rgba(0, 0, 0, 0.05)' }}
                   >
-                    <div className="tw-flex tw-justify-center tw-items-center">
+                    <div className="tw-flex tw-justify-center tw-items-center tw-pt-20 tw-pb-5">
                       <img
-                        className="max-lg:tw-h-40 max-lg:tw-w-40 tw-h-64 tw-w-64 object-cover"
-                        src="/assets/images/icons/3.png"
-                        alt="Card"
-                      />
-                    </div>
-                    <div className="p-5">
-                      <div className="text-black tw-text-xl tw-font-bold mb-4">퀴즈로 뇌를 깨워요!</div>
-                      <p className="text-black tw-text-base">
-                        오늘 학습할 새로운 지식을 접하기 전에 핵심 주제에 대한 퀴즈를 제시하여, 생각할 기회를
-                        제공합니다.
-                      </p>
-                    </div>
-                  </div>
-                </Grid>
-                <Grid item xs={2} sm={4} md={4}>
-                  <div
-                    className="w-1/2 bg-white  tw-rounded-xl overflow-hidden tw-h-[450px]  max-md:tw-h-[500px]"
-                    style={{ boxShadow: '-12px 13px 40px rgba(0, 0, 0, 0.05)' }}
-                  >
-                    <div className="tw-flex tw-justify-center tw-items-center">
-                      <img
-                        className="max-lg:tw-h-40 max-lg:tw-w-40  tw-h-64 tw-w-64 tw-object-cover"
-                        src="/assets/images/icons/1.png"
-                        alt="Card"
-                      />
-                    </div>
-                    <div className="p-5">
-                      <div className="text-black tw-text-xl tw-font-bold mb-4">나의 지식을 펼쳐봐요!</div>
-                      <p className="text-black tw-text-base">
-                        내가 아는 모든 지식을 동원하여, 퀴즈의 정답을 입력하면서, 나의 수준을 정확하게 알 수 있어요.
-                      </p>
-                    </div>
-                  </div>
-                </Grid>
-                <Grid item xs={2} sm={4} md={4}>
-                  <div
-                    className="w-1/2 bg-white  tw-rounded-xl overflow-hidden  tw-h-[450px] max-md:tw-h-[500px]"
-                    style={{ boxShadow: '-12px 13px 40px rgba(0, 0, 0, 0.05)' }}
-                  >
-                    <div className="tw-flex tw-justify-center tw-items-center">
-                      <img
-                        className="max-lg:tw-h-40 max-lg:tw-w-40 tw-h-64 tw-w-64 tw-object-cover"
-                        src="/assets/images/icons/2.png"
-                        alt="Card"
-                      />
-                    </div>
-                    <div className="p-5">
-                      <div className="text-black tw-text-xl tw-font-bold mb-4">나새로운 지식을 흡수해요!</div>
-                      <p className="text-black tw-text-base">
-                        퀴즈의 정답이 녹아 있는 엄선된 아티클을 읽으면서, 지식을 흡수하고 나만의 노트를 만들어요.
-                      </p>
-                    </div>
-                  </div>
-                </Grid>
-              </Grid>
-            </div>
-            <div className="tw-w-full tw-my-10 tw-relative tw-mb-24">
-              <img
-                className="tw-w-full tw-h-[300px] tw-object-center"
-                src="/assets/images/banner/Frame 2434.png"
-                alt=""
-              />
-              <div className="tw-w-full tw-absolute tw-top-1/2 tw-left-1/2 tw--translate-x-1/2 tw--translate-y-1/2 tw-text-center tw-transform">
-                <p className="tw-text-2xl tw-font-bold tw-text-black">
-                  꾸준히 최신 트렌드를 보고 기억할 수 있도록 도와드릴게요!
-                </p>
-              </div>
-            </div>
-            <SectionHeader
-              title="리더님! 크루와 함께 성장하세요!"
-              subTitle="새로운 인적 네트워크를 형성하고 기회를 창출하는 지름길"
-            />
-            <div className={cx('growth-area', 'pt-60', 'flex-wrap-container')}>
-              <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 12, sm: 8, md: 12 }}>
-                <Grid item xs={6} sm={4} md={6}>
-                  <div
-                    className="w-1/2 bg-white tw-rounded-xl overflow-hidden tw-h-[450px] max-md:tw-h-[500px]"
-                    style={{ boxShadow: '-12px 13px 40px rgba(0, 0, 0, 0.05)' }}
-                  >
-                    <div className="tw-flex tw-justify-center tw-items-center">
-                      <img
-                        className="max-lg:tw-h-40 max-lg:tw-w-40 tw-h-64 tw-object-cover"
-                        src="/assets/images/icons/3d-render-hand-high-five-gesture-team-work-clap 1.png"
-                        alt="Card"
-                      />
-                    </div>
-                    <div className="p-5">
-                      <div className="text-black tw-text-xl tw-font-bold mb-4">
-                        새로운 인적 네트워크를 형성해보세요!
-                      </div>
-                      <p className="text-black tw-text-base">
-                        다양한 분야의 리더님, 크루님이 이곳에 모여 있습니다. 함께 활동하면서 자연스럽게 친분을 쌓고
-                        새로운 기회를 만드실 수 있습니다.
-                      </p>
-                    </div>
-                  </div>
-                </Grid>
-                <Grid item xs={6} sm={4} md={6}>
-                  <div
-                    className="w-1/2 bg-white tw-rounded-xl overflow-hidden tw-h-[450px] max-md:tw-h-[500px]"
-                    style={{ boxShadow: '-12px 13px 40px rgba(0, 0, 0, 0.05)' }}
-                  >
-                    <div className="tw-flex tw-justify-center tw-items-center">
-                      <img
-                        className="max-lg:tw-h-40 max-lg:tw-w-40 tw-h-64 tw-w-64 object-cover"
-                        src="/assets/images/icons/7911246 1.png"
-                        alt="Card"
-                      />
-                    </div>
-                    <div className="p-5">
-                      <div className="text-black tw-text-xl tw-font-bold mb-4">평판과 리더십을 올려드릴게요!</div>
-                      <p className="text-black tw-text-base">
-                        리더님의 지식과 선한 영향력은 명성을 높이기에 충분합니다. 데브어스가 리더님의 명성과 커리어를
-                        높여 드리기 위해 지원을 아끼지 않겠습니다.
-                      </p>
-                    </div>
-                  </div>
-                </Grid>
-              </Grid>
-            </div>
-
-            <SectionHeader
-              title="메이커님! 지식을 선점하고 전수하세요.!"
-              subTitle="새로운 지식을 가장 빠르게 내 것으로 만드는 방법"
-            />
-
-            <div className={cx('growth-area', 'pt-60', 'flex-wrap-container')}>
-              <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-                <Grid item xs={2} sm={4} md={4}>
-                  <div
-                    className="w-1/2 bg-white  tw-rounded-xl overflow-hidden tw-h-[450px] max-md:tw-h-[500px]"
-                    style={{ boxShadow: '-12px 13px 40px rgba(0, 0, 0, 0.05)' }}
-                  >
-                    <div className="tw-flex tw-justify-center tw-items-center">
-                      <img
-                        className="max-lg:tw-h-40 max-lg:tw-w-40 tw-h-64 tw-w-64 tw-object-cover"
+                        className="max-lg:tw-h-[80px] max-lg:tw-w-[80px] tw-h-[162px] tw-w-[162px] tw-object-cover"
                         src="/assets/images/icons/megaphone_icon_182174.png"
                         alt="Card"
                       />
                     </div>
-                    <div className="p-5">
-                      <div className="text-black tw-text-xl tw-font-bold mb-4">리더가 퀴즈를 선택해요!</div>
-                      <p className="text-black tw-text-base">
-                        리더가 클럽을 만들고, 학습 날짜 별 퀴즈를 선정해요. 메이커님의 퀴즈가 많이 배치될 수록 혜택이
-                        커집니다.
+                    <div className="tw-pt-0 tw-px-5">
+                      <div className="text-black tw-text-[24px] tw-font-bold mb-4">크루님!</div>
+                      <p className="text-black tw-text-base tw-font-bold">
+                        최고의 개발자가 이끄는 클럽에 참여해서 함께 성장하세요!
                       </p>
+                    </div>
+                    <div className="tw-py-10">
+                      <div className="tw-bg-[#f2f2f2] tw-font-bold tw-rounded-full tw-py-3 tw-px-5 tw-text-gray-800">
+                        크루 가이드
+                      </div>
+                    </div>
+                    <div className=" tw-text-left tw-text-[14px] tw-text-black">
+                      1. 성장 퀴즈 클럽에 참가해요.
+                      <br /> 2. 직무 키워드의 퀴즈와 아티클을 보며 나의 언어로 정리해요. <br /> 3. 서로의 답변을 보며,
+                      생각을 확장해요.
+                    </div>
+
+                    <div className="tw-py-10">
+                      <button
+                        onClick={() => {
+                          {
+                            if (!logged) {
+                              alert('로그인 후, 사용이 가능합니다.');
+                              return false;
+                            } else {
+                              router.push('/quiz');
+                            }
+                          }
+                        }}
+                        className="tw-bg-[#3EA521] tw-font-bold tw-text-white tw-p-3 max-lg:tw-w-[100%] tw-w-[220px] tw-rounded-md"
+                      >
+                        클럽 가입하러 가기
+                      </button>
                     </div>
                   </div>
                 </Grid>
                 <Grid item xs={2} sm={4} md={4}>
                   <div
-                    className="w-1/2 bg-white  tw-rounded-xl overflow-hidden tw-h-[450px] max-md:tw-h-[500px]"
+                    className="w-1/2 bg-white  tw-rounded-xl overflow-hidden tw-h-[680px] max-md:tw-h-[680px] tw-px-[55px] "
                     style={{ boxShadow: '-12px 13px 40px rgba(0, 0, 0, 0.05)' }}
                   >
-                    <div className="tw-flex tw-justify-center tw-items-center">
+                    <div className="tw-flex tw-justify-center tw-items-center tw-pt-20 tw-pb-5">
                       <img
-                        className="max-lg:tw-h-40 max-lg:tw-w-40 tw-h-64 tw-w-64 tw-object-cover"
+                        className="max-lg:tw-h-[80px] max-lg:tw-w-[80px] tw-h-[162px] tw-w-[162px] tw-object-cover"
                         src="/assets/images/icons/8202590 1.png"
                         alt="Card"
                       />
                     </div>
-                    <div className="p-5">
-                      <div className="text-black tw-text-xl tw-font-bold mb-4">크루가 퀴즈를 풀어요!</div>
-                      <p className="text-black tw-text-base">
-                        메이커님이 만든 퀴즈를 크루가 풀어요. 크루가 열심히 풀수록 메이커님의 명성과 혜택이 올라갑니다.
+                    <div className="tw-pt-0 tw-px-5">
+                      <div className="text-black tw-text-[24px] tw-font-bold mb-4">리더님!</div>
+                      <p className="text-black tw-text-base tw-font-bold">
+                        클럽을 만들고 운영하면서<br></br> 존경받는 리더가 되어보세요!
                       </p>
+                    </div>
+                    <div className="tw-py-10">
+                      <div className="tw-bg-[#f2f2f2] tw-font-bold tw-rounded-full tw-py-3 tw-px-5 tw-text-gray-800">
+                        리더 가이드
+                      </div>
+                    </div>
+                    <div className=" tw-text-left tw-text-[14px] tw-text-black">
+                      1. 성장 퀴즈 클럽의 주제를 정하고 클럽을 개설하여 크루를 이끌어요.<br></br> 2. 함께할 퀴즈를
+                      정하고, 답변을 작성해요.<br></br> 3. 함께 공부하는 크루의 학습을 독려해요.
+                    </div>
+
+                    <div className="tw-py-10">
+                      <button
+                        onClick={() => {
+                          if (!logged) {
+                            alert('로그인 후, 사용이 가능합니다.');
+                            return false;
+                          } else {
+                            router.push('/quiz/open');
+                          }
+                        }}
+                        className="tw-bg-[#0E977D] tw-font-bold tw-text-white tw-p-3 max-lg:tw-w-[100%] tw-w-[220px] tw-rounded-md"
+                      >
+                        클럽 개설하러 가기
+                      </button>
                     </div>
                   </div>
                 </Grid>
                 <Grid item xs={2} sm={4} md={4}>
                   <div
-                    className="w-1/2 bg-white  tw-rounded-xl overflow-hidden tw-h-[450px] max-md:tw-h-[500px]"
+                    className="w-1/2 bg-white  tw-rounded-xl overflow-hidden tw-h-[680px] max-md:tw-h-[680px] tw-px-[55px] "
                     style={{ boxShadow: '-12px 13px 40px rgba(0, 0, 0, 0.05)' }}
                   >
-                    <div className="tw-flex tw-justify-center tw-items-center">
+                    <div className="tw-flex tw-justify-center tw-items-center tw-pt-20 tw-pb-5">
                       <img
-                        className="max-lg:tw-h-40 max-lg:tw-w-40 tw-h-64 tw-w-64 tw-object-cover"
+                        className="max-lg:tw-h-[80px] max-lg:tw-w-[80px] tw-h-[162px] tw-w-[162px] tw-object-cover"
                         src="/assets/images/icons/bookmark-folder.png"
                         alt="Card"
                       />
                     </div>
-                    <div className="p-5">
-                      <div className="text-black tw-text-xl tw-font-bold mb-4">좋은 퀴즈는 영원해요!</div>
-                      <p className="text-black tw-text-base">
-                        좋은 퀴즈는 수학의 정석이랑 같은 위치로 성장할 수 있어요. 퀴즈와 아티클 조합만으로 원작자가
-                        됩니다.
+                    <div className="tw-pt-0 tw-px-5">
+                      <div className="text-black tw-text-[24px] tw-font-bold mb-4">메이커님!</div>
+                      <p className="text-black tw-text-base tw-font-medium">
+                        리더가 가져가고 크루가 많이 푸는<br></br> 좋은 퀴즈를 만들어보세요!
                       </p>
+                    </div>
+                    <div className="tw-py-10">
+                      <div className="tw-bg-[#f2f2f2] tw-font-bold tw-rounded-full tw-py-3 tw-px-5 tw-text-gray-800">
+                        메이커 가이드
+                      </div>
+                    </div>
+                    <div className=" tw-text-left tw-text-[14px] tw-text-black">
+                      1. 직무와 관련된 질문을 만들어요. <br></br>2. 질문 키워드와 관련된 유용한 아티클을 선정해요.
+                      <br></br>
+                      <p className="h-[14px]">&nbsp;</p>
+                    </div>
+
+                    <div className="tw-py-10">
+                      <button
+                        onClick={() => {
+                          if (!logged) {
+                            alert('로그인 후, 사용이 가능합니다.');
+                            return false;
+                          } else {
+                            router.push('/quiz-make');
+                          }
+                        }}
+                        className="tw-bg-blue-500 tw-font-bold tw-text-white max-lg:tw-w-[100%] tw-p-3 tw-w-[220px] tw-rounded-md"
+                      >
+                        퀴즈 만들러 가기
+                      </button>
                     </div>
                   </div>
                 </Grid>
               </Grid>
             </div>
-
-            <div className="tw-w-full tw-my-10 tw-relative">
-              <img
-                className="tw-w-full tw-h-[300px] tw-object-center"
-                src="/assets/images/banner/Frame 2434.png"
-                alt=""
-              />
-              <div className="tw-w-full tw-absolute tw-top-1/2 tw-left-1/2 tw--translate-x-1/2 tw--translate-y-1/2 tw-text-center tw-transform">
-                <p className="tw-text-2xl tw-font-bold tw-text-black">
-                  데브어스는 크루, 리더, 메이커가 함께 성장하는 플랫폼입니다.
-                </p>
-              </div>
-            </div>
           </div>
         </section>
+      </div>
+      <div className="tw-py-50 tw-bg-white tw-text-center tw-mt-24">
+        <p className="tw-text-[16px] tw-font-bold tw-text-black tw-py-5">
+          상위 1% 리더들과 상위 10% 열정크루들이 모여 함께 성장하는
+        </p>
+        <div className="tw-flex tw-justify-center tw-mb-10">
+          <img src="/assets/images/devus 2.png" width="123" alt="logo" class="Header_image-logo__NzBUu"></img>
+        </div>
       </div>
 
       {isUser && (

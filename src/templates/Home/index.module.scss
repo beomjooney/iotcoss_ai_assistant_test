@@ -27,7 +27,7 @@
     .growth-area {
       display: flex;
       gap: 32px;
-      margin-bottom: 108px;
+      margin-bottom: 50px;
     }
 
     .recommended-area {
@@ -88,42 +88,23 @@
   @media (min-width: 1200px) {
     .action-btn {
       position: absolute;
-      width: 300px;
-      bottom: -58px;
+      bottom: 158px;
+      left: 24%;
     }
   }
 
   @media (min-width: 1200px) {
     .top-banner {
-      height: 312px;
-      top: -77px;
-      padding: 100px 200px 68px 200px;
-      background: url('../../../public/assets/images/banner/top_banner_main_bg.jpg') center center / cover no-repeat !important;
-
-      &__image {
-        width: 1200px;
-        position: absolute;
-        right: 50%; /* 오른쪽에서 절반 위치 */
-        transform: translateX(50%); /* 수평으로 가운데 정렬 */
-        // bottom: 0;
-
-        @media (min-width: 320px) and (max-width: 992px) {
-          right: -270px;
-        }
-      }
+      // height: 312px;
+      width: 100%;
     }
   }
 
   @media (min-width: 320px) and (max-width: 992px) {
-    .top-banner {
-      padding: 70% 0px 0px 0px;
-
-      &__image {
-        position: absolute;
-        right: 40px;
-        top: 45px;
-        bottom: 0;
-      }
+    .action-btn {
+      position: absolute;
+      bottom: 80px;
+      left: 18%;
     }
   }
 
