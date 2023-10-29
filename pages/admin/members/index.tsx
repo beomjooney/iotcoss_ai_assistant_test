@@ -46,8 +46,8 @@ export function MembersPage() {
   const PAGE_PROPS = {
     page: page,
     setPage: setPage,
-    count: memberList?.totalPage,
-    total: memberList?.totalPage,
+    count: memberList?.data?.totalPage,
+    total: memberList?.data?.totalPage,
     onChangeSize: size => {
       setSize(size);
       setPage(1);
