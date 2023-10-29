@@ -219,15 +219,15 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
           </button>,
         );
       } else if (contents?.isLeader && contents?.clubStatus == '0004') {
-        setApplicationButton(
-          <button
-            type="button"
-            onClick={handlerTodayQuizSolution}
-            className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
-          >
-            오늘의 퀴즈 풀기
-          </button>,
-        );
+        // setApplicationButton(
+        //   <button
+        //     type="button"
+        //     onClick={handlerTodayQuizSolution}
+        //     className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
+        //   >
+        //     오늘의 퀴즈 풀기
+        //   </button>,
+        // );
       } else if (contents?.clubStatus == '0006' && clubMemberStatus == '0006') {
         setApplicationButton(
           <button
@@ -289,15 +289,15 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
           </button>,
         );
       } else if (contents?.clubStatus == '0004' && clubMemberStatus == '0002') {
-        setApplicationButton(
-          <button
-            type="button"
-            onClick={handlerTodayQuizSolution}
-            className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
-          >
-            오늘의 퀴즈 풀기
-          </button>,
-        );
+        // setApplicationButton(
+        //   <button
+        //     type="button"
+        //     onClick={handlerTodayQuizSolution}
+        //     className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
+        //   >
+        //     오늘의 퀴즈 풀기
+        //   </button>,
+        // );
       } else if (contents?.clubStatus == '0004' && clubMemberStatus == '0006') {
         setApplicationButton(
           <button
