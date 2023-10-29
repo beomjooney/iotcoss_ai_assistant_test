@@ -274,8 +274,8 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
               </li>
             )}
             {logged && (
-              <div className="row tw-flex tw-items-center tw-justify-between tw-w-80">
-                <div className="col-lg-12 tw-flex tw-items-center tw-justify-start max-lg:tw-justify-end lg:tw-mb-0">
+              <div className="row tw-flex tw-items-center tw-justify-between tw-w-80 max-lg:tw-w-0">
+                <div className="col-lg-12 tw-flex tw-items-center tw-justify-start max-lg:tw-justify-end lg:tw-mb-0 max-lg:tw-px-0">
                   {logoutButton}
                   <Tooltip title="Alarm">
                     <div className="tw-px-2">
@@ -296,7 +296,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                       >
-                        <List>
+                        {/* <List>
                           <ListItem button onClick={() => (location.href = '/quiz-make')}>
                             <ListItemText primary="내가 만든 퀴즈" />
                           </ListItem>
@@ -316,7 +316,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                           <ListItem button onClick={handleLogout}>
                             <ListItemText primary="Logout" />
                           </ListItem>
-                        </List>
+                        </List> */}
                       </Popover>
                     </div>
                   </Tooltip>
@@ -335,7 +335,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                         </Avatar>
                       </IconButton>
                     </Tooltip>
-                    <Menu
+                    {/* <Menu
                       anchorEl={anchorEl}
                       id="account-menu"
                       open={open}
@@ -386,7 +386,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                         </ListItemIcon>
                         Logout
                       </MenuItem>
-                    </Menu>
+                    </Menu> */}
                   </li>
                   <IconButton
                     sx={{
@@ -529,27 +529,6 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                             );
                           })}
                         </div>
-                        {/* <List>
-                          <ListItem button onClick={() => (location.href = '/quiz-make')}>
-                            <ListItemText primary="내가 만든 퀴즈" />
-                          </ListItem>
-                          <Divider />
-                          <ListItem button onClick={() => (location.href = '/account/my/point')}>
-                            <ListItemText primary="내 포인트 내역" />
-                          </ListItem>
-                          <Divider />
-                          <ListItem button onClick={() => (location.href = '/profile')}>
-                            <ListItemText primary="내 프로필" />
-                          </ListItem>
-                          <Divider />
-                          <ListItem button onClick={handleClick}>
-                            <ListItemText primary="마이페이지" />
-                          </ListItem>
-                          <Divider />
-                          <ListItem button onClick={handleLogout}>
-                            <ListItemText primary="Logout" />
-                          </ListItem>
-                        </List> */}
                       </Popover>
                     </div>
                   </Tooltip>
