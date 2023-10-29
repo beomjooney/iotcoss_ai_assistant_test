@@ -90,7 +90,7 @@ export function MembersTemplate({
   });
 
   useEffect(() => {
-    memberData && setMember(memberData);
+    memberData && setMember(memberData.data);
   }, [memberData]);
 
   const onShowPopup = (memberId: string) => {
@@ -194,7 +194,7 @@ export function MembersTemplate({
           name="member"
           colgroup={COLGROUP}
           heads={HEADS}
-          items={memberList?.data?.map((item, index) => {
+          items={memberList?.data?.data?.contents?.map((item, index) => {
             return (
               <tr key={`tr-${index}`} onClick={() => onShowPopup(item.memberId)}>
                 <td className="magic" title={item.memberId}>
@@ -426,7 +426,7 @@ export function MembersTemplate({
                     </div>
                     <div className="inp">
                       <select value={member?.type || ''} onChange={onChangeMember} name="type" disabled={!isEdit}>
-                        {memberCodes?.map(item => (
+                        {memberCodes?.data?.contents?.map(item => (
                           <option key={item.id} value={item.id}>
                             {item.name}
                           </option>
@@ -447,7 +447,7 @@ export function MembersTemplate({
                         name="jobGroup"
                         disabled={!isEdit}
                       >
-                        {jobCodes?.map(item => (
+                        {jobCodes?.data?.contents?.map(item => (
                           <option key={item.id} value={item.id}>
                             {item.name}
                           </option>

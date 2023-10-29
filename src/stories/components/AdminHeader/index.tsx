@@ -48,17 +48,17 @@ const AdminHeader = ({ menuItem, activeNo = 0 }: AdminNavbarProps) => {
             toggle: true,
             children: [{ no: 1011, title: '회원관리', link: '/admin/members' }],
           },
-          {
-            no: 102,
-            title: '멘토',
-            link: '#',
-            upMenuNo: 1,
-            toggle: true,
-            children: [
-              { no: 1022, title: '멘토 관리', link: '/admin/mentors/growth-story' },
-              { no: 1021, title: '멘토 신청관리', link: '/admin/mentors' },
-            ],
-          },
+          // {
+          //   no: 102,
+          //   title: '멘토',
+          //   link: '#',
+          //   upMenuNo: 1,
+          //   toggle: true,
+          //   children: [
+          //     { no: 1022, title: '멘토 관리', link: '/admin/mentors/growth-story' },
+          //     { no: 1021, title: '멘토 신청관리', link: '/admin/mentors' },
+          //   ],
+          // },
         ]);
         break;
       case 2:
@@ -195,15 +195,15 @@ const AdminHeader = ({ menuItem, activeNo = 0 }: AdminNavbarProps) => {
   };
   return (
     <div className="header-admin" onMouseLeave={() => setSubMenuOn(false)} style={{ zIndex: 70 }}>
-      <Image
+      {/* <Image
         src="/assets/images/LOGO.svg"
         alt="커리어멘토스 로고"
         layout="fixed"
         width={100}
         height={40}
         className={cx('image-logo')}
-      />
-      <h1 className="logo">커리어멘토스</h1>
+      /> */}
+      <h1 className="logo">데브어스</h1>
       <div className="gnb-menu" style={{ width: 100 }}>
         <ul>
           {menuItem?.map(item => {

@@ -4,6 +4,7 @@ import { Footer } from '../../components';
 import AdminHeader from '../../components/AdminHeader';
 import classNames from 'classnames/bind';
 import { useSessionStore } from '../../../store/session';
+import { styled, useTheme } from '@mui/material/styles';
 
 export interface DefaultLayoutProps {
   /** 테마 색상 */
@@ -24,6 +25,15 @@ const cx = classNames.bind(styles);
 const AdminLayout = ({ darkBg, classOption, title, children, isFooter = true, resolution = 0 }: DefaultLayoutProps) => {
   const { roles } = useSessionStore();
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const DrawerHeader = styled('div')(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    padding: theme.spacing(0, 13),
+    // necessary for content to be below app bar
+    ...theme.mixins.toolbar,
+    justifyContent: 'flex-end',
+  }));
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -52,15 +62,15 @@ const AdminLayout = ({ darkBg, classOption, title, children, isFooter = true, re
       link: '/admin/members',
       icon: '/assets/images/icons/user.png',
     },
-    {
-      no: 2,
-      option: 'nav-item',
-      title: '서비스운영',
-      link: '/admin/seminar',
-      icon: '/assets/images/icons/service.png',
-    },
-    { no: 3, option: 'nav-item', title: '콘텐츠관리', link: '#', icon: '/assets/images/icons/content.png' },
-    { no: 4, option: 'nav-item', title: '시스템관리', link: '#', icon: '/assets/images/icons/system.png' },
+    // {
+    //   no: 2,
+    //   option: 'nav-item',
+    //   title: '서비스운영',
+    //   link: '/admin/seminar',
+    //   icon: '/assets/images/icons/service.png',
+    // },
+    // { no: 3, option: 'nav-item', title: '콘텐츠관리', link: '#', icon: '/assets/images/icons/content.png' },
+    // { no: 4, option: 'nav-item', title: '시스템관리', link: '#', icon: '/assets/images/icons/system.png' },
   ];
 
   return (
@@ -68,10 +78,12 @@ const AdminLayout = ({ darkBg, classOption, title, children, isFooter = true, re
       {!isLoading && (
         <div className="wrapper">
           <div className={cx('container')}>
-            <AdminHeader menuItem={menuItem} />
-            <main className={cx('main')}>
-              <div className={cx('content', `resolution--${resolution}`)}>{children}</div>
-            </main>
+            <DrawerHeader>
+              <AdminHeader menuItem={menuItem} />
+              <main className={cx('main')}>
+                <div className={cx('content', `resolution--${resolution}`)}>{children}</div>
+              </main>
+            </DrawerHeader>
           </div>
           {/*{isFooter && <Footer />}*/}
         </div>
