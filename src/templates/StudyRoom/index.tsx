@@ -53,6 +53,7 @@ import PaginationItem from '@mui/material/PaginationItem';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Stack from '@mui/material/Stack';
+import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 
 const studyStatus = [
   {
@@ -306,294 +307,407 @@ export function StudyRoomTemplate() {
   };
 
   return (
-    <div className={cx('seminar-container')}>
-      {/* <Banner title="커리어멘토스 세미나" subTitle="커멘세미나" /> */}
+    <>
+      <Desktop>
+        <div className={cx('seminar-container')}>
+          {/* <Banner title="커리어멘토스 세미나" subTitle="커멘세미나" /> */}
 
-      <div className={cx('container')}>
-        <div className="tw-py-[60px]">
-          <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-            <Grid item xs={2} className="tw-font-bold tw-text-3xl tw-text-black max-lg:!tw-text-base">
-              나의 학습방
-            </Grid>
-            <Grid item xs={6} className="max-lg:tw-p-2 tw-font-semi tw-text-base tw-text-black  max-lg:!tw-text-sm">
-              나의 퀴즈클럽 진행사항을 한 눈에 보여주고 있어요!
-            </Grid>
-            <Grid item xs={4} justifyContent="flex-end" className="tw-flex">
-              <button
-                onClick={() => (location.href = '/quiz-my')}
-                type="button"
-                className="tw-text-blue-600 tw-bg-white border border-primary tw-mr-3  tw-font-bold tw-rounded tw-text-sm tw-px-5 tw-py-2.5 "
-              >
-                내가 만든 클럽 {'>'}
-              </button>
-              <button
-                onClick={() => (location.href = '/quiz-make')}
-                type="button"
-                className="tw-text-blue-600 tw-bg-white border border-primary tw-font-bold tw-rounded tw-text-sm tw-px-5 tw-py-2.5  "
-              >
-                내가 만든 퀴즈 {'>'}
-              </button>
-            </Grid>
-          </Grid>
-        </div>
-        <Box sx={{ width: '100%', typography: 'body1', marginTop: '20px', marginBottom: '20px' }}>
-          <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-            <Grid item xs={12} className="tw-font-bold tw-text-3xl tw-text-black">
-              {/* <SecondTabs tabs={testBoards} /> */}
-
-              <div className={cx('filter-area')}>
-                <div className={cx('mentoring-button__group', 'gap-12', 'justify-content-center')}>
-                  {studyStatus.map((item, i) => (
-                    <Toggle
-                      key={item.id}
-                      label={item.name}
-                      name={item.name}
-                      value={item.id}
-                      variant="small"
-                      checked={active === i}
-                      isActive
-                      type="tabButton"
-                      onChange={() => {
-                        setActive(i);
-                        setContentType(item.id);
-                        setParams({
-                          ...params,
-                          viewFilter: item.id,
-                          page,
-                        });
-                        setPage(1);
-                      }}
-                      className={cx('fixed-width', 'tw-mr-4', 'max-lg:!tw-hidden')}
-                    />
-                  ))}
-                  <Toggle
-                    label="배지보기"
-                    name="배지보기"
-                    value=""
-                    variant="small"
-                    checked={active === 4}
-                    isActive
-                    type="tabButton"
-                    onChange={() => {
-                      setActive(4);
-                    }}
-                    className={cx('fixed-width')}
-                  />
-                </div>
-              </div>
-            </Grid>
-          </Grid>
-        </Box>
-
-        <Divider className="tw-mb-6 tw-border tw-bg-['#efefef']" />
-        <article>
-          <div className={cx('content-area')}>
-            <section className={cx('content', 'flex-wrap-container')}>
-              <Grid
-                container
-                direction="row"
-                justifyContent="left"
-                // alignItems="center"
-                rowSpacing={3}
-                columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-              >
-                <Grid item xs={8}>
-                  {isContentFetched && active === 0 && (
-                    <div>
-                      <TableContainer component={Paper} className=" tw-mb-5" elevation={0}>
-                        <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                          <TableHead>
-                            <TableRow>
-                              <StyledTableCell align="center" sx={{ width: '28%' }}>
-                                클럽명
-                              </StyledTableCell>
-                              <StyledTableCell align="center">리더</StyledTableCell>
-                              <StyledTableCell align="center">참가자</StyledTableCell>
-                              <StyledTableCell align="center">학습시작일</StyledTableCell>
-                              <StyledTableCell align="center">학습주기</StyledTableCell>
-                              <StyledTableCell align="center">상세보기</StyledTableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {contents.map(row => (
-                              <StyledTableRow key={row.clubName}>
-                                <StyledTableCell component="th" scope="row" align="center">
-                                  {row.clubName}
-                                </StyledTableCell>
-                                <StyledTableCell align="center">{row.leaderNickname}</StyledTableCell>
-                                <StyledTableCell align="center">{row.recruitedMemberCount}</StyledTableCell>
-                                <StyledTableCell align="center">{row.startAt.split(' ')[0]}</StyledTableCell>
-                                <StyledTableCell align="center">
-                                  {row.studyCycle.toString()},{row.studyWeekCount}회
-                                </StyledTableCell>
-                                <StyledTableCell align="center">
-                                  <span className="tw-bg-gray-300 tw-text-white tw-text-xs tw-font-medium tw-mr-2 tw-px-2.5 tw-py-3 tw-rounded">
-                                    오픈예정
-                                  </span>
-                                </StyledTableCell>
-                              </StyledTableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                      {/* <Pagination count={totalPage} page={page} onChange={handleChange} /> */}
-                      <Pagination page={page} setPage={setPage} total={totalPage} />
-                    </div>
-                  )}
-                  {isContentFetched && active === 1 && (
-                    <TableContainer component={Paper} className=" tw-mb-5" elevation={0}>
-                      <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                        <TableHead>
-                          <TableRow>
-                            <StyledTableCell></StyledTableCell>
-                            <StyledTableCell align="center" sx={{ width: '25%' }}>
-                              클럽명
-                            </StyledTableCell>
-                            <StyledTableCell align="center">리더</StyledTableCell>
-                            <StyledTableCell align="center">참가자</StyledTableCell>
-                            <StyledTableCell align="center">학습시작일</StyledTableCell>
-                            <StyledTableCell align="center">학습주기</StyledTableCell>
-                            <StyledTableCell align="center">학습현황</StyledTableCell>
-                            <StyledTableCell align="center">상세보기</StyledTableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {contents.map(row => (
-                            <Row key={row.clubName} row={row} />
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  )}
-                  {active === 4 && (
-                    <div>
-                      <div className="tw-grid tw-grid-cols-7 tw-gap-4">
-                        {badgeContents.map((item, index) => (
-                          <div key={index} className="tw-text-center">
-                            <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
-                              <img
-                                className="tw-object-cover tw-h-15 "
-                                src={`${process.env.NEXT_PUBLIC_GENERAL_URL}/assets/images/badge/${item?.badgeId}.png`}
-                                alt=""
-                              />
-                            </div>
-                            <div className="tw-text-sm tw-text-black tw-font-bold">{item?.name}</div>
-                            <div className="tw-text-sm tw-text-black tw-line-clamp-1">{item?.description}</div>
-                            <div className="tw-text-sm tw-text-black">{item?.achievementAt?.split(' ')[0]}</div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+          <div className={cx('container')}>
+            <div className="tw-py-[60px]">
+              <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
+                <Grid item xs={2} className="tw-font-bold tw-text-3xl tw-text-black max-lg:!tw-text-base">
+                  나의 학습방
                 </Grid>
-                <Grid item xs={4}>
-                  <div className="tw-bg-gray-50 tw-rounded-md tw-h-[400px] tw-p-5 tw-text-black ">
-                    <div className="tw-font-bold tw-text-base tw-pb-5">나의 학습 캘린더</div>
-                    <div className="tw-bg-white">
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DateCalendar
-                          onMonthChange={handleMonthChange}
-                          onChange={handleDayChange}
-                          showDaysOutsideCurrentMonth
-                          slots={{
-                            day: ServerDay,
+                <Grid item xs={6} className="max-lg:tw-p-2 tw-font-semi tw-text-base tw-text-black  max-lg:!tw-text-sm">
+                  나의 퀴즈클럽 진행사항을 한 눈에 보여주고 있어요!
+                </Grid>
+                <Grid item xs={4} justifyContent="flex-end" className="tw-flex">
+                  <button
+                    onClick={() => (location.href = '/quiz-my')}
+                    type="button"
+                    className="tw-text-blue-600 tw-bg-white border border-primary tw-mr-3  tw-font-bold tw-rounded tw-text-sm tw-px-5 tw-py-2.5 "
+                  >
+                    내가 만든 클럽 {'>'}
+                  </button>
+                  <button
+                    onClick={() => (location.href = '/quiz-make')}
+                    type="button"
+                    className="tw-text-blue-600 tw-bg-white border border-primary tw-font-bold tw-rounded tw-text-sm tw-px-5 tw-py-2.5  "
+                  >
+                    내가 만든 퀴즈 {'>'}
+                  </button>
+                </Grid>
+              </Grid>
+            </div>
+            <Box sx={{ width: '100%', typography: 'body1', marginTop: '20px', marginBottom: '20px' }}>
+              <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
+                <Grid item xs={12} className="tw-font-bold tw-text-3xl tw-text-black">
+                  {/* <SecondTabs tabs={testBoards} /> */}
+
+                  <div className={cx('filter-area')}>
+                    <div className={cx('mentoring-button__group', 'gap-12', 'justify-content-center')}>
+                      {studyStatus.map((item, i) => (
+                        <Toggle
+                          key={item.id}
+                          label={item.name}
+                          name={item.name}
+                          value={item.id}
+                          variant="small"
+                          checked={active === i}
+                          isActive
+                          type="tabButton"
+                          onChange={() => {
+                            setActive(i);
+                            setContentType(item.id);
+                            setParams({
+                              ...params,
+                              viewFilter: item.id,
+                              page,
+                            });
+                            setPage(1);
                           }}
-                          slotProps={{
-                            day: {
-                              highlightedDays,
-                            } as any,
-                          }}
+                          className={cx('fixed-width', 'tw-mr-4', 'max-lg:!tw-hidden')}
                         />
-                      </LocalizationProvider>
+                      ))}
+                      <Toggle
+                        label="배지보기"
+                        name="배지보기"
+                        value=""
+                        variant="small"
+                        checked={active === 4}
+                        isActive
+                        type="tabButton"
+                        onChange={() => {
+                          setActive(4);
+                        }}
+                        className={cx('fixed-width')}
+                      />
                     </div>
                   </div>
+                </Grid>
+              </Grid>
+            </Box>
 
-                  {quizStatusList.length > 0 && (
-                    <div className="tw-bg-gray-50 tw-rounded-md tw-p-5 tw-text-black ">
-                      <div className="tw-font-bold tw-text-base tw-pb-5">퀴즈 상태</div>
-                      {quizStatusList.map((item, i) => {
-                        return (
-                          // TODO API Response 보고 댓글 작성자로 수정 필요
-                          <div
-                            key={i}
-                            className="tw-flex tw-items-center tw-rounded-md tw-grid tw-grid-cols-6 tw-gap-0  tw-bg-white tw-text-sm  tw-p-4 tw-mb-5"
-                          >
-                            <div className="tw-col-span-4 ">
-                              <div className="tw-line-clamp-2"> {item.clubName}</div>
-                            </div>
-                            <div className="tw-col-span-2 tw-text-right">
-                              <button
-                                disabled
-                                className={`tw-w-[60px] tw-text-center tw-text-white tw-text-blue-800 tw-text-xs tw-font-medium tw-px-3 tw-py-2 tw-rounded ${
-                                  item.isComplete ? 'tw-bg-gray-400' : 'tw-bg-blue-500'
-                                }`}
-                              >
-                                {item.isComplete ? '완료 ' : '미완료'}
-                              </button>
-                            </div>
+            <Divider className="tw-mb-6 tw-border tw-bg-['#efefef']" />
+            <article>
+              <div className={cx('content-area')}>
+                <section className={cx('content', 'flex-wrap-container')}>
+                  <Grid
+                    container
+                    direction="row"
+                    justifyContent="left"
+                    // alignItems="center"
+                    rowSpacing={3}
+                    columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+                  >
+                    <Grid item xs={8}>
+                      {isContentFetched && active === 0 && (
+                        <div>
+                          <TableContainer component={Paper} className=" tw-mb-5" elevation={0}>
+                            <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                              <TableHead>
+                                <TableRow>
+                                  <StyledTableCell align="center" sx={{ width: '28%' }}>
+                                    클럽명
+                                  </StyledTableCell>
+                                  <StyledTableCell align="center">리더</StyledTableCell>
+                                  <StyledTableCell align="center">참가자</StyledTableCell>
+                                  <StyledTableCell align="center">학습시작일</StyledTableCell>
+                                  <StyledTableCell align="center">학습주기</StyledTableCell>
+                                  <StyledTableCell align="center">상세보기</StyledTableCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {contents.map(row => (
+                                  <StyledTableRow key={row.clubName}>
+                                    <StyledTableCell component="th" scope="row" align="center">
+                                      {row.clubName}
+                                    </StyledTableCell>
+                                    <StyledTableCell align="center">{row.leaderNickname}</StyledTableCell>
+                                    <StyledTableCell align="center">{row.recruitedMemberCount}</StyledTableCell>
+                                    <StyledTableCell align="center">{row.startAt.split(' ')[0]}</StyledTableCell>
+                                    <StyledTableCell align="center">
+                                      {row.studyCycle.toString()},{row.studyWeekCount}회
+                                    </StyledTableCell>
+                                    <StyledTableCell align="center">
+                                      <span className="tw-bg-gray-300 tw-text-white tw-text-xs tw-font-medium tw-mr-2 tw-px-2.5 tw-py-3 tw-rounded">
+                                        오픈예정
+                                      </span>
+                                    </StyledTableCell>
+                                  </StyledTableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                          {/* <Pagination count={totalPage} page={page} onChange={handleChange} /> */}
+                          <Pagination page={page} setPage={setPage} total={totalPage} />
+                        </div>
+                      )}
+                      {isContentFetched && active === 1 && (
+                        <TableContainer component={Paper} className=" tw-mb-5" elevation={0}>
+                          <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                            <TableHead>
+                              <TableRow>
+                                <StyledTableCell></StyledTableCell>
+                                <StyledTableCell align="center" sx={{ width: '25%' }}>
+                                  클럽명
+                                </StyledTableCell>
+                                <StyledTableCell align="center">리더</StyledTableCell>
+                                <StyledTableCell align="center">참가자</StyledTableCell>
+                                <StyledTableCell align="center">학습시작일</StyledTableCell>
+                                <StyledTableCell align="center">학습주기</StyledTableCell>
+                                <StyledTableCell align="center">학습현황</StyledTableCell>
+                                <StyledTableCell align="center">상세보기</StyledTableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {contents.map(row => (
+                                <Row key={row.clubName} row={row} />
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </TableContainer>
+                      )}
+                      {active === 4 && (
+                        <div>
+                          <div className="tw-grid tw-grid-cols-7 tw-gap-4">
+                            {badgeContents.map((item, index) => (
+                              <div key={index} className="tw-text-center">
+                                <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
+                                  <img
+                                    className="tw-object-cover tw-h-15 "
+                                    src={`${process.env.NEXT_PUBLIC_GENERAL_URL}/assets/images/badge/${item?.badgeId}.png`}
+                                    alt=""
+                                  />
+                                </div>
+                                <div className="tw-text-sm tw-text-black tw-font-bold">{item?.name}</div>
+                                <div className="tw-text-sm tw-text-black tw-line-clamp-1">{item?.description}</div>
+                                <div className="tw-text-sm tw-text-black">{item?.achievementAt?.split(' ')[0]}</div>
+                              </div>
+                            ))}
                           </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                  <div className="tw-bg-gray-50 tw-rounded-md tw-h-[430px] tw-p-5 tw-text-black ">
-                    <div className="tw-font-bold tw-text-base tw-pb-5">내가 풀어야 할 퀴즈</div>
-                    {/* {isQuizFetched && (
+                        </div>
+                      )}
+                    </Grid>
+                    <Grid item xs={4}>
+                      <div className="tw-bg-gray-50 tw-rounded-md tw-h-[400px] tw-p-5 tw-text-black ">
+                        <div className="tw-font-bold tw-text-base tw-pb-5">나의 학습 캘린더</div>
+                        <div className="tw-bg-white">
+                          <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DateCalendar
+                              onMonthChange={handleMonthChange}
+                              onChange={handleDayChange}
+                              showDaysOutsideCurrentMonth
+                              slots={{
+                                day: ServerDay,
+                              }}
+                              slotProps={{
+                                day: {
+                                  highlightedDays,
+                                } as any,
+                              }}
+                            />
+                          </LocalizationProvider>
+                        </div>
+                      </div>
+
+                      {quizStatusList.length > 0 && (
+                        <div className="tw-bg-gray-50 tw-rounded-md tw-p-5 tw-text-black ">
+                          <div className="tw-font-bold tw-text-base tw-pb-5">퀴즈 상태</div>
+                          {quizStatusList.map((item, i) => {
+                            return (
+                              // TODO API Response 보고 댓글 작성자로 수정 필요
+                              <div
+                                key={i}
+                                className="tw-flex tw-items-center tw-rounded-md tw-grid tw-grid-cols-6 tw-gap-0  tw-bg-white tw-text-sm  tw-p-4 tw-mb-5"
+                              >
+                                <div className="tw-col-span-4 ">
+                                  <div className="tw-line-clamp-2"> {item.clubName}</div>
+                                </div>
+                                <div className="tw-col-span-2 tw-text-right">
+                                  <button
+                                    disabled
+                                    className={`tw-w-[60px] tw-text-center tw-text-white tw-text-blue-800 tw-text-xs tw-font-medium tw-px-3 tw-py-2 tw-rounded ${
+                                      item.isComplete ? 'tw-bg-gray-400' : 'tw-bg-blue-500'
+                                    }`}
+                                  >
+                                    {item.isComplete ? '완료 ' : '미완료'}
+                                  </button>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                      <div className="tw-bg-gray-50 tw-rounded-md tw-h-[430px] tw-p-5 tw-text-black ">
+                        <div className="tw-font-bold tw-text-base tw-pb-5">내가 풀어야 할 퀴즈</div>
+                        {/* {isQuizFetched && (
                         {quizList.map((item,i)=> (
                           <div  key={item.id} className="tw-bg-white">
                           {item.clubName}
                     </div>
                               ))}
                       )} */}
-                    <div className="tw-mb-5">
-                      {isQuizFetched && quizList.length > 0 ? (
-                        quizList.map((item, i) => (
-                          <div
-                            key={i}
-                            className="tw-flex tw-items-center tw-rounded-md tw-grid tw-grid-cols-6 tw-gap-0  tw-bg-white tw-text-sm  tw-p-4 tw-mb-5"
-                          >
-                            <div className="tw-col-span-5 tw-pr-3">
-                              <div className="tw-line-clamp-1"> {item.clubName}</div>
-                              <div className="tw-font-bold"> 3회차</div>
-                              <div className="tw-line-clamp-1"> Q. {item.quizContent}</div>
-                            </div>
-                            <div className="tw-col-span-1">
-                              <button
-                                onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
-                                className="tw-text-center tw-bg-blue-500 tw-text-white tw-text-blue-800 tw-text-xs tw-font-medium tw-px-3 tw-py-2 tw-rounded"
+                        <div className="tw-mb-5">
+                          {isQuizFetched && quizList.length > 0 ? (
+                            quizList.map((item, i) => (
+                              <div
+                                key={i}
+                                className="tw-flex tw-items-center tw-rounded-md tw-grid tw-grid-cols-6 tw-gap-0  tw-bg-white tw-text-sm  tw-p-4 tw-mb-5"
                               >
-                                GO {'>'}
-                              </button>
+                                <div className="tw-col-span-5 tw-pr-3">
+                                  <div className="tw-line-clamp-1"> {item.clubName}</div>
+                                  <div className="tw-font-bold"> 3회차</div>
+                                  <div className="tw-line-clamp-1"> Q. {item.quizContent}</div>
+                                </div>
+                                <div className="tw-col-span-1">
+                                  <button
+                                    onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
+                                    className="tw-text-center tw-bg-blue-500 tw-text-white tw-text-blue-800 tw-text-xs tw-font-medium tw-px-3 tw-py-2 tw-rounded"
+                                  >
+                                    GO {'>'}
+                                  </button>
+                                </div>
+                              </div>
+                            ))
+                          ) : (
+                            <div className="tw-flex tw-items-center tw-rounded-md tw-gap-0  tw-bg-white tw-text-sm  tw-p-4 tw-mb-5">
+                              오늘은 풀어야 할 퀴즈가 없어요.
                             </div>
-                          </div>
-                        ))
-                      ) : (
-                        <div className="tw-flex tw-items-center tw-rounded-md tw-gap-0  tw-bg-white tw-text-sm  tw-p-4 tw-mb-5">
-                          오늘은 풀어야 할 퀴즈가 없어요.
+                          )}
                         </div>
-                      )}
-                    </div>
-                    <Stack spacing={2} className="tw-items-center">
-                      <_Pagination
-                        count={quizTotalPage}
-                        size="small"
-                        siblingCount={0}
-                        page={quizPage}
-                        renderItem={item => (
-                          <PaginationItem slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }} {...item} />
-                        )}
-                        onChange={handleChange}
-                      />
-                    </Stack>
-                    {/* <Pagination showCount={5} page={quizPage} setPage={setQuizPage} total={quizTotalPage} /> */}
-                  </div>
+                        <Stack spacing={2} className="tw-items-center">
+                          <_Pagination
+                            count={quizTotalPage}
+                            size="small"
+                            siblingCount={0}
+                            page={quizPage}
+                            renderItem={item => (
+                              <PaginationItem slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }} {...item} />
+                            )}
+                            onChange={handleChange}
+                          />
+                        </Stack>
+                        {/* <Pagination showCount={5} page={quizPage} setPage={setQuizPage} total={quizTotalPage} /> */}
+                      </div>
+                    </Grid>
+                  </Grid>
+                </section>
+              </div>
+            </article>
+          </div>
+        </div>
+      </Desktop>
+      <Mobile>
+        <div className={cx('seminar-container')}>
+          {/* <Banner title="커리어멘토스 세미나" subTitle="커멘세미나" /> */}
+
+          <div className={cx('container')}>
+            <div className="tw-py-[60px]">
+              <div className="tw-text-[24px] tw-font-bold tw-text-black tw-text-center">나의 학습방</div>
+              <div className="tw-text-[12px] tw-text-black tw-text-center tw-mb-10">
+                나의 퀴즈클럽 진행사항을 한 눈에 보여주고 있어요!
+              </div>
+              <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
+                <Grid item xs={6} justifyContent="center" className="tw-flex">
+                  <button
+                    onClick={() => (location.href = '/quiz-my')}
+                    type="button"
+                    className="tw-text-blue-600 tw-bg-white border border-primary tw-mr-3  tw-font-bold tw-rounded tw-text-sm tw-w-full tw-py-2.5 "
+                  >
+                    내가 만든 클럽 {'>'}
+                  </button>
+                </Grid>
+                <Grid item xs={6} justifyContent="center" className="tw-flex">
+                  <button
+                    onClick={() => (location.href = '/quiz-make')}
+                    type="button"
+                    className="tw-text-blue-600 tw-bg-white border border-primary tw-font-bold tw-rounded tw-text-sm tw-w-full tw-py-2.5  "
+                  >
+                    내가 만든 퀴즈 {'>'}
+                  </button>
                 </Grid>
               </Grid>
-            </section>
+
+              <Box sx={{ width: '100%', typography: 'body1', marginTop: '20px', marginBottom: '20px' }}>
+                <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
+                  <Grid item xs={12} className="tw-font-bold tw-text-3xl tw-text-black">
+                    {/* <SecondTabs tabs={testBoards} /> */}
+
+                    <div className={cx('filter-area')}>
+                      <div className={cx('mentoring-button__group', 'tw-px-0', 'justify-content-center')}>
+                        {studyStatus.map((item, i) => (
+                          <Toggle
+                            key={item.id}
+                            label={item.name}
+                            name={item.name}
+                            value={item.id}
+                            variant="small"
+                            checked={active === i}
+                            isActive
+                            type="tabButton"
+                            onChange={() => {
+                              setActive(i);
+                              setContentType(item.id);
+                              setParams({
+                                ...params,
+                                viewFilter: item.id,
+                                page,
+                              });
+                              setPage(1);
+                            }}
+                            className={cx('tw-mr-2 !tw-w-[90px]')}
+                          />
+                        ))}
+                        <Toggle
+                          label="배지보기"
+                          name="배지보기"
+                          value=""
+                          variant="small"
+                          checked={active === 4}
+                          isActive
+                          type="tabButton"
+                          onChange={() => {
+                            setActive(4);
+                          }}
+                          className={cx('tw-mr-2 !tw-w-[95px]')}
+                        />
+                        <Toggle
+                          label="나의 학습 캘린더"
+                          name="나의 학습 캘린더"
+                          value=""
+                          variant="small"
+                          checked={active === 5}
+                          isActive
+                          type="tabButton"
+                          onChange={() => {
+                            setActive(5);
+                          }}
+                          className={cx('tw-mt-3 tw-mr-2 !tw-w-[150px]')}
+                        />
+                        <Toggle
+                          label="내가 풀어야할 퀴즈"
+                          name="내가 풀어야할 퀴즈"
+                          value=""
+                          variant="small"
+                          checked={active === 6}
+                          isActive
+                          type="tabButton"
+                          onChange={() => {
+                            setActive(6);
+                          }}
+                          className={cx('tw-mr-2 !tw-w-[150px]')}
+                        />
+                      </div>
+                    </div>
+                  </Grid>
+                </Grid>
+              </Box>
+            </div>
           </div>
-        </article>
-      </div>
-    </div>
+        </div>
+      </Mobile>
+    </>
   );
 }
 
