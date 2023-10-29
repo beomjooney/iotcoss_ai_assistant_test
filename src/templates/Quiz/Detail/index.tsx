@@ -450,12 +450,12 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                                 <button
                                   type="button"
                                   data-tooltip-target="tooltip-default"
-                                  className="tw-w-[60px] tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-bold tw-px-3 tw-py-1 tw-rounded"
+                                  className="tw-w-0.5/12 tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-bold tw-px-3 tw-py-1 tw-rounded"
                                 >
                                   대표
                                 </button>
                               )}
-                              <div className="tw-flex-auto tw-px-5">
+                              <div className="tw-flex-auto tw-px-5 tw-w-3/12">
                                 <div className="tw-font-medium tw-text-black">{item?.content}</div>
                               </div>
 
