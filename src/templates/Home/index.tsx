@@ -349,7 +349,7 @@ export function HomeTemplate({ logged = false }: HomeProps) {
               <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
                 <Grid item xs={2} sm={4} md={4}>
                   <div
-                    className="w-1/2 bg-white  tw-rounded-xl overflow-hidden tw-h-[680px] max-md:tw-h-[680px] tw-px-[55px] "
+                    className="w-1/2 bg-white  tw-rounded-xl overflow-hidden tw-h-[680px] max-md:tw-h-[680px] tw-px-[55px] max-md:tw-px-4"
                     style={{ boxShadow: '-12px 13px 40px rgba(0, 0, 0, 0.05)' }}
                   >
                     <div className="tw-flex tw-justify-center tw-items-center tw-pt-20 tw-pb-5">
@@ -397,7 +397,7 @@ export function HomeTemplate({ logged = false }: HomeProps) {
                 </Grid>
                 <Grid item xs={2} sm={4} md={4}>
                   <div
-                    className="w-1/2 bg-white  tw-rounded-xl overflow-hidden tw-h-[680px] max-md:tw-h-[680px] tw-px-[55px] "
+                    className="w-1/2 bg-white  tw-rounded-xl overflow-hidden tw-h-[680px] max-md:tw-h-[680px] tw-px-[55px]  max-md:tw-px-4"
                     style={{ boxShadow: '-12px 13px 40px rgba(0, 0, 0, 0.05)' }}
                   >
                     <div className="tw-flex tw-justify-center tw-items-center tw-pt-20 tw-pb-5">
@@ -442,7 +442,7 @@ export function HomeTemplate({ logged = false }: HomeProps) {
                 </Grid>
                 <Grid item xs={2} sm={4} md={4}>
                   <div
-                    className="w-1/2 bg-white  tw-rounded-xl overflow-hidden tw-h-[680px] max-md:tw-h-[680px] tw-px-[55px] "
+                    className="w-1/2 bg-white  tw-rounded-xl overflow-hidden tw-h-[680px] max-md:tw-h-[680px] tw-px-[55px]  max-md:tw-px-4"
                     style={{ boxShadow: '-12px 13px 40px rgba(0, 0, 0, 0.05)' }}
                   >
                     <div className="tw-flex tw-justify-center tw-items-center tw-pt-20 tw-pb-5">

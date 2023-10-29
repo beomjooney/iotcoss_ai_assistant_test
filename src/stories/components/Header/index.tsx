@@ -103,7 +103,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
       ? setLogoutButton(
           <div className={cx('custom-item')} id="logoutBtn">
             <button
-              className="max-lg: tw-mr-1 tw-bg-[#2474ED] tw-rounded-md tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
+              className="tw-w-28 max-lg:tw-mr-1 tw-bg-[#2474ED] tw-rounded-md tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
               onClick={() => (location.href = '/quiz-make')}
             >
               퀴즈만들기
@@ -278,7 +278,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                 <div className="col-lg-12 tw-flex tw-items-center tw-justify-start max-lg:tw-justify-end lg:tw-mb-0">
                   {logoutButton}
                   <Tooltip title="Alarm">
-                    <div className="tw-px-4">
+                    <div className="tw-px-2">
                       <IconButton
                         onClick={handleIconClick}
                         size="large"
@@ -479,7 +479,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                   {logoutButton}
 
                   <Tooltip title="">
-                    <div className="tw-px-4">
+                    <div className="tw-px-2">
                       <IconButton
                         onClick={handleIconClick}
                         size="large"
