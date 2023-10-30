@@ -11,7 +11,7 @@ export const useSaveMember = (): UseMutationResult => {
       const { code, message } = error;
       alert(`mutation error : [${code}] ${message}`);
     },
-    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('MENTORS').all),
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_MEMBERS').all),
     onSuccess: async data => {
       alert('수정이 완료되었습니다.');
     },

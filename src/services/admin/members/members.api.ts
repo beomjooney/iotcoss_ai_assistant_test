@@ -17,8 +17,8 @@ export async function getMemberInfo(memberId: string) {
 }
 
 // 회원 정보 수정
-export const saveMember = async (memberId, body) =>
-  await axiosGeneralAPI().put(`/api/internal/v1/members/${memberId}`, body);
+export const saveMember = async (memberId: string, body) =>
+  await axiosGeneralAPI().put(`/api/internal/v1/members`, body);
 
 // 회원 정보 삭제
-export const deleteMember = async memberId => await axiosGeneralAPI().delete(`/api/internal/v1/members/${memberId}`);
+export const deleteMember = async memberId => await axiosGeneralAPI().delete(`/api/internal/v1/members`);

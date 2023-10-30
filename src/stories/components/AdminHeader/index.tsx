@@ -48,17 +48,17 @@ const AdminHeader = ({ menuItem, activeNo = 0 }: AdminNavbarProps) => {
             toggle: true,
             children: [{ no: 1011, title: '회원관리', link: '/admin/members' }],
           },
-          // {
-          //   no: 102,
-          //   title: '멘토',
-          //   link: '#',
-          //   upMenuNo: 1,
-          //   toggle: true,
-          //   children: [
-          //     { no: 1022, title: '멘토 관리', link: '/admin/mentors/growth-story' },
-          //     { no: 1021, title: '멘토 신청관리', link: '/admin/mentors' },
-          //   ],
-          // },
+          {
+            no: 102,
+            title: '리더',
+            link: '#',
+            upMenuNo: 1,
+            toggle: true,
+            children: [
+              { no: 1022, title: '리더 관리', link: '/admin/mentors/growth-story' },
+              // { no: 1021, title: '리더 신청관리', link: '/admin/mentors' },
+            ],
+          },
         ]);
         break;
       case 2:
