@@ -722,7 +722,7 @@ export function StudyRoomTemplate() {
                           <div className="tw-text-base">학습횟수: {row.recruitedMemberCount}회</div>
                         </div>
                         <div className="tw-col-span-4 tw-flex tw-items-center tw-justify-end">
-                          <span className="tw-bg-[#b8b8b8] tw-text-white tw-text-xs tw-font-medium tw-mr-2 tw-px-2.5 tw-py-3 tw-rounded">
+                          <span className="tw-bg-[#b8b8b8] tw-text-white tw-text-xs tw-font-medium tw-mr-2 tw-px-2.5 tw-py-3 tw-rounded tw-text-base">
                             {row.startAt.split(' ')[0].split('-')[1]}/{row.startAt.split(' ')[0].split('-')[2]} 오픈예정
                           </span>
                         </div>
