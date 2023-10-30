@@ -703,6 +703,35 @@ export function StudyRoomTemplate() {
                   </Grid>
                 </Grid>
               </Box>
+              {isContentFetched && active === 0 && (
+                <div>
+                  <div className="tw-bg-[#f9f9f9] tw-text-black tw-p-7 tw-rounded-lg tw-text-base">
+                    학습 예정 클럽정보
+                  </div>
+                  {contents.map((row, index) => (
+                    <div key={index} className="tw-px-3 tw-pt-4">
+                      <div className="tw-py-2 tw-text-black tw-font-bold tw-text-base">{row.clubName}</div>
+                      <div className="tw-text-base">리더: {row.leaderNickname}</div>
+                      <div className="tw-text-base">참가자: {row.recruitedMemberCount}명</div>
+                      <div className="tw-text-base">학습시작예정: {row.startAt.split(' ')[0]}</div>
+                      <div className="tw-grid tw-grid-cols-8 tw-gap-4">
+                        <div className="tw-col-span-4 ">
+                          <div className="tw-text-base">
+                            학습주기: {row.studyCycle.toString()},{row.studyWeekCount}회
+                          </div>
+                          <div className="tw-text-base">학습횟수: {row.recruitedMemberCount}회</div>
+                        </div>
+                        <div className="tw-col-span-4 tw-flex tw-items-center tw-justify-end">
+                          <span className="tw-bg-[#b8b8b8] tw-text-white tw-text-xs tw-font-medium tw-mr-2 tw-px-2.5 tw-py-3 tw-rounded">
+                            {row.startAt.split(' ')[0].split('-')[1]}/{row.startAt.split(' ')[0].split('-')[2]} 오픈예정
+                          </span>
+                        </div>
+                      </div>
+                      <Divider className="tw-mb-6 tw-border tw-bg-['#efefef']" />
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
