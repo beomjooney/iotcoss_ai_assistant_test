@@ -48,17 +48,17 @@ const AdminHeader = ({ menuItem, activeNo = 0 }: AdminNavbarProps) => {
             toggle: true,
             children: [{ no: 1011, title: '회원관리', link: '/admin/members' }],
           },
-          {
-            no: 102,
-            title: '리더',
-            link: '#',
-            upMenuNo: 1,
-            toggle: true,
-            children: [
-              { no: 1022, title: '리더 관리', link: '/admin/mentors/growth-story' },
-              // { no: 1021, title: '리더 신청관리', link: '/admin/mentors' },
-            ],
-          },
+          // {
+          //   no: 102,
+          //   title: '리더',
+          //   link: '#',
+          //   upMenuNo: 1,
+          //   toggle: true,
+          //   children: [
+          //     { no: 1022, title: '리더 관리', link: '/admin/mentors/growth-story' },
+          //     { no: 1021, title: '리더 신청관리', link: '/admin/mentors' },
+          //   ],
+          // },
         ]);
         break;
       case 2:
@@ -66,14 +66,14 @@ const AdminHeader = ({ menuItem, activeNo = 0 }: AdminNavbarProps) => {
         setSubMenuList([
           {
             no: 201,
-            title: '커리어세미나',
+            title: '클럽',
             link: '',
             upMenuNo: 2,
             toggle: true,
             children: [
-              { no: 2011, title: '세미나관리', link: '/admin/seminar' },
-              { no: 2012, title: '배너관리', link: '/admin/banner/seminar' },
-              { no: 2013, title: '메세지발송이력', link: '/admin/pushhistory' },
+              { no: 2011, title: '클럽관리', link: '/admin/club' },
+              // { no: 2012, title: '배너관리', link: '/admin/banner/seminar' },
+              // { no: 2013, title: '메세지발송이력', link: '/admin/pushhistory' },
             ],
           },
         ]);
