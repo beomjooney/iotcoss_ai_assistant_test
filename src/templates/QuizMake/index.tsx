@@ -432,7 +432,7 @@ export function QuizMakeTemplate() {
                     {/* <div className="">{item.memberName}</div> */}
                   </div>
                   <div className="tw-grid tw-grid-cols-12 tw-gap-4 tw-p-3">
-                    <div className="tw-col-span-1 tw-text-sm tw-font-bold tw-text-black">아티클</div>
+                    <div className="tw-col-span-1 tw-text-sm tw-font-bold tw-text-black ">아티클</div>
                     <div className="tw-col-span-9 tw-text-sm tw-text-gray-600">{item.articleUrl}</div>
                     <div className="tw-col-span-2 tw-text-sm tw-text-right">
                       댓글 : {item.activeCount} 답변 : {item.answerCount}

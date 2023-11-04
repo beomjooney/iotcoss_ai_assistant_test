@@ -468,6 +468,48 @@ export function StudyRoomTemplate() {
                           </Table>
                         </TableContainer>
                       )}
+                      {isContentFetched && active === 2 && (
+                        <div>
+                          <TableContainer component={Paper} className=" tw-mb-5" elevation={0}>
+                            <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                              <TableHead>
+                                <TableRow>
+                                  <StyledTableCell align="center" sx={{ width: '28%' }}>
+                                    클럽명
+                                  </StyledTableCell>
+                                  <StyledTableCell align="center">리더</StyledTableCell>
+                                  <StyledTableCell align="center">참가자</StyledTableCell>
+                                  <StyledTableCell align="center">학습시작일</StyledTableCell>
+                                  <StyledTableCell align="center">학습주기</StyledTableCell>
+                                  <StyledTableCell align="center">상세보기</StyledTableCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {contents.map(row => (
+                                  <StyledTableRow key={row.clubName}>
+                                    <StyledTableCell component="th" scope="row" align="center">
+                                      {row.clubName}
+                                    </StyledTableCell>
+                                    <StyledTableCell align="center">{row.leaderNickname}</StyledTableCell>
+                                    <StyledTableCell align="center">{row.recruitedMemberCount}</StyledTableCell>
+                                    <StyledTableCell align="center">{row.startAt.split(' ')[0]}</StyledTableCell>
+                                    <StyledTableCell align="center">
+                                      {row.studyCycle.toString()},{row.studyWeekCount}회
+                                    </StyledTableCell>
+                                    <StyledTableCell align="center">
+                                      <span className="tw-bg-gray-300 tw-text-white tw-text-xs tw-font-medium tw-mr-2 tw-px-2.5 tw-py-3 tw-rounded">
+                                        학습종료
+                                      </span>
+                                    </StyledTableCell>
+                                  </StyledTableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                          {/* <Pagination count={totalPage} page={page} onChange={handleChange} /> */}
+                          <Pagination page={page} setPage={setPage} total={totalPage} />
+                        </div>
+                      )}
                       {active === 4 && (
                         <div>
                           <div className="tw-grid tw-grid-cols-7 tw-gap-4">
@@ -730,6 +772,199 @@ export function StudyRoomTemplate() {
                       <Divider className="tw-mb-6 tw-border tw-bg-['#efefef']" />
                     </div>
                   ))}
+                </div>
+              )}
+              {isContentFetched && active === 1 && (
+                <div>
+                  <div className="tw-bg-[#f9f9f9] tw-text-black tw-p-7 tw-rounded-lg tw-text-base">
+                    학습 중 클럽정보
+                  </div>
+                  {contents.map((row, index) => (
+                    <div key={index} className="tw-px-3 tw-pt-4">
+                      <div className="tw-py-2 tw-text-black tw-font-bold tw-text-base">{row.clubName}</div>
+                      <div className="tw-text-base">리더: {row.leaderNickname}</div>
+                      <div className="tw-text-base">참가자: {row.recruitedMemberCount}명</div>
+                      <div className="tw-text-base">학습시작예정: {row.startAt.split(' ')[0]}</div>
+                      <div className="tw-grid tw-grid-cols-8 tw-gap-4">
+                        <div className="tw-col-span-4 ">
+                          <div className="tw-text-base">
+                            학습주기: {row.studyCycle.toString()},{row.studyWeekCount}회
+                          </div>
+                          <div className="tw-text-base">학습횟수: {row.recruitedMemberCount}회</div>
+                          <div className="tw-text-base">학습현황: {parseInt(row.clubRunRate)}%</div>
+                          <div className="tw-p-3 tw-pl-0">
+                            <div className="progress tw-rounded tw-h-2 tw-p-0">
+                              <span style={{ width: `${parseInt(row.clubRunRate)}%` }}>
+                                <span className="progress-line"></span>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="tw-col-span-4 tw-flex tw-items-center tw-justify-end">
+                          <span
+                            onClick={() => (location.href = '/quiz/' + `${row.clubSequence}`)}
+                            className="tw-bg-blue-500 tw-text-white tw-text-xs tw-font-medium tw-mr-2 tw-px-2.5 tw-py-3 tw-rounded"
+                          >
+                            입장하기
+                          </span>
+                        </div>
+                      </div>
+                      <div className="tw-bg-gray-50 tw-rounded-md tw-p-5 tw-text-gray-400 tw-mb-3  tw-text-base">
+                        <div>클럽생성일: {row.clubCreatedAt.split(' ')[0]}</div>
+                        <div>클럽가입일: {row.clubJoinedAt.split(' ')[0]}</div>
+                        <div>
+                          학습횟수: {row.studyCount} / {row.studyTotalCount} 회
+                        </div>
+                      </div>
+                      <Divider className="tw-mb-6 tw-border tw-bg-['#efefef']" />
+                    </div>
+                  ))}
+                </div>
+              )}
+              {isContentFetched && active === 2 && (
+                <div>
+                  <div className="tw-bg-[#f9f9f9] tw-text-black tw-p-7 tw-rounded-lg tw-text-base">
+                    학습 완료 클럽정보
+                  </div>
+                  {contents.map((row, index) => (
+                    <div key={index} className="tw-px-3 tw-pt-4">
+                      <div className="tw-py-2 tw-text-black tw-font-bold tw-text-base">{row.clubName}</div>
+                      <div className="tw-text-base">리더: {row.leaderNickname}</div>
+                      <div className="tw-text-base">참가자: {row.recruitedMemberCount}명</div>
+                      <div className="tw-text-base">학습시작예정: {row.startAt.split(' ')[0]}</div>
+                      <div className="tw-grid tw-grid-cols-8 tw-gap-4">
+                        <div className="tw-col-span-4 ">
+                          <div className="tw-text-base">
+                            학습주기: {row.studyCycle.toString()},{row.studyWeekCount}회
+                          </div>
+                          <div className="tw-text-base">학습횟수: {row.recruitedMemberCount}회</div>
+                        </div>
+                        <div className="tw-col-span-4 tw-flex tw-items-center tw-justify-end">
+                          <span className="tw-bg-[#b8b8b8] tw-text-white tw-text-xs tw-font-medium tw-mr-2 tw-px-2.5 tw-py-3 tw-rounded tw-text-base">
+                            학습완료
+                          </span>
+                        </div>
+                      </div>
+                      <Divider className="tw-mb-6 tw-border tw-bg-['#efefef']" />
+                    </div>
+                  ))}
+                </div>
+              )}
+              {active === 4 && (
+                <div>
+                  <div className="tw-grid tw-grid-cols-4 tw-gap-4">
+                    {badgeContents.map((item, index) => (
+                      <div key={index} className="tw-text-center">
+                        <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
+                          <img
+                            className="tw-object-cover tw-h-15 "
+                            src={`${process.env.NEXT_PUBLIC_GENERAL_URL}/assets/images/badge/${item?.badgeId}.png`}
+                            alt=""
+                          />
+                        </div>
+                        <div className="tw-text-sm tw-text-black tw-font-bold">{item?.name}</div>
+                        <div className="tw-text-sm tw-text-black tw-line-clamp-1">{item?.description}</div>
+                        <div className="tw-text-sm tw-text-black">{item?.achievementAt?.split(' ')[0]}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {active === 5 && (
+                <div>
+                  <div className="tw-bg-gray-50 tw-rounded-md tw-h-[400px] tw-p-5 tw-text-black ">
+                    <div className="tw-font-bold tw-text-base tw-pb-5">나의 학습 캘린더</div>
+                    <div className="tw-bg-white">
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DateCalendar
+                          onMonthChange={handleMonthChange}
+                          onChange={handleDayChange}
+                          showDaysOutsideCurrentMonth
+                          slots={{
+                            day: ServerDay,
+                          }}
+                          slotProps={{
+                            day: {
+                              highlightedDays,
+                            } as any,
+                          }}
+                        />
+                      </LocalizationProvider>
+                    </div>
+                  </div>
+                  {quizStatusList.length > 0 && (
+                    <div className="tw-bg-gray-50 tw-rounded-md tw-p-5 tw-text-black ">
+                      <div className="tw-font-bold tw-text-base tw-pb-5">퀴즈 상태</div>
+                      {quizStatusList.map((item, i) => {
+                        return (
+                          // TODO API Response 보고 댓글 작성자로 수정 필요
+                          <div
+                            key={i}
+                            className="tw-flex tw-items-center tw-rounded-md tw-grid tw-grid-cols-6 tw-gap-0  tw-bg-white tw-text-sm  tw-p-4 tw-mb-5"
+                          >
+                            <div className="tw-col-span-4 ">
+                              <div className="tw-line-clamp-2"> {item.clubName}</div>
+                            </div>
+                            <div className="tw-col-span-2 tw-text-right">
+                              <button
+                                disabled
+                                className={`tw-w-[60px] tw-text-center tw-text-white tw-text-blue-800 tw-text-xs tw-font-medium tw-px-3 tw-py-2 tw-rounded ${
+                                  item.isComplete ? 'tw-bg-gray-400' : 'tw-bg-blue-500'
+                                }`}
+                              >
+                                {item.isComplete ? '완료 ' : '미완료'}
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              )}
+              {active === 6 && (
+                <div className="tw-bg-gray-50 tw-rounded-md tw-h-[430px] tw-p-5 tw-text-black ">
+                  <div className="tw-font-bold tw-text-base tw-pb-5">내가 풀어야 할 퀴즈</div>
+                  <div className="tw-mb-5">
+                    {isQuizFetched && quizList.length > 0 ? (
+                      quizList.map((item, i) => (
+                        <div
+                          key={i}
+                          className="tw-flex tw-items-center tw-rounded-md tw-grid tw-grid-cols-6 tw-gap-0  tw-bg-white tw-text-sm  tw-p-4 tw-mb-5"
+                        >
+                          <div className="tw-col-span-5 tw-pr-3">
+                            <div className="tw-line-clamp-1"> {item.clubName}</div>
+                            <div className="tw-font-bold"> 3회차</div>
+                            <div className="tw-line-clamp-1"> Q. {item.quizContent}</div>
+                          </div>
+                          <div className="tw-col-span-1">
+                            <button
+                              onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
+                              className="tw-text-center tw-bg-blue-500 tw-text-white tw-text-blue-800 tw-text-xs tw-font-medium tw-px-3 tw-py-2 tw-rounded"
+                            >
+                              GO {'>'}
+                            </button>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="tw-flex tw-items-center tw-rounded-md tw-gap-0  tw-bg-white tw-text-sm  tw-p-4 tw-mb-5">
+                        오늘은 풀어야 할 퀴즈가 없어요.
+                      </div>
+                    )}
+                  </div>
+                  <Stack spacing={2} className="tw-items-center">
+                    <_Pagination
+                      count={quizTotalPage}
+                      size="small"
+                      siblingCount={0}
+                      page={quizPage}
+                      renderItem={item => (
+                        <PaginationItem slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }} {...item} />
+                      )}
+                      onChange={handleChange}
+                    />
+                  </Stack>
                 </div>
               )}
             </div>
