@@ -46,19 +46,19 @@ const AdminHeader = ({ menuItem, activeNo = 0 }: AdminNavbarProps) => {
             link: '/admin/members',
             upMenuNo: 1,
             toggle: true,
-            children: [{ no: 1011, title: '회원관리', link: '/admin/members' }],
+            children: [{ no: 1011, title: '회원', link: '/admin/members' }],
           },
-          // {
-          //   no: 102,
-          //   title: '리더',
-          //   link: '#',
-          //   upMenuNo: 1,
-          //   toggle: true,
-          //   children: [
-          //     { no: 1022, title: '리더 관리', link: '/admin/mentors/growth-story' },
-          //     { no: 1021, title: '리더 신청관리', link: '/admin/mentors' },
-          //   ],
-          // },
+          {
+            no: 102,
+            title: '리더',
+            link: '#',
+            upMenuNo: 1,
+            toggle: true,
+            children: [
+              { no: 1022, title: '리더', link: '#' },
+              // { no: 1021, title: '리더신청', link: '#' },
+            ],
+          },
         ]);
         break;
       case 2:
@@ -70,111 +70,104 @@ const AdminHeader = ({ menuItem, activeNo = 0 }: AdminNavbarProps) => {
             link: '',
             upMenuNo: 2,
             toggle: true,
-            children: [
-              { no: 2011, title: '클럽관리', link: '/admin/club' },
-              // { no: 2012, title: '배너관리', link: '/admin/banner/seminar' },
-              // { no: 2013, title: '메세지발송이력', link: '/admin/pushhistory' },
-            ],
+            children: [{ no: 2011, title: '클럽', link: '/admin/club' }],
+          },
+          {
+            no: 202,
+            title: '퀴즈',
+            link: '#',
+            upMenuNo: 2,
+            toggle: true,
+            children: [{ no: 2021, title: '퀴즈', link: '#' }],
+          },
+          {
+            no: 203,
+            title: '배너',
+            link: '#',
+            upMenuNo: 2,
+            toggle: true,
+            children: [{ no: 2031, title: '배너', link: '#' }],
           },
         ]);
         break;
       case 3:
-        setSubmenuTitle('콘텐츠 관리');
+        setSubmenuTitle('집계/통계');
         setSubMenuList([
           {
             no: 301,
-            title: '커리어네비게이션',
-            link: '#',
+            title: '통계',
+            link: '',
             upMenuNo: 3,
             toggle: true,
             children: [
-              { no: 3011, title: '성장노드', link: '/admin/contents/growthNode' },
-              { no: 3012, title: '성장엣지', link: '/admin/contents/growthEdge' },
+              { no: 3011, title: '클럽통계', link: '#' },
+              { no: 3012, title: '퀴즈통계', link: '#' },
+              { no: 3013, title: '리더통계', link: '#' },
             ],
-          },
-          {
-            no: 302,
-            title: '직무역량',
-            link: '#',
-            upMenuNo: 3,
-            toggle: true,
-            children: [
-              { no: 3021, title: '역량', link: '/admin/contents/capability' },
-              { no: 3022, title: '역량레벨', link: '/admin/contents/capability-level' },
-            ],
-          },
-          {
-            no: 303,
-            title: '스킬/경험',
-            link: '#',
-            upMenuNo: 3,
-            toggle: true,
-            children: [
-              { no: 3031, title: '스킬', link: '/admin/contents/skill' },
-              { no: 3032, title: '경험', link: '/admin/contents/experience' },
-            ],
-          },
-          {
-            no: 304,
-            title: '추천커맨픽',
-            link: '#',
-            upMenuNo: 3,
-            toggle: true,
-            children: [
-              { no: 3041, title: '추천콘텐츠', link: '/admin/contents/recommend-contents' },
-              { no: 3042, title: '추천서비스', link: '/admin/contents/recommend-service' },
-            ],
-          },
-          {
-            no: 305,
-            title: '게시판',
-            link: '#',
-            upMenuNo: 3,
-            toggle: true,
-            children: [{ no: 3051, title: '커멘니티', link: '/admin/contents/camenity' }],
           },
         ]);
         break;
       case 4:
-        setSubmenuTitle('시스템관리');
+        setSubmenuTitle('콘텐츠 관리');
         setSubMenuList([
           {
             no: 401,
-            title: '정책관리',
+            title: '스킬/경험',
             link: '#',
             upMenuNo: 4,
             toggle: true,
-            children: [{ no: 4011, title: '약관관리', link: '#' }],
+            children: [
+              { no: 4011, title: '스킬', link: '#' },
+              { no: 4012, title: '경험', link: '#' },
+            ],
           },
           {
             no: 402,
-            title: '알림관리',
+            title: '배지',
             link: '#',
             upMenuNo: 4,
             toggle: true,
-            children: [
-              { no: 4021, title: '알람발송이력', link: '#' },
-              { no: 4022, title: 'OTP이력', link: '#' },
-            ],
+            children: [{ no: 4021, title: '배지', link: '#' }],
           },
           {
             no: 403,
-            title: '코드관리',
+            title: '커리어',
             link: '#',
             upMenuNo: 4,
             toggle: true,
-            children: [
-              { no: 4031, title: '코드그룹관리', link: '/admin/system/manage-code' },
-              { no: 4032, title: '코드상세관리', link: '/admin/system/code-detail  ' },
-            ],
+            children: [{ no: 4031, title: '커리어', link: '#' }],
+          },
+        ]);
+        break;
+      case 5:
+        setSubmenuTitle('시스템관리');
+        setSubMenuList([
+          {
+            no: 501,
+            title: '정책관리',
+            link: '#',
+            upMenuNo: 5,
+            toggle: true,
+            children: [{ no: 5011, title: '약관', link: '#' }],
           },
           {
-            no: 404,
-            title: '오류관리',
+            no: 502,
+            title: '알림관리',
             link: '#',
+            upMenuNo: 5,
             toggle: true,
-            upMenuNo: 4,
-            children: [{ no: 4041, title: '시스템오류관리', link: '#' }],
+            children: [{ no: 5021, title: '알람발송이력', link: '#' }],
+          },
+          {
+            no: 503,
+            title: '코드관리',
+            link: '#',
+            upMenuNo: 5,
+            toggle: true,
+            children: [
+              { no: 5031, title: '코드그룹', link: '#' },
+              { no: 5032, title: '코드상세', link: '#' },
+            ],
           },
         ]);
         break;

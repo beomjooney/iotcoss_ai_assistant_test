@@ -58,7 +58,7 @@ const AdminLayout = ({ darkBg, classOption, title, children, isFooter = true, re
     },
     {
       no: 1,
-      title: '사용자관리',
+      title: '사용자',
       link: '/admin/members',
       icon: '/assets/images/icons/user.png',
     },
@@ -69,8 +69,9 @@ const AdminLayout = ({ darkBg, classOption, title, children, isFooter = true, re
       link: '/admin/club',
       icon: '/assets/images/icons/service.png',
     },
-    // { no: 3, option: 'nav-item', title: '콘텐츠관리', link: '#', icon: '/assets/images/icons/content.png' },
-    // { no: 4, option: 'nav-item', title: '시스템관리', link: '#', icon: '/assets/images/icons/system.png' },
+    { no: 3, option: 'nav-item', title: '집계/통계', link: '#', icon: '/assets/images/icons/content.png' },
+    { no: 4, option: 'nav-item', title: '콘텐츠', link: '#', icon: '/assets/images/icons/content.png' },
+    { no: 5, option: 'nav-item', title: '시스템', link: '#', icon: '/assets/images/icons/system.png' },
   ];
 
   return (
