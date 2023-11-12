@@ -50,6 +50,18 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
   const POPUP_COLGROUP = ['15%', '10%', '15%', '15%', '10%'];
   const POPUP_HEADS = ['신청자 아이디', '이름', '닉네임', '전화번호', '등록일시'];
 
+  const TAB2_COLGROUP = ['15%', '10%', '15%', '15%', '10%', '10%', '10%', '10%'];
+  const TAB2_HEADS = [
+    '회원UUID',
+    '이름',
+    '닉네임',
+    '상태',
+    '가입신청일시',
+    '가입승인일시',
+    '학습횟수',
+    '답변좋아요 수',
+  ];
+
   const LEVELS = [
     { level: 1, desc: '상용서비스 단위모듈 수준 개발 가능. 서비스 개발 리딩 시니어 필요' },
     { level: 2, desc: '상용서비스 개발 1인분 가능한 사람. 소규모 서비스 독자 개발 가능' },
@@ -572,7 +584,18 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
                   setIsEdit(false);
                 }}
               >
-                클럽 참여 승인/취소
+                클럽 회원 정보
+              </a>
+            </li>
+            <li className={tabValue === 3 ? 'on' : ''}>
+              <a
+                href="#"
+                onClick={() => {
+                  handleTab(3);
+                  setIsEdit(false);
+                }}
+              >
+                클럽 퀴즈 정보
               </a>
             </li>
           </ul>
@@ -739,7 +762,24 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
                 <div className="grid-25">
                   <div className="inpwrap">
                     <div className="inp-tit">
-                      세미나 상태<span className="star">*</span>
+                      학습 주수<span className="star">*</span>
+                    </div>
+                    <div className="inp">
+                      <input
+                        type="text"
+                        className="input-admin"
+                        name="keywords"
+                        value={seminarParams?.keywords || ''}
+                        onChange={onChangeSeminar}
+                        disabled={!isEdit}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid-25">
+                  <div className="inpwrap">
+                    <div className="inp-tit">
+                      학습 주기<span className="star">*</span>
                     </div>
                     <div className="inp">
                       <select
@@ -760,16 +800,16 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
                 <div className="grid-25">
                   <div className="inpwrap">
                     <div className="inp-tit">
-                      세미나 유형<span className="star">*</span>
+                      클럽 상태<span className="star">*</span>
                     </div>
                     <div className="inp">
                       <select
-                        name="seminarType"
+                        name="seminarStatus"
                         onChange={onChangeSeminar}
-                        value={seminarParams?.seminarType || ''}
+                        value={seminarParams?.seminarStatus || ''}
                         disabled={!isEdit}
                       >
-                        {seminarTypes?.map(option => (
+                        {seminarStatus?.map(option => (
                           <option key={option.id} value={option.id}>
                             {option.name}
                           </option>
@@ -778,10 +818,71 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
                     </div>
                   </div>
                 </div>
+                <div className="grid-25">
+                  <div className="inpwrap">
+                    <div className="inp-tit">
+                      공개 여부<span className="star">*</span>
+                    </div>
+                    <div className="inp">
+                      <select
+                        name="seminarStatus"
+                        onChange={onChangeSeminar}
+                        value={seminarParams?.seminarStatus || ''}
+                        disabled={!isEdit}
+                      >
+                        {seminarStatus?.map(option => (
+                          <option key={option.id} value={option.id}>
+                            {option.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div className="grid-25">
+                  <div className="inpwrap">
+                    <div className="inp-tit">
+                      참여코드<span className="star">*</span>
+                    </div>
+                    <div className="inp">
+                      <input
+                        type="text"
+                        className="input-admin"
+                        name="keywords"
+                        value={seminarParams?.keywords || ''}
+                        onChange={onChangeSeminar}
+                        disabled={!isEdit}
+                      />
+                    </div>
+                  </div>
+                </div>
                 <div className="grid-100">
                   <div className="inpwrap">
                     <div className="inp-tit">
                       추천직군<span className="star">*</span>
+                    </div>
+                    <div className="inp">
+                      {jobCodes?.map(item => (
+                        <span key={item.id} className={cx('col-md-2', 'pl-0')}>
+                          <Toggle
+                            isActive
+                            label={item.name}
+                            name={item.name}
+                            type="checkBox"
+                            value={item.id || ''}
+                            checked={seminarParams?.recommendJobGroups?.includes(item.id) || false}
+                            onChange={e => handleCheckboxChange(e, 'recommendJobGroups')}
+                            disabled={!isEdit}
+                          />
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <div className="grid-100">
+                  <div className="inpwrap">
+                    <div className="inp-tit">
+                      추천직무<span className="star">*</span>
                     </div>
                     <div className="inp">
                       {jobCodes?.map(item => (
@@ -973,7 +1074,7 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
                     </div>
                   </div>
                 </div>
-                {/* <div className="grid-100 mt-5">
+                <div className="grid-100 mt-5">
                   <div className="inpwrap">
                     <div className="inp-tit">
                       클럽 설명<span className="star">*</span>
@@ -990,6 +1091,7 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
                     </div>
                   </div>
                 </div>
+                {/*
                 <div className="grid-100">
                   <div className="inpwrap">
                     <div className="inp-tit">
@@ -1024,6 +1126,51 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
             </div>
           )}
           {tabValue === 2 && popupOpen && (
+            <div className="tab-content" data-id="tabLink02">
+              <hr className="h40" />
+              <div className="data-type1" data-evt="table-on">
+                <Table
+                  name="seminarMember"
+                  colgroup={TAB2_COLGROUP}
+                  heads={TAB2_HEADS}
+                  items={seminarParticipantList?.map((item, index) => {
+                    return (
+                      <tr key={`participant-${index}`}>
+                        <td>{item.memberId}</td>
+                        <td>{item.name}</td>
+                        <td>{item.nickname}</td>
+                        <td>{item.phoneNumber}</td>
+                        <td>{dayjs(item.createdAt).format('YYYY-MM-DD')}</td>
+                        <td>
+                          <div className="right">
+                            {['0001', '0003', '0004'].includes(item.approvalStatus) ? (
+                              <button
+                                className="btn-type1 type3"
+                                name="apply"
+                                onClick={event => handleSeminarApply(event, item.memberId)}
+                              >
+                                승인
+                              </button>
+                            ) : (
+                              <button
+                                className="btn-type1 type4"
+                                name="cancel"
+                                onClick={event => handleSeminarApply(event, item.memberId)}
+                              >
+                                반려
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                  isEmpty={seminarParticipantList?.length === 0 || false}
+                />
+              </div>
+            </div>
+          )}
+          {tabValue === 3 && popupOpen && (
             <div className="tab-content" data-id="tabLink02">
               <hr className="h40" />
               <div className="data-type1" data-evt="table-on">
