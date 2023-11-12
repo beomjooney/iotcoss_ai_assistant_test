@@ -32,22 +32,20 @@ interface ClubTemplateProps {
 }
 
 export function AdminClubTemplate({}: ClubTemplateProps) {
-  const COLGROUP = ['10%', '8%', '10%', '6%', '6%', '7%', '6%', '6%', '5%', '8%', '8%', '8%', '8%', '8%'];
+  const COLGROUP = ['8%', '8%', '10%', '6%', '6%', '7%', '6%', '6%', '6%', '8%', '8%', '8%'];
   const HEADS = [
     '클럽아이디',
+    '회원UUID',
     '클럽명',
-    '추천직군',
-    '추천직무',
-    '추천레벨',
-    '설명',
+    '추천직군들',
+    '추천직무들',
+    '추천레벨들',
     '공개여부',
     '모집회원수',
+    '모집된회원 수',
     '퀴즈시작일',
-    '퀴즈종료일',
-    '학습주수',
-    '학습주기',
-    '상태',
-    '등록일시',
+    '클럽상태',
+    '생성일시',
   ];
   const POPUP_COLGROUP = ['15%', '10%', '15%', '15%', '10%'];
   const POPUP_HEADS = ['신청자 아이디', '이름', '닉네임', '전화번호', '등록일시'];
@@ -125,6 +123,10 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
   const { data: jobs } = useJobs();
 
   const { isFetched: isPlaceTypeFetched } = usePlaceTypes(data => setPlaceTypes(data || []));
+
+  const seminarList = [];
+  const jobCodes = [];
+  const pageProps = [];
 
   // useEffect(() => {
   //   let keywords = '';
@@ -222,43 +224,43 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
     }
   };
 
-  // const handleSeminarApply = (event: React.MouseEvent<HTMLButtonElement>, memberId: string) => {
-  //   const { name } = event.currentTarget;
-  //   const params = {
-  //     approvalStatus: name === 'apply' ? '0002' : '0003',
-  //     noShow: false,
-  //     memberId,
-  //   };
-  //   onSeminarApply && onSeminarApply(params);
-  // };
+  const handleSeminarApply = (event: React.MouseEvent<HTMLButtonElement>, memberId: string) => {
+    const { name } = event.currentTarget;
+    const params = {
+      approvalStatus: name === 'apply' ? '0002' : '0003',
+      noShow: false,
+      memberId,
+    };
+    onSeminarApply && onSeminarApply(params);
+  };
 
-  // const handleSave = () => {
-  //   if (!introduceEditor || !curriculumEditor || introduceEditor?.length === 0 || curriculumEditor?.length === 0) {
-  //     alert('모든 항목을 입력해주세요.');
-  //     return;
-  //   }
+  const handleSave = () => {
+    if (!introduceEditor || !curriculumEditor || introduceEditor?.length === 0 || curriculumEditor?.length === 0) {
+      alert('모든 항목을 입력해주세요.');
+      return;
+    }
 
-  //   const keywords = seminarParams?.keywords.split(',');
-  //   const params = {
-  //     ...seminarParams,
-  //     keywords,
-  //     imageUrl1: imageUrl1?.toString()?.slice(1) || seminarParams?.imageUrl1,
-  //     imageUrl2: imageUrl2?.toString()?.slice(1) || seminarParams?.imageUrl2,
-  //     imageUrl3: imageUrl3?.toString()?.slice(1) || seminarParams?.imageUrl3,
-  //     seminarIntroduction: introduceEditor,
-  //     seminarCurriculum: curriculumEditor,
-  //     seminarFaq: faqEditor,
-  //     lecturerMemberId: seminarParams.seminarLecturer.memberId,
-  //     lecturerName: seminarParams.seminarLecturer.name,
-  //     organizerMemberId: seminarParams.seminarLecturer.memberId, // 등록자
-  //   };
-  //   onSave && onSave(params);
-  //   setIsEdit(false);
-  // };
+    const keywords = seminarParams?.keywords.split(',');
+    const params = {
+      ...seminarParams,
+      keywords,
+      imageUrl1: imageUrl1?.toString()?.slice(1) || seminarParams?.imageUrl1,
+      imageUrl2: imageUrl2?.toString()?.slice(1) || seminarParams?.imageUrl2,
+      imageUrl3: imageUrl3?.toString()?.slice(1) || seminarParams?.imageUrl3,
+      seminarIntroduction: introduceEditor,
+      seminarCurriculum: curriculumEditor,
+      seminarFaq: faqEditor,
+      lecturerMemberId: seminarParams.seminarLecturer.memberId,
+      lecturerName: seminarParams.seminarLecturer.name,
+      organizerMemberId: seminarParams.seminarLecturer.memberId, // 등록자
+    };
+    onSave && onSave(params);
+    setIsEdit(false);
+  };
 
-  // const onSmartFilterSearch = (params: any) => {
-  //   onSearch && onSearch(params);
-  // };
+  const onSmartFilterSearch = (params: any) => {
+    onSearch && onSearch(params);
+  };
 
   const readFile = (file, key) => {
     if (popupOpen) {
@@ -411,13 +413,11 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
     setIsRegisterPopupOpen(false);
   };
 
-  return <div>null</div>;
-
   return (
     <div className="content manage-seminar-container">
-      <h2 className="tit-type1">세미나관리</h2>
+      <h2 className="tit-type1">클럽관리</h2>
       <div className="path">
-        <span>Home</span> <span>세미나 목록</span>
+        <span>Home</span> <span>클럽 목록</span>
       </div>
       <div className="data-top">
         <div className="left">
