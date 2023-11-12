@@ -1,0 +1,84 @@
+@use 'src/stories/assets/styles/abstracts/mixin';
+@use 'src/stories/assets/styles/abstracts/font';
+@use 'src/stories/assets/styles/abstracts/palette';
+
+.profile-image-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  button {
+    margin: 10px 0;
+  }
+  &__upload {
+    padding: 6px 25px;
+    background-color: #ff6600;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+  }
+
+  #file {
+    display: none;
+  }
+}
+
+.business-container {
+  $self: #{&};
+
+  .mt-92 {
+    margin-top: 92px;
+  }
+
+  section {
+    .business-card {
+      width: 1120px;
+      height: 600px;
+      position: relative;
+
+      .business-text {
+        position: absolute;
+        width: 532px;
+        height: 218px;
+        left: 64px;
+        top: 54px;
+      }
+    }
+
+    .business-cm3 {
+      width: 1120px;
+      height: 600px;
+      position: relative;
+
+      .business-text-cm3 {
+        position: absolute;
+        width: 439px;
+        height: 218px;
+        left: 640px;
+        top: 59px;
+      }
+    }
+
+    .business-cm2 {
+      width: 1120px;
+      height: 600px;
+      position: relative;
+
+      .business-text-cm2 {
+        position: absolute;
+        width: 565px;
+        height: 218px;
+        left: 64px;
+        top: 343px;
+      }
+    }
+  }
+
+  :global {
+    #{$self}__override {
+      color: #000000;
+      margin-bottom: 28px;
+    }
+  }
+}

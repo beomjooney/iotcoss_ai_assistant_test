@@ -55,8 +55,8 @@ const AdminHeader = ({ menuItem, activeNo = 0 }: AdminNavbarProps) => {
             upMenuNo: 1,
             toggle: true,
             children: [
-              { no: 1022, title: '리더', link: '#' },
-              // { no: 1021, title: '리더신청', link: '#' },
+              { no: 1021, title: '리더', link: '#' },
+              // { no: 1022, title: '리더신청', link: '#' },
             ],
           },
         ]);
@@ -78,7 +78,7 @@ const AdminHeader = ({ menuItem, activeNo = 0 }: AdminNavbarProps) => {
             link: '#',
             upMenuNo: 2,
             toggle: true,
-            children: [{ no: 2021, title: '퀴즈', link: '#' }],
+            children: [{ no: 2021, title: '퀴즈', link: '/admin/quiz' }],
           },
           {
             no: 203,
