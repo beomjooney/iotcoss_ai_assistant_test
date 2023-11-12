@@ -77,7 +77,7 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
   ];
 
   const [isFilter, setIsFilter] = useState<boolean>(false);
-  const [popupOpen, setPopupOpen] = useState<boolean>(false);
+  const [popupOpen, setPopupOpen] = useState<boolean>(true);
   const [searchKeyword, setSearchKeyword] = useState<string>('');
 
   const [introduceEditor, setIntroduceEditor] = useState<string>('');
@@ -127,32 +127,37 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
   const seminarList = [];
   const jobCodes = [];
   const pageProps = [];
+  const paymentTypes = [];
+  const seminarStatus = [];
+  const seminarTypes = [];
+  const seminarData = [];
+  const seminarParticipantList = [];
 
-  // useEffect(() => {
-  //   let keywords = '';
-  //   if (seminarData) {
-  //     if (seminarData?.keywords?.length > 0) {
-  //       keywords = seminarData?.keywords.join(',');
-  //     }
-  //     setSeminarParams({
-  //       ...seminarData,
-  //       keywords,
-  //       imageUrl1: seminarData?.imageUrl1 || null,
-  //       imageUrl2: seminarData?.imageUrl2 || null,
-  //       imageUrl3: seminarData?.imageUrl3 || null,
-  //     });
-  //   }
-  // }, [seminarData]);
+  useEffect(() => {
+    let keywords = '';
+    if (seminarData) {
+      if (seminarData?.keywords?.length > 0) {
+        keywords = seminarData?.keywords.join(',');
+      }
+      setSeminarParams({
+        ...seminarData,
+        keywords,
+        imageUrl1: seminarData?.imageUrl1 || null,
+        imageUrl2: seminarData?.imageUrl2 || null,
+        imageUrl3: seminarData?.imageUrl3 || null,
+      });
+    }
+  }, [seminarData]);
 
-  // useEffect(() => {
-  //   !popupOpen && setTabValue(1);
-  // }, [popupOpen]);
+  useEffect(() => {
+    !popupOpen && setTabValue(1);
+  }, [popupOpen]);
 
-  // const onShowPopup = (seminarId: string) => {
-  //   onSeminarInfo && onSeminarInfo(seminarId);
-  //   setPopupOpen(true);
-  //   setIsRegisterPopupOpen(false);
-  // };
+  const onShowPopup = (seminarId: string) => {
+    onSeminarInfo && onSeminarInfo(seminarId);
+    setPopupOpen(true);
+    setIsRegisterPopupOpen(false);
+  };
 
   const handleSearchKeyword = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget;
@@ -349,42 +354,42 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
     );
   };
 
-  // const handleOnAdd = () => {
-  //   let params = { ...regitserValues };
-  //   if (!introduceEditor || !curriculumEditor || introduceEditor?.length === 0 || curriculumEditor?.length === 0) {
-  //     alert('모든 항목을 입력해주세요.');
-  //     return;
-  //   }
-  //   if (
-  //     regitserValues.seminarStartDate > regitserValues.seminarEndDate ||
-  //     regitserValues.seminarRegistrationStartDate > regitserValues.seminarRegistrationEndDate
-  //   ) {
-  //     alert('시작일은 종료일 보다 클 수 없습니다.');
-  //     return;
-  //   }
+  const handleOnAdd = () => {
+    let params = { ...regitserValues };
+    if (!introduceEditor || !curriculumEditor || introduceEditor?.length === 0 || curriculumEditor?.length === 0) {
+      alert('모든 항목을 입력해주세요.');
+      return;
+    }
+    if (
+      regitserValues.seminarStartDate > regitserValues.seminarEndDate ||
+      regitserValues.seminarRegistrationStartDate > regitserValues.seminarRegistrationEndDate
+    ) {
+      alert('시작일은 종료일 보다 클 수 없습니다.');
+      return;
+    }
 
-  //   if (regitserValues.seminarStartDate <= regitserValues.seminarRegistrationEndDate) {
-  //     alert('세미나 시작일은 접수 종료일 이후로 지정해주세요.');
-  //     return;
-  //   }
-  //   const registDate = moment().format('YYYY-MM-DD hh:mm');
-  //   params = {
-  //     ...regitserValues,
-  //     seminarStatus: regitserValues?.seminarStatus || seminarStatus[0]?.id,
-  //     keywords: regitserValues?.keywords ? regitserValues?.keywords.split(',') : [''],
-  //     seminarPlaceType: regitserValues?.seminarPlaceType.join(',') || '',
-  //     seminarType: regitserValues?.seminarType || seminarTypes[0]?.id,
-  //     paymentType: regitserValues?.paymentType || paymentTypes[0]?.id,
-  //     imageUrl1: registerImageUrl1.toString().slice(1),
-  //     imageUrl2: registerImageUrl2.toString().slice(1),
-  //     imageUrl3: registerImageUrl3.toString().slice(1),
-  //     seminarIntroduction: introduceEditor,
-  //     seminarCurriculum: curriculumEditor,
-  //     seminarFaq: faqEditor,
-  //     registDate: `${registDate}:00.000`,
-  //   };
-  //   onAdd && onAdd(params);
-  // };
+    if (regitserValues.seminarStartDate <= regitserValues.seminarRegistrationEndDate) {
+      alert('세미나 시작일은 접수 종료일 이후로 지정해주세요.');
+      return;
+    }
+    const registDate = moment().format('YYYY-MM-DD hh:mm');
+    params = {
+      ...regitserValues,
+      seminarStatus: regitserValues?.seminarStatus || seminarStatus[0]?.id,
+      keywords: regitserValues?.keywords ? regitserValues?.keywords.split(',') : [''],
+      seminarPlaceType: regitserValues?.seminarPlaceType.join(',') || '',
+      seminarType: regitserValues?.seminarType || seminarTypes[0]?.id,
+      paymentType: regitserValues?.paymentType || paymentTypes[0]?.id,
+      imageUrl1: registerImageUrl1.toString().slice(1),
+      imageUrl2: registerImageUrl2.toString().slice(1),
+      imageUrl3: registerImageUrl3.toString().slice(1),
+      seminarIntroduction: introduceEditor,
+      seminarCurriculum: curriculumEditor,
+      seminarFaq: faqEditor,
+      registDate: `${registDate}:00.000`,
+    };
+    onAdd && onAdd(params);
+  };
 
   const onShowUpRegisterPopUp = event => {
     setPopupOpen(false);
@@ -523,7 +528,7 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
                   <i className="ico i-x"></i>
                 </button>
               </div>
-              <div className="tit-type2">세미나 상세 정보</div>
+              <div className="tit-type2">클럽 상세 정보</div>
             </div>
             <div className="right">
               {isEdit ? (
@@ -567,7 +572,7 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
                   setIsEdit(false);
                 }}
               >
-                세미나 참여 승인/취소
+                클럽 참여 승인/취소
               </a>
             </li>
           </ul>
@@ -577,7 +582,7 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
                 <div className="grid-25">
                   <div className="inpwrap">
                     <div className="inp-tit">
-                      세미나 아이디<span className="star">*</span>
+                      클럽 아이디<span className="star">*</span>
                     </div>
                     <div className="inp">
                       <input
@@ -594,7 +599,7 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
                 <div className="grid-25">
                   <div className="inpwrap">
                     <div className="inp-tit">
-                      세미나 명(주제)<span className="star">*</span>
+                      클럽 명<span className="star">*</span>
                     </div>
                     <div className="inp">
                       <input
@@ -611,7 +616,7 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
                 <div className="grid-25">
                   <div className="inpwrap">
                     <div className="inp-tit">
-                      세미나 명(진행자 소개)<span className="star">*</span>
+                      회원UUID(리더)<span className="star">*</span>
                     </div>
                     <div className="inp">
                       <input
@@ -625,7 +630,7 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
                     </div>
                   </div>
                 </div>
-                <div className="grid-25">
+                {/* <div className="grid-25">
                   <div className="inpwrap">
                     <div className="inp-tit">
                       개설회원 아이디<span className="star">*</span>
@@ -641,8 +646,8 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
                       />
                     </div>
                   </div>
-                </div>
-                <div className="grid-25">
+                </div> */}
+                {/* <div className="grid-25">
                   <div className="inpwrap">
                     <div className="inp-tit">
                       강사명<span className="star">*</span>
@@ -658,11 +663,11 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
                       />
                     </div>
                   </div>
-                </div>
+                </div> */}
                 <div className="grid-25">
                   <div className="inpwrap">
                     <div className="inp-tit">
-                      모집인원<span className="star">*</span>
+                      모집회원 수<span className="star">*</span>
                     </div>
                     <div className="inp">
                       <input
@@ -676,7 +681,7 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
                     </div>
                   </div>
                 </div>
-                <div className="grid-25">
+                {/* <div className="grid-25">
                   <div className="inpwrap">
                     <div className="inp-tit">
                       결제유형<span className="star">*</span>
@@ -696,8 +701,8 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
                       </select>
                     </div>
                   </div>
-                </div>
-                <div className="grid-25">
+                </div> */}
+                {/* <div className="grid-25">
                   <div className="inpwrap">
                     <div className="inp-tit">
                       가격<span className="star">*</span>
@@ -713,7 +718,7 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
                       />
                     </div>
                   </div>
-                </div>
+                </div> */}
                 <div className="grid-25">
                   <div className="inpwrap">
                     <div className="inp-tit">
@@ -822,18 +827,18 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
                 <div className="grid-25">
                   <div className="inpwrap">
                     <div className="inp-tit" style={{ height: 25 }}>
-                      세미나 시작 일시<span className="star">*</span>
+                      퀴즈 시작 일시<span className="star">*</span>
                     </div>
                     <div className="inp">
                       <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <DateTimePicker
+                        {/* <DateTimePicker
                           inputFormat="YYYY-MM-DD HH:mm"
                           value={seminarParams?.seminarStartDate || ''}
                           className={cx('basic-info-page__picker')}
                           onChange={e => handlePickerChange(e, 'seminarStartDate')}
                           renderInput={params => <TextField {...params} variant="standard" />}
                           disabled={!isEdit}
-                        />
+                        /> */}
                       </LocalizationProvider>
                     </div>
                   </div>
@@ -841,23 +846,23 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
                 <div className="grid-25">
                   <div className="inpwrap">
                     <div className="inp-tit" style={{ height: 25 }}>
-                      세미나 종료 일시<span className="star">*</span>
+                      퀴즈 종료 일시<span className="star">*</span>
                     </div>
                     <div className="inp">
                       <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <DateTimePicker
+                        {/* <DateTimePicker
                           inputFormat="YYYY-MM-DD HH:mm"
                           value={seminarParams?.seminarEndDate || ''}
                           className={cx('basic-info-page__picker')}
                           onChange={e => handlePickerChange(e, 'seminarEndDate')}
                           renderInput={params => <TextField {...params} variant="standard" />}
                           disabled={!isEdit}
-                        />
+                        /> */}
                       </LocalizationProvider>
                     </div>
                   </div>
                 </div>
-                <div className="grid-25">
+                {/* <div className="grid-25">
                   <div className="inpwrap">
                     <div className="inp-tit" style={{ height: 25 }}>
                       세미나 접수 시작 일시<span className="star">*</span>
@@ -875,8 +880,8 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
                       </LocalizationProvider>
                     </div>
                   </div>
-                </div>
-                <div className="grid-25">
+                </div> */}
+                {/* <div className="grid-25">
                   <div className="inpwrap">
                     <div className="inp-tit" style={{ height: 25 }}>
                       세미나 접수 종료 일시<span className="star">*</span>
@@ -894,8 +899,8 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
                       </LocalizationProvider>
                     </div>
                   </div>
-                </div>
-                <div className="grid-100">
+                </div> */}
+                {/* <div className="grid-100">
                   <div className="inpwrap">
                     <div className="inp-tit" style={{ height: 25 }}>
                       위치<span className="star">*</span>
@@ -939,19 +944,19 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
                       />
                     </div>
                   </div>
-                </div>
+                </div> */}
                 <div className="grid-100">
                   <div className="inpwrap">
                     <div className="inp">
                       <div className={cx('seminar-image-area')}>
                         <div className={cx('seminar-image-area__upload')}>
                           {imageUploadItem(
-                            '멘토님 상반신 사진',
+                            '클럽 이미지',
                             'imageUrl1',
                             tempImageUrl1 ||
                               `${process.env['NEXT_PUBLIC_GENERAL_IMAGE_URL']}/images/${seminarParams?.imageUrl1}`,
                           )}
-                          {imageUploadItem(
+                          {/* {imageUploadItem(
                             '세미나 장표 #1',
                             'imageUrl2',
                             tempImageUrl2 ||
@@ -962,16 +967,16 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
                             'imageUrl3',
                             tempImageUrl3 ||
                               `${process.env['NEXT_PUBLIC_GENERAL_IMAGE_URL']}/images/${seminarParams?.imageUrl3}`,
-                          )}
+                          )} */}
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div className="grid-100 mt-5">
+                {/* <div className="grid-100 mt-5">
                   <div className="inpwrap">
                     <div className="inp-tit">
-                      세미나 소개<span className="star">*</span>
+                      클럽 설명<span className="star">*</span>
                     </div>
                     <div className="inp">
                       <Editor
@@ -1014,7 +1019,7 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
                       />
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           )}
@@ -1354,13 +1359,13 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
                   </div>
                   <div className="inp">
                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                      <DateTimePicker
+                      {/* <DateTimePicker
                         inputFormat="YYYY-MM-DD HH:mm"
                         value={regitserValues?.seminarStartDate || ''}
                         className={cx('basic-info-page__picker')}
                         onChange={e => handlePickerChange(e, 'seminarStartDate')}
                         renderInput={params => <TextField {...params} variant="standard" />}
-                      />
+                      /> */}
                     </LocalizationProvider>
                   </div>
                 </div>
@@ -1372,13 +1377,13 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
                   </div>
                   <div className="inp">
                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                      <DateTimePicker
+                      {/* <DateTimePicker
                         inputFormat="YYYY-MM-DD HH:mm"
                         value={regitserValues?.seminarEndDate || ''}
                         className={cx('basic-info-page__picker')}
                         onChange={e => handlePickerChange(e, 'seminarEndDate')}
                         renderInput={params => <TextField {...params} variant="standard" />}
-                      />
+                      /> */}
                     </LocalizationProvider>
                   </div>
                 </div>
@@ -1390,13 +1395,13 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
                   </div>
                   <div className="inp">
                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                      <DateTimePicker
+                      {/* <DateTimePicker
                         inputFormat="YYYY-MM-DD HH:mm"
                         value={regitserValues?.seminarRegistrationStartDate || ''}
                         className={cx('basic-info-page__picker')}
                         onChange={e => handlePickerChange(e, 'seminarRegistrationStartDate')}
                         renderInput={params => <TextField {...params} variant="standard" />}
-                      />
+                      /> */}
                     </LocalizationProvider>
                   </div>
                 </div>
@@ -1408,13 +1413,13 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
                   </div>
                   <div className="inp">
                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                      <DateTimePicker
+                      {/* <DateTimePicker
                         inputFormat="YYYY-MM-DD HH:mm"
                         value={regitserValues?.seminarRegistrationEndDate || ''}
                         className={cx('basic-info-page__picker')}
                         onChange={e => handlePickerChange(e, 'seminarRegistrationEndDate')}
                         renderInput={params => <TextField {...params} variant="standard" />}
-                      />
+                      /> */}
                     </LocalizationProvider>
                   </div>
                 </div>
@@ -1426,7 +1431,7 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
                   </div>
                 </div>
                 <div className="inp">
-                  {isPlaceTypeFetched &&
+                  {/* {isPlaceTypeFetched &&
                     placeTypes.map((item, i) => (
                       <Toggle
                         key={item.id}
@@ -1443,7 +1448,7 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
                         checked={regitserValues?.seminarPlaceType?.includes(item.id)}
                         onChange={e => handleCheckboxChange(e, 'seminarPlaceType')}
                       />
-                    ))}
+                    ))} */}
                 </div>
               </div>
               <div className="grid-50">
