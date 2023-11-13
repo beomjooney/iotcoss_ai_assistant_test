@@ -76,7 +76,6 @@ export function MembersTemplate({
   const [profileImageUrl, setProfilImageUrl] = useState(null);
   const [tabValue, setTabValue] = useState<number>(1);
   const [content, setContent] = useState<any>({});
-
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
   // TODO : 밸리데이션 추가 해야 함
@@ -96,8 +95,6 @@ export function MembersTemplate({
     reValidateMode: 'onChange',
     resolver: yupResolver(memberSaveSchema),
   });
-
-  console.log(memberData);
 
   useEffect(() => {
     memberData && setMember(memberData.data);
@@ -303,7 +300,7 @@ export function MembersTemplate({
                 )}
               </div>
             </div>
-            <ul className="tab-type1 tab4" data-evt="tab">
+            <ul className="tab-type1 tab5" data-evt="tab">
               <li className={tabValue === 1 ? 'on' : ''}>
                 <a href="#" onClick={() => handleTab(1)}>
                   기본 정보
@@ -329,6 +326,28 @@ export function MembersTemplate({
                   }}
                 >
                   경험
+                </a>
+              </li>{' '}
+              <li className={tabValue === 4 ? 'on' : ''}>
+                <a
+                  href="#"
+                  onClick={() => {
+                    handleTab(4);
+                    setIsEdit(false);
+                  }}
+                >
+                  배지
+                </a>
+              </li>{' '}
+              <li className={tabValue === 5 ? 'on' : ''}>
+                <a
+                  href="#"
+                  onClick={() => {
+                    handleTab(5);
+                    setIsEdit(false);
+                  }}
+                >
+                  친구
                 </a>
               </li>
             </ul>

@@ -30,8 +30,6 @@ export function MembersPage() {
   const { data: jobGroup, isFetched: isJobGroupFetched } = useJobGroups();
   const { data: memberCodes } = useMemberCode();
 
-  console.log(memberData);
-
   const { data: skillData }: UseQueryResult<any> = useSkills(
     paramsWithDefault({
       page: page,
