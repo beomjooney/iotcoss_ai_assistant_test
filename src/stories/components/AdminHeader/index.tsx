@@ -70,7 +70,10 @@ const AdminHeader = ({ menuItem, activeNo = 0 }: AdminNavbarProps) => {
             link: '',
             upMenuNo: 2,
             toggle: true,
-            children: [{ no: 2011, title: '클럽', link: '/admin/club' }],
+            children: [
+              { no: 2011, title: '클럽', link: '/admin/club' },
+              { no: 2012, title: '클럽퀴즈', link: '/admin/clubQuiz' },
+            ],
           },
           {
             no: 202,
