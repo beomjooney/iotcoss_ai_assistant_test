@@ -307,7 +307,7 @@ export function AdminClubQuizTemplate({
                     <i className="ico i-x"></i>
                   </button>
                 </div>
-                <div className="tit-type2">클럽 상세보기</div>
+                <div className="tit-type2">클럽퀴즈 상세보기</div>
               </div>
               <div className="right">
                 {isEdit ? (
