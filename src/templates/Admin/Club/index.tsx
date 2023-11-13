@@ -73,11 +73,14 @@ export function AdminClubTemplate({
   const POPUP_COLGROUP = ['15%', '10%', '15%', '15%', '10%'];
   const POPUP_HEADS = ['신청자 아이디', '이름', '닉네임', '전화번호', '등록일시'];
 
-  const TAB2_COLGROUP = ['10%', '10%', '15%', '10%', '15%', '15%'];
+  const TAB2_COLGROUP = ['15%', '15%', '15%', '15%', '15%', '15%'];
   const TAB2_HEADS = ['신청자ID', '이름', '닉네임', '상태', '가입신청일시', '가입승인일시'];
 
-  const TAB3_COLGROUP = ['10%', '10%', '10%', '15%', '13%', '13%', '13%'];
-  const TAB3_HEADS = ['퀴즈순서', '학습 주차', '대표 여부', '발행일시', '퀴즈 좋아요 수', '답변 수', '등록일시'];
+  const TAB3_COLGROUP = ['15%', '15%', '15%', '15%', '15%', '15%'];
+  const TAB3_HEADS = ['회원ID', '회원명', '전화번호', '가입신청일시', '학습 횟수', '답변 좋아요 수'];
+
+  const TAB4_COLGROUP = ['15%', '15%', '15%', '15%', '15%', '15%'];
+  const TAB4_HEADS = ['퀴즈순서', '학습주차', '발행일시', '퀴즈 좋아요 수', '답변 수', '대표 여부'];
 
   const LEVELS = [
     { level: 1, desc: '상용서비스 단위모듈 수준 개발 가능. 서비스 개발 리딩 시니어 필요' },
@@ -337,7 +340,7 @@ export function AdminClubTemplate({
                 )}
               </div>
             </div>
-            <ul className="tab-type1 tab2" data-evt="tab">
+            <ul className="tab-type1 tab4" data-evt="tab">
               <li className={tabValue === 1 ? 'on' : ''}>
                 <a href="#" onClick={() => handleTab(1)}>
                   기본 정보
@@ -352,6 +355,28 @@ export function AdminClubTemplate({
                   }}
                 >
                   클럽가입 승인/취소
+                </a>
+              </li>{' '}
+              <li className={tabValue === 3 ? 'on' : ''}>
+                <a
+                  href="#"
+                  onClick={() => {
+                    handleTab(3);
+                    setIsEdit(false);
+                  }}
+                >
+                  클럽회원
+                </a>
+              </li>{' '}
+              <li className={tabValue === 4 ? 'on' : ''}>
+                <a
+                  href="#"
+                  onClick={() => {
+                    handleTab(4);
+                    setIsEdit(false);
+                  }}
+                >
+                  클럽퀴즈
                 </a>
               </li>
             </ul>
@@ -641,10 +666,10 @@ export function AdminClubTemplate({
                     items={clubList?.map((item, index) => {
                       return (
                         <tr key={`participant-${index}`}>
-                          <td>{item.memberId}</td>
-                          <td>{item.name}</td>
-                          <td>{item.nickname}</td>
-                          <td>{item.phoneNumber}</td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
                           <td>{dayjs(item.createdAt).format('YYYY-MM-DD')}</td>
                           <td>
                             <div className="right">
@@ -671,6 +696,60 @@ export function AdminClubTemplate({
                       );
                     })}
                     isEmpty={clubList?.length === 0 || false}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* 클럽회원 */}
+            {tabValue === 3 && popupOpen && (
+              <div className="tab-content" data-id="tabLink02">
+                <hr className="h40" />
+                <div className="data-type1" data-evt="table-on">
+                  <Table
+                    name="seminarMember"
+                    colgroup={TAB3_COLGROUP}
+                    heads={TAB3_HEADS}
+                    items={levelInfo?.map((item, index) => {
+                      return (
+                        <tr key={`clubuser-${index}`}>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td>{dayjs(item.createdAt).format('YYYY-MM-DD')}</td>
+                          <td></td>
+                          <td></td>
+                        </tr>
+                      );
+                    })}
+                    isEmpty={club?.length === 0 || false}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* 클럽퀴즈 */}
+            {tabValue === 4 && popupOpen && (
+              <div className="tab-content" data-id="tabLink02">
+                <hr className="h40" />
+                <div className="data-type1" data-evt="table-on">
+                  <Table
+                    name="seminarMember"
+                    colgroup={TAB4_COLGROUP}
+                    heads={TAB4_HEADS}
+                    items={levelInfo?.map((item, index) => {
+                      return (
+                        <tr key={`clubquiz-${index}`}>
+                          <td></td>
+                          <td></td>
+                          <td>{dayjs(item.createdAt).format('YYYY-MM-DD')}</td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                        </tr>
+                      );
+                    })}
+                    isEmpty={club?.length === 0 || false}
                   />
                 </div>
               </div>

@@ -67,6 +67,12 @@ export function MembersTemplate({
     { name: '이메일', field: 'email', type: 'text' },
   ];
 
+  const TAB4_COLGROUP = ['15%', '15%', '15%'];
+  const TAB4_HEADS = ['배지명', '획득상태', '획득일시'];
+
+  const TAB5_COLGROUP = ['15%', '15%', '15%', '15%'];
+  const TAB5_HEADS = ['회원아이디', '회원명', '친구상태', '등록일시'];
+
   const { mutate: onSaveProfileImage, data: profileImage, isSuccess } = useUploadImage();
 
   const [popupOpen, setPopupOpen] = useState<boolean>(false);
@@ -314,7 +320,7 @@ export function MembersTemplate({
                     setIsEdit(false);
                   }}
                 >
-                  스킬
+                  회원보유스킬
                 </a>
               </li>
               <li className={tabValue === 3 ? 'on' : ''}>
@@ -325,7 +331,7 @@ export function MembersTemplate({
                     setIsEdit(false);
                   }}
                 >
-                  경험
+                  회원보유경험
                 </a>
               </li>{' '}
               <li className={tabValue === 4 ? 'on' : ''}>
@@ -336,7 +342,7 @@ export function MembersTemplate({
                     setIsEdit(false);
                   }}
                 >
-                  배지
+                  회원보유배지
                 </a>
               </li>{' '}
               <li className={tabValue === 5 ? 'on' : ''}>
@@ -347,7 +353,7 @@ export function MembersTemplate({
                     setIsEdit(false);
                   }}
                 >
-                  친구
+                  회원보유친구
                 </a>
               </li>
             </ul>
@@ -663,6 +669,7 @@ export function MembersTemplate({
               </div>
             )}
 
+            {/* 스킬 */}
             {tabValue === 2 && popupOpen && (
               <div className="tab-content" data-id="tabLink01">
                 <div className="layout-grid">
@@ -760,6 +767,157 @@ export function MembersTemplate({
                       </div>
                     </div>
                   </div>
+                </div>
+              </div>
+            )}
+
+            {/* 경험 */}
+            {tabValue === 3 && popupOpen && (
+              <div className="tab-content" data-id="tabLink01">
+                <div className="layout-grid">
+                  <div className="grid-100 mt-3">
+                    <div className="inpwrap">
+                      <div className="inp-tit">연관 직군들</div>
+                      <div className="inp">
+                        {jobGroup?.data?.contents?.map(item => {
+                          let isIncludeContent = false;
+                          if (member?.jobGroup?.includes(item.id)) {
+                            isIncludeContent = true;
+                          }
+                          return (
+                            <span
+                              key={item.id}
+                              className={cx('seminar-level-area__item', 'check-area__item', 'col-md-2')}
+                            >
+                              <Toggle
+                                isActive
+                                label={item.name}
+                                name="relatedJobGroups"
+                                type="checkBox"
+                                checked={isIncludeContent}
+                                value={item.id}
+                                key={item.id}
+                                disabled={!isEdit}
+                                className={cx('seminar-jobgroup-area')}
+                                onChange={e => handleCheckboxChange(e, 'relatedJobGroups')}
+                              />
+                            </span>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="grid-100 mt-3">
+                    <div className="inpwrap">
+                      <div className="inp-tit">연관직무들</div>
+                      <div className="inp">
+                        {jobCodes?.data?.contents?.map(item => {
+                          let isIncludeContent = false;
+                          if (member?.job?.includes(item.id)) {
+                            isIncludeContent = true;
+                          }
+                          return (
+                            <span
+                              key={item.id}
+                              className={cx('seminar-level-area__item', 'check-area__item', 'col-md-2')}
+                            >
+                              <Toggle
+                                isActive
+                                label={item.name}
+                                name="relatedJobs"
+                                type="checkBox"
+                                checked={isIncludeContent}
+                                value={item.id}
+                                key={item.id}
+                                className={cx('seminar-jobgroup-area')}
+                                disabled={!isEdit}
+                                onChange={e => handleCheckboxChange(e, 'relatedJobs')}
+                              />
+                            </span>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="grid-100 mt-3">
+                    <div className="inpwrap">
+                      <div className="inp-tit">연관 레벨들</div>
+                      <div className="inp">
+                        {levelInfo.map(item => {
+                          let isIncludeContent = false;
+                          if (member?.level === item.level) {
+                            isIncludeContent = true;
+                          }
+                          return (
+                            <span
+                              key={item.level}
+                              className={cx('seminar-level-area__item', 'check-area__item', 'col-md-2')}
+                            >
+                              <Toggle
+                                isActive
+                                label={`${item.level}레벨`}
+                                name="relatedLevels"
+                                checked={isIncludeContent}
+                                disabled={!isEdit}
+                                type="checkBox"
+                                value={item.level}
+                                onChange={e => handleCheckboxChange(e, 'relatedLevels')}
+                              />
+                            </span>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* 배지 */}
+            {tabValue === 4 && popupOpen && (
+              <div className="tab-content" data-id="tabLink02">
+                <hr className="h40" />
+                <div className="data-type1" data-evt="table-on">
+                  <Table
+                    name="seminarMember"
+                    colgroup={TAB4_COLGROUP}
+                    heads={TAB4_HEADS}
+                    items={levelInfo?.map((item, index) => {
+                      return (
+                        <tr key={`participant-${index}`}>
+                          <td></td>
+                          <td></td>
+                          <td>{dayjs(item.createdAt).format('YYYY-MM-DD')}</td>
+                        </tr>
+                      );
+                    })}
+                    isEmpty={member?.length === 0 || false}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* 친구 */}
+            {tabValue === 5 && popupOpen && (
+              <div className="tab-content" data-id="tabLink02">
+                <hr className="h40" />
+                <div className="data-type1" data-evt="table-on">
+                  <Table
+                    name="seminarMember"
+                    colgroup={TAB5_COLGROUP}
+                    heads={TAB5_HEADS}
+                    items={levelInfo?.map((item, index) => {
+                      return (
+                        <tr key={`participant-${index}`}>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td>{dayjs(item.createdAt).format('YYYY-MM-DD')}</td>
+                        </tr>
+                      );
+                    })}
+                    isEmpty={member?.length === 0 || false}
+                  />
                 </div>
               </div>
             )}
