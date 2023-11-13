@@ -62,6 +62,19 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
     '답변좋아요 수',
   ];
 
+  const TAB3_COLGROUP = ['15%', '10%', '15%', '15%', '10%', '10%', '10%', '10%', '10%'];
+  const TAB3_HEADS = [
+    '클럽SEQ',
+    '퀴즈SEQ',
+    '퀴즈순서',
+    '학습 주차',
+    '대표 여부',
+    '발행일(공개 날짜)',
+    '퀴즈 좋아요 수',
+    '답변 수',
+    '등록일시',
+  ];
+
   const LEVELS = [
     { level: 1, desc: '상용서비스 단위모듈 수준 개발 가능. 서비스 개발 리딩 시니어 필요' },
     { level: 2, desc: '상용서비스 개발 1인분 가능한 사람. 소규모 서비스 독자 개발 가능' },
@@ -1176,8 +1189,8 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
               <div className="data-type1" data-evt="table-on">
                 <Table
                   name="seminarMember"
-                  colgroup={POPUP_COLGROUP}
-                  heads={POPUP_HEADS}
+                  colgroup={TAB3_COLGROUP}
+                  heads={TAB3_HEADS}
                   items={seminarParticipantList?.map((item, index) => {
                     return (
                       <tr key={`participant-${index}`}>

@@ -39,16 +39,16 @@ export function MembersTemplate({
   const HEADS = [
     '회원아이디',
     '회원명',
+    '이메일',
+    '전화번호',
+    '연령대',
     '회원유형',
     '직군유형',
     '레벨',
-    '연령대',
-    '이메일',
-    '전화번호',
-    '인증기관',
     '이메일수신',
     '문자수신',
     '카카오톡수신',
+    '포인트',
     '등록일시',
   ];
 
@@ -208,6 +208,15 @@ export function MembersTemplate({
                 <td className="magic" title={item.name}>
                   {item.name}
                 </td>
+                <td className="magic" title={item.email}>
+                  {item.email}
+                </td>
+                <td className="magic" title={item.phoneNumber}>
+                  {item.phoneNumber}
+                </td>
+                <td className="magic" title={item.ageRange}>
+                  {item.ageRange}
+                </td>
                 <td className="magic" title={item.typeName}>
                   {item.typeName}
                 </td>
@@ -217,18 +226,6 @@ export function MembersTemplate({
                 <td className="magic" title={item.level}>
                   {item.level}
                 </td>
-                <td className="magic" title={item.ageRange}>
-                  {item.ageRange}
-                </td>
-                <td className="magic" title={item.email}>
-                  {item.email}
-                </td>
-                <td className="magic" title={item.phoneNumber}>
-                  {item.phoneNumber}
-                </td>
-                <td className="magic" title={item?.authProviderName}>
-                  {item?.authProviderName}
-                </td>
                 <td className="magic" title={item.emailReceiveYn ? 'Y' : 'N'}>
                   {item.emailReceiveYn ? 'Y' : 'N'}
                 </td>
@@ -237,6 +234,9 @@ export function MembersTemplate({
                 </td>
                 <td className="magic" title={item.kakaoReceiveYn ? 'Y' : 'N'}>
                   {item.kakaoReceiveYn ? 'Y' : 'N'}
+                </td>
+                <td className="magic" title={item?.authProviderName}>
+                  {/* {item?.authProviderName} */}
                 </td>
                 <td className="magic" title={dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}>
                   {dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}
@@ -301,18 +301,7 @@ export function MembersTemplate({
                     setIsEdit(false);
                   }}
                 >
-                  스킬
-                </a>
-              </li>
-              <li className={tabValue === 3 ? 'on' : ''}>
-                <a
-                  href="#"
-                  onClick={() => {
-                    handleTab(3);
-                    setIsEdit(false);
-                  }}
-                >
-                  경험
+                  스킬/경험
                 </a>
               </li>
             </ul>
@@ -620,6 +609,47 @@ export function MembersTemplate({
                           value={member?.updaterId || ''}
                           disabled
                           onChange={onChangeMember}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {tabValue === 2 && popupOpen && (
+              <div className="tab-content" data-id="tabLink01">
+                <div className="layout-grid">
+                  <div className="grid-25">
+                    <div className="inpwrap">
+                      <div className="inp-tit">
+                        커스텀스킬<span className="star">*</span>
+                      </div>
+                      <div className="inp">
+                        <input
+                          type="text"
+                          className="input-admin"
+                          {...methods.register('memberId')}
+                          disabled
+                          value={member?.memberId || ''}
+                          onChange={onChangeMember}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="grid-25">
+                    <div className="inpwrap">
+                      <div className="inp-tit">
+                        커스텀경험<span className="star">*</span>
+                      </div>
+                      <div className="inp">
+                        <input
+                          className="input-admin"
+                          type="text"
+                          {...methods.register('name')}
+                          value={member?.name || ''}
+                          onChange={onChangeMember}
+                          disabled={!isEdit}
                         />
                       </div>
                     </div>
