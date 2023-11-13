@@ -1,11 +1,20 @@
 import './index.module.scss';
-import AdminLayout from '../../../src/stories/Layout/AdminLayout';
-import MembersTemplate from '../../../src/templates/Admin/Members';
-import { useMember, useMembers } from '../../../src/services/admin/members/members.queries';
+
 import { UseQueryResult } from 'react-query';
 import { useEffect, useState } from 'react';
+
+import AdminLayout from '../../../src/stories/Layout/AdminLayout';
+import MembersTemplate from '../../../src/templates/Admin/Members';
+
+import { useMember, useMembers } from '../../../src/services/admin/members/members.queries';
 import { useDeleteMember, useSaveMember } from '../../../src/services/admin/members/members.mutations';
-import { useJobGroups, useMemberCode } from '../../../src/services/code/code.queries';
+import { useCodeList, useJobGroups, useJobs, useMemberCode } from 'src/services/code/code.queries';
+
+import { SkillResponse } from 'src/models/skills';
+import { useSkills } from 'src/services/admin/skill/skill.queries';
+
+import { ExperiencesResponse } from 'src/models/experiences';
+import { useExperiences } from 'src/services/experiences/experiences.queries';
 
 export function MembersPage() {
   const [page, setPage] = useState<number>(1);
@@ -14,9 +23,22 @@ export function MembersPage() {
   const [memberId, setMemberId] = useState<string>('');
   const [params, setParams] = useState<any>({});
 
+  const { data: jobCodes } = useJobs();
+  const { data: experienceData }: UseQueryResult<ExperiencesResponse> = useExperiences();
+  //const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
   const { data: memberData, refetch }: UseQueryResult<any> = useMember(memberId);
+  const { data: jobGroup, isFetched: isJobGroupFetched } = useJobGroups();
   const { data: memberCodes } = useMemberCode();
-  const { data: jobCodes } = useJobGroups();
+
+  console.log(memberData);
+
+  const { data: skillData }: UseQueryResult<any> = useSkills(
+    paramsWithDefault({
+      page: page,
+      size: size,
+    }),
+  );
+
   const { mutate: onSave } = useSaveMember();
   const { mutate: onDelete } = useDeleteMember();
 
@@ -34,6 +56,13 @@ export function MembersPage() {
       size: size,
       searchKeyword: search,
       ...params,
+    }),
+  );
+
+  const { data: skillsList }: UseQueryResult<any> = useSkills(
+    paramsWithDefault({
+      page: page,
+      size: size,
     }),
   );
 
@@ -86,10 +115,13 @@ export function MembersPage() {
   return (
     <MembersTemplate
       memberList={memberList}
-      onMemberInfo={onMemberInfo}
-      memberData={memberData}
-      memberCodes={memberCodes}
+      skillsList={skillsList}
+      experience={experienceData}
+      jobGroup={jobGroup}
       jobCodes={jobCodes}
+      memberData={memberData}
+      onMemberInfo={onMemberInfo}
+      memberCodes={memberCodes}
       pageProps={PAGE_PROPS}
       onDeleteMember={onDeleteMember}
       onSave={onSaveMember}

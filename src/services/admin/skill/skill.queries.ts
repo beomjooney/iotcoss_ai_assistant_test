@@ -1,8 +1,18 @@
 import { useQuery } from 'react-query';
-import { getSkills, getSkillsExcel } from './skill.api';
+import { SkillResponse } from 'src/models/skills';
+import { mySkillList, skillList, getSkills, getSkillsExcel } from './skill.api';
 import { QUERY_KEY_FACTORY } from '../../queryKeys';
 
 export const useSkills = params => useQuery([QUERY_KEY_FACTORY('SKILL').list(params)], () => getSkills(params));
+
+// export const useSkills = (onSuccess?: (data: SkillResponse) => void, onError?: (error: Error) => void) => {
+//   return useQuery<SkillResponse, Error>(QUERY_KEY_FACTORY('SKILL').lists(), () => getSkills(), {
+//     onSuccess,
+//     onError,
+//     // refetchOnWindowFocus: false,
+//     staleTime: 5 * 60 * 1000, // 5분 유지
+//   });
+// };
 
 export const useExcelSkills = () =>
   useQuery([QUERY_KEY_FACTORY('SKILL').list('')], () => getSkillsExcel(), {

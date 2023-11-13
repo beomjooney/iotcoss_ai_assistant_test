@@ -6,7 +6,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import Image from 'next/image';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Profile, AdminPagination, Table, SmartFilter, Button } from '../../../stories/components';
+import { Profile, AdminPagination, Table, SmartFilter, Button, Toggle } from '../../../stories/components';
 import dayjs from 'dayjs';
 import { useUploadImage } from 'src/services/image/image.mutations';
 
@@ -14,9 +14,12 @@ const cx = classNames.bind(styles);
 
 interface MembersTemplateProps {
   memberList?: any;
+  skillsList?: any;
+  experience?: any;
+  jobGroup?: any;
+  jobCodes?: any;
   memberData?: any;
   memberCodes?: any;
-  jobCodes?: any;
   pageProps?: any;
   onMemberInfo?: (memberId: string) => void;
   onDeleteMember?: (memberId: string) => void;
@@ -26,16 +29,19 @@ interface MembersTemplateProps {
 
 export function MembersTemplate({
   memberList,
+  skillsList,
+  experience,
+  jobGroup,
+  jobCodes,
   memberData,
   onMemberInfo,
   onDeleteMember,
   onSave,
   memberCodes,
-  jobCodes,
   pageProps,
   onSearch,
 }: MembersTemplateProps) {
-  const COLGROUP = ['8%', '7%', '8%', '4%', '3%', '5%', '10%', '5%', '7%', '4%', '4%', '4%', '7%'];
+  const COLGROUP = ['8%', '7%', '8%', '6%', '3%', '5%', '7%', '5%', '7%', '4%', '5%', '5%', '7%'];
   const HEADS = [
     '회원아이디',
     '회원명',
@@ -69,6 +75,7 @@ export function MembersTemplate({
   const [searchKeyword, setSearchKeyword] = useState<string>('');
   const [profileImageUrl, setProfilImageUrl] = useState(null);
   const [tabValue, setTabValue] = useState<number>(1);
+  const [content, setContent] = useState<any>({});
 
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
@@ -90,6 +97,8 @@ export function MembersTemplate({
     resolver: yupResolver(memberSaveSchema),
   });
 
+  console.log(memberData);
+
   useEffect(() => {
     memberData && setMember(memberData.data);
   }, [memberData]);
@@ -97,6 +106,9 @@ export function MembersTemplate({
   const onShowPopup = (memberId: string) => {
     // 사용자 조회
     onMemberInfo && onMemberInfo(memberId);
+
+    // const result = skillsList?.data?.data?.find(item => item?.relatedJobGroups === memberData?.data?.jobGroup);
+    // setContent(result);
     setPopupOpen(true);
   };
 
@@ -157,6 +169,10 @@ export function MembersTemplate({
     if (!files || files.length === 0) return;
     readFile(files[0]);
   };
+
+  const handleCheckboxChange = () => {};
+
+  //console.log(member);
 
   return (
     <div className="content">
@@ -236,7 +252,7 @@ export function MembersTemplate({
                   {item.kakaoReceiveYn ? 'Y' : 'N'}
                 </td>
                 <td className="magic" title={item?.authProviderName}>
-                  {/* {item?.authProviderName} */}
+                  {item?.points}
                 </td>
                 <td className="magic" title={dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}>
                   {dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}
@@ -301,7 +317,18 @@ export function MembersTemplate({
                     setIsEdit(false);
                   }}
                 >
-                  스킬/경험
+                  스킬
+                </a>
+              </li>
+              <li className={tabValue === 3 ? 'on' : ''}>
+                <a
+                  href="#"
+                  onClick={() => {
+                    handleTab(3);
+                    setIsEdit(false);
+                  }}
+                >
+                  경험
                 </a>
               </li>
             </ul>
@@ -620,37 +647,97 @@ export function MembersTemplate({
             {tabValue === 2 && popupOpen && (
               <div className="tab-content" data-id="tabLink01">
                 <div className="layout-grid">
-                  <div className="grid-25">
+                  <div className="grid-100 mt-3">
                     <div className="inpwrap">
-                      <div className="inp-tit">
-                        커스텀스킬<span className="star">*</span>
-                      </div>
+                      <div className="inp-tit">연관 직군들</div>
                       <div className="inp">
-                        <input
-                          type="text"
-                          className="input-admin"
-                          {...methods.register('memberId')}
-                          disabled
-                          value={member?.memberId || ''}
-                          onChange={onChangeMember}
-                        />
+                        {jobGroup?.data?.contents?.map(item => {
+                          let isIncludeContent = false;
+                          if (member?.jobGroup?.includes(item.id)) {
+                            isIncludeContent = true;
+                          }
+                          return (
+                            <span
+                              key={item.id}
+                              className={cx('seminar-level-area__item', 'check-area__item', 'col-md-2')}
+                            >
+                              <Toggle
+                                isActive
+                                label={item.name}
+                                name="relatedJobGroups"
+                                type="checkBox"
+                                checked={isIncludeContent}
+                                value={item.id}
+                                key={item.id}
+                                disabled={!isEdit}
+                                className={cx('seminar-jobgroup-area')}
+                                onChange={e => handleCheckboxChange(e, 'relatedJobGroups')}
+                              />
+                            </span>
+                          );
+                        })}
                       </div>
                     </div>
                   </div>
-                  <div className="grid-25">
+                  <div className="grid-100 mt-3">
                     <div className="inpwrap">
-                      <div className="inp-tit">
-                        커스텀경험<span className="star">*</span>
-                      </div>
+                      <div className="inp-tit">연관직무들</div>
                       <div className="inp">
-                        <input
-                          className="input-admin"
-                          type="text"
-                          {...methods.register('name')}
-                          value={member?.name || ''}
-                          onChange={onChangeMember}
-                          disabled={!isEdit}
-                        />
+                        {jobCodes?.data?.contents?.map(item => {
+                          let isIncludeContent = false;
+                          if (member?.job?.includes(item.id)) {
+                            isIncludeContent = true;
+                          }
+                          return (
+                            <span
+                              key={item.id}
+                              className={cx('seminar-level-area__item', 'check-area__item', 'col-md-2')}
+                            >
+                              <Toggle
+                                isActive
+                                label={item.name}
+                                name="relatedJobs"
+                                type="checkBox"
+                                checked={isIncludeContent}
+                                value={item.id}
+                                key={item.id}
+                                className={cx('seminar-jobgroup-area')}
+                                disabled={!isEdit}
+                                onChange={e => handleCheckboxChange(e, 'relatedJobs')}
+                              />
+                            </span>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="grid-100 mt-3">
+                    <div className="inpwrap">
+                      <div className="inp-tit">연관 레벨들</div>
+                      <div className="inp">
+                        {levelInfo.map(item => {
+                          let isIncludeContent = false;
+                          if (member?.level === item.level) {
+                            isIncludeContent = true;
+                          }
+                          return (
+                            <span
+                              key={item.level}
+                              className={cx('seminar-level-area__item', 'check-area__item', 'col-md-2')}
+                            >
+                              <Toggle
+                                isActive
+                                label={`${item.level}레벨`}
+                                name="relatedLevels"
+                                checked={isIncludeContent}
+                                disabled={!isEdit}
+                                type="checkBox"
+                                value={item.level}
+                                onChange={e => handleCheckboxChange(e, 'relatedLevels')}
+                              />
+                            </span>
+                          );
+                        })}
                       </div>
                     </div>
                   </div>
@@ -665,3 +752,5 @@ export function MembersTemplate({
 }
 
 export default MembersTemplate;
+
+const levelInfo = [{ level: 1 }, { level: 2 }, { level: 3 }, { level: 4 }, { level: 5 }];

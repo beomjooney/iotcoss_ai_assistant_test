@@ -50,30 +50,11 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
   const POPUP_COLGROUP = ['15%', '10%', '15%', '15%', '10%'];
   const POPUP_HEADS = ['신청자 아이디', '이름', '닉네임', '전화번호', '등록일시'];
 
-  const TAB2_COLGROUP = ['15%', '10%', '15%', '15%', '10%', '10%', '10%', '10%'];
-  const TAB2_HEADS = [
-    '회원UUID',
-    '이름',
-    '닉네임',
-    '상태',
-    '가입신청일시',
-    '가입승인일시',
-    '학습횟수',
-    '답변좋아요 수',
-  ];
+  const TAB2_COLGROUP = ['10%', '10%', '15%', '10%', '15%', '15%', '10%', '13%'];
+  const TAB2_HEADS = ['회원UUID', '이름', '닉네임', '상태', '가입신청일시', '가입승인일시', '학습횟수', '좋아요 수'];
 
-  const TAB3_COLGROUP = ['15%', '10%', '15%', '15%', '10%', '10%', '10%', '10%', '10%'];
-  const TAB3_HEADS = [
-    '클럽SEQ',
-    '퀴즈SEQ',
-    '퀴즈순서',
-    '학습 주차',
-    '대표 여부',
-    '발행일(공개 날짜)',
-    '퀴즈 좋아요 수',
-    '답변 수',
-    '등록일시',
-  ];
+  const TAB3_COLGROUP = ['10%', '10%', '10%', '15%', '13%', '13%', '13%'];
+  const TAB3_HEADS = ['퀴즈순서', '학습 주차', '대표 여부', '발행일시', '퀴즈 좋아요 수', '답변 수', '등록일시'];
 
   const LEVELS = [
     { level: 1, desc: '상용서비스 단위모듈 수준 개발 가능. 서비스 개발 리딩 시니어 필요' },
@@ -451,9 +432,9 @@ export function AdminClubTemplate({}: ClubTemplateProps) {
       </div>
       <div className="data-top">
         <div className="left">
-          <button className="btn-type1 type1" onClick={event => onShowUpRegisterPopUp(event)}>
+          {/* <button className="btn-type1 type1" onClick={event => onShowUpRegisterPopUp(event)}>
             등록
-          </button>
+          </button> */}
         </div>
         <div className="right">
           <div className="inpwrap">

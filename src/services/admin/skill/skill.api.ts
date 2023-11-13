@@ -5,6 +5,12 @@ interface SkillParamsProps {
   page: number;
   size: number;
 }
+
+export const skillList = async () => {
+  const { data } = await axiosGeneralAPI().get('/api/v1/skills');
+  return data;
+};
+
 export async function getSkills(args: SkillParamsProps) {
   let params = JSON.parse(JSON.stringify(args));
   Object.keys(params).forEach(key => {
@@ -12,7 +18,7 @@ export async function getSkills(args: SkillParamsProps) {
       delete params[key];
     }
   });
-  const { data, headers } = await axiosGeneralAPI().get('/skills', { params });
+  const { data, headers } = await axiosGeneralAPI().get('/api/v1/skills', { params });
   const totalPage = Number(headers['page-count']);
   return { data: data || [], nextPage: params.page + 1, totalPage };
 }
