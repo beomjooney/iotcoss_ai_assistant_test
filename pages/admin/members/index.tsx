@@ -9,9 +9,8 @@ import MembersTemplate from '../../../src/templates/Admin/Members';
 
 import { useMember, useMembers } from '../../../src/services/admin/members/members.queries';
 import { useDeleteMember, useSaveMember } from '../../../src/services/admin/members/members.mutations';
-import { useCodeList, useJobGroups, useJobs, useMemberCode, useContentTypes } from 'src/services/code/code.queries';
+import { useJobGroups, useMemberCode, useContentTypes } from 'src/services/code/code.queries';
 
-import { SkillResponse } from 'src/models/skills';
 import { useSkills } from 'src/services/admin/skill/skill.queries';
 
 import { ExperiencesResponse } from 'src/models/experiences';
@@ -27,6 +26,7 @@ export interface SearchParamsProps {
 
 export function MembersPage() {
   const now = dayjs();
+  const past1y = now.subtract(1, 'year');
   const tomorrow = now.add(1, 'day');
   const [page, setPage] = useState<number>(1);
   const [size, setSize] = useState<number>(15);
@@ -35,24 +35,16 @@ export function MembersPage() {
   const [params, setParams] = useState<SearchParamsProps>({
     page: page,
     size: size,
-    createdAtFrom: `${now?.format('YYYY-MM-DD')} 00:00:00`,
+    createdAtFrom: `${past1y?.format('YYYY-MM-DD')} 00:00:00`,
     createdAtTo: `${tomorrow.format('YYYY-MM-DD')} 00:00:00`,
     searchKeyword: '',
   });
 
   const { data: jobCodes } = useContentTypes();
   const { data: experienceData }: UseQueryResult<ExperiencesResponse> = useExperiences();
-  //const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
   const { data: memberData, refetch }: UseQueryResult<any> = useMember(memberId);
   const { data: jobGroup, isFetched: isJobGroupFetched } = useJobGroups();
   const { data: memberCodes } = useMemberCode();
-
-  const { data: skillData }: UseQueryResult<any> = useSkills(
-    paramsWithDefault({
-      page: page,
-      size: size,
-    }),
-  );
 
   const { mutate: onSave } = useSaveMember();
   const { mutate: onDelete } = useDeleteMember();
@@ -148,8 +140,6 @@ export function MembersPage() {
     }
     await memberListRefetch();
   };
-
-  console.log(experienceData);
 
   return (
     <MembersTemplate

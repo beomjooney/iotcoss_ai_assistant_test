@@ -1,31 +1,49 @@
 import './index.module.scss';
-import { useEffect, useState } from 'react';
+
 import { UseQueryResult } from 'react-query';
+import { useEffect, useState } from 'react';
+import dayjs from 'dayjs';
 
 import AdminLayout from '../../../src/stories/Layout/AdminLayout';
-import { AdminClubTemplate } from '../../../src/templates';
-
-import {} from '../../../src/services/club/clubs.queries';
-import {} from '../../../src/services/club/clubs.mutations';
+import AdminClubTemplate from '../../../src/templates/Admin/Club';
 
 import { useClub, useClubs } from '../../../src/services/club/clubs.queries';
 import { useDeleteClub, useSaveClub } from '../../../src/services/club/clubs.mutations';
-import { useJobGroups, useJobs } from 'src/services/code/code.queries';
-import { ExperiencesResponse } from 'src/models/experiences';
-import { useExperiences } from 'src/services/experiences/experiences.queries';
+import { useJobGroups, useMemberCode, useContentTypes } from 'src/services/code/code.queries';
+
 import { useSkills } from 'src/services/admin/skill/skill.queries';
 
+import { ExperiencesResponse } from 'src/models/experiences';
+import { useExperiences } from 'src/services/experiences/experiences.queries';
+
+export interface SearchParamsProps {
+  page: number;
+  size: number;
+  createdAtFrom: string;
+  createdAtTo: string;
+  searchKeyword: string;
+}
+
 export function ClubPage() {
+  const now = dayjs();
+  const past1y = now.subtract(1, 'year');
+  const tomorrow = now.add(1, 'day');
   const [page, setPage] = useState<number>(1);
   const [size, setSize] = useState<number>(15);
   const [search, setSearch] = useState<string>('');
   const [clubId, setClubId] = useState<string>('');
-  const [params, setParams] = useState<any>({});
+  const [params, setParams] = useState<SearchParamsProps>({
+    page: page,
+    size: size,
+    createdAtFrom: `${past1y?.format('YYYY-MM-DD')} 00:00:00`,
+    createdAtTo: `${tomorrow.format('YYYY-MM-DD')} 00:00:00`,
+    searchKeyword: '',
+  });
 
-  const { data: jobCodes } = useJobs();
+  const { data: jobCodes } = useContentTypes();
   const { data: experienceData }: UseQueryResult<ExperiencesResponse> = useExperiences();
-  const { data: jobGroup, isFetched: isJobGroupFetched } = useJobGroups();
   const { data: clubData, refetch }: UseQueryResult<any> = useClub(clubId);
+  const { data: jobGroup, isFetched: isJobGroupFetched } = useJobGroups();
 
   const { data: skillData }: UseQueryResult<any> = useSkills(
     paramsWithDefault({
@@ -47,9 +65,6 @@ export function ClubPage() {
     error,
   }: UseQueryResult<any> = useClubs(
     paramsWithDefault({
-      page: page,
-      size: size,
-      searchKeyword: search,
       ...params,
     }),
   );
@@ -60,6 +75,13 @@ export function ClubPage() {
       size: size,
     }),
   );
+
+  // const { data: experienceData }: UseQueryResult<any> = useExperiences(
+  //   paramsWithDefault({
+  //     page: page,
+  //     size: size,
+  //   }),
+  // );
 
   useEffect(() => {
     if (error) {
@@ -84,7 +106,7 @@ export function ClubPage() {
   };
 
   const onDeleteClub = (id: string) => {
-    if (confirm('해당 회원을 삭제하시겠습니까?')) {
+    if (confirm('해당 클럽을 삭제하시겠습니까?')) {
       onDelete(id);
     }
   };
@@ -97,10 +119,15 @@ export function ClubPage() {
     }
   };
 
-  const onSearch = async (params: any) => {
-    setPage(1);
+  const onSearch = async (params: SearchParamsProps) => {
+    // if (!params?.createdAtFrom || !params?.createdAtTo) {
+    //   alert('기간을 설정하세요');
+    // }
+
     if (typeof params === 'object') {
-      setParams(params);
+      setParams({
+        ...params,
+      });
     } else {
       setSearch(params);
     }
@@ -110,16 +137,18 @@ export function ClubPage() {
   return (
     <AdminClubTemplate
       clubList={clubList}
-      clubData={clubData}
       skillsList={skillsList}
       experience={experienceData}
       jobGroup={jobGroup}
       jobCodes={jobCodes}
-      onClubInfo={onClubInfo}
+      clubData={clubData}
       pageProps={PAGE_PROPS}
+      params={params}
+      onClubInfo={onClubInfo}
       onDeleteClub={onDeleteClub}
       onSave={onSaveClub}
       onSearch={onSearch}
+      setParams={setParams}
     />
   );
 }
@@ -133,8 +162,8 @@ ClubPage.LayoutProps = {
   title: '데브어스 관리자',
 };
 
-const paramsWithDefault = (params: any) => {
-  const defaultParams: any = {
+const paramsWithDefault = params => {
+  const defaultParams = {
     page: 1,
     size: 15,
   };

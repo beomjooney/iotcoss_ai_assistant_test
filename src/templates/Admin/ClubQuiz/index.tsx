@@ -14,7 +14,7 @@ import {
 import dayjs from 'dayjs';
 import moment from 'moment';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { DateTimePicker, DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { TextField } from '@mui/material';
 import { useStore } from 'src/store';
 import { usePlaceTypes, useJobs } from 'src/services/code/code.queries';
@@ -25,21 +25,25 @@ import Image from 'next/image';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useUploadImage } from 'src/services/image/image.mutations';
+import { SearchParamsProps } from 'pages/admin/club';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 const cx = classNames.bind(styles);
 
 interface ClubQuizTemplateProps {
   clubList?: any;
-  clubData?: any;
   skillsList?: any;
+  experience?: any;
   jobGroup?: any;
   jobCodes?: any;
-  experience?: any;
+  clubData?: any;
   pageProps?: any;
   onClubInfo?: (clubId: string) => void;
   onDeleteClub?: (clubId: string) => void;
   onSave?: (data: any) => void;
   onSearch?: (searchKeyword: any) => void;
+  params: SearchParamsProps;
+  setParams: React.Dispatch<React.SetStateAction<SearchParamsProps>>;
 }
 
 export function AdminClubQuizTemplate({
@@ -49,11 +53,13 @@ export function AdminClubQuizTemplate({
   jobGroup,
   jobCodes,
   clubData,
+  pageProps,
+  params,
   onClubInfo,
   onDeleteClub,
   onSave,
-  pageProps,
   onSearch,
+  setParams,
 }: ClubQuizTemplateProps) {
   const COLGROUP = ['15%', '15%', '15%', '15%', '15%', '15%', '15%'];
   const HEADS = ['퀴즈순서', '학습주차', '발행일시', '퀴즈 좋아요 수', '답변 수', '질문내용', '대표 여부'];
@@ -161,6 +167,23 @@ export function AdminClubQuizTemplate({
   const handleSearchKeyword = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.currentTarget;
     setSearchKeyword(value);
+    setParams({
+      ...params,
+      searchKeyword: value,
+    });
+  };
+
+  const handlePickerChange = (moment, key) => {
+    let datetime = moment?.format('YYYY-MM-DD');
+    if (key === 'createdAtTo') {
+      datetime = `${datetime} 23:59:59`;
+    } else {
+      datetime = `${datetime} 00:00:00`;
+    }
+    setParams({
+      ...params,
+      [key]: `${datetime}`,
+    });
   };
 
   const onSmartFilterSearch = (params: any) => {
@@ -215,27 +238,75 @@ export function AdminClubQuizTemplate({
           {/*</a>*/}
         </div>
         <div className="right">
-          <div className="inpwrap">
-            <div className="inp search">
-              <input
-                type="text"
-                placeholder="검색어"
-                className="input-admin"
-                onChange={handleSearchKeyword}
-                value={searchKeyword}
-                onKeyDown={event => onSearch && event.key === 'Enter' && onSearch(searchKeyword)}
-              />
-              <button className="btn" onClick={() => onSearch && onSearch(searchKeyword)}>
-                <i className="ico i-search"></i>
-              </button>
+          <div className={cx('search')}>
+            <div className={cx('date')}>
+              <div>
+                <div className="inpwrap">
+                  <div className="inp-tit">시작일</div>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DesktopDatePicker
+                      format="YYYY-MM-DD"
+                      value={dayjs(params?.createdAtFrom)}
+                      onChange={e => handlePickerChange(e, 'createdAtFrom')}
+                      //renderInput={params => <TextField {...params?.createdAtFrom} variant="standard" />}
+                    />
+                  </LocalizationProvider>
+                </div>
+              </div>
+              <div>-</div>
+              <div>
+                <div className="inpwrap">
+                  <div className="inp-tit">종료일</div>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DesktopDatePicker
+                      format="YYYY-MM-DD"
+                      value={dayjs(params?.createdAtTo)}
+                      onChange={e => handlePickerChange(e, 'createdAtTo')}
+                      //renderInput={params => <TextField {...params} variant="standard" />}
+                    />
+                  </LocalizationProvider>
+                </div>
+              </div>
             </div>
+            <div className="inpwrap">
+              <div className="inp search">
+                <input
+                  type="text"
+                  placeholder="검색어"
+                  className="input-admin"
+                  onChange={handleSearchKeyword}
+                  value={searchKeyword}
+                  name="searchKeyword"
+                  onKeyDown={event => onSearch && event.key === 'Enter' && onSearch(params)}
+                />
+                <button className="btn" onClick={() => onSearch && onSearch(params)}>
+                  <i className="ico i-search"></i>
+                </button>
+              </div>
+            </div>
+            <button
+              className="btn-type1 type3"
+              onClick={() => {
+                // if (!params?.createdAtFrom || !params?.createdAtTo) {
+                //   alert('기간을 설정해주세요');
+                // }
+
+                setIsFilter(!isFilter);
+              }}
+            >
+              <i className="ico i-filter"></i>
+              <span>필터</span>
+            </button>
           </div>
-          <button className="btn-type1 type3" onClick={() => setIsFilter(!isFilter)}>
-            <i className="ico i-filter"></i>
-            <span>필터</span>
-          </button>
+          <SmartFilter
+            name="memberFilter"
+            fields={FIELDS}
+            isFilterOpen={isFilter}
+            onSearch={onSmartFilterSearch}
+            params={params}
+            setParams={setParams}
+          />
         </div>
-        <SmartFilter name="memberFilter" fields={FIELDS} isFilterOpen={isFilter} onSearch={onSmartFilterSearch} />
       </div>
       <div className="data-type1" data-evt="main-table-on">
         <Table

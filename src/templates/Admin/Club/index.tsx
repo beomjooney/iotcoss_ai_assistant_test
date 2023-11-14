@@ -1,45 +1,35 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import React, { useEffect, useState } from 'react';
-import {
-  AdminPagination,
-  Editor,
-  SmartFilter,
-  Table,
-  Toggle,
-  Textfield,
-  Button,
-  Profile,
-} from '../../../stories/components';
-import dayjs from 'dayjs';
-import moment from 'moment';
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { TextField } from '@mui/material';
-import { useStore } from 'src/store';
-import { usePlaceTypes, useJobs } from 'src/services/code/code.queries';
-import { SeminarContent } from 'src/models/recommend';
-
 import { FormProvider, useForm } from 'react-hook-form';
-import Image from 'next/image';
+
 import * as yup from 'yup';
+import dayjs from 'dayjs';
+import Image from 'next/image';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { Profile, AdminPagination, Table, SmartFilter, Button, Toggle } from '../../../stories/components';
+import { TextField } from '@mui/material';
+import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useUploadImage } from 'src/services/image/image.mutations';
+import { SearchParamsProps } from 'pages/admin/club';
 
 const cx = classNames.bind(styles);
 
 interface ClubTemplateProps {
   clubList?: any;
-  clubData?: any;
   skillsList?: any;
+  experience?: any;
   jobGroup?: any;
   jobCodes?: any;
-  experience?: any;
+  clubData?: any;
   pageProps?: any;
   onClubInfo?: (clubId: string) => void;
   onDeleteClub?: (clubId: string) => void;
   onSave?: (data: any) => void;
   onSearch?: (searchKeyword: any) => void;
+  params: SearchParamsProps;
+  setParams: React.Dispatch<React.SetStateAction<SearchParamsProps>>;
 }
 
 export function AdminClubTemplate({
@@ -49,11 +39,13 @@ export function AdminClubTemplate({
   jobGroup,
   jobCodes,
   clubData,
+  pageProps,
+  params,
   onClubInfo,
   onDeleteClub,
   onSave,
-  pageProps,
   onSearch,
+  setParams,
 }: ClubTemplateProps) {
   const COLGROUP = ['8%', '8%', '10%', '6%', '6%', '7%', '6%', '6%', '6%', '8%', '8%', '8%'];
   const HEADS = [
@@ -82,21 +74,13 @@ export function AdminClubTemplate({
   const TAB4_COLGROUP = ['15%', '15%', '15%', '15%', '15%', '15%'];
   const TAB4_HEADS = ['퀴즈순서', '학습주차', '발행일시', '퀴즈 좋아요 수', '답변 수', '대표 여부'];
 
-  const LEVELS = [
-    { level: 1, desc: '상용서비스 단위모듈 수준 개발 가능. 서비스 개발 리딩 시니어 필요' },
-    { level: 2, desc: '상용서비스 개발 1인분 가능한 사람. 소규모 서비스 독자 개발 가능' },
-    { level: 3, desc: '상용서비스 개발 리더. 담당직무분야 N명 업무가이드 및 리딩 가능' },
-    { level: 4, desc: '다수 상용서비스 개발 리더. 수십명 혹은 수백명 수준의 개발자 총괄 리더' },
-    { level: 5, desc: '본인 오픈소스/방법론 등이 범용적 사용, 수백명이상 다수 직군 리딩' },
-  ];
-
   const FIELDS = [
-    { name: '클럽아이디', field: 'seminarId', type: 'text' },
-    { name: '클럽명', field: 'seminarTitle', type: 'text' },
+    { name: '클럽아이디', field: 'clubId', type: 'text' },
+    { name: '클럽명', field: 'clubName', type: 'text' },
     { name: '추천직군', field: 'seminarSubTitle', type: 'text' },
     { name: '추천직무', field: 'seminarIntroduction', type: 'text' },
-    { name: '추천레벨', field: 'description', type: 'text' },
-    { name: '설명', field: 'seminarStatus', type: 'choice' },
+    { name: '추천레벨', field: 'description', type: 'choice' },
+    { name: '설명', field: 'seminarStatus', type: 'text' },
     { name: '공개여부', field: 'seminarType', type: 'choice' },
     { name: '모집회원수', field: 'organizerMemberId', type: 'text' },
     { name: '퀴즈시작일', field: 'lecturerMemberId', type: 'text' },
@@ -104,7 +88,7 @@ export function AdminClubTemplate({
     { name: '학습주수', field: 'recommendJobGroups', type: 'text' },
     { name: '학습주기', field: 'recommendJobGroups', type: 'text' },
     { name: '학습주수', field: 'recommendJobGroups', type: 'text' },
-    { name: '상태', field: 'recommendLevels', type: 'text' },
+    { name: '상태', field: 'recommendLevels', type: 'choice' },
     { name: '등록일시', field: 'keywords', type: 'text' },
   ];
 
@@ -118,11 +102,11 @@ export function AdminClubTemplate({
   const [tabValue, setTabValue] = useState<number>(1);
   const [content, setContent] = useState<any>({});
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [skillIds, setSkillIds] = useState<any[]>([]);
+  const [experienceIds, setExperienceIds] = useState<string[]>([]);
 
-  const clubCodes = [];
-
-  const memberSaveSchema = yup.object().shape({
-    memberId: yup.string().notRequired(),
+  const clubSaveSchema = yup.object().shape({
+    clubId: yup.string().notRequired(),
     name: yup.string().notRequired(),
     nickname: yup.string().notRequired(),
     email: yup.string().notRequired(),
@@ -135,7 +119,7 @@ export function AdminClubTemplate({
   const methods = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange',
-    resolver: yupResolver(memberSaveSchema),
+    resolver: yupResolver(clubSaveSchema),
   });
 
   useEffect(() => {
@@ -171,6 +155,19 @@ export function AdminClubTemplate({
   const handleSearchKeyword = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.currentTarget;
     setSearchKeyword(value);
+  };
+
+  const handlePickerChange = (moment, key) => {
+    let datetime = moment?.format('YYYY-MM-DD');
+    if (key === 'createdAtTo') {
+      datetime = `${datetime} 23:59:59`;
+    } else {
+      datetime = `${datetime} 00:00:00`;
+    }
+    setParams({
+      ...params,
+      [key]: `${datetime}`,
+    });
   };
 
   const onSmartFilterSearch = (params: any) => {
@@ -211,6 +208,8 @@ export function AdminClubTemplate({
 
   const handleClubApply = () => {};
 
+  const clubCodes = [];
+
   return (
     <div className="content">
       <h2 className="tit-type1">클럽관리</h2>
@@ -225,27 +224,75 @@ export function AdminClubTemplate({
           {/*</a>*/}
         </div>
         <div className="right">
-          <div className="inpwrap">
-            <div className="inp search">
-              <input
-                type="text"
-                placeholder="검색어"
-                className="input-admin"
-                onChange={handleSearchKeyword}
-                value={searchKeyword}
-                onKeyDown={event => onSearch && event.key === 'Enter' && onSearch(searchKeyword)}
-              />
-              <button className="btn" onClick={() => onSearch && onSearch(searchKeyword)}>
-                <i className="ico i-search"></i>
-              </button>
+          <div className={cx('search')}>
+            <div className={cx('date')}>
+              <div>
+                <div className="inpwrap">
+                  <div className="inp-tit">시작일</div>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DesktopDatePicker
+                      format="YYYY-MM-DD"
+                      value={dayjs(params?.createdAtFrom)}
+                      onChange={e => handlePickerChange(e, 'createdAtFrom')}
+                      //renderInput={params => <TextField {...params?.createdAtFrom} variant="standard" />}
+                    />
+                  </LocalizationProvider>
+                </div>
+              </div>
+              <div>-</div>
+              <div>
+                <div className="inpwrap">
+                  <div className="inp-tit">종료일</div>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DesktopDatePicker
+                      format="YYYY-MM-DD"
+                      value={dayjs(params?.createdAtTo)}
+                      onChange={e => handlePickerChange(e, 'createdAtTo')}
+                      //renderInput={params => <TextField {...params} variant="standard" />}
+                    />
+                  </LocalizationProvider>
+                </div>
+              </div>
             </div>
+            <div className="inpwrap">
+              <div className="inp search">
+                <input
+                  type="text"
+                  placeholder="검색어"
+                  className="input-admin"
+                  onChange={handleSearchKeyword}
+                  value={searchKeyword}
+                  name="searchKeyword"
+                  onKeyDown={event => onSearch && event.key === 'Enter' && onSearch(params)}
+                />
+                <button className="btn" onClick={() => onSearch && onSearch(params)}>
+                  <i className="ico i-search"></i>
+                </button>
+              </div>
+            </div>
+            <button
+              className="btn-type1 type3"
+              onClick={() => {
+                // if (!params?.createdAtFrom || !params?.createdAtTo) {
+                //   alert('기간을 설정해주세요');
+                // }
+
+                setIsFilter(!isFilter);
+              }}
+            >
+              <i className="ico i-filter"></i>
+              <span>필터</span>
+            </button>
           </div>
-          <button className="btn-type1 type3" onClick={() => setIsFilter(!isFilter)}>
-            <i className="ico i-filter"></i>
-            <span>필터</span>
-          </button>
+          <SmartFilter
+            name="memberFilter"
+            fields={FIELDS}
+            isFilterOpen={isFilter}
+            onSearch={onSmartFilterSearch}
+            params={params}
+            setParams={setParams}
+          />
         </div>
-        <SmartFilter name="memberFilter" fields={FIELDS} isFilterOpen={isFilter} onSearch={onSmartFilterSearch} />
       </div>
       <div className="data-type1" data-evt="main-table-on">
         <Table
@@ -256,7 +303,7 @@ export function AdminClubTemplate({
             return (
               <tr key={`tr-${index}`} onClick={() => onShowPopup(item.memberId)}>
                 <td className="magic" title={item.memberId}>
-                  {item.memberId}
+                  {item.clubId}
                 </td>
                 <td className="magic" title={item.name}>
                   {item.name}

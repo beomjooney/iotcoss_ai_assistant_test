@@ -275,7 +275,7 @@ export function MembersTemplate({
                       format="YYYY-MM-DD"
                       value={dayjs(params?.createdAtFrom)}
                       onChange={e => handlePickerChange(e, 'createdAtFrom')}
-                      renderInput={params => <TextField {...params?.createdAtFrom} variant="standard" />}
+                      //renderInput={params => <TextField {...params?.createdAtFrom} variant="standard" />}
                     />
                   </LocalizationProvider>
                 </div>
@@ -289,7 +289,7 @@ export function MembersTemplate({
                       format="YYYY-MM-DD"
                       value={dayjs(params?.createdAtTo)}
                       onChange={e => handlePickerChange(e, 'createdAtTo')}
-                      renderInput={params => <TextField {...params} variant="standard" />}
+                      //renderInput={params => <TextField {...params} variant="standard" />}
                     />
                   </LocalizationProvider>
                 </div>
