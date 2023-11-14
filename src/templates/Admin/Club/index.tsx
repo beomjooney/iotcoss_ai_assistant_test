@@ -320,7 +320,7 @@ export function AdminClubTemplate({
                   {item.recommendJobNames}
                 </td>
                 <td className="magic" title={item.recommendLevels}>
-                  {item.recommendLevels.length === 5 ? '모든' : item.recommendLevels.sort().join(',')}
+                  {item.recommendLevels?.length === 5 ? '모든' : item.recommendLevels?.sort().join(',') || 0}
                 </td>
                 <td className="magic" title={item.isPublic ? 'Y' : 'N'}>
                   {item.isPublic ? 'Y' : 'N'}

@@ -92,8 +92,8 @@ export function ClubQuizPage() {
   const PAGE_PROPS = {
     page: page,
     setPage: setPage,
-    count: clubList?.data?.totalPage,
-    total: clubList?.data?.totalPage,
+    count: clubList?.data?.data?.totalPages,
+    total: clubList?.data?.data?.totalPages,
     onChangeSize: size => {
       setSize(size);
       setPage(1);

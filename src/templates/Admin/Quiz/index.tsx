@@ -7,7 +7,7 @@ import * as yup from 'yup';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Profile, AdminPagination, Table, SmartFilter, Button, Toggle } from '../../../stories/components';
+import { Profile, AdminPagination, Table, SmartFilter, Button, Toggle, Editor } from '../../../stories/components';
 import { TextField } from '@mui/material';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -24,8 +24,8 @@ interface QuizTemplateProps {
   jobCodes?: any;
   quizData?: any;
   pageProps?: any;
-  onMemberInfo?: (memberId: string) => void;
-  onDeleteMember?: (memberId: string) => void;
+  onQuizInfo?: (quizId: string) => void;
+  onDeleteQuiz?: (quizId: string) => void;
   onSave?: (data: any) => void;
   onSearch?: (keyword: any) => void;
   params: SearchParamsProps;
@@ -41,13 +41,13 @@ export function QuizTemplate({
   quizData,
   pageProps,
   params,
-  onMemberInfo,
-  onDeleteMember,
+  onQuizInfo,
+  onDeleteQuiz,
   onSave,
   onSearch,
   setParams,
 }: QuizTemplateProps) {
-  const COLGROUP = ['8%', '7%', '5%', '5%', '5%', '5%', '5%', '5%', '8%', '7%', '7%'];
+  const COLGROUP = ['12%', '12%', '5%', '5%', '4%', '5%', '4%', '4%', '6%', '6%', '6%'];
   const HEADS = [
     '퀴즈아이디',
     '회원UUID',
@@ -65,19 +65,23 @@ export function QuizTemplate({
   const memberCodes = [];
 
   const FIELDS = [
-    { name: 'UUID', field: 'uuid', type: 'text' },
-    { name: '회원아이디', field: 'memberId', type: 'text' },
-    { name: '회원고유번호', field: 'memberUri', type: 'text' },
-    { name: '회원명', field: 'name', type: 'text' },
-    { name: '닉네임', field: 'nickname', type: 'text' },
-    { name: '이메일', field: 'email', type: 'text' },
+    { name: '퀴즈ID', field: 'id', type: 'text' },
+    { name: '회원UUID', field: 'memberUUID', type: 'text' },
+    { name: '추천직군들', field: 'recommendJobGroupNames', type: 'text' },
+    { name: '추천직무들', field: 'recommendJobNames', type: 'text' },
+    { name: '추천레벨들', field: 'recommendLevels', type: 'text' },
+    { name: '연관스킬들', field: 'relatedSkills', type: 'text' },
+    { name: '퀴즈 활용 수', field: 'activeCount', type: 'text' },
+    { name: '퀴즈 답변 수', field: 'answerCount', type: 'text' },
+    { name: '해시 태그', field: 'hashTags', type: 'text' },
   ];
 
   const { mutate: onSaveProfileImage, data: profileImage, isSuccess } = useUploadImage();
 
+  const [introduceEditor, setIntroduceEditor] = useState<string>('');
   const [popupOpen, setPopupOpen] = useState<boolean>(false);
   const [isFilter, setIsFilter] = useState<boolean>(false);
-  const [member, setMember] = useState<any>({});
+  const [quiz, setQuiz] = useState<any>({});
   const [searchKeyword, setSearchKeyword] = useState<string>('');
   const [profileImageUrl, setProfilImageUrl] = useState(null);
   const [tabValue, setTabValue] = useState<number>(1);
@@ -105,30 +109,30 @@ export function QuizTemplate({
   });
 
   useEffect(() => {
-    quizData && setMember(quizData.data);
+    quizData && setQuiz(quizData.data);
   }, [quizData]);
 
-  const onShowPopup = (memberId: string) => {
-    // 사용자 조회
-    onMemberInfo && onMemberInfo(memberId);
+  const onShowPopup = (quizId: string) => {
+    // 조회
+    onQuizInfo && onQuizInfo(quizId);
     setPopupOpen(true);
   };
 
-  const onChangeMember = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const onChangeQuiz = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = event.currentTarget;
     const data = {
       [name]: value,
     };
-    setMember({
-      ...member,
+    setQuiz({
+      ...quiz,
       ...data,
     });
   };
 
-  const handleDelete = (memberId: string) => {
+  const handleDelete = (clubId: string) => {
     setPopupOpen(false);
-    setMember({});
-    onDeleteMember && onDeleteMember(memberId);
+    setQuiz({});
+    onDeleteQuiz && onDeleteQuiz(clubId);
   };
 
   const handleSearchKeyword = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -160,8 +164,8 @@ export function QuizTemplate({
   const handleSave = (data: any) => {
     const params = {
       ...data,
-      ...member,
-      profileImageUrl: profileImage?.toString()?.slice(1) || member?.profileImageUrl,
+      ...quiz,
+      profileImageUrl: profileImage?.toString()?.slice(1) || quiz?.profileImageUrl,
     };
     onSave && onSave(params);
   };
@@ -183,6 +187,31 @@ export function QuizTemplate({
   const onFileChange = files => {
     if (!files || files.length === 0) return;
     readFile(files[0]);
+  };
+
+  const onToggleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, checked } = event.currentTarget;
+
+    if (name === 'skillIds') {
+      const result = [...skillIds];
+
+      if (result.indexOf(value) > -1) {
+        result.splice(result.indexOf(value), 1);
+      } else {
+        result.push(value);
+      }
+      setSkillIds(result);
+    } else if (name === 'experienceIds') {
+      const result = [...experienceIds];
+
+      if (result.indexOf(value) > -1) {
+        result.splice(result.indexOf(value), 1);
+      } else {
+        result.push(value);
+      }
+
+      setExperienceIds(result);
+    }
   };
 
   return (
@@ -276,36 +305,36 @@ export function QuizTemplate({
           heads={HEADS}
           items={quizList?.data?.data?.contents?.map((item, index) => {
             return (
-              <tr key={`tr-${index}`} onClick={() => onShowPopup(item.memberId)}>
-                <td className="magic" title={item.memberId}>
-                  {item.memberId}
+              <tr key={`tr-${index}`} onClick={() => onShowPopup(item.sequence)}>
+                <td className="magic" title={item.id}>
+                  {item.id}
                 </td>
-                <td className="magic" title={item.name}>
-                  {item.name}
+                <td className="magic" title={item.memberUUID}>
+                  {item.memberUUID}
                 </td>
-                <td className="magic" title={item.typeName}>
-                  {item.typeName}
+                <td className="magic" title={item.recommendJobGroupNames}>
+                  {item.recommendJobGroupNames}
                 </td>
-                <td className="magic" title={item.jobGroupName}>
-                  {item.jobGroupName}
+                <td className="magic" title={item.recommendJobNames}>
+                  {item.recommendJobNames}
                 </td>
-                <td className="magic" title={item.level}>
-                  {item.level}
+                <td className="magic" title={item.recommendLevels}>
+                  {item.recommendLevels}
                 </td>
-                <td className="magic" title={item.ageRange}>
-                  {item.ageRange}
+                <td className="magic" title={item.relatedSkills}>
+                  {item.relatedSkills}
                 </td>
-                <td className="magic" title={item?.authProviderName}>
-                  {item?.authProviderName}
+                <td className="magic" title={item?.activeCount}>
+                  {item?.activeCount || 0}
                 </td>
-                <td className="magic" title={item.emailReceiveYn ? 'Y' : 'N'}>
-                  {item.emailReceiveYn ? 'Y' : 'N'}
+                <td className="magic" title={item.answerCount}>
+                  {item?.answerCount || 0}
                 </td>
-                <td className="magic" title={item.smsReceiveYn ? 'Y' : 'N'}>
-                  {item.smsReceiveYn ? 'Y' : 'N'}
+                <td className="magic" title={item.hashTags}>
+                  {item.hashTags}
                 </td>
-                <td className="magic" title={item.kakaoReceiveYn ? 'Y' : 'N'}>
-                  {item.kakaoReceiveYn ? 'Y' : 'N'}
+                <td className="magic" title={item.deleteStatus ? 'Y' : 'N'}>
+                  {item.deleteStatus ? 'Y' : 'N'}
                 </td>
                 <td className="magic" title={dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}>
                   {dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}
@@ -350,52 +379,13 @@ export function QuizTemplate({
                     취소
                   </button>
                 ) : (
-                  <button className="btn-type1 type1" onClick={() => handleDelete(member?.memberId)}>
+                  <button className="btn-type1 type1" onClick={() => handleDelete(quiz?.id)}>
                     삭제
                   </button>
                 )}
               </div>
             </div>
             <div className="tab-content" data-id="tabLink01">
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
-                {isEdit ? (
-                  <div className={cx('profile-image-item')}>
-                    <div className={cx('profile-image')}>
-                      <Image
-                        src={
-                          isSuccess
-                            ? profileImageUrl
-                            : member?.profileImageUrl?.indexOf('http') > -1
-                            ? member?.profileImageUrl
-                            : `${process.env['NEXT_PUBLIC_GENERAL_IMAGE_URL']}/images/${member?.profileImageUrl}`
-                        }
-                        // src={`${process.env['NEXT_PUBLIC_GENERAL_API_URL']}/images/${mentorInfo?.profileImageUrl}`}
-                        alt={`${member?.typeName} ${member?.nickname}`}
-                        className={cx('rounded-circle', 'profile-image__image')}
-                        width={`256px`}
-                        height={`256px`}
-                        objectFit="cover"
-                        unoptimized={true}
-                      />
-                    </div>
-                    <div className={cx('profile-image-item__upload-wrap')}>
-                      <Button type="button" color="secondary" disabled={!isEdit}>
-                        <label htmlFor="profile-image-item__upload">프로필 사진 수정</label>
-                        <input
-                          hidden
-                          disabled={!isEdit}
-                          id="profile-image-item__upload"
-                          accept="image/*"
-                          type="file"
-                          onChange={e => onFileChange(e.target?.files)}
-                        />
-                      </Button>
-                    </div>
-                  </div>
-                ) : (
-                  <Profile mentorInfo={member} showDesc isOnlyImage />
-                )}
-              </div>
               <div className="layout-grid">
                 <div className="grid-25">
                   <div className="inpwrap">
@@ -408,8 +398,8 @@ export function QuizTemplate({
                         className="input-admin"
                         {...methods.register('memberId')}
                         disabled
-                        value={member?.memberId || ''}
-                        onChange={onChangeMember}
+                        value={quiz?.memberId || ''}
+                        onChange={onChangeQuiz}
                       />
                     </div>
                   </div>
@@ -423,24 +413,9 @@ export function QuizTemplate({
                       <input
                         className="input-admin"
                         type="text"
-                        {...methods.register('name')}
-                        value={member?.name || ''}
-                        onChange={onChangeMember}
-                        disabled={!isEdit}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit">생일</div>
-                    <div className="inp">
-                      <input
-                        className="input-admin"
-                        type="text"
-                        {...methods.register('birthday')}
-                        value={member?.birthday || ''}
-                        onChange={onChangeMember}
+                        {...methods.register('memberName')}
+                        value={quiz?.memberName || ''}
+                        onChange={onChangeQuiz}
                         disabled={!isEdit}
                       />
                     </div>
@@ -453,9 +428,54 @@ export function QuizTemplate({
                       <input
                         className="input-admin"
                         type="text"
-                        {...methods.register('nickname')}
-                        value={member?.nickname || ''}
-                        onChange={onChangeMember}
+                        {...methods.register('memberNickname')}
+                        value={quiz?.memberNickname}
+                        onChange={onChangeQuiz}
+                        disabled={!isEdit}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid-25">
+                  <div className="inpwrap">
+                    <div className="inp-tit">아티클URL</div>
+                    <div className="inp">
+                      <input
+                        className="input-admin"
+                        type="text"
+                        {...methods.register('articleUrl')}
+                        value={quiz?.articleUrl || ''}
+                        onChange={onChangeQuiz}
+                        disabled={!isEdit}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid-25">
+                  <div className="inpwrap">
+                    <div className="inp-tit">퀴즈 활용 수</div>
+                    <div className="inp">
+                      <input
+                        className="input-admin"
+                        type="text"
+                        {...methods.register('activeCount')}
+                        value={quiz?.activeCount || 0}
+                        onChange={onChangeQuiz}
+                        disabled={!isEdit}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid-25">
+                  <div className="inpwrap">
+                    <div className="inp-tit">퀴즈 답변 수</div>
+                    <div className="inp">
+                      <input
+                        className="input-admin"
+                        type="text"
+                        {...methods.register('answerCount')}
+                        value={quiz?.answerCount || 0}
+                        onChange={onChangeQuiz}
                         disabled={!isEdit}
                       />
                     </div>
@@ -464,143 +484,15 @@ export function QuizTemplate({
                 <div className="grid-25">
                   <div className="inpwrap">
                     <div className="inp-tit">
-                      이메일<span className="star">*</span>
+                      키워드(해시태그)<span className="star">*</span>
                     </div>
                     <div className="inp">
                       <input
                         type="text"
                         className="input-admin"
-                        {...methods.register('email')}
-                        value={member?.email || ''}
-                        onChange={onChangeMember}
-                        disabled={!isEdit}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit">연령대</div>
-                    <div className="inp">
-                      <input
-                        type="text"
-                        className="input-admin"
-                        {...methods.register('ageRange')}
-                        value={member?.ageRange || ''}
-                        onChange={onChangeMember}
-                        disabled={!isEdit}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit">
-                      회원유형<span className="star">*</span>
-                    </div>
-                    <div className="inp">
-                      <select value={member?.type || ''} onChange={onChangeMember} name="type" disabled={!isEdit}>
-                        {memberCodes?.data?.contents?.map(item => (
-                          <option key={item.id} value={item.id}>
-                            {item.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit">
-                      직군유형<span className="star">*</span>
-                    </div>
-                    <div className="inp">
-                      <select
-                        value={member?.jobGroup || ''}
-                        onChange={onChangeMember}
-                        name="jobGroup"
-                        disabled={!isEdit}
-                      >
-                        {jobCodes?.data?.contents?.map(item => (
-                          <option key={item.id} value={item.id}>
-                            {item.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit">레벨</div>
-                    <div className="inp">
-                      <select value={member?.level || ''} onChange={onChangeMember} name="level" disabled={!isEdit}>
-                        <option value={1}>1레벨</option>
-                        <option value={2}>2레벨</option>
-                        <option value={3}>3레벨</option>
-                        <option value={4}>4레벨</option>
-                        <option value={5}>5레벨</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit">인증제공기관</div>
-                    <div className="inp">
-                      <input
-                        type="text"
-                        className="input-admin"
-                        {...methods.register('authProviderName')}
-                        value={member?.authProviderName || ''}
-                        disabled
-                        onChange={onChangeMember}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit">이메일 수신 여부</div>
-                    <div className="inp">
-                      <select
-                        value={member?.emailReceiveYn?.toString() || ''}
-                        onChange={onChangeMember}
-                        name="emailReceiveYn"
-                        disabled={!isEdit}
-                      >
-                        <option value="true">Y</option>
-                        <option value="false">N</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit">문자 수신 여부</div>
-                    <div className="inp">
-                      <select
-                        value={member?.smsReceiveYn?.toString() || ''}
-                        onChange={onChangeMember}
-                        name="smsReceiveYn"
-                        disabled={!isEdit}
-                      >
-                        <option value="true">Y</option>
-                        <option value="false">N</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit">로그인 실패 횟수</div>
-                    <div className="inp">
-                      <input
-                        type="text"
-                        className="input-admin"
-                        {...methods.register('loginFailCount')}
-                        value={member?.loginFailCount?.toString() || ''}
-                        onChange={onChangeMember}
+                        name="hashTags"
+                        value={quiz?.hashTags || ''}
+                        onChange={onChangeQuiz}
                         disabled={!isEdit}
                       />
                     </div>
@@ -613,23 +505,9 @@ export function QuizTemplate({
                       <input
                         type="text"
                         className="input-admin"
-                        value={member?.createdAt || ''}
+                        value={quiz?.createdAt || ''}
                         disabled
-                        onChange={onChangeMember}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit">등록자</div>
-                    <div className="inp">
-                      <input
-                        type="text"
-                        className="input-admin"
-                        value={member?.creatorId || ''}
-                        disabled
-                        onChange={onChangeMember}
+                        onChange={onChangeQuiz}
                       />
                     </div>
                   </div>
@@ -641,23 +519,27 @@ export function QuizTemplate({
                       <input
                         type="text"
                         className="input-admin"
-                        value={member?.updatedAt || ''}
+                        value={quiz?.updatedAt || ''}
                         disabled
-                        onChange={onChangeMember}
+                        onChange={onChangeQuiz}
                       />
                     </div>
                   </div>
                 </div>
-                <div className="grid-25">
+
+                <div className="grid-100 mt-5">
                   <div className="inpwrap">
-                    <div className="inp-tit">수정자</div>
+                    <div className="inp-tit">
+                      내용<span className="star">*</span>
+                    </div>
                     <div className="inp">
-                      <input
-                        type="text"
-                        className="input-admin"
-                        value={member?.updaterId || ''}
-                        disabled
-                        onChange={onChangeMember}
+                      <Editor
+                        type="seminar"
+                        data={quiz?.content || ''}
+                        onChange={(event, editor) => {
+                          setIntroduceEditor(editor.getData());
+                        }}
+                        disabled={!isEdit}
                       />
                     </div>
                   </div>

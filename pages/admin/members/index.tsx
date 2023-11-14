@@ -73,6 +73,8 @@ export function MembersPage() {
   //   }),
   // );
 
+  console.log(memberList);
+
   useEffect(() => {
     memberId && refetch();
   }, [memberId]);
@@ -86,8 +88,8 @@ export function MembersPage() {
   const PAGE_PROPS = {
     page: page,
     setPage: setPage,
-    count: memberList?.data?.totalPage,
-    total: memberList?.data?.totalPage,
+    count: memberList?.data?.data?.totalPages || 1,
+    total: memberList?.data?.data?.totalPages || 15,
     onChangeSize: size => {
       setSize(size);
       setPage(1);
@@ -114,6 +116,8 @@ export function MembersPage() {
   };
 
   const onSearch = async (params: SearchParamsProps) => {
+    setPage(1);
+
     // if (!params?.createdAtFrom || !params?.createdAtTo) {
     //   alert('기간을 설정하세요');
     // }

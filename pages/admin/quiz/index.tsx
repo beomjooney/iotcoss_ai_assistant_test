@@ -85,8 +85,8 @@ export function QuizPage() {
   const PAGE_PROPS = {
     page: page,
     setPage: setPage,
-    count: quizList?.data?.totalPage,
-    total: quizList?.data?.totalPage,
+    count: quizList?.data?.data?.totalPages || 1,
+    total: quizList?.data?.data?.totalPages || 15,
     onChangeSize: size => {
       setSize(size);
       setPage(1);
@@ -94,17 +94,17 @@ export function QuizPage() {
     size: size,
   };
 
-  const onMemberInfo = (id: string) => {
+  const onQuizInfo = (id: string) => {
     setQuizId(id);
   };
 
-  const onDeleteMember = (id: string) => {
-    if (confirm('해당 회원을 삭제하시겠습니까?')) {
+  const onDeleteQuiz = (id: string) => {
+    if (confirm('해당 내용을 삭제하시겠습니까?')) {
       onDelete(id);
     }
   };
 
-  const onSaveMember = (data: any) => {
+  const onSaveQuiz = (data: any) => {
     if (confirm('저장하시겠습니까?')) {
       onSave({
         ...data,
@@ -113,6 +113,7 @@ export function QuizPage() {
   };
 
   const onSearch = async (params: SearchParamsProps) => {
+    setPage(1);
     // if (!params?.createdAtFrom || !params?.createdAtTo) {
     //   alert('기간을 설정하세요');
     // }
@@ -137,9 +138,9 @@ export function QuizPage() {
       quizData={quizData}
       pageProps={PAGE_PROPS}
       params={params}
-      onMemberInfo={onMemberInfo}
-      onDeleteMember={onDeleteMember}
-      onSave={onSaveMember}
+      onQuizInfo={onQuizInfo}
+      onDeleteQuiz={onDeleteQuiz}
+      onSave={onSaveQuiz}
       onSearch={onSearch}
       setParams={setParams}
     />

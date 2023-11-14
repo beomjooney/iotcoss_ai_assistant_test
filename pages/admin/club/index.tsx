@@ -85,8 +85,8 @@ export function ClubPage() {
   const PAGE_PROPS = {
     page: page,
     setPage: setPage,
-    count: clubList?.data?.data?.totalPage,
-    total: clubList?.data?.data?.totalPage,
+    count: clubList?.data?.data?.totalPages || 1,
+    total: clubList?.data?.data?.totalPages || 15,
     onChangeSize: size => {
       setSize(size);
       setPage(1);
