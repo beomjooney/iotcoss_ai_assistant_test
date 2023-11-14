@@ -129,9 +129,9 @@ export function ReceiverTemplate({ onSearch, setParams, params, pageProps, pushH
               onClick={() => {
                 if (!params?.sendDateFrom || !params?.sendDateTo) {
                   alert('기간을 설정해주세요');
-                } else {
-                  setIsFilter(!isFilter);
                 }
+
+                setIsFilter(!isFilter);
               }}
             >
               <i className="ico i-filter"></i>

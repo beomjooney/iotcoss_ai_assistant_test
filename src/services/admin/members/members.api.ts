@@ -5,7 +5,7 @@ export async function authCheck() {
 }
 
 export async function getMembers(params: any) {
-  const { data, headers } = await axiosGeneralAPI().get('/api/internal/v1/members', { params });
+  const { data, headers } = await axiosGeneralAPI().get('/api/admin/v1/members', { params });
   const totalPage = Number(headers['page-count']);
   return { data: data || [], nextPage: params.page + 1, totalPage };
 }

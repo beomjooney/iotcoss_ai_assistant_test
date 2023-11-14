@@ -2,13 +2,14 @@ import './index.module.scss';
 
 import { UseQueryResult } from 'react-query';
 import { useEffect, useState } from 'react';
+import dayjs from 'dayjs';
 
 import AdminLayout from '../../../src/stories/Layout/AdminLayout';
 import MembersTemplate from '../../../src/templates/Admin/Members';
 
 import { useMember, useMembers } from '../../../src/services/admin/members/members.queries';
 import { useDeleteMember, useSaveMember } from '../../../src/services/admin/members/members.mutations';
-import { useCodeList, useJobGroups, useJobs, useMemberCode } from 'src/services/code/code.queries';
+import { useCodeList, useJobGroups, useJobs, useMemberCode, useContentTypes } from 'src/services/code/code.queries';
 
 import { SkillResponse } from 'src/models/skills';
 import { useSkills } from 'src/services/admin/skill/skill.queries';
@@ -16,14 +17,30 @@ import { useSkills } from 'src/services/admin/skill/skill.queries';
 import { ExperiencesResponse } from 'src/models/experiences';
 import { useExperiences } from 'src/services/experiences/experiences.queries';
 
+export interface SearchParamsProps {
+  page: number;
+  size: number;
+  createdAtFrom: string;
+  createdAtTo: string;
+  searchKeyword: string;
+}
+
 export function MembersPage() {
+  const now = dayjs();
+  const tomorrow = now.add(1, 'day');
   const [page, setPage] = useState<number>(1);
   const [size, setSize] = useState<number>(15);
   const [search, setSearch] = useState<string>('');
   const [memberId, setMemberId] = useState<string>('');
-  const [params, setParams] = useState<any>({});
+  const [params, setParams] = useState<SearchParamsProps>({
+    page: page,
+    size: size,
+    createdAtFrom: `${now?.format('YYYY-MM-DD')} 00:00:00`,
+    createdAtTo: `${tomorrow.format('YYYY-MM-DD')} 00:00:00`,
+    searchKeyword: '',
+  });
 
-  const { data: jobCodes } = useJobs();
+  const { data: jobCodes } = useContentTypes();
   const { data: experienceData }: UseQueryResult<ExperiencesResponse> = useExperiences();
   //const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
   const { data: memberData, refetch }: UseQueryResult<any> = useMember(memberId);
@@ -44,15 +61,25 @@ export function MembersPage() {
     memberId && refetch();
   }, [memberId]);
 
+  // const {
+  //   data: memberList,
+  //   refetch: memberListRefetch,
+  //   error,
+  // }: UseQueryResult<any> = useMembers(
+  //   paramsWithDefault({
+  //     page: page,
+  //     size: size,
+  //     searchKeyword: search,
+  //     ...params,
+  //   }),
+  // );
+
   const {
     data: memberList,
     refetch: memberListRefetch,
     error,
   }: UseQueryResult<any> = useMembers(
     paramsWithDefault({
-      page: page,
-      size: size,
-      searchKeyword: search,
       ...params,
     }),
   );
@@ -63,6 +90,13 @@ export function MembersPage() {
       size: size,
     }),
   );
+
+  // const { data: experienceData }: UseQueryResult<any> = useExperiences(
+  //   paramsWithDefault({
+  //     page: page,
+  //     size: size,
+  //   }),
+  // );
 
   useEffect(() => {
     if (error) {
@@ -100,15 +134,22 @@ export function MembersPage() {
     }
   };
 
-  const onSearch = async (params: any) => {
-    setPage(1);
+  const onSearch = async (params: SearchParamsProps) => {
+    // if (!params?.createdAtFrom || !params?.createdAtTo) {
+    //   alert('기간을 설정하세요');
+    // }
+
     if (typeof params === 'object') {
-      setParams(params);
+      setParams({
+        ...params,
+      });
     } else {
       setSearch(params);
     }
     await memberListRefetch();
   };
+
+  console.log(experienceData);
 
   return (
     <MembersTemplate
@@ -118,12 +159,14 @@ export function MembersPage() {
       jobGroup={jobGroup}
       jobCodes={jobCodes}
       memberData={memberData}
-      onMemberInfo={onMemberInfo}
       memberCodes={memberCodes}
       pageProps={PAGE_PROPS}
+      params={params}
+      onMemberInfo={onMemberInfo}
       onDeleteMember={onDeleteMember}
       onSave={onSaveMember}
       onSearch={onSearch}
+      setParams={setParams}
     />
   );
 }
@@ -137,8 +180,8 @@ MembersPage.LayoutProps = {
   title: '데브어스 관리자',
 };
 
-const paramsWithDefault = (params: any) => {
-  const defaultParams: any = {
+const paramsWithDefault = params => {
+  const defaultParams = {
     page: 1,
     size: 15,
   };

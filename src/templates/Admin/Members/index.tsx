@@ -1,14 +1,18 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import React, { useEffect, useState } from 'react';
-
 import { FormProvider, useForm } from 'react-hook-form';
-import Image from 'next/image';
+
 import * as yup from 'yup';
+import dayjs from 'dayjs';
+import Image from 'next/image';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Profile, AdminPagination, Table, SmartFilter, Button, Toggle } from '../../../stories/components';
-import dayjs from 'dayjs';
+import { TextField } from '@mui/material';
+import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useUploadImage } from 'src/services/image/image.mutations';
+import { SearchParamsProps } from 'pages/admin/members';
 
 const cx = classNames.bind(styles);
 
@@ -25,6 +29,8 @@ interface MembersTemplateProps {
   onDeleteMember?: (memberId: string) => void;
   onSave?: (data: any) => void;
   onSearch?: (searchKeyword: any) => void;
+  params: SearchParamsProps;
+  setParams: React.Dispatch<React.SetStateAction<SearchParamsProps>>;
 }
 
 export function MembersTemplate({
@@ -34,12 +40,14 @@ export function MembersTemplate({
   jobGroup,
   jobCodes,
   memberData,
+  memberCodes,
+  pageProps,
+  params,
   onMemberInfo,
   onDeleteMember,
   onSave,
-  memberCodes,
-  pageProps,
   onSearch,
+  setParams,
 }: MembersTemplateProps) {
   const COLGROUP = ['8%', '7%', '8%', '6%', '3%', '5%', '7%', '5%', '7%', '4%', '5%', '5%', '7%'];
   const HEADS = [
@@ -59,12 +67,24 @@ export function MembersTemplate({
   ];
 
   const FIELDS = [
-    { name: 'UUID', field: 'uuid', type: 'text' },
     { name: '회원아이디', field: 'memberId', type: 'text' },
-    { name: '회원고유번호', field: 'memberUri', type: 'text' },
     { name: '회원명', field: 'name', type: 'text' },
-    { name: '닉네임', field: 'nickname', type: 'text' },
     { name: '이메일', field: 'email', type: 'text' },
+    { name: '전화번호', field: 'phoneNumber', type: 'text' },
+    { name: '회원유형', field: 'type', type: 'text' },
+    { name: '직군유형', field: 'jobGroup', type: 'text' },
+    { name: '레벨', field: 'level', type: 'text' },
+    { name: '이메일수신여부', field: 'emailReceiveYn', type: 'text' },
+    { name: '문자수신여부', field: 'smsReceiveYn', type: 'text' },
+    { name: '카카오톡수신여부', field: 'kakaoReceiveYn', type: 'text' },
+    { name: '포인트', field: 'points', type: 'text' },
+    // {
+    //   name: '등록일시',
+    //   field: 'createdAtTo',
+    //   type: 'fromToDate',
+    //   fieldNames: ['createdAtFrom', 'createdAtTo'],
+    //   onChange: [e => handlePickerChange(e, 'createdAtFrom')],
+    // },
   ];
 
   const TAB4_COLGROUP = ['15%', '15%', '15%'];
@@ -83,6 +103,8 @@ export function MembersTemplate({
   const [tabValue, setTabValue] = useState<number>(1);
   const [content, setContent] = useState<any>({});
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [skillIds, setSkillIds] = useState<any[]>([]);
+  const [experienceIds, setExperienceIds] = useState<string[]>([]);
 
   // TODO : 밸리데이션 추가 해야 함
   const memberSaveSchema = yup.object().shape({
@@ -104,7 +126,18 @@ export function MembersTemplate({
 
   useEffect(() => {
     memberData && setMember(memberData.data);
+    if (memberData) {
+      setExperienceIds(memberData?.data?.customExperiences?.map((item, index) => item) || []);
+      setSkillIds(memberData?.data?.customSkills?.map((item, index) => item) || []);
+    } else {
+      setExperienceIds([]);
+      setSkillIds([]);
+    }
   }, [memberData]);
+
+  // useEffect(() => {
+  //   memberData && setMember(memberData.data);
+  // }, [memberData]);
 
   const onShowPopup = (memberId: string) => {
     // 사용자 조회
@@ -135,6 +168,23 @@ export function MembersTemplate({
   const handleSearchKeyword = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.currentTarget;
     setSearchKeyword(value);
+    setParams({
+      ...params,
+      searchKeyword: value,
+    });
+  };
+
+  const handlePickerChange = (moment, key) => {
+    let datetime = moment?.format('YYYY-MM-DD');
+    if (key === 'createdAtTo') {
+      datetime = `${datetime} 23:59:59`;
+    } else {
+      datetime = `${datetime} 00:00:00`;
+    }
+    setParams({
+      ...params,
+      [key]: `${datetime}`,
+    });
   };
 
   const onSmartFilterSearch = (params: any) => {
@@ -155,7 +205,7 @@ export function MembersTemplate({
   };
 
   const onError = (error: any) => {
-    console.log(error);
+    //console.log(error);
   };
 
   const readFile = file => {
@@ -175,7 +225,35 @@ export function MembersTemplate({
 
   const handleCheckboxChange = () => {};
 
-  //console.log(member);
+  const onToggleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, checked } = event.currentTarget;
+
+    console.log(name);
+    console.log(value);
+
+    if (name === 'skillIds') {
+      const result = [...skillIds];
+
+      if (result.indexOf(value) > -1) {
+        result.splice(result.indexOf(value), 1);
+      } else {
+        result.push(value);
+      }
+      setSkillIds(result);
+    } else if (name === 'experienceIds') {
+      const result = [...experienceIds];
+
+      if (result.indexOf(value) > -1) {
+        result.splice(result.indexOf(value), 1);
+      } else {
+        result.push(value);
+      }
+
+      setExperienceIds(result);
+    }
+  };
+
+  console.log(memberData);
 
   return (
     <div className="content">
@@ -185,33 +263,77 @@ export function MembersTemplate({
       </div>
 
       <div className="data-top">
-        <div className="left">
-          {/*<a href="#" className="btn-type1 type1">*/}
-          {/*  등록*/}
-          {/*</a>*/}
-        </div>
+        <div className="left"></div>
         <div className="right">
-          <div className="inpwrap">
-            <div className="inp search">
-              <input
-                type="text"
-                placeholder="검색어"
-                className="input-admin"
-                onChange={handleSearchKeyword}
-                value={searchKeyword}
-                onKeyDown={event => onSearch && event.key === 'Enter' && onSearch(searchKeyword)}
-              />
-              <button className="btn" onClick={() => onSearch && onSearch(searchKeyword)}>
-                <i className="ico i-search"></i>
-              </button>
+          <div className={cx('search')}>
+            <div className={cx('date')}>
+              <div>
+                <div className="inpwrap">
+                  <div className="inp-tit">시작일</div>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DesktopDatePicker
+                      format="YYYY-MM-DD"
+                      value={dayjs(params?.createdAtFrom)}
+                      onChange={e => handlePickerChange(e, 'createdAtFrom')}
+                      renderInput={params => <TextField {...params?.createdAtFrom} variant="standard" />}
+                    />
+                  </LocalizationProvider>
+                </div>
+              </div>
+              <div>-</div>
+              <div>
+                <div className="inpwrap">
+                  <div className="inp-tit">종료일</div>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DesktopDatePicker
+                      format="YYYY-MM-DD"
+                      value={dayjs(params?.createdAtTo)}
+                      onChange={e => handlePickerChange(e, 'createdAtTo')}
+                      renderInput={params => <TextField {...params} variant="standard" />}
+                    />
+                  </LocalizationProvider>
+                </div>
+              </div>
             </div>
+            <div className="inpwrap">
+              <div className="inp search">
+                <input
+                  type="text"
+                  placeholder="검색어"
+                  className="input-admin"
+                  onChange={handleSearchKeyword}
+                  value={searchKeyword}
+                  name="searchKeyword"
+                  onKeyDown={event => onSearch && event.key === 'Enter' && onSearch(params)}
+                />
+                <button className="btn" onClick={() => onSearch && onSearch(params)}>
+                  <i className="ico i-search"></i>
+                </button>
+              </div>
+            </div>
+            <button
+              className="btn-type1 type3"
+              onClick={() => {
+                // if (!params?.createdAtFrom || !params?.createdAtTo) {
+                //   alert('기간을 설정해주세요');
+                // }
+
+                setIsFilter(!isFilter);
+              }}
+            >
+              <i className="ico i-filter"></i>
+              <span>필터</span>
+            </button>
           </div>
-          <button className="btn-type1 type3" onClick={() => setIsFilter(!isFilter)}>
-            <i className="ico i-filter"></i>
-            <span>필터</span>
-          </button>
+          <SmartFilter
+            name="memberFilter"
+            fields={FIELDS}
+            isFilterOpen={isFilter}
+            onSearch={onSmartFilterSearch}
+            params={params}
+            setParams={setParams}
+          />
         </div>
-        <SmartFilter name="memberFilter" fields={FIELDS} isFilterOpen={isFilter} onSearch={onSmartFilterSearch} />
       </div>
       <div className="data-type1" data-evt="main-table-on">
         <Table
@@ -436,13 +558,15 @@ export function MembersTemplate({
                   </div>
                   <div className="grid-25">
                     <div className="inpwrap">
-                      <div className="inp-tit">생일</div>
+                      <div className="inp-tit">
+                        이메일<span className="star">*</span>
+                      </div>
                       <div className="inp">
                         <input
-                          className="input-admin"
                           type="text"
-                          {...methods.register('birthday')}
-                          value={member?.birthday || ''}
+                          className="input-admin"
+                          {...methods.register('email')}
+                          value={member?.email || ''}
                           onChange={onChangeMember}
                           disabled={!isEdit}
                         />
@@ -466,15 +590,31 @@ export function MembersTemplate({
                   </div>
                   <div className="grid-25">
                     <div className="inpwrap">
+                      <div className="inp-tit">생일</div>
+                      <div className="inp">
+                        <input
+                          className="input-admin"
+                          type="text"
+                          {...methods.register('birthday')}
+                          value={member?.birthday || ''}
+                          onChange={onChangeMember}
+                          disabled={!isEdit}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid-25">
+                    <div className="inpwrap">
                       <div className="inp-tit">
-                        이메일<span className="star">*</span>
+                        전화번호<span className="star">*</span>
                       </div>
                       <div className="inp">
                         <input
                           type="text"
                           className="input-admin"
-                          {...methods.register('email')}
-                          value={member?.email || ''}
+                          {...methods.register('phoneNumber')}
+                          value={member?.phoneNumber || ''}
                           onChange={onChangeMember}
                           disabled={!isEdit}
                         />
@@ -498,11 +638,31 @@ export function MembersTemplate({
                   </div>
                   <div className="grid-25">
                     <div className="inpwrap">
+                      <div className="inp-tit">포인트</div>
+                      <div className="inp">
+                        <input
+                          type="text"
+                          className="input-admin"
+                          {...methods.register('points')}
+                          value={member?.points || 0}
+                          onChange={onChangeMember}
+                          disabled={!isEdit}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="grid-25">
+                    <div className="inpwrap">
                       <div className="inp-tit">
                         회원유형<span className="star">*</span>
                       </div>
                       <div className="inp">
-                        <select value={member?.type || ''} onChange={onChangeMember} name="type" disabled={!isEdit}>
+                        <select
+                          value={member?.memberType || ''}
+                          onChange={onChangeMember}
+                          name="type"
+                          disabled={!isEdit}
+                        >
                           {memberCodes?.data?.contents?.map(item => (
                             <option key={item.id} value={item.id}>
                               {item.name}
@@ -596,13 +756,29 @@ export function MembersTemplate({
                   </div>
                   <div className="grid-25">
                     <div className="inpwrap">
+                      <div className="inp-tit">카카오 수신 여부</div>
+                      <div className="inp">
+                        <select
+                          value={member?.isKakaoReceive?.toString() || ''}
+                          onChange={onChangeMember}
+                          name="kakaoReceiveYn"
+                          disabled={!isEdit}
+                        >
+                          <option value="true">Y</option>
+                          <option value="false">N</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="grid-25">
+                    <div className="inpwrap">
                       <div className="inp-tit">로그인 실패 횟수</div>
                       <div className="inp">
                         <input
                           type="text"
                           className="input-admin"
                           {...methods.register('loginFailCount')}
-                          value={member?.loginFailCount?.toString() || ''}
+                          value={member?.loginFailCount?.toString() || 0}
                           onChange={onChangeMember}
                           disabled={!isEdit}
                         />
@@ -611,54 +787,12 @@ export function MembersTemplate({
                   </div>
                   <div className="grid-25">
                     <div className="inpwrap">
-                      <div className="inp-tit">등록일시</div>
+                      <div className="inp-tit">마지막 로그인 일자</div>
                       <div className="inp">
                         <input
                           type="text"
                           className="input-admin"
-                          value={member?.createdAt || ''}
-                          disabled
-                          onChange={onChangeMember}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="grid-25">
-                    <div className="inpwrap">
-                      <div className="inp-tit">등록자</div>
-                      <div className="inp">
-                        <input
-                          type="text"
-                          className="input-admin"
-                          value={member?.creatorId || ''}
-                          disabled
-                          onChange={onChangeMember}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="grid-25">
-                    <div className="inpwrap">
-                      <div className="inp-tit">수정일시</div>
-                      <div className="inp">
-                        <input
-                          type="text"
-                          className="input-admin"
-                          value={member?.updatedAt || ''}
-                          disabled
-                          onChange={onChangeMember}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="grid-25">
-                    <div className="inpwrap">
-                      <div className="inp-tit">수정자</div>
-                      <div className="inp">
-                        <input
-                          type="text"
-                          className="input-admin"
-                          value={member?.updaterId || ''}
+                          value={member?.lastLoginAt || ''}
                           disabled
                           onChange={onChangeMember}
                         />
@@ -673,7 +807,7 @@ export function MembersTemplate({
             {tabValue === 2 && popupOpen && (
               <div className="tab-content" data-id="tabLink01">
                 <div className="layout-grid">
-                  <div className="grid-100 mt-3">
+                  {/* <div className="grid-100 mt-3">
                     <div className="inpwrap">
                       <div className="inp-tit">연관 직군들</div>
                       <div className="inp">
@@ -704,14 +838,14 @@ export function MembersTemplate({
                         })}
                       </div>
                     </div>
-                  </div>
-                  <div className="grid-100 mt-3">
+                  </div> */}
+                  {/* <div className="grid-100 mt-3">
                     <div className="inpwrap">
                       <div className="inp-tit">연관직무들</div>
                       <div className="inp">
                         {jobCodes?.data?.contents?.map(item => {
                           let isIncludeContent = false;
-                          if (member?.job?.includes(item.id)) {
+                          if (member?.jobGroup?.includes(item.id)) {
                             isIncludeContent = true;
                           }
                           return (
@@ -764,6 +898,52 @@ export function MembersTemplate({
                             </span>
                           );
                         })}
+                      </div>
+                    </div>
+                  </div> */}
+                  <div className="grid-100 mt-3">
+                    <div className="inpwrap">
+                      <div className="inp-tit">보유 스킬들</div>
+                      <div className="inp">
+                        <div className={cx('filter-area')}>
+                          <div className={cx('skill__group')}>
+                            {skillsList?.data?.data?.map((item, index) => {
+                              return (
+                                <Toggle
+                                  key={`skillIds-${index}`}
+                                  label={item.name}
+                                  name="skillIds"
+                                  value={item.id}
+                                  onChange={onToggleChange}
+                                  className="mr-2 mt-2 custom"
+                                  variant="small"
+                                  type="multiple"
+                                  isActive
+                                  isBorder
+                                  checked={!!skillIds?.find(skill => skill === item.id)}
+                                  disabled={!isEdit}
+                                />
+                              );
+                            })}
+                            {member?.customSkills?.map((item, index) => {
+                              return (
+                                <Toggle
+                                  key={`custom-skill-${index}`}
+                                  label={item.skillName}
+                                  name="skillIds"
+                                  value={item.skillName}
+                                  onChange={onToggleChange}
+                                  className={cx('custom')}
+                                  variant="small"
+                                  type="multiple"
+                                  isActive
+                                  checked={true}
+                                  disabled={!isEdit}
+                                />
+                              );
+                            })}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -775,97 +955,53 @@ export function MembersTemplate({
             {tabValue === 3 && popupOpen && (
               <div className="tab-content" data-id="tabLink01">
                 <div className="layout-grid">
-                  <div className="grid-100 mt-3">
+                  <div className="grid-100">
                     <div className="inpwrap">
-                      <div className="inp-tit">연관 직군들</div>
-                      <div className="inp">
-                        {jobGroup?.data?.contents?.map(item => {
-                          let isIncludeContent = false;
-                          if (member?.jobGroup?.includes(item.id)) {
-                            isIncludeContent = true;
-                          }
-                          return (
-                            <span
-                              key={item.id}
-                              className={cx('seminar-level-area__item', 'check-area__item', 'col-md-2')}
-                            >
-                              <Toggle
-                                isActive
-                                label={item.name}
-                                name="relatedJobGroups"
-                                type="checkBox"
-                                checked={isIncludeContent}
-                                value={item.id}
-                                key={item.id}
-                                disabled={!isEdit}
-                                className={cx('seminar-jobgroup-area')}
-                                onChange={e => handleCheckboxChange(e, 'relatedJobGroups')}
-                              />
-                            </span>
-                          );
-                        })}
+                      <div className="inp-tit">
+                        보유 경험들<span className="star">*</span>
                       </div>
-                    </div>
-                  </div>
-                  <div className="grid-100 mt-3">
-                    <div className="inpwrap">
-                      <div className="inp-tit">연관직무들</div>
                       <div className="inp">
-                        {jobCodes?.data?.contents?.map(item => {
-                          let isIncludeContent = false;
-                          if (member?.job?.includes(item.id)) {
-                            isIncludeContent = true;
-                          }
-                          return (
-                            <span
-                              key={item.id}
-                              className={cx('seminar-level-area__item', 'check-area__item', 'col-md-2')}
-                            >
+                        <div className={cx('skill__group')}>
+                          {experience?.map((item, index) => {
+                            return (
                               <Toggle
+                                key={`experienceIds-${index}`}
+                                label={item.experienceName}
+                                name="experienceIds"
+                                value={item.experienceId}
+                                onChange={onToggleChange}
+                                className="mr-2 mt-2"
+                                variant="small"
+                                type="multiple"
                                 isActive
-                                label={item.name}
-                                name="relatedJobs"
-                                type="checkBox"
-                                checked={isIncludeContent}
-                                value={item.id}
-                                key={item.id}
-                                className={cx('seminar-jobgroup-area')}
+                                isBorder
+                                checked={!!experienceIds?.find(experiences => experiences === item.experienceId)}
                                 disabled={!isEdit}
-                                onChange={e => handleCheckboxChange(e, 'relatedJobs')}
                               />
-                            </span>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="grid-100 mt-3">
-                    <div className="inpwrap">
-                      <div className="inp-tit">연관 레벨들</div>
-                      <div className="inp">
-                        {levelInfo.map(item => {
-                          let isIncludeContent = false;
-                          if (member?.level === item.level) {
-                            isIncludeContent = true;
-                          }
-                          return (
-                            <span
-                              key={item.level}
-                              className={cx('seminar-level-area__item', 'check-area__item', 'col-md-2')}
-                            >
+                            );
+                          })}
+                          {member?.customExperiences?.map((item, index) => {
+                            return (
                               <Toggle
+                                key={`custom-experience-${index}`}
+                                label={item.experienceName}
+                                name="skillIds"
+                                value={item.experienceName}
+                                onChange={onToggleChange}
+                                className={cx('custom')}
+                                variant="small"
+                                type="multiple"
                                 isActive
-                                label={`${item.level}레벨`}
-                                name="relatedLevels"
-                                checked={isIncludeContent}
+                                checked={
+                                  !!member?.customExperiences?.find(
+                                    experiences => experiences.experienceId === item.experienceId,
+                                  )
+                                }
                                 disabled={!isEdit}
-                                type="checkBox"
-                                value={item.level}
-                                onChange={e => handleCheckboxChange(e, 'relatedLevels')}
                               />
-                            </span>
-                          );
-                        })}
+                            );
+                          })}
+                        </div>
                       </div>
                     </div>
                   </div>
