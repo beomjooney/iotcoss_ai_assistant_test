@@ -205,7 +205,7 @@ export function MembersTemplate({
   };
 
   const onError = (error: any) => {
-    //console.log(error);
+    console.log(error);
   };
 
   const readFile = file => {
@@ -228,9 +228,6 @@ export function MembersTemplate({
   const onToggleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked } = event.currentTarget;
 
-    console.log(name);
-    console.log(value);
-
     if (name === 'skillIds') {
       const result = [...skillIds];
 
@@ -252,8 +249,6 @@ export function MembersTemplate({
       setExperienceIds(result);
     }
   };
-
-  console.log(memberData);
 
   return (
     <div className="content">
