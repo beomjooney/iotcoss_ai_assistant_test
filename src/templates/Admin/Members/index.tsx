@@ -199,8 +199,11 @@ export function MembersTemplate({
     const params = {
       ...data,
       ...member,
+      customSkills: skillIds,
+      customExperiences: experienceIds,
       profileImageUrl: profileImage?.toString()?.slice(1) || member?.profileImageUrl,
     };
+
     onSave && onSave(params);
   };
 
@@ -952,25 +955,23 @@ export function MembersTemplate({
                 <div className="layout-grid">
                   <div className="grid-100">
                     <div className="inpwrap">
-                      <div className="inp-tit">
-                        보유 경험들<span className="star">*</span>
-                      </div>
+                      <div className="inp-tit">보유 경험들</div>
                       <div className="inp">
                         <div className={cx('skill__group')}>
-                          {experience?.map((item, index) => {
+                          {experience?.data?.contents?.map((item, index) => {
                             return (
                               <Toggle
                                 key={`experienceIds-${index}`}
-                                label={item.experienceName}
+                                label={item.name}
                                 name="experienceIds"
-                                value={item.experienceId}
+                                value={item.id}
                                 onChange={onToggleChange}
                                 className="mr-2 mt-2"
                                 variant="small"
                                 type="multiple"
                                 isActive
                                 isBorder
-                                checked={!!experienceIds?.find(experiences => experiences === item.experienceId)}
+                                checked={!!experienceIds?.find(experiences => experiences === item.id)}
                                 disabled={!isEdit}
                               />
                             );
