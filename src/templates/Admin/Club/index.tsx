@@ -305,45 +305,38 @@ export function AdminClubTemplate({
           heads={HEADS}
           items={clubList?.data?.data?.contents?.map((item, index) => {
             return (
-              <tr key={`tr-${index}`} onClick={() => onShowPopup(item.memberId)}>
-                <td className="magic" title={item.memberId}>
+              <tr key={`tr-${index}`} onClick={() => onShowPopup(item.sequence)}>
+                <td className="magic" title={item.clubId}>
                   {item.clubId}
                 </td>
+                <td className="magic" title={item.name}></td>
                 <td className="magic" title={item.name}>
                   {item.name}
                 </td>
-                <td className="magic" title={item.email}>
-                  {item.email}
+                <td className="magic" title={item.recommendJobGroupNames}>
+                  {item.recommendJobGroupNames}
                 </td>
-                <td className="magic" title={item.phoneNumber}>
-                  {item.phoneNumber}
+                <td className="magic" title={item.recommendJobNames}>
+                  {item.recommendJobNames}
                 </td>
-                <td className="magic" title={item.ageRange}>
-                  {item.ageRange}
+                <td className="magic" title={item.recommendLevels}>
+                  {item.recommendLevels.length === 5 ? '모든' : item.recommendLevels.sort().join(',')}
                 </td>
-                <td className="magic" title={item.typeName}>
-                  {item.typeName}
+                <td className="magic" title={item.isPublic ? 'Y' : 'N'}>
+                  {item.isPublic ? 'Y' : 'N'}
                 </td>
-                <td className="magic" title={item.jobGroupName}>
-                  {item.jobGroupName}
+                <td className="magic" title={item.recruitMemberCount}>
+                  {item.recruitMemberCount || 0}
                 </td>
-                <td className="magic" title={item.level}>
-                  {item.level}
+                <td className="magic" title={item.studyCount}>
+                  {item.studyCount || 0}
                 </td>
-                <td className="magic" title={item.emailReceiveYn ? 'Y' : 'N'}>
-                  {item.emailReceiveYn ? 'Y' : 'N'}
+                <td className="magic" title={dayjs(item.startAt).format('YYYY-MM-DD HH:mm:ss')}>
+                  {dayjs(item.startAt).format('YYYY-MM-DD')}
                 </td>
-                <td className="magic" title={item.smsReceiveYn ? 'Y' : 'N'}>
-                  {item.smsReceiveYn ? 'Y' : 'N'}
-                </td>
-                <td className="magic" title={item.kakaoReceiveYn ? 'Y' : 'N'}>
-                  {item.kakaoReceiveYn ? 'Y' : 'N'}
-                </td>
-                <td className="magic" title={item?.authProviderName}>
-                  {item?.points}
-                </td>
+                <td className="magic" title={item.level}></td>
                 <td className="magic" title={dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}>
-                  {dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}
+                  {dayjs(item.createdAt).format('YYYY-MM-DD')}
                 </td>
               </tr>
             );

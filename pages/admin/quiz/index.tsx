@@ -1,103 +1,149 @@
 import './index.module.scss';
-import AdminLayout from '../../../src/stories/Layout/AdminLayout';
-import QuizTemplate from '../../../src/templates/Admin/Quiz';
-import {} from '../../../src/services/admin/quiz/quiz.queries';
+
 import { UseQueryResult } from 'react-query';
 import { useEffect, useState } from 'react';
-import {} from '../../../src/services/admin/quiz/quiz.mutations';
-import { useJobGroups, useMemberCode } from '../../../src/services/code/code.queries';
+import dayjs from 'dayjs';
+
+import AdminLayout from '../../../src/stories/Layout/AdminLayout';
+import QuizTemplate from '../../../src/templates/Admin/Quiz';
+
+import { useQuiz, useQuizs } from '../../../src/services/admin/quiz/quiz.queries';
+import { useDeleteQuiz, useSaveQuiz } from '../../../src/services/admin/quiz/quiz.mutations';
+import { useJobGroups, useMemberCode, useContentTypes } from 'src/services/code/code.queries';
+
+import { useSkills } from 'src/services/admin/skill/skill.queries';
+
+import { ExperiencesResponse } from 'src/models/experiences';
+import { useExperiences } from 'src/services/experiences/experiences.queries';
+
+export interface SearchParamsProps {
+  page: number;
+  size: number;
+  createdAtFrom: string;
+  createdAtTo: string;
+  keyword: string;
+}
 
 export function QuizPage() {
-  //   const [page, setPage] = useState<number>(1);
-  //   const [size, setSize] = useState<number>(15);
-  //   const [search, setSearch] = useState<string>('');
-  //   const [memberId, setMemberId] = useState<string>('');
-  //   const [params, setParams] = useState<any>({});
+  const now = dayjs();
+  const past1y = now.subtract(1, 'year');
+  const tomorrow = now.add(1, 'day');
+  const [page, setPage] = useState<number>(1);
+  const [size, setSize] = useState<number>(15);
+  const [search, setSearch] = useState<string>('');
+  const [quizId, setQuizId] = useState<string>('');
+  const [params, setParams] = useState<SearchParamsProps>({
+    page: page,
+    size: size,
+    createdAtFrom: `${past1y?.format('YYYY-MM-DD')} 00:00:00`,
+    createdAtTo: `${tomorrow.format('YYYY-MM-DD')} 00:00:00`,
+    keyword: '',
+  });
 
-  //   const { data: memberData, refetch }: UseQueryResult<any> = useMember(memberId);
-  //   const { data: memberCodes } = useMemberCode();
-  //   const { data: jobCodes } = useJobGroups();
-  //   const { mutate: onSave } = useSaveMember();
-  //   const { mutate: onDelete } = useDeleteMember();
+  const { data: jobCodes } = useContentTypes();
+  const { data: experienceData }: UseQueryResult<ExperiencesResponse> = useExperiences();
+  const { data: quizData, refetch }: UseQueryResult<any> = useQuiz(quizId);
+  const { data: jobGroup, isFetched: isJobGroupFetched } = useJobGroups();
 
-  //   useEffect(() => {
-  //     memberId && refetch();
-  //   }, [memberId]);
+  const { mutate: onSave } = useSaveQuiz();
+  const { mutate: onDelete } = useDeleteQuiz();
 
-  //   const {
-  //     data: memberList,
-  //     refetch: memberListRefetch,
-  //     error,
-  //   }: UseQueryResult<any> = useMembers(
-  //     paramsWithDefault({
-  //       page: page,
-  //       size: size,
-  //       searchKeyword: search,
-  //       ...params,
-  //     }),
-  //   );
+  const {
+    data: quizList,
+    refetch: quizListRefetch,
+    error,
+  }: UseQueryResult<any> = useQuizs(
+    paramsWithDefault({
+      ...params,
+    }),
+  );
 
-  //   useEffect(() => {
-  //     if (error) {
-  //       console.log(error);
-  //     }
-  //   }, [error]);
+  const { data: skillsList }: UseQueryResult<any> = useSkills(
+    paramsWithDefault({
+      page: page,
+      size: size,
+    }),
+  );
 
-  //   const PAGE_PROPS = {
+  // const { data: experienceData }: UseQueryResult<any> = useExperiences(
+  //   paramsWithDefault({
   //     page: page,
-  //     setPage: setPage,
-  //     count: memberList?.data?.totalPage,
-  //     total: memberList?.data?.totalPage,
-  //     onChangeSize: size => {
-  //       setSize(size);
-  //       setPage(1);
-  //     },
   //     size: size,
-  //   };
+  //   }),
+  // );
 
-  //   const onMemberInfo = (id: string) => {
-  //     setMemberId(id);
-  //   };
+  useEffect(() => {
+    quizId && refetch();
+  }, [quizId]);
 
-  //   const onDeleteMember = (id: string) => {
-  //     if (confirm('해당 회원을 삭제하시겠습니까?')) {
-  //       onDelete(id);
-  //     }
-  //   };
+  useEffect(() => {
+    if (error) {
+      console.log(error);
+    }
+  }, [error]);
 
-  //   const onSaveMember = (data: any) => {
-  //     if (confirm('저장하시겠습니까?')) {
-  //       onSave({
-  //         ...data,
-  //       });
-  //     }
-  //   };
+  const PAGE_PROPS = {
+    page: page,
+    setPage: setPage,
+    count: quizList?.data?.totalPage,
+    total: quizList?.data?.totalPage,
+    onChangeSize: size => {
+      setSize(size);
+      setPage(1);
+    },
+    size: size,
+  };
 
-  //   const onSearch = async (params: any) => {
-  //     setPage(1);
-  //     if (typeof params === 'object') {
-  //       setParams(params);
-  //     } else {
-  //       setSearch(params);
-  //     }
-  //     await memberListRefetch();
-  //   };
+  const onMemberInfo = (id: string) => {
+    setQuizId(id);
+  };
 
-  //   return (
-  //     <QuizTemplate
-  //       memberList={memberList}
-  //       onMemberInfo={onMemberInfo}
-  //       memberData={memberData}
-  //       memberCodes={memberCodes}
-  //       jobCodes={jobCodes}
-  //       pageProps={PAGE_PROPS}
-  //       onDeleteMember={onDeleteMember}
-  //       onSave={onSaveMember}
-  //       onSearch={onSearch}
-  //     />
-  //   );
+  const onDeleteMember = (id: string) => {
+    if (confirm('해당 회원을 삭제하시겠습니까?')) {
+      onDelete(id);
+    }
+  };
 
-  return <QuizTemplate />;
+  const onSaveMember = (data: any) => {
+    if (confirm('저장하시겠습니까?')) {
+      onSave({
+        ...data,
+      });
+    }
+  };
+
+  const onSearch = async (params: SearchParamsProps) => {
+    // if (!params?.createdAtFrom || !params?.createdAtTo) {
+    //   alert('기간을 설정하세요');
+    // }
+
+    if (typeof params === 'object') {
+      setParams({
+        ...params,
+      });
+    } else {
+      setSearch(params);
+    }
+    await quizListRefetch();
+  };
+
+  return (
+    <QuizTemplate
+      quizList={quizList}
+      skillsList={skillsList}
+      experience={experienceData}
+      jobGroup={jobGroup}
+      jobCodes={jobCodes}
+      quizData={quizData}
+      pageProps={PAGE_PROPS}
+      params={params}
+      onMemberInfo={onMemberInfo}
+      onDeleteMember={onDeleteMember}
+      onSave={onSaveMember}
+      onSearch={onSearch}
+      setParams={setParams}
+    />
+  );
 }
 
 export default QuizPage;
@@ -109,8 +155,8 @@ QuizPage.LayoutProps = {
   title: '데브어스 관리자',
 };
 
-const paramsWithDefault = (params: any) => {
-  const defaultParams: any = {
+const paramsWithDefault = params => {
+  const defaultParams = {
     page: 1,
     size: 15,
   };

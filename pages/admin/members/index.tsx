@@ -49,23 +49,6 @@ export function MembersPage() {
   const { mutate: onSave } = useSaveMember();
   const { mutate: onDelete } = useDeleteMember();
 
-  useEffect(() => {
-    memberId && refetch();
-  }, [memberId]);
-
-  // const {
-  //   data: memberList,
-  //   refetch: memberListRefetch,
-  //   error,
-  // }: UseQueryResult<any> = useMembers(
-  //   paramsWithDefault({
-  //     page: page,
-  //     size: size,
-  //     searchKeyword: search,
-  //     ...params,
-  //   }),
-  // );
-
   const {
     data: memberList,
     refetch: memberListRefetch,
@@ -89,6 +72,10 @@ export function MembersPage() {
   //     size: size,
   //   }),
   // );
+
+  useEffect(() => {
+    memberId && refetch();
+  }, [memberId]);
 
   useEffect(() => {
     if (error) {

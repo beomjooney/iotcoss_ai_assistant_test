@@ -5,10 +5,9 @@ export async function authCheck() {
 }
 
 export async function getClubs(params: any) {
-  //   const { data, headers } = await axiosGeneralAPI().get('/api/internal/v1/members', { params });
-  //   const totalPage = Number(headers['page-count']);
-  //   return { data: data || [], nextPage: params.page + 1, totalPage };
-  return null;
+  const { data, headers } = await axiosGeneralAPI().get('/api/v1/clubs', { params });
+  const totalPage = Number(headers['page-count']);
+  return { data: data || [], nextPage: params.page + 1, totalPage };
 }
 
 // 조회

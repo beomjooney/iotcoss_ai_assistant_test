@@ -1,39 +1,51 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import React, { useEffect, useState } from 'react';
-
 import { FormProvider, useForm } from 'react-hook-form';
-import Image from 'next/image';
+
 import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { Profile, AdminPagination, Table, SmartFilter, Button } from '../../../stories/components';
 import dayjs from 'dayjs';
+import Image from 'next/image';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Profile, AdminPagination, Table, SmartFilter, Button, Toggle } from '../../../stories/components';
+import { TextField } from '@mui/material';
+import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useUploadImage } from 'src/services/image/image.mutations';
+import { SearchParamsProps } from 'pages/admin/quiz';
 
 const cx = classNames.bind(styles);
 
 interface QuizTemplateProps {
   quizList?: any;
-  quizData?: any;
-  memberCodes?: any;
+  skillsList?: any;
+  experience?: any;
+  jobGroup?: any;
   jobCodes?: any;
+  quizData?: any;
   pageProps?: any;
   onMemberInfo?: (memberId: string) => void;
   onDeleteMember?: (memberId: string) => void;
   onSave?: (data: any) => void;
-  onSearch?: (searchKeyword: any) => void;
+  onSearch?: (keyword: any) => void;
+  params: SearchParamsProps;
+  setParams: React.Dispatch<React.SetStateAction<SearchParamsProps>>;
 }
 
 export function QuizTemplate({
   quizList,
+  skillsList,
+  experience,
+  jobGroup,
+  jobCodes,
   quizData,
+  pageProps,
+  params,
   onMemberInfo,
   onDeleteMember,
   onSave,
-  memberCodes,
-  jobCodes,
-  pageProps,
   onSearch,
+  setParams,
 }: QuizTemplateProps) {
   const COLGROUP = ['8%', '7%', '5%', '5%', '5%', '5%', '5%', '5%', '8%', '7%', '7%'];
   const HEADS = [
@@ -50,8 +62,7 @@ export function QuizTemplate({
     '등록일시',
   ];
 
-  quizList = [];
-  quizData = [];
+  const memberCodes = [];
 
   const FIELDS = [
     { name: 'UUID', field: 'uuid', type: 'text' },
@@ -69,11 +80,14 @@ export function QuizTemplate({
   const [member, setMember] = useState<any>({});
   const [searchKeyword, setSearchKeyword] = useState<string>('');
   const [profileImageUrl, setProfilImageUrl] = useState(null);
-
+  const [tabValue, setTabValue] = useState<number>(1);
+  const [content, setContent] = useState<any>({});
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [skillIds, setSkillIds] = useState<any[]>([]);
+  const [experienceIds, setExperienceIds] = useState<string[]>([]);
 
   // TODO : 밸리데이션 추가 해야 함
-  const memberSaveSchema = yup.object().shape({
+  const quizSaveSchema = yup.object().shape({
     memberId: yup.string().notRequired(),
     name: yup.string().notRequired(),
     nickname: yup.string().notRequired(),
@@ -87,7 +101,7 @@ export function QuizTemplate({
   const methods = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange',
-    resolver: yupResolver(memberSaveSchema),
+    resolver: yupResolver(quizSaveSchema),
   });
 
   useEffect(() => {
@@ -120,6 +134,23 @@ export function QuizTemplate({
   const handleSearchKeyword = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.currentTarget;
     setSearchKeyword(value);
+    setParams({
+      ...params,
+      keyword: value,
+    });
+  };
+
+  const handlePickerChange = (moment, key) => {
+    let datetime = moment?.format('YYYY-MM-DD');
+    if (key === 'createdAtTo') {
+      datetime = `${datetime} 23:59:59`;
+    } else {
+      datetime = `${datetime} 00:00:00`;
+    }
+    setParams({
+      ...params,
+      [key]: `${datetime}`,
+    });
   };
 
   const onSmartFilterSearch = (params: any) => {
@@ -168,27 +199,75 @@ export function QuizTemplate({
           {/*</a>*/}
         </div>
         <div className="right">
-          <div className="inpwrap">
-            <div className="inp search">
-              <input
-                type="text"
-                placeholder="검색어"
-                className="input-admin"
-                onChange={handleSearchKeyword}
-                value={searchKeyword}
-                onKeyDown={event => onSearch && event.key === 'Enter' && onSearch(searchKeyword)}
-              />
-              <button className="btn" onClick={() => onSearch && onSearch(searchKeyword)}>
-                <i className="ico i-search"></i>
-              </button>
+          <div className={cx('search')}>
+            <div className={cx('date')}>
+              <div>
+                <div className="inpwrap">
+                  <div className="inp-tit">시작일</div>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DesktopDatePicker
+                      format="YYYY-MM-DD"
+                      value={dayjs(params?.createdAtFrom)}
+                      onChange={e => handlePickerChange(e, 'createdAtFrom')}
+                      //renderInput={params => <TextField {...params?.createdAtFrom} variant="standard" />}
+                    />
+                  </LocalizationProvider>
+                </div>
+              </div>
+              <div>-</div>
+              <div>
+                <div className="inpwrap">
+                  <div className="inp-tit">종료일</div>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DesktopDatePicker
+                      format="YYYY-MM-DD"
+                      value={dayjs(params?.createdAtTo)}
+                      onChange={e => handlePickerChange(e, 'createdAtTo')}
+                      //renderInput={params => <TextField {...params} variant="standard" />}
+                    />
+                  </LocalizationProvider>
+                </div>
+              </div>
             </div>
+            <div className="inpwrap">
+              <div className="inp search">
+                <input
+                  type="text"
+                  placeholder="검색어"
+                  className="input-admin"
+                  onChange={handleSearchKeyword}
+                  value={searchKeyword}
+                  name="keyword"
+                  onKeyDown={event => onSearch && event.key === 'Enter' && onSearch(params)}
+                />
+                <button className="btn" onClick={() => onSearch && onSearch(params)}>
+                  <i className="ico i-search"></i>
+                </button>
+              </div>
+            </div>
+            <button
+              className="btn-type1 type3"
+              onClick={() => {
+                // if (!params?.createdAtFrom || !params?.createdAtTo) {
+                //   alert('기간을 설정해주세요');
+                // }
+
+                setIsFilter(!isFilter);
+              }}
+            >
+              <i className="ico i-filter"></i>
+              <span>필터</span>
+            </button>
           </div>
-          <button className="btn-type1 type3" onClick={() => setIsFilter(!isFilter)}>
-            <i className="ico i-filter"></i>
-            <span>필터</span>
-          </button>
+          <SmartFilter
+            name="memberFilter"
+            fields={FIELDS}
+            isFilterOpen={isFilter}
+            onSearch={onSmartFilterSearch}
+            params={params}
+            setParams={setParams}
+          />
         </div>
-        <SmartFilter name="memberFilter" fields={FIELDS} isFilterOpen={isFilter} onSearch={onSmartFilterSearch} />
       </div>
       <div className="data-type1" data-evt="main-table-on">
         <Table
@@ -215,12 +294,6 @@ export function QuizTemplate({
                 </td>
                 <td className="magic" title={item.ageRange}>
                   {item.ageRange}
-                </td>
-                <td className="magic" title={item.email}>
-                  {item.email}
-                </td>
-                <td className="magic" title={item.phoneNumber}>
-                  {item.phoneNumber}
                 </td>
                 <td className="magic" title={item?.authProviderName}>
                   {item?.authProviderName}
@@ -260,7 +333,7 @@ export function QuizTemplate({
                     <i className="ico i-x"></i>
                   </button>
                 </div>
-                <div className="tit-type2">회원 상세보기</div>
+                <div className="tit-type2">퀴즈 상세보기</div>
               </div>
               <div className="right">
                 {isEdit ? (

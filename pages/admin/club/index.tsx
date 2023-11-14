@@ -45,19 +45,8 @@ export function ClubPage() {
   const { data: clubData, refetch }: UseQueryResult<any> = useClub(clubId);
   const { data: jobGroup, isFetched: isJobGroupFetched } = useJobGroups();
 
-  const { data: skillData }: UseQueryResult<any> = useSkills(
-    paramsWithDefault({
-      page: page,
-      size: size,
-    }),
-  );
-
   const { mutate: onSave } = useSaveClub();
   const { mutate: onDelete } = useDeleteClub();
-
-  useEffect(() => {
-    clubId && refetch();
-  }, [clubId]);
 
   const {
     data: clubList,
@@ -84,6 +73,10 @@ export function ClubPage() {
   // );
 
   useEffect(() => {
+    clubId && refetch();
+  }, [clubId]);
+
+  useEffect(() => {
     if (error) {
       console.log(error);
     }
@@ -92,8 +85,8 @@ export function ClubPage() {
   const PAGE_PROPS = {
     page: page,
     setPage: setPage,
-    count: clubList?.data?.totalPage,
-    total: clubList?.data?.totalPage,
+    count: clubList?.data?.data?.totalPage,
+    total: clubList?.data?.data?.totalPage,
     onChangeSize: size => {
       setSize(size);
       setPage(1);
