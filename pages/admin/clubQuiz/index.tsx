@@ -21,7 +21,7 @@ export interface SearchParamsProps {
   size: number;
   createdAtFrom: string;
   createdAtTo: string;
-  searchKeyword: string;
+  keyword: string;
 }
 
 export function ClubQuizPage() {
@@ -37,7 +37,7 @@ export function ClubQuizPage() {
     size: size,
     createdAtFrom: `${past1y?.format('YYYY-MM-DD')} 00:00:00`,
     createdAtTo: `${tomorrow.format('YYYY-MM-DD')} 00:00:00`,
-    searchKeyword: '',
+    keyword: '',
   });
 
   const { data: jobCodes } = useContentTypes();

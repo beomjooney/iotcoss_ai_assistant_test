@@ -169,7 +169,7 @@ export function AdminClubQuizTemplate({
     setSearchKeyword(value);
     setParams({
       ...params,
-      searchKeyword: value,
+      keyword: value,
     });
   };
 

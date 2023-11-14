@@ -28,7 +28,7 @@ interface MembersTemplateProps {
   onMemberInfo?: (memberId: string) => void;
   onDeleteMember?: (memberId: string) => void;
   onSave?: (data: any) => void;
-  onSearch?: (searchKeyword: any) => void;
+  onSearch?: (keyword: any) => void;
   params: SearchParamsProps;
   setParams: React.Dispatch<React.SetStateAction<SearchParamsProps>>;
 }
@@ -170,7 +170,7 @@ export function MembersTemplate({
     setSearchKeyword(value);
     setParams({
       ...params,
-      searchKeyword: value,
+      keyword: value,
     });
   };
 
@@ -303,7 +303,7 @@ export function MembersTemplate({
                   className="input-admin"
                   onChange={handleSearchKeyword}
                   value={searchKeyword}
-                  name="searchKeyword"
+                  name="keyword"
                   onKeyDown={event => onSearch && event.key === 'Enter' && onSearch(params)}
                 />
                 <button className="btn" onClick={() => onSearch && onSearch(params)}>

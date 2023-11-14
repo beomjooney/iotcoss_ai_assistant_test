@@ -155,6 +155,10 @@ export function AdminClubTemplate({
   const handleSearchKeyword = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.currentTarget;
     setSearchKeyword(value);
+    setParams({
+      ...params,
+      keyword: value,
+    });
   };
 
   const handlePickerChange = (moment, key) => {
