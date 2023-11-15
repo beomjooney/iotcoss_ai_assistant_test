@@ -93,13 +93,12 @@ export function QuizTemplate({
   // TODO : 밸리데이션 추가 해야 함
   const quizSaveSchema = yup.object().shape({
     memberId: yup.string().notRequired(),
-    name: yup.string().notRequired(),
-    nickname: yup.string().notRequired(),
-    email: yup.string().notRequired(),
-    ageRange: yup.string().notRequired(),
-    birthday: yup.string().notRequired(),
-    type: yup.string().notRequired(),
-    typeName: yup.string().notRequired(),
+    memberName: yup.string().notRequired(),
+    memberNickname: yup.string().notRequired(),
+    articleUrl: yup.string().notRequired(),
+    activeCount: yup.string().notRequired(),
+    answerCount: yup.string().notRequired(),
+    hashTags: yup.string().notRequired(),
   });
 
   const methods = useForm({
@@ -157,16 +156,16 @@ export function QuizTemplate({
     });
   };
 
-  const onSmartFilterSearch = (params: any) => {
-    onSearch && onSearch(params);
+  const onSmartFilterSearch = (searchParms: any) => {
+    onSearch && onSearch(searchParms);
   };
 
   const handleSave = (data: any) => {
     const params = {
       ...data,
       ...quiz,
-      profileImageUrl: profileImage?.toString()?.slice(1) || quiz?.profileImageUrl,
     };
+
     onSave && onSave(params);
   };
 
@@ -319,7 +318,7 @@ export function QuizTemplate({
                   {item.recommendJobNames}
                 </td>
                 <td className="magic" title={item.recommendLevels}>
-                  {item.recommendLevels}
+                  {item.recommendLevels?.length === 5 ? '모든' : item.recommendLevels?.sort().join(',') || 0}
                 </td>
                 <td className="magic" title={item.relatedSkills}>
                   {item.relatedSkills}
@@ -416,7 +415,7 @@ export function QuizTemplate({
                         {...methods.register('memberName')}
                         value={quiz?.memberName || ''}
                         onChange={onChangeQuiz}
-                        disabled={!isEdit}
+                        disabled
                       />
                     </div>
                   </div>
@@ -431,7 +430,7 @@ export function QuizTemplate({
                         {...methods.register('memberNickname')}
                         value={quiz?.memberNickname}
                         onChange={onChangeQuiz}
-                        disabled={!isEdit}
+                        disabled
                       />
                     </div>
                   </div>
@@ -490,7 +489,7 @@ export function QuizTemplate({
                       <input
                         type="text"
                         className="input-admin"
-                        name="hashTags"
+                        {...methods.register('hashTags')}
                         value={quiz?.hashTags || ''}
                         onChange={onChangeQuiz}
                         disabled={!isEdit}

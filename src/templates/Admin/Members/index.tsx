@@ -302,9 +302,9 @@ export function MembersTemplate({
                   onChange={handleSearchKeyword}
                   value={searchKeyword}
                   name="keyword"
-                  onKeyDown={event => onSearch && event.key === 'Enter' && onSearch(params)}
+                  onKeyDown={event => onSearch && event.key === 'Enter' && onSearch(searchKeyword)}
                 />
-                <button className="btn" onClick={() => onSearch && onSearch(params)}>
+                <button className="btn" onClick={() => onSearch && onSearch(searchKeyword)}>
                   <i className="ico i-search"></i>
                 </button>
               </div>
