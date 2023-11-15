@@ -496,7 +496,7 @@ export function HomeTemplate({ logged = false }: HomeProps) {
           상위 1% 리더들과 상위 10% 열정크루들이 모여 함께 성장하는
         </p>
         <div className="tw-flex tw-justify-center tw-mb-10">
-          <img src="/assets/images/devus 2.png" width="123" alt="logo" class="Header_image-logo__NzBUu"></img>
+          <img src="/assets/images/devus 2.png" width="123" alt="logo" className="Header_image-logo__NzBUu"></img>
         </div>
       </div>
 

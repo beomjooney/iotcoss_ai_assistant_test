@@ -642,8 +642,6 @@ export function StudyRoomTemplate() {
       </Desktop>
       <Mobile>
         <div className={cx('seminar-container')}>
-          {/* <Banner title="커리어멘토스 세미나" subTitle="커멘세미나" /> */}
-
           <div className={cx('container')}>
             <div className="tw-py-[60px]">
               <div className="tw-text-[24px] tw-font-bold tw-text-black tw-text-center">나의 학습방</div>
