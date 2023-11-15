@@ -707,7 +707,7 @@ export function AdminClubTemplate({
                     name="seminarMember"
                     colgroup={TAB2_COLGROUP}
                     heads={TAB2_HEADS}
-                    items={clubList?.map((item, index) => {
+                    items={clubList?.data?.data?.contents?.map((item, index) => {
                       return (
                         <tr key={`participant-${index}`}>
                           <td></td>
