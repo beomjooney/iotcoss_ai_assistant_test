@@ -923,7 +923,7 @@ export function MembersTemplate({
                                 />
                               );
                             })}
-                            {member?.customSkills?.map((item, index) => {
+                            {/* {member?.customSkills?.map((item, index) => {
                               return (
                                 <Toggle
                                   key={`custom-skill-${index}`}
@@ -939,7 +939,7 @@ export function MembersTemplate({
                                   disabled={!isEdit}
                                 />
                               );
-                            })}
+                            })} */}
                           </div>
                         </div>
                       </div>
@@ -976,7 +976,7 @@ export function MembersTemplate({
                               />
                             );
                           })}
-                          {member?.customExperiences?.map((item, index) => {
+                          {/* {member?.customExperiences?.map((item, index) => {
                             return (
                               <Toggle
                                 key={`custom-experience-${index}`}
@@ -996,7 +996,7 @@ export function MembersTemplate({
                                 disabled={!isEdit}
                               />
                             );
-                          })}
+                          })} */}
                         </div>
                       </div>
                     </div>

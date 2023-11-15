@@ -9,7 +9,7 @@ import QuizTemplate from '../../../src/templates/Admin/Quiz';
 
 import { useQuiz, useQuizs } from '../../../src/services/admin/quiz/quiz.queries';
 import { useDeleteQuiz, useSaveQuiz } from '../../../src/services/admin/quiz/quiz.mutations';
-import { useJobGroups, useMemberCode, useContentTypes } from 'src/services/code/code.queries';
+import { useJobGroups, useMemberCode, useContentTypes, useJobs } from 'src/services/code/code.queries';
 
 import { useSkills } from 'src/services/admin/skill/skill.queries';
 
@@ -40,6 +40,7 @@ export function QuizPage() {
   const { data: experienceData }: UseQueryResult<ExperiencesResponse> = useExperiences();
   const { data: quizData, refetch }: UseQueryResult<any> = useQuiz(quizId);
   const { data: jobGroup, isFetched: isJobGroupFetched } = useJobGroups();
+  const { data: jobs } = useJobs();
 
   const { mutate: onSave } = useSaveQuiz();
   const { mutate: onDelete } = useDeleteQuiz();
@@ -132,6 +133,7 @@ export function QuizPage() {
       skillsList={skillsList}
       experience={experienceData}
       jobGroup={jobGroup}
+      jobs={jobs}
       jobCodes={jobCodes}
       quizData={quizData}
       pageProps={PAGE_PROPS}

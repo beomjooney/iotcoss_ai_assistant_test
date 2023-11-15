@@ -12,8 +12,8 @@ export async function getQuizs(params: any) {
 }
 
 // 상세 조회
-export async function getQuizInfo(quizId: string) {
-  const { data } = await axiosGeneralAPI().get(`/api/admin/v1/quizzes/${quizId}`);
+export async function getQuizInfo(sequence: string) {
+  const { data } = await axiosGeneralAPI().get(`/api/admin/v1/quizzes/${sequence}`);
   return data;
 }
 
