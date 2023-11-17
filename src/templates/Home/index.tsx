@@ -310,6 +310,14 @@ export function HomeTemplate({ logged = false }: HomeProps) {
     setFile(files[0]);
   };
 
+  useEffect(() => {
+    if (phone.length === 11) {
+      setPhone(phone.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3'));
+    } else if (phone.length === 13) {
+      setPhone(phone.replace(/-/g, '').replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3'));
+    }
+  }, [phone]);
+
   return (
     <div className={cx('career-main')}>
       <section className={cx('top-banner', 'hero-section', 'hero-section-3')}>
