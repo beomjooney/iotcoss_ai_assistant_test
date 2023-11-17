@@ -6,7 +6,7 @@ import { deleteQuiz, saveQuiz } from './quiz.api';
 export const useSaveQuiz = (): UseMutationResult => {
   const queryClient = useQueryClient();
   // TODO : any 타입 변경
-  return useMutation<any, any, any>(requestBody => saveQuiz(requestBody.quizId, requestBody), {
+  return useMutation<any, any, any>(requestBody => saveQuiz(requestBody.sequence, requestBody), {
     onError: (error, variables, context) => {
       const { code, message } = error;
       alert(`mutation error : [${code}] ${message}`);

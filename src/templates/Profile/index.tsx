@@ -769,393 +769,790 @@ export function ProfileTemplate() {
               </div>
             </article>
             {isUserInfo && (
-              <ProfileModal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
-                <div className="tw-font-bold tw-text-xl tw-text-black tw-mt-0 tw-mb-5 tw-text-center">
-                  {user?.name || user?.nickname}님 데브어스에 오신 것을 환영합니다!
-                </div>
-                <div className="tw-font-semibold tw-text-base tw-text-black tw-mt-0  tw-text-center">
-                  직군 및 레벨을 설정하시면 님께
-                </div>
-                <div className="tw-font-semibold tw-text-base  tw-text-black tw-mt-0 tw-mb-10 tw-text-center">
-                  꼭 맞는 커멘 서비스를 추천받으실 수 있습니다!
-                </div>
+              <>
+                <Desktop>
+                  <ProfileModal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
+                    <div className="tw-font-bold tw-text-xl tw-text-black tw-mt-0 tw-mb-5 tw-text-center">
+                      {user?.name || user?.nickname}님 데브어스에 오신 것을 환영합니다!
+                    </div>
+                    <div className="tw-font-semibold tw-text-base tw-text-black tw-mt-0  tw-text-center">
+                      직군 및 레벨을 설정하시면 님께
+                    </div>
+                    <div className="tw-font-semibold tw-text-base  tw-text-black tw-mt-0 tw-mb-10 tw-text-center">
+                      꼭 맞는 커멘 서비스를 추천받으실 수 있습니다!
+                    </div>
 
-                <div className="border tw-p-7 tw-rounded-xl">
-                  <div className="tw-font-bold tw-text-base tw-text-black">개인정보</div>
+                    <div className="border tw-p-7 tw-rounded-xl">
+                      <div className="tw-font-bold tw-text-base tw-text-black">개인정보</div>
 
-                  <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
-                    <img
-                      className="tw-w-32 tw-h-32 tw-ring-1 tw-rounded-full"
-                      src={fileImageUrl ?? userInfo?.profileImageUrl}
-                      alt=""
-                    />
-                  </div>
-                  <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
-                    <button color="primary" className="tw-bg-blue-500 tw-px-5 tw-py-2 tw-rounded-md">
-                      <label htmlFor={`input-file`} className="tw-text-white tw-text-sm">
-                        사진 변경
-                      </label>
-                      <input
-                        hidden
-                        id={`input-file`}
-                        accept="image/*"
-                        type="file"
-                        onChange={e => onFileChange(e.target?.files)}
-                      />
-                    </button>
-                  </div>
-                  <div className="tw-mt-2 tw-border-t tw-border-gray-100">
-                    <dl className="tw-divide-y tw-divide-gray-100">
-                      <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
-                        <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">이메일</dt>
-                        <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
-                          {user?.email}
-                        </dd>
+                      <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
+                        <img
+                          className="tw-w-32 tw-h-32 tw-ring-1 tw-rounded-full"
+                          src={fileImageUrl ?? userInfo?.profileImageUrl}
+                          alt=""
+                        />
                       </div>
-                      <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
-                        <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">이름</dt>
-                        <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">{user?.name}</dd>
-                      </div>
-                      <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
-                        <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">닉네임</dt>
-                        <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
-                          <TextField
-                            size="small"
-                            id="outlined-basic"
-                            label=""
-                            name="companyName"
-                            variant="outlined"
-                            onChange={onNickNameChange}
-                            value={nickName}
-                            inputProps={{
-                              style: {
-                                height: '20px',
-                              },
-                            }}
+                      <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
+                        <button color="primary" className="tw-bg-blue-500 tw-px-5 tw-py-2 tw-rounded-md">
+                          <label htmlFor={`input-file`} className="tw-text-white tw-text-sm">
+                            사진 변경
+                          </label>
+                          <input
+                            hidden
+                            id={`input-file`}
+                            accept="image/*"
+                            type="file"
+                            onChange={e => onFileChange(e.target?.files)}
                           />
-                        </dd>
-                      </div>
-                      <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
-                        <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">(*) 전화번호</dt>
-                        <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
-                          <TextField
-                            inputRef={phoneRef} // ref를 할당합니다.
-                            size="small"
-                            id="outlined-basic"
-                            label=""
-                            name="companyName"
-                            variant="outlined"
-                            onChange={onPhoneChange}
-                            value={phone}
-                            inputProps={{
-                              maxLength: 13,
-                              style: {
-                                height: '20px',
-                              },
-                            }}
-                          />
-                        </dd>
-                      </div>
-                    </dl>
-                  </div>
-                </div>
-                <div className="border tw-p-7 tw-rounded-xl tw-mt-5">
-                  <div className="tw-font-bold tw-text-base tw-text-black">필수 | 직군 및 레벨</div>
-
-                  <dl className="tw-divide-y tw-divide-gray-100 tw-py-5">
-                    <div className="tw-px-4 tw-pt-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
-                      <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">(*) 직군선택</dt>
-                      <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
-                        <ToggleButtonGroup
-                          value={recommendJobGroups}
-                          exclusive
-                          onChange={handleJobGroups}
-                          aria-label="text alignment"
-                        >
-                          {jobGroup?.map((item, index) => (
-                            <ToggleButton
-                              ref={jobGroupRef} // ref를 할당합니다.
-                              key={`job-${index}`}
-                              value={item.id}
-                              aria-label="fff"
-                              className="tw-ring-1 tw-ring-slate-900/10"
-                              style={{
-                                borderRadius: '5px',
-                                borderLeft: '0px',
-                                margin: '5px',
-                                height: '35px',
-                                border: '0px',
-                              }}
-                            >
-                              {item.name}
-                            </ToggleButton>
-                          ))}
-                        </ToggleButtonGroup>
-                      </dd>
-                    </div>
-
-                    <div className="tw-px-4 tw-pt-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
-                      <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">(*) 레벨선택</dt>
-                      <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
-                        <ToggleButtonGroup
-                          value={recommendLevels}
-                          exclusive
-                          onChange={handleRecommendLevels}
-                          aria-label="text alignment"
-                        >
-                          {levelGroup?.map((item, index) => (
-                            <ToggleButton
-                              ref={recommendLevelsRef} // ref를 할당합니다.
-                              key={`job-${index}`}
-                              value={item.name}
-                              aria-label="fff"
-                              className="tw-ring-1 tw-ring-slate-900/10"
-                              style={{
-                                borderRadius: '5px',
-                                borderLeft: '0px',
-                                margin: '5px',
-                                height: '35px',
-                                border: '0px',
-                              }}
-                            >
-                              레벨 {item.name}
-                            </ToggleButton>
-                          ))}
-                        </ToggleButtonGroup>
-                      </dd>
-                    </div>
-                    <div className="tw-px-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0">
-                      <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900"></dt>
-                      <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
-                        {recommendLevels?.toString() === '0' && (
-                          <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
-                            0레벨 : 직무스킬(개발언어/프레임워크 등) 학습 중. 상용서비스 개발 경험 없음.
-                          </div>
-                        )}
-                        {recommendLevels?.toString() === '1' && (
-                          <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
-                            1레벨 : 상용서비스 단위모듈 수준 개발 가능. 서비스 개발 리딩 시니어 필요.
-                          </div>
-                        )}
-                        {recommendLevels?.toString() === '2' && (
-                          <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
-                            2레벨 : 상용 서비스 개발 1인분 가능한 사람. 소규모 서비스 독자 개발 가능.
-                          </div>
-                        )}
-                        {recommendLevels?.toString() === '3' && (
-                          <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
-                            3레벨 : 상용서비스 개발 리더. 담당직무분야 N명 업무가이드 및 리딩 가능.
-                          </div>
-                        )}
-                        {recommendLevels?.toString() === '4' && (
-                          <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
-                            4레벨 : 다수 상용서비스 개발 리더. 수십명 혹은 수백명 수준의 개발자 총괄 리더.
-                          </div>
-                        )}
-                        {recommendLevels?.toString() === '5' && (
-                          <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
-                            5레벨 : 본인 오픈소스/방법론 등이 범용적 사용, 수백명이상 다수 직군 리딩.
-                          </div>
-                        )}
-                      </dd>
-                    </div>
-                  </dl>
-                </div>
-                <div className="border tw-p-7 tw-rounded-xl tw-mt-5 ">
-                  <div className="tw-font-bold tw-text-base tw-text-black">선택 | 경력사항</div>
-                  <div className="tw-mt-2 tw-border-t tw-border-gray-100">
-                    <form onSubmit={handleSubmit} style={{ padding: '2%' }}>
-                      {formFields.map((field, index) => (
-                        <div key={index} style={{ marginBottom: 5 }} className="">
-                          <dl className="tw-divide-y tw-divide-gray-100">
-                            <div className="tw-px-4 tw-pt-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
-                              <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">회사명</dt>
-                              <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-4 tw-mt-0">
-                                <TextField
-                                  size="small"
-                                  id="outlined-basic"
-                                  label=""
-                                  name="companyName"
-                                  variant="outlined"
-                                  value={field.companyName}
-                                  onChange={e => handleInputChange(index, e, 'text')}
-                                  style={{ marginRight: 10 }}
-                                />
-                              </dd>
-                              <dt className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-1 tw-flex tw-justify-end">
-                                <button
-                                  className="tw-text-sm tw-bg-black tw-text-white tw-py-2 tw-px-4 tw-rounded"
-                                  type="button"
-                                  onClick={() => handleRemoveFields(index)}
-                                >
-                                  삭제
-                                </button>
-                              </dt>
-                            </div>
-                            <div className="tw-px-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
-                              <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900"></dt>
-                              <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
-                                <div className="tw-flex tw-items-center tw-gap-1">
-                                  <FormControlLabel
-                                    control={
-                                      <Checkbox
-                                        checked={field.isFreelance}
-                                        onChange={e => handleInputChange(index, e, 'isFreelance')}
-                                        name="jason"
-                                      />
-                                    }
-                                    label="프리랜서의 경우, 체크해주세요."
-                                  />
-                                </div>
-                              </dd>
-                            </div>
-                            <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
-                              <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">직무</dt>
-                              <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
-                                <div className="tw-grid tw-grid-cols-2 tw-flex tw-justify-center tw-items-center">
-                                  <div className="tw-col-span-1 ">
-                                    <Autocomplete
-                                      fullWidth
-                                      limitTags={2}
-                                      size="small"
-                                      id="checkboxes-tags-demo"
-                                      getOptionLabel={option => option.name || []}
-                                      options={contentJobType || []}
-                                      onChange={(e, v) => handleJobChange(index, e, v)}
-                                      renderInput={params => (
-                                        <TextField {...params} label="" placeholder="직무를 변경해주세요." />
-                                      )}
-                                    />
-                                  </div>
-                                  {field.jobName && (
-                                    <div className="tw-col-span-1 tw-text-base tw-px-2 tw-font-bold tw-pl-5">
-                                      현재직무 : {field.jobName}
-                                    </div>
-                                  )}
-                                </div>
-                              </dd>
-                            </div>
-
-                            <div className="tw-px-4 tw-pt-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
-                              <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">근무기간</dt>
-                              <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
-                                <div className="tw-grid tw-grid-cols-3 tw-flex tw-justify-center tw-items-center tw-gap-1">
-                                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                    <DatePicker
-                                      format="YYYY-MM-DD"
-                                      slotProps={{ textField: { size: 'small' } }}
-                                      value={dayjs(field.startDate)}
-                                      onChange={e => handleInputChange(index, e, 'startDate')}
-                                    />
-                                    <DatePicker
-                                      disabled={field.isCurrent}
-                                      format="YYYY-MM-DD"
-                                      slotProps={{ textField: { size: 'small' } }}
-                                      value={dayjs(field.endDate)}
-                                      onChange={e => handleInputChange(index, e, 'endDate')}
-                                      key={index}
-                                      inputRef={element => {
-                                        endDateRef.current[index] = element;
-                                      }}
-                                    />
-                                  </LocalizationProvider>
-                                  {careerTimes[index] && <div className="tw-px-2">{careerTimes[index]}년차</div>}
-                                </div>
-                              </dd>
-                            </div>
-                            <div className="tw-px-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
-                              <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900"></dt>
-                              <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
-                                <div className="tw-flex tw-items-center tw-gap-1">
-                                  <FormControlLabel
-                                    control={
-                                      <Checkbox
-                                        checked={field.isCurrent}
-                                        onChange={e => handleInputChange(index, e, 'isCurrent')}
-                                        name="isCurrent"
-                                      />
-                                    }
-                                    label="재직 중인 경우, 체크해 주세요."
-                                  />
-                                </div>
-                              </dd>
-                            </div>
-                            <div className="tw-flex tw-justify-center tw-items-center"></div>
-                            <Divider className="tw-border tw-bg-['#efefef']" />
-                          </dl>
-                        </div>
-                      ))}
-
-                      <div className="tw-text-center tw-flex tw-justify-end tw-items-center">
-                        <button
-                          type="button"
-                          onClick={() => handleAddFields()}
-                          className="tw-text-sm tw-bg-black tw-text-white tw-py-2 tw-px-4 tw-rounded"
-                        >
-                          경력 추가하기
                         </button>
                       </div>
-                      {/* <button type="submit">Submit</button> */}
-                    </form>
-                  </div>
-                </div>
-                <div className="border tw-p-7 tw-rounded-xl tw-mt-5">
-                  <div className="tw-font-bold tw-text-base tw-text-black">선택 | 보유스킬</div>
-                  <div className="tw-mt-2 tw-border-t tw-border-gray-100">
-                    <dl className="tw-divide-y tw-divide-gray-100">
-                      <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
-                        <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">보유스킬</dt>
-                        <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
-                          <Autocomplete
-                            fullWidth
-                            multiple
-                            limitTags={2}
-                            size="small"
-                            id="checkboxes-tags-demo"
-                            value={customSkills}
-                            getOptionLabel={option => option.name || []}
-                            options={skillData || []}
-                            onChange={handleSkillsChange} // onchange 이벤트 핸들러 추가
-                            renderInput={params => (
-                              <TextField {...params} label="보유스킬을 입력해주세요." placeholder="스킬" />
+                      <div className="tw-mt-2 tw-border-t tw-border-gray-100">
+                        <dl className="tw-divide-y tw-divide-gray-100">
+                          <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
+                            <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">이메일</dt>
+                            <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                              {user?.email}
+                            </dd>
+                          </div>
+                          <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
+                            <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">이름</dt>
+                            <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                              {user?.name}
+                            </dd>
+                          </div>
+                          <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
+                            <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">닉네임</dt>
+                            <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                              <TextField
+                                size="small"
+                                id="outlined-basic"
+                                label=""
+                                name="companyName"
+                                variant="outlined"
+                                onChange={onNickNameChange}
+                                value={nickName}
+                                inputProps={{
+                                  style: {
+                                    height: '20px',
+                                  },
+                                }}
+                              />
+                            </dd>
+                          </div>
+                          <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
+                            <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">(*) 전화번호</dt>
+                            <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                              <TextField
+                                inputRef={phoneRef} // ref를 할당합니다.
+                                size="small"
+                                id="outlined-basic"
+                                label=""
+                                name="companyName"
+                                variant="outlined"
+                                onChange={onPhoneChange}
+                                value={phone}
+                                inputProps={{
+                                  maxLength: 13,
+                                  style: {
+                                    height: '20px',
+                                  },
+                                }}
+                              />
+                            </dd>
+                          </div>
+                        </dl>
+                      </div>
+                    </div>
+                    <div className="border tw-p-7 tw-rounded-xl tw-mt-5">
+                      <div className="tw-font-bold tw-text-base tw-text-black">필수 | 직군 및 레벨</div>
+
+                      <dl className="tw-divide-y tw-divide-gray-100 tw-py-5">
+                        <div className="tw-px-4 tw-pt-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                          <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">(*) 직군선택</dt>
+                          <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                            <ToggleButtonGroup
+                              value={recommendJobGroups}
+                              exclusive
+                              onChange={handleJobGroups}
+                              aria-label="text alignment"
+                            >
+                              {jobGroup?.map((item, index) => (
+                                <ToggleButton
+                                  ref={jobGroupRef} // ref를 할당합니다.
+                                  key={`job-${index}`}
+                                  value={item.id}
+                                  aria-label="fff"
+                                  className="tw-ring-1 tw-ring-slate-900/10"
+                                  style={{
+                                    borderRadius: '5px',
+                                    borderLeft: '0px',
+                                    margin: '5px',
+                                    height: '35px',
+                                    border: '0px',
+                                  }}
+                                >
+                                  {item.name}
+                                </ToggleButton>
+                              ))}
+                            </ToggleButtonGroup>
+                          </dd>
+                        </div>
+
+                        <div className="tw-px-4 tw-pt-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                          <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">(*) 레벨선택</dt>
+                          <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                            <ToggleButtonGroup
+                              value={recommendLevels}
+                              exclusive
+                              onChange={handleRecommendLevels}
+                              aria-label="text alignment"
+                            >
+                              {levelGroup?.map((item, index) => (
+                                <ToggleButton
+                                  ref={recommendLevelsRef} // ref를 할당합니다.
+                                  key={`job-${index}`}
+                                  value={item.name}
+                                  aria-label="fff"
+                                  className="tw-ring-1 tw-ring-slate-900/10"
+                                  style={{
+                                    borderRadius: '5px',
+                                    borderLeft: '0px',
+                                    margin: '5px',
+                                    height: '35px',
+                                    border: '0px',
+                                  }}
+                                >
+                                  레벨 {item.name}
+                                </ToggleButton>
+                              ))}
+                            </ToggleButtonGroup>
+                          </dd>
+                        </div>
+                        <div className="tw-px-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0">
+                          <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900"></dt>
+                          <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                            {recommendLevels?.toString() === '0' && (
+                              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                                0레벨 : 직무스킬(개발언어/프레임워크 등) 학습 중. 상용서비스 개발 경험 없음.
+                              </div>
                             )}
-                          />
-                        </dd>
+                            {recommendLevels?.toString() === '1' && (
+                              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                                1레벨 : 상용서비스 단위모듈 수준 개발 가능. 서비스 개발 리딩 시니어 필요.
+                              </div>
+                            )}
+                            {recommendLevels?.toString() === '2' && (
+                              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                                2레벨 : 상용 서비스 개발 1인분 가능한 사람. 소규모 서비스 독자 개발 가능.
+                              </div>
+                            )}
+                            {recommendLevels?.toString() === '3' && (
+                              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                                3레벨 : 상용서비스 개발 리더. 담당직무분야 N명 업무가이드 및 리딩 가능.
+                              </div>
+                            )}
+                            {recommendLevels?.toString() === '4' && (
+                              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                                4레벨 : 다수 상용서비스 개발 리더. 수십명 혹은 수백명 수준의 개발자 총괄 리더.
+                              </div>
+                            )}
+                            {recommendLevels?.toString() === '5' && (
+                              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                                5레벨 : 본인 오픈소스/방법론 등이 범용적 사용, 수백명이상 다수 직군 리딩.
+                              </div>
+                            )}
+                          </dd>
+                        </div>
+                      </dl>
+                    </div>
+                    <div className="border tw-p-7 tw-rounded-xl tw-mt-5 ">
+                      <div className="tw-font-bold tw-text-base tw-text-black">선택 | 경력사항</div>
+                      <div className="tw-mt-2 tw-border-t tw-border-gray-100">
+                        <form onSubmit={handleSubmit} style={{ padding: '2%' }}>
+                          {formFields.map((field, index) => (
+                            <div key={index} style={{ marginBottom: 5 }} className="">
+                              <dl className="tw-divide-y tw-divide-gray-100">
+                                <div className="tw-px-4 tw-pt-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                                  <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">회사명</dt>
+                                  <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-4 tw-mt-0">
+                                    <TextField
+                                      size="small"
+                                      id="outlined-basic"
+                                      label=""
+                                      name="companyName"
+                                      variant="outlined"
+                                      value={field.companyName}
+                                      onChange={e => handleInputChange(index, e, 'text')}
+                                      style={{ marginRight: 10 }}
+                                    />
+                                  </dd>
+                                  <dt className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-1 tw-flex tw-justify-end">
+                                    <button
+                                      className="tw-text-sm tw-bg-black tw-text-white tw-py-2 tw-px-4 tw-rounded"
+                                      type="button"
+                                      onClick={() => handleRemoveFields(index)}
+                                    >
+                                      삭제
+                                    </button>
+                                  </dt>
+                                </div>
+                                <div className="tw-px-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                                  <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900"></dt>
+                                  <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                                    <div className="tw-flex tw-items-center tw-gap-1">
+                                      <FormControlLabel
+                                        control={
+                                          <Checkbox
+                                            checked={field.isFreelance}
+                                            onChange={e => handleInputChange(index, e, 'isFreelance')}
+                                            name="jason"
+                                          />
+                                        }
+                                        label="프리랜서의 경우, 체크해주세요."
+                                      />
+                                    </div>
+                                  </dd>
+                                </div>
+                                <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                                  <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">직무</dt>
+                                  <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                                    <div className="tw-grid tw-grid-cols-2 tw-flex tw-justify-center tw-items-center">
+                                      <div className="tw-col-span-1 ">
+                                        <Autocomplete
+                                          fullWidth
+                                          limitTags={2}
+                                          size="small"
+                                          id="checkboxes-tags-demo"
+                                          getOptionLabel={option => option.name || []}
+                                          options={contentJobType || []}
+                                          onChange={(e, v) => handleJobChange(index, e, v)}
+                                          renderInput={params => (
+                                            <TextField {...params} label="" placeholder="직무를 변경해주세요." />
+                                          )}
+                                        />
+                                      </div>
+                                      {field.jobName && (
+                                        <div className="tw-col-span-1 tw-text-base tw-px-2 tw-font-bold tw-pl-5">
+                                          현재직무 : {field.jobName}
+                                        </div>
+                                      )}
+                                    </div>
+                                  </dd>
+                                </div>
+
+                                <div className="tw-px-4 tw-pt-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                                  <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">근무기간</dt>
+                                  <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                                    <div className="tw-grid tw-grid-cols-3 tw-flex tw-justify-center tw-items-center tw-gap-1">
+                                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                        <DatePicker
+                                          format="YYYY-MM-DD"
+                                          slotProps={{ textField: { size: 'small' } }}
+                                          value={dayjs(field.startDate)}
+                                          onChange={e => handleInputChange(index, e, 'startDate')}
+                                        />
+                                        <DatePicker
+                                          disabled={field.isCurrent}
+                                          format="YYYY-MM-DD"
+                                          slotProps={{ textField: { size: 'small' } }}
+                                          value={dayjs(field.endDate)}
+                                          onChange={e => handleInputChange(index, e, 'endDate')}
+                                          key={index}
+                                          inputRef={element => {
+                                            endDateRef.current[index] = element;
+                                          }}
+                                        />
+                                      </LocalizationProvider>
+                                      {careerTimes[index] && <div className="tw-px-2">{careerTimes[index]}년차</div>}
+                                    </div>
+                                  </dd>
+                                </div>
+                                <div className="tw-px-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                                  <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900"></dt>
+                                  <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                                    <div className="tw-flex tw-items-center tw-gap-1">
+                                      <FormControlLabel
+                                        control={
+                                          <Checkbox
+                                            checked={field.isCurrent}
+                                            onChange={e => handleInputChange(index, e, 'isCurrent')}
+                                            name="isCurrent"
+                                          />
+                                        }
+                                        label="재직 중인 경우, 체크해 주세요."
+                                      />
+                                    </div>
+                                  </dd>
+                                </div>
+                                <div className="tw-flex tw-justify-center tw-items-center"></div>
+                                <Divider className="tw-border tw-bg-['#efefef']" />
+                              </dl>
+                            </div>
+                          ))}
+
+                          <div className="tw-text-center tw-flex tw-justify-end tw-items-center">
+                            <button
+                              type="button"
+                              onClick={() => handleAddFields()}
+                              className="tw-text-sm tw-bg-black tw-text-white tw-py-2 tw-px-4 tw-rounded"
+                            >
+                              경력 추가하기
+                            </button>
+                          </div>
+                          {/* <button type="submit">Submit</button> */}
+                        </form>
                       </div>
-                    </dl>
-                  </div>
-                </div>
-                <div className="border tw-p-7 tw-rounded-xl tw-mt-5 ">
-                  <div className="tw-font-bold tw-text-base tw-text-black">선택 | 자기소개</div>
-                  <div className="tw-mt-2 tw-border-t tw-border-gray-100">
-                    <dl className="tw-divide-y tw-divide-gray-100">
-                      <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 ">
-                        <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">한줄소개</dt>
-                        <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
-                          <TextField
-                            fullWidth
-                            id="margin-none"
-                            multiline
-                            rows={3}
-                            onChange={onMessageChange}
-                            value={introductionMessage}
-                            // defaultValue="클럽 소개 내용을 입력해주세요."
-                          />
-                        </dd>
+                    </div>
+                    <div className="border tw-p-7 tw-rounded-xl tw-mt-5">
+                      <div className="tw-font-bold tw-text-base tw-text-black">선택 | 보유스킬</div>
+                      <div className="tw-mt-2 tw-border-t tw-border-gray-100">
+                        <dl className="tw-divide-y tw-divide-gray-100">
+                          <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
+                            <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">보유스킬</dt>
+                            <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                              <Autocomplete
+                                fullWidth
+                                multiple
+                                limitTags={2}
+                                size="small"
+                                id="checkboxes-tags-demo"
+                                value={customSkills}
+                                getOptionLabel={option => option.name || []}
+                                options={skillData || []}
+                                onChange={handleSkillsChange} // onchange 이벤트 핸들러 추가
+                                renderInput={params => (
+                                  <TextField {...params} label="보유스킬을 입력해주세요." placeholder="스킬" />
+                                )}
+                              />
+                            </dd>
+                          </div>
+                        </dl>
                       </div>
-                    </dl>
-                  </div>
-                </div>
-                <div className="tw-p-3 tw-rounded-xl tw-mt-5 tw-text-center">
-                  <button
-                    type="button"
-                    onClick={() => handleProfileSave()}
-                    className="tw-text-sm tw-bg-black tw-text-white tw-py-2 tw-px-4 tw-rounded"
-                  >
-                    수정하기
-                  </button>
-                </div>
-              </ProfileModal>
+                    </div>
+                    <div className="border tw-p-7 tw-rounded-xl tw-mt-5 ">
+                      <div className="tw-font-bold tw-text-base tw-text-black">선택 | 자기소개</div>
+                      <div className="tw-mt-2 tw-border-t tw-border-gray-100">
+                        <dl className="tw-divide-y tw-divide-gray-100">
+                          <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 ">
+                            <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">한줄소개</dt>
+                            <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                              <TextField
+                                fullWidth
+                                id="margin-none"
+                                multiline
+                                rows={3}
+                                onChange={onMessageChange}
+                                value={introductionMessage}
+                                // defaultValue="클럽 소개 내용을 입력해주세요."
+                              />
+                            </dd>
+                          </div>
+                        </dl>
+                      </div>
+                    </div>
+                    <div className="tw-p-3 tw-rounded-xl tw-mt-5 tw-text-center">
+                      <button
+                        type="button"
+                        onClick={() => handleProfileSave()}
+                        className="tw-text-sm tw-bg-black tw-text-white tw-py-2 tw-px-4 tw-rounded"
+                      >
+                        수정하기
+                      </button>
+                    </div>
+                  </ProfileModal>
+                </Desktop>
+                <Mobile>
+                  <ProfileModal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
+                    <div className="tw-font-bold tw-text-xl tw-text-black tw-mt-0 tw-mb-5 tw-text-center">
+                      {user?.name || user?.nickname}님 데브어스에 오신 것을 환영합니다!
+                    </div>
+                    <div className="tw-font-semibold tw-text-base tw-text-black tw-mt-0  tw-text-center">
+                      직군 및 레벨을 설정하시면 님께
+                    </div>
+                    <div className="tw-font-semibold tw-text-base  tw-text-black tw-mt-0 tw-mb-10 tw-text-center">
+                      꼭 맞는 커멘 서비스를 추천받으실 수 있습니다!
+                    </div>
+
+                    <div className="border tw-p-7 tw-rounded-xl">
+                      <div className="tw-font-bold tw-text-base tw-text-black">개인정보</div>
+
+                      <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
+                        <img
+                          className="tw-w-32 tw-h-32 tw-ring-1 tw-rounded-full"
+                          src={fileImageUrl ?? userInfo?.profileImageUrl}
+                          alt=""
+                        />
+                      </div>
+                      <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
+                        <button color="primary" className="tw-bg-blue-500 tw-px-5 tw-py-2 tw-rounded-md">
+                          <label htmlFor={`input-file`} className="tw-text-white tw-text-sm">
+                            사진 변경
+                          </label>
+                          <input
+                            hidden
+                            id={`input-file`}
+                            accept="image/*"
+                            type="file"
+                            onChange={e => onFileChange(e.target?.files)}
+                          />
+                        </button>
+                      </div>
+                      <div className="tw-mt-2 tw-border-t tw-border-gray-100">
+                        <dl className="tw-divide-y tw-divide-gray-100">
+                          <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
+                            <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">이메일</dt>
+                            <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                              {user?.email}
+                            </dd>
+                          </div>
+                          <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
+                            <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">이름</dt>
+                            <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                              {user?.name}
+                            </dd>
+                          </div>
+                          <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
+                            <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">닉네임</dt>
+                            <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                              <TextField
+                                size="small"
+                                id="outlined-basic"
+                                label=""
+                                name="companyName"
+                                variant="outlined"
+                                onChange={onNickNameChange}
+                                value={nickName}
+                                inputProps={{
+                                  style: {
+                                    height: '20px',
+                                  },
+                                }}
+                              />
+                            </dd>
+                          </div>
+                          <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
+                            <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">(*) 전화번호</dt>
+                            <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                              <TextField
+                                inputRef={phoneRef} // ref를 할당합니다.
+                                size="small"
+                                id="outlined-basic"
+                                label=""
+                                name="companyName"
+                                variant="outlined"
+                                onChange={onPhoneChange}
+                                value={phone}
+                                inputProps={{
+                                  maxLength: 13,
+                                  style: {
+                                    height: '20px',
+                                  },
+                                }}
+                              />
+                            </dd>
+                          </div>
+                        </dl>
+                      </div>
+                    </div>
+                    <div className="border tw-p-7 tw-rounded-xl tw-mt-5">
+                      <div className="tw-font-bold tw-text-base tw-text-black">필수 | 직군 및 레벨</div>
+
+                      <dl className="tw-divide-y tw-divide-gray-100 tw-py-5">
+                        <div className="tw-px-4 tw-pt-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                          <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">(*) 직군선택</dt>
+                          <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                            <ToggleButtonGroup
+                              value={recommendJobGroups}
+                              exclusive
+                              onChange={handleJobGroups}
+                              aria-label="text alignment"
+                            >
+                              {jobGroup?.map((item, index) => (
+                                <ToggleButton
+                                  ref={jobGroupRef} // ref를 할당합니다.
+                                  key={`job-${index}`}
+                                  value={item.id}
+                                  aria-label="fff"
+                                  className="tw-ring-1 tw-ring-slate-900/10"
+                                  style={{
+                                    borderRadius: '5px',
+                                    borderLeft: '0px',
+                                    margin: '5px',
+                                    height: '35px',
+                                    border: '0px',
+                                  }}
+                                >
+                                  {item.name}
+                                </ToggleButton>
+                              ))}
+                            </ToggleButtonGroup>
+                          </dd>
+                        </div>
+
+                        <div className="tw-px-4 tw-pt-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                          <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">(*) 레벨선택</dt>
+                          <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                            <ToggleButtonGroup
+                              value={recommendLevels}
+                              exclusive
+                              onChange={handleRecommendLevels}
+                              aria-label="text alignment"
+                            >
+                              {levelGroup?.map((item, index) => (
+                                <ToggleButton
+                                  ref={recommendLevelsRef} // ref를 할당합니다.
+                                  key={`job-${index}`}
+                                  value={item.name}
+                                  aria-label="fff"
+                                  className="tw-ring-1 tw-ring-slate-900/10"
+                                  style={{
+                                    borderRadius: '5px',
+                                    borderLeft: '0px',
+                                    margin: '5px',
+                                    height: '35px',
+                                    border: '0px',
+                                  }}
+                                >
+                                  레벨 {item.name}
+                                </ToggleButton>
+                              ))}
+                            </ToggleButtonGroup>
+                          </dd>
+                        </div>
+                        <div className="tw-px-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0">
+                          <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900"></dt>
+                          <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                            {recommendLevels?.toString() === '0' && (
+                              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                                0레벨 : 직무스킬(개발언어/프레임워크 등) 학습 중. 상용서비스 개발 경험 없음.
+                              </div>
+                            )}
+                            {recommendLevels?.toString() === '1' && (
+                              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                                1레벨 : 상용서비스 단위모듈 수준 개발 가능. 서비스 개발 리딩 시니어 필요.
+                              </div>
+                            )}
+                            {recommendLevels?.toString() === '2' && (
+                              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                                2레벨 : 상용 서비스 개발 1인분 가능한 사람. 소규모 서비스 독자 개발 가능.
+                              </div>
+                            )}
+                            {recommendLevels?.toString() === '3' && (
+                              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                                3레벨 : 상용서비스 개발 리더. 담당직무분야 N명 업무가이드 및 리딩 가능.
+                              </div>
+                            )}
+                            {recommendLevels?.toString() === '4' && (
+                              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                                4레벨 : 다수 상용서비스 개발 리더. 수십명 혹은 수백명 수준의 개발자 총괄 리더.
+                              </div>
+                            )}
+                            {recommendLevels?.toString() === '5' && (
+                              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                                5레벨 : 본인 오픈소스/방법론 등이 범용적 사용, 수백명이상 다수 직군 리딩.
+                              </div>
+                            )}
+                          </dd>
+                        </div>
+                      </dl>
+                    </div>
+                    <div className="border tw-p-7 tw-rounded-xl tw-mt-5 ">
+                      <div className="tw-font-bold tw-text-base tw-text-black">선택 | 경력사항</div>
+                      <div className="tw-mt-2 tw-border-t tw-border-gray-100">
+                        <form onSubmit={handleSubmit} style={{ padding: '2%' }}>
+                          {formFields.map((field, index) => (
+                            <div key={index} style={{ marginBottom: 5 }} className="">
+                              <dl className="tw-divide-y tw-divide-gray-100">
+                                <div className="tw-px-4 tw-pt-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                                  <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">회사명</dt>
+                                  <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-4 tw-mt-0">
+                                    <TextField
+                                      size="small"
+                                      id="outlined-basic"
+                                      label=""
+                                      name="companyName"
+                                      variant="outlined"
+                                      value={field.companyName}
+                                      onChange={e => handleInputChange(index, e, 'text')}
+                                      style={{ marginRight: 10 }}
+                                    />
+                                  </dd>
+                                  <dt className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-1 tw-flex tw-justify-end">
+                                    <button
+                                      className="tw-text-sm tw-bg-black tw-text-white tw-py-2 tw-px-4 tw-rounded"
+                                      type="button"
+                                      onClick={() => handleRemoveFields(index)}
+                                    >
+                                      삭제
+                                    </button>
+                                  </dt>
+                                </div>
+                                <div className="tw-px-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                                  <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900"></dt>
+                                  <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                                    <div className="tw-flex tw-items-center tw-gap-1">
+                                      <FormControlLabel
+                                        control={
+                                          <Checkbox
+                                            checked={field.isFreelance}
+                                            onChange={e => handleInputChange(index, e, 'isFreelance')}
+                                            name="jason"
+                                          />
+                                        }
+                                        label="프리랜서의 경우, 체크해주세요."
+                                      />
+                                    </div>
+                                  </dd>
+                                </div>
+                                <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                                  <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">직무</dt>
+                                  <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                                    <div className="tw-grid tw-grid-cols-2 tw-flex tw-justify-center tw-items-center">
+                                      <div className="tw-col-span-1 ">
+                                        <Autocomplete
+                                          fullWidth
+                                          limitTags={2}
+                                          size="small"
+                                          id="checkboxes-tags-demo"
+                                          getOptionLabel={option => option.name || []}
+                                          options={contentJobType || []}
+                                          onChange={(e, v) => handleJobChange(index, e, v)}
+                                          renderInput={params => (
+                                            <TextField {...params} label="" placeholder="직무를 변경해주세요." />
+                                          )}
+                                        />
+                                      </div>
+                                      {field.jobName && (
+                                        <div className="tw-col-span-1 tw-text-base tw-px-2 tw-font-bold tw-pl-5">
+                                          현재직무 : {field.jobName}
+                                        </div>
+                                      )}
+                                    </div>
+                                  </dd>
+                                </div>
+
+                                <div className="tw-px-4 tw-pt-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                                  <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">근무기간</dt>
+                                  <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                                    <div className="tw-grid tw-grid-cols-3 tw-flex tw-justify-center tw-items-center tw-gap-1">
+                                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                        <DatePicker
+                                          format="YYYY-MM-DD"
+                                          slotProps={{ textField: { size: 'small' } }}
+                                          value={dayjs(field.startDate)}
+                                          onChange={e => handleInputChange(index, e, 'startDate')}
+                                        />
+                                        <DatePicker
+                                          disabled={field.isCurrent}
+                                          format="YYYY-MM-DD"
+                                          slotProps={{ textField: { size: 'small' } }}
+                                          value={dayjs(field.endDate)}
+                                          onChange={e => handleInputChange(index, e, 'endDate')}
+                                          key={index}
+                                          inputRef={element => {
+                                            endDateRef.current[index] = element;
+                                          }}
+                                        />
+                                      </LocalizationProvider>
+                                      {careerTimes[index] && <div className="tw-px-2">{careerTimes[index]}년차</div>}
+                                    </div>
+                                  </dd>
+                                </div>
+                                <div className="tw-px-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                                  <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900"></dt>
+                                  <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                                    <div className="tw-flex tw-items-center tw-gap-1">
+                                      <FormControlLabel
+                                        control={
+                                          <Checkbox
+                                            checked={field.isCurrent}
+                                            onChange={e => handleInputChange(index, e, 'isCurrent')}
+                                            name="isCurrent"
+                                          />
+                                        }
+                                        label="재직 중인 경우, 체크해 주세요."
+                                      />
+                                    </div>
+                                  </dd>
+                                </div>
+                                <div className="tw-flex tw-justify-center tw-items-center"></div>
+                                <Divider className="tw-border tw-bg-['#efefef']" />
+                              </dl>
+                            </div>
+                          ))}
+
+                          <div className="tw-text-center tw-flex tw-justify-end tw-items-center">
+                            <button
+                              type="button"
+                              onClick={() => handleAddFields()}
+                              className="tw-text-sm tw-bg-black tw-text-white tw-py-2 tw-px-4 tw-rounded"
+                            >
+                              경력 추가하기
+                            </button>
+                          </div>
+                          {/* <button type="submit">Submit</button> */}
+                        </form>
+                      </div>
+                    </div>
+                    <div className="border tw-p-7 tw-rounded-xl tw-mt-5">
+                      <div className="tw-font-bold tw-text-base tw-text-black">선택 | 보유스킬</div>
+                      <div className="tw-mt-2 tw-border-t tw-border-gray-100">
+                        <dl className="tw-divide-y tw-divide-gray-100">
+                          <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
+                            <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">보유스킬</dt>
+                            <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                              <Autocomplete
+                                fullWidth
+                                multiple
+                                limitTags={2}
+                                size="small"
+                                id="checkboxes-tags-demo"
+                                value={customSkills}
+                                getOptionLabel={option => option.name || []}
+                                options={skillData || []}
+                                onChange={handleSkillsChange} // onchange 이벤트 핸들러 추가
+                                renderInput={params => (
+                                  <TextField {...params} label="보유스킬을 입력해주세요." placeholder="스킬" />
+                                )}
+                              />
+                            </dd>
+                          </div>
+                        </dl>
+                      </div>
+                    </div>
+                    <div className="border tw-p-7 tw-rounded-xl tw-mt-5 ">
+                      <div className="tw-font-bold tw-text-base tw-text-black">선택 | 자기소개</div>
+                      <div className="tw-mt-2 tw-border-t tw-border-gray-100">
+                        <dl className="tw-divide-y tw-divide-gray-100">
+                          <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 ">
+                            <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">한줄소개</dt>
+                            <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                              <TextField
+                                fullWidth
+                                id="margin-none"
+                                multiline
+                                rows={3}
+                                onChange={onMessageChange}
+                                value={introductionMessage}
+                                // defaultValue="클럽 소개 내용을 입력해주세요."
+                              />
+                            </dd>
+                          </div>
+                        </dl>
+                      </div>
+                    </div>
+                    <div className="tw-p-3 tw-rounded-xl tw-mt-5 tw-text-center">
+                      <button
+                        type="button"
+                        onClick={() => handleProfileSave()}
+                        className="tw-text-sm tw-bg-black tw-text-white tw-py-2 tw-px-4 tw-rounded"
+                      >
+                        수정하기
+                      </button>
+                    </div>
+                  </ProfileModal>
+                </Mobile>
+              </>
             )}
           </div>
         </div>
@@ -1263,7 +1660,7 @@ export function ProfileTemplate() {
           )}
           <div className={cx('container')}>
             <Box sx={{ width: '100%', typography: 'body1' }}>
-              <div className="tw-flex tw-gap-5">
+              <div className="tw-flex tw-gap-5 tw-mb-10">
                 <Toggle
                   label="보유배지"
                   name="보유배지"
@@ -1316,7 +1713,7 @@ export function ProfileTemplate() {
             <Divider className="tw-my-10 tw-border tw-bg-['#efefef']" />
             {active == 0 && (
               <div>
-                <div className="tw-grid tw-grid-cols-4 tw-gap-4">
+                <div className="tw-grid tw-grid-cols-4 tw-gap-4 tw-py-5">
                   {badgeContents.map((item, index) => (
                     <div key={index} className="tw-text-center">
                       <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
@@ -1335,10 +1732,10 @@ export function ProfileTemplate() {
               </div>
             )}
             {active == 1 && (
-              <div>
+              <div className=" tw-my-5">
                 {myQuizListData?.contents.map((item, index) => (
                   <div key={`admin-quiz-${index}`} className="tw-flex tw-pb-5">
-                    <div className="tw-p-4 tw-border border tw-rounded-lg tw-flex-col md:tw-flex-row tw-w-full">
+                    <div className="tw-p-4 tw-border border tw-rounded-lg tw-flex-col md:tw-flex-row tw-w-full ">
                       {/* 첫 번째 컬럼 */}
                       <div className="md:tw-w-1/3">
                         <div className="tw-font-medium tw-text-black">
@@ -1451,393 +1848,790 @@ export function ProfileTemplate() {
               </div>
             </article>
             {isUserInfo && (
-              <ProfileModal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
-                <div className="tw-font-bold tw-text-xl tw-text-black tw-mt-0 tw-mb-5 tw-text-center">
-                  {user?.name || user?.nickname}님 데브어스에 오신 것을 환영합니다!
-                </div>
-                <div className="tw-font-semibold tw-text-base tw-text-black tw-mt-0  tw-text-center">
-                  직군 및 레벨을 설정하시면 님께
-                </div>
-                <div className="tw-font-semibold tw-text-base  tw-text-black tw-mt-0 tw-mb-10 tw-text-center">
-                  꼭 맞는 커멘 서비스를 추천받으실 수 있습니다!
-                </div>
+              <>
+                <Desktop>
+                  <ProfileModal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
+                    <div className="tw-font-bold tw-text-xl tw-text-black tw-mt-0 tw-mb-5 tw-text-center">
+                      {user?.name || user?.nickname}님 데브어스에 오신 것을 환영합니다!
+                    </div>
+                    <div className="tw-font-semibold tw-text-base tw-text-black tw-mt-0  tw-text-center">
+                      직군 및 레벨을 설정하시면 님께
+                    </div>
+                    <div className="tw-font-semibold tw-text-base  tw-text-black tw-mt-0 tw-mb-10 tw-text-center">
+                      꼭 맞는 커멘 서비스를 추천받으실 수 있습니다!
+                    </div>
 
-                <div className="border tw-p-7 tw-rounded-xl">
-                  <div className="tw-font-bold tw-text-base tw-text-black">개인정보</div>
+                    <div className="border tw-p-7 tw-rounded-xl">
+                      <div className="tw-font-bold tw-text-base tw-text-black">개인정보</div>
 
-                  <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
-                    <img
-                      className="tw-w-32 tw-h-32 tw-ring-1 tw-rounded-full"
-                      src={fileImageUrl ?? userInfo?.profileImageUrl}
-                      alt=""
-                    />
-                  </div>
-                  <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
-                    <button color="primary" className="tw-bg-blue-500 tw-px-5 tw-py-2 tw-rounded-md">
-                      <label htmlFor={`input-file`} className="tw-text-white tw-text-sm">
-                        사진 변경
-                      </label>
-                      <input
-                        hidden
-                        id={`input-file`}
-                        accept="image/*"
-                        type="file"
-                        onChange={e => onFileChange(e.target?.files)}
-                      />
-                    </button>
-                  </div>
-                  <div className="tw-mt-2 tw-border-t tw-border-gray-100">
-                    <dl className="tw-divide-y tw-divide-gray-100">
-                      <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
-                        <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">이메일</dt>
-                        <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
-                          {user?.email}
-                        </dd>
+                      <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
+                        <img
+                          className="tw-w-32 tw-h-32 tw-ring-1 tw-rounded-full"
+                          src={fileImageUrl ?? userInfo?.profileImageUrl}
+                          alt=""
+                        />
                       </div>
-                      <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
-                        <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">이름</dt>
-                        <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">{user?.name}</dd>
-                      </div>
-                      <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
-                        <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">닉네임</dt>
-                        <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
-                          <TextField
-                            size="small"
-                            id="outlined-basic"
-                            label=""
-                            name="companyName"
-                            variant="outlined"
-                            onChange={onNickNameChange}
-                            value={nickName}
-                            inputProps={{
-                              style: {
-                                height: '20px',
-                              },
-                            }}
+                      <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
+                        <button color="primary" className="tw-bg-blue-500 tw-px-5 tw-py-2 tw-rounded-md">
+                          <label htmlFor={`input-file`} className="tw-text-white tw-text-sm">
+                            사진 변경
+                          </label>
+                          <input
+                            hidden
+                            id={`input-file`}
+                            accept="image/*"
+                            type="file"
+                            onChange={e => onFileChange(e.target?.files)}
                           />
-                        </dd>
-                      </div>
-                      <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
-                        <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">(*) 전화번호</dt>
-                        <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
-                          <TextField
-                            inputRef={phoneRef} // ref를 할당합니다.
-                            size="small"
-                            id="outlined-basic"
-                            label=""
-                            name="companyName"
-                            variant="outlined"
-                            onChange={onPhoneChange}
-                            value={phone}
-                            inputProps={{
-                              maxLength: 13,
-                              style: {
-                                height: '20px',
-                              },
-                            }}
-                          />
-                        </dd>
-                      </div>
-                    </dl>
-                  </div>
-                </div>
-                <div className="border tw-p-7 tw-rounded-xl tw-mt-5">
-                  <div className="tw-font-bold tw-text-base tw-text-black">필수 | 직군 및 레벨</div>
-
-                  <dl className="tw-divide-y tw-divide-gray-100 tw-py-5">
-                    <div className="tw-px-4 tw-pt-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
-                      <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">(*) 직군선택</dt>
-                      <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
-                        <ToggleButtonGroup
-                          value={recommendJobGroups}
-                          exclusive
-                          onChange={handleJobGroups}
-                          aria-label="text alignment"
-                        >
-                          {jobGroup?.map((item, index) => (
-                            <ToggleButton
-                              ref={jobGroupRef} // ref를 할당합니다.
-                              key={`job-${index}`}
-                              value={item.id}
-                              aria-label="fff"
-                              className="tw-ring-1 tw-ring-slate-900/10"
-                              style={{
-                                borderRadius: '5px',
-                                borderLeft: '0px',
-                                margin: '5px',
-                                height: '35px',
-                                border: '0px',
-                              }}
-                            >
-                              {item.name}
-                            </ToggleButton>
-                          ))}
-                        </ToggleButtonGroup>
-                      </dd>
-                    </div>
-
-                    <div className="tw-px-4 tw-pt-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
-                      <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">(*) 레벨선택</dt>
-                      <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
-                        <ToggleButtonGroup
-                          value={recommendLevels}
-                          exclusive
-                          onChange={handleRecommendLevels}
-                          aria-label="text alignment"
-                        >
-                          {levelGroup?.map((item, index) => (
-                            <ToggleButton
-                              ref={recommendLevelsRef} // ref를 할당합니다.
-                              key={`job-${index}`}
-                              value={item.name}
-                              aria-label="fff"
-                              className="tw-ring-1 tw-ring-slate-900/10"
-                              style={{
-                                borderRadius: '5px',
-                                borderLeft: '0px',
-                                margin: '5px',
-                                height: '35px',
-                                border: '0px',
-                              }}
-                            >
-                              레벨 {item.name}
-                            </ToggleButton>
-                          ))}
-                        </ToggleButtonGroup>
-                      </dd>
-                    </div>
-                    <div className="tw-px-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0">
-                      <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900"></dt>
-                      <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
-                        {recommendLevels?.toString() === '0' && (
-                          <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
-                            0레벨 : 직무스킬(개발언어/프레임워크 등) 학습 중. 상용서비스 개발 경험 없음.
-                          </div>
-                        )}
-                        {recommendLevels?.toString() === '1' && (
-                          <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
-                            1레벨 : 상용서비스 단위모듈 수준 개발 가능. 서비스 개발 리딩 시니어 필요.
-                          </div>
-                        )}
-                        {recommendLevels?.toString() === '2' && (
-                          <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
-                            2레벨 : 상용 서비스 개발 1인분 가능한 사람. 소규모 서비스 독자 개발 가능.
-                          </div>
-                        )}
-                        {recommendLevels?.toString() === '3' && (
-                          <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
-                            3레벨 : 상용서비스 개발 리더. 담당직무분야 N명 업무가이드 및 리딩 가능.
-                          </div>
-                        )}
-                        {recommendLevels?.toString() === '4' && (
-                          <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
-                            4레벨 : 다수 상용서비스 개발 리더. 수십명 혹은 수백명 수준의 개발자 총괄 리더.
-                          </div>
-                        )}
-                        {recommendLevels?.toString() === '5' && (
-                          <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
-                            5레벨 : 본인 오픈소스/방법론 등이 범용적 사용, 수백명이상 다수 직군 리딩.
-                          </div>
-                        )}
-                      </dd>
-                    </div>
-                  </dl>
-                </div>
-                <div className="border tw-p-7 tw-rounded-xl tw-mt-5 ">
-                  <div className="tw-font-bold tw-text-base tw-text-black">선택 | 경력사항</div>
-                  <div className="tw-mt-2 tw-border-t tw-border-gray-100">
-                    <form onSubmit={handleSubmit} style={{ padding: '2%' }}>
-                      {formFields.map((field, index) => (
-                        <div key={index} style={{ marginBottom: 5 }} className="">
-                          <dl className="tw-divide-y tw-divide-gray-100">
-                            <div className="tw-px-4 tw-pt-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
-                              <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">회사명</dt>
-                              <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-4 tw-mt-0">
-                                <TextField
-                                  size="small"
-                                  id="outlined-basic"
-                                  label=""
-                                  name="companyName"
-                                  variant="outlined"
-                                  value={field.companyName}
-                                  onChange={e => handleInputChange(index, e, 'text')}
-                                  style={{ marginRight: 10 }}
-                                />
-                              </dd>
-                              <dt className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-1 tw-flex tw-justify-end">
-                                <button
-                                  className="tw-text-sm tw-bg-black tw-text-white tw-py-2 tw-px-4 tw-rounded"
-                                  type="button"
-                                  onClick={() => handleRemoveFields(index)}
-                                >
-                                  삭제
-                                </button>
-                              </dt>
-                            </div>
-                            <div className="tw-px-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
-                              <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900"></dt>
-                              <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
-                                <div className="tw-flex tw-items-center tw-gap-1">
-                                  <FormControlLabel
-                                    control={
-                                      <Checkbox
-                                        checked={field.isFreelance}
-                                        onChange={e => handleInputChange(index, e, 'isFreelance')}
-                                        name="jason"
-                                      />
-                                    }
-                                    label="프리랜서의 경우, 체크해주세요."
-                                  />
-                                </div>
-                              </dd>
-                            </div>
-                            <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
-                              <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">직무</dt>
-                              <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
-                                <div className="tw-grid tw-grid-cols-2 tw-flex tw-justify-center tw-items-center">
-                                  <div className="tw-col-span-1 ">
-                                    <Autocomplete
-                                      fullWidth
-                                      limitTags={2}
-                                      size="small"
-                                      id="checkboxes-tags-demo"
-                                      getOptionLabel={option => option.name || []}
-                                      options={contentJobType || []}
-                                      onChange={(e, v) => handleJobChange(index, e, v)}
-                                      renderInput={params => (
-                                        <TextField {...params} label="" placeholder="직무를 변경해주세요." />
-                                      )}
-                                    />
-                                  </div>
-                                  {field.jobName && (
-                                    <div className="tw-col-span-1 tw-text-base tw-px-2 tw-font-bold tw-pl-5">
-                                      현재직무 : {field.jobName}
-                                    </div>
-                                  )}
-                                </div>
-                              </dd>
-                            </div>
-
-                            <div className="tw-px-4 tw-pt-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
-                              <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">근무기간</dt>
-                              <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
-                                <div className="tw-grid tw-grid-cols-3 tw-flex tw-justify-center tw-items-center tw-gap-1">
-                                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                    <DatePicker
-                                      format="YYYY-MM-DD"
-                                      slotProps={{ textField: { size: 'small' } }}
-                                      value={dayjs(field.startDate)}
-                                      onChange={e => handleInputChange(index, e, 'startDate')}
-                                    />
-                                    <DatePicker
-                                      disabled={field.isCurrent}
-                                      format="YYYY-MM-DD"
-                                      slotProps={{ textField: { size: 'small' } }}
-                                      value={dayjs(field.endDate)}
-                                      onChange={e => handleInputChange(index, e, 'endDate')}
-                                      key={index}
-                                      inputRef={element => {
-                                        endDateRef.current[index] = element;
-                                      }}
-                                    />
-                                  </LocalizationProvider>
-                                  {careerTimes[index] && <div className="tw-px-2">{careerTimes[index]}년차</div>}
-                                </div>
-                              </dd>
-                            </div>
-                            <div className="tw-px-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
-                              <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900"></dt>
-                              <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
-                                <div className="tw-flex tw-items-center tw-gap-1">
-                                  <FormControlLabel
-                                    control={
-                                      <Checkbox
-                                        checked={field.isCurrent}
-                                        onChange={e => handleInputChange(index, e, 'isCurrent')}
-                                        name="isCurrent"
-                                      />
-                                    }
-                                    label="재직 중인 경우, 체크해 주세요."
-                                  />
-                                </div>
-                              </dd>
-                            </div>
-                            <div className="tw-flex tw-justify-center tw-items-center"></div>
-                            <Divider className="tw-border tw-bg-['#efefef']" />
-                          </dl>
-                        </div>
-                      ))}
-
-                      <div className="tw-text-center tw-flex tw-justify-end tw-items-center">
-                        <button
-                          type="button"
-                          onClick={() => handleAddFields()}
-                          className="tw-text-sm tw-bg-black tw-text-white tw-py-2 tw-px-4 tw-rounded"
-                        >
-                          경력 추가하기
                         </button>
                       </div>
-                      {/* <button type="submit">Submit</button> */}
-                    </form>
-                  </div>
-                </div>
-                <div className="border tw-p-7 tw-rounded-xl tw-mt-5">
-                  <div className="tw-font-bold tw-text-base tw-text-black">선택 | 보유스킬</div>
-                  <div className="tw-mt-2 tw-border-t tw-border-gray-100">
-                    <dl className="tw-divide-y tw-divide-gray-100">
-                      <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
-                        <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">보유스킬</dt>
-                        <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
-                          <Autocomplete
-                            fullWidth
-                            multiple
-                            limitTags={2}
-                            size="small"
-                            id="checkboxes-tags-demo"
-                            value={customSkills}
-                            getOptionLabel={option => option.name || []}
-                            options={skillData || []}
-                            onChange={handleSkillsChange} // onchange 이벤트 핸들러 추가
-                            renderInput={params => (
-                              <TextField {...params} label="보유스킬을 입력해주세요." placeholder="스킬" />
+                      <div className="tw-mt-2 tw-border-t tw-border-gray-100">
+                        <dl className="tw-divide-y tw-divide-gray-100">
+                          <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
+                            <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">이메일</dt>
+                            <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                              {user?.email}
+                            </dd>
+                          </div>
+                          <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
+                            <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">이름</dt>
+                            <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                              {user?.name}
+                            </dd>
+                          </div>
+                          <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
+                            <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">닉네임</dt>
+                            <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                              <TextField
+                                size="small"
+                                id="outlined-basic"
+                                label=""
+                                name="companyName"
+                                variant="outlined"
+                                onChange={onNickNameChange}
+                                value={nickName}
+                                inputProps={{
+                                  style: {
+                                    height: '20px',
+                                  },
+                                }}
+                              />
+                            </dd>
+                          </div>
+                          <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
+                            <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">(*) 전화번호</dt>
+                            <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                              <TextField
+                                inputRef={phoneRef} // ref를 할당합니다.
+                                size="small"
+                                id="outlined-basic"
+                                label=""
+                                name="companyName"
+                                variant="outlined"
+                                onChange={onPhoneChange}
+                                value={phone}
+                                inputProps={{
+                                  maxLength: 13,
+                                  style: {
+                                    height: '20px',
+                                  },
+                                }}
+                              />
+                            </dd>
+                          </div>
+                        </dl>
+                      </div>
+                    </div>
+                    <div className="border tw-p-7 tw-rounded-xl tw-mt-5">
+                      <div className="tw-font-bold tw-text-base tw-text-black">필수 | 직군 및 레벨</div>
+
+                      <dl className="tw-divide-y tw-divide-gray-100 tw-py-5">
+                        <div className="tw-px-4 tw-pt-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                          <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">(*) 직군선택</dt>
+                          <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                            <ToggleButtonGroup
+                              value={recommendJobGroups}
+                              exclusive
+                              onChange={handleJobGroups}
+                              aria-label="text alignment"
+                            >
+                              {jobGroup?.map((item, index) => (
+                                <ToggleButton
+                                  ref={jobGroupRef} // ref를 할당합니다.
+                                  key={`job-${index}`}
+                                  value={item.id}
+                                  aria-label="fff"
+                                  className="tw-ring-1 tw-ring-slate-900/10"
+                                  style={{
+                                    borderRadius: '5px',
+                                    borderLeft: '0px',
+                                    margin: '5px',
+                                    height: '35px',
+                                    border: '0px',
+                                  }}
+                                >
+                                  {item.name}
+                                </ToggleButton>
+                              ))}
+                            </ToggleButtonGroup>
+                          </dd>
+                        </div>
+
+                        <div className="tw-px-4 tw-pt-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                          <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">(*) 레벨선택</dt>
+                          <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                            <ToggleButtonGroup
+                              value={recommendLevels}
+                              exclusive
+                              onChange={handleRecommendLevels}
+                              aria-label="text alignment"
+                            >
+                              {levelGroup?.map((item, index) => (
+                                <ToggleButton
+                                  ref={recommendLevelsRef} // ref를 할당합니다.
+                                  key={`job-${index}`}
+                                  value={item.name}
+                                  aria-label="fff"
+                                  className="tw-ring-1 tw-ring-slate-900/10"
+                                  style={{
+                                    borderRadius: '5px',
+                                    borderLeft: '0px',
+                                    margin: '5px',
+                                    height: '35px',
+                                    border: '0px',
+                                  }}
+                                >
+                                  레벨 {item.name}
+                                </ToggleButton>
+                              ))}
+                            </ToggleButtonGroup>
+                          </dd>
+                        </div>
+                        <div className="tw-px-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0">
+                          <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900"></dt>
+                          <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                            {recommendLevels?.toString() === '0' && (
+                              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                                0레벨 : 직무스킬(개발언어/프레임워크 등) 학습 중. 상용서비스 개발 경험 없음.
+                              </div>
                             )}
-                          />
-                        </dd>
+                            {recommendLevels?.toString() === '1' && (
+                              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                                1레벨 : 상용서비스 단위모듈 수준 개발 가능. 서비스 개발 리딩 시니어 필요.
+                              </div>
+                            )}
+                            {recommendLevels?.toString() === '2' && (
+                              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                                2레벨 : 상용 서비스 개발 1인분 가능한 사람. 소규모 서비스 독자 개발 가능.
+                              </div>
+                            )}
+                            {recommendLevels?.toString() === '3' && (
+                              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                                3레벨 : 상용서비스 개발 리더. 담당직무분야 N명 업무가이드 및 리딩 가능.
+                              </div>
+                            )}
+                            {recommendLevels?.toString() === '4' && (
+                              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                                4레벨 : 다수 상용서비스 개발 리더. 수십명 혹은 수백명 수준의 개발자 총괄 리더.
+                              </div>
+                            )}
+                            {recommendLevels?.toString() === '5' && (
+                              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                                5레벨 : 본인 오픈소스/방법론 등이 범용적 사용, 수백명이상 다수 직군 리딩.
+                              </div>
+                            )}
+                          </dd>
+                        </div>
+                      </dl>
+                    </div>
+                    <div className="border tw-p-7 tw-rounded-xl tw-mt-5 ">
+                      <div className="tw-font-bold tw-text-base tw-text-black">선택 | 경력사항</div>
+                      <div className="tw-mt-2 tw-border-t tw-border-gray-100">
+                        <form onSubmit={handleSubmit} style={{ padding: '2%' }}>
+                          {formFields.map((field, index) => (
+                            <div key={index} style={{ marginBottom: 5 }} className="">
+                              <dl className="tw-divide-y tw-divide-gray-100">
+                                <div className="tw-px-4 tw-pt-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                                  <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">회사명</dt>
+                                  <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-4 tw-mt-0">
+                                    <TextField
+                                      size="small"
+                                      id="outlined-basic"
+                                      label=""
+                                      name="companyName"
+                                      variant="outlined"
+                                      value={field.companyName}
+                                      onChange={e => handleInputChange(index, e, 'text')}
+                                      style={{ marginRight: 10 }}
+                                    />
+                                  </dd>
+                                  <dt className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-1 tw-flex tw-justify-end">
+                                    <button
+                                      className="tw-text-sm tw-bg-black tw-text-white tw-py-2 tw-px-4 tw-rounded"
+                                      type="button"
+                                      onClick={() => handleRemoveFields(index)}
+                                    >
+                                      삭제
+                                    </button>
+                                  </dt>
+                                </div>
+                                <div className="tw-px-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                                  <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900"></dt>
+                                  <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                                    <div className="tw-flex tw-items-center tw-gap-1">
+                                      <FormControlLabel
+                                        control={
+                                          <Checkbox
+                                            checked={field.isFreelance}
+                                            onChange={e => handleInputChange(index, e, 'isFreelance')}
+                                            name="jason"
+                                          />
+                                        }
+                                        label="프리랜서의 경우, 체크해주세요."
+                                      />
+                                    </div>
+                                  </dd>
+                                </div>
+                                <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                                  <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">직무</dt>
+                                  <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                                    <div className="tw-grid tw-grid-cols-2 tw-flex tw-justify-center tw-items-center">
+                                      <div className="tw-col-span-1 ">
+                                        <Autocomplete
+                                          fullWidth
+                                          limitTags={2}
+                                          size="small"
+                                          id="checkboxes-tags-demo"
+                                          getOptionLabel={option => option.name || []}
+                                          options={contentJobType || []}
+                                          onChange={(e, v) => handleJobChange(index, e, v)}
+                                          renderInput={params => (
+                                            <TextField {...params} label="" placeholder="직무를 변경해주세요." />
+                                          )}
+                                        />
+                                      </div>
+                                      {field.jobName && (
+                                        <div className="tw-col-span-1 tw-text-base tw-px-2 tw-font-bold tw-pl-5">
+                                          현재직무 : {field.jobName}
+                                        </div>
+                                      )}
+                                    </div>
+                                  </dd>
+                                </div>
+
+                                <div className="tw-px-4 tw-pt-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                                  <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">근무기간</dt>
+                                  <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                                    <div className="tw-grid tw-grid-cols-3 tw-flex tw-justify-center tw-items-center tw-gap-1">
+                                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                        <DatePicker
+                                          format="YYYY-MM-DD"
+                                          slotProps={{ textField: { size: 'small' } }}
+                                          value={dayjs(field.startDate)}
+                                          onChange={e => handleInputChange(index, e, 'startDate')}
+                                        />
+                                        <DatePicker
+                                          disabled={field.isCurrent}
+                                          format="YYYY-MM-DD"
+                                          slotProps={{ textField: { size: 'small' } }}
+                                          value={dayjs(field.endDate)}
+                                          onChange={e => handleInputChange(index, e, 'endDate')}
+                                          key={index}
+                                          inputRef={element => {
+                                            endDateRef.current[index] = element;
+                                          }}
+                                        />
+                                      </LocalizationProvider>
+                                      {careerTimes[index] && <div className="tw-px-2">{careerTimes[index]}년차</div>}
+                                    </div>
+                                  </dd>
+                                </div>
+                                <div className="tw-px-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                                  <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900"></dt>
+                                  <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                                    <div className="tw-flex tw-items-center tw-gap-1">
+                                      <FormControlLabel
+                                        control={
+                                          <Checkbox
+                                            checked={field.isCurrent}
+                                            onChange={e => handleInputChange(index, e, 'isCurrent')}
+                                            name="isCurrent"
+                                          />
+                                        }
+                                        label="재직 중인 경우, 체크해 주세요."
+                                      />
+                                    </div>
+                                  </dd>
+                                </div>
+                                <div className="tw-flex tw-justify-center tw-items-center"></div>
+                                <Divider className="tw-border tw-bg-['#efefef']" />
+                              </dl>
+                            </div>
+                          ))}
+
+                          <div className="tw-text-center tw-flex tw-justify-end tw-items-center">
+                            <button
+                              type="button"
+                              onClick={() => handleAddFields()}
+                              className="tw-text-sm tw-bg-black tw-text-white tw-py-2 tw-px-4 tw-rounded"
+                            >
+                              경력 추가하기
+                            </button>
+                          </div>
+                          {/* <button type="submit">Submit</button> */}
+                        </form>
                       </div>
-                    </dl>
-                  </div>
-                </div>
-                <div className="border tw-p-7 tw-rounded-xl tw-mt-5 ">
-                  <div className="tw-font-bold tw-text-base tw-text-black">선택 | 자기소개</div>
-                  <div className="tw-mt-2 tw-border-t tw-border-gray-100">
-                    <dl className="tw-divide-y tw-divide-gray-100">
-                      <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 ">
-                        <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">한줄소개</dt>
-                        <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
-                          <TextField
-                            fullWidth
-                            id="margin-none"
-                            multiline
-                            rows={3}
-                            onChange={onMessageChange}
-                            value={introductionMessage}
-                            // defaultValue="클럽 소개 내용을 입력해주세요."
-                          />
-                        </dd>
+                    </div>
+                    <div className="border tw-p-7 tw-rounded-xl tw-mt-5">
+                      <div className="tw-font-bold tw-text-base tw-text-black">선택 | 보유스킬</div>
+                      <div className="tw-mt-2 tw-border-t tw-border-gray-100">
+                        <dl className="tw-divide-y tw-divide-gray-100">
+                          <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
+                            <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">보유스킬</dt>
+                            <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                              <Autocomplete
+                                fullWidth
+                                multiple
+                                limitTags={2}
+                                size="small"
+                                id="checkboxes-tags-demo"
+                                value={customSkills}
+                                getOptionLabel={option => option.name || []}
+                                options={skillData || []}
+                                onChange={handleSkillsChange} // onchange 이벤트 핸들러 추가
+                                renderInput={params => (
+                                  <TextField {...params} label="보유스킬을 입력해주세요." placeholder="스킬" />
+                                )}
+                              />
+                            </dd>
+                          </div>
+                        </dl>
                       </div>
-                    </dl>
-                  </div>
-                </div>
-                <div className="tw-p-3 tw-rounded-xl tw-mt-5 tw-text-center">
-                  <button
-                    type="button"
-                    onClick={() => handleProfileSave()}
-                    className="tw-text-sm tw-bg-black tw-text-white tw-py-2 tw-px-4 tw-rounded"
-                  >
-                    수정하기
-                  </button>
-                </div>
-              </ProfileModal>
+                    </div>
+                    <div className="border tw-p-7 tw-rounded-xl tw-mt-5 ">
+                      <div className="tw-font-bold tw-text-base tw-text-black">선택 | 자기소개</div>
+                      <div className="tw-mt-2 tw-border-t tw-border-gray-100">
+                        <dl className="tw-divide-y tw-divide-gray-100">
+                          <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 ">
+                            <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">한줄소개</dt>
+                            <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                              <TextField
+                                fullWidth
+                                id="margin-none"
+                                multiline
+                                rows={3}
+                                onChange={onMessageChange}
+                                value={introductionMessage}
+                                // defaultValue="클럽 소개 내용을 입력해주세요."
+                              />
+                            </dd>
+                          </div>
+                        </dl>
+                      </div>
+                    </div>
+                    <div className="tw-p-3 tw-rounded-xl tw-mt-5 tw-text-center">
+                      <button
+                        type="button"
+                        onClick={() => handleProfileSave()}
+                        className="tw-text-sm tw-bg-black tw-text-white tw-py-2 tw-px-4 tw-rounded"
+                      >
+                        수정하기
+                      </button>
+                    </div>
+                  </ProfileModal>
+                </Desktop>
+                <Mobile>
+                  <ProfileModal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
+                    <div className="tw-font-bold tw-text-xl tw-text-black tw-mt-0 tw-mb-5 tw-text-center">
+                      {user?.name || user?.nickname}님 데브어스에 오신 것을 환영합니다!
+                    </div>
+                    <div className="tw-font-semibold tw-text-base tw-text-black tw-mt-0  tw-text-center">
+                      직군 및 레벨을 설정하시면 님께
+                    </div>
+                    <div className="tw-font-semibold tw-text-base  tw-text-black tw-mt-0 tw-mb-10 tw-text-center">
+                      꼭 맞는 커멘 서비스를 추천받으실 수 있습니다!
+                    </div>
+
+                    <div className="border tw-p-7 tw-rounded-xl">
+                      <div className="tw-font-bold tw-text-base tw-text-black">개인정보</div>
+
+                      <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
+                        <img
+                          className="tw-w-32 tw-h-32 tw-ring-1 tw-rounded-full"
+                          src={fileImageUrl ?? userInfo?.profileImageUrl}
+                          alt=""
+                        />
+                      </div>
+                      <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
+                        <button color="primary" className="tw-bg-blue-500 tw-px-5 tw-py-2 tw-rounded-md">
+                          <label htmlFor={`input-file`} className="tw-text-white tw-text-sm">
+                            사진 변경
+                          </label>
+                          <input
+                            hidden
+                            id={`input-file`}
+                            accept="image/*"
+                            type="file"
+                            onChange={e => onFileChange(e.target?.files)}
+                          />
+                        </button>
+                      </div>
+                      <div className="tw-mt-2 tw-border-t tw-border-gray-100">
+                        <dl className="tw-divide-y tw-divide-gray-100">
+                          <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
+                            <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">이메일</dt>
+                            <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                              {user?.email}
+                            </dd>
+                          </div>
+                          <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
+                            <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">이름</dt>
+                            <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                              {user?.name}
+                            </dd>
+                          </div>
+                          <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
+                            <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">닉네임</dt>
+                            <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                              <TextField
+                                size="small"
+                                id="outlined-basic"
+                                label=""
+                                name="companyName"
+                                variant="outlined"
+                                onChange={onNickNameChange}
+                                value={nickName}
+                                inputProps={{
+                                  style: {
+                                    height: '20px',
+                                  },
+                                }}
+                              />
+                            </dd>
+                          </div>
+                          <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
+                            <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">(*) 전화번호</dt>
+                            <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                              <TextField
+                                inputRef={phoneRef} // ref를 할당합니다.
+                                size="small"
+                                id="outlined-basic"
+                                label=""
+                                name="companyName"
+                                variant="outlined"
+                                onChange={onPhoneChange}
+                                value={phone}
+                                inputProps={{
+                                  maxLength: 13,
+                                  style: {
+                                    height: '20px',
+                                  },
+                                }}
+                              />
+                            </dd>
+                          </div>
+                        </dl>
+                      </div>
+                    </div>
+                    <div className="border tw-p-7 tw-rounded-xl tw-mt-5">
+                      <div className="tw-font-bold tw-text-base tw-text-black">필수 | 직군 및 레벨</div>
+
+                      <dl className="tw-divide-y tw-divide-gray-100 tw-py-5">
+                        <div className="tw-px-4 tw-pt-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                          <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">(*) 직군선택</dt>
+                          <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                            <ToggleButtonGroup
+                              value={recommendJobGroups}
+                              exclusive
+                              onChange={handleJobGroups}
+                              aria-label="text alignment"
+                            >
+                              {jobGroup?.map((item, index) => (
+                                <ToggleButton
+                                  ref={jobGroupRef} // ref를 할당합니다.
+                                  key={`job-${index}`}
+                                  value={item.id}
+                                  aria-label="fff"
+                                  className="tw-ring-1 tw-ring-slate-900/10"
+                                  style={{
+                                    borderRadius: '5px',
+                                    borderLeft: '0px',
+                                    margin: '5px',
+                                    height: '35px',
+                                    border: '0px',
+                                  }}
+                                >
+                                  {item.name}
+                                </ToggleButton>
+                              ))}
+                            </ToggleButtonGroup>
+                          </dd>
+                        </div>
+
+                        <div className="tw-px-4 tw-pt-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                          <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">(*) 레벨선택</dt>
+                          <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                            <ToggleButtonGroup
+                              value={recommendLevels}
+                              exclusive
+                              onChange={handleRecommendLevels}
+                              aria-label="text alignment"
+                            >
+                              {levelGroup?.map((item, index) => (
+                                <ToggleButton
+                                  ref={recommendLevelsRef} // ref를 할당합니다.
+                                  key={`job-${index}`}
+                                  value={item.name}
+                                  aria-label="fff"
+                                  className="tw-ring-1 tw-ring-slate-900/10"
+                                  style={{
+                                    borderRadius: '5px',
+                                    borderLeft: '0px',
+                                    margin: '5px',
+                                    height: '35px',
+                                    border: '0px',
+                                  }}
+                                >
+                                  레벨 {item.name}
+                                </ToggleButton>
+                              ))}
+                            </ToggleButtonGroup>
+                          </dd>
+                        </div>
+                        <div className="tw-px-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0">
+                          <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900"></dt>
+                          <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                            {recommendLevels?.toString() === '0' && (
+                              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                                0레벨 : 직무스킬(개발언어/프레임워크 등) 학습 중. 상용서비스 개발 경험 없음.
+                              </div>
+                            )}
+                            {recommendLevels?.toString() === '1' && (
+                              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                                1레벨 : 상용서비스 단위모듈 수준 개발 가능. 서비스 개발 리딩 시니어 필요.
+                              </div>
+                            )}
+                            {recommendLevels?.toString() === '2' && (
+                              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                                2레벨 : 상용 서비스 개발 1인분 가능한 사람. 소규모 서비스 독자 개발 가능.
+                              </div>
+                            )}
+                            {recommendLevels?.toString() === '3' && (
+                              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                                3레벨 : 상용서비스 개발 리더. 담당직무분야 N명 업무가이드 및 리딩 가능.
+                              </div>
+                            )}
+                            {recommendLevels?.toString() === '4' && (
+                              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                                4레벨 : 다수 상용서비스 개발 리더. 수십명 혹은 수백명 수준의 개발자 총괄 리더.
+                              </div>
+                            )}
+                            {recommendLevels?.toString() === '5' && (
+                              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                                5레벨 : 본인 오픈소스/방법론 등이 범용적 사용, 수백명이상 다수 직군 리딩.
+                              </div>
+                            )}
+                          </dd>
+                        </div>
+                      </dl>
+                    </div>
+                    <div className="border tw-p-7 tw-rounded-xl tw-mt-5 ">
+                      <div className="tw-font-bold tw-text-base tw-text-black">선택 | 경력사항</div>
+                      <div className="tw-mt-2 tw-border-t tw-border-gray-100">
+                        <form onSubmit={handleSubmit} style={{ padding: '2%' }}>
+                          {formFields.map((field, index) => (
+                            <div key={index} style={{ marginBottom: 5 }} className="">
+                              <dl className="tw-divide-y tw-divide-gray-100">
+                                <div className="tw-px-4 tw-pt-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                                  <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">회사명</dt>
+                                  <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-4 tw-mt-0">
+                                    <TextField
+                                      size="small"
+                                      id="outlined-basic"
+                                      label=""
+                                      name="companyName"
+                                      variant="outlined"
+                                      value={field.companyName}
+                                      onChange={e => handleInputChange(index, e, 'text')}
+                                      style={{ marginRight: 10 }}
+                                    />
+                                  </dd>
+                                  <dt className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-1 tw-flex tw-justify-end">
+                                    <button
+                                      className="tw-text-sm tw-bg-black tw-text-white tw-py-2 tw-px-4 tw-rounded"
+                                      type="button"
+                                      onClick={() => handleRemoveFields(index)}
+                                    >
+                                      삭제
+                                    </button>
+                                  </dt>
+                                </div>
+                                <div className="tw-px-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                                  <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900"></dt>
+                                  <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                                    <div className="tw-flex tw-items-center tw-gap-1">
+                                      <FormControlLabel
+                                        control={
+                                          <Checkbox
+                                            checked={field.isFreelance}
+                                            onChange={e => handleInputChange(index, e, 'isFreelance')}
+                                            name="jason"
+                                          />
+                                        }
+                                        label="프리랜서의 경우, 체크해주세요."
+                                      />
+                                    </div>
+                                  </dd>
+                                </div>
+                                <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                                  <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">직무</dt>
+                                  <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                                    <div className="tw-grid tw-grid-cols-2 tw-flex tw-justify-center tw-items-center">
+                                      <div className="tw-col-span-1 ">
+                                        <Autocomplete
+                                          fullWidth
+                                          limitTags={2}
+                                          size="small"
+                                          id="checkboxes-tags-demo"
+                                          getOptionLabel={option => option.name || []}
+                                          options={contentJobType || []}
+                                          onChange={(e, v) => handleJobChange(index, e, v)}
+                                          renderInput={params => (
+                                            <TextField {...params} label="" placeholder="직무를 변경해주세요." />
+                                          )}
+                                        />
+                                      </div>
+                                      {field.jobName && (
+                                        <div className="tw-col-span-1 tw-text-base tw-px-2 tw-font-bold tw-pl-5">
+                                          현재직무 : {field.jobName}
+                                        </div>
+                                      )}
+                                    </div>
+                                  </dd>
+                                </div>
+
+                                <div className="tw-px-4 tw-pt-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                                  <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">근무기간</dt>
+                                  <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                                    <div className="tw-grid tw-grid-cols-3 tw-flex tw-justify-center tw-items-center tw-gap-1">
+                                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                        <DatePicker
+                                          format="YYYY-MM-DD"
+                                          slotProps={{ textField: { size: 'small' } }}
+                                          value={dayjs(field.startDate)}
+                                          onChange={e => handleInputChange(index, e, 'startDate')}
+                                        />
+                                        <DatePicker
+                                          disabled={field.isCurrent}
+                                          format="YYYY-MM-DD"
+                                          slotProps={{ textField: { size: 'small' } }}
+                                          value={dayjs(field.endDate)}
+                                          onChange={e => handleInputChange(index, e, 'endDate')}
+                                          key={index}
+                                          inputRef={element => {
+                                            endDateRef.current[index] = element;
+                                          }}
+                                        />
+                                      </LocalizationProvider>
+                                      {careerTimes[index] && <div className="tw-px-2">{careerTimes[index]}년차</div>}
+                                    </div>
+                                  </dd>
+                                </div>
+                                <div className="tw-px-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                                  <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900"></dt>
+                                  <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                                    <div className="tw-flex tw-items-center tw-gap-1">
+                                      <FormControlLabel
+                                        control={
+                                          <Checkbox
+                                            checked={field.isCurrent}
+                                            onChange={e => handleInputChange(index, e, 'isCurrent')}
+                                            name="isCurrent"
+                                          />
+                                        }
+                                        label="재직 중인 경우, 체크해 주세요."
+                                      />
+                                    </div>
+                                  </dd>
+                                </div>
+                                <div className="tw-flex tw-justify-center tw-items-center"></div>
+                                <Divider className="tw-border tw-bg-['#efefef']" />
+                              </dl>
+                            </div>
+                          ))}
+
+                          <div className="tw-text-center tw-flex tw-justify-end tw-items-center">
+                            <button
+                              type="button"
+                              onClick={() => handleAddFields()}
+                              className="tw-text-sm tw-bg-black tw-text-white tw-py-2 tw-px-4 tw-rounded"
+                            >
+                              경력 추가하기
+                            </button>
+                          </div>
+                          {/* <button type="submit">Submit</button> */}
+                        </form>
+                      </div>
+                    </div>
+                    <div className="border tw-p-7 tw-rounded-xl tw-mt-5">
+                      <div className="tw-font-bold tw-text-base tw-text-black">선택 | 보유스킬</div>
+                      <div className="tw-mt-2 tw-border-t tw-border-gray-100">
+                        <dl className="tw-divide-y tw-divide-gray-100">
+                          <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
+                            <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">보유스킬</dt>
+                            <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                              <Autocomplete
+                                fullWidth
+                                multiple
+                                limitTags={2}
+                                size="small"
+                                id="checkboxes-tags-demo"
+                                value={customSkills}
+                                getOptionLabel={option => option.name || []}
+                                options={skillData || []}
+                                onChange={handleSkillsChange} // onchange 이벤트 핸들러 추가
+                                renderInput={params => (
+                                  <TextField {...params} label="보유스킬을 입력해주세요." placeholder="스킬" />
+                                )}
+                              />
+                            </dd>
+                          </div>
+                        </dl>
+                      </div>
+                    </div>
+                    <div className="border tw-p-7 tw-rounded-xl tw-mt-5 ">
+                      <div className="tw-font-bold tw-text-base tw-text-black">선택 | 자기소개</div>
+                      <div className="tw-mt-2 tw-border-t tw-border-gray-100">
+                        <dl className="tw-divide-y tw-divide-gray-100">
+                          <div className="tw-px-4 tw-py-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 ">
+                            <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">한줄소개</dt>
+                            <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                              <TextField
+                                fullWidth
+                                id="margin-none"
+                                multiline
+                                rows={3}
+                                onChange={onMessageChange}
+                                value={introductionMessage}
+                                // defaultValue="클럽 소개 내용을 입력해주세요."
+                              />
+                            </dd>
+                          </div>
+                        </dl>
+                      </div>
+                    </div>
+                    <div className="tw-p-3 tw-rounded-xl tw-mt-5 tw-text-center">
+                      <button
+                        type="button"
+                        onClick={() => handleProfileSave()}
+                        className="tw-text-sm tw-bg-black tw-text-white tw-py-2 tw-px-4 tw-rounded"
+                      >
+                        수정하기
+                      </button>
+                    </div>
+                  </ProfileModal>
+                </Mobile>
+              </>
             )}
           </div>
         </div>

@@ -17,8 +17,6 @@ import { ExperiencesResponse } from 'src/models/experiences';
 import { useExperiences } from 'src/services/experiences/experiences.queries';
 
 export interface SearchParamsProps {
-  page: number;
-  size: number;
   createdAtFrom: string;
   createdAtTo: string;
   keyword: string;
@@ -33,8 +31,6 @@ export function ClubQuizPage() {
   const [search, setSearch] = useState<string>('');
   const [clubId, setClubId] = useState<string>('');
   const [params, setParams] = useState<SearchParamsProps>({
-    page: page,
-    size: size,
     createdAtFrom: `${past1y?.format('YYYY-MM-DD')} 00:00:00`,
     createdAtTo: `${tomorrow.format('YYYY-MM-DD')} 00:00:00`,
     keyword: '',
@@ -65,6 +61,8 @@ export function ClubQuizPage() {
     error,
   }: UseQueryResult<any> = useClubs(
     paramsWithDefault({
+      page: page,
+      size: size,
       ...params,
     }),
   );

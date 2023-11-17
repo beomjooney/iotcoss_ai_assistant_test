@@ -21,6 +21,7 @@ interface QuizTemplateProps {
   skillsList?: any;
   experience?: any;
   jobGroup?: any;
+  jobs?: any;
   jobCodes?: any;
   quizData?: any;
   pageProps?: any;
@@ -37,6 +38,7 @@ export function QuizTemplate({
   skillsList,
   experience,
   jobGroup,
+  jobs,
   jobCodes,
   quizData,
   pageProps,
@@ -64,6 +66,14 @@ export function QuizTemplate({
 
   const memberCodes = [];
 
+  const LEVELS = [
+    { level: 1, desc: '상용서비스 단위모듈 수준 개발 가능. 서비스 개발 리딩 시니어 필요' },
+    { level: 2, desc: '상용서비스 개발 1인분 가능한 사람. 소규모 서비스 독자 개발 가능' },
+    { level: 3, desc: '상용서비스 개발 리더. 담당직무분야 N명 업무가이드 및 리딩 가능' },
+    { level: 4, desc: '다수 상용서비스 개발 리더. 수십명 혹은 수백명 수준의 개발자 총괄 리더' },
+    { level: 5, desc: '본인 오픈소스/방법론 등이 범용적 사용, 수백명이상 다수 직군 리딩' },
+  ];
+
   const FIELDS = [
     { name: '퀴즈ID', field: 'id', type: 'text' },
     { name: '회원UUID', field: 'memberUUID', type: 'text' },
@@ -89,17 +99,19 @@ export function QuizTemplate({
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [skillIds, setSkillIds] = useState<any[]>([]);
   const [experienceIds, setExperienceIds] = useState<string[]>([]);
+  const [recommendJobGroupsIds, setrecommendJobGroupsIds] = useState<string[]>([]);
+  const [recommendJobsIds, setrecommendJobsIds] = useState<string[]>([]);
+  const [recommendLevelsIds, setrecommendLevelsIds] = useState<string[]>([]);
 
   // TODO : 밸리데이션 추가 해야 함
   const quizSaveSchema = yup.object().shape({
     memberId: yup.string().notRequired(),
-    name: yup.string().notRequired(),
-    nickname: yup.string().notRequired(),
-    email: yup.string().notRequired(),
-    ageRange: yup.string().notRequired(),
-    birthday: yup.string().notRequired(),
-    type: yup.string().notRequired(),
-    typeName: yup.string().notRequired(),
+    memberName: yup.string().notRequired(),
+    memberNickname: yup.string().notRequired(),
+    articleUrl: yup.string().notRequired(),
+    activeCount: yup.string().notRequired(),
+    answerCount: yup.string().notRequired(),
+    hashTags: yup.string().notRequired(),
   });
 
   const methods = useForm({
@@ -110,7 +122,24 @@ export function QuizTemplate({
 
   useEffect(() => {
     quizData && setQuiz(quizData.data);
+    if (quizData) {
+      setExperienceIds(quizData?.data?.customExperiences?.map((item, index) => item) || []);
+      setSkillIds(quizData?.data?.customSkills?.map((item, index) => item) || []);
+      setrecommendJobGroupsIds(quizData?.data?.recommendJobGroups?.map((item, index) => item) || []);
+      setrecommendJobsIds(quizData?.data?.recommendJobs?.map((item, index) => item) || []);
+      setrecommendLevelsIds(quizData?.data?.recommendLevels?.map((item, index) => item) || []);
+    } else {
+      setExperienceIds([]);
+      setSkillIds([]);
+      setrecommendJobGroupsIds([]);
+      setrecommendJobsIds([]);
+      setrecommendLevelsIds([]);
+    }
   }, [quizData]);
+
+  // useEffect(() => {
+  //   quizData && setQuiz(quizData.data);
+  // }, [quizData]);
 
   const onShowPopup = (quizId: string) => {
     // 조회
@@ -157,16 +186,19 @@ export function QuizTemplate({
     });
   };
 
-  const onSmartFilterSearch = (params: any) => {
-    onSearch && onSearch(params);
+  const onSmartFilterSearch = (searchParms: any) => {
+    onSearch && onSearch(searchParms);
   };
 
   const handleSave = (data: any) => {
     const params = {
       ...data,
       ...quiz,
-      profileImageUrl: profileImage?.toString()?.slice(1) || quiz?.profileImageUrl,
+      recommendJobGroups: recommendJobGroupsIds,
+      recommendJobs: recommendJobsIds,
+      recommendLevels: recommendLevelsIds,
     };
+
     onSave && onSave(params);
   };
 
@@ -211,6 +243,36 @@ export function QuizTemplate({
       }
 
       setExperienceIds(result);
+    } else if (name === 'recommendJobGroups') {
+      const result = [...recommendJobGroupsIds];
+
+      if (result.indexOf(value) > -1) {
+        result.splice(result.indexOf(value), 1);
+      } else {
+        result.push(value);
+      }
+
+      setrecommendJobGroupsIds(result);
+    } else if (name === 'recommendJobs') {
+      const result = [...recommendJobsIds];
+
+      if (result.indexOf(value) > -1) {
+        result.splice(result.indexOf(value), 1);
+      } else {
+        result.push(value);
+      }
+
+      setrecommendJobsIds(result);
+    } else if (name === 'recommendLevels') {
+      const result = [...recommendLevelsIds];
+
+      if (result.indexOf(value) > -1) {
+        result.splice(result.indexOf(value), 1);
+      } else {
+        result.push(value);
+      }
+
+      setrecommendLevelsIds(result);
     }
   };
 
@@ -319,7 +381,7 @@ export function QuizTemplate({
                   {item.recommendJobNames}
                 </td>
                 <td className="magic" title={item.recommendLevels}>
-                  {item.recommendLevels}
+                  {item.recommendLevels?.length === 5 ? '모든' : item.recommendLevels?.sort().join(',') || 0}
                 </td>
                 <td className="magic" title={item.relatedSkills}>
                   {item.relatedSkills}
@@ -416,7 +478,7 @@ export function QuizTemplate({
                         {...methods.register('memberName')}
                         value={quiz?.memberName || ''}
                         onChange={onChangeQuiz}
-                        disabled={!isEdit}
+                        disabled
                       />
                     </div>
                   </div>
@@ -431,7 +493,7 @@ export function QuizTemplate({
                         {...methods.register('memberNickname')}
                         value={quiz?.memberNickname}
                         onChange={onChangeQuiz}
-                        disabled={!isEdit}
+                        disabled
                       />
                     </div>
                   </div>
@@ -490,7 +552,7 @@ export function QuizTemplate({
                       <input
                         type="text"
                         className="input-admin"
-                        name="hashTags"
+                        {...methods.register('hashTags')}
                         value={quiz?.hashTags || ''}
                         onChange={onChangeQuiz}
                         disabled={!isEdit}
@@ -524,6 +586,163 @@ export function QuizTemplate({
                         onChange={onChangeQuiz}
                       />
                     </div>
+                  </div>
+                </div>
+
+                <div className="grid-100">
+                  <div className="inpwrap">
+                    <div className="inp-tit">
+                      추천직군<span className="star">*</span>
+                    </div>
+
+                    <div className="inp">
+                      <div className={cx('skill__group')}>
+                        {jobCodes?.data?.contents?.map((item, index) => {
+                          return (
+                            <Toggle
+                              key={`recommendJobGroupsIds-${index}`}
+                              label={item.name}
+                              name="recommendJobGroups"
+                              value={item.id}
+                              onChange={onToggleChange}
+                              className="mr-2 mt-2"
+                              variant="small"
+                              type="multiple"
+                              isActive
+                              isBorder
+                              checked={
+                                !!recommendJobGroupsIds?.find(recommendJobGroups => recommendJobGroups === item.id)
+                              }
+                              disabled={!isEdit}
+                            />
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* <div className="inp">
+                      {jobCodes?.data?.contents?.map(item => (
+                        <span key={item.id} className={cx('col-md-2', 'pl-0')}>
+                          <Toggle
+                            isActive
+                            label={item.name}
+                            name="recommendJobGroups"
+                            type="checkBox"
+                            value={item.id || ''}
+                            checked={quiz?.recommendJobGroups?.includes(item.id) || false}
+                            //onChange={e => handleCheckboxChange(e, 'recommendJobGroups')}
+                            onChange={onToggleChange}
+                            disabled={!isEdit}
+                          />
+                        </span>
+                      ))}
+                    </div> */}
+                  </div>
+                </div>
+                <div className="grid-50 mt-3">
+                  <div className="inpwrap">
+                    <div className="inp-tit">
+                      추천직무<span className="star">*</span>
+                    </div>
+                    <div className="inp">
+                      <div className={cx('skill__group')}>
+                        {jobs?.data?.contents?.map((item, index) => {
+                          return (
+                            <Toggle
+                              key={`recommendJobsIds-${index}`}
+                              label={item.name}
+                              name="recommendJobs"
+                              value={item.id}
+                              onChange={onToggleChange}
+                              className="mr-2 mt-2"
+                              variant="small"
+                              type="multiple"
+                              isActive
+                              isBorder
+                              checked={!!recommendJobsIds?.find(recommendJobs => recommendJobs === item.id)}
+                              disabled={!isEdit}
+                            />
+                          );
+                        })}
+                      </div>
+                    </div>
+                    {/* <div className="inp">
+                      {jobs?.data?.contents?.map(item => {
+                        let isIncludeContent = false;
+                        if (quiz?.recommendJobs?.includes(item.id)) {
+                          isIncludeContent = true;
+                        }
+                        return (
+                          <span
+                            key={item.id}
+                            className={cx('seminar-level-area__item', 'check-area__item', 'col-md-2')}
+                          >
+                            <Toggle
+                              isActive
+                              label={item.name}
+                              name="recommendJobs"
+                              type="checkBox"
+                              checked={isIncludeContent}
+                              value={item.id}
+                              key={item.id}
+                              className={cx('fixed-width')}
+                              disabled={!isEdit}
+                              //onChange={e => handleCheckboxChange(e, 'recommendJobs')}
+                              onChange={onToggleChange}
+                            />
+                          </span>
+                        );
+                      })}
+                    </div> */}
+                  </div>
+                </div>
+                <div className="grid-100">
+                  <div className="inpwrap">
+                    <div className="inp-tit">
+                      추천레벨<span className="star">*</span>
+                    </div>
+                    <div className="inp">
+                      <div className={cx('skill__group')}>
+                        {LEVELS?.map((item, index) => {
+                          return (
+                            <Toggle
+                              key={`recommendLevelsIds-${index}`}
+                              label={`${item.level}레벨`}
+                              name="recommendLevels"
+                              value={item.level || ''}
+                              onChange={onToggleChange}
+                              className="mr-2 mt-2"
+                              variant="small"
+                              type="multiple"
+                              isActive
+                              isBorder
+                              checked={
+                                !!recommendLevelsIds?.find(recommendLevels => parseInt(recommendLevels) === item.level)
+                              }
+                              disabled={!isEdit}
+                            />
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* <div className="inp">
+                      {LEVELS.map(item => (
+                        <span key={item.level} className={cx('col-md-2', 'pl-0')}>
+                          <Toggle
+                            isActive
+                            label={`${item.level}레벨`}
+                            name="recommendLevels"
+                            type="checkBox"
+                            value={item.level || ''}
+                            checked={quiz?.recommendLevels?.includes(item.level) || false}
+                            //onChange={e => handleCheckboxChange(e, 'recommendLevels')}
+                            onChange={onToggleChange}
+                            disabled={!isEdit}
+                          />
+                        </span>
+                      ))}
+                    </div> */}
                   </div>
                 </div>
 

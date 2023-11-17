@@ -12,13 +12,14 @@ export async function getQuizs(params: any) {
 }
 
 // 상세 조회
-export async function getQuizInfo(quizId: string) {
-  const { data } = await axiosGeneralAPI().get(`/api/admin/v1/quizzes/${quizId}`);
+export async function getQuizInfo(sequence: string) {
+  const { data } = await axiosGeneralAPI().get(`/api/admin/v1/quizzes/${sequence}`);
   return data;
 }
 
 // 수정
-export const saveQuiz = async (quizId: string, body) => await axiosGeneralAPI().put(`/api/internal/v1/members`, body);
+export const saveQuiz = async (sequence: string, body) =>
+  await axiosGeneralAPI().put(`/api/admin/v1/quizzes/${sequence}`, body);
 
 // 삭제
-export const deleteQuiz = async quizId => await axiosGeneralAPI().delete(`/api/internal/v1/members`);
+export const deleteQuiz = async quizId => await axiosGeneralAPI().delete(`/api/admin/v1/quizzes/`);
