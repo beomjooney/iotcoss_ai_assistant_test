@@ -7,7 +7,7 @@ import dayjs from 'dayjs';
 import AdminLayout from '../../../src/stories/Layout/AdminLayout';
 import AdminClubQuizTemplate from '../../../src/templates/Admin/ClubQuiz';
 
-import { useClub, useClubs } from '../../../src/services/club/clubs.queries';
+import { useClubQuiz, useClubQuizs } from '../../../src/services/club/clubs.queries';
 import { useDeleteClub, useSaveClub } from '../../../src/services/club/clubs.mutations';
 import { useJobGroups, useMemberCode, useContentTypes } from 'src/services/code/code.queries';
 
@@ -29,7 +29,7 @@ export function ClubQuizPage() {
   const [page, setPage] = useState<number>(1);
   const [size, setSize] = useState<number>(15);
   const [search, setSearch] = useState<string>('');
-  const [clubId, setClubId] = useState<string>('');
+  const [clubSequence, setClubSequence] = useState<string>('');
   const [params, setParams] = useState<SearchParamsProps>({
     createdAtFrom: `${past1y?.format('YYYY-MM-DD')} 00:00:00`,
     createdAtTo: `${tomorrow.format('YYYY-MM-DD')} 00:00:00`,
@@ -38,7 +38,7 @@ export function ClubQuizPage() {
 
   const { data: jobCodes } = useContentTypes();
   const { data: experienceData }: UseQueryResult<ExperiencesResponse> = useExperiences();
-  const { data: clubData, refetch }: UseQueryResult<any> = useClub(clubId);
+  const { data: clubQuizData, refetch }: UseQueryResult<any> = useClubQuiz(clubSequence);
   const { data: jobGroup, isFetched: isJobGroupFetched } = useJobGroups();
 
   const { data: skillData }: UseQueryResult<any> = useSkills(
@@ -52,14 +52,14 @@ export function ClubQuizPage() {
   const { mutate: onDelete } = useDeleteClub();
 
   useEffect(() => {
-    clubId && refetch();
-  }, [clubId]);
+    clubSequence && refetch();
+  }, [clubSequence]);
 
   const {
-    data: clubList,
-    refetch: clubListRefetch,
+    data: clubQuizList,
+    refetch: clubQuizListRefetch,
     error,
-  }: UseQueryResult<any> = useClubs(
+  }: UseQueryResult<any> = useClubQuizs(
     paramsWithDefault({
       page: page,
       size: size,
@@ -90,8 +90,8 @@ export function ClubQuizPage() {
   const PAGE_PROPS = {
     page: page,
     setPage: setPage,
-    count: clubList?.data?.data?.totalPages,
-    total: clubList?.data?.data?.totalPages,
+    count: clubQuizList?.data?.data?.totalPages,
+    total: clubQuizList?.data?.data?.totalPages,
     onChangeSize: size => {
       setSize(size);
       setPage(1);
@@ -99,17 +99,17 @@ export function ClubQuizPage() {
     size: size,
   };
 
-  const onClubInfo = (id: string) => {
-    setClubId(id);
+  const onClubQuizInfo = (clubSequence: string) => {
+    setClubSequence(clubSequence);
   };
 
-  const onDeleteClub = (id: string) => {
-    if (confirm('해당 클럽을 삭제하시겠습니까?')) {
-      onDelete(id);
+  const onDeleteClubQuiz = (clubSequence: string) => {
+    if (confirm('해당 클럽퀴즈를 삭제하시겠습니까?')) {
+      onDelete(clubSequence);
     }
   };
 
-  const onSaveClub = (data: any) => {
+  const onSaveClubQuiz = (data: any) => {
     if (confirm('저장하시겠습니까?')) {
       onSave({
         ...data,
@@ -129,22 +129,22 @@ export function ClubQuizPage() {
     } else {
       setSearch(params);
     }
-    await clubListRefetch();
+    await clubQuizListRefetch();
   };
 
   return (
     <AdminClubQuizTemplate
-      clubList={clubList}
+      clubQuizList={clubQuizList}
       skillsList={skillsList}
       experience={experienceData}
       jobGroup={jobGroup}
       jobCodes={jobCodes}
-      clubData={clubData}
+      clubQuizData={clubQuizData}
       pageProps={PAGE_PROPS}
       params={params}
-      onClubInfo={onClubInfo}
-      onDeleteClub={onDeleteClub}
-      onSave={onSaveClub}
+      onClubQuizInfo={onClubQuizInfo}
+      onDeleteClubQuiz={onDeleteClubQuiz}
+      onSave={onSaveClubQuiz}
       onSearch={onSearch}
       setParams={setParams}
     />

@@ -31,15 +31,15 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 const cx = classNames.bind(styles);
 
 interface ClubQuizTemplateProps {
-  clubList?: any;
+  clubQuizList?: any;
   skillsList?: any;
   experience?: any;
   jobGroup?: any;
   jobCodes?: any;
-  clubData?: any;
+  clubQuizData?: any;
   pageProps?: any;
-  onClubInfo?: (clubId: string) => void;
-  onDeleteClub?: (clubId: string) => void;
+  onClubQuizInfo?: (clubSequence: string) => void;
+  onDeleteClubQuiz?: (clubSequence: string) => void;
   onSave?: (data: any) => void;
   onSearch?: (searchKeyword: any) => void;
   params: SearchParamsProps;
@@ -47,22 +47,22 @@ interface ClubQuizTemplateProps {
 }
 
 export function AdminClubQuizTemplate({
-  clubList,
+  clubQuizList,
   skillsList,
   experience,
   jobGroup,
   jobCodes,
-  clubData,
+  clubQuizData,
   pageProps,
   params,
-  onClubInfo,
-  onDeleteClub,
+  onClubQuizInfo,
+  onDeleteClubQuiz,
   onSave,
   onSearch,
   setParams,
 }: ClubQuizTemplateProps) {
   const COLGROUP = ['15%', '15%', '15%', '15%', '15%', '15%', '15%'];
-  const HEADS = ['퀴즈순서', '학습주차', '발행일시', '퀴즈 좋아요 수', '답변 수', '질문내용', '대표 여부'];
+  const HEADS = ['퀴즈순서', '학습주차', '퀴즈 좋아요 수', '답변 수', '발행여부', '대표여부', '발행일시'];
   const POPUP_COLGROUP = ['15%', '10%', '15%', '15%', '10%'];
   const POPUP_HEADS = ['신청자 아이디', '이름', '닉네임', '전화번호', '등록일시'];
 
@@ -87,28 +87,23 @@ export function AdminClubQuizTemplate({
   ];
 
   const FIELDS = [
-    { name: '클럽아이디', field: 'seminarId', type: 'text' },
-    { name: '클럽명', field: 'seminarTitle', type: 'text' },
-    { name: '추천직군', field: 'seminarSubTitle', type: 'text' },
-    { name: '추천직무', field: 'seminarIntroduction', type: 'text' },
-    { name: '추천레벨', field: 'description', type: 'text' },
-    { name: '설명', field: 'seminarStatus', type: 'choice' },
-    { name: '공개여부', field: 'seminarType', type: 'choice' },
-    { name: '모집회원수', field: 'organizerMemberId', type: 'text' },
-    { name: '퀴즈시작일', field: 'lecturerMemberId', type: 'text' },
-    { name: '퀴즈종료일', field: 'lecturerName', type: 'text' },
-    { name: '학습주수', field: 'recommendJobGroups', type: 'text' },
-    { name: '학습주기', field: 'recommendJobGroups', type: 'text' },
-    { name: '학습주수', field: 'recommendJobGroups', type: 'text' },
-    { name: '상태', field: 'recommendLevels', type: 'text' },
-    { name: '등록일시', field: 'keywords', type: 'text' },
+    { name: '클럽SEQ', field: 'clubId', type: 'text' },
+    { name: '퀴즈SEQ', field: 'sequence', type: 'text' },
+    { name: '퀴즈순서', field: 'order', type: 'text' },
+    { name: '학습주차', field: 'order', type: 'text' },
+    { name: '대표여부', field: 'isRepresentative', type: 'text' },
+    { name: '발행일시', field: 'publishDate', type: 'text' },
+    { name: '퀴즈좋아요 수', field: 'likeCount', type: 'text' },
+    { name: '답변 수', field: 'answerCount', type: 'text' },
+    { name: '등록일시', field: 'createdAt', type: 'text' },
   ];
 
   const { mutate: onSaveProfileImage, data: profileImage, isSuccess } = useUploadImage();
 
-  const [popupOpen, setPopupOpen] = useState<boolean>(true);
+  const [introduceEditor, setIntroduceEditor] = useState<string>('');
+  const [popupOpen, setPopupOpen] = useState<boolean>(false);
   const [isFilter, setIsFilter] = useState<boolean>(false);
-  const [club, setClub] = useState<any>({});
+  const [clubQuiz, setClubQuiz] = useState<any>({});
   const [searchKeyword, setSearchKeyword] = useState<string>('');
   const [profileImageUrl, setProfilImageUrl] = useState(null);
   const [tabValue, setTabValue] = useState<number>(1);
@@ -135,12 +130,12 @@ export function AdminClubQuizTemplate({
   });
 
   useEffect(() => {
-    clubData && setClub(clubData.data);
-  }, [clubData]);
+    clubQuizData && setClubQuiz(clubQuizData.data);
+  }, [clubQuizData]);
 
-  const onShowPopup = (clubId: string) => {
+  const onShowPopup = (clubSequence: string) => {
     // 사용자 조회
-    onClubInfo && onClubInfo(clubId);
+    onClubQuizInfo && onClubQuizInfo(clubSequence);
 
     // const result = skillsList?.data?.data?.find(item => item?.relatedJobGroups === memberData?.data?.jobGroup);
     // setContent(result);
@@ -152,16 +147,16 @@ export function AdminClubQuizTemplate({
     const data = {
       [name]: value,
     };
-    setClub({
-      ...club,
+    setClubQuiz({
+      ...clubQuiz,
       ...data,
     });
   };
 
-  const handleDelete = (clubId: string) => {
+  const handleDelete = (clubSequence: string) => {
     setPopupOpen(false);
-    setClub({});
-    onDeleteClub && onDeleteClub(clubId);
+    setClubQuiz({});
+    onDeleteClubQuiz && onDeleteClubQuiz(clubSequence);
   };
 
   const handleSearchKeyword = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -197,8 +192,8 @@ export function AdminClubQuizTemplate({
   const handleSave = (data: any) => {
     const params = {
       ...data,
-      ...club,
-      profileImageUrl: profileImage?.toString()?.slice(1) || club?.profileImageUrl,
+      ...clubQuiz,
+      profileImageUrl: profileImage?.toString()?.slice(1) || clubQuiz?.profileImageUrl,
     };
     onSave && onSave(params);
   };
@@ -222,8 +217,6 @@ export function AdminClubQuizTemplate({
     readFile(files[0]);
   };
 
-  const handleClubApply = () => {};
-
   return (
     <div className="content">
       <h2 className="tit-type1">클럽퀴즈관리</h2>
@@ -240,7 +233,7 @@ export function AdminClubQuizTemplate({
         <div className="right">
           <div className={cx('search')}>
             <div className={cx('date')}>
-              <div>
+              {/* <div>
                 <div className="inpwrap">
                   <div className="inp-tit">시작일</div>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -266,7 +259,7 @@ export function AdminClubQuizTemplate({
                     />
                   </LocalizationProvider>
                 </div>
-              </div>
+              </div> */}
             </div>
             <div className="inpwrap">
               <div className="inp search">
@@ -313,52 +306,34 @@ export function AdminClubQuizTemplate({
           name="member"
           colgroup={COLGROUP}
           heads={HEADS}
-          items={clubList?.data?.data?.contents?.map((item, index) => {
+          items={clubQuizList?.data?.data?.contents?.map((item, index) => {
             return (
-              <tr key={`tr-${index}`} onClick={() => onShowPopup(item.memberId)}>
-                <td className="magic" title={item.memberId}>
-                  {item.memberId}
+              <tr key={`tr-${index}`} onClick={() => onShowPopup(item.sequence)}>
+                <td className="magic" title={item.order}>
+                  {item.order}
                 </td>
-                <td className="magic" title={item.name}>
-                  {item.name}
+                <td className="magic" title={item.name || 0}>
+                  {item.name || 0}
                 </td>
-                <td className="magic" title={item.email}>
-                  {item.email}
+                <td className="magic" title={item.likeCount || 0}>
+                  {item.likeCount || 0}
                 </td>
-                <td className="magic" title={item.phoneNumber}>
-                  {item.phoneNumber}
+                <td className="magic" title={item.answerCount || 0}>
+                  {item.answerCount || 0}
                 </td>
-                <td className="magic" title={item.ageRange}>
-                  {item.ageRange}
+                <td className="magic" title={item.isPublished ? 'Y' : 'N'}>
+                  {item.isPublished ? 'Y' : 'N'}
                 </td>
-                <td className="magic" title={item.typeName}>
-                  {item.typeName}
+                <td className="magic" title={item.isRepresentative ? 'Y' : 'N'}>
+                  {item.isRepresentative ? 'Y' : 'N'}
                 </td>
-                <td className="magic" title={item.jobGroupName}>
-                  {item.jobGroupName}
-                </td>
-                <td className="magic" title={item.level}>
-                  {item.level}
-                </td>
-                <td className="magic" title={item.emailReceiveYn ? 'Y' : 'N'}>
-                  {item.emailReceiveYn ? 'Y' : 'N'}
-                </td>
-                <td className="magic" title={item.smsReceiveYn ? 'Y' : 'N'}>
-                  {item.smsReceiveYn ? 'Y' : 'N'}
-                </td>
-                <td className="magic" title={item.kakaoReceiveYn ? 'Y' : 'N'}>
-                  {item.kakaoReceiveYn ? 'Y' : 'N'}
-                </td>
-                <td className="magic" title={item?.authProviderName}>
-                  {item?.points}
-                </td>
-                <td className="magic" title={dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}>
-                  {dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}
+                <td className="magic" title={dayjs(item.publishDate).format('YYYY-MM-DD HH:mm:ss')}>
+                  {dayjs(item.publishDate).format('YYYY-MM-DD HH:mm:ss')}
                 </td>
               </tr>
             );
           })}
-          isEmpty={clubList?.data?.length === 0 || false}
+          isEmpty={clubQuizList?.data?.length === 0 || false}
         />
         <AdminPagination {...pageProps} />
       </div>
@@ -395,7 +370,7 @@ export function AdminClubQuizTemplate({
                     취소
                   </button>
                 ) : (
-                  <button className="btn-type1 type1" onClick={() => handleDelete(club?.memberId)}>
+                  <button className="btn-type1 type1" onClick={() => handleDelete(clubQuiz?.memberId)}>
                     삭제
                   </button>
                 )}
@@ -455,74 +430,18 @@ export function AdminClubQuizTemplate({
 
             {tabValue === 1 && popupOpen && (
               <div className="tab-content" data-id="tabLink01">
-                <div style={{ display: 'flex', justifyContent: 'center' }} className="tw-mt-10">
-                  {isEdit ? (
-                    <div className={cx('profile-image-item')}>
-                      <div className={cx('profile-image')}>
-                        <Image
-                          src={
-                            isSuccess
-                              ? profileImageUrl
-                              : club?.profileImageUrl?.indexOf('http') > -1
-                              ? club?.profileImageUrl
-                              : `${process.env['NEXT_PUBLIC_GENERAL_IMAGE_URL']}/images/${club?.profileImageUrl}`
-                          }
-                          // src={`${process.env['NEXT_PUBLIC_GENERAL_API_URL']}/images/${mentorInfo?.profileImageUrl}`}
-                          alt={`${club?.typeName} ${club?.nickname}`}
-                          className={cx('rounded-circle', 'profile-image__image')}
-                          width={`256px`}
-                          height={`256px`}
-                          objectFit="cover"
-                          unoptimized={true}
-                        />
-                      </div>
-                      <div className={cx('profile-image-item__upload-wrap')}>
-                        <Button type="button" color="secondary" disabled={!isEdit}>
-                          <label htmlFor="profile-image-item__upload">프로필 사진 수정</label>
-                          <input
-                            hidden
-                            disabled={!isEdit}
-                            id="profile-image-item__upload"
-                            accept="image/*"
-                            type="file"
-                            onChange={e => onFileChange(e.target?.files)}
-                          />
-                        </Button>
-                      </div>
-                    </div>
-                  ) : (
-                    <Profile mentorInfo={club} showDesc isOnlyImage />
-                  )}
-                </div>
                 <div className="layout-grid">
                   <div className="grid-25">
                     <div className="inpwrap">
                       <div className="inp-tit">
-                        클럽 아이디<span className="star">*</span>
-                      </div>
-                      <div className="inp">
-                        <input
-                          type="text"
-                          className="input-admin"
-                          {...methods.register('memberId')}
-                          disabled
-                          value={club?.memberId || ''}
-                          onChange={onChangeClub}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="grid-25">
-                    <div className="inpwrap">
-                      <div className="inp-tit">
-                        클럽명<span className="star">*</span>
+                        퀴즈아이디<span className="star">*</span>
                       </div>
                       <div className="inp">
                         <input
                           className="input-admin"
                           type="text"
                           {...methods.register('name')}
-                          value={club?.name || ''}
+                          value={clubQuiz?.quiz?.quizId || ''}
                           onChange={onChangeClub}
                           disabled={!isEdit}
                         />
@@ -531,13 +450,13 @@ export function AdminClubQuizTemplate({
                   </div>
                   <div className="grid-25">
                     <div className="inpwrap">
-                      <div className="inp-tit">회원UUID</div>
+                      <div className="inp-tit">회원아이디</div>
                       <div className="inp">
                         <input
                           type="text"
                           className="input-admin"
-                          {...methods.register('ageRange')}
-                          value={club?.ageRange || ''}
+                          {...methods.register('memberId')}
+                          value={clubQuiz?.quiz?.memberId || ''}
                           onChange={onChangeClub}
                           disabled={!isEdit}
                         />
@@ -546,13 +465,13 @@ export function AdminClubQuizTemplate({
                   </div>
                   <div className="grid-25">
                     <div className="inpwrap">
-                      <div className="inp-tit">모집회원 수</div>
+                      <div className="inp-tit">회원명</div>
                       <div className="inp">
                         <input
                           type="text"
                           className="input-admin"
-                          {...methods.register('ageRange')}
-                          value={club?.ageRange || ''}
+                          {...methods.register('memberName')}
+                          value={clubQuiz?.quiz?.memberName || ''}
                           onChange={onChangeClub}
                           disabled={!isEdit}
                         />
@@ -561,13 +480,13 @@ export function AdminClubQuizTemplate({
                   </div>
                   <div className="grid-25">
                     <div className="inpwrap">
-                      <div className="inp-tit">해시태그</div>
+                      <div className="inp-tit">회원닉네임</div>
                       <div className="inp">
                         <input
                           type="text"
                           className="input-admin"
-                          {...methods.register('ageRange')}
-                          value={club?.ageRange || ''}
+                          {...methods.register('memberNickname')}
+                          value={clubQuiz?.quiz?.memberNickname || ''}
                           onChange={onChangeClub}
                           disabled={!isEdit}
                         />
@@ -581,7 +500,7 @@ export function AdminClubQuizTemplate({
                         학습 주 수<span className="star">*</span>
                       </div>
                       <div className="inp">
-                        <select value={club?.type || ''} onChange={onChangeClub} name="type" disabled={!isEdit}>
+                        <select value={clubQuiz?.type || ''} onChange={onChangeClub} name="type" disabled={!isEdit}>
                           {clubCodes?.data?.contents?.map(item => (
                             <option key={item.id} value={item.id}>
                               {item.name}
@@ -591,82 +510,74 @@ export function AdminClubQuizTemplate({
                       </div>
                     </div>
                   </div>
+
                   <div className="grid-25">
                     <div className="inpwrap">
-                      <div className="inp-tit">학습 주기</div>
+                      <div className="inp-tit">활용 수</div>
                       <div className="inp">
                         <input
                           type="text"
                           className="input-admin"
-                          {...methods.register('ageRange')}
-                          value={club?.ageRange || ''}
+                          {...methods.register('activeCount')}
+                          value={clubQuiz?.quiz?.activeCount || 0}
                           onChange={onChangeClub}
                           disabled={!isEdit}
                         />
                       </div>
                     </div>
                   </div>
+
                   <div className="grid-25">
                     <div className="inpwrap">
-                      <div className="inp-tit">
-                        클럽 상태<span className="star">*</span>
-                      </div>
-                      <div className="inp">
-                        <select value={club?.jobGroup || ''} onChange={onChangeClub} name="jobGroup" disabled={!isEdit}>
-                          {jobCodes?.data?.contents?.map(item => (
-                            <option key={item.id} value={item.id}>
-                              {item.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="grid-25">
-                    <div className="inpwrap">
-                      <div className="inp-tit">
-                        공개 여부<span className="star">*</span>
-                      </div>
-                      <div className="inp">
-                        <select value={club?.jobGroup || ''} onChange={onChangeClub} name="jobGroup" disabled={!isEdit}>
-                          {jobCodes?.data?.contents?.map(item => (
-                            <option key={item.id} value={item.id}>
-                              {item.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="grid-25">
-                    <div className="inpwrap">
-                      <div className="inp-tit">참여 코드</div>
+                      <div className="inp-tit">답변 수</div>
                       <div className="inp">
                         <input
                           type="text"
                           className="input-admin"
-                          {...methods.register('ageRange')}
-                          value={club?.ageRange || ''}
+                          {...methods.register('answerCount')}
+                          value={clubQuiz?.quiz?.answerCount || 0}
                           onChange={onChangeClub}
                           disabled={!isEdit}
                         />
                       </div>
                     </div>
                   </div>
+
                   <div className="grid-25">
                     <div className="inpwrap">
-                      <div className="inp-tit">레벨</div>
+                      <div className="inp-tit">삭제 상태</div>
                       <div className="inp">
-                        <select value={club?.level || ''} onChange={onChangeClub} name="level" disabled={!isEdit}>
-                          <option value={1}>1레벨</option>
-                          <option value={2}>2레벨</option>
-                          <option value={3}>3레벨</option>
-                          <option value={4}>4레벨</option>
-                          <option value={5}>5레벨</option>
+                        <select
+                          value={clubQuiz?.quiz?.deleteStatus?.toString() || ''}
+                          onChange={onChangeClub}
+                          name="deleteStatus"
+                          disabled={!isEdit}
+                        >
+                          <option value="true">Y</option>
+                          <option value="false">N</option>
                         </select>
                       </div>
                     </div>
                   </div>
+
+                  <div className="grid-25">
+                    <div className="inpwrap">
+                      <div className="inp-tit">
+                        해시태그<span className="star">*</span>
+                      </div>
+                      <div className="inp">
+                        <input
+                          type="text"
+                          className="input-admin"
+                          {...methods.register('hashTags')}
+                          value={clubQuiz?.quiz?.hashTags || ''}
+                          onChange={onChangeClub}
+                          disabled={!isEdit}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="grid-25">
                     <div className="inpwrap">
                       <div className="inp-tit">등록일시</div>
@@ -674,27 +585,14 @@ export function AdminClubQuizTemplate({
                         <input
                           type="text"
                           className="input-admin"
-                          value={club?.createdAt || ''}
+                          value={clubQuiz?.quiz?.createdAt || ''}
                           disabled
                           onChange={onChangeClub}
                         />
                       </div>
                     </div>
                   </div>
-                  <div className="grid-25">
-                    <div className="inpwrap">
-                      <div className="inp-tit">등록자</div>
-                      <div className="inp">
-                        <input
-                          type="text"
-                          className="input-admin"
-                          value={club?.creatorId || ''}
-                          disabled
-                          onChange={onChangeClub}
-                        />
-                      </div>
-                    </div>
-                  </div>
+
                   <div className="grid-25">
                     <div className="inpwrap">
                       <div className="inp-tit">수정일시</div>
@@ -702,23 +600,45 @@ export function AdminClubQuizTemplate({
                         <input
                           type="text"
                           className="input-admin"
-                          value={club?.updatedAt || ''}
+                          value={clubQuiz?.quiz?.updatedAt || ''}
                           disabled
                           onChange={onChangeClub}
                         />
                       </div>
                     </div>
                   </div>
-                  <div className="grid-25">
+
+                  <div className="grid-100">
                     <div className="inpwrap">
-                      <div className="inp-tit">수정자</div>
+                      <div className="inp-tit">
+                        아티클URL<span className="star">*</span>
+                      </div>
                       <div className="inp">
                         <input
                           type="text"
                           className="input-admin"
-                          value={club?.updaterId || ''}
-                          disabled
+                          {...methods.register('articleUrl')}
+                          value={clubQuiz?.quiz?.articleUrl || ''}
                           onChange={onChangeClub}
+                          disabled={!isEdit}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid-100 mt-5">
+                    <div className="inpwrap">
+                      <div className="inp-tit">
+                        내용<span className="star">*</span>
+                      </div>
+                      <div className="inp">
+                        <Editor
+                          type="seminar"
+                          data={clubQuiz?.quiz?.content || ''}
+                          onChange={(event, editor) => {
+                            setIntroduceEditor(editor.getData());
+                          }}
+                          disabled={!isEdit}
                         />
                       </div>
                     </div>
@@ -736,7 +656,7 @@ export function AdminClubQuizTemplate({
                     name="seminarMember"
                     colgroup={TAB2_COLGROUP}
                     heads={TAB2_HEADS}
-                    items={clubList?.data?.data?.contents?.map((item, index) => {
+                    items={clubQuizList.data?.data?.contents?.map((item, index) => {
                       return (
                         <tr key={`participant-${index}`}>
                           <td></td>
@@ -744,7 +664,7 @@ export function AdminClubQuizTemplate({
                         </tr>
                       );
                     })}
-                    isEmpty={clubList?.length === 0 || false}
+                    isEmpty={clubQuizList.length === 0 || false}
                   />
                 </div>
               </div>
@@ -772,7 +692,7 @@ export function AdminClubQuizTemplate({
                         </tr>
                       );
                     })}
-                    isEmpty={club?.length === 0 || false}
+                    isEmpty={clubQuiz?.length === 0 || false}
                   />
                 </div>
               </div>
@@ -789,12 +709,12 @@ export function AdminClubQuizTemplate({
                     heads={TAB4_HEADS}
                     items={levelInfo?.map((item, index) => {
                       return (
-                        <tr key={`clubquiz-${index}`}>
+                        <tr key={`clubQuiz-${index}`}>
                           <td></td>
                         </tr>
                       );
                     })}
-                    isEmpty={club?.length === 0 || false}
+                    isEmpty={clubQuiz?.length === 0 || false}
                   />
                 </div>
               </div>
@@ -817,7 +737,7 @@ export function AdminClubQuizTemplate({
                         </tr>
                       );
                     })}
-                    isEmpty={club?.length === 0 || false}
+                    isEmpty={clubQuiz?.length === 0 || false}
                   />
                 </div>
               </div>
