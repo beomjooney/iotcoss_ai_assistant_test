@@ -7,9 +7,10 @@ import * as yup from 'yup';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Profile, AdminPagination, Table, SmartFilter, Button, Toggle } from '../../../stories/components';
+import { Profile, AdminPagination, Table, SmartFilter, Button, Toggle, Editor } from '../../../stories/components';
 import { TextField } from '@mui/material';
-import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { DesktopDatePicker, DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useUploadImage } from 'src/services/image/image.mutations';
 import { SearchParamsProps } from 'pages/admin/club';
@@ -21,11 +22,12 @@ interface ClubTemplateProps {
   skillsList?: any;
   experience?: any;
   jobGroup?: any;
+  jobs?: any;
   jobCodes?: any;
   clubData?: any;
   pageProps?: any;
-  onClubInfo?: (clubId: string) => void;
-  onDeleteClub?: (clubId: string) => void;
+  onClubInfo?: (clubSequence: string) => void;
+  onDeleteClub?: (clubSequence: string) => void;
   onSave?: (data: any) => void;
   onSearch?: (searchKeyword: any) => void;
   params: SearchParamsProps;
@@ -37,6 +39,7 @@ export function AdminClubTemplate({
   skillsList,
   experience,
   jobGroup,
+  jobs,
   jobCodes,
   clubData,
   pageProps,
@@ -47,10 +50,10 @@ export function AdminClubTemplate({
   onSearch,
   setParams,
 }: ClubTemplateProps) {
-  const COLGROUP = ['8%', '8%', '10%', '6%', '6%', '7%', '6%', '6%', '6%', '8%', '8%', '8%'];
+  const COLGROUP = ['17%', '10%', '12%', '7%', '7%', '6%', '4%', '6%', '6%', '6%', '6%', '8%'];
   const HEADS = [
     '클럽아이디',
-    '회원UUID',
+    '리더아이디',
     '클럽명',
     '추천직군들',
     '추천직무들',
@@ -62,6 +65,86 @@ export function AdminClubTemplate({
     '클럽상태',
     '생성일시',
   ];
+
+  const LEVELS = [
+    { level: 1, desc: '상용서비스 단위모듈 수준 개발 가능. 서비스 개발 리딩 시니어 필요' },
+    { level: 2, desc: '상용서비스 개발 1인분 가능한 사람. 소규모 서비스 독자 개발 가능' },
+    { level: 3, desc: '상용서비스 개발 리더. 담당직무분야 N명 업무가이드 및 리딩 가능' },
+    { level: 4, desc: '다수 상용서비스 개발 리더. 수십명 혹은 수백명 수준의 개발자 총괄 리더' },
+    { level: 5, desc: '본인 오픈소스/방법론 등이 범용적 사용, 수백명이상 다수 직군 리딩' },
+  ];
+
+  const dayGroup = [
+    {
+      id: 'MONDAY',
+      groupId: '0001',
+      name: '월',
+      description: '월',
+      order: 1,
+    },
+    {
+      id: 'TUESDAY',
+      groupId: '0001',
+      name: '화',
+      description: '화',
+      order: 2,
+    },
+    {
+      id: 'WEDNESDAY',
+      groupId: '0001',
+      name: '수',
+      description: '수',
+      order: 3,
+    },
+    {
+      id: 'THURSDAY',
+      groupId: '0001',
+      name: '목',
+      description: '목',
+      order: 3,
+    },
+    {
+      id: 'FRIDAY',
+      groupId: '0001',
+      name: '금',
+      description: '금',
+      order: 3,
+    },
+    {
+      id: 'SATURDAY',
+      groupId: '0001',
+      name: '토',
+      description: '토',
+      order: 4,
+    },
+    {
+      id: 'SUNDAY',
+      groupId: '0001',
+      name: '일',
+      description: '일',
+      order: 4,
+    },
+  ];
+
+  const privateGroup = [
+    {
+      id: '0100',
+      groupId: '0001',
+      name: '공개',
+      description: '공개',
+      active: true,
+      order: 1,
+    },
+    {
+      id: '0200',
+      groupId: '0001',
+      name: '비공개',
+      description: '비공개',
+      active: false,
+      order: 2,
+    },
+  ];
+
   const POPUP_COLGROUP = ['15%', '10%', '15%', '15%', '10%'];
   const POPUP_HEADS = ['신청자 아이디', '이름', '닉네임', '전화번호', '등록일시'];
 
@@ -92,18 +175,52 @@ export function AdminClubTemplate({
     { name: '등록일시', field: 'keywords', type: 'text' },
   ];
 
-  const { mutate: onSaveProfileImage, data: profileImage, isSuccess } = useUploadImage();
+  const { mutate: onSaveClubImage, data: clubImage, isSuccess } = useUploadImage();
 
-  const [popupOpen, setPopupOpen] = useState<boolean>(true);
+  const [popupOpen, setPopupOpen] = useState<boolean>(false);
   const [isFilter, setIsFilter] = useState<boolean>(false);
   const [club, setClub] = useState<any>({});
   const [searchKeyword, setSearchKeyword] = useState<string>('');
-  const [profileImageUrl, setProfilImageUrl] = useState(null);
+  const [clubImageUrl, setClubImageUrl] = useState(null);
   const [tabValue, setTabValue] = useState<number>(1);
   const [content, setContent] = useState<any>({});
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [skillIds, setSkillIds] = useState<any[]>([]);
   const [experienceIds, setExperienceIds] = useState<string[]>([]);
+  const [recommendJobGroupsIds, setrecommendJobGroupsIds] = useState<string[]>([]);
+  const [recommendJobsIds, setrecommendJobsIds] = useState<string[]>([]);
+  const [recommendLevelsIds, setrecommendLevelsIds] = useState<string[]>([]);
+  const [dayIds, setdayIds] = useState<string[]>([]);
+
+  const [tempImageUrl1, setTempImageUrl1] = useState(null);
+  const [tempImageUrl2, setTempImageUrl2] = useState(null);
+  const [tempImageUrl3, setTempImageUrl3] = useState(null);
+
+  const {
+    mutate: onSaveImage1,
+    data: imageUrl1,
+    isSuccess: imageSuccess1,
+    isLoading: imageLoading1,
+  } = useUploadImage();
+  const { mutate: onSaveImage2, data: imageUrl2, isSuccess: imageSuccess2 } = useUploadImage();
+  const { mutate: onSaveImage3, data: imageUrl3, isSuccess: imageSuccess3 } = useUploadImage();
+
+  const {
+    mutate: onSaveRegisterImage1,
+    data: registerImageUrl1,
+    isSuccess: isRegisterImageSuccess1,
+    isLoading: isRegisterImageLoading1,
+  } = useUploadImage();
+  const {
+    mutate: onSaveRegisterImage2,
+    data: registerImageUrl2,
+    isSuccess: isRegisterImageLoading2,
+  } = useUploadImage();
+  const {
+    mutate: onSaveRegisterImage3,
+    data: registerImageUrl3,
+    isSuccess: isRegisterImageLoading3,
+  } = useUploadImage();
 
   const clubSaveSchema = yup.object().shape({
     clubId: yup.string().notRequired(),
@@ -124,11 +241,26 @@ export function AdminClubTemplate({
 
   useEffect(() => {
     clubData && setClub(clubData.data);
+    if (clubData) {
+      setExperienceIds(clubData?.data?.relatedExperiences?.map((item, index) => item) || []);
+      setSkillIds(clubData?.data?.relatedSkills?.map((item, index) => item) || []);
+      setrecommendJobGroupsIds(clubData?.data?.recommendJobGroups?.map((item, index) => item) || []);
+      setrecommendJobsIds(clubData?.data?.recommendJobs?.map((item, index) => item) || []);
+      setrecommendLevelsIds(clubData?.data?.recommendLevels?.map((item, index) => item) || []);
+      setdayIds(clubData?.data?.studyCycle?.map((item, index) => item) || []);
+    } else {
+      setExperienceIds([]);
+      setSkillIds([]);
+      setrecommendJobGroupsIds([]);
+      setrecommendJobsIds([]);
+      setrecommendLevelsIds([]);
+      setdayIds([]);
+    }
   }, [clubData]);
 
-  const onShowPopup = (clubId: string) => {
+  const onShowPopup = (clubSequence: string) => {
     // 사용자 조회
-    onClubInfo && onClubInfo(clubId);
+    onClubInfo && onClubInfo(clubSequence);
 
     // const result = skillsList?.data?.data?.find(item => item?.relatedJobGroups === memberData?.data?.jobGroup);
     // setContent(result);
@@ -186,7 +318,11 @@ export function AdminClubTemplate({
     const params = {
       ...data,
       ...club,
-      profileImageUrl: profileImage?.toString()?.slice(1) || club?.profileImageUrl,
+      clubImageUrl: clubImage?.toString()?.slice(1) || club?.clubImageUrl,
+      recommendJobGroups: recommendJobGroupsIds,
+      recommendJobs: recommendJobsIds,
+      recommendLevels: recommendLevelsIds,
+      studyCycle: dayIds,
     };
     onSave && onSave(params);
   };
@@ -195,24 +331,183 @@ export function AdminClubTemplate({
     console.log(error);
   };
 
-  const readFile = file => {
-    const reader = new FileReader();
-    reader.onload = e => {
-      const image = e.target.result;
-      setProfilImageUrl(image);
-      onSaveProfileImage(file);
-    };
-    reader.readAsDataURL(file);
+  const readFile = (file, key) => {
+    if (popupOpen) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const image = e.target.result;
+        switch (key) {
+          case 'imageUrl1':
+            onSaveImage1(file);
+            setTempImageUrl1(image);
+            break;
+          case 'imageUrl2':
+            onSaveImage2(file);
+            setTempImageUrl2(image);
+            break;
+          case 'imageUrl3':
+            onSaveImage3(file);
+            setTempImageUrl3(image);
+            break;
+          default:
+            setClubImageUrl(image);
+            onSaveClubImage(file);
+            break;
+        }
+      };
+      reader.readAsDataURL(file);
+    } else {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const image = e.target.result;
+        switch (key) {
+          case 'imageUrl1':
+            onSaveRegisterImage1(file);
+            setTempImageUrl1(image);
+            break;
+          case 'imageUrl2':
+            onSaveRegisterImage2(file);
+            setTempImageUrl2(image);
+            break;
+          case 'imageUrl3':
+            onSaveRegisterImage3(file);
+            setTempImageUrl3(image);
+            break;
+          default:
+            setClubImageUrl(image);
+            onSaveClubImage(file);
+            break;
+        }
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
-  const onFileChange = files => {
+  const onFileChange = (files, key) => {
     if (!files || files.length === 0) return;
-    readFile(files[0]);
+    readFile(files[0], key);
   };
 
-  const handleClubApply = () => {};
+  const imageUploadItem = (title, key, imageUrl) => {
+    return (
+      <div className={cx('seminar-image-item')} key={key}>
+        <span className={cx('seminar-image-item__title', 'area-title')}>
+          {title} <span className={cx('seminar-image-item__star')}>*</span>
+        </span>
+        <span className={cx('seminar-image-item__file-size', 'area-desc')}>500kb 이상</span>
+        <div className={cx('seminar-image-item__upload-wrap')}>
+          {imageUrl ? <img src={imageUrl} alt={title} /> : <></>}
+          {popupOpen && !isEdit ? (
+            <Button type="button" color="secondary" disabled={!isEdit}>
+              <label htmlFor={`input-file-${key}`}>Image Upload</label>
+              <input
+                hidden
+                disabled={!isEdit}
+                id={`input-file-${key}`}
+                accept="image/*"
+                type="file"
+                onChange={e => onFileChange(e.target?.files, key)}
+              />
+            </Button>
+          ) : (
+            <Button type="button" color="secondary">
+              <label htmlFor={`input-file-${key}`}>Image Upload</label>
+              <input
+                hidden
+                id={`input-file-${key}`}
+                accept="image/*"
+                type="file"
+                onChange={e => onFileChange(e.target?.files, key)}
+              />
+            </Button>
+          )}
+        </div>
+      </div>
+    );
+  };
 
-  const clubCodes = [];
+  const onToggleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, checked } = event.currentTarget;
+
+    if (name === 'skillIds') {
+      const result = [...skillIds];
+
+      if (result.indexOf(value) > -1) {
+        result.splice(result.indexOf(value), 1);
+      } else {
+        result.push(value);
+      }
+      setSkillIds(result);
+    } else if (name === 'experienceIds') {
+      const result = [...experienceIds];
+
+      if (result.indexOf(value) > -1) {
+        result.splice(result.indexOf(value), 1);
+      } else {
+        result.push(value);
+      }
+
+      setExperienceIds(result);
+    } else if (name === 'recommendJobGroups') {
+      const result = [...recommendJobGroupsIds];
+
+      if (result.indexOf(value) > -1) {
+        result.splice(result.indexOf(value), 1);
+      } else {
+        result.push(value);
+      }
+
+      setrecommendJobGroupsIds(result);
+    } else if (name === 'recommendJobs') {
+      const result = [...recommendJobsIds];
+
+      if (result.indexOf(value) > -1) {
+        result.splice(result.indexOf(value), 1);
+      } else {
+        result.push(value);
+      }
+
+      setrecommendJobsIds(result);
+    } else if (name === 'recommendLevels') {
+      const result = [...recommendLevelsIds];
+
+      if (result.indexOf(value) > -1) {
+        result.splice(result.indexOf(value), 1);
+      } else {
+        result.push(value);
+      }
+
+      setrecommendLevelsIds(result);
+    } else if (name === 'dayIds') {
+      const result = [...dayIds];
+
+      if (result.indexOf(value) > -1) {
+        result.splice(result.indexOf(value), 1);
+      } else {
+        result.push(value);
+      }
+
+      setdayIds(result);
+    }
+  };
+
+  const clubStatusTxt = clubStatus => {
+    let clubStatusTxt;
+
+    switch (clubStatus) {
+      case '0004':
+        clubStatusTxt = '진행중';
+        break;
+      case '0005':
+        clubStatusTxt = '진행완료';
+        break;
+      default:
+        clubStatusTxt = '진행예정';
+        break;
+    }
+
+    return clubStatusTxt;
+  };
 
   return (
     <div className="content">
@@ -229,7 +524,7 @@ export function AdminClubTemplate({
         </div>
         <div className="right">
           <div className={cx('search')}>
-            <div className={cx('date')}>
+            {/* <div className={cx('date')}>
               <div>
                 <div className="inpwrap">
                   <div className="inp-tit">시작일</div>
@@ -257,7 +552,7 @@ export function AdminClubTemplate({
                   </LocalizationProvider>
                 </div>
               </div>
-            </div>
+            </div> */}
             <div className="inpwrap">
               <div className="inp search">
                 <input
@@ -305,19 +600,21 @@ export function AdminClubTemplate({
           heads={HEADS}
           items={clubList?.data?.data?.contents?.map((item, index) => {
             return (
-              <tr key={`tr-${index}`} onClick={() => onShowPopup(item.sequence)}>
+              <tr key={`tr-${index}`} onClick={() => onShowPopup(item.sequence)} style={{ textAlign: 'left' }}>
                 <td className="magic" title={item.clubId}>
                   {item.clubId}
                 </td>
-                <td className="magic" title={item.name}></td>
-                <td className="magic" title={item.name}>
+                <td className="magic" title={item.leaderNickname}>
+                  {item.leaderNickname}
+                </td>
+                <td className="magic" title={item.name} style={{ textAlign: 'left' }}>
                   {item.name}
                 </td>
                 <td className="magic" title={item.recommendJobGroupNames}>
                   {item.recommendJobGroupNames}
                 </td>
-                <td className="magic" title={item.recommendJobNames}>
-                  {item.recommendJobNames}
+                <td className="magic" title={item.recommendJobNames?.join(', ')}>
+                  {item.recommendJobNames?.join(', ')}
                 </td>
                 <td className="magic" title={item.recommendLevels}>
                   {item.recommendLevels?.length === 5 ? '모든' : item.recommendLevels?.sort().join(',') || 0}
@@ -334,7 +631,9 @@ export function AdminClubTemplate({
                 <td className="magic" title={dayjs(item.startAt).format('YYYY-MM-DD HH:mm:ss')}>
                   {dayjs(item.startAt).format('YYYY-MM-DD')}
                 </td>
-                <td className="magic" title={item.level}></td>
+                <td className="magic" title={clubStatusTxt(item.clubStatus)}>
+                  {clubStatusTxt(item.clubStatus)}
+                </td>
                 <td className="magic" title={dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}>
                   {dayjs(item.createdAt).format('YYYY-MM-DD')}
                 </td>
@@ -427,45 +726,6 @@ export function AdminClubTemplate({
 
             {tabValue === 1 && popupOpen && (
               <div className="tab-content" data-id="tabLink01">
-                <div style={{ display: 'flex', justifyContent: 'center' }} className="tw-mt-10">
-                  {isEdit ? (
-                    <div className={cx('profile-image-item')}>
-                      <div className={cx('profile-image')}>
-                        <Image
-                          src={
-                            isSuccess
-                              ? profileImageUrl
-                              : club?.profileImageUrl?.indexOf('http') > -1
-                              ? club?.profileImageUrl
-                              : `${process.env['NEXT_PUBLIC_GENERAL_IMAGE_URL']}/images/${club?.profileImageUrl}`
-                          }
-                          // src={`${process.env['NEXT_PUBLIC_GENERAL_API_URL']}/images/${mentorInfo?.profileImageUrl}`}
-                          alt={`${club?.typeName} ${club?.nickname}`}
-                          className={cx('rounded-circle', 'profile-image__image')}
-                          width={`256px`}
-                          height={`256px`}
-                          objectFit="cover"
-                          unoptimized={true}
-                        />
-                      </div>
-                      <div className={cx('profile-image-item__upload-wrap')}>
-                        <Button type="button" color="secondary" disabled={!isEdit}>
-                          <label htmlFor="profile-image-item__upload">프로필 사진 수정</label>
-                          <input
-                            hidden
-                            disabled={!isEdit}
-                            id="profile-image-item__upload"
-                            accept="image/*"
-                            type="file"
-                            onChange={e => onFileChange(e.target?.files)}
-                          />
-                        </Button>
-                      </div>
-                    </div>
-                  ) : (
-                    <Profile mentorInfo={club} showDesc isOnlyImage />
-                  )}
-                </div>
                 <div className="layout-grid">
                   <div className="grid-25">
                     <div className="inpwrap">
@@ -476,9 +736,9 @@ export function AdminClubTemplate({
                         <input
                           type="text"
                           className="input-admin"
-                          {...methods.register('memberId')}
+                          name="clubId"
                           disabled
-                          value={club?.memberId || ''}
+                          value={club?.id || ''}
                           onChange={onChangeClub}
                         />
                       </div>
@@ -487,13 +747,13 @@ export function AdminClubTemplate({
                   <div className="grid-25">
                     <div className="inpwrap">
                       <div className="inp-tit">
-                        클럽명<span className="star">*</span>
+                        클럽 명<span className="star">*</span>
                       </div>
                       <div className="inp">
                         <input
-                          className="input-admin"
                           type="text"
-                          {...methods.register('name')}
+                          className="input-admin"
+                          name="name"
                           value={club?.name || ''}
                           onChange={onChangeClub}
                           disabled={!isEdit}
@@ -503,75 +763,15 @@ export function AdminClubTemplate({
                   </div>
                   <div className="grid-25">
                     <div className="inpwrap">
-                      <div className="inp-tit">회원UUID</div>
-                      <div className="inp">
-                        <input
-                          type="text"
-                          className="input-admin"
-                          {...methods.register('ageRange')}
-                          value={club?.ageRange || ''}
-                          onChange={onChangeClub}
-                          disabled={!isEdit}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="grid-25">
-                    <div className="inpwrap">
-                      <div className="inp-tit">모집회원 수</div>
-                      <div className="inp">
-                        <input
-                          type="text"
-                          className="input-admin"
-                          {...methods.register('ageRange')}
-                          value={club?.ageRange || ''}
-                          onChange={onChangeClub}
-                          disabled={!isEdit}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="grid-25">
-                    <div className="inpwrap">
-                      <div className="inp-tit">해시태그</div>
-                      <div className="inp">
-                        <input
-                          type="text"
-                          className="input-admin"
-                          {...methods.register('ageRange')}
-                          value={club?.ageRange || ''}
-                          onChange={onChangeClub}
-                          disabled={!isEdit}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="grid-25">
-                    <div className="inpwrap">
                       <div className="inp-tit">
-                        학습 주 수<span className="star">*</span>
+                        리더 닉네임<span className="star">*</span>
                       </div>
-                      <div className="inp">
-                        <select value={club?.type || ''} onChange={onChangeClub} name="type" disabled={!isEdit}>
-                          {clubCodes?.data?.contents?.map(item => (
-                            <option key={item.id} value={item.id}>
-                              {item.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="grid-25">
-                    <div className="inpwrap">
-                      <div className="inp-tit">학습 주기</div>
                       <div className="inp">
                         <input
                           type="text"
                           className="input-admin"
-                          {...methods.register('ageRange')}
-                          value={club?.ageRange || ''}
+                          name="leaderNickname"
+                          value={club?.leaderNickname || ''}
                           onChange={onChangeClub}
                           disabled={!isEdit}
                         />
@@ -581,31 +781,32 @@ export function AdminClubTemplate({
                   <div className="grid-25">
                     <div className="inpwrap">
                       <div className="inp-tit">
-                        클럽 상태<span className="star">*</span>
+                        모집인원<span className="star">*</span>
                       </div>
                       <div className="inp">
-                        <select value={club?.jobGroup || ''} onChange={onChangeClub} name="jobGroup" disabled={!isEdit}>
-                          {jobCodes?.data?.contents?.map(item => (
-                            <option key={item.id} value={item.id}>
-                              {item.name}
-                            </option>
-                          ))}
-                        </select>
+                        <input
+                          type="text"
+                          className="input-admin"
+                          name="recruitMemberCount"
+                          value={club?.recruitMemberCount || ''}
+                          onChange={onChangeClub}
+                          disabled={!isEdit}
+                        />
                       </div>
                     </div>
                   </div>
                   <div className="grid-25">
                     <div className="inpwrap">
-                      <div className="inp-tit">
-                        공개 여부<span className="star">*</span>
-                      </div>
+                      <div className="inp-tit">공개 여부</div>
                       <div className="inp">
-                        <select value={club?.jobGroup || ''} onChange={onChangeClub} name="jobGroup" disabled={!isEdit}>
-                          {jobCodes?.data?.contents?.map(item => (
-                            <option key={item.id} value={item.id}>
-                              {item.name}
-                            </option>
-                          ))}
+                        <select
+                          value={club?.isPublic?.toString() || ''}
+                          onChange={onChangeClub}
+                          name="isPublic"
+                          disabled={!isEdit}
+                        >
+                          <option value="true">Y</option>
+                          <option value="false">N</option>
                         </select>
                       </div>
                     </div>
@@ -617,89 +818,376 @@ export function AdminClubTemplate({
                         <input
                           type="text"
                           className="input-admin"
-                          {...methods.register('ageRange')}
-                          value={club?.ageRange || ''}
+                          {...methods.register('participationCode')}
+                          value={club?.participationCode || ''}
                           onChange={onChangeClub}
                           disabled={!isEdit}
                         />
                       </div>
                     </div>
                   </div>
+
                   <div className="grid-25">
                     <div className="inpwrap">
-                      <div className="inp-tit">레벨</div>
+                      <div className="inp-tit">
+                        상태<span className="star">*</span>
+                      </div>
                       <div className="inp">
-                        <select value={club?.level || ''} onChange={onChangeClub} name="level" disabled={!isEdit}>
-                          <option value={1}>1레벨</option>
-                          <option value={2}>2레벨</option>
-                          <option value={3}>3레벨</option>
-                          <option value={4}>4레벨</option>
-                          <option value={5}>5레벨</option>
+                        <select
+                          name="clubStatus"
+                          onChange={onChangeClub}
+                          value={club?.clubStatus || ''}
+                          disabled={!isEdit}
+                        >
+                          <option value="0003">진행예정</option>
+                          <option value="0004">진행중</option>
+                          <option value="0005">진행완료</option>
                         </select>
                       </div>
                     </div>
                   </div>
+
+                  <div className="grid-100">
+                    <div className="inpwrap">
+                      <div className="inp-tit">
+                        추천직군<span className="star">*</span>
+                      </div>
+
+                      <div className="inp">
+                        <div className={cx('skill__group')}>
+                          {jobCodes?.data?.contents?.map((item, index) => {
+                            return (
+                              <Toggle
+                                key={`recommendJobGroupsIds-${index}`}
+                                label={item.name}
+                                name="recommendJobGroups"
+                                value={item.id}
+                                onChange={onToggleChange}
+                                className="mr-2 mt-2"
+                                variant="small"
+                                type="multiple"
+                                isActive
+                                isBorder
+                                checked={
+                                  !!recommendJobGroupsIds?.find(recommendJobGroups => recommendJobGroups === item.id)
+                                }
+                                disabled={!isEdit}
+                              />
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid-50 mt-3">
+                    <div className="inpwrap">
+                      <div className="inp-tit">
+                        추천직무<span className="star">*</span>
+                      </div>
+                      <div className="inp">
+                        <div className={cx('skill__group')}>
+                          {jobs?.data?.contents?.map((item, index) => {
+                            return (
+                              <Toggle
+                                key={`recommendJobsIds-${index}`}
+                                label={item.name}
+                                name="recommendJobs"
+                                value={item.id}
+                                onChange={onToggleChange}
+                                className="mr-2 mt-2"
+                                variant="small"
+                                type="multiple"
+                                isActive
+                                isBorder
+                                checked={!!recommendJobsIds?.find(recommendJobs => recommendJobs === item.id)}
+                                disabled={!isEdit}
+                              />
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid-100">
+                    <div className="inpwrap">
+                      <div className="inp-tit">
+                        추천레벨<span className="star">*</span>
+                      </div>
+                      <div className="inp">
+                        <div className={cx('skill__group')}>
+                          {LEVELS?.map((item, index) => {
+                            return (
+                              <Toggle
+                                key={`recommendLevelsIds-${index}`}
+                                label={`${item.level}레벨`}
+                                name="recommendLevels"
+                                value={item.level || ''}
+                                onChange={onToggleChange}
+                                className="mr-2 mt-2"
+                                variant="small"
+                                type="multiple"
+                                isActive
+                                isBorder
+                                checked={
+                                  !!recommendLevelsIds?.find(
+                                    recommendLevels => parseInt(recommendLevels) === item.level,
+                                  )
+                                }
+                                disabled={!isEdit}
+                              />
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid-100 mt-3">
+                    <div className="inpwrap">
+                      <div className="inp-tit">퀴즈 주기</div>
+                      <div className="inp">
+                        <div className={cx('filter-area')}>
+                          <div className={cx('skill__group')}>
+                            {dayGroup?.map((item, index) => {
+                              return (
+                                <Toggle
+                                  key={`dayIds-${index}`}
+                                  label={item.name}
+                                  name="dayIds"
+                                  value={item.id}
+                                  onChange={onToggleChange}
+                                  className="mr-2 mt-2 custom"
+                                  variant="small"
+                                  type="multiple"
+                                  isActive
+                                  isBorder
+                                  checked={!!dayIds?.find(day => day === item.id)}
+                                  disabled={!isEdit}
+                                />
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid-100 mt-3">
+                    <div className="inpwrap">
+                      <div className="inp-tit">관련 스킬들</div>
+                      <div className="inp">
+                        <div className={cx('filter-area')}>
+                          <div className={cx('skill__group')}>
+                            {skillsList?.data?.data?.map((item, index) => {
+                              return (
+                                <Toggle
+                                  key={`skillIds-${index}`}
+                                  label={item.name}
+                                  name="skillIds"
+                                  value={item.id}
+                                  onChange={onToggleChange}
+                                  className="mr-2 mt-2 custom"
+                                  variant="small"
+                                  type="multiple"
+                                  isActive
+                                  isBorder
+                                  checked={!!skillIds?.find(skill => skill === item.id)}
+                                  disabled={!isEdit}
+                                />
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid-100">
+                    <div className="inpwrap">
+                      <div className="inp-tit">관련 경험들</div>
+                      <div className="inp">
+                        <div className={cx('skill__group')}>
+                          {experience?.data?.contents?.map((item, index) => {
+                            return (
+                              <Toggle
+                                key={`experienceIds-${index}`}
+                                label={item.name}
+                                name="experienceIds"
+                                value={item.id}
+                                onChange={onToggleChange}
+                                className="mr-2 mt-2"
+                                variant="small"
+                                type="multiple"
+                                isActive
+                                isBorder
+                                checked={!!experienceIds?.find(experiences => experiences === item.name)}
+                                disabled={!isEdit}
+                              />
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="grid-25">
                     <div className="inpwrap">
-                      <div className="inp-tit">등록일시</div>
+                      <div className="inp-tit" style={{ height: 25 }}>
+                        시작 일시<span className="star">*</span>
+                      </div>
                       <div className="inp">
-                        <input
-                          type="text"
-                          className="input-admin"
-                          value={club?.createdAt || ''}
-                          disabled
-                          onChange={onChangeClub}
-                        />
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DateTimePicker
+                            format="YYYY-MM-DD"
+                            value={dayjs(club?.startAt) || ''}
+                            className={cx('basic-info-page__picker')}
+                            onChange={e => handlePickerChange(e, 'startAt')}
+                            //renderInput={params => <TextField {...params} variant="standard" />}
+                            disabled={!isEdit}
+                          />
+                        </LocalizationProvider>
                       </div>
                     </div>
                   </div>
                   <div className="grid-25">
                     <div className="inpwrap">
-                      <div className="inp-tit">등록자</div>
+                      <div className="inp-tit" style={{ height: 25 }}>
+                        종료 일시<span className="star">*</span>
+                      </div>
                       <div className="inp">
-                        <input
-                          type="text"
-                          className="input-admin"
-                          value={club?.creatorId || ''}
-                          disabled
-                          onChange={onChangeClub}
-                        />
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DateTimePicker
+                            format="YYYY-MM-DD"
+                            value={dayjs(club?.endAt) || ''}
+                            className={cx('basic-info-page__picker')}
+                            onChange={e => handlePickerChange(e, 'endAt')}
+                            //renderInput={params => <TextField {...params} variant="standard" />}
+                            disabled={!isEdit}
+                          />
+                        </LocalizationProvider>
                       </div>
                     </div>
                   </div>
+                  {/* <div className="grid-25">
+                    <div className="inpwrap">
+                      <div className="inp-tit" style={{ height: 25 }}>
+                        접수 시작 일시<span className="star">*</span>
+                      </div>
+                      <div className="inp">
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DateTimePicker
+                            format="YYYY-MM-DD HH:mm"
+                            value={dayjs(club?.seminarRegistrationStartDate) || ''}
+                            className={cx('basic-info-page__picker')}
+                            onChange={e => handlePickerChange(e, 'seminarRegistrationStartDate')}
+                            //renderInput={params => <TextField {...params} variant="standard" />}
+                            disabled={!isEdit}
+                          />
+                        </LocalizationProvider>
+                      </div>
+                    </div>
+                  </div> */}
                   <div className="grid-25">
                     <div className="inpwrap">
-                      <div className="inp-tit">수정일시</div>
+                      <div className="inp-tit" style={{ height: 25 }}>
+                        모집 종료 일시<span className="star">*</span>
+                      </div>
                       <div className="inp">
-                        <input
-                          type="text"
-                          className="input-admin"
-                          value={club?.updatedAt || ''}
-                          disabled
-                          onChange={onChangeClub}
-                        />
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DateTimePicker
+                            format="YYYY-MM-DD"
+                            value={dayjs(club?.recruitDeadlineAt) || ''}
+                            className={cx('basic-info-page__picker')}
+                            onChange={e => handlePickerChange(e, 'recruitDeadlineAt')}
+                            //renderInput={params => <TextField {...params} variant="standard" />}
+                            disabled={!isEdit}
+                          />
+                        </LocalizationProvider>
                       </div>
                     </div>
                   </div>
-                  <div className="grid-25">
+                  {/* <div className="grid-100">
                     <div className="inpwrap">
-                      <div className="inp-tit">수정자</div>
                       <div className="inp">
-                        <input
-                          type="text"
-                          className="input-admin"
-                          value={club?.updaterId || ''}
-                          disabled
-                          onChange={onChangeClub}
+                        <div className={cx('seminar-image-area')}>
+                          <div className={cx('seminar-image-area__upload')}>
+                            {imageUploadItem(
+                              '멘토님 상반신 사진',
+                              'imageUrl1',
+                              tempImageUrl1 ||
+                                `${process.env['NEXT_PUBLIC_GENERAL_IMAGE_URL']}/images/${club?.imageUrl1}`,
+                            )}
+                            {imageUploadItem(
+                              '세미나 장표 #1',
+                              'imageUrl2',
+                              tempImageUrl2 ||
+                                `${process.env['NEXT_PUBLIC_GENERAL_IMAGE_URL']}/images/${club?.imageUrl2}`,
+                            )}
+                            {imageUploadItem(
+                              '세미나 장표 #2',
+                              'imageUrl3',
+                              tempImageUrl3 ||
+                                `${process.env['NEXT_PUBLIC_GENERAL_IMAGE_URL']}/images/${club?.imageUrl3}`,
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div> */}
+                  {/* <div className="grid-100 mt-5">
+                    <div className="inpwrap">
+                      <div className="inp-tit">
+                        소개<span className="star">*</span>
+                      </div>
+                      <div className="inp">
+                        <Editor
+                          type="seminar"
+                          data={club?.seminarIntroduction || ''}
+                          onChange={(event, editor) => {
+                            setIntroduceEditor(editor.getData());
+                          }}
+                          disabled={!isEdit}
                         />
                       </div>
                     </div>
                   </div>
+                  <div className="grid-100">
+                    <div className="inpwrap">
+                      <div className="inp-tit">
+                        커리큘럼<span className="star">*</span>
+                      </div>
+                      <div className="inp">
+                        <Editor
+                          type="seminar"
+                          data={club?.seminarCurriculum || ''}
+                          onChange={(event, editor) => setCurriculumEditor(editor.getData())}
+                          disabled={!isEdit}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="grid-100">
+                    <div className="inpwrap">
+                      <div className="inp-tit">
+                        FAQ<span className="star">*</span>
+                      </div>
+                      <div className="inp">
+                        <Editor
+                          type="seminar"
+                          data={club?.seminarFaq || ''}
+                          onChange={(event, editor) => setFaqEditor(editor.getData())}
+                          disabled={!isEdit}
+                        />
+                      </div>
+                    </div>
+                  </div> */}
                 </div>
               </div>
             )}
 
-            {tabValue === 2 && popupOpen && (
+            {/* {tabValue === 2 && popupOpen && (
               <div className="tab-content" data-id="tabLink02">
                 <hr className="h40" />
                 <div className="data-type1" data-evt="table-on">
@@ -743,7 +1231,7 @@ export function AdminClubTemplate({
                   />
                 </div>
               </div>
-            )}
+            )} */}
 
             {/* 클럽회원 */}
             {tabValue === 3 && popupOpen && (

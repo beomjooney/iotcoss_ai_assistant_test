@@ -9,7 +9,7 @@ import AdminClubTemplate from '../../../src/templates/Admin/Club';
 
 import { useClub, useClubs } from '../../../src/services/club/clubs.queries';
 import { useDeleteClub, useSaveClub } from '../../../src/services/club/clubs.mutations';
-import { useJobGroups, useMemberCode, useContentTypes } from 'src/services/code/code.queries';
+import { useJobGroups, useMemberCode, useContentTypes, useJobs } from 'src/services/code/code.queries';
 
 import { useSkills } from 'src/services/admin/skill/skill.queries';
 
@@ -29,7 +29,7 @@ export function ClubPage() {
   const [page, setPage] = useState<number>(1);
   const [size, setSize] = useState<number>(15);
   const [search, setSearch] = useState<string>('');
-  const [clubId, setClubId] = useState<string>('');
+  const [clubSequence, setClubSequence] = useState<string>('');
   const [params, setParams] = useState<SearchParamsProps>({
     createdAtFrom: `${past1y?.format('YYYY-MM-DD')} 00:00:00`,
     createdAtTo: `${tomorrow.format('YYYY-MM-DD')} 00:00:00`,
@@ -38,8 +38,9 @@ export function ClubPage() {
 
   const { data: jobCodes } = useContentTypes();
   const { data: experienceData }: UseQueryResult<ExperiencesResponse> = useExperiences();
-  const { data: clubData, refetch }: UseQueryResult<any> = useClub(clubId);
+  const { data: clubData, refetch }: UseQueryResult<any> = useClub(clubSequence);
   const { data: jobGroup, isFetched: isJobGroupFetched } = useJobGroups();
+  const { data: jobs } = useJobs();
 
   const { mutate: onSave } = useSaveClub();
   const { mutate: onDelete } = useDeleteClub();
@@ -71,8 +72,8 @@ export function ClubPage() {
   // );
 
   useEffect(() => {
-    clubId && refetch();
-  }, [clubId]);
+    clubSequence && refetch();
+  }, [clubSequence]);
 
   useEffect(() => {
     if (error) {
@@ -92,8 +93,8 @@ export function ClubPage() {
     size: size,
   };
 
-  const onClubInfo = (id: string) => {
-    setClubId(id);
+  const onClubInfo = (clubSequence: string) => {
+    setClubSequence(clubSequence);
   };
 
   const onDeleteClub = (id: string) => {
@@ -131,6 +132,7 @@ export function ClubPage() {
       skillsList={skillsList}
       experience={experienceData}
       jobGroup={jobGroup}
+      jobs={jobs}
       jobCodes={jobCodes}
       clubData={clubData}
       pageProps={PAGE_PROPS}

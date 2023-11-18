@@ -5,16 +5,15 @@ export async function authCheck() {
 }
 
 export async function getClubs(params: any) {
-  const { data, headers } = await axiosGeneralAPI().get('/api/v1/clubs', { params });
+  const { data, headers } = await axiosGeneralAPI().get('/api/admin/v1/clubs', { params });
   const totalPage = Number(headers['page-count']);
   return { data: data || [], nextPage: params.page + 1, totalPage };
 }
 
 // 조회
-export async function getClubInfo(memberId: string) {
-  //   const { data } = await axiosGeneralAPI().get(`/api/internal/v1/members/${memberId}`);
-  //   return data;
-  return null;
+export async function getClubInfo(clubSequence: string) {
+  const { data } = await axiosGeneralAPI().get(`/api/admin/v1/clubs/${clubSequence}`);
+  return data;
 }
 
 // 수정
