@@ -7,7 +7,17 @@ import * as yup from 'yup';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Profile, AdminPagination, Table, SmartFilter, Button, Toggle, Editor } from '../../../stories/components';
+import {
+  Profile,
+  AdminPagination,
+  Table,
+  SmartFilter,
+  Button,
+  Toggle,
+  ResumeStory,
+  Editor,
+} from '../../../stories/components';
+import SectionHeader from '../../../stories/components/SectionHeader';
 import { TextField } from '@mui/material';
 import { DesktopDatePicker, DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
@@ -151,11 +161,11 @@ export function AdminClubTemplate({
   const TAB2_COLGROUP = ['15%', '15%', '15%', '15%', '15%', '15%'];
   const TAB2_HEADS = ['신청자ID', '이름', '닉네임', '상태', '가입신청일시', '가입승인일시'];
 
-  const TAB3_COLGROUP = ['15%', '15%', '15%', '15%', '15%', '15%'];
-  const TAB3_HEADS = ['회원ID', '회원명', '전화번호', '가입신청일시', '학습 횟수', '답변 좋아요 수'];
+  const TAB3_COLGROUP = ['10%', '10%', '5%', '7%', '8%', '8%'];
+  const TAB3_HEADS = ['회원UUID', '닉네임', '상태', '학습 횟수', '답변 좋아요 수', '가입신청일시'];
 
   const TAB4_COLGROUP = ['15%', '15%', '15%', '15%', '15%', '15%'];
-  const TAB4_HEADS = ['퀴즈순서', '학습주차', '발행일시', '퀴즈 좋아요 수', '답변 수', '대표 여부'];
+  const TAB4_HEADS = ['퀴즈순서', '퀴즈 좋아요 수', '답변 수', '발행 여부', '대표 여부', '발행일시'];
 
   const FIELDS = [
     { name: '클럽아이디', field: 'clubId', type: 'text' },
@@ -178,8 +188,11 @@ export function AdminClubTemplate({
   const { mutate: onSaveClubImage, data: clubImage, isSuccess } = useUploadImage();
 
   const [popupOpen, setPopupOpen] = useState<boolean>(false);
+  const [popupDetailOpen, setPopupDetailOpen] = useState<boolean>(false);
+  const [clubQuizIndex, setClubQuizIndex] = useState<number>(0);
   const [isFilter, setIsFilter] = useState<boolean>(false);
   const [club, setClub] = useState<any>({});
+  const [clubQuizzes, setClubQuizzes] = useState<any>({});
   const [searchKeyword, setSearchKeyword] = useState<string>('');
   const [clubImageUrl, setClubImageUrl] = useState(null);
   const [tabValue, setTabValue] = useState<number>(1);
@@ -258,6 +271,10 @@ export function AdminClubTemplate({
     }
   }, [clubData]);
 
+  useEffect(() => {
+    clubData && setClubQuizzes(clubData.data.clubQuizzes);
+  }, [clubData]);
+
   const onShowPopup = (clubSequence: string) => {
     // 사용자 조회
     onClubInfo && onClubInfo(clubSequence);
@@ -265,6 +282,11 @@ export function AdminClubTemplate({
     // const result = skillsList?.data?.data?.find(item => item?.relatedJobGroups === memberData?.data?.jobGroup);
     // setContent(result);
     setPopupOpen(true);
+  };
+
+  const onShowPopupDetail = (clubQuizIndex: number) => {
+    setClubQuizIndex(clubQuizIndex);
+    setPopupDetailOpen(true);
   };
 
   const onChangeClub = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -509,6 +531,30 @@ export function AdminClubTemplate({
     return clubStatusTxt;
   };
 
+  const clubMembersStatusTxt = clubMembersStatus => {
+    let clubMembersStatusTxt;
+
+    switch (clubMembersStatus) {
+      case '0001':
+        clubMembersStatusTxt = '승인';
+        break;
+      case '0002':
+        clubMembersStatusTxt = '거절';
+        break;
+      case '0003':
+        clubMembersStatusTxt = '강퇴';
+        break;
+      case '0009':
+        clubMembersStatusTxt = '탈퇴';
+        break;
+      default:
+        clubMembersStatusTxt = '가입신청';
+        break;
+    }
+
+    return clubMembersStatusTxt;
+  };
+
   return (
     <div className="content">
       <h2 className="tit-type1">클럽관리</h2>
@@ -689,7 +735,7 @@ export function AdminClubTemplate({
                   기본 정보
                 </a>
               </li>
-              <li className={tabValue === 2 ? 'on' : ''}>
+              {/* <li className={tabValue === 2 ? 'on' : ''}>
                 <a
                   href="#"
                   onClick={() => {
@@ -699,7 +745,7 @@ export function AdminClubTemplate({
                 >
                   클럽가입 승인/취소
                 </a>
-              </li>{' '}
+              </li>{' '} */}
               <li className={tabValue === 3 ? 'on' : ''}>
                 <a
                   href="#"
@@ -1242,15 +1288,15 @@ export function AdminClubTemplate({
                     name="seminarMember"
                     colgroup={TAB3_COLGROUP}
                     heads={TAB3_HEADS}
-                    items={levelInfo?.map((item, index) => {
+                    items={club?.clubMembers?.map((item, index) => {
                       return (
                         <tr key={`clubuser-${index}`}>
-                          <td></td>
-                          <td></td>
-                          <td></td>
+                          <td>{item.memberUUID}</td>
+                          <td>{item.nickName}</td>
+                          <td>{clubMembersStatusTxt(item.status)}</td>
+                          <td>{item.studyCount || 0}</td>
+                          <td>{item.likeReactionCount || 0}</td>
                           <td>{dayjs(item.createdAt).format('YYYY-MM-DD')}</td>
-                          <td></td>
-                          <td></td>
                         </tr>
                       );
                     })}
@@ -1269,20 +1315,165 @@ export function AdminClubTemplate({
                     name="seminarMember"
                     colgroup={TAB4_COLGROUP}
                     heads={TAB4_HEADS}
-                    items={levelInfo?.map((item, index) => {
+                    items={club?.clubQuizzes?.map((item, index) => {
                       return (
-                        <tr key={`clubquiz-${index}`}>
-                          <td></td>
-                          <td></td>
-                          <td>{dayjs(item.createdAt).format('YYYY-MM-DD')}</td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
+                        <tr key={`clubquiz-${index}`} onClick={() => onShowPopupDetail(index)}>
+                          <td>{item.order || 0}</td>
+                          <td>{item.likeCount || 0}</td>
+                          <td>{item.answerCount || 0}</td>
+                          <td>{item.isPublished ? 'Y' : 'N'}</td>
+                          <td>{item.isRepresentative ? 'Y' : 'N'}</td>
+                          <td>{dayjs(item.publishDate).format('YYYY-MM-DD')}</td>
                         </tr>
                       );
                     })}
                     isEmpty={club?.length === 0 || false}
                   />
+
+                  {popupDetailOpen && (
+                    /*
+                    clubQuizIndex
+                    */
+                    <div className="tab-content" data-id="tabLink01">
+                      <div className="layout-grid">
+                        <div className="grid-25">
+                          <div className="inpwrap">
+                            <div className="inp-tit">회원 UUID</div>
+                            <div className="inp">
+                              <input
+                                type="text"
+                                className="input-admin"
+                                name="clubId"
+                                disabled
+                                value={clubQuizzes[clubQuizIndex].quiz?.memberUUID}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="grid-25">
+                          <div className="inpwrap">
+                            <div className="inp-tit">회원 아이디</div>
+                            <div className="inp">
+                              <input
+                                type="text"
+                                className="input-admin"
+                                name="clubId"
+                                disabled
+                                value={clubQuizzes[clubQuizIndex].quiz?.memberId}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="grid-25">
+                          <div className="inpwrap">
+                            <div className="inp-tit">회원 명</div>
+                            <div className="inp">
+                              <input
+                                type="text"
+                                className="input-admin"
+                                name="clubId"
+                                disabled
+                                value={clubQuizzes[clubQuizIndex].quiz?.memberName}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="grid-25">
+                          <div className="inpwrap">
+                            <div className="inp-tit">닉네임</div>
+                            <div className="inp">
+                              <input
+                                type="text"
+                                className="input-admin"
+                                name="clubId"
+                                disabled
+                                value={clubQuizzes[clubQuizIndex].quiz?.memberNickname}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="grid-25">
+                          <div className="inpwrap">
+                            <div className="inp-tit">활용 수</div>
+                            <div className="inp">
+                              <input
+                                type="text"
+                                className="input-admin"
+                                name="clubId"
+                                disabled
+                                value={clubQuizzes[clubQuizIndex].quiz?.activeCount}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="grid-25">
+                          <div className="inpwrap">
+                            <div className="inp-tit">답변 수</div>
+                            <div className="inp">
+                              <input
+                                type="text"
+                                className="input-admin"
+                                name="clubId"
+                                disabled
+                                value={clubQuizzes[clubQuizIndex].quiz?.answerCount}
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="grid-25">
+                          <div className="inpwrap">
+                            <div className="inp-tit">등록일자</div>
+                            <div className="inp">
+                              <input
+                                type="text"
+                                className="input-admin"
+                                name="clubId"
+                                disabled
+                                value={clubQuizzes[clubQuizIndex].quiz?.createdAt}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="grid-25">
+                          <div className="inpwrap">
+                            <div className="inp-tit">수정일자</div>
+                            <div className="inp">
+                              <input
+                                type="text"
+                                className="input-admin"
+                                name="clubId"
+                                disabled
+                                value={clubQuizzes[clubQuizIndex].quiz?.updatedAt}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="grid-100">
+                          <div className="inpwrap">
+                            <div className="inp-tit">아티클URL</div>
+                            <div className="inp">
+                              <input
+                                type="text"
+                                className="input-admin"
+                                name="clubId"
+                                disabled
+                                value={clubQuizzes[clubQuizIndex].quiz?.articleUrl}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="grid-100 mt-4">
+                          <div className="inpwrap">
+                            <div className="inp-tit">내용</div>
+                            <div className="inp">
+                              <Editor type="seminar" data={clubQuizzes[clubQuizIndex].quiz?.content || ''} disabled />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
