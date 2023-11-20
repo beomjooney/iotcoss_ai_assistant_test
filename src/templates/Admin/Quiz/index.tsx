@@ -6,6 +6,8 @@ import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import dayjs from 'dayjs';
 import Image from 'next/image';
+import moment from 'moment';
+
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Profile, AdminPagination, Table, SmartFilter, Button, Toggle, Editor } from '../../../stories/components';
 import { TextField } from '@mui/material';
@@ -28,6 +30,7 @@ interface QuizTemplateProps {
   onQuizInfo?: (quizId: string) => void;
   onDeleteQuiz?: (quizId: string) => void;
   onSave?: (data: any) => void;
+  onAdd?: (data: any) => void;
   onSearch?: (keyword: any) => void;
   params: SearchParamsProps;
   setParams: React.Dispatch<React.SetStateAction<SearchParamsProps>>;
@@ -46,6 +49,7 @@ export function QuizTemplate({
   onQuizInfo,
   onDeleteQuiz,
   onSave,
+  onAdd,
   onSearch,
   setParams,
 }: QuizTemplateProps) {
@@ -102,6 +106,8 @@ export function QuizTemplate({
   const [recommendJobGroupsIds, setrecommendJobGroupsIds] = useState<string[]>([]);
   const [recommendJobsIds, setrecommendJobsIds] = useState<string[]>([]);
   const [recommendLevelsIds, setrecommendLevelsIds] = useState<string[]>([]);
+  const [isRegisterPopupOpen, setIsRegisterPopupOpen] = useState<boolean>(false);
+  const [regitserValues, setRegisterValues] = useState<any>({});
 
   // TODO : 밸리데이션 추가 해야 함
   const quizSaveSchema = yup.object().shape({
@@ -123,8 +129,8 @@ export function QuizTemplate({
   useEffect(() => {
     quizData && setQuiz(quizData.data);
     if (quizData) {
-      setExperienceIds(quizData?.data?.customExperiences?.map((item, index) => item) || []);
-      setSkillIds(quizData?.data?.customSkills?.map((item, index) => item) || []);
+      setExperienceIds(quizData?.data?.relatedExperiences?.map((item, index) => item) || []);
+      setSkillIds(quizData?.data?.relatedSkills?.map((item, index) => item) || []);
       setrecommendJobGroupsIds(quizData?.data?.recommendJobGroups?.map((item, index) => item) || []);
       setrecommendJobsIds(quizData?.data?.recommendJobs?.map((item, index) => item) || []);
       setrecommendLevelsIds(quizData?.data?.recommendLevels?.map((item, index) => item) || []);
@@ -142,9 +148,9 @@ export function QuizTemplate({
   // }, [quizData]);
 
   const onShowPopup = (quizId: string) => {
-    // 조회
     onQuizInfo && onQuizInfo(quizId);
     setPopupOpen(true);
+    setIsRegisterPopupOpen(false);
   };
 
   const onChangeQuiz = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -197,6 +203,8 @@ export function QuizTemplate({
       recommendJobGroups: recommendJobGroupsIds,
       recommendJobs: recommendJobsIds,
       recommendLevels: recommendLevelsIds,
+      relatedExperiences: experienceIds,
+      relatedSkills: skillIds,
     };
 
     onSave && onSave(params);
@@ -276,6 +284,65 @@ export function QuizTemplate({
     }
   };
 
+  const handleRegister = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = event.currentTarget;
+    const data = {
+      [name]: value,
+    };
+    setRegisterValues({
+      ...regitserValues,
+      ...data,
+    });
+  };
+
+  const onShowUpRegisterPopUp = event => {
+    setPopupOpen(false);
+    setIsRegisterPopupOpen(true);
+  };
+
+  const closeRegisterPopup = () => {
+    setRegisterValues({});
+    setIntroduceEditor('');
+    setIsRegisterPopupOpen(false);
+  };
+
+  const handleOnAdd = () => {
+    let params = { ...regitserValues };
+    //const registDate = moment().format('YYYY-MM-DD hh:mm');
+
+    params = {
+      ...regitserValues,
+      recommendJobGroups: recommendJobGroupsIds,
+      recommendJobs: recommendJobsIds,
+      recommendLevels: recommendLevelsIds,
+      relatedSkills: skillIds,
+      relatedExperiences: experienceIds,
+      //registDate: `${registDate}:00.000`,
+    };
+
+    if (params.content.length === 0) {
+      alert('질문을 입력해주세요.');
+      return;
+    }
+
+    if (params.articleUrl.length === 0) {
+      alert('아티클URL을 입력해주세요.');
+      return;
+    }
+
+    if (params.recommendJobs.length === 0) {
+      alert('추천 직무를 선택해주세요.');
+      return;
+    }
+
+    if (params.recommendLevels.length === 0) {
+      alert('추천 레벨을 선택해주세요.');
+      return;
+    }
+
+    onAdd && onAdd(params);
+  };
+
   return (
     <div className="content">
       <h2 className="tit-type1">퀴즈관리</h2>
@@ -285,13 +352,13 @@ export function QuizTemplate({
 
       <div className="data-top">
         <div className="left">
-          {/*<a href="#" className="btn-type1 type1">*/}
-          {/*  등록*/}
-          {/*</a>*/}
+          <button className="btn-type1 type1" onClick={event => onShowUpRegisterPopUp(event)}>
+            등록
+          </button>
         </div>
         <div className="right">
           <div className={cx('search')}>
-            <div className={cx('date')}>
+            {/* <div className={cx('date')}>
               <div>
                 <div className="inpwrap">
                   <div className="inp-tit">시작일</div>
@@ -319,7 +386,7 @@ export function QuizTemplate({
                   </LocalizationProvider>
                 </div>
               </div>
-            </div>
+            </div> */}
             <div className="inpwrap">
               <div className="inp search">
                 <input
@@ -451,9 +518,7 @@ export function QuizTemplate({
               <div className="layout-grid">
                 <div className="grid-25">
                   <div className="inpwrap">
-                    <div className="inp-tit">
-                      회원 아이디<span className="star">*</span>
-                    </div>
+                    <div className="inp-tit">회원 아이디</div>
                     <div className="inp">
                       <input
                         type="text"
@@ -468,9 +533,7 @@ export function QuizTemplate({
                 </div>
                 <div className="grid-25">
                   <div className="inpwrap">
-                    <div className="inp-tit">
-                      회원명<span className="star">*</span>
-                    </div>
+                    <div className="inp-tit">회원명</div>
                     <div className="inp">
                       <input
                         className="input-admin"
@@ -494,21 +557,6 @@ export function QuizTemplate({
                         value={quiz?.memberNickname}
                         onChange={onChangeQuiz}
                         disabled
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit">아티클URL</div>
-                    <div className="inp">
-                      <input
-                        className="input-admin"
-                        type="text"
-                        {...methods.register('articleUrl')}
-                        value={quiz?.articleUrl || ''}
-                        onChange={onChangeQuiz}
-                        disabled={!isEdit}
                       />
                     </div>
                   </div>
@@ -545,9 +593,7 @@ export function QuizTemplate({
                 </div>
                 <div className="grid-25">
                   <div className="inpwrap">
-                    <div className="inp-tit">
-                      키워드(해시태그)<span className="star">*</span>
-                    </div>
+                    <div className="inp-tit">키워드(해시태그)</div>
                     <div className="inp">
                       <input
                         type="text"
@@ -592,6 +638,42 @@ export function QuizTemplate({
                 <div className="grid-100">
                   <div className="inpwrap">
                     <div className="inp-tit">
+                      질문<span className="star">*</span>
+                    </div>
+                    <div className="inp">
+                      <input
+                        className="input-admin"
+                        type="text"
+                        {...methods.register('content')}
+                        value={quiz?.content || ''}
+                        onChange={onChangeQuiz}
+                        disabled={!isEdit}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid-100">
+                  <div className="inpwrap">
+                    <div className="inp-tit">
+                      아티클URL<span className="star">*</span>
+                    </div>
+                    <div className="inp">
+                      <input
+                        className="input-admin"
+                        type="text"
+                        {...methods.register('articleUrl')}
+                        value={quiz?.articleUrl || ''}
+                        onChange={onChangeQuiz}
+                        disabled={!isEdit}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid-100">
+                  <div className="inpwrap">
+                    <div className="inp-tit">
                       추천직군<span className="star">*</span>
                     </div>
 
@@ -619,24 +701,6 @@ export function QuizTemplate({
                         })}
                       </div>
                     </div>
-
-                    {/* <div className="inp">
-                      {jobCodes?.data?.contents?.map(item => (
-                        <span key={item.id} className={cx('col-md-2', 'pl-0')}>
-                          <Toggle
-                            isActive
-                            label={item.name}
-                            name="recommendJobGroups"
-                            type="checkBox"
-                            value={item.id || ''}
-                            checked={quiz?.recommendJobGroups?.includes(item.id) || false}
-                            //onChange={e => handleCheckboxChange(e, 'recommendJobGroups')}
-                            onChange={onToggleChange}
-                            disabled={!isEdit}
-                          />
-                        </span>
-                      ))}
-                    </div> */}
                   </div>
                 </div>
                 <div className="grid-50 mt-3">
@@ -666,34 +730,6 @@ export function QuizTemplate({
                         })}
                       </div>
                     </div>
-                    {/* <div className="inp">
-                      {jobs?.data?.contents?.map(item => {
-                        let isIncludeContent = false;
-                        if (quiz?.recommendJobs?.includes(item.id)) {
-                          isIncludeContent = true;
-                        }
-                        return (
-                          <span
-                            key={item.id}
-                            className={cx('seminar-level-area__item', 'check-area__item', 'col-md-2')}
-                          >
-                            <Toggle
-                              isActive
-                              label={item.name}
-                              name="recommendJobs"
-                              type="checkBox"
-                              checked={isIncludeContent}
-                              value={item.id}
-                              key={item.id}
-                              className={cx('fixed-width')}
-                              disabled={!isEdit}
-                              //onChange={e => handleCheckboxChange(e, 'recommendJobs')}
-                              onChange={onToggleChange}
-                            />
-                          </span>
-                        );
-                      })}
-                    </div> */}
                   </div>
                 </div>
                 <div className="grid-100">
@@ -726,27 +762,67 @@ export function QuizTemplate({
                       </div>
                     </div>
 
-                    {/* <div className="inp">
-                      {LEVELS.map(item => (
-                        <span key={item.level} className={cx('col-md-2', 'pl-0')}>
-                          <Toggle
-                            isActive
-                            label={`${item.level}레벨`}
-                            name="recommendLevels"
-                            type="checkBox"
-                            value={item.level || ''}
-                            checked={quiz?.recommendLevels?.includes(item.level) || false}
-                            //onChange={e => handleCheckboxChange(e, 'recommendLevels')}
-                            onChange={onToggleChange}
-                            disabled={!isEdit}
-                          />
-                        </span>
-                      ))}
-                    </div> */}
+                    <div className="grid-100 mt-3">
+                      <div className="inpwrap">
+                        <div className="inp-tit">관련 스킬</div>
+                        <div className="inp">
+                          <div className={cx('filter-area')}>
+                            <div className={cx('skill__group')}>
+                              {skillsList?.data?.data?.map((item, index) => {
+                                return (
+                                  <Toggle
+                                    key={`skillIds-${index}`}
+                                    label={item.name}
+                                    name="skillIds"
+                                    value={item.id}
+                                    onChange={onToggleChange}
+                                    className="mr-2 mt-2 custom"
+                                    variant="small"
+                                    type="multiple"
+                                    isActive
+                                    isBorder
+                                    checked={!!skillIds?.find(skill => skill === item.id)}
+                                    disabled={!isEdit}
+                                  />
+                                );
+                              })}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid-100 mt-3">
+                      <div className="inpwrap">
+                        <div className="inp-tit">관련 경험</div>
+                        <div className="inp">
+                          <div className={cx('skill__group')}>
+                            {experience?.data?.contents?.map((item, index) => {
+                              return (
+                                <Toggle
+                                  key={`experienceIds-${index}`}
+                                  label={item.name}
+                                  name="experienceIds"
+                                  value={item.name}
+                                  onChange={onToggleChange}
+                                  className="mr-2 mt-2"
+                                  variant="small"
+                                  type="multiple"
+                                  isActive
+                                  isBorder
+                                  checked={!!experienceIds?.find(experiences => experiences === item.name)}
+                                  disabled={!isEdit}
+                                />
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                <div className="grid-100 mt-5">
+                {/* <div className="grid-100 mt-4">
                   <div className="inpwrap">
                     <div className="inp-tit">
                       내용<span className="star">*</span>
@@ -762,12 +838,223 @@ export function QuizTemplate({
                       />
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
         </FormProvider>
       </div>
+
+      {isRegisterPopupOpen && (
+        <div className={cx('side-layer', isRegisterPopupOpen ? 'open' : '')} id="sidePop2">
+          <div className="dim"></div>
+          <div className="side-contents">
+            <div className="layer-top">
+              <div className="left" style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{ fontSize: 30, marginRight: 30 }}>
+                  <button onClick={() => closeRegisterPopup()}>
+                    <i className="ico i-x"></i>
+                  </button>
+                </div>
+                <div className="tit-type2">퀴즈 등록</div>
+              </div>
+              <div className="right">
+                <button className="btn-type1 type2" onClick={handleOnAdd}>
+                  저장
+                </button>
+              </div>
+            </div>
+            <div className="tab-content" data-id="tabLink01">
+              <div className="layout-grid">
+                <div className="grid-100">
+                  <div className="inpwrap">
+                    <div className="inp-tit">
+                      질문<span className="star">*</span>
+                    </div>
+                    <div className="inp">
+                      <input
+                        type="text"
+                        className="input-admin"
+                        name="content"
+                        value={regitserValues?.content || ''}
+                        onChange={handleRegister}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid-100">
+                  <div className="inpwrap">
+                    <div className="inp-tit">
+                      아티클URL<span className="star">*</span>
+                    </div>
+                    <div className="inp">
+                      <input
+                        type="text"
+                        className="input-admin"
+                        name="articleUrl"
+                        value={regitserValues?.articleUrl || ''}
+                        onChange={handleRegister}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid-100">
+                  <div className="inpwrap">
+                    <div className="inp-tit">
+                      추천직군<span className="star">*</span>
+                    </div>
+
+                    <div className="inp">
+                      <div className={cx('skill__group')}>
+                        {jobCodes?.data?.contents?.map((item, index) => {
+                          return (
+                            <Toggle
+                              key={`recommendJobGroupsIds-${index}`}
+                              label={item.name}
+                              name="recommendJobGroups"
+                              value={item.id}
+                              onChange={onToggleChange}
+                              className="mr-2 mt-2"
+                              variant="small"
+                              type="multiple"
+                              isActive
+                              isBorder
+                            />
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="grid-50 mt-3">
+                  <div className="inpwrap">
+                    <div className="inp-tit">
+                      추천직무<span className="star">*</span>
+                    </div>
+                    <div className="inp">
+                      <div className={cx('skill__group')}>
+                        {jobs?.data?.contents?.map((item, index) => {
+                          return (
+                            <Toggle
+                              key={`recommendJobsIds-${index}`}
+                              label={item.name}
+                              name="recommendJobs"
+                              value={item.id}
+                              onChange={onToggleChange}
+                              className="mr-2 mt-2"
+                              variant="small"
+                              type="multiple"
+                              isActive
+                              isBorder
+                            />
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="grid-100">
+                  <div className="inpwrap">
+                    <div className="inp-tit">
+                      추천레벨<span className="star">*</span>
+                    </div>
+                    <div className="inp">
+                      <div className={cx('skill__group')}>
+                        {LEVELS?.map((item, index) => {
+                          return (
+                            <Toggle
+                              key={`recommendLevelsIds-${index}`}
+                              label={`${item.level}레벨`}
+                              name="recommendLevels"
+                              value={item.level || ''}
+                              onChange={onToggleChange}
+                              className="mr-2 mt-2"
+                              variant="small"
+                              type="multiple"
+                              isActive
+                              isBorder
+                            />
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    <div className="grid-100 mt-3">
+                      <div className="inpwrap">
+                        <div className="inp-tit">관련 스킬</div>
+                        <div className="inp">
+                          <div className={cx('filter-area')}>
+                            <div className={cx('skill__group')}>
+                              {skillsList?.data?.data?.map((item, index) => {
+                                return (
+                                  <Toggle
+                                    key={`skillIds-${index}`}
+                                    label={item.name}
+                                    name="skillIds"
+                                    value={item.id}
+                                    onChange={onToggleChange}
+                                    className="mr-2 mt-2 custom"
+                                    variant="small"
+                                    type="multiple"
+                                    isActive
+                                    isBorder
+                                  />
+                                );
+                              })}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid-100 mt-3">
+                      <div className="inpwrap">
+                        <div className="inp-tit">관련 경험</div>
+                        <div className="inp">
+                          <div className={cx('skill__group')}>
+                            {experience?.data?.contents?.map((item, index) => {
+                              return (
+                                <Toggle
+                                  key={`experienceIds-${index}`}
+                                  label={item.name}
+                                  name="experienceIds"
+                                  value={item.name}
+                                  onChange={onToggleChange}
+                                  className="mr-2 mt-2"
+                                  variant="small"
+                                  type="multiple"
+                                  isActive
+                                  isBorder
+                                />
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid-100 mt-4">
+                      <div className="inpwrap">
+                        <div className="inp-tit">키워드(해시태그)</div>
+                        <div className="inp">
+                          <input
+                            type="text"
+                            className="input-admin"
+                            name="hashTags"
+                            value={regitserValues?.hashTags || ''}
+                            onChange={handleRegister}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

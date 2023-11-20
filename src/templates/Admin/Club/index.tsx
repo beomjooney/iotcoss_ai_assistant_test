@@ -168,21 +168,17 @@ export function AdminClubTemplate({
   const TAB4_HEADS = ['퀴즈순서', '퀴즈 좋아요 수', '답변 수', '발행 여부', '대표 여부', '발행일시'];
 
   const FIELDS = [
-    { name: '클럽아이디', field: 'clubId', type: 'text' },
-    { name: '클럽명', field: 'clubName', type: 'text' },
-    { name: '추천직군', field: 'seminarSubTitle', type: 'text' },
-    { name: '추천직무', field: 'seminarIntroduction', type: 'text' },
-    { name: '추천레벨', field: 'description', type: 'choice' },
-    { name: '설명', field: 'seminarStatus', type: 'text' },
-    { name: '공개여부', field: 'seminarType', type: 'choice' },
-    { name: '모집회원수', field: 'organizerMemberId', type: 'text' },
-    { name: '퀴즈시작일', field: 'lecturerMemberId', type: 'text' },
-    { name: '퀴즈종료일', field: 'lecturerName', type: 'text' },
-    { name: '학습주수', field: 'recommendJobGroups', type: 'text' },
-    { name: '학습주기', field: 'recommendJobGroups', type: 'text' },
-    { name: '학습주수', field: 'recommendJobGroups', type: 'text' },
-    { name: '상태', field: 'recommendLevels', type: 'choice' },
-    { name: '등록일시', field: 'keywords', type: 'text' },
+    { name: '클럽아이디', field: 'id', type: 'text' },
+    { name: '클럽명', field: 'name', type: 'text' },
+    { name: '추천직군', field: 'recommendJobGroups', type: 'text' },
+    { name: '추천직무', field: 'recommendJobs', type: 'text' },
+    { name: '추천레벨', field: 'recommendLevels', type: 'text' },
+    { name: '공개여부', field: 'isPublic', type: 'text' },
+    { name: '모집회원수', field: 'recruitMemberCount', type: 'text' },
+    { name: '모집된 회원수', field: 'studyCount', type: 'text' },
+    { name: '퀴즈시작일', field: 'startAtTo', type: 'text' },
+    { name: '상태', field: 'clubStatus', type: 'text' },
+    { name: '등록일시', field: 'createdAtTo', type: 'text' },
   ];
 
   const { mutate: onSaveClubImage, data: clubImage, isSuccess } = useUploadImage();

@@ -21,5 +21,8 @@ export async function getQuizInfo(sequence: string) {
 export const saveQuiz = async (sequence: string, body) =>
   await axiosGeneralAPI().put(`/api/admin/v1/quizzes/${sequence}`, body);
 
+// 등록
+export const addQuiz = async (params: any) => await axiosGeneralAPI().post('/api/admin/v1/quizzes', params);
+
 // 삭제
 export const deleteQuiz = async quizId => await axiosGeneralAPI().delete(`/api/admin/v1/quizzes/`);

@@ -71,8 +71,6 @@ export function MembersPage() {
   //   }),
   // );
 
-  console.log(memberList);
-
   useEffect(() => {
     memberId && refetch();
   }, [memberId]);
