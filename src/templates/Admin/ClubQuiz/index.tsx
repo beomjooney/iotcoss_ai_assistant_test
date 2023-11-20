@@ -90,7 +90,7 @@ export function AdminClubQuizTemplate({
     { name: '클럽SEQ', field: 'clubId', type: 'text' },
     { name: '퀴즈SEQ', field: 'sequence', type: 'text' },
     { name: '퀴즈순서', field: 'order', type: 'text' },
-    { name: '학습주차', field: 'order', type: 'text' },
+    { name: '학습주차', field: 'weekNumber', type: 'text' },
     { name: '대표여부', field: 'isRepresentative', type: 'text' },
     { name: '발행일시', field: 'publishDate', type: 'text' },
     { name: '퀴즈좋아요 수', field: 'likeCount', type: 'text' },
@@ -312,8 +312,8 @@ export function AdminClubQuizTemplate({
                 <td className="magic" title={item.order}>
                   {item.order}
                 </td>
-                <td className="magic" title={item.name || 0}>
-                  {item.name || 0}
+                <td className="magic" title={item.weekNumber || 0}>
+                  {item.weekNumber || 0}
                 </td>
                 <td className="magic" title={item.likeCount || 0}>
                   {item.likeCount || 0}
