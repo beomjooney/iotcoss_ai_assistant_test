@@ -320,22 +320,22 @@ export function QuizTemplate({
       //registDate: `${registDate}:00.000`,
     };
 
-    if (params.content.length === 0) {
+    if (params.content === undefined || params.content?.length === 0) {
       alert('질문을 입력해주세요.');
       return;
     }
 
-    if (params.articleUrl.length === 0) {
+    if (params.articleUrl === undefined || params.articleUrl?.length === 0) {
       alert('아티클URL을 입력해주세요.');
       return;
     }
 
-    if (params.recommendJobs.length === 0) {
+    if (params.recommendJobs?.length === 0) {
       alert('추천 직무를 선택해주세요.');
       return;
     }
 
-    if (params.recommendLevels.length === 0) {
+    if (params.recommendLevels?.length === 0) {
       alert('추천 레벨을 선택해주세요.');
       return;
     }
