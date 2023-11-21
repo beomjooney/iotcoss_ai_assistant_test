@@ -183,6 +183,7 @@ export function AdminClubTemplate({
 
   const { mutate: onSaveClubImage, data: clubImage, isSuccess } = useUploadImage();
 
+  const [introduceEditor, setIntroduceEditor] = useState<string>('');
   const [popupOpen, setPopupOpen] = useState<boolean>(false);
   const [popupDetailOpen, setPopupDetailOpen] = useState<boolean>(false);
   const [clubQuizIndex, setClubQuizIndex] = useState<number>(0);
@@ -341,7 +342,9 @@ export function AdminClubTemplate({
       recommendJobs: recommendJobsIds,
       recommendLevels: recommendLevelsIds,
       studyCycle: dayIds,
+      description: introduceEditor,
     };
+
     onSave && onSave(params);
   };
 
@@ -1074,6 +1077,24 @@ export function AdminClubTemplate({
                     </div>
                   </div>
 
+                  <div className="grid-100 mt-5">
+                    <div className="inpwrap">
+                      <div className="inp-tit">
+                        클럽 소개<span className="star">*</span>
+                      </div>
+                      <div className="inp">
+                        <Editor
+                          type="seminar"
+                          data={club?.description || ''}
+                          onChange={(event, editor) => {
+                            setIntroduceEditor(editor.getData());
+                          }}
+                          disabled={!isEdit}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="grid-25">
                     <div className="inpwrap">
                       <div className="inp-tit" style={{ height: 25 }}>
@@ -1390,6 +1411,20 @@ export function AdminClubTemplate({
                         </div>
                         <div className="grid-25">
                           <div className="inpwrap">
+                            <div className="inp-tit">퀴즈 순서</div>
+                            <div className="inp">
+                              <input
+                                type="text"
+                                className="input-admin"
+                                name="order"
+                                disabled
+                                value={clubQuizzes[clubQuizIndex].order}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="grid-25">
+                          <div className="inpwrap">
                             <div className="inp-tit">활용 수</div>
                             <div className="inp">
                               <input
@@ -1413,6 +1448,22 @@ export function AdminClubTemplate({
                                 disabled
                                 value={clubQuizzes[clubQuizIndex].quiz?.answerCount}
                               />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="grid-25">
+                          <div className="inpwrap">
+                            <div className="inp-tit">대표 여부</div>
+                            <div className="inp">
+                              <select
+                                value={clubQuizzes[clubQuizIndex].isRepresentative?.toString() || ''}
+                                onChange={onChangeClub}
+                                name="isRepresentative"
+                                disabled={!isEdit}
+                              >
+                                <option value="true">Y</option>
+                                <option value="false">N</option>
+                              </select>
                             </div>
                           </div>
                         </div>
@@ -1447,6 +1498,20 @@ export function AdminClubTemplate({
                         </div>
                         <div className="grid-100">
                           <div className="inpwrap">
+                            <div className="inp-tit">질문</div>
+                            <div className="inp">
+                              <input
+                                type="text"
+                                className="input-admin"
+                                name="clubId"
+                                disabled
+                                value={clubQuizzes[clubQuizIndex].quiz?.content}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="grid-100">
+                          <div className="inpwrap">
                             <div className="inp-tit">아티클URL</div>
                             <div className="inp">
                               <input
@@ -1459,14 +1524,14 @@ export function AdminClubTemplate({
                             </div>
                           </div>
                         </div>
-                        <div className="grid-100 mt-4">
+                        {/* <div className="grid-100 mt-4">
                           <div className="inpwrap">
                             <div className="inp-tit">내용</div>
                             <div className="inp">
                               <Editor type="seminar" data={clubQuizzes[clubQuizIndex].quiz?.content || ''} disabled />
                             </div>
                           </div>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   )}

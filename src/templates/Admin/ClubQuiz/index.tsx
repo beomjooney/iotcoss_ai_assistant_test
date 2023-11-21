@@ -110,8 +110,6 @@ export function AdminClubQuizTemplate({
   const [content, setContent] = useState<any>({});
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
-  const clubCodes = [];
-
   const memberSaveSchema = yup.object().shape({
     memberId: yup.string().notRequired(),
     name: yup.string().notRequired(),
@@ -443,7 +441,7 @@ export function AdminClubQuizTemplate({
                           {...methods.register('name')}
                           value={clubQuiz?.quiz?.quizId || ''}
                           onChange={onChangeClub}
-                          disabled={!isEdit}
+                          disabled
                         />
                       </div>
                     </div>
@@ -458,7 +456,7 @@ export function AdminClubQuizTemplate({
                           {...methods.register('memberId')}
                           value={clubQuiz?.quiz?.memberId || ''}
                           onChange={onChangeClub}
-                          disabled={!isEdit}
+                          disabled
                         />
                       </div>
                     </div>
@@ -496,6 +494,22 @@ export function AdminClubQuizTemplate({
 
                   <div className="grid-25">
                     <div className="inpwrap">
+                      <div className="inp-tit">학습 주 수</div>
+                      <div className="inp">
+                        <input
+                          type="text"
+                          className="input-admin"
+                          {...methods.register('weekNumber')}
+                          value={clubQuiz?.weekNumber || ''}
+                          onChange={onChangeClub}
+                          disabled={!isEdit}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* <div className="grid-25">
+                    <div className="inpwrap">
                       <div className="inp-tit">
                         학습 주 수<span className="star">*</span>
                       </div>
@@ -507,6 +521,21 @@ export function AdminClubQuizTemplate({
                             </option>
                           ))}
                         </select>
+                      </div>
+                    </div>
+                  </div> */}
+                  <div className="grid-25">
+                    <div className="inpwrap">
+                      <div className="inp-tit">좋아요 수</div>
+                      <div className="inp">
+                        <input
+                          type="text"
+                          className="input-admin"
+                          {...methods.register('likeCount')}
+                          value={clubQuiz?.likeCount || 0}
+                          onChange={onChangeClub}
+                          disabled
+                        />
                       </div>
                     </div>
                   </div>
@@ -521,7 +550,7 @@ export function AdminClubQuizTemplate({
                           {...methods.register('activeCount')}
                           value={clubQuiz?.quiz?.activeCount || 0}
                           onChange={onChangeClub}
-                          disabled={!isEdit}
+                          disabled
                         />
                       </div>
                     </div>
@@ -535,9 +564,9 @@ export function AdminClubQuizTemplate({
                           type="text"
                           className="input-admin"
                           {...methods.register('answerCount')}
-                          value={clubQuiz?.quiz?.answerCount || 0}
+                          value={clubQuiz?.answerCount || 0}
                           onChange={onChangeClub}
-                          disabled={!isEdit}
+                          disabled
                         />
                       </div>
                     </div>
@@ -611,6 +640,24 @@ export function AdminClubQuizTemplate({
                   <div className="grid-100">
                     <div className="inpwrap">
                       <div className="inp-tit">
+                        질문<span className="star">*</span>
+                      </div>
+                      <div className="inp">
+                        <input
+                          type="text"
+                          className="input-admin"
+                          {...methods.register('content')}
+                          value={clubQuiz?.quiz?.content || ''}
+                          onChange={onChangeClub}
+                          disabled={!isEdit}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid-100">
+                    <div className="inpwrap">
+                      <div className="inp-tit">
                         아티클URL<span className="star">*</span>
                       </div>
                       <div className="inp">
@@ -626,7 +673,7 @@ export function AdminClubQuizTemplate({
                     </div>
                   </div>
 
-                  <div className="grid-100 mt-5">
+                  {/* <div className="grid-100 mt-5">
                     <div className="inpwrap">
                       <div className="inp-tit">
                         내용<span className="star">*</span>
@@ -642,7 +689,7 @@ export function AdminClubQuizTemplate({
                         />
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             )}
