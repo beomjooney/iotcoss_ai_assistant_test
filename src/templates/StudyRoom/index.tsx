@@ -58,7 +58,7 @@ import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 const studyStatus = [
   {
     id: '0001',
-    name: '학습 예정',
+    name: '학습예정',
   },
   {
     id: '0002',
@@ -66,7 +66,7 @@ const studyStatus = [
   },
   {
     id: '0003',
-    name: '학습 완료',
+    name: '학습완료',
   },
 ];
 

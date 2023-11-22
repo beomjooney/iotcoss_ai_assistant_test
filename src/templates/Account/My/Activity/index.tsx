@@ -36,18 +36,20 @@ export function MyActivityTemplate() {
               <div className="tw-grid tw-grid-cols-3 tw-gap-0 tw-p-5 border tw-flex tw-items-center tw-justify-between">
                 <div className="tw-col-span-1 tw-text-base tw-font-bold tw-text-gray-600 tw-text-center">
                   <div className="tw-text-xl tw-py-3 tw-text-gray-400">
-                    {summary?.myStudyRoomStatus?.scheduledCount}
+                    {summary?.myStudyRoomStatus?.scheduledCount || 0}
                   </div>
                   <div>학습예정</div>
                 </div>
                 <div className="tw-col-span-1 tw-text-base tw-font-bold tw-text-gray-600 tw-text-center">
                   <div className="tw-text-xl tw-py-3 tw-text-blue-500">
-                    {summary?.myStudyRoomStatus?.inProgressCount}
+                    {summary?.myStudyRoomStatus?.inProgressCount || 0}
                   </div>
                   <div>학습 중</div>
                 </div>
                 <div className="tw-col-span-1 tw-text-base tw-font-bold tw-text-gray-600 tw-text-center">
-                  <div className="tw-text-xl tw-py-3 tw-text-black">{summary?.myStudyRoomStatus?.completeCount}</div>
+                  <div className="tw-text-xl tw-py-3 tw-text-black">
+                    {summary?.myStudyRoomStatus?.completeCount || 0}
+                  </div>
                   <div>학습완료</div>
                 </div>
               </div>

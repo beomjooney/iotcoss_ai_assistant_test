@@ -45,7 +45,7 @@ import { TagsInput } from 'react-tag-input-component';
 import { useDeletePost } from 'src/services/community/community.mutations';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import { makeStyles } from '@material-ui/core';
-
+import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 interface BoardListItemType {
   id: number;
   name: string;
@@ -353,91 +353,156 @@ export function QuizMakeTemplate() {
           <div className={cx('content-area')}>
             <section className={cx('content', 'flex-wrap-container')}>
               {myQuizData?.contents?.map((item, index) => (
-                <div key={index} className="tw-p-4 tw-border border tw-w-full tw-rounded-xl">
-                  <div className="tw-flex tw-w-full tw-items-center"></div>
-                  <div className="tw-flex  tw-items-center">
-                    <div className="tw-flex-auto">
-                      <div className="tw-font-medium tw-text-black">
-                        <div className="tw-p-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
-                          {item?.recommendJobGroupNames?.map((name, i) => (
-                            <span
-                              key={i}
-                              className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600"
-                            >
-                              {name}
-                            </span>
-                          ))}
-                          <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
-                            {item?.recommendLevels?.sort().join(',')}레벨
-                          </span>
-                          {item?.recommendJobNames?.map((name, i) => (
-                            <span
-                              key={i}
-                              className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-100 tw-text-sm tw-font-light tw-text-gray-600"
-                            >
-                              {name}
-                            </span>
-                          ))}
-                          {item?.hashTags?.map((name, i) => (
-                            <span
-                              key={i}
-                              className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-gray-700"
-                            >
-                              {name}
-                            </span>
-                          ))}
+                <div key={index}>
+                  <Desktop>
+                    <div className="tw-p-4 tw-border border tw-w-full tw-rounded-xl">
+                      <div className="tw-flex tw-w-full tw-items-center"></div>
+                      <div className="tw-flex  tw-items-center">
+                        <div className="tw-flex-auto">
+                          <div className="tw-font-medium tw-text-black">
+                            <div className="tw-p-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
+                              {item?.recommendJobGroupNames?.map((name, i) => (
+                                <span
+                                  key={i}
+                                  className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600"
+                                >
+                                  {name}
+                                </span>
+                              ))}
+                              <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
+                                {item?.recommendLevels?.sort().join(',')}레벨
+                              </span>
+                              {item?.recommendJobNames?.map((name, i) => (
+                                <span
+                                  key={i}
+                                  className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-100 tw-text-sm tw-font-light tw-text-gray-600"
+                                >
+                                  {name}
+                                </span>
+                              ))}
+                              {item?.hashTags?.map((name, i) => (
+                                <span
+                                  key={i}
+                                  className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-gray-700"
+                                >
+                                  {name}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="tw-text-gray-400 tw-text-sm tw-mr-5">{item.createdAt}</div>
+                        <IconButton
+                          aria-label="more"
+                          id="long-button"
+                          aria-controls={open ? 'long-menu' : undefined}
+                          aria-expanded={open ? 'true' : undefined}
+                          aria-haspopup="true"
+                          onClick={event => handleDropMenuClick(event, item.sequence)}
+                        >
+                          <MoreVertIcon />
+                        </IconButton>
+                        <div>
+                          <Menu
+                            id="lock-menu"
+                            anchorEl={anchorEl}
+                            open={open}
+                            onClose={handleClose}
+                            className={classes.root}
+                            MenuListProps={{
+                              'aria-labelledby': 'lock-button',
+                              role: 'listbox',
+                              style: {
+                                border: '1px solid rgb(218, 226, 237)',
+                                boxShadow: 'none !important',
+                                borderRadius: '12px',
+                              },
+                            }}
+                          >
+                            {options.map((option, index) => (
+                              <MenuItem key={index} onClick={event => handleMenuItemClick(event, index)}>
+                                {option}
+                              </MenuItem>
+                            ))}
+                          </Menu>
+                        </div>
+                      </div>
+                      <div className="tw-flex  tw-items-center tw-p-3">
+                        <div className="tw-flex-auto">
+                          <div className="tw-font-medium tw-text-black tw-text-base">{item.content}</div>
+                        </div>
+                        {/* <div className="">{item.memberName}</div> */}
+                      </div>
+                      <div className="tw-grid tw-grid-cols-12 tw-gap-4 tw-p-3">
+                        <div className="tw-col-span-1 tw-text-sm tw-font-bold tw-text-black ">아티클</div>
+                        <div className="tw-col-span-9 tw-text-sm tw-text-gray-600">{item.articleUrl}</div>
+                        <div className="tw-col-span-2 tw-text-sm tw-text-right">
+                          댓글 : {item.activeCount} 답변 : {item.answerCount}
                         </div>
                       </div>
                     </div>
-                    <div className="tw-text-gray-400 tw-text-sm tw-mr-5">{item.createdAt}</div>
-                    <IconButton
-                      aria-label="more"
-                      id="long-button"
-                      aria-controls={open ? 'long-menu' : undefined}
-                      aria-expanded={open ? 'true' : undefined}
-                      aria-haspopup="true"
-                      onClick={event => handleDropMenuClick(event, item.sequence)}
-                    >
-                      <MoreVertIcon />
-                    </IconButton>
-                    <div>
-                      <Menu
-                        id="lock-menu"
-                        anchorEl={anchorEl}
-                        open={open}
-                        onClose={handleClose}
-                        className={classes.root}
-                        MenuListProps={{
-                          'aria-labelledby': 'lock-button',
-                          role: 'listbox',
-                          style: {
-                            border: '1px solid rgb(218, 226, 237)',
-                            boxShadow: 'none !important',
-                            borderRadius: '12px',
-                          },
-                        }}
-                      >
-                        {options.map((option, index) => (
-                          <MenuItem key={index} onClick={event => handleMenuItemClick(event, index)}>
-                            {option}
-                          </MenuItem>
-                        ))}
-                      </Menu>
+                  </Desktop>
+                  <Mobile>
+                    <div className="tw-p-5 tw-border border tw-w-full tw-rounded-xl">
+                      {/* 첫 번째 컬럼 */}
+                      <div className="md:tw-w-full">
+                        <div className="tw-font-medium tw-text-black">
+                          <div className="tw-text-sm tw-font-normal tw-text-gray-500">
+                            {item?.recommendJobGroupNames?.map((name, i) => (
+                              <span
+                                key={i}
+                                className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600"
+                              >
+                                {name}
+                              </span>
+                            ))}
+                            <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
+                              {item?.recommendLevels?.sort().join(',')}레벨
+                            </span>
+                            {item?.recommendJobNames?.map((name, i) => (
+                              <span
+                                key={i}
+                                className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-100 tw-text-sm tw-font-light tw-text-gray-600"
+                              >
+                                {name}
+                              </span>
+                            ))}
+                            {item?.hashTags?.map((name, i) => (
+                              <span
+                                key={i}
+                                className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-gray-700"
+                              >
+                                {name}
+                              </span>
+                            ))}
+                          </div>
+                          <div className="tw-text-gray-400 tw-text-base tw-py-1 tw-text-right">{item.createdAt}</div>
+                        </div>
+                      </div>
+                      {/* 두 번째 컬럼 */}
+                      <div className="md:tw-w-full">
+                        <div className="tw-flex  tw-items-center py-2">
+                          <div className="tw-flex-auto">
+                            <div className="tw-font-medium tw-text-black tw-text-base tw-line-clamp-1">
+                              {item.content}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      {/* 세 번째 컬럼 */}
+                      <div className="md:tw-w-full">
+                        <div className="tw-grid tw-grid-cols-12 tw-gap-4">
+                          <div className="tw-col-span-2 tw-text-sm tw-font-bold tw-text-black">아티클</div>
+                          <div className="tw-col-span-10 tw-text-sm tw-text-gray-600  tw-line-clamp-1">
+                            {item.articleUrl}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="tw-col-span-2 tw-text-sm tw-text-right">
+                        댓글 : {item.activeCount} 답변 : {item.answerCount}
+                      </div>
                     </div>
-                  </div>
-                  <div className="tw-flex  tw-items-center tw-p-3">
-                    <div className="tw-flex-auto">
-                      <div className="tw-font-medium tw-text-black tw-text-base">{item.content}</div>
-                    </div>
-                    {/* <div className="">{item.memberName}</div> */}
-                  </div>
-                  <div className="tw-grid tw-grid-cols-12 tw-gap-4 tw-p-3">
-                    <div className="tw-col-span-1 tw-text-sm tw-font-bold tw-text-black ">아티클</div>
-                    <div className="tw-col-span-9 tw-text-sm tw-text-gray-600">{item.articleUrl}</div>
-                    <div className="tw-col-span-2 tw-text-sm tw-text-right">
-                      댓글 : {item.activeCount} 답변 : {item.answerCount}
-                    </div>
-                  </div>
+                  </Mobile>
                 </div>
               ))}
             </section>
