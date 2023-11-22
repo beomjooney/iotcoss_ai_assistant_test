@@ -204,7 +204,7 @@ const CommunityCardReply = ({ reply, className, refetch }: CommunityCardReplyPro
             <div className="tw-grid tw-grid-cols-12 tw-items-center tw-justify-center tw-pb-4">
               <div className="tw-col-span-1"></div>
               <div className="tw-col-span-11 ">
-                <div className="tw-flex tw-justify-start tw-items-center">
+                <div className="tw-flex tw-justify-start tw-items-center tw-w-full">
                   <div className={cx('tw-text-[12px]', 'tw-text-gray-400')}>
                     <Textfield
                       defaultValue=""
