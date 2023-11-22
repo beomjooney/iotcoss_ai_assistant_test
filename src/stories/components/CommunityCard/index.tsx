@@ -34,6 +34,7 @@ import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import StarIcon from '@mui/icons-material/Star';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
+import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 export interface CommunityCardProps {
   /** 게시판 object */
   board: BoardType;
@@ -256,147 +257,279 @@ CommunityCardProps) => {
 
   const router = useRouter();
   return (
-    <div className={cx('community-board-container', className)}>
-      <div className={cx('main-container')}>
-        <div className={cx('board-header', 'row')}>
-          <div className="tw-flex tw-items-center tw-space-x-4 tw-my-5 tw-gap-2">
-            {/* {board.postNo} */}
-            <img
-              src={
-                board?.profileImageUrl.indexOf('http') > -1
-                  ? board?.profileImageUrl
-                  : `${process.env['NEXT_PUBLIC_GENERAL_API_URL']}/images/${board?.profileImageUrl}`
-              }
-              alt={'image'}
-              className={cx('rounded-circle', 'profile-image', 'tw-h-12', 'tw-w-12')}
+    <>
+      <Desktop>
+        <div className={cx('community-board-container', className)}>
+          <div className={cx('main-container')}>
+            <div className={cx('board-header', 'row')}>
+              <div className="tw-flex tw-items-center tw-space-x-4 tw-my-5 tw-gap-2">
+                <img
+                  src={
+                    board?.profileImageUrl.indexOf('http') > -1
+                      ? board?.profileImageUrl
+                      : `${process.env['NEXT_PUBLIC_GENERAL_API_URL']}/images/${board?.profileImageUrl}`
+                  }
+                  alt={'image'}
+                  className={cx('rounded-circle', 'profile-image', 'tw-h-12', 'tw-w-12')}
+                />
+                <div>
+                  <div className="tw-font-bold tw-text-lg tw-text-black">{board?.nickname}</div>
+                </div>
+                <div>
+                  <div className="tw-text-sm">{board.createdAt.toString().split(' ')[0]}</div>
+                </div>
+                <div>{/* <div className="tw-text-sm">{timeForToday(board.createdAt)}</div> */}</div>
+              </div>
+              <div className={cx('date-area', 'col-md-2')}></div>
+            </div>
+            <TextareaAutosize
+              aria-label="minimum height"
+              minRows={8}
+              placeholder="답변을 25자 이상 입력해주세요."
+              style={{
+                width: '100%',
+                // backgroundColor: '#F9F9F9',
+                border: '1px solid #EFEFEF',
+                borderRadius: 10,
+                fontSize: '14px',
+                color: 'black',
+                padding: 25,
+                resize: 'none',
+                overflow: 'auto',
+                maxHeight: '320px', // 최대 높이 설정 (스크롤을 표시하려면 설정)
+              }}
+              name="introductionMessage"
+              value={board?.postAnswer}
             />
-            <div>
-              <div className="tw-font-bold tw-text-lg tw-text-black">{board?.nickname}</div>
-            </div>
-            <div>
-              <div className="tw-text-sm">{board.createdAt.toString().split(' ')[0]}</div>
-            </div>
-            <div>{/* <div className="tw-text-sm">{timeForToday(board.createdAt)}</div> */}</div>
-          </div>
-          <div className={cx('date-area', 'col-md-2')}></div>
-        </div>
-        <TextareaAutosize
-          aria-label="minimum height"
-          minRows={8}
-          placeholder="답변을 25자 이상 입력해주세요."
-          style={{
-            width: '100%',
-            // backgroundColor: '#F9F9F9',
-            border: '1px solid #EFEFEF',
-            borderRadius: 10,
-            fontSize: '14px',
-            color: 'black',
-            padding: 25,
-            resize: 'none',
-            overflow: 'auto',
-            maxHeight: '320px', // 최대 높이 설정 (스크롤을 표시하려면 설정)
-          }}
-          name="introductionMessage"
-          value={board?.postAnswer}
-        />
 
-        <div className="tw-grid tw-items-center tw-grid-cols-12 tw-py-3 tw-mt-1">
-          <div className="tw-col-span-3">
-            <div className="tw-flex tw-items-center tw-gap-4">
-              <span className="tw-flex tw-items-center">
-                <AssignmentOutlinedIcon className="tw-mr-1 tw-w-5" />
-                {board?.replyCount}
-              </span>
-              <span className="tw-flex tw-items-center">
-                {/* <button
-                  className="tw-flex tw-items-center"
-                  onClick={() => {
-                    onChangeOnePick(board?.clubQuizAnswerSequence, board?.isOnePick);
+            <div className="tw-grid tw-items-center tw-grid-cols-12 tw-py-3 tw-mt-1">
+              <div className="tw-col-span-3">
+                <div className="tw-flex tw-items-center tw-gap-4">
+                  <span className="tw-flex tw-items-center">
+                    <AssignmentOutlinedIcon className="tw-mr-1 tw-w-5" />
+                    {board?.replyCount}
+                  </span>
+                  <span className="tw-flex tw-items-center">
+                    {isOnePick ? (
+                      <button
+                        onClick={() => {
+                          onChangeDeleteOnePick(board?.clubQuizAnswerSequence, board?.isOnePick);
+                        }}
+                      >
+                        <StarIcon color="primary" className="tw-mr-1" />
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          onChangeOnePick(board?.clubQuizAnswerSequence, board?.isOnePick);
+                        }}
+                      >
+                        <StarBorderIcon color="disabled" className="tw-mr-1" />
+                      </button>
+                    )}
+                    <span>{onePickCount}</span>
+                    {/* </button> */}
+                  </span>
+                  <span>
+                    <button
+                      className="tw-flex tw-items-center"
+                      onClick={() => {
+                        onChangeLike(board?.clubQuizAnswerSequence, board?.isLiked);
+                      }}
+                    >
+                      {isLiked ? (
+                        <FavoriteIcon color="primary" className="tw-mr-1 tw-w-5" />
+                      ) : (
+                        <FavoriteBorderIcon color="disabled" className="tw-mr-1 tw-w-5" />
+                      )}
+                      <span>{likeCount}</span>
+                    </button>
+                  </span>
+                </div>
+              </div>
+              <div className="tw-col-span-9 tw-flex tw-items-center tw-justify-end ">
+                <Textfield
+                  width={400}
+                  defaultValue=""
+                  placeholder="댓글을 입력해주세요."
+                  ref={textInput}
+                  onKeyPress={e => {
+                    if (e.key === 'Enter') {
+                      onReplySubmit(board?.clubQuizAnswerSequence, textInput.current.value);
+                    }
                   }}
-                > */}
-                {isOnePick ? (
-                  <button
-                    onClick={() => {
-                      onChangeDeleteOnePick(board?.clubQuizAnswerSequence, board?.isOnePick);
-                    }}
-                  >
-                    <StarIcon color="primary" className="tw-mr-1" />
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => {
-                      onChangeOnePick(board?.clubQuizAnswerSequence, board?.isOnePick);
-                    }}
-                  >
-                    <StarBorderIcon color="disabled" className="tw-mr-1" />
-                  </button>
-                )}
-                <span>{onePickCount}</span>
-                {/* </button> */}
-              </span>
-              <span>
+                />
                 <button
-                  className="tw-flex tw-items-center"
+                  className="tw-bg-gray-400 tw-text-sm tw-text-white tw-px-5 tw-ml-2 tw-rounded-md tw-h-10"
+                  onClick={() => onReplySubmit(board?.clubQuizAnswerSequence, textInput.current.value)}
+                >
+                  입력
+                </button>
+
+                <button
+                  className={cx('board-footer__reply', 'tw-text-[14px] tw-pl-4')}
                   onClick={() => {
-                    onChangeLike(board?.clubQuizAnswerSequence, board?.isLiked);
+                    onButtonReply(board.clubQuizAnswerSequence);
                   }}
                 >
-                  {isLiked ? (
-                    <FavoriteIcon color="primary" className="tw-mr-1 tw-w-5" />
-                  ) : (
-                    <FavoriteBorderIcon color="disabled" className="tw-mr-1 tw-w-5" />
-                  )}
-                  <span>{likeCount}</span>
+                  댓글 {replyCount}개{isOpen ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
                 </button>
-              </span>
+              </div>
             </div>
           </div>
-          <div className="tw-col-span-9 tw-flex tw-items-center tw-justify-end ">
-            <Textfield
-              width={400}
-              defaultValue=""
-              placeholder="댓글을 입력해주세요."
-              ref={textInput}
-              onKeyPress={e => {
-                if (e.key === 'Enter') {
-                  onReplySubmit(board?.clubQuizAnswerSequence, textInput.current.value);
-                }
+          {isReplyFetched && isOpen && (
+            <div className={cx('reply-container')}>
+              <div className={cx('reply-container__content')}>
+                {repliesList.map((reply, i) => {
+                  return (
+                    // TODO API Response 보고 댓글 작성자로 수정 필요
+                    <CommunityCardReply key={i} reply={reply} refetch={refetch} />
+                  );
+                })}
+              </div>
+              <div className="tw-flex tw-justify-center tw-my-5">
+                <Pagination page={page} setPage={setPage} total={totalPage} />
+              </div>
+            </div>
+          )}
+        </div>
+      </Desktop>
+      <Mobile>
+        <div className={cx('community-board-container', className)}>
+          <div className={cx('main-container')}>
+            <div className={cx('board-header', 'row')}>
+              <div className="tw-flex tw-items-center tw-space-x-4 tw-my-5 tw-gap-2">
+                <img
+                  src={
+                    board?.profileImageUrl.indexOf('http') > -1
+                      ? board?.profileImageUrl
+                      : `${process.env['NEXT_PUBLIC_GENERAL_API_URL']}/images/${board?.profileImageUrl}`
+                  }
+                  alt={'image'}
+                  className={cx('rounded-circle', 'profile-image', 'tw-h-12', 'tw-w-12')}
+                />
+                <div>
+                  <div className="tw-font-bold tw-text-lg tw-text-black">{board?.nickname}</div>
+                </div>
+                <div>
+                  <div className="tw-text-sm">{board.createdAt.toString().split(' ')[0]}</div>
+                </div>
+                <div>{/* <div className="tw-text-sm">{timeForToday(board.createdAt)}</div> */}</div>
+              </div>
+              <div className={cx('date-area', 'col-md-2')}></div>
+            </div>
+            <TextareaAutosize
+              aria-label="minimum height"
+              minRows={3}
+              placeholder="답변을 25자 이상 입력해주세요."
+              style={{
+                width: '100%',
+                // backgroundColor: '#F9F9F9',
+                border: '1px solid #EFEFEF',
+                borderRadius: 10,
+                fontSize: '14px',
+                color: 'black',
+                padding: 25,
+                resize: 'none',
+                overflow: 'auto',
+                maxHeight: '320px', // 최대 높이 설정 (스크롤을 표시하려면 설정)
               }}
+              name="introductionMessage"
+              value={board?.postAnswer}
             />
-            <button
-              className="tw-bg-gray-400 tw-text-sm tw-text-white tw-px-5 tw-ml-2 tw-rounded-md tw-h-10"
-              onClick={() => onReplySubmit(board?.clubQuizAnswerSequence, textInput.current.value)}
-            >
-              입력
-            </button>
 
-            <button
-              className={cx('board-footer__reply', 'tw-text-[14px] tw-pl-4')}
-              onClick={() => {
-                onButtonReply(board.clubQuizAnswerSequence);
-              }}
-            >
-              댓글 {replyCount}개{isOpen ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
-            </button>
+            <div className="tw-grid tw-items-center tw-grid-cols-12 tw-py-3 tw-mt-0">
+              <div className="tw-col-span-3">
+                <div className="tw-flex tw-items-center tw-gap-1">
+                  <span className="tw-flex tw-items-center">
+                    <AssignmentOutlinedIcon className="tw-mr-1 tw-w-4" />
+                    {board?.replyCount}
+                  </span>
+                  <span className="tw-flex tw-items-center">
+                    {isOnePick ? (
+                      <button
+                        onClick={() => {
+                          onChangeDeleteOnePick(board?.clubQuizAnswerSequence, board?.isOnePick);
+                        }}
+                      >
+                        <StarIcon color="primary" className="tw-mr-1" />
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          onChangeOnePick(board?.clubQuizAnswerSequence, board?.isOnePick);
+                        }}
+                      >
+                        <StarBorderIcon color="disabled" className="tw-mr-1" />
+                      </button>
+                    )}
+                    <span>{onePickCount}</span>
+                    {/* </button> */}
+                  </span>
+                  <span>
+                    <button
+                      className="tw-flex tw-items-center"
+                      onClick={() => {
+                        onChangeLike(board?.clubQuizAnswerSequence, board?.isLiked);
+                      }}
+                    >
+                      {isLiked ? (
+                        <FavoriteIcon color="primary" className="tw-mr-1 tw-w-4" />
+                      ) : (
+                        <FavoriteBorderIcon color="disabled" className="tw-mr-1 tw-w-4" />
+                      )}
+                      <span>{likeCount}</span>
+                    </button>
+                  </span>
+                </div>
+              </div>
+              <div className="tw-col-span-9 tw-flex tw-items-center tw-justify-end ">
+                <Textfield
+                  defaultValue=""
+                  placeholder="댓글을 입력해주세요."
+                  ref={textInput}
+                  onKeyPress={e => {
+                    if (e.key === 'Enter') {
+                      onReplySubmit(board?.clubQuizAnswerSequence, textInput.current.value);
+                    }
+                  }}
+                />
+                <button
+                  className="tw-bg-gray-400 tw-text-sm tw-text-white tw-px-2 tw-w-20 tw-ml-2 tw-rounded-md tw-h-10"
+                  onClick={() => onReplySubmit(board?.clubQuizAnswerSequence, textInput.current.value)}
+                >
+                  입력
+                </button>
+
+                <button
+                  className={cx('board-footer__reply', 'tw-text-[14px] tw-pl-4')}
+                  onClick={() => {
+                    onButtonReply(board.clubQuizAnswerSequence);
+                  }}
+                >
+                  댓글 {replyCount}개{isOpen ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
+                </button>
+              </div>
+            </div>
           </div>
+          {isReplyFetched && isOpen && (
+            <div className={cx('reply-container')}>
+              <div className={cx('reply-container__content')}>
+                {repliesList.map((reply, i) => {
+                  return (
+                    // TODO API Response 보고 댓글 작성자로 수정 필요
+                    <CommunityCardReply key={i} reply={reply} refetch={refetch} />
+                  );
+                })}
+              </div>
+              <div className="tw-flex tw-justify-center tw-my-5">
+                <Pagination page={page} setPage={setPage} total={totalPage} />
+              </div>
+            </div>
+          )}
         </div>
-      </div>
-      {isReplyFetched && isOpen && (
-        <div className={cx('reply-container')}>
-          <div className={cx('reply-container__content')}>
-            {repliesList.map((reply, i) => {
-              return (
-                // TODO API Response 보고 댓글 작성자로 수정 필요
-                <CommunityCardReply key={i} reply={reply} refetch={refetch} />
-              );
-            })}
-          </div>
-          <div className="tw-flex tw-justify-center tw-my-5">
-            <Pagination page={page} setPage={setPage} total={totalPage} />
-          </div>
-        </div>
-      )}
-    </div>
+      </Mobile>
+    </>
   );
 };
 

@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useSessionStore } from 'src/store/session';
 import { useSaveReReply } from 'src/services/community/community.mutations';
 import CommunityCardReReply from '../CommunityCardReReply';
+import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 const { logged } = useSessionStore.getState();
 
 export interface CommunityCardReplyProps {
@@ -82,77 +83,153 @@ const CommunityCardReply = ({ reply, className, refetch }: CommunityCardReplyPro
   // TODO 좋아요 여부 필드 수정 필요
 
   return (
-    <div className={cx('community-board-reply-container', 'row', className)}>
-      <div className="tw-grid  tw-grid-cols-12  tw-flex tw-items-center  tw-mt-2 tw-gap-2">
-        {/* {board.postNo} */}
-        <div className="tw-col-span-1 tw-flex tw-items-end tw-justify-center">
-          <img
-            src={reply?.imageUrl}
-            alt={'image'}
-            className={cx('rounded-circle', 'profile-image', 'tw-h-10', 'tw-w-10')}
-          />
-        </div>
-        <div className="tw-col-span-3 tw-text-left tw-flex tw-items-center">
-          <div className="tw-font-bold tw-text-lg tw-text-black">{reply?.nickname} </div>
-          <div className="tw-text-[11px] tw-text-gray-400 tw-pl-4">{timeForToday(reply.createAt)}</div>
-        </div>
-        <div className="tw-col-span-7"></div>
-      </div>
+    <>
+      <Desktop>
+        <div className={cx('community-board-reply-container', 'row', className)}>
+          <div className="tw-grid  tw-grid-cols-12  tw-flex tw-items-center  tw-mt-2 tw-gap-2">
+            {/* {board.postNo} */}
+            <div className="tw-col-span-1 tw-flex tw-items-end tw-justify-center">
+              <img
+                src={reply?.imageUrl}
+                alt={'image'}
+                className={cx('rounded-circle', 'profile-image', 'tw-h-10', 'tw-w-10')}
+              />
+            </div>
+            <div className="tw-col-span-3 tw-text-left tw-flex tw-items-center">
+              <div className="tw-font-bold tw-text-lg tw-text-black">{reply?.nickname} </div>
+              <div className="tw-text-[11px] tw-text-gray-400 tw-pl-4">{timeForToday(reply.createAt)}</div>
+            </div>
+            <div className="tw-col-span-7"></div>
+          </div>
 
-      <div className="tw-grid tw-grid-cols-12 tw-items-start tw-justify-center">
-        <div className="tw-col-span-1"></div>
-        <div className="tw-col-span-11 tw-py-3">
-          <div className="tw-text-sm">{reply.body}</div>
-        </div>
-        <div className="tw-col-span-1"></div>
-      </div>
-      <div className="tw-grid tw-grid-cols-12 tw-items-start tw-justify-center">
-        <div className="tw-col-span-1"></div>
-        <div className="tw-col-span-11 tw-pt-0 tw-pb-3">
-          <button className={cx('tw-text-[12px]', 'tw-text-gray-400')} onClick={() => replyOpen()}>
-            답글쓰기
-          </button>
-        </div>
-        <div className="tw-col-span-1"></div>
-      </div>
-      <div className="tw-grid tw-grid-cols-12 tw-items-start tw-justify-center">
-        <div className="tw-col-span-1"></div>
-        <div className="tw-col-span-11 tw-pt-0 tw-pb-3">
-          {reply?.replies.map((reply, i) => {
-            return <CommunityCardReReply key={i} reply={reply} />;
-          })}
-        </div>
-      </div>
-
-      {isOpen && (
-        <div className="tw-grid tw-grid-cols-12 tw-items-center tw-justify-center tw-pb-4">
-          <div className="tw-col-span-1"></div>
-          <div className="tw-col-span-11 ">
-            <div className="tw-flex tw-justify-start tw-items-center">
-              <div className={cx('tw-text-[12px]', 'tw-text-gray-400')}>
-                <Textfield
-                  width={600}
-                  defaultValue=""
-                  placeholder="댓글을 입력해주세요."
-                  ref={textInput}
-                  onKeyPress={e => {
-                    if (e.key === 'Enter') {
-                      onReplySubmit(reply.sequence, textInput.current.value);
-                    }
-                  }}
-                />
-              </div>
-              <button
-                className="tw-bg-gray-400 tw-text-white tw-h-10 tw-px-6  tw-ml-2 tw-rounded-md tw-text-sm"
-                onClick={() => onReplySubmit(reply.sequence, textInput.current.value)}
-              >
-                입력
+          <div className="tw-grid tw-grid-cols-12 tw-items-start tw-justify-center">
+            <div className="tw-col-span-1"></div>
+            <div className="tw-col-span-11 tw-py-3">
+              <div className="tw-text-sm">{reply.body}</div>
+            </div>
+            <div className="tw-col-span-1"></div>
+          </div>
+          <div className="tw-grid tw-grid-cols-12 tw-items-start tw-justify-center">
+            <div className="tw-col-span-1"></div>
+            <div className="tw-col-span-11 tw-pt-0 tw-pb-3">
+              <button className={cx('tw-text-[12px]', 'tw-text-gray-400')} onClick={() => replyOpen()}>
+                답글쓰기
               </button>
             </div>
+            <div className="tw-col-span-1"></div>
           </div>
+          <div className="tw-grid tw-grid-cols-12 tw-items-start tw-justify-center">
+            <div className="tw-col-span-1"></div>
+            <div className="tw-col-span-11 tw-pt-0 tw-pb-3">
+              {reply?.replies.map((reply, i) => {
+                return <CommunityCardReReply key={i} reply={reply} />;
+              })}
+            </div>
+          </div>
+
+          {isOpen && (
+            <div className="tw-grid tw-grid-cols-12 tw-items-center tw-justify-center tw-pb-4">
+              <div className="tw-col-span-1"></div>
+              <div className="tw-col-span-11 ">
+                <div className="tw-flex tw-justify-start tw-items-center">
+                  <div className={cx('tw-text-[12px]', 'tw-text-gray-400')}>
+                    <Textfield
+                      width={600}
+                      defaultValue=""
+                      placeholder="댓글을 입력해주세요."
+                      ref={textInput}
+                      onKeyPress={e => {
+                        if (e.key === 'Enter') {
+                          onReplySubmit(reply.sequence, textInput.current.value);
+                        }
+                      }}
+                    />
+                  </div>
+                  <button
+                    className="tw-bg-gray-400 tw-text-white tw-h-10 tw-px-6  tw-ml-2 tw-rounded-md tw-text-sm"
+                    onClick={() => onReplySubmit(reply.sequence, textInput.current.value)}
+                  >
+                    입력
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-      )}
-    </div>
+      </Desktop>
+      <Mobile>
+        <div className={cx('community-board-reply-container', 'row', className)}>
+          <div className="tw-grid  tw-grid-cols-12  tw-flex tw-items-center  tw-mt-2 tw-gap-2">
+            {/* {board.postNo} */}
+            <div className="tw-col-span-2 tw-flex tw-items-end tw-justify-center">
+              <img
+                src={reply?.imageUrl}
+                alt={'image'}
+                className={cx('rounded-circle', 'profile-image', 'tw-h-10', 'tw-w-10')}
+              />
+            </div>
+            <div className="tw-col-span-4 tw-text-left tw-flex tw-items-center">
+              <div className="tw-font-bold tw-text-lg tw-text-black">{reply?.nickname} </div>
+              <div className="tw-text-[11px] tw-text-gray-400 tw-pl-4">{timeForToday(reply.createAt)}</div>
+            </div>
+            <div className="tw-col-span-5"></div>
+          </div>
+
+          <div className="tw-grid tw-grid-cols-12 tw-items-start tw-justify-center">
+            <div className="tw-col-span-1"></div>
+            <div className="tw-col-span-11 tw-py-3">
+              <div className="tw-text-sm">{reply.body}</div>
+            </div>
+            <div className="tw-col-span-1"></div>
+          </div>
+          <div className="tw-grid tw-grid-cols-12 tw-items-start tw-justify-center">
+            <div className="tw-col-span-1"></div>
+            <div className="tw-col-span-11 tw-pt-0 tw-pb-3">
+              <button className={cx('tw-text-[12px]', 'tw-text-gray-400')} onClick={() => replyOpen()}>
+                답글쓰기
+              </button>
+            </div>
+            <div className="tw-col-span-1"></div>
+          </div>
+          <div className="tw-grid tw-grid-cols-12 tw-items-start tw-justify-center">
+            <div className="tw-col-span-1"></div>
+            <div className="tw-col-span-11 tw-pt-0 tw-pb-3">
+              {reply?.replies.map((reply, i) => {
+                return <CommunityCardReReply key={i} reply={reply} />;
+              })}
+            </div>
+          </div>
+
+          {isOpen && (
+            <div className="tw-grid tw-grid-cols-12 tw-items-center tw-justify-center tw-pb-4">
+              <div className="tw-col-span-1"></div>
+              <div className="tw-col-span-11 ">
+                <div className="tw-flex tw-justify-start tw-items-center">
+                  <div className={cx('tw-text-[12px]', 'tw-text-gray-400')}>
+                    <Textfield
+                      defaultValue=""
+                      placeholder="댓글을 입력해주세요."
+                      ref={textInput}
+                      onKeyPress={e => {
+                        if (e.key === 'Enter') {
+                          onReplySubmit(reply.sequence, textInput.current.value);
+                        }
+                      }}
+                    />
+                  </div>
+                  <button
+                    className="tw-bg-gray-400 tw-text-white tw-h-10 tw-px-6  tw-ml-2 tw-rounded-md tw-text-sm"
+                    onClick={() => onReplySubmit(reply.sequence, textInput.current.value)}
+                  >
+                    입력
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </Mobile>
+    </>
   );
 };
 

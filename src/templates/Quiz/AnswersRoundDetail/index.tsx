@@ -403,7 +403,7 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
               columnSpacing={{ xs: 1, sm: 2, md: 3 }}
             >
               <Grid item xs={12}>
-                <div className="tw-bg-gray-50 tw-rounded-lg tw-px-8 tw-py-5 tw-text-black ">
+                <div className="tw-bg-gray-50 tw-rounded-lg tw-px-5 tw-py-5 tw-text-black ">
                   <div className="tw-flex tw-items-center tw-space-x-4 tw-my-2">
                     <img
                       className="tw-w-9 tw-h-9 tw-ring-1 tw-rounded-full"
@@ -426,7 +426,7 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                         <span
                           type="button"
                           data-tooltip-target="tooltip-default"
-                          className="tw-w-[75px] tw-bg-green-100 tw-text-green-800 tw-text-center tw-px-3 tw-py-1 tw-text-sm tw-font-bold tw-rounded-md tw-mr-3"
+                          className="tw-w-[90px] tw-bg-green-100 tw-text-green-800 tw-text-center tw-px-3 tw-py-1 tw-text-sm tw-font-bold tw-rounded-md tw-mr-3"
                         >
                           대표
                         </span>
