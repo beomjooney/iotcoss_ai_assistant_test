@@ -34,6 +34,7 @@ interface ClubTemplateProps {
   jobGroup?: any;
   jobs?: any;
   jobCodes?: any;
+  contentJobType?: any;
   clubData?: any;
   pageProps?: any;
   onClubInfo?: (clubSequence: string) => void;
@@ -51,6 +52,7 @@ export function AdminClubTemplate({
   jobGroup,
   jobs,
   jobCodes,
+  contentJobType,
   clubData,
   pageProps,
   params,
@@ -932,7 +934,7 @@ export function AdminClubTemplate({
                       </div>
                       <div className="inp">
                         <div className={cx('skill__group')}>
-                          {jobs?.data?.contents?.map((item, index) => {
+                          {contentJobType?.map((item, index) => {
                             return (
                               <Toggle
                                 key={`recommendJobsIds-${index}`}
