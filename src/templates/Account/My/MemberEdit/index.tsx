@@ -411,7 +411,7 @@ export function MemberEditTemplate() {
   }, [isSuccess]);
 
   return (
-    <div className={cx('member-edit-container')}>
+    <div className={cx('member-edit-container tw-p-4')}>
       <div className={cx('sub-content', 'border', 'tw-rounded-lg', 'tw-mt-5', 'tw-text-center')}>
         <div className="tw-p-10 tw-pb-0 tw-text-black tw-text-base tw-font-semibold">
           <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-3">
@@ -563,7 +563,7 @@ export function MemberEditTemplate() {
         </div>
       </div>
       <div className={cx('sub-content', 'border', 'tw-rounded-lg', 'tw-mt-5')}>
-        <div className=" tw-p-14  tw-text-center">
+        <div className=" tw-p-14 max-lg:tw-p-5  tw-text-center">
           <div className="tw-text-xl tw-pb-10 tw-text-black">
             <span className="tw-font-bold tw-text-xl">데브어스</span> 이용 약관에 동의해주세요.
           </div>
@@ -701,8 +701,8 @@ export function MemberEditTemplate() {
             <Grid item xs={2}></Grid>
           </Grid>
 
-          <Grid container direction="row" alignItems="center" sx={{ marginLeft: 4 }}>
-            <Grid item xs={3}>
+          <Grid container direction="row" alignItems="center" sx={{ marginLeft: 0 }}>
+            <Grid item xs={4}>
               <Box display="flex">
                 <FormGroup sx={{ fontWeight: 'bold' }}>
                   <FormControlLabel
@@ -718,14 +718,12 @@ export function MemberEditTemplate() {
                         }}
                       />
                     }
-                    label={
-                      <Typography sx={{ fontSize: 15, color: 'black', fontWeight: 'bold' }}>이메일수신</Typography>
-                    }
+                    label={<Typography sx={{ fontSize: 15, color: 'black', fontWeight: 'bold' }}>이메일</Typography>}
                   />
                 </FormGroup>
               </Box>
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={4}>
               <Box display="flex" justifyContent="flex-start" sx={{ fontWeight: 'bold' }}>
                 <FormGroup sx={{ fontWeight: 'bold' }}>
                   <FormControlLabel
@@ -741,7 +739,7 @@ export function MemberEditTemplate() {
                         }}
                       />
                     }
-                    label={<Typography sx={{ fontSize: 15, color: 'black', fontWeight: 'bold' }}>문자 수신</Typography>}
+                    label={<Typography sx={{ fontSize: 15, color: 'black', fontWeight: 'bold' }}>문자</Typography>}
                   />
                 </FormGroup>
               </Box>
@@ -762,9 +760,7 @@ export function MemberEditTemplate() {
                         }}
                       />
                     }
-                    label={
-                      <Typography sx={{ fontSize: 15, color: 'black', fontWeight: 'bold' }}>카카오 수신</Typography>
-                    }
+                    label={<Typography sx={{ fontSize: 15, color: 'black', fontWeight: 'bold' }}>카카오</Typography>}
                   />
                 </FormGroup>
               </Box>

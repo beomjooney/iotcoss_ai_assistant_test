@@ -88,7 +88,7 @@ export function MyTemplate({ children }: MyTemplateProps) {
       menus.map(menu => {
         return menu.role === 'all'
           ? menuIteMobile(menu)
-          : menu.role === 'admin' && user?.roles?.indexOf('ROLE_ADMIN') >= 0 && menuItem(menu);
+          : menu.role === 'admin' && user?.roles?.indexOf('ROLE_ADMIN') >= 0 && menuIteMobile(menu);
       }),
     );
   }, [user]);
@@ -116,14 +116,17 @@ export function MyTemplate({ children }: MyTemplateProps) {
     return (
       <li
         key={menu.no}
-        className={cx({
-          'lnb-content__item': true,
-          'lnb-content__item--active': menu === currentMenu,
-        })}
+        className={cx(
+          {
+            'lnb-content__item': true,
+            'lnb-content__item--active': menu === currentMenu,
+          },
+          'tw-bg-white tw-py-4 tw-my-2 tw-rounded-md',
+        )}
       >
-        <span className={cx('ti-angle-right')} />
+        <span className={cx('ti-angle-right tw-px-5 tw-text-base')} />
         <Link href={`/account/my${menu.link}`} className={cx('lnb-item__link')}>
-          {menu.title}
+          <span className="tw-text-lg">{menu.title}</span>
         </Link>
       </li>
     );
@@ -150,12 +153,6 @@ export function MyTemplate({ children }: MyTemplateProps) {
                   <div className="tw-p-5 tw-mb-5 tw-bg-white tw-rounded-lg">
                     <div className="tw-py-5 tw-px-0 tw-text-center ">
                       <div className="tw-flex tw-justify-center tw-py-0">
-                        {/* <img
-                          className="tw-w-13 tw-h-13 tw-ring-1 tw-rounded-full "
-                          src={summary?.profileImageUrl}
-                          alt=""
-                        /> */}
-
                         <Image
                           src={summary?.profileImageUrl || 'D'}
                           alt="profile_image"
@@ -260,41 +257,6 @@ export function MyTemplate({ children }: MyTemplateProps) {
               </div>
 
               <ul className={cx('lnb-content', 'tw-px-5', 'tw-pt-0')}>{showMenu}</ul>
-
-              {/*TODO 성장 스토리 2차 오픈*/}
-              {/*<Button*/}
-              {/*  color="primary"*/}
-              {/*  label="성장 스토리 입력하기 >"*/}
-              {/*  size="medium"*/}
-              {/*  className={cx('mb-2')}*/}
-              {/*  onClick={handleMoveToMentorRegist}*/}
-              {/*/>*/}
-              {/* {isShowMentorBtn && (
-                <Button
-                  color="secondary"
-                  label="멘토 계정으로 전환하기 >"
-                  size="medium"
-                  onClick={() => setIsModalOpen(true)}
-                />
-              )}
-              <Modal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)} title="멘토 계정 전환 안내">
-                <div className={cx('mentor-change-container__card-nodes')}>
-                  <div className={cx('mb-5')}>
-                    성장 스토리 내역이 없습니다. <br />
-                    성장 스토리 입력 후 신청하여 주시기 바랍니다.
-                  </div>
-                  <div>
-                    <Button
-                      color="primary"
-                      label="성장 스토리 입력하기"
-                      size="small"
-                      className={cx('mr-2')}
-                      onClick={handleMoveToMentorRegist}
-                    />
-                    <Button color="secondary" label="닫기" size="small" onClick={() => setIsModalOpen(false)} />
-                  </div>
-                </div>
-              </Modal> */}
             </div>
             <div className={cx('page-area')}>
               <div className={cx('page-area__container')}>
@@ -305,6 +267,138 @@ export function MyTemplate({ children }: MyTemplateProps) {
           </div>
         </div>
       </Desktop>
+      <Mobile>
+        <div>
+          <div className="tw-py-5 tw-mt-10">
+            <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
+              <Grid item xs={7} className="tw-font-bold tw-text-3xl tw-text-black">
+                마이페이지
+              </Grid>
+              <Grid item xs={2} className="tw-font-semi tw-text-base tw-text-black"></Grid>
+              <Grid item xs={2} justifyContent="flex-end" className="tw-flex"></Grid>
+            </Grid>
+          </div>
+          <div>
+            <div className={cx('lnb-area', 'tw-bg-gray-100', 'tw-rounded-lg')}>
+              <ul className={cx('lnb-content', 'tw-px-5', 'tw-pt-5', 'tw-bg-gray-100')}>{showMenuMobile}</ul>
+              <div className="">
+                <div className="tw-p-5">
+                  <div className="tw-text-lg tw-pb-4 tw-font-semibold tw-text-black">안녕하세요! {nickname}님</div>
+                  <div className="tw-p-5 tw-mb-5 tw-bg-white tw-rounded-lg">
+                    <div className="tw-py-5 tw-px-0 tw-text-center ">
+                      <div className="tw-flex tw-justify-center tw-py-0">
+                        <Image
+                          src={summary?.profileImageUrl || 'D'}
+                          alt="profile_image"
+                          className={cx('rounded-circle', 'image-info__image')}
+                          width="110px"
+                          height="110px"
+                          objectFit="cover"
+                          unoptimized={true}
+                        />
+                      </div>
+                      <div className="tw-py-3 tw-font-semibold tw-text-black tw-text-lg">{summary?.nickname}</div>
+                      <div className="">
+                        {summary?.jobGroupName && (
+                          <span className=" tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-[5px] tw-rounded">
+                            {summary.jobGroupName}
+                          </span>
+                        )}
+                        {summary?.level && (
+                          <span className=" tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-[5px] tw-rounded">
+                            {summary.level}레벨
+                          </span>
+                        )}
+                        {summary?.jobName && (
+                          <span className=" tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-[5px] tw-rounded">
+                            {summary.jobName}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="tw-text-gray-600 tw-text-[15px] tw-font-medium tw-p-5 tw-pt-0">
+                      <div className="tw-py-5 tw-flex tw-justify-between">
+                        <div className="tw-flex tw-items-center">
+                          <div className="tw-pr-2">
+                            <img src="/assets/images/icons/point.png" alt="포인트" />
+                          </div>
+                          <div className="tw-font-bold">보유포인트</div>
+                        </div>
+                        <div className="tw-font-bold tw-text-blue-500">{summary?.points?.toLocaleString()}P</div>
+                      </div>
+                      <div className="tw-flex tw-justify-between">
+                        <div> 가입일 </div>
+                        <div>{summary?.joinDate}</div>
+                      </div>
+                      <div className="tw-flex tw-justify-between">
+                        <div> 방문횟수 </div>
+                        <div>{summary?.visitCount || 0} 회</div>
+                      </div>
+                      <div className="tw-py-3 ">
+                        <div className="tw-flex tw-justify-between">
+                          <div> 내가 만든 퀴즈 </div>
+                          <div>{summary?.createdQuizCount || 0}개</div>
+                        </div>
+                        <div className="tw-flex tw-justify-between">
+                          <div> 내가 만든 클럽 </div>
+                          <div>{summary?.createdClubCount || 0}개</div>
+                        </div>
+                      </div>
+                      <div className="tw-py-3 ">
+                        <div className="tw-flex tw-justify-between">
+                          <div> 내가 푼 퀴즈 </div>
+                          <div>{summary?.solvedQuizCount || 0}개</div>
+                        </div>
+                        <div className="tw-flex tw-justify-between">
+                          <div> 내가 쓴 댓글 </div>
+                          <div>{summary?.replyCount || 0}개</div>
+                        </div>
+                        <div className="tw-flex tw-justify-between">
+                          <div> 내가 참여한 클럽 </div>
+                          <div>{summary?.joinedClubCount || 0}개</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="tw-flex tw-justify-between tw-mt-2 tw-gap-2">
+                      <Button
+                        className="tw-w-full"
+                        variant="outlined"
+                        sx={{
+                          borderColor: 'gray',
+                          color: 'gray',
+                          fontSize: '15px',
+                        }}
+                        onClick={() => (location.href = '/profile')}
+                      >
+                        프로필 바로가기
+                      </Button>
+                      <Button
+                        className="tw-w-full "
+                        variant="outlined"
+                        onClick={handleLogout}
+                        sx={{
+                          borderColor: 'gray',
+                          color: 'gray',
+                          fontSize: '15px',
+                        }}
+                      >
+                        로그아웃
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className={cx('page-area')}>
+              <div className={cx('page-area__container')}>
+                <h6 className="tw-py-3 tw-px-2 tw-font-bold">{currentMenu?.title}</h6>
+                {children}
+              </div>
+            </div>
+          </div>
+        </div>
+      </Mobile>
     </div>
   );
 }

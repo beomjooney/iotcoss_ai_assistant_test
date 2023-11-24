@@ -72,7 +72,7 @@ const Footer = () => {
                         <Typography type="B1">
                           {/*(주중 9시-18시/주말 및 공휴일 제외)*/}
                           {/*<br />*/}
-                          주소 : 서울시 강남구 테헤란로2길 27, 12층 1224호
+                          주소 : 서울시 마포구 마포대로8길 35, 흥전빌딩 401호
                         </Typography>
                       </li>
                       <li className="mb-2 d-flex align-items-center">

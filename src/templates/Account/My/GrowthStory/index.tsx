@@ -45,44 +45,46 @@ export function GrowthStoryTemplate({ hasInfoData, userType }: GrowthStoryTempla
   };
 
   return (
-    <div className={cx('member-edit-container')}>
-      <section className={cx('content')}>
-        <div className={cx('content--not-found')}>
-          <Grid container direction="row" justifyContent="left" alignItems="center" rowSpacing={3}>
-            {isContentFetched &&
-              (contents.length > 0 ? (
-                contents.map((item, index) => {
-                  return (
-                    <ClubCard
-                      key={index}
-                      item={item}
-                      xs={12}
-                      // writer={memberSample}
-                      className={cx('reply-container__item')}
-                      // memberId={memberId}
-                      // onPostDeleteSubmit={onPostDeleteSubmit}
-                    />
-                  );
-                })
-              ) : (
-                <div className="tw-text-center  tw-w-full border tw-rounded-md">
-                  <div className="tw-p-10  tw-mb-5">
-                    <div className="tw-p-10">아직 가입하신 클럽이 없습니다.</div>
-                    <button
-                      onClick={() => (location.href = '/quiz')}
-                      className="tw-mr-2 tw-bg-[#2474ED] tw-rounded-md border tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
-                    >
-                      클럽 가입하러가기
-                    </button>
+    <>
+      <div className={cx('member-edit-container')}>
+        <section className={cx('content')}>
+          <div className={cx('content--not-found')}>
+            <Grid container direction="row" justifyContent="left" alignItems="center" rowSpacing={3}>
+              {isContentFetched &&
+                (contents.length > 0 ? (
+                  contents.map((item, index) => {
+                    return (
+                      <ClubCard
+                        key={index}
+                        item={item}
+                        xs={12}
+                        // writer={memberSample}
+                        className={cx('reply-container__item')}
+                        // memberId={memberId}
+                        // onPostDeleteSubmit={onPostDeleteSubmit}
+                      />
+                    );
+                  })
+                ) : (
+                  <div className="tw-text-center  tw-w-full border tw-rounded-md">
+                    <div className="tw-p-10  tw-mb-5">
+                      <div className="tw-p-10">아직 가입하신 클럽이 없습니다.</div>
+                      <button
+                        onClick={() => (location.href = '/quiz')}
+                        className="tw-mr-2 tw-bg-[#2474ED] tw-rounded-md border tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
+                      >
+                        클럽 가입하러가기
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
-          </Grid>
-          <div className="tw-mt-10">
-            <Pagination page={page} setPage={setPage} total={totalPage} />
+                ))}
+            </Grid>
+            <div className="tw-mt-10">
+              <Pagination page={page} setPage={setPage} total={totalPage} />
+            </div>
           </div>
-        </div>
-      </section>
-    </div>
+        </section>
+      </div>
+    </>
   );
 }
