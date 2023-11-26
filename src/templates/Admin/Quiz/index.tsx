@@ -25,6 +25,7 @@ interface QuizTemplateProps {
   jobGroup?: any;
   jobs?: any;
   jobCodes?: any;
+  contentJobType?: any;
   quizData?: any;
   pageProps?: any;
   onQuizInfo?: (quizId: string) => void;
@@ -43,6 +44,7 @@ export function QuizTemplate({
   jobGroup,
   jobs,
   jobCodes,
+  contentJobType,
   quizData,
   pageProps,
   params,
@@ -703,14 +705,14 @@ export function QuizTemplate({
                     </div>
                   </div>
                 </div>
-                <div className="grid-50 mt-3">
+                <div className="grid-100 mt-3">
                   <div className="inpwrap">
                     <div className="inp-tit">
                       추천직무<span className="star">*</span>
                     </div>
                     <div className="inp">
                       <div className={cx('skill__group')}>
-                        {jobs?.data?.contents?.map((item, index) => {
+                        {contentJobType?.map((item, index) => {
                           return (
                             <Toggle
                               key={`recommendJobsIds-${index}`}

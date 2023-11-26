@@ -929,7 +929,7 @@ export function AdminClubTemplate({
                     </div>
                   </div>
 
-                  <div className="grid-50 mt-3">
+                  <div className="grid-100 mt-3">
                     <div className="inpwrap">
                       <div className="inp-tit">
                         추천직무<span className="star">*</span>

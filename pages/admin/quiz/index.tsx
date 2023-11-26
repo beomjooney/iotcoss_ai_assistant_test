@@ -9,7 +9,13 @@ import QuizTemplate from '../../../src/templates/Admin/Quiz';
 
 import { useQuiz, useQuizs } from '../../../src/services/admin/quiz/quiz.queries';
 import { useDeleteQuiz, useSaveQuiz, useAddQuiz } from '../../../src/services/admin/quiz/quiz.mutations';
-import { useJobGroups, useMemberCode, useContentTypes, useJobs } from 'src/services/code/code.queries';
+import {
+  useContentJobTypes,
+  useJobGroups,
+  useMemberCode,
+  useContentTypes,
+  useJobs,
+} from 'src/services/code/code.queries';
 
 import { useSkills } from 'src/services/admin/skill/skill.queries';
 
@@ -37,10 +43,15 @@ export function QuizPage() {
   });
 
   const { data: jobCodes } = useContentTypes();
+  const [contentJobType, setContentJobType] = useState<any[]>([]);
   const { data: experienceData }: UseQueryResult<ExperiencesResponse> = useExperiences();
   const { data: quizData, refetch }: UseQueryResult<any> = useQuiz(quizId);
   const { data: jobGroup, isFetched: isJobGroupFetched } = useJobGroups();
   const { data: jobs } = useJobs();
+
+  const { isFetched: isContentTypeJobFetched } = useContentJobTypes(data => {
+    setContentJobType(data.data.contents || []);
+  });
 
   const { mutate: onSave } = useSaveQuiz();
   const { mutate: onDelete } = useDeleteQuiz();
@@ -140,6 +151,7 @@ export function QuizPage() {
       jobGroup={jobGroup}
       jobs={jobs}
       jobCodes={jobCodes}
+      contentJobType={contentJobType}
       quizData={quizData}
       pageProps={PAGE_PROPS}
       params={params}
