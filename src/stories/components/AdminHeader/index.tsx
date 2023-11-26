@@ -199,7 +199,7 @@ const AdminHeader = ({ menuItem, activeNo = 0 }: AdminNavbarProps) => {
         height={40}
         className={cx('image-logo')}
       /> */}
-      <h1 className="logo">데브어스</h1>
+      {/* <h1 className="logo">데브어스</h1> */}
       <div className="gnb-menu" style={{ width: 100 }}>
         <ul>
           {menuItem?.map(item => {

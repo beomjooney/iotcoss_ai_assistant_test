@@ -1,4 +1,4 @@
-import 'public/assets/css/admin/style.css';
+import '../../../../public/assets/css/admin/style.css';
 import { Meta, Story } from '@storybook/react';
 
 import Table from './index';

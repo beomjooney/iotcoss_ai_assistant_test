@@ -1,5 +1,5 @@
-@use 'src/stories/assets/styles/abstracts/font';
-@use 'src/stories/assets/styles/abstracts/palette';
+@use '../../../stories/assets/styles/abstracts/font';
+@use '../../../stories/assets/styles/abstracts/palette';
 
 .table-container {
   table-layout: fixed;
@@ -10,6 +10,11 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    .table-thead tr th {
+      font-family: 'HelveticaNeu', 'NotoSansCJKkr', 'Sans-serif';
+      font-weight: 500;
     }
   }
 }

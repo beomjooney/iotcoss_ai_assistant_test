@@ -577,6 +577,7 @@ export function AdminClubQuizTemplate({
                       <div className="inp-tit">삭제 상태</div>
                       <div className="inp">
                         <select
+                          className="input-admin"
                           value={clubQuiz?.quiz?.deleteStatus?.toString() || ''}
                           onChange={onChangeClub}
                           name="deleteStatus"

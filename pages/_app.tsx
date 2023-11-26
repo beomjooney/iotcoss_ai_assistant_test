@@ -2,7 +2,7 @@ import '../public/assets/css/materialdesignicons.min.css';
 import '../public/Apps.scss';
 import '../public/assets/css/colors/default.css';
 
-import 'public/assets/css/admin/style.css';
+import '../public/assets/css/admin/style.css';
 import 'public/assets/css/themify-icons.css';
 import 'public/assets/css/bootstrap.min.css';
 import 'public/assets/css/style.css';

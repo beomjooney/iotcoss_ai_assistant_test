@@ -1,7 +1,7 @@
-import 'public/assets/css/themify-icons.css';
-import 'public/assets/css/bootstrap.min.css';
-import 'public/assets/css/style.css';
-import 'public/assets/css/responsive.css';
+import '../../../../public/assets/css/themify-icons.css';
+import '../../../../public/assets/css/bootstrap.min.css';
+import '../../../../public/assets/css/admin/style.css';
+import '../../../../public/assets/css/responsive.css';
 
 import React from 'react';
 import { Meta, Story } from '@storybook/react';

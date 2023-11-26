@@ -264,7 +264,7 @@ export function MembersTemplate({
         <div className="left"></div>
         <div className="right">
           <div className={cx('search')}>
-            <div className={cx('date')}>
+            {/* <div className={cx('date')}>
               <div>
                 <div className="inpwrap">
                   <div className="inp-tit">시작일</div>
@@ -292,7 +292,7 @@ export function MembersTemplate({
                   </LocalizationProvider>
                 </div>
               </div>
-            </div>
+            </div> */}
             <div className="inpwrap">
               <div className="inp search">
                 <input
@@ -656,6 +656,7 @@ export function MembersTemplate({
                       </div>
                       <div className="inp">
                         <select
+                          className="input-admin"
                           value={member?.memberType || ''}
                           onChange={onChangeMember}
                           name="type"
@@ -677,6 +678,7 @@ export function MembersTemplate({
                       </div>
                       <div className="inp">
                         <select
+                          className="input-admin"
                           value={member?.jobGroup || ''}
                           onChange={onChangeMember}
                           name="jobGroup"
@@ -725,6 +727,7 @@ export function MembersTemplate({
                       <div className="inp-tit">이메일 수신 여부</div>
                       <div className="inp">
                         <select
+                          className="input-admin"
                           value={member?.emailReceiveYn?.toString() || ''}
                           onChange={onChangeMember}
                           name="emailReceiveYn"
@@ -741,6 +744,7 @@ export function MembersTemplate({
                       <div className="inp-tit">문자 수신 여부</div>
                       <div className="inp">
                         <select
+                          className="input-admin"
                           value={member?.smsReceiveYn?.toString() || ''}
                           onChange={onChangeMember}
                           name="smsReceiveYn"
@@ -757,6 +761,7 @@ export function MembersTemplate({
                       <div className="inp-tit">카카오 수신 여부</div>
                       <div className="inp">
                         <select
+                          className="input-admin"
                           value={member?.isKakaoReceive?.toString() || ''}
                           onChange={onChangeMember}
                           name="kakaoReceiveYn"

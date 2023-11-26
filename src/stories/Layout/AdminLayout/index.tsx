@@ -29,7 +29,7 @@ const AdminLayout = ({ darkBg, classOption, title, children, isFooter = true, re
   const DrawerHeader = styled('div')(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
-    padding: theme.spacing(0, 13),
+    padding: theme.spacing(0, 0),
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
     justifyContent: 'flex-end',
@@ -79,12 +79,10 @@ const AdminLayout = ({ darkBg, classOption, title, children, isFooter = true, re
       {!isLoading && (
         <div className="wrapper">
           <div className={cx('container')}>
-            <DrawerHeader>
-              <AdminHeader menuItem={menuItem} />
-              <main className={cx('main')}>
-                <div className={cx('content', `resolution--${resolution}`)}>{children}</div>
-              </main>
-            </DrawerHeader>
+            <AdminHeader menuItem={menuItem} />
+            <main className={cx('main')}>
+              <div className={cx('content', `resolution--${resolution}`)}>{children}</div>
+            </main>
           </div>
           {/*{isFooter && <Footer />}*/}
         </div>

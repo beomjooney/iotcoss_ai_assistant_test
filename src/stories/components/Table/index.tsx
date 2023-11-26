@@ -21,7 +21,7 @@ const Table = ({ name, colgroup, heads, items, isEmpty }: TableProps) => {
             return <col key={`colgroup-${name}${index}`} style={{ width: item }} />;
           })}
         </colgroup>
-        <thead>
+        <thead className={cx('table-thead')}>
           <tr>
             {heads.map((item, index) => {
               return (

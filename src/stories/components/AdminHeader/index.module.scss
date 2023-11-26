@@ -1,5 +1,5 @@
-@use 'src/stories/assets/styles/abstracts/font';
-@use 'src/stories/assets/styles/abstracts/palette';
+@use '../../../../src/stories/assets/styles/abstracts/font';
+@use '../../../../src/stories/assets/styles/abstracts/palette';
 
 .header-link {
   display: flex;
@@ -31,19 +31,19 @@
 }
 
 .menu-title {
-    position: relative;
-    display: block;
-    padding: 15px 0;
-    padding-left: 30px;
-    font-size: 14px;
-    color: #fff;
-    color: rgba(255,255,255,0.3);
-    font-size: 14px;
-    text-decoration: none !important;
-    background-color: transparent;
-    transition: all 0.3s ease-in-out;
+  position: relative;
+  display: block;
+  padding: 15px 0;
+  padding-left: 30px;
+  font-size: 14px;
+  color: #fff;
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 14px;
+  text-decoration: none !important;
+  background-color: transparent;
+  transition: all 0.3s ease-in-out;
 
-    span {
-        color: #fff;
-    }
+  span {
+    color: #fff;
+  }
 }

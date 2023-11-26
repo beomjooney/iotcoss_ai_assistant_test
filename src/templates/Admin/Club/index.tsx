@@ -847,6 +847,7 @@ export function AdminClubTemplate({
                       <div className="inp-tit">공개 여부</div>
                       <div className="inp">
                         <select
+                          className="input-admin"
                           value={club?.isPublic?.toString() || ''}
                           onChange={onChangeClub}
                           name="isPublic"
@@ -881,6 +882,7 @@ export function AdminClubTemplate({
                       </div>
                       <div className="inp">
                         <select
+                          className="input-admin"
                           name="clubStatus"
                           onChange={onChangeClub}
                           value={club?.clubStatus || ''}
@@ -1458,6 +1460,7 @@ export function AdminClubTemplate({
                             <div className="inp-tit">대표 여부</div>
                             <div className="inp">
                               <select
+                                className="input-admin"
                                 value={clubQuizzes[clubQuizIndex].isRepresentative?.toString() || ''}
                                 onChange={onChangeClub}
                                 name="isRepresentative"
