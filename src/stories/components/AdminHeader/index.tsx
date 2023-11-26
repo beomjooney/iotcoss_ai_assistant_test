@@ -151,7 +151,7 @@ const AdminHeader = ({ menuItem, activeNo = 0 }: AdminNavbarProps) => {
             link: '#',
             upMenuNo: 5,
             toggle: true,
-            children: [{ no: 5011, title: '약관', link: '#' }],
+            children: [{ no: 5011, title: '약관', link: '/admin/terms' }],
           },
           {
             no: 502,
