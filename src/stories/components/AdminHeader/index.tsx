@@ -51,11 +51,11 @@ const AdminHeader = ({ menuItem, activeNo = 0 }: AdminNavbarProps) => {
           {
             no: 102,
             title: '리더',
-            link: '#',
+            link: 'javascript:void(0);',
             upMenuNo: 1,
             toggle: true,
             children: [
-              { no: 1021, title: '리더', link: '#' },
+              { no: 1021, title: '리더', link: 'javascript:void(0);' },
               // { no: 1022, title: '리더신청', link: '#' },
             ],
           },
@@ -78,7 +78,7 @@ const AdminHeader = ({ menuItem, activeNo = 0 }: AdminNavbarProps) => {
           {
             no: 202,
             title: '퀴즈',
-            link: '#',
+            link: 'javascript:void(0);',
             upMenuNo: 2,
             toggle: true,
             children: [{ no: 2021, title: '퀴즈', link: '/admin/quiz' }],
@@ -86,10 +86,10 @@ const AdminHeader = ({ menuItem, activeNo = 0 }: AdminNavbarProps) => {
           {
             no: 203,
             title: '배너',
-            link: '#',
+            link: 'javascript:void(0);',
             upMenuNo: 2,
             toggle: true,
-            children: [{ no: 2031, title: '배너', link: '#' }],
+            children: [{ no: 2031, title: '배너', link: 'javascript:void(0);' }],
           },
         ]);
         break;
@@ -99,13 +99,13 @@ const AdminHeader = ({ menuItem, activeNo = 0 }: AdminNavbarProps) => {
           {
             no: 301,
             title: '통계',
-            link: '',
+            link: 'javascript:void(0);',
             upMenuNo: 3,
             toggle: true,
             children: [
-              { no: 3011, title: '클럽통계', link: '#' },
-              { no: 3012, title: '퀴즈통계', link: '#' },
-              { no: 3013, title: '리더통계', link: '#' },
+              { no: 3011, title: '클럽통계', link: 'javascript:void(0);' },
+              { no: 3012, title: '퀴즈통계', link: 'javascript:void(0);' },
+              { no: 3013, title: '리더통계', link: 'javascript:void(0);' },
             ],
           },
         ]);
@@ -116,29 +116,29 @@ const AdminHeader = ({ menuItem, activeNo = 0 }: AdminNavbarProps) => {
           {
             no: 401,
             title: '스킬/경험',
-            link: '#',
+            link: 'javascript:void(0);',
             upMenuNo: 4,
             toggle: true,
             children: [
-              { no: 4011, title: '스킬', link: '#' },
-              { no: 4012, title: '경험', link: '#' },
+              { no: 4011, title: '스킬', link: 'javascript:void(0);' },
+              { no: 4012, title: '경험', link: 'javascript:void(0);' },
             ],
           },
           {
             no: 402,
             title: '배지',
-            link: '#',
+            link: 'javascript:void(0);',
             upMenuNo: 4,
             toggle: true,
-            children: [{ no: 4021, title: '배지', link: '#' }],
+            children: [{ no: 4021, title: '배지', link: 'javascript:void(0);' }],
           },
           {
             no: 403,
             title: '커리어',
-            link: '#',
+            link: 'javascript:void(0);',
             upMenuNo: 4,
             toggle: true,
-            children: [{ no: 4031, title: '커리어', link: '#' }],
+            children: [{ no: 4031, title: '커리어', link: 'javascript:void(0);' }],
           },
         ]);
         break;
@@ -159,20 +159,20 @@ const AdminHeader = ({ menuItem, activeNo = 0 }: AdminNavbarProps) => {
           {
             no: 502,
             title: '알림관리',
-            link: '#',
+            link: 'javascript:void(0);',
             upMenuNo: 5,
             toggle: true,
-            children: [{ no: 5021, title: '알람발송이력', link: '#' }],
+            children: [{ no: 5021, title: '알람발송이력', link: 'javascript:void(0);' }],
           },
           {
             no: 503,
             title: '코드관리',
-            link: '#',
+            link: 'javascript:void(0);',
             upMenuNo: 5,
             toggle: true,
             children: [
-              { no: 5031, title: '코드그룹', link: '#' },
-              { no: 5032, title: '코드상세', link: '#' },
+              { no: 5031, title: '코드그룹', link: 'javascript:void(0);' },
+              { no: 5032, title: '코드상세', link: 'javascript:void(0);' },
             ],
           },
         ]);

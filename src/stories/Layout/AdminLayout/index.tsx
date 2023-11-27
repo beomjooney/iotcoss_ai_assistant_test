@@ -69,9 +69,21 @@ const AdminLayout = ({ darkBg, classOption, title, children, isFooter = true, re
       link: '/admin/club',
       icon: '/assets/images/icons/service.png',
     },
-    { no: 3, option: 'nav-item', title: '집계/통계', link: '#', icon: '/assets/images/icons/content.png' },
-    { no: 4, option: 'nav-item', title: '콘텐츠', link: '#', icon: '/assets/images/icons/content.png' },
-    { no: 5, option: 'nav-item', title: '시스템', link: '#', icon: '/assets/images/icons/system.png' },
+    {
+      no: 3,
+      option: 'nav-item',
+      title: '집계/통계',
+      link: 'javascript:void(0);',
+      icon: '/assets/images/icons/content.png',
+    },
+    {
+      no: 4,
+      option: 'nav-item',
+      title: '콘텐츠',
+      link: 'javascript:void(0);',
+      icon: '/assets/images/icons/content.png',
+    },
+    { no: 5, option: 'nav-item', title: '시스템', link: '/admin/terms', icon: '/assets/images/icons/system.png' },
   ];
 
   return (
