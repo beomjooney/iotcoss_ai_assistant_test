@@ -67,7 +67,7 @@ const AdminHeader = ({ menuItem, activeNo = 0 }: AdminNavbarProps) => {
           {
             no: 201,
             title: '클럽',
-            link: '',
+            link: '/admin/club',
             upMenuNo: 2,
             toggle: true,
             children: [
@@ -148,10 +148,13 @@ const AdminHeader = ({ menuItem, activeNo = 0 }: AdminNavbarProps) => {
           {
             no: 501,
             title: '정책관리',
-            link: '#',
+            link: '/admin/terms',
             upMenuNo: 5,
             toggle: true,
-            children: [{ no: 5011, title: '약관', link: '/admin/terms' }],
+            children: [
+              { no: 5011, title: '정책(약관)', link: '/admin/terms' },
+              { no: 5012, title: '정책동의', link: '/admin/termsAgree' },
+            ],
           },
           {
             no: 502,

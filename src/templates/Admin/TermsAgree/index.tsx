@@ -14,19 +14,19 @@ import { TextField } from '@mui/material';
 import { DesktopDatePicker, DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useUploadImage } from 'src/services/image/image.mutations';
-import { SearchParamsProps } from 'pages/admin/terms';
+import { SearchParamsProps } from 'pages/admin/termsAgree';
 
 const cx = classNames.bind(styles);
 
-interface TermsTemplateProps {
-  termList?: any;
+interface TermsAgreeTemplateProps {
+  termAgreeList?: any;
   skillsList?: any;
   experience?: any;
   jobGroup?: any;
   jobs?: any;
   jobCodes?: any;
   contentJobType?: any;
-  termData?: any;
+  termAgreeData?: any;
   pageProps?: any;
   onTermInfo?: (sequence: string) => void;
   onDeleteTerm?: (sequence: string) => void;
@@ -37,15 +37,15 @@ interface TermsTemplateProps {
   setParams: React.Dispatch<React.SetStateAction<SearchParamsProps>>;
 }
 
-export function TermsTemplate({
-  termList,
+export function TermsAgreeTemplate({
+  termAgreeList,
   skillsList,
   experience,
   jobGroup,
   jobs,
   jobCodes,
   contentJobType,
-  termData,
+  termAgreeData,
   pageProps,
   params,
   onTermInfo,
@@ -54,9 +54,9 @@ export function TermsTemplate({
   onAdd,
   onSearch,
   setParams,
-}: TermsTemplateProps) {
-  const COLGROUP = ['10%', '10%', '10%', '10%', '10%', '10%', '12%', '12%'];
-  const HEADS = ['유형', '공고일시', '시행일시', '이전정책 아이디', '등록자', '수정자', '등록일시', '수정일시'];
+}: TermsAgreeTemplateProps) {
+  const COLGROUP = ['10%', '10%', '10%', '10%'];
+  const HEADS = ['회원아이디', '회원명', '등록일시', '수정일시'];
 
   const TERMINFO = [
     { id: 1, name: '개인정보수집' },
@@ -64,7 +64,10 @@ export function TermsTemplate({
     { id: 3, name: '이용약관' },
   ];
 
-  const FIELDS = [{ name: '정책아이디', field: 'sequence', type: 'text' }];
+  const FIELDS = [
+    { name: '회원아이디', field: 'memberId', type: 'text' },
+    { name: '회원명', field: 'memberName', type: 'text' },
+  ];
 
   const { mutate: onSaveProfileImage, data: profileImage, isSuccess } = useUploadImage();
 
@@ -103,13 +106,13 @@ export function TermsTemplate({
   });
 
   useEffect(() => {
-    termData && setTerm(termData.data);
-    if (termData) {
-      setExperienceIds(termData?.data?.relatedExperiences?.map((item, index) => item) || []);
-      setSkillIds(termData?.data?.relatedSkills?.map((item, index) => item) || []);
-      setrecommendJobGroupsIds(termData?.data?.recommendJobGroups?.map((item, index) => item) || []);
-      setrecommendJobsIds(termData?.data?.recommendJobs?.map((item, index) => item) || []);
-      setrecommendLevelsIds(termData?.data?.recommendLevels?.map((item, index) => item) || []);
+    termAgreeData && setTerm(termAgreeData.data);
+    if (termAgreeData) {
+      setExperienceIds(termAgreeData?.data?.relatedExperiences?.map((item, index) => item) || []);
+      setSkillIds(termAgreeData?.data?.relatedSkills?.map((item, index) => item) || []);
+      setrecommendJobGroupsIds(termAgreeData?.data?.recommendJobGroups?.map((item, index) => item) || []);
+      setrecommendJobsIds(termAgreeData?.data?.recommendJobs?.map((item, index) => item) || []);
+      setrecommendLevelsIds(termAgreeData?.data?.recommendLevels?.map((item, index) => item) || []);
     } else {
       setExperienceIds([]);
       setSkillIds([]);
@@ -117,11 +120,11 @@ export function TermsTemplate({
       setrecommendJobsIds([]);
       setrecommendLevelsIds([]);
     }
-  }, [termData]);
+  }, [termAgreeData]);
 
   // useEffect(() => {
-  //   setTerm && setTerm(termData.data);
-  // }, [termData]);
+  //   setTerm && setTerm(termAgreeData.data);
+  // }, [termAgreeData]);
 
   const onShowPopup = (sequence: string) => {
     onTermInfo && onTermInfo(sequence);
@@ -129,7 +132,7 @@ export function TermsTemplate({
     setIsRegisterPopupOpen(false);
   };
 
-  const onChangeTerm = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const onChangeTermAgree = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = event.currentTarget;
     const data = {
       [name]: value,
@@ -321,16 +324,16 @@ export function TermsTemplate({
 
   return (
     <div className="content">
-      <h2 className="tit-type1">정책(약관)관리</h2>
+      <h2 className="tit-type1">정책동의관리</h2>
       <div className="path">
-        <span>Home</span> <span>약관목록</span>
+        <span>Home</span> <span>정책(동의)목록</span>
       </div>
 
       <div className="data-top">
         <div className="left">
-          <button className="btn-type1 type1" onClick={event => onShowUpRegisterPopUp(event)}>
+          {/* <button className="btn-type1 type1" onClick={event => onShowUpRegisterPopUp(event)}>
             등록
-          </button>
+          </button> */}
         </div>
         <div className="right">
           <div className={cx('search')}>
@@ -408,26 +411,14 @@ export function TermsTemplate({
           name="member"
           colgroup={COLGROUP}
           heads={HEADS}
-          items={termList?.data?.data?.contents?.map((item, index) => {
+          items={termAgreeList?.data?.data?.contents?.map((item, index) => {
             return (
               <tr key={`tr-${index}`} onClick={() => onShowPopup(item.sequence)}>
-                <td className="magic" title={item.typeName}>
-                  {item.typeName}
+                <td className="magic" title={item.memberId}>
+                  {item.memberId}
                 </td>
-                <td className="magic" title={dayjs(item.firmAt).format('YYYY-MM-DD HH:mm:ss')}>
-                  {dayjs(item.firmAt).format('YYYY-MM-DD')}
-                </td>
-                <td className="magic" title={dayjs(item.enforcementAt).format('YYYY-MM-DD HH:mm:ss')}>
-                  {dayjs(item.enforcementAt).format('YYYY-MM-DD')}
-                </td>
-                <td className="magic" title={item.previousTermsSeq}>
-                  {item.previousTermsSeq}
-                </td>
-                <td className="magic" title={item.creatorUUID}>
-                  {item?.creatorUUID || 0}
-                </td>
-                <td className="magic" title={item.updaterUUID}>
-                  {item?.updaterUUID || 0}
+                <td className="magic" title={item.memberName}>
+                  {item.memberName}
                 </td>
                 <td className="magic" title={dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}>
                   {dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}
@@ -438,7 +429,7 @@ export function TermsTemplate({
               </tr>
             );
           })}
-          isEmpty={termList?.data?.length === 0 || false}
+          isEmpty={termAgreeList?.data?.length === 0 || false}
         />
         <AdminPagination {...pageProps} />
       </div>
@@ -458,18 +449,9 @@ export function TermsTemplate({
                     <i className="ico i-x"></i>
                   </button>
                 </div>
-                <div className="tit-type2">약관 상세보기</div>
+                <div className="tit-type2">정책동의 상세보기</div>
               </div>
               <div className="right">
-                {isEdit ? (
-                  <button className="btn-type1 type2" onClick={methods.handleSubmit(handleSave, onError)}>
-                    저장
-                  </button>
-                ) : (
-                  <button className="btn-type1 type2" onClick={() => setIsEdit(true)}>
-                    수정
-                  </button>
-                )}
                 {isEdit ? (
                   <button className="btn-type1 type1" onClick={() => setIsEdit(false)}>
                     취소
@@ -485,14 +467,14 @@ export function TermsTemplate({
               <div className="layout-grid">
                 <div className="grid-25">
                   <div className="inpwrap">
-                    <div className="inp-tit">이전정책 아이디</div>
+                    <div className="inp-tit">약관동의아이디</div>
                     <div className="inp">
                       <input
                         className="input-admin"
                         type="text"
-                        {...methods.register('previousTermsSeq')}
-                        value={term?.previousTermsSeq || 0}
-                        onChange={onChangeTerm}
+                        {...methods.register('sequence')}
+                        value={term?.sequence || 0}
+                        onChange={onChangeTermAgree}
                         disabled
                       />
                     </div>
@@ -500,16 +482,91 @@ export function TermsTemplate({
                 </div>
                 <div className="grid-25">
                   <div className="inpwrap">
-                    <div className="inp-tit">
-                      유형<span className="star">*</span>
+                    <div className="inp-tit">회원아이디</div>
+                    <div className="inp">
+                      <input
+                        className="input-admin"
+                        type="text"
+                        {...methods.register('memberId')}
+                        value={term?.memberId || 0}
+                        onChange={onChangeTermAgree}
+                        disabled
+                      />
                     </div>
+                  </div>
+                </div>
+                <div className="grid-25">
+                  <div className="inpwrap">
+                    <div className="inp-tit">회원명</div>
+                    <div className="inp">
+                      <input
+                        className="input-admin"
+                        type="text"
+                        {...methods.register('name')}
+                        value={term?.name || 0}
+                        onChange={onChangeTermAgree}
+                        disabled
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid-25">
+                  <div className="inpwrap">
+                    <div className="inp-tit">회원닉네임</div>
+                    <div className="inp">
+                      <input
+                        className="input-admin"
+                        type="text"
+                        {...methods.register('nickname')}
+                        value={term?.nickname || 0}
+                        onChange={onChangeTermAgree}
+                        disabled
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid-50">
+                  <div className="inpwrap">
+                    <div className="inp-tit">등록일시</div>
+                    <div className="inp">
+                      <input
+                        className="input-admin"
+                        type="text"
+                        {...methods.register('createdAt')}
+                        value={term?.createdAt}
+                        onChange={onChangeTermAgree}
+                        disabled
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid-50">
+                  <div className="inpwrap">
+                    <div className="inp-tit">수정일시</div>
+                    <div className="inp">
+                      <input
+                        className="input-admin"
+                        type="text"
+                        {...methods.register('updatedAt')}
+                        value={term?.updatedAt}
+                        onChange={onChangeTermAgree}
+                        disabled
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid-25">
+                  <div className="inpwrap">
+                    <div className="inp-tit">정책유형</div>
                     <div className="inp">
                       <select
                         className="input-admin"
                         value={term?.type || ''}
-                        onChange={onChangeTerm}
+                        onChange={onChangeTermAgree}
                         name="type"
-                        disabled={!isEdit}
+                        disabled
                       >
                         {TERMINFO?.map(item => (
                           <option key={item.id} value={item.id}>
@@ -520,31 +577,16 @@ export function TermsTemplate({
                     </div>
                   </div>
                 </div>
-                <div className="grid-25">
+                <div className="grid-100 mt-4">
                   <div className="inpwrap">
-                    <div className="inp-tit">작성자</div>
+                    <div className="inp-tit">정책내용</div>
                     <div className="inp">
-                      <input
-                        className="input-admin"
-                        type="text"
-                        {...methods.register('creatorUUID')}
-                        value={term?.creatorUUID}
-                        onChange={onChangeTerm}
-                        disabled
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit">수정자</div>
-                    <div className="inp">
-                      <input
-                        className="input-admin"
-                        type="text"
-                        {...methods.register('updaterUUID')}
-                        value={term?.updaterUUID}
-                        onChange={onChangeTerm}
+                      <Editor
+                        type="seminar"
+                        data={term?.terms?.content || ''}
+                        onChange={(event, editor) => {
+                          setIntroduceEditor(editor.getData());
+                        }}
                         disabled
                       />
                     </div>
@@ -553,53 +595,15 @@ export function TermsTemplate({
                 <div className="grid-25">
                   <div className="inpwrap">
                     <div className="inp-tit" style={{ height: 25 }}>
-                      공고 일시<span className="star">*</span>
-                    </div>
-                    <div className="inp">
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DateTimePicker
-                          format="YYYY-MM-DD"
-                          value={dayjs(term?.firmAt) || ''}
-                          className={cx('basic-info-page__picker')}
-                          onChange={e => handlePickerChange(e, 'firmAt')}
-                          //renderInput={params => <TextField {...params} variant="standard" />}
-                          disabled={!isEdit}
-                        />
-                      </LocalizationProvider>
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit" style={{ height: 25 }}>
-                      시행 일시<span className="star">*</span>
-                    </div>
-                    <div className="inp">
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DateTimePicker
-                          format="YYYY-MM-DD"
-                          value={dayjs(term?.enforcementAt) || ''}
-                          className={cx('basic-info-page__picker')}
-                          onChange={e => handlePickerChange(e, 'enforcementAt')}
-                          //renderInput={params => <TextField {...params} variant="standard" />}
-                          disabled={!isEdit}
-                        />
-                      </LocalizationProvider>
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit" style={{ height: 25 }}>
-                      등록일시
+                      정책공고일시
                     </div>
                     <div className="inp">
                       <input
                         className="input-admin"
                         type="text"
-                        {...methods.register('createdAt')}
-                        value={term?.createdAt}
-                        onChange={onChangeTerm}
+                        {...methods.register('firmAt')}
+                        value={dayjs(term?.terms?.firmAt).format('YYYY-MM-DD')}
+                        onChange={onChangeTermAgree}
                         disabled
                       />
                     </div>
@@ -608,34 +612,51 @@ export function TermsTemplate({
                 <div className="grid-25">
                   <div className="inpwrap">
                     <div className="inp-tit" style={{ height: 25 }}>
-                      수정일시
+                      정책시행일시
                     </div>
                     <div className="inp">
                       <input
                         className="input-admin"
                         type="text"
-                        {...methods.register('updatedAt')}
-                        value={term?.updatedAt}
-                        onChange={onChangeTerm}
+                        {...methods.register('enforcementAt')}
+                        value={dayjs(term?.terms?.enforcementAt).format('YYYY-MM-DD')}
+                        onChange={onChangeTermAgree}
                         disabled
                       />
                     </div>
                   </div>
                 </div>
 
-                <div className="grid-100 mt-4">
+                <div className="grid-25">
                   <div className="inpwrap">
-                    <div className="inp-tit">
-                      내용<span className="star">*</span>
+                    <div className="inp-tit" style={{ height: 25 }}>
+                      정책등록일시
                     </div>
                     <div className="inp">
-                      <Editor
-                        type="seminar"
-                        data={term?.content || ''}
-                        onChange={(event, editor) => {
-                          setIntroduceEditor(editor.getData());
-                        }}
-                        disabled={!isEdit}
+                      <input
+                        className="input-admin"
+                        type="text"
+                        {...methods.register('createdAt')}
+                        value={dayjs(term?.terms?.createdAt).format('YYYY-MM-DD')}
+                        onChange={onChangeTermAgree}
+                        disabled
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid-25">
+                  <div className="inpwrap">
+                    <div className="inp-tit" style={{ height: 25 }}>
+                      정책수정일시
+                    </div>
+                    <div className="inp">
+                      <input
+                        className="input-admin"
+                        type="text"
+                        {...methods.register('updatedAt')}
+                        value={dayjs(term?.terms?.updatedAt).format('YYYY-MM-DD')}
+                        onChange={onChangeTermAgree}
+                        disabled
                       />
                     </div>
                   </div>
@@ -645,109 +666,8 @@ export function TermsTemplate({
           </div>
         </FormProvider>
       </div>
-
-      {isRegisterPopupOpen && (
-        <div className={cx('side-layer', isRegisterPopupOpen ? 'open' : '')} id="sidePop2">
-          <div className="dim"></div>
-          <div className="side-contents">
-            <div className="layer-top">
-              <div className="left" style={{ display: 'flex', alignItems: 'center' }}>
-                <div style={{ fontSize: 30, marginRight: 30 }}>
-                  <button onClick={() => closeRegisterPopup()}>
-                    <i className="ico i-x"></i>
-                  </button>
-                </div>
-                <div className="tit-type2">약관 등록</div>
-              </div>
-              <div className="right">
-                <button className="btn-type1 type2" onClick={handleOnAdd}>
-                  저장
-                </button>
-              </div>
-            </div>
-            <div className="tab-content" data-id="tabLink01">
-              <div className="layout-grid">
-                <div className="grid-33">
-                  <div className="inpwrap">
-                    <div className="inp-tit" style={{ height: 25 }}>
-                      유형<span className="star">*</span>
-                    </div>
-                    <div className="inp">
-                      <select
-                        className="input-admin"
-                        value={regitserValues?.type || ''}
-                        onChange={onChangeTerm}
-                        name="type"
-                      >
-                        {TERMINFO?.map(item => (
-                          <option key={item.id} value={item.id}>
-                            {item.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-33">
-                  <div className="inpwrap">
-                    <div className="inp-tit" style={{ height: 25 }}>
-                      공고 일시<span className="star">*</span>
-                    </div>
-                    <div className="inp">
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DateTimePicker
-                          format="YYYY-MM-DD"
-                          value={dayjs(regitserValues?.firmAt) || ''}
-                          className={cx('basic-info-page__picker')}
-                          onChange={e => handlePickerChange(e, 'firmAt')}
-                          //renderInput={params => <TextField {...params} variant="standard" />}
-                        />
-                      </LocalizationProvider>
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-33">
-                  <div className="inpwrap">
-                    <div className="inp-tit" style={{ height: 25 }}>
-                      시행 일시<span className="star">*</span>
-                    </div>
-                    <div className="inp">
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DateTimePicker
-                          format="YYYY-MM-DD"
-                          value={dayjs(regitserValues?.enforcementAt) || ''}
-                          className={cx('basic-info-page__picker')}
-                          onChange={e => handlePickerChange(e, 'enforcementAt')}
-                          //renderInput={params => <TextField {...params} variant="standard" />}
-                        />
-                      </LocalizationProvider>
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-100 mt-4">
-                  <div className="inpwrap">
-                    <div className="inp-tit">
-                      내용<span className="star">*</span>
-                    </div>
-                    <div className="inp">
-                      <Editor
-                        type="seminar"
-                        data={regitserValues?.content || ''}
-                        onChange={(event, editor) => {
-                          setIntroduceEditor(editor.getData());
-                        }}
-                        disabled={!isEdit}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
 
-export default TermsTemplate;
+export default TermsAgreeTemplate;
