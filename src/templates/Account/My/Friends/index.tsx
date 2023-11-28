@@ -73,9 +73,9 @@ export function MyFriendsTemplate() {
                 contents.map((item, index) => (
                   <div
                     key={index}
-                    className="tw-p-3 center tw-grid tw-grid-cols-6 border-bottom tw-flex tw-items-center tw-space-x-4"
+                    className="tw-p-3 center tw-grid tw-grid-cols-7 border-bottom tw-flex tw-items-center tw-space-x-4"
                   >
-                    <div className="tw-col-span-2 tw-flex  tw-items-center ">
+                    <div className="tw-col-span-3 tw-flex  tw-items-center ">
                       <img
                         src={item?.imageUrl}
                         alt="image"

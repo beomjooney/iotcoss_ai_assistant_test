@@ -30,6 +30,7 @@ import TableRow from '@mui/material/TableRow';
 import ReactDragList from 'react-drag-list';
 import { useQuizOrder } from 'src/services/quiz/quiz.mutations';
 import { useCrewAcceptPost, useCrewBanDelete, useCrewRejectPost } from 'src/services/admin/friends/friends.mutations';
+import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 
 const cx = classNames.bind(styles);
 export interface QuizCrewManageTemplateProps {
@@ -101,120 +102,239 @@ export function QuizCrewManageTemplate({ id }: QuizCrewManageTemplateProps) {
   }, [page]);
 
   return (
-    <div className={cx('seminar-detail-container')}>
-      <div className={cx('container')}>
-        <div className="tw-py-5 tw-mb-16">
-          <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-            <Grid item xs={4} className="tw-font-bold tw-text-3xl tw-text-black">
-              내가 만든 클럽 &gt; 크루관리
-            </Grid>
-            <Grid item xs={5} className="tw-font-semi tw-text-base tw-text-black">
-              나의 퀴즈클럽 클럽 페이지에 관련 간단한 설명
-            </Grid>
-            <Grid item xs={3} justifyContent="flex-end" className="tw-flex"></Grid>
-          </Grid>
+    <>
+      <Desktop>
+        <div className={cx('seminar-detail-container')}>
+          <div className={cx('container')}>
+            <div className="tw-py-5 tw-mb-16">
+              <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
+                <Grid item xs={4} className="tw-font-bold tw-text-3xl tw-text-black">
+                  내가 만든 클럽 &gt; 크루관리
+                </Grid>
+                <Grid item xs={5} className="tw-font-semi tw-text-base tw-text-black">
+                  나의 퀴즈클럽 클럽 페이지에 관련 간단한 설명
+                </Grid>
+                <Grid item xs={3} justifyContent="flex-end" className="tw-flex"></Grid>
+              </Grid>
+            </div>
+            <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="center" sx={{ width: 150 }}>
+                      아이디
+                    </TableCell>
+                    <TableCell align="center">가입일</TableCell>
+                    <TableCell align="center">참여도</TableCell>
+                    <TableCell align="center">받은 좋아요 수</TableCell>
+                    <TableCell align="center">관리</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {contents?.map((row, index) => (
+                    <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                      <TableCell align="left">
+                        <div className="tw-flex tw-gap-4 tw-items-center">
+                          <img className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full" src={row?.profileImageUrl} alt="" />
+                          <div>{row?.nickName}</div>
+                        </div>
+                      </TableCell>
+                      <TableCell align="center">{row?.approvedAt ? row.approvedAt.split(' ')[0] : ''}</TableCell>
+                      <TableCell align="center">
+                        <div>
+                          {row?.studyCount} / {row?.totalStudyCount}
+                        </div>
+                      </TableCell>
+                      <TableCell align="center">{row?.totalStudyCount}</TableCell>
+                      <TableCell align="right">
+                        <div className="tw-flex tw-items-center tw-justify-end">
+                          <button
+                            onClick={() => (location.href = '/profile/' + `${row?.memberUUID}`)}
+                            className="tw-bg-white tw-text-black border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded tw-mr-3 "
+                          >
+                            프로필 보기
+                          </button>
+                          {row?.clubMemberStatus === '0001' && (
+                            <div>
+                              <button
+                                onClick={() => handleCrewAccept(row?.clubMemberSequence)}
+                                className="tw-mr-3 tw-bg-white tw-text-black border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
+                              >
+                                승인하기
+                              </button>
+                              <button
+                                onClick={() => handleCrewReject(row?.clubMemberSequence)}
+                                className="tw-mr-3 border-danger tw-bg-white tw-text-red-500 border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
+                              >
+                                거절하기
+                              </button>
+                              <button
+                                onClick={() => handleCrewBan(row?.clubMemberSequence)}
+                                className="border-danger tw-bg-white tw-text-red-500 border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
+                              >
+                                강퇴하기
+                              </button>
+                            </div>
+                          )}
+                          {row?.clubMemberStatus === '0002' && (
+                            <div>
+                              <button
+                                onClick={() => handleCrewBan(row?.clubMemberSequence)}
+                                className="border-danger tw-bg-white tw-text-red-500 border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
+                              >
+                                강퇴하기
+                              </button>
+                            </div>
+                          )}
+                          {row?.clubMemberStatus === '0003' && (
+                            <div>
+                              <button
+                                disabled
+                                className="border-danger tw-bg-white tw-text-red-500 border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
+                              >
+                                거절됨
+                              </button>
+                            </div>
+                          )}
+                          {row?.clubMemberStatus === '0004' && (
+                            <div>
+                              <button
+                                disabled
+                                className="border-danger tw-bg-white tw-text-red-500 border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
+                              >
+                                강퇴됨
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
+          <div className="tw-mt-10">
+            <Pagination page={page} setPage={setPage} total={totalPage} />
+          </div>
         </div>
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TableCell align="center" sx={{ width: 150 }}>
-                  아이디
-                </TableCell>
-                <TableCell align="center">가입일</TableCell>
-                <TableCell align="center">참여도</TableCell>
-                <TableCell align="center">받은 좋아요 수</TableCell>
-                <TableCell align="center">관리</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {contents?.map((row, index) => (
-                <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                  <TableCell align="left">
-                    <div className="tw-flex tw-gap-4 tw-items-center">
-                      <img className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full" src={row?.profileImageUrl} alt="" />
-                      <div>{row?.nickName}</div>
-                    </div>
-                  </TableCell>
-                  <TableCell align="center">{row?.approvedAt ? row.approvedAt.split(' ')[0] : ''}</TableCell>
-                  <TableCell align="center">
-                    <div>
-                      {row?.studyCount} / {row?.totalStudyCount}
-                    </div>
-                  </TableCell>
-                  <TableCell align="center">{row?.totalStudyCount}</TableCell>
-                  <TableCell align="right">
-                    <div className="tw-flex tw-items-center tw-justify-end">
-                      <button
-                        onClick={() => (location.href = '/profile/' + `${row?.memberUUID}`)}
-                        className="tw-bg-white tw-text-black border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded tw-mr-3 "
-                      >
-                        프로필 보기
-                      </button>
-                      {row?.clubMemberStatus === '0001' && (
-                        <div>
-                          <button
-                            onClick={() => handleCrewAccept(row?.clubMemberSequence)}
-                            className="tw-mr-3 tw-bg-white tw-text-black border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
-                          >
-                            승인하기
-                          </button>
-                          <button
-                            onClick={() => handleCrewReject(row?.clubMemberSequence)}
-                            className="tw-mr-3 border-danger tw-bg-white tw-text-red-500 border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
-                          >
-                            거절하기
-                          </button>
-                          <button
-                            onClick={() => handleCrewBan(row?.clubMemberSequence)}
-                            className="border-danger tw-bg-white tw-text-red-500 border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
-                          >
-                            강퇴하기
-                          </button>
+      </Desktop>
+      <Mobile>
+        <div className={cx('seminar-detail-container')}>
+          <div className={cx('container')}>
+            <div className="tw-py-5 tw-mb-16">
+              <div className="tw-pt-[60px]">
+                <div className="tw-text-[24px] tw-font-bold tw-text-black tw-text-center">
+                  내가 만든 클럽 &gt; 크루관리
+                </div>
+                <div className="tw-text-[12px] tw-text-black tw-text-center tw-mb-10">
+                  내가 만든 클럽 페이지에 관한 간단한 설명란
+                </div>
+              </div>
+            </div>
+            <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="center" sx={{ width: 150 }}>
+                      아이디
+                    </TableCell>
+                    <TableCell align="center">가입일</TableCell>
+                    <TableCell align="center">참여도</TableCell>
+                    <TableCell align="center">받은 좋아요 수</TableCell>
+                    <TableCell align="center">관리</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {contents?.map((row, index) => (
+                    <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                      <TableCell align="left">
+                        <div className="tw-flex tw-gap-4 tw-items-center">
+                          <img className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full" src={row?.profileImageUrl} alt="" />
+                          <div>{row?.nickName}</div>
                         </div>
-                      )}
-                      {row?.clubMemberStatus === '0002' && (
+                      </TableCell>
+                      <TableCell align="center">{row?.approvedAt ? row.approvedAt.split(' ')[0] : ''}</TableCell>
+                      <TableCell align="center">
                         <div>
-                          <button
-                            onClick={() => handleCrewBan(row?.clubMemberSequence)}
-                            className="border-danger tw-bg-white tw-text-red-500 border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
-                          >
-                            강퇴하기
-                          </button>
+                          {row?.studyCount} / {row?.totalStudyCount}
                         </div>
-                      )}
-                      {row?.clubMemberStatus === '0003' && (
-                        <div>
+                      </TableCell>
+                      <TableCell align="center">{row?.totalStudyCount}</TableCell>
+                      <TableCell align="right">
+                        <div className="tw-flex tw-items-center tw-justify-end">
                           <button
-                            disabled
-                            className="border-danger tw-bg-white tw-text-red-500 border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
+                            onClick={() => (location.href = '/profile/' + `${row?.memberUUID}`)}
+                            className="tw-bg-white tw-text-black border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded tw-mr-3 "
                           >
-                            거절됨
+                            프로필 보기
                           </button>
+                          {row?.clubMemberStatus === '0001' && (
+                            <div>
+                              <button
+                                onClick={() => handleCrewAccept(row?.clubMemberSequence)}
+                                className="tw-mr-3 tw-bg-white tw-text-black border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
+                              >
+                                승인하기
+                              </button>
+                              <button
+                                onClick={() => handleCrewReject(row?.clubMemberSequence)}
+                                className="tw-mr-3 border-danger tw-bg-white tw-text-red-500 border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
+                              >
+                                거절하기
+                              </button>
+                              <button
+                                onClick={() => handleCrewBan(row?.clubMemberSequence)}
+                                className="border-danger tw-bg-white tw-text-red-500 border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
+                              >
+                                강퇴하기
+                              </button>
+                            </div>
+                          )}
+                          {row?.clubMemberStatus === '0002' && (
+                            <div>
+                              <button
+                                onClick={() => handleCrewBan(row?.clubMemberSequence)}
+                                className="border-danger tw-bg-white tw-text-red-500 border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
+                              >
+                                강퇴하기
+                              </button>
+                            </div>
+                          )}
+                          {row?.clubMemberStatus === '0003' && (
+                            <div>
+                              <button
+                                disabled
+                                className="border-danger tw-bg-white tw-text-red-500 border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
+                              >
+                                거절됨
+                              </button>
+                            </div>
+                          )}
+                          {row?.clubMemberStatus === '0004' && (
+                            <div>
+                              <button
+                                disabled
+                                className="border-danger tw-bg-white tw-text-red-500 border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
+                              >
+                                강퇴됨
+                              </button>
+                            </div>
+                          )}
                         </div>
-                      )}
-                      {row?.clubMemberStatus === '0004' && (
-                        <div>
-                          <button
-                            disabled
-                            className="border-danger tw-bg-white tw-text-red-500 border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
-                          >
-                            강퇴됨
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </div>
-      <div className="tw-mt-10">
-        <Pagination page={page} setPage={setPage} total={totalPage} />
-      </div>
-    </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
+          <div className="tw-mt-10">
+            <Pagination page={page} setPage={setPage} total={totalPage} />
+          </div>
+        </div>
+      </Mobile>
+    </>
   );
 }
 

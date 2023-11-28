@@ -168,7 +168,8 @@ select {
   transition: border 0.5s ease;
   -webkit-transition: border 0.5s ease;
 }
-input[type='text'],
+/* 전역변수 문제*/
+/* input[type='text'],
 input[type='password'],
 input[type='number'] {
   height: 38px;
@@ -181,7 +182,7 @@ input[type='number'] {
   outline: none;
   transition: border 0.5s ease;
   -webkit-transition: border 0.5s ease;
-}
+} */
 textarea {
   font-size: 13px;
   padding: 10px;
@@ -456,7 +457,9 @@ hr.h50 {
 }
 
 .content {
-  padding: 10px 40px 60px 120px;
+  /* 전역변수 문제 */
+  /* padding: 10px 40px 60px 120px; */
+  padding: 20px;
 }
 
 /* footer */

@@ -91,7 +91,8 @@ const levelGroup = [
   },
 ];
 
-const options = ['삭제하기', '퀴즈 비공개'];
+const options = ['삭제하기'];
+// const options = ['삭제하기', '퀴즈 비공개'];
 
 export type ArticleLikeUser = {
   userId: string;
@@ -300,67 +301,153 @@ export function QuizMakeTemplate() {
   }));
   const classes = useStyles();
   return (
-    <div className={cx('seminar-container')}>
-      {/* <Banner title="커리어멘토스 세미나" subTitle="커멘세미나" /> */}
+    <>
+      <div className={cx('seminar-container')}>
+        <div className={cx('container')}>
+          <div className="xl:tw-py-[60px] tw-pt-[50px]">
+            <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
+              <Grid item xs={12} sm={3} className="tw-font-bold sm:tw-text-3xl tw-text-2xl tw-text-black">
+                내가 만든 퀴즈
+              </Grid>
+              <Grid item xs={12} sm={6} className="tw-font-semi tw-text-base tw-text-black sm:tw-pt-5">
+                <div>나와 크루들의 성장을 돕기위해 내가 만든 퀴즈 리스트예요!</div>
+              </Grid>
+              <Grid item xs={12} sm={3} justifyContent="flex-end" className="tw-flex">
+                <button
+                  type="button"
+                  onClick={() => handleAddClick()}
+                  className="tw-text-blue-600 tw-bg-white border border-primary tw-font-bold tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
+                >
+                  퀴즈 직접 등록하기 +
+                </button>
+              </Grid>
+            </Grid>
+          </div>
+          <Box sx={{ width: '100%', typography: 'body1', marginTop: '20px', marginBottom: '20px' }}>
+            <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
+              <Grid item xs={6} sm={9} className="tw-font-bold tw-text-3xl tw-text-black">
+                <div className="tw-text-xl">퀴즈목록 ({myQuizData?.contents?.length})</div>
+              </Grid>
+              <Grid item xs={6} sm={3} className="tw-font-semi tw-text-base tw-text-black">
+                <TextField
+                  fullWidth
+                  id="outlined-basic"
+                  label=""
+                  variant="outlined"
+                  InputProps={{
+                    style: { height: '43px' },
+                    startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
+                  }}
+                  onKeyPress={e => {
+                    if (e.key === 'Enter') {
+                      searchKeyworld((e.target as HTMLInputElement).value);
+                    }
+                  }}
+                />
+              </Grid>
+            </Grid>
+          </Box>
 
-      <div className={cx('container')}>
-        <div className="xl:tw-py-[60px] tw-pt-[50px]">
-          <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-            <Grid item xs={12} sm={3} className="tw-font-bold sm:tw-text-3xl tw-text-2xl tw-text-black">
-              내가 만든 퀴즈
-            </Grid>
-            <Grid item xs={12} sm={6} className="tw-font-semi tw-text-base tw-text-black sm:tw-pt-5">
-              <div>나와 크루들의 성장을 돕기위해 내가 만든 퀴즈 리스트예요!</div>
-            </Grid>
-            <Grid item xs={12} sm={3} justifyContent="flex-end" className="tw-flex">
-              <button
-                type="button"
-                onClick={() => handleAddClick()}
-                className="tw-text-blue-600 tw-bg-white border border-primary tw-font-bold tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
-              >
-                퀴즈 직접 등록하기 +
-              </button>
-            </Grid>
-          </Grid>
-        </div>
-        <Box sx={{ width: '100%', typography: 'body1', marginTop: '20px', marginBottom: '20px' }}>
-          <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-            <Grid item xs={6} sm={9} className="tw-font-bold tw-text-3xl tw-text-black">
-              <div className="tw-text-xl">퀴즈목록 ({myQuizData?.contents?.length})</div>
-            </Grid>
-            <Grid item xs={6} sm={3} className="tw-font-semi tw-text-base tw-text-black">
-              <TextField
-                fullWidth
-                id="outlined-basic"
-                label=""
-                variant="outlined"
-                InputProps={{
-                  style: { height: '43px' },
-                  startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
-                }}
-                onKeyPress={e => {
-                  if (e.key === 'Enter') {
-                    searchKeyworld((e.target as HTMLInputElement).value);
-                  }
-                }}
-              />
-            </Grid>
-          </Grid>
-        </Box>
-
-        <Divider className="tw-mb-3 tw-border tw-bg-['#efefef']" />
-        <article>
-          <div className={cx('content-area')}>
-            <section className={cx('content', 'flex-wrap-container')}>
-              {myQuizData?.contents?.map((item, index) => (
-                <div key={index}>
-                  <Desktop>
-                    <div className="tw-p-4 tw-border border tw-w-full tw-rounded-xl">
-                      <div className="tw-flex tw-w-full tw-items-center"></div>
-                      <div className="tw-flex  tw-items-center">
-                        <div className="tw-flex-auto">
+          <Divider className="tw-mb-3 tw-border tw-bg-['#efefef']" />
+          <article>
+            <div className={cx('content-area')}>
+              <section className={cx('content', 'flex-wrap-container')}>
+                {myQuizData?.contents?.map((item, index) => (
+                  <div key={index} className="tw-w-full">
+                    <Desktop>
+                      <div className="tw-p-4 tw-border border tw-w-full tw-rounded-xl">
+                        <div className="tw-flex tw-w-full tw-items-center"></div>
+                        <div className="tw-flex  tw-items-center">
+                          <div className="tw-flex-auto ">
+                            <div className="tw-font-medium tw-text-black">
+                              <div className="tw-p-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
+                                {item?.recommendJobGroupNames?.map((name, i) => (
+                                  <span
+                                    key={i}
+                                    className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600"
+                                  >
+                                    {name}
+                                  </span>
+                                ))}
+                                <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
+                                  {item?.recommendLevels?.sort().join(',')}레벨
+                                </span>
+                                {item?.recommendJobNames?.map((name, i) => (
+                                  <span
+                                    key={i}
+                                    className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-100 tw-text-sm tw-font-light tw-text-gray-600"
+                                  >
+                                    {name}
+                                  </span>
+                                ))}
+                                {item?.hashTags?.map((name, i) => (
+                                  <span
+                                    key={i}
+                                    className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-gray-700"
+                                  >
+                                    {name}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="tw-text-gray-400 tw-text-sm tw-mr-5">{item.createdAt}</div>
+                          <IconButton
+                            aria-label="more"
+                            id="long-button"
+                            aria-controls={open ? 'long-menu' : undefined}
+                            aria-expanded={open ? 'true' : undefined}
+                            aria-haspopup="true"
+                            onClick={event => handleDropMenuClick(event, item.sequence)}
+                          >
+                            <MoreVertIcon />
+                          </IconButton>
+                          <div>
+                            <Menu
+                              id="lock-menu"
+                              anchorEl={anchorEl}
+                              open={open}
+                              onClose={handleClose}
+                              className={classes.root}
+                              MenuListProps={{
+                                'aria-labelledby': 'lock-button',
+                                role: 'listbox',
+                                style: {
+                                  border: '1px solid rgb(218, 226, 237)',
+                                  boxShadow: 'none !important',
+                                  borderRadius: '12px',
+                                },
+                              }}
+                            >
+                              {options.map((option, index) => (
+                                <MenuItem key={index} onClick={event => handleMenuItemClick(event, index)}>
+                                  {option}
+                                </MenuItem>
+                              ))}
+                            </Menu>
+                          </div>
+                        </div>
+                        <div className="tw-flex  tw-items-center tw-p-3">
+                          <div className="tw-flex-auto">
+                            <div className="tw-font-medium tw-text-black tw-text-base">{item.content}</div>
+                          </div>
+                          {/* <div className="">{item.memberName}</div> */}
+                        </div>
+                        <div className="tw-grid tw-grid-cols-12 tw-gap-4 tw-p-3">
+                          <div className="tw-col-span-1 tw-text-sm tw-font-bold tw-text-black ">아티클</div>
+                          <div className="tw-col-span-9 tw-text-sm tw-text-gray-600">{item.articleUrl}</div>
+                          <div className="tw-col-span-2 tw-text-sm tw-text-right">
+                            댓글 : {item.activeCount} 답변 : {item.answerCount}
+                          </div>
+                        </div>
+                      </div>
+                    </Desktop>
+                    <Mobile>
+                      <div className="tw-p-5 tw-border border tw-w-full tw-rounded-xl">
+                        {/* 첫 번째 컬럼 */}
+                        <div className="md:tw-w-full">
                           <div className="tw-font-medium tw-text-black">
-                            <div className="tw-p-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
+                            <div className="tw-text-sm tw-font-normal tw-text-gray-500">
                               {item?.recommendJobGroupNames?.map((name, i) => (
                                 <span
                                   key={i}
@@ -389,345 +476,259 @@ export function QuizMakeTemplate() {
                                 </span>
                               ))}
                             </div>
+                            <div className="tw-text-gray-400 tw-text-base tw-py-1 tw-text-right">{item.createdAt}</div>
                           </div>
                         </div>
-                        <div className="tw-text-gray-400 tw-text-sm tw-mr-5">{item.createdAt}</div>
-                        <IconButton
-                          aria-label="more"
-                          id="long-button"
-                          aria-controls={open ? 'long-menu' : undefined}
-                          aria-expanded={open ? 'true' : undefined}
-                          aria-haspopup="true"
-                          onClick={event => handleDropMenuClick(event, item.sequence)}
-                        >
-                          <MoreVertIcon />
-                        </IconButton>
-                        <div>
-                          <Menu
-                            id="lock-menu"
-                            anchorEl={anchorEl}
-                            open={open}
-                            onClose={handleClose}
-                            className={classes.root}
-                            MenuListProps={{
-                              'aria-labelledby': 'lock-button',
-                              role: 'listbox',
-                              style: {
-                                border: '1px solid rgb(218, 226, 237)',
-                                boxShadow: 'none !important',
-                                borderRadius: '12px',
-                              },
-                            }}
-                          >
-                            {options.map((option, index) => (
-                              <MenuItem key={index} onClick={event => handleMenuItemClick(event, index)}>
-                                {option}
-                              </MenuItem>
-                            ))}
-                          </Menu>
+                        {/* 두 번째 컬럼 */}
+                        <div className="md:tw-w-full">
+                          <div className="tw-flex  tw-items-center py-2">
+                            <div className="tw-flex-auto">
+                              <div className="tw-font-medium tw-text-black tw-text-base tw-line-clamp-1">
+                                {item.content}
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                      <div className="tw-flex  tw-items-center tw-p-3">
-                        <div className="tw-flex-auto">
-                          <div className="tw-font-medium tw-text-black tw-text-base">{item.content}</div>
+                        {/* 세 번째 컬럼 */}
+                        <div className="md:tw-w-full">
+                          <div className="tw-grid tw-grid-cols-12 tw-gap-4">
+                            <div className="tw-col-span-2 tw-text-sm tw-font-bold tw-text-black">아티클</div>
+                            <div className="tw-col-span-10 tw-text-sm tw-text-gray-600  tw-line-clamp-1">
+                              {item.articleUrl}
+                            </div>
+                          </div>
                         </div>
-                        {/* <div className="">{item.memberName}</div> */}
-                      </div>
-                      <div className="tw-grid tw-grid-cols-12 tw-gap-4 tw-p-3">
-                        <div className="tw-col-span-1 tw-text-sm tw-font-bold tw-text-black ">아티클</div>
-                        <div className="tw-col-span-9 tw-text-sm tw-text-gray-600">{item.articleUrl}</div>
                         <div className="tw-col-span-2 tw-text-sm tw-text-right">
                           댓글 : {item.activeCount} 답변 : {item.answerCount}
                         </div>
                       </div>
-                    </div>
-                  </Desktop>
-                  <Mobile>
-                    <div className="tw-p-5 tw-border border tw-w-full tw-rounded-xl">
-                      {/* 첫 번째 컬럼 */}
-                      <div className="md:tw-w-full">
-                        <div className="tw-font-medium tw-text-black">
-                          <div className="tw-text-sm tw-font-normal tw-text-gray-500">
-                            {item?.recommendJobGroupNames?.map((name, i) => (
-                              <span
-                                key={i}
-                                className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600"
-                              >
-                                {name}
-                              </span>
-                            ))}
-                            <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
-                              {item?.recommendLevels?.sort().join(',')}레벨
-                            </span>
-                            {item?.recommendJobNames?.map((name, i) => (
-                              <span
-                                key={i}
-                                className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-100 tw-text-sm tw-font-light tw-text-gray-600"
-                              >
-                                {name}
-                              </span>
-                            ))}
-                            {item?.hashTags?.map((name, i) => (
-                              <span
-                                key={i}
-                                className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-gray-700"
-                              >
-                                {name}
-                              </span>
-                            ))}
-                          </div>
-                          <div className="tw-text-gray-400 tw-text-base tw-py-1 tw-text-right">{item.createdAt}</div>
-                        </div>
-                      </div>
-                      {/* 두 번째 컬럼 */}
-                      <div className="md:tw-w-full">
-                        <div className="tw-flex  tw-items-center py-2">
-                          <div className="tw-flex-auto">
-                            <div className="tw-font-medium tw-text-black tw-text-base tw-line-clamp-1">
-                              {item.content}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      {/* 세 번째 컬럼 */}
-                      <div className="md:tw-w-full">
-                        <div className="tw-grid tw-grid-cols-12 tw-gap-4">
-                          <div className="tw-col-span-2 tw-text-sm tw-font-bold tw-text-black">아티클</div>
-                          <div className="tw-col-span-10 tw-text-sm tw-text-gray-600  tw-line-clamp-1">
-                            {item.articleUrl}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="tw-col-span-2 tw-text-sm tw-text-right">
-                        댓글 : {item.activeCount} 답변 : {item.answerCount}
-                      </div>
-                    </div>
-                  </Mobile>
-                </div>
-              ))}
-            </section>
-            <Pagination page={page} setPage={setPage} total={totalPage} />
-          </div>
-        </article>
-      </div>
-      <MentorsModal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
-        <div className="tw-font-bold tw-text-xl tw-text-black tw-my-5 tw-mb-2 tw-text-left tw-mt-0">
-          퀴즈 직접 등록하기
-        </div>
-        <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-5 tw-text-left tw-mt-0">
-          내가 공부하고 싶거나 크루들과 공유하고 싶은 주제 & 아티클로 퀴즈를 만들어요!
-        </div>
-
-        <div>
-          <div className="tw-font-bold tw-text-base tw-text-black">필수 입력</div>
-          <div>
-            <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2 tw-mt-5">* 질문</div>
-            <TextField
-              size="small"
-              fullWidth
-              placeholder="ex) Github Actions와 기존 Github의 차이점에 대해 설명하세요."
-              onChange={handleInputQuizChange}
-              id="margin-none"
-              value={quizName}
-              ref={quizRef}
-              name="quizName"
-            />
-          </div>
-          <div>
-            <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2 tw-mt-5">
-              * 아티클 (질문에 대한 답변에 참고가 될 아티클 링크를 입력해주세요.)
+                    </Mobile>
+                  </div>
+                ))}
+              </section>
+              <Pagination page={page} setPage={setPage} total={totalPage} />
             </div>
-            <TextField
-              size="small"
-              fullWidth
-              placeholder="http://"
-              onChange={handleInputQuizUrlChange}
-              id="margin-none"
-              value={quizUrl}
-              ref={quizUrlRef}
-              name="quizUrl"
-            />
-          </div>
-          <div>
-            <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2 tw-mt-5">추천 직군</div>
-            <ToggleButtonGroup value={jobGroup} exclusive onChange={handleJobGroups} aria-label="text alignment">
-              {contentTypes?.map((item, index) => (
-                <ToggleButton
-                  key={`job-${index}`}
-                  value={item.id}
-                  className="tw-ring-1 tw-ring-slate-900/10"
-                  style={{
-                    borderRadius: '5px',
-                    borderLeft: '0px',
-                    margin: '5px',
-                    height: '35px',
-                    border: '0px',
-                  }}
-                >
-                  {item.name}
-                </ToggleButton>
-              ))}
-            </ToggleButtonGroup>
-            <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2 tw-mt-5">* 추천 직무</div>
-            <ToggleButtonGroup
-              style={{ display: 'inline' }}
-              value={jobs}
-              onChange={handleJobs}
-              aria-label="text alignment"
-            >
-              {jobGroups?.map((item, index) => (
-                <ToggleButton
-                  key={`job-${index}`}
-                  value={item.id}
-                  className="tw-ring-1 tw-ring-slate-900/10"
-                  style={{
-                    borderRadius: '5px',
-                    borderLeft: '0px',
-                    margin: '5px',
-                    height: '35px',
-                    border: '0px',
-                  }}
-                >
-                  {item.name}
-                </ToggleButton>
-              ))}
-            </ToggleButtonGroup>
-
-            <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2 tw-mt-5">* 추천 레벨</div>
-            <ToggleButtonGroup
-              exclusive
-              value={recommendLevels}
-              onChange={handleRecommendLevels}
-              aria-label="text alignment"
-            >
-              {levelGroup?.map((item, index) => (
-                <ToggleButton
-                  key={`job-${index}`}
-                  value={item.name}
-                  aria-label="fff"
-                  className="tw-ring-1 tw-ring-slate-900/10"
-                  style={{
-                    borderRadius: '5px',
-                    borderLeft: '0px',
-                    margin: '5px',
-                    height: '35px',
-                    border: '0px',
-                  }}
-                >
-                  레벨 {item.name}
-                </ToggleButton>
-              ))}
-            </ToggleButtonGroup>
-            {recommendLevels?.toString() === '0' && (
-              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
-                0레벨 : 직무스킬(개발언어/프레임워크 등) 학습 중. 상용서비스 개발 경험 없음.
-              </div>
-            )}
-            {recommendLevels?.toString() === '1' && (
-              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
-                1레벨 : 상용서비스 단위모듈 수준 개발 가능. 서비스 개발 리딩 시니어 필요.
-              </div>
-            )}
-            {recommendLevels?.toString() === '2' && (
-              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
-                2레벨 : 상용 서비스 개발 1인분 가능한 사람. 소규모 서비스 독자 개발 가능.
-              </div>
-            )}
-            {recommendLevels?.toString() === '3' && (
-              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
-                3레벨 : 상용서비스 개발 리더. 담당직무분야 N명 업무가이드 및 리딩 가능.
-              </div>
-            )}
-            {recommendLevels?.toString() === '4' && (
-              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
-                4레벨 : 다수 상용서비스 개발 리더. 수십명 혹은 수백명 수준의 개발자 총괄 리더.
-              </div>
-            )}
-            {recommendLevels?.toString() === '5' && (
-              <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
-                5레벨 : 본인 오픈소스/방법론 등이 범용적 사용, 수백명이상 다수 직군 리딩.
-              </div>
-            )}
-
-            <div className="tw-font-bold tw-text-base tw-text-black tw-pt-10">선택 입력</div>
-
-            <div className="tw-font-semibold tw-text-sm tw-text-black tw-mb-2 tw-mt-5">관련스킬</div>
-
-            <ToggleButtonGroup
-              style={{ display: 'inline' }}
-              value={skillIds}
-              onChange={handleFormat}
-              aria-label=""
-              color="standard"
-            >
-              {skillData?.map((item, index) => {
-                return (
-                  <ToggleButton
-                    key={`skillIds-${index}`}
-                    value={item.name}
-                    className="tw-ring-1 tw-ring-slate-900/10"
-                    style={{
-                      borderRadius: '5px',
-                      borderLeft: '0px',
-                      margin: '5px',
-                      height: '35px',
-                      border: '0px',
-                    }}
-                  >
-                    {item.name}
-                  </ToggleButton>
-                );
-              })}
-            </ToggleButtonGroup>
-
-            <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-mb-2">관련경험</div>
-            <ToggleButtonGroup
-              style={{ display: 'inline' }}
-              value={experienceIds}
-              onChange={handleFormatEx}
-              aria-label=""
-              color="standard"
-            >
-              {experienceData?.data?.contents?.map((item, index) => {
-                return (
-                  <ToggleButton
-                    key={`skillIds-${index}`}
-                    value={item.name}
-                    className="tw-ring-1 tw-ring-slate-900/10"
-                    style={{
-                      borderRadius: '5px',
-                      borderLeft: '0px',
-                      margin: '5px',
-                      height: '35px',
-                      border: '0px',
-                    }}
-                  >
-                    {item.name}
-                  </ToggleButton>
-                );
-              })}
-            </ToggleButtonGroup>
-          </div>
-          <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-mb-2">해시태그</div>
-          <TagsInput
-            value={selected}
-            onChange={setSelected}
-            name="fruits"
-            placeHolder="#해쉬태그 입력 후 엔터를 쳐주세요.
-              "
-          />
-          <div className="tw-text-center">
-            <button
-              type="button"
-              onClick={() => handleQuizInsertClick()}
-              className="tw-mt-5 tw-text-white tw-bg-blue-500 hover:tw-bg-blue-800 tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5  dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
-            >
-              퀴즈 등록하기
-            </button>
-          </div>
+          </article>
         </div>
-      </MentorsModal>
-    </div>
+        <MentorsModal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
+          <div className="tw-font-bold tw-text-xl tw-text-black tw-my-5 tw-mb-2 tw-text-left tw-mt-0">
+            퀴즈 직접 등록하기
+          </div>
+          <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-5 tw-text-left tw-mt-0">
+            내가 공부하고 싶거나 크루들과 공유하고 싶은 주제 & 아티클로 퀴즈를 만들어요!
+          </div>
+
+          <div>
+            <div className="tw-font-bold tw-text-base tw-text-black">필수 입력</div>
+            <div>
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2 tw-mt-5">* 질문</div>
+              <TextField
+                size="small"
+                fullWidth
+                placeholder="ex) Github Actions와 기존 Github의 차이점에 대해 설명하세요."
+                onChange={handleInputQuizChange}
+                id="margin-none"
+                value={quizName}
+                ref={quizRef}
+                name="quizName"
+              />
+            </div>
+            <div>
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2 tw-mt-5">
+                * 아티클 (질문에 대한 답변에 참고가 될 아티클 링크를 입력해주세요.)
+              </div>
+              <TextField
+                size="small"
+                fullWidth
+                placeholder="http://"
+                onChange={handleInputQuizUrlChange}
+                id="margin-none"
+                value={quizUrl}
+                ref={quizUrlRef}
+                name="quizUrl"
+              />
+            </div>
+            <div>
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2 tw-mt-5">추천 직군</div>
+              <ToggleButtonGroup value={jobGroup} exclusive onChange={handleJobGroups} aria-label="text alignment">
+                {contentTypes?.map((item, index) => (
+                  <ToggleButton
+                    key={`job-${index}`}
+                    value={item.id}
+                    className="tw-ring-1 tw-ring-slate-900/10"
+                    style={{
+                      borderRadius: '5px',
+                      borderLeft: '0px',
+                      margin: '5px',
+                      height: '35px',
+                      border: '0px',
+                    }}
+                  >
+                    {item.name}
+                  </ToggleButton>
+                ))}
+              </ToggleButtonGroup>
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2 tw-mt-5">* 추천 직무</div>
+              <ToggleButtonGroup
+                style={{ display: 'inline' }}
+                value={jobs}
+                onChange={handleJobs}
+                aria-label="text alignment"
+              >
+                {jobGroups?.map((item, index) => (
+                  <ToggleButton
+                    key={`job-${index}`}
+                    value={item.id}
+                    className="tw-ring-1 tw-ring-slate-900/10"
+                    style={{
+                      borderRadius: '5px',
+                      borderLeft: '0px',
+                      margin: '5px',
+                      height: '35px',
+                      border: '0px',
+                    }}
+                  >
+                    {item.name}
+                  </ToggleButton>
+                ))}
+              </ToggleButtonGroup>
+
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2 tw-mt-5">* 추천 레벨</div>
+              <ToggleButtonGroup
+                exclusive
+                value={recommendLevels}
+                onChange={handleRecommendLevels}
+                aria-label="text alignment"
+              >
+                {levelGroup?.map((item, index) => (
+                  <ToggleButton
+                    key={`job-${index}`}
+                    value={item.name}
+                    aria-label="fff"
+                    className="tw-ring-1 tw-ring-slate-900/10"
+                    style={{
+                      borderRadius: '5px',
+                      borderLeft: '0px',
+                      margin: '5px',
+                      height: '35px',
+                      border: '0px',
+                    }}
+                  >
+                    레벨 {item.name}
+                  </ToggleButton>
+                ))}
+              </ToggleButtonGroup>
+              {recommendLevels?.toString() === '0' && (
+                <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                  0레벨 : 직무스킬(개발언어/프레임워크 등) 학습 중. 상용서비스 개발 경험 없음.
+                </div>
+              )}
+              {recommendLevels?.toString() === '1' && (
+                <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                  1레벨 : 상용서비스 단위모듈 수준 개발 가능. 서비스 개발 리딩 시니어 필요.
+                </div>
+              )}
+              {recommendLevels?.toString() === '2' && (
+                <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                  2레벨 : 상용 서비스 개발 1인분 가능한 사람. 소규모 서비스 독자 개발 가능.
+                </div>
+              )}
+              {recommendLevels?.toString() === '3' && (
+                <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                  3레벨 : 상용서비스 개발 리더. 담당직무분야 N명 업무가이드 및 리딩 가능.
+                </div>
+              )}
+              {recommendLevels?.toString() === '4' && (
+                <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                  4레벨 : 다수 상용서비스 개발 리더. 수십명 혹은 수백명 수준의 개발자 총괄 리더.
+                </div>
+              )}
+              {recommendLevels?.toString() === '5' && (
+                <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                  5레벨 : 본인 오픈소스/방법론 등이 범용적 사용, 수백명이상 다수 직군 리딩.
+                </div>
+              )}
+
+              <div className="tw-font-bold tw-text-base tw-text-black tw-pt-10">선택 입력</div>
+
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-mb-2 tw-mt-5">관련스킬</div>
+
+              <ToggleButtonGroup
+                style={{ display: 'inline' }}
+                value={skillIds}
+                onChange={handleFormat}
+                aria-label=""
+                color="standard"
+              >
+                {skillData?.map((item, index) => {
+                  return (
+                    <ToggleButton
+                      key={`skillIds-${index}`}
+                      value={item.name}
+                      className="tw-ring-1 tw-ring-slate-900/10"
+                      style={{
+                        borderRadius: '5px',
+                        borderLeft: '0px',
+                        margin: '5px',
+                        height: '35px',
+                        border: '0px',
+                      }}
+                    >
+                      {item.name}
+                    </ToggleButton>
+                  );
+                })}
+              </ToggleButtonGroup>
+
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-mb-2">관련경험</div>
+              <ToggleButtonGroup
+                style={{ display: 'inline' }}
+                value={experienceIds}
+                onChange={handleFormatEx}
+                aria-label=""
+                color="standard"
+              >
+                {experienceData?.data?.contents?.map((item, index) => {
+                  return (
+                    <ToggleButton
+                      key={`skillIds-${index}`}
+                      value={item.name}
+                      className="tw-ring-1 tw-ring-slate-900/10"
+                      style={{
+                        borderRadius: '5px',
+                        borderLeft: '0px',
+                        margin: '5px',
+                        height: '35px',
+                        border: '0px',
+                      }}
+                    >
+                      {item.name}
+                    </ToggleButton>
+                  );
+                })}
+              </ToggleButtonGroup>
+            </div>
+            <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-mb-2">해시태그</div>
+            <TagsInput
+              value={selected}
+              onChange={setSelected}
+              name="fruits"
+              placeHolder="#해쉬태그 입력 후 엔터를 쳐주세요.
+              "
+            />
+            <div className="tw-text-center">
+              <button
+                type="button"
+                onClick={() => handleQuizInsertClick()}
+                className="tw-mt-5 tw-text-white tw-bg-blue-500 hover:tw-bg-blue-800 tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5  dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
+              >
+                퀴즈 등록하기
+              </button>
+            </div>
+          </div>
+        </MentorsModal>
+      </div>
+    </>
   );
 }
 
