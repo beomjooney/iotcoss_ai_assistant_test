@@ -323,7 +323,7 @@ export function TermsAgreeTemplate({
   };
 
   return (
-    <div className="content">
+    <div className="admin-content">
       <h2 className="tit-type1">정책동의관리</h2>
       <div className="path">
         <span>Home</span> <span>정책(동의)목록</span>

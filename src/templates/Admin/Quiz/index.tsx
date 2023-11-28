@@ -346,7 +346,7 @@ export function QuizTemplate({
   };
 
   return (
-    <div className="content">
+    <div className="admin-content">
       <h2 className="tit-type1">퀴즈관리</h2>
       <div className="path">
         <span>Home</span> <span>퀴즈목록</span>

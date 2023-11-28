@@ -216,7 +216,7 @@ export function AdminClubQuizTemplate({
   };
 
   return (
-    <div className="content">
+    <div className="admin-content">
       <h2 className="tit-type1">클럽퀴즈관리</h2>
       <div className="path">
         <span>Home</span> <span>클럽퀴즈목록</span>

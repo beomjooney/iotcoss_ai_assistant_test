@@ -286,7 +286,7 @@ export function PointTemplate({
   };
 
   return (
-    <div className="content">
+    <div className="admin-content">
       <h2 className="tit-type1">포인트 이력 관리</h2>
       <div className="path">
         <span>Home</span> <span>포인트목록</span>

@@ -168,6 +168,20 @@ select {
   transition: border 0.5s ease;
   -webkit-transition: border 0.5s ease;
 }
+
+.admin-input {
+  height: 38px;
+  font-size: 14px;
+  padding: 0 10px;
+  line-height: 32px;
+  color: #666666;
+  border: 1px solid #dddfe0;
+  border-radius: 3px;
+  outline: none;
+  transition: border 0.5s ease;
+  -webkit-transition: border 0.5s ease;
+}
+
 /* 전역변수 문제*/
 /* input[type='text'],
 input[type='password'],
@@ -183,6 +197,7 @@ input[type='number'] {
   transition: border 0.5s ease;
   -webkit-transition: border 0.5s ease;
 } */
+
 textarea {
   font-size: 13px;
   padding: 10px;
@@ -454,6 +469,10 @@ hr.h50 {
 
 .gnb-menu-2depth.on {
   left: 80px;
+}
+
+.admin-content {
+  padding: 10px 40px 60px 120px;
 }
 
 .content {

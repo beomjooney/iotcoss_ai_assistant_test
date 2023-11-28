@@ -557,7 +557,7 @@ export function AdminClubTemplate({
   };
 
   return (
-    <div className="content">
+    <div className="admin-content">
       <h2 className="tit-type1">클럽관리</h2>
       <div className="path">
         <span>Home</span> <span>클럽목록</span>

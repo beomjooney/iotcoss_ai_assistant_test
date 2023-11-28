@@ -5,7 +5,7 @@ const cx = classNames.bind(styles);
 
 export function AdminIndexTemplate() {
   return (
-    <div className="content">
+    <div className="admin-content">
       <h2 className="tit-type1">대시보드</h2>
       <div className="path">
         <span>Home</span> <span>대시보드</span>

@@ -320,7 +320,7 @@ export function TermsTemplate({
   };
 
   return (
-    <div className="content">
+    <div className="admin-content">
       <h2 className="tit-type1">정책(약관)관리</h2>
       <div className="path">
         <span>Home</span> <span>약관목록</span>
