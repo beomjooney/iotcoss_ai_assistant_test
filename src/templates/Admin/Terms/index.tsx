@@ -59,9 +59,9 @@ export function TermsTemplate({
   const HEADS = ['유형', '공고일시', '시행일시', '이전정책 아이디', '등록자', '수정자', '등록일시', '수정일시'];
 
   const TERMINFO = [
-    { id: 1, name: '개인정보수집' },
-    { id: 2, name: '이벤트 알림 수신' },
-    { id: 3, name: '이용약관' },
+    { id: '0001', name: '이용약관' },
+    { id: '0002', name: '개인정보수집' },
+    { id: '0003', name: '이벤트 알림 수신' },
   ];
 
   const FIELDS = [{ name: '정책아이디', field: 'sequence', type: 'text' }];

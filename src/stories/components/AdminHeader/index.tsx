@@ -175,6 +175,14 @@ const AdminHeader = ({ menuItem, activeNo = 0 }: AdminNavbarProps) => {
               { no: 5032, title: '코드상세', link: 'javascript:void(0);' },
             ],
           },
+          {
+            no: 504,
+            title: '포인트관리',
+            link: 'javascript:void(0);',
+            upMenuNo: 5,
+            toggle: true,
+            children: [{ no: 5041, title: '포인트이력', link: '/admin/point' }],
+          },
         ]);
         break;
     }
