@@ -107,9 +107,9 @@ export function TermsAgreePage() {
     setSequence(id);
   };
 
-  const onDeleteTerm = (id: string) => {
+  const onDeleteTerm = (sequence: string) => {
     if (confirm('해당 내용을 삭제하시겠습니까?')) {
-      onDelete(id);
+      onDelete(sequence);
     }
   };
 

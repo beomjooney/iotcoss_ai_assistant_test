@@ -82,12 +82,12 @@ export function PointTemplate({
     { name: '변동 포인트', field: 'pointsChange', type: 'text' },
     { name: '현재 포인트', field: 'total', type: 'text' },
     { name: '이벤트유형', field: 'eventType', type: 'choice', data: pointEventTypeIds },
-    {
-      name: '등록일시',
-      field: 'createdAt',
-      type: 'fromToDate',
-      fieldNames: ['createdAtFrom', 'createdAtTo'],
-    },
+    // {
+    //   name: '등록일시',
+    //   field: 'createdAt',
+    //   type: 'fromToDate',
+    //   fieldNames: ['createdAtFrom', 'createdAtTo'],
+    // },
   ];
 
   // TODO : 밸리데이션 추가 해야 함
@@ -360,7 +360,7 @@ export function PointTemplate({
             </button>
           </div>
           <SmartFilter
-            name="memberFilter"
+            name="pointFilter"
             fields={FIELDS}
             isFilterOpen={isFilter}
             onSearch={onSmartFilterSearch}

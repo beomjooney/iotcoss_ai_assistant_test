@@ -457,7 +457,7 @@ export function TermsAgreeTemplate({
                     취소
                   </button>
                 ) : (
-                  <button className="btn-type1 type1" onClick={() => handleDelete(term?.id)}>
+                  <button className="btn-type1 type1" onClick={() => handleDelete(term?.sequence)}>
                     삭제
                   </button>
                 )}

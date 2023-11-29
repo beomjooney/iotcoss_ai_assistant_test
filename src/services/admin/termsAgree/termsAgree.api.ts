@@ -18,4 +18,5 @@ export async function getTermsAgreeInfo(sequence: string) {
 }
 
 // 삭제
-export const deleteTermsAgree = async quizId => await axiosGeneralAPI().delete(`/api/admin/v1/terms-agreements/`);
+export const deleteTermsAgree = async sequence =>
+  await axiosGeneralAPI().delete(`/api/admin/v1/terms-agreements/${sequence}`);

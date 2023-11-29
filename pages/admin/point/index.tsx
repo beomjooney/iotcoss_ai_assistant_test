@@ -30,8 +30,8 @@ export interface SearchParamsProps {
 
 export function PointPage() {
   const now = dayjs();
-  const past1y = now.subtract(1, 'year');
-  const tomorrow = now.add(1, 'day');
+  const past1y = dayjs(now.subtract(1, 'year'));
+  const tomorrow = dayjs(now.add(1, 'day'));
   const [page, setPage] = useState<number>(1);
   const [size, setSize] = useState<number>(15);
   const [search, setSearch] = useState<string>('');
