@@ -176,11 +176,6 @@ export function TermsTemplate({
     const params = {
       ...data,
       ...term,
-      recommendJobGroups: recommendJobGroupsIds,
-      recommendJobs: recommendJobsIds,
-      recommendLevels: recommendLevelsIds,
-      relatedExperiences: experienceIds,
-      relatedSkills: skillIds,
     };
 
     onSave && onSave(params);
@@ -475,7 +470,7 @@ export function TermsTemplate({
                     취소
                   </button>
                 ) : (
-                  <button className="btn-type1 type1" onClick={() => handleDelete(term?.sequence)}>
+                  <button className="btn-type1 type1" onClick={() => handleDelete(term?.id)}>
                     삭제
                   </button>
                 )}
@@ -550,7 +545,7 @@ export function TermsTemplate({
                     </div>
                   </div>
                 </div>
-                <div className="grid-25">
+                <div className={cx('date', 'grid-25')}>
                   <div className="inpwrap">
                     <div className="inp-tit" style={{ height: 25 }}>
                       공고 일시<span className="star">*</span>
@@ -569,7 +564,7 @@ export function TermsTemplate({
                     </div>
                   </div>
                 </div>
-                <div className="grid-25">
+                <div className={cx('date', 'grid-25')}>
                   <div className="inpwrap">
                     <div className="inp-tit" style={{ height: 25 }}>
                       시행 일시<span className="star">*</span>
@@ -688,7 +683,7 @@ export function TermsTemplate({
                     </div>
                   </div>
                 </div>
-                <div className="grid-33">
+                <div className={cx('date', 'grid-33')}>
                   <div className="inpwrap">
                     <div className="inp-tit" style={{ height: 25 }}>
                       공고 일시<span className="star">*</span>
@@ -706,7 +701,7 @@ export function TermsTemplate({
                     </div>
                   </div>
                 </div>
-                <div className="grid-33">
+                <div className={cx('date', 'grid-33')}>
                   <div className="inpwrap">
                     <div className="inp-tit" style={{ height: 25 }}>
                       시행 일시<span className="star">*</span>
