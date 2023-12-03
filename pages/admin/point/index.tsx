@@ -133,8 +133,6 @@ export function PointPage() {
     //   alert('기간을 설정하세요');
     // }
 
-    console.log(params);
-
     if (typeof params === 'object') {
       setParams({
         ...params,
