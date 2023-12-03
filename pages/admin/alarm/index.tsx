@@ -30,14 +30,14 @@ export interface SearchParamsProps {
 
 export function AlarmPage() {
   const now = dayjs();
-  const past1y = now.subtract(1, 'year');
+  const past1m = now.subtract(3, 'month');
   const tomorrow = now.add(1, 'day');
   const [page, setPage] = useState<number>(1);
   const [size, setSize] = useState<number>(15);
   const [search, setSearch] = useState<string>('');
   const [sequence, setSequence] = useState<string>('');
   const [params, setParams] = useState<SearchParamsProps>({
-    createdAtFrom: `${past1y?.format('YYYY-MM-DD')} 00:00:00`,
+    createdAtFrom: `${past1m?.format('YYYY-MM-DD')} 00:00:00`,
     createdAtTo: `${tomorrow.format('YYYY-MM-DD')} 00:00:00`,
     keyword: '',
   });
