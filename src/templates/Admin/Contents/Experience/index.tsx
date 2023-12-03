@@ -55,7 +55,7 @@ export function ExperienceTemplate({
   onSearch,
   setParams,
 }: ExperienceTemplateProps) {
-  const COLGROUP = ['12%', '12%', '10%', '10%', '10%', '10%', '10%', '10%', '10%', '10%'];
+  const COLGROUP = ['12%', '15%', '15%', '10%', '10%', '10%', '7%', '7%', '10%', '10%'];
   const HEADS = [
     '경험명',
     '설명',
@@ -127,9 +127,9 @@ export function ExperienceTemplate({
   const FIELDS = [
     { name: '경험ID', field: 'id', type: 'text' },
     { name: '경험명', field: 'memberUUID', type: 'text' },
-    { name: '관련직군들', field: 'recommendJobGroupNames', type: 'text' },
-    { name: '관련직무들', field: 'recommendJobNames', type: 'text' },
-    { name: '관련레벨들', field: 'recommendLevels', type: 'text' },
+    { name: '연관직군들', field: 'recommendJobGroupNames', type: 'text' },
+    { name: '연관직무들', field: 'recommendJobNames', type: 'text' },
+    { name: '연관레벨들', field: 'recommendLevels', type: 'text' },
     { name: '트랜드레벨', field: 'relatedSkills', type: 'text' },
     { name: '활성화레벨', field: 'relatedSkills', type: 'text' },
   ];
@@ -382,6 +382,8 @@ export function ExperienceTemplate({
     onAdd && onAdd(params);
   };
 
+  //console.log(jobCodes?.data?.contents);
+
   return (
     <div className="admin-content">
       <h2 className="tit-type1">경험관리</h2>
@@ -484,10 +486,10 @@ export function ExperienceTemplate({
                   {item.imageUrl}
                 </td>
                 <td className="magic" title={item.relatedJobGroups}>
-                  {item.relatedJobGroups?.join(',')}
+                  {item.relatedJobGroupsName?.join(',') || item.relatedJobGroups?.join(',')}
                 </td>
                 <td className="magic" title={item.relatedJobs}>
-                  {item.relatedJobs?.join(',')}
+                  {item.relatedJobsName?.join(',') || item.relatedJobs?.join(',')}
                 </td>
                 <td className="magic" title={item.relatedLevels}>
                   {item.relatedLevels?.length === 5 ? '모든' : item.relatedLevels?.sort().join(',') || 0}
@@ -615,7 +617,7 @@ export function ExperienceTemplate({
                 <div className="grid-100">
                   <div className="inpwrap">
                     <div className="inp-tit">
-                      관련직군<span className="star">*</span>
+                      연관직군<span className="star">*</span>
                     </div>
 
                     <div className="inp">
@@ -887,7 +889,7 @@ export function ExperienceTemplate({
                 <div className="grid-100">
                   <div className="inpwrap">
                     <div className="inp-tit">
-                      관련직군<span className="star">*</span>
+                      연관직군<span className="star">*</span>
                     </div>
 
                     <div className="inp">

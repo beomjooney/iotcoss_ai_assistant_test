@@ -15,6 +15,7 @@ import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useUploadImage } from 'src/services/image/image.mutations';
 import { SearchParamsProps } from 'pages/admin/contents/skill';
+import { skillList } from 'src/services/skill/skill.api';
 
 const cx = classNames.bind(styles);
 
@@ -55,7 +56,7 @@ export function SkillTemplate({
   onSearch,
   setParams,
 }: SkillTemplateProps) {
-  const COLGROUP = ['12%', '12%', '10%', '10%', '10%', '10%', '10%', '10%', '10%', '10%'];
+  const COLGROUP = ['12%', '15%', '15%', '10%', '10%', '10%', '7%', '7%', '10%', '10%'];
   const HEADS = [
     '스킬명',
     '설명',
@@ -127,9 +128,10 @@ export function SkillTemplate({
   const FIELDS = [
     { name: '스킬ID', field: 'id', type: 'text' },
     { name: '스킬명', field: 'memberUUID', type: 'text' },
-    { name: '관련직군들', field: 'recommendJobGroupNames', type: 'text' },
-    { name: '관련직무들', field: 'recommendJobNames', type: 'text' },
-    { name: '관련레벨들', field: 'recommendLevels', type: 'text' },
+    // { name: '연관직군들', field: 'recommendJobGroupNames', type: 'choice', data: jobCodes?.data?.contents || [] },
+    { name: '연관직군들', field: 'recommendJobGroupNames', type: 'text' },
+    { name: '연관직무들', field: 'recommendJobNames', type: 'text' },
+    { name: '연관레벨들', field: 'recommendLevels', type: 'text' },
     { name: '트랜드레벨', field: 'relatedSkills', type: 'text' },
     { name: '활성화레벨', field: 'relatedSkills', type: 'text' },
   ];
@@ -484,10 +486,10 @@ export function SkillTemplate({
                   {item.imageUrl}
                 </td>
                 <td className="magic" title={item.relatedJobGroups}>
-                  {item.relatedJobGroups?.join(',')}
+                  {item.relatedJobGroupsName?.join(',') || item.relatedJobGroups?.join(',')}
                 </td>
                 <td className="magic" title={item.relatedJobs}>
-                  {item.relatedJobs?.join(',')}
+                  {item.relatedJobsName?.join(',') || item.relatedJobs?.join(',')}
                 </td>
                 <td className="magic" title={item.relatedLevels}>
                   {item.relatedLevels?.length === 5 ? '모든' : item.relatedLevels?.sort().join(',') || 0}
@@ -621,7 +623,7 @@ export function SkillTemplate({
                 <div className="grid-100">
                   <div className="inpwrap">
                     <div className="inp-tit">
-                      관련직군<span className="star">*</span>
+                      연관직군<span className="star">*</span>
                     </div>
 
                     <div className="inp">
@@ -893,7 +895,7 @@ export function SkillTemplate({
                 <div className="grid-100">
                   <div className="inpwrap">
                     <div className="inp-tit">
-                      관련직군<span className="star">*</span>
+                      연관직군<span className="star">*</span>
                     </div>
 
                     <div className="inp">
