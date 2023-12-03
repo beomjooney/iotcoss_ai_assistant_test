@@ -5,8 +5,8 @@ import { QUERY_KEY_FACTORY } from '../../queryKeys';
 export const useMembers = params =>
   useQuery([QUERY_KEY_FACTORY('ADMIN_MEMBERS').list(params)], () => getMembers(params));
 
-export const useMember = memberId =>
-  useQuery([QUERY_KEY_FACTORY('ADMIN_MEMBERS').detail(memberId)], () => getMemberInfo(memberId), {
+export const useMember = uuid =>
+  useQuery([QUERY_KEY_FACTORY('ADMIN_MEMBERS').detail(uuid)], () => getMemberInfo(uuid), {
     refetchOnWindowFocus: false,
     enabled: false,
   });

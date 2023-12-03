@@ -12,7 +12,7 @@ export async function getMembers(params: any) {
 
 // 회원 정보 조회
 export async function getMemberInfo(memberId: string) {
-  const { data } = await axiosGeneralAPI().get(`/api/internal/v1/members/${memberId}`);
+  const { data } = await axiosGeneralAPI().get(`/api/admin/v1/members/${memberId}`);
   return data;
 }
 

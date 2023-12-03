@@ -93,8 +93,8 @@ export function MembersPage() {
     size: size,
   };
 
-  const onMemberInfo = (id: string) => {
-    setMemberId(id);
+  const onMemberInfo = (uuid: string) => {
+    setMemberId(uuid);
   };
 
   const onDeleteMember = (id: string) => {

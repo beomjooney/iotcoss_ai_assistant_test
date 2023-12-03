@@ -87,11 +87,11 @@ export function MembersTemplate({
     // },
   ];
 
-  const TAB4_COLGROUP = ['15%', '15%', '15%'];
-  const TAB4_HEADS = ['배지명', '획득상태', '획득일시'];
+  const TAB4_COLGROUP = ['8%', '25%', '6%', '6%'];
+  const TAB4_HEADS = ['배지명', '설명', '획득상태', '획득일시'];
 
-  const TAB5_COLGROUP = ['15%', '15%', '15%', '15%'];
-  const TAB5_HEADS = ['회원아이디', '회원명', '친구상태', '등록일시'];
+  const TAB5_COLGROUP = ['20%', '10%', '5%'];
+  const TAB5_HEADS = ['회원아이디', '닉네임', '친구상태'];
 
   const { mutate: onSaveProfileImage, data: profileImage, isSuccess } = useUploadImage();
 
@@ -340,7 +340,7 @@ export function MembersTemplate({
           heads={HEADS}
           items={memberList?.data?.data?.contents?.map((item, index) => {
             return (
-              <tr key={`tr-${index}`} onClick={() => onShowPopup(item.memberId)}>
+              <tr key={`tr-${index}`} onClick={() => onShowPopup(item.uuid)}>
                 <td className="magic" title={item.memberId}>
                   {item.memberId}
                 </td>
@@ -1019,12 +1019,13 @@ export function MembersTemplate({
                     name="seminarMember"
                     colgroup={TAB4_COLGROUP}
                     heads={TAB4_HEADS}
-                    items={levelInfo?.map((item, index) => {
+                    items={member?.badges?.map((item, index) => {
                       return (
                         <tr key={`participant-${index}`}>
-                          <td></td>
-                          <td></td>
-                          <td>{dayjs(item.createdAt).format('YYYY-MM-DD')}</td>
+                          <td>{item.name}</td>
+                          <td>{item.description}</td>
+                          <td>{item.achievementStatus}</td>
+                          <td>{dayjs(item.achievementAt).format('YYYY-MM-DD')}</td>
                         </tr>
                       );
                     })}
@@ -1043,13 +1044,12 @@ export function MembersTemplate({
                     name="seminarMember"
                     colgroup={TAB5_COLGROUP}
                     heads={TAB5_HEADS}
-                    items={levelInfo?.map((item, index) => {
+                    items={member?.friends?.map((item, index) => {
                       return (
                         <tr key={`participant-${index}`}>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td>{dayjs(item.createdAt).format('YYYY-MM-DD')}</td>
+                          <td>{item.friendMemberUUID}</td>
+                          <td>{item.nickname}</td>
+                          <td>{item.memberFriendStatusTypeName}</td>
                         </tr>
                       );
                     })}
