@@ -30,28 +30,3 @@ export const myExperienceList = async memberId => {
   const { data } = await axiosGeneralAPI().get(`/members/${memberId}/experience`);
   return data.experiences;
 };
-
-// 목록 조회
-export async function getDevusExperiences(params: any) {
-  const { data, headers } = await axiosGeneralAPI().get('/api/admin/v1/experiences', { params });
-  const totalPage = Number(headers['page-count']);
-  return { data: data || [], nextPage: params.page + 1, totalPage };
-}
-
-// 상세 조회
-export async function getDevusExperienceInfo(sequence: string) {
-  const { data } = await axiosGeneralAPI().get(`/api/admin/v1/experiences/${sequence}`);
-  return data;
-}
-
-// 수정
-export const saveDevusExperience = async (sequence: string, body) =>
-  await axiosGeneralAPI().put(`/api/admin/v1/experiences/${sequence}`, body);
-
-// 등록
-export const addDevusExperience = async (params: any) =>
-  await axiosGeneralAPI().post('/api/admin/v1/experiences', params);
-
-// 삭제
-export const deleteDevusExperience = async experienceId =>
-  await axiosGeneralAPI().delete(`/api/admin/v1/experiences/${experienceId}`);

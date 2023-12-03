@@ -14,22 +14,22 @@ import { TextField } from '@mui/material';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useUploadImage } from 'src/services/image/image.mutations';
-import { SearchParamsProps } from 'pages/admin/contents/experience';
+import { SearchParamsProps } from 'pages/admin/contents/skill';
 
 const cx = classNames.bind(styles);
 
-interface ExperienceTemplateProps {
-  devusExperienceList?: any;
+interface SkillTemplateProps {
+  badgeList?: any;
   skillsList?: any;
-  experienceList?: any;
+  experience?: any;
   jobGroup?: any;
   jobs?: any;
   jobCodes?: any;
   contentJobType?: any;
-  devusExperienceData?: any;
+  badgeData?: any;
   pageProps?: any;
-  onExperienceInfo?: (experienceId: string) => void;
-  onDeleteExperience?: (experienceId: string) => void;
+  onBadgeInfo?: (badgeId: string) => void;
+  onDeleteBadge?: (badgeId: string) => void;
   onSave?: (data: any) => void;
   onAdd?: (data: any) => void;
   onSearch?: (keyword: any) => void;
@@ -37,101 +37,32 @@ interface ExperienceTemplateProps {
   setParams: React.Dispatch<React.SetStateAction<SearchParamsProps>>;
 }
 
-export function ExperienceTemplate({
-  devusExperienceList,
+export function BadgeTemplate({
+  badgeList,
   skillsList,
-  experienceList,
+  experience,
   jobGroup,
   jobs,
   jobCodes,
   contentJobType,
-  devusExperienceData,
+  badgeData,
   pageProps,
   params,
-  onExperienceInfo,
-  onDeleteExperience,
+  onBadgeInfo,
+  onDeleteBadge,
   onSave,
   onAdd,
   onSearch,
   setParams,
-}: ExperienceTemplateProps) {
-  const COLGROUP = ['12%', '12%', '10%', '10%', '10%', '10%', '10%', '10%', '10%', '10%'];
-  const HEADS = [
-    '경험명',
-    '설명',
-    '이미지URL',
-    '연관직군들',
-    '연관직무들',
-    '연관레벨들',
-    '트랜드레벨',
-    '활성화레벨',
-    '등록일시',
-    '수정일시',
-  ];
-
-  const memberCodes = [];
-
-  const LEVELS = [
-    { level: 1, desc: '상용서비스 단위모듈 수준 개발 가능. 서비스 개발 리딩 시니어 필요' },
-    { level: 2, desc: '상용서비스 개발 1인분 가능한 사람. 소규모 서비스 독자 개발 가능' },
-    { level: 3, desc: '상용서비스 개발 리더. 담당직무분야 N명 업무가이드 및 리딩 가능' },
-    { level: 4, desc: '다수 상용서비스 개발 리더. 수십명 혹은 수백명 수준의 개발자 총괄 리더' },
-    { level: 5, desc: '본인 오픈소스/방법론 등이 범용적 사용, 수백명이상 다수 직군 리딩' },
-  ];
-
-  const trendLevel = [
-    {
-      name: '급하락',
-      id: 1,
-    },
-    {
-      name: '하락',
-      id: 2,
-    },
-    {
-      name: '일반',
-      id: 3,
-    },
-    {
-      name: '상승',
-      id: 4,
-    },
-    {
-      name: '급상승',
-      id: 5,
-    },
-  ];
-  const activeLevel = [
-    {
-      name: '신생',
-      id: 1,
-    },
-    {
-      name: '일부사용',
-      id: 2,
-    },
-    {
-      name: '일반',
-      id: 3,
-    },
-    {
-      name: '범용',
-      id: 4,
-    },
-    {
-      name: '대세',
-      id: 5,
-    },
-  ];
+}: SkillTemplateProps) {
+  const COLGROUP = ['7%', '7%', '13%', '25%', '10%', '10%'];
+  const HEADS = ['배지아이디', '배지그룹', '배지명', '설명', '등록일시', '수정일시'];
 
   const FIELDS = [
-    { name: '경험ID', field: 'id', type: 'text' },
-    { name: '경험명', field: 'memberUUID', type: 'text' },
-    { name: '관련직군들', field: 'recommendJobGroupNames', type: 'text' },
-    { name: '관련직무들', field: 'recommendJobNames', type: 'text' },
-    { name: '관련레벨들', field: 'recommendLevels', type: 'text' },
-    { name: '트랜드레벨', field: 'relatedSkills', type: 'text' },
-    { name: '활성화레벨', field: 'relatedSkills', type: 'text' },
+    { name: '배지SEQ', field: 'badgeSequence', type: 'text' },
+    { name: '배지ID', field: 'badgeId', type: 'text' },
+    { name: '배지그룹', field: 'badgeGroupType', type: 'text' },
+    { name: '배지명', field: 'name', type: 'text' },
   ];
 
   const { mutate: onSaveProfileImage, data: profileImage, isSuccess } = useUploadImage();
@@ -139,7 +70,7 @@ export function ExperienceTemplate({
   const [introduceEditor, setIntroduceEditor] = useState<string>('');
   const [popupOpen, setPopupOpen] = useState<boolean>(false);
   const [isFilter, setIsFilter] = useState<boolean>(false);
-  const [experience, setExperience] = useState<any>({});
+  const [badge, setBadge] = useState<any>({});
   const [searchKeyword, setSearchKeyword] = useState<string>('');
   const [profileImageUrl, setProfilImageUrl] = useState(null);
   const [tabValue, setTabValue] = useState<number>(1);
@@ -154,7 +85,7 @@ export function ExperienceTemplate({
   const [regitserValues, setRegisterValues] = useState<any>({});
 
   // TODO : 밸리데이션 추가 해야 함
-  const experienceSaveSchema = yup.object().shape({
+  const skillSaveSchema = yup.object().shape({
     name: yup.string().notRequired(),
     description: yup.string().notRequired(),
     memberNickname: yup.string().notRequired(),
@@ -166,17 +97,17 @@ export function ExperienceTemplate({
   const methods = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange',
-    resolver: yupResolver(experienceSaveSchema),
+    resolver: yupResolver(skillSaveSchema),
   });
 
   useEffect(() => {
-    devusExperienceData && setExperience(devusExperienceData.data);
-    if (devusExperienceData) {
-      setExperienceIds(devusExperienceData?.data?.relatedExperiences?.map((item, index) => item) || []);
-      setSkillIds(devusExperienceData?.data?.relatedSkills?.map((item, index) => item) || []);
-      setrecommendJobGroupsIds(devusExperienceData?.data?.relatedJobGroups?.map((item, index) => item) || []);
-      setrecommendJobsIds(devusExperienceData?.data?.relatedJobs?.map((item, index) => item) || []);
-      setrecommendLevelsIds(devusExperienceData?.data?.relatedLevels?.map((item, index) => item) || []);
+    badgeData && setBadge(badgeData.data);
+    if (badgeData) {
+      setExperienceIds(badgeData?.data?.relatedExperiences?.map((item, index) => item) || []);
+      setSkillIds(badgeData?.data?.relatedSkills?.map((item, index) => item) || []);
+      setrecommendJobGroupsIds(badgeData?.data?.relatedJobGroups?.map((item, index) => item) || []);
+      setrecommendJobsIds(badgeData?.data?.relatedJobs?.map((item, index) => item) || []);
+      setrecommendLevelsIds(badgeData?.data?.relatedLevels?.map((item, index) => item) || []);
     } else {
       setExperienceIds([]);
       setSkillIds([]);
@@ -184,29 +115,29 @@ export function ExperienceTemplate({
       setrecommendJobsIds([]);
       setrecommendLevelsIds([]);
     }
-  }, [devusExperienceData]);
+  }, [badgeData]);
 
-  const onShowPopup = (experienceId: string) => {
-    onExperienceInfo && onExperienceInfo(experienceId);
+  const onShowPopup = (badgeId: string) => {
+    onBadgeInfo && onBadgeInfo(badgeId);
     setPopupOpen(true);
     setIsRegisterPopupOpen(false);
   };
 
-  const onChangeExperience = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const onChangeBadge = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = event.currentTarget;
     const data = {
       [name]: value,
     };
-    setExperience({
-      ...experience,
+    setBadge({
+      ...badge,
       ...data,
     });
   };
 
-  const handleDelete = (experienceId: string) => {
+  const handleDelete = (badgeId: string) => {
     setPopupOpen(false);
-    setExperience({});
-    onDeleteExperience && onDeleteExperience(experienceId);
+    setBadge({});
+    onDeleteBadge && onDeleteBadge(badgeId);
   };
 
   const handleSearchKeyword = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -238,12 +169,7 @@ export function ExperienceTemplate({
   const handleSave = (data: any) => {
     const params = {
       ...data,
-      ...experience,
-      recommendJobGroups: recommendJobGroupsIds,
-      recommendJobs: recommendJobsIds,
-      recommendLevels: recommendLevelsIds,
-      relatedExperiences: experienceIds,
-      relatedSkills: skillIds,
+      ...badge,
     };
 
     onSave && onSave(params);
@@ -360,7 +286,7 @@ export function ExperienceTemplate({
     };
 
     if (params.name === undefined || params.name?.length === 0) {
-      alert('경험명을 입력해주세요.');
+      alert('스킬명을 입력해주세요.');
       return;
     }
 
@@ -384,9 +310,9 @@ export function ExperienceTemplate({
 
   return (
     <div className="admin-content">
-      <h2 className="tit-type1">경험관리</h2>
+      <h2 className="tit-type1">배지관리</h2>
       <div className="path">
-        <span>Home</span> <span>경험목록</span>
+        <span>Home</span> <span>배지목록</span>
       </div>
 
       <div className="data-top">
@@ -471,32 +397,20 @@ export function ExperienceTemplate({
           name="member"
           colgroup={COLGROUP}
           heads={HEADS}
-          items={devusExperienceList?.data?.data?.contents?.map((item, index) => {
+          items={badgeList?.data?.data?.contents?.map((item, index) => {
             return (
-              <tr key={`tr-${index}`} onClick={() => onShowPopup(item.id)}>
+              <tr key={`tr-${index}`} onClick={() => onShowPopup(item.badgeSequence)}>
+                <td className="magic" title={item.badgeId}>
+                  {item.badgeId}
+                </td>
+                <td className="magic" title={item.badgeGroupType}>
+                  {item.badgeGroupType}
+                </td>
                 <td className="magic" title={item.name}>
                   {item.name}
                 </td>
                 <td className="magic" title={item.description}>
                   {item.description}
-                </td>
-                <td className="magic" title={item.imageUrl}>
-                  {item.imageUrl}
-                </td>
-                <td className="magic" title={item.relatedJobGroups}>
-                  {item.relatedJobGroups?.join(',')}
-                </td>
-                <td className="magic" title={item.relatedJobs}>
-                  {item.relatedJobs?.join(',')}
-                </td>
-                <td className="magic" title={item.relatedLevels}>
-                  {item.relatedLevels?.length === 5 ? '모든' : item.relatedLevels?.sort().join(',') || 0}
-                </td>
-                <td className="magic" title={item?.trendLevel}>
-                  {item?.trendLevel || 0}
-                </td>
-                <td className="magic" title={item.activeLevel}>
-                  {item?.activeLevel || 0}
                 </td>
                 <td className="magic" title={dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}>
                   {dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}
@@ -507,7 +421,7 @@ export function ExperienceTemplate({
               </tr>
             );
           })}
-          isEmpty={devusExperienceList?.data?.length === 0 || false}
+          isEmpty={badgeList?.data?.length === 0 || false}
         />
         <AdminPagination {...pageProps} />
       </div>
@@ -527,7 +441,7 @@ export function ExperienceTemplate({
                     <i className="ico i-x"></i>
                   </button>
                 </div>
-                <div className="tit-type2">경험 상세보기</div>
+                <div className="tit-type2">배지 상세보기</div>
               </div>
               <div className="right">
                 {isEdit ? (
@@ -544,7 +458,7 @@ export function ExperienceTemplate({
                     취소
                   </button>
                 ) : (
-                  <button className="btn-type1 type1" onClick={() => handleDelete(experience?.id)}>
+                  <button className="btn-type1 type1" onClick={() => handleDelete(badge?.id)}>
                     삭제
                   </button>
                 )}
@@ -552,31 +466,48 @@ export function ExperienceTemplate({
             </div>
             <div className="tab-content" data-id="tabLink01">
               <div className="layout-grid">
-                <div className="grid-50">
+                <div className="grid-33">
                   <div className="inpwrap">
-                    <div className="inp-tit">경험 아이디</div>
+                    <div className="inp-tit">배지 아이디</div>
                     <div className="inp">
                       <input
                         type="text"
                         className="input-admin"
-                        {...methods.register('id')}
+                        {...methods.register('badgeId')}
                         disabled
-                        value={experience?.id || ''}
-                        onChange={onChangeExperience}
+                        value={badge?.badgeId || ''}
+                        onChange={onChangeBadge}
                       />
                     </div>
                   </div>
                 </div>
-                <div className="grid-50">
+                <div className="grid-33">
                   <div className="inpwrap">
-                    <div className="inp-tit">경험명</div>
+                    <div className="inp-tit">배지그룹타입</div>
+                    <div className="inp">
+                      <input
+                        type="text"
+                        className="input-admin"
+                        {...methods.register('badgeGroupType')}
+                        disabled
+                        value={badge?.badgeGroupType || ''}
+                        onChange={onChangeBadge}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid-33">
+                  <div className="inpwrap">
+                    <div className="inp-tit">
+                      배지명<span className="star">*</span>
+                    </div>
                     <div className="inp">
                       <input
                         className="input-admin"
                         type="text"
                         {...methods.register('name')}
-                        value={experience?.name || ''}
-                        onChange={onChangeExperience}
+                        value={badge?.name || ''}
+                        onChange={onChangeBadge}
                         disabled={!isEdit}
                       />
                     </div>
@@ -584,14 +515,16 @@ export function ExperienceTemplate({
                 </div>
                 <div className="grid-100">
                   <div className="inpwrap">
-                    <div className="inp-tit">설명</div>
+                    <div className="inp-tit">
+                      설명<span className="star">*</span>
+                    </div>
                     <div className="inp">
                       <input
                         className="input-admin"
                         type="text"
                         {...methods.register('description')}
-                        value={experience?.description}
-                        onChange={onChangeExperience}
+                        value={badge?.description}
+                        onChange={onChangeBadge}
                         disabled={!isEdit}
                       />
                     </div>
@@ -599,151 +532,22 @@ export function ExperienceTemplate({
                 </div>
                 <div className="grid-100">
                   <div className="inpwrap">
-                    <div className="inp-tit">이미지URL</div>
+                    <div className="inp-tit">
+                      이미지URL<span className="star">*</span>
+                    </div>
                     <div className="inp">
                       <input
                         className="input-admin"
                         type="text"
                         {...methods.register('imageUrl')}
-                        value={experience?.imageUrl || 0}
-                        onChange={onChangeExperience}
+                        value={badge?.imageUrl}
+                        onChange={onChangeBadge}
                         disabled={!isEdit}
                       />
                     </div>
                   </div>
                 </div>
-                <div className="grid-100">
-                  <div className="inpwrap">
-                    <div className="inp-tit">
-                      관련직군<span className="star">*</span>
-                    </div>
 
-                    <div className="inp">
-                      <div className={cx('skill__group')}>
-                        {jobCodes?.data?.contents?.map((item, index) => {
-                          return (
-                            <Toggle
-                              key={`recommendJobGroupsIds-${index}`}
-                              label={item.name}
-                              name="relatedJobGroups"
-                              value={item.id}
-                              onChange={onToggleChange}
-                              className="mr-2 mt-2"
-                              variant="small"
-                              type="multiple"
-                              isActive
-                              isBorder
-                              checked={
-                                !!recommendJobGroupsIds?.find(recommendJobGroups => recommendJobGroups === item.id)
-                              }
-                              disabled={!isEdit}
-                            />
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-100 mt-3">
-                  <div className="inpwrap">
-                    <div className="inp-tit">
-                      연관직무<span className="star">*</span>
-                    </div>
-                    <div className="inp">
-                      <div className={cx('skill__group')}>
-                        {contentJobType?.map((item, index) => {
-                          return (
-                            <Toggle
-                              key={`recommendJobsIds-${index}`}
-                              label={item.name}
-                              name="relatedJobs"
-                              value={item.id}
-                              onChange={onToggleChange}
-                              className="mr-2 mt-2"
-                              variant="small"
-                              type="multiple"
-                              isActive
-                              isBorder
-                              checked={!!recommendJobsIds?.find(recommendJobs => recommendJobs === item.id)}
-                              disabled={!isEdit}
-                            />
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-100">
-                  <div className="inpwrap">
-                    <div className="inp-tit">
-                      연관레벨<span className="star">*</span>
-                    </div>
-                    <div className="inp">
-                      <div className={cx('skill__group')}>
-                        {LEVELS?.map((item, index) => {
-                          return (
-                            <Toggle
-                              key={`recommendLevelsIds-${index}`}
-                              label={`${item.level}레벨`}
-                              name="relatedLevels"
-                              value={item.level || ''}
-                              onChange={onToggleChange}
-                              className="mr-2 mt-2"
-                              variant="small"
-                              type="multiple"
-                              isActive
-                              isBorder
-                              checked={
-                                !!recommendLevelsIds?.find(recommendLevels => parseInt(recommendLevels) === item.level)
-                              }
-                              disabled={!isEdit}
-                            />
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit">트렌드 레벨</div>
-                    <div className="inp">
-                      <select
-                        value={experience.trendLevel}
-                        onChange={onChangeExperience}
-                        name="trendLevel"
-                        disabled={!isEdit}
-                      >
-                        <option value="">-- 선택 --</option>
-                        {trendLevel?.map(item => (
-                          <option value={item.id} key={item.id}>
-                            {item.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit">활성화 레벨</div>
-                    <div className="inp">
-                      <select
-                        value={experience.activeLevel}
-                        onChange={onChangeExperience}
-                        name="activeLevel"
-                        disabled={!isEdit}
-                      >
-                        <option value="">-- 선택 --</option>
-                        {activeLevel?.map(item => (
-                          <option value={item.id} key={item.id}>
-                            {item.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                </div>
                 <div className="grid-25">
                   <div className="inpwrap">
                     <div className="inp-tit">등록일시</div>
@@ -751,9 +555,9 @@ export function ExperienceTemplate({
                       <input
                         type="text"
                         className="input-admin"
-                        value={experience?.updatedAt || ''}
+                        value={badge?.updatedAt || ''}
                         disabled
-                        onChange={onChangeExperience}
+                        onChange={onChangeBadge}
                       />
                     </div>
                   </div>
@@ -765,9 +569,9 @@ export function ExperienceTemplate({
                       <input
                         type="text"
                         className="input-admin"
-                        value={experience?.updatedAt || ''}
+                        value={badge?.updatedAt || ''}
                         disabled
-                        onChange={onChangeExperience}
+                        onChange={onChangeBadge}
                       />
                     </div>
                   </div>
@@ -781,7 +585,7 @@ export function ExperienceTemplate({
                     <div className="inp">
                       <Editor
                         type="seminar"
-                        data={experience?.content || ''}
+                        data={badge?.content || ''}
                         onChange={(event, editor) => {
                           setIntroduceEditor(editor.getData());
                         }}
@@ -807,7 +611,7 @@ export function ExperienceTemplate({
                     <i className="ico i-x"></i>
                   </button>
                 </div>
-                <div className="tit-type2">경험 등록</div>
+                <div className="tit-type2">배지 등록</div>
               </div>
               <div className="right">
                 <button className="btn-type1 type2" onClick={handleOnAdd}>
@@ -817,26 +621,42 @@ export function ExperienceTemplate({
             </div>
             <div className="tab-content" data-id="tabLink01">
               <div className="layout-grid">
-                <div className="grid-50">
+                <div className="grid-33">
                   <div className="inpwrap">
                     <div className="inp-tit">
-                      경험아이디<span className="star">*</span>
+                      배지아이디<span className="star">*</span>
                     </div>
                     <div className="inp">
                       <input
                         type="text"
                         className="input-admin"
-                        name="id"
-                        value={regitserValues?.id || ''}
+                        name="badgeId"
+                        value={regitserValues?.badgeId || ''}
                         onChange={handleRegister}
                       />
                     </div>
                   </div>
                 </div>
-                <div className="grid-50">
+                <div className="grid-33">
                   <div className="inpwrap">
                     <div className="inp-tit">
-                      경험명<span className="star">*</span>
+                      배지그룹<span className="star">*</span>
+                    </div>
+                    <div className="inp">
+                      <input
+                        type="text"
+                        className="input-admin"
+                        name="badgeGroupType"
+                        value={regitserValues?.badgeGroupType || ''}
+                        onChange={handleRegister}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid-33">
+                  <div className="inpwrap">
+                    <div className="inp-tit">
+                      배지명<span className="star">*</span>
                     </div>
                     <div className="inp">
                       <input
@@ -881,128 +701,6 @@ export function ExperienceTemplate({
                     </div>
                   </div>
                 </div>
-
-                <div className="grid-100">
-                  <div className="inpwrap">
-                    <div className="inp-tit">
-                      관련직군<span className="star">*</span>
-                    </div>
-
-                    <div className="inp">
-                      <div className={cx('skill__group')}>
-                        {jobCodes?.data?.contents?.map((item, index) => {
-                          return (
-                            <Toggle
-                              key={`recommendJobGroupsIds-${index}`}
-                              label={item.name}
-                              name="relatedJobGroups"
-                              value={item.id}
-                              onChange={onToggleChange}
-                              className="mr-2 mt-2"
-                              variant="small"
-                              type="multiple"
-                              isActive
-                              isBorder
-                            />
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-100 mt-3">
-                  <div className="inpwrap">
-                    <div className="inp-tit">
-                      연관직무<span className="star">*</span>
-                    </div>
-                    <div className="inp">
-                      <div className={cx('skill__group')}>
-                        {contentJobType?.map((item, index) => {
-                          return (
-                            <Toggle
-                              key={`recommendJobsIds-${index}`}
-                              label={item.name}
-                              name="relatedJobs"
-                              value={item.id}
-                              onChange={onToggleChange}
-                              className="mr-2 mt-2"
-                              variant="small"
-                              type="multiple"
-                              isActive
-                              isBorder
-                            />
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-100">
-                  <div className="inpwrap">
-                    <div className="inp-tit">
-                      연관레벨<span className="star">*</span>
-                    </div>
-                    <div className="inp">
-                      <div className={cx('skill__group')}>
-                        {LEVELS?.map((item, index) => {
-                          return (
-                            <Toggle
-                              key={`recommendLevelsIds-${index}`}
-                              label={`${item.level}레벨`}
-                              name="relatedLevels"
-                              value={item.level || ''}
-                              onChange={onToggleChange}
-                              className="mr-2 mt-2"
-                              variant="small"
-                              type="multiple"
-                              isActive
-                              isBorder
-                            />
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit">트렌드 레벨</div>
-                    <div className="inp">
-                      {isRegisterPopupOpen ? (
-                        <select value={regitserValues.trendLevel} onChange={handleRegister} name="trendLevel">
-                          <option value="">-- 선택 --</option>
-                          {trendLevel?.map(item => (
-                            <option value={item.id} key={item.id}>
-                              {item.name}
-                            </option>
-                          ))}
-                        </select>
-                      ) : (
-                        <></>
-                      )}
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit">활성화 레벨</div>
-                    <div className="inp">
-                      {isRegisterPopupOpen ? (
-                        <select value={regitserValues.activeLevel} onChange={handleRegister} name="activeLevel">
-                          <option value="">-- 선택 --</option>
-                          {activeLevel?.map(item => (
-                            <option value={item.id} key={item.id}>
-                              {item.name}
-                            </option>
-                          ))}
-                        </select>
-                      ) : (
-                        <></>
-                      )}
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -1012,4 +710,4 @@ export function ExperienceTemplate({
   );
 }
 
-export default ExperienceTemplate;
+export default BadgeTemplate;

@@ -569,7 +569,9 @@ export function SkillTemplate({
                 </div>
                 <div className="grid-50">
                   <div className="inpwrap">
-                    <div className="inp-tit">스킬명</div>
+                    <div className="inp-tit">
+                      스킬명<span className="star">*</span>
+                    </div>
                     <div className="inp">
                       <input
                         className="input-admin"
@@ -584,7 +586,9 @@ export function SkillTemplate({
                 </div>
                 <div className="grid-100">
                   <div className="inpwrap">
-                    <div className="inp-tit">설명</div>
+                    <div className="inp-tit">
+                      설명<span className="star">*</span>
+                    </div>
                     <div className="inp">
                       <input
                         className="input-admin"
@@ -599,7 +603,9 @@ export function SkillTemplate({
                 </div>
                 <div className="grid-100">
                   <div className="inpwrap">
-                    <div className="inp-tit">이미지URL</div>
+                    <div className="inp-tit">
+                      이미지URL<span className="star">*</span>
+                    </div>
                     <div className="inp">
                       <input
                         className="input-admin"
@@ -816,8 +822,8 @@ export function SkillTemplate({
                       <input
                         type="text"
                         className="input-admin"
-                        name="content"
-                        value={regitserValues?.content || ''}
+                        name="id"
+                        value={regitserValues?.id || ''}
                         onChange={handleRegister}
                       />
                     </div>
@@ -832,8 +838,8 @@ export function SkillTemplate({
                       <input
                         type="text"
                         className="input-admin"
-                        name="content"
-                        value={regitserValues?.content || ''}
+                        name="name"
+                        value={regitserValues?.name || ''}
                         onChange={handleRegister}
                       />
                     </div>
@@ -848,8 +854,8 @@ export function SkillTemplate({
                       <input
                         type="text"
                         className="input-admin"
-                        name="articleUrl"
-                        value={regitserValues?.articleUrl || ''}
+                        name="description"
+                        value={regitserValues?.description || ''}
                         onChange={handleRegister}
                       />
                     </div>
@@ -864,8 +870,8 @@ export function SkillTemplate({
                       <input
                         type="text"
                         className="input-admin"
-                        name="articleUrl"
-                        value={regitserValues?.articleUrl || ''}
+                        name="imageUrl"
+                        value={regitserValues?.imageUrl || ''}
                         onChange={handleRegister}
                       />
                     </div>

@@ -54,7 +54,7 @@ export const useDeleteExperience = (): UseMutationResult => {
 export const useSaveDevusExperience = (): UseMutationResult => {
   const queryClient = useQueryClient();
   // TODO : any 타입 변경
-  return useMutation<any, any, any>(requestBody => saveDevusExperience(requestBody.sequence, requestBody), {
+  return useMutation<any, any, any>(requestBody => saveDevusExperience(requestBody.id, requestBody), {
     onError: (error, variables, context) => {
       const { code, message } = error;
       alert(`mutation error : [${code}] ${message}`);
