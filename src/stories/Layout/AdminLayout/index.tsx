@@ -80,7 +80,7 @@ const AdminLayout = ({ darkBg, classOption, title, children, isFooter = true, re
       no: 4,
       option: 'nav-item',
       title: '콘텐츠',
-      link: 'javascript:void(0);',
+      link: '/admin/contents/skill',
       icon: '/assets/images/icons/content.png',
     },
     { no: 5, option: 'nav-item', title: '시스템', link: '/admin/terms', icon: '/assets/images/icons/system.png' },

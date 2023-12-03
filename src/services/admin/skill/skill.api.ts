@@ -59,4 +59,4 @@ export const saveDevusSkill = async (sequence: string, body) =>
 export const addDevusSkill = async (params: any) => await axiosGeneralAPI().post('/api/admin/v1/skills', params);
 
 // 삭제
-export const deleteDevusSkill = async quizId => await axiosGeneralAPI().delete(`/api/admin/v1/quizzes/`);
+export const deleteDevusSkill = async skillId => await axiosGeneralAPI().delete(`/api/admin/v1/quizzes/${skillId}`);

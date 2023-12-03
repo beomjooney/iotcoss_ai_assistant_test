@@ -21,4 +21,4 @@ export const saveMember = async (memberId: string, body) =>
   await axiosGeneralAPI().put(`/api/internal/v1/members`, body);
 
 // 회원 정보 삭제
-export const deleteMember = async memberId => await axiosGeneralAPI().delete(`/api/internal/v1/members`);
+export const deleteMember = async memberId => await axiosGeneralAPI().delete(`/api/internal/v1/members/${memberId}`);

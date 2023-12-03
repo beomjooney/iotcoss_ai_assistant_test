@@ -125,15 +125,13 @@ export function SkillTemplate({
   ];
 
   const FIELDS = [
-    { name: '퀴즈ID', field: 'id', type: 'text' },
-    { name: '회원UUID', field: 'memberUUID', type: 'text' },
-    { name: '추천직군들', field: 'recommendJobGroupNames', type: 'text' },
-    { name: '추천직무들', field: 'recommendJobNames', type: 'text' },
-    { name: '추천레벨들', field: 'recommendLevels', type: 'text' },
-    { name: '연관스킬들', field: 'relatedSkills', type: 'text' },
-    { name: '퀴즈 활용 수', field: 'activeCount', type: 'text' },
-    { name: '퀴즈 답변 수', field: 'answerCount', type: 'text' },
-    { name: '해시 태그', field: 'hashTags', type: 'text' },
+    { name: '스킬ID', field: 'id', type: 'text' },
+    { name: '스킬명', field: 'memberUUID', type: 'text' },
+    { name: '관련직군들', field: 'recommendJobGroupNames', type: 'text' },
+    { name: '관련직무들', field: 'recommendJobNames', type: 'text' },
+    { name: '관련레벨들', field: 'recommendLevels', type: 'text' },
+    { name: '트랜드레벨', field: 'relatedSkills', type: 'text' },
+    { name: '활성화레벨', field: 'relatedSkills', type: 'text' },
   ];
 
   const { mutate: onSaveProfileImage, data: profileImage, isSuccess } = useUploadImage();
@@ -292,7 +290,7 @@ export function SkillTemplate({
       }
 
       setExperienceIds(result);
-    } else if (name === 'recommendJobGroups') {
+    } else if (name === 'relatedJobGroups') {
       const result = [...recommendJobGroupsIds];
 
       if (result.indexOf(value) > -1) {
@@ -302,7 +300,7 @@ export function SkillTemplate({
       }
 
       setrecommendJobGroupsIds(result);
-    } else if (name === 'recommendJobs') {
+    } else if (name === 'relatedJobs') {
       const result = [...recommendJobsIds];
 
       if (result.indexOf(value) > -1) {
@@ -312,7 +310,7 @@ export function SkillTemplate({
       }
 
       setrecommendJobsIds(result);
-    } else if (name === 'recommendLevels') {
+    } else if (name === 'relatedLevels') {
       const result = [...recommendLevelsIds];
 
       if (result.indexOf(value) > -1) {

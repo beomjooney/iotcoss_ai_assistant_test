@@ -1,7 +1,7 @@
 import { useQuery } from 'react-query';
 import { ExperiencesResponse } from 'src/models/experiences';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
-import { experienceList, myExperienceList } from './experiences.api';
+import { experienceList, myExperienceList, getDevusExperiences, getDevusExperienceInfo } from './experiences.api';
 
 // export const useExperiences = params =>
 //   useQuery([QUERY_KEY_FACTORY('EXPERIENCE').list(params)], () => experienceList(params));
@@ -30,3 +30,12 @@ export const useMyExperiences = (
     },
   );
 };
+
+export const useDevusExperiences = params =>
+  useQuery([QUERY_KEY_FACTORY('SKILL').list(params)], () => getDevusExperiences(params));
+
+export const useDevusExperience = sequence =>
+  useQuery([QUERY_KEY_FACTORY('SKILL').detail(sequence)], () => getDevusExperienceInfo(sequence), {
+    refetchOnWindowFocus: false,
+    enabled: false,
+  });

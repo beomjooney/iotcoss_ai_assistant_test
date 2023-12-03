@@ -25,4 +25,4 @@ export const saveQuiz = async (sequence: string, body) =>
 export const addQuiz = async (params: any) => await axiosGeneralAPI().post('/api/admin/v1/quizzes', params);
 
 // 삭제
-export const deleteQuiz = async quizId => await axiosGeneralAPI().delete(`/api/admin/v1/quizzes/`);
+export const deleteQuiz = async quizId => await axiosGeneralAPI().delete(`/api/admin/v1/quizzes/${quizId}`);

@@ -14,22 +14,22 @@ import { TextField } from '@mui/material';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useUploadImage } from 'src/services/image/image.mutations';
-import { SearchParamsProps } from 'pages/admin/quiz';
+import { SearchParamsProps } from 'pages/admin/contents/experience';
 
 const cx = classNames.bind(styles);
 
-interface QuizTemplateProps {
-  quizList?: any;
+interface ExperienceTemplateProps {
+  devusExperienceList?: any;
   skillsList?: any;
-  experience?: any;
+  experienceList?: any;
   jobGroup?: any;
   jobs?: any;
   jobCodes?: any;
   contentJobType?: any;
-  quizData?: any;
+  devusExperienceData?: any;
   pageProps?: any;
-  onQuizInfo?: (quizId: string) => void;
-  onDeleteQuiz?: (quizId: string) => void;
+  onExperienceInfo?: (experienceId: string) => void;
+  onDeleteExperience?: (experienceId: string) => void;
   onSave?: (data: any) => void;
   onAdd?: (data: any) => void;
   onSearch?: (keyword: any) => void;
@@ -37,37 +37,36 @@ interface QuizTemplateProps {
   setParams: React.Dispatch<React.SetStateAction<SearchParamsProps>>;
 }
 
-export function QuizTemplate({
-  quizList,
+export function ExperienceTemplate({
+  devusExperienceList,
   skillsList,
-  experience,
+  experienceList,
   jobGroup,
   jobs,
   jobCodes,
   contentJobType,
-  quizData,
+  devusExperienceData,
   pageProps,
   params,
-  onQuizInfo,
-  onDeleteQuiz,
+  onExperienceInfo,
+  onDeleteExperience,
   onSave,
   onAdd,
   onSearch,
   setParams,
-}: QuizTemplateProps) {
-  const COLGROUP = ['12%', '12%', '5%', '5%', '4%', '5%', '4%', '4%', '6%', '6%', '6%'];
+}: ExperienceTemplateProps) {
+  const COLGROUP = ['12%', '12%', '10%', '10%', '10%', '10%', '10%', '10%', '10%', '10%'];
   const HEADS = [
-    '퀴즈아이디',
-    '회원UUID',
-    '추천직군들',
-    '추천직무들',
-    '추천레벨들',
-    '연관스킬들',
-    '퀴즈활용 수',
-    '퀴즈답변 수',
-    '해시태그',
-    '삭제상태',
+    '경험명',
+    '설명',
+    '이미지URL',
+    '연관직군들',
+    '연관직무들',
+    '연관레벨들',
+    '트랜드레벨',
+    '활성화레벨',
     '등록일시',
+    '수정일시',
   ];
 
   const memberCodes = [];
@@ -80,16 +79,59 @@ export function QuizTemplate({
     { level: 5, desc: '본인 오픈소스/방법론 등이 범용적 사용, 수백명이상 다수 직군 리딩' },
   ];
 
+  const trendLevel = [
+    {
+      name: '급하락',
+      id: 1,
+    },
+    {
+      name: '하락',
+      id: 2,
+    },
+    {
+      name: '일반',
+      id: 3,
+    },
+    {
+      name: '상승',
+      id: 4,
+    },
+    {
+      name: '급상승',
+      id: 5,
+    },
+  ];
+  const activeLevel = [
+    {
+      name: '신생',
+      id: 1,
+    },
+    {
+      name: '일부사용',
+      id: 2,
+    },
+    {
+      name: '일반',
+      id: 3,
+    },
+    {
+      name: '범용',
+      id: 4,
+    },
+    {
+      name: '대세',
+      id: 5,
+    },
+  ];
+
   const FIELDS = [
-    { name: '퀴즈ID', field: 'id', type: 'text' },
-    { name: '회원UUID', field: 'memberUUID', type: 'text' },
-    { name: '추천직군들', field: 'recommendJobGroupNames', type: 'text' },
-    { name: '추천직무들', field: 'recommendJobNames', type: 'text' },
-    { name: '추천레벨들', field: 'recommendLevels', type: 'text' },
-    { name: '연관스킬들', field: 'relatedSkills', type: 'text' },
-    { name: '퀴즈 활용 수', field: 'activeCount', type: 'text' },
-    { name: '퀴즈 답변 수', field: 'answerCount', type: 'text' },
-    { name: '해시 태그', field: 'hashTags', type: 'text' },
+    { name: '경험ID', field: 'id', type: 'text' },
+    { name: '경험명', field: 'memberUUID', type: 'text' },
+    { name: '관련직군들', field: 'recommendJobGroupNames', type: 'text' },
+    { name: '관련직무들', field: 'recommendJobNames', type: 'text' },
+    { name: '관련레벨들', field: 'recommendLevels', type: 'text' },
+    { name: '트랜드레벨', field: 'relatedSkills', type: 'text' },
+    { name: '활성화레벨', field: 'relatedSkills', type: 'text' },
   ];
 
   const { mutate: onSaveProfileImage, data: profileImage, isSuccess } = useUploadImage();
@@ -97,7 +139,7 @@ export function QuizTemplate({
   const [introduceEditor, setIntroduceEditor] = useState<string>('');
   const [popupOpen, setPopupOpen] = useState<boolean>(false);
   const [isFilter, setIsFilter] = useState<boolean>(false);
-  const [quiz, setQuiz] = useState<any>({});
+  const [experience, setExperience] = useState<any>({});
   const [searchKeyword, setSearchKeyword] = useState<string>('');
   const [profileImageUrl, setProfilImageUrl] = useState(null);
   const [tabValue, setTabValue] = useState<number>(1);
@@ -112,30 +154,29 @@ export function QuizTemplate({
   const [regitserValues, setRegisterValues] = useState<any>({});
 
   // TODO : 밸리데이션 추가 해야 함
-  const quizSaveSchema = yup.object().shape({
-    memberId: yup.string().notRequired(),
-    memberName: yup.string().notRequired(),
+  const experienceSaveSchema = yup.object().shape({
+    name: yup.string().notRequired(),
+    description: yup.string().notRequired(),
     memberNickname: yup.string().notRequired(),
-    articleUrl: yup.string().notRequired(),
-    activeCount: yup.string().notRequired(),
-    answerCount: yup.string().notRequired(),
-    hashTags: yup.string().notRequired(),
+    imageUrl: yup.string().notRequired(),
+    trendLevel: yup.string().notRequired(),
+    activeLevel: yup.string().notRequired(),
   });
 
   const methods = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange',
-    resolver: yupResolver(quizSaveSchema),
+    resolver: yupResolver(experienceSaveSchema),
   });
 
   useEffect(() => {
-    quizData && setQuiz(quizData.data);
-    if (quizData) {
-      setExperienceIds(quizData?.data?.relatedExperiences?.map((item, index) => item) || []);
-      setSkillIds(quizData?.data?.relatedSkills?.map((item, index) => item) || []);
-      setrecommendJobGroupsIds(quizData?.data?.recommendJobGroups?.map((item, index) => item) || []);
-      setrecommendJobsIds(quizData?.data?.recommendJobs?.map((item, index) => item) || []);
-      setrecommendLevelsIds(quizData?.data?.recommendLevels?.map((item, index) => item) || []);
+    devusExperienceData && setExperience(devusExperienceData.data);
+    if (devusExperienceData) {
+      setExperienceIds(devusExperienceData?.data?.relatedExperiences?.map((item, index) => item) || []);
+      setSkillIds(devusExperienceData?.data?.relatedSkills?.map((item, index) => item) || []);
+      setrecommendJobGroupsIds(devusExperienceData?.data?.relatedJobGroups?.map((item, index) => item) || []);
+      setrecommendJobsIds(devusExperienceData?.data?.relatedJobs?.map((item, index) => item) || []);
+      setrecommendLevelsIds(devusExperienceData?.data?.relatedLevels?.map((item, index) => item) || []);
     } else {
       setExperienceIds([]);
       setSkillIds([]);
@@ -143,33 +184,29 @@ export function QuizTemplate({
       setrecommendJobsIds([]);
       setrecommendLevelsIds([]);
     }
-  }, [quizData]);
+  }, [devusExperienceData]);
 
-  // useEffect(() => {
-  //   quizData && setQuiz(quizData.data);
-  // }, [quizData]);
-
-  const onShowPopup = (quizId: string) => {
-    onQuizInfo && onQuizInfo(quizId);
+  const onShowPopup = (experienceId: string) => {
+    onExperienceInfo && onExperienceInfo(experienceId);
     setPopupOpen(true);
     setIsRegisterPopupOpen(false);
   };
 
-  const onChangeQuiz = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const onChangeExperience = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = event.currentTarget;
     const data = {
       [name]: value,
     };
-    setQuiz({
-      ...quiz,
+    setExperience({
+      ...experience,
       ...data,
     });
   };
 
-  const handleDelete = (clubId: string) => {
+  const handleDelete = (experienceId: string) => {
     setPopupOpen(false);
-    setQuiz({});
-    onDeleteQuiz && onDeleteQuiz(clubId);
+    setExperience({});
+    onDeleteExperience && onDeleteExperience(experienceId);
   };
 
   const handleSearchKeyword = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -201,7 +238,7 @@ export function QuizTemplate({
   const handleSave = (data: any) => {
     const params = {
       ...data,
-      ...quiz,
+      ...experience,
       recommendJobGroups: recommendJobGroupsIds,
       recommendJobs: recommendJobsIds,
       recommendLevels: recommendLevelsIds,
@@ -253,7 +290,7 @@ export function QuizTemplate({
       }
 
       setExperienceIds(result);
-    } else if (name === 'recommendJobGroups') {
+    } else if (name === 'relatedJobGroups') {
       const result = [...recommendJobGroupsIds];
 
       if (result.indexOf(value) > -1) {
@@ -263,7 +300,7 @@ export function QuizTemplate({
       }
 
       setrecommendJobGroupsIds(result);
-    } else if (name === 'recommendJobs') {
+    } else if (name === 'relatedJobs') {
       const result = [...recommendJobsIds];
 
       if (result.indexOf(value) > -1) {
@@ -273,7 +310,7 @@ export function QuizTemplate({
       }
 
       setrecommendJobsIds(result);
-    } else if (name === 'recommendLevels') {
+    } else if (name === 'relatedLevels') {
       const result = [...recommendLevelsIds];
 
       if (result.indexOf(value) > -1) {
@@ -322,13 +359,13 @@ export function QuizTemplate({
       //registDate: `${registDate}:00.000`,
     };
 
-    if (params.content === undefined || params.content?.length === 0) {
-      alert('질문을 입력해주세요.');
+    if (params.name === undefined || params.name?.length === 0) {
+      alert('경험명을 입력해주세요.');
       return;
     }
 
-    if (params.articleUrl === undefined || params.articleUrl?.length === 0) {
-      alert('아티클URL을 입력해주세요.');
+    if (params.description === undefined || params.description?.length === 0) {
+      alert('설명을 입력해주세요.');
       return;
     }
 
@@ -347,9 +384,9 @@ export function QuizTemplate({
 
   return (
     <div className="admin-content">
-      <h2 className="tit-type1">퀴즈관리</h2>
+      <h2 className="tit-type1">경험관리</h2>
       <div className="path">
-        <span>Home</span> <span>퀴즈목록</span>
+        <span>Home</span> <span>경험목록</span>
       </div>
 
       <div className="data-top">
@@ -434,46 +471,43 @@ export function QuizTemplate({
           name="member"
           colgroup={COLGROUP}
           heads={HEADS}
-          items={quizList?.data?.data?.contents?.map((item, index) => {
+          items={devusExperienceList?.data?.data?.contents?.map((item, index) => {
             return (
-              <tr key={`tr-${index}`} onClick={() => onShowPopup(item.sequence)}>
-                <td className="magic" title={item.id}>
-                  {item.id}
+              <tr key={`tr-${index}`} onClick={() => onShowPopup(item.id)}>
+                <td className="magic" title={item.name}>
+                  {item.name}
                 </td>
-                <td className="magic" title={item.memberUUID}>
-                  {item.memberUUID}
+                <td className="magic" title={item.description}>
+                  {item.description}
                 </td>
-                <td className="magic" title={item.recommendJobGroupNames}>
-                  {item.recommendJobGroupNames}
+                <td className="magic" title={item.imageUrl}>
+                  {item.imageUrl}
                 </td>
-                <td className="magic" title={item.recommendJobNames}>
-                  {item.recommendJobNames}
+                <td className="magic" title={item.relatedJobGroups}>
+                  {item.relatedJobGroups?.join(',')}
                 </td>
-                <td className="magic" title={item.recommendLevels}>
-                  {item.recommendLevels?.length === 5 ? '모든' : item.recommendLevels?.sort().join(',') || 0}
+                <td className="magic" title={item.relatedJobs}>
+                  {item.relatedJobs?.join(',')}
                 </td>
-                <td className="magic" title={item.relatedSkills}>
-                  {item.relatedSkills}
+                <td className="magic" title={item.relatedLevels}>
+                  {item.relatedLevels?.length === 5 ? '모든' : item.relatedLevels?.sort().join(',') || 0}
                 </td>
-                <td className="magic" title={item?.activeCount}>
-                  {item?.activeCount || 0}
+                <td className="magic" title={item?.trendLevel}>
+                  {item?.trendLevel || 0}
                 </td>
-                <td className="magic" title={item.answerCount}>
-                  {item?.answerCount || 0}
-                </td>
-                <td className="magic" title={item.hashTags}>
-                  {item.hashTags}
-                </td>
-                <td className="magic" title={item.deleteStatus ? 'Y' : 'N'}>
-                  {item.deleteStatus ? 'Y' : 'N'}
+                <td className="magic" title={item.activeLevel}>
+                  {item?.activeLevel || 0}
                 </td>
                 <td className="magic" title={dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}>
                   {dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}
+                </td>{' '}
+                <td className="magic" title={dayjs(item.updatedAt).format('YYYY-MM-DD HH:mm:ss')}>
+                  {dayjs(item.updatedAt).format('YYYY-MM-DD HH:mm:ss')}
                 </td>
               </tr>
             );
           })}
-          isEmpty={quizList?.data?.length === 0 || false}
+          isEmpty={devusExperienceList?.data?.length === 0 || false}
         />
         <AdminPagination {...pageProps} />
       </div>
@@ -493,7 +527,7 @@ export function QuizTemplate({
                     <i className="ico i-x"></i>
                   </button>
                 </div>
-                <div className="tit-type2">퀴즈 상세보기</div>
+                <div className="tit-type2">경험 상세보기</div>
               </div>
               <div className="right">
                 {isEdit ? (
@@ -510,7 +544,7 @@ export function QuizTemplate({
                     취소
                   </button>
                 ) : (
-                  <button className="btn-type1 type1" onClick={() => handleDelete(quiz?.id)}>
+                  <button className="btn-type1 type1" onClick={() => handleDelete(experience?.id)}>
                     삭제
                   </button>
                 )}
@@ -518,165 +552,70 @@ export function QuizTemplate({
             </div>
             <div className="tab-content" data-id="tabLink01">
               <div className="layout-grid">
-                <div className="grid-25">
+                <div className="grid-50">
                   <div className="inpwrap">
-                    <div className="inp-tit">회원 아이디</div>
+                    <div className="inp-tit">경험 아이디</div>
                     <div className="inp">
                       <input
                         type="text"
                         className="input-admin"
-                        {...methods.register('memberId')}
+                        {...methods.register('id')}
                         disabled
-                        value={quiz?.memberId || ''}
-                        onChange={onChangeQuiz}
+                        value={experience?.id || ''}
+                        onChange={onChangeExperience}
                       />
                     </div>
                   </div>
                 </div>
-                <div className="grid-25">
+                <div className="grid-50">
                   <div className="inpwrap">
-                    <div className="inp-tit">회원명</div>
+                    <div className="inp-tit">경험명</div>
                     <div className="inp">
                       <input
                         className="input-admin"
                         type="text"
-                        {...methods.register('memberName')}
-                        value={quiz?.memberName || ''}
-                        onChange={onChangeQuiz}
-                        disabled
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit">닉네임</div>
-                    <div className="inp">
-                      <input
-                        className="input-admin"
-                        type="text"
-                        {...methods.register('memberNickname')}
-                        value={quiz?.memberNickname}
-                        onChange={onChangeQuiz}
-                        disabled
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit">퀴즈 활용 수</div>
-                    <div className="inp">
-                      <input
-                        className="input-admin"
-                        type="text"
-                        {...methods.register('activeCount')}
-                        value={quiz?.activeCount || 0}
-                        onChange={onChangeQuiz}
+                        {...methods.register('name')}
+                        value={experience?.name || ''}
+                        onChange={onChangeExperience}
                         disabled={!isEdit}
                       />
                     </div>
                   </div>
                 </div>
-                <div className="grid-25">
+                <div className="grid-100">
                   <div className="inpwrap">
-                    <div className="inp-tit">퀴즈 답변 수</div>
+                    <div className="inp-tit">설명</div>
                     <div className="inp">
                       <input
                         className="input-admin"
                         type="text"
-                        {...methods.register('answerCount')}
-                        value={quiz?.answerCount || 0}
-                        onChange={onChangeQuiz}
+                        {...methods.register('description')}
+                        value={experience?.description}
+                        onChange={onChangeExperience}
                         disabled={!isEdit}
                       />
                     </div>
                   </div>
                 </div>
-                <div className="grid-25">
+                <div className="grid-100">
                   <div className="inpwrap">
-                    <div className="inp-tit">키워드(해시태그)</div>
+                    <div className="inp-tit">이미지URL</div>
                     <div className="inp">
                       <input
-                        type="text"
                         className="input-admin"
-                        {...methods.register('hashTags')}
-                        value={quiz?.hashTags || ''}
-                        onChange={onChangeQuiz}
+                        type="text"
+                        {...methods.register('imageUrl')}
+                        value={experience?.imageUrl || 0}
+                        onChange={onChangeExperience}
                         disabled={!isEdit}
                       />
                     </div>
                   </div>
                 </div>
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit">등록일시</div>
-                    <div className="inp">
-                      <input
-                        type="text"
-                        className="input-admin"
-                        value={quiz?.createdAt || ''}
-                        disabled
-                        onChange={onChangeQuiz}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit">수정일시</div>
-                    <div className="inp">
-                      <input
-                        type="text"
-                        className="input-admin"
-                        value={quiz?.updatedAt || ''}
-                        disabled
-                        onChange={onChangeQuiz}
-                      />
-                    </div>
-                  </div>
-                </div>
-
                 <div className="grid-100">
                   <div className="inpwrap">
                     <div className="inp-tit">
-                      질문<span className="star">*</span>
-                    </div>
-                    <div className="inp">
-                      <input
-                        className="input-admin"
-                        type="text"
-                        {...methods.register('content')}
-                        value={quiz?.content || ''}
-                        onChange={onChangeQuiz}
-                        disabled={!isEdit}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid-100">
-                  <div className="inpwrap">
-                    <div className="inp-tit">
-                      아티클URL<span className="star">*</span>
-                    </div>
-                    <div className="inp">
-                      <input
-                        className="input-admin"
-                        type="text"
-                        {...methods.register('articleUrl')}
-                        value={quiz?.articleUrl || ''}
-                        onChange={onChangeQuiz}
-                        disabled={!isEdit}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid-100">
-                  <div className="inpwrap">
-                    <div className="inp-tit">
-                      추천직군<span className="star">*</span>
+                      관련직군<span className="star">*</span>
                     </div>
 
                     <div className="inp">
@@ -686,7 +625,7 @@ export function QuizTemplate({
                             <Toggle
                               key={`recommendJobGroupsIds-${index}`}
                               label={item.name}
-                              name="recommendJobGroups"
+                              name="relatedJobGroups"
                               value={item.id}
                               onChange={onToggleChange}
                               className="mr-2 mt-2"
@@ -708,7 +647,7 @@ export function QuizTemplate({
                 <div className="grid-100 mt-3">
                   <div className="inpwrap">
                     <div className="inp-tit">
-                      추천직무<span className="star">*</span>
+                      연관직무<span className="star">*</span>
                     </div>
                     <div className="inp">
                       <div className={cx('skill__group')}>
@@ -717,7 +656,7 @@ export function QuizTemplate({
                             <Toggle
                               key={`recommendJobsIds-${index}`}
                               label={item.name}
-                              name="recommendJobs"
+                              name="relatedJobs"
                               value={item.id}
                               onChange={onToggleChange}
                               className="mr-2 mt-2"
@@ -737,7 +676,7 @@ export function QuizTemplate({
                 <div className="grid-100">
                   <div className="inpwrap">
                     <div className="inp-tit">
-                      추천레벨<span className="star">*</span>
+                      연관레벨<span className="star">*</span>
                     </div>
                     <div className="inp">
                       <div className={cx('skill__group')}>
@@ -746,7 +685,7 @@ export function QuizTemplate({
                             <Toggle
                               key={`recommendLevelsIds-${index}`}
                               label={`${item.level}레벨`}
-                              name="recommendLevels"
+                              name="relatedLevels"
                               value={item.level || ''}
                               onChange={onToggleChange}
                               className="mr-2 mt-2"
@@ -763,63 +702,73 @@ export function QuizTemplate({
                         })}
                       </div>
                     </div>
-
-                    <div className="grid-100 mt-3">
-                      <div className="inpwrap">
-                        <div className="inp-tit">관련 스킬</div>
-                        <div className="inp">
-                          <div className={cx('filter-area')}>
-                            <div className={cx('skill__group')}>
-                              {skillsList?.data?.data?.map((item, index) => {
-                                return (
-                                  <Toggle
-                                    key={`skillIds-${index}`}
-                                    label={item.name}
-                                    name="skillIds"
-                                    value={item.id}
-                                    onChange={onToggleChange}
-                                    className="mr-2 mt-2 custom"
-                                    variant="small"
-                                    type="multiple"
-                                    isActive
-                                    isBorder
-                                    checked={!!skillIds?.find(skill => skill === item.id)}
-                                    disabled={!isEdit}
-                                  />
-                                );
-                              })}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                  </div>
+                </div>
+                <div className="grid-25">
+                  <div className="inpwrap">
+                    <div className="inp-tit">트렌드 레벨</div>
+                    <div className="inp">
+                      <select
+                        value={experience.trendLevel}
+                        onChange={onChangeExperience}
+                        name="trendLevel"
+                        disabled={!isEdit}
+                      >
+                        <option value="">-- 선택 --</option>
+                        {trendLevel?.map(item => (
+                          <option value={item.id} key={item.id}>
+                            {item.name}
+                          </option>
+                        ))}
+                      </select>
                     </div>
-
-                    <div className="grid-100 mt-3">
-                      <div className="inpwrap">
-                        <div className="inp-tit">관련 경험</div>
-                        <div className="inp">
-                          <div className={cx('skill__group')}>
-                            {experience?.data?.contents?.map((item, index) => {
-                              return (
-                                <Toggle
-                                  key={`experienceIds-${index}`}
-                                  label={item.name}
-                                  name="experienceIds"
-                                  value={item.name}
-                                  onChange={onToggleChange}
-                                  className="mr-2 mt-2"
-                                  variant="small"
-                                  type="multiple"
-                                  isActive
-                                  isBorder
-                                  checked={!!experienceIds?.find(experiences => experiences === item.name)}
-                                  disabled={!isEdit}
-                                />
-                              );
-                            })}
-                          </div>
-                        </div>
-                      </div>
+                  </div>
+                </div>
+                <div className="grid-25">
+                  <div className="inpwrap">
+                    <div className="inp-tit">활성화 레벨</div>
+                    <div className="inp">
+                      <select
+                        value={experience.activeLevel}
+                        onChange={onChangeExperience}
+                        name="activeLevel"
+                        disabled={!isEdit}
+                      >
+                        <option value="">-- 선택 --</option>
+                        {activeLevel?.map(item => (
+                          <option value={item.id} key={item.id}>
+                            {item.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div className="grid-25">
+                  <div className="inpwrap">
+                    <div className="inp-tit">등록일시</div>
+                    <div className="inp">
+                      <input
+                        type="text"
+                        className="input-admin"
+                        value={experience?.updatedAt || ''}
+                        disabled
+                        onChange={onChangeExperience}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid-25">
+                  <div className="inpwrap">
+                    <div className="inp-tit">수정일시</div>
+                    <div className="inp">
+                      <input
+                        type="text"
+                        className="input-admin"
+                        value={experience?.updatedAt || ''}
+                        disabled
+                        onChange={onChangeExperience}
+                      />
                     </div>
                   </div>
                 </div>
@@ -832,7 +781,7 @@ export function QuizTemplate({
                     <div className="inp">
                       <Editor
                         type="seminar"
-                        data={quiz?.content || ''}
+                        data={experience?.content || ''}
                         onChange={(event, editor) => {
                           setIntroduceEditor(editor.getData());
                         }}
@@ -858,7 +807,7 @@ export function QuizTemplate({
                     <i className="ico i-x"></i>
                   </button>
                 </div>
-                <div className="tit-type2">퀴즈 등록</div>
+                <div className="tit-type2">경험 등록</div>
               </div>
               <div className="right">
                 <button className="btn-type1 type2" onClick={handleOnAdd}>
@@ -868,10 +817,26 @@ export function QuizTemplate({
             </div>
             <div className="tab-content" data-id="tabLink01">
               <div className="layout-grid">
-                <div className="grid-100">
+                <div className="grid-50">
                   <div className="inpwrap">
                     <div className="inp-tit">
-                      질문<span className="star">*</span>
+                      경험아이디<span className="star">*</span>
+                    </div>
+                    <div className="inp">
+                      <input
+                        type="text"
+                        className="input-admin"
+                        name="content"
+                        value={regitserValues?.content || ''}
+                        onChange={handleRegister}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid-50">
+                  <div className="inpwrap">
+                    <div className="inp-tit">
+                      경험명<span className="star">*</span>
                     </div>
                     <div className="inp">
                       <input
@@ -887,7 +852,23 @@ export function QuizTemplate({
                 <div className="grid-100">
                   <div className="inpwrap">
                     <div className="inp-tit">
-                      아티클URL<span className="star">*</span>
+                      설명<span className="star">*</span>
+                    </div>
+                    <div className="inp">
+                      <input
+                        type="text"
+                        className="input-admin"
+                        name="articleUrl"
+                        value={regitserValues?.articleUrl || ''}
+                        onChange={handleRegister}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid-100">
+                  <div className="inpwrap">
+                    <div className="inp-tit">
+                      이미지URL<span className="star">*</span>
                     </div>
                     <div className="inp">
                       <input
@@ -904,7 +885,7 @@ export function QuizTemplate({
                 <div className="grid-100">
                   <div className="inpwrap">
                     <div className="inp-tit">
-                      추천직군<span className="star">*</span>
+                      관련직군<span className="star">*</span>
                     </div>
 
                     <div className="inp">
@@ -914,7 +895,7 @@ export function QuizTemplate({
                             <Toggle
                               key={`recommendJobGroupsIds-${index}`}
                               label={item.name}
-                              name="recommendJobGroups"
+                              name="relatedJobGroups"
                               value={item.id}
                               onChange={onToggleChange}
                               className="mr-2 mt-2"
@@ -929,19 +910,19 @@ export function QuizTemplate({
                     </div>
                   </div>
                 </div>
-                <div className="grid-50 mt-3">
+                <div className="grid-100 mt-3">
                   <div className="inpwrap">
                     <div className="inp-tit">
-                      추천직무<span className="star">*</span>
+                      연관직무<span className="star">*</span>
                     </div>
                     <div className="inp">
                       <div className={cx('skill__group')}>
-                        {jobs?.data?.contents?.map((item, index) => {
+                        {contentJobType?.map((item, index) => {
                           return (
                             <Toggle
                               key={`recommendJobsIds-${index}`}
                               label={item.name}
-                              name="recommendJobs"
+                              name="relatedJobs"
                               value={item.id}
                               onChange={onToggleChange}
                               className="mr-2 mt-2"
@@ -959,7 +940,7 @@ export function QuizTemplate({
                 <div className="grid-100">
                   <div className="inpwrap">
                     <div className="inp-tit">
-                      추천레벨<span className="star">*</span>
+                      연관레벨<span className="star">*</span>
                     </div>
                     <div className="inp">
                       <div className={cx('skill__group')}>
@@ -968,7 +949,7 @@ export function QuizTemplate({
                             <Toggle
                               key={`recommendLevelsIds-${index}`}
                               label={`${item.level}레벨`}
-                              name="recommendLevels"
+                              name="relatedLevels"
                               value={item.level || ''}
                               onChange={onToggleChange}
                               className="mr-2 mt-2"
@@ -981,74 +962,44 @@ export function QuizTemplate({
                         })}
                       </div>
                     </div>
+                  </div>
+                </div>
 
-                    <div className="grid-100 mt-3">
-                      <div className="inpwrap">
-                        <div className="inp-tit">관련 스킬</div>
-                        <div className="inp">
-                          <div className={cx('filter-area')}>
-                            <div className={cx('skill__group')}>
-                              {skillsList?.data?.data?.map((item, index) => {
-                                return (
-                                  <Toggle
-                                    key={`skillIds-${index}`}
-                                    label={item.name}
-                                    name="skillIds"
-                                    value={item.id}
-                                    onChange={onToggleChange}
-                                    className="mr-2 mt-2 custom"
-                                    variant="small"
-                                    type="multiple"
-                                    isActive
-                                    isBorder
-                                  />
-                                );
-                              })}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                <div className="grid-25">
+                  <div className="inpwrap">
+                    <div className="inp-tit">트렌드 레벨</div>
+                    <div className="inp">
+                      {isRegisterPopupOpen ? (
+                        <select value={regitserValues.trendLevel} onChange={handleRegister} name="trendLevel">
+                          <option value="">-- 선택 --</option>
+                          {trendLevel?.map(item => (
+                            <option value={item.id} key={item.id}>
+                              {item.name}
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        <></>
+                      )}
                     </div>
-
-                    <div className="grid-100 mt-3">
-                      <div className="inpwrap">
-                        <div className="inp-tit">관련 경험</div>
-                        <div className="inp">
-                          <div className={cx('skill__group')}>
-                            {experience?.data?.contents?.map((item, index) => {
-                              return (
-                                <Toggle
-                                  key={`experienceIds-${index}`}
-                                  label={item.name}
-                                  name="experienceIds"
-                                  value={item.name}
-                                  onChange={onToggleChange}
-                                  className="mr-2 mt-2"
-                                  variant="small"
-                                  type="multiple"
-                                  isActive
-                                  isBorder
-                                />
-                              );
-                            })}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="grid-100 mt-4">
-                      <div className="inpwrap">
-                        <div className="inp-tit">키워드(해시태그)</div>
-                        <div className="inp">
-                          <input
-                            type="text"
-                            className="input-admin"
-                            name="hashTags"
-                            value={regitserValues?.hashTags || ''}
-                            onChange={handleRegister}
-                          />
-                        </div>
-                      </div>
+                  </div>
+                </div>
+                <div className="grid-25">
+                  <div className="inpwrap">
+                    <div className="inp-tit">활성화 레벨</div>
+                    <div className="inp">
+                      {isRegisterPopupOpen ? (
+                        <select value={regitserValues.activeLevel} onChange={handleRegister} name="activeLevel">
+                          <option value="">-- 선택 --</option>
+                          {activeLevel?.map(item => (
+                            <option value={item.id} key={item.id}>
+                              {item.name}
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        <></>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -1061,4 +1012,4 @@ export function QuizTemplate({
   );
 }
 
-export default QuizTemplate;
+export default ExperienceTemplate;
