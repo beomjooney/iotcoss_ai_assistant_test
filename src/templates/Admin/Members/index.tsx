@@ -253,6 +253,25 @@ export function MembersTemplate({
     }
   };
 
+  const badgeStatusTxt = badgeStatus => {
+    let badgeStatusTxt = '';
+
+    switch (badgeStatus) {
+      case '0002':
+        badgeStatusTxt = '달성';
+        break;
+      case '0003':
+        badgeStatusTxt = '미달성';
+        break;
+
+      default:
+        badgeStatusTxt = '부분달성';
+        break;
+    }
+
+    return badgeStatusTxt;
+  };
+
   return (
     <div className="admin-content">
       <h2 className="tit-type1">회원관리</h2>
@@ -1024,7 +1043,7 @@ export function MembersTemplate({
                         <tr key={`participant-${index}`}>
                           <td>{item.name}</td>
                           <td>{item.description}</td>
-                          <td>{item.achievementStatus}</td>
+                          <td>{badgeStatusTxt(item.achievementStatus)}</td>
                           <td>{dayjs(item.achievementAt).format('YYYY-MM-DD')}</td>
                         </tr>
                       );
