@@ -49,6 +49,7 @@ import styled from '@emotion/styled';
 import MuiTabs from '@material-ui/core/Tabs';
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
 import { StepIconProps } from '@mui/material/StepIcon';
+import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -83,6 +84,10 @@ const ColorlibStepIconRoot = styled('div')<{
   ...(ownerState.completed && {
     backgroundColor: '#2474ED',
   }),
+  '@media (max-width: 1024px)': {
+    // 모바일 화면 크기에 따라 변경
+    width: 60,
+  },
 }));
 
 function ColorlibStepIcon(props: StepIconProps) {
@@ -164,27 +169,27 @@ const privateGroup = [
 const levelGroup = [
   {
     name: '0',
-    description: '레벨 0',
+    description: '0레벨',
   },
   {
     name: '1',
-    description: '레벨 1',
+    description: '1레벨',
   },
   {
     name: '2',
-    description: '레벨 2',
+    description: '2레벨',
   },
   {
     name: '3',
-    description: '레벨 3',
+    description: '3레벨',
   },
   {
     name: '4',
-    description: '레벨 4',
+    description: '4레벨',
   },
   {
     name: '5',
-    description: '레벨 5',
+    description: '5레벨',
   },
 ];
 
@@ -993,29 +998,32 @@ export function QuizOpenTemplate() {
 
   return (
     <div className={cx('seminar-container')}>
-      {/* <Banner title="dfsdf" subTitle="sdfadf" /> */}
-
       <div className={cx('container')}>
-        <div className="tw-py-5 tw-mb-16">
-          <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-            <Grid item xs={5} className="tw-font-bold tw-text-3xl tw-text-black">
-              성장퀴즈 &gt; 성장퀴즈 클럽 개설하기
+        <Desktop>
+          <div className="tw-py-5 tw-mb-16">
+            <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
+              <Grid item xs={5} className="tw-font-bold tw-text-3xl tw-text-black">
+                성장퀴즈 &gt; 성장퀴즈 클럽 개설하기
+              </Grid>
+              <Grid item xs={4} className="tw-font-semi tw-text-base tw-text-black">
+                나와 크루들의 성장을 이끌 퀴즈 클럽을 개설해요!
+              </Grid>
+              <Grid item xs={3} justifyContent="flex-end" className="tw-flex"></Grid>
             </Grid>
-            <Grid item xs={4} className="tw-font-semi tw-text-base tw-text-black">
-              나와 크루들의 성장을 이끌 퀴즈 클럽을 개설해요!
-            </Grid>
-            <Grid item xs={3} justifyContent="flex-end" className="tw-flex">
-              {/* <button
-                type="button"
-                className="tw-text-black tw-border tw-border-indigo-600 tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5"
-              >
-                <Link href="/quiz1" className="nav-link">
-                  임시저장 불러오기
-                </Link>
-              </button> */}
-            </Grid>
-          </Grid>
-        </div>
+          </div>
+        </Desktop>
+        <Mobile>
+          <div className="tw-py-5 tw-mb-0">
+            <div className="tw-pt-[60px]">
+              <div className="tw-text-[24px] tw-font-bold tw-text-black tw-text-center">
+                내가 만든 클럽 &gt; 크루관리
+              </div>
+              <div className="tw-text-[12px] tw-text-black tw-text-center tw-mb-10">
+                내가 만든 클럽 페이지에 관한 간단한 설명란
+              </div>
+            </div>
+          </div>
+        </Mobile>
 
         <Stepper alternativeLabel activeStep={activeStep} connector={<ColorlibConnector />}>
           {steps.map((label, index) => {
@@ -1077,161 +1085,50 @@ export function QuizOpenTemplate() {
         )}
         {activeStep === 1 && (
           <article>
-            <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">클럽 정보입력</div>
-            <div className={cx('content-area')}>
-              <div className="tw-font-semibold tw-text-sm tw-text-black tw-mb-2">클럽명</div>
-              <TextField
-                size="small"
-                fullWidth
-                label={'클럽명을 입력해주세요.'}
-                onChange={handleInputChange}
-                id="margin-none"
-                value={clubName}
-                name="clubName"
-              />
-              <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-my-2">클럽 이미지 선택</div>
+            <Desktop>
+              <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">클럽 정보입력</div>
+              <div className={cx('content-area')}>
+                <div className="tw-font-semibold tw-text-sm tw-text-black tw-mb-2">클럽명</div>
+                <TextField
+                  size="small"
+                  fullWidth
+                  label={'클럽명을 입력해주세요.'}
+                  onChange={handleInputChange}
+                  id="margin-none"
+                  value={clubName}
+                  name="clubName"
+                />
+                <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-my-2">클럽 이미지 선택</div>
 
-              <div className="tw-grid tw-grid-flow-col tw-gap-0 tw-content-end">
-                {images.map((image, index) => (
-                  <img
-                    key={index}
-                    src={image}
-                    alt={`Image ${index + 1}`}
-                    className={`image-item ${
-                      selectedImage === image ? 'selected' : ''
-                    } tw-object-cover tw-w-[100px] tw-rounded-lg tw-h-[100px] md:tw-h-[100px] md:tw-w-[100px] md:tw-rounded-lg`}
-                    style={{ opacity: selectedImage !== image ? 0.2 : 1 }}
-                    onClick={() => handleImageClick(image)}
-                  />
-                ))}
-              </div>
+                <div className="tw-grid tw-grid-flow-col tw-gap-0 tw-content-end">
+                  {images.map((image, index) => (
+                    <img
+                      key={index}
+                      src={image}
+                      alt={`Image ${index + 1}`}
+                      className={`image-item ${
+                        selectedImage === image ? 'selected' : ''
+                      } tw-object-cover tw-w-[100px] tw-rounded-lg tw-h-[100px] md:tw-h-[100px] md:tw-w-[100px] md:tw-rounded-lg`}
+                      style={{ opacity: selectedImage !== image ? 0.2 : 1 }}
+                      onClick={() => handleImageClick(image)}
+                    />
+                  ))}
+                </div>
 
-              <div>
-                <div className="tw-grid tw-grid-cols-2 tw-gap-4 tw-content-start">
-                  <div>
-                    <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천 직군</div>
-                    <ToggleButtonGroup
-                      value={jobGroupObject}
-                      exclusive
-                      onChange={handleJobs}
-                      aria-label="text alignment"
-                    >
-                      {contentTypes?.map((item, index) => (
-                        <ToggleButton
-                          classes={{ selected: classes.selected }}
-                          key={`job-1-${index}`}
-                          value={item}
-                          className="tw-ring-1 tw-ring-slate-900/10"
-                          style={{
-                            borderRadius: '5px',
-                            borderLeft: '0px',
-                            margin: '5px',
-                            height: '35px',
-                            border: '0px',
-                          }}
-                        >
-                          {item.name}
-                        </ToggleButton>
-                      ))}
-                    </ToggleButtonGroup>
-
-                    <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천 레벨</div>
-
-                    <ToggleButtonGroup
-                      value={recommendLevels}
-                      exclusive
-                      onChange={handleRecommendLevels}
-                      aria-label="text alignment"
-                    >
-                      {levelGroup?.map((item, index) => (
-                        <ToggleButton
-                          classes={{ selected: classes.selected }}
-                          key={`job-2-${index}`}
-                          value={item.name}
-                          aria-label="fff"
-                          className="tw-ring-1 tw-ring-slate-900/10"
-                          style={{
-                            borderRadius: '5px',
-                            borderLeft: '0px',
-                            margin: '5px',
-                            height: '35px',
-                            border: '0px',
-                          }}
-                        >
-                          레벨 {item.name}
-                        </ToggleButton>
-                      ))}
-                    </ToggleButtonGroup>
-                    {recommendLevels.toString() === '0' && (
-                      <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
-                        0레벨 : 직무스킬(개발언어/프레임워크 등) 학습 중. 상용서비스 개발 경험 없음.
-                      </div>
-                    )}
-                    {recommendLevels.toString() === '1' && (
-                      <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
-                        1레벨 : 상용서비스 단위모듈 수준 개발 가능. 서비스 개발 리딩 시니어 필요.
-                      </div>
-                    )}
-                    {recommendLevels.toString() === '2' && (
-                      <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
-                        2레벨 : 상용 서비스 개발 1인분 가능한 사람. 소규모 서비스 독자 개발 가능.
-                      </div>
-                    )}
-                    {recommendLevels.toString() === '3' && (
-                      <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
-                        3레벨 : 상용서비스 개발 리더. 담당직무분야 N명 업무가이드 및 리딩 가능.
-                      </div>
-                    )}
-                    {recommendLevels.toString() === '4' && (
-                      <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
-                        4레벨 : 다수 상용서비스 개발 리더. 수십명 혹은 수백명 수준의 개발자 총괄 리더.
-                      </div>
-                    )}
-                    {recommendLevels.toString() === '5' && (
-                      <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
-                        5레벨 : 본인 오픈소스/방법론 등이 범용적 사용, 수백명이상 다수 직군 리딩.
-                      </div>
-                    )}
-
-                    <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
-                      성장퀴즈 주기 (복수 선택 가능)
-                    </div>
-                    <ToggleButtonGroup value={studyCycle} onChange={handleStudyCycle} aria-label="" color="standard">
-                      {dayGroup?.map((item, index) => (
-                        <ToggleButton
-                          classes={{ selected: classes.selected }}
-                          key={`job1-${index}`}
-                          value={item.id}
-                          name={item.name}
-                          className="tw-ring-1 tw-ring-slate-900/10"
-                          style={{
-                            borderRadius: '5px',
-                            borderLeft: '0px',
-                            margin: '5px',
-                            height: '35px',
-                            border: '0px',
-                          }}
-                        >
-                          {item.name}
-                        </ToggleButton>
-                      ))}
-                    </ToggleButtonGroup>
-                  </div>
-                  <div>
+                <div>
+                  <div className="tw-grid tw-grid-cols-2 tw-gap-4 tw-content-start">
                     <div>
-                      <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천직무</div>
+                      <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천 직군</div>
                       <ToggleButtonGroup
-                        style={{ display: 'inline' }}
-                        value={recommendJobGroupsObject}
+                        value={jobGroupObject}
                         exclusive
-                        onChange={handleJobGroup}
-                        aria-label=""
-                        color="standard"
+                        onChange={handleJobs}
+                        aria-label="text alignment"
                       >
-                        {contentJobType?.map((item, index) => (
+                        {contentTypes?.map((item, index) => (
                           <ToggleButton
                             classes={{ selected: classes.selected }}
-                            key={`job-3-${index}`}
+                            key={`job-1-${index}`}
                             value={item}
                             className="tw-ring-1 tw-ring-slate-900/10"
                             style={{
@@ -1247,19 +1144,74 @@ export function QuizOpenTemplate() {
                         ))}
                       </ToggleButtonGroup>
 
-                      <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">공개/비공개 설정</div>
+                      <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천 레벨</div>
+
                       <ToggleButtonGroup
-                        value={isPublic}
-                        onChange={handleIsPublic}
+                        value={recommendLevels}
                         exclusive
-                        aria-label=""
-                        color="standard"
+                        onChange={handleRecommendLevels}
+                        aria-label="text alignment"
                       >
-                        {privateGroup?.map((item, index) => (
+                        {levelGroup?.map((item, index) => (
                           <ToggleButton
                             classes={{ selected: classes.selected }}
-                            key={`job-4-${index}`}
+                            key={`job-2-${index}`}
                             value={item.name}
+                            aria-label="fff"
+                            className="tw-ring-1 tw-ring-slate-900/10"
+                            style={{
+                              borderRadius: '5px',
+                              borderLeft: '0px',
+                              margin: '5px',
+                              height: '35px',
+                              border: '0px',
+                            }}
+                          >
+                            {item.name}레벨
+                          </ToggleButton>
+                        ))}
+                      </ToggleButtonGroup>
+                      {recommendLevels.toString() === '0' && (
+                        <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                          0레벨 : 직무스킬(개발언어/프레임워크 등) 학습 중. 상용서비스 개발 경험 없음.
+                        </div>
+                      )}
+                      {recommendLevels.toString() === '1' && (
+                        <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                          1레벨 : 상용서비스 단위모듈 수준 개발 가능. 서비스 개발 리딩 시니어 필요.
+                        </div>
+                      )}
+                      {recommendLevels.toString() === '2' && (
+                        <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                          2레벨 : 상용 서비스 개발 1인분 가능한 사람. 소규모 서비스 독자 개발 가능.
+                        </div>
+                      )}
+                      {recommendLevels.toString() === '3' && (
+                        <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                          3레벨 : 상용서비스 개발 리더. 담당직무분야 N명 업무가이드 및 리딩 가능.
+                        </div>
+                      )}
+                      {recommendLevels.toString() === '4' && (
+                        <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                          4레벨 : 다수 상용서비스 개발 리더. 수십명 혹은 수백명 수준의 개발자 총괄 리더.
+                        </div>
+                      )}
+                      {recommendLevels.toString() === '5' && (
+                        <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                          5레벨 : 본인 오픈소스/방법론 등이 범용적 사용, 수백명이상 다수 직군 리딩.
+                        </div>
+                      )}
+
+                      <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
+                        성장퀴즈 주기 (복수 선택 가능)
+                      </div>
+                      <ToggleButtonGroup value={studyCycle} onChange={handleStudyCycle} aria-label="" color="standard">
+                        {dayGroup?.map((item, index) => (
+                          <ToggleButton
+                            classes={{ selected: classes.selected }}
+                            key={`job1-${index}`}
+                            value={item.id}
+                            name={item.name}
                             className="tw-ring-1 tw-ring-slate-900/10"
                             style={{
                               borderRadius: '5px',
@@ -1273,69 +1225,128 @@ export function QuizOpenTemplate() {
                           </ToggleButton>
                         ))}
                       </ToggleButtonGroup>
-                      <TextField
-                        className="tw-pl-1 tw-mt-1"
-                        size="small"
-                        disabled
-                        label={'입장코드를 설정해주세요.'}
-                        id="margin-none"
-                      />
+                    </div>
+                    <div>
+                      <div>
+                        <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천직무</div>
+                        <ToggleButtonGroup
+                          style={{ display: 'inline' }}
+                          value={recommendJobGroupsObject}
+                          exclusive
+                          onChange={handleJobGroup}
+                          aria-label=""
+                          color="standard"
+                        >
+                          {contentJobType?.map((item, index) => (
+                            <ToggleButton
+                              classes={{ selected: classes.selected }}
+                              key={`job-3-${index}`}
+                              value={item}
+                              className="tw-ring-1 tw-ring-slate-900/10"
+                              style={{
+                                borderRadius: '5px',
+                                borderLeft: '0px',
+                                margin: '5px',
+                                height: '35px',
+                                border: '0px',
+                              }}
+                            >
+                              {item.name}
+                            </ToggleButton>
+                          ))}
+                        </ToggleButtonGroup>
+
+                        <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
+                          공개/비공개 설정
+                        </div>
+                        <ToggleButtonGroup
+                          value={isPublic}
+                          onChange={handleIsPublic}
+                          exclusive
+                          aria-label=""
+                          color="standard"
+                        >
+                          {privateGroup?.map((item, index) => (
+                            <ToggleButton
+                              classes={{ selected: classes.selected }}
+                              key={`job-4-${index}`}
+                              value={item.name}
+                              className="tw-ring-1 tw-ring-slate-900/10"
+                              style={{
+                                borderRadius: '5px',
+                                borderLeft: '0px',
+                                margin: '5px',
+                                height: '35px',
+                                border: '0px',
+                              }}
+                            >
+                              {item.name}
+                            </ToggleButton>
+                          ))}
+                        </ToggleButtonGroup>
+                        <TextField
+                          className="tw-pl-1 tw-mt-1"
+                          size="small"
+                          disabled
+                          label={'입장코드를 설정해주세요.'}
+                          id="margin-none"
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">관련스킬</div>
+                  <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">관련스킬</div>
 
-                <ToggleButtonGroup
-                  style={{ display: 'inline' }}
-                  value={skillIds}
-                  onChange={handleFormat}
-                  aria-label=""
-                  color="standard"
-                >
-                  {skillData?.map((item, index) => {
-                    return (
-                      <ToggleButton
-                        classes={{ selected: classes.selected }}
-                        key={`skillIds-${index}`}
-                        value={item.name}
-                        className="tw-ring-1 tw-ring-slate-900/10"
-                        style={{
-                          borderRadius: '5px',
-                          borderLeft: '0px',
-                          margin: '5px',
-                          height: '35px',
-                          border: '0px',
-                        }}
-                      >
-                        {item.name}
-                      </ToggleButton>
-                    );
-                  })}
-                </ToggleButtonGroup>
+                  <ToggleButtonGroup
+                    style={{ display: 'inline' }}
+                    value={skillIds}
+                    onChange={handleFormat}
+                    aria-label=""
+                    color="standard"
+                  >
+                    {skillData?.map((item, index) => {
+                      return (
+                        <ToggleButton
+                          classes={{ selected: classes.selected }}
+                          key={`skillIds-${index}`}
+                          value={item.name}
+                          className="tw-ring-1 tw-ring-slate-900/10"
+                          style={{
+                            borderRadius: '5px',
+                            borderLeft: '0px',
+                            margin: '5px',
+                            height: '35px',
+                            border: '0px',
+                          }}
+                        >
+                          {item.name}
+                        </ToggleButton>
+                      );
+                    })}
+                  </ToggleButtonGroup>
 
-                <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">관련경험</div>
-                <ToggleButtonGroup value={experienceIds} onChange={handleFormatEx} aria-label="" color="standard">
-                  {experienceData.data.contents?.map((item, index) => {
-                    return (
-                      <ToggleButton
-                        classes={{ selected: classes.selected }}
-                        key={`skillIds-${index}`}
-                        value={item.name}
-                        className="tw-ring-1 tw-ring-slate-900/10"
-                        style={{
-                          borderRadius: '5px',
-                          borderLeft: '0px',
-                          margin: '5px',
-                          height: '35px',
-                          border: '0px',
-                        }}
-                      >
-                        {item.name}
-                      </ToggleButton>
-                    );
-                  })}
-                </ToggleButtonGroup>
-                {/* {experienceData.data.contents?.map((item, index) => {
+                  <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">관련경험</div>
+                  <ToggleButtonGroup value={experienceIds} onChange={handleFormatEx} aria-label="" color="standard">
+                    {experienceData.data.contents?.map((item, index) => {
+                      return (
+                        <ToggleButton
+                          classes={{ selected: classes.selected }}
+                          key={`skillIds-${index}`}
+                          value={item.name}
+                          className="tw-ring-1 tw-ring-slate-900/10"
+                          style={{
+                            borderRadius: '5px',
+                            borderLeft: '0px',
+                            margin: '5px',
+                            height: '35px',
+                            border: '0px',
+                          }}
+                        >
+                          {item.name}
+                        </ToggleButton>
+                      );
+                    })}
+                  </ToggleButtonGroup>
+                  {/* {experienceData.data.contents?.map((item, index) => {
                   return (
                     <ToggleButton
                       key={`custom-skill-${index}`}
@@ -1351,51 +1362,51 @@ export function QuizOpenTemplate() {
                     />
                   );
                 })} */}
-                <div className="tw-grid tw-grid-cols-2 tw-gap-4 tw-content-start">
-                  <div>
-                    <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">퀴즈클럽 시작일</div>
+                  <div className="tw-grid tw-grid-cols-2 tw-gap-4 tw-content-start">
+                    <div>
+                      <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">퀴즈클럽 시작일</div>
 
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DatePicker
-                        format="YYYY-MM-DD"
-                        slotProps={{ textField: { size: 'small' } }}
-                        value={startDay}
-                        onChange={e => onChangeHandleFromToStartDate(e)}
-                      />
-                    </LocalizationProvider>
-                    <div className="tw-text-sm tw-text-black tw-mt-2 tw-my-0">* 스펙업 주기는 기본 12주 입니다.</div>
-                  </div>
-                  <div>
-                    <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">클럽 모집 마감일</div>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DatePicker
-                        format="YYYY-MM-DD"
-                        slotProps={{ textField: { size: 'small' } }}
-                        value={endDay}
-                        onChange={e => onChangeHandleFromToEndDate(e)}
-                      />
-                    </LocalizationProvider>
-                    <div className="tw-text-sm tw-text-black tw-mt-2 tw-my-0">
-                      *스펙업 시작일보다 이른 날짜만 설정이 가능합니다.
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                          format="YYYY-MM-DD"
+                          slotProps={{ textField: { size: 'small' } }}
+                          value={startDay}
+                          onChange={e => onChangeHandleFromToStartDate(e)}
+                        />
+                      </LocalizationProvider>
+                      <div className="tw-text-sm tw-text-black tw-mt-2 tw-my-0">* 스펙업 주기는 기본 12주 입니다.</div>
+                    </div>
+                    <div>
+                      <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">클럽 모집 마감일</div>
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                          format="YYYY-MM-DD"
+                          slotProps={{ textField: { size: 'small' } }}
+                          value={endDay}
+                          onChange={e => onChangeHandleFromToEndDate(e)}
+                        />
+                      </LocalizationProvider>
+                      <div className="tw-text-sm tw-text-black tw-mt-2 tw-my-0">
+                        *스펙업 시작일보다 이른 날짜만 설정이 가능합니다.
+                      </div>
                     </div>
                   </div>
+                  <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">성장퀴즈 클럽 소개</div>
+                  <TextField
+                    fullWidth
+                    id="margin-none"
+                    multiline
+                    rows={6}
+                    onChange={onMessageChange}
+                    value={introductionMessage}
+                    defaultValue="클럽 소개 내용을 입력해주세요."
+                  />
                 </div>
-                <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">성장퀴즈 클럽 소개</div>
-                <TextField
-                  fullWidth
-                  id="margin-none"
-                  multiline
-                  rows={6}
-                  onChange={onMessageChange}
-                  value={introductionMessage}
-                  defaultValue="클럽 소개 내용을 입력해주세요."
-                />
               </div>
-            </div>
-            <div className="tw-container tw-py-10 tw-px-10 tw-mx-0 tw-min-w-full tw-flex tw-flex-col tw-items-center">
-              <div className="tw-grid tw-grid-rows-3 tw-grid-flow-col tw-gap-4">
-                <div className="tw-row-span-2">
-                  {/* {isStepOptional(activeStep) && (
+              <div className="tw-container tw-py-10 tw-px-10 tw-mx-0 tw-min-w-full tw-flex tw-flex-col tw-items-center">
+                <div className="tw-grid tw-grid-rows-3 tw-grid-flow-col tw-gap-4">
+                  <div className="tw-row-span-2">
+                    {/* {isStepOptional(activeStep) && (
                     <button
                       color="inherit"
                       disabled={activeStep === 0}
@@ -1405,224 +1416,754 @@ export function QuizOpenTemplate() {
                       {activeStep === steps.length - 1 ? '성장퀴즈 클럽 개설하기 >' : '다음'}
                     </button>
                   )} */}
-                  {/* <button className="tw-w-[300px] btn-outline-secondary tw-outline-blue-500 tw-bg-white tw-mr-5 tw-text-black tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded">
+                    {/* <button className="tw-w-[300px] btn-outline-secondary tw-outline-blue-500 tw-bg-white tw-mr-5 tw-text-black tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded">
                     임시 저장하기
                   </button> */}
-                  <button
-                    className="tw-w-[300px] tw-bg-[#2474ED] tw-text-white tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded"
-                    onClick={handleNextOne}
-                  >
-                    {activeStep === steps.length - 1 ? '성장퀴즈 클럽 개설하기 >' : '다음'}
-                  </button>
+                    <button
+                      className="tw-w-[300px] tw-bg-[#2474ED] tw-text-white tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded"
+                      onClick={handleNextOne}
+                    >
+                      {activeStep === steps.length - 1 ? '성장퀴즈 클럽 개설하기 >' : '다음'}
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
+            </Desktop>
+            <Mobile>
+              <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">클럽 정보입력</div>
+              <div className={cx('content-area')}>
+                <div className="tw-font-semibold tw-text-sm tw-text-black tw-mb-2">클럽명</div>
+                <TextField
+                  size="small"
+                  fullWidth
+                  label={'클럽명을 입력해주세요.'}
+                  onChange={handleInputChange}
+                  id="margin-none"
+                  value={clubName}
+                  name="clubName"
+                />
+                <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-my-2">클럽 이미지 선택</div>
+
+                <div className="tw-flex tw-justify-center">
+                  <div className="tw-grid tw-grid-cols-3 tw-gap-5 tw-content-center">
+                    {images.map((image, index) => (
+                      <img
+                        key={index}
+                        src={image}
+                        alt={`Image ${index + 1}`}
+                        className={`image-item ${
+                          selectedImage === image ? 'selected' : ''
+                        } tw-object-cover tw-w-[100px] tw-rounded-lg tw-h-[100px] md:tw-h-[100px] md:tw-w-[100px] md:tw-rounded-lg`}
+                        style={{ opacity: selectedImage !== image ? 0.2 : 1 }}
+                        onClick={() => handleImageClick(image)}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <div className="tw-gap-4 tw-content-start">
+                    <div>
+                      <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천 직군</div>
+                      <ToggleButtonGroup
+                        value={jobGroupObject}
+                        exclusive
+                        onChange={handleJobs}
+                        aria-label="text alignment"
+                      >
+                        {contentTypes?.map((item, index) => (
+                          <ToggleButton
+                            classes={{ selected: classes.selected }}
+                            key={`job-1-${index}`}
+                            value={item}
+                            className="tw-ring-1 tw-ring-slate-900/10"
+                            style={{
+                              borderRadius: '5px',
+                              borderLeft: '0px',
+                              margin: '5px',
+                              height: '35px',
+                              border: '0px',
+                            }}
+                          >
+                            {item.name}
+                          </ToggleButton>
+                        ))}
+                      </ToggleButtonGroup>
+
+                      <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천 레벨</div>
+
+                      <ToggleButtonGroup
+                        value={recommendLevels}
+                        exclusive
+                        onChange={handleRecommendLevels}
+                        aria-label="text alignment"
+                      >
+                        {levelGroup?.map((item, index) => (
+                          <ToggleButton
+                            classes={{ selected: classes.selected }}
+                            key={`job-2-${index}`}
+                            value={item.name}
+                            aria-label="fff"
+                            className="tw-ring-1 tw-ring-slate-900/10"
+                            style={{
+                              borderRadius: '5px',
+                              borderLeft: '0px',
+                              margin: '5px',
+                              height: '35px',
+                              border: '0px',
+                              width: '55px',
+                            }}
+                          >
+                            {item.name}레벨
+                          </ToggleButton>
+                        ))}
+                      </ToggleButtonGroup>
+                      {recommendLevels.toString() === '0' && (
+                        <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                          0레벨 : 직무스킬(개발언어/프레임워크 등) 학습 중. 상용서비스 개발 경험 없음.
+                        </div>
+                      )}
+                      {recommendLevels.toString() === '1' && (
+                        <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                          1레벨 : 상용서비스 단위모듈 수준 개발 가능. 서비스 개발 리딩 시니어 필요.
+                        </div>
+                      )}
+                      {recommendLevels.toString() === '2' && (
+                        <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                          2레벨 : 상용 서비스 개발 1인분 가능한 사람. 소규모 서비스 독자 개발 가능.
+                        </div>
+                      )}
+                      {recommendLevels.toString() === '3' && (
+                        <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                          3레벨 : 상용서비스 개발 리더. 담당직무분야 N명 업무가이드 및 리딩 가능.
+                        </div>
+                      )}
+                      {recommendLevels.toString() === '4' && (
+                        <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                          4레벨 : 다수 상용서비스 개발 리더. 수십명 혹은 수백명 수준의 개발자 총괄 리더.
+                        </div>
+                      )}
+                      {recommendLevels.toString() === '5' && (
+                        <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                          5레벨 : 본인 오픈소스/방법론 등이 범용적 사용, 수백명이상 다수 직군 리딩.
+                        </div>
+                      )}
+
+                      <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
+                        성장퀴즈 주기 (복수 선택 가능)
+                      </div>
+                      <ToggleButtonGroup value={studyCycle} onChange={handleStudyCycle} aria-label="" color="standard">
+                        {dayGroup?.map((item, index) => (
+                          <ToggleButton
+                            classes={{ selected: classes.selected }}
+                            key={`job1-${index}`}
+                            value={item.id}
+                            name={item.name}
+                            className="tw-ring-1 tw-ring-slate-900/10"
+                            style={{
+                              borderRadius: '5px',
+                              borderLeft: '0px',
+                              margin: '5px',
+                              height: '35px',
+                              border: '0px',
+                            }}
+                          >
+                            {item.name}
+                          </ToggleButton>
+                        ))}
+                      </ToggleButtonGroup>
+                    </div>
+                    <div>
+                      <div>
+                        <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천직무</div>
+                        <ToggleButtonGroup
+                          style={{ display: 'inline' }}
+                          value={recommendJobGroupsObject}
+                          exclusive
+                          onChange={handleJobGroup}
+                          aria-label=""
+                          color="standard"
+                        >
+                          {contentJobType?.map((item, index) => (
+                            <ToggleButton
+                              classes={{ selected: classes.selected }}
+                              key={`job-3-${index}`}
+                              value={item}
+                              className="tw-ring-1 tw-ring-slate-900/10"
+                              style={{
+                                borderRadius: '5px',
+                                borderLeft: '0px',
+                                margin: '5px',
+                                height: '35px',
+                                border: '0px',
+                              }}
+                            >
+                              {item.name}
+                            </ToggleButton>
+                          ))}
+                        </ToggleButtonGroup>
+
+                        <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
+                          공개/비공개 설정
+                        </div>
+                        <ToggleButtonGroup
+                          value={isPublic}
+                          onChange={handleIsPublic}
+                          exclusive
+                          aria-label=""
+                          color="standard"
+                        >
+                          {privateGroup?.map((item, index) => (
+                            <ToggleButton
+                              classes={{ selected: classes.selected }}
+                              key={`job-4-${index}`}
+                              value={item.name}
+                              className="tw-ring-1 tw-ring-slate-900/10"
+                              style={{
+                                borderRadius: '5px',
+                                borderLeft: '0px',
+                                margin: '5px',
+                                height: '35px',
+                                border: '0px',
+                              }}
+                            >
+                              {item.name}
+                            </ToggleButton>
+                          ))}
+                        </ToggleButtonGroup>
+                        <TextField
+                          className="tw-pl-1 tw-mt-1"
+                          size="small"
+                          disabled
+                          label={'입장코드를 설정해주세요.'}
+                          id="margin-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">관련스킬</div>
+
+                  <ToggleButtonGroup
+                    style={{ display: 'inline' }}
+                    value={skillIds}
+                    onChange={handleFormat}
+                    aria-label=""
+                    color="standard"
+                  >
+                    {skillData?.map((item, index) => {
+                      return (
+                        <ToggleButton
+                          classes={{ selected: classes.selected }}
+                          key={`skillIds-${index}`}
+                          value={item.name}
+                          className="tw-ring-1 tw-ring-slate-900/10"
+                          style={{
+                            borderRadius: '5px',
+                            borderLeft: '0px',
+                            margin: '5px',
+                            height: '35px',
+                            border: '0px',
+                          }}
+                        >
+                          {item.name}
+                        </ToggleButton>
+                      );
+                    })}
+                  </ToggleButtonGroup>
+
+                  <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">관련경험</div>
+                  <ToggleButtonGroup
+                    style={{ display: 'inline' }}
+                    value={experienceIds}
+                    onChange={handleFormatEx}
+                    aria-label=""
+                    color="standard"
+                  >
+                    {experienceData.data.contents?.map((item, index) => {
+                      return (
+                        <ToggleButton
+                          classes={{ selected: classes.selected }}
+                          key={`skillIds-${index}`}
+                          value={item.name}
+                          className="tw-ring-1 tw-ring-slate-900/10"
+                          style={{
+                            borderRadius: '5px',
+                            borderLeft: '0px',
+                            margin: '5px',
+                            height: '35px',
+                            border: '0px',
+                          }}
+                        >
+                          {item.name}
+                        </ToggleButton>
+                      );
+                    })}
+                  </ToggleButtonGroup>
+                  <div className="tw-grid tw-grid-cols-2 tw-gap-4 tw-content-start">
+                    <div>
+                      <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">퀴즈클럽 시작일</div>
+
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                          format="YYYY-MM-DD"
+                          slotProps={{ textField: { size: 'small' } }}
+                          value={startDay}
+                          onChange={e => onChangeHandleFromToStartDate(e)}
+                        />
+                      </LocalizationProvider>
+                      <div className="tw-text-sm tw-text-black tw-mt-2 tw-my-0">* 스펙업 주기는 기본 12주 입니다.</div>
+                    </div>
+                    <div>
+                      <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">클럽 모집 마감일</div>
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                          format="YYYY-MM-DD"
+                          slotProps={{ textField: { size: 'small' } }}
+                          value={endDay}
+                          onChange={e => onChangeHandleFromToEndDate(e)}
+                        />
+                      </LocalizationProvider>
+                      <div className="tw-text-sm tw-text-black tw-mt-2 tw-my-0">
+                        *스펙업 시작일보다 이른 날짜만 설정이 가능합니다.
+                      </div>
+                    </div>
+                  </div>
+                  <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">성장퀴즈 클럽 소개</div>
+                  <TextField
+                    fullWidth
+                    id="margin-none"
+                    multiline
+                    rows={6}
+                    onChange={onMessageChange}
+                    value={introductionMessage}
+                    defaultValue="클럽 소개 내용을 입력해주세요."
+                  />
+                </div>
+              </div>
+              <div className="tw-container tw-py-10 tw-px-10 tw-mx-0 tw-min-w-full tw-flex tw-flex-col tw-items-center">
+                <div className="tw-grid tw-grid-rows-3 tw-grid-flow-col tw-gap-4">
+                  <div className="tw-row-span-2">
+                    <button
+                      className="tw-w-[300px] tw-bg-[#2474ED] tw-text-white tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded"
+                      onClick={handleNextOne}
+                    >
+                      {activeStep === steps.length - 1 ? '성장퀴즈 클럽 개설하기 >' : '다음'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </Mobile>
           </article>
         )}
 
         {activeStep === 2 && (
           <>
-            <article className="tw-mt-10">
-              <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-                <Grid item xs={2} className="tw-font-bold tw-text-xl tw-text-black">
-                  퀴즈 등록하기 {quizList.length}
+            <Desktop>
+              <article className="tw-mt-10">
+                <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
+                  <Grid item xs={2} className="tw-font-bold tw-text-xl tw-text-black">
+                    퀴즈 등록하기 {quizList.length}
+                  </Grid>
+                  <Grid item xs={7} className="tw-font-bold tw-text-xl tw-text-black ">
+                    <div className="tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500">
+                      {recommendJobGroupsName.map((name, i) => (
+                        <span
+                          key={i}
+                          className="tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded"
+                        >
+                          {name}
+                        </span>
+                      ))}
+                      {paramss?.recommendLevels.map((name, i) => (
+                        <span
+                          key={i}
+                          className="tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
+                        >
+                          {name} 레벨
+                        </span>
+                      ))}
+                      {jobGroupName?.map((name, i) => (
+                        <span
+                          className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
+                          key={i}
+                        >
+                          {name}
+                        </span>
+                      ))}
+                    </div>
+                  </Grid>
+                  <Grid item xs={3} justifyContent="flex-end" className="tw-flex">
+                    <button
+                      type="button"
+                      onClick={handleAddClick}
+                      className="tw-text-white tw-bg-blue-500 tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5 "
+                    >
+                      성장퀴즈 추가하기
+                    </button>
+                  </Grid>
                 </Grid>
-                <Grid item xs={7} className="tw-font-bold tw-text-xl tw-text-black ">
-                  <div className="tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500">
-                    {recommendJobGroupsName.map((name, i) => (
-                      <span
-                        key={i}
-                        className="tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded"
-                      >
-                        {name}
-                      </span>
-                    ))}
-                    {paramss?.recommendLevels.map((name, i) => (
-                      <span
-                        key={i}
-                        className="tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
-                      >
-                        {name} 레벨
-                      </span>
-                    ))}
-                    {jobGroupName?.map((name, i) => (
-                      <span
-                        className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
-                        key={i}
-                      >
-                        {name}
-                      </span>
-                    ))}
-                  </div>
-                </Grid>
-                <Grid item xs={3} justifyContent="flex-end" className="tw-flex">
-                  <button
-                    type="button"
-                    onClick={handleAddClick}
-                    className="tw-text-white tw-bg-blue-500 tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5 "
-                  >
-                    성장퀴즈 추가하기
-                  </button>
-                </Grid>
-              </Grid>
-              <div className="tw-mt-10"></div>
-              {quizListCopy.length === 0
-                ? quizListOrigin.map((item, index) => {
-                    return (
-                      <Grid
-                        key={index}
-                        container
-                        direction="row"
-                        justifyContent="left"
-                        alignItems="center"
-                        rowSpacing={3}
-                      >
-                        <Grid item xs={1}>
-                          <div className="tw-flex-auto tw-text-center tw-text-black tw-font-bold">Q{index + 1}.</div>
-                          <div className="tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold">
-                            {index + 1} 주차 ({item.studyCycle})
-                          </div>
-                        </Grid>
-                        <Grid item xs={1}>
-                          <div className="tw-flex-auto tw-text-center">
-                            <button
-                              type="button"
-                              className="tw-text-blue-700 border tw-border-blue-700 tw-font-medium tw-rounded-lg tw-text-sm tw-p-2.5 tw-text-center tw-inline-flex tw-items-center tw-mr-2"
-                            >
-                              <svg
-                                className="tw-w-4 tw-h-4"
-                                aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="currentColor"
-                                viewBox="2 2 12 12"
-                              >
-                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
-                              </svg>
-                              <span className="sr-only">Icon description</span>
-                            </button>
-                          </div>
-                        </Grid>
-                        <Grid item xs={10}>
-                          <div className="tw-flex tw-items-center tw-h-16 tw-p-4 tw-border border mb-3 mt-3 rounded">
-                            <div className="tw-flex-auto">
-                              <div className="tw-font-medium tw-text-black">{item.content}</div>
+                <div className="tw-mt-10"></div>
+                {quizListCopy.length === 0
+                  ? quizListOrigin.map((item, index) => {
+                      return (
+                        <Grid
+                          key={index}
+                          container
+                          direction="row"
+                          justifyContent="left"
+                          alignItems="center"
+                          rowSpacing={3}
+                        >
+                          <Grid item xs={1}>
+                            <div className="tw-flex-auto tw-text-center tw-text-black tw-font-bold">Q{index + 1}.</div>
+                            <div className="tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold">
+                              {index + 1} 주차 ({item.studyCycle})
                             </div>
-                            <div className="">{item.memberName}</div>
-                            <svg className="tw-ml-6 tw-h-6 tw-w-6 tw-flex-none" fill="none">
-                              <path
-                                d="M12 8v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1V8Zm0 0V7a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1ZM12 12v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1ZM12 16v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1Z"
-                                fill="#64748B"
-                              ></path>
-                            </svg>
-                          </div>
-                        </Grid>
-                      </Grid>
-                    );
-                  })
-                : quizListOrigin.map((item, index) => {
-                    return (
-                      <Grid
-                        key={index}
-                        container
-                        direction="row"
-                        justifyContent="left"
-                        alignItems="center"
-                        rowSpacing={3}
-                      >
-                        <Grid item xs={1}>
-                          <div className="tw-flex-auto tw-text-center tw-text-black tw-font-bold">Q{index + 1}.</div>
-                          <div className="tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold">
-                            {index + 1} 주차 ({item.studyCycle})
-                          </div>
-                        </Grid>
-                        <Grid item xs={1}>
-                          <div className="tw-flex-auto tw-text-center">
-                            <button
-                              type="button"
-                              onClick={() => handleDeleteQuiz(item.quizSequence)}
-                              className="tw-text-blue-700 border tw-border-blue-700 tw-font-medium tw-rounded-lg tw-text-sm tw-p-2.5 tw-text-center tw-inline-flex tw-items-center tw-mr-2"
-                            >
-                              <svg
-                                className="tw-w-4 tw-h-4"
-                                aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="currentColor"
-                                viewBox="2 2 12 12"
+                          </Grid>
+                          <Grid item xs={1}>
+                            <div className="tw-flex-auto tw-text-center">
+                              <button
+                                type="button"
+                                className="tw-text-blue-700 border tw-border-blue-700 tw-font-medium tw-rounded-lg tw-text-sm tw-p-2.5 tw-text-center tw-inline-flex tw-items-center tw-mr-2"
                               >
-                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
-                              </svg>
-                              <span className="sr-only">Icon description</span>
-                            </button>
-                          </div>
-                        </Grid>
-                        <Grid item xs={10}>
-                          <div className="tw-flex tw-items-center  tw-h-16 tw-p-4 tw-border border mb-3 mt-3 rounded">
-                            <div className="tw-flex-auto">
-                              <div className="tw-font-medium tw-text-black">{item?.content}</div>
+                                <svg
+                                  className="tw-w-4 tw-h-4"
+                                  aria-hidden="true"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="currentColor"
+                                  viewBox="2 2 12 12"
+                                >
+                                  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                                </svg>
+                                <span className="sr-only">Icon description</span>
+                              </button>
                             </div>
+                          </Grid>
+                          <Grid item xs={10}>
+                            <div className="tw-flex tw-items-center tw-h-16 tw-p-4 tw-border border mb-3 mt-3 rounded">
+                              <div className="tw-flex-auto">
+                                <div className="tw-font-medium tw-text-black">{item.content}</div>
+                              </div>
+                              <div className="">{item.memberName}</div>
+                              <svg className="tw-ml-6 tw-h-6 tw-w-6 tw-flex-none" fill="none">
+                                <path
+                                  d="M12 8v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1V8Zm0 0V7a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1ZM12 12v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1ZM12 16v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1Z"
+                                  fill="#64748B"
+                                ></path>
+                              </svg>
+                            </div>
+                          </Grid>
+                        </Grid>
+                      );
+                    })
+                  : quizListOrigin.map((item, index) => {
+                      return (
+                        <Grid
+                          key={index}
+                          container
+                          direction="row"
+                          justifyContent="left"
+                          alignItems="center"
+                          rowSpacing={3}
+                        >
+                          <Grid item xs={1}>
+                            <div className="tw-flex-auto tw-text-center tw-text-black tw-font-bold">Q{index + 1}.</div>
+                            <div className="tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold">
+                              {index + 1} 주차 ({item.studyCycle})
+                            </div>
+                          </Grid>
+                          <Grid item xs={1}>
+                            <div className="tw-flex-auto tw-text-center">
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteQuiz(item.quizSequence)}
+                                className="tw-text-blue-700 border tw-border-blue-700 tw-font-medium tw-rounded-lg tw-text-sm tw-p-2.5 tw-text-center tw-inline-flex tw-items-center tw-mr-2"
+                              >
+                                <svg
+                                  className="tw-w-4 tw-h-4"
+                                  aria-hidden="true"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="currentColor"
+                                  viewBox="2 2 12 12"
+                                >
+                                  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                                </svg>
+                                <span className="sr-only">Icon description</span>
+                              </button>
+                            </div>
+                          </Grid>
+                          <Grid item xs={10}>
+                            <div className="tw-flex tw-items-center  tw-h-16 tw-p-4 tw-border border mb-3 mt-3 rounded">
+                              <div className="tw-flex-auto">
+                                <div className="tw-font-medium tw-text-black">{item?.content}</div>
+                              </div>
 
-                            <div className="">
-                              {item?.isRepresentative === true && (
-                                <div onClick={() => handleClickQuiz(item?.quizSequence, item?.isRepresentative)}>
-                                  <Tooltip
-                                    content="클릭시 대표퀴즈로 설정됩니다.대표퀴즈 설정은 3개까지 가능합니다."
-                                    placement="bottom"
-                                    trigger="mouseEnter"
-                                    warpClassName={cx('icon-height')}
-                                  >
-                                    <button
-                                      type="button"
-                                      data-tooltip-target="tooltip-default"
-                                      className="tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded"
+                              <div className="">
+                                {item?.isRepresentative === true && (
+                                  <div onClick={() => handleClickQuiz(item?.quizSequence, item?.isRepresentative)}>
+                                    <Tooltip
+                                      content="클릭시 대표퀴즈로 설정됩니다.대표퀴즈 설정은 3개까지 가능합니다."
+                                      placement="bottom"
+                                      trigger="mouseEnter"
+                                      warpClassName={cx('icon-height')}
                                     >
-                                      대표
-                                    </button>
-                                  </Tooltip>
-                                </div>
-                              )}
-                              {item?.isRepresentative === false && (
-                                <div onClick={() => handleClickQuiz(item?.quizSequence, item?.isRepresentative)}>
-                                  <Tooltip
-                                    content="클릭시 대표퀴즈로 설정됩니다.대표퀴즈 설정은 3개까지 가능합니다."
-                                    placement="bottom"
-                                    trigger="mouseEnter"
-                                    warpClassName={cx('icon-height')}
-                                  >
-                                    <button
-                                      type="button"
-                                      data-tooltip-target="tooltip-default"
-                                      className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded"
+                                      <button
+                                        type="button"
+                                        data-tooltip-target="tooltip-default"
+                                        className="tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded"
+                                      >
+                                        대표
+                                      </button>
+                                    </Tooltip>
+                                  </div>
+                                )}
+                                {item?.isRepresentative === false && (
+                                  <div onClick={() => handleClickQuiz(item?.quizSequence, item?.isRepresentative)}>
+                                    <Tooltip
+                                      content="클릭시 대표퀴즈로 설정됩니다.대표퀴즈 설정은 3개까지 가능합니다."
+                                      placement="bottom"
+                                      trigger="mouseEnter"
+                                      warpClassName={cx('icon-height')}
                                     >
-                                      대표
-                                    </button>
-                                  </Tooltip>
-                                </div>
-                              )}
+                                      <button
+                                        type="button"
+                                        data-tooltip-target="tooltip-default"
+                                        className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-3 tw-py-1 tw-rounded"
+                                      >
+                                        대표
+                                      </button>
+                                    </Tooltip>
+                                  </div>
+                                )}
+                              </div>
                             </div>
-                          </div>
+                          </Grid>
                         </Grid>
-                      </Grid>
-                    );
-                  })}
-              <div className="tw-container tw-py-10 tw-px-10 tw-mx-0 tw-min-w-full tw-flex tw-flex-col tw-items-center">
-                <div className="tw-grid tw-grid-rows-3 tw-grid-flow-col tw-gap-4">
-                  <div className="tw-row-span-2">
-                    <button
-                      onClick={handleBack}
-                      className="tw-w-[300px] btn-outline-secondary tw-outline-blue-500 tw-bg-white tw-mr-5 tw-text-black tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded"
-                    >
-                      이전
-                    </button>
-                    <button
-                      className="tw-w-[300px] tw-bg-[#2474ED] tw-text-white tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded"
-                      onClick={handleNext}
-                    >
-                      {activeStep === steps.length - 1 ? '성장퀴즈 클럽 개설하기 >' : '미리보기'}
-                    </button>
+                      );
+                    })}
+                <div className="tw-container tw-py-10 tw-px-10 tw-mx-0 tw-min-w-full tw-flex tw-flex-col tw-items-center">
+                  <div className="tw-grid tw-grid-rows-3 tw-grid-flow-col tw-gap-4">
+                    <div className="tw-row-span-2">
+                      <button
+                        onClick={handleBack}
+                        className="tw-w-[300px] btn-outline-secondary tw-outline-blue-500 tw-bg-white tw-mr-5 tw-text-black tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded"
+                      >
+                        이전
+                      </button>
+                      <button
+                        className="tw-w-[300px] tw-bg-[#2474ED] tw-text-white tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded"
+                        onClick={handleNext}
+                      >
+                        {activeStep === steps.length - 1 ? '성장퀴즈 클럽 개설하기 >' : '미리보기'}
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </article>
+              </article>
+            </Desktop>
+            <Mobile>
+              <article className="tw-mt-10">
+                <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
+                  <Grid item xs={12} className="tw-font-bold tw-text-xl tw-text-black tw-py-2">
+                    퀴즈 등록하기 {quizList.length}
+                  </Grid>
+                  <Grid item xs={12} className="tw-font-bold tw-text-xl tw-text-black ">
+                    <div className="tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500">
+                      {recommendJobGroupsName.map((name, i) => (
+                        <span
+                          key={i}
+                          className="tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded"
+                        >
+                          {name}
+                        </span>
+                      ))}
+                      {paramss?.recommendLevels.map((name, i) => (
+                        <span
+                          key={i}
+                          className="tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
+                        >
+                          {name} 레벨
+                        </span>
+                      ))}
+                      {jobGroupName?.map((name, i) => (
+                        <span
+                          className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
+                          key={i}
+                        >
+                          {name}
+                        </span>
+                      ))}
+                    </div>
+                  </Grid>
+                  <Grid item xs={12} justifyContent="flex-end" className="tw-flex">
+                    <button
+                      type="button"
+                      onClick={handleAddClick}
+                      className="tw-text-white tw-bg-blue-500 tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5 "
+                    >
+                      성장퀴즈 추가하기
+                    </button>
+                  </Grid>
+                </Grid>
+                <div className="tw-mt-10"></div>
+                {quizListCopy.length === 0
+                  ? quizListOrigin.map((item, index) => {
+                      return (
+                        <Grid
+                          key={index}
+                          container
+                          direction="row"
+                          justifyContent="left"
+                          alignItems="center"
+                          rowSpacing={3}
+                        >
+                          <Grid item xs={2}>
+                            <div className="tw-flex-auto tw-text-center tw-text-black tw-font-bold">Q{index + 1}.</div>
+                            <div className="tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold">
+                              {index + 1} 주차 ({item.studyCycle})
+                            </div>
+                          </Grid>
+                          <Grid item xs={2}>
+                            <div className="tw-flex-auto tw-text-center">
+                              <button
+                                type="button"
+                                className="tw-text-blue-700 border tw-border-blue-700 tw-font-medium tw-rounded-lg tw-text-sm tw-p-2.5 tw-text-center tw-inline-flex tw-items-center tw-mr-2"
+                              >
+                                <svg
+                                  className="tw-w-4 tw-h-4"
+                                  aria-hidden="true"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="currentColor"
+                                  viewBox="2 2 12 12"
+                                >
+                                  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                                </svg>
+                                <span className="sr-only">Icon description</span>
+                              </button>
+                            </div>
+                          </Grid>
+                          <Grid item xs={8}>
+                            <div className="tw-flex tw-items-center tw-p-4 tw-border border mb-3 mt-3 rounded">
+                              <div className="tw-flex-auto">
+                                <div className="tw-font-medium tw-text-black">{item.content}</div>
+                              </div>
+                              <div className="">{item.memberName}</div>
+                              <svg className="tw-ml-6 tw-h-6 tw-w-6 tw-flex-none" fill="none">
+                                <path
+                                  d="M12 8v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1V8Zm0 0V7a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1ZM12 12v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1ZM12 16v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1Z"
+                                  fill="#64748B"
+                                ></path>
+                              </svg>
+                            </div>
+                          </Grid>
+                        </Grid>
+                      );
+                    })
+                  : quizListOrigin.map((item, index) => {
+                      return (
+                        <Grid
+                          key={index}
+                          container
+                          direction="row"
+                          justifyContent="left"
+                          alignItems="center"
+                          rowSpacing={3}
+                        >
+                          <Grid item xs={2}>
+                            <div className="tw-flex-auto tw-text-center tw-text-black tw-font-bold">Q{index + 1}.</div>
+                            <div className="tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold">
+                              {index + 1} 주차 ({item.studyCycle})
+                            </div>
+                          </Grid>
+                          <Grid item xs={2}>
+                            <div className="tw-flex-auto tw-text-center">
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteQuiz(item.quizSequence)}
+                                className="tw-text-blue-700 border tw-border-blue-700 tw-font-medium tw-rounded-lg tw-text-sm tw-p-2.5 tw-text-center tw-inline-flex tw-items-center tw-mr-2"
+                              >
+                                <svg
+                                  className="tw-w-4 tw-h-4"
+                                  aria-hidden="true"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="currentColor"
+                                  viewBox="2 2 12 12"
+                                >
+                                  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                                </svg>
+                                <span className="sr-only">Icon description</span>
+                              </button>
+                            </div>
+                          </Grid>
+                          <Grid item xs={8}>
+                            <div className="tw-flex tw-items-center  tw-p-4 tw-border border mb-3 mt-3 rounded">
+                              <div className="tw-flex-auto">
+                                <div className="tw-font-medium tw-text-black">{item?.content}</div>
+                              </div>
+
+                              <div className="">
+                                {item?.isRepresentative === true && (
+                                  <div onClick={() => handleClickQuiz(item?.quizSequence, item?.isRepresentative)}>
+                                    <Tooltip
+                                      content="클릭시 대표퀴즈로 설정됩니다.대표퀴즈 설정은 3개까지 가능합니다."
+                                      placement="bottom"
+                                      trigger="mouseEnter"
+                                      warpClassName={cx('icon-height')}
+                                    >
+                                      <button
+                                        type="button"
+                                        data-tooltip-target="tooltip-default"
+                                        className="tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-medium tw-w-[40px]  tw-px-1 tw-rounded"
+                                      >
+                                        대표
+                                      </button>
+                                    </Tooltip>
+                                  </div>
+                                )}
+                                {item?.isRepresentative === false && (
+                                  <div onClick={() => handleClickQuiz(item?.quizSequence, item?.isRepresentative)}>
+                                    <Tooltip
+                                      content="클릭시 대표퀴즈로 설정됩니다.대표퀴즈 설정은 3개까지 가능합니다."
+                                      placement="bottom"
+                                      trigger="mouseEnter"
+                                      warpClassName={cx('icon-height')}
+                                    >
+                                      <button
+                                        type="button"
+                                        data-tooltip-target="tooltip-default"
+                                        className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium   tw-w-[40px]  tw-px-1 tw-rounded"
+                                      >
+                                        대표
+                                      </button>
+                                    </Tooltip>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </Grid>
+                        </Grid>
+                      );
+                    })}
+                <div className="tw-container tw-py-10 tw-px-10 tw-mx-0 tw-min-w-full tw-flex tw-flex-col tw-items-center">
+                  <div className="tw-grid tw-grid-rows-3 tw-grid-flow-col tw-gap-4">
+                    <div className="tw-row-span-2">
+                      <button
+                        onClick={handleBack}
+                        className="tw-w-[300px] btn-outline-secondary tw-outline-blue-500 tw-bg-white tw-mr-5 tw-text-black tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded"
+                      >
+                        이전
+                      </button>
+                      <button
+                        className="tw-w-[300px] tw-bg-[#2474ED] tw-text-white tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded"
+                        onClick={handleNext}
+                      >
+                        {activeStep === steps.length - 1 ? '성장퀴즈 클럽 개설하기 >' : '미리보기'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </Mobile>
           </>
         )}
         {activeStep === 3 && (
@@ -1789,69 +2330,147 @@ export function QuizOpenTemplate() {
               />
             </div>
             {quizListData.map((item, index) => (
-              <div key={`admin-menu-${index}`} className="tw-flex tw-pb-5">
-                <Checkbox
-                  disableRipple
-                  onChange={handleChangeCheck}
-                  checked={state.includes(String(item.sequence))}
-                  name={item.sequence}
-                  className="tw-mr-3"
-                />
-                <div className="tw-p-4 tw-border border tw-w-full tw-rounded-lg">
-                  <div className="tw-flex tw-w-full tw-items-center"></div>
-                  <div className="tw-flex  tw-items-center">
-                    <div className="tw-flex-auto">
-                      <div className="tw-font-medium tw-text-black">
-                        <div className="tw-text-sm tw-font-normal tw-text-gray-500  tw-line-clamp-1">
-                          {item?.recommendJobGroupNames?.map((name, i) => (
-                            <span
-                              key={i}
-                              className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600"
-                            >
-                              {name}
-                            </span>
-                          ))}
-                          <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
-                            {item?.recommendLevels?.sort().join(',')}레벨
-                          </span>
-                          {item?.recommendJobNames?.map((name, i) => (
-                            <span
-                              key={i}
-                              className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-100 tw-text-sm tw-font-light tw-text-gray-600"
-                            >
-                              {name}
-                            </span>
-                          ))}
-                          {item?.hashTags?.map((name, i) => (
-                            <span
-                              key={i}
-                              className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-gray-700"
-                            >
-                              {name}
-                            </span>
-                          ))}
+              <>
+                <Desktop>
+                  <div key={`admin-menu-${index}`} className="tw-flex tw-pb-5">
+                    <Checkbox
+                      disableRipple
+                      onChange={handleChangeCheck}
+                      checked={state.includes(String(item.sequence))}
+                      name={item.sequence}
+                      className="tw-mr-3"
+                    />
+                    <div className="tw-p-4 tw-border border tw-w-full tw-rounded-lg">
+                      <div className="tw-flex tw-w-full tw-items-center"></div>
+                      <div className="tw-flex  tw-items-center">
+                        <div className="tw-flex-auto">
+                          <div className="tw-font-medium tw-text-black">
+                            <div className="tw-text-sm tw-font-normal tw-text-gray-500  tw-line-clamp-1">
+                              {item?.recommendJobGroupNames?.map((name, i) => (
+                                <span
+                                  key={i}
+                                  className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600"
+                                >
+                                  {name}
+                                </span>
+                              ))}
+                              <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
+                                {item?.recommendLevels?.sort().join(',')}레벨
+                              </span>
+                              {item?.recommendJobNames?.map((name, i) => (
+                                <span
+                                  key={i}
+                                  className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-100 tw-text-sm tw-font-light tw-text-gray-600"
+                                >
+                                  {name}
+                                </span>
+                              ))}
+                              {item?.hashTags?.map((name, i) => (
+                                <span
+                                  key={i}
+                                  className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-gray-700"
+                                >
+                                  {name}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="tw-text-gray-400 tw-text-sm  tw-line-clamp-1">{item.createdAt}</div>
+                      </div>
+                      <div className="tw-flex  tw-items-center py-2">
+                        <div className="tw-flex-auto">
+                          <div className="tw-font-medium tw-text-black tw-text-base tw-line-clamp-1">
+                            {item.content}
+                          </div>
+                        </div>
+                        {/* <div className="">{item.memberName}</div> */}
+                      </div>
+                      <div className="tw-grid tw-grid-cols-12 tw-gap-4">
+                        <div className="tw-col-span-1 tw-text-sm tw-font-bold tw-text-black">아티클</div>
+                        <div className="tw-col-span-9 tw-text-sm tw-text-gray-600  tw-line-clamp-1">
+                          {item.articleUrl}
+                        </div>
+                        <div className="tw-col-span-2 tw-text-sm tw-text-right">
+                          댓글 : {item.activeCount} 답변 : {item.answerCount}
                         </div>
                       </div>
                     </div>
-                    <div className="tw-text-gray-400 tw-text-sm  tw-line-clamp-1">{item.createdAt}</div>
                   </div>
-                  <div className="tw-flex  tw-items-center py-2">
-                    <div className="tw-flex-auto">
-                      <div className="tw-font-medium tw-text-black tw-text-base tw-line-clamp-1">{item.content}</div>
+                </Desktop>
+                <Mobile>
+                  <div key={`admin-menu-${index}`} className="tw-flex tw-pb-5">
+                    <Checkbox
+                      disableRipple
+                      onChange={handleChangeCheck}
+                      checked={state.includes(String(item.sequence))}
+                      name={item.sequence}
+                      className="tw-mr-3"
+                    />
+                    <div className="tw-p-5 tw-border border tw-w-full tw-rounded-xl">
+                      {/* 첫 번째 컬럼 */}
+                      <div className="md:tw-w-full">
+                        <div className="tw-font-medium tw-text-black">
+                          <div className="tw-text-sm tw-font-normal tw-text-gray-500">
+                            {item?.recommendJobGroupNames?.map((name, i) => (
+                              <span
+                                key={i}
+                                className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600"
+                              >
+                                {name}
+                              </span>
+                            ))}
+                            <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
+                              {item?.recommendLevels?.sort().join(',')}레벨
+                            </span>
+                            {item?.recommendJobNames?.map((name, i) => (
+                              <span
+                                key={i}
+                                className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-100 tw-text-sm tw-font-light tw-text-gray-600"
+                              >
+                                {name}
+                              </span>
+                            ))}
+                            {item?.hashTags?.map((name, i) => (
+                              <span
+                                key={i}
+                                className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-gray-700"
+                              >
+                                {name}
+                              </span>
+                            ))}
+                          </div>
+                          <div className="tw-text-gray-400 tw-text-base tw-py-1 tw-text-right">{item.createdAt}</div>
+                        </div>
+                      </div>
+                      {/* 두 번째 컬럼 */}
+                      <div className="md:tw-w-full">
+                        <div className="tw-flex  tw-items-center py-2">
+                          <div className="tw-flex-auto">
+                            <div className="tw-font-medium tw-text-black tw-text-base tw-line-clamp-1">
+                              {item.content}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      {/* 세 번째 컬럼 */}
+                      <div className="md:tw-w-full">
+                        <div className="tw-grid tw-grid-cols-12 tw-gap-4">
+                          <div className="tw-col-span-3 tw-text-sm tw-font-bold tw-text-black">아티클</div>
+                          <div className="tw-col-span-9 tw-text-sm tw-text-gray-600  tw-line-clamp-1">
+                            {item.articleUrl}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="tw-col-span-2 tw-text-sm tw-text-right">
+                        댓글 : {item.activeCount} 답변 : {item.answerCount}
+                      </div>
                     </div>
-                    {/* <div className="">{item.memberName}</div> */}
                   </div>
-                  <div className="tw-grid tw-grid-cols-12 tw-gap-4">
-                    <div className="tw-col-span-1 tw-text-sm tw-font-bold tw-text-black">아티클</div>
-                    <div className="tw-col-span-9 tw-text-sm tw-text-gray-600  tw-line-clamp-1">{item.articleUrl}</div>
-                    <div className="tw-col-span-2 tw-text-sm tw-text-right">
-                      댓글 : {item.activeCount} 답변 : {item.answerCount}
-                    </div>
-                  </div>
-                </div>
-              </div>
+                </Mobile>
+              </>
             ))}
-            <Pagination page={page} setPage={setPage} total={totalPage} />
+            <Pagination page={page} setPage={setPage} total={totalPage} showCount={5} />
           </div>
         )}
         {active == 1 && (
@@ -2087,67 +2706,145 @@ export function QuizOpenTemplate() {
               />
             </div>
             {myQuizListData?.contents.map((item, index) => (
-              <div key={`admin-quiz-${index}`} className="tw-flex tw-pb-5">
-                <Checkbox
-                  disableRipple
-                  onChange={handleChangeCheck}
-                  checked={state.includes(String(item.sequence))}
-                  name={item.sequence}
-                  className="tw-mr-3"
-                />
-                <div className="tw-p-4 tw-border border tw-w-full tw-rounded-lg">
-                  <div className="tw-flex tw-w-full tw-items-center"></div>
-                  <div className="tw-flex  tw-items-center">
-                    <div className="tw-flex-auto">
-                      <div className="tw-font-medium tw-text-black">
-                        <div className="tw-text-sm tw-font-normal tw-text-gray-500">
-                          {item?.recommendJobGroupNames?.map((name, i) => (
-                            <span
-                              key={i}
-                              className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600"
-                            >
-                              {name}
-                            </span>
-                          ))}
-                          <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
-                            {item?.recommendLevels?.sort().join(',')}레벨
-                          </span>
-                          {item?.recommendJobNames?.map((name, i) => (
-                            <span
-                              key={i}
-                              className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-100 tw-text-sm tw-font-light tw-text-gray-600"
-                            >
-                              {name}
-                            </span>
-                          ))}
-                          {item?.hashTags?.map((name, i) => (
-                            <span
-                              key={i}
-                              className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-gray-700"
-                            >
-                              {name}
-                            </span>
-                          ))}
+              <>
+                <Desktop>
+                  <div key={`admin-quiz-${index}`} className="tw-flex tw-pb-5">
+                    <Checkbox
+                      disableRipple
+                      onChange={handleChangeCheck}
+                      checked={state.includes(String(item.sequence))}
+                      name={item.sequence}
+                      className="tw-mr-3"
+                    />
+                    <div className="tw-p-4 tw-border border tw-w-full tw-rounded-lg">
+                      <div className="tw-flex tw-w-full tw-items-center"></div>
+                      <div className="tw-flex  tw-items-center">
+                        <div className="tw-flex-auto">
+                          <div className="tw-font-medium tw-text-black">
+                            <div className="tw-text-sm tw-font-normal tw-text-gray-500">
+                              {item?.recommendJobGroupNames?.map((name, i) => (
+                                <span
+                                  key={i}
+                                  className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600"
+                                >
+                                  {name}
+                                </span>
+                              ))}
+                              <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
+                                {item?.recommendLevels?.sort().join(',')}레벨
+                              </span>
+                              {item?.recommendJobNames?.map((name, i) => (
+                                <span
+                                  key={i}
+                                  className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-100 tw-text-sm tw-font-light tw-text-gray-600"
+                                >
+                                  {name}
+                                </span>
+                              ))}
+                              {item?.hashTags?.map((name, i) => (
+                                <span
+                                  key={i}
+                                  className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-gray-700"
+                                >
+                                  {name}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="tw-text-gray-400 tw-text-sm ">{item.createdAt}</div>
+                      </div>
+                      <div className="tw-flex  tw-items-center py-2">
+                        <div className="tw-flex-auto">
+                          <div className="tw-font-medium tw-text-black tw-text-base tw-line-clamp-1">
+                            {item.content}
+                          </div>
+                        </div>
+                        {/* <div className="">{item.memberName}</div> */}
+                      </div>
+                      <div className="tw-grid tw-grid-cols-12 tw-gap-4">
+                        <div className="tw-col-span-1 tw-text-sm tw-font-bold tw-text-black">아티클</div>
+                        <div className="tw-col-span-9 tw-text-sm tw-text-gray-600  tw-line-clamp-1">
+                          {item.articleUrl}
+                        </div>
+                        <div className="tw-col-span-2 tw-text-sm tw-text-right">
+                          댓글 : {item.activeCount} 답변 : {item.answerCount}
                         </div>
                       </div>
                     </div>
-                    <div className="tw-text-gray-400 tw-text-sm ">{item.createdAt}</div>
                   </div>
-                  <div className="tw-flex  tw-items-center py-2">
-                    <div className="tw-flex-auto">
-                      <div className="tw-font-medium tw-text-black tw-text-base tw-line-clamp-1">{item.content}</div>
+                </Desktop>
+                <Mobile>
+                  <div key={`admin-quiz-${index}`} className="tw-flex tw-pb-5">
+                    <Checkbox
+                      disableRipple
+                      onChange={handleChangeCheck}
+                      checked={state.includes(String(item.sequence))}
+                      name={item.sequence}
+                      className="tw-mr-3"
+                    />
+                    <div className="tw-p-5 tw-border border tw-w-full tw-rounded-xl">
+                      {/* 첫 번째 컬럼 */}
+                      <div className="md:tw-w-full">
+                        <div className="tw-font-medium tw-text-black">
+                          <div className="tw-text-sm tw-font-normal tw-text-gray-500">
+                            {item?.recommendJobGroupNames?.map((name, i) => (
+                              <span
+                                key={i}
+                                className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600"
+                              >
+                                {name}
+                              </span>
+                            ))}
+                            <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
+                              {item?.recommendLevels?.sort().join(',')}레벨
+                            </span>
+                            {item?.recommendJobNames?.map((name, i) => (
+                              <span
+                                key={i}
+                                className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-100 tw-text-sm tw-font-light tw-text-gray-600"
+                              >
+                                {name}
+                              </span>
+                            ))}
+                            {item?.hashTags?.map((name, i) => (
+                              <span
+                                key={i}
+                                className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-gray-700"
+                              >
+                                {name}
+                              </span>
+                            ))}
+                          </div>
+                          <div className="tw-text-gray-400 tw-text-base tw-py-1 tw-text-right">{item.createdAt}</div>
+                        </div>
+                      </div>
+                      {/* 두 번째 컬럼 */}
+                      <div className="md:tw-w-full">
+                        <div className="tw-flex  tw-items-center py-2">
+                          <div className="tw-flex-auto">
+                            <div className="tw-font-medium tw-text-black tw-text-base tw-line-clamp-1">
+                              {item.content}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      {/* 세 번째 컬럼 */}
+                      <div className="md:tw-w-full">
+                        <div className="tw-grid tw-grid-cols-12 tw-gap-4">
+                          <div className="tw-col-span-3 tw-text-sm tw-font-bold tw-text-black">아티클</div>
+                          <div className="tw-col-span-9 tw-text-sm tw-text-gray-600  tw-line-clamp-1">
+                            {item.articleUrl}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="tw-col-span-2 tw-text-sm tw-text-right">
+                        댓글 : {item.activeCount} 답변 : {item.answerCount}
+                      </div>
                     </div>
-                    {/* <div className="">{item.memberName}</div> */}
                   </div>
-                  <div className="tw-grid tw-grid-cols-12 tw-gap-4">
-                    <div className="tw-col-span-1 tw-text-sm tw-font-bold tw-text-black">아티클</div>
-                    <div className="tw-col-span-9 tw-text-sm tw-text-gray-600  tw-line-clamp-1">{item.articleUrl}</div>
-                    <div className="tw-col-span-2 tw-text-sm tw-text-right">
-                      댓글 : {item.activeCount} 답변 : {item.answerCount}
-                    </div>
-                  </div>
-                </div>
-              </div>
+                </Mobile>
+              </>
             ))}
           </div>
         )}

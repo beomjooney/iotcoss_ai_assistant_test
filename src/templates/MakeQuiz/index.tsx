@@ -231,8 +231,6 @@ export function QuizTemplate() {
 
   return (
     <div className={cx('seminar-container')}>
-      {/* <Banner title="커리어멘토스 세미나" subTitle="커멘세미나" /> */}
-
       <div className={cx('container')}>
         <div className="tw-py-[60px]">
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
@@ -346,21 +344,6 @@ export function QuizTemplate() {
                         height: '30px',
                         border: '0px',
                       }}
-                      // value={item.id}
-                      // variant="small"
-                      // checked={active === i + 1}
-                      // isActive
-                      // type="tabButton"
-                      // onChange={() => {
-                      //   setActive(i + 1);
-                      //   setParams({
-                      //     ...params,
-                      //     recommendJobGroup: item.id,
-                      //     page,
-                      //   });
-                      //   setPage(0);
-                      // }}
-                      // className={cx('fixed-width')}
                     >
                       {item.name}
                     </ToggleButton>
@@ -478,12 +461,6 @@ export function QuizTemplate() {
                             </div>
                           </a>
                         </Grid>
-                        // <ArticleCard
-                        //   uiType={ArticleEnum.MENTOR_SEMINAR}
-                        //   content={item}
-                        //   key={i}
-                        //   className={cx('container__item')}
-                        // />
                       );
                     })
                   ) : (
