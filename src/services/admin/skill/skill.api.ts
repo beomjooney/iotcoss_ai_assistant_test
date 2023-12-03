@@ -37,3 +37,26 @@ export const updateSkillsExcel = async body =>
     headers: { 'Content-Type': 'multipart/form-data' },
     responseType: 'blob',
   });
+
+// 목록 조회
+export async function getDevusSkills(params: any) {
+  const { data, headers } = await axiosGeneralAPI().get('/api/admin/v1/skills', { params });
+  const totalPage = Number(headers['page-count']);
+  return { data: data || [], nextPage: params.page + 1, totalPage };
+}
+
+// 상세 조회
+export async function getDevusSkillInfo(sequence: string) {
+  const { data } = await axiosGeneralAPI().get(`/api/admin/v1/skills/${sequence}`);
+  return data;
+}
+
+// 수정
+export const saveDevusSkill = async (sequence: string, body) =>
+  await axiosGeneralAPI().put(`/api/admin/v1/skills/${sequence}`, body);
+
+// 등록
+export const addDevusSkill = async (params: any) => await axiosGeneralAPI().post('/api/admin/v1/skills', params);
+
+// 삭제
+export const deleteDevusSkill = async quizId => await axiosGeneralAPI().delete(`/api/admin/v1/quizzes/`);

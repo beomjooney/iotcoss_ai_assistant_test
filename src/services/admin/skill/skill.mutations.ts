@@ -1,6 +1,14 @@
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import { QUERY_KEY_FACTORY } from '../../../services/queryKeys';
-import { saveSkills, addSkills, deleteSkills, updateSkillsExcel } from './skill.api';
+import {
+  saveSkills,
+  addSkills,
+  deleteSkills,
+  updateSkillsExcel,
+  saveDevusSkill,
+  deleteDevusSkill,
+  addDevusSkill,
+} from './skill.api';
 
 export const useSaveSkill = (): UseMutationResult => {
   const queryClient = useQueryClient();
@@ -66,6 +74,51 @@ export const useUpdateSkillExcel = (): UseMutationResult => {
           data.headers['excel-upload-fail-count'] +
           '',
       );
+    },
+  });
+};
+
+export const useSaveDevusSkill = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  // TODO : any 타입 변경
+  return useMutation<any, any, any>(requestBody => saveDevusSkill(requestBody.sequence, requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('SKILL').all),
+    onSuccess: async data => {
+      alert('수정이 완료되었습니다.');
+    },
+  });
+};
+
+export const useDeleteDevusSkill = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  // TODO : any 타입 변경
+  return useMutation<any, any, any>(requestBody => deleteDevusSkill(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('SKILL').all),
+    onSuccess: async () => {
+      alert('회원삭제가 완료되었습니다.');
+    },
+  });
+};
+
+export const useAddDevusSkill = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  // TODO : any 타입 변경
+  return useMutation<any, any, any>(requestBody => addDevusSkill(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('SKILL').all),
+    onSuccess: async data => {
+      alert('등록이 완료되었습니다.');
     },
   });
 };

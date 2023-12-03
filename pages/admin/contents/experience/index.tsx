@@ -1,35 +1,103 @@
 import './index.module.scss';
-import { useState } from 'react';
+
 import { UseQueryResult } from 'react-query';
-import { useExperience } from 'src/services/admin/experience/experience.queries';
-import AdminLayout from 'src/stories/Layout/AdminLayout';
-import ExperienceTemplate from 'src/templates/Admin/Contents/Experience';
+import { useEffect, useState } from 'react';
+import dayjs from 'dayjs';
+
+import AdminLayout from '../../../src/stories/Layout/AdminLayout';
+import QuizTemplate from '../../../src/templates/Admin/Quiz';
+
+import { useQuiz, useQuizs } from '../../../src/services/admin/quiz/quiz.queries';
+import { useDeleteQuiz, useSaveQuiz, useAddQuiz } from '../../../src/services/admin/quiz/quiz.mutations';
 import {
-  useAddExperience,
-  useDeleteExperience,
-  useSaveExperience,
-} from 'src/services/admin/experience/experience.mutations';
+  useContentJobTypes,
+  useJobGroups,
+  useMemberCode,
+  useContentTypes,
+  useJobs,
+} from 'src/services/code/code.queries';
 
-export function ManageExperience() {
+import { useSkills } from 'src/services/admin/skill/skill.queries';
+
+import { ExperiencesResponse } from 'src/models/experiences';
+import { useExperiences } from 'src/services/experiences/experiences.queries';
+
+export interface SearchParamsProps {
+  createdAtFrom: string;
+  createdAtTo: string;
+  keyword: string;
+}
+
+export function QuizPage() {
+  const now = dayjs();
+  const past1y = now.subtract(1, 'year');
+  const tomorrow = now.add(1, 'day');
   const [page, setPage] = useState<number>(1);
-  const [size, setSize] = useState<number>(25);
+  const [size, setSize] = useState<number>(15);
+  const [search, setSearch] = useState<string>('');
+  const [quizId, setQuizId] = useState<string>('');
+  const [params, setParams] = useState<SearchParamsProps>({
+    createdAtFrom: `${past1y?.format('YYYY-MM-DD')} 00:00:00`,
+    createdAtTo: `${tomorrow.format('YYYY-MM-DD')} 00:00:00`,
+    keyword: '',
+  });
 
-  const { data: experienceList, refetch }: UseQueryResult<any> = useExperience(
+  const { data: jobCodes } = useContentTypes();
+  const [contentJobType, setContentJobType] = useState<any[]>([]);
+  const { data: experienceData }: UseQueryResult<ExperiencesResponse> = useExperiences();
+  const { data: quizData, refetch }: UseQueryResult<any> = useQuiz(quizId);
+  const { data: jobGroup, isFetched: isJobGroupFetched } = useJobGroups();
+  const { data: jobs } = useJobs();
+
+  const { isFetched: isContentTypeJobFetched } = useContentJobTypes(data => {
+    setContentJobType(data.data.contents || []);
+  });
+
+  const { mutate: onSave } = useSaveQuiz();
+  const { mutate: onDelete } = useDeleteQuiz();
+  const { mutate: onAdd } = useAddQuiz();
+
+  const {
+    data: quizList,
+    refetch: quizListRefetch,
+    error,
+  }: UseQueryResult<any> = useQuizs(
+    paramsWithDefault({
+      page: page,
+      size: size,
+      ...params,
+    }),
+  );
+
+  const { data: skillsList }: UseQueryResult<any> = useSkills(
     paramsWithDefault({
       page: page,
       size: size,
     }),
   );
 
-  const { mutate: onDelete } = useDeleteExperience();
-  const { mutate: onSave } = useSaveExperience();
-  const { mutate: onAdd } = useAddExperience();
+  // const { data: experienceData }: UseQueryResult<any> = useExperiences(
+  //   paramsWithDefault({
+  //     page: page,
+  //     size: size,
+  //   }),
+  // );
+
+  useEffect(() => {
+    quizId && refetch();
+  }, [quizId]);
+
+  useEffect(() => {
+    if (error) {
+      console.log(error);
+    }
+  }, [error]);
 
   const PAGE_PROPS = {
     page: page,
     setPage: setPage,
-    count: experienceList?.totalPage,
-    total: experienceList?.totalPage,
+    count: quizList?.data?.data?.totalPages || 1,
+    total: quizList?.data?.data?.totalPages || 15,
     onChangeSize: size => {
       setSize(size);
       setPage(1);
@@ -37,36 +105,74 @@ export function ManageExperience() {
     size: size,
   };
 
-  const onSearch = async () => {
-    setPage(1);
-    await refetch();
+  const onQuizInfo = (id: string) => {
+    setQuizId(id);
   };
 
-  const handleOnAdd = async values => {
-    onAdd && onAdd(values);
-    await refetch();
+  const onDeleteQuiz = (id: string) => {
+    if (confirm('해당 내용을 삭제하시겠습니까?')) {
+      onDelete(id);
+    }
+  };
+
+  const onSaveQuiz = (data: any) => {
+    if (confirm('저장하시겠습니까?')) {
+      onSave({
+        ...data,
+      });
+    }
+  };
+
+  const onAddQuiz = (params: any) => {
+    onAdd && onAdd(params);
+  };
+
+  const onSearch = async (params: SearchParamsProps) => {
+    setPage(1);
+    // if (!params?.createdAtFrom || !params?.createdAtTo) {
+    //   alert('기간을 설정하세요');
+    // }
+
+    if (typeof params === 'object') {
+      setParams({
+        ...params,
+      });
+    } else {
+      setSearch(params);
+    }
+    await quizListRefetch();
   };
 
   return (
-    <ExperienceTemplate
-      experienceList={experienceList}
-      onSearch={onSearch}
-      setPage={setPage}
+    <QuizTemplate
+      quizList={quizList}
+      skillsList={skillsList}
+      experience={experienceData}
+      jobGroup={jobGroup}
+      jobs={jobs}
+      jobCodes={jobCodes}
+      contentJobType={contentJobType}
+      quizData={quizData}
       pageProps={PAGE_PROPS}
-      onDelete={onDelete}
-      onSave={onSave}
-      onAdd={handleOnAdd}
+      params={params}
+      onQuizInfo={onQuizInfo}
+      onDeleteQuiz={onDeleteQuiz}
+      onSave={onSaveQuiz}
+      onAdd={onAddQuiz}
+      onSearch={onSearch}
+      setParams={setParams}
     />
   );
 }
-ManageExperience.Layout = AdminLayout;
-ManageExperience.LayoutProps = {
+
+export default QuizPage;
+
+QuizPage.Layout = AdminLayout;
+QuizPage.LayoutProps = {
   darkBg: false,
   classOption: 'custom-header',
-  title: '경험',
+  title: '데브어스 관리자',
 };
-
-export default ManageExperience;
 
 const paramsWithDefault = params => {
   const defaultParams = {

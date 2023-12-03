@@ -120,8 +120,8 @@ const AdminHeader = ({ menuItem, activeNo = 0 }: AdminNavbarProps) => {
             upMenuNo: 4,
             toggle: true,
             children: [
-              { no: 4011, title: '스킬', link: 'javascript:void(0);' },
-              { no: 4012, title: '경험', link: 'javascript:void(0);' },
+              { no: 4011, title: '스킬', link: '/admin/contents/skill' },
+              { no: 4012, title: '경험', link: '/admin/contents/experience' },
             ],
           },
           {
@@ -130,7 +130,7 @@ const AdminHeader = ({ menuItem, activeNo = 0 }: AdminNavbarProps) => {
             link: 'javascript:void(0);',
             upMenuNo: 4,
             toggle: true,
-            children: [{ no: 4021, title: '배지', link: 'javascript:void(0);' }],
+            children: [{ no: 4021, title: '배지', link: '/admin/contents/badge' }],
           },
           {
             no: 403,
@@ -162,7 +162,7 @@ const AdminHeader = ({ menuItem, activeNo = 0 }: AdminNavbarProps) => {
             link: 'javascript:void(0);',
             upMenuNo: 5,
             toggle: true,
-            children: [{ no: 5021, title: '알람발송이력', link: 'javascript:void(0);' }],
+            children: [{ no: 5021, title: '알람이벤트이력', link: '/admin/alarm' }],
           },
           {
             no: 503,

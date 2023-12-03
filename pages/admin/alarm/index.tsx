@@ -4,15 +4,11 @@ import { UseQueryResult } from 'react-query';
 import { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 
-import AdminLayout from '../../../../src/stories/Layout/AdminLayout';
-import SkillTemplate from '../../../../src/templates/Admin/Contents/Skill';
+import AdminLayout from '../../../src/stories/Layout/AdminLayout';
+import AlarmTemplate from '../../../src/templates/Admin/Alarm';
 
-import { useDevusSkill, useDevusSkills } from '../../../../src/services/admin/skill/skill.queries';
-import {
-  useDeleteDevusSkill,
-  useSaveDevusSkill,
-  useAddDevusSkill,
-} from '../../../../src/services/admin/skill/skill.mutations';
+import { useAlarms, useAlarm } from '../../../src/services/admin/alarm/alarm.queries';
+import { useDeleteAlarm } from '../../../src/services/admin/alarm/alarm.mutations';
 import {
   useContentJobTypes,
   useJobGroups,
@@ -32,14 +28,14 @@ export interface SearchParamsProps {
   keyword: string;
 }
 
-export function SkillPage() {
+export function AlarmPage() {
   const now = dayjs();
   const past1y = now.subtract(1, 'year');
   const tomorrow = now.add(1, 'day');
   const [page, setPage] = useState<number>(1);
   const [size, setSize] = useState<number>(15);
   const [search, setSearch] = useState<string>('');
-  const [skillId, setSkillId] = useState<string>('');
+  const [sequence, setSequence] = useState<string>('');
   const [params, setParams] = useState<SearchParamsProps>({
     createdAtFrom: `${past1y?.format('YYYY-MM-DD')} 00:00:00`,
     createdAtTo: `${tomorrow.format('YYYY-MM-DD')} 00:00:00`,
@@ -49,7 +45,7 @@ export function SkillPage() {
   const { data: jobCodes } = useContentTypes();
   const [contentJobType, setContentJobType] = useState<any[]>([]);
   const { data: experienceData }: UseQueryResult<ExperiencesResponse> = useExperiences();
-  const { data: devusSkillData, refetch }: UseQueryResult<any> = useDevusSkill(skillId);
+  const { data: alarmData, refetch }: UseQueryResult<any> = useAlarm(sequence);
   const { data: jobGroup, isFetched: isJobGroupFetched } = useJobGroups();
   const { data: jobs } = useJobs();
 
@@ -57,15 +53,13 @@ export function SkillPage() {
     setContentJobType(data.data.contents || []);
   });
 
-  const { mutate: onSave } = useSaveDevusSkill();
-  const { mutate: onDelete } = useDeleteDevusSkill();
-  const { mutate: onAdd } = useAddDevusSkill();
+  const { mutate: onDelete } = useDeleteAlarm();
 
   const {
-    data: devusSkillList,
-    refetch: quizListRefetch,
+    data: alarmList,
+    refetch: alarmListRefetch,
     error,
-  }: UseQueryResult<any> = useDevusSkills(
+  }: UseQueryResult<any> = useAlarms(
     paramsWithDefault({
       page: page,
       size: size,
@@ -88,8 +82,8 @@ export function SkillPage() {
   // );
 
   useEffect(() => {
-    skillId && refetch();
-  }, [skillId]);
+    sequence && refetch();
+  }, [sequence]);
 
   useEffect(() => {
     if (error) {
@@ -100,8 +94,8 @@ export function SkillPage() {
   const PAGE_PROPS = {
     page: page,
     setPage: setPage,
-    count: devusSkillList?.data?.data?.totalPages || 1,
-    total: devusSkillList?.data?.data?.totalPages || 15,
+    count: alarmList?.data?.data?.totalPages || 1,
+    total: alarmList?.data?.data?.totalPages || 15,
     onChangeSize: size => {
       setSize(size);
       setPage(1);
@@ -109,26 +103,14 @@ export function SkillPage() {
     size: size,
   };
 
-  const onSkillInfo = (id: string) => {
-    setSkillId(id);
+  const onAlarmInfo = (id: string) => {
+    setSequence(id);
   };
 
-  const onDeleteSkill = (id: string) => {
+  const onDeleteAlarm = (sequence: string) => {
     if (confirm('해당 내용을 삭제하시겠습니까?')) {
-      onDelete(id);
+      onDelete(sequence);
     }
-  };
-
-  const onSaveSkill = (data: any) => {
-    if (confirm('저장하시겠습니까?')) {
-      onSave({
-        ...data,
-      });
-    }
-  };
-
-  const onAddSkill = (params: any) => {
-    onAdd && onAdd(params);
   };
 
   const onSearch = async (params: SearchParamsProps) => {
@@ -144,35 +126,33 @@ export function SkillPage() {
     } else {
       setSearch(params);
     }
-    await quizListRefetch();
+    await alarmListRefetch();
   };
 
   return (
-    <SkillTemplate
-      devusSkillList={devusSkillList}
+    <AlarmTemplate
+      alarmList={alarmList}
       skillsList={skillsList}
       experience={experienceData}
       jobGroup={jobGroup}
       jobs={jobs}
       jobCodes={jobCodes}
       contentJobType={contentJobType}
-      devusSkillData={devusSkillData}
+      alarmData={alarmData}
       pageProps={PAGE_PROPS}
       params={params}
-      onSkillInfo={onSkillInfo}
-      onDeleteSkill={onDeleteSkill}
-      onSave={onSaveSkill}
-      onAdd={onAddSkill}
+      onAlarmInfo={onAlarmInfo}
+      onDeleteAlarm={onDeleteAlarm}
       onSearch={onSearch}
       setParams={setParams}
     />
   );
 }
 
-export default SkillPage;
+export default AlarmPage;
 
-SkillPage.Layout = AdminLayout;
-SkillPage.LayoutProps = {
+AlarmPage.Layout = AdminLayout;
+AlarmPage.LayoutProps = {
   darkBg: false,
   classOption: 'custom-header',
   title: '데브어스 관리자',

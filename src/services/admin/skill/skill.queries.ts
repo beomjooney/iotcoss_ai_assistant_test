@@ -1,6 +1,6 @@
 import { useQuery } from 'react-query';
 import { SkillResponse } from 'src/models/skills';
-import { mySkillList, skillList, getSkills, getSkillsExcel } from './skill.api';
+import { skillList, getSkills, getSkillsExcel, getDevusSkills, getDevusSkillInfo } from './skill.api';
 import { QUERY_KEY_FACTORY } from '../../queryKeys';
 
 export const useSkills = params => useQuery([QUERY_KEY_FACTORY('SKILL').list(params)], () => getSkills(params));
@@ -28,4 +28,13 @@ export const useExcelSkills = () =>
     onError: error => {
       alert('다운로드에 실패했습니다.');
     },
+  });
+
+export const useDevusSkills = params =>
+  useQuery([QUERY_KEY_FACTORY('SKILL').list(params)], () => getDevusSkills(params));
+
+export const useDevusSkill = sequence =>
+  useQuery([QUERY_KEY_FACTORY('SKILL').detail(sequence)], () => getDevusSkillInfo(sequence), {
+    refetchOnWindowFocus: false,
+    enabled: false,
   });

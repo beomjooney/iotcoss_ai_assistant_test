@@ -1,84 +1,331 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import React, { useState } from 'react';
-import { UseQueryResult } from 'react-query';
-import { useCodeList, useJobGroups, useJobs } from 'src/services/code/code.queries';
-import { AdminPagination, Table, Toggle, SmartFilter, Button } from 'src/stories/components';
+import React, { useEffect, useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
+
+import * as yup from 'yup';
+import dayjs from 'dayjs';
+import Image from 'next/image';
+import moment from 'moment';
+
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Profile, AdminPagination, Table, SmartFilter, Button, Toggle, Editor } from '../../../../stories/components';
+import { TextField } from '@mui/material';
+import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useUploadImage } from 'src/services/image/image.mutations';
-import { useExcelSkills } from 'src/services/admin/skill/skill.queries';
+import { SearchParamsProps } from 'pages/admin/contents/skill';
 
 const cx = classNames.bind(styles);
 
-interface SkillListProps {
-  onSearch?: () => void;
-  onDelete?: (memberId: string) => void;
+interface SkillTemplateProps {
+  devusSkillList?: any;
+  skillsList?: any;
+  experience?: any;
+  jobGroup?: any;
+  jobs?: any;
+  jobCodes?: any;
+  contentJobType?: any;
+  devusSkillData?: any;
+  pageProps?: any;
+  onSkillInfo?: (skillId: string) => void;
+  onDeleteSkill?: (skillId: string) => void;
   onSave?: (data: any) => void;
   onAdd?: (data: any) => void;
-  skillsList?: any;
-  pageProps?: any;
-  setPage?: React.Dispatch<React.SetStateAction<number>>;
-  onUpdateExcel?: (data: any) => void;
+  onSearch?: (keyword: any) => void;
+  params: SearchParamsProps;
+  setParams: React.Dispatch<React.SetStateAction<SearchParamsProps>>;
 }
 
-export function SkillList({ onSearch, onDelete, onSave, onAdd, onUpdateExcel, pageProps, skillsList }: SkillListProps) {
-  const { data: codeList } = useCodeList('');
-  const { data: jobgroup, isFetched: isJobGroupFetched } = useJobGroups();
-  const { data: jobs } = useJobs();
-  const [content, setContent] = useState<any>({});
-  const [regitserValues, setRegisterValues] = useState<any>({});
-  const [isRegisterPopupOpen, setIsRegisterPopupOpen] = useState<boolean>(false);
+export function SkillTemplate({
+  devusSkillList,
+  skillsList,
+  experience,
+  jobGroup,
+  jobs,
+  jobCodes,
+  contentJobType,
+  devusSkillData,
+  pageProps,
+  params,
+  onSkillInfo,
+  onDeleteSkill,
+  onSave,
+  onAdd,
+  onSearch,
+  setParams,
+}: SkillTemplateProps) {
+  const COLGROUP = ['12%', '12%', '10%', '10%', '10%', '10%', '10%', '10%', '10%', '10%'];
+  const HEADS = [
+    '스킬명',
+    '설명',
+    '이미지URL',
+    '연관직군들',
+    '연관직무들',
+    '연관레벨들',
+    '트랜드레벨',
+    '활성화레벨',
+    '등록일시',
+    '수정일시',
+  ];
+
+  const memberCodes = [];
+
+  const LEVELS = [
+    { level: 1, desc: '상용서비스 단위모듈 수준 개발 가능. 서비스 개발 리딩 시니어 필요' },
+    { level: 2, desc: '상용서비스 개발 1인분 가능한 사람. 소규모 서비스 독자 개발 가능' },
+    { level: 3, desc: '상용서비스 개발 리더. 담당직무분야 N명 업무가이드 및 리딩 가능' },
+    { level: 4, desc: '다수 상용서비스 개발 리더. 수십명 혹은 수백명 수준의 개발자 총괄 리더' },
+    { level: 5, desc: '본인 오픈소스/방법론 등이 범용적 사용, 수백명이상 다수 직군 리딩' },
+  ];
+
+  const trendLevel = [
+    {
+      name: '급하락',
+      id: 1,
+    },
+    {
+      name: '하락',
+      id: 2,
+    },
+    {
+      name: '일반',
+      id: 3,
+    },
+    {
+      name: '상승',
+      id: 4,
+    },
+    {
+      name: '급상승',
+      id: 5,
+    },
+  ];
+  const activeLevel = [
+    {
+      name: '신생',
+      id: 1,
+    },
+    {
+      name: '일부사용',
+      id: 2,
+    },
+    {
+      name: '일반',
+      id: 3,
+    },
+    {
+      name: '범용',
+      id: 4,
+    },
+    {
+      name: '대세',
+      id: 5,
+    },
+  ];
+
+  const FIELDS = [
+    { name: '퀴즈ID', field: 'id', type: 'text' },
+    { name: '회원UUID', field: 'memberUUID', type: 'text' },
+    { name: '추천직군들', field: 'recommendJobGroupNames', type: 'text' },
+    { name: '추천직무들', field: 'recommendJobNames', type: 'text' },
+    { name: '추천레벨들', field: 'recommendLevels', type: 'text' },
+    { name: '연관스킬들', field: 'relatedSkills', type: 'text' },
+    { name: '퀴즈 활용 수', field: 'activeCount', type: 'text' },
+    { name: '퀴즈 답변 수', field: 'answerCount', type: 'text' },
+    { name: '해시 태그', field: 'hashTags', type: 'text' },
+  ];
+
+  const { mutate: onSaveProfileImage, data: profileImage, isSuccess } = useUploadImage();
+
+  const [introduceEditor, setIntroduceEditor] = useState<string>('');
   const [popupOpen, setPopupOpen] = useState<boolean>(false);
-  const [isEdit, setIsEdit] = useState<boolean>(false);
   const [isFilter, setIsFilter] = useState<boolean>(false);
+  const [skill, setSkill] = useState<any>({});
   const [searchKeyword, setSearchKeyword] = useState<string>('');
-  const [tempImageUrl1, setTempImageUrl1] = useState(null);
+  const [profileImageUrl, setProfilImageUrl] = useState(null);
+  const [tabValue, setTabValue] = useState<number>(1);
+  const [content, setContent] = useState<any>({});
+  const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [skillIds, setSkillIds] = useState<any[]>([]);
+  const [experienceIds, setExperienceIds] = useState<string[]>([]);
+  const [recommendJobGroupsIds, setrecommendJobGroupsIds] = useState<string[]>([]);
+  const [recommendJobsIds, setrecommendJobsIds] = useState<string[]>([]);
+  const [recommendLevelsIds, setrecommendLevelsIds] = useState<string[]>([]);
+  const [isRegisterPopupOpen, setIsRegisterPopupOpen] = useState<boolean>(false);
+  const [regitserValues, setRegisterValues] = useState<any>({});
 
-  const COLGROUP = ['5%', '5%', '5%', '5%', '5%', '5%', '5%', '5%'];
-  const HEADS = ['스킬명', '설명', '이미지URL', '연관직군들', '연관직무들', '연관레벨들', '트렌드레벨', '활성화레벨'];
+  // TODO : 밸리데이션 추가 해야 함
+  const skillSaveSchema = yup.object().shape({
+    name: yup.string().notRequired(),
+    description: yup.string().notRequired(),
+    memberNickname: yup.string().notRequired(),
+    imageUrl: yup.string().notRequired(),
+    trendLevel: yup.string().notRequired(),
+    activeLevel: yup.string().notRequired(),
+  });
 
-  const { mutate: onSaveImage, data: imageUrl1 } = useUploadImage();
-  const { data: excelSkillsList, refetch: refetchExcel }: UseQueryResult<any> = useExcelSkills();
+  const methods = useForm({
+    mode: 'onChange',
+    reValidateMode: 'onChange',
+    resolver: yupResolver(skillSaveSchema),
+  });
 
-  const handleSave = () => {
-    const params = {
-      ...content,
-      imageUrl: imageUrl1?.toString()?.slice(1) || content?.imageUrl,
-    };
-    onSave && onSave(params);
-    setIsEdit(false);
+  useEffect(() => {
+    devusSkillData && setSkill(devusSkillData.data);
+    if (devusSkillData) {
+      setExperienceIds(devusSkillData?.data?.relatedExperiences?.map((item, index) => item) || []);
+      setSkillIds(devusSkillData?.data?.relatedSkills?.map((item, index) => item) || []);
+      setrecommendJobGroupsIds(devusSkillData?.data?.relatedJobGroups?.map((item, index) => item) || []);
+      setrecommendJobsIds(devusSkillData?.data?.relatedJobs?.map((item, index) => item) || []);
+      setrecommendLevelsIds(devusSkillData?.data?.relatedLevels?.map((item, index) => item) || []);
+    } else {
+      setExperienceIds([]);
+      setSkillIds([]);
+      setrecommendJobGroupsIds([]);
+      setrecommendJobsIds([]);
+      setrecommendLevelsIds([]);
+    }
+  }, [devusSkillData]);
+
+  const onShowPopup = (skillId: string) => {
+    onSkillInfo && onSkillInfo(skillId);
+    setPopupOpen(true);
+    setIsRegisterPopupOpen(false);
   };
 
-  const onShowPopup = (id: string) => {
-    const result = skillsList?.data?.find(item => item?.skillId === id);
-    setContent(result);
-    setPopupOpen(true);
+  const onChangeSkill = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = event.currentTarget;
+    const data = {
+      [name]: value,
+    };
+    setSkill({
+      ...skill,
+      ...data,
+    });
+  };
+
+  const handleDelete = (skillId: string) => {
+    setPopupOpen(false);
+    setSkill({});
+    onDeleteSkill && onDeleteSkill(skillId);
   };
 
   const handleSearchKeyword = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.currentTarget;
     setSearchKeyword(value);
-  };
-
-  const onSmartFilterSearch = (params: any) => {
-    onSearch && onSearch();
-  };
-
-  const onChangeContent = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = event.currentTarget;
-    const data = {
-      [name]: value,
-    };
-    setContent({
-      ...content,
-      ...data,
+    setParams({
+      ...params,
+      keyword: value,
     });
   };
 
-  const onShowUpRegisterPopUp = event => {
-    setIsRegisterPopupOpen(true);
+  const handlePickerChange = (moment, key) => {
+    let datetime = moment?.format('YYYY-MM-DD');
+    if (key === 'createdAtTo') {
+      datetime = `${datetime} 23:59:59`;
+    } else {
+      datetime = `${datetime} 00:00:00`;
+    }
+    setParams({
+      ...params,
+      [key]: `${datetime}`,
+    });
   };
 
-  const handleRegister = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const onSmartFilterSearch = (searchParms: any) => {
+    onSearch && onSearch(searchParms);
+  };
+
+  const handleSave = (data: any) => {
+    const params = {
+      ...data,
+      ...skill,
+      recommendJobGroups: recommendJobGroupsIds,
+      recommendJobs: recommendJobsIds,
+      recommendLevels: recommendLevelsIds,
+      relatedExperiences: experienceIds,
+      relatedSkills: skillIds,
+    };
+
+    onSave && onSave(params);
+  };
+
+  const onError = (error: any) => {
+    console.log(error);
+  };
+
+  const readFile = file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const image = e.target.result;
+      setProfilImageUrl(image);
+      onSaveProfileImage(file);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const onFileChange = files => {
+    if (!files || files.length === 0) return;
+    readFile(files[0]);
+  };
+
+  const onToggleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, checked } = event.currentTarget;
+
+    if (name === 'skillIds') {
+      const result = [...skillIds];
+
+      if (result.indexOf(value) > -1) {
+        result.splice(result.indexOf(value), 1);
+      } else {
+        result.push(value);
+      }
+      setSkillIds(result);
+    } else if (name === 'experienceIds') {
+      const result = [...experienceIds];
+
+      if (result.indexOf(value) > -1) {
+        result.splice(result.indexOf(value), 1);
+      } else {
+        result.push(value);
+      }
+
+      setExperienceIds(result);
+    } else if (name === 'recommendJobGroups') {
+      const result = [...recommendJobGroupsIds];
+
+      if (result.indexOf(value) > -1) {
+        result.splice(result.indexOf(value), 1);
+      } else {
+        result.push(value);
+      }
+
+      setrecommendJobGroupsIds(result);
+    } else if (name === 'recommendJobs') {
+      const result = [...recommendJobsIds];
+
+      if (result.indexOf(value) > -1) {
+        result.splice(result.indexOf(value), 1);
+      } else {
+        result.push(value);
+      }
+
+      setrecommendJobsIds(result);
+    } else if (name === 'recommendLevels') {
+      const result = [...recommendLevelsIds];
+
+      if (result.indexOf(value) > -1) {
+        result.splice(result.indexOf(value), 1);
+      } else {
+        result.push(value);
+      }
+
+      setrecommendLevelsIds(result);
+    }
+  };
+
+  const handleRegister = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = event.currentTarget;
     const data = {
       [name]: value,
@@ -89,153 +336,148 @@ export function SkillList({ onSearch, onDelete, onSave, onAdd, onUpdateExcel, pa
     });
   };
 
+  const onShowUpRegisterPopUp = event => {
+    setPopupOpen(false);
+    setIsRegisterPopupOpen(true);
+  };
+
+  const closeRegisterPopup = () => {
+    setRegisterValues({});
+    setIntroduceEditor('');
+    setIsRegisterPopupOpen(false);
+  };
+
   const handleOnAdd = () => {
-    onAdd && onAdd(regitserValues);
-  };
+    let params = { ...regitserValues };
+    //const registDate = moment().format('YYYY-MM-DD hh:mm');
 
-  const handleCheckboxChange = (e, key) => {
-    const { value, checked } = e.target;
-    if (popupOpen) {
-      const temp = new Set(content[key]);
-      const isNumberType = key === 'recommendLevels';
-      if (checked) temp.add(isNumberType ? parseInt(value) : value);
-      else temp.delete(value);
-      setContent({ ...content, [key]: [...temp] });
-    } else {
-      const temp = new Set(regitserValues[key]);
-      const isNumberType = key === 'recommendLevels';
-      if (checked) temp.add(isNumberType ? parseInt(value) : value);
-      else temp.delete(value);
-      setRegisterValues({ ...regitserValues, [key]: [...temp] });
-    }
-  };
-
-  const readFile = (file, key) => {
-    const reader = new FileReader();
-    reader.onload = e => {
-      const image = e.target.result;
-      onSaveImage(file);
-      setTempImageUrl1(image);
+    params = {
+      ...regitserValues,
+      recommendJobGroups: recommendJobGroupsIds,
+      recommendJobs: recommendJobsIds,
+      recommendLevels: recommendLevelsIds,
+      relatedSkills: skillIds,
+      relatedExperiences: experienceIds,
+      //registDate: `${registDate}:00.000`,
     };
-    reader.readAsDataURL(file);
-  };
 
-  const onFileChange = (files, key) => {
-    if (!files || files.length === 0) return;
-    readFile(files[0], key);
-  };
-
-  const handleExcelDownload = () => {
-    refetchExcel();
-  };
-
-  const imageUploadItem = (title, key, imageUrl) => {
-    return (
-      <div className={cx('seminar-image-item')} key={key}>
-        <span className={cx('seminar-image-item__title', 'area-title')}>
-          {title} <span className={cx('seminar-image-item__star')}>*</span>
-        </span>
-        <span className={cx('seminar-image-item__file-size', 'area-desc')}>500kb 이상</span>
-        <div className={cx('seminar-image-item__upload-wrap')}>
-          {imageUrl && <img src={imageUrl} alt={title} />}
-          {isEdit && (
-            <Button type="button" color="secondary" disabled={!isEdit}>
-              <label htmlFor={`input-file-${key}`}>Image Upload</label>
-              <input
-                hidden
-                disabled={!isEdit}
-                id={`input-file-${key}`}
-                accept="image/*"
-                type="file"
-                onChange={e => onFileChange(e.target?.files, key)}
-              />
-            </Button>
-          )}
-        </div>
-      </div>
-    );
-  };
-
-  const handleUploadExcel = (e: any) => {
-    const file = e?.target.files;
-    if (
-      file[0]?.type === 'application/vnd.ms-excel' ||
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    ) {
-      onUpdateExcel(file[0]);
-      e.target.value = '';
-    } else {
-      e.target.value = '';
-      alert('올바른 파일을 업로드 하세요.');
+    if (params.name === undefined || params.name?.length === 0) {
+      alert('스킬명을 입력해주세요.');
+      return;
     }
-  };
 
-  const FIELDS = [{ name: '코드 그룹', field: 'id', type: 'choice', data: codeList }];
+    if (params.description === undefined || params.description?.length === 0) {
+      alert('설명을 입력해주세요.');
+      return;
+    }
+
+    if (params.recommendJobs?.length === 0) {
+      alert('추천 직무를 선택해주세요.');
+      return;
+    }
+
+    if (params.recommendLevels?.length === 0) {
+      alert('추천 레벨을 선택해주세요.');
+      return;
+    }
+
+    onAdd && onAdd(params);
+  };
 
   return (
-    <div className="content">
-      <h2 className="tit-type1">스킬</h2>
+    <div className="admin-content">
+      <h2 className="tit-type1">스킬관리</h2>
       <div className="path">
-        <span>Home</span> <span>스킬 목록</span>
+        <span>Home</span> <span>스킬목록</span>
       </div>
+
       <div className="data-top">
         <div className="left">
           <button className="btn-type1 type1" onClick={event => onShowUpRegisterPopUp(event)}>
             등록
           </button>
-          <div>
-            <label className="btn-type1 type1" htmlFor="input-file">
-              엑셀업로드
-            </label>
-            <input
-              type="file"
-              id="input-file"
-              style={{ display: 'none' }}
-              onChange={e => {
-                return handleUploadExcel(e);
-              }}
-              accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            />
-          </div>
         </div>
         <div className="right">
-          <div className="inpwrap">
-            <div className="inp search">
-              <button className="btn-type1 type1 mr-3" onClick={handleExcelDownload}>
-                엑셀다운로드
-              </button>
-              <input
-                type="text"
-                placeholder="검색어"
-                className="input-admin"
-                onChange={handleSearchKeyword}
-                value={searchKeyword}
-                name="searchKeyword"
-                onKeyDown={event => onSearch && event.key === 'Enter' && onSearch()}
-              />
-              <button className="btn" onClick={() => onSearch && onSearch()}>
-                <i className="ico i-search"></i>
-              </button>
+          <div className={cx('search')}>
+            {/* <div className={cx('date')}>
+              <div>
+                <div className="inpwrap">
+                  <div className="inp-tit">시작일</div>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DesktopDatePicker
+                      format="YYYY-MM-DD"
+                      value={dayjs(params?.createdAtFrom)}
+                      onChange={e => handlePickerChange(e, 'createdAtFrom')}
+                      //renderInput={params => <TextField {...params?.createdAtFrom} variant="standard" />}
+                    />
+                  </LocalizationProvider>
+                </div>
+              </div>
+              <div>-</div>
+              <div>
+                <div className="inpwrap">
+                  <div className="inp-tit">종료일</div>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DesktopDatePicker
+                      format="YYYY-MM-DD"
+                      value={dayjs(params?.createdAtTo)}
+                      onChange={e => handlePickerChange(e, 'createdAtTo')}
+                      //renderInput={params => <TextField {...params} variant="standard" />}
+                    />
+                  </LocalizationProvider>
+                </div>
+              </div>
+            </div> */}
+            <div className="inpwrap">
+              <div className="inp search">
+                <input
+                  type="text"
+                  placeholder="검색어"
+                  className="input-admin"
+                  onChange={handleSearchKeyword}
+                  value={searchKeyword}
+                  name="keyword"
+                  onKeyDown={event => onSearch && event.key === 'Enter' && onSearch(params)}
+                />
+                <button className="btn" onClick={() => onSearch && onSearch(params)}>
+                  <i className="ico i-search"></i>
+                </button>
+              </div>
             </div>
+            <button
+              className="btn-type1 type3"
+              onClick={() => {
+                // if (!params?.createdAtFrom || !params?.createdAtTo) {
+                //   alert('기간을 설정해주세요');
+                // }
+
+                setIsFilter(!isFilter);
+              }}
+            >
+              <i className="ico i-filter"></i>
+              <span>필터</span>
+            </button>
           </div>
-          <button className="btn-type1 type3" onClick={() => setIsFilter(!isFilter)}>
-            <i className="ico i-filter"></i>
-            <span>필터</span>
-          </button>
+          <SmartFilter
+            name="memberFilter"
+            fields={FIELDS}
+            isFilterOpen={isFilter}
+            onSearch={onSmartFilterSearch}
+            params={params}
+            setParams={setParams}
+          />
         </div>
-        {/* <SmartFilter name="skillsFilter" fields={FIELDS} isFilterOpen={isFilter} onSearch={onSmartFilterSearch} /> */}
       </div>
       <div className="data-type1" data-evt="main-table-on">
         <Table
-          name="content"
+          name="member"
           colgroup={COLGROUP}
           heads={HEADS}
-          items={skillsList?.data?.map((item, index) => {
+          items={devusSkillList?.data?.data?.contents?.map((item, index) => {
             return (
-              <tr key={`tr-${index}`} onClick={() => onShowPopup(item.skillId)}>
-                <td className="magic" title={item.skillName}>
-                  {item.skillName}
+              <tr key={`tr-${index}`} onClick={() => onShowPopup(item.id)}>
+                <td className="magic" title={item.name}>
+                  {item.name}
                 </td>
                 <td className="magic" title={item.description}>
                   {item.description}
@@ -243,527 +485,523 @@ export function SkillList({ onSearch, onDelete, onSave, onAdd, onUpdateExcel, pa
                 <td className="magic" title={item.imageUrl}>
                   {item.imageUrl}
                 </td>
-                <td className="magic" title={item.relatedJobGroupNames}>
-                  {item.relatedJobGroupNames?.join(',')}
+                <td className="magic" title={item.relatedJobGroups}>
+                  {item.relatedJobGroups?.join(',')}
                 </td>
-                <td className="magic" title={item.relatedJobNames}>
-                  {item.relatedJobNames?.join(',')}
+                <td className="magic" title={item.relatedJobs}>
+                  {item.relatedJobs?.join(',')}
                 </td>
                 <td className="magic" title={item.relatedLevels}>
-                  {item.relatedLevels?.join(',')}
+                  {item.relatedLevels?.length === 5 ? '모든' : item.relatedLevels?.sort().join(',') || 0}
                 </td>
-                <td className="magic" title={item.trendLevel}>
-                  {item.trendLevel}
+                <td className="magic" title={item?.trendLevel}>
+                  {item?.trendLevel || 0}
                 </td>
                 <td className="magic" title={item.activeLevel}>
-                  {item.activeLevel}
+                  {item?.activeLevel || 0}
+                </td>
+                <td className="magic" title={dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}>
+                  {dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}
+                </td>{' '}
+                <td className="magic" title={dayjs(item.updatedAt).format('YYYY-MM-DD HH:mm:ss')}>
+                  {dayjs(item.updatedAt).format('YYYY-MM-DD HH:mm:ss')}
                 </td>
               </tr>
             );
           })}
-          isEmpty={skillsList?.data?.length === 0 || false}
+          isEmpty={devusSkillList?.data?.length === 0 || false}
         />
         <AdminPagination {...pageProps} />
       </div>
       <div className={cx('side-layer', popupOpen ? 'open' : '')} id="sidePop1">
-        <div className="dim"></div>
-        <div className="side-contents">
-          <div className="layer-top">
-            <div className="left" style={{ display: 'flex', alignItems: 'center' }}>
-              <div style={{ fontSize: 30, marginRight: 30 }}>
-                <button
-                  onClick={() => {
-                    setPopupOpen(false);
-                    setIsEdit(false);
-                  }}
-                >
-                  <i className="ico i-x"></i>
-                </button>
+        <FormProvider {...methods}>
+          <div className="dim"></div>
+          <div className="side-contents">
+            <div className="layer-top">
+              <div className="left" style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{ fontSize: 30, marginRight: 30 }}>
+                  <button
+                    onClick={() => {
+                      setPopupOpen(false);
+                      setIsEdit(false);
+                    }}
+                  >
+                    <i className="ico i-x"></i>
+                  </button>
+                </div>
+                <div className="tit-type2">스킬 상세보기</div>
               </div>
-              <div className="tit-type2">스킬 상세보기</div>
+              <div className="right">
+                {isEdit ? (
+                  <button className="btn-type1 type2" onClick={methods.handleSubmit(handleSave, onError)}>
+                    저장
+                  </button>
+                ) : (
+                  <button className="btn-type1 type2" onClick={() => setIsEdit(true)}>
+                    수정
+                  </button>
+                )}
+                {isEdit ? (
+                  <button className="btn-type1 type1" onClick={() => setIsEdit(false)}>
+                    취소
+                  </button>
+                ) : (
+                  <button className="btn-type1 type1" onClick={() => handleDelete(skill?.id)}>
+                    삭제
+                  </button>
+                )}
+              </div>
             </div>
-            <div className="right">
-              {isEdit ? (
-                <button className="btn-type1 type2" onClick={handleSave}>
+            <div className="tab-content" data-id="tabLink01">
+              <div className="layout-grid">
+                <div className="grid-50">
+                  <div className="inpwrap">
+                    <div className="inp-tit">스킬 아이디</div>
+                    <div className="inp">
+                      <input
+                        type="text"
+                        className="input-admin"
+                        {...methods.register('id')}
+                        disabled
+                        value={skill?.id || ''}
+                        onChange={onChangeSkill}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid-50">
+                  <div className="inpwrap">
+                    <div className="inp-tit">스킬명</div>
+                    <div className="inp">
+                      <input
+                        className="input-admin"
+                        type="text"
+                        {...methods.register('name')}
+                        value={skill?.name || ''}
+                        onChange={onChangeSkill}
+                        disabled={!isEdit}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid-100">
+                  <div className="inpwrap">
+                    <div className="inp-tit">설명</div>
+                    <div className="inp">
+                      <input
+                        className="input-admin"
+                        type="text"
+                        {...methods.register('description')}
+                        value={skill?.description}
+                        onChange={onChangeSkill}
+                        disabled={!isEdit}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid-100">
+                  <div className="inpwrap">
+                    <div className="inp-tit">이미지URL</div>
+                    <div className="inp">
+                      <input
+                        className="input-admin"
+                        type="text"
+                        {...methods.register('imageUrl')}
+                        value={skill?.imageUrl || 0}
+                        onChange={onChangeSkill}
+                        disabled={!isEdit}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid-100">
+                  <div className="inpwrap">
+                    <div className="inp-tit">
+                      관련직군<span className="star">*</span>
+                    </div>
+
+                    <div className="inp">
+                      <div className={cx('skill__group')}>
+                        {jobCodes?.data?.contents?.map((item, index) => {
+                          return (
+                            <Toggle
+                              key={`recommendJobGroupsIds-${index}`}
+                              label={item.name}
+                              name="relatedJobGroups"
+                              value={item.id}
+                              onChange={onToggleChange}
+                              className="mr-2 mt-2"
+                              variant="small"
+                              type="multiple"
+                              isActive
+                              isBorder
+                              checked={
+                                !!recommendJobGroupsIds?.find(recommendJobGroups => recommendJobGroups === item.id)
+                              }
+                              disabled={!isEdit}
+                            />
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="grid-100 mt-3">
+                  <div className="inpwrap">
+                    <div className="inp-tit">
+                      연관직무<span className="star">*</span>
+                    </div>
+                    <div className="inp">
+                      <div className={cx('skill__group')}>
+                        {contentJobType?.map((item, index) => {
+                          return (
+                            <Toggle
+                              key={`recommendJobsIds-${index}`}
+                              label={item.name}
+                              name="relatedJobs"
+                              value={item.id}
+                              onChange={onToggleChange}
+                              className="mr-2 mt-2"
+                              variant="small"
+                              type="multiple"
+                              isActive
+                              isBorder
+                              checked={!!recommendJobsIds?.find(recommendJobs => recommendJobs === item.id)}
+                              disabled={!isEdit}
+                            />
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="grid-100">
+                  <div className="inpwrap">
+                    <div className="inp-tit">
+                      연관레벨<span className="star">*</span>
+                    </div>
+                    <div className="inp">
+                      <div className={cx('skill__group')}>
+                        {LEVELS?.map((item, index) => {
+                          return (
+                            <Toggle
+                              key={`recommendLevelsIds-${index}`}
+                              label={`${item.level}레벨`}
+                              name="relatedLevels"
+                              value={item.level || ''}
+                              onChange={onToggleChange}
+                              className="mr-2 mt-2"
+                              variant="small"
+                              type="multiple"
+                              isActive
+                              isBorder
+                              checked={
+                                !!recommendLevelsIds?.find(recommendLevels => parseInt(recommendLevels) === item.level)
+                              }
+                              disabled={!isEdit}
+                            />
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="grid-25">
+                  <div className="inpwrap">
+                    <div className="inp-tit">트렌드 레벨</div>
+                    <div className="inp">
+                      <select value={skill.trendLevel} onChange={onChangeSkill} name="trendLevel" disabled={!isEdit}>
+                        <option value="">-- 선택 --</option>
+                        {trendLevel?.map(item => (
+                          <option value={item.id} key={item.id}>
+                            {item.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div className="grid-25">
+                  <div className="inpwrap">
+                    <div className="inp-tit">활성화 레벨</div>
+                    <div className="inp">
+                      <select value={skill.activeLevel} onChange={onChangeSkill} name="activeLevel" disabled={!isEdit}>
+                        <option value="">-- 선택 --</option>
+                        {activeLevel?.map(item => (
+                          <option value={item.id} key={item.id}>
+                            {item.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div className="grid-25">
+                  <div className="inpwrap">
+                    <div className="inp-tit">등록일시</div>
+                    <div className="inp">
+                      <input
+                        type="text"
+                        className="input-admin"
+                        value={skill?.updatedAt || ''}
+                        disabled
+                        onChange={onChangeSkill}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid-25">
+                  <div className="inpwrap">
+                    <div className="inp-tit">수정일시</div>
+                    <div className="inp">
+                      <input
+                        type="text"
+                        className="input-admin"
+                        value={skill?.updatedAt || ''}
+                        disabled
+                        onChange={onChangeSkill}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* <div className="grid-100 mt-4">
+                  <div className="inpwrap">
+                    <div className="inp-tit">
+                      내용<span className="star">*</span>
+                    </div>
+                    <div className="inp">
+                      <Editor
+                        type="seminar"
+                        data={skill?.content || ''}
+                        onChange={(event, editor) => {
+                          setIntroduceEditor(editor.getData());
+                        }}
+                        disabled={!isEdit}
+                      />
+                    </div>
+                  </div>
+                </div> */}
+              </div>
+            </div>
+          </div>
+        </FormProvider>
+      </div>
+
+      {isRegisterPopupOpen && (
+        <div className={cx('side-layer', isRegisterPopupOpen ? 'open' : '')} id="sidePop2">
+          <div className="dim"></div>
+          <div className="side-contents">
+            <div className="layer-top">
+              <div className="left" style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{ fontSize: 30, marginRight: 30 }}>
+                  <button onClick={() => closeRegisterPopup()}>
+                    <i className="ico i-x"></i>
+                  </button>
+                </div>
+                <div className="tit-type2">스킬 등록</div>
+              </div>
+              <div className="right">
+                <button className="btn-type1 type2" onClick={handleOnAdd}>
                   저장
                 </button>
-              ) : (
-                <button className="btn-type1 type2" onClick={() => setIsEdit(true)}>
-                  수정
-                </button>
-              )}
-              {isEdit ? (
-                <button className="btn-type1 type1" onClick={() => setIsEdit(false)}>
-                  취소
-                </button>
-              ) : (
-                <button
-                  className="btn-type1 type1"
-                  onClick={() => {
-                    setIsEdit(false);
-                    setPopupOpen(false);
-                    onDelete && onDelete(content.skillId);
-                  }}
-                >
-                  삭제
-                </button>
-              )}
+              </div>
             </div>
-          </div>
-          <div className="layout-grid">
-            <div className="layout-grid">
-              <div className="grid-25">
-                <div className="inpwrap">
-                  <div className="inp-tit">스킬 아이디</div>
-                  <div className="inp">
-                    <input
-                      type="text"
-                      className="input-admin"
-                      name="skillId"
-                      value={content?.skillId || ''}
-                      onChange={onChangeContent}
-                      disabled
-                    />
+            <div className="tab-content" data-id="tabLink01">
+              <div className="layout-grid">
+                <div className="grid-50">
+                  <div className="inpwrap">
+                    <div className="inp-tit">
+                      스킬아이디<span className="star">*</span>
+                    </div>
+                    <div className="inp">
+                      <input
+                        type="text"
+                        className="input-admin"
+                        name="content"
+                        value={regitserValues?.content || ''}
+                        onChange={handleRegister}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="grid-25">
-                <div className="inpwrap">
-                  <div className="inp-tit">스킬명</div>
-                  <div className="inp">
-                    <input
-                      className="input-admin"
-                      type="text"
-                      name="skillName"
-                      value={content?.skillName || ''}
-                      onChange={onChangeContent}
-                      disabled={!isEdit}
-                    />
+                <div className="grid-50">
+                  <div className="inpwrap">
+                    <div className="inp-tit">
+                      스킬명<span className="star">*</span>
+                    </div>
+                    <div className="inp">
+                      <input
+                        type="text"
+                        className="input-admin"
+                        name="content"
+                        value={regitserValues?.content || ''}
+                        onChange={handleRegister}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="grid-25">
-                <div className="inpwrap">
-                  <div className="inp-tit">설명</div>
-                  <div className="inp">
-                    <input
-                      className="input-admin"
-                      type="text"
-                      name="description"
-                      value={content?.description || ''}
-                      onChange={onChangeContent}
-                      disabled={!isEdit}
-                    />
+                <div className="grid-100">
+                  <div className="inpwrap">
+                    <div className="inp-tit">
+                      설명<span className="star">*</span>
+                    </div>
+                    <div className="inp">
+                      <input
+                        type="text"
+                        className="input-admin"
+                        name="articleUrl"
+                        value={regitserValues?.articleUrl || ''}
+                        onChange={handleRegister}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="grid-25">
-                <div className="inpwrap">
-                  <div className="inp-tit">이미지URL</div>
-                  <div className="inp">
-                    <input
-                      className="input-admin"
-                      type="text"
-                      name="imageUrl"
-                      onChange={onChangeContent}
-                      disabled={!isEdit}
-                      value={content?.imageUrl || ''}
-                    />
+                <div className="grid-100">
+                  <div className="inpwrap">
+                    <div className="inp-tit">
+                      이미지URL<span className="star">*</span>
+                    </div>
+                    <div className="inp">
+                      <input
+                        type="text"
+                        className="input-admin"
+                        name="articleUrl"
+                        value={regitserValues?.articleUrl || ''}
+                        onChange={handleRegister}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="grid-100 mt-3">
-                <div className="inpwrap">
-                  <div className="inp-tit">연관 직군들</div>
-                  <div className="inp">
-                    {isJobGroupFetched &&
-                      jobgroup?.map(item => {
-                        let isIncludeContent = false;
-                        if (content?.relatedJobGroups?.includes(item.id)) {
-                          isIncludeContent = true;
-                        }
-                        return (
-                          <span
-                            key={item.id}
-                            className={cx('seminar-level-area__item', 'check-area__item', 'col-md-2')}
-                          >
+
+                <div className="grid-100">
+                  <div className="inpwrap">
+                    <div className="inp-tit">
+                      관련직군<span className="star">*</span>
+                    </div>
+
+                    <div className="inp">
+                      <div className={cx('skill__group')}>
+                        {jobCodes?.data?.contents?.map((item, index) => {
+                          return (
                             <Toggle
-                              isActive
+                              key={`recommendJobGroupsIds-${index}`}
                               label={item.name}
                               name="relatedJobGroups"
-                              type="checkBox"
-                              checked={isIncludeContent}
                               value={item.id}
-                              key={item.id}
-                              disabled={!isEdit}
-                              className={cx('seminar-jobgroup-area')}
-                              onChange={e => handleCheckboxChange(e, 'relatedJobGroups')}
+                              onChange={onToggleChange}
+                              className="mr-2 mt-2"
+                              variant="small"
+                              type="multiple"
+                              isActive
+                              isBorder
                             />
-                          </span>
-                        );
-                      })}
+                          );
+                        })}
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="grid-100 mt-3">
-                <div className="inpwrap">
-                  <div className="inp-tit">연관직무들</div>
-                  <div className="inp">
-                    {jobs?.map(item => {
-                      let isIncludeContent = false;
-                      if (content?.relatedJobs?.includes(item.id)) {
-                        isIncludeContent = true;
-                      }
-                      return (
-                        <span key={item.id} className={cx('seminar-level-area__item', 'check-area__item', 'col-md-2')}>
-                          <Toggle
-                            isActive
-                            label={item.name}
-                            name="relatedJobs"
-                            type="checkBox"
-                            checked={isIncludeContent}
-                            value={item.id}
-                            key={item.id}
-                            className={cx('seminar-jobgroup-area')}
-                            disabled={!isEdit}
-                            onChange={e => handleCheckboxChange(e, 'relatedJobs')}
-                          />
-                        </span>
-                      );
-                    })}
+                <div className="grid-100 mt-3">
+                  <div className="inpwrap">
+                    <div className="inp-tit">
+                      연관직무<span className="star">*</span>
+                    </div>
+                    <div className="inp">
+                      <div className={cx('skill__group')}>
+                        {contentJobType?.map((item, index) => {
+                          return (
+                            <Toggle
+                              key={`recommendJobsIds-${index}`}
+                              label={item.name}
+                              name="relatedJobs"
+                              value={item.id}
+                              onChange={onToggleChange}
+                              className="mr-2 mt-2"
+                              variant="small"
+                              type="multiple"
+                              isActive
+                              isBorder
+                            />
+                          );
+                        })}
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="grid-100 mt-3">
-                <div className="inpwrap">
-                  <div className="inp-tit">연관 레벨들</div>
-                  <div className="inp">
-                    {levelInfo.map(item => {
-                      let isIncludeContent = false;
-                      if (content?.relatedLevels?.includes(item.level)) {
-                        isIncludeContent = true;
-                      }
-                      return (
-                        <span
-                          key={item.level}
-                          className={cx('seminar-level-area__item', 'check-area__item', 'col-md-2')}
-                        >
-                          <Toggle
-                            isActive
-                            label={`${item.level}레벨`}
-                            name="relatedLevels"
-                            checked={isIncludeContent}
-                            disabled={!isEdit}
-                            type="checkBox"
-                            value={item.level}
-                            onChange={e => handleCheckboxChange(e, 'relatedLevels')}
-                          />
-                        </span>
-                      );
-                    })}
+                <div className="grid-100">
+                  <div className="inpwrap">
+                    <div className="inp-tit">
+                      연관레벨<span className="star">*</span>
+                    </div>
+                    <div className="inp">
+                      <div className={cx('skill__group')}>
+                        {LEVELS?.map((item, index) => {
+                          return (
+                            <Toggle
+                              key={`recommendLevelsIds-${index}`}
+                              label={`${item.level}레벨`}
+                              name="relatedLevels"
+                              value={item.level || ''}
+                              onChange={onToggleChange}
+                              className="mr-2 mt-2"
+                              variant="small"
+                              type="multiple"
+                              isActive
+                              isBorder
+                            />
+                          );
+                        })}
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="grid-25">
-                <div className="inpwrap">
-                  <div className="inp-tit">트렌드 레벨</div>
-                  <div className="inp">
-                    <select value={content.trendLevel} onChange={onChangeContent} name="trendLevel" disabled={!isEdit}>
-                      <option value="">-- 선택 --</option>
-                      {trendLevel?.map(item => (
-                        <option value={item.id} key={item.id}>
-                          {item.name}
-                        </option>
-                      ))}
-                    </select>
+
+                <div className="grid-25">
+                  <div className="inpwrap">
+                    <div className="inp-tit">트렌드 레벨</div>
+                    <div className="inp">
+                      {isRegisterPopupOpen ? (
+                        <select value={regitserValues.trendLevel} onChange={handleRegister} name="trendLevel">
+                          <option value="">-- 선택 --</option>
+                          {trendLevel?.map(item => (
+                            <option value={item.id} key={item.id}>
+                              {item.name}
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        <></>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="grid-25">
-                <div className="inpwrap">
-                  <div className="inp-tit">활성화 레벨</div>
-                  <div className="inp">
-                    <select
-                      value={content.activeLevel}
-                      onChange={onChangeContent}
-                      name="activeLevel"
-                      disabled={!isEdit}
-                    >
-                      <option value="">-- 선택 --</option>
-                      {activeLevel?.map(item => (
-                        <option value={item.id} key={item.id}>
-                          {item.name}
-                        </option>
-                      ))}
-                    </select>
+                <div className="grid-25">
+                  <div className="inpwrap">
+                    <div className="inp-tit">활성화 레벨</div>
+                    <div className="inp">
+                      {isRegisterPopupOpen ? (
+                        <select value={regitserValues.activeLevel} onChange={handleRegister} name="activeLevel">
+                          <option value="">-- 선택 --</option>
+                          {activeLevel?.map(item => (
+                            <option value={item.id} key={item.id}>
+                              {item.name}
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        <></>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div className={cx('side-layer', isRegisterPopupOpen ? 'open' : '')} id="sidePop2">
-        <div className="dim"></div>
-        <div className="side-contents">
-          <div className="layer-top">
-            <div className="left" style={{ display: 'flex', alignItems: 'center' }}>
-              <div style={{ fontSize: 30, marginRight: 30 }}>
-                <button
-                  onClick={() => {
-                    setRegisterValues({});
-                    setIsRegisterPopupOpen(false);
-                  }}
-                >
-                  <i className="ico i-x"></i>
-                </button>
-              </div>
-              <div className="tit-type2">스킬 추가</div>
-            </div>
-            <div className="right">
-              <button className="btn-type1 type2" onClick={handleOnAdd}>
-                저장
-              </button>
-            </div>
-          </div>
-          <div className="layout-grid">
-            <div className="grid-25">
-              <div className="inpwrap">
-                <div className="inp-tit">스킬아이디</div>
-                <div className="inp">
-                  <input
-                    type="text"
-                    className="input-admin"
-                    name="skillId"
-                    value={regitserValues?.skillId || ''}
-                    onChange={handleRegister}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="grid-25">
-              <div className="inpwrap">
-                <div className="inp-tit">스킬명</div>
-                <div className="inp">
-                  <input
-                    type="text"
-                    className="input-admin"
-                    name="skillName"
-                    value={regitserValues?.skillName || ''}
-                    onChange={handleRegister}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="grid-25">
-              <div className="inpwrap">
-                <div className="inp-tit">설명</div>
-                <div className="inp">
-                  <input
-                    type="text"
-                    className="input-admin"
-                    name="description"
-                    onChange={handleRegister}
-                    value={regitserValues?.description || ''}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="grid-25">
-              <div className="inpwrap">
-                <div className="inp-tit">이미지URL</div>
-                <div className="inp">
-                  <input
-                    className="input-admin"
-                    type="text"
-                    name="imageUrl"
-                    onChange={handleRegister}
-                    value={regitserValues?.imageUrl || ''}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="grid-100 mt-3">
-              <div className="inpwrap">
-                <div className="inp-tit">연관 직군들</div>
-                <div className="inp">
-                  {isJobGroupFetched &&
-                    jobgroup?.map(item => {
-                      let isIncludeContent = false;
-                      if (regitserValues?.relatedJobGroups?.includes(item.id)) {
-                        isIncludeContent = true;
-                      }
-                      return (
-                        <span key={item.id} className={cx('seminar-level-area__item', 'check-area__item', 'col-md-2')}>
-                          {isRegisterPopupOpen ? (
-                            <Toggle
-                              isActive
-                              label={item.name}
-                              name="relatedJobGroups"
-                              type="checkBox"
-                              value={item.id}
-                              key={item.id}
-                              className={cx('seminar-jobgroup-area')}
-                              onChange={e => handleCheckboxChange(e, 'relatedJobGroups')}
-                            />
-                          ) : (
-                            <></>
-                          )}
-                        </span>
-                      );
-                    })}
-                </div>
-              </div>
-            </div>
-            <div className="grid-100 mt-3">
-              <div className="inpwrap">
-                <div className="inp-tit">연관직무들</div>
-                <div className="inp">
-                  {jobs?.map(item => {
-                    let isIncludeContent = false;
-                    if (regitserValues?.relatedJobs?.includes(item.id)) {
-                      isIncludeContent = true;
-                    }
-                    return (
-                      <span key={item.id} className={cx('seminar-level-area__item', 'check-area__item', 'col-md-2')}>
-                        {isRegisterPopupOpen ? (
-                          <Toggle
-                            isActive
-                            label={item.name}
-                            name="relatedJobs"
-                            type="checkBox"
-                            value={item.id}
-                            key={item.id}
-                            className={cx('seminar-jobgroup-area')}
-                            onChange={e => handleCheckboxChange(e, 'relatedJobs')}
-                          />
-                        ) : (
-                          <></>
-                        )}
-                      </span>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-            <div className="grid-100 mt-3">
-              <div className="inpwrap">
-                <div className="inp-tit">연관 레벨들</div>
-                <div className="inp">
-                  {levelInfo.map(item => {
-                    let isIncludeContent = false;
-                    if (regitserValues?.relatedLevels?.includes(item.level)) {
-                      isIncludeContent = true;
-                    }
-                    return (
-                      <span key={item.level} className={cx('seminar-level-area__item', 'check-area__item', 'col-md-2')}>
-                        {isRegisterPopupOpen ? (
-                          <Toggle
-                            isActive
-                            label={`${item.level}레벨`}
-                            name="relatedLevels"
-                            type="checkBox"
-                            value={item.level}
-                            onChange={e => handleCheckboxChange(e, 'relatedLevels')}
-                          />
-                        ) : (
-                          <></>
-                        )}
-                      </span>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-            <div className="grid-25">
-              <div className="inpwrap">
-                <div className="inp-tit">트렌드 레벨</div>
-                <div className="inp">
-                  {isRegisterPopupOpen ? (
-                    <select value={regitserValues.trendLevel} onChange={handleRegister} name="trendLevel">
-                      <option value="">-- 선택 --</option>
-                      {trendLevel?.map(item => (
-                        <option value={item.id} key={item.id}>
-                          {item.name}
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
-                    <></>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="grid-25">
-              <div className="inpwrap">
-                <div className="inp-tit">활성화 레벨</div>
-                <div className="inp">
-                  {isRegisterPopupOpen ? (
-                    <select value={regitserValues.activeLevel} onChange={handleRegister} name="activeLevel">
-                      <option value="">-- 선택 --</option>
-                      {activeLevel?.map(item => (
-                        <option value={item.id} key={item.id}>
-                          {item.name}
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
-                    <></>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      )}
     </div>
   );
 }
 
-export default SkillList;
-
-const levelInfo = [{ level: 1 }, { level: 2 }, { level: 3 }, { level: 4 }, { level: 5 }];
-const trendLevel = [
-  {
-    name: '급하락',
-    id: 1,
-  },
-  {
-    name: '하락',
-    id: 2,
-  },
-  {
-    name: '일반',
-    id: 3,
-  },
-  {
-    name: '상승',
-    id: 4,
-  },
-  {
-    name: '급상승',
-    id: 5,
-  },
-];
-const activeLevel = [
-  {
-    name: '신생',
-    id: 1,
-  },
-  {
-    name: '일부사용',
-    id: 2,
-  },
-  {
-    name: '일반',
-    id: 3,
-  },
-  {
-    name: '범용',
-    id: 4,
-  },
-  {
-    name: '대세',
-    id: 5,
-  },
-];
+export default SkillTemplate;
