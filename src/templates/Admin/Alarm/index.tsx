@@ -337,7 +337,7 @@ export function AlarmTemplate({
         </div>
         <div className="right">
           <div className={cx('search')}>
-            {/* <div className={cx('date')}>
+            <div className={cx('date')}>
               <div>
                 <div className="inpwrap">
                   <div className="inp-tit">시작일</div>
@@ -365,7 +365,7 @@ export function AlarmTemplate({
                   </LocalizationProvider>
                 </div>
               </div>
-            </div> */}
+            </div>
             <div className="inpwrap">
               <div className="inp search">
                 <input

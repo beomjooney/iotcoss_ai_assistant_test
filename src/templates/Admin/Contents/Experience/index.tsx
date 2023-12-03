@@ -713,6 +713,7 @@ export function ExperienceTemplate({
                         onChange={onChangeExperience}
                         name="trendLevel"
                         disabled={!isEdit}
+                        className="input-admin"
                       >
                         <option value="">-- 선택 --</option>
                         {trendLevel?.map(item => (
@@ -733,6 +734,7 @@ export function ExperienceTemplate({
                         onChange={onChangeExperience}
                         name="activeLevel"
                         disabled={!isEdit}
+                        className="input-admin"
                       >
                         <option value="">-- 선택 --</option>
                         {activeLevel?.map(item => (
@@ -970,7 +972,12 @@ export function ExperienceTemplate({
                     <div className="inp-tit">트렌드 레벨</div>
                     <div className="inp">
                       {isRegisterPopupOpen ? (
-                        <select value={regitserValues.trendLevel} onChange={handleRegister} name="trendLevel">
+                        <select
+                          value={regitserValues.trendLevel}
+                          onChange={handleRegister}
+                          name="trendLevel"
+                          className="input-admin"
+                        >
                           <option value="">-- 선택 --</option>
                           {trendLevel?.map(item => (
                             <option value={item.id} key={item.id}>
@@ -989,7 +996,12 @@ export function ExperienceTemplate({
                     <div className="inp-tit">활성화 레벨</div>
                     <div className="inp">
                       {isRegisterPopupOpen ? (
-                        <select value={regitserValues.activeLevel} onChange={handleRegister} name="activeLevel">
+                        <select
+                          value={regitserValues.activeLevel}
+                          onChange={handleRegister}
+                          name="activeLevel"
+                          className="input-admin"
+                        >
                           <option value="">-- 선택 --</option>
                           {activeLevel?.map(item => (
                             <option value={item.id} key={item.id}>

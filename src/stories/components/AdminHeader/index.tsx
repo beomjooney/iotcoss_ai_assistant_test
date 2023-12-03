@@ -48,17 +48,17 @@ const AdminHeader = ({ menuItem, activeNo = 0 }: AdminNavbarProps) => {
             toggle: true,
             children: [{ no: 1011, title: '회원', link: '/admin/members' }],
           },
-          {
-            no: 102,
-            title: '리더',
-            link: 'javascript:void(0);',
-            upMenuNo: 1,
-            toggle: true,
-            children: [
-              { no: 1021, title: '리더', link: 'javascript:void(0);' },
-              // { no: 1022, title: '리더신청', link: '#' },
-            ],
-          },
+          // {
+          //   no: 102,
+          //   title: '리더',
+          //   link: 'javascript:void(0);',
+          //   upMenuNo: 1,
+          //   toggle: true,
+          //   children: [
+          //     { no: 1021, title: '리더', link: 'javascript:void(0);' },
+          //     // { no: 1022, title: '리더신청', link: '#' },
+          //   ],
+          // },
         ]);
         break;
       case 2:
@@ -83,14 +83,14 @@ const AdminHeader = ({ menuItem, activeNo = 0 }: AdminNavbarProps) => {
             toggle: true,
             children: [{ no: 2021, title: '퀴즈', link: '/admin/quiz' }],
           },
-          {
-            no: 203,
-            title: '배너',
-            link: 'javascript:void(0);',
-            upMenuNo: 2,
-            toggle: true,
-            children: [{ no: 2031, title: '배너', link: 'javascript:void(0);' }],
-          },
+          // {
+          //   no: 203,
+          //   title: '배너',
+          //   link: 'javascript:void(0);',
+          //   upMenuNo: 2,
+          //   toggle: true,
+          //   children: [{ no: 2031, title: '배너', link: 'javascript:void(0);' }],
+          // },
         ]);
         break;
       case 3:
@@ -132,14 +132,14 @@ const AdminHeader = ({ menuItem, activeNo = 0 }: AdminNavbarProps) => {
             toggle: true,
             children: [{ no: 4021, title: '배지', link: '/admin/contents/badge' }],
           },
-          {
-            no: 403,
-            title: '커리어',
-            link: 'javascript:void(0);',
-            upMenuNo: 4,
-            toggle: true,
-            children: [{ no: 4031, title: '커리어', link: 'javascript:void(0);' }],
-          },
+          // {
+          //   no: 403,
+          //   title: '커리어',
+          //   link: 'javascript:void(0);',
+          //   upMenuNo: 4,
+          //   toggle: true,
+          //   children: [{ no: 4031, title: '커리어', link: 'javascript:void(0);' }],
+          // },
         ]);
         break;
       case 5:
@@ -164,17 +164,17 @@ const AdminHeader = ({ menuItem, activeNo = 0 }: AdminNavbarProps) => {
             toggle: true,
             children: [{ no: 5021, title: '알람이벤트이력', link: '/admin/alarm' }],
           },
-          {
-            no: 503,
-            title: '코드관리',
-            link: 'javascript:void(0);',
-            upMenuNo: 5,
-            toggle: true,
-            children: [
-              { no: 5031, title: '코드그룹', link: 'javascript:void(0);' },
-              { no: 5032, title: '코드상세', link: 'javascript:void(0);' },
-            ],
-          },
+          // {
+          //   no: 503,
+          //   title: '코드관리',
+          //   link: 'javascript:void(0);',
+          //   upMenuNo: 5,
+          //   toggle: true,
+          //   children: [
+          //     { no: 5031, title: '코드그룹', link: 'javascript:void(0);' },
+          //     { no: 5032, title: '코드상세', link: 'javascript:void(0);' },
+          //   ],
+          // },
           {
             no: 504,
             title: '포인트관리',

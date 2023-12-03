@@ -69,13 +69,13 @@ const AdminLayout = ({ darkBg, classOption, title, children, isFooter = true, re
       link: '/admin/club',
       icon: '/assets/images/icons/service.png',
     },
-    {
-      no: 3,
-      option: 'nav-item',
-      title: '집계/통계',
-      link: 'javascript:void(0);',
-      icon: '/assets/images/icons/content.png',
-    },
+    // {
+    //   no: 3,
+    //   option: 'nav-item',
+    //   title: '집계/통계',
+    //   link: 'javascript:void(0);',
+    //   icon: '/assets/images/icons/content.png',
+    // },
     {
       no: 4,
       option: 'nav-item',
