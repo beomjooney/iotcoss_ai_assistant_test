@@ -1016,10 +1016,10 @@ export function QuizOpenTemplate() {
           <div className="tw-py-5 tw-mb-0">
             <div className="tw-pt-[60px]">
               <div className="tw-text-[24px] tw-font-bold tw-text-black tw-text-center">
-                내가 만든 클럽 &gt; 크루관리
+                성장퀴즈 &gt; 성장퀴즈 클럽 개설하기
               </div>
               <div className="tw-text-[12px] tw-text-black tw-text-center tw-mb-10">
-                내가 만든 클럽 페이지에 관한 간단한 설명란
+                나와 크루들의 성장을 이끌 퀴즈 클럽을 개설해요!
               </div>
             </div>
           </div>
