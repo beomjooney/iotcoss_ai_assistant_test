@@ -69,8 +69,6 @@ export function ExperienceTemplate({
     '수정일시',
   ];
 
-  const memberCodes = [];
-
   const LEVELS = [
     { level: 1, desc: '상용서비스 단위모듈 수준 개발 가능. 서비스 개발 리딩 시니어 필요' },
     { level: 2, desc: '상용서비스 개발 1인분 가능한 사람. 소규모 서비스 독자 개발 가능' },
