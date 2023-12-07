@@ -113,17 +113,17 @@ const AdminHeader = ({ menuItem, activeNo = 0 }: AdminNavbarProps) => {
       case 4:
         setSubmenuTitle('콘텐츠 관리');
         setSubMenuList([
-          {
-            no: 401,
-            title: '스킬/경험',
-            link: 'javascript:void(0);',
-            upMenuNo: 4,
-            toggle: true,
-            children: [
-              { no: 4011, title: '스킬', link: '/admin/contents/skill' },
-              { no: 4012, title: '경험', link: '/admin/contents/experience' },
-            ],
-          },
+          // {
+          //   no: 401,
+          //   title: '스킬/경험',
+          //   link: 'javascript:void(0);',
+          //   upMenuNo: 4,
+          //   toggle: true,
+          //   children: [
+          //     { no: 4011, title: '스킬', link: '/admin/contents/skill' },
+          //     { no: 4012, title: '경험', link: '/admin/contents/experience' },
+          //   ],
+          // },
           {
             no: 402,
             title: '배지',
@@ -164,17 +164,17 @@ const AdminHeader = ({ menuItem, activeNo = 0 }: AdminNavbarProps) => {
             toggle: true,
             children: [{ no: 5021, title: '알람이벤트이력', link: '/admin/alarm' }],
           },
-          // {
-          //   no: 503,
-          //   title: '코드관리',
-          //   link: 'javascript:void(0);',
-          //   upMenuNo: 5,
-          //   toggle: true,
-          //   children: [
-          //     { no: 5031, title: '코드그룹', link: 'javascript:void(0);' },
-          //     { no: 5032, title: '코드상세', link: 'javascript:void(0);' },
-          //   ],
-          // },
+          {
+            no: 503,
+            title: '코드관리',
+            link: 'javascript:void(0);',
+            upMenuNo: 5,
+            toggle: true,
+            children: [
+              { no: 5031, title: '코드그룹', link: '/admin/codeGroup' },
+              { no: 5032, title: '코드상세', link: '/admin/codeDetail' },
+            ],
+          },
           {
             no: 504,
             title: '포인트관리',

@@ -6,7 +6,7 @@ export async function authCheck() {
 
 // 목록 조회
 export async function getQuizs(params: any) {
-  const { data, headers } = await axiosGeneralAPI().get('api/admin/v1/quizzes', { params });
+  const { data, headers } = await axiosGeneralAPI().get('/api/admin/v1/quizzes', { params });
   const totalPage = Number(headers['page-count']);
   return { data: data || [], nextPage: params.page + 1, totalPage };
 }

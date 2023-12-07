@@ -9,27 +9,27 @@ import Image from 'next/image';
 import moment from 'moment';
 
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Profile, AdminPagination, Table, SmartFilter, Button, Toggle, Editor } from '../../../../stories/components';
+import { Profile, AdminPagination, Table, SmartFilter, Button, Toggle, Editor } from '../../../stories/components';
 import { TextField } from '@mui/material';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useUploadImage } from 'src/services/image/image.mutations';
-import { SearchParamsProps } from 'pages/admin/contents/experience';
+import { SearchParamsProps } from 'pages/admin/codeGroup';
 
 const cx = classNames.bind(styles);
 
-interface ExperienceTemplateProps {
-  devusExperienceList?: any;
+interface CodeGroupTemplateProps {
+  codeGroupList?: any;
   skillsList?: any;
-  experienceList?: any;
+  experience?: any;
   jobGroup?: any;
   jobs?: any;
   jobCodes?: any;
   contentJobType?: any;
-  devusExperienceData?: any;
+  codeGroupData?: any;
   pageProps?: any;
-  onExperienceInfo?: (experienceId: string) => void;
-  onDeleteExperience?: (experienceId: string) => void;
+  onCodeGroupInfo?: (codeGroupId: string) => void;
+  onDeleteCodeGroup?: (codeGroupId: string) => void;
   onSave?: (data: any) => void;
   onAdd?: (data: any) => void;
   onSearch?: (keyword: any) => void;
@@ -37,36 +37,37 @@ interface ExperienceTemplateProps {
   setParams: React.Dispatch<React.SetStateAction<SearchParamsProps>>;
 }
 
-export function ExperienceTemplate({
-  devusExperienceList,
+export function CodeGroupTemplate({
+  codeGroupList,
   skillsList,
-  experienceList,
+  experience,
   jobGroup,
   jobs,
   jobCodes,
   contentJobType,
-  devusExperienceData,
+  codeGroupData,
   pageProps,
   params,
-  onExperienceInfo,
-  onDeleteExperience,
+  onCodeGroupInfo,
+  onDeleteCodeGroup,
   onSave,
   onAdd,
   onSearch,
   setParams,
-}: ExperienceTemplateProps) {
-  const COLGROUP = ['12%', '15%', '15%', '10%', '10%', '10%', '7%', '7%', '10%', '10%'];
+}: CodeGroupTemplateProps) {
+  const COLGROUP = ['12%', '12%', '5%', '5%', '4%', '5%', '4%', '4%', '6%', '6%', '6%'];
   const HEADS = [
-    '경험명',
-    '설명',
-    '이미지URL',
-    '연관직군들',
-    '연관직무들',
-    '연관레벨들',
-    '트랜드레벨',
-    '활성화레벨',
+    '퀴즈아이디',
+    '회원UUID',
+    '추천직군들',
+    '추천직무들',
+    '추천레벨들',
+    '연관스킬들',
+    '퀴즈활용 수',
+    '퀴즈답변 수',
+    '해시태그',
+    '삭제상태',
     '등록일시',
-    '수정일시',
   ];
 
   const LEVELS = [
@@ -77,59 +78,16 @@ export function ExperienceTemplate({
     { level: 5, desc: '본인 오픈소스/방법론 등이 범용적 사용, 수백명이상 다수 직군 리딩' },
   ];
 
-  const trendLevel = [
-    {
-      name: '급하락',
-      id: 1,
-    },
-    {
-      name: '하락',
-      id: 2,
-    },
-    {
-      name: '일반',
-      id: 3,
-    },
-    {
-      name: '상승',
-      id: 4,
-    },
-    {
-      name: '급상승',
-      id: 5,
-    },
-  ];
-  const activeLevel = [
-    {
-      name: '신생',
-      id: 1,
-    },
-    {
-      name: '일부사용',
-      id: 2,
-    },
-    {
-      name: '일반',
-      id: 3,
-    },
-    {
-      name: '범용',
-      id: 4,
-    },
-    {
-      name: '대세',
-      id: 5,
-    },
-  ];
-
   const FIELDS = [
-    { name: '경험ID', field: 'id', type: 'text' },
-    { name: '경험명', field: 'memberUUID', type: 'text' },
-    { name: '연관직군들', field: 'recommendJobGroupNames', type: 'text' },
-    { name: '연관직무들', field: 'recommendJobNames', type: 'text' },
-    { name: '연관레벨들', field: 'recommendLevels', type: 'text' },
-    { name: '트랜드레벨', field: 'relatedSkills', type: 'text' },
-    { name: '활성화레벨', field: 'relatedSkills', type: 'text' },
+    { name: '퀴즈ID', field: 'id', type: 'text' },
+    { name: '회원UUID', field: 'memberUUID', type: 'text' },
+    { name: '추천직군들', field: 'recommendJobGroupNames', type: 'text' },
+    { name: '추천직무들', field: 'recommendJobNames', type: 'text' },
+    { name: '추천레벨들', field: 'recommendLevels', type: 'text' },
+    { name: '연관스킬들', field: 'relatedSkills', type: 'text' },
+    { name: '퀴즈 활용 수', field: 'activeCount', type: 'text' },
+    { name: '퀴즈 답변 수', field: 'answerCount', type: 'text' },
+    { name: '해시 태그', field: 'hashTags', type: 'text' },
   ];
 
   const { mutate: onSaveProfileImage, data: profileImage, isSuccess } = useUploadImage();
@@ -137,7 +95,7 @@ export function ExperienceTemplate({
   const [introduceEditor, setIntroduceEditor] = useState<string>('');
   const [popupOpen, setPopupOpen] = useState<boolean>(false);
   const [isFilter, setIsFilter] = useState<boolean>(false);
-  const [experience, setExperience] = useState<any>({});
+  const [codeGroup, setCodeGroup] = useState<any>({});
   const [searchKeyword, setSearchKeyword] = useState<string>('');
   const [profileImageUrl, setProfilImageUrl] = useState(null);
   const [tabValue, setTabValue] = useState<number>(1);
@@ -152,29 +110,30 @@ export function ExperienceTemplate({
   const [regitserValues, setRegisterValues] = useState<any>({});
 
   // TODO : 밸리데이션 추가 해야 함
-  const experienceSaveSchema = yup.object().shape({
-    name: yup.string().notRequired(),
-    description: yup.string().notRequired(),
+  const codeGroupSaveSchema = yup.object().shape({
+    memberId: yup.string().notRequired(),
+    memberName: yup.string().notRequired(),
     memberNickname: yup.string().notRequired(),
-    imageUrl: yup.string().notRequired(),
-    trendLevel: yup.string().notRequired(),
-    activeLevel: yup.string().notRequired(),
+    articleUrl: yup.string().notRequired(),
+    activeCount: yup.string().notRequired(),
+    answerCount: yup.string().notRequired(),
+    hashTags: yup.string().notRequired(),
   });
 
   const methods = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange',
-    resolver: yupResolver(experienceSaveSchema),
+    resolver: yupResolver(codeGroupSaveSchema),
   });
 
   useEffect(() => {
-    devusExperienceData && setExperience(devusExperienceData.data);
-    if (devusExperienceData) {
-      setExperienceIds(devusExperienceData?.data?.relatedExperiences?.map((item, index) => item) || []);
-      setSkillIds(devusExperienceData?.data?.relatedSkills?.map((item, index) => item) || []);
-      setrecommendJobGroupsIds(devusExperienceData?.data?.relatedJobGroups?.map((item, index) => item) || []);
-      setrecommendJobsIds(devusExperienceData?.data?.relatedJobs?.map((item, index) => item) || []);
-      setrecommendLevelsIds(devusExperienceData?.data?.relatedLevels?.map((item, index) => item) || []);
+    codeGroupData && setCodeGroup(codeGroupData.data);
+    if (codeGroupData) {
+      setExperienceIds(codeGroupData?.data?.relatedExperiences?.map((item, index) => item) || []);
+      setSkillIds(codeGroupData?.data?.relatedSkills?.map((item, index) => item) || []);
+      setrecommendJobGroupsIds(codeGroupData?.data?.recommendJobGroups?.map((item, index) => item) || []);
+      setrecommendJobsIds(codeGroupData?.data?.recommendJobs?.map((item, index) => item) || []);
+      setrecommendLevelsIds(codeGroupData?.data?.recommendLevels?.map((item, index) => item) || []);
     } else {
       setExperienceIds([]);
       setSkillIds([]);
@@ -182,29 +141,33 @@ export function ExperienceTemplate({
       setrecommendJobsIds([]);
       setrecommendLevelsIds([]);
     }
-  }, [devusExperienceData]);
+  }, [codeGroupData]);
 
-  const onShowPopup = (experienceId: string) => {
-    onExperienceInfo && onExperienceInfo(experienceId);
+  // useEffect(() => {
+  //   codeGroupData && setCodeGroup(codeGroupData.data);
+  // }, [codeGroupData]);
+
+  const onShowPopup = (codeGroupId: string) => {
+    onCodeGroupInfo && onCodeGroupInfo(codeGroupId);
     setPopupOpen(true);
     setIsRegisterPopupOpen(false);
   };
 
-  const onChangeExperience = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const onChangeCodeGroup = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = event.currentTarget;
     const data = {
       [name]: value,
     };
-    setExperience({
-      ...experience,
+    setCodeGroup({
+      ...codeGroup,
       ...data,
     });
   };
 
-  const handleDelete = (experienceId: string) => {
+  const handleDelete = (codeGroupId: string) => {
     setPopupOpen(false);
-    setExperience({});
-    onDeleteExperience && onDeleteExperience(experienceId);
+    setCodeGroup({});
+    onDeleteCodeGroup && onDeleteCodeGroup(codeGroupId);
   };
 
   const handleSearchKeyword = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -236,7 +199,7 @@ export function ExperienceTemplate({
   const handleSave = (data: any) => {
     const params = {
       ...data,
-      ...experience,
+      ...codeGroup,
       recommendJobGroups: recommendJobGroupsIds,
       recommendJobs: recommendJobsIds,
       recommendLevels: recommendLevelsIds,
@@ -288,7 +251,7 @@ export function ExperienceTemplate({
       }
 
       setExperienceIds(result);
-    } else if (name === 'relatedJobGroups') {
+    } else if (name === 'recommendJobGroups') {
       const result = [...recommendJobGroupsIds];
 
       if (result.indexOf(value) > -1) {
@@ -298,7 +261,7 @@ export function ExperienceTemplate({
       }
 
       setrecommendJobGroupsIds(result);
-    } else if (name === 'relatedJobs') {
+    } else if (name === 'recommendJobs') {
       const result = [...recommendJobsIds];
 
       if (result.indexOf(value) > -1) {
@@ -308,7 +271,7 @@ export function ExperienceTemplate({
       }
 
       setrecommendJobsIds(result);
-    } else if (name === 'relatedLevels') {
+    } else if (name === 'recommendLevels') {
       const result = [...recommendLevelsIds];
 
       if (result.indexOf(value) > -1) {
@@ -357,13 +320,13 @@ export function ExperienceTemplate({
       //registDate: `${registDate}:00.000`,
     };
 
-    if (params.name === undefined || params.name?.length === 0) {
-      alert('경험명을 입력해주세요.');
+    if (params.content === undefined || params.content?.length === 0) {
+      alert('질문을 입력해주세요.');
       return;
     }
 
-    if (params.description === undefined || params.description?.length === 0) {
-      alert('설명을 입력해주세요.');
+    if (params.articleUrl === undefined || params.articleUrl?.length === 0) {
+      alert('아티클URL을 입력해주세요.');
       return;
     }
 
@@ -380,13 +343,11 @@ export function ExperienceTemplate({
     onAdd && onAdd(params);
   };
 
-  //console.log(jobCodes?.data?.contents);
-
   return (
     <div className="admin-content">
-      <h2 className="tit-type1">경험관리</h2>
+      <h2 className="tit-type1">코드그룹관리</h2>
       <div className="path">
-        <span>Home</span> <span>경험목록</span>
+        <span>Home</span> <span>코드그룹목록</span>
       </div>
 
       <div className="data-top">
@@ -471,43 +432,46 @@ export function ExperienceTemplate({
           name="member"
           colgroup={COLGROUP}
           heads={HEADS}
-          items={devusExperienceList?.data?.data?.contents?.map((item, index) => {
+          items={codeGroupList?.data?.data?.contents?.map((item, index) => {
             return (
-              <tr key={`tr-${index}`} onClick={() => onShowPopup(item.id)}>
-                <td className="magic" title={item.name}>
-                  {item.name}
+              <tr key={`tr-${index}`} onClick={() => onShowPopup(item.sequence)}>
+                <td className="magic" title={item.id}>
+                  {item.id}
                 </td>
-                <td className="magic" title={item.description}>
-                  {item.description}
+                <td className="magic" title={item.memberUUID}>
+                  {item.memberUUID}
                 </td>
-                <td className="magic" title={item.imageUrl}>
-                  {item.imageUrl}
+                <td className="magic" title={item.recommendJobGroupNames}>
+                  {item.recommendJobGroupNames}
                 </td>
-                <td className="magic" title={item.relatedJobGroups}>
-                  {item.relatedJobGroupsName?.join(',') || item.relatedJobGroups?.join(',')}
+                <td className="magic" title={item.recommendJobNames}>
+                  {item.recommendJobNames}
                 </td>
-                <td className="magic" title={item.relatedJobs}>
-                  {item.relatedJobsName?.join(',') || item.relatedJobs?.join(',')}
+                <td className="magic" title={item.recommendLevels}>
+                  {item.recommendLevels?.length === 5 ? '모든' : item.recommendLevels?.sort().join(',') || 0}
                 </td>
-                <td className="magic" title={item.relatedLevels}>
-                  {item.relatedLevels?.length === 5 ? '모든' : item.relatedLevels?.sort().join(',') || 0}
+                <td className="magic" title={item.relatedSkills}>
+                  {item.relatedSkills}
                 </td>
-                <td className="magic" title={item?.trendLevel}>
-                  {item?.trendLevel || 0}
+                <td className="magic" title={item?.activeCount}>
+                  {item?.activeCount || 0}
                 </td>
-                <td className="magic" title={item.activeLevel}>
-                  {item?.activeLevel || 0}
+                <td className="magic" title={item.answerCount}>
+                  {item?.answerCount || 0}
+                </td>
+                <td className="magic" title={item.hashTags}>
+                  {item.hashTags}
+                </td>
+                <td className="magic" title={item.deleteStatus ? 'Y' : 'N'}>
+                  {item.deleteStatus ? 'Y' : 'N'}
                 </td>
                 <td className="magic" title={dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}>
                   {dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}
-                </td>{' '}
-                <td className="magic" title={dayjs(item.updatedAt).format('YYYY-MM-DD HH:mm:ss')}>
-                  {dayjs(item.updatedAt).format('YYYY-MM-DD HH:mm:ss')}
                 </td>
               </tr>
             );
           })}
-          isEmpty={devusExperienceList?.data?.length === 0 || false}
+          isEmpty={codeGroupList?.data?.length === 0 || false}
         />
         <AdminPagination {...pageProps} />
       </div>
@@ -527,7 +491,7 @@ export function ExperienceTemplate({
                     <i className="ico i-x"></i>
                   </button>
                 </div>
-                <div className="tit-type2">경험 상세보기</div>
+                <div className="tit-type2">퀴즈 상세보기</div>
               </div>
               <div className="right">
                 {isEdit ? (
@@ -544,7 +508,7 @@ export function ExperienceTemplate({
                     취소
                   </button>
                 ) : (
-                  <button className="btn-type1 type1" onClick={() => handleDelete(experience?.id)}>
+                  <button className="btn-type1 type1" onClick={() => handleDelete(codeGroup?.id)}>
                     삭제
                   </button>
                 )}
@@ -552,70 +516,165 @@ export function ExperienceTemplate({
             </div>
             <div className="tab-content" data-id="tabLink01">
               <div className="layout-grid">
-                <div className="grid-50">
+                <div className="grid-25">
                   <div className="inpwrap">
-                    <div className="inp-tit">경험 아이디</div>
+                    <div className="inp-tit">회원 아이디</div>
                     <div className="inp">
                       <input
                         type="text"
                         className="input-admin"
-                        {...methods.register('id')}
+                        {...methods.register('memberId')}
                         disabled
-                        value={experience?.id || ''}
-                        onChange={onChangeExperience}
+                        value={codeGroup?.memberId || ''}
+                        onChange={onChangeCodeGroup}
                       />
                     </div>
                   </div>
                 </div>
-                <div className="grid-50">
+                <div className="grid-25">
                   <div className="inpwrap">
-                    <div className="inp-tit">경험명</div>
+                    <div className="inp-tit">회원명</div>
                     <div className="inp">
                       <input
                         className="input-admin"
                         type="text"
-                        {...methods.register('name')}
-                        value={experience?.name || ''}
-                        onChange={onChangeExperience}
+                        {...methods.register('memberName')}
+                        value={codeGroup?.memberName || ''}
+                        onChange={onChangeCodeGroup}
+                        disabled
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid-25">
+                  <div className="inpwrap">
+                    <div className="inp-tit">닉네임</div>
+                    <div className="inp">
+                      <input
+                        className="input-admin"
+                        type="text"
+                        {...methods.register('memberNickname')}
+                        value={codeGroup?.memberNickname}
+                        onChange={onChangeCodeGroup}
+                        disabled
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid-25">
+                  <div className="inpwrap">
+                    <div className="inp-tit">퀴즈 활용 수</div>
+                    <div className="inp">
+                      <input
+                        className="input-admin"
+                        type="text"
+                        {...methods.register('activeCount')}
+                        value={codeGroup?.activeCount || 0}
+                        onChange={onChangeCodeGroup}
                         disabled={!isEdit}
                       />
                     </div>
                   </div>
                 </div>
-                <div className="grid-100">
+                <div className="grid-25">
                   <div className="inpwrap">
-                    <div className="inp-tit">설명</div>
+                    <div className="inp-tit">퀴즈 답변 수</div>
                     <div className="inp">
                       <input
                         className="input-admin"
                         type="text"
-                        {...methods.register('description')}
-                        value={experience?.description}
-                        onChange={onChangeExperience}
+                        {...methods.register('answerCount')}
+                        value={codeGroup?.answerCount || 0}
+                        onChange={onChangeCodeGroup}
                         disabled={!isEdit}
                       />
                     </div>
                   </div>
                 </div>
-                <div className="grid-100">
+                <div className="grid-25">
                   <div className="inpwrap">
-                    <div className="inp-tit">이미지URL</div>
+                    <div className="inp-tit">키워드(해시태그)</div>
                     <div className="inp">
                       <input
-                        className="input-admin"
                         type="text"
-                        {...methods.register('imageUrl')}
-                        value={experience?.imageUrl || 0}
-                        onChange={onChangeExperience}
+                        className="input-admin"
+                        {...methods.register('hashTags')}
+                        value={codeGroup?.hashTags || ''}
+                        onChange={onChangeCodeGroup}
                         disabled={!isEdit}
                       />
                     </div>
                   </div>
                 </div>
+                <div className="grid-25">
+                  <div className="inpwrap">
+                    <div className="inp-tit">등록일시</div>
+                    <div className="inp">
+                      <input
+                        type="text"
+                        className="input-admin"
+                        value={codeGroup?.createdAt || ''}
+                        disabled
+                        onChange={onChangeCodeGroup}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid-25">
+                  <div className="inpwrap">
+                    <div className="inp-tit">수정일시</div>
+                    <div className="inp">
+                      <input
+                        type="text"
+                        className="input-admin"
+                        value={codeGroup?.updatedAt || ''}
+                        disabled
+                        onChange={onChangeCodeGroup}
+                      />
+                    </div>
+                  </div>
+                </div>
+
                 <div className="grid-100">
                   <div className="inpwrap">
                     <div className="inp-tit">
-                      연관직군<span className="star">*</span>
+                      질문<span className="star">*</span>
+                    </div>
+                    <div className="inp">
+                      <input
+                        className="input-admin"
+                        type="text"
+                        {...methods.register('content')}
+                        value={codeGroup?.content || ''}
+                        onChange={onChangeCodeGroup}
+                        disabled={!isEdit}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid-100">
+                  <div className="inpwrap">
+                    <div className="inp-tit">
+                      아티클URL<span className="star">*</span>
+                    </div>
+                    <div className="inp">
+                      <input
+                        className="input-admin"
+                        type="text"
+                        {...methods.register('articleUrl')}
+                        value={codeGroup?.articleUrl || ''}
+                        onChange={onChangeCodeGroup}
+                        disabled={!isEdit}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid-100">
+                  <div className="inpwrap">
+                    <div className="inp-tit">
+                      추천직군<span className="star">*</span>
                     </div>
 
                     <div className="inp">
@@ -625,7 +684,7 @@ export function ExperienceTemplate({
                             <Toggle
                               key={`recommendJobGroupsIds-${index}`}
                               label={item.name}
-                              name="relatedJobGroups"
+                              name="recommendJobGroups"
                               value={item.id}
                               onChange={onToggleChange}
                               className="mr-2 mt-2"
@@ -647,7 +706,7 @@ export function ExperienceTemplate({
                 <div className="grid-100 mt-3">
                   <div className="inpwrap">
                     <div className="inp-tit">
-                      연관직무<span className="star">*</span>
+                      추천직무<span className="star">*</span>
                     </div>
                     <div className="inp">
                       <div className={cx('skill__group')}>
@@ -656,7 +715,7 @@ export function ExperienceTemplate({
                             <Toggle
                               key={`recommendJobsIds-${index}`}
                               label={item.name}
-                              name="relatedJobs"
+                              name="recommendJobs"
                               value={item.id}
                               onChange={onToggleChange}
                               className="mr-2 mt-2"
@@ -676,7 +735,7 @@ export function ExperienceTemplate({
                 <div className="grid-100">
                   <div className="inpwrap">
                     <div className="inp-tit">
-                      연관레벨<span className="star">*</span>
+                      추천레벨<span className="star">*</span>
                     </div>
                     <div className="inp">
                       <div className={cx('skill__group')}>
@@ -685,7 +744,7 @@ export function ExperienceTemplate({
                             <Toggle
                               key={`recommendLevelsIds-${index}`}
                               label={`${item.level}레벨`}
-                              name="relatedLevels"
+                              name="recommendLevels"
                               value={item.level || ''}
                               onChange={onToggleChange}
                               className="mr-2 mt-2"
@@ -702,75 +761,63 @@ export function ExperienceTemplate({
                         })}
                       </div>
                     </div>
-                  </div>
-                </div>
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit">트렌드 레벨</div>
-                    <div className="inp">
-                      <select
-                        value={experience.trendLevel}
-                        onChange={onChangeExperience}
-                        name="trendLevel"
-                        disabled={!isEdit}
-                        className="input-admin"
-                      >
-                        <option value="">-- 선택 --</option>
-                        {trendLevel?.map(item => (
-                          <option value={item.id} key={item.id}>
-                            {item.name}
-                          </option>
-                        ))}
-                      </select>
+
+                    <div className="grid-100 mt-3">
+                      <div className="inpwrap">
+                        <div className="inp-tit">관련 스킬</div>
+                        <div className="inp">
+                          <div className={cx('filter-area')}>
+                            <div className={cx('skill__group')}>
+                              {skillsList?.data?.data?.map((item, index) => {
+                                return (
+                                  <Toggle
+                                    key={`skillIds-${index}`}
+                                    label={item.name}
+                                    name="skillIds"
+                                    value={item.id}
+                                    onChange={onToggleChange}
+                                    className="mr-2 mt-2 custom"
+                                    variant="small"
+                                    type="multiple"
+                                    isActive
+                                    isBorder
+                                    checked={!!skillIds?.find(skill => skill === item.id)}
+                                    disabled={!isEdit}
+                                  />
+                                );
+                              })}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit">활성화 레벨</div>
-                    <div className="inp">
-                      <select
-                        value={experience.activeLevel}
-                        onChange={onChangeExperience}
-                        name="activeLevel"
-                        disabled={!isEdit}
-                        className="input-admin"
-                      >
-                        <option value="">-- 선택 --</option>
-                        {activeLevel?.map(item => (
-                          <option value={item.id} key={item.id}>
-                            {item.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit">등록일시</div>
-                    <div className="inp">
-                      <input
-                        type="text"
-                        className="input-admin"
-                        value={experience?.updatedAt || ''}
-                        disabled
-                        onChange={onChangeExperience}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit">수정일시</div>
-                    <div className="inp">
-                      <input
-                        type="text"
-                        className="input-admin"
-                        value={experience?.updatedAt || ''}
-                        disabled
-                        onChange={onChangeExperience}
-                      />
+
+                    <div className="grid-100 mt-3">
+                      <div className="inpwrap">
+                        <div className="inp-tit">관련 경험</div>
+                        <div className="inp">
+                          <div className={cx('skill__group')}>
+                            {experience?.data?.contents?.map((item, index) => {
+                              return (
+                                <Toggle
+                                  key={`experienceIds-${index}`}
+                                  label={item.name}
+                                  name="experienceIds"
+                                  value={item.name}
+                                  onChange={onToggleChange}
+                                  className="mr-2 mt-2"
+                                  variant="small"
+                                  type="multiple"
+                                  isActive
+                                  isBorder
+                                  checked={!!experienceIds?.find(experiences => experiences === item.name)}
+                                  disabled={!isEdit}
+                                />
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -783,7 +830,7 @@ export function ExperienceTemplate({
                     <div className="inp">
                       <Editor
                         type="seminar"
-                        data={experience?.content || ''}
+                        data={codeGroup?.content || ''}
                         onChange={(event, editor) => {
                           setIntroduceEditor(editor.getData());
                         }}
@@ -809,7 +856,7 @@ export function ExperienceTemplate({
                     <i className="ico i-x"></i>
                   </button>
                 </div>
-                <div className="tit-type2">경험 등록</div>
+                <div className="tit-type2">퀴즈 등록</div>
               </div>
               <div className="right">
                 <button className="btn-type1 type2" onClick={handleOnAdd}>
@@ -819,33 +866,17 @@ export function ExperienceTemplate({
             </div>
             <div className="tab-content" data-id="tabLink01">
               <div className="layout-grid">
-                <div className="grid-50">
+                <div className="grid-100">
                   <div className="inpwrap">
                     <div className="inp-tit">
-                      경험아이디<span className="star">*</span>
+                      질문<span className="star">*</span>
                     </div>
                     <div className="inp">
                       <input
                         type="text"
                         className="input-admin"
-                        name="id"
-                        value={regitserValues?.id || ''}
-                        onChange={handleRegister}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-50">
-                  <div className="inpwrap">
-                    <div className="inp-tit">
-                      경험명<span className="star">*</span>
-                    </div>
-                    <div className="inp">
-                      <input
-                        type="text"
-                        className="input-admin"
-                        name="name"
-                        value={regitserValues?.name || ''}
+                        name="content"
+                        value={regitserValues?.content || ''}
                         onChange={handleRegister}
                       />
                     </div>
@@ -854,30 +885,14 @@ export function ExperienceTemplate({
                 <div className="grid-100">
                   <div className="inpwrap">
                     <div className="inp-tit">
-                      설명<span className="star">*</span>
+                      아티클URL<span className="star">*</span>
                     </div>
                     <div className="inp">
                       <input
                         type="text"
                         className="input-admin"
-                        name="description"
-                        value={regitserValues?.description || ''}
-                        onChange={handleRegister}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-100">
-                  <div className="inpwrap">
-                    <div className="inp-tit">
-                      이미지URL<span className="star">*</span>
-                    </div>
-                    <div className="inp">
-                      <input
-                        type="text"
-                        className="input-admin"
-                        name="imageUrl"
-                        value={regitserValues?.imageUrl || ''}
+                        name="articleUrl"
+                        value={regitserValues?.articleUrl || ''}
                         onChange={handleRegister}
                       />
                     </div>
@@ -887,7 +902,7 @@ export function ExperienceTemplate({
                 <div className="grid-100">
                   <div className="inpwrap">
                     <div className="inp-tit">
-                      연관직군<span className="star">*</span>
+                      추천직군<span className="star">*</span>
                     </div>
 
                     <div className="inp">
@@ -897,7 +912,7 @@ export function ExperienceTemplate({
                             <Toggle
                               key={`recommendJobGroupsIds-${index}`}
                               label={item.name}
-                              name="relatedJobGroups"
+                              name="recommendJobGroups"
                               value={item.id}
                               onChange={onToggleChange}
                               className="mr-2 mt-2"
@@ -912,19 +927,19 @@ export function ExperienceTemplate({
                     </div>
                   </div>
                 </div>
-                <div className="grid-100 mt-3">
+                <div className="grid-50 mt-3">
                   <div className="inpwrap">
                     <div className="inp-tit">
-                      연관직무<span className="star">*</span>
+                      추천직무<span className="star">*</span>
                     </div>
                     <div className="inp">
                       <div className={cx('skill__group')}>
-                        {contentJobType?.map((item, index) => {
+                        {jobs?.data?.contents?.map((item, index) => {
                           return (
                             <Toggle
                               key={`recommendJobsIds-${index}`}
                               label={item.name}
-                              name="relatedJobs"
+                              name="recommendJobs"
                               value={item.id}
                               onChange={onToggleChange}
                               className="mr-2 mt-2"
@@ -942,7 +957,7 @@ export function ExperienceTemplate({
                 <div className="grid-100">
                   <div className="inpwrap">
                     <div className="inp-tit">
-                      연관레벨<span className="star">*</span>
+                      추천레벨<span className="star">*</span>
                     </div>
                     <div className="inp">
                       <div className={cx('skill__group')}>
@@ -951,7 +966,7 @@ export function ExperienceTemplate({
                             <Toggle
                               key={`recommendLevelsIds-${index}`}
                               label={`${item.level}레벨`}
-                              name="relatedLevels"
+                              name="recommendLevels"
                               value={item.level || ''}
                               onChange={onToggleChange}
                               className="mr-2 mt-2"
@@ -964,54 +979,74 @@ export function ExperienceTemplate({
                         })}
                       </div>
                     </div>
-                  </div>
-                </div>
 
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit">트렌드 레벨</div>
-                    <div className="inp">
-                      {isRegisterPopupOpen ? (
-                        <select
-                          value={regitserValues.trendLevel}
-                          onChange={handleRegister}
-                          name="trendLevel"
-                          className="input-admin"
-                        >
-                          <option value="">-- 선택 --</option>
-                          {trendLevel?.map(item => (
-                            <option value={item.id} key={item.id}>
-                              {item.name}
-                            </option>
-                          ))}
-                        </select>
-                      ) : (
-                        <></>
-                      )}
+                    <div className="grid-100 mt-3">
+                      <div className="inpwrap">
+                        <div className="inp-tit">관련 스킬</div>
+                        <div className="inp">
+                          <div className={cx('filter-area')}>
+                            <div className={cx('skill__group')}>
+                              {skillsList?.data?.data?.map((item, index) => {
+                                return (
+                                  <Toggle
+                                    key={`skillIds-${index}`}
+                                    label={item.name}
+                                    name="skillIds"
+                                    value={item.id}
+                                    onChange={onToggleChange}
+                                    className="mr-2 mt-2 custom"
+                                    variant="small"
+                                    type="multiple"
+                                    isActive
+                                    isBorder
+                                  />
+                                );
+                              })}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit">활성화 레벨</div>
-                    <div className="inp">
-                      {isRegisterPopupOpen ? (
-                        <select
-                          value={regitserValues.activeLevel}
-                          onChange={handleRegister}
-                          name="activeLevel"
-                          className="input-admin"
-                        >
-                          <option value="">-- 선택 --</option>
-                          {activeLevel?.map(item => (
-                            <option value={item.id} key={item.id}>
-                              {item.name}
-                            </option>
-                          ))}
-                        </select>
-                      ) : (
-                        <></>
-                      )}
+
+                    <div className="grid-100 mt-3">
+                      <div className="inpwrap">
+                        <div className="inp-tit">관련 경험</div>
+                        <div className="inp">
+                          <div className={cx('skill__group')}>
+                            {experience?.data?.contents?.map((item, index) => {
+                              return (
+                                <Toggle
+                                  key={`experienceIds-${index}`}
+                                  label={item.name}
+                                  name="experienceIds"
+                                  value={item.name}
+                                  onChange={onToggleChange}
+                                  className="mr-2 mt-2"
+                                  variant="small"
+                                  type="multiple"
+                                  isActive
+                                  isBorder
+                                />
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid-100 mt-4">
+                      <div className="inpwrap">
+                        <div className="inp-tit">키워드(해시태그)</div>
+                        <div className="inp">
+                          <input
+                            type="text"
+                            className="input-admin"
+                            name="hashTags"
+                            value={regitserValues?.hashTags || ''}
+                            onChange={handleRegister}
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1024,4 +1059,4 @@ export function ExperienceTemplate({
   );
 }
 
-export default ExperienceTemplate;
+export default CodeGroupTemplate;
