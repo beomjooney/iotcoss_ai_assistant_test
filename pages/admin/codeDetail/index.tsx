@@ -13,23 +13,12 @@ import {
   useSaveCodeDetail,
   useAddCodeDetail,
 } from '../../../src/services/admin/codeDetail/codeDetail.mutations';
-import {
-  useContentJobTypes,
-  useJobGroups,
-  useMemberCode,
-  useContentTypes,
-  useJobs,
-} from 'src/services/code/code.queries';
-
-import { useSkills } from 'src/services/admin/skill/skill.queries';
-
-import { ExperiencesResponse } from 'src/models/experiences';
-import { useExperiences } from 'src/services/experiences/experiences.queries';
 
 export interface SearchParamsProps {
   createdAtFrom: string;
   createdAtTo: string;
   keyword: string;
+  groupId: string;
 }
 
 export function CodeDetailPage() {
@@ -44,18 +33,10 @@ export function CodeDetailPage() {
     createdAtFrom: `${past1y?.format('YYYY-MM-DD')} 00:00:00`,
     createdAtTo: `${tomorrow.format('YYYY-MM-DD')} 00:00:00`,
     keyword: '',
+    groupId: '1101',
   });
 
-  const { data: jobCodes } = useContentTypes();
-  const [contentJobType, setContentJobType] = useState<any[]>([]);
-  const { data: experienceData }: UseQueryResult<ExperiencesResponse> = useExperiences();
   const { data: codeDetailData, refetch }: UseQueryResult<any> = useCodeDetail(codeDetailId);
-  const { data: jobGroup, isFetched: isJobGroupFetched } = useJobGroups();
-  const { data: jobs } = useJobs();
-
-  const { isFetched: isContentTypeJobFetched } = useContentJobTypes(data => {
-    setContentJobType(data.data.contents || []);
-  });
 
   const { mutate: onSave } = useSaveCodeDetail();
   const { mutate: onDelete } = useDeleteCodeDetail();
@@ -72,20 +53,6 @@ export function CodeDetailPage() {
       ...params,
     }),
   );
-
-  const { data: skillsList }: UseQueryResult<any> = useSkills(
-    paramsWithDefault({
-      page: page,
-      size: size,
-    }),
-  );
-
-  // const { data: experienceData }: UseQueryResult<any> = useExperiences(
-  //   paramsWithDefault({
-  //     page: page,
-  //     size: size,
-  //   }),
-  // );
 
   useEffect(() => {
     codeDetailId && refetch();
@@ -150,12 +117,6 @@ export function CodeDetailPage() {
   return (
     <CodeDetailTemplate
       codeDetailList={codeDetailList}
-      skillsList={skillsList}
-      experience={experienceData}
-      jobGroup={jobGroup}
-      jobs={jobs}
-      jobCodes={jobCodes}
-      contentJobType={contentJobType}
       codeDetailData={codeDetailData}
       pageProps={PAGE_PROPS}
       params={params}

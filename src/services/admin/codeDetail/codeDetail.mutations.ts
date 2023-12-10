@@ -11,7 +11,7 @@ export const useSaveCodeDetail = (): UseMutationResult => {
       const { code, message } = error;
       alert(`mutation error : [${code}] ${message}`);
     },
-    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_MEMBERS').all),
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CODE_LIST').all),
     onSuccess: async data => {
       alert('수정이 완료되었습니다.');
     },
@@ -26,7 +26,7 @@ export const useDeleteCodeDetail = (): UseMutationResult => {
       const { code, message } = error;
       alert(`mutation error : [${code}] ${message}`);
     },
-    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_MEMBERS').all),
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CODE_LIST').all),
     onSuccess: async () => {
       alert('회원삭제가 완료되었습니다.');
     },
@@ -41,7 +41,7 @@ export const useAddCodeDetail = (): UseMutationResult => {
       const { code, message } = error;
       alert(`mutation error : [${code}] ${message}`);
     },
-    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_MEMBERS').all),
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CODE_LIST').all),
     onSuccess: async data => {
       alert('등록이 완료되었습니다.');
     },

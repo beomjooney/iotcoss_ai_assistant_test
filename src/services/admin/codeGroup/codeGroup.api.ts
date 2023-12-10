@@ -12,17 +12,16 @@ export async function getCodeGroups(params: any) {
 }
 
 // 상세 조회
-export async function getCodeGroupInfo(sequence: string) {
-  const { data } = await axiosGeneralAPI().get(`/api/internal/v1/code/group/${sequence}`);
+export async function getCodeGroupInfo(id: string) {
+  const { data } = await axiosGeneralAPI().get(`/api/internal/v1/code/group/${id}`);
   return data;
 }
 
 // 수정
-export const saveCodeGroup = async (sequence: string, body) =>
-  await axiosGeneralAPI().put(`/api/internal/v1/code/${sequence}`, body);
+export const saveCodeGroup = async body => await axiosGeneralAPI().put(`/api/internal/v1/code/group`, body);
 
 // 등록
-export const addCodeGroup = async (params: any) => await axiosGeneralAPI().post('/api/internal/v1/code/', params);
+export const addCodeGroup = async (params: any) => await axiosGeneralAPI().post('/api/internal/v1/code/group', params);
 
 // 삭제
-export const deleteCodeGroup = async quizId => await axiosGeneralAPI().delete(`/api/internal/v1/code/group/${quizId}`);
+export const deleteCodeGroup = async id => await axiosGeneralAPI().delete(`/api/internal/v1/code/group/${id}`);

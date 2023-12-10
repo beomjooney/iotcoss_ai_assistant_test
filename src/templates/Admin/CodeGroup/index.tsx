@@ -110,30 +110,44 @@ export function CodeGroupTemplate({
     resolver: yupResolver(codeGroupSaveSchema),
   });
 
-  useEffect(() => {
-    codeGroupData && setCodeGroup(codeGroupData.data);
-  }, [codeGroupData]);
+  // useEffect(() => {
+  //   codeGroupData && setCodeGroup(codeGroupData.data);
+  // }, [codeGroupData]);
 
   const onShowPopup = (codeGroupId: string) => {
-    onCodeGroupInfo && onCodeGroupInfo(codeGroupId);
+    const result = codeGroupList?.data?.data?.contents?.find(item => item?.id === codeGroupId);
+    let param = result;
+
+    if (result) {
+      param = {
+        ...result,
+      };
+    }
+    setContent(param);
     setPopupOpen(true);
     setIsRegisterPopupOpen(false);
   };
+
+  // const onShowPopup = (codeGroupId: string) => {
+  //   onCodeGroupInfo && onCodeGroupInfo(codeGroupId);
+  //   setPopupOpen(true);
+  //   setIsRegisterPopupOpen(false);
+  // };
 
   const onChangeCodeGroup = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = event.currentTarget;
     const data = {
       [name]: value,
     };
-    setCodeGroup({
-      ...codeGroup,
+    setContent({
+      ...content,
       ...data,
     });
   };
 
   const handleDelete = (codeGroupId: string) => {
     setPopupOpen(false);
-    setCodeGroup({});
+    setContent({});
     onDeleteCodeGroup && onDeleteCodeGroup(codeGroupId);
   };
 
@@ -166,7 +180,7 @@ export function CodeGroupTemplate({
   const handleSave = (data: any) => {
     const params = {
       ...data,
-      ...codeGroup,
+      ...content,
       recommendJobGroups: recommendJobGroupsIds,
       recommendJobs: recommendJobsIds,
       recommendLevels: recommendLevelsIds,
@@ -460,7 +474,7 @@ export function CodeGroupTemplate({
                     취소
                   </button>
                 ) : (
-                  <button className="btn-type1 type1" onClick={() => handleDelete(codeGroup?.id)}>
+                  <button className="btn-type1 type1" onClick={() => handleDelete(content?.id)}>
                     삭제
                   </button>
                 )}
@@ -477,7 +491,7 @@ export function CodeGroupTemplate({
                         className="input-admin"
                         {...methods.register('id')}
                         disabled={!isEdit}
-                        value={codeGroup?.id || ''}
+                        value={content?.id || ''}
                         onChange={onChangeCodeGroup}
                       />
                     </div>
@@ -491,7 +505,7 @@ export function CodeGroupTemplate({
                         className="input-admin"
                         type="text"
                         {...methods.register('name')}
-                        value={codeGroup?.name || ''}
+                        value={content?.name || ''}
                         onChange={onChangeCodeGroup}
                         disabled={!isEdit}
                       />
@@ -506,7 +520,7 @@ export function CodeGroupTemplate({
                         className="input-admin"
                         type="text"
                         {...methods.register('description')}
-                        value={codeGroup?.description}
+                        value={content?.description}
                         onChange={onChangeCodeGroup}
                         disabled={!isEdit}
                       />
@@ -521,7 +535,7 @@ export function CodeGroupTemplate({
                         className="input-admin"
                         type="text"
                         {...methods.register('order')}
-                        value={codeGroup?.order || 0}
+                        value={content?.order || 0}
                         onChange={onChangeCodeGroup}
                         disabled={!isEdit}
                       />
@@ -536,7 +550,7 @@ export function CodeGroupTemplate({
                       <input
                         type="text"
                         className="input-admin"
-                        value={codeGroup?.createdAt || ''}
+                        value={content?.createdAt || ''}
                         disabled
                         onChange={onChangeCodeGroup}
                       />
@@ -550,7 +564,7 @@ export function CodeGroupTemplate({
                       <input
                         type="text"
                         className="input-admin"
-                        value={codeGroup?.updatedAt || ''}
+                        value={content?.updatedAt || ''}
                         disabled
                         onChange={onChangeCodeGroup}
                       />

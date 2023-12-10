@@ -46,16 +46,7 @@ export function CodeGroupPage() {
     keyword: '',
   });
 
-  const { data: jobCodes } = useContentTypes();
-  const [contentJobType, setContentJobType] = useState<any[]>([]);
-  const { data: experienceData }: UseQueryResult<ExperiencesResponse> = useExperiences();
   const { data: codeGroupData, refetch }: UseQueryResult<any> = useCodeGroup(codeGroupId);
-  const { data: jobGroup, isFetched: isJobGroupFetched } = useJobGroups();
-  const { data: jobs } = useJobs();
-
-  const { isFetched: isContentTypeJobFetched } = useContentJobTypes(data => {
-    setContentJobType(data.data.contents || []);
-  });
 
   const { mutate: onSave } = useSaveCodeGroup();
   const { mutate: onDelete } = useDeleteCodeGroup();
@@ -72,20 +63,6 @@ export function CodeGroupPage() {
       ...params,
     }),
   );
-
-  const { data: skillsList }: UseQueryResult<any> = useSkills(
-    paramsWithDefault({
-      page: page,
-      size: size,
-    }),
-  );
-
-  // const { data: experienceData }: UseQueryResult<any> = useExperiences(
-  //   paramsWithDefault({
-  //     page: page,
-  //     size: size,
-  //   }),
-  // );
 
   useEffect(() => {
     codeGroupId && refetch();
@@ -150,12 +127,6 @@ export function CodeGroupPage() {
   return (
     <CodeGroupTemplate
       codeGroupList={codeGroupList}
-      skillsList={skillsList}
-      experience={experienceData}
-      jobGroup={jobGroup}
-      jobs={jobs}
-      jobCodes={jobCodes}
-      contentJobType={contentJobType}
       codeGroupData={codeGroupData}
       pageProps={PAGE_PROPS}
       params={params}

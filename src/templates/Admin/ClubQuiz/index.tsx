@@ -380,7 +380,7 @@ export function AdminClubQuizTemplate({
                   기본 정보
                 </a>
               </li>
-              <li className={tabValue === 2 ? 'on' : ''}>
+              {/* <li className={tabValue === 2 ? 'on' : ''}>
                 <a
                   href="#"
                   onClick={() => {
@@ -423,7 +423,7 @@ export function AdminClubQuizTemplate({
                 >
                   클럽 퀴즈 답변 리액션
                 </a>
-              </li>
+              </li> */}
             </ul>
 
             {tabValue === 1 && popupOpen && (
