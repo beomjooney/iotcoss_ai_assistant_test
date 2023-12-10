@@ -20,7 +20,9 @@ const cx = classNames.bind(styles);
 
 interface CodeDetailTemplateProps {
   codeDetailList?: any;
+  codeGroupList?: any;
   codeDetailData?: any;
+  codeList?: any;
   pageProps?: any;
   onCodeDetailInfo?: (codeDetailId: string) => void;
   onDeleteCodeDetail?: (codeDetailId: string) => void;
@@ -33,7 +35,9 @@ interface CodeDetailTemplateProps {
 
 export function CodeDetailTemplate({
   codeDetailList,
+  codeGroupList,
   codeDetailData,
+  codeList,
   pageProps,
   params,
   onCodeDetailInfo,
@@ -43,36 +47,12 @@ export function CodeDetailTemplate({
   onSearch,
   setParams,
 }: CodeDetailTemplateProps) {
-  const COLGROUP = ['5%', '5%', '5%', '5%', '5%', '5%', '5%'];
-  const HEADS = ['코드상세아이디', '코드그룹아이디', '코드그룹명', '설명', '정렬순서', '등록일시', '수정일시'];
-
-  const FIELDS = [
-    // { name: '코드 그룹', field: 'id', type: 'choice', data: codeList },
-    { name: '코드그룹아이디', field: 'groupId', type: 'text' },
-    { name: '코드상세아이디', field: 'id', type: 'text' },
-    { name: '코드상세명', field: 'name', type: 'text' },
-    { name: '설명', field: 'description', type: 'text' },
-    { name: '정렬순서', field: 'order', type: 'text' },
-    { name: '', field: 'blank', type: 'blank' },
-    // {
-    //   name: '등록일시',
-    //   field: 'createdDate',
-    //   type: 'fromToDate',
-    //   fieldNames: ['createdFrom', 'createdTo'],
-    // },
-    // {
-    //   name: '수정일시',
-    //   field: 'updateDate',
-    //   type: 'fromToDate',
-    //   fieldNames: ['updateDateFrom', 'updateDateTo'],
-    // },
-  ];
-
   const { mutate: onSaveProfileImage, data: profileImage, isSuccess } = useUploadImage();
 
   const [introduceEditor, setIntroduceEditor] = useState<string>('');
   const [popupOpen, setPopupOpen] = useState<boolean>(false);
   const [isFilter, setIsFilter] = useState<boolean>(false);
+  const [groupIds, setGroupIds] = useState<any>({});
   const [codeDetail, setCodeDetail] = useState<any>({});
   const [searchKeyword, setSearchKeyword] = useState<string>('');
   const [profileImageUrl, setProfilImageUrl] = useState(null);
@@ -101,9 +81,34 @@ export function CodeDetailTemplate({
     resolver: yupResolver(codeDetailSaveSchema),
   });
 
-  // useEffect(() => {
-  //   codeDetailData && setCodeDetail(codeDetailData.data);
-  // }, [codeDetailData]);
+  const COLGROUP = ['5%', '5%', '5%', '5%', '5%', '5%', '5%'];
+  const HEADS = ['코드상세아이디', '코드그룹아이디', '코드그룹명', '설명', '정렬순서', '등록일시', '수정일시'];
+
+  const FIELDS = [
+    {
+      name: '코드그룹아이디',
+      field: 'groupId',
+      type: 'choice',
+      data: codeGroupList?.data?.data?.contents?.map((item, index) => item) || [],
+    },
+    { name: '코드상세아이디', field: 'id', type: 'text' },
+    { name: '코드상세명', field: 'name', type: 'text' },
+    { name: '설명', field: 'description', type: 'text' },
+    { name: '정렬순서', field: 'order', type: 'text' },
+    { name: '', field: 'blank', type: 'blank' },
+    // {
+    //   name: '등록일시',
+    //   field: 'createdDate',
+    //   type: 'fromToDate',
+    //   fieldNames: ['createdFrom', 'createdTo'],
+    // },
+    // {
+    //   name: '수정일시',
+    //   field: 'updateDate',
+    //   type: 'fromToDate',
+    //   fieldNames: ['updateDateFrom', 'updateDateTo'],
+    // },
+  ];
 
   const onShowPopup = (id: string) => {
     const result = codeDetailList?.data?.data?.contents?.find(item => item?.id === id);
@@ -471,7 +476,13 @@ export function CodeDetailTemplate({
                   <div className="inpwrap">
                     <div className="inp-tit">코드그룹아이디</div>
                     <div className="inp">
-                      <select onChange={onChangeCodeDetail} name="groupId" disabled={!isEdit} value={content.groupId}>
+                      <select
+                        onChange={onChangeCodeDetail}
+                        name="groupId"
+                        disabled={!isEdit}
+                        value={content.groupId}
+                        className="input-admin"
+                      >
                         {codeDetailList?.data?.data?.contents?.map(item => (
                           <option value={item.id} key={item.id}>
                             {item.name}
@@ -596,6 +607,25 @@ export function CodeDetailTemplate({
                         value={regitserValues?.id || ''}
                         onChange={handleRegister}
                       />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid-25">
+                  <div className="inpwrap">
+                    <div className="inp-tit">코드그룹아이디</div>
+                    <div className="inp">
+                      <select
+                        onChange={onChangeCodeDetail}
+                        name="groupId"
+                        value={content.groupId}
+                        className="input-admin"
+                      >
+                        {codeGroupList?.data?.data?.contents?.map(item => (
+                          <option value={item.id} key={item.id}>
+                            {item.name}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   </div>
                 </div>

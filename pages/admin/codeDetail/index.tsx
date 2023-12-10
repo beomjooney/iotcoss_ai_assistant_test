@@ -6,8 +6,11 @@ import dayjs from 'dayjs';
 
 import AdminLayout from '../../../src/stories/Layout/AdminLayout';
 import CodeDetailTemplate from '../../../src/templates/Admin/CodeDetail';
+import { useCodeList } from '../../../src/services/code/code.queries';
 
 import { useCodeDetail, useCodeDetails } from '../../../src/services/admin/codeDetail/codeDetail.queries';
+import { useCodeGroups } from '../../../src/services/admin/codeGroup/codeGroup.queries';
+
 import {
   useDeleteCodeDetail,
   useSaveCodeDetail,
@@ -15,8 +18,6 @@ import {
 } from '../../../src/services/admin/codeDetail/codeDetail.mutations';
 
 export interface SearchParamsProps {
-  createdAtFrom: string;
-  createdAtTo: string;
   keyword: string;
   groupId: string;
 }
@@ -30,17 +31,9 @@ export function CodeDetailPage() {
   const [search, setSearch] = useState<string>('');
   const [codeDetailId, setCodeDetailId] = useState<string>('');
   const [params, setParams] = useState<SearchParamsProps>({
-    createdAtFrom: `${past1y?.format('YYYY-MM-DD')} 00:00:00`,
-    createdAtTo: `${tomorrow.format('YYYY-MM-DD')} 00:00:00`,
     keyword: '',
     groupId: '1101',
   });
-
-  const { data: codeDetailData, refetch }: UseQueryResult<any> = useCodeDetail(codeDetailId);
-
-  const { mutate: onSave } = useSaveCodeDetail();
-  const { mutate: onDelete } = useDeleteCodeDetail();
-  const { mutate: onAdd } = useAddCodeDetail();
 
   const {
     data: codeDetailList,
@@ -53,6 +46,19 @@ export function CodeDetailPage() {
       ...params,
     }),
   );
+
+  const { data: codeGroupList }: UseQueryResult<any> = useCodeGroups(
+    paramsWithDefault({
+      page: page,
+      size: size,
+    }),
+  );
+
+  const { data: codeDetailData, refetch }: UseQueryResult<any> = useCodeDetail(codeDetailId);
+
+  const { mutate: onSave } = useSaveCodeDetail();
+  const { mutate: onDelete } = useDeleteCodeDetail();
+  const { mutate: onAdd } = useAddCodeDetail();
 
   useEffect(() => {
     codeDetailId && refetch();
@@ -117,6 +123,7 @@ export function CodeDetailPage() {
   return (
     <CodeDetailTemplate
       codeDetailList={codeDetailList}
+      codeGroupList={codeGroupList}
       codeDetailData={codeDetailData}
       pageProps={PAGE_PROPS}
       params={params}
