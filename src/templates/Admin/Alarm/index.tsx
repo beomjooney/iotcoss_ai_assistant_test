@@ -55,18 +55,23 @@ export function AlarmTemplate({
   onSearch,
   setParams,
 }: AlarmTemplateProps) {
-  const COLGROUP = ['10%', '10%', '10%', '10%'];
-  const HEADS = ['회원아이디', '회원명', '등록일시', '수정일시'];
-
-  const TERMINFO = [
-    { id: '0001', name: '이용약관' },
-    { id: '0002', name: '개인정보수집' },
-    { id: '0003', name: '이벤트 알림 수신' },
+  const COLGROUP = ['10%', '10%', '10%', '10%', '10%', '10%', '10%'];
+  const HEADS = [
+    '이벤트유형',
+    '알림노출 회원아이디',
+    '알림노출 회원명',
+    '발동 회원아이디',
+    '발동 회원명',
+    '확인여부',
+    '등록일시',
   ];
 
   const FIELDS = [
-    { name: '회원아이디', field: 'memberId', type: 'text' },
-    { name: '회원명', field: 'memberName', type: 'text' },
+    { name: '이벤트유형', field: 'alarmEventType', type: 'text' },
+    { name: '알림노출대상회원UUID', field: 'targetMemberUuid', type: 'text' },
+    { name: '발동회원UUID', field: 'triggerMemberUuid', type: 'text' },
+    { name: '발동리소스SEQ', field: 'triggerSequence', type: 'text' },
+    { name: '확인여부', field: 'isChecked', type: 'text' },
   ];
 
   const { mutate: onSaveProfileImage, data: profileImage, isSuccess } = useUploadImage();
@@ -285,43 +290,6 @@ export function AlarmTemplate({
     setIsRegisterPopupOpen(false);
   };
 
-  const handleOnAdd = () => {
-    let params = { ...regitserValues };
-    //const registDate = moment().format('YYYY-MM-DD hh:mm');
-
-    params = {
-      ...regitserValues,
-      recommendJobGroups: recommendJobGroupsIds,
-      recommendJobs: recommendJobsIds,
-      recommendLevels: recommendLevelsIds,
-      relatedSkills: skillIds,
-      relatedExperiences: experienceIds,
-      //registDate: `${registDate}:00.000`,
-    };
-
-    if (params.content === undefined || params.content?.length === 0) {
-      alert('질문을 입력해주세요.');
-      return;
-    }
-
-    if (params.articleUrl === undefined || params.articleUrl?.length === 0) {
-      alert('아티클URL을 입력해주세요.');
-      return;
-    }
-
-    if (params.recommendJobs?.length === 0) {
-      alert('추천 직무를 선택해주세요.');
-      return;
-    }
-
-    if (params.recommendLevels?.length === 0) {
-      alert('추천 레벨을 선택해주세요.');
-      return;
-    }
-
-    onAdd && onAdd(params);
-  };
-
   return (
     <div className="admin-content">
       <h2 className="tit-type1">알림관리</h2>
@@ -413,18 +381,27 @@ export function AlarmTemplate({
           heads={HEADS}
           items={alarmList?.data?.data?.contents?.map((item, index) => {
             return (
-              <tr key={`tr-${index}`} onClick={() => onShowPopup(item.sequence)}>
-                <td className="magic" title={item.memberId}>
-                  {item.memberId}
+              <tr key={`tr-${index}`} onClick={() => onShowPopup(item.alarmEventSequence)}>
+                <td className="magic" title={item.alarmEventType}>
+                  {item.alarmEventType}
                 </td>
-                <td className="magic" title={item.memberName}>
-                  {item.memberName}
+                <td className="magic" title={item.targetMemberId}>
+                  {item.targetMemberId}
+                </td>
+                <td className="magic" title={item.targetMemberName}>
+                  {item.targetMemberName}
+                </td>
+                <td className="magic" title={item.triggerMemberId}>
+                  {item.triggerMemberId}
+                </td>
+                <td className="magic" title={item.triggerMemberName}>
+                  {item.triggerMemberName}
+                </td>
+                <td className="magic" title={item.isChecked ? 'Y' : 'N'}>
+                  {item.isChecked ? 'Y' : 'N'}
                 </td>
                 <td className="magic" title={dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}>
                   {dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}
-                </td>
-                <td className="magic" title={dayjs(item.updatedAt).format('YYYY-MM-DD HH:mm:ss')}>
-                  {dayjs(item.updatedAt).format('YYYY-MM-DD HH:mm:ss')}
                 </td>
               </tr>
             );
@@ -449,76 +426,91 @@ export function AlarmTemplate({
                     <i className="ico i-x"></i>
                   </button>
                 </div>
-                <div className="tit-type2">정책동의 상세보기</div>
+                <div className="tit-type2">알림이벤트 상세보기</div>
               </div>
               <div className="right">
-                {isEdit ? (
-                  <button className="btn-type1 type1" onClick={() => setIsEdit(false)}>
-                    취소
-                  </button>
-                ) : (
-                  <button className="btn-type1 type1" onClick={() => handleDelete(alarm?.sequence)}>
-                    삭제
-                  </button>
-                )}
+                <button className="btn-type1 type1" onClick={() => setIsEdit(false)}>
+                  취소
+                </button>
               </div>
             </div>
             <div className="tab-content" data-id="tabLink01">
               <div className="layout-grid">
-                <div className="grid-25">
+                <div className="grid-50">
                   <div className="inpwrap">
-                    <div className="inp-tit">약관동의아이디</div>
+                    <div className="inp-tit">이벤트 유형</div>
+                    <div className="inp">
+                      <select
+                        className="input-admin"
+                        value={alarm?.alarmEventType?.toString() || ''}
+                        onChange={onChangeAlarm}
+                        name="alarmEventType"
+                        disabled
+                      >
+                        <option value="true">Y</option>
+                        <option value="false">N</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid-50">
+                  <div className="inpwrap">
+                    <div className="inp-tit">확인여부</div>
+                    <div className="inp">
+                      <select
+                        className="input-admin"
+                        value={alarm?.isChecked?.toString() || ''}
+                        onChange={onChangeAlarm}
+                        name="isChecked"
+                        disabled
+                      >
+                        <option value="true">Y</option>
+                        <option value="false">N</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid-50">
+                  <div className="inpwrap">
+                    <div className="inp-tit">알림노출 대상 회원아이디</div>
                     <div className="inp">
                       <input
                         className="input-admin"
                         type="text"
-                        {...methods.register('sequence')}
-                        value={alarm?.sequence || 0}
+                        {...methods.register('targetMemberId')}
+                        value={alarm?.targetMemberId || ''}
                         onChange={onChangeAlarm}
                         disabled
                       />
                     </div>
                   </div>
                 </div>
-                <div className="grid-25">
+                <div className="grid-50">
                   <div className="inpwrap">
-                    <div className="inp-tit">회원아이디</div>
+                    <div className="inp-tit">알림노출 대상 회원명</div>
                     <div className="inp">
                       <input
                         className="input-admin"
                         type="text"
-                        {...methods.register('memberId')}
-                        value={alarm?.memberId || 0}
+                        {...methods.register('targetMemberName')}
+                        value={alarm?.targetMemberName || ''}
                         onChange={onChangeAlarm}
                         disabled
                       />
                     </div>
                   </div>
                 </div>
-                <div className="grid-25">
+                <div className="grid-50">
                   <div className="inpwrap">
-                    <div className="inp-tit">회원명</div>
+                    <div className="inp-tit">발동 회원아이디</div>
                     <div className="inp">
                       <input
                         className="input-admin"
                         type="text"
-                        {...methods.register('name')}
-                        value={alarm?.name || 0}
-                        onChange={onChangeAlarm}
-                        disabled
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit">회원닉네임</div>
-                    <div className="inp">
-                      <input
-                        className="input-admin"
-                        type="text"
-                        {...methods.register('nickname')}
-                        value={alarm?.nickname || 0}
+                        {...methods.register('triggerMemberId')}
+                        value={alarm?.triggerMemberId}
                         onChange={onChangeAlarm}
                         disabled
                       />
@@ -528,19 +520,51 @@ export function AlarmTemplate({
 
                 <div className="grid-50">
                   <div className="inpwrap">
-                    <div className="inp-tit">등록일시</div>
+                    <div className="inp-tit">발동 회원명</div>
                     <div className="inp">
                       <input
                         className="input-admin"
                         type="text"
-                        {...methods.register('createdAt')}
-                        value={alarm?.createdAt}
+                        {...methods.register('triggerMemberName')}
+                        value={alarm?.triggerMemberName}
                         onChange={onChangeAlarm}
                         disabled
                       />
                     </div>
                   </div>
                 </div>
+                <div className="grid-100">
+                  <div className="inpwrap">
+                    <div className="inp-tit">상세 데이터</div>
+                    <div className="inp">
+                      <input
+                        className="input-admin"
+                        type="text"
+                        {...methods.register('alarmEventData')}
+                        value={alarm?.alarmEventData}
+                        onChange={onChangeAlarm}
+                        disabled
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid-50">
+                  <div className="inpwrap">
+                    <div className="inp-tit">생성일시</div>
+                    <div className="inp">
+                      <input
+                        className="input-admin"
+                        type="text"
+                        {...methods.register('createdAt')}
+                        value={dayjs(alarm?.terms?.createdAt).format('YYYY-MM-DD HH:MM:ss')}
+                        onChange={onChangeAlarm}
+                        disabled
+                      />
+                    </div>
+                  </div>
+                </div>
+
                 <div className="grid-50">
                   <div className="inpwrap">
                     <div className="inp-tit">수정일시</div>
@@ -549,112 +573,7 @@ export function AlarmTemplate({
                         className="input-admin"
                         type="text"
                         {...methods.register('updatedAt')}
-                        value={alarm?.updatedAt}
-                        onChange={onChangeAlarm}
-                        disabled
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit">정책유형</div>
-                    <div className="inp">
-                      <select
-                        className="input-admin"
-                        value={alarm?.type || ''}
-                        onChange={onChangeAlarm}
-                        name="type"
-                        disabled
-                      >
-                        {TERMINFO?.map(item => (
-                          <option key={item.id} value={item.id}>
-                            {item.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-100 mt-4">
-                  <div className="inpwrap">
-                    <div className="inp-tit">정책내용</div>
-                    <div className="inp">
-                      <Editor
-                        type="seminar"
-                        data={alarm?.terms?.content || ''}
-                        onChange={(event, editor) => {
-                          setIntroduceEditor(editor.getData());
-                        }}
-                        disabled
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit" style={{ height: 25 }}>
-                      정책공고일시
-                    </div>
-                    <div className="inp">
-                      <input
-                        className="input-admin"
-                        type="text"
-                        {...methods.register('firmAt')}
-                        value={dayjs(alarm?.terms?.firmAt).format('YYYY-MM-DD')}
-                        onChange={onChangeAlarm}
-                        disabled
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit" style={{ height: 25 }}>
-                      정책시행일시
-                    </div>
-                    <div className="inp">
-                      <input
-                        className="input-admin"
-                        type="text"
-                        {...methods.register('enforcementAt')}
-                        value={dayjs(alarm?.terms?.enforcementAt).format('YYYY-MM-DD')}
-                        onChange={onChangeAlarm}
-                        disabled
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit" style={{ height: 25 }}>
-                      정책등록일시
-                    </div>
-                    <div className="inp">
-                      <input
-                        className="input-admin"
-                        type="text"
-                        {...methods.register('createdAt')}
-                        value={dayjs(alarm?.terms?.createdAt).format('YYYY-MM-DD')}
-                        onChange={onChangeAlarm}
-                        disabled
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit" style={{ height: 25 }}>
-                      정책수정일시
-                    </div>
-                    <div className="inp">
-                      <input
-                        className="input-admin"
-                        type="text"
-                        {...methods.register('updatedAt')}
-                        value={dayjs(alarm?.terms?.updatedAt).format('YYYY-MM-DD')}
+                        value={dayjs(alarm?.terms?.updatedAt).format('YYYY-MM-DD HH:MM:ss')}
                         onChange={onChangeAlarm}
                         disabled
                       />
