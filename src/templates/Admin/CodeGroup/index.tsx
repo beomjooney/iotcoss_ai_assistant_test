@@ -55,39 +55,26 @@ export function CodeGroupTemplate({
   onSearch,
   setParams,
 }: CodeGroupTemplateProps) {
-  const COLGROUP = ['12%', '12%', '5%', '5%', '4%', '5%', '4%', '4%', '6%', '6%', '6%'];
-  const HEADS = [
-    '퀴즈아이디',
-    '회원UUID',
-    '추천직군들',
-    '추천직무들',
-    '추천레벨들',
-    '연관스킬들',
-    '퀴즈활용 수',
-    '퀴즈답변 수',
-    '해시태그',
-    '삭제상태',
-    '등록일시',
-  ];
-
-  const LEVELS = [
-    { level: 1, desc: '상용서비스 단위모듈 수준 개발 가능. 서비스 개발 리딩 시니어 필요' },
-    { level: 2, desc: '상용서비스 개발 1인분 가능한 사람. 소규모 서비스 독자 개발 가능' },
-    { level: 3, desc: '상용서비스 개발 리더. 담당직무분야 N명 업무가이드 및 리딩 가능' },
-    { level: 4, desc: '다수 상용서비스 개발 리더. 수십명 혹은 수백명 수준의 개발자 총괄 리더' },
-    { level: 5, desc: '본인 오픈소스/방법론 등이 범용적 사용, 수백명이상 다수 직군 리딩' },
-  ];
+  const COLGROUP = ['5%', '5%', '5%', '5%', '5%', '5%'];
+  const HEADS = ['코드그룹아이디', '코드그룹명', '설명', '정렬순서', '등록일시', '수정일시'];
 
   const FIELDS = [
-    { name: '퀴즈ID', field: 'id', type: 'text' },
-    { name: '회원UUID', field: 'memberUUID', type: 'text' },
-    { name: '추천직군들', field: 'recommendJobGroupNames', type: 'text' },
-    { name: '추천직무들', field: 'recommendJobNames', type: 'text' },
-    { name: '추천레벨들', field: 'recommendLevels', type: 'text' },
-    { name: '연관스킬들', field: 'relatedSkills', type: 'text' },
-    { name: '퀴즈 활용 수', field: 'activeCount', type: 'text' },
-    { name: '퀴즈 답변 수', field: 'answerCount', type: 'text' },
-    { name: '해시 태그', field: 'hashTags', type: 'text' },
+    { name: '코드그룹아이디', field: 'id', type: 'text' },
+    { name: '코드그룹명', field: 'name', type: 'text' },
+    { name: '설명', field: 'description', type: 'text' },
+    { name: '정렬순서', field: 'order', type: 'text' },
+    // {
+    //   name: '등록일시',
+    //   field: 'createdDate',
+    //   type: 'fromToDate',
+    //   fieldNames: ['createdFrom', 'createdTo'],
+    // },
+    // {
+    //   name: '수정일시',
+    //   field: 'updateDate',
+    //   type: 'fromToDate',
+    //   fieldNames: ['updateDateFrom', 'updateDateTo'],
+    // },
   ];
 
   const { mutate: onSaveProfileImage, data: profileImage, isSuccess } = useUploadImage();
@@ -111,13 +98,10 @@ export function CodeGroupTemplate({
 
   // TODO : 밸리데이션 추가 해야 함
   const codeGroupSaveSchema = yup.object().shape({
-    memberId: yup.string().notRequired(),
-    memberName: yup.string().notRequired(),
-    memberNickname: yup.string().notRequired(),
-    articleUrl: yup.string().notRequired(),
-    activeCount: yup.string().notRequired(),
-    answerCount: yup.string().notRequired(),
-    hashTags: yup.string().notRequired(),
+    id: yup.string().notRequired(),
+    name: yup.string().notRequired(),
+    description: yup.string().notRequired(),
+    order: yup.string().notRequired(),
   });
 
   const methods = useForm({
@@ -128,24 +112,7 @@ export function CodeGroupTemplate({
 
   useEffect(() => {
     codeGroupData && setCodeGroup(codeGroupData.data);
-    if (codeGroupData) {
-      setExperienceIds(codeGroupData?.data?.relatedExperiences?.map((item, index) => item) || []);
-      setSkillIds(codeGroupData?.data?.relatedSkills?.map((item, index) => item) || []);
-      setrecommendJobGroupsIds(codeGroupData?.data?.recommendJobGroups?.map((item, index) => item) || []);
-      setrecommendJobsIds(codeGroupData?.data?.recommendJobs?.map((item, index) => item) || []);
-      setrecommendLevelsIds(codeGroupData?.data?.recommendLevels?.map((item, index) => item) || []);
-    } else {
-      setExperienceIds([]);
-      setSkillIds([]);
-      setrecommendJobGroupsIds([]);
-      setrecommendJobsIds([]);
-      setrecommendLevelsIds([]);
-    }
   }, [codeGroupData]);
-
-  // useEffect(() => {
-  //   codeGroupData && setCodeGroup(codeGroupData.data);
-  // }, [codeGroupData]);
 
   const onShowPopup = (codeGroupId: string) => {
     onCodeGroupInfo && onCodeGroupInfo(codeGroupId);
@@ -434,39 +401,24 @@ export function CodeGroupTemplate({
           heads={HEADS}
           items={codeGroupList?.data?.data?.contents?.map((item, index) => {
             return (
-              <tr key={`tr-${index}`} onClick={() => onShowPopup(item.sequence)}>
+              <tr key={`tr-${index}`} onClick={() => onShowPopup(item.id)}>
                 <td className="magic" title={item.id}>
                   {item.id}
                 </td>
-                <td className="magic" title={item.memberUUID}>
-                  {item.memberUUID}
+                <td className="magic" title={item.name}>
+                  {item.name}
                 </td>
-                <td className="magic" title={item.recommendJobGroupNames}>
-                  {item.recommendJobGroupNames}
+                <td className="magic" title={item.description}>
+                  {item.description}
                 </td>
-                <td className="magic" title={item.recommendJobNames}>
-                  {item.recommendJobNames}
-                </td>
-                <td className="magic" title={item.recommendLevels}>
-                  {item.recommendLevels?.length === 5 ? '모든' : item.recommendLevels?.sort().join(',') || 0}
-                </td>
-                <td className="magic" title={item.relatedSkills}>
-                  {item.relatedSkills}
-                </td>
-                <td className="magic" title={item?.activeCount}>
-                  {item?.activeCount || 0}
-                </td>
-                <td className="magic" title={item.answerCount}>
-                  {item?.answerCount || 0}
-                </td>
-                <td className="magic" title={item.hashTags}>
-                  {item.hashTags}
-                </td>
-                <td className="magic" title={item.deleteStatus ? 'Y' : 'N'}>
-                  {item.deleteStatus ? 'Y' : 'N'}
+                <td className="magic" title={item.order}>
+                  {item.order}
                 </td>
                 <td className="magic" title={dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}>
                   {dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}
+                </td>
+                <td className="magic" title={dayjs(item.updatedAt).format('YYYY-MM-DD HH:mm:ss')}>
+                  {dayjs(item.updatedAt).format('YYYY-MM-DD HH:mm:ss')}
                 </td>
               </tr>
             );
@@ -491,7 +443,7 @@ export function CodeGroupTemplate({
                     <i className="ico i-x"></i>
                   </button>
                 </div>
-                <div className="tit-type2">퀴즈 상세보기</div>
+                <div className="tit-type2">코드 그룹 상세보기</div>
               </div>
               <div className="right">
                 {isEdit ? (
@@ -518,14 +470,14 @@ export function CodeGroupTemplate({
               <div className="layout-grid">
                 <div className="grid-25">
                   <div className="inpwrap">
-                    <div className="inp-tit">회원 아이디</div>
+                    <div className="inp-tit">코드상세아이디</div>
                     <div className="inp">
                       <input
                         type="text"
                         className="input-admin"
-                        {...methods.register('memberId')}
-                        disabled
-                        value={codeGroup?.memberId || ''}
+                        {...methods.register('id')}
+                        disabled={!isEdit}
+                        value={codeGroup?.id || ''}
                         onChange={onChangeCodeGroup}
                       />
                     </div>
@@ -533,43 +485,13 @@ export function CodeGroupTemplate({
                 </div>
                 <div className="grid-25">
                   <div className="inpwrap">
-                    <div className="inp-tit">회원명</div>
+                    <div className="inp-tit">코드그룹명</div>
                     <div className="inp">
                       <input
                         className="input-admin"
                         type="text"
-                        {...methods.register('memberName')}
-                        value={codeGroup?.memberName || ''}
-                        onChange={onChangeCodeGroup}
-                        disabled
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit">닉네임</div>
-                    <div className="inp">
-                      <input
-                        className="input-admin"
-                        type="text"
-                        {...methods.register('memberNickname')}
-                        value={codeGroup?.memberNickname}
-                        onChange={onChangeCodeGroup}
-                        disabled
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-25">
-                  <div className="inpwrap">
-                    <div className="inp-tit">퀴즈 활용 수</div>
-                    <div className="inp">
-                      <input
-                        className="input-admin"
-                        type="text"
-                        {...methods.register('activeCount')}
-                        value={codeGroup?.activeCount || 0}
+                        {...methods.register('name')}
+                        value={codeGroup?.name || ''}
                         onChange={onChangeCodeGroup}
                         disabled={!isEdit}
                       />
@@ -578,13 +500,13 @@ export function CodeGroupTemplate({
                 </div>
                 <div className="grid-25">
                   <div className="inpwrap">
-                    <div className="inp-tit">퀴즈 답변 수</div>
+                    <div className="inp-tit">설명</div>
                     <div className="inp">
                       <input
                         className="input-admin"
                         type="text"
-                        {...methods.register('answerCount')}
-                        value={codeGroup?.answerCount || 0}
+                        {...methods.register('description')}
+                        value={codeGroup?.description}
                         onChange={onChangeCodeGroup}
                         disabled={!isEdit}
                       />
@@ -593,19 +515,20 @@ export function CodeGroupTemplate({
                 </div>
                 <div className="grid-25">
                   <div className="inpwrap">
-                    <div className="inp-tit">키워드(해시태그)</div>
+                    <div className="inp-tit">정렬순서</div>
                     <div className="inp">
                       <input
-                        type="text"
                         className="input-admin"
-                        {...methods.register('hashTags')}
-                        value={codeGroup?.hashTags || ''}
+                        type="text"
+                        {...methods.register('order')}
+                        value={codeGroup?.order || 0}
                         onChange={onChangeCodeGroup}
                         disabled={!isEdit}
                       />
                     </div>
                   </div>
                 </div>
+
                 <div className="grid-25">
                   <div className="inpwrap">
                     <div className="inp-tit">등록일시</div>
@@ -634,211 +557,6 @@ export function CodeGroupTemplate({
                     </div>
                   </div>
                 </div>
-
-                <div className="grid-100">
-                  <div className="inpwrap">
-                    <div className="inp-tit">
-                      질문<span className="star">*</span>
-                    </div>
-                    <div className="inp">
-                      <input
-                        className="input-admin"
-                        type="text"
-                        {...methods.register('content')}
-                        value={codeGroup?.content || ''}
-                        onChange={onChangeCodeGroup}
-                        disabled={!isEdit}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid-100">
-                  <div className="inpwrap">
-                    <div className="inp-tit">
-                      아티클URL<span className="star">*</span>
-                    </div>
-                    <div className="inp">
-                      <input
-                        className="input-admin"
-                        type="text"
-                        {...methods.register('articleUrl')}
-                        value={codeGroup?.articleUrl || ''}
-                        onChange={onChangeCodeGroup}
-                        disabled={!isEdit}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid-100">
-                  <div className="inpwrap">
-                    <div className="inp-tit">
-                      추천직군<span className="star">*</span>
-                    </div>
-
-                    <div className="inp">
-                      <div className={cx('skill__group')}>
-                        {jobCodes?.data?.contents?.map((item, index) => {
-                          return (
-                            <Toggle
-                              key={`recommendJobGroupsIds-${index}`}
-                              label={item.name}
-                              name="recommendJobGroups"
-                              value={item.id}
-                              onChange={onToggleChange}
-                              className="mr-2 mt-2"
-                              variant="small"
-                              type="multiple"
-                              isActive
-                              isBorder
-                              checked={
-                                !!recommendJobGroupsIds?.find(recommendJobGroups => recommendJobGroups === item.id)
-                              }
-                              disabled={!isEdit}
-                            />
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-100 mt-3">
-                  <div className="inpwrap">
-                    <div className="inp-tit">
-                      추천직무<span className="star">*</span>
-                    </div>
-                    <div className="inp">
-                      <div className={cx('skill__group')}>
-                        {contentJobType?.map((item, index) => {
-                          return (
-                            <Toggle
-                              key={`recommendJobsIds-${index}`}
-                              label={item.name}
-                              name="recommendJobs"
-                              value={item.id}
-                              onChange={onToggleChange}
-                              className="mr-2 mt-2"
-                              variant="small"
-                              type="multiple"
-                              isActive
-                              isBorder
-                              checked={!!recommendJobsIds?.find(recommendJobs => recommendJobs === item.id)}
-                              disabled={!isEdit}
-                            />
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-100">
-                  <div className="inpwrap">
-                    <div className="inp-tit">
-                      추천레벨<span className="star">*</span>
-                    </div>
-                    <div className="inp">
-                      <div className={cx('skill__group')}>
-                        {LEVELS?.map((item, index) => {
-                          return (
-                            <Toggle
-                              key={`recommendLevelsIds-${index}`}
-                              label={`${item.level}레벨`}
-                              name="recommendLevels"
-                              value={item.level || ''}
-                              onChange={onToggleChange}
-                              className="mr-2 mt-2"
-                              variant="small"
-                              type="multiple"
-                              isActive
-                              isBorder
-                              checked={
-                                !!recommendLevelsIds?.find(recommendLevels => parseInt(recommendLevels) === item.level)
-                              }
-                              disabled={!isEdit}
-                            />
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                    <div className="grid-100 mt-3">
-                      <div className="inpwrap">
-                        <div className="inp-tit">관련 스킬</div>
-                        <div className="inp">
-                          <div className={cx('filter-area')}>
-                            <div className={cx('skill__group')}>
-                              {skillsList?.data?.data?.map((item, index) => {
-                                return (
-                                  <Toggle
-                                    key={`skillIds-${index}`}
-                                    label={item.name}
-                                    name="skillIds"
-                                    value={item.id}
-                                    onChange={onToggleChange}
-                                    className="mr-2 mt-2 custom"
-                                    variant="small"
-                                    type="multiple"
-                                    isActive
-                                    isBorder
-                                    checked={!!skillIds?.find(skill => skill === item.id)}
-                                    disabled={!isEdit}
-                                  />
-                                );
-                              })}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="grid-100 mt-3">
-                      <div className="inpwrap">
-                        <div className="inp-tit">관련 경험</div>
-                        <div className="inp">
-                          <div className={cx('skill__group')}>
-                            {experience?.data?.contents?.map((item, index) => {
-                              return (
-                                <Toggle
-                                  key={`experienceIds-${index}`}
-                                  label={item.name}
-                                  name="experienceIds"
-                                  value={item.name}
-                                  onChange={onToggleChange}
-                                  className="mr-2 mt-2"
-                                  variant="small"
-                                  type="multiple"
-                                  isActive
-                                  isBorder
-                                  checked={!!experienceIds?.find(experiences => experiences === item.name)}
-                                  disabled={!isEdit}
-                                />
-                              );
-                            })}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* <div className="grid-100 mt-4">
-                  <div className="inpwrap">
-                    <div className="inp-tit">
-                      내용<span className="star">*</span>
-                    </div>
-                    <div className="inp">
-                      <Editor
-                        type="seminar"
-                        data={codeGroup?.content || ''}
-                        onChange={(event, editor) => {
-                          setIntroduceEditor(editor.getData());
-                        }}
-                        disabled={!isEdit}
-                      />
-                    </div>
-                  </div>
-                </div> */}
               </div>
             </div>
           </div>
@@ -856,7 +574,7 @@ export function CodeGroupTemplate({
                     <i className="ico i-x"></i>
                   </button>
                 </div>
-                <div className="tit-type2">퀴즈 등록</div>
+                <div className="tit-type2">코드 등록</div>
               </div>
               <div className="right">
                 <button className="btn-type1 type2" onClick={handleOnAdd}>
@@ -866,187 +584,69 @@ export function CodeGroupTemplate({
             </div>
             <div className="tab-content" data-id="tabLink01">
               <div className="layout-grid">
-                <div className="grid-100">
+                <div className="grid-25">
                   <div className="inpwrap">
                     <div className="inp-tit">
-                      질문<span className="star">*</span>
+                      코드상세아이디<span className="star">*</span>
                     </div>
                     <div className="inp">
                       <input
                         type="text"
                         className="input-admin"
-                        name="content"
-                        value={regitserValues?.content || ''}
+                        name="id"
+                        value={regitserValues?.id || ''}
                         onChange={handleRegister}
                       />
                     </div>
                   </div>
                 </div>
-                <div className="grid-100">
+                <div className="grid-25">
                   <div className="inpwrap">
                     <div className="inp-tit">
-                      아티클URL<span className="star">*</span>
+                      코드그룹명<span className="star">*</span>
                     </div>
                     <div className="inp">
                       <input
                         type="text"
                         className="input-admin"
-                        name="articleUrl"
-                        value={regitserValues?.articleUrl || ''}
+                        name="name"
+                        value={regitserValues?.name || ''}
                         onChange={handleRegister}
                       />
                     </div>
                   </div>
                 </div>
 
-                <div className="grid-100">
+                <div className="grid-25">
                   <div className="inpwrap">
                     <div className="inp-tit">
-                      추천직군<span className="star">*</span>
+                      설명<span className="star">*</span>
                     </div>
-
                     <div className="inp">
-                      <div className={cx('skill__group')}>
-                        {jobCodes?.data?.contents?.map((item, index) => {
-                          return (
-                            <Toggle
-                              key={`recommendJobGroupsIds-${index}`}
-                              label={item.name}
-                              name="recommendJobGroups"
-                              value={item.id}
-                              onChange={onToggleChange}
-                              className="mr-2 mt-2"
-                              variant="small"
-                              type="multiple"
-                              isActive
-                              isBorder
-                            />
-                          );
-                        })}
-                      </div>
+                      <input
+                        type="text"
+                        className="input-admin"
+                        name="description"
+                        value={regitserValues?.description || ''}
+                        onChange={handleRegister}
+                      />
                     </div>
                   </div>
                 </div>
-                <div className="grid-50 mt-3">
+
+                <div className="grid-25">
                   <div className="inpwrap">
                     <div className="inp-tit">
-                      추천직무<span className="star">*</span>
+                      정렬순서<span className="star">*</span>
                     </div>
                     <div className="inp">
-                      <div className={cx('skill__group')}>
-                        {jobs?.data?.contents?.map((item, index) => {
-                          return (
-                            <Toggle
-                              key={`recommendJobsIds-${index}`}
-                              label={item.name}
-                              name="recommendJobs"
-                              value={item.id}
-                              onChange={onToggleChange}
-                              className="mr-2 mt-2"
-                              variant="small"
-                              type="multiple"
-                              isActive
-                              isBorder
-                            />
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="grid-100">
-                  <div className="inpwrap">
-                    <div className="inp-tit">
-                      추천레벨<span className="star">*</span>
-                    </div>
-                    <div className="inp">
-                      <div className={cx('skill__group')}>
-                        {LEVELS?.map((item, index) => {
-                          return (
-                            <Toggle
-                              key={`recommendLevelsIds-${index}`}
-                              label={`${item.level}레벨`}
-                              name="recommendLevels"
-                              value={item.level || ''}
-                              onChange={onToggleChange}
-                              className="mr-2 mt-2"
-                              variant="small"
-                              type="multiple"
-                              isActive
-                              isBorder
-                            />
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                    <div className="grid-100 mt-3">
-                      <div className="inpwrap">
-                        <div className="inp-tit">관련 스킬</div>
-                        <div className="inp">
-                          <div className={cx('filter-area')}>
-                            <div className={cx('skill__group')}>
-                              {skillsList?.data?.data?.map((item, index) => {
-                                return (
-                                  <Toggle
-                                    key={`skillIds-${index}`}
-                                    label={item.name}
-                                    name="skillIds"
-                                    value={item.id}
-                                    onChange={onToggleChange}
-                                    className="mr-2 mt-2 custom"
-                                    variant="small"
-                                    type="multiple"
-                                    isActive
-                                    isBorder
-                                  />
-                                );
-                              })}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="grid-100 mt-3">
-                      <div className="inpwrap">
-                        <div className="inp-tit">관련 경험</div>
-                        <div className="inp">
-                          <div className={cx('skill__group')}>
-                            {experience?.data?.contents?.map((item, index) => {
-                              return (
-                                <Toggle
-                                  key={`experienceIds-${index}`}
-                                  label={item.name}
-                                  name="experienceIds"
-                                  value={item.name}
-                                  onChange={onToggleChange}
-                                  className="mr-2 mt-2"
-                                  variant="small"
-                                  type="multiple"
-                                  isActive
-                                  isBorder
-                                />
-                              );
-                            })}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="grid-100 mt-4">
-                      <div className="inpwrap">
-                        <div className="inp-tit">키워드(해시태그)</div>
-                        <div className="inp">
-                          <input
-                            type="text"
-                            className="input-admin"
-                            name="hashTags"
-                            value={regitserValues?.hashTags || ''}
-                            onChange={handleRegister}
-                          />
-                        </div>
-                      </div>
+                      <input
+                        type="text"
+                        className="input-admin"
+                        name="order"
+                        value={regitserValues?.order || ''}
+                        onChange={handleRegister}
+                      />
                     </div>
                   </div>
                 </div>
