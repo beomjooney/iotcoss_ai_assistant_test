@@ -30,7 +30,7 @@ export interface SearchParamsProps {
 
 export function ClubPage() {
   const now = dayjs();
-  const past1y = now.subtract(1, 'year');
+  const past1y = now.subtract(3, 'year');
   const tomorrow = now.add(1, 'day');
   const [page, setPage] = useState<number>(1);
   const [size, setSize] = useState<number>(15);

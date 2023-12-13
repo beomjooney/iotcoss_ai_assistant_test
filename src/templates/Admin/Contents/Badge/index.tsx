@@ -65,6 +65,16 @@ export function BadgeTemplate({
     { name: '배지명', field: 'name', type: 'text' },
   ];
 
+  const BADGES = [
+    { id: '0001', name: 'INVINCIBLE' },
+    { id: '0002', name: 'MAKER' },
+    { id: '0003', name: 'LEADER' },
+    { id: '0004', name: 'CREW' },
+    { id: '0005', name: 'RELATIONSHIP' },
+    { id: '0006', name: 'COMMON' },
+    { id: '0007', name: 'DEFAULT_NONE' },
+  ];
+
   const { mutate: onSaveProfileImage, data: profileImage, isSuccess } = useUploadImage();
 
   const [introduceEditor, setIntroduceEditor] = useState<string>('');
@@ -403,8 +413,8 @@ export function BadgeTemplate({
                 <td className="magic" title={item.badgeId}>
                   {item.badgeId}
                 </td>
-                <td className="magic" title={item.badgeGroupType}>
-                  {item.badgeGroupType}
+                <td className="magic" title={item.badgeGroupTypeName}>
+                  {item.badgeGroupTypeName}
                 </td>
                 <td className="magic" title={item.name}>
                   {item.name}
@@ -485,14 +495,19 @@ export function BadgeTemplate({
                   <div className="inpwrap">
                     <div className="inp-tit">배지그룹타입</div>
                     <div className="inp">
-                      <input
-                        type="text"
+                      <select
                         className="input-admin"
-                        {...methods.register('badgeGroupType')}
-                        disabled
-                        value={badge?.badgeGroupType || ''}
+                        value={badge?.badgeGroupTypeName || ''}
                         onChange={onChangeBadge}
-                      />
+                        name="badgeGroupTypeName"
+                        disabled={!isEdit}
+                      >
+                        {BADGES?.map(item => (
+                          <option key={item.id} value={item.name}>
+                            {item.name}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   </div>
                 </div>
