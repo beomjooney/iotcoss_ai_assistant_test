@@ -3,15 +3,8 @@ import classNames from 'classnames/bind';
 import { Toggle, Pagination, Typography, Chip, MentorsModal, Textfield } from 'src/stories/components';
 import React, { useEffect, useState, useRef } from 'react';
 import { RecommendContent, SeminarImages } from 'src/models/recommend';
-import { useSeminarList, paramProps, useSeminarImageList } from 'src/services/seminars/seminars.queries';
-import QuizArticleCard from 'src/stories/components/QuizArticleCard';
-import Carousel from 'nuka-carousel';
-import { ArticleEnum } from '../../config/types';
-import Banner from '../../stories/components/Banner';
 import { useStore } from 'src/store';
 import { useRouter } from 'next/router';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import Grid from '@mui/material/Grid';
 import Icon from '@mui/material/Icon';
 import Box from '@mui/system/Box';
@@ -46,6 +39,10 @@ import { useDeletePost } from 'src/services/community/community.mutations';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import { makeStyles } from '@material-ui/core';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import KnowledgeComponent from 'src/stories/components/KnowledgeComponent';
+
 interface BoardListItemType {
   id: number;
   name: string;
@@ -137,6 +134,32 @@ export function QuizMakeTemplate() {
 
   const quizRef = useRef(null);
   const quizUrlRef = useRef(null);
+
+  // 데이터 예시
+  // 데이터 배열로 묶어주기
+  const knowledgeData = [
+    {
+      title: 'ESB와 API Gateway 차이점에 대해서 설명하세요',
+      date: '2024.06.30',
+      content:
+        'EAI는 엔터프라이즈 어플리케이션 인테그레이션의 약자입니다. 시스템이 서로 얽히고 복잡해지면서 통제가 잘 안되는 상황이 발생하여 이런 문제를 해결하기 위해 등장한 솔루션이 바로 EAI 입니다.',
+      tags: ['소프트웨어융합대학', '컴퓨터공학과', '2학년'],
+      likes: 32,
+      comments: 27,
+      hashtags: ['MVVM', '해시태그'],
+    },
+    {
+      title: 'ESB와 API Gateway 차이점에 대해서 설명하세요',
+      date: '2024.06.30',
+      content:
+        'EAI는 엔터프라이즈 어플리케이션 인테그레이션의 약자입니다. 시스템이 서로 얽히고 복잡해지면서 통제가 잘 안되는 상황이 발생하여 이런 문제를 해결하기 위해 등장한 솔루션이 바로 EAI 입니다.',
+      tags: ['소프트웨어융합대학', '컴퓨터공학과', '2학년'],
+      likes: 32,
+      comments: 27,
+      hashtags: ['MVVM', '해시태그'],
+    },
+    // 다른 데이터도 이어서 넣어주면 됩니다.
+  ];
 
   //api call
   const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
@@ -300,33 +323,79 @@ export function QuizMakeTemplate() {
     },
   }));
   const classes = useStyles();
+
+  const [activeTab, setActiveTab] = useState('퀴즈목록');
+  const handleTabClick = tabName => {
+    setActiveTab(tabName);
+  };
+
   return (
     <>
       <div className={cx('seminar-container')}>
         <div className={cx('container')}>
           <div className="xl:tw-py-[60px] tw-pt-[50px]">
             <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-              <Grid item xs={12} sm={3} className="tw-font-bold sm:tw-text-3xl tw-text-2xl tw-text-black">
-                내가 만든 퀴즈
+              <Grid item xs={12} sm={2} className="tw-font-bold sm:tw-text-3xl tw-text-2xl tw-text-black">
+                나의 퀴즈
               </Grid>
-              <Grid item xs={12} sm={6} className="tw-font-semi tw-text-base tw-text-black sm:tw-pt-5">
-                <div>나와 크루들의 성장을 돕기위해 내가 만든 퀴즈 리스트예요!</div>
+              <Grid item xs={12} sm={6} className="tw-font-semi tw-text-base tw-text-black">
+                <div>나와 학습자들의 성장을 돕기위해 내가 만든 퀴즈 리스트예요!</div>
               </Grid>
-              <Grid item xs={12} sm={3} justifyContent="flex-end" className="tw-flex">
+              <Grid item xs={12} sm={4} justifyContent="flex-end" className="tw-flex">
                 <button
                   type="button"
                   onClick={() => handleAddClick()}
-                  className="tw-text-blue-600 tw-bg-white border border-primary tw-font-bold tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
+                  className=" tw-text-[#e11837] tw-mr-3 tw-font-bold tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
+                  style={{ border: '1px solid', color: '#e11837', width: '150px' }}
                 >
-                  퀴즈 직접 등록하기 +
+                  + 퀴즈 만들기
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleAddClick()}
+                  style={{ border: '1px solid', color: 'black', width: '150px' }}
+                  className="tw-text-black tw-bg-white tw-font-bold tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
+                >
+                  + 지식컨텐츠 등록
                 </button>
               </Grid>
             </Grid>
           </div>
-          <Box sx={{ width: '100%', typography: 'body1', marginTop: '20px', marginBottom: '20px' }}>
+          <Box sx={{ width: '100%', typography: 'body1', marginTop: '20px', marginBottom: '50px' }}>
             <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
               <Grid item xs={6} sm={9} className="tw-font-bold tw-text-3xl tw-text-black">
-                <div className="tw-text-xl">퀴즈목록 ({myQuizData?.contents?.length})</div>
+                <div className="tw-flex tw-justify-start tw-items-start tw-gap-10">
+                  <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-h-11 tw-relative tw-gap-2.5">
+                    <p
+                      className={`tw-flex-grow-0 tw-flex-shrink-0 tw-text-lg tw-text-left tw-cursor-pointer ${
+                        activeTab === '퀴즈목록' ? 'tw-font-bold tw-text-black' : 'tw-text-[#6a7380]'
+                      } tw-hover:tw-font-bold tw-hover:tw-text-black`}
+                      onClick={() => handleTabClick('퀴즈목록')}
+                    >
+                      퀴즈목록
+                    </p>
+                  </div>
+                  <div className="tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-h-11 tw-relative tw-gap-2.5">
+                    <p
+                      className={`tw-flex-grow-0 tw-flex-shrink-0 tw-text-lg tw-text-left tw-cursor-pointer ${
+                        activeTab === '지식컨텐츠' ? 'tw-font-bold tw-text-black' : 'tw-text-[#6a7380]'
+                      } tw-hover:tw-font-bold tw-hover:tw-text-black`}
+                      onClick={() => handleTabClick('지식컨텐츠')}
+                    >
+                      지식컨텐츠
+                    </p>
+                  </div>
+                  <div className="tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-h-11 tw-relative tw-gap-2.5">
+                    <p
+                      className={`tw-flex-grow-0 tw-flex-shrink-0 tw-text-lg tw-text-left tw-cursor-pointer ${
+                        activeTab === '휴지통' ? 'tw-font-bold tw-text-black' : 'tw-text-[#6a7380]'
+                      } tw-hover:tw-font-bold tw-hover:tw-text-black`}
+                      onClick={() => handleTabClick('휴지통')}
+                    >
+                      휴지통
+                    </p>
+                  </div>
+                </div>
               </Grid>
               <Grid item xs={6} sm={3} className="tw-font-semi tw-text-base tw-text-black">
                 <TextField
@@ -348,7 +417,92 @@ export function QuizMakeTemplate() {
             </Grid>
           </Box>
 
-          <Divider className="tw-mb-3 tw-border tw-bg-['#efefef']" />
+          <div className="tw-flex tw-justify-start tw-items-center tw-w-[1120px] tw-h-12 tw-gap-6 tw-mb-8">
+            <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-3">
+              <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                정렬 :
+              </p>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    defaultChecked
+                    sx={{
+                      color: '#ced4de',
+                      '&.Mui-checked': { color: '#e11837' },
+                    }}
+                  />
+                }
+                label={
+                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                    최신순
+                  </p>
+                }
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    sx={{
+                      color: '#ced4de',
+                      '&.Mui-checked': { color: '#e11837' },
+                    }}
+                  />
+                }
+                label={
+                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                    오래된순
+                  </p>
+                }
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    sx={{
+                      color: '#ced4de',
+                      '&.Mui-checked': { color: '#e11837' },
+                    }}
+                  />
+                }
+                label={
+                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                    학년순
+                  </p>
+                }
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    sx={{
+                      color: '#ced4de',
+                      '&.Mui-checked': { color: '#e11837' },
+                    }}
+                  />
+                }
+                label={
+                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                    많이 복사된 순
+                  </p>
+                }
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    sx={{
+                      color: '#ced4de',
+                      '&.Mui-checked': { color: '#e11837' },
+                    }}
+                  />
+                }
+                label={
+                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                    답변순
+                  </p>
+                }
+              />
+            </div>
+          </div>
+
+          <KnowledgeComponent knowledgeData={knowledgeData} />
+
           <article>
             <div className={cx('content-area')}>
               <section className={cx('content', 'flex-wrap-container')}>

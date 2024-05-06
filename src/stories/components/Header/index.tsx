@@ -104,10 +104,16 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
       ? setLogoutButton(
           <div className={cx('custom-item')} id="logoutBtn">
             <button
-              className="tw-w-28 max-lg:tw-mr-1 tw-bg-[#2474ED] tw-rounded-md tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
+              className="tw-w-28 max-lg:tw-mr-1 tw-bg-[#e11837] tw-mr-4 tw-rounded-md tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
               onClick={() => (location.href = '/quiz-make')}
             >
-              퀴즈만들기
+              나의 클럽
+            </button>
+            <button
+              className="tw-w-28 max-lg:tw-mr-1 tw-bg-[#31343d] tw-rounded-md tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
+              onClick={() => (location.href = '/quiz-make')}
+            >
+              나의 퀴즈
             </button>
           </div>,
         )
@@ -260,7 +266,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
         <div className="container" style={{ alignItems: 'center' }}>
           <div className={cx('header-link', 'navbar-brand')} onClick={handleGoHome}>
             {/* <div className="tw-text-3xl tw-font-black ">DevUs</div> */}
-            <img src="/assets/images/devus.png" width={85} alt="logo" className={cx('image-logo')} />
+            <img src="/assets/images/header/image_1.png" width={130} alt="logo" className={cx('image-logo')} />
           </div>
           <Mobile>
             {!logged && (
@@ -360,12 +366,13 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
             className={cx(
               'collapse navbar-collapse main-menu',
               'navbar-mobile  tw-mt-2.5 tw-mb-2.5 tw-ml-16',
-              'tw-justify-between',
+              'tw-justify-end',
               isShowMenu ? 'show' : '',
             )}
             id="navbarSupportedContent"
           >
             <ul className={cx('nav-custom', 'navbar-custom-mobile', 'navbar-nav', 'tw-text-lg', 'tw-text-left')}>
+              {/* <ul className={cx('nav-custom', 'navbar-custom-mobile', 'navbar-nav', 'tw-text-lg', 'tw-text-left')}> */}
               {menuItem?.map((item, index) => {
                 return (
                   item?.login && (
@@ -376,7 +383,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                             if (item.dropdown.length === 0) setIsShowMenu(!isShowMenu);
                           }}
                         >
-                          <div className="tw-mr-10 tw-text-base tw-text-black tw-font-bold">{item.title}</div>
+                          <div className="tw-mr-10 tw-text-base tw-text-black tw-font-extrabold">{item.title}</div>
                         </a>
                       </Link>
                       <div className="dropdown-menu submenu" aria-labelledby="navbarDropdownHome">
@@ -388,7 +395,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                                   setIsShowMenu(!isShowMenu);
                                 }}
                               >
-                                <div className="tw-text-base tw-font-light">{menu.title}</div>
+                                <div className="tw-text-base tw-font-bold">{menu.title}</div>
                               </a>
                             </Link>
                           );
@@ -402,8 +409,8 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
 
             {!logged && (
               <li className={cx('custom-item')}>
-                <button className="tw-mr-2 tw-bg-[#2474ED] tw-rounded-md tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded">
-                  퀴즈만들기
+                <button className="tw-mr-2 tw-bg-[#e11837] tw-rounded-md tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded">
+                  나의 학습방
                 </button>
                 <button
                   className="tw-bg-white tw-rounded-md border tw-text-sm tw-text-gray-500 tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
@@ -415,7 +422,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
             )}
             {/* {adminButton} */}
             {logged && (
-              <div className="row tw-flex tw-items-center tw-justify-between tw-w-80">
+              <div className="row tw-flex tw-items-center tw-justify-between tw-w-[25rem]">
                 <div className="col-lg-12 tw-flex tw-items-center tw-justify-end max-lg:tw-justify-end lg:tw-mb-0">
                   {logoutButton}
 

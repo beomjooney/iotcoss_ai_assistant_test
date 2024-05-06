@@ -10,6 +10,12 @@ module.exports = {
   ],
   prefix: 'tw-',
   theme: {
+    extends: {
+      fontFamily: {
+        bebas: ['var(--font-bebas)'],
+        pretendard: ['var(--font-pretendard)'],
+      },
+    },
     screens: {
       sm: '576px',
       md: '768px',

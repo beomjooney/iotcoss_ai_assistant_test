@@ -71,56 +71,42 @@ export function LoginTemplate({ onSubmitLogin }: LoginTemplateProps) {
       <div className={cx('logo-area')}>
         {/* <img src="/assets/images/cm_CI_co_1000x225.png" alt="footer logo" width={162} className="img-fluid mb-3" /> */}
         <p className={cx('logo-area__text')}>로그인</p>
-        <div className={cx('button-area', 'tw-mt-10')}>
-          <Button type="submit" color="kakao" size="medium" onClick={handleLogin}>
-            <img src="/assets/images/account/kakao.svg" alt="카카오 로그인" className={cx('image-login')} />
-            <Typography sx={{ fontWeight: '600', fontSize: 16 }}>카카오 3초만에 시작하기</Typography>
-          </Button>
-        </div>
         {/* <Divider className={cx('sign-color')}>또는 이메일 로그인</Divider> */}
       </div>
-      {/* <form onSubmit={handleSubmit(onSubmit, onError)}>
+      <form onSubmit={handleSubmit(onSubmit, onError)}>
+        <Typography sx={{ fontSize: 14, marginTop: 3, color: 'black', fontWeight: '600' }}>학번 및 이메일</Typography>
         <TextField
           required
           id="username"
           name="username"
-          label="Email"
-          variant="standard"
+          label="학번 혹은 이메일을 입력해주세요."
+          variant="outlined"
           type="search"
           fullWidth
           sx={{
-            marginTop: '20px',
-            '& label': { fontSize: 13, color: '#919191', fontWeight: 'bold' },
+            marginTop: '10px',
+            '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
             // '& input': { height: ' 0.8em;' },
-            '& .MuiTextField-root': { marginBottom: 0 },
-            '& .MuiFormHelperText-root': {
-              position: 'absolute',
-              bottom: '-1.4rem',
-            },
           }}
           margin="dense"
           {...register('username')}
           error={errors.username ? true : false}
           helperText={errors.username?.message}
         />
+        <Typography sx={{ fontSize: 14, marginTop: 3, color: 'black', fontWeight: '600' }}>비밀번호</Typography>
         <TextField
           required
           id="password"
           name="password"
-          label="Password"
+          label="비밀번호를 입력해주세요."
           type="password"
           fullWidth
           margin="dense"
-          variant="standard"
+          variant="outlined"
           sx={{
-            marginTop: '28px',
-            marginBottom: '20px',
+            marginTop: '10px',
+            '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
             // '& input': { height: ' 0.8em;' },
-            '& label': { fontSize: 13, color: '#919191', fontWeight: 'bold' },
-            '& .MuiFormHelperText-root': {
-              position: 'absolute',
-              bottom: '-1.4rem',
-            },
           }}
           {...register('password')}
           error={errors.password ? true : false}
@@ -129,7 +115,7 @@ export function LoginTemplate({ onSubmitLogin }: LoginTemplateProps) {
 
         <Grid container spacing={3} direction="row" justifyContent="space-between" alignItems="center">
           <Grid item xs={6}>
-            <Box display="flex" justifyContent="flex-start">
+            {/* <Box display="flex" justifyContent="flex-start">
               <FormGroup sx={{ fontWeight: 'bold' }}>
                 <FormControlLabel
                   control={
@@ -143,23 +129,40 @@ export function LoginTemplate({ onSubmitLogin }: LoginTemplateProps) {
                   label={<Typography>자동 로그인</Typography>}
                 />
               </FormGroup>
-            </Box>
+            </Box> */}
           </Grid>
           <Grid item xs={6}>
             <Box display="flex" justifyContent="flex-end" sx={{ fontWeight: 'bold' }}>
-              <Typography>비밀번호 찾기</Typography>
+              <Typography sx={{ fontSize: 12, textDecoration: 'underline' }} className="tw-py-3">
+                비밀번호를 잊으셨나요?
+              </Typography>
             </Box>
           </Grid>
         </Grid>
         <div style={{ marginBottom: '20px', marginTop: '20px' }}>
-          <Button size="medium" onClick={() => handleSubmit(onSubmit)}>
-            <Typography sx={{ fontWeight: '600', fontSize: 14 }}>로그인</Typography>
+          <Button color="red" size="medium" onClick={() => handleSubmit(onSubmit)}>
+            <Typography sx={{ fontWeight: '600', fontSize: 16 }}>로그인</Typography>
           </Button>
         </div>
       </form>
-      <Button size="medium" onClick={() => router.push('/account/signup')}>
-        <Typography sx={{ fontWeight: '600', fontSize: 14 }}>이메일로 회원가입</Typography>
+      {/* <Button size="medium" onClick={() => router.push('/account/signup')}>
+        <Typography sx={{ fontWeight: '600', fontSize: 18 }}>이메일로 회원가입</Typography>
       </Button> */}
+      <Divider className={cx('sign-color', 'tw-py-3')}>또는</Divider>
+      <div style={{ marginBottom: '20px', marginTop: '20px' }}>
+        <Button type="submit" size="medium" color="kakao" onClick={handleLogin}>
+          <img src="/assets/images/account/kakao.svg" alt="카카오 로그인" className={cx('image-login')} />
+          <Typography sx={{ fontWeight: '600', fontSize: 16 }}>카카오 3초만에 시작하기</Typography>
+        </Button>
+      </div>
+      <Box display="flex" justifyContent="center" sx={{ fontWeight: 'bold' }}>
+        <Typography sx={{ fontSize: 14 }}>동서대학교 devus 계정이 없으신가요?</Typography>
+      </Box>
+      <Box display="flex" justifyContent="center" sx={{ fontWeight: 'bold' }}>
+        <Typography sx={{ fontSize: 14, textDecoration: 'underline' }} className="tw-py-3">
+          회원가입
+        </Typography>
+      </Box>
     </div>
   );
 }

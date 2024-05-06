@@ -98,11 +98,11 @@ function CustomApp({ Component, pageProps = {}, session }: AppPropsWithLayout) {
         }}
       />
       <Head>
-        <title>데브어스</title>
-        <meta name="description" content="데브어스" />
-        <meta name="keywords" content="데브어스, devus" />
-        <meta name="application-name" content="데브어스" />
-        <meta name="application-mobile-web-app-title" content="데브어스" />
+        <title>DSU DevUs</title>
+        <meta name="description" content="DSU DevUs" />
+        <meta name="keywords" content="DSU DevUs, devus" />
+        <meta name="application-name" content="DSU DevUs" />
+        <meta name="application-mobile-web-app-title" content="DSU DevUs" />
         {/* <meta name="viewport" content="width=1200" /> */}
         <link rel="shortcut icon" href="#" />
         <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/icons/favicon-16x16.png" />
