@@ -56,7 +56,6 @@ export interface NavbarProps {
 const cx = classNames.bind(styles);
 
 const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
-  console.log(menuItem);
   const { logged, roles } = useSessionStore.getState();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [anchorElAlarm, setAnchorElAlarm] = useState(null);

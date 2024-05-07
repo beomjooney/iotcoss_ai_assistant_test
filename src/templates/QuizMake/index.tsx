@@ -26,6 +26,7 @@ import { makeStyles } from '@material-ui/core';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 import Checkbox from '@mui/material/Checkbox';
 import KnowledgeComponent from 'src/stories/components/KnowledgeComponent';
+import ArticleList from 'src/stories/components/ArticleList';
 import { Accordion, AccordionSummary, AccordionDetails, Typography } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import * as Yup from 'yup';
@@ -348,23 +349,25 @@ export function QuizMakeTemplate() {
     });
   }, [page, keyWorld]);
 
+  useEffect(() => {
+    setExpanded(0);
+  }, [isModalOpen]);
+
   function searchKeyworld(value) {
     let _keyworld = value.replace('#', '');
     if (_keyworld == '') _keyworld = null;
     setKeyWorld(_keyworld);
   }
 
-  const handleMenuItemClick = (event: React.MouseEvent<HTMLElement>, index: number) => {
-    //console.log(index, removeIndex);
-    if (index === 0) {
-      if (window.confirm('정말로 삭제하시겠습니까?')) {
-        onDeletePost({
-          postNo: removeIndex,
-        });
-      }
+  const handleMenuItemClick = (index: number) => {
+    console.log(index, removeIndex);
+    // if (index === 0) {
+    if (window.confirm('정말로 삭제하시겠습니까?')) {
+      onDeletePost({
+        postNo: index,
+      });
     }
-
-    setAnchorEl(null);
+    // }
   };
 
   const handleQuizInsertClick = async () => {
@@ -624,170 +627,14 @@ export function QuizMakeTemplate() {
 
           {/* 휴지통에 해당하는 div */}
           {activeTab === '지식컨텐츠' && (
-            <div>
-              <article>
-                <div className={cx('content-area')}>
-                  <section className={cx('content', 'flex-wrap-container')}>
-                    {myQuizData?.contents?.map((item, index) => (
-                      <div key={index} className="tw-w-full">
-                        <Desktop>
-                          <div className="tw-p-4 tw-border border tw-w-full tw-rounded-xl">
-                            <div className="tw-flex tw-w-full tw-items-center"></div>
-                            <div className="tw-flex  tw-items-center">
-                              <div className="tw-flex-auto ">
-                                <div className="tw-font-medium tw-text-black">
-                                  <div className="tw-p-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
-                                    {item?.recommendJobGroupNames?.map((name, i) => (
-                                      <span
-                                        key={i}
-                                        className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600"
-                                      >
-                                        {name}
-                                      </span>
-                                    ))}
-                                    <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
-                                      {item?.recommendLevels?.sort().join(',')}레벨
-                                    </span>
-                                    {item?.recommendJobNames?.map((name, i) => (
-                                      <span
-                                        key={i}
-                                        className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-100 tw-text-sm tw-font-light tw-text-gray-600"
-                                      >
-                                        {name}
-                                      </span>
-                                    ))}
-                                    {item?.hashTags?.map((name, i) => (
-                                      <span
-                                        key={i}
-                                        className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-gray-700"
-                                      >
-                                        {name}
-                                      </span>
-                                    ))}
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="tw-text-gray-400 tw-text-sm tw-mr-5">{item.createdAt}</div>
-                              <IconButton
-                                aria-label="more"
-                                id="long-button"
-                                aria-controls={open ? 'long-menu' : undefined}
-                                aria-expanded={open ? 'true' : undefined}
-                                aria-haspopup="true"
-                                onClick={event => handleDropMenuClick(event, item.sequence)}
-                              >
-                                <MoreVertIcon />
-                              </IconButton>
-                              <div>
-                                <Menu
-                                  id="lock-menu"
-                                  anchorEl={anchorEl}
-                                  open={open}
-                                  onClose={handleClose}
-                                  className={classes.root}
-                                  MenuListProps={{
-                                    'aria-labelledby': 'lock-button',
-                                    role: 'listbox',
-                                    style: {
-                                      border: '1px solid rgb(218, 226, 237)',
-                                      boxShadow: 'none !important',
-                                      borderRadius: '12px',
-                                    },
-                                  }}
-                                >
-                                  {options.map((option, index) => (
-                                    <MenuItem key={index} onClick={event => handleMenuItemClick(event, index)}>
-                                      {option}
-                                    </MenuItem>
-                                  ))}
-                                </Menu>
-                              </div>
-                            </div>
-                            <div className="tw-flex  tw-items-center tw-p-3">
-                              <div className="tw-flex-auto">
-                                <div className="tw-font-medium tw-text-black tw-text-base">{item.content}</div>
-                              </div>
-                              {/* <div className="">{item.memberName}</div> */}
-                            </div>
-                            <div className="tw-grid tw-grid-cols-12 tw-gap-4 tw-p-3">
-                              <div className="tw-col-span-1 tw-text-sm tw-font-bold tw-text-black ">아티클</div>
-                              <div className="tw-col-span-9 tw-text-sm tw-text-gray-600">{item.articleUrl}</div>
-                              <div className="tw-col-span-2 tw-text-sm tw-text-right">
-                                댓글 : {item.activeCount} 답변 : {item.answerCount}
-                              </div>
-                            </div>
-                          </div>
-                        </Desktop>
-                        <Mobile>
-                          <div className="tw-p-5 tw-border border tw-w-full tw-rounded-xl">
-                            {/* 첫 번째 컬럼 */}
-                            <div className="md:tw-w-full">
-                              <div className="tw-font-medium tw-text-black">
-                                <div className="tw-text-sm tw-font-normal tw-text-gray-500">
-                                  {item?.recommendJobGroupNames?.map((name, i) => (
-                                    <span
-                                      key={i}
-                                      className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600"
-                                    >
-                                      {name}
-                                    </span>
-                                  ))}
-                                  <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
-                                    {item?.recommendLevels?.sort().join(',')}레벨
-                                  </span>
-                                  {item?.recommendJobNames?.map((name, i) => (
-                                    <span
-                                      key={i}
-                                      className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-100 tw-text-sm tw-font-light tw-text-gray-600"
-                                    >
-                                      {name}
-                                    </span>
-                                  ))}
-                                  {item?.hashTags?.map((name, i) => (
-                                    <span
-                                      key={i}
-                                      className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-gray-700"
-                                    >
-                                      {name}
-                                    </span>
-                                  ))}
-                                </div>
-                                <div className="tw-text-gray-400 tw-text-base tw-py-1 tw-text-right">
-                                  {item.createdAt}
-                                </div>
-                              </div>
-                            </div>
-                            {/* 두 번째 컬럼 */}
-                            <div className="md:tw-w-full">
-                              <div className="tw-flex  tw-items-center py-2">
-                                <div className="tw-flex-auto">
-                                  <div className="tw-font-medium tw-text-black tw-text-base tw-line-clamp-1">
-                                    {item.content}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            {/* 세 번째 컬럼 */}
-                            <div className="md:tw-w-full">
-                              <div className="tw-grid tw-grid-cols-12 tw-gap-4">
-                                <div className="tw-col-span-2 tw-text-sm tw-font-bold tw-text-black">아티클</div>
-                                <div className="tw-col-span-10 tw-text-sm tw-text-gray-600  tw-line-clamp-1">
-                                  {item.articleUrl}
-                                </div>
-                              </div>
-                            </div>
-                            <div className="tw-col-span-2 tw-text-sm tw-text-right">
-                              댓글 : {item.activeCount} 답변 : {item.answerCount}
-                            </div>
-                          </div>
-                        </Mobile>
-                      </div>
-                    ))}
-                  </section>
-                  <Pagination page={page} setPage={setPage} total={totalPage} />
-                </div>
-              </article>
-            </div>
+            <ArticleList
+              myQuizData={myQuizData}
+              page={page}
+              setPage={setPage}
+              totalPage={totalPage}
+              options={options}
+              handleMenuItemClick={handleMenuItemClick}
+            />
           )}
         </div>
         <MentorsModal title={'퀴즈 직접 등록하기'} isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
