@@ -1,27 +1,13 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import { Toggle, Pagination, Typography, Chip, MentorsModal, Textfield } from 'src/stories/components';
+import { Toggle, Pagination, Chip, MentorsModal, Textfield } from 'src/stories/components';
 import React, { useEffect, useState, useRef } from 'react';
 import { RecommendContent, SeminarImages } from 'src/models/recommend';
 import { useStore } from 'src/store';
 import { useRouter } from 'next/router';
 import Grid from '@mui/material/Grid';
-import Icon from '@mui/material/Icon';
 import Box from '@mui/system/Box';
-import Image from 'next/image';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import SecondTabs from 'src/stories/components/Tab/SecondTab';
-import ListItemtag from 'src/stories/components/QuizItemCard/ListItemTag';
-import SecondTechLogCard from 'src/stories/components/QuizItemCard/SecondTechLogCard';
-import Card6 from 'src/stories/components/QuizItemCard/Card6';
-import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
-import Divider from '@mui/material/Divider';
-import Link from 'next/link';
-import { jobColorKey } from 'src/config/colors';
-import ToggleButton from '@mui/material/ToggleButton';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { UseQueryResult } from 'react-query';
 import { useMyQuiz } from 'src/services/jobs/jobs.queries';
 import IconButton from '@mui/material/IconButton';
@@ -34,26 +20,24 @@ import { useExperiences } from 'src/services/experiences/experiences.queries';
 import { SkillResponse } from 'src/models/skills';
 import { useSkills } from 'src/services/skill/skill.queries';
 import { ExperiencesResponse } from 'src/models/experiences';
-import { TagsInput } from 'react-tag-input-component';
 import { useDeletePost } from 'src/services/community/community.mutations';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import { makeStyles } from '@material-ui/core';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import KnowledgeComponent from 'src/stories/components/KnowledgeComponent';
+import { Accordion, AccordionSummary, AccordionDetails, Typography } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import * as Yup from 'yup';
+import { useForm, Controller } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { TagsInput } from 'react-tag-input-component';
 
-interface BoardListItemType {
-  id: number;
-  name: string;
-  boardType?: string;
-  status: 'ACTIVE' | 'DEACTIVATED';
-  layoutType: 'LIST' | 'IMAGE_TEXT' | 'IMAGE';
-  enableHashtag: boolean;
-  enableReply: boolean;
-  index: number;
-  articleCnt?: number;
-}
+import { Radio, RadioGroup, FormControlLabel, TextField } from '@mui/material';
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded';
+import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded';
 
 const levelGroup = [
   {
@@ -88,6 +72,48 @@ const levelGroup = [
   },
 ];
 
+const studyStatus = [
+  {
+    id: '0001',
+    name: '학습예정',
+  },
+  {
+    id: '0002',
+    name: '학습 중',
+  },
+  {
+    id: '0003',
+    name: '학습완료',
+  },
+];
+
+const gradeStatus = [
+  {
+    id: '0001',
+    name: '1학년',
+  },
+  {
+    id: '0002',
+    name: '2학년',
+  },
+  {
+    id: '0003',
+    name: '3학년',
+  },
+  {
+    id: '0004',
+    name: '4학년',
+  },
+  {
+    id: '0005',
+    name: '취업준비생',
+  },
+  {
+    id: '0006',
+    name: '상관없음',
+  },
+];
+
 const options = ['삭제하기'];
 // const options = ['삭제하기', '퀴즈 비공개'];
 
@@ -100,6 +126,23 @@ export type ArticleLikeUser = {
 const cx = classNames.bind(styles);
 
 export function QuizMakeTemplate() {
+  const validationSchema = Yup.object().shape({
+    username: Yup.string().required('Email is required').email('Email is invalid'),
+    password: Yup.string()
+      .required('Password is required')
+      .min(4, 'Password must be at least 4 characters')
+      .max(8, 'Password must not exceed 8 characters'),
+  });
+
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+  });
+
   const { contentTypes, setContentTypes } = useStore();
 
   const router = useRouter();
@@ -131,6 +174,53 @@ export function QuizMakeTemplate() {
   const open = Boolean(anchorEl);
   const [keyWorld, setKeyWorld] = useState('');
   const [removeIndex, setRemoveIndex] = React.useState('');
+
+  const [expanded, setExpanded] = useState(0); // 현재 확장된 Accordion의 인덱스
+  const [selectedButton, setSelectedButton] = React.useState(null);
+
+  const [selected1, setSelected1] = useState([]);
+  const [selected2, setSelected2] = useState([]);
+  const [quizCount, setQuizCount] = useState('');
+  const [aiQuiz, setAiQuiz] = useState(false);
+
+  const [selectedOption, setSelectedOption] = useState('latest');
+
+  const handleChangeQuiz = event => {
+    setSelectedOption(event.target.value);
+  };
+
+  const handleQuizCountChange = e => {
+    setQuizCount(e.target.value);
+  };
+
+  const handleAiQuizChange = e => {
+    setAiQuiz(e.target.checked);
+  };
+
+  const handleSubmitQuiz = e => {
+    e.preventDefault();
+    // Your logic for quiz creation
+    console.log(`Quiz count: ${quizCount}`);
+    console.log(`AI Quiz: ${aiQuiz}`);
+  };
+
+  const handleClick = buttonValue => {
+    setSelectedButton(buttonValue);
+  };
+
+  const handleChange = index => (event, isExpanded) => {
+    setExpanded(isExpanded ? index : false);
+  };
+
+  const handlePreviousAccordion = () => {
+    setExpanded(prevExpanded => (prevExpanded === null || prevExpanded === 0 ? null : prevExpanded - 1));
+  };
+
+  const handleNextAccordion = () => {
+    if (expanded !== 2) {
+      setExpanded(prevExpanded => (prevExpanded === null ? 0 : prevExpanded + 1));
+    }
+  };
 
   const quizRef = useRef(null);
   const quizUrlRef = useRef(null);
@@ -361,7 +451,7 @@ export function QuizMakeTemplate() {
               </Grid>
             </Grid>
           </div>
-          <Box sx={{ width: '100%', typography: 'body1', marginTop: '20px', marginBottom: '50px' }}>
+          <Box sx={{ width: '100%', typography: 'body1', marginTop: '0px', marginBottom: '40px' }}>
             <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
               <Grid item xs={6} sm={9} className="tw-font-bold tw-text-3xl tw-text-black">
                 <div className="tw-flex tw-justify-start tw-items-start tw-gap-10">
@@ -422,249 +512,530 @@ export function QuizMakeTemplate() {
               <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
                 정렬 :
               </p>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    defaultChecked
-                    sx={{
-                      color: '#ced4de',
-                      '&.Mui-checked': { color: '#e11837' },
-                    }}
-                  />
-                }
-                label={
-                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                    최신순
-                  </p>
-                }
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    sx={{
-                      color: '#ced4de',
-                      '&.Mui-checked': { color: '#e11837' },
-                    }}
-                  />
-                }
-                label={
-                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                    오래된순
-                  </p>
-                }
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    sx={{
-                      color: '#ced4de',
-                      '&.Mui-checked': { color: '#e11837' },
-                    }}
-                  />
-                }
-                label={
-                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                    학년순
-                  </p>
-                }
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    sx={{
-                      color: '#ced4de',
-                      '&.Mui-checked': { color: '#e11837' },
-                    }}
-                  />
-                }
-                label={
-                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                    많이 복사된 순
-                  </p>
-                }
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    sx={{
-                      color: '#ced4de',
-                      '&.Mui-checked': { color: '#e11837' },
-                    }}
-                  />
-                }
-                label={
-                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                    답변순
-                  </p>
-                }
-              />
+
+              <RadioGroup value={selectedOption} onChange={handleChangeQuiz} row>
+                <FormControlLabel
+                  value="latest"
+                  control={
+                    <Radio
+                      sx={{
+                        color: '#ced4de',
+                        '&.Mui-checked': { color: '#e11837' },
+                      }}
+                      icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                      checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                    />
+                  }
+                  label={
+                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                      최신순
+                    </p>
+                  }
+                />
+                <FormControlLabel
+                  value="oldest"
+                  control={
+                    <Radio
+                      sx={{
+                        color: '#ced4de',
+                        '&.Mui-checked': { color: '#e11837' },
+                      }}
+                      icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                      checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                    />
+                  }
+                  label={
+                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                      오래된순
+                    </p>
+                  }
+                />
+                <FormControlLabel
+                  value="oldest1"
+                  control={
+                    <Radio
+                      sx={{
+                        color: '#ced4de',
+                        '&.Mui-checked': { color: '#e11837' },
+                      }}
+                      icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                      checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                    />
+                  }
+                  label={
+                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                      학년순
+                    </p>
+                  }
+                />
+                <FormControlLabel
+                  value="oldest2"
+                  control={
+                    <Radio
+                      sx={{
+                        color: '#ced4de',
+                        '&.Mui-checked': { color: '#e11837' },
+                      }}
+                      icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                      checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                    />
+                  }
+                  label={
+                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                      많이 복사된 순
+                    </p>
+                  }
+                />
+                <FormControlLabel
+                  value="oldest3"
+                  control={
+                    <Radio
+                      sx={{
+                        color: '#ced4de',
+                        '&.Mui-checked': { color: '#e11837' },
+                      }}
+                      icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                      checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                    />
+                  }
+                  label={
+                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                      답변순
+                    </p>
+                  }
+                />
+              </RadioGroup>
             </div>
           </div>
 
-          <KnowledgeComponent knowledgeData={knowledgeData} />
-
-          <article>
-            <div className={cx('content-area')}>
-              <section className={cx('content', 'flex-wrap-container')}>
-                {myQuizData?.contents?.map((item, index) => (
-                  <div key={index} className="tw-w-full">
-                    <Desktop>
-                      <div className="tw-p-4 tw-border border tw-w-full tw-rounded-xl">
-                        <div className="tw-flex tw-w-full tw-items-center"></div>
-                        <div className="tw-flex  tw-items-center">
-                          <div className="tw-flex-auto ">
-                            <div className="tw-font-medium tw-text-black">
-                              <div className="tw-p-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
-                                {item?.recommendJobGroupNames?.map((name, i) => (
-                                  <span
-                                    key={i}
-                                    className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600"
-                                  >
-                                    {name}
-                                  </span>
-                                ))}
-                                <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
-                                  {item?.recommendLevels?.sort().join(',')}레벨
-                                </span>
-                                {item?.recommendJobNames?.map((name, i) => (
-                                  <span
-                                    key={i}
-                                    className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-100 tw-text-sm tw-font-light tw-text-gray-600"
-                                  >
-                                    {name}
-                                  </span>
-                                ))}
-                                {item?.hashTags?.map((name, i) => (
-                                  <span
-                                    key={i}
-                                    className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-gray-700"
-                                  >
-                                    {name}
-                                  </span>
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="tw-text-gray-400 tw-text-sm tw-mr-5">{item.createdAt}</div>
-                          <IconButton
-                            aria-label="more"
-                            id="long-button"
-                            aria-controls={open ? 'long-menu' : undefined}
-                            aria-expanded={open ? 'true' : undefined}
-                            aria-haspopup="true"
-                            onClick={event => handleDropMenuClick(event, item.sequence)}
-                          >
-                            <MoreVertIcon />
-                          </IconButton>
-                          <div>
-                            <Menu
-                              id="lock-menu"
-                              anchorEl={anchorEl}
-                              open={open}
-                              onClose={handleClose}
-                              className={classes.root}
-                              MenuListProps={{
-                                'aria-labelledby': 'lock-button',
-                                role: 'listbox',
-                                style: {
-                                  border: '1px solid rgb(218, 226, 237)',
-                                  boxShadow: 'none !important',
-                                  borderRadius: '12px',
-                                },
-                              }}
-                            >
-                              {options.map((option, index) => (
-                                <MenuItem key={index} onClick={event => handleMenuItemClick(event, index)}>
-                                  {option}
-                                </MenuItem>
-                              ))}
-                            </Menu>
-                          </div>
-                        </div>
-                        <div className="tw-flex  tw-items-center tw-p-3">
-                          <div className="tw-flex-auto">
-                            <div className="tw-font-medium tw-text-black tw-text-base">{item.content}</div>
-                          </div>
-                          {/* <div className="">{item.memberName}</div> */}
-                        </div>
-                        <div className="tw-grid tw-grid-cols-12 tw-gap-4 tw-p-3">
-                          <div className="tw-col-span-1 tw-text-sm tw-font-bold tw-text-black ">아티클</div>
-                          <div className="tw-col-span-9 tw-text-sm tw-text-gray-600">{item.articleUrl}</div>
-                          <div className="tw-col-span-2 tw-text-sm tw-text-right">
-                            댓글 : {item.activeCount} 답변 : {item.answerCount}
-                          </div>
-                        </div>
-                      </div>
-                    </Desktop>
-                    <Mobile>
-                      <div className="tw-p-5 tw-border border tw-w-full tw-rounded-xl">
-                        {/* 첫 번째 컬럼 */}
-                        <div className="md:tw-w-full">
-                          <div className="tw-font-medium tw-text-black">
-                            <div className="tw-text-sm tw-font-normal tw-text-gray-500">
-                              {item?.recommendJobGroupNames?.map((name, i) => (
-                                <span
-                                  key={i}
-                                  className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600"
-                                >
-                                  {name}
-                                </span>
-                              ))}
-                              <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
-                                {item?.recommendLevels?.sort().join(',')}레벨
-                              </span>
-                              {item?.recommendJobNames?.map((name, i) => (
-                                <span
-                                  key={i}
-                                  className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-100 tw-text-sm tw-font-light tw-text-gray-600"
-                                >
-                                  {name}
-                                </span>
-                              ))}
-                              {item?.hashTags?.map((name, i) => (
-                                <span
-                                  key={i}
-                                  className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-gray-700"
-                                >
-                                  {name}
-                                </span>
-                              ))}
-                            </div>
-                            <div className="tw-text-gray-400 tw-text-base tw-py-1 tw-text-right">{item.createdAt}</div>
-                          </div>
-                        </div>
-                        {/* 두 번째 컬럼 */}
-                        <div className="md:tw-w-full">
-                          <div className="tw-flex  tw-items-center py-2">
-                            <div className="tw-flex-auto">
-                              <div className="tw-font-medium tw-text-black tw-text-base tw-line-clamp-1">
-                                {item.content}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        {/* 세 번째 컬럼 */}
-                        <div className="md:tw-w-full">
-                          <div className="tw-grid tw-grid-cols-12 tw-gap-4">
-                            <div className="tw-col-span-2 tw-text-sm tw-font-bold tw-text-black">아티클</div>
-                            <div className="tw-col-span-10 tw-text-sm tw-text-gray-600  tw-line-clamp-1">
-                              {item.articleUrl}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="tw-col-span-2 tw-text-sm tw-text-right">
-                          댓글 : {item.activeCount} 답변 : {item.answerCount}
-                        </div>
-                      </div>
-                    </Mobile>
-                  </div>
-                ))}
-              </section>
-              <Pagination page={page} setPage={setPage} total={totalPage} />
+          {/* 퀴즈목록에 해당하는 div */}
+          {activeTab === '퀴즈목록' && (
+            <div>
+              <KnowledgeComponent knowledgeData={knowledgeData} />
             </div>
-          </article>
+          )}
+
+          {/* 퀴즈목록에 해당하는 div */}
+          {activeTab === '휴지통' && (
+            <div>
+              <KnowledgeComponent knowledgeData={knowledgeData} />
+            </div>
+          )}
+
+          {/* 휴지통에 해당하는 div */}
+          {activeTab === '지식컨텐츠' && (
+            <div>
+              <article>
+                <div className={cx('content-area')}>
+                  <section className={cx('content', 'flex-wrap-container')}>
+                    {myQuizData?.contents?.map((item, index) => (
+                      <div key={index} className="tw-w-full">
+                        <Desktop>
+                          <div className="tw-p-4 tw-border border tw-w-full tw-rounded-xl">
+                            <div className="tw-flex tw-w-full tw-items-center"></div>
+                            <div className="tw-flex  tw-items-center">
+                              <div className="tw-flex-auto ">
+                                <div className="tw-font-medium tw-text-black">
+                                  <div className="tw-p-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
+                                    {item?.recommendJobGroupNames?.map((name, i) => (
+                                      <span
+                                        key={i}
+                                        className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600"
+                                      >
+                                        {name}
+                                      </span>
+                                    ))}
+                                    <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
+                                      {item?.recommendLevels?.sort().join(',')}레벨
+                                    </span>
+                                    {item?.recommendJobNames?.map((name, i) => (
+                                      <span
+                                        key={i}
+                                        className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-100 tw-text-sm tw-font-light tw-text-gray-600"
+                                      >
+                                        {name}
+                                      </span>
+                                    ))}
+                                    {item?.hashTags?.map((name, i) => (
+                                      <span
+                                        key={i}
+                                        className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-gray-700"
+                                      >
+                                        {name}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="tw-text-gray-400 tw-text-sm tw-mr-5">{item.createdAt}</div>
+                              <IconButton
+                                aria-label="more"
+                                id="long-button"
+                                aria-controls={open ? 'long-menu' : undefined}
+                                aria-expanded={open ? 'true' : undefined}
+                                aria-haspopup="true"
+                                onClick={event => handleDropMenuClick(event, item.sequence)}
+                              >
+                                <MoreVertIcon />
+                              </IconButton>
+                              <div>
+                                <Menu
+                                  id="lock-menu"
+                                  anchorEl={anchorEl}
+                                  open={open}
+                                  onClose={handleClose}
+                                  className={classes.root}
+                                  MenuListProps={{
+                                    'aria-labelledby': 'lock-button',
+                                    role: 'listbox',
+                                    style: {
+                                      border: '1px solid rgb(218, 226, 237)',
+                                      boxShadow: 'none !important',
+                                      borderRadius: '12px',
+                                    },
+                                  }}
+                                >
+                                  {options.map((option, index) => (
+                                    <MenuItem key={index} onClick={event => handleMenuItemClick(event, index)}>
+                                      {option}
+                                    </MenuItem>
+                                  ))}
+                                </Menu>
+                              </div>
+                            </div>
+                            <div className="tw-flex  tw-items-center tw-p-3">
+                              <div className="tw-flex-auto">
+                                <div className="tw-font-medium tw-text-black tw-text-base">{item.content}</div>
+                              </div>
+                              {/* <div className="">{item.memberName}</div> */}
+                            </div>
+                            <div className="tw-grid tw-grid-cols-12 tw-gap-4 tw-p-3">
+                              <div className="tw-col-span-1 tw-text-sm tw-font-bold tw-text-black ">아티클</div>
+                              <div className="tw-col-span-9 tw-text-sm tw-text-gray-600">{item.articleUrl}</div>
+                              <div className="tw-col-span-2 tw-text-sm tw-text-right">
+                                댓글 : {item.activeCount} 답변 : {item.answerCount}
+                              </div>
+                            </div>
+                          </div>
+                        </Desktop>
+                        <Mobile>
+                          <div className="tw-p-5 tw-border border tw-w-full tw-rounded-xl">
+                            {/* 첫 번째 컬럼 */}
+                            <div className="md:tw-w-full">
+                              <div className="tw-font-medium tw-text-black">
+                                <div className="tw-text-sm tw-font-normal tw-text-gray-500">
+                                  {item?.recommendJobGroupNames?.map((name, i) => (
+                                    <span
+                                      key={i}
+                                      className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600"
+                                    >
+                                      {name}
+                                    </span>
+                                  ))}
+                                  <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
+                                    {item?.recommendLevels?.sort().join(',')}레벨
+                                  </span>
+                                  {item?.recommendJobNames?.map((name, i) => (
+                                    <span
+                                      key={i}
+                                      className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-100 tw-text-sm tw-font-light tw-text-gray-600"
+                                    >
+                                      {name}
+                                    </span>
+                                  ))}
+                                  {item?.hashTags?.map((name, i) => (
+                                    <span
+                                      key={i}
+                                      className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-gray-700"
+                                    >
+                                      {name}
+                                    </span>
+                                  ))}
+                                </div>
+                                <div className="tw-text-gray-400 tw-text-base tw-py-1 tw-text-right">
+                                  {item.createdAt}
+                                </div>
+                              </div>
+                            </div>
+                            {/* 두 번째 컬럼 */}
+                            <div className="md:tw-w-full">
+                              <div className="tw-flex  tw-items-center py-2">
+                                <div className="tw-flex-auto">
+                                  <div className="tw-font-medium tw-text-black tw-text-base tw-line-clamp-1">
+                                    {item.content}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            {/* 세 번째 컬럼 */}
+                            <div className="md:tw-w-full">
+                              <div className="tw-grid tw-grid-cols-12 tw-gap-4">
+                                <div className="tw-col-span-2 tw-text-sm tw-font-bold tw-text-black">아티클</div>
+                                <div className="tw-col-span-10 tw-text-sm tw-text-gray-600  tw-line-clamp-1">
+                                  {item.articleUrl}
+                                </div>
+                              </div>
+                            </div>
+                            <div className="tw-col-span-2 tw-text-sm tw-text-right">
+                              댓글 : {item.activeCount} 답변 : {item.answerCount}
+                            </div>
+                          </div>
+                        </Mobile>
+                      </div>
+                    ))}
+                  </section>
+                  <Pagination page={page} setPage={setPage} total={totalPage} />
+                </div>
+              </article>
+            </div>
+          )}
         </div>
-        <MentorsModal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
+        <MentorsModal title={'퀴즈 직접 등록하기'} isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
+          <div>
+            <Accordion
+              disableGutters
+              sx={{ backgroundColor: '#e9ecf2' }}
+              expanded={expanded === 0}
+              onChange={handleChange(0)}
+            >
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <div className="tw-text-lg tw-font-bold">지식컨텐츠 정보 입력</div>
+              </AccordionSummary>
+              <AccordionDetails sx={{ backgroundColor: 'white' }}>
+                <div className="tw-text-sm tw-font-bold tw-py-2">지식컨텐츠 유형</div>
+                <div className={cx('mentoring-button__group', 'tw-px-0', 'justify-content-center')}>
+                  {studyStatus.map((item, i) => (
+                    <Toggle
+                      key={item.id}
+                      label={item.name}
+                      name={item.name}
+                      value={item.id}
+                      variant="small"
+                      checked={active === i}
+                      isActive
+                      type="tabButton"
+                      onChange={() => {
+                        setActive(i);
+                        setContentType(item.id);
+                        setParams({
+                          ...params,
+                          viewFilter: item.id,
+                          page,
+                        });
+                        setPage(1);
+                      }}
+                      className={cx('tw-mr-2 !tw-w-[90px]')}
+                    />
+                  ))}
+                </div>
+                <div className="tw-text-sm tw-font-bold tw-pt-5">지식컨텐츠 URL</div>
+                <TextField
+                  required
+                  id="username"
+                  name="username"
+                  label="학번 혹은 이메일을 입력해주세요."
+                  variant="outlined"
+                  type="search"
+                  size="small"
+                  fullWidth
+                  sx={{
+                    '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
+                    // '& input': { height: ' 0.8em;' },
+                  }}
+                  margin="dense"
+                  {...register('username')}
+                  error={errors.username ? true : false}
+                  helperText={errors.username?.message}
+                />
+                <div className="tw-text-sm tw-font-bold tw-pt-5">지식컨텐츠 제목</div>
+                <TextField
+                  required
+                  id="username"
+                  name="username"
+                  label="제목을 입력해주세요."
+                  variant="outlined"
+                  type="search"
+                  size="small"
+                  fullWidth
+                  sx={{
+                    '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
+                    // '& input': { height: ' 0.8em;' },
+                  }}
+                  margin="dense"
+                  {...register('username')}
+                  error={errors.username ? true : false}
+                  helperText={errors.username?.message}
+                />
+              </AccordionDetails>
+            </Accordion>
+            <Accordion
+              disableGutters
+              sx={{ backgroundColor: '#e9ecf2' }}
+              expanded={expanded === 1}
+              onChange={handleChange(1)}
+            >
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <div className="tw-text-lg tw-font-bold">지식컨텐츠 태깅</div>
+              </AccordionSummary>
+              <AccordionDetails sx={{ backgroundColor: 'white' }}>
+                <div className="tw-text-sm tw-font-bold tw-py-2">추천 대학</div>
+                <TagsInput
+                  value={selected1}
+                  onChange={setSelected1}
+                  name="fruits"
+                  placeHolder="추천대학 입력 후 엔터를 쳐주세요."
+                />
+                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">추천 전공</div>
+                <TagsInput
+                  value={selected1}
+                  onChange={setSelected1}
+                  name="fruits"
+                  placeHolder="추천전공 입력 후 엔터를 쳐주세요."
+                />
+                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">추천 학년</div>
+                {gradeStatus.map((item, i) => (
+                  <Toggle
+                    key={item.id}
+                    label={item.name}
+                    name={item.name}
+                    value={item.id}
+                    variant="small"
+                    checked={active === i}
+                    isActive
+                    type="tabButton"
+                    onChange={() => {
+                      setActive(i);
+                      setContentType(item.id);
+                      setParams({
+                        ...params,
+                        viewFilter: item.id,
+                        page,
+                      });
+                      setPage(1);
+                    }}
+                    className={cx('tw-mr-2 !tw-w-[90px]')}
+                  />
+                ))}
+                <div className="tw-text-sm tw-font-bold tw-pt-5">학습 주제</div>
+                <TextField
+                  required
+                  id="username"
+                  name="username"
+                  label="학습 주제를 입력해주세요."
+                  variant="outlined"
+                  type="search"
+                  size="small"
+                  fullWidth
+                  sx={{
+                    '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
+                    // '& input': { height: ' 0.8em;' },
+                  }}
+                  margin="dense"
+                  {...register('username')}
+                  error={errors.username ? true : false}
+                  helperText={errors.username?.message}
+                />
+                <div className="tw-text-sm tw-font-bold tw-pt-5">학습 챕터</div>
+                <TextField
+                  required
+                  id="username"
+                  name="username"
+                  label="학습 챕터를 입력해주세요."
+                  variant="outlined"
+                  type="search"
+                  size="small"
+                  fullWidth
+                  sx={{
+                    '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
+                    // '& input': { height: ' 0.8em;' },
+                  }}
+                  margin="dense"
+                  {...register('username')}
+                  error={errors.username ? true : false}
+                  helperText={errors.username?.message}
+                />
+                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">학습 키워드</div>
+                <TagsInput
+                  value={selected1}
+                  onChange={setSelected1}
+                  name="fruits"
+                  placeHolder="추천전공 입력 후 엔터를 쳐주세요."
+                />
+              </AccordionDetails>
+            </Accordion>
+            <Accordion
+              disableGutters
+              sx={{ backgroundColor: '#e9ecf2' }}
+              expanded={expanded === 2}
+              onChange={handleChange(2)}
+            >
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <div className="tw-text-lg tw-font-bold">퀴즈 정보 입력</div>
+              </AccordionSummary>
+              <AccordionDetails sx={{ backgroundColor: 'white' }}>
+                <div className="tw-text-sm tw-font-bold tw-pt-5">생성할 퀴즈 개수</div>
+                <div className="tw-grid tw-grid-cols-2 tw-items-center">
+                  <div>
+                    {/* col-span을 4로 변경 */}
+                    <TextField
+                      required
+                      id="username"
+                      name="username"
+                      label="생성할 퀴즈 개수를 입력해주세요."
+                      variant="outlined"
+                      type="search"
+                      size="small"
+                      fullWidth
+                      sx={{
+                        '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
+                      }}
+                      margin="dense"
+                    />
+                  </div>
+                  <div className="tw-pl-4">
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          defaultChecked
+                          sx={{
+                            color: '#ced4de',
+                            '&.Mui-checked': { color: '#e11837' },
+                          }}
+                        />
+                      }
+                      label={<p className="tw-text-sm tw-font-bold tw-text-left tw-text-[#31343d]">AI퀴즈</p>}
+                    />
+                    <button
+                      type="submit"
+                      className="tw-px-4 tw-py-2 tw-text-sm tw-bg-gray-300 tw-rounded-md hover:tw-bg-gray-400"
+                    >
+                      퀴즈 생성하기
+                    </button>
+                  </div>
+                  <div></div>
+                </div>
+              </AccordionDetails>
+            </Accordion>
+
+            <div className="tw-py-5 tw-flex tw-justify-between">
+              <button
+                onClick={handlePreviousAccordion}
+                className="tw-px-10 tw-py-2 tw-text-base tw-bg-gray-300 tw-rounded-md hover:tw-bg-gray-400"
+                style={{ marginRight: 'auto' }} // 왼쪽 정렬
+              >
+                이전
+              </button>
+              <button
+                onClick={handleNextAccordion}
+                className="tw-px-10 tw-py-2 tw-text-base tw-bg-gray-300 tw-rounded-md hover:tw-bg-gray-400"
+                style={{ marginLeft: 'auto' }} // 오른쪽 정렬
+              >
+                {expanded === 2 ? '완료' : '다음'} {/* expanded가 2일 때는 "완료", 그 외에는 "다음" 표시 */}
+              </button>
+            </div>
+          </div>
+        </MentorsModal>
+        {/* <MentorsModal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
           <div className="tw-font-bold tw-text-xl tw-text-black tw-my-5 tw-mb-2 tw-text-left tw-mt-0">
             퀴즈 직접 등록하기
           </div>
@@ -880,7 +1251,7 @@ export function QuizMakeTemplate() {
               </button>
             </div>
           </div>
-        </MentorsModal>
+        </MentorsModal> */}
       </div>
     </>
   );

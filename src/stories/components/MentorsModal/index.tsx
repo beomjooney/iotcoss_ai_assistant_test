@@ -9,16 +9,25 @@ ReactModal.setAppElement('body');
 
 export interface MentorsModalProps {
   isOpen: boolean;
+  title?: string;
   closable?: boolean;
   children?: React.ReactNode;
   onAfterClose?: () => void;
 }
 
-function MentorsModal({ isOpen, children, closable = true, onAfterClose }: MentorsModalProps) {
+function MentorsModal({ isOpen, title, children, closable = true, onAfterClose }: MentorsModalProps) {
   const [isShow, setIsShow] = useState<boolean>(false);
+  const [scrollPosition, setScrollPosition] = useState<number>(0);
 
   useEffect(() => {
     setIsShow(isOpen);
+    if (isOpen) {
+      setScrollPosition(window.scrollY); // 모달이 열릴 때 현재 스크롤 위치 저장
+      document.body.style.overflow = 'hidden'; // 모달이 열릴 때 스크롤 막기
+    } else {
+      window.scrollTo(0, scrollPosition); // 모달이 닫힐 때 이전 스크롤 위치로 스크롤 이동
+      document.body.style.overflow = 'visible'; // 모달이 닫힐 때 스크롤 허용
+    }
   }, [isOpen]);
 
   return (
@@ -43,7 +52,7 @@ function MentorsModal({ isOpen, children, closable = true, onAfterClose }: Mento
               left: '50%',
               transform: 'translateX(-50%)',
               width: '95%',
-              height: '85%',
+              height: '90%',
               border: '1px solid #ccc',
               background: '#fff',
               overflow: 'hidden',
@@ -56,9 +65,11 @@ function MentorsModal({ isOpen, children, closable = true, onAfterClose }: Mento
           }}
         >
           {closable && (
-            <div className={cx('closable')} onClick={() => setIsShow(false)}>
-              <span className="ti-close" style={{ cursor: 'pointer' }} />
-            </div>
+            <>
+              <div className={cx('closable')} onClick={() => setIsShow(false)}>
+                <span className="ti-close" style={{ cursor: 'pointer' }} />
+              </div>
+            </>
           )}
           <div className={cx('content')}>{children}</div>
         </ReactModal>
@@ -95,9 +106,18 @@ function MentorsModal({ isOpen, children, closable = true, onAfterClose }: Mento
           }}
         >
           {closable && (
-            <div className={cx('closable')} onClick={() => setIsShow(false)}>
-              <span className="ti-close" style={{ cursor: 'pointer' }} />
-            </div>
+            <>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div
+                  className={cx('closable tw-font-bold tw-text-xl tw-text-black tw-my-5 tw-mb-2 tw-text-left tw-mt-0')}
+                >
+                  {title}
+                </div>
+                <div className={cx('closable')} onClick={() => setIsShow(false)}>
+                  <span className="ti-close" style={{ cursor: 'pointer' }} />
+                </div>
+              </div>
+            </>
           )}
           <div className={cx('content')}>{children}</div>
         </ReactModal>
