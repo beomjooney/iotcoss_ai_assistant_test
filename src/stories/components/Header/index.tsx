@@ -87,9 +87,9 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
   const [isShowMenu, setIsShowMenu] = useState<boolean>(false);
 
   //**alarm */
-  const { isFetched: isContentFetched, refetch: refetch } = useQuizAlarmHistory(params, data => {
-    setContents(data);
-  });
+  // const { isFetched: isContentFetched, refetch: refetch } = useQuizAlarmHistory(params, data => {
+  //   setContents(data);
+  // });
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
