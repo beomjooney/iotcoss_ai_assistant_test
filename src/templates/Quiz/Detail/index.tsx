@@ -23,6 +23,8 @@ import Divider from '@mui/material/Divider';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import { useQuizDeleteLike, useQuizLike, useSaveLike } from 'src/services/community/community.mutations';
+import QuizClubDetailInfo from 'src/stories/components/QuizClubDetailInfo';
+import QuizClubDetaillSolution from 'src/stories/components/QuizClubDetaillSolution';
 
 /** rc progress */
 import { Line, Circle } from 'rc-progress';
@@ -42,6 +44,47 @@ export interface QuizDetailTemplateProps {
   /** 세미나 아이디 */
   id?: any;
 }
+
+const clubInfo = {
+  intro: '비전공자 개발자라면, 컴퓨터 공학 지식에 대한 갈증이 있을텐데요...',
+  benefits: '개발에 대한 기초적인 지식을 기반으로...',
+  schedule: '2023.06.01 - 2023.06.18 / 주2회(월, 수) 총 36개 퀴즈',
+  recommendation: '컴공에 대한 기초적인 지식이 있으신 분...',
+};
+
+const leaders = {
+  name: '양황규 교수님',
+  position: '교수ㅣ컴퓨터공학과ㅣ20년차',
+  description: '동서대학교 석현태 교수입니다.',
+  greeting: '안녕하세요. 이 퀴즈 클럽을 운영하게 된 양황규 교수입니다...',
+  career: '(현) 카카오 개발 리더...',
+  projects: '카카오 모빌리티 앱 개발...',
+  tags: ['JAVA', 'Spring5', 'Go'],
+  departments: [
+    { label: '소프트웨어융합대학', bgColor: 'tw-bg-[#d7ecff]', textColor: 'tw-text-[#235a8d]' },
+    { label: '컴퓨터공학과', bgColor: 'tw-bg-[#e4e4e4]', textColor: 'tw-text-[#313b49]' },
+  ],
+};
+
+const representativeQuizzes = [
+  { question: 'ESB와 API Gateway 차이점에 대해서 설명하세요' },
+  { question: 'Grafana 주요기능 및 역할에 대해서 설명하세요.' },
+  { question: '대용량 DB 트래픽 처리를 위한 Query Off Loading에 대해서 설명하세요.' },
+];
+
+const clubQuizzes = {
+  title: '임베디드 시스템',
+  details: '[전공선택] 3학년 화요일 A반',
+  schedule: '학습 주기 : 매주 화요일 (총 12회)',
+  duration: '학습 기간 : 12주 (2024. 09. 03 ~ 2024. 11. 03)',
+  participants: '참여 인원 : 24명',
+  leader: '양황규 교수',
+  tags: [
+    { label: '소프트웨어융합대학', bgColor: 'tw-bg-[#d7ecff]', textColor: 'tw-text-[#235a8d]' },
+    { label: '컴퓨터공학과', bgColor: 'tw-bg-[#e4e4e4]', textColor: 'tw-text-[#313b49]' },
+    { label: '3학년', bgColor: 'tw-bg-[#ffdede]', textColor: 'tw-text-[#b83333]' },
+  ],
+};
 
 export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
   const { user } = useStore();
@@ -312,7 +355,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
         setApplicationButton(
           <button
             type="button"
-            disabled
+            onClick={() => handleParticipant()}
             className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
           >
             진행 종료
@@ -324,9 +367,17 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
   return (
     <div className={cx('seminar-detail-container')}>
       {isParticipantListFetched &&
-        (contents?.clubStatus == '0004' && contents?.clubMemberStatus == '0002' ? (
-          <div className="max-lg:tw-mt-5">
-            <BannerDetail
+        (true ? (
+          // (contents?.clubStatus == '0004' && contents?.clubMemberStatus == '0002' ? (
+          <div className={cx('container')}>
+            <QuizClubDetaillSolution
+              border={false}
+              clubInfo={clubInfo}
+              leaders={leaders}
+              clubQuizzes={clubQuizzes}
+              representativeQuizzes={representativeQuizzes}
+            />
+            {/* <BannerDetail
               data={contents}
               title="퀴즈클럽"
               subTitle="클럽 상세보기"
@@ -337,7 +388,6 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                 throw new Error('Function not implemented.');
               }}
             />
-            {/*바로 밑에 자식만 sticky 적용됨*/}
             <div className={cx('content-wrap')}>
               <div className="tw-bg-[#F2F9FF]">
                 <div className={cx('container')}>
@@ -407,7 +457,6 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                     퀴즈목록 {totalElements}
                   </Grid>
                   <Grid container justifyContent="flex-end" xs={6} sm={2} style={{ textAlign: 'right' }}>
-                    {/* <Pagination page={page} setPage={setPage} total={totalPage} /> */}
                     <Pagination
                       count={totalPage}
                       size="small"
@@ -533,19 +582,6 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                                     {item?.answer?.text}
                                   </div>
                                 </div>
-                                {/* <div className="">
-                                <div className="tw-font-medium tw-text-black ">
-                                  <button
-                                    onClick={() => router.push('/quiz/round-answers/' + `${item?.clubQuizSequence}`)}
-                                    // onClick={() => router.push('/quiz/answers/' + `${item?.clubQuizSequence}`)}
-                                    type="button"
-                                    data-tooltip-target="tooltip-default"
-                                    className="tw-bg-white tw-text-gray-500 tw-text-sm tw-font-right tw-px-3 tw-py-1 tw-rounded"
-                                  >
-                                    자세히보기
-                                  </button>
-                                </div>
-                              </div> */}
                               </div>
                             ) : (
                               <div></div>
@@ -568,178 +604,24 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                       </Grid>
                     </Grid>
                   );
-                  // <ArticleCard uiType={item.contentsType} content={item} key={i} className={cx('container__item')} />
                 })}
               </div>
-            </div>
+            </div> */}
           </div>
         ) : (
-          <div>
-            <BannerDetail
-              data={contents}
-              title="퀴즈클럽"
-              subTitle="클럽 상세보기"
-              imageName="top_banner_seminar.svg"
-              className="tw-bg-[#FFFAF1]"
-              setIsModalOpen={setIsModalOpen}
-            />
-            <div className="tw-bg-[#FFFAF1]">
-              <div className="container">
-                <div className={cx('content-wrap')}>
-                  <div className={cx('content', 'tw-px-11')}>
-                    <Tabs
-                      indicatorColor="white"
-                      value={value}
-                      onChange={handleChange}
-                      aria-label="basic tabs example"
-                      className={cx('tabs', 'sticky', 'tw-bg-red-500')}
-                      style={{ backgroundColor: '#FFFAF1' }}
-                    >
-                      <Tab
-                        style={{ backgroundColor: '#fff' }}
-                        label="퀴즈클럽 소개"
-                        {...a11yProps(0)}
-                        onClick={() => handleClickTab(0)}
-                      />
-                      <Tab
-                        style={{ backgroundColor: '#fff' }}
-                        label="크루활동"
-                        {...a11yProps(1)}
-                        onClick={() => handleClickTab(1)}
-                      />
-                    </Tabs>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="container tw-px-11">
-              <TabPanel value={value} index={0} className="tw-p-5">
-                <div className="tw-flex tw-items-center tw-space-x-4 tw-my-5">
-                  <img
-                    className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full"
-                    src={contents?.leaderProfileImageUrl}
-                    alt=""
-                  />
-                  <div className="tw-text-base tw-font-semibold tw-text-black dark:tw-text-white">
-                    <div>{contents?.leaderNickname}</div>
-                  </div>
-                </div>
-
-                <div className="tw-text-xl tw-mb-10 tw-font-bold tw-text-black dark:tw-text-gray-400">
-                  퀴즈클럽 소개
-                </div>
-                <div className="tw-text-base tw-mb-10 tw-font-normal tw-text-black dark:tw-text-gray-400">
-                  {/* <ReactMarkdown children={value1} remarkPlugins={[remarkGfm]} /> */}
-                  <div dangerouslySetInnerHTML={{ __html: contents?.description }} />
-                </div>
-
-                <div className="tw-text-xl tw-mb-10 tw-font-bold tw-text-black dark:tw-text-gray-400">
-                  퀴즈클럽 질문 미리보기
-                </div>
-
-                <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-400 dark:tw-text-gray-400">
-                  {contents?.studyWeekCount}주 총 학습 {contents?.studyTotalCount}회 진행
-                </div>
-
-                {contents?.clubQuizzes?.map((item, index) => {
-                  if (item?.isRepresentative === true) {
-                    return (
-                      <div key={index} className="">
-                        <div className="tw-grid  tw-grid-cols-12 tw-flex tw-items-center tw-px-0 tw-border mb-2 mt-0 rounded">
-                          <div className="tw-col-span-1 ">
-                            <div className="tw-mx-3 tw-py-2 tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-medium tw-text-center  tw-rounded">
-                              대표 {index + 1}
-                            </div>
-                          </div>
-                          <div className="tw-col-span-11 ">
-                            <div className="tw-font-medium tw-text-black">{item.content}</div>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  } else {
-                    // 다른 경우에는 렌더링하지 않음
-                    return null;
-                  }
-                })}
-              </TabPanel>
-              <TabPanel value={value} index={1}>
-                {/* <Profile
-                      showDesc
-                      mentorInfo={data?.seminarLecturer}
-                      className={cx('seminar-tabpanel-1__profile', 'col-md-4')}
-                      imageSize={160}
-                      colorMode="primary"
-                      isDetail
-                    /> */}
-              </TabPanel>
-              <TabPanel value={value} index={2}>
-                {/* <Typography type="H3" bold>
-                    크루활동
-                  </Typography> */}
-                <div
-                  dangerouslySetInnerHTML={{ __html: contents?.seminarCurriculum }}
-                  className={cx('seminar-tabpanel__html-content')}
-                />
-              </TabPanel>
-            </div>
+          <div className={cx('seminar-container')}>
             <div className={cx('container')}>
-              {/*바로 밑에 자식만 sticky 적용됨*/}
-              <div className={cx('content-wrap')}>
-                <div className={cx('content')}>
-                  {contents?.imageUrl3 && (
-                    <Image
-                      src={`${process.env['NEXT_PUBLIC_GENERAL_IMAGE_URL']}/images/${contents?.imageUrl3}`}
-                      alt={`${contents?.seminarTitle}`}
-                      layout="responsive"
-                      width="736"
-                      height="420"
-                      objectFit="fill"
-                      unoptimized={true}
-                    />
-                  )}
-                </div>
-              </div>
+              <QuizClubDetailInfo
+                border={false}
+                clubInfo={clubInfo}
+                leaders={leaders}
+                clubQuizzes={clubQuizzes}
+                representativeQuizzes={representativeQuizzes}
+              />
             </div>
           </div>
         ))}
-      <div className="tw-mt-10">{applicationButton}</div>
-      <Modal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)} title="퀴즈풀러가기" maxWidth="900px">
-        <div className={cx('seminar-check-popup')}>
-          <div className={cx('mb-5')}>
-            <span className={cx('text-bold', 'tw-text-xl', 'tw-font-bold')}>퀴즈 클럽 가입에 연락처가 필요합니다.</span>
-          </div>
-          <div>효과적이고 원활한 퀴즈 클럽 진행을 위해,</div>
-          <div>클럽 소통 채널을 개설할 예정입니다.</div>
-          <br></br>
-          <div>프로필로 이동하여, 연락처를 기입해주세요.</div>
-          <div>연라거는 클럽 활동 외에 다른 용도로 사용되지 않습니다.</div>
-          <br></br>
-          <div className="tw-mt-5">
-            <Button
-              className="tw-mr-5"
-              color="lite-gray"
-              label="취소"
-              size="modal"
-              onClick={() => setIsModalOpen(false)}
-            />
-            <Button
-              color="primary"
-              label="연락처 입력하러가기"
-              size="modal"
-              onClick={() =>
-                router.push(
-                  {
-                    pathname: '/profile',
-                    query: { isOpenModal: true, beforeQuizSequence: id },
-                  },
-                  '/profile',
-                )
-              }
-            />
-          </div>
-        </div>
-      </Modal>
+      {/* <div className="tw-mt-10">{applicationButton}</div> */}
     </div>
   );
 }

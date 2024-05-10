@@ -2754,7 +2754,7 @@ span.sub-title {
 }
 
 .progress-line {
-  background-color: #007bff;
+  background-color: black;
   -webkit-animation: progressBar 3s ease-in-out;
   -webkit-animation-fill-mode: both;
   -moz-animation: progressBar 3s ease-in-out;

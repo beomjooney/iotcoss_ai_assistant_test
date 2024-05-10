@@ -1,15 +1,10 @@
 import styles from './index.module.scss';
-import { format } from 'date-fns';
-import koLocale from 'date-fns/locale/ko';
 import classNames from 'classnames/bind';
 import { Button, Chip, MentorsModal, Pagination, Toggle } from 'src/stories/components';
 import React, { useEffect, useState, useRef } from 'react';
 import { RecommendContent, SeminarImages } from 'src/models/recommend';
 import { useSeminarList, paramProps, useSeminarImageList } from 'src/services/seminars/seminars.queries';
-import QuizArticleCard from 'src/stories/components/QuizArticleCard';
-import Carousel from 'nuka-carousel';
 import { useContentJobTypes, useContentTypes, useJobGroups, useJobGroupss } from 'src/services/code/code.queries';
-import { useStore } from 'src/store';
 import { useRouter } from 'next/router';
 import Grid from '@mui/material/Grid';
 import Icon from '@mui/material/Icon';
@@ -19,11 +14,9 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import TextField, { TextFieldProps } from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
-import Link from 'next/link';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
-// import ToggleButton from 'src/stories/components/ToggleButton';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
 import { UseQueryResult } from 'react-query';
@@ -36,31 +29,69 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 import { useRecommendContents } from 'src/services/contents/contents.queries';
 import { useJobs, useMyQuiz, useQuizList } from 'src/services/jobs/jobs.queries';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import { useClubQuizSave, useQuizSave } from 'src/services/quiz/quiz.mutations';
-import { jobColorKey } from 'src/config/colors';
 import { TagsInput } from 'react-tag-input-component';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import { useUploadImage } from 'src/services/image/image.mutations';
-import Tooltip from 'src/stories/components/Tooltip';
 import { makeStyles, withStyles } from '@mui/styles';
 import styled from '@emotion/styled';
-import MuiTabs from '@material-ui/core/Tabs';
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
 import { StepIconProps } from '@mui/material/StepIcon';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Stack from '@mui/material/Stack';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import NavigatePrevIcon from '@mui/icons-material/NavigateBefore';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
+import QuizBreakerInfo from 'src/stories/components/QuizBreakerInfo';
+import QuizBreakerInfoCheck from 'src/stories/components/QuizBreakerInfoCheck';
+import QuizClubDetailInfo from 'src/stories/components/QuizClubDetailInfo';
 
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+//group
+import { dayGroup, privateGroup, levelGroup, openGroup } from './group';
+
+const clubInfo = {
+  intro: '비전공자 개발자라면, 컴퓨터 공학 지식에 대한 갈증이 있을텐데요...',
+  benefits: '개발에 대한 기초적인 지식을 기반으로...',
+  schedule: '2023.06.01 - 2023.06.18 / 주2회(월, 수) 총 36개 퀴즈',
+  recommendation: '컴공에 대한 기초적인 지식이 있으신 분...',
+};
+
+const leaders = {
+  name: '양황규 교수님',
+  position: '교수ㅣ컴퓨터공학과ㅣ20년차',
+  description: '동서대학교 석현태 교수입니다.',
+  greeting: '안녕하세요. 이 퀴즈 클럽을 운영하게 된 양황규 교수입니다...',
+  career: '(현) 카카오 개발 리더...',
+  projects: '카카오 모빌리티 앱 개발...',
+  tags: ['JAVA', 'Spring5', 'Go'],
+  departments: [
+    { label: '소프트웨어융합대학', bgColor: 'tw-bg-[#d7ecff]', textColor: 'tw-text-[#235a8d]' },
+    { label: '컴퓨터공학과', bgColor: 'tw-bg-[#e4e4e4]', textColor: 'tw-text-[#313b49]' },
+  ],
+};
+
+const representativeQuizzes = [
+  { question: 'ESB와 API Gateway 차이점에 대해서 설명하세요' },
+  { question: 'Grafana 주요기능 및 역할에 대해서 설명하세요.' },
+  { question: '대용량 DB 트래픽 처리를 위한 Query Off Loading에 대해서 설명하세요.' },
+];
+
+const clubQuizzes = {
+  title: '임베디드 시스템',
+  details: '[전공선택] 3학년 화요일 A반',
+  schedule: '학습 주기 : 매주 화요일 (총 12회)',
+  duration: '학습 기간 : 12주 (2024. 09. 03 ~ 2024. 11. 03)',
+  participants: '참여 인원 : 24명',
+  leader: '양황규 교수',
+  tags: [
+    { label: '소프트웨어융합대학', bgColor: 'tw-bg-[#d7ecff]', textColor: 'tw-text-[#235a8d]' },
+    { label: '컴퓨터공학과', bgColor: 'tw-bg-[#e4e4e4]', textColor: 'tw-text-[#313b49]' },
+    { label: '3학년', bgColor: 'tw-bg-[#ffdede]', textColor: 'tw-text-[#b83333]' },
+  ],
+};
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -105,119 +136,6 @@ function ColorlibStepIcon(props: StepIconProps) {
   const { active, completed, className } = props;
   return <ColorlibStepIconRoot ownerState={{ completed, active }} className={className}></ColorlibStepIconRoot>;
 }
-
-const dayGroup = [
-  {
-    id: '월',
-    groupId: '0001',
-    name: '월',
-    description: '월',
-    order: 1,
-  },
-  {
-    id: '화',
-    groupId: '0001',
-    name: '화',
-    description: '화',
-    order: 2,
-  },
-  {
-    id: '수',
-    groupId: '0001',
-    name: '수',
-    description: '수',
-    order: 3,
-  },
-  {
-    id: '목',
-    groupId: '0001',
-    name: '목',
-    description: '목',
-    order: 3,
-  },
-  {
-    id: '금',
-    groupId: '0001',
-    name: '금',
-    description: '금',
-    order: 3,
-  },
-  {
-    id: '토',
-    groupId: '0001',
-    name: '토',
-    description: '토',
-    order: 4,
-  },
-  {
-    id: '일',
-    groupId: '0001',
-    name: '일',
-    description: '일',
-    order: 4,
-  },
-];
-
-const privateGroup = [
-  {
-    id: '0100',
-    groupId: '0001',
-    name: '공개',
-    description: '공개',
-    active: true,
-    order: 1,
-  },
-  {
-    id: '0200',
-    groupId: '0001',
-    name: '비공개',
-    description: '비공개',
-    active: false,
-    order: 2,
-  },
-];
-
-const levelGroup = [
-  {
-    name: '0',
-    description: '1학년',
-  },
-  {
-    name: '1',
-    description: '2학년',
-  },
-  {
-    name: '2',
-    description: '3학년',
-  },
-  {
-    name: '3',
-    description: '4학년',
-  },
-  {
-    name: '4',
-    description: '취업준비생',
-  },
-  {
-    name: '5',
-    description: '상관없음',
-  },
-];
-
-const openGroup = [
-  {
-    name: '0',
-    description: 'Type1. 정기 자동 오픈',
-  },
-  {
-    name: '1',
-    description: 'Type2. 교수자 수동 오픈',
-  },
-  {
-    name: '2',
-    description: 'Type3. 학습자 학습 오픈',
-  },
-];
 
 const cx = classNames.bind(styles);
 
@@ -683,83 +601,6 @@ export function QuizOpenTemplate() {
     });
   };
 
-  const handleChangeCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, checked } = event.currentTarget;
-    const quizData = quizListData;
-    const result = [...state];
-
-    console.log(result, quizListOrigin, quizData);
-
-    // if (result.length >= quizListOrigin.length) {
-    //   alert('더이상 퀴즈를 선택할수 없습니다.');
-    //   return;
-    // }
-
-    //console.log('name -------------', name, result, quizData, quizListCopy);
-
-    if (result.indexOf(name) > -1) {
-      result.splice(result.indexOf(name), 1);
-    } else {
-      result.push(name);
-    }
-    setState(result);
-    //console.log(state, quizData, result);
-    const filteredData = getObjectsWithSequences(quizData, result);
-    const valueData = getObjectsWithSequences(quizData, [name]);
-
-    //console.log('filteredData------', filteredData, quizListOrigin);
-    //studyCycle 로직추가
-    //setQuizListCopy(quizListOrigin);
-
-    const resultArray1 = [];
-    //console.log('quizListCopy ', quizListCopy);
-    //console.log('quizListOrigin ', quizListOrigin);
-    //console.log('resultArray1 ', resultArray1);
-    const flag = true;
-    if (checked) {
-      //console.log('add', quizListOrigin);
-      quizListOrigin.map((item, index) => {
-        // //console.log(item);
-        if (typeof item.order === 'undefined' && flag === true) {
-          //console.log('undefind');
-          resultArray1.push({
-            ...item,
-            quizSequence: valueData[0].sequence,
-            content: valueData[0].content,
-            memberName: valueData[0].memberName,
-            isRepresentative: false,
-            order: index,
-          });
-          flag = false;
-        } else {
-          //console.log('mmn');
-          resultArray1.push(item);
-        }
-      });
-      setQuizListCopy(resultArray1);
-      setQuizListOrigin(resultArray1);
-    } else {
-      //console.log('remove', valueData);
-      const modifiedArray = quizListOrigin.map(item => {
-        if (item.quizSequence === valueData[0].sequence) {
-          const { isRepresentative, memberName, order, quizSequence, content, ...rest } = item;
-          return rest;
-        }
-        return item;
-      });
-      //console.log('remove', modifiedArray);
-      setQuizListCopy(modifiedArray);
-      setQuizListOrigin(modifiedArray);
-      setQuizList(modifiedArray);
-    }
-
-    setQuizList(result);
-    //console.log(resultArray1);
-    // setQuizListCopy(resultArray1);
-    // setQuizList(filteredData);
-    // setQuizListParam(filteredDataParam);
-  };
-
   useEffect(() => {
     setParams({
       ...params,
@@ -846,7 +687,7 @@ export function QuizOpenTemplate() {
 
   const steps = ['Step 1.클럽 세부사항 설정', 'Step 2.퀴즈 선택', 'Step 3. 개설될 클럽 미리보기'];
 
-  const [activeStep, setActiveStep] = React.useState(1);
+  const [activeStep, setActiveStep] = React.useState(2);
   const [skipped, setSkipped] = React.useState(new Set<number>());
 
   const [quizUrl, setQuizUrl] = React.useState('');
@@ -874,7 +715,7 @@ export function QuizOpenTemplate() {
     }
     if (activeStep === 1) {
       console.log(quizListOrigin.length, quizList.length);
-      if (quizList.length < 3) {
+      if (selectedQuizzes.length < 3) {
         alert('퀴즈를 3개 이상 추가해주세요');
         return 0;
       }
@@ -890,10 +731,10 @@ export function QuizOpenTemplate() {
       });
       //console.log(countIsRepresentative);
       // "isRepresentative" 값이 3개가 아닌 경우 알림 창 표시
-      if (countIsRepresentative !== 3) {
-        alert('대표 퀴즈는 3개로 설정 해주세요.');
-        return 0;
-      }
+      // if (countIsRepresentative !== 3) {
+      //   alert('대표 퀴즈는 3개로 설정 해주세요.');
+      //   return 0;
+      // }
     }
     // 필터링하여 새로운 배열 생성
     const filteredData = quizListOrigin
@@ -1954,23 +1795,109 @@ export function QuizOpenTemplate() {
         {activeStep === 1 && (
           <>
             <Desktop>
-              <article className="tw-mt-10">
-                <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-                  <Grid item xs={2} className="tw-font-bold tw-text-xl tw-text-black">
-                    퀴즈 등록하기 {selectedQuizzes.length}
-                  </Grid>
-                  <Grid item xs={7} className="tw-font-bold tw-text-xl tw-text-black "></Grid>
-                  <Grid item xs={3} justifyContent="flex-end" className="tw-flex">
-                    <button
-                      type="button"
-                      onClick={handleAddClick}
-                      className="tw-text-white tw-bg-blue-500 tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5 "
+              <article className="tw-mt-8">
+                <div className="tw-relative">
+                  <p className="tw-text-xl tw-font-bold tw-text-left tw-text-black tw-py-10">퀴즈 등록하기</p>
+                  <p className="tw-text-base tw-text-left tw-text-black">
+                    <span className="tw-text-base tw-text-left tw-text-black">
+                      클럽 세부사항에서 선택한 항목에 따라 자동으로 추천된 퀴즈 목록입니다. 퀴즈를 클릭하시면 다른
+                      퀴즈로 변경할 수 있습니다.
+                    </span>
+                    <br />
+                    <span className="tw-text-base tw-text-left tw-text-black">
+                      퀴즈 순서 및 삭제로 편집하여 우리 클럽에 맞는 퀴즈 목록을 만들어주세요!
+                    </span>
+                  </p>
+                  <div className="tw-absolute tw-bottom-0 tw-right-0">
+                    <div className="tw-flex tw-justify-center tw-items-center tw-w-[124px] tw-relative tw-overflow-hidden tw-gap-2 tw-px-7 tw-py-[11.5px] tw-rounded tw-bg-[#e9ecf2]">
+                      <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-center tw-text-[#6a7380]">
+                        퀴즈 초기화
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="tw-grid tw-grid-cols-3 tw-gap-8 tw-py-12">
+                  <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
+                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">대학</p>
+                    <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[314px] tw-relative tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
+                      <TextField
+                        size="small"
+                        fullWidth
+                        label={'클럽명을 입력해주세요.'}
+                        onChange={handleInputChange}
+                        id="margin-none"
+                        value={clubName}
+                        name="clubName"
+                      />
+                    </div>
+                  </div>
+                  <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
+                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">학과</p>
+                    <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[314px] tw-h-11 tw-relative tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
+                      <TextField
+                        size="small"
+                        fullWidth
+                        label={'클럽명을 입력해주세요.'}
+                        onChange={handleInputChange}
+                        id="margin-none"
+                        value={clubName}
+                        name="clubName"
+                      />
+                    </div>
+                  </div>
+                  <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
+                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">학년</p>
+                    <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[314px] tw-h-11 tw-relative tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
+                      <TextField
+                        size="small"
+                        fullWidth
+                        label={'클럽명을 입력해주세요.'}
+                        onChange={handleInputChange}
+                        id="margin-none"
+                        value={clubName}
+                        name="clubName"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="tw-h-20 tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white border tw-border-[#e9ecf2]">
+                  <div className="tw-absolute tw-top-7 tw-left-1/2 tw-transform tw--translate-x-1/2 tw-flex tw-justify-center tw-items-center tw-gap-2">
+                    <svg
+                      width={24}
+                      height={24}
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-6 tw-h-6 tw-relative"
+                      preserveAspectRatio="xMidYMid meet"
                     >
-                      성장퀴즈 추가하기
-                    </button>
-                  </Grid>
-                </Grid>
+                      <g clip-path="url(#tw-clip0_320_49119)">
+                        <circle cx={12} cy={12} r="11.5" stroke="#9CA5B2" stroke-dasharray="2.25 2.25" />
+                        <path
+                          fill-rule="evenodd"
+                          clip-rule="evenodd"
+                          d="M12.75 7.5H11.25V11.25L7.5 11.25V12.75H11.25V16.5H12.75V12.75H16.5V11.25L12.75 11.25V7.5Z"
+                          fill="#9CA5B2"
+                        />
+                      </g>
+                      <defs>
+                        <clippath id="tw-clip0_320_49119">
+                          <rect width={24} height={24} fill="white" />
+                        </clippath>
+                      </defs>
+                    </svg>
+                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-medium tw-text-left tw-text-[#9ca5b2]">
+                      <button type="button" onClick={handleAddClick} className="tw-text-black tw-text-sm ">
+                        성장퀴즈 추가하기
+                      </button>
+                    </p>
+                  </div>
+                </div>
+
                 <div className="tw-mt-10"></div>
+
                 {selectedQuizzes.map((item, index) => {
                   return (
                     <Grid
@@ -1987,7 +1914,7 @@ export function QuizOpenTemplate() {
                           {index + 1} 주차 ({item.studyCycle})
                         </div>
                       </Grid>
-                      <Grid item xs={1}>
+                      {/* <Grid item xs={1}>
                         <div className="tw-flex-auto tw-text-center">
                           <button
                             type="button"
@@ -2007,9 +1934,19 @@ export function QuizOpenTemplate() {
                             <span className="sr-only">Icon description</span>
                           </button>
                         </div>
-                      </Grid>
-                      <Grid item xs={10}>
-                        <div className="tw-flex tw-items-center  tw-h-16 tw-p-4 tw-border border mb-3 mt-3 rounded">
+                      </Grid> */}
+                      <Grid item xs={11}>
+                        <QuizBreakerInfo
+                          avatarSrc="https://via.placeholder.com/40"
+                          userName={item.memberName}
+                          questionText={item.content}
+                          isRepresentative={item.isRepresentative}
+                          index={item.sequence}
+                          answerText="EAI는 엔터프라이즈 어플리케이션 인테그레이션의 약자입니다. 시스템이 서로 얽히고 복잡해지면서 통제가 잘 안되는 상황이 발생하여 이런 문제를 해결하기 위해 등장한 솔루션이 바로 EAI 입니다."
+                          handleCheckboxDelete={handleCheckboxDelete}
+                          handleCheckboxIsRepresentative={handleCheckboxIsRepresentative}
+                        />
+                        {/* <div className="tw-flex tw-items-center  tw-h-16 tw-p-4 tw-border border mb-3 mt-3 rounded">
                           <div className="tw-flex-auto">
                             <div className="tw-font-medium tw-text-black">{item?.content}</div>
                           </div>
@@ -2038,240 +1975,44 @@ export function QuizOpenTemplate() {
                               </div>
                             )}
                           </div>
-                        </div>
+                        </div> */}
                       </Grid>
                     </Grid>
                   );
                 })}
                 <div className="tw-container tw-py-10 tw-px-10 tw-mx-0 tw-min-w-full tw-flex tw-flex-col tw-items-center">
-                  <div className="tw-grid tw-grid-rows-3 tw-grid-flow-col tw-gap-4">
-                    <div className="tw-row-span-2">
-                      <button
-                        onClick={handleBack}
-                        className="tw-w-[300px] btn-outline-secondary tw-outline-blue-500 tw-bg-white tw-mr-5 tw-text-black tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded"
-                      >
-                        이전
-                      </button>
-                      <button
-                        className="tw-w-[300px] tw-bg-[#E11837] tw-text-white tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded"
-                        onClick={handleNext}
-                      >
-                        {activeStep === steps.length - 1 ? '성장퀴즈 클럽 개설하기 >' : '미리보기'}
-                      </button>
-                    </div>
+                  <div className="tw-flex tw-gap-5 tw-mt-3">
+                    <button
+                      onClick={handleBack}
+                      className="border tw-w-[150px] tw-btn-outline-secondary tw-outline-blue-500 tw-bg-white tw-text-black tw-font-bold tw-py-3 tw-px-4 tw-rounded tw-flex tw-items-center tw-justify-center tw-gap-1"
+                    >
+                      <NavigatePrevIcon fontSize="small" />
+                      이전
+                    </button>
+                    <button
+                      className="tw-w-[150px] tw-bg-[#E11837] tw-text-white tw-font-bold tw-py-3 tw-px-4 tw-rounded tw-flex tw-items-center tw-justify-center tw-gap-1"
+                      onClick={handleNext}
+                    >
+                      {activeStep === steps.length - 1 ? '성장퀴즈 클럽 개설하기 >' : '다음'}
+                      <NavigateNextIcon fontSize="small" />
+                    </button>
                   </div>
                 </div>
               </article>
             </Desktop>
-            <Mobile>
-              <article className="tw-mt-10">
-                <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-                  <Grid item xs={12} className="tw-font-bold tw-text-xl tw-text-black tw-py-2">
-                    퀴즈 등록하기 {quizList.length}
-                  </Grid>
-                  <Grid item xs={12} className="tw-font-bold tw-text-xl tw-text-black ">
-                    <div className="tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500">
-                      {recommendJobGroupsName.map((name, i) => (
-                        <span
-                          key={i}
-                          className="tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded"
-                        >
-                          {name}
-                        </span>
-                      ))}
-                      {/* {paramss?.recommendLevels.map((name, i) => (
-                        <span
-                          key={i}
-                          className="tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
-                        >
-                          {name} 레벨
-                        </span>
-                      ))} */}
-                      {jobGroupName?.map((name, i) => (
-                        <span
-                          className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
-                          key={i}
-                        >
-                          {name}
-                        </span>
-                      ))}
-                    </div>
-                  </Grid>
-                  <Grid item xs={12} justifyContent="flex-end" className="tw-flex">
-                    <button
-                      type="button"
-                      onClick={handleAddClick}
-                      className="tw-text-white tw-bg-blue-500 tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5 "
-                    >
-                      성장퀴즈 추가하기
-                    </button>
-                  </Grid>
-                </Grid>
-                <div className="tw-mt-10"></div>
-                {quizListCopy.length === 0
-                  ? quizListOrigin.map((item, index) => {
-                      return (
-                        <Grid
-                          key={index}
-                          container
-                          direction="row"
-                          justifyContent="left"
-                          alignItems="center"
-                          rowSpacing={3}
-                        >
-                          <Grid item xs={2}>
-                            <div className="tw-flex-auto tw-text-center tw-text-black tw-font-bold">Q{index + 1}.</div>
-                            <div className="tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold">
-                              {index + 1} 주차 ({item.studyCycle})
-                            </div>
-                          </Grid>
-                          <Grid item xs={2}>
-                            <div className="tw-flex-auto tw-text-center">
-                              <button
-                                type="button"
-                                className="tw-text-blue-700 border tw-border-blue-700 tw-font-medium tw-rounded-lg tw-text-sm tw-p-2.5 tw-text-center tw-inline-flex tw-items-center tw-mr-2"
-                              >
-                                <svg
-                                  className="tw-w-4 tw-h-4"
-                                  aria-hidden="true"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="currentColor"
-                                  viewBox="2 2 12 12"
-                                >
-                                  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
-                                </svg>
-                                <span className="sr-only">Icon description</span>
-                              </button>
-                            </div>
-                          </Grid>
-                          <Grid item xs={8}>
-                            <div className="tw-flex tw-items-center tw-p-4 tw-border border mb-3 mt-3 rounded">
-                              <div className="tw-flex-auto">
-                                <div className="tw-font-medium tw-text-black">{item.content}</div>
-                              </div>
-                              <div className="">{item.memberName}</div>
-                              <svg className="tw-ml-6 tw-h-6 tw-w-6 tw-flex-none" fill="none">
-                                <path
-                                  d="M12 8v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1V8Zm0 0V7a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1ZM12 12v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1ZM12 16v1a1 1 0 0 0 1-1h-1Zm0 0h-1a1 1 0 0 0 1 1v-1Zm0 0v-1a1 1 0 0 0-1 1h1Zm0 0h1a1 1 0 0 0-1-1v1Z"
-                                  fill="#64748B"
-                                ></path>
-                              </svg>
-                            </div>
-                          </Grid>
-                        </Grid>
-                      );
-                    })
-                  : quizListOrigin.map((item, index) => {
-                      return (
-                        <Grid
-                          key={index}
-                          container
-                          direction="row"
-                          justifyContent="left"
-                          alignItems="center"
-                          rowSpacing={3}
-                        >
-                          <Grid item xs={2}>
-                            <div className="tw-flex-auto tw-text-center tw-text-black tw-font-bold">Q{index + 1}.</div>
-                            <div className="tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold">
-                              {index + 1} 주차 ({item.studyCycle})
-                            </div>
-                          </Grid>
-                          <Grid item xs={2}>
-                            <div className="tw-flex-auto tw-text-center">
-                              <button
-                                type="button"
-                                onClick={() => handleDeleteQuiz(item.quizSequence)}
-                                className="tw-text-blue-700 border tw-border-blue-700 tw-font-medium tw-rounded-lg tw-text-sm tw-p-2.5 tw-text-center tw-inline-flex tw-items-center tw-mr-2"
-                              >
-                                <svg
-                                  className="tw-w-4 tw-h-4"
-                                  aria-hidden="true"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="currentColor"
-                                  viewBox="2 2 12 12"
-                                >
-                                  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
-                                </svg>
-                                <span className="sr-only">Icon description</span>
-                              </button>
-                            </div>
-                          </Grid>
-                          <Grid item xs={8}>
-                            <div className="tw-flex tw-items-center  tw-p-4 tw-border border mb-3 mt-3 rounded">
-                              <div className="tw-flex-auto">
-                                <div className="tw-font-medium tw-text-black">{item?.content}</div>
-                              </div>
-
-                              <div className="">
-                                {item?.isRepresentative === true && (
-                                  <div onClick={() => handleClickQuiz(item?.quizSequence, item?.isRepresentative)}>
-                                    <Tooltip
-                                      content="클릭시 대표퀴즈로 설정됩니다.대표퀴즈 설정은 3개까지 가능합니다."
-                                      placement="bottom"
-                                      trigger="mouseEnter"
-                                      warpClassName={cx('icon-height')}
-                                    >
-                                      <button
-                                        type="button"
-                                        data-tooltip-target="tooltip-default"
-                                        className="tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-medium tw-w-[40px]  tw-px-1 tw-rounded"
-                                      >
-                                        대표
-                                      </button>
-                                    </Tooltip>
-                                  </div>
-                                )}
-                                {item?.isRepresentative === false && (
-                                  <div onClick={() => handleClickQuiz(item?.quizSequence, item?.isRepresentative)}>
-                                    <Tooltip
-                                      content="클릭시 대표퀴즈로 설정됩니다.대표퀴즈 설정은 3개까지 가능합니다."
-                                      placement="bottom"
-                                      trigger="mouseEnter"
-                                      warpClassName={cx('icon-height')}
-                                    >
-                                      <button
-                                        type="button"
-                                        data-tooltip-target="tooltip-default"
-                                        className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium   tw-w-[40px]  tw-px-1 tw-rounded"
-                                      >
-                                        대표
-                                      </button>
-                                    </Tooltip>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          </Grid>
-                        </Grid>
-                      );
-                    })}
-                <div className="tw-container tw-py-10 tw-px-10 tw-mx-0 tw-min-w-full tw-flex tw-flex-col tw-items-center">
-                  <div className="tw-grid tw-grid-rows-3 tw-grid-flow-col tw-gap-4">
-                    <div className="tw-row-span-2">
-                      <button
-                        onClick={handleBack}
-                        className="tw-w-[300px] btn-outline-secondary tw-outline-blue-500 tw-bg-white tw-mr-5 tw-text-black tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded"
-                      >
-                        이전
-                      </button>
-                      <button
-                        className="tw-w-[300px] tw-bg-[#E11837] tw-text-white tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded"
-                        onClick={handleNext}
-                      >
-                        {activeStep === steps.length - 1 ? '성장퀴즈 클럽 개설하기 >' : '미리보기'}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </article>
-            </Mobile>
           </>
         )}
         {activeStep === 2 && (
           <>
             <article>
-              <div className="tw-p-10 tw-bg-gray-50 tw-mt-10">
+              <QuizClubDetailInfo
+                border={true}
+                clubInfo={clubInfo}
+                leaders={leaders}
+                clubQuizzes={clubQuizzes}
+                representativeQuizzes={representativeQuizzes}
+              />
+              {/* <div className="tw-p-10 tw-bg-gray-50 tw-mt-10">
                 <div className="tw-flex tw-flex-col tw-items-center tw-bg-white tw-border tw-border-gray-200 tw-rounded-lg tw-shadow md:tw-flex-row">
                   <img
                     className="tw-object-cover tw-rounded-t-lg tw-h-[245px] md:tw-h-[245px] md:tw-w-[220px] md:tw-rounded-none md:tw-rounded-l-lg"
@@ -2323,12 +2064,12 @@ export function QuizOpenTemplate() {
                       회
                     </div>
 
-                    {/* <div className="tw-flex tw-items-center tw-space-x-4">
-                    <img className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full" src={item?.author?.avatar} alt="" />
-                    <div className="tw-text-sm tw-font-semibold tw-text-black dark:tw-text-white">
-                      <div>{item?.author?.displayName}</div>
+                    <div className="tw-flex tw-items-center tw-space-x-4">
+                      <img className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full" src={item?.author?.avatar} alt="" />
+                      <div className="tw-text-sm tw-font-semibold tw-text-black dark:tw-text-white">
+                        <div>{item?.author?.displayName}</div>
+                      </div>
                     </div>
-                  </div> */}
                   </div>
                 </div>
               </div>
@@ -2355,40 +2096,34 @@ export function QuizOpenTemplate() {
                   // 다른 경우에는 렌더링하지 않음
                   return null;
                 }
-              })}
+              })} */}
 
               <div className="tw-container tw-py-10 tw-px-10 tw-mx-0 tw-min-w-full tw-flex tw-flex-col tw-items-center">
-                <div className="tw-grid tw-grid-rows-3 tw-grid-flow-col tw-gap-4">
-                  <div className="tw-row-span-2">
-                    <button
-                      onClick={handleBack}
-                      className="tw-w-[300px] btn-outline-secondary tw-outline-blue-500 tw-bg-white tw-mr-5 tw-text-black tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded"
-                    >
-                      이전
-                    </button>
-                    <button
-                      className="tw-w-[300px] tw-bg-[#E11837] tw-text-white tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded"
-                      onClick={handleNextLast}
-                    >
-                      {activeStep === steps.length - 1 ? '성장퀴즈 클럽 개설하기 >' : '미리보기'}
-                    </button>
-                  </div>
+                <div className="tw-flex tw-gap-5 tw-mt-3">
+                  <button
+                    onClick={handleBack}
+                    className="border tw-w-[240px] tw-btn-outline-secondary tw-outline-blue-500 tw-bg-white tw-text-black tw-font-bold tw-py-3 tw-px-4 tw-rounded tw-flex tw-items-center tw-justify-center tw-gap-1"
+                  >
+                    <NavigatePrevIcon fontSize="small" />
+                    이전
+                  </button>
+                  <button
+                    className="tw-w-[240px] tw-bg-[#E11837] tw-text-white tw-font-bold tw-py-3 tw-px-4 tw-rounded tw-flex tw-items-center tw-justify-center tw-gap-1"
+                    onClick={handleNextLast}
+                  >
+                    {activeStep === steps.length - 1 ? '클럽 개설하기' : '다음'}
+                    <NavigateNextIcon fontSize="small" />
+                  </button>
                 </div>
               </div>
             </article>
           </>
         )}
       </div>
-      <MentorsModal title={'퀴즈 등록하기'} isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
+      <MentorsModal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
         <Box width="100%" sx={{ borderBottom: '1px solid LightGray' }}>
-          {/* <div
-            style={{
-              borderBottom: '2px solid gray',
-              height: 51,
-              flexGrow: 1,
-            }}
-          ></div> */}
-          <Tabs value={value} onChange={handleChange}>
+          <p className="tw-text-xl tw-font-bold tw-text-center tw-text-black tw-pb-7">퀴즈 등록하기</p>
+          <Tabs value={value} onChange={handleChange} centered>
             {/* <StyledSubTabs value={value} onChange={handleChange}> */}
             <Tab disableRipple className="tw-text-black tw-text-base" label="퀴즈 검색하기" />
             <Tab
@@ -2414,7 +2149,7 @@ export function QuizOpenTemplate() {
               <TextField
                 size="small"
                 fullWidth
-                label={'퀴즈 키워드를 입력하세요.'}
+                placeholder="퀴즈 키워드를 입력해주세요."
                 onChange={handleInputQuizSearchChange}
                 id="margin-none"
                 value={quizSearch}
@@ -2429,154 +2164,51 @@ export function QuizOpenTemplate() {
                   }
                 }}
               />
+
+              <div className="tw-grid tw-grid-cols-3 tw-gap-8 tw-pt-8 tw-pb-4">
+                <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
+                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">대학</p>
+                  <select className="form-select" aria-label="Default select example">
+                    <option selected>대학을 선택해주세요.</option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                  </select>
+                </div>
+                <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
+                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">학과</p>
+                  <select className="form-select" aria-label="Default select example">
+                    <option selected>대학을 선택해주세요.</option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                  </select>
+                </div>
+                <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
+                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">학년</p>
+                  <select className="form-select" aria-label="Default select example">
+                    <option selected>대학을 선택해주세요.</option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                  </select>
+                </div>
+              </div>
             </div>
+            <p className="tw-text-xl tw-font-bold tw-text-left tw-text-black tw-pb-5">퀴즈검색 00개</p>
             {quizListData.map((item, index) => (
               <>
-                <Desktop>
-                  <div key={`admin-menu-${index}`} className="tw-flex tw-pb-5">
-                    {/* new logic */}
-                    <Checkbox
-                      disableRipple
-                      checked={selectedQuizIds.includes(item.sequence)}
-                      onChange={() => handleCheckboxChange(item.sequence)}
-                      name={item.sequence}
-                      className="tw-mr-3"
-                    />
-                    {/* <Checkbox
-                      disableRipple
-                      onChange={handleChangeCheck}
-                      checked={state.includes(String(item.sequence))}
-                      name={item.sequence}
-                      className="tw-mr-3"
-                    /> */}
-                    <div className="tw-p-4 tw-border border tw-w-full tw-rounded-lg">
-                      <div className="tw-flex tw-w-full tw-items-center"></div>
-                      <div className="tw-flex  tw-items-center">
-                        <div className="tw-flex-auto">
-                          <div className="tw-font-medium tw-text-black">
-                            <div className="tw-text-sm tw-font-normal tw-text-gray-500  tw-line-clamp-1">
-                              {item?.recommendJobGroupNames?.map((name, i) => (
-                                <span
-                                  key={i}
-                                  className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600"
-                                >
-                                  {name}
-                                </span>
-                              ))}
-                              <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
-                                {item?.recommendLevels?.sort().join(',')}레벨
-                              </span>
-                              {item?.recommendJobNames?.map((name, i) => (
-                                <span
-                                  key={i}
-                                  className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-100 tw-text-sm tw-font-light tw-text-gray-600"
-                                >
-                                  {name}
-                                </span>
-                              ))}
-                              {item?.hashTags?.map((name, i) => (
-                                <span
-                                  key={i}
-                                  className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-gray-700"
-                                >
-                                  {name}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="tw-text-gray-400 tw-text-sm  tw-line-clamp-1">{item.createdAt}</div>
-                      </div>
-                      <div className="tw-flex  tw-items-center py-2">
-                        <div className="tw-flex-auto">
-                          <div className="tw-font-medium tw-text-black tw-text-base tw-line-clamp-1">
-                            {item.content}
-                          </div>
-                        </div>
-                        {/* <div className="">{item.memberName}</div> */}
-                      </div>
-                      <div className="tw-grid tw-grid-cols-12 tw-gap-4">
-                        <div className="tw-col-span-1 tw-text-sm tw-font-bold tw-text-black">아티클</div>
-                        <div className="tw-col-span-9 tw-text-sm tw-text-gray-600  tw-line-clamp-1">
-                          {item.articleUrl}
-                        </div>
-                        <div className="tw-col-span-2 tw-text-sm tw-text-right">
-                          댓글 : {item.activeCount} 답변 : {item.answerCount}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </Desktop>
-                <Mobile>
-                  <div key={`admin-menu-${index}`} className="tw-flex tw-pb-5">
-                    <Checkbox
-                      disableRipple
-                      onChange={handleChangeCheck}
-                      checked={state.includes(String(item.sequence))}
-                      name={item.sequence}
-                      className="tw-mr-3"
-                    />
-                    <div className="tw-p-5 tw-border border tw-w-full tw-rounded-xl">
-                      {/* 첫 번째 컬럼 */}
-                      <div className="md:tw-w-full">
-                        <div className="tw-font-medium tw-text-black">
-                          <div className="tw-text-sm tw-font-normal tw-text-gray-500">
-                            {item?.recommendJobGroupNames?.map((name, i) => (
-                              <span
-                                key={i}
-                                className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600"
-                              >
-                                {name}
-                              </span>
-                            ))}
-                            <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
-                              {item?.recommendLevels?.sort().join(',')}레벨
-                            </span>
-                            {item?.recommendJobNames?.map((name, i) => (
-                              <span
-                                key={i}
-                                className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-100 tw-text-sm tw-font-light tw-text-gray-600"
-                              >
-                                {name}
-                              </span>
-                            ))}
-                            {item?.hashTags?.map((name, i) => (
-                              <span
-                                key={i}
-                                className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-gray-700"
-                              >
-                                {name}
-                              </span>
-                            ))}
-                          </div>
-                          <div className="tw-text-gray-400 tw-text-base tw-py-1 tw-text-right">{item.createdAt}</div>
-                        </div>
-                      </div>
-                      {/* 두 번째 컬럼 */}
-                      <div className="md:tw-w-full">
-                        <div className="tw-flex  tw-items-center py-2">
-                          <div className="tw-flex-auto">
-                            <div className="tw-font-medium tw-text-black tw-text-base tw-line-clamp-1">
-                              {item.content}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      {/* 세 번째 컬럼 */}
-                      <div className="md:tw-w-full">
-                        <div className="tw-grid tw-grid-cols-12 tw-gap-4">
-                          <div className="tw-col-span-3 tw-text-sm tw-font-bold tw-text-black">아티클</div>
-                          <div className="tw-col-span-9 tw-text-sm tw-text-gray-600  tw-line-clamp-1">
-                            {item.articleUrl}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="tw-col-span-2 tw-text-sm tw-text-right">
-                        댓글 : {item.activeCount} 답변 : {item.answerCount}
-                      </div>
-                    </div>
-                  </div>
-                </Mobile>
+                <QuizBreakerInfoCheck
+                  avatarSrc="https://via.placeholder.com/40"
+                  userName={item.memberName}
+                  questionText={item.content}
+                  index={item.sequence}
+                  selectedQuizIds={selectedQuizIds}
+                  handleCheckboxChange={handleCheckboxChange}
+                  hashtags={['MVVM', '해시태그']}
+                  tags={['소프트웨어융합대학', '컴퓨터공학과', '2학년']}
+                  answerText="EAI는 엔터프라이즈 어플리케이션 인테그레이션의 약자입니다. 시스템이 서로 얽히고 복잡해지면서 통제가 잘 안되는 상황이 발생하여 이런 문제를 해결하기 위해 등장한 솔루션이 바로 EAI 입니다."
+                />
               </>
             ))}
             <Pagination page={page} setPage={setPage} total={totalPage} showCount={5} />
@@ -2786,7 +2418,18 @@ export function QuizOpenTemplate() {
             </div>
             {myQuizListData?.contents.map((item, index) => (
               <>
-                <Desktop>
+                <QuizBreakerInfoCheck
+                  avatarSrc="https://via.placeholder.com/40"
+                  userName={item.memberName}
+                  questionText={item.content}
+                  index={item.sequence}
+                  selectedQuizIds={selectedQuizIds}
+                  handleCheckboxChange={handleCheckboxChange}
+                  hashtags={['MVVM', '해시태그']}
+                  tags={['소프트웨어융합대학', '컴퓨터공학과', '2학년']}
+                  answerText="EAI는 엔터프라이즈 어플리케이션 인테그레이션의 약자입니다. 시스템이 서로 얽히고 복잡해지면서 통제가 잘 안되는 상황이 발생하여 이런 문제를 해결하기 위해 등장한 솔루션이 바로 EAI 입니다."
+                />
+                {/* <Desktop>
                   <div key={`admin-quiz-${index}`} className="tw-flex tw-pb-5">
                     <Checkbox
                       disableRipple
@@ -2839,7 +2482,6 @@ export function QuizOpenTemplate() {
                             {item.content}
                           </div>
                         </div>
-                        {/* <div className="">{item.memberName}</div> */}
                       </div>
                       <div className="tw-grid tw-grid-cols-12 tw-gap-4">
                         <div className="tw-col-span-1 tw-text-sm tw-font-bold tw-text-black">아티클</div>
@@ -2852,77 +2494,7 @@ export function QuizOpenTemplate() {
                       </div>
                     </div>
                   </div>
-                </Desktop>
-                <Mobile>
-                  <div key={`admin-quiz-${index}`} className="tw-flex tw-pb-5">
-                    <Checkbox
-                      disableRipple
-                      onChange={handleChangeCheck}
-                      checked={state.includes(String(item.sequence))}
-                      name={item.sequence}
-                      className="tw-mr-3"
-                    />
-                    <div className="tw-p-5 tw-border border tw-w-full tw-rounded-xl">
-                      {/* 첫 번째 컬럼 */}
-                      <div className="md:tw-w-full">
-                        <div className="tw-font-medium tw-text-black">
-                          <div className="tw-text-sm tw-font-normal tw-text-gray-500">
-                            {item?.recommendJobGroupNames?.map((name, i) => (
-                              <span
-                                key={i}
-                                className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-blue-100 tw-text-sm tw-font-light tw-text-blue-600"
-                              >
-                                {name}
-                              </span>
-                            ))}
-                            <span className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-red-100 tw-text-sm tw-font-light tw-text-red-600">
-                              {item?.recommendLevels?.sort().join(',')}레벨
-                            </span>
-                            {item?.recommendJobNames?.map((name, i) => (
-                              <span
-                                key={i}
-                                className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 tw-bg-gray-100 tw-text-sm tw-font-light tw-text-gray-600"
-                              >
-                                {name}
-                              </span>
-                            ))}
-                            {item?.hashTags?.map((name, i) => (
-                              <span
-                                key={i}
-                                className="tw-inline-flex tw-rounded tw-items-center tw-m-1 tw-px-3 tw-py-0.5 border tw-text-sm tw-font-light tw-text-gray-700"
-                              >
-                                {name}
-                              </span>
-                            ))}
-                          </div>
-                          <div className="tw-text-gray-400 tw-text-base tw-py-1 tw-text-right">{item.createdAt}</div>
-                        </div>
-                      </div>
-                      {/* 두 번째 컬럼 */}
-                      <div className="md:tw-w-full">
-                        <div className="tw-flex  tw-items-center py-2">
-                          <div className="tw-flex-auto">
-                            <div className="tw-font-medium tw-text-black tw-text-base tw-line-clamp-1">
-                              {item.content}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      {/* 세 번째 컬럼 */}
-                      <div className="md:tw-w-full">
-                        <div className="tw-grid tw-grid-cols-12 tw-gap-4">
-                          <div className="tw-col-span-3 tw-text-sm tw-font-bold tw-text-black">아티클</div>
-                          <div className="tw-col-span-9 tw-text-sm tw-text-gray-600  tw-line-clamp-1">
-                            {item.articleUrl}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="tw-col-span-2 tw-text-sm tw-text-right">
-                        댓글 : {item.activeCount} 답변 : {item.answerCount}
-                      </div>
-                    </div>
-                  </div>
-                </Mobile>
+                </Desktop> */}
               </>
             ))}
           </div>

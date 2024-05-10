@@ -145,14 +145,14 @@ export function QuizTemplate() {
       <div className={cx('container')}>
         <div className="tw-py-[60px] max-lg:tw-py-[50px]">
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-            <Grid item xs={12} sm={2} className="tw-font-bold tw-text-3xl tw-text-black max-lg:!tw-text-2xl">
+            <Grid item xs={12} sm={2} className="tw-font-bold tw-text-4xl tw-text-black max-lg:!tw-text-2xl">
               퀴즈클럽
             </Grid>
             <Grid
               item
               xs={12}
               sm={8}
-              className="max-lg:tw-py-2 tw-font-semi tw-text-base tw-text-black  max-lg:!tw-text-base"
+              className="max-lg:tw-py-2 tw-font-light tw-text-base tw-text-black  max-lg:!tw-text-base"
             >
               관심 주제별로 성장 퀴즈를 풀고 네트워킹 할 수 있는 클럽을 만나보세요!
             </Grid>
@@ -160,9 +160,9 @@ export function QuizTemplate() {
               <button
                 onClick={() => (location.href = '/quiz/open')}
                 type="button"
-                className="tw-text-white tw-bg-blue-500 tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
+                className="tw-text-[#FF0000] border border-danger tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
               >
-                퀴즈클럽 개설하기
+                + 퀴즈클럽 개설하기
               </button>
             </Grid>
           </Grid>
@@ -221,6 +221,7 @@ export function QuizTemplate() {
                 fullWidth
                 id="outlined-basic"
                 label=""
+                placeholder="수업명, 교수님명으로 클럽검색하기"
                 variant="outlined"
                 onKeyPress={e => {
                   if (e.key === 'Enter') {
