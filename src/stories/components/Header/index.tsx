@@ -104,7 +104,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
           <div className={cx('custom-item')} id="logoutBtn">
             <button
               className="tw-w-28 max-lg:tw-mr-1 tw-bg-[#e11837] tw-mr-4 tw-rounded-md tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
-              onClick={() => (location.href = '/quiz-make')}
+              onClick={() => (location.href = '/quiz-my')}
             >
               나의 클럽
             </button>

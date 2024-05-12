@@ -375,6 +375,11 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
               clubInfo={clubInfo}
               leaders={leaders}
               clubQuizzes={clubQuizzes}
+              totalElements={totalElements}
+              totalPage={totalPage}
+              page={page}
+              handlePageChange={handlePageChange}
+              quizList={quizList}
               representativeQuizzes={representativeQuizzes}
             />
             {/* <BannerDetail

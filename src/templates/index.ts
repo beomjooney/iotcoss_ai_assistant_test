@@ -36,6 +36,7 @@ export * from './QuizMake/index';
 export * from './Quiz/Open/index';
 export * from './Quiz/Crew/index';
 export * from './Quiz/Manage/index';
+export * from './Quiz/Dashboard/index';
 export * from './Quiz/Solution/index';
 export * from './Quiz/Growth/index';
 export * from './Quiz/AnswersDetail/index';

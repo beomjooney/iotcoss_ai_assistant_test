@@ -1,14 +1,70 @@
 // QuizClubDetailInfo.jsx
 import React, { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
-import LinearProgress from '@mui/material/LinearProgress';
-
+import styles from './index.module.scss';
+import classNames from 'classnames/bind';
 import Divider from '@mui/material/Divider';
+import Grid from '@mui/material/Grid';
 
-const QuizClubDetaillSolution = ({ clubInfo, border, leaders, clubQuizzes, representativeQuizzes }) => {
+/** import pagenation */
+import Pagination from '@mui/material/Pagination';
+import PaginationItem from '@mui/material/PaginationItem';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+
+/**icon */
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
+
+import { Radio, RadioGroup, FormControlLabel, TextField } from '@mui/material';
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded';
+import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded';
+import SearchIcon from '@mui/icons-material/Search';
+import router from 'next/router';
+
+import { CommunityCard } from 'src/stories/components';
+const cx = classNames.bind(styles);
+
+//comment
+import { useQuizAnswerDetail, useQuizRankDetail, useQuizSolutionDetail } from 'src/services/quiz/quiz.queries';
+
+const QuizClubDetaillSolution = ({
+  clubInfo,
+  totalElements,
+  quizList,
+  border,
+  page,
+  totalPage,
+  leaders,
+  clubQuizzes,
+  handlePageChange,
+  representativeQuizzes,
+}) => {
   const borderStyle = border ? 'border border-[#e9ecf2] tw-mt-14' : '';
+  // const [activeTab, setActiveTab] = useState('myQuiz');
+  const [activeTab, setActiveTab] = useState('community');
+  const [selectedOption, setSelectedOption] = useState('latest');
+  const [answerContents, setAnswerContents] = useState<RecommendContent[]>([]);
+  const [totalElementsCm, setTotalElementsCm] = useState(0);
+  const [totalPageCm, setTotalPageCm] = useState(1);
+  const [beforeOnePick, setBeforeOnePick] = useState(1);
 
-  const [activeTab, setActiveTab] = useState('myQuiz');
+  const [params, setParams] = useState<any>({ id: '154', page });
+
+  const { isFetched: isQuizAnswerListFetched } = useQuizAnswerDetail(params, data => {
+    //console.log(data);
+    setAnswerContents(data?.contents);
+    setTotalElementsCm(data?.totalElements);
+    setTotalPageCm(data?.totalPages);
+    // isOnePicked가 true인 객체를 찾고 그 객체의 clubQuizAnswerSequence 값을 가져옵니다.
+    console.log(data?.contents.find(item => item.isOnePicked === true)?.clubQuizAnswerSequence);
+    setBeforeOnePick(data?.contents.find(item => item.isOnePicked === true)?.clubQuizAnswerSequence);
+  });
+
+  const handleChangeQuiz = event => {
+    setSelectedOption(event.target.value);
+  };
 
   const handleTabClick = tab => {
     setActiveTab(tab);
@@ -65,80 +121,6 @@ const QuizClubDetaillSolution = ({ clubInfo, border, leaders, clubQuizzes, repre
         { date: 'D-28', isFuture: true, status: 'feature' },
       ],
     },
-  };
-
-  const renderSessions = sessions => {
-    return sessions.map((session, idx) => {
-      const isCompleted = session.status === 'completed';
-      const isUpcoming = session.status === 'upcoming';
-      const hasWarning = session.isWarning || false;
-      const isChecked = session.isChecked || false;
-
-      return (
-        <div key={idx} className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[48px] tw-relative tw-bg-white">
-          {isCompleted ? (
-            isChecked ? (
-              <div className="tw-flex tw-justify-center">
-                <svg
-                  width={20}
-                  height={20}
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="tw-w-5 tw-h-5"
-                  preserveAspectRatio="none"
-                >
-                  <circle cx={10} cy={10} r={10} fill="#31343D" />
-                  <path d="M6 9L9.60494 13L14 7" stroke="white" strokeWidth="1.5" />
-                </svg>
-              </div>
-            ) : (
-              <div className="tw-flex tw-justify-center">
-                <div className="tw-w-5 tw-h-5 tw-relative ">
-                  <svg
-                    width={20}
-                    height={20}
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="absolute left-[-1px] top-[-1px]"
-                    preserveAspectRatio="xMidYMid meet"
-                  >
-                    <circle cx={10} cy={10} r="9.5" fill="white" stroke="#E11837" />
-                  </svg>
-                  <p className="tw-absolute tw-left-[7px] tw-top-[3.5px] tw-text-xs tw-font-medium tw-text-center tw-text-[#e11837]">
-                    ?
-                  </p>
-                </div>
-              </div>
-            )
-          ) : isUpcoming ? (
-            <div className="tw-flex tw-justify-center">
-              <div className="tw-w-5 tw-h-5 ">
-                <svg
-                  width={20}
-                  height={20}
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  preserveAspectRatio="xMidYMid meet"
-                >
-                  <circle cx={10} cy={10} r="9.5" fill="#F6F7FB" stroke="#E0E4EB" />
-                </svg>
-                <p className="tw-text-xs tw-font-medium tw-text-center tw-text-white">-</p>
-              </div>
-            </div>
-          ) : null}
-          <p
-            className={`tw-w-[54px] tw-h-3.5 tw-text-xs tw-font-medium tw-text-center ${
-              hasWarning ? 'tw-text-[#e11837]' : 'tw-text-[#9ca5b2]'
-            }`}
-          >
-            {session.date}
-          </p>
-        </div>
-      );
-    });
   };
 
   return (
@@ -302,16 +284,18 @@ const QuizClubDetaillSolution = ({ clubInfo, border, leaders, clubQuizzes, repre
                     </p>
                   </div>
 
-                  <div className="tw-px-3 tw-grid tw-grid-cols-12 tw-gap-5 " style={{ width: '100%' }}>
+                  <div className="tw-ml-10 tw-grid tw-grid-cols-9 tw-gap-4" style={{ width: '100%' }}>
                     {data.tabs[0].sessions.map((session, idx) => (
-                      <div key={idx} className="tw-items-center tw-flex-shrink-0 ">
-                        <div className=" border-bottom tw-pb-3 tw-px-0 tw-pt-0 ">
-                          <p className="tw-text-base tw-font-medium tw-text-center tw-text-[#31343d]">
+                      <div key={idx} className="tw-items-center tw-flex-shrink-0 border tw-rounded-lg">
+                        <div className=" border-bottom tw-pb-3 tw-px-0 tw-pt-0 tw-bg-[#f6f7fb] tw-rounded-t-lg">
+                          <p className="tw-text-base tw-font-medium tw-text-center tw-text-[#31343d] tw-pt-1">
                             {session.session}
                           </p>
-                          <p className="tw-text-xs tw-font-medium tw-text-center tw-text-[#9ca5b2]">{session.date}</p>
+                          <p className="tw-text-xs tw-font-medium tw-text-center tw-text-[#9ca5b2] tw-pt-1">
+                            {session.date}
+                          </p>
                         </div>
-                        <div className="tw-py-3">
+                        <div className="tw-pt-3 tw-pb-2">
                           {
                             <div className="tw-flex tw-justify-center">
                               <circle cx={10} cy={10} r={10} fill="#31343D" />
@@ -364,7 +348,7 @@ const QuizClubDetaillSolution = ({ clubInfo, border, leaders, clubQuizzes, repre
                           }
                         </div>
                         <p
-                          className={`tw-text-xs tw-font-medium tw-text-center ${
+                          className={`tw-text-xs tw-font-medium tw-text-center tw-pb-2 ${
                             data.progress.sessions[idx].isWarning ? 'tw-text-[#e11837]' : 'tw-text-[#9ca5b2]'
                           }`}
                         >
@@ -375,34 +359,503 @@ const QuizClubDetaillSolution = ({ clubInfo, border, leaders, clubQuizzes, repre
                   </div>
                 </div>
               </div>
-              {/* <div className="tw-mt-4 tw-w-[100%] tw-bg-white">
-                <div className="tw-mt-4 tw-flex">
-                  <div className="tw-flex tw-items-center">
-                    <div className="tw-flex tw-items-center tw-w-20">
-                      <svg
-                        width={36}
-                        height={36}
-                        viewBox="0 0 36 36"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="tw-mr-2"
+            </div>
+            <div className={cx('content-wrap')}>
+              <div className={cx('container', 'tw-mt-10')}>
+                <Grid container direction="row" alignItems="center" rowSpacing={0}>
+                  <Grid
+                    container
+                    justifyContent="flex-start"
+                    xs={6}
+                    sm={10}
+                    className="tw-text-xl tw-text-black tw-font-bold"
+                  >
+                    퀴즈목록 {totalElements}
+                  </Grid>
+                  <Grid container justifyContent="flex-end" xs={6} sm={2} style={{ textAlign: 'right' }}>
+                    <Pagination
+                      count={totalPage}
+                      size="small"
+                      siblingCount={0}
+                      page={page}
+                      renderItem={item => (
+                        <PaginationItem slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }} {...item} />
+                      )}
+                      onChange={handlePageChange}
+                    />
+                  </Grid>
+                </Grid>
+                <Divider className="tw-py-3 tw-mb-3" />
+                {quizList.map((item, index) => {
+                  return (
+                    <React.Fragment key={index}>
+                      <Grid
+                        className="tw-pt-10"
+                        key={index}
+                        container
+                        direction="row"
+                        justifyContent="left"
+                        alignItems="center"
+                        rowSpacing={3}
                       >
-                        <circle cx={18} cy={18} r={18} fill="#E9ECF2" />
-                      </svg>
-                      <div className="tw-text-xs tw-font-medium tw-text-black">{data.progress.student}</div>
-                    </div>
-                    <p className="tw-text-base tw-font-medium tw-text-[#31343d]  tw-w-20">
-                      {data.progress.currentSession}
-                    </p>
-                  </div>
+                        {item?.isRepresentative ? <Grid item xs={12} sm={1} style={{ paddingTop: 10 }}></Grid> : <></>}
+                        <Grid item xs={12} sm={1} style={{ paddingTop: 10 }}>
+                          <div className="tw-flex-auto tw-text-center tw-text-black tw-font-bold">Q{index + 1}.</div>
+                          <div className="tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold">
+                            {item?.weekNumber}주차 ({item?.dayOfWeek})
+                          </div>
+                          <div className="tw-flex-auto tw-mt-10 tw-text-center tw-text-sm tw-text-[#f44] tw-font-bold">
+                            D-2
+                          </div>
+                        </Grid>
 
-                  {renderSessions(data.progress.sessions)}
-                </div>
-              </div> */}
+                        <Grid item xs={12} sm={item?.isRepresentative ? 10 : 11}>
+                          {item?.isPublished ? (
+                            <div className="tw-rounded-xl">
+                              <div
+                                className={`tw-bg-[#F6F7FB] tw-flex tw-items-center tw-px-4 max-lg:tw-p-3 tw-py-1   ${
+                                  item?.answer ? 'tw-rounded-tl-xl tw-rounded-tr-xl' : 'tw-rounded-xl'
+                                }`}
+                              >
+                                <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
+                                  <img className="tw-w-10 tw-h-10 " src="/assets/images/quiz/ellipse_209.png" />
+                                  <div className="tw-text-xs tw-text-left tw-text-black">양황규 교수님</div>
+                                </div>
+                                {item?.isRepresentative === true && (
+                                  <div className="tw-p-3">
+                                    <button
+                                      type="button"
+                                      data-tooltip-target="tooltip-default"
+                                      className="border tw-w-0.5/12 tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-bold tw-px-3 tw-py-1 tw-rounded"
+                                    >
+                                      대표
+                                    </button>
+                                  </div>
+                                )}
+                                <div className="tw-flex-auto tw-px-5 tw-w-3/12">
+                                  <div className="tw-font-medium tw-text-black">{item?.content}</div>
+                                </div>
+                                {item?.answer?.answerStatus === '0001' ? (
+                                  <div className="">
+                                    <button
+                                      type="button"
+                                      onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
+                                      data-tooltip-target="tooltip-default"
+                                      className="max-lg:tw-w-[60px]  tw-bg-gray-300 tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                    >
+                                      1차답변 입력완료
+                                    </button>
+                                  </div>
+                                ) : item?.answer?.answerStatus === '0002' ? (
+                                  <div className="">
+                                    <button
+                                      type="button"
+                                      onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
+                                      data-tooltip-target="tooltip-default"
+                                      className="max-lg:tw-w-[60px] tw-bg-gray-300 tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                    >
+                                      이해도 입력완료
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <div className="">
+                                    <button
+                                      // onClick={() => router.push('/quiz/round-answers/' + `${item?.clubQuizSequence}`)}
+                                      onClick={() => router.push('/quiz/answers/' + `${item?.clubQuizSequence}`)}
+                                      type="button"
+                                      data-tooltip-target="tooltip-default"
+                                      className="tw-mr-3 about-content-rightmax-lg:tw-w-[60px] tw-bg-black tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                    >
+                                      아티클 보기
+                                    </button>
+                                    <button
+                                      onClick={() => router.push('/quiz/answers/' + `${item?.clubQuizSequence}`)}
+                                      type="button"
+                                      data-tooltip-target="tooltip-default"
+                                      className="max-lg:tw-w-[60px] border border-danger tw-text-black tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                    >
+                                      전체 답변보기 {'>'}
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+                              {item?.answer?.text ? (
+                                <div className="border border-secondary tw-bg-white tw-flex tw-items-center tw-p-4  tw-py-3 tw-rounded-bl-xl tw-rounded-br-xl">
+                                  <div className="tw-w-1.5/12 tw-pl-14 tw-pr-3 tw-flex tw-flex-col tw-items-center tw-justify-center">
+                                    <svg
+                                      width={24}
+                                      height={25}
+                                      viewBox="0 0 24 25"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      className="w-6 h-6 relative"
+                                      preserveAspectRatio="none"
+                                    >
+                                      <path
+                                        d="M6 6.32422V12.3242C6 13.1199 6.31607 13.8829 6.87868 14.4455C7.44129 15.0081 8.20435 15.3242 9 15.3242H19M19 15.3242L15 11.3242M19 15.3242L15 19.3242"
+                                        stroke="#31343D"
+                                        stroke-width={2}
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                      />
+                                    </svg>
+                                  </div>
+                                  <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
+                                    <img
+                                      className="border tw-rounded-full tw-w-10 tw-h-10 "
+                                      src="/assets/images/quiz/아그리파_1.png"
+                                    />
+                                    <div className="tw-text-xs tw-text-left tw-text-black">김동서</div>
+                                  </div>
+                                  <div className="tw-flex-auto tw-w-9/12 tw-px-5">
+                                    <div className="tw-font-medium tw-text-[#9ca5b2] tw-text-sm tw-line-clamp-2">
+                                      {item?.answer?.text} Docker는 쿠버네티스가 오케스트레이션하는 컨테이너 런타임으로
+                                      사용할 수 있습니다. 쿠버네티스가 노드에 대해 포드를 예약하면 해당 노드의
+                                      kubelet(각 컨테이너의 실행을 보장하는 서비스)이 지정된 컨테이너를 실행하도록
+                                      Docker에 명령...
+                                    </div>
+                                  </div>
+                                  <div className="tw-flex-auto">
+                                    <div className="tw-flex tw-justify-end tw-items-center tw-relative tw-gap-2 tw-px-2 tw-py-1 tw-rounded">
+                                      <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-bold tw-text-right tw-text-[#9ca5b2]">
+                                        자세히보기
+                                      </p>
+                                      <svg
+                                        width={7}
+                                        height={10}
+                                        viewBox="0 0 7 10"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="flex-grow-0 flex-shrink-0"
+                                        preserveAspectRatio="none"
+                                      >
+                                        <path d="M1 1L5 5L1 9" stroke="#9CA5B2" stroke-width="1.5" />
+                                      </svg>
+                                    </div>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className="border border-secondary tw-bg-white tw-flex tw-items-center  tw-py-1 tw-rounded-bl-xl tw-rounded-br-xl">
+                                  <div className="tw-w-1.5/12 tw-pl-14 tw-pr-3 tw-flex tw-flex-col tw-items-center tw-justify-center">
+                                    <svg
+                                      width={24}
+                                      height={25}
+                                      viewBox="0 0 24 25"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      className="w-6 h-6 relative"
+                                      preserveAspectRatio="none"
+                                    >
+                                      <path
+                                        d="M6 6.32422V12.3242C6 13.1199 6.31607 13.8829 6.87868 14.4455C7.44129 15.0081 8.20435 15.3242 9 15.3242H19M19 15.3242L15 11.3242M19 15.3242L15 19.3242"
+                                        stroke="#31343D"
+                                        stroke-width={2}
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                      />
+                                    </svg>
+                                  </div>
+                                  <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
+                                    <img
+                                      className="border tw-rounded-full tw-w-10 tw-h-10 "
+                                      src="/assets/images/quiz/아그리파_1.png"
+                                    />
+                                    <div className="tw-text-xs tw-text-left tw-text-black">김동서</div>
+                                  </div>
+                                  <div className="tw-flex-auto tw-w-1.5/12">
+                                    <div className="tw-font-medium tw-text-gray-500 tw-text-sm tw-line-clamp-2">
+                                      {item?.answer?.answerStatus === '0000' ? (
+                                        <div className="tw-text-center">
+                                          <button
+                                            type="button"
+                                            onClick={() => {
+                                              router.push('/quiz/solution/' + `${item?.clubQuizSequence}`);
+                                            }}
+                                            data-tooltip-target="tooltip-default"
+                                            className=" max-lg:tw-w-[60px] tw-px-[30.5px] tw-py-[9.5px] tw-rounded tw-bg-[#E11837] tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                          >
+                                            퀴즈 풀러가기
+                                          </button>
+                                        </div>
+                                      ) : item?.answer?.answerStatus === '0001' ? (
+                                        <div className="">
+                                          <button
+                                            type="button"
+                                            onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
+                                            data-tooltip-target="tooltip-default"
+                                            className="max-lg:tw-w-[60px]  tw-bg-gray-300 tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                          >
+                                            1차답변 입력완료
+                                          </button>
+                                        </div>
+                                      ) : item?.answer?.answerStatus === '0002' ? (
+                                        <div className="">
+                                          <button
+                                            type="button"
+                                            onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
+                                            data-tooltip-target="tooltip-default"
+                                            className="max-lg:tw-w-[60px] tw-bg-gray-300 tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                          >
+                                            이해도 입력완료
+                                          </button>
+                                        </div>
+                                      ) : (
+                                        <div className="">
+                                          <button
+                                            // onClick={() => router.push('/quiz/round-answers/' + `${item?.clubQuizSequence}`)}
+                                            onClick={() => router.push('/quiz/answers/' + `${item?.clubQuizSequence}`)}
+                                            type="button"
+                                            data-tooltip-target="tooltip-default"
+                                            className="max-lg:tw-w-[60px] tw-bg-[#FF8D8D] tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                          >
+                                            전체 답변보기 {'>'}
+                                          </button>
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          ) : (
+                            <div className="border tw-rounded-xl p-4">
+                              {item?.isRepresentative === true && (
+                                <button
+                                  type="button"
+                                  data-tooltip-target="tooltip-default"
+                                  className="tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-bold tw-mr-2 tw-px-3 tw-py-1 tw-rounded"
+                                >
+                                  대표
+                                </button>
+                              )}
+                              {item?.publishDate} 질문공개
+                            </div>
+                          )}
+                        </Grid>
+                      </Grid>
+                    </React.Fragment>
+                  );
+                })}
+              </div>
             </div>
           </div>
         )}
-        {activeTab === 'community' && <div className="tw-p-4 tw-mt-4 tw-border tw-rounded tw-bg-gray-100"></div>}
+        {activeTab === 'community' && (
+          <>
+            <div className="tw-mt-5 tw-h-[52px] tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-[#f6f7fb]">
+              <div className="tw-flex tw-justify-start tw-items-center tw-absolute tw-left-5 tw-top-[13px] tw-gap-4">
+                <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2 tw-px-2 tw-py-1 tw-rounded tw-bg-[#e11837]">
+                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-font-bold tw-text-left tw-text-white">
+                    공지
+                  </p>
+                </div>
+                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-medium tw-text-left tw-text-[#31343d]">
+                  공지사항입니다. 학생들은 꼭 읽어주세요! 퀴즈 진행할 때 해당내용 참고하여 진행바랍니다.
+                </p>
+              </div>
+              <div className="tw-flex tw-justify-end tw-items-center tw-absolute tw-left-[870px] tw-top-3 tw-gap-5">
+                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-right tw-text-[#9ca5b2]">
+                  24.06.12ㅣ18:00:00
+                </p>
+                <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
+                  <img className="tw-flex-grow-0 tw-flex-shrink-0" src="/assets/images/quiz/ellipse_209_2.png" />
+                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-black">양황규 교수</p>
+                </div>
+              </div>
+            </div>
+            <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-3">
+              <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                정렬 :
+              </p>
+
+              <RadioGroup className="tw-py-5" value={selectedOption} onChange={handleChangeQuiz} row>
+                <FormControlLabel
+                  value="latest"
+                  control={
+                    <Radio
+                      sx={{
+                        color: '#ced4de',
+                        '&.Mui-checked': { color: '#e11837' },
+                      }}
+                      icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                      checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                    />
+                  }
+                  label={
+                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                      최신순
+                    </p>
+                  }
+                />
+                <FormControlLabel
+                  value="oldest"
+                  control={
+                    <Radio
+                      sx={{
+                        color: '#ced4de',
+                        '&.Mui-checked': { color: '#e11837' },
+                      }}
+                      icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                      checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                    />
+                  }
+                  label={
+                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                      좋아요순
+                    </p>
+                  }
+                />
+              </RadioGroup>
+            </div>
+            <div className="border border-secondary tw-px-10 tw-py-5 tw-rounded-xl">
+              <div>
+                {/* reply */}
+                {answerContents.length === 0 ? (
+                  <div className="tw-text-center  tw-w-full border tw-rounded-md tw-my-10">
+                    <div className="tw-p-10  tw-mb-5">
+                      <div className="tw-p-10">데이터가 없습니다.</div>
+                    </div>
+                  </div>
+                ) : (
+                  answerContents.map((item, index) => {
+                    return (
+                      <CommunityCard
+                        key={index}
+                        board={item}
+                        // writer={memberSample}
+                        className={cx('reply-container__item')}
+                        beforeOnePick={beforeOnePick}
+                        setBeforeOnePick={setBeforeOnePick}
+                        // memberId={memberId}
+                        // onPostDeleteSubmit={onPostDeleteSubmit}
+                      />
+                    );
+                  })
+                )}
+
+                <div className="tw-flex tw-justify-start tw-items-center tw-gap-3">
+                  <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow tw-flex-shrink tw-relative tw-gap-2">
+                    <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-10 tw-h-10">
+                      <div className="tw-absolute tw-left-[-0.5px] tw-top-[-0.5px]" />
+                      <svg
+                        width={24}
+                        height={24}
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-6 h-6 relative"
+                        preserveAspectRatio="none"
+                      >
+                        <path
+                          d="M6 6V12C6 12.7956 6.31607 13.5587 6.87868 14.1213C7.44129 14.6839 8.20435 15 9 15H19M19 15L15 11M19 15L15 19"
+                          stroke="#31343D"
+                          stroke-width={2}
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </div>
+                    <p class="tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-center tw-text-[#313b49]">
+                      <div class="tw-w-10 tw-h-[42.62px] tw-flex tw-justify-center tw-items-center">
+                        <img
+                          src="/assets/images/quiz/아그리파_1.png"
+                          class="tw-w-[26.44px] tw-h-[38.31px] tw-object-cover"
+                        />
+                      </div>
+                    </p>
+                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-bold tw-text-left tw-text-[#313b49]">
+                      김동서
+                    </p>
+                    <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-gap-2">
+                      <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#d7ecff]">
+                        <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#235a8d]">
+                          소프트웨어융합대학
+                        </p>
+                      </div>
+                      <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#e4e4e4]">
+                        <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#313b49]">
+                          컴퓨터공학과
+                        </p>
+                      </div>
+                      <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#ffdede]">
+                        <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#b83333]">
+                          2학년
+                        </p>
+                      </div>
+                      <p className="tw-text-xs tw-text-left tw-text-[#9ca5b2] tw-ml-auto">24.06.12ㅣ18:00:00</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="tw-flex tw-flex-col tw-justify-start tw-items-start tw-relative tw-gap-2 tw-left-24 tw-py-2">
+                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[964px] tw-text-sm tw-text-left tw-text-[#313b49]">
+                    Lorem Ipsum&nbsp;is simply dummy text of the printing and typesetting industry.
+                  </p>
+                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[10px] tw-text-left tw-text-[#9ca5b2]">
+                    답글쓰기
+                  </p>
+                </div>
+                {/* comment */}
+                <div className="tw-grid tw-grid-cols-10 tw-items-center tw-gap-3 tw-py-5">
+                  <div className="tw-col-span-9">
+                    <div className="tw-form-floating tw-w-full tw-pt-1">
+                      <textarea
+                        className="tw-form-control tw-w-full"
+                        placeholder="Leave a comment here"
+                        id="floatingTextarea"
+                        style={{ height: '60px', resize: 'none', padding: 10 }}
+                      ></textarea>
+                    </div>
+                  </div>
+                  <div className="tw-col-span-1">
+                    <button className=" tw-py-[20px] tw-w-full tw-h-full tw-rounded tw-bg-white border border-secondary tw-border-[#e9ecf2] tw-text-sm tw-text-center tw-text-[#6a7380]">
+                      댓글달기
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="tw-grid tw-grid-cols-10 tw-items-center tw-gap-3 tw-py-5">
+              <div className="tw-col-span-9">
+                <div className="tw-form-floating tw-w-full tw-pt-1">
+                  <textarea
+                    className="tw-form-control tw-w-full"
+                    placeholder="Leave a comment here"
+                    id="floatingTextarea"
+                    style={{ height: '60px', resize: 'none', padding: 10 }}
+                  ></textarea>
+                </div>
+              </div>
+              <div className="tw-col-span-1">
+                <button className="tw-bg-[#31343d] tw-py-[20px] tw-w-full tw-h-full tw-rounded border border-secondary tw-text-sm tw-text-center tw-text-white">
+                  글쓰기
+                </button>
+              </div>
+            </div>
+            {/* pagenation */}
+            {/* 검색 */}
+            <div className="tw-flex tw-items-center tw-justify-center tw-text-center tw-py-5">
+              <div className="tw-flex tw-items-center tw-justify-center tw-w-full  tw-gap-3">
+                <TextField
+                  id="outlined-basic"
+                  label=""
+                  variant="outlined"
+                  InputProps={{
+                    style: { height: '43px', width: '300px' },
+                    startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
+                  }}
+                  onKeyPress={e => {
+                    if (e.key === 'Enter') {
+                      // Add your submit function here
+                    }
+                  }}
+                />
+                <button className="tw-w-[100px] tw-bg-[#E9ECF2] tw-py-[12px] tw-px-14 tw-px-4 tw-h-full tw-rounded tw-border tw-border-secondary tw-text-sm">
+                  검색
+                </button>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

@@ -55,8 +55,9 @@ ClubMiniCardProps) => {
     setAnchorEl(null);
   };
 
-  const handleMenuItemClick = (event: React.MouseEvent<HTMLElement>) => {
-    router.push('/quiz-manage/' + removeIndex);
+  const handleMenuItemClick = index => {
+    // router.push('/quiz-manage/' + removeIndex);
+    router.push('/quiz-dashboard/' + index);
     setAnchorEl(null);
   };
   const handleMenuItemCrewClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -99,7 +100,12 @@ ClubMiniCardProps) => {
   const classes = useStyles();
   return (
     <Grid item xs={xs}>
-      <div className="tw-flex tw-flex-col border tw-items-center tw-bg-white tw-border tw-border-gray-200 tw-rounded-lg md:tw-flex-row tw-w-full ">
+      <div
+        onClick={() => {
+          handleMenuItemClick(item?.sequence);
+        }}
+        className="tw-cursor-pointer tw-flex tw-flex-col border tw-items-center tw-bg-white tw-border tw-border-gray-200 tw-rounded-lg md:tw-flex-row tw-w-full "
+      >
         <img
           className="tw-object-cover tw-w-[200px] tw-rounded-l-lg tw-h-[145px] md:tw-h-[145px] md:tw-w-[200px]"
           src={item?.clubImageUrl}
@@ -143,7 +149,7 @@ ClubMiniCardProps) => {
                 ))}
               </div>
             </Grid>
-            <Grid item xs={1} className="tw-text-right">
+            {/* <Grid item xs={1} className="tw-text-right">
               <IconButton
                 aria-label="more"
                 id="long-button"
@@ -175,14 +181,7 @@ ClubMiniCardProps) => {
                   <MenuItem onClick={event => handleMenuItemCrewClick(event)}>크루관리하기</MenuItem>
                 </Menu>
               </div>
-              {/* <button
-                onClick={() => {
-                  onChangeLike(item.sequence, item.isFavorite);
-                }}
-              >
-                {isLiked ? <StarIcon color="primary" /> : <StarBorderIcon color="disabled" />}
-              </button> */}
-            </Grid>
+            </Grid> */}
           </Grid>
           <h6 className="tw-mb-2 tw-text-2xl tw-font-bold tw-tracking-tight tw-text-gray-900 dark:tw-text-white">
             {item.name}

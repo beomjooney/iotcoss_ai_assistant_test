@@ -46,7 +46,7 @@ export function QuizMyTemplate() {
                   퀴즈클럽 {'-'} 내가 만든 클럽
                 </Grid>
                 <Grid item xs={5} className="tw-font-semi tw-text-base tw-text-black">
-                  내가 만든 클럽 페이지에 관한 간단한 설명란
+                  내가 만든 클럽 페이지에 관한 간단한 설명란 1
                 </Grid>
                 <Grid item xs={3} justifyContent="flex-end" className="tw-flex">
                   <button
