@@ -24,6 +24,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import router from 'next/router';
 
 import { CommunityCard } from 'src/stories/components';
+import { Button, Typography, Profile, Modal, ArticleCard } from 'src/stories/components';
 const cx = classNames.bind(styles);
 
 //comment
@@ -49,8 +50,9 @@ const QuizClubDetaillSolution = ({
   const [totalElementsCm, setTotalElementsCm] = useState(0);
   const [totalPageCm, setTotalPageCm] = useState(1);
   const [beforeOnePick, setBeforeOnePick] = useState(1);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  const [params, setParams] = useState<any>({ id: '154', page });
+  const [params, setParams] = useState<any>({ id: '225', page });
 
   const { isFetched: isQuizAnswerListFetched } = useQuizAnswerDetail(params, data => {
     //console.log(data);
@@ -206,8 +208,13 @@ const QuizClubDetaillSolution = ({
             <img className="tw-flex-grow-0 tw-flex-shrink-0" src="/assets/images/quiz/ellipse_209_2.png" />
             <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">양황규 교수</p>
           </div>
-          <div className="tw-flex tw-justify-start tw-items-center tw-absolute tw-left-[90%] tw-top-[220.5px] tw-overflow-hidden tw-gap-[7px] tw-px-[24.5px] tw-py-[10.0625px] tw-rounded-[3.5px] tw-bg-[#e11837]">
-            <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[12.25px] tw-font-bold tw-text-center tw-text-white">
+          <div className="tw-flex tw-justify-start tw-items-center tw-absolute tw-left-[89%] tw-top-[220.5px] tw-overflow-hidden tw-gap-[7px] tw-px-[24.5px] tw-py-[10.0625px] tw-rounded-[3.5px] tw-bg-[#e11837]">
+            <p
+              onClick={() => {
+                setIsModalOpen(true);
+              }}
+              className="tw-cursor-pointer tw-flex-grow-0 tw-flex-shrink-0 tw-text-[12.25px] tw-font-bold tw-text-center tw-text-white"
+            >
               참여하기
             </p>
           </div>
@@ -663,12 +670,16 @@ const QuizClubDetaillSolution = ({
                 </div>
               </div>
             </div>
-            <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-3">
-              <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                정렬 :
-              </p>
-
-              <RadioGroup className="tw-py-5" value={selectedOption} onChange={handleChangeQuiz} row>
+            <div className="tw-flex tw-justify-between tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-3">
+              <RadioGroup
+                className="tw-items-center tw-py-5 tw-gap-3"
+                value={selectedOption}
+                onChange={handleChangeQuiz}
+                row
+              >
+                <p className="tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d] tw-mb-1">
+                  정렬 :
+                </p>
                 <FormControlLabel
                   value="latest"
                   control={
@@ -706,6 +717,27 @@ const QuizClubDetaillSolution = ({
                   }
                 />
               </RadioGroup>
+              <p className="tw-flex tw-items-center tw-justify-end tw-text-center tw-py-5">
+                <div className="tw-flex tw-items-center tw-justify-center tw-w-full  tw-gap-3">
+                  <TextField
+                    id="outlined-basic"
+                    label=""
+                    variant="outlined"
+                    InputProps={{
+                      style: { height: '40px', width: '250px' },
+                      startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
+                    }}
+                    onKeyPress={e => {
+                      if (e.key === 'Enter') {
+                        // Add your submit function here
+                      }
+                    }}
+                  />
+                  <button className="tw-w-[60px] tw-bg-[#E9ECF2] tw-py-[11px] tw-px-14 tw-px-4 tw-h-full tw-rounded tw-border tw-border-secondary tw-text-sm">
+                    검색
+                  </button>
+                </div>
+              </p>
             </div>
             <div className="border border-secondary tw-px-10 tw-py-5 tw-rounded-xl">
               <div>
@@ -732,86 +764,6 @@ const QuizClubDetaillSolution = ({
                     );
                   })
                 )}
-
-                <div className="tw-flex tw-justify-start tw-items-center tw-gap-3">
-                  <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow tw-flex-shrink tw-relative tw-gap-2">
-                    <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-10 tw-h-10">
-                      <div className="tw-absolute tw-left-[-0.5px] tw-top-[-0.5px]" />
-                      <svg
-                        width={24}
-                        height={24}
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-6 h-6 relative"
-                        preserveAspectRatio="none"
-                      >
-                        <path
-                          d="M6 6V12C6 12.7956 6.31607 13.5587 6.87868 14.1213C7.44129 14.6839 8.20435 15 9 15H19M19 15L15 11M19 15L15 19"
-                          stroke="#31343D"
-                          stroke-width={2}
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        />
-                      </svg>
-                    </div>
-                    <p class="tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-center tw-text-[#313b49]">
-                      <div class="tw-w-10 tw-h-[42.62px] tw-flex tw-justify-center tw-items-center">
-                        <img
-                          src="/assets/images/quiz/아그리파_1.png"
-                          class="tw-w-[26.44px] tw-h-[38.31px] tw-object-cover"
-                        />
-                      </div>
-                    </p>
-                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-bold tw-text-left tw-text-[#313b49]">
-                      김동서
-                    </p>
-                    <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-gap-2">
-                      <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#d7ecff]">
-                        <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#235a8d]">
-                          소프트웨어융합대학
-                        </p>
-                      </div>
-                      <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#e4e4e4]">
-                        <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#313b49]">
-                          컴퓨터공학과
-                        </p>
-                      </div>
-                      <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#ffdede]">
-                        <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#b83333]">
-                          2학년
-                        </p>
-                      </div>
-                      <p className="tw-text-xs tw-text-left tw-text-[#9ca5b2] tw-ml-auto">24.06.12ㅣ18:00:00</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="tw-flex tw-flex-col tw-justify-start tw-items-start tw-relative tw-gap-2 tw-left-24 tw-py-2">
-                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[964px] tw-text-sm tw-text-left tw-text-[#313b49]">
-                    Lorem Ipsum&nbsp;is simply dummy text of the printing and typesetting industry.
-                  </p>
-                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[10px] tw-text-left tw-text-[#9ca5b2]">
-                    답글쓰기
-                  </p>
-                </div>
-                {/* comment */}
-                <div className="tw-grid tw-grid-cols-10 tw-items-center tw-gap-3 tw-py-5">
-                  <div className="tw-col-span-9">
-                    <div className="tw-form-floating tw-w-full tw-pt-1">
-                      <textarea
-                        className="tw-form-control tw-w-full"
-                        placeholder="Leave a comment here"
-                        id="floatingTextarea"
-                        style={{ height: '60px', resize: 'none', padding: 10 }}
-                      ></textarea>
-                    </div>
-                  </div>
-                  <div className="tw-col-span-1">
-                    <button className=" tw-py-[20px] tw-w-full tw-h-full tw-rounded tw-bg-white border border-secondary tw-border-[#e9ecf2] tw-text-sm tw-text-center tw-text-[#6a7380]">
-                      댓글달기
-                    </button>
-                  </div>
-                </div>
               </div>
             </div>
             <div className="tw-grid tw-grid-cols-10 tw-items-center tw-gap-3 tw-py-5">
@@ -831,32 +783,37 @@ const QuizClubDetaillSolution = ({
                 </button>
               </div>
             </div>
-            {/* pagenation */}
-            {/* 검색 */}
-            <div className="tw-flex tw-items-center tw-justify-center tw-text-center tw-py-5">
-              <div className="tw-flex tw-items-center tw-justify-center tw-w-full  tw-gap-3">
-                <TextField
-                  id="outlined-basic"
-                  label=""
-                  variant="outlined"
-                  InputProps={{
-                    style: { height: '43px', width: '300px' },
-                    startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
-                  }}
-                  onKeyPress={e => {
-                    if (e.key === 'Enter') {
-                      // Add your submit function here
-                    }
-                  }}
-                />
-                <button className="tw-w-[100px] tw-bg-[#E9ECF2] tw-py-[12px] tw-px-14 tw-px-4 tw-h-full tw-rounded tw-border tw-border-secondary tw-text-sm">
-                  검색
-                </button>
-              </div>
-            </div>
           </>
         )}
       </div>
+      <Modal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)} title="퀴즈풀러가기" maxWidth="900px">
+        <div className={cx('seminar-check-popup')}>
+          <div className={cx('mb-5')}>
+            <span className={cx('text-bold', 'tw-text-xl', 'tw-font-bold')}>가입 신청이 완료되었습니다!</span>
+          </div>
+          <div>가입 신청 후 클럽장 승인이 완료될때까지 기다려주세요!</div>
+          <div>승인 완료 후 MY페이지나 퀴즈클럽 페이지 상단에서 가입된 클럽을 확인하실 수 있습니다.</div>
+          <br></br>
+          <br></br>
+          <div className="tw-mt-5">
+            <Button className="tw-mr-5" color="red" label="확인" size="modal" onClick={() => setIsModalOpen(false)} />
+            {/* <Button
+              color="primary"
+              label="연락처 입력하러가기"
+              size="modal"
+              onClick={() =>
+                router.push(
+                  {
+                    pathname: '/profile',
+                    query: { isOpenModal: true, beforeQuizSequence: id },
+                  },
+                  '/profile',
+                )
+              }
+            /> */}
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

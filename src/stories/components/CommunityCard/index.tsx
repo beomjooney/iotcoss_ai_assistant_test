@@ -355,7 +355,7 @@ CommunityCardProps) => {
                 </p>
               </div>
             </div>
-            <div className="tw-py-7">
+            <div className="tw-py-5">
               <svg
                 width={'100%'}
                 height={1}
@@ -454,7 +454,7 @@ CommunityCardProps) => {
 
               <div className="tw-col-span-9 tw-flex tw-items-center tw-justify-end ">
                 <button
-                  className={cx('board-footer__reply', 'tw-text-[14px] tw-pl-4')}
+                  className={cx('tw-text-[14px] tw-pl-4')}
                   onClick={() => {
                     onButtonReply(board.clubQuizAnswerSequence);
                   }}

@@ -136,7 +136,7 @@ const CommunityCardReply = ({ reply, className, refetch }: CommunityCardReplyPro
 
           <div className="tw-grid tw-grid-cols-12 tw-items-start tw-justify-center">
             <div className="tw-col-span-1"></div>
-            <div className="tw-col-span-11 tw-py-3">
+            <div className="tw-col-span-11 tw-py-2">
               <div className="tw-text-sm">{reply.body}</div>
             </div>
             <div className="tw-col-span-1"></div>
@@ -158,7 +158,7 @@ const CommunityCardReply = ({ reply, className, refetch }: CommunityCardReplyPro
           </div>
 
           {isOpen && (
-            <div className="tw-grid tw-grid-cols-12 tw-items-center tw-justify-center tw-pb-4 tw-gap-3">
+            <div className="tw-grid tw-grid-cols-12 tw-items-center tw-justify-center tw-gap-3">
               <div className="tw-col-span-1"></div>
               <div className="tw-col-span-10 ">
                 <textarea
@@ -180,7 +180,7 @@ const CommunityCardReply = ({ reply, className, refetch }: CommunityCardReplyPro
           )}
           <div className="tw-grid tw-grid-cols-12 tw-items-start tw-justify-center">
             <div className="tw-col-span-1"></div>
-            <div className="tw-col-span-11 tw-pt-0 tw-pb-3">
+            <div className="tw-col-span-11 tw-pt-0">
               {reply?.replies.map((reply, i) => {
                 return <CommunityCardReReply key={i} reply={reply} />;
               })}
