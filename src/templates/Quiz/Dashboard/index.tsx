@@ -48,6 +48,8 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
+import router from 'next/router';
+
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
@@ -1026,7 +1028,10 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
           </Grid>
         </div>
         <div className="tw-w-full tw-py-5 tw-cursor-pointer">
-          <div className="tw-h-[50px] tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white border tw-border-secondary">
+          <div
+            onClick={() => router.push('/quiz-list/20')}
+            className="tw-h-[50px] tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white border tw-border-secondary"
+          >
             <div className="tw-flex tw-justify-start tw-items-start tw-absolute tw-left-[28.21px] tw-top-[14px] tw-gap-[16.133331298828125px]">
               <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-medium tw-text-left tw-text-[#31343d]">
                 ㄴ 퀴즈 목록 전체보기

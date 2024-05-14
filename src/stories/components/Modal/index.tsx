@@ -46,6 +46,7 @@ function Modal({
           zIndex: 1030,
         },
         content: {
+          overflowY: 'auto',
           position: 'absolute',
           maxWidth,
           maxHeight,
@@ -55,7 +56,7 @@ function Modal({
           background: '#fff',
           overflow: 'hidden',
           WebkitOverflowScrolling: 'touch',
-          borderRadius: '0px',
+          borderRadius: '10px',
           outline: 'none',
           padding: '0px',
           top: '50%',
@@ -68,8 +69,14 @@ function Modal({
       }}
     >
       {closable && (
-        <div className={cx('closable', 'tw-bg-white')} onClick={() => setIsShow(false)}>
-          {/* {title && <span className={cx('modal-header__title')}>{title}</span>} */}
+        <div className={cx('closable', 'tw-bg-white', 'border-bottom')} onClick={() => setIsShow(false)}>
+          {title && (
+            <div className="">
+              <span className={cx('modal-header__title', 'tw-px-5 tw-mb-5 tw-font-bold tw-text-[18px] tw-text-black')}>
+                {title}
+              </span>
+            </div>
+          )}
           <span className="ti-close" />
         </div>
       )}

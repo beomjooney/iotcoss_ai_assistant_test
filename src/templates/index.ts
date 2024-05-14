@@ -36,7 +36,12 @@ export * from './QuizMake/index';
 export * from './Quiz/Open/index';
 export * from './Quiz/Crew/index';
 export * from './Quiz/Manage/index';
+/** 퀴즈 대시보드*/
 export * from './Quiz/Dashboard/index';
+/** 전체 목록 전체보기*/
+export * from './Quiz/QuizListViewAll/index';
+/** 전체 답변보기 & 채점하기*/
+export * from './Quiz/QuizViewAllAnswers/index';
 export * from './Quiz/Solution/index';
 export * from './Quiz/Growth/index';
 export * from './Quiz/AnswersDetail/index';

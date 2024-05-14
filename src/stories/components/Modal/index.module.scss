@@ -15,7 +15,7 @@ $header-height: 52px;
     position: absolute;
     width: 100%;
     left: 0;
-    text-align: center;
+    text-align: left;
   }
 
   span:not(.modal-header__title) {
@@ -28,7 +28,7 @@ $header-height: 52px;
 }
 .content-wrap {
   top: $header-height;
-  padding: 3rem 5rem;
+  padding: 2rem 2rem;
   display: table;
   width: 100%;
   height: calc(100% - $header-height);
