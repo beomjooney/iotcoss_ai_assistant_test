@@ -159,7 +159,11 @@ export function LoginTemplate({ onSubmitLogin }: LoginTemplateProps) {
         <Typography sx={{ fontSize: 14 }}>동서대학교 devus 계정이 없으신가요?</Typography>
       </Box>
       <Box display="flex" justifyContent="center" sx={{ fontWeight: 'bold' }}>
-        <Typography sx={{ fontSize: 14, textDecoration: 'underline' }} className="tw-py-3">
+        <Typography
+          onClick={() => router.push('/account/signup')}
+          sx={{ fontSize: 14, textDecoration: 'underline' }}
+          className="tw-py-3  tw-cursor-pointer"
+        >
           회원가입
         </Typography>
       </Box>
