@@ -1342,10 +1342,6 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
                       </div>
                     </TableCell>
                   ))}
-
-                  <p className="tw-absolute tw-left-[310px] tw-top-[22px] tw-text-base tw-font-semibold tw-text-center tw-text-[#31343d]">
-                    5/60
-                  </p>
                 </TableRow>
               ))}
             </TableBody>

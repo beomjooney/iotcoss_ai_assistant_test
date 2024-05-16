@@ -117,9 +117,8 @@
   }
 
   &.gray {
-    color: palette.$Primary-Withe;
-    background-color: palette.$Primary-Gray900;
-    border: 1px solid palette.$Primary-Gray900;
+    color: #fff;
+    background-color: #e0e4eb;
 
     &:hover:active {
       background-color: palette.$Primary-Gray800;

@@ -3,6 +3,7 @@ import classNames from 'classnames/bind';
 import { Button } from '../../../stories/components';
 import { useRouter } from 'next/router';
 import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
 import Grid from '@mui/material/Grid';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -27,7 +28,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { useLoginOtp, useLoginOtpVerification, useLoginSignUp } from 'src/services/account/account.mutations';
 import isURL from 'validator/lib/isURL';
-
+import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
+import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
 interface SignUpTemplateProps {
   onSubmitLogin: () => void;
 }
@@ -213,42 +215,6 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
       return;
     }
 
-    //youtube url check
-    if ((isURL(data.youtubeUrl) && data.youtubeUrl.includes('youtube')) || data.youtubeUrl === '') {
-    } else {
-      setUrlError('youtube 주소가 유효하지 않습니다.');
-      focusYoutube_Ref.current.focus();
-      return;
-    }
-
-    if ((isURL(data.twitterUrl) && data.twitterUrl.includes('twitter')) || data.twitterUrl === '') {
-    } else {
-      setUrlError('twitter 주소가 유효하지 않습니다.');
-      focusTwitter_Ref.current.focus();
-      return;
-    }
-
-    if ((isURL(data.linkedUrl) && data.linkedUrl.includes('linked')) || data.linkedUrl === '') {
-    } else {
-      setUrlError('linked 주소가 유효하지 않습니다.');
-      focusLinked_Ref.current.focus();
-      return;
-    }
-
-    if ((isURL(data.facebookUrl) && data.facebookUrl.includes('facebook')) || data.facebookUrl === '') {
-    } else {
-      setUrlError('facebook 주소가 유효하지 않습니다.');
-      focusFacebook_Ref.current.focus();
-      return;
-    }
-
-    if ((isURL(data.instagramUrl) && data.instagramUrl.includes('instagram')) || data.instagramUrl === '') {
-    } else {
-      setUrlError('instagram 주소가 유효하지 않습니다.');
-      focusInstargram_Ref.current.focus();
-      return;
-    }
-
     onLoginSignUp({
       // ...data,
       memberId: data.memberId,
@@ -399,295 +365,175 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
 
   return (
     <div className={cx('login-container')}>
-      <div className={cx('logo-area')}>
-        <img src="/assets/images/cm_CI_co_1000x225.png" alt="footer logo" width={162} className="img-fluid mb-3" />
-        <p className={cx('logo-area__text')}>
-          데브어스에<br></br> 오신 것을 환영합니다!
-          <br />
-        </p>
-      </div>
+      <p className="tw-text-3xl tw-font-bold tw-text-center tw-text-black tw-pb-5">회원가입</p>;
       <form onSubmit={handleSubmit(onSubmit, onError)}>
-        <TextField
-          sx={{
-            marginTop: '0px',
-            marginBottom: '10px',
-            fontSize: 18,
-            '& label': { fontSize: 14, color: '#919191', fontWeight: 'bold' },
-          }}
-          fullWidth
-          required
-          label="이름"
-          type="search"
-          id="name"
-          name="name"
-          variant="standard"
-          {...register('name')}
-          error={errors.name ? true : false}
-          helperText={errors.name?.message}
-        />
-
-        <TextField
-          sx={{
-            marginTop: '5px',
-            marginBottom: '15px',
-            '& label': { fontSize: 14, color: '#919191', fontWeight: 'bold' },
-          }}
-          label="이메일"
-          fullWidth
-          id="memberId"
-          name="memberId"
-          variant="standard"
-          {...register('memberId')}
-          error={errors.memberId ? true : false}
-          helperText={errors.memberId?.message}
-        />
+        <div className="tw-flex tw-items-center">
+          <label htmlFor="name" className="tw-text-gray-700 tw-font-bold tw-w-40">
+            이메일
+          </label>
+          <TextField
+            sx={{
+              marginTop: '5px',
+              marginBottom: '15px',
+              '& label': { fontSize: 14, color: '#919191', fontWeight: 'bold' },
+            }}
+            label="이메일"
+            fullWidth
+            id="memberId"
+            name="memberId"
+            {...register('memberId')}
+            error={errors.memberId ? true : false}
+            helperText={errors.memberId?.message}
+          />
+        </div>
+        <div className="tw-flex tw-items-center">
+          <label htmlFor="name" className="tw-text-gray-700 tw-font-bold tw-w-40">
+            이름
+          </label>
+          <TextField
+            sx={{
+              fontSize: 18,
+              '& label': { fontSize: 14, color: '#919191', fontWeight: 'bold' },
+            }}
+            label="이름"
+            fullWidth
+            required
+            type="search"
+            id="name"
+            name="name"
+            {...register('name')}
+            error={errors.name ? true : false}
+            helperText={errors.name?.message}
+          />
+        </div>
       </form>
       <form onSubmit={handleSubmitPhone(onSubmitPhone, onErrorPhone)}>
-        <Grid container spacing={3} direction="row" justifyContent="space-between" alignItems="center">
-          <Grid item xs={7.5}>
-            <Box display="flex" justifyContent="flex-start">
-              <TextField
-                sx={{
-                  '& label': { fontSize: 14, color: '#919191', fontWeight: 'bold' },
-                }}
-                fullWidth
-                label="휴대폰 번호"
-                type="tel"
-                inputProps={{
-                  maxLength: 11,
-                }}
-                disabled={isDisabled}
-                id="phoneNumber"
-                name="phoneNumber"
-                variant="standard"
-                {...registerPhone('phoneNumber')}
-                error={errorsPhone.phoneNumber ? true : false}
-                helperText={errorsPhone.phoneNumber?.message}
-              />
-            </Box>
-          </Grid>
-          <Grid item xs={4.5}>
-            <Box display="flex" justifyContent="flex-end" sx={{ fontWeight: 'bold', marginBottom: '-15px' }}>
-              <Button disabled={isDisabledPhone} onClick={() => handleSubmitPhone(onSubmitPhone)}>
-                <Typography sx={{ fontWeight: '500', fontSize: 14 }}>{smsSend}</Typography>
-              </Button>
-            </Box>
-          </Grid>
-        </Grid>
+        <div className="tw-flex tw-items-center tw-mt-4">
+          <label htmlFor="name" className="tw-text-gray-700 tw-font-bold tw-w-40">
+            휴대폰번호
+          </label>
+          <TextField
+            sx={{
+              '& label': { fontSize: 14, color: '#919191', fontWeight: 'bold' },
+            }}
+            fullWidth
+            label="휴대폰 번호"
+            type="tel"
+            inputProps={{
+              maxLength: 11,
+            }}
+            disabled={isDisabled}
+            id="phoneNumber"
+            name="phoneNumber"
+            {...registerPhone('phoneNumber')}
+            error={errorsPhone.phoneNumber ? true : false}
+            helperText={errorsPhone.phoneNumber?.message}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <Button disabled={isDisabledPhone} onClick={() => handleSubmitPhone(onSubmitPhone)}>
+                    <Typography sx={{ fontWeight: '500', fontSize: 14 }}>{smsSend}</Typography>
+                  </Button>
+                </InputAdornment>
+              ),
+            }}
+          />
+        </div>
       </form>
       {smsFlag && (
         <form onSubmit={handleSubmitOtp(onSubmitOtp, onErrorOtp)}>
-          <Grid
-            container
-            spacing={3}
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-            sx={{ marginBottom: '0px', paddingTop: '0px' }}
-          >
-            <Grid item xs={6.5}>
-              <Box display="flex" justifyContent="flex-start" sx={{ marginTop: '15px' }}>
-                <TextField
-                  sx={{
-                    '& label': { fontSize: 14, color: '#919191', fontWeight: 'bold' },
-                  }}
-                  fullWidth
-                  label="인증번호"
-                  type="search"
-                  id="otp"
-                  name="otp"
-                  variant="standard"
-                  inputProps={{
-                    maxLength: 6,
-                  }}
-                  {...registerOtp('otp')}
-                  error={errorsOtp.otp ? true : false}
-                  helperText={errorsOtp.otp?.message}
-                />
-              </Box>
-            </Grid>
-            <Grid item xs={5.5}>
-              <Box
+          <div className="tw-flex tw-items-center tw-mt-4">
+            <label htmlFor="name" className="tw-text-gray-700 tw-font-bold tw-w-36">
+              인증번호
+            </label>
+            <div className="tw-flex tw-items-center">
+              <TextField
+                fullWidth
                 sx={{
-                  display: 'flex',
-                  flexDirection: 'row-reverse',
-                  alignItems: 'center',
-                  p: 1,
-                  m: 1,
-                  bgcolor: 'background.paper',
-                  borderRadius: 1,
-                  marginRight: 0,
-                  paddingRight: 0,
-                  marginBottom: '-15px',
+                  '& label': { fontSize: 14, color: '#919191', fontWeight: 'bold' },
                 }}
+                label="인증번호"
+                type="search"
+                id="otp"
+                name="otp"
+                inputProps={{
+                  maxLength: 6,
+                }}
+                {...registerOtp('otp')}
+                error={errorsOtp.otp ? true : false}
+                helperText={errorsOtp.otp?.message}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Button disabled={isDisabledOtp} onClick={() => handleSubmitOtp(onSubmitOtp)}>
+                        <Typography sx={{ fontWeight: '500', fontSize: 14 }}>인증하기</Typography>
+                      </Button>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <Typography
+                className="tw-text-right"
+                variant="h6"
+                sx={{ fontWeight: '600', color: 'black', mr: 2, width: '70px' }}
               >
-                <Button disabled={isDisabledOtp} onClick={() => handleSubmitOtp(onSubmitOtp)}>
-                  <Typography sx={{ fontWeight: '500', fontSize: 14 }}>인증하기</Typography>
-                </Button>
-                <Typography variant="h6" sx={{ fontWeight: '600', color: 'black', mr: 2 }}>
-                  {min}:{sec < 10 ? `0${sec}` : sec}
-                </Typography>
-              </Box>
-            </Grid>
-          </Grid>
+                {min}:{sec < 10 ? `0${sec}` : sec}
+              </Typography>
+            </div>
+          </div>
         </form>
       )}
       <form onSubmit={handleSubmit(onSubmit, onError)}>
-        <TextField
-          sx={{
-            marginTop: '15px',
-            marginBottom: '10px',
-            '& label': { fontSize: 14, color: '#919191', fontWeight: 'bold' },
-          }}
-          inputProps={{
-            style: { borderBottomColor: '#e3e3e3 !important' },
-          }}
-          fullWidth
-          label="비밀번호"
-          type="password"
-          variant="standard"
-          id="password"
-          name="password"
-          {...register('password')}
-          error={errors.password ? true : false}
-          helperText={errors.password?.message}
-        />
+        <div className="tw-flex tw-items-center">
+          <label htmlFor="name" className="tw-text-gray-700 tw-font-bold tw-w-40">
+            비밀번호
+          </label>
+          <TextField
+            sx={{
+              marginTop: '15px',
+              marginBottom: '10px',
+              '& label': { fontSize: 14, color: '#919191', fontWeight: 'bold' },
+            }}
+            inputProps={{
+              style: { borderBottomColor: '#e3e3e3 !important' },
+            }}
+            fullWidth
+            label="비밀번호"
+            type="password"
+            id="password"
+            name="password"
+            {...register('password')}
+            error={errors.password ? true : false}
+            helperText={errors.password?.message}
+          />
+        </div>
+        <div className="tw-flex tw-items-center tw-mt-2 tw-mb-5">
+          <label htmlFor="name" className="tw-text-gray-700 tw-font-bold tw-w-40">
+            비밀번호 확인
+          </label>
+          <TextField
+            sx={{ '& label': { fontSize: 14, color: '#919191', fontWeight: 'bold' } }}
+            // inputProps={{
+            //   style: { border: '0px !important' },
+            // }}
+            fullWidth
+            label="비밀번호 확인"
+            type="password"
+            autoComplete="current-password"
+            id="passwordConfirm"
+            name="passwordConfirm"
+            {...register('passwordConfirm')}
+            error={errors.passwordConfirm ? true : false}
+            helperText={errors.passwordConfirm?.message}
+          />
+        </div>
 
-        <TextField
-          sx={{ marginBottom: '30px', '& label': { fontSize: 14, color: '#919191', fontWeight: 'bold' } }}
-          // inputProps={{
-          //   style: { border: '0px !important' },
-          // }}
-          fullWidth
-          label="비밀번호 확인"
-          type="password"
-          autoComplete="current-password"
-          variant="standard"
-          id="passwordConfirm"
-          name="passwordConfirm"
-          {...register('passwordConfirm')}
-          error={errors.passwordConfirm ? true : false}
-          helperText={errors.passwordConfirm?.message}
-        />
+        <Divider variant="middle" sx={{ borderColor: 'rgba(0, 0, 0, 0.5);', margin: '40px 0px' }} />
 
-        <Box display="flex" justifyContent="flex-start" className="mb-0">
-          <FormGroup sx={{ fontWeight: 'bold' }}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  value="sns"
-                  onChange={onSnsChange}
-                  checked={snsFlag}
-                  icon={<CheckCircleOutlineIcon />}
-                  checkedIcon={<CheckCircleOutlineIcon />}
-                  sx={{
-                    color: '#c7c7c7',
-                    '& .MuiSvgIcon-root': { fontSize: 24 },
-                  }}
-                />
-              }
-              label={
-                <Typography variant="h6" sx={{ fontWeight: '600', color: 'black' }}>
-                  SNS 링크/공유하기
-                </Typography>
-              }
-            />
-          </FormGroup>
-        </Box>
-
-        {snsFlag && (
-          <>
-            <TextField
-              sx={{
-                marginTop: '0px',
-                marginBottom: '10px',
-                '& label': { fontSize: 14, color: '#919191', fontWeight: 'bold' },
-              }}
-              label="유튜브 주소를 입력해주세요."
-              fullWidth
-              id="filled-error-helper-text"
-              inputRef={focusYoutube_Ref}
-              name="website"
-              variant="standard"
-              {...register('youtubeUrl')}
-            />
-
-            <TextField
-              sx={{
-                marginTop: '0px',
-                marginBottom: '10px',
-                '& label': { fontSize: 14, color: '#919191', fontWeight: 'bold' },
-              }}
-              label="페이스북 주소를 입력해주세요."
-              fullWidth
-              inputRef={focusFacebook_Ref}
-              id="facebookUrl"
-              name="facebookUrl"
-              variant="standard"
-              {...register('facebookUrl')}
-            />
-
-            <TextField
-              sx={{
-                marginTop: '0px',
-                marginBottom: '10px',
-                '& label': { fontSize: 14, color: '#919191', fontWeight: 'bold' },
-              }}
-              label="인스타그램 주소를 입력해주세요."
-              fullWidth
-              inputRef={focusInstargram_Ref}
-              id="instagramUrl"
-              name="instagramUrl"
-              variant="standard"
-              {...register('instagramUrl')}
-            />
-
-            <TextField
-              sx={{
-                marginTop: '0px',
-                marginBottom: '10px',
-                '& label': { fontSize: 14, color: '#919191', fontWeight: 'bold' },
-              }}
-              label="트위터 주소 입력해주세요."
-              fullWidth
-              inputRef={focusTwitter_Ref}
-              id="twitterUrl"
-              name="twitterUrl"
-              variant="standard"
-              {...register('twitterUrl')}
-            />
-
-            <TextField
-              sx={{
-                marginTop: '0px',
-                marginBottom: '10px',
-                '& label': { fontSize: 14, color: '#919191', fontWeight: 'bold' },
-              }}
-              label="링크드인 주소를 입력해주세요."
-              fullWidth
-              inputRef={focusLinked_Ref}
-              id="linkedUrl"
-              name="linkedUrl"
-              variant="standard"
-              {...register('linkedUrl')}
-            />
-
-            <TextField
-              sx={{
-                marginTop: '0px',
-                marginBottom: '30px',
-                '& label': { fontSize: 14, color: '#919191', fontWeight: 'bold' },
-              }}
-              label="기타 SNS주소를 입력해주세요."
-              fullWidth
-              id="snsUrl"
-              name="snsUrl"
-              variant="standard"
-              {...register('snsUrl')}
-            />
-          </>
-        )}
-
+        <p className="tw-text-xl tw-text-center tw-text-black tw-pb-5">
+          <span className="tw-text-xl tw-font-bold tw-text-left text-black">동서대학교 DevUs </span>
+          <span className="tw-text-xl tw-text-left tw-text-black">이용 약관에 동의해주세요.</span>
+        </p>
         <Grid container direction="row" justifyContent="space-between" alignItems="center">
           <Grid item xs={10}>
             <Box display="flex" justifyContent="flex-start">
@@ -698,8 +544,8 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
                       value="ALL"
                       onChange={onChangeAll}
                       checked={CheckList.length === IdList.length}
-                      icon={<CheckCircleOutlineIcon />}
-                      checkedIcon={<CheckCircleOutlineIcon />}
+                      icon={<CheckBoxOutlineBlankOutlinedIcon />}
+                      checkedIcon={<CheckBoxOutlinedIcon />}
                       sx={{
                         color: '#c7c7c7',
                         '& .MuiSvgIcon-root': { fontSize: 24 },
@@ -708,18 +554,15 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
                   }
                   label={
                     <Typography variant="h6" sx={{ fontWeight: '600', color: 'black' }}>
-                      전체 동의하기
+                      전체 약관 동의
                     </Typography>
                   }
                 />
               </FormGroup>
             </Box>
           </Grid>
-          <Box sx={{ marginLeft: 4, fontSize: 14, color: 'black' }}>
-            전체동의는 선택목적에 대한 동의를 포함하고 있으며, 선택목적에 대한 동의를 거부해도 서비스 이용이 가능합니다.
-          </Box>
         </Grid>
-        <Divider variant="middle" sx={{ borderColor: 'rgba(0, 0, 0, 0.9);', margin: '20px 0px 10px 0px' }} />
+        <Divider variant="middle" sx={{ borderColor: 'rgba(0, 0, 0, 0.5);', margin: '20px 0px 20px 0px' }} />
         <Grid container direction="row" justifyContent="space-between" alignItems="center">
           <Grid item xs={10}>
             <Box display="flex" justifyContent="flex-start">
@@ -730,8 +573,8 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
                       onChange={e => onChangeEach(e, IdList[0])}
                       checked={CheckList.includes(IdList[0])}
                       value={IdList[0]}
-                      icon={<CheckIcon />}
-                      checkedIcon={<CheckIcon />}
+                      icon={<CheckBoxOutlineBlankOutlinedIcon />}
+                      checkedIcon={<CheckBoxOutlinedIcon />}
                       ref={checkboxref}
                       sx={{
                         color: '#c7c7c7',
@@ -739,11 +582,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
                       }}
                     />
                   }
-                  label={
-                    <Typography sx={{ fontSize: 14, color: 'black', fontWeight: 'bold' }}>
-                      [필수] 서비스 이용약관 동의
-                    </Typography>
-                  }
+                  label={<Typography sx={{ fontSize: 14, color: 'black' }}>(필수) 서비스 이용약관 동의</Typography>}
                 />
               </FormGroup>
             </Box>
@@ -764,7 +603,6 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
             </Box>
           </Grid>
         </Grid>
-
         <Grid container direction="row" justifyContent="space-between" alignItems="center">
           <Grid item xs={10}>
             <Box display="flex" justifyContent="flex-start">
@@ -775,8 +613,8 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
                       onChange={e => onChangeEach(e, IdList[1])}
                       checked={CheckList.includes(IdList[1])}
                       value={IdList[1]}
-                      icon={<CheckIcon />}
-                      checkedIcon={<CheckIcon />}
+                      icon={<CheckBoxOutlineBlankOutlinedIcon />}
+                      checkedIcon={<CheckBoxOutlinedIcon />}
                       sx={{
                         color: '#c7c7c7',
                         '& .MuiSvgIcon-root': { fontSize: 24 },
@@ -784,9 +622,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
                     />
                   }
                   label={
-                    <Typography sx={{ fontSize: 14, color: 'black', fontWeight: 'bold' }}>
-                      [필수] 개인정보 수집 및 이용 동의
-                    </Typography>
+                    <Typography sx={{ fontSize: 14, color: 'black' }}>(필수) 개인정보 수집 및 이용 동의</Typography>
                   }
                 />
               </FormGroup>
@@ -808,9 +644,6 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
             </Box>
           </Grid>
         </Grid>
-
-        <Divider variant="middle" sx={{ borderColor: 'rgba(0, 0, 0, 0.9);', margin: '10px 0px 10px 0px' }} />
-
         <Grid container direction="row" justifyContent="space-between" alignItems="center">
           <Grid item xs={10}>
             <Box display="flex" justifyContent="flex-start">
@@ -821,8 +654,8 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
                       onChange={e => onChangeMarketingAll(e, IdList[2])}
                       checked={CheckMarketingList.length >= 1}
                       value={IdList[2]}
-                      icon={<CheckIcon />}
-                      checkedIcon={<CheckIcon />}
+                      icon={<CheckBoxOutlineBlankOutlinedIcon />}
+                      checkedIcon={<CheckBoxOutlinedIcon />}
                       sx={{
                         color: '#c7c7c7',
                         '& .MuiSvgIcon-root': { fontSize: 24 },
@@ -830,9 +663,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
                     />
                   }
                   label={
-                    <Typography sx={{ fontSize: 14, color: 'black', fontWeight: 'bold' }}>
-                      [선택] 이벤트 등 프로모션 알림 수신
-                    </Typography>
+                    <Typography sx={{ fontSize: 14, color: 'black' }}>(선택) 이벤트 등 프로모션 알림 수신</Typography>
                   }
                 />
               </FormGroup>
@@ -855,7 +686,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
           </Grid>
         </Grid>
         <Grid container direction="row" alignItems="center" sx={{ marginLeft: 4 }}>
-          <Grid item xs={3}>
+          <Grid item xs={4}>
             <Box display="flex">
               <FormGroup sx={{ fontWeight: 'bold' }}>
                 <FormControlLabel
@@ -864,20 +695,20 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
                       onChange={e => onChangeMarketingEach(e, marketingList[0])}
                       checked={CheckMarketingList.includes(marketingList[0])}
                       value={marketingList[0]}
-                      icon={<CheckIcon />}
-                      checkedIcon={<CheckIcon />}
+                      icon={<CheckBoxOutlineBlankOutlinedIcon />}
+                      checkedIcon={<CheckBoxOutlinedIcon />}
                       sx={{
                         color: '#c7c7c7',
                         '& .MuiSvgIcon-root': { fontSize: 24 },
                       }}
                     />
                   }
-                  label={<Typography sx={{ fontSize: 14, color: 'black', fontWeight: 'bold' }}>이메일</Typography>}
+                  label={<Typography sx={{ fontSize: 14, color: 'black' }}>이메일 수신</Typography>}
                 />
               </FormGroup>
             </Box>
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={4}>
             <Box display="flex" justifyContent="flex-start" sx={{ fontWeight: 'bold' }}>
               <FormGroup sx={{ fontWeight: 'bold' }}>
                 <FormControlLabel
@@ -886,15 +717,15 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
                       onChange={e => onChangeMarketingEach(e, marketingList[1])}
                       checked={CheckMarketingList.includes(marketingList[1])}
                       value={marketingList[1]}
-                      icon={<CheckIcon />}
-                      checkedIcon={<CheckIcon />}
+                      icon={<CheckBoxOutlineBlankOutlinedIcon />}
+                      checkedIcon={<CheckBoxOutlinedIcon />}
                       sx={{
                         color: '#c7c7c7',
                         '& .MuiSvgIcon-root': { fontSize: 24 },
                       }}
                     />
                   }
-                  label={<Typography sx={{ fontSize: 14, color: 'black', fontWeight: 'bold' }}>SMS</Typography>}
+                  label={<Typography sx={{ fontSize: 14, color: 'black' }}>문자 수신</Typography>}
                 />
               </FormGroup>
             </Box>
@@ -908,23 +739,23 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
                       onChange={e => onChangeMarketingEach(e, marketingList[2])}
                       checked={CheckMarketingList.includes(marketingList[2])}
                       value={marketingList[2]}
-                      icon={<CheckIcon />}
-                      checkedIcon={<CheckIcon />}
+                      icon={<CheckBoxOutlineBlankOutlinedIcon />}
+                      checkedIcon={<CheckBoxOutlinedIcon />}
                       sx={{
                         color: '#c7c7c7',
                         '& .MuiSvgIcon-root': { fontSize: 24 },
                       }}
                     />
                   }
-                  label={<Typography sx={{ fontSize: 14, color: 'black', fontWeight: 'bold' }}>카카오톡</Typography>}
+                  label={<Typography sx={{ fontSize: 14, color: 'black' }}>카카오톡 수신</Typography>}
                 />
               </FormGroup>
             </Box>
           </Grid>
         </Grid>
         <div style={{ marginBottom: '20px', marginTop: '20px' }}>
-          <Button size="medium" onClick={() => handleSubmit(onSubmit)}>
-            <Typography sx={{ fontWeight: '600', fontSize: 14 }}>커리어멘토스 가입하기</Typography>
+          <Button size="large" color="gray" onClick={() => handleSubmit(onSubmit)}>
+            회원가입
           </Button>
         </div>
       </form>

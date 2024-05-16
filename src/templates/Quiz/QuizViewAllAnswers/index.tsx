@@ -8,7 +8,7 @@ import { useParticipantSeminar } from 'src/services/seminars/seminars.mutations'
 import { useSessionStore } from 'src/store/session';
 import { useClubDetailQuizList } from 'src/services/quiz/quiz.queries';
 import { useQuizDeleteLike, useQuizLike, useSaveLike } from 'src/services/community/community.mutations';
-import QuizClubListView from 'src/stories/components/QuizClubListView';
+import QuizClubAnswersView from 'src/stories/components/QuizClubAnswersView';
 import router from 'next/router';
 
 const cx = classNames.bind(styles);
@@ -194,7 +194,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
   return (
     <div className={cx('seminar-detail-container')}>
       <div className={cx('container')}>
-        <QuizClubListView
+        <QuizClubAnswersView
           border={false}
           clubInfo={clubInfo}
           leaders={leaders}
