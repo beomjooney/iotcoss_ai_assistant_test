@@ -38,6 +38,10 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 
+import { Radio, RadioGroup, FormControlLabel, TextField } from '@mui/material';
+import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded';
+import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded';
+
 /** import galendar  */
 import moment from 'moment';
 import { PickersDay, PickersDayProps } from '@mui/x-date-pickers/PickersDay';
@@ -111,6 +115,12 @@ export function StudyRoomTemplate() {
   const currDateTime = moment(currDate).format('MM-DD');
   const [open, setOpen] = React.useState(false);
   const [contentJobType, setContentJobType] = useState<any[]>([]);
+
+  const [selectedOption, setSelectedOption] = useState('latest');
+
+  const handleChangeQuiz = event => {
+    setSelectedOption(event.target.value);
+  };
 
   /**calendar param */
   const [calendarYearMonth, setCalendarYearMonth] = useState(new Date().toISOString().split('T')[0].slice(0, 7));
@@ -318,10 +328,14 @@ export function StudyRoomTemplate() {
                 <Grid item xs={2} className="tw-font-bold tw-text-3xl tw-text-black max-lg:!tw-text-base">
                   나의 학습방
                 </Grid>
-                <Grid item xs={6} className="max-lg:tw-p-2 tw-font-semi tw-text-base tw-text-black  max-lg:!tw-text-sm">
+                <Grid
+                  item
+                  xs={10}
+                  className="max-lg:tw-p-2 tw-font-semi tw-text-base tw-text-black  max-lg:!tw-text-sm"
+                >
                   나의 퀴즈클럽 진행사항을 한 눈에 보여주고 있어요!
                 </Grid>
-                <Grid item xs={4} justifyContent="flex-end" className="tw-flex">
+                {/* <Grid item xs={4} justifyContent="flex-end" className="tw-flex">
                   <button
                     onClick={() => (location.href = '/quiz-my')}
                     type="button"
@@ -336,7 +350,7 @@ export function StudyRoomTemplate() {
                   >
                     내가 만든 퀴즈 {'>'}
                   </button>
-                </Grid>
+                </Grid> */}
               </Grid>
             </div>
             <Box sx={{ width: '100%', typography: 'body1', marginTop: '20px', marginBottom: '20px' }}>
@@ -400,10 +414,130 @@ export function StudyRoomTemplate() {
                     rowSpacing={3}
                     columnSpacing={{ xs: 1, sm: 2, md: 3 }}
                   >
-                    <Grid item xs={8}>
+                    <Grid item xs={12}>
                       {isContentFetched && active === 0 && (
-                        <div>
-                          <TableContainer component={Paper} className=" tw-mb-5" elevation={0}>
+                        <>
+                          <Grid
+                            container
+                            direction="row"
+                            justifyContent="left"
+                            // alignItems="center"
+                            rowSpacing={3}
+                            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+                          >
+                            <Grid item xs={8}>
+                              <RadioGroup
+                                className="tw-items-center tw-pb-3 tw-gap-3"
+                                value={selectedOption}
+                                onChange={handleChangeQuiz}
+                                row
+                              >
+                                <p className="tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d] tw-mb-1">
+                                  정렬 :
+                                </p>
+                                <FormControlLabel
+                                  value="latest"
+                                  control={
+                                    <Radio
+                                      sx={{
+                                        color: '#ced4de',
+                                        '&.Mui-checked': { color: '#e11837' },
+                                      }}
+                                      icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                                      checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                                    />
+                                  }
+                                  label={
+                                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                                      최신순
+                                    </p>
+                                  }
+                                />
+                                <FormControlLabel
+                                  value="oldest"
+                                  control={
+                                    <Radio
+                                      sx={{
+                                        color: '#ced4de',
+                                        '&.Mui-checked': { color: '#e11837' },
+                                      }}
+                                      icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                                      checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                                    />
+                                  }
+                                  label={
+                                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                                      좋아요순
+                                    </p>
+                                  }
+                                />
+                              </RadioGroup>
+
+                              <div className="tw-py-4 ">
+                                <div className="tw-h-[142px] tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white border tw-border-[#e9ecf2]">
+                                  <img
+                                    src="/assets/images/quiz/rectangle_183.png"
+                                    className="tw-w-[132px] tw-h-[142px] tw-object-cover tw-float-left"
+                                  />
+
+                                  <div className="tw-flex tw-justify-start tw-items-start tw-gap-1 tw-ml-[148px] tw-mt-4">
+                                    <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#313b49]">
+                                      <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-white">
+                                        진행중
+                                      </p>
+                                    </div>
+                                    <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#d7ecff]">
+                                      <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#235a8d]">
+                                        소프트웨어융합대학
+                                      </p>
+                                    </div>
+                                    <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#e4e4e4]">
+                                      <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#313b49]">
+                                        컴퓨터공학과
+                                      </p>
+                                    </div>
+                                    <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-1 tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#ffdede]">
+                                      <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#b83333]">
+                                        2학년
+                                      </p>
+                                    </div>
+                                    <div className="tw-flex tw-justify-end tw-items-center tw-ml-auto tw-pr-4">
+                                      <svg
+                                        width={24}
+                                        height={24}
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="tw-w-6 tw-h-6"
+                                        preserveAspectRatio="none"
+                                      >
+                                        <path
+                                          d="M22 9.24L14.81 8.62L12 2L9.19 8.63L2 9.24L7.46 13.97L5.82 21L12 17.27L18.18 21L16.55 13.97L22 9.24Z"
+                                          fill="#E11837"
+                                        />
+                                      </svg>
+                                    </div>
+                                  </div>
+
+                                  <div className="tw-py-2">
+                                    <p className="tw-ml-[148px] tw-mt-[18px] tw-text-sm tw-font-bold tw-text-left tw-text-black">
+                                      임베디드 시스템
+                                    </p>
+                                    <p className="tw-w-[262px] tw-h-6 tw-ml-[148px] tw-mt-1 tw-text-sm tw-text-left tw-text-black">
+                                      [전공선택] 2학년 화요일 A반
+                                    </p>
+                                  </div>
+                                  <div className="tw-ml-[148px]">
+                                    <p className="tw-text-xs tw-text-left tw-text-black">
+                                      양황규 교수님
+                                      <span className="tw-text-xs tw-text-left tw-text-[#9ca5b2] tw-ml-4">
+                                        2023.00.00 ~ 2023.00.00ㅣ월, 목ㅣ퀴즈클럽 12주ㅣ학습 24회
+                                      </span>
+                                    </p>
+                                  </div>
+                                </div>
+
+                                {/* <TableContainer component={Paper} className=" tw-mb-5" elevation={0}>
                             <Table sx={{ minWidth: 700 }} aria-label="customized table">
                               <TableHead>
                                 <TableRow>
@@ -438,13 +572,123 @@ export function StudyRoomTemplate() {
                                 ))}
                               </TableBody>
                             </Table>
-                          </TableContainer>
-                          {/* <Pagination count={totalPage} page={page} onChange={handleChange} /> */}
-                          <Pagination page={page} setPage={setPage} total={totalPage} />
-                        </div>
+                          </TableContainer> */}
+                                {/* <Pagination count={totalPage} page={page} onChange={handleChange} /> */}
+                                <div className="tw-py-4">
+                                  <Pagination page={page} setPage={setPage} total={totalPage} />
+                                </div>
+                              </div>
+                            </Grid>
+                            <Grid item xs={4}>
+                              <div className="tw-bg-gray-50 tw-rounded-md tw-h-[400px] tw-p-5 tw-text-black ">
+                                <div className="tw-font-bold tw-text-base tw-pb-5">나의 학습 캘린더</div>
+                                <div className="tw-bg-white">
+                                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <DateCalendar
+                                      onMonthChange={handleMonthChange}
+                                      onChange={handleDayChange}
+                                      showDaysOutsideCurrentMonth
+                                      slots={{
+                                        day: ServerDay,
+                                      }}
+                                      slotProps={{
+                                        day: {
+                                          highlightedDays,
+                                        } as any,
+                                      }}
+                                    />
+                                  </LocalizationProvider>
+                                </div>
+                              </div>
+
+                              {quizStatusList.length > 0 && (
+                                <div className="tw-bg-gray-50 tw-rounded-md tw-p-5 tw-text-black ">
+                                  <div className="tw-font-bold tw-text-base tw-pb-5">퀴즈 상태</div>
+                                  {quizStatusList.map((item, i) => {
+                                    return (
+                                      // TODO API Response 보고 댓글 작성자로 수정 필요
+                                      <div
+                                        key={i}
+                                        className="tw-flex tw-items-center tw-rounded-md tw-grid tw-grid-cols-6 tw-gap-0  tw-bg-white tw-text-sm  tw-p-4 tw-mb-5"
+                                      >
+                                        <div className="tw-col-span-4 ">
+                                          <div className="tw-line-clamp-2"> {item.clubName}</div>
+                                        </div>
+                                        <div className="tw-col-span-2 tw-text-right">
+                                          <button
+                                            disabled
+                                            className={`tw-w-[60px] tw-text-center tw-text-white tw-text-blue-800 tw-text-xs tw-font-medium tw-px-3 tw-py-2 tw-rounded ${
+                                              item.isComplete ? 'tw-bg-gray-400' : 'tw-bg-blue-500'
+                                            }`}
+                                          >
+                                            {item.isComplete ? '완료 ' : '미완료'}
+                                          </button>
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              )}
+                              <div className="tw-bg-gray-50 tw-rounded-md tw-h-[430px] tw-p-5 tw-text-black ">
+                                <div className="tw-font-bold tw-text-base tw-pb-5">내가 풀어야 할 퀴즈</div>
+                                {/* {isQuizFetched && (
+                        {quizList.map((item,i)=> (
+                          <div  key={item.id} className="tw-bg-white">
+                          {item.clubName}
+                    </div>
+                              ))}
+                      )} */}
+                                <div className="tw-mb-5">
+                                  {isQuizFetched && quizList.length > 0 ? (
+                                    quizList.map((item, i) => (
+                                      <div
+                                        key={i}
+                                        className="tw-flex tw-items-center tw-rounded-md tw-grid tw-grid-cols-6 tw-gap-0  tw-bg-white tw-text-sm  tw-p-4 tw-mb-5"
+                                      >
+                                        <div className="tw-col-span-5 tw-pr-3">
+                                          <div className="tw-line-clamp-1"> {item.clubName}</div>
+                                          <div className="tw-font-bold"> 3회차</div>
+                                          <div className="tw-line-clamp-1"> Q. {item.quizContent}</div>
+                                        </div>
+                                        <div className="tw-col-span-1">
+                                          <button
+                                            onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
+                                            className="tw-text-center tw-bg-blue-500 tw-text-white tw-text-blue-800 tw-text-xs tw-font-medium tw-px-3 tw-py-2 tw-rounded"
+                                          >
+                                            GO {'>'}
+                                          </button>
+                                        </div>
+                                      </div>
+                                    ))
+                                  ) : (
+                                    <div className="tw-flex tw-items-center tw-rounded-md tw-gap-0  tw-bg-white tw-text-sm  tw-p-4 tw-mb-5">
+                                      오늘은 풀어야 할 퀴즈가 없어요.
+                                    </div>
+                                  )}
+                                </div>
+                                <Stack spacing={2} className="tw-items-center">
+                                  <_Pagination
+                                    count={quizTotalPage}
+                                    size="small"
+                                    siblingCount={0}
+                                    page={quizPage}
+                                    renderItem={item => (
+                                      <PaginationItem
+                                        slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
+                                        {...item}
+                                      />
+                                    )}
+                                    onChange={handleChange}
+                                  />
+                                </Stack>
+                                {/* <Pagination showCount={5} page={quizPage} setPage={setQuizPage} total={quizTotalPage} /> */}
+                              </div>
+                            </Grid>
+                          </Grid>
+                        </>
                       )}
                       {isContentFetched && active === 1 && (
-                        <TableContainer component={Paper} className=" tw-mb-5" elevation={0}>
+                        <TableContainer component={Paper} className=" tw-mb-5 tw-h-[400px]" elevation={0}>
                           <Table sx={{ minWidth: 700 }} aria-label="customized table">
                             <TableHead>
                               <TableRow>
@@ -470,7 +714,7 @@ export function StudyRoomTemplate() {
                       )}
                       {isContentFetched && active === 2 && (
                         <div>
-                          <TableContainer component={Paper} className=" tw-mb-5" elevation={0}>
+                          <TableContainer component={Paper} className=" tw-mb-5  tw-h-[400px]" elevation={0}>
                             <Table sx={{ minWidth: 700 }} aria-label="customized table">
                               <TableHead>
                                 <TableRow>
@@ -512,7 +756,7 @@ export function StudyRoomTemplate() {
                       )}
                       {active === 4 && (
                         <div>
-                          <div className="tw-grid tw-grid-cols-7 tw-gap-4">
+                          <div className="tw-grid tw-grid-cols-7 tw-gap-4  tw-h-[400px]">
                             {badgeContents.map((item, index) => (
                               <div key={index} className="tw-text-center">
                                 <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
@@ -530,108 +774,6 @@ export function StudyRoomTemplate() {
                           </div>
                         </div>
                       )}
-                    </Grid>
-                    <Grid item xs={4}>
-                      <div className="tw-bg-gray-50 tw-rounded-md tw-h-[400px] tw-p-5 tw-text-black ">
-                        <div className="tw-font-bold tw-text-base tw-pb-5">나의 학습 캘린더</div>
-                        <div className="tw-bg-white">
-                          <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DateCalendar
-                              onMonthChange={handleMonthChange}
-                              onChange={handleDayChange}
-                              showDaysOutsideCurrentMonth
-                              slots={{
-                                day: ServerDay,
-                              }}
-                              slotProps={{
-                                day: {
-                                  highlightedDays,
-                                } as any,
-                              }}
-                            />
-                          </LocalizationProvider>
-                        </div>
-                      </div>
-
-                      {quizStatusList.length > 0 && (
-                        <div className="tw-bg-gray-50 tw-rounded-md tw-p-5 tw-text-black ">
-                          <div className="tw-font-bold tw-text-base tw-pb-5">퀴즈 상태</div>
-                          {quizStatusList.map((item, i) => {
-                            return (
-                              // TODO API Response 보고 댓글 작성자로 수정 필요
-                              <div
-                                key={i}
-                                className="tw-flex tw-items-center tw-rounded-md tw-grid tw-grid-cols-6 tw-gap-0  tw-bg-white tw-text-sm  tw-p-4 tw-mb-5"
-                              >
-                                <div className="tw-col-span-4 ">
-                                  <div className="tw-line-clamp-2"> {item.clubName}</div>
-                                </div>
-                                <div className="tw-col-span-2 tw-text-right">
-                                  <button
-                                    disabled
-                                    className={`tw-w-[60px] tw-text-center tw-text-white tw-text-blue-800 tw-text-xs tw-font-medium tw-px-3 tw-py-2 tw-rounded ${
-                                      item.isComplete ? 'tw-bg-gray-400' : 'tw-bg-blue-500'
-                                    }`}
-                                  >
-                                    {item.isComplete ? '완료 ' : '미완료'}
-                                  </button>
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      )}
-                      <div className="tw-bg-gray-50 tw-rounded-md tw-h-[430px] tw-p-5 tw-text-black ">
-                        <div className="tw-font-bold tw-text-base tw-pb-5">내가 풀어야 할 퀴즈</div>
-                        {/* {isQuizFetched && (
-                        {quizList.map((item,i)=> (
-                          <div  key={item.id} className="tw-bg-white">
-                          {item.clubName}
-                    </div>
-                              ))}
-                      )} */}
-                        <div className="tw-mb-5">
-                          {isQuizFetched && quizList.length > 0 ? (
-                            quizList.map((item, i) => (
-                              <div
-                                key={i}
-                                className="tw-flex tw-items-center tw-rounded-md tw-grid tw-grid-cols-6 tw-gap-0  tw-bg-white tw-text-sm  tw-p-4 tw-mb-5"
-                              >
-                                <div className="tw-col-span-5 tw-pr-3">
-                                  <div className="tw-line-clamp-1"> {item.clubName}</div>
-                                  <div className="tw-font-bold"> 3회차</div>
-                                  <div className="tw-line-clamp-1"> Q. {item.quizContent}</div>
-                                </div>
-                                <div className="tw-col-span-1">
-                                  <button
-                                    onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
-                                    className="tw-text-center tw-bg-blue-500 tw-text-white tw-text-blue-800 tw-text-xs tw-font-medium tw-px-3 tw-py-2 tw-rounded"
-                                  >
-                                    GO {'>'}
-                                  </button>
-                                </div>
-                              </div>
-                            ))
-                          ) : (
-                            <div className="tw-flex tw-items-center tw-rounded-md tw-gap-0  tw-bg-white tw-text-sm  tw-p-4 tw-mb-5">
-                              오늘은 풀어야 할 퀴즈가 없어요.
-                            </div>
-                          )}
-                        </div>
-                        <Stack spacing={2} className="tw-items-center">
-                          <_Pagination
-                            count={quizTotalPage}
-                            size="small"
-                            siblingCount={0}
-                            page={quizPage}
-                            renderItem={item => (
-                              <PaginationItem slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }} {...item} />
-                            )}
-                            onChange={handleChange}
-                          />
-                        </Stack>
-                        {/* <Pagination showCount={5} page={quizPage} setPage={setQuizPage} total={quizTotalPage} /> */}
-                      </div>
                     </Grid>
                   </Grid>
                 </section>
