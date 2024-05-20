@@ -2,6 +2,7 @@ import React from 'react';
 import Tooltip from 'src/stories/components/Tooltip';
 import classNames from 'classnames/bind';
 import styles from './index.module.scss';
+import ReactDragList from 'react-drag-list';
 
 const cx = classNames.bind(styles);
 
@@ -17,8 +18,8 @@ const QuizBreakerInfo = ({
   handleCheckboxIsRepresentative,
 }) => {
   return (
-    <div>
-      <div className="tw-relative tw-overflow-visible tw-rounded-lg tw-bg-[#f6f7fb] tw-mb-3 tw-grid tw-grid-cols-[60px_1fr_100px_28px_40px] tw-grid-rows-[auto_auto] tw-h-20 tw-z-10">
+    <div className="tw-h-[193px] tw-mb-4">
+      <div className=" tw-relative tw-overflow-visible tw-rounded-lg tw-bg-[#f6f7fb] tw-mb-3 tw-grid tw-grid-cols-[60px_1fr_100px_28px_40px] tw-grid-rows-[auto_auto] tw-h-20 tw-z-10">
         <img
           src={avatarSrc}
           alt="User Avatar"
@@ -29,28 +30,6 @@ const QuizBreakerInfo = ({
         </p>
         <p className="tw-col-start-2 tw-col-end-3 tw-row-start-1 tw-row-end-3 tw-text-base tw-text-left tw-text-black tw-mt-7 tw-ml-[33px]">
           {questionText}
-        </p>
-        <p className="tw-mr-10 tw-w-7 tw-h-1 tw-col-start-3 tw-row-start-1 tw-row-end-2 tw-place-self-center">
-          {isRepresentative !== undefined && (
-            <div onClick={() => handleCheckboxIsRepresentative(index)}>
-              <Tooltip
-                content="클릭시 대표퀴즈로 설정됩니다.대표퀴즈 설정은 3개까지 가능합니다."
-                placement="bottom"
-                trigger="mouseEnter"
-                warpClassName={cx('icon-height')}
-              >
-                <button
-                  type="button"
-                  data-tooltip-target="tooltip-default"
-                  className={`tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded border tw-w-[55px]  ${
-                    isRepresentative ? 'tw-bg-green-100 tw-text-green-800' : 'tw-bg-white tw-text-gray-800'
-                  }`}
-                >
-                  대표
-                </button>
-              </Tooltip>
-            </div>
-          )}
         </p>
 
         <svg

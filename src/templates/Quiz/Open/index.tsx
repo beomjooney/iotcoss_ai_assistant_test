@@ -48,6 +48,8 @@ import Divider from '@mui/material/Divider';
 import QuizBreakerInfo from 'src/stories/components/QuizBreakerInfo';
 import QuizBreakerInfoCheck from 'src/stories/components/QuizBreakerInfoCheck';
 import QuizClubDetailInfo from 'src/stories/components/QuizClubDetailInfo';
+/** drag list */
+import ReactDragList from 'react-drag-list';
 
 //group
 import { dayGroup, privateGroup, levelGroup, openGroup } from './group';
@@ -202,6 +204,7 @@ export function QuizOpenTemplate() {
   const [quizListParam, setQuizListParam] = useState<any[]>([]);
   const [quizListData, setQuizListData] = useState<any[]>([]);
   const [allQuizData, setAllQuizData] = useState([]);
+  const [itemList, setItemList] = useState<any[]>([]);
 
   // const { isFetched: isJobGroupFetched } = useJobGroups(data => setJobGroups(data.data.contents || []));
   const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
@@ -535,11 +538,11 @@ export function QuizOpenTemplate() {
     });
 
     // "isRepresentative" 값이 4개 이상인 경우 알림 창 표시
-    if (countIsRepresentative >= 4) {
-      alert('대표 퀴즈는 3개입니다.');
-    } else {
-      setQuizListOrigin(updatedData);
-    }
+    // if (countIsRepresentative >= 4) {
+    //   alert('대표 퀴즈는 3개입니다.');
+    // } else {
+    //   setQuizListOrigin(updatedData);
+    // }
   }
   //new logic
   const handleCheckboxChange = quizSequence => {
@@ -687,7 +690,7 @@ export function QuizOpenTemplate() {
 
   const steps = ['Step 1.클럽 세부사항 설정', 'Step 2.퀴즈 선택', 'Step 3. 개설될 클럽 미리보기'];
 
-  const [activeStep, setActiveStep] = React.useState(2);
+  const [activeStep, setActiveStep] = React.useState(1);
   const [skipped, setSkipped] = React.useState(new Set<number>());
 
   const [quizUrl, setQuizUrl] = React.useState('');
@@ -721,14 +724,14 @@ export function QuizOpenTemplate() {
       }
 
       // "isRepresentative" 값이 true인 개수를 세기 위한 변수
-      let countIsRepresentative = 0;
+      // let countIsRepresentative = 0;
 
       // 데이터를 순회하면서 "isRepresentative" 값이 true인 경우 카운트 증가
-      quizListOrigin.forEach(quiz => {
-        if (quiz.isRepresentative === true) {
-          countIsRepresentative++;
-        }
-      });
+      // quizListOrigin.forEach(quiz => {
+      //   if (quiz.isRepresentative === true) {
+      //     countIsRepresentative++;
+      //   }
+      // });
       //console.log(countIsRepresentative);
       // "isRepresentative" 값이 3개가 아닌 경우 알림 창 표시
       // if (countIsRepresentative !== 3) {
@@ -748,9 +751,28 @@ export function QuizOpenTemplate() {
       }));
     // //console.log(filteredData);
     setQuizListParam(filteredData);
-    setActiveStep(prevActiveStep => prevActiveStep + 1);
-    setSkipped(newSkipped);
+    console.log(selectedQuizzes);
+    // setActiveStep(prevActiveStep => prevActiveStep + 1);
+    // setSkipped(newSkipped);
   };
+
+  const handleUpdate = (evt: any, updated: any) => {
+    //console.log(evt); // tslint:disable-line
+    console.log(updated); // tslint:disable-line
+    setItemList([...updated]);
+  };
+  const dragList = (item: any, index: any) => (
+    <QuizBreakerInfo
+      avatarSrc="https://via.placeholder.com/40"
+      userName={item.memberName}
+      questionText={item.content}
+      isRepresentative={item.isRepresentative}
+      index={item.sequence}
+      answerText="EAI는 엔터프라이즈 어플리케이션 인테그레이션의 약자입니다. 시스템이 서로 얽히고 복잡해지면서 통제가 잘 안되는 상황이 발생하여 이런 문제를 해결하기 위해 등장한 솔루션이 바로 EAI 입니다."
+      handleCheckboxDelete={handleCheckboxDelete}
+      handleCheckboxIsRepresentative={handleCheckboxIsRepresentative}
+    />
+  );
 
   const handleNextLast = () => {
     //console.log(quizListParam);
@@ -1119,7 +1141,7 @@ export function QuizOpenTemplate() {
     <div className={cx('seminar-container')}>
       <div className={cx('container')}>
         <Desktop>
-          <div className="tw-pt-[40px] tw-pt-5 tw-pb-14">
+          <div className="tw-pt-[40px] tw-pt-5 tw-pb-0">
             <Stack spacing={2}>
               <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
                 <Typography key="1" variant="body2">
@@ -1168,7 +1190,7 @@ export function QuizOpenTemplate() {
           </div>
         </Mobile>
 
-        <Stepper alternativeLabel activeStep={activeStep} connector={<ColorlibConnector />}>
+        {/* <Stepper alternativeLabel activeStep={activeStep} connector={<ColorlibConnector />}>
           {steps.map((label, index) => {
             const stepProps: { completed?: boolean } = {};
             const labelProps: {
@@ -1185,7 +1207,7 @@ export function QuizOpenTemplate() {
               </Step>
             );
           })}
-        </Stepper>
+        </Stepper> */}
 
         {activeStep === 0 && (
           <article>
@@ -1797,7 +1819,7 @@ export function QuizOpenTemplate() {
             <Desktop>
               <article className="tw-mt-8">
                 <div className="tw-relative">
-                  <p className="tw-text-xl tw-font-bold tw-text-left tw-text-black tw-py-10">퀴즈 등록하기</p>
+                  <p className="tw-text-xl tw-font-bold tw-text-left tw-text-black tw-py-5">퀴즈 등록하기</p>
                   <p className="tw-text-base tw-text-left tw-text-black">
                     <span className="tw-text-base tw-text-left tw-text-black">
                       클럽 세부사항에서 선택한 항목에 따라 자동으로 추천된 퀴즈 목록입니다. 퀴즈를 클릭하시면 다른
@@ -1898,88 +1920,32 @@ export function QuizOpenTemplate() {
 
                 <div className="tw-mt-10"></div>
 
-                {selectedQuizzes.map((item, index) => {
-                  return (
-                    <Grid
-                      key={index}
-                      container
-                      direction="row"
-                      justifyContent="left"
-                      alignItems="center"
-                      rowSpacing={3}
-                    >
-                      <Grid item xs={1}>
-                        <div className="tw-flex-auto tw-text-center tw-text-black tw-font-bold">Q{index + 1}.</div>
-                        <div className="tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold">
-                          {index + 1} 주차 ({item.studyCycle})
-                        </div>
-                      </Grid>
-                      {/* <Grid item xs={1}>
-                        <div className="tw-flex-auto tw-text-center">
-                          <button
-                            type="button"
-                            // onClick={() => handleDeleteQuiz(item.quizSequence)}
-                            onClick={() => handleCheckboxDelete(item.sequence)}
-                            className="tw-text-blue-700 border tw-border-blue-700 tw-font-medium tw-rounded-lg tw-text-sm tw-p-2.5 tw-text-center tw-inline-flex tw-items-center tw-mr-2"
-                          >
-                            <svg
-                              className="tw-w-4 tw-h-4"
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="currentColor"
-                              viewBox="2 2 12 12"
-                            >
-                              <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
-                            </svg>
-                            <span className="sr-only">Icon description</span>
-                          </button>
-                        </div>
-                      </Grid> */}
-                      <Grid item xs={11}>
-                        <QuizBreakerInfo
-                          avatarSrc="https://via.placeholder.com/40"
-                          userName={item.memberName}
-                          questionText={item.content}
-                          isRepresentative={item.isRepresentative}
-                          index={item.sequence}
-                          answerText="EAI는 엔터프라이즈 어플리케이션 인테그레이션의 약자입니다. 시스템이 서로 얽히고 복잡해지면서 통제가 잘 안되는 상황이 발생하여 이런 문제를 해결하기 위해 등장한 솔루션이 바로 EAI 입니다."
-                          handleCheckboxDelete={handleCheckboxDelete}
-                          handleCheckboxIsRepresentative={handleCheckboxIsRepresentative}
-                        />
-                        {/* <div className="tw-flex tw-items-center  tw-h-16 tw-p-4 tw-border border mb-3 mt-3 rounded">
-                          <div className="tw-flex-auto">
-                            <div className="tw-font-medium tw-text-black">{item?.content}</div>
+                <Grid container direction="row" justifyContent="left" alignItems="center" rowSpacing={4}>
+                  <Grid item xs={1}>
+                    {selectedQuizzes.map((item, index) => {
+                      return (
+                        <div key={index} className="tw-h-[209px] tw-flex tw-flex-col tw-items-center tw-justify-center">
+                          <div className=" tw-text-center tw-text-black tw-font-bold">Q{index + 1}.</div>
+                          <div className="tw-text-center tw-text-sm tw-text-black  tw-font-bold">
+                            {index + 1} 주차 ({item.studyCycle})
                           </div>
+                        </div>
+                      );
+                    })}
+                  </Grid>
+                  <Grid item xs={11}>
+                    <ReactDragList
+                      dataSource={selectedQuizzes}
+                      rowKey="order"
+                      row={dragList}
+                      handles={false}
+                      className="simple-drag"
+                      rowClassName="simple-drag-row"
+                      onUpdate={handleUpdate}
+                    />
+                  </Grid>
+                </Grid>
 
-                          <div className="">
-                            {item?.isRepresentative !== undefined && (
-                              <div onClick={() => handleCheckboxIsRepresentative(item?.sequence)}>
-                                <Tooltip
-                                  content="클릭시 대표퀴즈로 설정됩니다.대표퀴즈 설정은 3개까지 가능합니다."
-                                  placement="bottom"
-                                  trigger="mouseEnter"
-                                  warpClassName={cx('icon-height')}
-                                >
-                                  <button
-                                    type="button"
-                                    data-tooltip-target="tooltip-default"
-                                    className={`tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded ${
-                                      item?.isRepresentative
-                                        ? 'tw-bg-green-100 tw-text-green-800'
-                                        : 'tw-bg-gray-100 tw-text-gray-800'
-                                    }`}
-                                  >
-                                    대표
-                                  </button>
-                                </Tooltip>
-                              </div>
-                            )}
-                          </div>
-                        </div> */}
-                      </Grid>
-                    </Grid>
-                  );
-                })}
                 <div className="tw-container tw-py-10 tw-px-10 tw-mx-0 tw-min-w-full tw-flex tw-flex-col tw-items-center">
                   <div className="tw-flex tw-gap-5 tw-mt-3">
                     <button
