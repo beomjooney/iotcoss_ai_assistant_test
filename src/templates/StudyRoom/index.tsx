@@ -1,6 +1,6 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import { Toggle, Pagination, Typography, Chip, ClubCard } from 'src/stories/components';
+import { ToggleLabel, Pagination, Typography, Chip, ClubCard, CourseCard } from 'src/stories/components';
 import React, { useEffect, useState } from 'react';
 import { RecommendContent, SeminarImages } from 'src/models/recommend';
 import {
@@ -25,13 +25,6 @@ import Divider from '@mui/material/Divider';
 import { useSessionStore } from 'src/store/session';
 import { useDeleteLike, useSaveLike } from 'src/services/community/community.mutations';
 import { styled } from '@mui/material/styles';
-import { makeStyles } from '@material-ui/core/styles';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell, { tableCellClasses } from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
@@ -59,22 +52,50 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Stack from '@mui/material/Stack';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 
-const studyStatus = [
-  {
-    id: '0001',
-    name: '학습예정',
-  },
-  {
-    id: '0002',
-    name: '학습 중',
-  },
-  {
-    id: '0003',
-    name: '학습완료',
-  },
-];
+/** table */
+import { makeStyles } from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 
 const useStyles = makeStyles(theme => ({
+  table: {
+    minWidth: 650,
+  },
+  sticky: {
+    position: 'sticky',
+    backgroundColor: '#F6F7FB',
+    zIndex: 1,
+  },
+  stickyWhite: {
+    position: 'sticky',
+    backgroundColor: 'white',
+    zIndex: 1,
+  },
+  stickyWhiteBoard: {
+    position: 'sticky',
+    backgroundColor: 'white',
+    borderRight: '2px solid black',
+    zIndex: 1,
+  },
+  stickyBoard: {
+    position: 'sticky',
+    backgroundColor: '#F6F7FB',
+    borderRight: '2px solid black',
+    zIndex: 1,
+  },
+  stickyFirst: {
+    left: 0,
+  },
+  stickySecond: {
+    left: 100, // 이 값을 `Dessert` 열의 너비에 맞게 조정하세요.
+  },
+  stickyThread: {
+    left: 220, // 이 값을 `Dessert` 열의 너비에 맞게 조정하세요.
+  },
   root: {
     '& > *': {
       margin: theme.spacing(0),
@@ -88,8 +109,138 @@ const useStyles = makeStyles(theme => ({
     pointerEvents: 'none', // Make the element non-interactive
   },
 }));
-
 const cx = classNames.bind(styles);
+
+const studyStatus = [
+  {
+    id: '0001',
+    name: '가입한 클럽',
+  },
+  {
+    id: '0002',
+    name: '나의 학습내역',
+  },
+  {
+    id: '0003',
+    name: '학습완료',
+  },
+  {
+    id: '0004',
+    name: '내가 푼 퀴즈',
+  },
+  {
+    id: '0005',
+    name: '저장한 지식콘텐츠',
+  },
+];
+
+const dateInfo = {
+  sessions: [
+    { number: '1회', date: '07-01 (월)' },
+    { number: '2회', date: '07-08 (월)' },
+    { number: '3회', date: '07-15 (월)' },
+    { number: '4회', date: '07-22 (월)' },
+    { number: '5회', date: '07-29 (월)' },
+    { number: '6회', date: '08-05 (월)' },
+    { number: '7회', date: '08-12 (월)' },
+    { number: '8회', date: '08-19 (월)' },
+    { number: '9회', date: '08-19 (월)' },
+    { number: '10회', date: '08-19 (월)' },
+    { number: '11회', date: '08-19 (월)' },
+    { number: '12회', date: '08-19 (월)' },
+    { number: '12회', date: '08-19 (월)' },
+    { number: '12회', date: '08-19 (월)' },
+    { number: '12회', date: '08-19 (월)' },
+    { number: '12회', date: '08-19 (월)' },
+    { number: '12회', date: '08-19 (월)' },
+  ],
+  student: [
+    {
+      name: '김승테',
+      sessions: [
+        {
+          date: '09-03 (월)',
+          color: '#31343D',
+          text: '3',
+        },
+        {
+          date: '00-16 (월)',
+          color: '#FF8F60',
+          text: '?',
+        },
+        {
+          date: '09-18 (수)',
+          color: '#E11837',
+          text: '?',
+        },
+        {
+          date: 'D+2',
+          color: 'white',
+          borderColor: '#E11837',
+          text: '?',
+          isBold: true,
+        },
+        {
+          date: 'D+2',
+          color: 'white',
+          borderColor: '#E11837',
+          text: '?',
+          isBold: true,
+        },
+        {
+          date: 'D+2',
+          color: 'white',
+          borderColor: '#E11837',
+          text: '?',
+          isBold: true,
+        },
+        {
+          date: 'D+2',
+          color: '#F6F7FB',
+          borderColor: '#E0E4EB',
+          text: '',
+          isBold: false,
+        },
+      ],
+    },
+  ],
+};
+
+const courseData = [
+  {
+    imageSrc: '/assets/images/quiz/rectangle_183.png',
+    status: '진행중',
+    college: '소프트웨어융합대학',
+    department: '컴퓨터공학과',
+    year: '2학년',
+    courseTitle: '임베디드 시스템',
+    courseDetails: '[전공선택] 2학년 화요일 A반',
+    professor: '양황규 교수님',
+    courseSchedule: '2023.00.00 ~ 2023.00.00ㅣ월, 목ㅣ퀴즈클럽 12주ㅣ학습 24회',
+  },
+  {
+    imageSrc: '/assets/images/quiz/rectangle_183.png',
+    status: '종료',
+    college: '공과대학',
+    department: '기계공학과',
+    year: '3학년',
+    courseTitle: '열역학',
+    courseDetails: '[전공필수] 3학년 수요일 B반',
+    professor: '김철수 교수님',
+    courseSchedule: '2023.01.15 ~ 2023.06.30ㅣ화, 금ㅣ퀴즈클럽 16주ㅣ학습 32회',
+  },
+  {
+    imageSrc: '/assets/images/quiz/rectangle_183.png',
+    status: '예정',
+    college: '인문대학',
+    department: '영문학과',
+    year: '1학년',
+    courseTitle: '영미문학개론',
+    courseDetails: '[교양선택] 1학년 월요일 C반',
+    professor: '이영희 교수님',
+    courseSchedule: '2023.09.01 ~ 2023.12.20ㅣ월, 수ㅣ퀴즈클럽 14주ㅣ학습 28회',
+  },
+];
 
 export function StudyRoomTemplate() {
   const { jobGroups, setJobGroups, contentTypes, setContentTypes } = useStore();
@@ -315,7 +466,6 @@ export function StudyRoomTemplate() {
     setQuizStatusList(clubsForTargetDate);
     // setCalendarYearMonth(yearMonth);
   };
-
   return (
     <>
       <Desktop>
@@ -361,7 +511,7 @@ export function StudyRoomTemplate() {
                   <div className={cx('filter-area')}>
                     <div className={cx('mentoring-button__group', 'gap-12', 'justify-content-center')}>
                       {studyStatus.map((item, i) => (
-                        <Toggle
+                        <ToggleLabel
                           key={item.id}
                           label={item.name}
                           name={item.name}
@@ -380,10 +530,10 @@ export function StudyRoomTemplate() {
                             });
                             setPage(1);
                           }}
-                          className={cx('fixed-width', 'tw-mr-4', 'max-lg:!tw-hidden')}
+                          className={cx('fixed-width', 'max-lg:!tw-hidden')}
                         />
                       ))}
-                      <Toggle
+                      <ToggleLabel
                         label="배지보기"
                         name="배지보기"
                         value=""
@@ -474,105 +624,12 @@ export function StudyRoomTemplate() {
                               </RadioGroup>
 
                               <div className="tw-py-4 ">
-                                <div className="tw-h-[142px] tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white border tw-border-[#e9ecf2]">
-                                  <img
-                                    src="/assets/images/quiz/rectangle_183.png"
-                                    className="tw-w-[132px] tw-h-[142px] tw-object-cover tw-float-left"
-                                  />
-
-                                  <div className="tw-flex tw-justify-start tw-items-start tw-gap-1 tw-ml-[148px] tw-mt-4">
-                                    <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#313b49]">
-                                      <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-white">
-                                        진행중
-                                      </p>
-                                    </div>
-                                    <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#d7ecff]">
-                                      <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#235a8d]">
-                                        소프트웨어융합대학
-                                      </p>
-                                    </div>
-                                    <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#e4e4e4]">
-                                      <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#313b49]">
-                                        컴퓨터공학과
-                                      </p>
-                                    </div>
-                                    <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-1 tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#ffdede]">
-                                      <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#b83333]">
-                                        2학년
-                                      </p>
-                                    </div>
-                                    <div className="tw-flex tw-justify-end tw-items-center tw-ml-auto tw-pr-4">
-                                      <svg
-                                        width={24}
-                                        height={24}
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="tw-w-6 tw-h-6"
-                                        preserveAspectRatio="none"
-                                      >
-                                        <path
-                                          d="M22 9.24L14.81 8.62L12 2L9.19 8.63L2 9.24L7.46 13.97L5.82 21L12 17.27L18.18 21L16.55 13.97L22 9.24Z"
-                                          fill="#E11837"
-                                        />
-                                      </svg>
-                                    </div>
+                                {courseData.map((course, index) => (
+                                  <div key={index} className="tw-pb-5">
+                                    <CourseCard key={index} data={course} />
                                   </div>
-
-                                  <div className="tw-py-2">
-                                    <p className="tw-ml-[148px] tw-mt-[18px] tw-text-sm tw-font-bold tw-text-left tw-text-black">
-                                      임베디드 시스템
-                                    </p>
-                                    <p className="tw-w-[262px] tw-h-6 tw-ml-[148px] tw-mt-1 tw-text-sm tw-text-left tw-text-black">
-                                      [전공선택] 2학년 화요일 A반
-                                    </p>
-                                  </div>
-                                  <div className="tw-ml-[148px]">
-                                    <p className="tw-text-xs tw-text-left tw-text-black">
-                                      양황규 교수님
-                                      <span className="tw-text-xs tw-text-left tw-text-[#9ca5b2] tw-ml-4">
-                                        2023.00.00 ~ 2023.00.00ㅣ월, 목ㅣ퀴즈클럽 12주ㅣ학습 24회
-                                      </span>
-                                    </p>
-                                  </div>
-                                </div>
-
-                                {/* <TableContainer component={Paper} className=" tw-mb-5" elevation={0}>
-                            <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                              <TableHead>
-                                <TableRow>
-                                  <StyledTableCell align="center" sx={{ width: '28%' }}>
-                                    클럽명
-                                  </StyledTableCell>
-                                  <StyledTableCell align="center">리더</StyledTableCell>
-                                  <StyledTableCell align="center">참가자</StyledTableCell>
-                                  <StyledTableCell align="center">학습시작일</StyledTableCell>
-                                  <StyledTableCell align="center">학습주기</StyledTableCell>
-                                  <StyledTableCell align="center">상세보기</StyledTableCell>
-                                </TableRow>
-                              </TableHead>
-                              <TableBody>
-                                {contents.map(row => (
-                                  <StyledTableRow key={row.clubName}>
-                                    <StyledTableCell component="th" scope="row" align="center">
-                                      {row.clubName}
-                                    </StyledTableCell>
-                                    <StyledTableCell align="center">{row.leaderNickname}</StyledTableCell>
-                                    <StyledTableCell align="center">{row.recruitedMemberCount}</StyledTableCell>
-                                    <StyledTableCell align="center">{row.startAt.split(' ')[0]}</StyledTableCell>
-                                    <StyledTableCell align="center">
-                                      {row.studyCycle.toString()},{row.studyWeekCount}회
-                                    </StyledTableCell>
-                                    <StyledTableCell align="center">
-                                      <span className="tw-bg-gray-300 tw-text-white tw-text-xs tw-font-medium tw-mr-2 tw-px-2.5 tw-py-3 tw-rounded">
-                                        오픈예정
-                                      </span>
-                                    </StyledTableCell>
-                                  </StyledTableRow>
                                 ))}
-                              </TableBody>
-                            </Table>
-                          </TableContainer> */}
+
                                 {/* <Pagination count={totalPage} page={page} onChange={handleChange} /> */}
                                 <div className="tw-py-4">
                                   <Pagination page={page} setPage={setPage} total={totalPage} />
@@ -688,29 +745,126 @@ export function StudyRoomTemplate() {
                         </>
                       )}
                       {isContentFetched && active === 1 && (
-                        <TableContainer component={Paper} className=" tw-mb-5 tw-h-[400px]" elevation={0}>
-                          <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                            <TableHead>
-                              <TableRow>
-                                <StyledTableCell></StyledTableCell>
-                                <StyledTableCell align="center" sx={{ width: '25%' }}>
-                                  클럽명
-                                </StyledTableCell>
-                                <StyledTableCell align="center">리더</StyledTableCell>
-                                <StyledTableCell align="center">참가자</StyledTableCell>
-                                <StyledTableCell align="center">학습시작일</StyledTableCell>
-                                <StyledTableCell align="center">학습주기</StyledTableCell>
-                                <StyledTableCell align="center">학습현황</StyledTableCell>
-                                <StyledTableCell align="center">상세보기</StyledTableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {contents.map(row => (
-                                <Row key={row.clubName} row={row} />
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
+                        <>
+                          {courseData.map((course, index) => (
+                            <div key={index} className="tw-pb-5">
+                              <CourseCard key={index} data={course} />
+                              <TableContainer>
+                                <Table
+                                  className={classes.table}
+                                  aria-label="simple table"
+                                  style={{ tableLayout: 'fixed' }}
+                                >
+                                  <TableHead style={{ backgroundColor: '#F6F7FB' }}>
+                                    <TableRow>
+                                      <TableCell
+                                        align="center"
+                                        width={100}
+                                        className={`${classes.sticky} ${classes.stickyFirst}`}
+                                      >
+                                        학생
+                                      </TableCell>
+                                      <TableCell
+                                        align="center"
+                                        width={120}
+                                        className={`${classes.stickyBoard} ${classes.stickySecond}`}
+                                      >
+                                        학습현황
+                                      </TableCell>
+
+                                      {dateInfo.sessions.map((session, index) => (
+                                        <TableCell key={index} width={100} align="right">
+                                          <div>
+                                            <p className="tw-text-base tw-font-medium tw-text-center tw-text-[#31343d] tw-left-[15px] tw-top-0">
+                                              {session.number}
+                                            </p>
+                                            <p className="tw-w-full tw-h-3.5 tw-text-xs tw-font-medium tw-text-center tw-text-[#9ca5b2] tw-bottom-0">
+                                              {session.date}
+                                            </p>
+                                          </div>
+                                        </TableCell>
+                                      ))}
+                                    </TableRow>
+                                  </TableHead>
+                                  <TableBody>
+                                    {dateInfo.student.map((info, index) => (
+                                      <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                        <TableCell
+                                          align="center"
+                                          width={100}
+                                          component="th"
+                                          scope="row"
+                                          className={`${classes.stickyWhite} ${classes.stickyFirst}`}
+                                        >
+                                          <div className="tw-flex tw-items-center tw-gap-3">
+                                            <img src="/assets/images/quiz/아그리파_1.png" alt="아그리파" />
+                                            <div>test</div>
+                                          </div>
+                                        </TableCell>
+                                        <TableCell
+                                          align="center"
+                                          width={120}
+                                          component="th"
+                                          scope="row"
+                                          className={`${classes.stickyWhiteBoard} ${classes.stickySecond}`}
+                                        >
+                                          <div className="tw-grid tw-grid-cols-5 tw-gap-1 tw-justify-center tw-items-center">
+                                            <div className="tw-col-span-3 progress tw-rounded tw-h-2 tw-p-0">
+                                              <span style={{ width: `70%` }}>
+                                                <span className="progress-line"></span>
+                                              </span>
+                                            </div>
+                                            <div className="tw-col-span-2">5회</div>
+                                          </div>
+                                        </TableCell>
+                                        {info.sessions.map((info, index) => (
+                                          <TableCell
+                                            padding="none"
+                                            key={index}
+                                            align="center"
+                                            width={100}
+                                            component="th"
+                                            scope="row"
+                                          >
+                                            <div className="tw-h-12 tw-flex tw-justify-center tw-items-center">
+                                              <svg
+                                                width="20"
+                                                height="20"
+                                                viewBox="0 0 20 20"
+                                                fill="none"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                className="tw-left-[-1px] tw-top-[-1px]"
+                                                preserveAspectRatio="xMidYMid meet"
+                                              >
+                                                <circle
+                                                  cx="10"
+                                                  cy="10"
+                                                  r="9.5"
+                                                  fill={info.color}
+                                                  stroke={info.borderColor || info.color}
+                                                ></circle>
+                                                <text
+                                                  x="10" // x 좌표, 원의 중심
+                                                  y="10" // y 좌표, 원의 중심을 약간 조정해야 할 수 있습니다
+                                                  textAnchor="middle" // 텍스트를 x 좌표의 중앙에 정렬
+                                                  dominantBaseline="central" // 텍스트를 y 좌표의 중앙에 정렬
+                                                  fill="white" // 텍스트 색상
+                                                  className="tw-text-xs tw-font-medium tw-text-center"
+                                                >
+                                                  {info.text}
+                                                </text>
+                                              </svg>
+                                            </div>
+                                          </TableCell>
+                                        ))}
+                                      </TableRow>
+                                    ))}
+                                  </TableBody>
+                                </Table>
+                              </TableContainer>
+                            </div>
+                          ))}
+                        </>
                       )}
                       {isContentFetched && active === 2 && (
                         <div>
@@ -819,7 +973,7 @@ export function StudyRoomTemplate() {
                     <div className={cx('filter-area')}>
                       <div className={cx('mentoring-button__group', 'tw-px-0', 'justify-content-center')}>
                         {studyStatus.map((item, i) => (
-                          <Toggle
+                          <ToggleLabel
                             key={item.id}
                             label={item.name}
                             name={item.name}
@@ -841,7 +995,7 @@ export function StudyRoomTemplate() {
                             className={cx('tw-mr-2 !tw-w-[90px]')}
                           />
                         ))}
-                        <Toggle
+                        <ToggleLabel
                           label="배지보기"
                           name="배지보기"
                           value=""
@@ -854,7 +1008,7 @@ export function StudyRoomTemplate() {
                           }}
                           className={cx('tw-mr-2 !tw-w-[95px]')}
                         />
-                        <Toggle
+                        <ToggleLabel
                           label="나의 학습 캘린더"
                           name="나의 학습 캘린더"
                           value=""
@@ -867,7 +1021,7 @@ export function StudyRoomTemplate() {
                           }}
                           className={cx('tw-mt-3 tw-mr-2 !tw-w-[150px]')}
                         />
-                        <Toggle
+                        <ToggleLabel
                           label="내가 풀어야할 퀴즈"
                           name="내가 풀어야할 퀴즈"
                           value=""
