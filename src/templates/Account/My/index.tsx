@@ -151,103 +151,48 @@ export function MyTemplate({ children }: MyTemplateProps) {
                 <div className="tw-p-5">
                   <div className="tw-text-lg tw-pb-4 tw-font-semibold tw-text-black">안녕하세요! {nickname}님</div>
                   <div className="tw-p-5 tw-mb-5 tw-bg-white tw-rounded-lg">
-                    <div className="tw-py-5 tw-px-0 tw-text-center ">
-                      <div className="tw-flex tw-justify-center tw-py-0">
-                        <Image
-                          src={summary?.profileImageUrl || 'D'}
-                          alt="profile_image"
-                          className={cx('rounded-circle', 'image-info__image')}
-                          width="110px"
-                          height="110px"
-                          objectFit="cover"
-                          unoptimized={true}
-                        />
-                      </div>
-                      <div className="tw-py-3 tw-font-semibold tw-text-black tw-text-lg">{summary?.nickname}</div>
-                      <div className="">
-                        {summary?.jobGroupName && (
-                          <span className=" tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-[5px] tw-rounded">
-                            {summary.jobGroupName}
-                          </span>
-                        )}
-                        {summary?.level && (
-                          <span className=" tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-[5px] tw-rounded">
-                            {summary.level}레벨
-                          </span>
-                        )}
-                        {summary?.jobName && (
-                          <span className=" tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-[5px] tw-rounded">
-                            {summary.jobName}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    <div className="tw-text-gray-600 tw-text-sm tw-font-medium tw-p-5 tw-pt-0">
-                      <div className="tw-py-5 tw-flex tw-justify-between">
-                        <div className="tw-flex tw-items-center">
-                          <div className="tw-pr-2">
-                            <img src="/assets/images/icons/point.png" alt="포인트" />
-                          </div>
-                          <div className="tw-text-base tw-font-bold">보유포인트</div>
-                        </div>
-                        <div className="tw-text-base tw-font-bold tw-text-blue-500">
+                    <div className="tw-flex tw-justify-between tw-mt-2 tw-gap-2 tw-text-center tw-pb-5">
+                      <div className="tw-p-1 tw-flex-1 border-right">
+                        <div className="tw-text-[12px] tw-font-bold">보유포인트</div>
+                        <div className="tw-text-lg tw-font-bold tw-text-red-500 tw-py-1">
                           {summary?.points?.toLocaleString()}P
                         </div>
                       </div>
-                      <div className="tw-flex tw-justify-between">
-                        <div> 가입일 </div>
-                        <div>{summary?.joinDate}</div>
-                      </div>
-                      <div className="tw-flex tw-justify-between">
-                        <div> 방문횟수 </div>
-                        <div>{summary?.visitCount || 0} 회</div>
-                      </div>
-                      <div className="tw-py-3 ">
-                        <div className="tw-flex tw-justify-between">
-                          <div> 내가 만든 퀴즈 </div>
-                          <div>{summary?.createdQuizCount || 0}개</div>
-                        </div>
-                        <div className="tw-flex tw-justify-between">
-                          <div> 내가 만든 클럽 </div>
-                          <div>{summary?.createdClubCount || 0}개</div>
+                      <div className="tw-p-1 tw-flex-1 border-right">
+                        <div className="tw-text-[12px]  tw-font-bold">푼 퀴즈</div>
+                        <div className="tw-text-lg tw-font-bold tw-text-red-500  tw-py-1">
+                          {summary?.solvedQuizCount || 0}개
                         </div>
                       </div>
-                      <div className="tw-py-3 ">
-                        <div className="tw-flex tw-justify-between">
-                          <div> 내가 푼 퀴즈 </div>
-                          <div>{summary?.solvedQuizCount || 0}개</div>
-                        </div>
-                        <div className="tw-flex tw-justify-between">
-                          <div> 내가 쓴 댓글 </div>
-                          <div>{summary?.replyCount || 0}개</div>
-                        </div>
-                        <div className="tw-flex tw-justify-between">
-                          <div> 내가 참여한 클럽 </div>
-                          <div>{summary?.joinedClubCount || 0}개</div>
+                      <div className="tw-p-1 tw-flex-1">
+                        <div className="tw-text-[12px]  tw-font-bold">참여중 클럽</div>
+                        <div className="tw-text-lg tw-font-bold tw-text-red-500  tw-py-1">
+                          {summary?.joinedClubCount?.toLocaleString()}P
                         </div>
                       </div>
                     </div>
 
-                    <div className="tw-flex tw-justify-between tw-mt-2 tw-gap-2">
-                      <Button
-                        className="tw-w-full  "
-                        variant="outlined"
-                        sx={{
-                          borderColor: 'gray',
-                          color: 'gray',
-                        }}
-                        onClick={() => (location.href = '/profile')}
-                      >
-                        프로필 바로가기
-                      </Button>
+                    <div className="tw-flex tw-justify-between tw-mt-2 tw-gap-5">
                       <Button
                         className="tw-w-full "
                         variant="outlined"
-                        onClick={handleLogout}
+                        size="large"
                         sx={{
-                          borderColor: 'gray',
+                          background: 'black',
+                          color: 'white',
+                        }}
+                        onClick={() => (location.href = '/profile')}
+                      >
+                        프로필 보기
+                      </Button>
+                      <Button
+                        sx={{
                           color: 'gray',
                         }}
+                        size="large"
+                        className="tw-w-full border tw-text-gray-400"
+                        variant="outlined"
+                        onClick={handleLogout}
                       >
                         로그아웃
                       </Button>
@@ -260,7 +205,7 @@ export function MyTemplate({ children }: MyTemplateProps) {
             </div>
             <div className={cx('page-area')}>
               <div className={cx('page-area__container')}>
-                <h3>{currentMenu?.title}</h3>
+                <div className="tw-font-bold tw-text-xl tw-text-black tw-p-0">{currentMenu?.title}</div>
                 {children}
               </div>
             </div>
