@@ -24,11 +24,11 @@ import { useSkills } from '../../../../src/services/skill/skill.queries';
 import { SkillResponse } from '../../../../src/models/skills';
 import { DatePicker, DateTimePicker, DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { ExperiencesResponse } from 'src/models/experiences';
-import { useExperiences } from 'src/services/experiences/experiences.queries';
+import { useOptions } from 'src/services/experiences/experiences.queries';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 import { useRecommendContents } from 'src/services/contents/contents.queries';
-import { useJobs, useMyQuiz, useQuizList } from 'src/services/jobs/jobs.queries';
+import { useJobs, useMyQuiz, useQuizList, useGetSchedule } from 'src/services/jobs/jobs.queries';
 import Checkbox from '@mui/material/Checkbox';
 import { useClubQuizSave, useQuizSave } from 'src/services/quiz/quiz.mutations';
 import { TagsInput } from 'react-tag-input-component';
@@ -195,6 +195,7 @@ export function QuizOpenTemplate() {
   const [seminarFilter, setSeminarFilter] = useState(['0002']);
   const [paramss, setParamss] = useState({});
   const [params, setParams] = useState<paramProps>({ page });
+  const [dayParams, setDayParams] = useState<paramProps>({});
   const [myParams, setMyParams] = useState<paramProps>({ page });
   const [contents, setContents] = useState<RecommendContent[]>([]);
   // const [images, setSeminarImages] = useState<any[]>([]);
@@ -204,18 +205,33 @@ export function QuizOpenTemplate() {
   const [quizListParam, setQuizListParam] = useState<any[]>([]);
   const [quizListData, setQuizListData] = useState<any[]>([]);
   const [allQuizData, setAllQuizData] = useState([]);
+  const [scheduleData, setScheduleData] = useState<any[]>([]);
+  const [scheduleSaveData, setScheduleSaveData] = useState<any[]>([]);
   const [itemList, setItemList] = useState<any[]>([]);
 
+  const [selectedSessions, setSelectedSessions] = useState([]);
+
+  const [universities, setUniversities] = useState([]);
+  const [selectedUniversity, setSelectedUniversity] = useState('');
+  const [jobs, setJobs] = useState([]);
+  const [selectedJob, setSelectedJob] = useState('');
+
   // const { isFetched: isJobGroupFetched } = useJobGroups(data => setJobGroups(data.data.contents || []));
-  const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
-  const { data: experienceData }: UseQueryResult<ExperiencesResponse> = useExperiences();
+  // const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
+  const { data: optionsData }: UseQueryResult<ExperiencesResponse> = useOptions();
+  // console.log(optionsData);
 
   // const { data: quizListData, refetch }: UseQueryResult<any> = useQuizList(params);
   const { isFetched: isQuizData, refetch } = useQuizList(params, data => {
+    // console.log(data);
     setQuizListData(data.contents || []);
     setTotalPage(data.totalPages);
   });
   const { data: myQuizListData, refetch: refetchMyJob }: UseQueryResult<any> = useMyQuiz(myParams);
+  //get schedule
+  const { refetch: refetchGetSchedule }: UseQueryResult<any> = useGetSchedule(dayParams, data => {
+    setScheduleData(data);
+  });
 
   const [skillIds, setSkillIds] = useState<any[]>([]);
   const [experienceIds, setExperienceIds] = useState<any[]>([]);
@@ -223,7 +239,10 @@ export function QuizOpenTemplate() {
   const [experienceIdsPopUp, setExperienceIdsPopUp] = useState<any[]>([]);
   const [fileImageUrl, setFileImageUrl] = useState(null);
   const [isPublic, setIsPublic] = useState('공개');
-  const [selected, setSelected] = useState([]);
+  const [studyKeywords, setStudyKeywords] = useState([]);
+  const [studyChapter, setStudyChapter] = useState('');
+  const [studySubject, setStudySubject] = useState('');
+  const [skills, setSkills] = useState([]);
   const { mutate: onSaveImage, data: imageUrl, isSuccess: imageSuccess } = useUploadImage();
   const [file, setFile] = useState(null);
   const [keyWorld, setKeyWorld] = useState('');
@@ -266,18 +285,25 @@ export function QuizOpenTemplate() {
     // Merge new data from quizListData into allQuizData
     setAllQuizData(prevAllQuizData => {
       const mergedQuizData = [...prevAllQuizData];
-      const existingSequences = new Set(mergedQuizData.map(quiz => quiz.sequence));
+      const existingSequences = new Set(mergedQuizData.map(quiz => quiz.quizSequence));
 
       quizListData.forEach(quiz => {
-        if (!existingSequences.has(quiz.sequence)) {
+        if (!existingSequences.has(quiz.quizSequence)) {
           mergedQuizData.push(quiz);
-          existingSequences.add(quiz.sequence);
+          existingSequences.add(quiz.quizSequence);
         }
       });
 
       return mergedQuizData;
     });
   }, [quizListData]);
+
+  useEffect(() => {
+    if (Object.keys(dayParams).length > 0) {
+      console.log('start');
+      refetchGetSchedule();
+    }
+  }, [dayParams]);
 
   useEffect(() => {
     setParams({
@@ -360,7 +386,12 @@ export function QuizOpenTemplate() {
     //console.log(newFormats);
   };
 
-  const [introductionMessage, setIntroductionMessage] = useState<string>('');
+  const [introductionText, setIntroductionText] = useState<string>('');
+  const [recommendationText, setRecommendationText] = useState<string>('');
+  const [learningText, setLearningText] = useState<string>('');
+  const [memberIntroductionText, setMemberIntroductionText] = useState<string>('');
+  const [careerText, setCareerText] = useState<string>('');
+
   const handleJobGroup = (event: React.MouseEvent<HTMLElement>, newFormats: { id: string; name: string }[]) => {
     if (newFormats) {
       setRecommendJobGroups(newFormats.id);
@@ -393,9 +424,14 @@ export function QuizOpenTemplate() {
       setRecommendType(newFormats);
     }
   };
+  const handleQuizType = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
+    if (newFormats) {
+      setQuizType(newFormats);
+    }
+  };
 
   const handleStudyCycle = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
-    setStudyCycle(newFormats);
+    setStudyCycleNum(newFormats);
   };
 
   const handleIsPublic = (event: React.MouseEvent<HTMLElement>, newFormats: string) => {
@@ -461,59 +497,6 @@ export function QuizOpenTemplate() {
     setActive(2);
   };
 
-  function getObjectsWithSequences(arr, sequenceArray) {
-    //console.log(arr, sequenceArray);
-
-    return arr
-      .filter(item => sequenceArray.includes(String(item.sequence)))
-      .map(item => ({
-        ...item,
-        quizSequence: 1,
-        order: 0,
-        isRepresentative: false,
-        // isPublic: true,
-        // publishAt: '2023-08-22 00:00:00',
-      }));
-  }
-
-  function handleDeleteQuiz(quizSequence) {
-    //console.log('delete', quizSequence);
-
-    // "sequence"가 71인 객체를 제외하고 새로운 배열 생성
-    const filteredData = quizListOrigin.filter(item => item.sequence !== quizSequence);
-    //console.log('filteredData', filteredData);
-    //console.log('quizListCopy', quizListCopy);
-    //console.log('quizListOrigin', quizListOrigin);
-
-    // filter 메서드를 사용하여 특정 quizSequence를 가진 요소를 제거하고 키 제거
-    // map 메서드를 사용하여 targetSequence에 해당하는 요소만 수정
-    const modifiedArray = quizListOrigin.map(item => {
-      if (item.quizSequence === quizSequence) {
-        const { isRepresentative, memberName, order, quizSequence, content, ...rest } = item;
-        return rest;
-      }
-      return item;
-    });
-
-    //console.log('modifiedArray', modifiedArray);
-
-    //console.log('filteredArray1', state, quizSequence, resultArray1);
-    const filteredArray = state.filter(item => {
-      if (quizSequence !== undefined) {
-        return item !== quizSequence.toString();
-      }
-      // 만약 quizSequence가 undefined이면 여기서 필터링을 하지 않고 모든 아이템을 유지합니다.
-      return true;
-    });
-
-    //console.log('filteredArray', filteredArray);
-    //console.log('filtmodifiedArrayeredArray2', modifiedArray);
-    //console.log('filteredData', filteredData);
-    setState(filteredArray);
-    setQuizListCopy(modifiedArray);
-    setQuizList(filteredArray);
-    setQuizListOrigin(modifiedArray);
-  }
   function handleClickQuiz(quizSequence, flag) {
     //console.log(quizSequence, flag);
     // "quizSequence"가 83인 객체를 찾아서 "isRepresentative" 값을 변경
@@ -556,12 +539,12 @@ export function QuizOpenTemplate() {
       // Update selectedQuizzes by filtering from allQuizData
       setSelectedQuizzes(prevSelectedQuizzes => {
         // Remove quiz if it is already in selected quizzes, else add it
-        const alreadySelected = prevSelectedQuizzes.some(quiz => quiz.sequence === quizSequence);
+        const alreadySelected = prevSelectedQuizzes.some(quiz => quiz.quizSequence === quizSequence);
 
         if (alreadySelected) {
-          return prevSelectedQuizzes.filter(quiz => quiz.sequence !== quizSequence);
+          return prevSelectedQuizzes.filter(quiz => quiz.quizSequence !== quizSequence);
         } else {
-          const newQuiz = allQuizData.find(quiz => quiz.sequence === quizSequence);
+          const newQuiz = allQuizData.find(quiz => quiz.quizSequence === quizSequence);
           return newQuiz
             ? [...prevSelectedQuizzes, { ...newQuiz, isRepresentative: newQuiz.isRepresentative || false }]
             : prevSelectedQuizzes;
@@ -578,29 +561,9 @@ export function QuizOpenTemplate() {
 
       console.log('After Deletion, Selected Quiz IDs:', updatedSelectedQuizIds);
 
-      setSelectedQuizzes(prevSelectedQuizzes => prevSelectedQuizzes.filter(quiz => quiz.sequence !== quizSequence));
+      setSelectedQuizzes(prevSelectedQuizzes => prevSelectedQuizzes.filter(quiz => quiz.quizSequence !== quizSequence));
 
       return updatedSelectedQuizIds;
-    });
-  };
-
-  const handleCheckboxIsRepresentative = sequence => {
-    setSelectedQuizzes(prevSelectedQuizzes => {
-      const updatedSelectedQuizzes = prevSelectedQuizzes.map(quiz =>
-        quiz.sequence === sequence ? { ...quiz, isRepresentative: !quiz.isRepresentative } : quiz,
-      );
-
-      console.log('Updated Selected Quizzes with isRepresentative:', updatedSelectedQuizzes);
-
-      return updatedSelectedQuizzes;
-    });
-
-    setAllQuizData(prevAllQuizData => {
-      const updatedAllQuizData = prevAllQuizData.map(quiz =>
-        quiz.sequence === sequence ? { ...quiz, isRepresentative: !quiz.isRepresentative } : quiz,
-      );
-
-      return updatedAllQuizData;
     });
   };
 
@@ -619,12 +582,13 @@ export function QuizOpenTemplate() {
   const [jobGroupName, setJobGroupName] = useState([]);
   const [jobGroupObject, setJobGroupObject] = useState([]);
   const [jobGroupPopUp, setJobGroupPopUp] = useState([]);
-  const [studyCycle, setStudyCycle] = useState([]);
+  const [studyCycleNum, setStudyCycleNum] = useState([]);
   const [recommendJobGroups, setRecommendJobGroups] = useState([]);
   const [recommendJobGroupsName, setRecommendJobGroupsName] = useState([]);
   const [recommendJobGroupsObject, setRecommendJobGroupsObject] = useState([]);
   const [recommendLevels, setRecommendLevels] = useState([]);
   const [recommendType, setRecommendType] = useState(null);
+  const [quizType, setQuizType] = useState(null);
   const [recommendJobGroupsPopUp, setRecommendJobGroupsPopUp] = useState([]);
   const [recommendLevelsPopUp, setRecommendLevelsPopUp] = useState([]);
   const [clubName, setClubName] = useState<string>('');
@@ -632,7 +596,6 @@ export function QuizOpenTemplate() {
   const [alignment, setAlignment] = React.useState<string | null>('');
   const [selectedDate, setSelectedDate] = useState(null);
   const [active, setActive] = useState(0);
-  const [jobs, setJobs] = useState([]);
   const { isFetched: isJobGroupsFetched } = useJobGroupss(data => setJobGroups(data.data.contents || []));
   const [popupParams, setPopupParams] = useState<paramProps>({
     page,
@@ -690,7 +653,7 @@ export function QuizOpenTemplate() {
 
   const steps = ['Step 1.클럽 세부사항 설정', 'Step 2.퀴즈 선택', 'Step 3. 개설될 클럽 미리보기'];
 
-  const [activeStep, setActiveStep] = React.useState(1);
+  const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set<number>());
 
   const [quizUrl, setQuizUrl] = React.useState('');
@@ -770,7 +733,6 @@ export function QuizOpenTemplate() {
       index={item.sequence}
       answerText="EAI는 엔터프라이즈 어플리케이션 인테그레이션의 약자입니다. 시스템이 서로 얽히고 복잡해지면서 통제가 잘 안되는 상황이 발생하여 이런 문제를 해결하기 위해 등장한 솔루션이 바로 EAI 입니다."
       handleCheckboxDelete={handleCheckboxDelete}
-      handleCheckboxIsRepresentative={handleCheckboxIsRepresentative}
     />
   );
 
@@ -789,8 +751,8 @@ export function QuizOpenTemplate() {
 
   // "studyCycle" 속성을 기준으로 정렬하는 함수
   function sortByDay(a, b) {
-    const dayA = studyCycle.indexOf(a.studyCycle);
-    const dayB = studyCycle.indexOf(b.studyCycle);
+    const dayA = studyCycleNum.indexOf(a.studyCycleNum);
+    const dayB = studyCycleNum.indexOf(b.studyCycleNum);
 
     return dayA - dayB;
   }
@@ -800,38 +762,55 @@ export function QuizOpenTemplate() {
     //console.log('imageUrl key', imageUrl);
     //요일 정렬
 
-    const params = {
+    const selectedUniversityCode = optionsData?.data?.jobs?.find(u => u.code === selectedUniversity)?.code || 'None';
+    const selectedJobCode = jobs.find(j => j.code === selectedJob)?.code || 'None';
+
+    const clubFormParams = {
+      clubName: clubName,
       clubImageUrl: imageUrl,
-      recommendJobs: [recommendJobGroups],
-      name: clubName,
-      studyCycle: studyCycle.sort(sortByDay),
-      recommendJobGroups: [jobGroup],
-      recommendLevels: [recommendLevels],
-      startAt: startDay.format('YYYY-MM-DD') + ' 00:00:00',
-      recruitDeadlineAt: endDay.format('YYYY-MM-DD') + ' 00:00:00',
-      description: introductionMessage,
-      studyWeekCount: studyCycle.length * 12,
+      jobGroups: [selectedUniversityCode],
+      jobs: [selectedJobCode],
+      jobLevels: [recommendLevels],
       isPublic: true,
-      recruitMemberCount: 12,
-      publicYn: 'Y',
       participationCode: '',
-      relatedSkills: skillIds,
-      relatedExperiences: experienceIds,
+      studyCycle: studyCycleNum,
+      startAt: startDay.format('YYYY-MM-DD') + ' 00:00:00',
+      studyWeekCount: num,
+      studySubject: studySubject,
+      studyChapter: studyChapter,
+      skills: skills,
+      introductionText: introductionText,
+      recommendationText: recommendationText,
+      learningText: learningText,
+      memberIntroductionText: memberIntroductionText,
+      careerText: careerText,
+      studyKeywords: studyKeywords,
+      quizOpenType: quizType,
       clubQuizzes: quizListParam,
     };
+
+    const params = {
+      clubFormParams: clubFormParams,
+      clubQuizzes: quizListParam,
+    };
+    console.log(params);
+
     setParamss(params);
+
+    console.log(quizType);
+
     console.log('next', params);
-    if (jobGroup.length === 0) {
-      alert('등록을 원하는 분야를 선택해주세요.');
-      return;
-    }
+    // if (jobGroup.length === 0) {
+    //   alert('등록을 원하는 분야를 선택해주세요.');
+    //   return;
+    // }
 
     if (clubName === '') {
       alert('클럽 이름을 입력해주세요.');
       return;
     }
 
-    if (studyCycle.length === 0) {
+    if (studyCycleNum.length === 0) {
       alert('요일을 입력해주세요.');
       return;
     }
@@ -846,8 +825,8 @@ export function QuizOpenTemplate() {
     const numberOfIterations = 12;
     const resultObject = {};
     //studyCycle
-    const modifiedArray = studyCycle.sort(sortByDay).map(item => {
-      const objectWithTest = { studyCycle: item };
+    const modifiedArray = studyCycleNum.sort(sortByDay).map(item => {
+      const objectWithTest = { studyCycleNum: item };
       const newArray = [];
 
       for (let i = 0; i < numberOfIterations; i++) {
@@ -866,14 +845,20 @@ export function QuizOpenTemplate() {
     // 정렬된 결과
     setQuizListOrigin(sortedData);
 
-    setActiveStep(prevActiveStep => prevActiveStep + 1);
-    setSkipped(newSkipped);
+    // setActiveStep(prevActiveStep => prevActiveStep + 1);
+    // setSkipped(newSkipped);
   };
 
   const handleBack = () => {
     setActiveStep(prevActiveStep => prevActiveStep - 1);
   };
 
+  const handleInputStudySubjectChange = event => {
+    setStudySubject(event.target.value);
+  };
+  const handleInputStudyChapterChange = event => {
+    setStudyChapter(event.target.value);
+  };
   const handleInputChange = event => {
     setClubName(event.target.value);
   };
@@ -894,9 +879,25 @@ export function QuizOpenTemplate() {
     setQuizSearch(event.target.value);
   };
 
-  const onMessageChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, no?: number) => {
+  const onMessageChange1 = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, no?: number) => {
     const { name, value } = event.currentTarget;
-    setIntroductionMessage(value);
+    setIntroductionText(value);
+  };
+  const onMessageChange2 = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, no?: number) => {
+    const { name, value } = event.currentTarget;
+    setRecommendationText(value);
+  };
+  const onMessageChange3 = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, no?: number) => {
+    const { name, value } = event.currentTarget;
+    setLearningText(value);
+  };
+  const onMessageChange4 = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, no?: number) => {
+    const { name, value } = event.currentTarget;
+    setMemberIntroductionText(value);
+  };
+  const onMessageChange5 = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, no?: number) => {
+    const { name, value } = event.currentTarget;
+    setCareerText(value);
   };
 
   const handleJobGroups = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
@@ -930,18 +931,25 @@ export function QuizOpenTemplate() {
   };
 
   const handlerClubMake = () => {
-    if (studyCycle.length === 0) {
+    if (studyCycleNum.length === 0) {
       alert('요일을 입력해주세요.');
       return;
     }
 
-    console.log(studyCycle);
+    console.log(studyCycleNum);
     console.log(num);
     console.log(startDay.format('YYYY-MM-DD'));
-    renderDatesAndSessions(startDay.format('YYYY-MM-DD'), studyCycle, num);
+    // renderDatesAndSessions(startDay.format('YYYY-MM-DD'), studyCycle, num);
+
+    setDayParams({
+      // ...params,
+      studyCycle: studyCycleNum.join(','),
+      studyWeekCount: num,
+      startDate: startDay.format('YYYY-MM-DD'),
+    });
   };
   const handlerClubMakeManual = () => {
-    console.log(studyCycle);
+    console.log(studyCycleNum);
     console.log(num);
     console.log(startDay.format('YYYY-MM-DD'));
     renderDatesAndSessionsManual(startDay.format('YYYY-MM-DD'), num);
@@ -1050,11 +1058,12 @@ export function QuizOpenTemplate() {
   function renderDatesAndSessionsView() {
     return (
       <div className="tw-grid tw-grid-cols-12 tw-gap-4 tw-p-4">
-        {dayArr.map((session, index) => (
+        {scheduleData.map((session, index) => (
           <div key={session} className="tw-flex-shrink-0">
             <p className="tw-text-base tw-font-medium tw-text-center tw-text-[#31343d]">{index + 1}회</p>
             <p className="tw-text-xs tw-font-medium tw-text-center tw-text-[#9ca5b2]">
-              {session.replace(/\((.*?)요일\)/, '($1)')}
+              {session.publishDate}
+              {/* {session.replace(/\((.*?)요일\)/, '($1)')} */}
             </p>
           </div>
         ))}
@@ -1062,13 +1071,53 @@ export function QuizOpenTemplate() {
     );
   }
 
+  const handleInputDayChange = (index, part, value) => {
+    const updatedScheduleData = [...scheduleData];
+    const dateParts = updatedScheduleData[index].publishDate.split('-');
+
+    if (part === 'month') {
+      const day = new Date(startDay.format('YYYY-MM-DD'));
+      const newDate = new Date(day.getFullYear(), value - 1, dateParts[2]);
+      if (newDate < day) {
+        alert('월은 시작 날짜보다 이전일 수 없습니다.');
+        return;
+      }
+      dateParts[1] = value.padStart(2, '0');
+    } else if (part === 'day') {
+      if (value < 0 || value > 31) {
+        alert('일은 1에서 31 사이여야 합니다.');
+        return;
+      }
+      dateParts[2] = value.padStart(2);
+    }
+
+    updatedScheduleData[index].publishDate = dateParts.join('-');
+    setScheduleSaveData(updatedScheduleData);
+  };
+
+  const handleCheckboxDayChange = index => {
+    setSelectedSessions(prev => {
+      if (prev.includes(index)) {
+        return prev.filter(i => i !== index);
+      } else {
+        return [...prev, index];
+      }
+    });
+  };
+
+  const handleDelete = () => {
+    const updatedScheduleData = scheduleData.filter((_, i) => !selectedSessions.includes(i));
+    setScheduleData(updatedScheduleData);
+    setSelectedSessions([]);
+  };
+
   function renderDatesAndSessionsModify() {
     return (
       <div className="tw-grid tw-grid-cols-12 tw-gap-4 tw-p-3">
-        {dayArr.map((session, index) => (
+        {scheduleData.map((session, index) => (
           <div key={session} className="tw-flex-grow tw-flex-shrink relative">
             <div className="tw-text-center">
-              <Checkbox />
+              <Checkbox checked={selectedSessions.includes(index)} onChange={() => handleCheckboxDayChange(index)} />
               <p className="tw-text-base tw-font-medium tw-text-center tw-text-[#31343d]">{index + 1}회</p>
               <div className="tw-flex tw-justify-center tw-items-center  tw-left-0 tw-top-0 tw-overflow-hidden tw-gap-1 tw-px-0 tw-py-[3px] tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
                 <input
@@ -1076,17 +1125,17 @@ export function QuizOpenTemplate() {
                   type="text"
                   maxLength={2}
                   className="form-control tw-text-sm"
-                  value={session.split(' ')[0].split('-')[0]}
+                  value={session.publishDate.split('-')[1]}
+                  onChange={e => handleInputDayChange(index, 'month', e.target.value)}
                 ></input>
                 <input
                   style={{ padding: 0, height: 25, width: 25, textAlign: 'center' }}
                   type="text"
                   className="form-control tw-text-sm"
-                  value={session.split(' ')[0].split('-')[1]}
+                  value={session.publishDate.split('-')[2]}
+                  onChange={e => handleInputDayChange(index, 'day', e.target.value)}
                 ></input>
-                <p className="tw-text-xs tw-font-medium tw-text-center tw-text-[#9ca5b2]">
-                  {session.split(' ')[1].replace(/\((.*?)요일\)/, '($1)')}
-                </p>
+                <p className="tw-text-xs tw-font-medium tw-text-center tw-text-[#9ca5b2]">{session.dayOfWeek}</p>
               </div>
             </div>
             <div className="tw-w-6 tw-h-6 tw-left-[21px] tw-top-0 tw-overflow-hidden">
@@ -1097,6 +1146,19 @@ export function QuizOpenTemplate() {
       </div>
     );
   }
+
+  const handleUniversityChange = e => {
+    const selectedCode = e.target.value;
+    const selected = optionsData?.data?.jobs?.find(u => u.code === selectedCode);
+    setSelectedUniversity(selectedCode);
+    setJobs(selected ? selected.jobs : []);
+    setSelectedJob(''); // Clear the selected job when university changes
+  };
+
+  const handleJobChange = e => {
+    setSelectedJob(e.target.value);
+  };
+
   function renderDatesAndSessionsModifyManual() {
     return (
       <div className="tw-grid tw-grid-cols-12 tw-gap-4 tw-p-3">
@@ -1161,11 +1223,11 @@ export function QuizOpenTemplate() {
                   </p>
                 </div>
                 <div className="tw-flex tw-justify-end tw-items-center tw-gap-4">
-                  <button className="tw-flex tw-justify-center tw-items-center tw-w-40 tw-relative tw-overflow-hidden tw-gap-2 tw-px-7 tw-py-[11.5px] tw-rounded tw-bg-[#31343d]">
+                  {/* <button className="tw-flex tw-justify-center tw-items-center tw-w-40 tw-relative tw-overflow-hidden tw-gap-2 tw-px-7 tw-py-[11.5px] tw-rounded tw-bg-[#31343d]">
                     <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-center tw-text-white">
                       템플릿 불러오기
                     </p>
-                  </button>
+                  </button> */}
                   <button className="border tw-flex tw-justify-center tw-items-center tw-w-40 tw-relative tw-overflow-hidden tw-gap-2 tw-px-6 tw-py-[11.5px] tw-rounded tw-bg-white tw-border tw-border-gray-400">
                     <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-center tw-text-[#6a7380]">
                       임시저장 불러오기
@@ -1245,46 +1307,29 @@ export function QuizOpenTemplate() {
                   <div className="tw-grid tw-grid-cols-2 tw-gap-4 tw-content-start">
                     <div>
                       <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천 대학</div>
-                      <select className="form-select" aria-label="Default select example">
-                        <option selected>대학을 선택해주세요.</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
-                      </select>
-                      {/* <ToggleButtonGroup
-                        value={jobGroupObject}
-                        exclusive
-                        onChange={handleJobs}
-                        aria-label="text alignment"
+                      <select
+                        className="form-select"
+                        onChange={handleUniversityChange}
+                        aria-label="Default select example"
                       >
-                        {contentTypes?.map((item, index) => (
-                          <ToggleButton
-                            classes={{ selected: classes.selected }}
-                            key={`job-1-${index}`}
-                            value={item}
-                            className="tw-ring-1 tw-ring-slate-900/10"
-                            style={{
-                              borderRadius: '5px',
-                              borderLeft: '0px',
-                              margin: '5px',
-                              height: '35px',
-                              border: '0px',
-                            }}
-                          >
-                            {item.name}
-                          </ToggleButton>
+                        <option selected>대학을 선택해주세요.</option>
+                        {optionsData?.data?.jobs?.map(university => (
+                          <option key={university.code} value={university.code}>
+                            {university.name}
+                          </option>
                         ))}
-                      </ToggleButtonGroup> */}
+                      </select>
 
                       <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천 레벨</div>
 
                       <ToggleButtonGroup
+                        style={{ display: 'inline' }}
                         value={recommendLevels}
                         exclusive
                         onChange={handleRecommendLevels}
                         aria-label="text alignment"
                       >
-                        {levelGroup?.map((item, index) => (
+                        {optionsData?.data?.jobLevels?.map((item, index) => (
                           <ToggleButton
                             classes={{ selected: classes.selected }}
                             key={`job-2-${index}`}
@@ -1299,7 +1344,7 @@ export function QuizOpenTemplate() {
                               border: '0px',
                             }}
                           >
-                            {item.description}
+                            {item.name}
                           </ToggleButton>
                         ))}
                       </ToggleButtonGroup>
@@ -1308,12 +1353,28 @@ export function QuizOpenTemplate() {
                     <div>
                       <div>
                         <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천 학과</div>
-                        <select className="form-select" aria-label="Default select example">
+                        <select
+                          className="form-select"
+                          aria-label="Default select example"
+                          disabled={jobs.length === 0}
+                          onChange={handleJobChange}
+                          value={selectedJob}
+                        >
+                          <option selected disabled value="">
+                            학과를 선택해주세요.
+                          </option>
+                          {jobs.map(job => (
+                            <option key={job.code} value={job.code}>
+                              {job.name}
+                            </option>
+                          ))}
+                        </select>
+                        {/* <select className="form-select" aria-label="Default select example">
                           <option selected>학과를 선택해주세요.</option>
                           <option value="1">One</option>
                           <option value="2">Two</option>
                           <option value="3">Three</option>
-                        </select>
+                        </select> */}
                         {/* <ToggleButtonGroup
                           style={{ display: 'inline' }}
                           value={recommendJobGroupsObject}
@@ -1388,12 +1449,7 @@ export function QuizOpenTemplate() {
                       퀴즈 생성(오픈) 주기
                     </div>
 
-                    <ToggleButtonGroup
-                      value={recommendType}
-                      exclusive
-                      onChange={handleRecommendType}
-                      aria-label="text alignment"
-                    >
+                    <ToggleButtonGroup value={quizType} exclusive onChange={handleQuizType} aria-label="text alignment">
                       {openGroup?.map((item, index) => (
                         <ToggleButton
                           classes={{ selected: classes.selected }}
@@ -1415,7 +1471,7 @@ export function QuizOpenTemplate() {
                     </ToggleButtonGroup>
                   </div>
                   {/* Conditionally render a div based on recommendType and recommendLevels */}
-                  {recommendType == 0 && (
+                  {quizType == '0100' && (
                     <div className="tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-[#f6f7fb] tw-pb-5">
                       <div className="tw-flex tw-p-5 ...">
                         <div className="tw-flex-grow tw-w-1/2 tw-h-14 ...">
@@ -1423,7 +1479,7 @@ export function QuizOpenTemplate() {
                             퀴즈 주기 (복수선택가능)
                           </p>
                           <ToggleButtonGroup
-                            value={studyCycle}
+                            value={studyCycleNum}
                             onChange={handleStudyCycle}
                             aria-label=""
                             color="standard"
@@ -1486,13 +1542,16 @@ export function QuizOpenTemplate() {
                           </button>
                         </div>
                       </div>
-                      {dayArr.length > 0 && (
+                      {scheduleData?.length > 0 && (
                         <div className="tw-p-5">
                           <div className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">
                             퀴즈 클럽회차
                           </div>
                           <div className="tw-rounded-lg tw-bg-white">{renderDatesAndSessionsView()}</div>
-                          <div className="tw-text-sm tw-text-right tw-text-black tw-py-5 tw-font-semibold">
+                          <div
+                            onClick={handleDelete}
+                            className="tw-cursor-pointer tw-text-sm tw-text-right tw-text-black tw-py-5 tw-font-semibold"
+                          >
                             선택회차 삭제하기
                           </div>
                           <div className="tw-rounded-lg tw-bg-white">{renderDatesAndSessionsModify()}</div>
@@ -1501,7 +1560,7 @@ export function QuizOpenTemplate() {
                     </div>
                   )}
 
-                  {recommendType == 1 && (
+                  {quizType == '0200' && (
                     <div className="tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-[#f6f7fb] tw-pb-5">
                       <div className="tw-flex tw-p-5 ...">
                         <div className="tw-flex-none tw-w-1/4 tw-h-14 ...">
@@ -1549,7 +1608,7 @@ export function QuizOpenTemplate() {
                       )}
                     </div>
                   )}
-                  {recommendType == 2 && (
+                  {quizType == '0300' && (
                     <div className="tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-[#f6f7fb] tw-pb-5">
                       <p className="tw-text-sm tw-text-left tw-text-black tw-font-semibold tw-pt-5 tw-px-5">
                         날짜/요일을 지정할 필요 없이 학생이 퀴즈를 풀면 자동으로 다음 회차가 열립니다.
@@ -1590,29 +1649,30 @@ export function QuizOpenTemplate() {
                     size="small"
                     fullWidth
                     label={'학습 주제를 입력해주세요.'}
-                    onChange={handleInputChange}
+                    onChange={handleInputStudySubjectChange}
                     id="margin-none"
-                    value={clubName}
-                    name="clubName"
+                    value={studySubject}
+                    name="studySubject"
                   />
                   <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">학습 쳅터</div>
                   <TextField
                     size="small"
                     fullWidth
                     label={'학습 챕터를 입력해주세요.'}
-                    onChange={handleInputChange}
+                    onChange={handleInputStudyChapterChange}
                     id="margin-none"
-                    value={clubName}
-                    name="clubName"
+                    value={studyChapter}
+                    name="studyChapter"
                   />
                   <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">학습 키워드</div>
                   <TagsInput
-                    value={selected}
-                    onChange={setSelected}
+                    value={studyKeywords}
+                    onChange={setStudyKeywords}
                     name="fruits"
-                    placeHolder="학습 키워드를 입력해주세요."
+                    placeHolder="학습 키워드를 입력해주세요. 입력 후 엔터를 쳐주세요"
                   />
-                  <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">관련스킬</div>
+                  <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">관련기술</div>
+
                   <ToggleButtonGroup
                     style={{ display: 'inline' }}
                     value={skillIds}
@@ -1620,12 +1680,12 @@ export function QuizOpenTemplate() {
                     aria-label=""
                     color="standard"
                   >
-                    {skillData?.map((item, index) => {
+                    {optionsData?.data?.skills?.map((item, index) => {
                       return (
                         <ToggleButton
                           classes={{ selected: classes.selected }}
                           key={`skillIds-${index}`}
-                          value={item.name}
+                          value={item}
                           className="tw-ring-1 tw-ring-slate-900/10"
                           style={{
                             borderRadius: '5px',
@@ -1635,78 +1695,19 @@ export function QuizOpenTemplate() {
                             border: '0px',
                           }}
                         >
-                          {item.name}
+                          {item}
                         </ToggleButton>
                       );
                     })}
                   </ToggleButtonGroup>
-                  <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">관련경험</div>
-                  {/* <ToggleButtonGroup value={experienceIds} onChange={handleFormatEx} aria-label="" color="standard">
-                    {experienceData.data.contents?.map((item, index) => {
-                      return (
-                        <ToggleButton
-                          classes={{ selected: classes.selected }}
-                          key={`skillIds-${index}`}
-                          value={item.name}
-                          className="tw-ring-1 tw-ring-slate-900/10"
-                          style={{
-                            borderRadius: '5px',
-                            borderLeft: '0px',
-                            margin: '5px',
-                            height: '35px',
-                            border: '0px',
-                          }}
-                        >
-                          {item.name}
-                        </ToggleButton>
-                      );
-                    })}
-                  </ToggleButtonGroup> */}
-                  {/* {experienceData.data.contents?.map((item, index) => {
-                    return (
-                      <ToggleButton
-                        key={`custom-skill-${index}`}
-                        className="tw-mb-3 tw-mr-3"
-                        label={item.name}
-                        name="experienceIds"
-                        value={item.name}
-                        onChange={onToggleChange}
-                        variant="small"
-                        type="multiple"
-                        isActive
-                        isBorder
-                      />
-                    );
-                  })} */}
-                  {/* <div className="tw-grid tw-grid-cols-2 tw-gap-4 tw-content-start">
-                    <div>
-                      <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">퀴즈클럽 시작일</div>
-
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DatePicker
-                          format="YYYY-MM-DD"
-                          slotProps={{ textField: { size: 'small' } }}
-                          value={startDay}
-                          onChange={e => onChangeHandleFromToStartDate(e)}
-                        />
-                      </LocalizationProvider>
-                      <div className="tw-text-sm tw-text-black tw-mt-2 tw-my-0">* 스펙업 주기는 기본 12주 입니다.</div>
-                    </div>
-                    <div>
-                      <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">클럽 모집 마감일</div>
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DatePicker
-                          format="YYYY-MM-DD"
-                          slotProps={{ textField: { size: 'small' } }}
-                          value={endDay}
-                          onChange={e => onChangeHandleFromToEndDate(e)}
-                        />
-                      </LocalizationProvider>
-                      <div className="tw-text-sm tw-text-black tw-mt-2 tw-my-0">
-                        *스펙업 시작일보다 이른 날짜만 설정이 가능합니다.
-                      </div>
-                    </div>
-                  </div> */}
+                  <div className="tw-px-1">
+                    <TagsInput
+                      value={skills}
+                      onChange={setSkills}
+                      name="fruits"
+                      placeHolder="관련기술 입력 후 엔터를 쳐주세요"
+                    />
+                  </div>
                   <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">클럽 기본정보 입력</div>
                   <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">
                     간략한 클럽 소개 내용을 입력해주세요.
@@ -1716,8 +1717,8 @@ export function QuizOpenTemplate() {
                     id="margin-none"
                     multiline
                     rows={4}
-                    onChange={onMessageChange}
-                    value={introductionMessage}
+                    onChange={onMessageChange1}
+                    value={introductionText}
                     placeholder="비전공자 개발자라면, 컴퓨터 공학 지식에 대한 갈증이 있을텐데요.
                     혼자서는 끝까지 하기 어려운 개발 공부를 함께 퀴즈 클럽에서 해봅시다.
                     멀리 가려면 함께 가라는 말이 있는데, 우리 전원 퀴즈클럽 달성도 100% 만들어 보아요!"
@@ -1730,8 +1731,8 @@ export function QuizOpenTemplate() {
                     id="margin-none"
                     multiline
                     rows={4}
-                    onChange={onMessageChange}
-                    value={introductionMessage}
+                    onChange={onMessageChange2}
+                    value={recommendationText}
                     placeholder="컴공에 대한 기초적인 지식이 있으신 분
                     학원 공부가 맞지 않으신 분
                     다른 사람들과 자유롭게 의견 나누면서 공부하고 싶으신 분"
@@ -1744,8 +1745,8 @@ export function QuizOpenTemplate() {
                     id="margin-none"
                     multiline
                     rows={4}
-                    onChange={onMessageChange}
-                    value={introductionMessage}
+                    onChange={onMessageChange3}
+                    value={learningText}
                     placeholder="개발 트랜드를 따라갈 수 있어요.
                     정확히 몰랐던 기초를 다질 수 있어요.
                     동종업계 인맥을 넓힐 수 있어요."
@@ -1758,8 +1759,8 @@ export function QuizOpenTemplate() {
                     id="margin-none"
                     multiline
                     rows={4}
-                    onChange={onMessageChange}
-                    value={introductionMessage}
+                    onChange={onMessageChange4}
+                    value={memberIntroductionText}
                     placeholder="안녕하세요. 만나서 반가워요."
                   />
                   <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">
@@ -1770,8 +1771,8 @@ export function QuizOpenTemplate() {
                     id="margin-none"
                     multiline
                     rows={4}
-                    onChange={onMessageChange}
-                    value={introductionMessage}
+                    onChange={onMessageChange5}
+                    value={careerText}
                     placeholder="(현) ○○○ 개발 리더
                     (전) △△ 개발 팀장
                     (전) □□□□ 개발 사원"
@@ -1814,160 +1815,160 @@ export function QuizOpenTemplate() {
           </article>
         )}
 
-        {activeStep === 1 && (
-          <>
-            <Desktop>
-              <article className="tw-mt-8">
-                <div className="tw-relative">
-                  <p className="tw-text-xl tw-font-bold tw-text-left tw-text-black tw-py-5">퀴즈 등록하기</p>
-                  <p className="tw-text-base tw-text-left tw-text-black">
-                    <span className="tw-text-base tw-text-left tw-text-black">
-                      클럽 세부사항에서 선택한 항목에 따라 자동으로 추천된 퀴즈 목록입니다. 퀴즈를 클릭하시면 다른
-                      퀴즈로 변경할 수 있습니다.
-                    </span>
-                    <br />
-                    <span className="tw-text-base tw-text-left tw-text-black">
-                      퀴즈 순서 및 삭제로 편집하여 우리 클럽에 맞는 퀴즈 목록을 만들어주세요!
-                    </span>
-                  </p>
-                  <div className="tw-absolute tw-bottom-0 tw-right-0">
-                    <div className="tw-flex tw-justify-center tw-items-center tw-w-[124px] tw-relative tw-overflow-hidden tw-gap-2 tw-px-7 tw-py-[11.5px] tw-rounded tw-bg-[#e9ecf2]">
-                      <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-center tw-text-[#6a7380]">
-                        퀴즈 초기화
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="tw-grid tw-grid-cols-3 tw-gap-8 tw-py-12">
-                  <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
-                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">대학</p>
-                    <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[314px] tw-relative tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
-                      <TextField
-                        size="small"
-                        fullWidth
-                        label={'클럽명을 입력해주세요.'}
-                        onChange={handleInputChange}
-                        id="margin-none"
-                        value={clubName}
-                        name="clubName"
-                      />
-                    </div>
-                  </div>
-                  <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
-                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">학과</p>
-                    <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[314px] tw-h-11 tw-relative tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
-                      <TextField
-                        size="small"
-                        fullWidth
-                        label={'클럽명을 입력해주세요.'}
-                        onChange={handleInputChange}
-                        id="margin-none"
-                        value={clubName}
-                        name="clubName"
-                      />
-                    </div>
-                  </div>
-                  <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
-                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">학년</p>
-                    <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[314px] tw-h-11 tw-relative tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
-                      <TextField
-                        size="small"
-                        fullWidth
-                        label={'클럽명을 입력해주세요.'}
-                        onChange={handleInputChange}
-                        id="margin-none"
-                        value={clubName}
-                        name="clubName"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="tw-h-20 tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white border tw-border-[#e9ecf2]">
-                  <div className="tw-absolute tw-top-7 tw-left-1/2 tw-transform tw--translate-x-1/2 tw-flex tw-justify-center tw-items-center tw-gap-2">
-                    <svg
-                      width={24}
-                      height={24}
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-6 tw-h-6 tw-relative"
-                      preserveAspectRatio="xMidYMid meet"
-                    >
-                      <g clip-path="url(#tw-clip0_320_49119)">
-                        <circle cx={12} cy={12} r="11.5" stroke="#9CA5B2" stroke-dasharray="2.25 2.25" />
-                        <path
-                          fill-rule="evenodd"
-                          clip-rule="evenodd"
-                          d="M12.75 7.5H11.25V11.25L7.5 11.25V12.75H11.25V16.5H12.75V12.75H16.5V11.25L12.75 11.25V7.5Z"
-                          fill="#9CA5B2"
-                        />
-                      </g>
-                      <defs>
-                        <clippath id="tw-clip0_320_49119">
-                          <rect width={24} height={24} fill="white" />
-                        </clippath>
-                      </defs>
-                    </svg>
-                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-medium tw-text-left tw-text-[#9ca5b2]">
-                      <button type="button" onClick={handleAddClick} className="tw-text-black tw-text-sm ">
-                        성장퀴즈 추가하기
-                      </button>
+        {/* {activeStep === 1 && ( */}
+        <>
+          <Desktop>
+            <article className="tw-mt-8">
+              <div className="tw-relative">
+                <p className="tw-text-xl tw-font-bold tw-text-left tw-text-black tw-py-5">퀴즈 등록하기</p>
+                <p className="tw-text-base tw-text-left tw-text-black">
+                  <span className="tw-text-base tw-text-left tw-text-black">
+                    클럽 세부사항에서 선택한 항목에 따라 자동으로 추천된 퀴즈 목록입니다. 퀴즈를 클릭하시면 다른 퀴즈로
+                    변경할 수 있습니다.
+                  </span>
+                  <br />
+                  <span className="tw-text-base tw-text-left tw-text-black">
+                    퀴즈 순서 및 삭제로 편집하여 우리 클럽에 맞는 퀴즈 목록을 만들어주세요!
+                  </span>
+                </p>
+                <div className="tw-absolute tw-bottom-0 tw-right-0">
+                  <div className="tw-flex tw-justify-center tw-items-center tw-w-[124px] tw-relative tw-overflow-hidden tw-gap-2 tw-px-7 tw-py-[11.5px] tw-rounded tw-bg-[#e9ecf2]">
+                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-center tw-text-[#6a7380]">
+                      퀴즈 초기화
                     </p>
                   </div>
                 </div>
+              </div>
 
-                <div className="tw-mt-10"></div>
-
-                <Grid container direction="row" justifyContent="left" alignItems="center" rowSpacing={4}>
-                  <Grid item xs={1}>
-                    {selectedQuizzes.map((item, index) => {
-                      return (
-                        <div key={index} className="tw-h-[209px] tw-flex tw-flex-col tw-items-center tw-justify-center">
-                          <div className=" tw-text-center tw-text-black tw-font-bold">Q{index + 1}.</div>
-                          <div className="tw-text-center tw-text-sm tw-text-black  tw-font-bold">
-                            {index + 1} 주차 ({item.studyCycle})
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </Grid>
-                  <Grid item xs={11}>
-                    <ReactDragList
-                      dataSource={selectedQuizzes}
-                      rowKey="order"
-                      row={dragList}
-                      handles={false}
-                      className="simple-drag"
-                      rowClassName="simple-drag-row"
-                      onUpdate={handleUpdate}
+              <div className="tw-grid tw-grid-cols-3 tw-gap-8 tw-py-12">
+                <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
+                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">대학</p>
+                  <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[314px] tw-relative tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
+                    <TextField
+                      size="small"
+                      fullWidth
+                      label={'클럽명을 입력해주세요.'}
+                      onChange={handleInputChange}
+                      id="margin-none"
+                      value={clubName}
+                      name="clubName"
                     />
-                  </Grid>
-                </Grid>
-
-                <div className="tw-container tw-py-10 tw-px-10 tw-mx-0 tw-min-w-full tw-flex tw-flex-col tw-items-center">
-                  <div className="tw-flex tw-gap-5 tw-mt-3">
-                    <button
-                      onClick={handleBack}
-                      className="border tw-w-[150px] tw-btn-outline-secondary tw-outline-blue-500 tw-bg-white tw-text-black tw-font-bold tw-py-3 tw-px-4 tw-rounded tw-flex tw-items-center tw-justify-center tw-gap-1"
-                    >
-                      <NavigatePrevIcon fontSize="small" />
-                      이전
-                    </button>
-                    <button
-                      className="tw-w-[150px] tw-bg-[#E11837] tw-text-white tw-font-bold tw-py-3 tw-px-4 tw-rounded tw-flex tw-items-center tw-justify-center tw-gap-1"
-                      onClick={handleNext}
-                    >
-                      {activeStep === steps.length - 1 ? '성장퀴즈 클럽 개설하기 >' : '다음'}
-                      <NavigateNextIcon fontSize="small" />
-                    </button>
                   </div>
                 </div>
-              </article>
-            </Desktop>
-          </>
-        )}
+                <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
+                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">학과</p>
+                  <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[314px] tw-h-11 tw-relative tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
+                    <TextField
+                      size="small"
+                      fullWidth
+                      label={'클럽명을 입력해주세요.'}
+                      onChange={handleInputChange}
+                      id="margin-none"
+                      value={clubName}
+                      name="clubName"
+                    />
+                  </div>
+                </div>
+                <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
+                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">학년</p>
+                  <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[314px] tw-h-11 tw-relative tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
+                    <TextField
+                      size="small"
+                      fullWidth
+                      label={'클럽명을 입력해주세요.'}
+                      onChange={handleInputChange}
+                      id="margin-none"
+                      value={clubName}
+                      name="clubName"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="tw-h-20 tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white border tw-border-[#e9ecf2]">
+                <div className="tw-absolute tw-top-7 tw-left-1/2 tw-transform tw--translate-x-1/2 tw-flex tw-justify-center tw-items-center tw-gap-2">
+                  <svg
+                    width={24}
+                    height={24}
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-6 tw-h-6 tw-relative"
+                    preserveAspectRatio="xMidYMid meet"
+                  >
+                    <g clip-path="url(#tw-clip0_320_49119)">
+                      <circle cx={12} cy={12} r="11.5" stroke="#9CA5B2" stroke-dasharray="2.25 2.25" />
+                      <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M12.75 7.5H11.25V11.25L7.5 11.25V12.75H11.25V16.5H12.75V12.75H16.5V11.25L12.75 11.25V7.5Z"
+                        fill="#9CA5B2"
+                      />
+                    </g>
+                    <defs>
+                      <clippath id="tw-clip0_320_49119">
+                        <rect width={24} height={24} fill="white" />
+                      </clippath>
+                    </defs>
+                  </svg>
+                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-medium tw-text-left tw-text-[#9ca5b2]">
+                    <button type="button" onClick={handleAddClick} className="tw-text-black tw-text-sm ">
+                      성장퀴즈 추가하기
+                    </button>
+                  </p>
+                </div>
+              </div>
+
+              <div className="tw-mt-10"></div>
+
+              <Grid container direction="row" justifyContent="left" alignItems="flex-start" rowSpacing={4}>
+                <Grid item xs={1}>
+                  {scheduleData.map((item, index) => {
+                    return (
+                      <div key={index} className="tw-h-[209px] tw-flex tw-flex-col tw-items-center tw-justify-center">
+                        <div className=" tw-text-center tw-text-black tw-font-bold">Q{index + 1}.</div>
+                        <div className="tw-text-center tw-text-sm tw-text-black  tw-font-bold">
+                          {item.weekNumber} 주차 ({item.dayOfWeek})
+                        </div>
+                      </div>
+                    );
+                  })}
+                </Grid>
+                <Grid item xs={11}>
+                  <ReactDragList
+                    dataSource={selectedQuizzes}
+                    rowKey="order"
+                    row={dragList}
+                    handles={false}
+                    className="simple-drag"
+                    rowClassName="simple-drag-row"
+                    onUpdate={handleUpdate}
+                  />
+                </Grid>
+              </Grid>
+
+              <div className="tw-container tw-py-10 tw-px-10 tw-mx-0 tw-min-w-full tw-flex tw-flex-col tw-items-center">
+                <div className="tw-flex tw-gap-5 tw-mt-3">
+                  <button
+                    onClick={handleBack}
+                    className="border tw-w-[150px] tw-btn-outline-secondary tw-outline-blue-500 tw-bg-white tw-text-black tw-font-bold tw-py-3 tw-px-4 tw-rounded tw-flex tw-items-center tw-justify-center tw-gap-1"
+                  >
+                    <NavigatePrevIcon fontSize="small" />
+                    이전
+                  </button>
+                  <button
+                    className="tw-w-[150px] tw-bg-[#E11837] tw-text-white tw-font-bold tw-py-3 tw-px-4 tw-rounded tw-flex tw-items-center tw-justify-center tw-gap-1"
+                    onClick={handleNext}
+                  >
+                    {activeStep === steps.length - 1 ? '성장퀴즈 클럽 개설하기 >' : '다음'}
+                    <NavigateNextIcon fontSize="small" />
+                  </button>
+                </div>
+              </div>
+            </article>
+          </Desktop>
+        </>
+        {/* )} */}
         {activeStep === 2 && (
           <>
             <article>
@@ -2166,9 +2167,9 @@ export function QuizOpenTemplate() {
               <>
                 <QuizBreakerInfoCheck
                   avatarSrc="https://via.placeholder.com/40"
-                  userName={item.memberName}
-                  questionText={item.content}
-                  index={item.sequence}
+                  userName={item.memberNickname}
+                  questionText={item.question}
+                  index={item.quizSequence}
                   selectedQuizIds={selectedQuizIds}
                   handleCheckboxChange={handleCheckboxChange}
                   hashtags={['MVVM', '해시태그']}
@@ -2286,7 +2287,7 @@ export function QuizOpenTemplate() {
 
               <div className="tw-font-semibold tw-text-sm tw-text-black tw-mb-2 tw-mt-5">관련스킬</div>
 
-              <ToggleButtonGroup
+              {/* <ToggleButtonGroup
                 style={{ display: 'inline' }}
                 value={skillIdsPopUp}
                 onChange={handleFormatPopUp}
@@ -2311,7 +2312,7 @@ export function QuizOpenTemplate() {
                     </ToggleButton>
                   );
                 })}
-              </ToggleButtonGroup>
+              </ToggleButtonGroup> */}
 
               <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-mb-2">관련경험</div>
               <ToggleButtonGroup

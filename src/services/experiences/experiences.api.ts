@@ -8,7 +8,7 @@ interface ExperienceParamsProps {
 
 // 경험 목록 조회
 export const experienceList = async () => {
-  const { data } = await axiosGeneralAPI().get('/api/v1/experiences');
+  const { data } = await axiosGeneralAPI().get('/api/v1/club/options');
   return data;
 };
 

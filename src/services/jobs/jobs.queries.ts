@@ -1,5 +1,5 @@
 import { useQuery } from 'react-query';
-import { getQuizList, getMyQuiz, getJobs, getMyQuizReply, getQuizReply } from './jobs.api';
+import { getQuizList, getMyQuiz, getJobs, getMyQuizReply, getQuizReply, getGetSchedule } from './jobs.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 import { RecommendContentsResponse } from 'src/models/recommend';
 import { paramProps } from '../community/community.queries';
@@ -45,6 +45,23 @@ export const useMyQuiz = (
     {
       onSuccess,
       onError,
+      refetchOnWindowFocus: false,
+    },
+  );
+};
+export const useGetSchedule = (
+  params?: paramProps,
+  onSuccess?: (data: RecommendContentsResponse) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 10;
+  return useQuery<RecommendContentsResponse, Error>(
+    QUERY_KEY_FACTORY('SCHEDULE').list(params),
+    () => getGetSchedule(params),
+    {
+      onSuccess,
+      onError,
+      enabled: false,
       refetchOnWindowFocus: false,
     },
   );

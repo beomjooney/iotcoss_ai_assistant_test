@@ -3,10 +3,7 @@ import { ExperiencesResponse } from 'src/models/experiences';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 import { experienceList, myExperienceList } from './experiences.api';
 
-// export const useExperiences = params =>
-//   useQuery([QUERY_KEY_FACTORY('EXPERIENCE').list(params)], () => experienceList(params));
-
-export const useExperiences = (onSuccess?: (data: ExperiencesResponse) => void, onError?: (error: Error) => void) => {
+export const useOptions = (onSuccess?: (data: ExperiencesResponse) => void, onError?: (error: Error) => void) => {
   return useQuery<ExperiencesResponse, Error>(QUERY_KEY_FACTORY('EXPERIENCE').lists(), () => experienceList(), {
     onSuccess,
     onError,

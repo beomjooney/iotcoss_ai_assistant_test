@@ -17,6 +17,11 @@ export const getMyQuiz = async params => {
   const { data } = await axiosGeneralAPI().get('/api/v1/quizzes/me', { params });
   return data.data;
 };
+// 내 퀴즈 조회
+export const getGetSchedule = async params => {
+  const { data } = await axiosGeneralAPI().get('/api/v1/club/quiz-schedule', { params });
+  return data.data;
+};
 // 내 댓글 조회
 export const getMyQuizReply = async params => {
   const { data } = await axiosGeneralAPI().get('/api/v1/replies/me', { params });

@@ -100,15 +100,15 @@ export const levelGroup = [
 
 export const openGroup = [
   {
-    name: '0',
+    name: '0100',
     description: 'Type1. 정기 자동 오픈',
   },
   {
-    name: '1',
+    name: '0200',
     description: 'Type2. 교수자 수동 오픈',
   },
   {
-    name: '2',
+    name: '0300',
     description: 'Type3. 학습자 학습 오픈',
   },
 ];

@@ -7,7 +7,7 @@ export const useUploadImage = (): UseMutationResult => {
   // TODO : any 타입 변경
   return useMutation<any, any, any>(file => postImage(file), {
     onError: (error, variables, context) => {
-      alert(`사진 업로드에 실패하였습니다. ${error}`);
+      // alert(`사진 업로드에 실패하였습니다. ${error}`);
     },
     onSettled: data => queryClient.invalidateQueries(QUERY_KEY_FACTORY('IMAGE').detail(data)),
     onSuccess: async data => {

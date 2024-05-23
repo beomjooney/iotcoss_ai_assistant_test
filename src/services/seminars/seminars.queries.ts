@@ -30,6 +30,7 @@ export interface paramProps {
   recommendJobGroups?: string;
   recommendLevels?: string;
   keyword?: string;
+  studyCycle?: string;
   excludeSeminarIds?: any; // 콤마(,)로 구분
   enabled?: boolean;
   lecturerMemberId?: string;
