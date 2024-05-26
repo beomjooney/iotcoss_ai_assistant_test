@@ -1,5 +1,5 @@
 import { useQuery } from 'react-query';
-import { getQuizList, getMyQuiz, getJobs, getMyQuizReply, getQuizReply, getGetSchedule } from './jobs.api';
+import { getQuizList, getMyQuiz, getJobs, getMyQuizReply, getQuizReply, getGetSchedule, getGetTemp } from './jobs.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 import { RecommendContentsResponse } from 'src/models/recommend';
 import { paramProps } from '../community/community.queries';
@@ -51,21 +51,26 @@ export const useMyQuiz = (
 };
 export const useGetSchedule = (
   params?: paramProps,
-  onSuccess?: (data: RecommendContentsResponse) => void,
+  onSuccess?: (data: any) => void,
   onError?: (error: Error) => void,
 ) => {
-  const DEFAULT_SIZE = 10;
-  return useQuery<RecommendContentsResponse, Error>(
-    QUERY_KEY_FACTORY('SCHEDULE').list(params),
-    () => getGetSchedule(params),
-    {
-      onSuccess,
-      onError,
-      enabled: false,
-      refetchOnWindowFocus: false,
-    },
-  );
+  return useQuery<any, Error>(QUERY_KEY_FACTORY('SCHEDULE').list(params), () => getGetSchedule(params), {
+    onSuccess,
+    onError,
+    enabled: false,
+    refetchOnWindowFocus: false,
+  });
 };
+
+export const useGetTemp = (onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
+  return useQuery<any, Error>(QUERY_KEY_FACTORY('TEMP').details(), () => getGetTemp(), {
+    onSuccess,
+    onError,
+    enabled: false,
+    refetchOnWindowFocus: false,
+  });
+};
+
 export const useMyQuizReply = (
   params?: paramProps,
   onSuccess?: (data: RecommendContentsResponse) => void,

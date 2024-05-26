@@ -16,7 +16,8 @@ export async function getCamenities(args: CamenityProps) {
   return { data: data || [], nextPage: params.page + 1, totalPage };
 }
 export const savePost = async body => await axiosGeneralAPI().post(`/api/v1/quizzes`, body);
-export const saveClubQuizPost = async body => await axiosGeneralAPI().post(`/api/v1/clubs`, body);
+export const saveClubQuizPost = async body => await axiosGeneralAPI().post(`/api/v1/club`, body);
+export const saveClubTempPost = async body => await axiosGeneralAPI().post(`/api/v1/club/temporary`, body);
 
 export const deletePost = async postNo => await axiosGeneralAPI().delete(`/posts/${postNo}`);
 

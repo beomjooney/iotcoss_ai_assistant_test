@@ -66,7 +66,7 @@ function createAxios(requestConfig: RequestConfig): AxiosInstance {
       if (status === 401) {
         const { update } = useSessionStore.getState();
         const userData: UserInfo = jwt_decode(process.env['NEXT_PUBLIC_GUEST_TOKEN']);
-        console.log(process.env['NEXT_PUBLIC_GUEST_TOKEN']);
+        // console.log(process.env['NEXT_PUBLIC_GUEST_TOKEN']);
         /**auth test */
         update({
           logged: userData.sub !== 'Guest',
@@ -84,7 +84,7 @@ function createAxios(requestConfig: RequestConfig): AxiosInstance {
         //   // window.location.href = '/account/login';
         //   throw new LoginError();
         // }
-        throw new AuthError();
+        // throw new AuthError();
       }
 
       if (status === 404) {

@@ -1,9 +1,28 @@
 // QuizClubDetailInfo.jsx
 import React from 'react';
-import Divider from '@mui/material/Divider';
 
-const QuizClubDetailInfo = ({ clubInfo, border, leaders, clubQuizzes, representativeQuizzes }) => {
+interface QuizClubDetailInfoProps {
+  border: boolean;
+  clubData: any; // or the specific type expected
+  user: any; // or the specific type expected
+  selectedUniversityName: string;
+  jobLevelName: any[]; // or the specific type expected
+  selectedQuizzes: any[]; // or the specific type expected
+  selectedJobName: string;
+}
+
+const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
+  clubData,
+  border,
+  user,
+  selectedQuizzes,
+  selectedUniversityName,
+  jobLevelName,
+  selectedJobName,
+}) => {
   const borderStyle = border ? 'border border-[#e9ecf2] tw-mt-14' : '';
+  const studyWeekCount = parseInt(clubData?.studyWeekCount, 10);
+  const totalMeetings = studyWeekCount * clubData?.studyCycle.length;
   return (
     <div className={`tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white ${borderStyle}`}>
       <div className="tw-px-[108.5px] tw-pt-[35px]">
@@ -36,37 +55,38 @@ const QuizClubDetailInfo = ({ clubInfo, border, leaders, clubQuizzes, representa
         </div>
         <div className="tw-h-[280px] tw-relative tw-overflow-hidden tw-rounded-[8.75px] tw-bg-white border tw-border-[#e9ecf2]">
           <img
-            src="/assets/images/quiz/rectangle_183.png"
+            src={clubData?.clubImageUrl}
             className="tw-w-[280px] tw-h-[280px]  tw-left-0 tw-top-[-0.01px] tw-object-cover"
           />
           <p className="tw-absolute tw-left-[305.38px] tw-top-[65.63px] tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black">
-            임베디드 시스템
-          </p>
-          <p className="tw-absolute tw-left-[440.13px] tw-top-[69.13px] tw-text-[12.25px] tw-text-left tw-text-black">
-            [전공선택] 3학년 화요일 A반{' '}
+            {clubData?.clubName}
           </p>
           <p className="tw-absolute tw-left-[305.38px] tw-top-[118.13px] tw-text-sm tw-text-left tw-text-black">
-            <span className="tw-text-sm tw-text-left tw-text-black">학습 주기 : 매주 화요일 (총 12회)</span>
-            <br />
             <span className="tw-text-sm tw-text-left tw-text-black">
-              학습 기간 : 12주 (2024. 09. 03 ~ 2024. 11. 03)
+              학습 주기 : {clubData?.studyWeekCount}주 {clubData?.studyCycle.toString()}요일 (총 {totalMeetings}회)
             </span>
             <br />
-            <span className="tw-text-sm tw-text-left tw-text-black">참여 인원 : 24명</span>
+            <span className="tw-text-sm tw-text-left tw-text-black">
+              학습 기간 : {clubData?.num}주 {clubData?.startAt}
+            </span>
+            <br />
+            {/* <span className="tw-text-sm tw-text-left tw-text-black">참여 인원 : 24명</span> */}
           </p>
           <div className="tw-flex tw-justify-start tw-items-start tw-absolute tw-left-[305.38px] tw-top-[24.5px] tw-gap-[7px]">
             <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-[8.75px] tw-px-[10.5px] tw-py-[3.5px] tw-rounded-[3.5px] tw-bg-[#d7ecff]">
               <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[12.25px] tw-text-left tw-text-[#235a8d]">
-                소프트웨어융합대학
+                {selectedUniversityName}
               </p>
             </div>
             <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-[8.75px] tw-px-[10.5px] tw-py-[3.5px] tw-rounded-[3.5px] tw-bg-[#e4e4e4]">
               <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[12.25px] tw-text-left tw-text-[#313b49]">
-                컴퓨터공학과
+                {selectedJobName}
               </p>
             </div>
             <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-[8.75px] tw-px-[10.5px] tw-py-[3.5px] tw-rounded-[3.5px] tw-bg-[#ffdede]">
-              <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[12.25px] tw-text-left tw-text-[#b83333]">3학년</p>
+              <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[12.25px] tw-text-left tw-text-[#b83333]">
+                {jobLevelName}
+              </p>
             </div>
           </div>
           <svg
@@ -75,7 +95,7 @@ const QuizClubDetailInfo = ({ clubInfo, border, leaders, clubQuizzes, representa
             viewBox="0 0 28 28"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className="tw-w-7 tw-h-7 tw-absolute tw-left-[90%] tw-top-[21px]"
+            className="tw-w-7 tw-h-7 tw-absolute tw-right-5 tw-top-[21px]"
             preserveAspectRatio="xMidYMid meet"
           >
             <path
@@ -84,8 +104,15 @@ const QuizClubDetailInfo = ({ clubInfo, border, leaders, clubQuizzes, representa
             />
           </svg>
           <div className="tw-flex tw-justify-start tw-items-center tw-absolute tw-left-[305.38px] tw-top-[231px] tw-gap-[7px]">
-            <img className="tw-flex-grow-0 tw-flex-shrink-0" src="/assets/images/quiz/ellipse_209_2.png" />
-            <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">양황규 교수</p>
+            <img
+              className="tw-flex-grow-0 tw-flex-shrink-0 border tw-rounded-full"
+              src={user.profileImageUrl}
+              width="25"
+              height="25"
+            />
+            <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">
+              {user.name ? user.name : user.nickname} 교수
+            </p>
           </div>
           <div className="tw-flex tw-justify-start tw-items-center tw-absolute tw-left-[87%] tw-top-[220.5px] tw-overflow-hidden tw-gap-[7px] tw-px-[24.5px] tw-py-[10.0625px] tw-rounded-[3.5px] tw-bg-[#e11837]">
             <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[12.25px] tw-font-bold tw-text-center tw-text-white">
@@ -104,10 +131,7 @@ const QuizClubDetailInfo = ({ clubInfo, border, leaders, clubQuizzes, representa
           <div className="tw-col-start-2 tw-col-end-13">
             <div className="tw-flex tw-flex-col tw-gap-0">
               <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-1">간단 클럽 소개</p>
-              <p className="tw-text-[12.25px] tw-text-left tw-text-black">
-                컴공에 대한 기초적인 지식이 있으신 분 학원 공부가 맞지 않으신 분 다른 사람들과 자유롭게 의견 나누면서
-                공부하고 싶으신 분 컴퓨터 공학 지식 뿌시고 싶으신 분
-              </p>
+              <p className="tw-text-[12.25px] tw-text-left tw-text-black">{clubData?.introductionText}</p>
             </div>
           </div>
         </div>
@@ -124,10 +148,7 @@ const QuizClubDetailInfo = ({ clubInfo, border, leaders, clubQuizzes, representa
               <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black  tw-pb-5">
                 이런 분께 가입 추천드립니다
               </p>
-              <p className="tw-text-[12.25px] tw-text-left tw-text-black">
-                개발에 대한 기초적인 지식을 기반으로, 퀴즈를 풀고 사람들과 같이 소통하며 지식을 나누며 업그레이드하고,
-                다양한 분야의 사람들과 활발한 소통을 통해 비전공자, 전공자 구분없이 커뮤니티 활동을 할 수 있습니다!
-              </p>
+              <p className="tw-text-[12.25px] tw-text-left tw-text-black">{clubData?.recommendationText}</p>
             </div>
           </div>
         </div>
@@ -143,11 +164,7 @@ const QuizClubDetailInfo = ({ clubInfo, border, leaders, clubQuizzes, representa
               <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-5">
                 우리 클럽을 통해 얻을 수 있는 것은 무엇인가요?
               </p>
-              <p className="tw-text-[12.25px] tw-text-left tw-text-black">
-                비전공자 개발자라면, 컴퓨터 공학 지식에 대한 갈증이 있을텐데요, 혼자서는 끝까지 하기 어려운 이 공부,
-                우리 같이 퀴즈클럽로 해봐요. 멀리 가려면 함께 가라는 말이 있는데, 우리 전원 퀴즈클럽 달성도 100% 만들고,
-                컴퓨터 공학 지식 뿌셔요.
-              </p>
+              <p className="tw-text-[12.25px] tw-text-left tw-text-black">{clubData?.learningText}</p>
             </div>
           </div>
         </div>
@@ -156,36 +173,38 @@ const QuizClubDetailInfo = ({ clubInfo, border, leaders, clubQuizzes, representa
         <div className="tw-bg-[#f6f7fb] tw-w-full tw-overflow-hidden tw-px-[108.13px] tw-pt-[40px]">
           <div className=" tw-rounded-[8.75px] tw-py-[40px]">
             <div className="tw-flex tw-items-start tw-gap-[16px]">
-              <img src="/assets/images/quiz/ellipse_209.png" />
+              <img className="border tw-rounded-full" src={user.profileImageUrl} width="105" height="105" />
               <div>
-                {/* <h4 className="tw-text-[21.875px] tw-font-bold tw-text-black">{leaders.name}</h4> */}
-                <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-[14px] ">
+                <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-[14px]  tw-gap-3">
                   <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[21.875px] tw-font-bold tw-text-left tw-text-black">
-                    양황규 교수님
+                    {user.name ? user.name : user.nickname} 교수님
                   </p>
-                  <div className="tw-flex tw-justify-start tw-items-start tw-flex-grow-0 tw-flex-shrink-0 tw-gap-[7px]">
-                    <div className="tw-flex tw-justify-start tw-items-start tw-flex-grow-0 tw-flex-shrink-0 tw-gap-[7px]">
-                      {leaders.departments.map((department, index) => (
-                        <div
-                          key={index}
-                          className={`tw-flex tw-text-sm tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-[8.75px] tw-px-[10.5px] tw-py-[3.5px] tw-rounded-[3.5px] tw-bg-[#e4e4e4]`}
-                        >
-                          <p className={department.textColor}>{department.label}</p>
-                        </div>
-                      ))}
+
+                  <div className="tw-flex tw-justify-start tw-items-start tw-flex-grow-0 tw-flex-shrink-0">
+                    <div className="tw-flex tw-justify-start tw-items-start tw-flex-grow-0 tw-flex-shrink-0 tw-gap-3">
+                      <div
+                        className={`tw-bg-[#d7ecff] tw-flex tw-text-sm tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-[8.75px] tw-px-[10.5px] tw-py-[3.5px] tw-rounded-[3.5px] `}
+                      >
+                        <p className="">{user?.jobGroup?.name}</p>
+                      </div>
+                      <div
+                        className={`tw-bg-[#e4e4e4] tw-flex tw-text-sm tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-[8.75px] tw-px-[10.5px] tw-py-[3.5px] tw-rounded-[3.5px] `}
+                      >
+                        <p className="">{user?.job?.name}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <p className="tw-text-[12.25px] tw-text-[#6a7380]">{leaders.position}</p>
+                <p className="tw-text-[12.25px] tw-text-[#6a7380]">{user.position}</p>
 
                 <div className="tw-flex tw-gap-2.5 tw-mt-3">
-                  {leaders.tags.map((tag, index) => (
+                  {user?.skills?.map((tag, index) => (
                     <div key={index} className="tw-bg-[#313b49] tw-rounded-[3.5px] tw-px-[7px] tw-py-[1.75px]">
                       <p className="tw-text-[10.5px] tw-text-white">{tag}</p>
                     </div>
                   ))}
                 </div>
-                <p className="tw-text-[12.25px] tw-text-black tw-mt-3">{leaders.greeting}</p>
+                <p className="tw-text-[12.25px] tw-text-black tw-mt-3">{user.introductionMessage}</p>
               </div>
             </div>
           </div>
@@ -200,10 +219,7 @@ const QuizClubDetailInfo = ({ clubInfo, border, leaders, clubQuizzes, representa
               <div className="tw-col-start-2 tw-col-end-12">
                 <div className="tw-flex tw-flex-col">
                   <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-5">리더 인사</p>
-                  <p className="tw-text-[12.25px] tw-text-left tw-text-black">
-                    안녕하세요. 이 퀴즈 클럽을 운영하게 된 양황규 교수입니다! 만나서 반가워요. 저도 다른 교수자님들의
-                    도움을 받아 이 자리까지 오게 되었네요! 함께 성장해봅시다.
-                  </p>
+                  <p className="tw-text-[12.25px] tw-text-left tw-text-black">{clubData?.memberIntroductionText}</p>
                 </div>
               </div>
             </div>
@@ -219,10 +235,7 @@ const QuizClubDetailInfo = ({ clubInfo, border, leaders, clubQuizzes, representa
               <div className="tw-col-start-2 tw-col-end-12">
                 <div className="tw-flex tw-flex-col">
                   <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-5">리더 이력 및 경력</p>
-                  <p className="tw-text-[12.25px] tw-text-left tw-text-black">
-                    (현) 카카오 개발 리더 (전) 네이버 개발 팀장 (전) 안랩 개발 사원 (전) 카카오 개발 인턴 카카오
-                    모빌리티 앱 개발 애플워치 ios 개발 네이버 쇼핑 어플 UI 개발
-                  </p>
+                  <p className="tw-text-[12.25px] tw-text-left tw-text-black">{clubData?.careerText}</p>
                 </div>
               </div>
             </div>
@@ -241,7 +254,8 @@ const QuizClubDetailInfo = ({ clubInfo, border, leaders, clubQuizzes, representa
             <div className="tw-flex tw-flex-col">
               <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-5">퀴즈 전체 일정</p>
               <p className="tw-text-[12.25px] tw-text-left tw-text-black">
-                2023.06.01 - 2023.06.18 / 주2회(월, 수) 총 36개 퀴즈
+                {clubData?.startAt} / 주 {clubData?.studyWeekCount.toString()}회({clubData?.studyCycle.toString()}) 총{' '}
+                {selectedQuizzes.length}개 퀴즈
               </p>
             </div>
           </div>
@@ -256,10 +270,8 @@ const QuizClubDetailInfo = ({ clubInfo, border, leaders, clubQuizzes, representa
           </div>
           <div className="tw-col-start-2 tw-col-end-13">
             <div className="tw-flex tw-flex-col">
-              <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-5">
-                우리 클럽을 통해 얻을 수 있는 것은 무엇인가요?
-              </p>
-              {representativeQuizzes.map((quiz, index) => (
+              <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-5">우리 클럽 대표퀴즈</p>
+              {selectedQuizzes.slice(0, 3).map((quiz, index) => (
                 <div key={index} className="tw-mt-3.5 tw-flex tw-items-center tw-gap-3">
                   <div className="tw-bg-[#e11837] tw-rounded-[3.5px] tw-px-[7px] tw-py-[1.75px]">
                     <p className="tw-text-[10.5px] tw-font-bold tw-text-white">대표 {index + 1}</p>

@@ -1,6 +1,15 @@
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
-import { addPosts, deletePost, savePost, saveReply, deleteReply, saveClubQuizPost, quizOrder } from './quiz.api';
+import {
+  addPosts,
+  deletePost,
+  savePost,
+  saveReply,
+  deleteReply,
+  saveClubQuizPost,
+  quizOrder,
+  saveClubTempPost,
+} from './quiz.api';
 
 export const useQuizOrder = (): UseMutationResult => {
   const queryClient = useQueryClient();
@@ -54,6 +63,20 @@ export const useClubQuizSave = (): UseMutationResult => {
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CAMENITY').all),
     onSuccess: async data => {
       alert('클럽이 개설 되었습니다.\n관리자가 클럽 승인대기 중입니다.');
+    },
+  });
+};
+
+export const useClubTempSave = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => saveClubTempPost(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('TEMP').all),
+    onSuccess: async data => {
+      alert('임시저장 되었습니다.');
     },
   });
 };

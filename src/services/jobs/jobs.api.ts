@@ -22,6 +22,12 @@ export const getGetSchedule = async params => {
   const { data } = await axiosGeneralAPI().get('/api/v1/club/quiz-schedule', { params });
   return data.data;
 };
+// 임시저장 조회
+export async function getGetTemp() {
+  const { data } = await axiosGeneralAPI().get('/api/v1/club/temporary');
+  return data.data;
+}
+
 // 내 댓글 조회
 export const getMyQuizReply = async params => {
   const { data } = await axiosGeneralAPI().get('/api/v1/replies/me', { params });
