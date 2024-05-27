@@ -52,6 +52,18 @@ export const dayGroup = [
   },
 ];
 
+export const images = [
+  '/assets/images/banner/Rectangle_190.png',
+  '/assets/images/banner/Rectangle_191.png',
+  '/assets/images/banner/Rectangle_192.png',
+  '/assets/images/banner/Rectangle_193.png',
+  '/assets/images/banner/Rectangle_195.png',
+  '/assets/images/banner/Rectangle_196.png',
+  '/assets/images/banner/Rectangle_197.png',
+  '/assets/images/banner/Rectangle_198.png',
+  '/assets/images/banner/Rectangle_199.png',
+];
+
 export const privateGroup = [
   {
     id: '0100',

@@ -2,7 +2,6 @@ import React from 'react';
 import Tooltip from 'src/stories/components/Tooltip';
 import classNames from 'classnames/bind';
 import styles from './index.module.scss';
-import ReactDragList from 'react-drag-list';
 
 const cx = classNames.bind(styles);
 
@@ -11,7 +10,6 @@ const QuizBreakerInfo = ({
   userName = 'Unknown User',
   questionText,
   index,
-  isRepresentative,
   answerText,
   knowledgeContentTitle = '[영상] CircuitBreaker를 이용한 외부 API 장애 관리',
   handleCheckboxDelete,
@@ -31,15 +29,14 @@ const QuizBreakerInfo = ({
             <img
               src={avatarSrc}
               alt="User Avatar"
-              className="tw-w-8 tw-h-8 tw-col-start-1 tw-row-start-1 tw-row-end-2 tw-mt-[11px] tw-ml-[22px] tw-rounded-full tw-object-cover"
+              className="tw-w-8 border tw-h-8 tw-col-start-1 tw-row-start-1 tw-row-end-2 tw-mt-[11px] tw-ml-[22px] tw-rounded-full tw-object-cover"
             />
             <p className="tw-col-start-1 tw-row-start-2 tw-row-end-3 tw-mt-[2px] tw-ml-[22px] tw-text-[10px] tw-text-left tw-text-black">
               {userName}
             </p>
-            <p className="tw-col-start-2 tw-col-end-3 tw-row-start-1 tw-row-end-3 tw-text-base tw-text-left tw-text-black tw-mt-7 tw-ml-[33px]">
+            <p className="tw-col-start-2 tw-col-end-3 tw-row-start-1 tw-row-end-3 tw-text-base tw-text-left tw-text-black tw-ml-[33px] tw-flex tw-items-center">
               {questionText}
             </p>
-
             <svg
               width={28}
               height={28}

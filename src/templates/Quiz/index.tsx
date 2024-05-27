@@ -1,6 +1,6 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import { Toggle, Pagination, ClubCard } from 'src/stories/components';
+import { ToggleLabel, Pagination, ClubCard } from 'src/stories/components';
 import React, { useEffect, useState } from 'react';
 import { RecommendContent } from 'src/models/recommend';
 import { useSeminarList, paramProps } from 'src/services/seminars/seminars.queries';
@@ -172,7 +172,7 @@ export function QuizTemplate() {
             <Grid item xs={6} sm={9} className="tw-font-bold tw-text-3xl tw-text-black">
               <div className={cx('filter-area')}>
                 <div className={cx('mentoring-button__group', 'gap-12', 'justify-content-center')}>
-                  <Toggle
+                  <ToggleLabel
                     label="전체보기"
                     name="전체보기"
                     value=""
@@ -191,7 +191,7 @@ export function QuizTemplate() {
                   />
                   {isContentTypeFetched &&
                     contentTypes.map((item, i) => (
-                      <Toggle
+                      <ToggleLabel
                         key={item.id}
                         label={item.name}
                         name={item.name}
@@ -238,64 +238,15 @@ export function QuizTemplate() {
         </Box>
 
         {/* <Divider className="tw-mb-6 tw-border tw-bg-['#efefef']" /> */}
-        <hr className="tw-y-14 tw-my-5 tw-h-[1px] tw-border-t tw-bg-gray-300 " />
+        <hr className="tw-y-14 tw-my-5 tw-h-[0.5px] tw-border-t tw-bg-gray-300 " />
         {active != 0 && (
           <div>
             <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
               <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천 직군</div>
-              <ToggleButtonGroup
-                style={{ display: 'inline' }}
-                value={jobGroup}
-                onChange={handleJobs}
-                aria-label="text alignment"
-                size="small"
-              >
-                {isContentTypeJobFetched &&
-                  contentJobType.map((item, i) => (
-                    <ToggleButton
-                      key={item.id}
-                      value={item.id}
-                      className="tw-ring-1 tw-ring-slate-900/10"
-                      style={{
-                        borderRadius: '5px',
-                        borderLeft: '0px',
-                        margin: '5px',
-                        height: '30px',
-                        border: '0px',
-                      }}
-                    >
-                      {item.name}
-                    </ToggleButton>
-                  ))}
-              </ToggleButtonGroup>
             </div>
 
             <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
               <span className="tw-font-bold tw-text-base tw-text-black tw-mr-4">레벨</span>
-              <ToggleButtonGroup
-                value={recommendLevels}
-                onChange={handleRecommendLevels}
-                aria-label="text alignment"
-                size="small"
-              >
-                {levelGroup?.map((item, index) => (
-                  <ToggleButton
-                    key={`job-${index}`}
-                    value={item.name}
-                    aria-label="fff"
-                    className="tw-ring-1 tw-ring-slate-900/10"
-                    style={{
-                      borderRadius: '5px',
-                      borderLeft: '0px',
-                      margin: '5px',
-                      height: '30px',
-                      border: '0px',
-                    }}
-                  >
-                    레벨 {item.name}
-                  </ToggleButton>
-                ))}
-              </ToggleButtonGroup>
             </div>
           </div>
         )}

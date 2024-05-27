@@ -150,28 +150,35 @@ ClubCardProps) => {
             className=" tw-flex tw-flex-col tw-bg-white border tw-rounded-lg md:tw-flex-row tw-w-full "
           >
             <img
-              className="tw-object-cover tw-w-[240px] tw-rounded-t-lg tw-h-[240px] md:tw-h-[240px] md:tw-w-[240px] md:tw-rounded-none md:tw-rounded-l-lg"
+              className="tw-object-cover border-right  tw-w-[230px] tw-rounded-t-lg tw-h-[240px] md:tw-h-[230px] md:tw-w-[230px] md:tw-rounded-none md:tw-rounded-l-lg"
               src={item?.clubImageUrl}
               alt=""
             />
-            <div className="tw-flex tw-w-full tw-flex-col tw-p-[20px] tw-pb-[16px]">
+            <button
+              className="tw-absolute tw-pl-2 tw-pt-2"
+              onClick={() => {
+                onChangeLike(item.sequence, item.isFavorite);
+              }}
+            >
+              {isLiked ? <StarIcon color="primary" /> : <StarBorderIcon color="disabled" />}
+            </button>
+            <div className="tw-flex tw-w-full tw-flex-col tw-p-[12px]">
               <Grid container direction="row" justifyContent="space-between" alignItems="center" rowSpacing={0}>
-                <Grid item xs={11}>
+                <Grid item xs={12}>
                   <div className="max-lg:tw-h-[100px] tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
-                    <span className="tw-inline-flex tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded">
+                    <span className="tw-inline-flex tw-bg-blue-100 tw-text-blue-800 tw-text-xs tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded">
                       {item?.jobGroups[0].name}
                     </span>
 
-                    <span className="tw-inline-flex tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
-                      {item?.jobLevels[0].name} 레벨
-                    </span>
-
-                    <span className="tw-inline-flex tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
+                    <span className="tw-inline-flex tw-bg-gray-100 tw-text-gray-800 tw-text-xs tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
                       {item?.jobs[0].name}
+                    </span>
+                    <span className="tw-inline-flex tw-bg-red-100 tw-text-red-800 tw-text-xs tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
+                      {item?.jobLevels[0].name}
                     </span>
                   </div>
                 </Grid>
-                <Grid item xs={1} className="">
+                {/* <Grid item xs={1} className="">
                   <button
                     onClick={() => {
                       onChangeLike(item.sequence, item.isFavorite);
@@ -179,7 +186,7 @@ ClubCardProps) => {
                   >
                     {isLiked ? <StarIcon color="primary" /> : <StarBorderIcon color="disabled" />}
                   </button>
-                </Grid>
+                </Grid> */}
               </Grid>
               <div className="tw-my-[12px] tw-text-[12px] tw-font-bold tw-text-[#9a9a9a]">
                 모집마감일 : {item?.recruitDeadlineAt.split(' ')[0]}

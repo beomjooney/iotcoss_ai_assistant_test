@@ -41,7 +41,8 @@ import ReactDragList from 'react-drag-list';
 import { useStore } from 'src/store';
 
 //group
-import { dayGroup, privateGroup, levelGroup, openGroup } from './group';
+import { dayGroup, privateGroup, levelGroup, openGroup, images } from './group';
+import { update } from 'lodash';
 
 const cx = classNames.bind(styles);
 
@@ -69,14 +70,12 @@ export function QuizOpenTemplate() {
   const [paramss, setParamss] = useState({});
   const [params, setParams] = useState<paramProps>({ page });
   const [dayParams, setDayParams] = useState<any>({});
-  const [tempParams, setTempParams] = useState<any>({});
   const [myParams, setMyParams] = useState<paramProps>({ page });
   const [quizListParam, setQuizListParam] = useState<any[]>([]);
   const [quizListData, setQuizListData] = useState<any[]>([]);
   const [allQuizData, setAllQuizData] = useState([]);
   const [scheduleData, setScheduleData] = useState<any[]>([]);
   const [scheduleSaveData, setScheduleSaveData] = useState<any[]>([]);
-  const [itemList, setItemList] = useState<any[]>([]);
   const [selectedSessions, setSelectedSessions] = useState([]);
   const [selectedUniversity, setSelectedUniversity] = useState('');
   const [selectedUniversityName, setSelectedUniversityName] = useState('');
@@ -97,7 +96,7 @@ export function QuizOpenTemplate() {
   const { refetch: refetchGetSchedule }: UseQueryResult<any> = useGetSchedule(dayParams, data => {
     setScheduleData(data);
   });
-  const [isDataLoaded, setIsDataLoaded] = useState(false);
+
   //temp 조회
   const { refetch: refetchGetTemp }: UseQueryResult<any> = useGetTemp(data => {
     console.log('load temp', data);
@@ -118,38 +117,21 @@ export function QuizOpenTemplate() {
     setStudyChapter(clubForm?.studyChapter);
     setStudySubject(clubForm?.studySubject);
     setStudyCycleNum(clubForm?.studyCycle);
-    setRecommendLevels(clubForm?.jobLevels[0].code);
-    setUniversityCode(clubForm?.jobGroups[0].code);
+    setRecommendLevels(clubForm?.jobLevels[0]?.code);
+    setUniversityCode(clubForm?.jobGroups[0]?.code);
     setSelectedUniversityName(clubForm?.jobGroups[0]?.name);
-    console.log(clubForm?.jobs[0]?.code);
     setSelectedJobName(clubForm?.jobs[0]?.name);
     setJobLevelName(clubForm?.jobLevels[0]?.name);
-    setSelectedQuizzes(quizList);
-    //job(학과) list
-    console.log(selected ? selected.jobs : []);
-    console.log(clubForm?.jobLevels[0]?.code);
-    console.log(quizList);
-
     const selected = optionsData?.data?.jobs?.find(u => u.code === clubForm?.jobGroups[0].code);
     setJobs(selected ? selected.jobs : []);
     setSelectedJob(clubForm?.jobs[0]?.code);
-    console.log(clubForm?.clubQuizzes);
     setButtonFlag(true);
     setScheduleData(quizList);
 
     // Filter out items with quizSequence not null and extract quizSequence values
     const quizSequenceNumbers = quizList.filter(item => item.quizSequence !== null).map(item => item.quizSequence);
     setSelectedQuizIds(quizSequenceNumbers);
-    // Indicate that the data loading is complete
-    // setIsDataLoaded(true);
   });
-
-  // useEffect(() => {
-  //   if (isDataLoaded) {
-  //     handlerClubMake(); // Clear the selected job when university changes
-  //     setIsDataLoaded(false); // Reset the state for future data loads
-  //   }
-  // }, [isDataLoaded]);
 
   //temp 등록
   const { mutate: onTempSave, isSuccess: tempSucces } = useClubTempSave();
@@ -160,7 +142,7 @@ export function QuizOpenTemplate() {
   const [studyKeywords, setStudyKeywords] = useState([]);
   const [studyChapter, setStudyChapter] = useState('');
   const [studySubject, setStudySubject] = useState('');
-  const [mergeQuizData, setMergeQuizData] = useState([]);
+  // const [mergeQuizData, setMergeQuizData] = useState([]);
   const [skills, setSkills] = useState([]);
   const { mutate: onSaveImage, data: imageUrl, isSuccess: imageSuccess } = useUploadImage();
   const [keyWorld, setKeyWorld] = useState('');
@@ -170,24 +152,11 @@ export function QuizOpenTemplate() {
 
   //quiz new logic
   const [selectedQuizIds, setSelectedQuizIds] = useState([]);
-  const [selectedQuizzes, setSelectedQuizzes] = useState([]);
 
   const quizRef = useRef(null);
   const quizUrlRef = useRef(null);
 
   const [selectedImage, setSelectedImage] = useState('/assets/images/banner/Rectangle_190.png');
-
-  const images = [
-    '/assets/images/banner/Rectangle_190.png',
-    '/assets/images/banner/Rectangle_191.png',
-    '/assets/images/banner/Rectangle_192.png',
-    '/assets/images/banner/Rectangle_193.png',
-    '/assets/images/banner/Rectangle_195.png',
-    '/assets/images/banner/Rectangle_196.png',
-    '/assets/images/banner/Rectangle_197.png',
-    '/assets/images/banner/Rectangle_198.png',
-    '/assets/images/banner/Rectangle_199.png',
-  ];
 
   const [contentJobType, setContentJobType] = useState<any[]>([]);
   const [contentTypes, setContentTypes] = useState<any[]>([]);
@@ -315,7 +284,6 @@ export function QuizOpenTemplate() {
     if (newFormats) {
       setScheduleData([]);
       setNum(0);
-      setSelectedQuizzes([]);
       setSelectedQuizIds([]);
       setStudyCycleNum([]);
       setQuizType(newFormats);
@@ -331,7 +299,6 @@ export function QuizOpenTemplate() {
   };
 
   useDidMountEffect(() => {
-    //console.log('delete 1 !!!', params, page);
     refetchMyJob();
   }, [postSucces]);
 
@@ -385,11 +352,9 @@ export function QuizOpenTemplate() {
   //new logic
   const handleCheckboxChange = quizSequence => {
     // Filter out items with quizSequence as null and count them
-    console.log(mergeQuizData);
     const nullQuizSequenceCount = scheduleData.filter(item => item.quizSequence === null).length;
 
-    console.log(nullQuizSequenceCount);
-    if (!selectedQuizIds.includes(quizSequence) && 0 >= nullQuizSequenceCount) {
+    if (!selectedQuizIds.includes(quizSequence) && nullQuizSequenceCount <= 0) {
       alert('퀴즈를 추가 할 수 없습니다.');
       return;
     }
@@ -399,25 +364,50 @@ export function QuizOpenTemplate() {
         ? prevSelectedQuizIds.filter(id => id !== quizSequence)
         : [...prevSelectedQuizIds, quizSequence];
 
-      console.log('Updated Selected Quiz IDs:', updatedSelectedQuizIds);
-
-      setSelectedQuizzes(prevSelectedQuizzes => {
-        // Remove quizzes with quizSequence as null
-        const filteredQuizzes = prevSelectedQuizzes.filter(quiz => quiz.quizSequence !== null);
-
-        const alreadySelected = filteredQuizzes.some(quiz => quiz.quizSequence === quizSequence);
+      setScheduleData(prevSelectedQuizzes => {
+        const alreadySelected = prevSelectedQuizzes.some(quiz => quiz.quizSequence === quizSequence);
 
         if (alreadySelected) {
-          return filteredQuizzes.filter(quiz => quiz.quizSequence !== quizSequence);
+          // When unchecked, set quizSequence to null
+          return prevSelectedQuizzes.map(quiz =>
+            quiz.quizSequence === quizSequence ? { ...quiz, quizSequence: null } : quiz,
+          );
         } else {
           const newQuiz = allQuizData.find(quiz => quiz.quizSequence === quizSequence);
-          return newQuiz
-            ? [...filteredQuizzes, { ...newQuiz, isRepresentative: newQuiz.isRepresentative || false }]
-            : filteredQuizzes;
+          const reconstructedQuiz = newQuiz
+            ? {
+                quizSequence: newQuiz.quizSequence,
+                question: newQuiz.question,
+                leaderUri: newQuiz.memberUri,
+                leaderUUID: newQuiz.memberUUID,
+                leaderProfileImageUrl: newQuiz.memberProfileImageUrl,
+                leaderNickname: newQuiz.memberNickname,
+                contentUrl: newQuiz.contentUrl,
+                contentTitle: newQuiz.contentTitle,
+                modelAnswer: newQuiz.modelAnswer,
+                quizUri: newQuiz.quizUri,
+              }
+            : null;
+
+          console.log(newQuiz);
+          console.log(reconstructedQuiz);
+
+          // Find the first item with null values in scheduleData
+          const firstNullItemIndex = scheduleData.findIndex(item => item.quizSequence === null);
+
+          if (firstNullItemIndex !== -1 && newQuiz) {
+            // Update the first null item with the new quiz data
+            const updatedScheduleData = [...scheduleData];
+            updatedScheduleData[firstNullItemIndex] = {
+              ...updatedScheduleData[firstNullItemIndex],
+              ...reconstructedQuiz,
+            };
+            console.log(updatedScheduleData);
+            setScheduleData(updatedScheduleData);
+            return updatedScheduleData;
+          }
         }
       });
-      setIsDataLoaded(true);
-
       return updatedSelectedQuizIds;
     });
   };
@@ -426,27 +416,12 @@ export function QuizOpenTemplate() {
     setSelectedQuizIds(prevSelectedQuizIds => {
       const updatedSelectedQuizIds = prevSelectedQuizIds.filter(id => id !== quizSequence);
       console.log('After Deletion, Selected Quiz IDs:', updatedSelectedQuizIds);
-
-      setSelectedQuizzes(prevSelectedQuizzes =>
-        prevSelectedQuizzes.map(quiz => (quiz.quizSequence === quizSequence ? { ...quiz, quizSequence: null } : quiz)),
-      );
       setScheduleData(prevSelectedQuizzes =>
         prevSelectedQuizzes.map(quiz => (quiz.quizSequence === quizSequence ? { ...quiz, quizSequence: null } : quiz)),
       );
-
-      setIsDataLoaded(true);
       return updatedSelectedQuizIds;
     });
   };
-
-  useEffect(() => {
-    if (isDataLoaded) {
-      console.log('click');
-      handleMergeData();
-
-      setIsDataLoaded(false); // Reset the state for future data loads
-    }
-  }, [isDataLoaded]);
 
   useEffect(() => {
     setParams({
@@ -463,7 +438,7 @@ export function QuizOpenTemplate() {
   const [jobGroupPopUp, setJobGroupPopUp] = useState([]);
   const [studyCycleNum, setStudyCycleNum] = useState([]);
   const [recommendLevels, setRecommendLevels] = useState([]);
-  const [universityCode, setUniversityCode] = useState([]);
+  const [universityCode, setUniversityCode] = useState<string>('');
   const [recommendType, setRecommendType] = useState(null);
   const [quizType, setQuizType] = useState('0100');
   const [recommendLevelsPopUp, setRecommendLevelsPopUp] = useState([]);
@@ -519,31 +494,7 @@ export function QuizOpenTemplate() {
     return skipped.has(step);
   };
 
-  const handleMergeData = () => {
-    const newData = [...scheduleData];
-    let lastQuizSequence = 0;
-
-    for (let i = 0; i < selectedQuizzes.length; i++) {
-      const currentQuizSequence = selectedQuizzes[i].quizSequence;
-
-      newData[i] = {
-        ...newData[i],
-        quizSequence: currentQuizSequence,
-        // publishDate: '2024-06-18',
-      };
-
-      delete newData[i].weekNumber;
-      delete newData[i].dayOfWeek;
-
-      lastQuizSequence = currentQuizSequence;
-    }
-
-    console.log(newData);
-    setMergeQuizData(newData);
-    setScheduleData(newData);
-  };
-
-  const handleNext = () => {
+  const handleNextTwo = () => {
     console.log('next');
     console.log(scheduleData);
     console.log(selectedQuizzes);
@@ -567,10 +518,14 @@ export function QuizOpenTemplate() {
     }
 
     console.log(newData);
-    setMergeQuizData(newData);
+    // setMergeQuizData(newData);
 
-    if (scheduleData.length !== selectedQuizzes.length) {
-      alert('퀴즈 데이터를 추가해주세요.');
+    const nullQuizSequences = scheduleData
+      .map((item, index) => (item.quizSequence === null ? index + 1 : null))
+      .filter(index => index !== null);
+
+    if (nullQuizSequences.length > 0) {
+      alert(`${nullQuizSequences.join(', ')} 번째 퀴즈를 등록해주세요.`);
       return;
     }
 
@@ -589,49 +544,89 @@ export function QuizOpenTemplate() {
     setActiveStep(prevActiveStep => prevActiveStep + 1);
     setSkipped(newSkipped);
   };
-
+  const [updateKey, setUpdateKey] = useState(0); // 상태 업데이트 강제 트리거를 위한 키
   const handleUpdate = (evt: any, updated: any) => {
-    //console.log(evt); // tslint:disable-line
-    console.log(updated); // tslint:disable-line
-    setItemList([...updated]);
+    // 인덱스로 일정 항목을 보유할 맵
+    const scheduleMap = updated.reduce((acc, item, index) => {
+      acc[index] = item;
+      return acc;
+    }, {});
+
+    // 관련 필드만 추출하고 'order'로 정렬
+    const sortedReducedData = updated
+      .map(({ order, dayOfWeek, weekNumber, publishDate }) => ({
+        order,
+        dayOfWeek,
+        weekNumber,
+        publishDate,
+      }))
+      .sort((a, b) => a.order - b.order);
+
+    // 정렬된 데이터와 원본 항목의 추가 속성을 병합
+    const mergeData = sortedReducedData.map((item, index) => ({
+      ...item,
+      quizSequence: scheduleMap[index].quizSequence,
+      question: scheduleMap[index].question,
+      leaderUri: scheduleMap[index].leaderUri,
+      leaderUUID: scheduleMap[index].leaderUUID,
+      leaderProfileImageUrl: scheduleMap[index].leaderProfileImageUrl,
+      leaderNickname: scheduleMap[index].leaderNickname,
+      contentUrl: scheduleMap[index].contentUrl,
+      contentTitle: scheduleMap[index].contentTitle,
+      modelAnswer: scheduleMap[index].modelAnswer,
+      quizUri: scheduleMap[index].quizUri,
+    }));
+
+    // 상태 업데이트
+    setScheduleData(mergeData);
   };
+
+  useEffect(() => {
+    // 상태 업데이트 후 추가 작업 수행
+    console.log('scheduleData가 업데이트되었습니다.', scheduleData);
+    // setUpdateKey를 호출하여 강제 리렌더링
+    setUpdateKey(prevKey => prevKey + 1);
+  }, [scheduleData]);
+
   const dragList = (item: any, index: any) => (
-    <QuizBreakerInfo
-      avatarSrc="https://via.placeholder.com/40"
-      userName={item.memberName}
-      questionText={item.question}
-      isRepresentative={item.isRepresentative}
-      index={item.quizSequence}
-      answerText={item.modelAnswer}
-      handleCheckboxDelete={handleCheckboxDelete}
-    />
+    <div key={item.order} className="simple-drag-row">
+      <QuizBreakerInfo
+        avatarSrc={item.leaderProfileImageUrl}
+        userName={item.leaderNickname}
+        questionText={item.question}
+        index={item.quizSequence !== undefined ? item.quizSequence : null}
+        answerText={item.modelAnswer}
+        handleCheckboxDelete={handleCheckboxDelete}
+      />
+    </div>
   );
 
-  const handleNextLast = () => {
+  const handleNextThree = () => {
     console.log('NextLast');
     console.log(quizListParam);
-    const params = { ...paramss, clubQuizzes: mergeQuizData };
+    const params = { ...paramss, clubQuizzes: scheduleData };
     console.log(params);
     onClubQuizSave(params);
   };
 
   const handleNextOne = () => {
     window.scrollTo(0, 0);
-    //console.log('imageUrl key', imageUrl);
-    //요일 정렬
 
-    const selectedUniversityCode = optionsData?.data?.jobs?.find(u => u.code === selectedUniversity)?.code || 'None';
+    const _selectedUniversityCode =
+      optionsData?.data?.jobs?.find(u => u.code === selectedUniversity)?.code || universityCode;
+    setUniversityCode(_selectedUniversityCode);
     const selectedJobCode = jobs.find(j => j.code === selectedJob)?.code || 'None';
     const clubFormParams = {
       clubName: clubName,
       clubImageUrl: imageUrl,
-      jobGroups: [selectedUniversityCode],
+      jobGroups: [_selectedUniversityCode],
       jobs: [selectedJobCode],
       jobLevels: [recommendLevels],
       isPublic: true,
       participationCode: '',
       studyCycle: studyCycleNum,
       startAt: startDay.format('YYYY-MM-DD') + ' 00:00:00',
+      studyCount: num,
       studyWeekCount: num,
       studySubject: studySubject,
       studyChapter: studyChapter,
@@ -649,11 +644,19 @@ export function QuizOpenTemplate() {
       clubRecruitType: '0100',
     };
 
+    //scheduleData null insert
+    const updatedData = scheduleData.map(item => ({
+      ...item,
+      ...(item.quizSequence === undefined && { quizSequence: null }),
+    }));
+    setScheduleData(updatedData);
+
     const params = {
       clubForm: clubFormParams,
       clubQuizzes: scheduleData,
     };
     console.log(params);
+    console.log(scheduleData);
 
     setParamss(params);
     console.log(quizType);
@@ -683,7 +686,11 @@ export function QuizOpenTemplate() {
         return;
       }
     } else if (quizType == '0200' || quizType == '0300') {
-      handlerClubMakeManual();
+      if (buttonFlag == false) {
+        alert('수동 오픈에서 확인 버튼 눌러주세요.');
+        return;
+      }
+      // handlerClubMakeManual();
     }
 
     let newSkipped = skipped;
@@ -764,20 +771,32 @@ export function QuizOpenTemplate() {
   };
 
   const handlerQuizInit = async () => {
-    setSelectedQuizzes([]);
+    const newData = scheduleData.map(item => ({
+      ...item,
+      quizSequence: null,
+      quizUri: null,
+      leaderUUID: null,
+      leaderUri: null,
+      leaderNickname: null,
+      leaderProfileImageUrl: null,
+      question: null,
+      modelAnswer: null,
+      contentTitle: null,
+      contentUrl: null,
+    }));
+
+    setScheduleData(newData);
+    setSelectedQuizIds([]);
   };
 
-  const handlerClubSaveTemp = number => {
-    console.log('save temp 1', number);
-
-    const selectedUniversityCode = optionsData?.data?.jobs?.find(u => u.code === selectedUniversity)?.code || '';
+  const handlerClubSaveTemp = () => {
     const selectedJobCode = jobs.find(j => j.code === selectedJob)?.code || '';
     const clubFormParams = {
       clubName: clubName || '',
       clubImageUrl: imageUrl || '',
-      jobGroups: [selectedUniversityCode] || [],
+      jobGroups: [universityCode] || [],
       jobs: [selectedJobCode] || [],
-      jobLevels: [recommendLevels] || [],
+      jobLevels: recommendLevels && recommendLevels.length > 0 ? [recommendLevels] : [],
       isPublic: true,
       participationCode: '',
       studyCycle: studyCycleNum || '',
@@ -799,19 +818,13 @@ export function QuizOpenTemplate() {
       clubRecruitType: '0100',
     };
 
-    console.log(mergeQuizData);
-
     const params = {
       clubForm: clubFormParams,
-      clubQuizzes: number === 2 ? mergeQuizData : scheduleData,
+      clubQuizzes: scheduleData,
     };
+    console.log(scheduleData);
 
     onTempSave(params);
-
-    if (number === 1) {
-      setSelectedQuizzes([]);
-      setSelectedQuizIds([]);
-    }
   };
 
   const handlerClubMake = () => {
@@ -841,6 +854,7 @@ export function QuizOpenTemplate() {
       });
     }
     setScheduleData(weeks);
+    setButtonFlag(true);
   };
 
   const useStyles = makeStyles(theme => ({
@@ -1086,13 +1100,22 @@ export function QuizOpenTemplate() {
                             key={`job-2-${index}`}
                             value={item.code}
                             aria-label="fff"
-                            className="tw-ring-1 tw-ring-slate-900/10"
+                            className=" tw-ring-1 tw-ring-slate-900/10"
                             style={{
                               borderRadius: '5px',
                               borderLeft: '0px',
                               margin: '5px',
                               height: '35px',
                               border: '0px',
+                            }}
+                            sx={{
+                              '&.Mui-selected': {
+                                backgroundColor: '#6A7380',
+                                color: '#fff',
+                              },
+                              '&.Mui-selected:hover': {
+                                backgroundColor: '#6A7380',
+                              },
                             }}
                           >
                             {item.name}
@@ -1146,6 +1169,15 @@ export function QuizOpenTemplate() {
                                   height: '35px',
                                   border: '0px',
                                 }}
+                                sx={{
+                                  '&.Mui-selected': {
+                                    backgroundColor: '#6A7380',
+                                    color: '#fff',
+                                  },
+                                  '&.Mui-selected:hover': {
+                                    backgroundColor: '#6A7380',
+                                  },
+                                }}
                               >
                                 {item.name}
                               </ToggleButton>
@@ -1183,6 +1215,15 @@ export function QuizOpenTemplate() {
                             height: '35px',
                             border: '0px',
                           }}
+                          sx={{
+                            '&.Mui-selected': {
+                              backgroundColor: '#6A7380',
+                              color: '#fff',
+                            },
+                            '&.Mui-selected:hover': {
+                              backgroundColor: '#6A7380',
+                            },
+                          }}
                         >
                           {item.description}
                         </ToggleButton>
@@ -1216,6 +1257,15 @@ export function QuizOpenTemplate() {
                                   margin: '5px',
                                   height: '35px',
                                   border: '0px',
+                                }}
+                                sx={{
+                                  '&.Mui-selected': {
+                                    backgroundColor: '#6A7380',
+                                    color: '#fff',
+                                  },
+                                  '&.Mui-selected:hover': {
+                                    backgroundColor: '#6A7380',
+                                  },
                                 }}
                               >
                                 {item.name}
@@ -1504,7 +1554,7 @@ export function QuizOpenTemplate() {
                   <div className="tw-row-span-2">
                     <button
                       className="tw-w-[150px] border tw-mr-4 tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded tw-text-sm"
-                      onClick={() => handlerClubSaveTemp(1)}
+                      onClick={() => handlerClubSaveTemp()}
                     >
                       임시 저장하기
                     </button>
@@ -1553,7 +1603,7 @@ export function QuizOpenTemplate() {
                 <div className="tw-grid tw-grid-cols-3 tw-gap-8 tw-py-12">
                   <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
                     <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">대학</p>
-                    <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[314px] tw-relative tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
+                    <div className="tw-flex-grow tw-flex-shrink tw-relative tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
                       <TextField
                         size="small"
                         fullWidth
@@ -1566,13 +1616,13 @@ export function QuizOpenTemplate() {
                   </div>
                   <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
                     <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">학과</p>
-                    <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[314px] tw-h-11 tw-relative tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
+                    <div className="tw-flex-grow tw-flex-shrink tw-relative tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
                       <TextField size="small" fullWidth id="margin-none" value={selectedJobName} disabled />
                     </div>
                   </div>
                   <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
                     <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">학년</p>
-                    <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[314px] tw-h-11 tw-relative tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
+                    <div className="tw-flex-grow tw-flex-shrink tw-relative tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
                       <TextField
                         size="small"
                         fullWidth
@@ -1596,11 +1646,11 @@ export function QuizOpenTemplate() {
                       className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-6 tw-h-6 tw-relative"
                       preserveAspectRatio="xMidYMid meet"
                     >
-                      <g clip-path="url(#tw-clip0_320_49119)">
-                        <circle cx={12} cy={12} r="11.5" stroke="#9CA5B2" stroke-dasharray="2.25 2.25" />
+                      <g clipPath="url(#tw-clip0_320_49119)">
+                        <circle cx={12} cy={12} r="11.5" stroke="#9CA5B2" strokeDasharray="2.25 2.25" />
                         <path
-                          fill-rule="evenodd"
-                          clip-rule="evenodd"
+                          fillRule="evenodd"
+                          clipRule="evenodd"
                           d="M12.75 7.5H11.25V11.25L7.5 11.25V12.75H11.25V16.5H12.75V12.75H16.5V11.25L12.75 11.25V7.5Z"
                           fill="#9CA5B2"
                         />
@@ -1645,6 +1695,7 @@ export function QuizOpenTemplate() {
                       className="simple-drag"
                       rowClassName="simple-drag-row"
                       onUpdate={handleUpdate}
+                      key={updateKey} // 상태 업데이트를 강제 트리거
                     />
                   </Grid>
                 </Grid>
@@ -1660,13 +1711,13 @@ export function QuizOpenTemplate() {
                     </button>
                     <button
                       className="tw-w-[150px] border tw-font-bold tw-py-3  tw-text-sm tw-px-4 tw-rounded tw-text-black tw-font-bold"
-                      onClick={() => handlerClubSaveTemp(2)}
+                      onClick={() => handlerClubSaveTemp()}
                     >
                       임시 저장하기
                     </button>
                     <button
                       className="tw-w-[150px] tw-bg-[#E11837] tw-text-white  tw-text-sm tw-font-bold tw-py-3 tw-px-4 tw-rounded tw-flex tw-items-center tw-justify-center tw-gap-1"
-                      onClick={handleNext}
+                      onClick={handleNextTwo}
                     >
                       {activeStep === steps.length - 1 ? '성장퀴즈 클럽 개설하기 >' : '다음'}
                       <NavigateNextIcon fontSize="small" />
@@ -1700,7 +1751,7 @@ export function QuizOpenTemplate() {
                   </button>
                   <button
                     className="tw-w-[240px] tw-text-sm tw-bg-[#E11837] tw-text-white tw-font-bold tw-py-3 tw-px-4 tw-rounded tw-flex tw-items-center tw-justify-center tw-gap-1"
-                    onClick={handleNextLast}
+                    onClick={handleNextThree}
                   >
                     {activeStep === steps.length - 1 ? '클럽 개설하기' : '다음'}
                     <NavigateNextIcon fontSize="small" />
@@ -1716,7 +1767,6 @@ export function QuizOpenTemplate() {
         <Box width="100%" sx={{ borderBottom: '1px solid LightGray' }}>
           <p className="tw-text-xl tw-font-bold tw-text-center tw-text-black tw-pb-7">퀴즈 등록하기</p>
           <Tabs value={value} onChange={handleChange} centered>
-            {/* <StyledSubTabs value={value} onChange={handleChange}> */}
             <Tab disableRipple className="tw-text-black tw-text-base" label="퀴즈 검색하기" />
             <Tab
               disableRipple
@@ -1726,14 +1776,6 @@ export function QuizOpenTemplate() {
             />
             <Tab disableRipple className="tw-text-black tw-text-base" label="퀴즈 만들기 불러오기" />
           </Tabs>
-          {/* </StyledSubTabs> */}
-          {/* <div
-            style={{
-              borderBottom: '2px solid gray',
-              height: 51,
-              flexGrow: 1,
-            }}
-          ></div> */}
         </Box>
         {active === 0 && (
           <div className="">
@@ -1845,12 +1887,18 @@ export function QuizOpenTemplate() {
                     key={`job-${index}`}
                     value={item.id}
                     className="tw-ring-1 tw-ring-slate-900/10"
-                    style={{
+                    sx={{
                       borderRadius: '5px',
                       borderLeft: '0px',
                       margin: '5px',
                       height: '35px',
                       border: '0px',
+                      '&.Mui-selected': {
+                        backgroundColor: '#6A7380',
+                      },
+                      '&.Mui-selected:hover': {
+                        backgroundColor: '#6A7380',
+                      },
                     }}
                   >
                     {item.name}
