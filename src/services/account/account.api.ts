@@ -1,3 +1,4 @@
+import Paragraph from 'antd/es/skeleton/Paragraph';
 import { axiosGeneralAPI } from '../index';
 
 export async function authCheck() {
@@ -60,13 +61,24 @@ export async function login(params: any[]) {
 }
 
 // 회원 등록
-export const loginSignUp = async body => await axiosGeneralAPI().post('/members', body);
+export const loginSignUp = async body => await axiosGeneralAPI().post('/api/v1/signup', body);
 
 // 회원 OTP
-export const loginOtp = async body => await axiosGeneralAPI().post('/otp', body);
+// export const getIdVerification = async body => {
+//   console.log(body);
+//   await axiosGeneralAPI().get('/api/v1/member/validate', { body });
+// };
+export const loginOtp = async body => await axiosGeneralAPI().post('/api/v1/otp', body);
 
 // 회원 OTP
 export const loginOtpVerification = async body => {
-  const { data } = await axiosGeneralAPI().put('/otp/verification', body);
-  return data.result;
+  const { data } = await axiosGeneralAPI().put('/api/v1/otp/verification', body);
+  return data.data;
 };
+
+// 회원 OTP
+export async function getIdVerification(params: any) {
+  console.log(params);
+  const { data } = await axiosGeneralAPI().get('/api/v1/member/validate', { params });
+  return data.data;
+}

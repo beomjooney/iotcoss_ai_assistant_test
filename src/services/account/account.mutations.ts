@@ -1,7 +1,16 @@
 import { deleteCookie } from 'cookies-next';
-import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
+import { useMutation, UseMutationResult, useQuery, useQueryClient } from 'react-query';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
-import { deleteMember, editInfo, login, loginOtp, loginOtpVerification, loginSignUp, saveProfile } from './account.api';
+import {
+  getIdVerification,
+  deleteMember,
+  editInfo,
+  login,
+  loginOtp,
+  loginOtpVerification,
+  loginSignUp,
+  saveProfile,
+} from './account.api';
 import { setCookie } from 'cookies-next';
 
 export const useSaveProfile = (): UseMutationResult => {
@@ -103,6 +112,21 @@ export const useLoginOtp = (): UseMutationResult => {
   });
 };
 
+// export const useLoginId = (): UseMutationResult => {
+//   const queryClient = useQueryClient();
+//   // TODO : any 타입 변경
+//   return useMutation<any, any, any>(requestBody => getIdVerification(requestBody), {
+//     onError: (error, variables, context) => {
+//       const { code, message } = error;
+//       alert(`mutation error : [${code}] ${message}`);
+//     },
+//     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('OTP').all),
+//     onSuccess: async data => {
+//       // alert('좋아요.~');
+//     },
+//   });
+// };
+
 export const useLoginOtpVerification = (): UseMutationResult => {
   const queryClient = useQueryClient();
   // TODO : any 타입 변경
@@ -113,7 +137,7 @@ export const useLoginOtpVerification = (): UseMutationResult => {
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('OTP').all),
     onSuccess: async data => {
-      if (data) {
+      if (data.result) {
         alert('인증에 성공했습니다.');
       } else {
         alert('유효하지 않은 번호입니다.');

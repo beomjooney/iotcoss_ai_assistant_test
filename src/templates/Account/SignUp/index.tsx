@@ -22,7 +22,7 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CheckIcon from '@mui/icons-material/Check';
 import Divider from '@mui/material/Divider';
 import { UseQueryResult } from 'react-query';
-import { useTermsList } from 'src/services/account/account.queries';
+import { useIdVerification, useTermsList } from 'src/services/account/account.queries';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
@@ -30,6 +30,7 @@ import { useLoginOtp, useLoginOtpVerification, useLoginSignUp } from 'src/servic
 import isURL from 'validator/lib/isURL';
 import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
 import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
+import { isReadable } from 'stream';
 interface SignUpTemplateProps {
   onSubmitLogin: () => void;
 }
@@ -40,6 +41,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
   const [open, setOpen] = React.useState(false);
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
   const [isDisabledPhone, setIsDisabledPhone] = useState<boolean>(false);
+  const [isDisabledEmail, setIsDisabledEmail] = useState<boolean>(false);
   const [isDisabledOtp, setIsDisabledOtp] = useState<boolean>(true);
   const [isDisabledTimer, setIsDisabledTimer] = useState<boolean>(true);
   const [scroll, setScroll] = React.useState<DialogProps['scroll']>('paper');
@@ -50,12 +52,11 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
   const [IdList, setIdList] = useState(['serviceTerms', 'privateTerms', 'marketing']);
   const [marketingList, setMarketingList] = useState(['email', 'sms', 'kakao']);
   const [phone, setPhone] = useState('');
-  const [smsSend, setSmsSend] = useState('인증문자 발송');
   const [allTerm, setAllTerm] = useState<boolean>(false);
   const [serviceTerm, setServiceTerm] = useState<boolean>(false);
   const [privateTerm, setPrivateTerm] = useState<boolean>(false);
   const [marketing, setMarketing] = useState<boolean>(false);
-  const [email, setEmail] = useState<boolean>(false);
+  const [email1, setEmail1] = useState<boolean>(false);
   const [kakao, setKakao] = useState<boolean>(false);
   const [snsFlag, setSnsFlag] = useState(false);
   const [sms, setSms] = useState<boolean>(false);
@@ -80,10 +81,27 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
   // ** Timer
   const [min, setMin] = useState(0);
   const [sec, setSec] = useState(0);
+  const [email, setEmail] = useState('');
+  const [params, setParams] = useState<any>({ email });
 
   const { mutate: onLoginSignUp } = useLoginSignUp();
   const { mutate: onLoginOtp, isSuccess } = useLoginOtp();
   const { mutate: onLoginOtpVerification, isSuccess: isVerification, data: resultData } = useLoginOtpVerification();
+  const { mutate: onLoginIdVerification, isSuccess: isIdSuccess, data: resultIdData } = useLoginOtpVerification();
+
+  const {
+    data: clubQuizList,
+    refetch: idRefetch,
+    error,
+  }: UseQueryResult<any> = useIdVerification(params, data => {
+    console.log('data', data);
+    if (data) {
+      alert('가입가능한 이메일입니다.');
+      setIsDisabledEmail(true);
+    } else {
+      alert('중복된 이메일 입니다.');
+    }
+  });
 
   const router = useRouter();
 
@@ -99,14 +117,14 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
     setServiceTerm(e.target.checked);
     setPrivateTerm(e.target.checked);
     setMarketing(e.target.checked);
-    setEmail(e.target.checked);
+    setEmail1(e.target.checked);
     setSms(e.target.checked);
     setKakao(e.target.checked);
   };
 
   // 체크박스 전체 선택
   const onChangeMarketingAll = (e, id) => {
-    setEmail(e.target.checked);
+    setEmail1(e.target.checked);
     setSms(e.target.checked);
     setKakao(e.target.checked);
     if (e.target.checked) {
@@ -140,7 +158,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
 
   const onChangeMarketingEach = (e, id) => {
     if (id === 'email') {
-      setEmail(e.target.checked);
+      setEmail1(e.target.checked);
     } else if (id === 'sms') {
       setSms(e.target.checked);
     } else if (id === 'kakao') {
@@ -155,9 +173,10 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
   const phoneRegExp =
     // /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
     /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+
   const validationSchema = Yup.object().shape({
     name: Yup.string().min(2, 'Must be more than one character').required('Username is required'),
-    memberId: Yup.string().required('Email is required').email('Email is invalid'),
+    // memberId: Yup.string().required('Email is required').email('Email is invalid'),
     password: Yup.string()
       .required('Password is required')
       .min(4, 'Password must be at least 4 characters')
@@ -176,6 +195,10 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
   function phone_format(num) {
     return num.replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]+)([0-9]{4})/, '$1-$2-$3');
   }
+
+  const validationEmailSchema = Yup.object().shape({
+    memberId: Yup.string().email('유효하지 않은 이메일 주소입니다.').required('이메일 주소는 필수입니다.'),
+  });
 
   const validationSchemaPhone = Yup.object().shape({
     phoneNumber: Yup.string().matches(phoneRegExp, '핸도폰 번호 입력이 잘못됬습니다.'),
@@ -214,29 +237,31 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
       alert('본인인증을 해주세요.');
       return;
     }
-
-    onLoginSignUp({
+    console.log({
       // ...data,
-      memberId: data.memberId,
+      email: email,
       password: data.password,
       name: data.name,
       nickname: data.name,
       phoneNumber: phone,
-      email: data.memberId,
-      authenticatedYn: privateTerm,
-      emailReceiveYn: email,
+      agreedTermsIds: ['service1', 'privacy1'],
+      emailReceiveYn: email1,
       smsReceiveYn: sms,
       kakaoReceiveYn: kakao,
-      snsUrl: [
-        data.youtubeUrl,
-        data.twitterUrl,
-        data.linkedUrl,
-        data.facebookUrl,
-        data.snsUrl,
-        data.instagramUrl,
-      ].filter(function (e) {
-        return e === 0 || e;
-      }),
+      token: resultData.token,
+    });
+    onLoginSignUp({
+      // ...data,
+      email: email,
+      name: data.name,
+      password: data.password,
+      nickname: data.name,
+      phoneNumber: phone,
+      agreedTermsIds: ['service1', 'privacy1'],
+      emailReceiveYn: email1,
+      smsReceiveYn: sms,
+      kakaoReceiveYn: kakao,
+      token: resultData.token,
     });
   };
 
@@ -258,11 +283,32 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
     if (resultData) {
       setIsDisabledTimer(false);
       setIsDisabledPhone(true);
-      setSmsSend('인증완료');
+      // setSmsSend('인증완료');
       setSmsFlag(false);
       setIsDisabled(true);
     }
   }, [resultData]);
+
+  const {
+    register: registerId,
+    control: test,
+    handleSubmit: handleSubmitId,
+    formState: { errors: errorsId },
+  } = useForm({
+    resolver: yupResolver(validationEmailSchema),
+  });
+
+  useEffect(() => {
+    if (email != '') {
+      idRefetch();
+    }
+  }, [params]);
+
+  const onSubmitId = async data => {
+    console.log('id', data);
+    setEmail(data.memberId);
+    setParams({ email: data.memberId });
+  };
 
   const {
     register: registerPhone,
@@ -272,6 +318,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
   } = useForm({
     resolver: yupResolver(validationSchemaPhone),
   });
+
   const onSubmitPhone = async data => {
     console.log(phone_format(data.phoneNumber));
     setPhone(phone_format(data.phoneNumber));
@@ -281,6 +328,10 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
   };
 
   const onErrorPhone = (e: any) => {
+    console.log('error', e);
+  };
+
+  const onErrorId = (e: any) => {
     console.log('error', e);
   };
 
@@ -365,8 +416,8 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
 
   return (
     <div className={cx('login-container')}>
-      <p className="tw-text-3xl tw-font-bold tw-text-center tw-text-black tw-pb-5">회원가입</p>;
-      <form onSubmit={handleSubmit(onSubmit, onError)}>
+      <p className="tw-text-3xl tw-font-bold tw-text-center tw-text-black tw-pb-5">회원가입</p>
+      <form onSubmit={handleSubmitId(onSubmitId, onErrorId)}>
         <div className="tw-flex tw-items-center">
           <label htmlFor="name" className="tw-text-gray-700 tw-font-bold tw-w-40">
             이메일
@@ -374,36 +425,23 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
           <TextField
             sx={{
               marginTop: '5px',
-              marginBottom: '15px',
               '& label': { fontSize: 14, color: '#919191', fontWeight: 'bold' },
             }}
-            label="이메일"
             fullWidth
             id="memberId"
             name="memberId"
-            {...register('memberId')}
-            error={errors.memberId ? true : false}
-            helperText={errors.memberId?.message}
-          />
-        </div>
-        <div className="tw-flex tw-items-center">
-          <label htmlFor="name" className="tw-text-gray-700 tw-font-bold tw-w-40">
-            이름
-          </label>
-          <TextField
-            sx={{
-              fontSize: 18,
-              '& label': { fontSize: 14, color: '#919191', fontWeight: 'bold' },
+            {...registerId('memberId')}
+            error={errorsId.memberId ? true : false}
+            helperText={errorsId.memberId?.message}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <Button disabled={isDisabledEmail} color="lite-gray" onClick={() => handleSubmitId(onSubmitId)}>
+                    <Typography sx={{ fontSize: 12 }}>중복확인</Typography>
+                  </Button>
+                </InputAdornment>
+              ),
             }}
-            label="이름"
-            fullWidth
-            required
-            type="search"
-            id="name"
-            name="name"
-            {...register('name')}
-            error={errors.name ? true : false}
-            helperText={errors.name?.message}
           />
         </div>
       </form>
@@ -417,7 +455,6 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
               '& label': { fontSize: 14, color: '#919191', fontWeight: 'bold' },
             }}
             fullWidth
-            label="휴대폰 번호"
             type="tel"
             inputProps={{
               maxLength: 11,
@@ -431,8 +468,8 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <Button disabled={isDisabledPhone} onClick={() => handleSubmitPhone(onSubmitPhone)}>
-                    <Typography sx={{ fontWeight: '500', fontSize: 14 }}>{smsSend}</Typography>
+                  <Button color="lite-gray" disabled={isDisabledPhone} onClick={() => handleSubmitPhone(onSubmitPhone)}>
+                    <Typography sx={{ fontSize: 12 }}>인증문자 발송</Typography>
                   </Button>
                 </InputAdornment>
               ),
@@ -443,10 +480,10 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
       {smsFlag && (
         <form onSubmit={handleSubmitOtp(onSubmitOtp, onErrorOtp)}>
           <div className="tw-flex tw-items-center tw-mt-4">
-            <label htmlFor="name" className="tw-text-gray-700 tw-font-bold tw-w-36">
+            <label htmlFor="name" className="tw-text-gray-700 tw-font-bold tw-w-[125px]">
               인증번호
             </label>
-            <div className="tw-flex tw-items-center">
+            <div className="tw-flex tw-items-center ">
               <TextField
                 fullWidth
                 sx={{
@@ -466,7 +503,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
                   endAdornment: (
                     <InputAdornment position="end">
                       <Button disabled={isDisabledOtp} onClick={() => handleSubmitOtp(onSubmitOtp)}>
-                        <Typography sx={{ fontWeight: '500', fontSize: 14 }}>인증하기</Typography>
+                        <Typography sx={{ fontSize: 12 }}>인증하기</Typography>
                       </Button>
                     </InputAdornment>
                   ),
@@ -475,7 +512,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
               <Typography
                 className="tw-text-right"
                 variant="h6"
-                sx={{ fontWeight: '600', color: 'black', mr: 2, width: '70px' }}
+                sx={{ fontWeight: '600', color: 'black', width: '70px' }}
               >
                 {min}:{sec < 10 ? `0${sec}` : sec}
               </Typography>
@@ -484,6 +521,26 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
         </form>
       )}
       <form onSubmit={handleSubmit(onSubmit, onError)}>
+        <div className="tw-flex tw-items-center">
+          <label htmlFor="name" className="tw-text-gray-700 tw-font-bold tw-w-40">
+            이름
+          </label>
+          <TextField
+            sx={{
+              marginTop: '15px',
+              fontSize: 18,
+              '& label': { fontSize: 14, color: '#919191', fontWeight: 'bold' },
+            }}
+            fullWidth
+            required
+            type="search"
+            id="name"
+            name="name"
+            {...register('name')}
+            error={errorsId.name ? true : false}
+            helperText={errorsId.name?.message}
+          />
+        </div>
         <div className="tw-flex tw-items-center">
           <label htmlFor="name" className="tw-text-gray-700 tw-font-bold tw-w-40">
             비밀번호
@@ -498,7 +555,6 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
               style: { borderBottomColor: '#e3e3e3 !important' },
             }}
             fullWidth
-            label="비밀번호"
             type="password"
             id="password"
             name="password"
@@ -517,7 +573,6 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
             //   style: { border: '0px !important' },
             // }}
             fullWidth
-            label="비밀번호 확인"
             type="password"
             autoComplete="current-password"
             id="passwordConfirm"
@@ -531,7 +586,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
         <Divider variant="middle" sx={{ borderColor: 'rgba(0, 0, 0, 0.5);', margin: '40px 0px' }} />
 
         <p className="tw-text-xl tw-text-center tw-text-black tw-pb-5">
-          <span className="tw-text-xl tw-font-bold tw-text-left text-black">동서대학교 DevUs </span>
+          {/* <span className="tw-text-xl tw-font-bold tw-text-left text-black">동서대학교 DevUs </span> */}
           <span className="tw-text-xl tw-text-left tw-text-black">이용 약관에 동의해주세요.</span>
         </p>
         <Grid container direction="row" justifyContent="space-between" alignItems="center">
@@ -582,24 +637,22 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
                       }}
                     />
                   }
-                  label={<Typography sx={{ fontSize: 14, color: 'black' }}>(필수) 서비스 이용약관 동의</Typography>}
+                  label={
+                    <Typography sx={{ fontSize: 13, color: 'black', fontWeight: '700 ' }}>
+                      (필수) 서비스{' '}
+                      <span
+                        className="tw-underline tw-cursor-pointer"
+                        onClick={() => {
+                          onReply('0001', 'paper');
+                        }}
+                      >
+                        이용약관
+                      </span>{' '}
+                      동의
+                    </Typography>
+                  }
                 />
               </FormGroup>
-            </Box>
-          </Grid>
-          <Grid item xs={2}>
-            <Box display="flex" justifyContent="flex-end" sx={{ fontWeight: 'bold' }}>
-              <Typography sx={{ fontSize: 14, textDecoration: 'underline' }} display="inline">
-                <Link
-                  href="#"
-                  underline="always"
-                  onClick={() => {
-                    onReply('0001', 'paper');
-                  }}
-                >
-                  약관보기
-                </Link>
-              </Typography>
             </Box>
           </Grid>
         </Grid>
@@ -622,25 +675,21 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
                     />
                   }
                   label={
-                    <Typography sx={{ fontSize: 14, color: 'black' }}>(필수) 개인정보 수집 및 이용 동의</Typography>
+                    <Typography sx={{ fontSize: 13, color: 'black', fontWeight: '700 ' }}>
+                      (필수){' '}
+                      <span
+                        className="tw-underline tw-cursor-pointer"
+                        onClick={() => {
+                          onReply('0002', 'paper');
+                        }}
+                      >
+                        개인정보 처리 방침
+                      </span>
+                      에 동의
+                    </Typography>
                   }
                 />
               </FormGroup>
-            </Box>
-          </Grid>
-          <Grid item xs={2}>
-            <Box display="flex" justifyContent="flex-end" sx={{ fontWeight: 'bold' }}>
-              <Typography sx={{ fontSize: 14, textDecoration: 'underline' }} display="inline">
-                <Link
-                  href="#"
-                  underline="always"
-                  onClick={() => {
-                    onReply('0002', 'paper');
-                  }}
-                >
-                  약관보기
-                </Link>
-              </Typography>
             </Box>
           </Grid>
         </Grid>
@@ -663,25 +712,12 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
                     />
                   }
                   label={
-                    <Typography sx={{ fontSize: 14, color: 'black' }}>(선택) 이벤트 등 프로모션 알림 수신</Typography>
+                    <Typography sx={{ fontSize: 13, color: 'black', fontWeight: '700 ' }}>
+                      (선택) 이벤트 등 프로모션 알림 수신
+                    </Typography>
                   }
                 />
               </FormGroup>
-            </Box>
-          </Grid>
-          <Grid item xs={2}>
-            <Box display="flex" justifyContent="flex-end" sx={{ fontWeight: 'bold' }}>
-              <Typography sx={{ fontSize: 14, textDecoration: 'underline' }} display="inline">
-                <Link
-                  href="#"
-                  underline="always"
-                  onClick={() => {
-                    onReply('0003', 'paper');
-                  }}
-                >
-                  약관보기
-                </Link>
-              </Typography>
             </Box>
           </Grid>
         </Grid>
@@ -703,7 +739,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
                       }}
                     />
                   }
-                  label={<Typography sx={{ fontSize: 14, color: 'black' }}>이메일 수신</Typography>}
+                  label={<Typography sx={{ fontSize: 13, color: 'black', fontWeight: '700 ' }}>이메일 수신</Typography>}
                 />
               </FormGroup>
             </Box>
@@ -725,7 +761,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
                       }}
                     />
                   }
-                  label={<Typography sx={{ fontSize: 14, color: 'black' }}>문자 수신</Typography>}
+                  label={<Typography sx={{ fontSize: 13, color: 'black', fontWeight: '700 ' }}>문자 수신</Typography>}
                 />
               </FormGroup>
             </Box>
@@ -747,14 +783,16 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
                       }}
                     />
                   }
-                  label={<Typography sx={{ fontSize: 14, color: 'black' }}>카카오톡 수신</Typography>}
+                  label={
+                    <Typography sx={{ fontSize: 13, color: 'black', fontWeight: '700 ' }}>카카오톡 수신</Typography>
+                  }
                 />
               </FormGroup>
             </Box>
           </Grid>
         </Grid>
         <div style={{ marginBottom: '20px', marginTop: '20px' }}>
-          <Button size="large" color="gray" onClick={() => handleSubmit(onSubmit)}>
+          <Button size="large" color="red" onClick={() => handleSubmit(onSubmit, onError)}>
             회원가입
           </Button>
         </div>
