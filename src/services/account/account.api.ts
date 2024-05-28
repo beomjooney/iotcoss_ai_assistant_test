@@ -47,8 +47,15 @@ export const deleteMember = async memberId => await axiosGeneralAPI().delete(`/m
 
 // 서비스 이용 약관 조회
 export async function termsInfo(params: any) {
-  const { data } = await axiosGeneralAPI().get(`/api/v1/terms?typeCode=${params.type}`);
-  return data;
+  // const { data } = await axiosGeneralAPI().get(`/api/v1/terms?typeCode=${params.type}`);
+  let url;
+  if (params.type === '0001') {
+    url = '/api/v1/terms/service1';
+  } else {
+    url = `/api/v1/terms/privacy1`;
+  }
+  const { data } = await axiosGeneralAPI().get(url);
+  return data.data;
 }
 
 //login
@@ -78,7 +85,6 @@ export const loginOtpVerification = async body => {
 
 // 회원 OTP
 export async function getIdVerification(params: any) {
-  console.log(params);
   const { data } = await axiosGeneralAPI().get('/api/v1/member/validate', { params });
   return data.data;
 }

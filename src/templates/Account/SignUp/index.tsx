@@ -31,6 +31,7 @@ import isURL from 'validator/lib/isURL';
 import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
 import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
 import { isReadable } from 'stream';
+import useDidMountEffect from 'src/hooks/useDidMountEffect';
 interface SignUpTemplateProps {
   onSubmitLogin: () => void;
 }
@@ -83,6 +84,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
   const [sec, setSec] = useState(0);
   const [email, setEmail] = useState('');
   const [params, setParams] = useState<any>({ email });
+  const [shouldRefetch, setShouldRefetch] = useState(false);
 
   const { mutate: onLoginSignUp } = useLoginSignUp();
   const { mutate: onLoginOtp, isSuccess } = useLoginOtp();
@@ -104,10 +106,6 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
   });
 
   const router = useRouter();
-
-  const onSnsChange = e => {
-    setSnsFlag(e.target.checked);
-  };
 
   // 체크할 시 CheckList에 id 값 전체 넣기, 체크 해제할 시 CheckList에 빈 배열 넣기
   const onChangeAll = e => {
@@ -221,11 +219,6 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
     resolver: yupResolver(validationSchema),
   });
 
-  const urlPatternValidation = URL => {
-    const regex = new RegExp('(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?');
-    return regex.test(URL);
-  };
-
   const onSubmit = data => {
     if (!serviceTerm) {
       alert('서비스이용약관을 선택 해주세요.');
@@ -237,19 +230,6 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
       alert('본인인증을 해주세요.');
       return;
     }
-    console.log({
-      // ...data,
-      email: email,
-      password: data.password,
-      name: data.name,
-      nickname: data.name,
-      phoneNumber: phone,
-      agreedTermsIds: ['service1', 'privacy1'],
-      emailReceiveYn: email1,
-      smsReceiveYn: sms,
-      kakaoReceiveYn: kakao,
-      token: resultData.token,
-    });
     onLoginSignUp({
       // ...data,
       email: email,
@@ -299,15 +279,19 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
   });
 
   useEffect(() => {
-    if (email != '') {
+    if (shouldRefetch) {
+      console.log('33');
       idRefetch();
+      setShouldRefetch(false); // Reset the state to prevent continuous refetch
     }
   }, [params]);
 
   const onSubmitId = async data => {
-    console.log('id', data);
+    event.preventDefault();
+    console.log('id3133', data);
     setEmail(data.memberId);
     setParams({ email: data.memberId });
+    setShouldRefetch(true);
   };
 
   const {
@@ -436,7 +420,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <Button disabled={isDisabledEmail} color="lite-gray" onClick={() => handleSubmitId(onSubmitId)}>
+                  <Button color="lite-gray" onClick={() => handleSubmitId(onSubmitId)}>
                     <Typography sx={{ fontSize: 12 }}>중복확인</Typography>
                   </Button>
                 </InputAdornment>
