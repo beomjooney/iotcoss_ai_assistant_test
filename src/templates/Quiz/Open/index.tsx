@@ -497,29 +497,8 @@ export function QuizOpenTemplate() {
   const handleNextTwo = () => {
     console.log('next');
     console.log(scheduleData);
-    console.log(selectedQuizzes);
 
     const newData = [...scheduleData];
-    let lastQuizSequence = 0;
-
-    for (let i = 0; i < selectedQuizzes.length; i++) {
-      const currentQuizSequence = selectedQuizzes[i].quizSequence;
-
-      newData[i] = {
-        ...newData[i],
-        quizSequence: currentQuizSequence,
-        // publishDate: '2024-06-18',
-      };
-
-      delete newData[i].weekNumber;
-      delete newData[i].dayOfWeek;
-
-      lastQuizSequence = currentQuizSequence;
-    }
-
-    console.log(newData);
-    // setMergeQuizData(newData);
-
     const nullQuizSequences = scheduleData
       .map((item, index) => (item.quizSequence === null ? index + 1 : null))
       .filter(index => index !== null);
@@ -533,12 +512,6 @@ export function QuizOpenTemplate() {
     if (isStepSkipped(activeStep)) {
       newSkipped = new Set(newSkipped.values());
       newSkipped.delete(activeStep);
-    }
-    if (activeStep === 1) {
-      if (selectedQuizzes.length < 3) {
-        alert('퀴즈를 3개 이상 추가해주세요');
-        return 0;
-      }
     }
 
     setActiveStep(prevActiveStep => prevActiveStep + 1);
@@ -1738,7 +1711,7 @@ export function QuizOpenTemplate() {
                 selectedUniversityName={selectedUniversityName}
                 jobLevelName={jobLevelName}
                 selectedJobName={selectedJobName}
-                selectedQuizzes={selectedQuizzes}
+                selectedQuizzes={scheduleData}
               />
               <div className="tw-container tw-py-10 tw-px-10 tw-mx-0 tw-min-w-full tw-flex tw-flex-col tw-items-center">
                 <div className="tw-flex tw-gap-5 tw-mt-3">
