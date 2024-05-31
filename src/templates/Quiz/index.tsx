@@ -15,46 +15,6 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { useSessionStore } from 'src/store/session';
 
-const levelGroup = [
-  {
-    id: '0100',
-    groupId: '0001',
-    name: '0',
-    description: '레벨 0',
-  },
-  {
-    id: '0200',
-    groupId: '0001',
-    name: '1',
-    description: '레벨 1',
-  },
-  {
-    id: '0300',
-    groupId: '0001',
-    name: '2',
-    description: '레벨 2',
-  },
-  {
-    id: '0301',
-    groupId: '0001',
-    name: '3',
-    description: '레벨 3',
-  },
-  {
-    id: '0302',
-    groupId: '0001',
-    name: '4',
-    description: '레벨 4',
-  },
-  ,
-  {
-    id: '0303',
-    groupId: '0001',
-    name: '5',
-    description: '레벨 5',
-  },
-];
-
 const cx = classNames.bind(styles);
 
 export function QuizTemplate() {
@@ -76,7 +36,7 @@ export function QuizTemplate() {
   const [jobGroup, setJobGroup] = useState([]);
   const [active, setActive] = useState(0);
   const [contentType, setContentType] = useState(0);
-  const { isFetched: isJobGroupFetched } = useJobGroups(data => setJobGroups(data || []));
+  // const { isFetched: isJobGroupFetched } = useJobGroups(data => setJobGroups(data || []));
   const [recommendLevels, setRecommendLevels] = useState([]);
   const [keyWorld, setKeyWorld] = useState('');
 

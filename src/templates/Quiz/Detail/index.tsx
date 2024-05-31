@@ -104,15 +104,17 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
-  const [params, setParams] = useState<paramProps>({ id, page });
+  const [params, setParams] = useState<paramProps>({ page });
   let [isLiked, setIsLiked] = useState(false);
 
   const { isFetched: isParticipantListFetched, isLoading } = useSeminarDetail(id, data => {
-    setClubMemberStatus(data?.clubMemberStatus);
+    // setClubMemberStatus(data?.clubMemberStatus);
     //console.log(data);
+    console.log(data);
     setContents(data);
   });
-  const { isFetched: isQuizListFetched, refetch } = useClubDetailQuizList(params, data => {
+  const { isFetched: isQuizListFetched, refetch } = useClubDetailQuizList(params, id, data => {
+    console.log(data?.contents);
     setQuizList(data?.contents);
     setTotalPage(data?.totalPages);
     setTotalElements(data?.totalElements);
@@ -248,121 +250,103 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
           로그인 후 신청 가능합니다.
         </button>,
       );
-    } else if (isParticipantListFetched) {
-      // console.log(1111, contents?.clubStatus, clubMemberStatus);
-
-      if (contents?.isLeader && contents?.clubStatus == '0007') {
-        setApplicationButton(
-          <button
-            // disabled
-            type="button"
-            className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
-          >
-            모집 완료 ({contents?.startAt}) 퀴즈클럽 시작
-          </button>,
-        );
-      } else if (contents?.isLeader && contents?.clubStatus == '0004') {
-        // setApplicationButton(
-        //   <button
-        //     type="button"
-        //     onClick={handlerTodayQuizSolution}
-        //     className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
-        //   >
-        //     오늘의 퀴즈 풀기
-        //   </button>,
-        // );
-      } else if (contents?.clubStatus == '0006' && clubMemberStatus == '0006') {
-        setApplicationButton(
-          <button
-            type="button"
-            onClick={() => handleParticipant()}
-            className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
-          >
-            참여하기
-          </button>,
-        );
-      } else if (contents?.clubStatus == '0006' && clubMemberStatus == '0001') {
-        setApplicationButton(
-          <button
-            type="button"
-            disabled
-            className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
-          >
-            가입요청 승인중
-          </button>,
-        );
-      } else if (contents?.clubStatus == '0006' && clubMemberStatus == '0002') {
-        setApplicationButton(
-          <button
-            type="button"
-            disabled
-            className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
-          >
-            가입승인 완료
-          </button>,
-        );
-      } else if (contents?.clubStatus == '0006' && clubMemberStatus == '0003') {
-        setApplicationButton(
-          <button
-            type="button"
-            disabled
-            className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
-          >
-            진행불가
-          </button>,
-        );
-      } else if (contents?.clubStatus == '0006' && clubMemberStatus == '0004') {
-        setApplicationButton(
-          <button
-            type="button"
-            disabled
-            className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
-          >
-            모집완료
-          </button>,
-        );
-      } else if (contents?.clubStatus == '0007') {
-        setApplicationButton(
-          <button
-            type="button"
-            disabled
-            className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
-          >
-            모집완료
-          </button>,
-        );
-      } else if (contents?.clubStatus == '0004' && clubMemberStatus == '0002') {
-        // setApplicationButton(
-        //   <button
-        //     type="button"
-        //     onClick={handlerTodayQuizSolution}
-        //     className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
-        //   >
-        //     오늘의 퀴즈 풀기
-        //   </button>,
-        // );
-      } else if (contents?.clubStatus == '0004' && clubMemberStatus == '0006') {
-        setApplicationButton(
-          <button
-            disabled
-            type="button"
-            className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
-          >
-            진행중 참여 불가
-          </button>,
-        );
-      } else if (contents?.clubStatus == '0005') {
-        setApplicationButton(
-          <button
-            type="button"
-            onClick={() => handleParticipant()}
-            className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
-          >
-            진행 종료
-          </button>,
-        );
-      }
     }
+    // } else if (isParticipantListFetched) {
+    // console.log(1111, contents?.clubStatus, clubMemberStatus);
+    // if (contents?.isLeader && contents?.clubStatus == '0007') {
+    //   setApplicationButton(
+    //     <button
+    //       // disabled
+    //       type="button"
+    //       className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
+    //     >
+    //       모집 완료 ({contents?.startAt}) 퀴즈클럽 시작
+    //     </button>,
+    //   );
+    // } else if (contents?.isLeader && contents?.clubStatus == '0004') {
+    // } else if (contents?.clubStatus == '0006' && clubMemberStatus == '0006') {
+    //   setApplicationButton(
+    //     <button
+    //       type="button"
+    //       onClick={() => handleParticipant()}
+    //       className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
+    //     >
+    //       참여하기
+    //     </button>,
+    //   );
+    // } else if (contents?.clubStatus == '0006' && clubMemberStatus == '0001') {
+    //   setApplicationButton(
+    //     <button
+    //       type="button"
+    //       disabled
+    //       className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
+    //     >
+    //       가입요청 승인중
+    //     </button>,
+    //   );
+    // } else if (contents?.clubStatus == '0006' && clubMemberStatus == '0002') {
+    //   setApplicationButton(
+    //     <button
+    //       type="button"
+    //       disabled
+    //       className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
+    //     >
+    //       가입승인 완료
+    //     </button>,
+    //   );
+    // } else if (contents?.clubStatus == '0006' && clubMemberStatus == '0003') {
+    //   setApplicationButton(
+    //     <button
+    //       type="button"
+    //       disabled
+    //       className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
+    //     >
+    //       진행불가
+    //     </button>,
+    //   );
+    // } else if (contents?.clubStatus == '0006' && clubMemberStatus == '0004') {
+    //   setApplicationButton(
+    //     <button
+    //       type="button"
+    //       disabled
+    //       className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
+    //     >
+    //       모집완료
+    //     </button>,
+    //   );
+    // } else if (contents?.clubStatus == '0007') {
+    //   setApplicationButton(
+    //     <button
+    //       type="button"
+    //       disabled
+    //       className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
+    //     >
+    //       모집완료
+    //     </button>,
+    //   );
+    // } else if (contents?.clubStatus == '0004' && clubMemberStatus == '0002') {
+    // } else if (contents?.clubStatus == '0004' && clubMemberStatus == '0006') {
+    //   setApplicationButton(
+    //     <button
+    //       disabled
+    //       type="button"
+    //       className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
+    //     >
+    //       진행중 참여 불가
+    //     </button>,
+    //   );
+    // } else if (contents?.clubStatus == '0005') {
+    //   setApplicationButton(
+    //     <button
+    //       type="button"
+    //       onClick={() => handleParticipant()}
+    //       className="tw-w-full tw-text-white tw-bg-[#555555]   tw-font-semibold tw-text-xl tw-px-5 tw-py-8"
+    //     >
+    //       진행 종료
+    //     </button>,
+    //   );
+    // }
+    // }
   }, [logged, contents, clubMemberStatus]);
   return (
     <div className={cx('seminar-detail-container')}>
@@ -372,246 +356,13 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
           <div className={cx('container')}>
             <QuizClubDetaillSolution
               border={false}
-              clubInfo={clubInfo}
-              leaders={leaders}
-              clubQuizzes={clubQuizzes}
               totalElements={totalElements}
               totalPage={totalPage}
               page={page}
               handlePageChange={handlePageChange}
+              contents={contents}
               quizList={quizList}
-              representativeQuizzes={representativeQuizzes}
             />
-            {/* <BannerDetail
-              data={contents}
-              title="퀴즈클럽"
-              subTitle="클럽 상세보기"
-              className="tw-bg-[#fffff]"
-              imageName="top_banner_seminar.svg"
-              onClick={() => handleParticipant()}
-              setIsModalOpen={function (file: boolean): void {
-                throw new Error('Function not implemented.');
-              }}
-            />
-            <div className={cx('content-wrap')}>
-              <div className="tw-bg-[#F2F9FF]">
-                <div className={cx('container')}>
-                  <div className="tw-leading-normal tw-text-black tw-font-bold tw-text-xl tw-pt-10">실행율</div>
-                  <div className="tw-grid tw-grid-cols-4 tw-gap-4 tw-pb-5 tw-font-bold tw-text-black">
-                    <div className="tw-span-cols-1 "></div>
-                    <div className="tw-span-cols-1 tw-text-center">
-                      <div className="tw-text-center tw-flex tw-justify-center tw-items-center">
-                        <Circle
-                          className="tw-h-[150px] tw-mb-5 "
-                          trailWidth={8}
-                          trailColor="#DADADA"
-                          percent={contents?.progress?.myRunRate}
-                          strokeWidth={8}
-                          strokeColor="#2474ED"
-                        />
-                      </div>
-                      <div className="tw-mt-5">
-                        나의 실행률{' '}
-                        <span className="tw-font-bold tw-text-blue-500">{parseInt(contents?.progress?.myRunRate)}</span>
-                        %
-                      </div>
-                      <div>
-                        <span className="tw-font-bold tw-text-blue-500">{contents?.progress?.myStudyCount}</span>회 /{' '}
-                        <span className="tw-font-bold tw-text-gray-400">{contents?.studyTotalCount}회</span>
-                      </div>
-                    </div>
-                    <div className="tw-span-cols-1 tw-text-center">
-                      <div className="tw-text-center tw-flex tw-justify-center tw-items-center">
-                        <Circle
-                          className="tw-h-[150px] tw-mb-5"
-                          trailWidth={8}
-                          trailColor="#DADADA"
-                          percent={contents?.progress?.myRunRate}
-                          strokeWidth={8}
-                          strokeColor="#9A9A9A"
-                        />
-                      </div>
-                      <div className="tw-mt-5">
-                        평균 실행률 :{' '}
-                        <span className="tw-font-bold tw-text-gray-400">
-                          {parseInt(contents?.progress?.averageRunRate)}
-                        </span>
-                        %
-                      </div>
-                      <div>
-                        {contents?.progress?.averageStudyCount}회 /
-                        <span className="tw-font-bold tw-text-gray-400">{contents?.studyTotalCount}회</span>
-                      </div>
-                    </div>
-                    <div className="tw-font-medium tw-span-cols-1 tw-flex tw-items-end">
-                      <PersonIcon className="tw-mr-1  tw-w-5" />
-                      {contents?.recruitedMemberCount}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className={cx('container', 'tw-mt-10')}>
-                <Grid container direction="row" alignItems="center" rowSpacing={0}>
-                  <Grid
-                    container
-                    justifyContent="flex-start"
-                    xs={6}
-                    sm={10}
-                    className="tw-text-xl tw-text-black tw-font-bold"
-                  >
-                    퀴즈목록 {totalElements}
-                  </Grid>
-                  <Grid container justifyContent="flex-end" xs={6} sm={2} style={{ textAlign: 'right' }}>
-                    <Pagination
-                      count={totalPage}
-                      size="small"
-                      siblingCount={0}
-                      page={page}
-                      renderItem={item => (
-                        <PaginationItem slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }} {...item} />
-                      )}
-                      onChange={handlePageChange}
-                    />
-                  </Grid>
-                </Grid>
-                <Divider className="tw-py-3 tw-mb-3" />
-                {quizList.map((item, index) => {
-                  return (
-                    <Grid
-                      className="tw-pt-5"
-                      key={index}
-                      container
-                      direction="row"
-                      justifyContent="left"
-                      alignItems="center"
-                      rowSpacing={3}
-                    >
-                      <Grid item xs={12} sm={1}>
-                        <div className="tw-flex-auto tw-text-center tw-text-black tw-font-bold">Q{index + 1}.</div>
-                        <div className="tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold">
-                          {item?.weekNumber}주차 ({item?.dayOfWeek})
-                        </div>
-                      </Grid>
-                      <Grid item xs={12} sm={11}>
-                        {item?.isPublished ? (
-                          <div className="border tw-rounded-xl">
-                            <div
-                              className={`tw-bg-zinc-50 tw-flex tw-items-center tw-p-4 max-lg:tw-p-3 tw-py-6   ${
-                                item?.answer ? 'tw-rounded-tl-xl tw-rounded-tr-xl' : 'tw-rounded-xl'
-                              }`}
-                            >
-                              {item?.isRepresentative === true && (
-                                <button
-                                  type="button"
-                                  data-tooltip-target="tooltip-default"
-                                  className="tw-w-0.5/12 tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-bold tw-px-3 tw-py-1 tw-rounded"
-                                >
-                                  대표
-                                </button>
-                              )}
-                              <div className="tw-flex-auto tw-px-5 tw-w-3/12">
-                                <div className="tw-font-medium tw-text-black">{item?.content}</div>
-                              </div>
-
-                              <div className="tw-mr-7">
-                                <button
-                                  onClick={() => {
-                                    onChangeLike(item?.clubQuizSequence, item?.isLiked);
-                                  }}
-                                >
-                                  {item?.isLiked ? (
-                                    <ThumbUpAltIcon color="primary" />
-                                  ) : (
-                                    <ThumbUpOffAltIcon color="disabled" />
-                                  )}
-                                </button>
-                              </div>
-
-                              {item?.answer?.answerStatus === '0000' ? (
-                                <div>
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      if (user.phoneNumber === null || user.phoneNumber === '') {
-                                        setIsModalOpen(true);
-                                      } else {
-                                        router.push('/quiz/solution/' + `${item?.clubQuizSequence}`);
-                                      }
-                                    }}
-                                    data-tooltip-target="tooltip-default"
-                                    className="max-lg:tw-w-[60px] tw-w-[120px] tw-bg-[#2474ED] tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
-                                  >
-                                    퀴즈 풀러가기 {'>'}
-                                  </button>
-                                </div>
-                              ) : item?.answer?.answerStatus === '0001' ? (
-                                <div className="">
-                                  <button
-                                    type="button"
-                                    onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
-                                    data-tooltip-target="tooltip-default"
-                                    className="max-lg:tw-w-[60px]  tw-bg-gray-300 tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
-                                  >
-                                    1차답변 입력완료
-                                  </button>
-                                </div>
-                              ) : item?.answer?.answerStatus === '0002' ? (
-                                <div className="">
-                                  <button
-                                    type="button"
-                                    onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
-                                    data-tooltip-target="tooltip-default"
-                                    className="max-lg:tw-w-[60px] tw-bg-gray-300 tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
-                                  >
-                                    이해도 입력완료
-                                  </button>
-                                </div>
-                              ) : (
-                                <div className="">
-                                  <button
-                                    // onClick={() => router.push('/quiz/round-answers/' + `${item?.clubQuizSequence}`)}
-                                    onClick={() => router.push('/quiz/answers/' + `${item?.clubQuizSequence}`)}
-                                    type="button"
-                                    data-tooltip-target="tooltip-default"
-                                    className="max-lg:tw-w-[60px] tw-bg-[#FF8D8D] tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
-                                  >
-                                    전체 답변보기 {'>'}
-                                  </button>
-                                </div>
-                              )}
-                            </div>
-                            {item?.answer ? (
-                              <div className="tw-bg-white tw-flex tw-items-center tw-p-4  tw-py-6 tw-rounded-bl-xl tw-rounded-br-xl">
-                                <div className="tw-flex-auto">
-                                  <div className="tw-font-medium tw-text-gray-500 tw-text-sm tw-line-clamp-2">
-                                    {item?.answer?.text}
-                                  </div>
-                                </div>
-                              </div>
-                            ) : (
-                              <div></div>
-                            )}
-                          </div>
-                        ) : (
-                          <div className="border tw-rounded-xl p-4">
-                            {item?.isRepresentative === true && (
-                              <button
-                                type="button"
-                                data-tooltip-target="tooltip-default"
-                                className="tw-bg-green-100 tw-text-green-800 tw-text-sm tw-font-bold tw-mr-2 tw-px-3 tw-py-1 tw-rounded"
-                              >
-                                대표
-                              </button>
-                            )}
-                            {item?.publishDate} 질문공개
-                          </div>
-                        )}
-                      </Grid>
-                    </Grid>
-                  );
-                })}
-              </div>
-            </div> */}
           </div>
         ) : (
           <div className={cx('seminar-container')}>

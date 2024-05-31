@@ -41,6 +41,7 @@ export interface QuizSolutionTemplateProps {
 
 export function QuizSolutionTemplate({ id }: QuizSolutionTemplateProps) {
   const { user } = useStore();
+  // const { clubSequence } = router.query;
   const [value, setValue] = React.useState(0);
   const [isBookmark, setIsBookmark] = useState(true);
   const [contents, setContents] = useState<RecommendContent[]>([]);
@@ -53,7 +54,7 @@ export function QuizSolutionTemplate({ id }: QuizSolutionTemplateProps) {
   const [applicationButton, setApplicationButton] = useState<ReactNode>(null);
   const { memberId, logged } = useSessionStore.getState();
 
-  const { isFetched: isParticipantListFetched, data } = useQuizSolutionDetail(id);
+  const { isFetched: isParticipantListFetched, data } = useQuizSolutionDetail(id, 12);
   const { isFetched: isParticipantListStatusFetched, data: quizSolutionDetailStatus } = useQuizSolutionDetailStatus(id);
 
   const { mutate: onParticipant } = useParticipantSeminar();
@@ -297,24 +298,7 @@ export function QuizSolutionTemplate({ id }: QuizSolutionTemplateProps) {
   const [value1, setValue1] = useState('# A demo of `react-markdown`');
   return (
     <div className={cx('seminar-detail-container')}>
-      <div className={cx('container')}>
-        <div className="tw-py-[60px] max-lg:tw-py-[50px] max-lg:tw-pb-[20px]">
-          <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-            <Grid item xs={12} sm={2} className="tw-font-bold tw-text-3xl tw-text-black max-lg:!tw-text-2xl">
-              퀴즈클럽
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              sm={7}
-              className="tw-font-semi tw-text-base tw-text-black  max-lg:!tw-text-base max-lg:tw-py-2 "
-            >
-              관심 주제별로 성장 퀴즈를 풀고 네트워킹 할 수 있는 클럽을 만나보세요!
-            </Grid>
-            <Grid item xs={12} sm={3} justifyContent="flex-end" className="tw-flex"></Grid>
-          </Grid>
-        </div>
-      </div>
+      <div className={cx('container')}></div>
       <QuizSolutionDetail
         data={data}
         quizStatus={quizSolutionDetailStatus}

@@ -146,7 +146,7 @@ ClubCardProps) => {
       <Desktop>
         <Grid item xs={xs}>
           <a
-            href={'/quiz/' + `${item.sequence}`}
+            href={'/quiz/' + `${item.clubSequence}`}
             className=" tw-flex tw-flex-col tw-bg-white border tw-rounded-lg md:tw-flex-row tw-w-full "
           >
             <img
@@ -157,7 +157,7 @@ ClubCardProps) => {
             <button
               className="tw-absolute tw-pl-2 tw-pt-2"
               onClick={() => {
-                onChangeLike(item.sequence, item.isFavorite);
+                onChangeLike(item.clubSequence, item.isFavorite);
               }}
             >
               {isLiked ? <StarIcon color="primary" /> : <StarBorderIcon color="disabled" />}

@@ -33,8 +33,8 @@ export const deleteReply = async body =>
 export const quizOrder = async body => await axiosGeneralAPI().put(`/api/v1/club/quizzes`, body);
 
 // 퀴즈 상세 조회
-export const quizSolutionDetail = async id => {
-  const { data } = await axiosGeneralAPI().get(`/api/v1/club/quizzes/${id}`);
+export const quizSolutionDetail = async (id, clubSequence) => {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/clubs/${clubSequence}/quizzes/${id}/my-status`);
   return data.data;
 };
 // 라운지 상세 조회
@@ -79,8 +79,10 @@ export const quizAlarmHistory = async params => {
 };
 
 // 내 퀴즈 답변
-export const clubDetailQuizList = async params => {
-  const { data } = await axiosGeneralAPI().get(`/api/v1/clubs/${params.id}/quizzes/my-answers`, { params });
+export const clubDetailQuizList = async (params, id) => {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/clubs/${id}/quizzes-my-answers`, {
+    params,
+  });
   return data.data;
 };
 

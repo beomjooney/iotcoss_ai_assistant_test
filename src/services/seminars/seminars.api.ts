@@ -55,7 +55,7 @@ export const clubQuizCrewManage = async (params: any) => {
 
 // 세미나 상세 조회
 export const seminarDetail = async id => {
-  const { data } = await axiosGeneralAPI().get(`/api/v1/clubs/detail/${id}`);
+  const { data } = await axiosGeneralAPI().get(`/api/v1/clubs/${id}/my-progress`);
   return data.data;
 };
 
