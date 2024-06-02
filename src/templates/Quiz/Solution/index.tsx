@@ -32,7 +32,7 @@ import { useQuizSolutionDetail, useQuizSolutionDetailStatus } from 'src/services
 
 // import { remark } from 'remark';
 // import html from 'remark-html';
-
+import { useRouter } from 'next/router';
 const cx = classNames.bind(styles);
 export interface QuizSolutionTemplateProps {
   /** 세미나 아이디 */
@@ -42,6 +42,9 @@ export interface QuizSolutionTemplateProps {
 export function QuizSolutionTemplate({ id }: QuizSolutionTemplateProps) {
   const { user } = useStore();
   // const { clubSequence } = router.query;
+  const router = useRouter();
+  const { clubSequence } = router.query;
+  console.log(clubSequence);
   const [value, setValue] = React.useState(0);
   const [isBookmark, setIsBookmark] = useState(true);
   const [contents, setContents] = useState<RecommendContent[]>([]);
@@ -55,7 +58,7 @@ export function QuizSolutionTemplate({ id }: QuizSolutionTemplateProps) {
   const { memberId, logged } = useSessionStore.getState();
 
   const { isFetched: isParticipantListFetched, data } = useQuizSolutionDetail(id, 12);
-  const { isFetched: isParticipantListStatusFetched, data: quizSolutionDetailStatus } = useQuizSolutionDetailStatus(id);
+  // const { isFetched: isParticipantListStatusFetched, data: quizSolutionDetailStatus } = useQuizSolutionDetailStatus(id);
 
   const { mutate: onParticipant } = useParticipantSeminar();
   const { mutate: onCancelParticipant } = useParticipantCancelSeminar();
@@ -301,7 +304,7 @@ export function QuizSolutionTemplate({ id }: QuizSolutionTemplateProps) {
       <div className={cx('container')}></div>
       <QuizSolutionDetail
         data={data}
-        quizStatus={quizSolutionDetailStatus}
+        // quizStatus={quizSolutionDetailStatus}
         title="퀴즈풀기"
         subTitle="퀴즈클럽 풀고 천하무적 커리어를 만들어요!"
         imageName="top_banner_seminar.svg"

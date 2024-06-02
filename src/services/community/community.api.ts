@@ -41,36 +41,66 @@ export const popularPostSearchList = async (postNo: number) => {
   return { data: data || [] };
 };
 
-export const saveLiked = async (postNo: number) => await axiosGeneralAPI().post(`/api/v1/favorite/clubs/${postNo}`);
-export const deleteLiked = async (postId: number) => await axiosGeneralAPI().delete(`/api/v1/favorite/clubs/${postId}`);
+export const saveLiked = async (postNo: number) => await axiosGeneralAPI().post(`/api/v1/clubs/${postNo}/favorite`);
+export const deleteLiked = async (postId: number) => await axiosGeneralAPI().delete(`/api/v1/clubs/${postId}/favorite`);
 
 export const saveQuizLiked = async (postNo: number) =>
   await axiosGeneralAPI().post(`/api/v1/club/quiz/answers/${postNo}/like`);
 
+// 댓글 좋아요 삭제
 export const deleteQuizLiked = async (postNo: number) =>
   await axiosGeneralAPI().delete(`/api/v1/club/quiz/answers/${postNo}/like`);
 
-export const saveQuizOnePick = async (postNo: number) =>
-  await axiosGeneralAPI().post(`/api/v1/club/quiz/answers/${postNo}/onepick`);
+//퀴즈 댓글 좋아요
+export const saveQuizLikedReply = async (params: any) =>
+  await axiosGeneralAPI().post(`/api/v1/clubs/${params.club}/quizzes/${params.quiz}/answers/${params.memberUUID}/like`);
 
-export const deleteQuizOnePick = async (postNo: number) =>
-  await axiosGeneralAPI().delete(`/api/v1/club/quiz/answers/${postNo}/onepick`);
+//퀴즈 댓글 좋아요 삭제
+export const deleteQuizLikedReply = async (params: any) =>
+  await axiosGeneralAPI().delete(
+    `/api/v1/clubs/${params.club}/quizzes/${params.quiz}/answers/${params.memberUUID}/like`,
+  );
+
+export const saveQuizOnePick = async (params: any) =>
+  await axiosGeneralAPI().post(
+    `/api/v1/clubs/${params.club}/quizzes/${params.quiz}/answers/${params.memberUUID}/onepick`,
+  );
+
+export const deleteQuizOnePick = async (params: any) =>
+  await axiosGeneralAPI().delete(
+    `/api/v1/clubs/${params.club}/quizzes/${params.quiz}/answers/${params.memberUUID}/onepick`,
+  );
 
 export const saveReply = async (params: any) => {
-  const { data } = await axiosGeneralAPI().post(`/api/v1/replies`, params);
+  const { data } = await axiosGeneralAPI().post(`/api/v1/reply`, params);
   return { data: data || [] };
 };
 export const saveReReply = async (params: any) => {
-  const { data } = await axiosGeneralAPI().post(`/api/v1/re-replies`, params);
+  const { data } = await axiosGeneralAPI().post(
+    `/api/v1/replies/${params.clubQuizAnswerReplySequence}/reply`,
+    params.body,
+  );
   return { data: data || [] };
 };
 export const answerSave = async (params: any) => {
-  const { data } = await axiosGeneralAPI().post(`/api/v1/club/quizzes/preanswer`, params.data);
-  return { data: data || [] };
+  const { data } = await axiosGeneralAPI().post(
+    `/api/v1/clubs/${params.club}/quizzes/${params.quiz}/preanswer`,
+    params.formData,
+    {
+      headers: { 'content-type': 'multipart/form-data' },
+    },
+  );
+  return { data: data.data || [] };
 };
 export const answerUpdate = async (params: any) => {
-  const { data } = await axiosGeneralAPI().put(`/api/v1/club/quizzes/postanswer`, params.data);
-  return { data: data || [] };
+  const { data } = await axiosGeneralAPI().post(
+    `/api/v1/clubs/${params.club}/quizzes/${params.quiz}/postanswer`,
+    params.formData,
+    {
+      headers: { 'content-type': 'multipart/form-data' },
+    },
+  );
+  return { data: data.data || [] };
 };
 export const comprehensionSave = async (params: any) => {
   const { data } = await axiosGeneralAPI().put(`/api/v1/club/quizzes/comprehension`, params.data);

@@ -11,16 +11,17 @@ import Pagination from '@mui/material/Pagination';
 import PaginationItem from '@mui/material/PaginationItem';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
+import StarIcon from '@mui/icons-material/Star';
 
 /**icon */
-import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
-
-import { Radio, RadioGroup, FormControlLabel, TextField } from '@mui/material';
-import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded';
-import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded';
-import SearchIcon from '@mui/icons-material/Search';
+import {
+  useSaveLike,
+  useDeleteLike,
+  useSaveReply,
+  useDeleteReply,
+  useDeletePost,
+} from 'src/services/community/community.mutations';
 import router from 'next/router';
 
 import { CommunityCard } from 'src/stories/components';
@@ -29,30 +30,43 @@ const cx = classNames.bind(styles);
 
 //comment
 
-import { useQuizAnswerDetail, useQuizRankDetail, useQuizSolutionDetail } from 'src/services/quiz/quiz.queries';
-
 const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, page, totalPage, handlePageChange }) => {
   const borderStyle = border ? 'border border-[#e9ecf2] tw-mt-14' : '';
-  // const [activeTab, setActiveTab] = useState('myQuiz');
-  const [activeTab, setActiveTab] = useState('myQuiz');
-  const [selectedOption, setSelectedOption] = useState('latest');
-  const [answerContents, setAnswerContents] = useState<RecommendContent[]>([]);
-  const [totalElementsCm, setTotalElementsCm] = useState(0);
-  const [totalPageCm, setTotalPageCm] = useState(1);
-  const [beforeOnePick, setBeforeOnePick] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  let [isLiked, setIsLiked] = useState(contents?.club?.isFavorite);
+  const { mutate: onSaveLike, isSuccess } = useSaveLike();
+  const { mutate: onDeleteLike } = useDeleteLike();
 
-  const [params, setParams] = useState<any>({ id: '225', page });
+  const [expandedItems, setExpandedItems] = useState(Array(quizList?.length).fill(false));
+  const [expandedQuizzData, setExpandedQuizzData] = useState(
+    quizList?.map(item => Array(item.makeupQuizzes.length).fill(false)),
+  );
+  console.log(contents);
+  const toggleExpand = index => {
+    setExpandedItems(prev => {
+      const newExpandedItems = [...prev];
+      newExpandedItems[index] = !newExpandedItems[index];
+      return newExpandedItems;
+    });
+  };
 
-  // const { isFetched: isQuizAnswerListFetched } = useQuizAnswerDetail(params, data => {
-  //   //console.log(data);
-  //   setAnswerContents(data?.contents);
-  //   setTotalElementsCm(data?.totalElements);
-  //   setTotalPageCm(data?.totalPages);
-  //   // isOnePicked가 true인 객체를 찾고 그 객체의 clubQuizAnswerSequence 값을 가져옵니다.
-  //   console.log(data?.contents.find(item => item.isOnePicked === true)?.clubQuizAnswerSequence);
-  //   setBeforeOnePick(data?.contents.find(item => item.isOnePicked === true)?.clubQuizAnswerSequence);
-  // });
+  const toggleExpandQuizzData = (itemIndex, quizzIndex) => {
+    setExpandedQuizzData(prev => {
+      const newExpandedQuizzData = [...prev];
+      newExpandedQuizzData[itemIndex][quizzIndex] = !newExpandedQuizzData[itemIndex][quizzIndex];
+      return newExpandedQuizzData;
+    });
+  };
+
+  const onChangeLike = function (postNo: number) {
+    event.preventDefault();
+    setIsLiked(!isLiked);
+    if (isLiked) {
+      onDeleteLike(postNo);
+    } else {
+      onSaveLike(postNo);
+    }
+  };
 
   return (
     <div className={`tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white ${borderStyle}`}>
@@ -89,17 +103,29 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
             <img src={contents?.club?.clubImageUrl} width={320} height={320} className="tw-object-cover" />
           </div>
           <div className="tw-col-span-2 tw-flex tw-flex-col tw-py-4 tw-pr-4">
-            <div className="tw-flex tw-gap-[7px]">
-              <div className="tw-bg-[#d7ecff] tw-rounded-[3.5px] tw-px-[10.5px] tw-py-[3.5px]">
-                <p className="tw-text-[12.25px] tw-text-[#235a8d]">{contents?.club?.jobGroups[0].name}</p>
-              </div>
-              <div className="tw-bg-[#e4e4e4] tw-rounded-[3.5px] tw-px-[10.5px] tw-py-[3.5px]">
-                <p className="tw-text-[12.25px] tw-text-[#313b49]">{contents?.club?.jobLevels[0].name}</p>
-              </div>
-              <div className="tw-bg-[#ffdede] tw-rounded-[3.5px] tw-px-[10.5px] tw-py-[3.5px]">
-                <p className="tw-text-[12.25px] tw-text-[#b83333]">{contents?.club?.jobs[0].name}</p>
+            <div className="tw-col-span-2 tw-flex tw-flex-col tw-py-4 tw-pr-4">
+              <div className="tw-flex tw-gap-[7px]">
+                <div className="tw-bg-[#d7ecff] tw-rounded-[3.5px] tw-px-[10.5px] tw-py-[3.5px]">
+                  <p className="tw-text-[12.25px] tw-text-[#235a8d]">{contents?.club?.jobGroups[0].name}</p>
+                </div>
+                <div className="tw-bg-[#e4e4e4] tw-rounded-[3.5px] tw-px-[10.5px] tw-py-[3.5px]">
+                  <p className="tw-text-[12.25px] tw-text-[#313b49]">{contents?.club?.jobLevels[0].name}</p>
+                </div>
+                <div className="tw-bg-[#ffdede] tw-rounded-[3.5px] tw-px-[10.5px] tw-py-[3.5px]">
+                  <p className="tw-text-[12.25px] tw-text-[#b83333]">{contents?.club?.jobs[0].name}</p>
+                </div>
+                <div className="tw-flex-1"></div> {/* 빈 div로 flex-grow를 추가하여 버튼을 오른쪽으로 밀어냅니다. */}
+                <button
+                  className=""
+                  onClick={() => {
+                    onChangeLike(contents?.club?.clubSequence);
+                  }}
+                >
+                  {isLiked ? <StarIcon color="primary" /> : <StarBorderIcon color="disabled" />}
+                </button>
               </div>
             </div>
+
             <div className="tw-text-[20.5px] tw-font-bold tw-text-black tw-mt-4">{contents?.club?.clubName}</div>
             <p className="tw-text-[12.25px] tw-mt-2 tw-text-black">{contents?.club?.description}</p>
             <div className="tw-mt-4">
@@ -135,9 +161,7 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                 </div>
                 <div
                   className="tw-bg-[#e11837] tw-rounded-[3.5px] tw-px-[24.5px] tw-py-[10.0625px] tw-cursor-pointer"
-                  onClick={() => {
-                    setIsModalOpen(true);
-                  }}
+                  onClick={() => router.push('/quiz/round-answers/' + `${contents?.club?.clubSequence}`)}
                 >
                   <p className="tw-text-[12.25px] tw-font-bold tw-text-white tw-text-center">퀴즈라운지</p>
                 </div>
@@ -151,115 +175,113 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
         <div className="tw-flex tw-flex-col tw-space-y-4 tw-rounded-lg tw-py-4 tw-overflow-hidden">
           <p className="tw-text-xl tw-font-bold tw-text-black tw-py-4">나의 학습 현황</p>
           <div className="tw-overflow-auto tw-rounded-lg">
-            <div className="">
-              <div className="tw-flex tw-flex-row">
-                {/* 새로운 div 추가 */}
-                <div className="tw-flex justify-center ">
-                  <p className="tw-text-base tw-font-medium tw-text-[#31343d] tw-w-24 tw-text-center">
-                    학생
-                    <div className="tw-py-2">
-                      <Avatar
-                        className="tw-mx-auto border tw-rounded-full"
-                        sx={{ width: 32, height: 32 }}
-                        src={contents?.progress?.profileImageUrl}
-                      ></Avatar>
-                      <div className="tw-text-sm tw-py-2"> {contents?.progress?.nickname}</div>
-                    </div>
-                  </p>
-                  <p className="tw-text-base tw-font-medium tw-text-[#31343d] tw-w-24 tw-text-center">
-                    학습현황
-                    <div className="tw-py-5">
-                      <div className="tw-flex tw-items-center">
-                        <div className="progress tw-rounded tw-h-2 tw-p-0 tw-flex-grow">
-                          <span
-                            style={{
-                              width: `${
-                                (contents?.progress?.currentRound / contents?.progress?.studyStatuses.length) * 100
-                              }%`,
-                            }}
-                          >
-                            <span className="progress-line"></span>
-                          </span>
-                        </div>
-                        <div className="tw-ml-2 tw-text-base tw-font-bold">{contents?.progress?.currentRound}회</div>
-                      </div>
-                    </div>
-                  </p>
+            <div className="tw-flex tw-flex-row">
+              {/* 새로운 div 추가 */}
+              <div className="tw-flex justify-center ">
+                <div className="tw-text-base tw-font-medium tw-text-[#31343d] tw-w-24 tw-text-center">
+                  학생
+                  <div className="tw-py-2">
+                    <Avatar
+                      className="tw-mx-auto border tw-rounded-full"
+                      sx={{ width: 32, height: 32 }}
+                      src={contents?.progress?.profileImageUrl}
+                    ></Avatar>
+                    <div className="tw-text-sm tw-py-2"> {contents?.progress?.nickname}</div>
+                  </div>
                 </div>
-
-                <div className="tw-ml-10 tw-grid tw-grid-cols-9 tw-gap-4" style={{ width: '100%' }}>
-                  {contents?.progress?.studyStatuses.map((session, idx) => (
-                    <div key={idx} className="tw-items-center tw-flex-shrink-0 border tw-rounded-lg">
-                      <div className=" border-bottom tw-pb-3 tw-px-0 tw-pt-0 tw-bg-[#f6f7fb] tw-rounded-t-lg">
-                        <p className="tw-text-base tw-font-medium tw-text-center tw-text-[#31343d] tw-pt-1">
-                          {session?.order}회
-                        </p>
-                        <p className="tw-text-xs tw-font-medium tw-text-center tw-text-[#9ca5b2] tw-pt-1">
-                          {session?.publishDate.split('-').slice(1).join('-')}
-                        </p>
+                <div className="tw-text-base tw-font-medium tw-text-[#31343d] tw-w-24 tw-text-center">
+                  학습현황
+                  <div className="tw-py-5">
+                    <div className="tw-flex tw-items-center">
+                      <div className="progress tw-rounded tw-h-2 tw-p-0 tw-flex-grow">
+                        <span
+                          style={{
+                            width: `${
+                              (contents?.progress?.currentRound / contents?.progress?.studyStatuses.length) * 100
+                            }%`,
+                          }}
+                        >
+                          <span className="progress-line"></span>
+                        </span>
                       </div>
-                      <div className="tw-pt-3 tw-pb-2">
-                        {
-                          <div className="tw-flex tw-justify-center">
-                            <circle cx={10} cy={10} r={10} fill="#31343D" />
-                            {session?.status === '0003' ? (
+                      <div className="tw-ml-2 tw-text-base tw-font-bold">{contents?.progress?.currentRound}회</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="tw-ml-10 tw-grid tw-grid-cols-9 tw-gap-4" style={{ width: '100%' }}>
+                {contents?.progress?.studyStatuses.map((session, idx) => (
+                  <div key={idx} className="tw-items-center tw-flex-shrink-0 border tw-rounded-lg">
+                    <div className=" border-bottom tw-pb-3 tw-px-0 tw-pt-0 tw-bg-[#f6f7fb] tw-rounded-t-lg">
+                      <p className="tw-text-base tw-font-medium tw-text-center tw-text-[#31343d] tw-pt-1">
+                        {session?.order}회
+                      </p>
+                      <p className="tw-text-xs tw-font-medium tw-text-center tw-text-[#9ca5b2] tw-pt-1">
+                        {session?.publishDate.split('-').slice(1).join('-')}
+                      </p>
+                    </div>
+                    <div className="tw-pt-3 tw-pb-2">
+                      {
+                        <div className="tw-flex tw-justify-center">
+                          {/* <circle cx={10} cy={10} r={10} fill="#31343D" /> */}
+                          {session?.status === '0003' ? (
+                            <svg
+                              width={20}
+                              height={20}
+                              viewBox="0 0 20 20"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="tw-w-5 tw-h-5"
+                              preserveAspectRatio="none"
+                            >
+                              <circle cx={10} cy={10} r={10} fill="#31343D" />
+                              <path d="M6 9L9.60494 13L14 7" stroke="white" strokeWidth="1.5" />
+                            </svg>
+                          ) : session?.status === '0002' ? (
+                            <div className="tw-w-5 tw-h-5 tw-relative ">
                               <svg
                                 width={20}
                                 height={20}
                                 viewBox="0 0 20 20"
                                 fill="none"
                                 xmlns="http://www.w3.org/2000/svg"
-                                className="tw-w-5 tw-h-5"
-                                preserveAspectRatio="none"
+                                className="absolute left-[-1px] top-[-1px]"
+                                preserveAspectRatio="xMidYMid meet"
                               >
-                                <circle cx={10} cy={10} r={10} fill="#31343D" />
-                                <path d="M6 9L9.60494 13L14 7" stroke="white" strokeWidth="1.5" />
+                                <circle cx={10} cy={10} r="9.5" fill="white" stroke="#E11837" />
                               </svg>
-                            ) : session?.status === '0002' ? (
-                              <div className="tw-w-5 tw-h-5 tw-relative ">
-                                <svg
-                                  width={20}
-                                  height={20}
-                                  viewBox="0 0 20 20"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  className="absolute left-[-1px] top-[-1px]"
-                                  preserveAspectRatio="xMidYMid meet"
-                                >
-                                  <circle cx={10} cy={10} r="9.5" fill="white" stroke="#E11837" />
-                                </svg>
-                                <p className="tw-absolute tw-left-[7px] tw-top-[3.5px] tw-text-xs tw-font-medium tw-text-center tw-text-[#e11837]">
-                                  ?
-                                </p>
-                              </div>
-                            ) : session?.status === '0001' ? (
-                              <div className="tw-w-5 tw-h-5">
-                                <svg
-                                  width={20}
-                                  height={20}
-                                  viewBox="0 0 20 20"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  preserveAspectRatio="xMidYMid meet"
-                                >
-                                  <circle cx={10} cy={10} r="9.5" fill="#F6F7FB" stroke="#E0E4EB" />
-                                </svg>
-                                <p className="tw-text-xs tw-font-medium tw-text-center tw-text-white">-</p>
-                              </div>
-                            ) : null}
-                          </div>
-                        }
-                      </div>
-                      <p
-                        className={`tw-text-xs tw-font-medium tw-text-center tw-pb-2 ${
-                          session?.answerStatus === '0002' ? 'tw-text-[#e11837]' : 'tw-text-[#9ca5b2]'
-                        }`}
-                      >
-                        {session?.completedDate ? session?.completedDate : 'D' + session?.relativeDaysToPublishDate}
-                      </p>
+                              <p className="tw-absolute tw-left-[7px] tw-top-[3.5px] tw-text-xs tw-font-medium tw-text-center tw-text-[#e11837]">
+                                ?
+                              </p>
+                            </div>
+                          ) : session?.status === '0001' ? (
+                            <div className="tw-w-5 tw-h-5">
+                              <svg
+                                width={20}
+                                height={20}
+                                viewBox="0 0 20 20"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                preserveAspectRatio="xMidYMid meet"
+                              >
+                                <circle cx={10} cy={10} r="9.5" fill="#F6F7FB" stroke="#E0E4EB" />
+                              </svg>
+                              <p className="tw-text-xs tw-font-medium tw-text-center tw-text-white">-</p>
+                            </div>
+                          ) : null}
+                        </div>
+                      }
                     </div>
-                  ))}
-                </div>
+                    <p
+                      className={`tw-text-xs tw-font-medium tw-text-center tw-pb-2 ${
+                        session?.answerStatus === '0002' ? 'tw-text-[#e11837]' : 'tw-text-[#9ca5b2]'
+                      }`}
+                    >
+                      {session?.completedDate ? session?.completedDate : 'D' + session?.relativeDaysToPublishDate}
+                    </p>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -267,15 +289,16 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
             <div className={cx('container', 'tw-mt-10')}>
               <Grid container direction="row" alignItems="center" rowSpacing={0}>
                 <Grid
+                  item
                   container
                   justifyContent="flex-start"
                   xs={6}
                   sm={10}
                   className="tw-text-xl tw-text-black tw-font-bold"
                 >
-                  퀴즈 목록 {contents?.club?.publishedCount}/ {contents?.club?.studyCount}
+                  퀴즈 목록 {contents?.club?.studyCount} / {contents?.club?.publishedCount}
                 </Grid>
-                <Grid container justifyContent="flex-end" xs={6} sm={2} style={{ textAlign: 'right' }}>
+                <Grid container justifyContent="flex-end" item xs={6} sm={2} style={{ textAlign: 'right' }}>
                   <Pagination
                     count={totalPage}
                     size="small"
@@ -342,7 +365,12 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                                   {item?.answer?.answerStatus === '0003' && (
                                     <div className="tw-flex-auto">
                                       <div className="tw-flex tw-justify-end tw-items-center tw-relative tw-gap-2 tw-px-2 tw-py-1 tw-rounded">
-                                        <button className="tw-bg-black tw-p-1.5 tw-text-white tw-rounded tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-font-bold tw-text-right tw-text-[#9ca5b2]">
+                                        <button
+                                          onClick={() => {
+                                            window.open(item?.contentUrl, '_blank'); // data?.articleUrl을 새 탭으로 열기
+                                          }}
+                                          className="tw-bg-black tw-p-1.5 tw-text-white tw-rounded tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-font-bold tw-text-right tw-text-[#9ca5b2]"
+                                        >
                                           지식컨텐츠 보기
                                         </button>
                                       </div>
@@ -363,9 +391,9 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                                       <path
                                         d="M6 6.32422V12.3242C6 13.1199 6.31607 13.8829 6.87868 14.4455C7.44129 15.0081 8.20435 15.3242 9 15.3242H19M19 15.3242L15 11.3242M19 15.3242L15 19.3242"
                                         stroke="#31343D"
-                                        stroke-width={2}
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
+                                        strokeWidth={2}
+                                        strokeLinejoin="round"
+                                        strokeLinejoin="round"
                                       />
                                     </svg>
                                   </div>
@@ -385,8 +413,11 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                                   </div>
                                   <div className="tw-flex-auto">
                                     <div className="tw-flex tw-justify-end tw-items-center tw-relative tw-gap-2 tw-px-2 tw-py-1 tw-rounded">
-                                      <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-bold tw-text-right tw-text-[#9ca5b2]">
-                                        자세히보기
+                                      <p
+                                        onClick={() => toggleExpand(index)}
+                                        className="tw-cursor-pointer tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-bold tw-text-right tw-text-[#9ca5b2]"
+                                      >
+                                        {expandedItems[index] ? '접기' : '자세히보기'}
                                       </p>
                                       <svg
                                         width={7}
@@ -397,7 +428,7 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                                         className="flex-grow-0 flex-shrink-0"
                                         preserveAspectRatio="none"
                                       >
-                                        <path d="M1 1L5 5L1 9" stroke="#9CA5B2" stroke-width="1.5" />
+                                        <path d="M1 1L5 5L1 9" stroke="#9CA5B2" strokeWidth="1.5" />
                                       </svg>
                                     </div>
                                   </div>
@@ -405,7 +436,7 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                               </div>
                             </Grid>
                           </>
-                          {item?.makeupQuizzes?.map((item, index) => {
+                          {item?.makeupQuizzes?.map((item, quizzIndex) => {
                             return (
                               <>
                                 <Grid item xs={12} sm={1} style={{ paddingTop: 10 }}></Grid>
@@ -447,7 +478,12 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                                       {item?.answer?.answerStatus === '0003' && (
                                         <div className="tw-flex-auto">
                                           <div className="tw-flex tw-justify-end tw-items-center tw-relative tw-gap-2 tw-px-2 tw-py-1 tw-rounded">
-                                            <button className="tw-bg-black tw-p-1.5 tw-text-white tw-rounded tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-font-bold tw-text-right tw-text-[#9ca5b2]">
+                                            <button
+                                              onClick={() => {
+                                                window.open(item?.contentUrl, '_blank'); // data?.articleUrl을 새 탭으로 열기
+                                              }}
+                                              className="tw-bg-black tw-p-1.5 tw-text-white tw-rounded tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-font-bold tw-text-right tw-text-[#9ca5b2]"
+                                            >
                                               지식컨텐츠 보기
                                             </button>
                                           </div>
@@ -470,9 +506,9 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                                               <path
                                                 d="M6 6.32422V12.3242C6 13.1199 6.31607 13.8829 6.87868 14.4455C7.44129 15.0081 8.20435 15.3242 9 15.3242H19M19 15.3242L15 11.3242M19 15.3242L15 19.3242"
                                                 stroke="#31343D"
-                                                stroke-width={2}
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
+                                                strokeWidth={2}
+                                                strokeLinejoin="round"
+                                                strokeLinejoin="round"
                                               />
                                             </svg>
                                           </div>
@@ -486,14 +522,21 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                                             </div>
                                           </div>
                                           <div className="tw-flex-auto tw-w-9/12 tw-px-5">
-                                            <div className="tw-font-medium tw-text-[#9ca5b2] tw-text-sm tw-line-clamp-2">
+                                            <div
+                                              className={`tw-font-medium tw-text-[#9ca5b2] tw-text-sm ${
+                                                !expandedQuizzData[index][quizzIndex] ? 'tw-line-clamp-2' : ''
+                                              }`}
+                                            >
                                               {item?.answer?.text}
                                             </div>
                                           </div>
                                           <div className="tw-flex-auto">
                                             <div className="tw-flex tw-justify-end tw-items-center tw-relative tw-gap-2 tw-px-2 tw-py-1 tw-rounded">
-                                              <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-bold tw-text-right tw-text-[#9ca5b2]">
-                                                자세히보기
+                                              <p
+                                                onClick={() => toggleExpandQuizzData(index, quizzIndex)}
+                                                className="tw-cursor-pointer tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-bold tw-text-right tw-text-[#9ca5b2]"
+                                              >
+                                                {expandedQuizzData[index][quizzIndex] ? '접기' : '자세히보기'}
                                               </p>
                                               <svg
                                                 width={7}
@@ -504,7 +547,7 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                                                 className="flex-grow-0 flex-shrink-0"
                                                 preserveAspectRatio="none"
                                               >
-                                                <path d="M1 1L5 5L1 9" stroke="#9CA5B2" stroke-width="1.5" />
+                                                <path d="M1 1L5 5L1 9" stroke="#9CA5B2" strokeWidth="1.5" />
                                               </svg>
                                             </div>
                                           </div>
@@ -525,9 +568,9 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                                             <path
                                               d="M6 6.32422V12.3242C6 13.1199 6.31607 13.8829 6.87868 14.4455C7.44129 15.0081 8.20435 15.3242 9 15.3242H19M19 15.3242L15 11.3242M19 15.3242L15 19.3242"
                                               stroke="#31343D"
-                                              stroke-width={2}
-                                              stroke-linecap="round"
-                                              stroke-linejoin="round"
+                                              strokeWidth={2}
+                                              strokeLinejoin="round"
+                                              strokeLinejoin="round"
                                             />
                                           </svg>
                                         </div>
@@ -547,13 +590,18 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                                               <button
                                                 type="button"
                                                 onClick={() => {
-                                                  // router.push('/quiz/solution/' + `${item?.quizSequence}`);
                                                   router.push(
-                                                    `/quiz/solution/${item?.quizSequence}?clubSequence=${item?.clubSequence}`,
+                                                    {
+                                                      pathname: `/quiz/solution/${item?.quizSequence}`,
+                                                      query: {
+                                                        clubSequence: item?.clubSequence,
+                                                      },
+                                                    },
+                                                    `/quiz/solution/${item?.quizSequence}`,
                                                   );
                                                 }}
                                                 data-tooltip-target="tooltip-default"
-                                                className=" max-lg:tw-w-[60px] tw-px-[30.5px] tw-py-[9.5px] tw-rounded tw-bg-[#E11837] tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                                className=" max-lg:tw-w-[60px] tw-px-[30.5px] tw-py-[9.5px] tw-rounded tw-bg-[#E111837] tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
                                               >
                                                 퀴즈 풀러가기
                                               </button>
@@ -606,7 +654,12 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                                 {item?.answer?.answerStatus === '0003' && (
                                   <div className="tw-flex-auto">
                                     <div className="tw-flex tw-justify-end tw-items-center tw-relative tw-gap-2 tw-px-2 tw-py-1 tw-rounded">
-                                      <button className="tw-bg-black tw-p-1.5 tw-text-white tw-rounded tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-font-bold tw-text-right tw-text-[#9ca5b2]">
+                                      <button
+                                        onClick={() => {
+                                          window.open(item?.contentUrl, '_blank'); // data?.articleUrl을 새 탭으로 열기
+                                        }}
+                                        className="tw-bg-black tw-p-1.5 tw-text-white tw-rounded tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-font-bold tw-text-right tw-text-[#9ca5b2]"
+                                      >
                                         지식컨텐츠 보기
                                       </button>
                                     </div>
@@ -629,9 +682,9 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                                         <path
                                           d="M6 6.32422V12.3242C6 13.1199 6.31607 13.8829 6.87868 14.4455C7.44129 15.0081 8.20435 15.3242 9 15.3242H19M19 15.3242L15 11.3242M19 15.3242L15 19.3242"
                                           stroke="#31343D"
-                                          stroke-width={2}
-                                          stroke-linecap="round"
-                                          stroke-linejoin="round"
+                                          strokeWidth={2}
+                                          strokeLinejoin="round"
+                                          strokeLinejoin="round"
                                         />
                                       </svg>
                                     </div>
@@ -645,14 +698,21 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                                       </div>
                                     </div>
                                     <div className="tw-flex-auto tw-w-9/12 tw-px-5">
-                                      <div className="tw-font-medium tw-text-[#9ca5b2] tw-text-sm tw-line-clamp-2">
+                                      <div
+                                        className={`tw-font-medium tw-text-[#9ca5b2] tw-text-sm ${
+                                          !expandedItems[index] ? 'tw-line-clamp-2' : ''
+                                        }`}
+                                      >
                                         {item?.answer?.text}
                                       </div>
                                     </div>
                                     <div className="tw-flex-auto">
                                       <div className="tw-flex tw-justify-end tw-items-center tw-relative tw-gap-2 tw-px-2 tw-py-1 tw-rounded">
-                                        <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-bold tw-text-right tw-text-[#9ca5b2]">
-                                          자세히보기
+                                        <p
+                                          onClick={() => toggleExpand(index)}
+                                          className="tw-cursor-pointer tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-bold tw-text-right tw-text-[#9ca5b2]"
+                                        >
+                                          {expandedItems[index] ? '접기' : '자세히보기'}
                                         </p>
                                         <svg
                                           width={7}
@@ -663,95 +723,11 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                                           className="flex-grow-0 flex-shrink-0"
                                           preserveAspectRatio="none"
                                         >
-                                          <path d="M1 1L5 5L1 9" stroke="#9CA5B2" stroke-width="1.5" />
+                                          <path d="M1 1L5 5L1 9" stroke="#9CA5B2" strokeWidth="1.5" />
                                         </svg>
                                       </div>
                                     </div>
                                   </div>
-                                  {item?.makeupQuizzes?.length > 0 && (
-                                    <>
-                                      <div
-                                        className={`tw-bg-[#F6F7FB] tw-flex tw-items-center tw-px-4 max-lg:tw-p-3 tw-py-1   ${
-                                          item?.answer ? 'tw-rounded-tl-xl tw-rounded-tr-xl' : 'tw-rounded-xl'
-                                        }`}
-                                      >
-                                        <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
-                                          <img
-                                            className="tw-w-10 tw-h-10 border tw-rounded-full"
-                                            src={item?.maker?.profileImageUrl}
-                                          />
-                                          <div className="tw-text-xs tw-text-left tw-text-black">
-                                            {item?.maker?.nickname}
-                                          </div>
-                                        </div>
-                                        <div className="tw-flex-auto tw-px-5 tw-w-10/12">
-                                          <div className="tw-font-medium tw-text-black">{item?.question}</div>
-                                        </div>
-                                        {item?.answer?.answerStatus === '0003' && (
-                                          <div className="tw-flex-auto">
-                                            <div className="tw-flex tw-justify-end tw-items-center tw-relative tw-gap-2 tw-px-2 tw-py-1 tw-rounded">
-                                              <button className="tw-bg-black tw-p-1.5 tw-text-white tw-rounded tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-font-bold tw-text-right tw-text-[#9ca5b2]">
-                                                지식컨텐츠 보기
-                                              </button>
-                                            </div>
-                                          </div>
-                                        )}
-                                      </div>
-                                      <div className="border border-secondary tw-bg-white tw-flex tw-items-center tw-p-4  tw-py-3 tw-rounded-bl-xl tw-rounded-br-xl">
-                                        <div className="tw-w-1.5/12 tw-pl-14 tw-pr-3 tw-flex tw-flex-col tw-items-center tw-justify-center">
-                                          <svg
-                                            width={24}
-                                            height={25}
-                                            viewBox="0 0 24 25"
-                                            fill="none"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            className="w-6 h-6 relative"
-                                            preserveAspectRatio="none"
-                                          >
-                                            <path
-                                              d="M6 6.32422V12.3242C6 13.1199 6.31607 13.8829 6.87868 14.4455C7.44129 15.0081 8.20435 15.3242 9 15.3242H19M19 15.3242L15 11.3242M19 15.3242L15 19.3242"
-                                              stroke="#31343D"
-                                              stroke-width={2}
-                                              stroke-linecap="round"
-                                              stroke-linejoin="round"
-                                            />
-                                          </svg>
-                                        </div>
-                                        <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
-                                          <img
-                                            className="border tw-rounded-full tw-w-10 tw-h-10 "
-                                            src={item?.answer?.member?.profileImageUrl}
-                                          />
-                                          <div className="tw-text-xs tw-text-left tw-text-black">
-                                            {item?.answer?.member?.nickname}
-                                          </div>
-                                        </div>
-                                        <div className="tw-flex-auto tw-w-9/12 tw-px-5">
-                                          <div className="tw-font-medium tw-text-[#9ca5b2] tw-text-sm tw-line-clamp-2">
-                                            {item?.answer?.text}
-                                          </div>
-                                        </div>
-                                        <div className="tw-flex-auto">
-                                          <div className="tw-flex tw-justify-end tw-items-center tw-relative tw-gap-2 tw-px-2 tw-py-1 tw-rounded">
-                                            <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-bold tw-text-right tw-text-[#9ca5b2]">
-                                              자세히보기
-                                            </p>
-                                            <svg
-                                              width={7}
-                                              height={10}
-                                              viewBox="0 0 7 10"
-                                              fill="none"
-                                              xmlns="http://www.w3.org/2000/svg"
-                                              className="flex-grow-0 flex-shrink-0"
-                                              preserveAspectRatio="none"
-                                            >
-                                              <path d="M1 1L5 5L1 9" stroke="#9CA5B2" stroke-width="1.5" />
-                                            </svg>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </>
-                                  )}
                                 </>
                               ) : (
                                 <div className="border border-secondary tw-bg-white tw-flex tw-items-center  tw-py-1 tw-rounded-bl-xl tw-rounded-br-xl">
@@ -768,9 +744,9 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                                       <path
                                         d="M6 6.32422V12.3242C6 13.1199 6.31607 13.8829 6.87868 14.4455C7.44129 15.0081 8.20435 15.3242 9 15.3242H19M19 15.3242L15 11.3242M19 15.3242L15 19.3242"
                                         stroke="#31343D"
-                                        stroke-width={2}
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
+                                        strokeWidth={2}
+                                        strokeLinejoin="round"
+                                        strokeLinejoin="round"
                                       />
                                     </svg>
                                   </div>
@@ -779,10 +755,7 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                                       className="border tw-rounded-full tw-w-10 tw-h-10"
                                       src={item?.maker?.profileImageUrl}
                                     />
-                                    <div className="tw-text-xs tw-text-left tw-text-black">
-                                      {' '}
-                                      {item?.maker?.nickname}
-                                    </div>
+                                    <div className="tw-text-xs tw-text-left tw-text-black">{item?.maker?.nickname}</div>
                                   </div>
                                   <div className="tw-flex-auto tw-w-1.5/12 tw-py-3">
                                     <div className="tw-font-medium tw-text-gray-500 tw-text-sm tw-line-clamp-2">
@@ -792,7 +765,13 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                                           onClick={() => {
                                             // router.push('/quiz/solution/' + `${item?.quizSequence}`);
                                             router.push(
-                                              `/quiz/solution/${item?.quizSequence}?clubSequence=${item?.clubSequence}`,
+                                              {
+                                                pathname: `/quiz/solution/${item?.quizSequence}`,
+                                                query: {
+                                                  clubSequence: item?.clubSequence,
+                                                },
+                                              },
+                                              `/quiz/solution/${item?.quizSequence}`,
                                             );
                                           }}
                                           data-tooltip-target="tooltip-default"

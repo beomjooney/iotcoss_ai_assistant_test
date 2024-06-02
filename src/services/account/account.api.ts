@@ -63,7 +63,7 @@ export async function login(params: any[]) {
   const { data } = await axiosGeneralAPI().post('/oauth2/token', new URLSearchParams(params), {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
   });
-
+  console.log(data);
   return data;
 }
 

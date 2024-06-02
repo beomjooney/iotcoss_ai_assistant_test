@@ -110,31 +110,6 @@ function ColorlibStepIcon(props: StepIconProps) {
   );
 }
 
-const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-  const file = event.target.files ? event.target.files[0] : null;
-  if (!file) {
-    alert('파일을 선택해주세요.');
-    return;
-  }
-  // 파일 처리 로직 (예: 서버에 업로드)
-  const formData = new FormData();
-  formData.append('file', file);
-  // 예시: 파일 업로드 API 호출
-  fetch('YOUR_API_ENDPOINT', {
-    method: 'POST',
-    body: formData,
-  })
-    .then(response => response.json())
-    .then(data => {
-      console.log('파일이 성공적으로 업로드되었습니다.', data);
-      alert('파일이 성공적으로 업로드되었습니다.');
-    })
-    .catch(error => {
-      console.error('파일 업로드 중 오류가 발생했습니다.', error);
-      alert('파일 업로드 중 오류가 발생했습니다.');
-    });
-};
-
 export interface BannerProps {
   /** 배경 이미지 */
   imageName?: string;
@@ -144,7 +119,7 @@ export interface BannerProps {
   data: object;
   className?: string;
   subTitle?: string;
-  quizStatus: object;
+  // quizStatus: object;
 }
 
 const cx = classNames.bind(styles);
@@ -155,8 +130,8 @@ const quizSolutionDetail = ({
   subTitle,
   className,
   data,
-  quizStatus,
-}: BannerProps) => {
+}: // quizStatus,
+BannerProps) => {
   const steps = ['Step1. 답변 입력', 'Step2. 지식콘텐츠 읽기', 'Step3. 답변 수정(선택)'];
   const [inputList, setInputList] = useState([]);
   let [isLiked, setIsLiked] = useState(false);
@@ -164,24 +139,33 @@ const quizSolutionDetail = ({
   const [skipped, setSkipped] = React.useState(new Set<number>());
   const [type, setType] = React.useState('0001'); // 초기값 설정
   const [introductionMessage, setIntroductionMessage] = useState<string>('');
+  const [postIntroductionMessage, setPostIntroductionMessage] = useState<string>('');
+  const [contentUrl, setContentUrl] = useState<string>('');
+  const [preAnswer, setPreAnswer] = useState<string>('');
 
   const { mutate: onSaveLike, isSuccess } = useSaveLike();
   const { mutate: onDeleteLike } = useDeleteLike();
-  const { mutate: onAnswerSave, isSuccess: isAnswerSave } = useAnswerSave();
+  const { mutate: onAnswerSave, isSuccess: isAnswerSave, data: answerRes } = useAnswerSave();
   const { mutate: onAnswerUpdate, isSuccess: isAnswerUpdate } = useAnswerUpdate();
   const { mutate: onComprehensionSave, isSuccess: isComprehensionSave } = useComprehensionSave();
 
-  console.log('status', quizStatus);
+  useEffect(() => {
+    if (isAnswerSave) {
+      setContentUrl(answerRes?.data?.contentUrl);
+      setPreAnswer(answerRes?.data?.preAnswer);
+    }
+  }, [isAnswerSave]);
 
   useEffect(() => {
-    if (quizStatus?.answerStatus === '0001') {
-      setIntroductionMessage(quizStatus?.preAnswer);
+    console.log('data', data?.answer?.answerStatus);
+    if (data?.status?.answerStatus === '0001') {
+      setIntroductionMessage(data?.status?.preAnswer);
       setActiveStep(1);
-    } else if (quizStatus?.answerStatus === '0002') {
-      setIntroductionMessage(quizStatus?.preAnswer);
+    } else if (data?.status?.answerStatus === '0002') {
+      setIntroductionMessage(data?.status?.preAnswer);
       setActiveStep(2);
     }
-  }, [quizStatus]);
+  }, [data]);
 
   const isStepSkipped = (step: number) => {
     return skipped.has(step);
@@ -214,6 +198,10 @@ const quizSolutionDetail = ({
     const { name, value } = event.currentTarget;
     setIntroductionMessage(value);
   };
+  const onPostMessageChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, no?: number) => {
+    const { name, value } = event.currentTarget;
+    setPostIntroductionMessage(value);
+  };
   const fileInputRef = useRef(null);
 
   const handleButtonClick = () => {
@@ -222,6 +210,16 @@ const quizSolutionDetail = ({
 
   const handleFileChange = event => {
     const files = Array.from(event.target.files);
+    const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.xls|\.xlsx|\.doc|\.docx|\.ppt|\.pptx|\.hwp)$/i;
+
+    for (let i = 0; i < files.length; i++) {
+      if (!allowedExtensions.exec(files[i].name)) {
+        alert('허용되지 않는 파일 형식입니다.');
+        event.target.value = ''; // input 초기화
+        return;
+      }
+    }
+
     setFileList(prevFileList => [...prevFileList, ...files]);
   };
   const handleNext = () => {
@@ -229,51 +227,68 @@ const quizSolutionDetail = ({
       alert('답변을 입력해주세요.');
       return;
     }
+    const inputData = inputList.map(input => input.value).filter(value => value !== '');
+    console.log(inputData);
+
     if (activeStep === 0) {
-      setActiveStep(prevActiveStep => prevActiveStep + 1);
-      onAnswerSave({
-        data: {
-          clubQuizSequence: data?.clubQuizSequence,
-          preAnswer: introductionMessage,
-        },
-      });
-    }
-    if (activeStep === 2) {
-      onAnswerUpdate({
-        data: {
-          clubQuizSequence: data?.clubQuizSequence,
-          postAnswer: introductionMessage,
-        },
+      const formData = new FormData();
+      formData.append('preAnswer', introductionMessage);
+      formData.append('urls', inputData.toString());
+      fileList.forEach((file, index) => {
+        formData.append('files', file);
       });
 
-      // router.push(`/quiz/growth/${data?.clubSequence}`);
-      router.push(
-        {
-          pathname: `/quiz/growth/${data?.clubSequence}`,
-          query: { qid: data?.clubQuizSequence },
-        },
-        `/quiz/growth/${data?.clubSequence}`,
-      );
+      setActiveStep(prevActiveStep => prevActiveStep + 1);
+      console.log(formData);
+      // FormData 내용을 콘솔에 출력
+      onAnswerSave({
+        formData,
+        club: data?.clubSequence,
+        quiz: data?.quizSequence,
+      });
+
+      setFileList([]);
+      setInputList([]);
+    }
+    if (activeStep === 2) {
+      const formData = new FormData();
+      formData.append('postAnswer', introductionMessage);
+      formData.append('urls', inputData.toString());
+      fileList.forEach((file, index) => {
+        formData.append('files', file);
+      });
+
+      onAnswerUpdate({
+        formData,
+        club: data?.clubSequence,
+        quiz: data?.quizSequence,
+      });
+
+      router.push(`/quiz/${data?.clubSequence}`);
+      // router.push(
+      //   {
+      //     pathname: `/quiz/growth/${data?.clubSequence}`,
+      //     query: { qid: data?.clubQuizSequence },
+      //   },
+      //   `/quiz/growth/${data?.clubSequence}`,
+      // );
     }
   };
 
   const [fileList, setFileList] = useState([]);
-  const handleConfirm = () => {
-    const inputData = inputList.map(input => input.value).filter(value => value !== '');
-    console.log(inputData);
-  };
+  const handleConfirm = () => {};
 
   const handleDeleteFile = index => {
     setFileList(prevFileList => prevFileList.filter((_, i) => i !== index));
   };
 
   const handleComprehension = () => {
-    onComprehensionSave({
-      data: {
-        clubQuizSequence: data?.clubQuizSequence,
-        comprehensionStatus: type,
-      },
-    });
+    // onComprehensionSave({
+    //   data: {
+    //     clubQuizSequence: data?.clubQuizSequence,
+    //     comprehensionStatus: type,
+    //   },
+    // });
     setActiveStep(prevActiveStep => prevActiveStep + 1);
   };
   return (
@@ -406,8 +421,8 @@ const quizSolutionDetail = ({
                         overflow: 'auto',
                       }}
                       name="introductionMessage"
-                      onChange={onMessageChange}
-                      value={introductionMessage}
+                      onChange={onPostMessageChange}
+                      value={postIntroductionMessage}
                     />
                   )}
                   <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3  tw-py-2">
@@ -418,7 +433,13 @@ const quizSolutionDetail = ({
                       >
                         파일추가
                       </button>
-                      <input type="file" ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileChange} />
+                      <input
+                        accept=".jpeg,.jpg,.png,.xls,.xlsx,.doc,.docx,.ppt,.pptx,.hwp"
+                        type="file"
+                        ref={fileInputRef}
+                        style={{ display: 'none' }}
+                        onChange={handleFileChange}
+                      />
                       <svg
                         width={16}
                         height={16}
@@ -503,20 +524,19 @@ const quizSolutionDetail = ({
                           <div key={input.id} style={{ marginBottom: '10px' }}>
                             <input
                               type="text"
-                              className="border tw-w-full tw-rounded tw-text-sm tw-py-2"
+                              className="border tw-w-full tw-rounded tw-text-sm tw-p-2 "
                               value={input.value}
                               onChange={event => handleInputChange(input.id, event)}
                             />
                           </div>
                         ))}
-                        {inputList.length > 0 && <button onClick={handleConfirm}>Confirm</button>}
                       </div>
                     </div>
                   )}
                   <button
                     type="button"
                     onClick={handleNext}
-                    className=" tw-text-white tw-bg-gray-300 tw-mt-5 tw-focus:ring-4  tw-font-medium tw-rounded tw-text-sm tw-px-7 tw-py-3 "
+                    className=" tw-text-white tw-bg-red-500 tw-mt-5 tw-focus:ring-4  tw-font-medium tw-rounded tw-text-sm tw-px-7 tw-py-3 "
                   >
                     {activeStep === 0 ? '답변입력 및 지식콘텐츠 읽기' : '수정완료 및 답변 제출하기'}
                   </button>
@@ -529,7 +549,7 @@ const quizSolutionDetail = ({
                     <button
                       type="button"
                       onClick={() => {
-                        window.open(data?.articleUrl, '_blank'); // data?.articleUrl을 새 탭으로 열기
+                        window.open(contentUrl, '_blank'); // data?.articleUrl을 새 탭으로 열기
                       }}
                       className=" tw-text-white tw-w-[150px]  tw-bg-red-500 tw-my-8 tw-text-sm  tw-font-medium tw-rounded tw-text-base tw-px-7 tw-py-3 "
                     >
@@ -562,7 +582,7 @@ const quizSolutionDetail = ({
                     onClick={handleComprehension}
                     className="tw-text-white tw-bg-red-500 tw-mt-5 tw-focus:ring-4  tw-font-medium tw-rounded tw-text-sm tw-px-7 tw-py-3 "
                   >
-                    답변입력 및 지식콘텐츠 읽기
+                    답변수정 하러가기
                   </button>
                 </div>
               )}

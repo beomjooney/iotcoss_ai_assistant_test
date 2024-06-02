@@ -62,10 +62,11 @@ const CommunityCardReply = ({ reply, className, refetch }: CommunityCardReplyPro
   }, [reply]);
 
   useEffect(() => {
-    refetch();
+    if (replyReplySucces) refetch();
   }, [replyReplySucces]);
 
   const onReplySubmit = (postNo: number, text: string) => {
+    console.log(postNo);
     setIsOpened(!isOpen);
     if (logged) {
       onSaveReReply({
@@ -86,55 +87,78 @@ const CommunityCardReply = ({ reply, className, refetch }: CommunityCardReplyPro
     <>
       <Desktop>
         <div className={cx('community-board-reply-container', 'row', className)}>
-          <div className="tw-grid  tw-grid-cols-12  tw-flex tw-items-center  tw-mt-2 tw-gap-2">
-            {/* {board.postNo} */}
-            <div className="tw-col-span-1 tw-flex tw-items-end tw-justify-center tw-gap-2">
-              <svg
-                width={24}
-                height={24}
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="tw-w-6 tw-h-6 tw-relative tw-mb-3"
-                preserveAspectRatio="none"
-              >
-                <path
-                  d="M6 6V12C6 12.7956 6.31607 13.5587 6.87868 14.1213C7.44129 14.6839 8.20435 15 9 15H19M19 15L15 11M19 15L15 19"
-                  stroke="#31343D"
-                  stroke-width={2}
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              <img
-                src={reply?.imageUrl}
-                alt={'image'}
-                className={cx('rounded-circle', 'profile-image', 'tw-h-10', 'tw-w-10')}
-              />
-            </div>
-            <div className="tw-col-span-11 tw-text-left tw-flex tw-items-center tw-gap-5">
-              <div className="tw-font-bold tw-text-base tw-text-black">{reply?.nickname} </div>
-
-              <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-gap-2">
-                <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#d7ecff]">
-                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#235a8d]">
-                    소프트웨어융합대학
-                  </p>
+          <div className="tw-flex ...">
+            <div className="tw-grow">
+              <div className="tw-grid tw-grid-cols-12 tw-items-center tw-justify-center">
+                <div className="tw-col-span-1">
+                  <img
+                    src={reply?.replier?.profileImageUrl}
+                    alt="profile"
+                    className="border tw-rounded-full tw-h-10 tw-w-10"
+                  />
                 </div>
-                <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#e4e4e4]">
-                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#313b49]">
-                    컴퓨터공학과
-                  </p>
+                <div className="tw-col-span-11 tw-flex tw-items-center tw-space-x-2">
+                  <div className="tw-font-medium tw-text-sm tw-text-black">{reply?.replier?.nickname}</div>
+                  <div className="tw-font-medium tw-text-sm tw-text-gray-400">{reply?.createAt}</div>
                 </div>
-                <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#ffdede]">
-                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#b83333]">2학년</p>
+              </div>
+              <div className="tw-grid tw-grid-cols-12 tw-items-start tw-justify-center">
+                <div className="tw-col-span-0"></div>
+                <div className="tw-col-span-11 tw-pt-0 tw-pb-3">{reply?.body}</div>
+              </div>
+              <div className="tw-grid tw-grid-cols-12 tw-items-start tw-justify-center">
+                <div className="tw-col-span-1"></div>
+                <div className="tw-col-span-11 tw-pt-0 tw-pb-3">
+                  <button
+                    className={cx('tw-text-[12px]', 'tw-text-gray-400 tw-mr-3 tw-underline')}
+                    onClick={() => replyOpen()}
+                  >
+                    답글쓰기
+                  </button>
+                  <button
+                    className={cx('tw-text-[12px]', 'tw-text-gray-400  tw-underline')}
+                    onClick={() => replyOpen()}
+                  >
+                    삭제하기
+                  </button>
                 </div>
-                <p className="tw-text-sm tw-text-left tw-text-[#9ca5b2] tw-ml-auto">{timeForToday(reply.createAt)}</p>
+              </div>
+              <div className="tw-grid tw-grid-cols-12 tw-items-start tw-justify-center">
+                <div className="tw-col-span-1"></div>
+                <div className="tw-col-span-11 tw-pt-0 tw-pb-3">
+                  {isOpen && (
+                    <div className="tw-grid tw-grid-cols-12 tw-items-center tw-justify-center tw-gap-2">
+                      <div className="tw-col-span-11 ">
+                        <textarea
+                          className="tw-form-control tw-w-full tw-py-[8px] tw-p-5"
+                          id="floatingTextarea"
+                          placeholder="댓글을 입력해주세요."
+                          ref={textInput}
+                        ></textarea>
+                      </div>
+                      <div className="tw-col-span-1">
+                        <button
+                          onClick={() => onReplySubmit(reply?.answerReplySequence, textInput.current.value)}
+                          className="tw-mb-[5px] tw-py-[17px] tw-w-full tw-h-full tw-rounded tw-bg-white border border-secondary tw-border-[#e9ecf2] tw-text-sm tw-text-center tw-text-[#6a7380]"
+                        >
+                          댓글달기
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  <div className="tw-grid tw-grid-cols-12 tw-items-start tw-justify-center">
+                    <div className="tw-col-span-12 tw-pt-0">
+                      {reply?.replies.map((reply, i) => {
+                        return <CommunityCardReReply key={i} reply={reply} />;
+                      })}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="tw-grid tw-grid-cols-12 tw-items-start tw-justify-center">
+          {/* <div className="tw-grid tw-grid-cols-12 tw-items-start tw-justify-center">
             <div className="tw-col-span-1"></div>
             <div className="tw-col-span-11 tw-py-2">
               <div className="tw-text-sm">{reply.body}</div>
@@ -155,37 +179,7 @@ const CommunityCardReply = ({ reply, className, refetch }: CommunityCardReplyPro
               </button>
             </div>
             <div className="tw-col-span-1"></div>
-          </div>
-
-          {isOpen && (
-            <div className="tw-grid tw-grid-cols-12 tw-items-center tw-justify-center tw-gap-3">
-              <div className="tw-col-span-1"></div>
-              <div className="tw-col-span-10 ">
-                <textarea
-                  className="tw-form-control tw-w-full tw-py-[8px] tw-p-5"
-                  id="floatingTextarea"
-                  placeholder="댓글을 입력해주세요."
-                  ref={textInput}
-                ></textarea>
-              </div>
-              <div className="tw-col-span-1 ">
-                <button
-                  onClick={() => onReplySubmit(reply.sequence, textInput.current.value)}
-                  className="tw-mb-[5px] tw-py-[21px] tw-w-full tw-h-full tw-rounded tw-bg-white border border-secondary tw-border-[#e9ecf2] tw-text-sm tw-text-center tw-text-[#6a7380]"
-                >
-                  댓글달기
-                </button>
-              </div>
-            </div>
-          )}
-          <div className="tw-grid tw-grid-cols-12 tw-items-start tw-justify-center">
-            <div className="tw-col-span-1"></div>
-            <div className="tw-col-span-11 tw-pt-0">
-              {reply?.replies.map((reply, i) => {
-                return <CommunityCardReReply key={i} reply={reply} />;
-              })}
-            </div>
-          </div>
+          </div> */}
         </div>
       </Desktop>
       <Mobile>

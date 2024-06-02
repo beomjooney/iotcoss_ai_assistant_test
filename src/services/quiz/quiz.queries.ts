@@ -10,8 +10,10 @@ import {
   quizPoint,
   quizRanking,
   quizRoungeDetail,
+  quizRoungeInfo,
   quizSolutionDetail,
   quizSolutionDetailStatus,
+  quizFileDownload,
 } from './quiz.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 import { User } from 'src/models/user';
@@ -40,6 +42,26 @@ export const useQuizSolutionDetail = (
   // return useQuery<SeminarContent, Error>(QUERY_KEY_FACTORY('SEMINAR').detail(id), () => seminarDetail(id), {
   // TODO : 수정 해주세요. 타입에러 나요. -> 세미나 상세 Profile 컴포넌트에 셋 할때 발생
   return useQuery<any, Error>(QUERY_KEY_FACTORY('SEMINAR').detail(id), () => quizSolutionDetail(id, clubSequence), {
+    onSuccess,
+    onError,
+    refetchOnWindowFocus: false,
+    enabled: !!id,
+  });
+};
+export const useQuizRoungeInfo = (id, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
+  // return useQuery<SeminarContent, Error>(QUERY_KEY_FACTORY('SEMINAR').detail(id), () => seminarDetail(id), {
+  // TODO : 수정 해주세요. 타입에러 나요. -> 세미나 상세 Profile 컴포넌트에 셋 할때 발생
+  return useQuery<any, Error>(QUERY_KEY_FACTORY('SEMINAR').detail(id), () => quizRoungeInfo(id), {
+    onSuccess,
+    onError,
+    refetchOnWindowFocus: false,
+    enabled: !!id,
+  });
+};
+export const useQuizFileDownload = (id, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
+  // return useQuery<SeminarContent, Error>(QUERY_KEY_FACTORY('SEMINAR').detail(id), () => seminarDetail(id), {
+  // TODO : 수정 해주세요. 타입에러 나요. -> 세미나 상세 Profile 컴포넌트에 셋 할때 발생
+  return useQuery<any, Error>(QUERY_KEY_FACTORY('SEMINAR').detail(id), () => quizFileDownload(id), {
     onSuccess,
     onError,
     refetchOnWindowFocus: false,
@@ -109,7 +131,7 @@ export const useQuizAnswerDetail = (params, onSuccess?: (data: any) => void, onE
       onSuccess,
       onError,
       refetchOnWindowFocus: true,
-      enabled: true,
+      enabled: false,
     },
   );
 };

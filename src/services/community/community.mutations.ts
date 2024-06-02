@@ -11,7 +11,9 @@ import {
   answerSave,
   comprehensionSave,
   saveQuizLiked,
+  saveQuizLikedReply,
   deleteQuizLiked,
+  deleteQuizLikedReply,
   answerUpdate,
   saveReReply,
   saveQuizOnePick,
@@ -47,6 +49,21 @@ export const useQuizLike = (): UseMutationResult => {
     },
   });
 };
+
+export const useQuizLikeReply = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  // TODO : any 타입 변경
+  return useMutation<any, any, any>((params: any) => saveQuizLikedReply(params), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('LIKE').all),
+    onSuccess: async data => {
+      // alert('좋아요.~');
+    },
+  });
+};
 export const useQuizDeleteLike = (): UseMutationResult => {
   const queryClient = useQueryClient();
   // TODO : any 타입 변경
@@ -61,10 +78,24 @@ export const useQuizDeleteLike = (): UseMutationResult => {
     },
   });
 };
+export const useQuizDeleteLikeReply = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  // TODO : any 타입 변경
+  return useMutation<any, any, any>((params: any) => deleteQuizLikedReply(params), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('LIKE').all),
+    onSuccess: async data => {
+      // alert('좋아요.~');
+    },
+  });
+};
 export const useQuizOnePick = (): UseMutationResult => {
   const queryClient = useQueryClient();
   // TODO : any 타입 변경
-  return useMutation<any, any, any>((postId: number) => saveQuizOnePick(postId), {
+  return useMutation<any, any, any>((params: any) => saveQuizOnePick(params), {
     onError: (error, variables, context) => {
       // const { code, message } = error;
       // alert(`mutation error : [${code}] ${message}`);
@@ -78,7 +109,7 @@ export const useQuizOnePick = (): UseMutationResult => {
 export const useQuizDeleteOnePick = (): UseMutationResult => {
   const queryClient = useQueryClient();
   // TODO : any 타입 변경
-  return useMutation<any, any, any>((postId: number) => deleteQuizOnePick(postId), {
+  return useMutation<any, any, any>((params: any) => deleteQuizOnePick(params), {
     onError: (error, variables, context) => {
       const { code, message } = error;
       alert(`mutation error : [${code}] ${message}`);
@@ -140,7 +171,9 @@ export const useAnswerSave = (): UseMutationResult => {
       alert(`mutation error : [${code}] ${message}`);
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('REPLY').all),
-    onSuccess: async data => {},
+    onSuccess: async data => {
+      data;
+    },
   });
 };
 export const useAnswerUpdate = (): UseMutationResult => {

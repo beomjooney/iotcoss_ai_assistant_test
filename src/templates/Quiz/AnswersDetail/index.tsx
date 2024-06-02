@@ -56,7 +56,7 @@ export function QuizAnswersDetailTemplate({ id }: QuizAnswersDetailTemplateProps
     setContents(data);
   });
   const { isFetched: isQuizAnswerListFetched } = useQuizAnswerDetail(params, data => {
-    //console.log(data);
+    console.log('-------------------------------------');
     setAnswerContents(data?.contents);
     setTotalElements(data?.totalElements);
     setTotalPage(data?.totalPages);

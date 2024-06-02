@@ -68,8 +68,14 @@ export const useLogin = (): UseMutationResult => {
   // TODO : any 타입 변경
   return useMutation<any, any, any>(requestBody => login(requestBody), {
     onError: (error, variables, context) => {
+      console.log(error);
       const { code, message } = error;
-      alert(`mutation error : [${code}] ${message}`);
+      // alert(`mutation error : [${code}] ${message}`);
+      if (code === 'C06000') {
+        alert('로그인 실패 횟수 초과');
+      } else if (code === 'C06002') {
+        alert('잘못된 사용자 또는 암호 입니다.');
+      }
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('LOGIN').all),
     onSuccess: async data => {

@@ -353,7 +353,7 @@ export function HomeTemplate({ logged = false }: HomeProps) {
                 filterUnits="userSpaceOnUse"
                 colorInterpolationFilters="sRGB"
               >
-                <feflood flood-opacity={0} result="BackgroundImageFix" />
+                <feflood floodOpacity={0} result="BackgroundImageFix" />
                 <feblend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
                 <fegaussianblur stdDeviation={15} result="effect1_foregroundBlur_320_40043" />
               </filter>
@@ -365,8 +365,8 @@ export function HomeTemplate({ logged = false }: HomeProps) {
                 gradientUnits="userSpaceOnUse"
                 gradientTransform="translate(390.5 390.5) rotate(90) scale(292.5)"
               >
-                <stop stop-color="#FAFFC5" stop-opacity="0.5" />
-                <stop offset={1} stop-color="white" stop-opacity={0} />
+                <stop stopColor="#FAFFC5" stopOpacity="0.5" />
+                <stop offset={1} stopColor="white" stopOpacity={0} />
               </radialgradient>
             </defs>
           </svg>
@@ -392,7 +392,7 @@ export function HomeTemplate({ logged = false }: HomeProps) {
                 filterUnits="userSpaceOnUse"
                 colorInterpolationFilters="sRGB"
               >
-                <feflood flood-opacity={0} result="BackgroundImageFix" />
+                <feflood floodOpacity={0} result="BackgroundImageFix" />
                 <feblend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
                 <fegaussianblur stdDeviation={15} result="effect1_foregroundBlur_320_40044" />
               </filter>
@@ -404,8 +404,8 @@ export function HomeTemplate({ logged = false }: HomeProps) {
                 gradientUnits="userSpaceOnUse"
                 gradientTransform="translate(441 -29) rotate(90) scale(333.474)"
               >
-                <stop stop-color="#AEC5FF" />
-                <stop offset={1} stop-color="white" stop-opacity={0} />
+                <stop stopColor="#AEC5FF" />
+                <stop offset={1} stopColor="white" stoppacity={0} />
               </radialgradient>
             </defs>
           </svg>
@@ -429,8 +429,8 @@ export function HomeTemplate({ logged = false }: HomeProps) {
                 gradientUnits="userSpaceOnUse"
                 gradientTransform="translate(453 306) rotate(90) scale(322.897)"
               >
-                <stop offset="0.438441" stop-color="white" />
-                <stop offset={1} stop-color="white" stop-opacity={0} />
+                <stop offset="0.438441" stopColor="white" />
+                <stop offset={1} stopColor="white" stoppacity={0} />
               </radialgradient>
             </defs>
           </svg>
@@ -485,8 +485,8 @@ export function HomeTemplate({ logged = false }: HomeProps) {
                   y2={47}
                   gradientUnits="userSpaceOnUse"
                 >
-                  <stop stop-color="#005DE2" />
-                  <stop offset={1} stop-color="#003178" />
+                  <stop stopColor="#005DE2" />
+                  <stop offset={1} stopColor="#003178" />
                 </lineargradient>
               </defs>
             </svg>
@@ -522,8 +522,8 @@ export function HomeTemplate({ logged = false }: HomeProps) {
                     y2="46.1551"
                     gradientUnits="userSpaceOnUse"
                   >
-                    <stop stop-color="#3EA521" />
-                    <stop offset={1} stop-color="#14842D" />
+                    <stop stopColor="#3EA521" />
+                    <stop offset={1} stopColor="#14842D" />
                   </lineargradient>
                 </defs>
               </svg>

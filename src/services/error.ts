@@ -25,9 +25,12 @@ export class ForbiddenError extends ApiError {
 }
 
 export class AuthError extends ApiError {
-  override name = 'AuthError';
-  override message = '로그인이 필요한 페이지입니다.';
-  override redirectUrl = '/account/login';
+  constructor(public code: string = '') {
+    super();
+    this.name = 'AuthError';
+    this.message = '로그인이 필요한 페이지입니다.';
+    this.redirectUrl = '/account/login';
+  }
 }
 
 export class LoginError extends ApiError {

@@ -36,6 +36,6 @@ export const getMyQuizReply = async params => {
 
 // 퀴즈 댓글 조회
 export const getQuizReply = async params => {
-  const { data } = await axiosGeneralAPI().get('/api/v1/replies', { params });
+  const { data } = await axiosGeneralAPI().get('/api/v1/reply', { params });
   return data.data;
 };
