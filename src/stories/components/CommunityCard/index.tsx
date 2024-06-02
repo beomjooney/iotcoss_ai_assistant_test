@@ -36,6 +36,7 @@ import StarIcon from '@mui/icons-material/Star';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 import { useQuizFileDownload, useQuizRoungeInfo } from 'src/services/quiz/quiz.queries';
+import { border } from '@mui/system';
 export interface CommunityCardProps {
   /** 게시판 object */
   board: any;
@@ -75,7 +76,7 @@ CommunityCardProps) => {
   const [totalPage, setTotalPage] = useState(1);
   const [postNo, setPostNo] = useState(0);
   let [isLiked, setIsLiked] = useState(false);
-  let [isOnePick, setIsOnePick] = useState(false);
+  let [isOnePicked, setIsOnePicked] = useState(false);
   let [isOpen, setIsOpened] = useState(false);
   let [likeCount, setLikeCount] = useState(0);
   let [onePickCount, setOnePickCount] = useState(0);
@@ -123,19 +124,19 @@ CommunityCardProps) => {
       alert(`원픽은 하나만 선택할 수 있어요.\n기존 원픽을 취소해 주세요.`);
     }
   }, [isError]);
-  useEffect(() => {
-    if (isDeleteOnePick) {
-      setIsOnePick(false);
-      // onePickCount가 0보다 클 때만 감소시킵니다.
-      if (onePickCount > 0) {
-        setOnePickCount(onePickCount - 1);
-      }
-    }
-  }, [isDeleteOnePick]);
+  // useEffect(() => {
+  //   if (isDeleteOnePick) {
+  //     setIsOnePicked(false);
+  //     // onePickCount가 0보다 클 때만 감소시킵니다.
+  //     if (onePickCount > 0) {
+  //       setOnePickCount(onePickCount - 1);
+  //     }
+  //   }
+  // }, [isDeleteOnePick]);
 
   useEffect(() => {
     if (isSuccess) {
-      setIsOnePick(true);
+      setIsOnePicked(true);
       setOnePickCount(onePickCount + 1);
       update({
         beforeOnePick: beforeOnePickInner,
@@ -151,7 +152,7 @@ CommunityCardProps) => {
   useEffect(() => {
     console.log(board);
     setIsLiked(board?.isLiked);
-    setIsOnePick(board?.isOnePicked);
+    setIsOnePicked(board?.isOnePicked);
     setLikeCount(board?.likeCount);
     setReplyCount(board?.replyCount);
     setOnePickCount(board?.onePickCount);
@@ -191,22 +192,51 @@ CommunityCardProps) => {
     }
   };
 
-  const onChangeLike = function (memberUUID: string) {
+  const onChangeLike = function (memberUUID: string, isLiked: boolean, quiz) {
     if (logged) {
-      setIsLiked(!isLiked);
-      if (isLiked) {
-        // onePickCount가 0보다 클 때만 감소시킵니다.
-        if (likeCount > 0) {
-          setLikeCount(likeCount - 1);
-        }
-        onDeleteLikeReply({
+      const newIsOnePicked = !isLiked;
+      console.log(newIsOnePicked);
+      setIsLiked(newIsOnePicked);
+
+      if (newIsOnePicked) {
+        // 좋아요를 누른 경우
+        setLikeCount(prevCount => prevCount + 1);
+        onSaveLikeReply({
           club: selectedQuiz.clubSequence,
           quiz: selectedQuiz.quizSequence,
           memberUUID: memberUUID,
         });
       } else {
-        setLikeCount(likeCount => likeCount + 1);
-        onSaveLikeReply({
+        // 좋아요를 취소한 경우
+        setLikeCount(prevCount => (prevCount > 0 ? prevCount - 1 : 0));
+        onDeleteLikeReply({
+          club: selectedQuiz.clubSequence,
+          quiz: selectedQuiz.quizSequence,
+          memberUUID: memberUUID,
+        });
+      }
+    } else {
+      alert('로그인 후 좋아요를 클릭 할 수 있습니다.');
+    }
+  };
+  const onChangeOnePick = function (memberUUID: string, isOnePicked) {
+    if (logged) {
+      const newIsOnePicked = !isOnePicked;
+      console.log(newIsOnePicked);
+      setIsOnePicked(newIsOnePicked);
+
+      if (newIsOnePicked) {
+        // 좋아요를 누른 경우
+        setOnePickCount(prevCount => prevCount + 1);
+        onSaveOnePick({
+          club: selectedQuiz.clubSequence,
+          quiz: selectedQuiz.quizSequence,
+          memberUUID: memberUUID,
+        });
+      } else {
+        // 좋아요를 취소한 경우
+        setOnePickCount(prevCount => (prevCount > 0 ? prevCount - 1 : 0));
+        onDeleteOnePick({
           club: selectedQuiz.clubSequence,
           quiz: selectedQuiz.quizSequence,
           memberUUID: memberUUID,
@@ -239,44 +269,7 @@ CommunityCardProps) => {
     setFileName(fileName);
     // onFileDownload(key);
   };
-  const onChangeOnePick = function (memberUUID: string) {
-    if (logged) {
-      setIsOnePick(!isOnePick);
-      if (isOnePick) {
-        // onePickCount가 0보다 클 때만 감소시킵니다.
-        if (onePickCount > 0) {
-          setOnePickCount(onePickCount - 1);
-        }
-        onDeleteOnePick({
-          club: selectedQuiz.clubSequence,
-          quiz: selectedQuiz.quizSequence,
-          memberUUID: memberUUID,
-        });
-      } else {
-        setOnePickCount(onePickCount => onePickCount + 1);
-        onSaveOnePick({
-          club: selectedQuiz.clubSequence,
-          quiz: selectedQuiz.quizSequence,
-          memberUUID: memberUUID,
-        });
-      }
-    } else {
-      alert('로그인 후 좋아요를 클릭 할 수 있습니다.');
-    }
-  };
 
-  // const onChangeOnePick = function (postNo: number, memberUUID: string) {
-  //   if (logged) {
-  //     onSaveOnePick({
-  //       club: selectedQuiz.clubSequence,
-  //       quiz: selectedQuiz.quizSequence,
-  //       memberUUID: memberUUID,
-  //     });
-  //     setBeforeOnePickInner(postNo);
-  //   } else {
-  //     alert('로그인 후 원픽을 클릭 할 수 있습니다.');
-  //   }
-  // };
   const onChangeDeleteOnePick = async function (postNo: number) {
     if (logged) {
       await onDeleteOnePick(postNo);
@@ -407,9 +400,10 @@ CommunityCardProps) => {
                       height={21}
                       viewBox="0 0 20 21"
                       onClick={() => {
-                        onChangeOnePick(board?.member?.memberUUID, board?.isOnePick);
+                        onChangeOnePick(board?.member?.memberUUID, isOnePicked);
                       }}
                       fill="none"
+                      // fill={isOnePick ? '#e11837' : ''} // 배경 색상
                       xmlns="http://www.w3.org/2000/svg"
                       className="tw-cursor-pointer tw-flex-grow-0 tw-flex-shrink-0 tw-w-5 tw-h-5 tw-relative"
                       preserveAspectRatio="none"
@@ -417,13 +411,14 @@ CommunityCardProps) => {
                       <g clipPath="url(#clip0_801_17810)">
                         <path
                           d="M12.5144 7.1812L12.6386 7.40396L12.8874 7.46028L17.1079 8.41576C17.1079 8.41577 17.108 8.41579 17.108 8.4158C17.1723 8.43042 17.2345 8.46297 17.2875 8.5131C17.3408 8.56343 17.3828 8.6298 17.4068 8.70693L17.928 8.54495L17.4068 8.70693C17.4308 8.78414 17.4351 8.86731 17.419 8.94741C17.4029 9.02737 17.3675 9.09908 17.3188 9.15615C17.3187 9.15617 17.3187 9.1562 17.3187 9.15622C17.3187 9.15625 17.3186 9.15628 17.3186 9.15631L14.4416 12.5209L14.2837 12.7056L14.3071 12.9475L14.7426 17.4369L14.7426 17.437C14.7506 17.5189 14.7377 17.6008 14.7063 17.6742C14.6749 17.7474 14.6271 17.8077 14.5701 17.8509C14.5134 17.894 14.4492 17.9191 14.3842 17.9263C14.3193 17.9336 14.253 17.9231 14.1913 17.8947L14.1912 17.8946L10.2393 16.0745L10.0003 15.9644L9.76124 16.0745L5.80943 17.8946L5.80932 17.8947C5.74757 17.9231 5.68127 17.9336 5.61638 17.9263C5.55142 17.9191 5.4872 17.894 5.43045 17.8509L5.08492 18.306L5.43045 17.8509C5.3735 17.8077 5.32564 17.7474 5.29429 17.6742C5.2629 17.6008 5.25001 17.5189 5.25797 17.437L5.25798 17.4369L5.69344 12.9475L5.7169 12.7056L5.55894 12.5209L2.68179 9.15691L2.68164 9.15673C2.63278 9.09966 2.59724 9.02786 2.58106 8.94777C2.56488 8.86763 2.56919 8.7844 2.59319 8.70712C2.61717 8.62993 2.65924 8.56352 2.71253 8.51316C2.76565 8.46297 2.82798 8.43042 2.89236 8.41584C2.89237 8.41584 2.89237 8.41584 2.89237 8.41584L7.11323 7.46028L7.36198 7.40396L7.48617 7.1812L9.65954 3.28262C9.65955 3.2826 9.65957 3.28257 9.65958 3.28255C9.69764 3.21433 9.7504 3.16083 9.81016 3.12494L9.51599 2.63505L9.81016 3.12494C9.86973 3.08917 9.9352 3.07143 10.0003 3.07143C10.0654 3.07143 10.1309 3.08917 10.1904 3.12494C10.2502 3.16084 10.303 3.21437 10.341 3.28262L12.5144 7.1812Z"
-                          stroke="#555555"
+                          // stroke="#555555"
+                          stroke={isOnePicked ? '#e11837' : '#555555'} // 배경 색상
                           strokeWidth="1.14286"
                         />
                         <path
                           d="M9.3751 13.9282V13.0092L9.37563 9.39533H8.28564V8.69263C8.88758 8.58452 9.30242 8.43781 9.68473 8.21387H10.5714V13.0092V13.9282H9.3751Z"
                           // fill="#555555"
-                          fill={isOnePick ? '#e11837' : ''} // 배경 색상
+                          fill={isOnePicked ? '#e11837' : ''} // 배경 색상
                         />
                       </g>
                       <defs>
@@ -433,7 +428,7 @@ CommunityCardProps) => {
                       </defs>
                     </svg>
                     <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#555]">
-                      {board?.onePickCount}
+                      {onePickCount}
                     </p>
                   </div>
                   <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-1">
@@ -444,7 +439,7 @@ CommunityCardProps) => {
                       fill="" // 배경을 빨간색으로 설정
                       xmlns="http://www.w3.org/2000/svg"
                       onClick={() => {
-                        onChangeLike(board?.member?.memberUUID, board?.isLiked);
+                        onChangeLike(board?.member?.memberUUID, isLiked, board?.quizSequence);
                       }}
                       className="tw-cursor-pointer tw-flex-grow-0 tw-flex-shrink-0 tw-w-5 tw-h-5 tw-relative"
                       preserveAspectRatio="xMidYMid meet"
