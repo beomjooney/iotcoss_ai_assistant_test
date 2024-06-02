@@ -293,6 +293,9 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                     </div>
                     {(selectedQuiz.myAnswerStatus === '0000' || selectedQuiz.myAnswerStatus === '0001') && (
                       <div className="tw-mt-4 border tw-rounded-lg tw-p-5 tw-text-center">
+                        <div className="tw-mt-4 tw-pt-4 tw-text-base tw-text-center">
+                          <p>아직 해당 퀴즈를 풀지 않았어요.! 퀴즈를 풀고 다른 클럽원들의 답변도 확인해보세요.!</p>
+                        </div>
                         <button
                           type="button"
                           onClick={() => {
