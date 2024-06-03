@@ -18,7 +18,7 @@ import {
   seminarList,
   seminarMeFavoriteList,
   seminarMeList,
-  seminarMeWaitList,
+  clubAboutDetail,
   seminarParticipantList,
 } from './seminars.api';
 
@@ -154,6 +154,16 @@ export const useClubQuizCrewManage = (params, onSuccess?: (data: any) => void, o
 export const useSeminarDetail = (id, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
   // return useQuery<SeminarContent, Error>(QUERY_KEY_FACTORY('SEMINAR').detail(id), () => seminarDetail(id), {
   return useQuery<any, Error>(QUERY_KEY_FACTORY('SEMINAR').detail(id), () => seminarDetail(id), {
+    onSuccess,
+    onError,
+    refetchOnWindowFocus: true,
+    enabled: !!id,
+  });
+};
+
+export const useClubAboutDetail = (id, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
+  // return useQuery<SeminarContent, Error>(QUERY_KEY_FACTORY('SEMINAR').detail(id), () => seminarDetail(id), {
+  return useQuery<any, Error>(QUERY_KEY_FACTORY('QUIZ_ABOUT').detail(id), () => clubAboutDetail(id), {
     onSuccess,
     onError,
     refetchOnWindowFocus: true,

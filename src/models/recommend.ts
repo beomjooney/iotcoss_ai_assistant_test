@@ -132,6 +132,10 @@ export interface RecommendContent {
   seminarId?: string;
   /** 나의 참여 현황*/
   myParticipant?: SeminarParticipant;
+  /** 클럽 상태 */
+  clubStatus?: string;
+  /** 클럽 멤버 상태 */
+  clubMemberStatus?: string;
 }
 export interface SeminarContent {
   /** 세미나 아이디 */

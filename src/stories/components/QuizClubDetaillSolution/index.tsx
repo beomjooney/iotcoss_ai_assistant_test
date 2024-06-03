@@ -37,10 +37,11 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
   const { mutate: onSaveLike, isSuccess } = useSaveLike();
   const { mutate: onDeleteLike } = useDeleteLike();
 
-  const [expandedItems, setExpandedItems] = useState(Array(quizList?.length).fill(false));
+  const [expandedItems, setExpandedItems] = useState(() => Array(quizList?.length || 0).fill(false));
   const [expandedQuizzData, setExpandedQuizzData] = useState(
-    quizList?.map(item => Array(item.makeupQuizzes.length).fill(false)),
+    () => quizList?.map(item => Array(item?.makeupQuizzes?.length || 0).fill(false)) || [],
   );
+
   console.log(contents);
   const toggleExpand = index => {
     setExpandedItems(prev => {
@@ -524,7 +525,11 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                                           <div className="tw-flex-auto tw-w-9/12 tw-px-5">
                                             <div
                                               className={`tw-font-medium tw-text-[#9ca5b2] tw-text-sm ${
-                                                !expandedQuizzData[index][quizzIndex] ? 'tw-line-clamp-2' : ''
+                                                expandedQuizzData &&
+                                                expandedQuizzData[index] &&
+                                                !expandedQuizzData[index][quizzIndex]
+                                                  ? 'tw-line-clamp-2'
+                                                  : ''
                                               }`}
                                             >
                                               {item?.answer?.text}
@@ -536,7 +541,9 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                                                 onClick={() => toggleExpandQuizzData(index, quizzIndex)}
                                                 className="tw-cursor-pointer tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-bold tw-text-right tw-text-[#9ca5b2]"
                                               >
-                                                {expandedQuizzData[index][quizzIndex] ? '접기' : '자세히보기'}
+                                                {expandedQuizzData[index] && expandedQuizzData[index][quizzIndex]
+                                                  ? '접기'
+                                                  : '자세히보기'}
                                               </p>
                                               <svg
                                                 width={7}
@@ -795,144 +802,6 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
             </div>
           </div>
         </div>
-        {/* )}
-        {activeTab === 'community' && ( */}
-        {/* <>
-          <div className="tw-mt-5 tw-h-[52px] tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-[#f6f7fb]">
-            <div className="tw-flex tw-justify-start tw-items-center tw-absolute tw-left-5 tw-top-[13px] tw-gap-4">
-              <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2 tw-px-2 tw-py-1 tw-rounded tw-bg-[#e11837]">
-                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-font-bold tw-text-left tw-text-white">
-                  공지
-                </p>
-              </div>
-              <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-medium tw-text-left tw-text-[#31343d]">
-                공지사항입니다. 학생들은 꼭 읽어주세요! 퀴즈 진행할 때 해당내용 참고하여 진행바랍니다.
-              </p>
-            </div>
-            <div className="tw-flex tw-justify-end tw-items-center tw-absolute tw-left-[870px] tw-top-3 tw-gap-5">
-              <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-right tw-text-[#9ca5b2]">
-                24.06.12ㅣ18:00:00
-              </p>
-              <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
-                <img className="tw-flex-grow-0 tw-flex-shrink-0" src="/assets/images/quiz/ellipse_209_2.png" />
-                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-black">양황규 교수</p>
-              </div>
-            </div>
-          </div>
-          <div className="tw-flex tw-justify-between tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-3">
-            <RadioGroup
-              className="tw-items-center tw-py-5 tw-gap-3"
-              value={selectedOption}
-              onChange={handleChangeQuiz}
-              row
-            >
-              <p className="tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d] tw-mb-1">
-                정렬 :
-              </p>
-              <FormControlLabel
-                value="latest"
-                control={
-                  <Radio
-                    sx={{
-                      color: '#ced4de',
-                      '&.Mui-checked': { color: '#e11837' },
-                    }}
-                    icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
-                    checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
-                  />
-                }
-                label={
-                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                    최신순
-                  </p>
-                }
-              />
-              <FormControlLabel
-                value="oldest"
-                control={
-                  <Radio
-                    sx={{
-                      color: '#ced4de',
-                      '&.Mui-checked': { color: '#e11837' },
-                    }}
-                    icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
-                    checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
-                  />
-                }
-                label={
-                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                    좋아요순
-                  </p>
-                }
-              />
-            </RadioGroup>
-            <p className="tw-flex tw-items-center tw-justify-end tw-text-center tw-py-5">
-              <div className="tw-flex tw-items-center tw-justify-center tw-w-full  tw-gap-3">
-                <TextField
-                  id="outlined-basic"
-                  label=""
-                  variant="outlined"
-                  InputProps={{
-                    style: { height: '40px', width: '250px' },
-                    startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
-                  }}
-                  onKeyPress={e => {
-                    if (e.key === 'Enter') {
-                      // Add your submit function here
-                    }
-                  }}
-                />
-                <button className="tw-w-[60px] tw-bg-[#E9ECF2] tw-py-[11px] tw-px-14 tw-px-4 tw-h-full tw-rounded tw-border tw-border-secondary tw-text-sm">
-                  검색
-                </button>
-              </div>
-            </p>
-          </div>
-          <div className="border border-secondary tw-px-10 tw-py-5 tw-rounded-xl">
-            <div>
-              {answerContents.length === 0 ? (
-                <div className="tw-text-center  tw-w-full border tw-rounded-md tw-my-10">
-                  <div className="tw-p-10  tw-mb-5">
-                    <div className="tw-p-10">데이터가 없습니다.</div>
-                  </div>
-                </div>
-              ) : (
-                answerContents.map((item, index) => {
-                  return (
-                    <CommunityCard
-                      key={index}
-                      board={item}
-                      // writer={memberSample}
-                      className={cx('reply-container__item')}
-                      beforeOnePick={beforeOnePick}
-                      setBeforeOnePick={setBeforeOnePick}
-                      // memberId={memberId}
-                      // onPostDeleteSubmit={onPostDeleteSubmit}
-                    />
-                  );
-                })
-              )}
-            </div>
-          </div>
-          <div className="tw-grid tw-grid-cols-10 tw-items-center tw-gap-3 tw-py-5">
-            <div className="tw-col-span-9">
-              <div className="tw-form-floating tw-w-full tw-pt-1">
-                <textarea
-                  className="tw-form-control tw-w-full"
-                  placeholder="Leave a comment here"
-                  id="floatingTextarea"
-                  style={{ height: '60px', resize: 'none', padding: 10 }}
-                ></textarea>
-              </div>
-            </div>
-            <div className="tw-col-span-1">
-              <button className="tw-bg-[#31343d] tw-py-[20px] tw-w-full tw-h-full tw-rounded border border-secondary tw-text-sm tw-text-center tw-text-white">
-                글쓰기
-              </button>
-            </div>
-          </div>
-        </> */}
-        {/* )} */}
       </div>
       <Modal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)} title="퀴즈풀러가기" maxWidth="900px">
         <div className={cx('seminar-check-popup')}>

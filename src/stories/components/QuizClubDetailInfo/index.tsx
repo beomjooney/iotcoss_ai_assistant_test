@@ -11,6 +11,25 @@ interface QuizClubDetailInfoProps {
   selectedJobName: string;
 }
 
+const getButtonText = status => {
+  switch (status) {
+    case '0002':
+      return '가입완료';
+    case '0200':
+      return '개설 예정';
+    case '0210':
+      return '개설 연기';
+    case '0220':
+      return '취소';
+    case '0300':
+      return '모집중';
+    case '0310':
+      return '모집완료';
+    case '0500':
+      return '완료';
+  }
+};
+
 const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
   clubData,
   border,
@@ -22,7 +41,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
 }) => {
   const borderStyle = border ? 'border border-[#e9ecf2] tw-mt-14' : '';
   const studyWeekCount = parseInt(clubData?.studyWeekCount, 10);
-  const totalMeetings = studyWeekCount * clubData?.studyCycle.length;
+  const totalMeetings = studyWeekCount * clubData?.studyCycle?.length;
   return (
     <div className={`tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white ${borderStyle}`}>
       <div className="tw-px-[108.5px] tw-pt-[35px]">
@@ -63,7 +82,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
           </p>
           <p className="tw-absolute tw-left-[305.38px] tw-top-[118.13px] tw-text-sm tw-text-left tw-text-black">
             <span className="tw-text-sm tw-text-left tw-text-black">
-              학습 주기 : {clubData?.studyWeekCount}주 {clubData?.studyCycle.toString()}요일 (총 {totalMeetings}회)
+              학습 주기 : {clubData?.studyWeekCount}주 {clubData?.studyCycle?.toString()}요일 (총 {totalMeetings}회)
             </span>
             <br />
             <span className="tw-text-sm tw-text-left tw-text-black">
@@ -106,17 +125,17 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
           <div className="tw-flex tw-justify-start tw-items-center tw-absolute tw-left-[305.38px] tw-top-[231px] tw-gap-[7px]">
             <img
               className="tw-flex-grow-0 tw-flex-shrink-0 border tw-rounded-full"
-              src={user.profileImageUrl}
+              src={user?.profileImageUrl}
               width="25"
               height="25"
             />
             <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">
-              {user.name ? user.name : user.nickname} 교수
+              {user?.name ? user?.name : user?.nickname} 교수
             </p>
           </div>
           <div className="tw-flex tw-justify-start tw-items-center tw-absolute tw-left-[87%] tw-top-[220.5px] tw-overflow-hidden tw-gap-[7px] tw-px-[24.5px] tw-py-[10.0625px] tw-rounded-[3.5px] tw-bg-[#e11837]">
             <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[12.25px] tw-font-bold tw-text-center tw-text-white">
-              참여하기
+              {getButtonText(clubData?.clubStatus)}
             </p>
           </div>
         </div>
@@ -173,11 +192,11 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
         <div className="tw-bg-[#f6f7fb] tw-w-full tw-overflow-hidden tw-px-[108.13px] tw-pt-[40px]">
           <div className=" tw-rounded-[8.75px] tw-py-[40px]">
             <div className="tw-flex tw-items-start tw-gap-[16px]">
-              <img className="border tw-rounded-full" src={user.profileImageUrl} width="105" height="105" />
+              <img className="border tw-rounded-full" src={user?.profileImageUrl} width="105" height="105" />
               <div>
                 <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-[14px]  tw-gap-3">
                   <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[21.875px] tw-font-bold tw-text-left tw-text-black">
-                    {user.name ? user.name : user.nickname} 교수님
+                    {user?.name ? user?.name : user?.nickname} 교수님
                   </p>
 
                   <div className="tw-flex tw-justify-start tw-items-start tw-flex-grow-0 tw-flex-shrink-0">
@@ -195,7 +214,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
                     </div>
                   </div>
                 </div>
-                <p className="tw-text-[12.25px] tw-text-[#6a7380]">{user.position}</p>
+                <p className="tw-text-[12.25px] tw-text-[#6a7380]">{user?.position}</p>
 
                 <div className="tw-flex tw-gap-2.5 tw-mt-3">
                   {user?.skills?.map((tag, index) => (
@@ -204,7 +223,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
                     </div>
                   ))}
                 </div>
-                <p className="tw-text-[12.25px] tw-text-black tw-mt-3">{user.introductionMessage}</p>
+                <p className="tw-text-[12.25px] tw-text-black tw-mt-3">{user?.introductionMessage}</p>
               </div>
             </div>
           </div>
@@ -254,8 +273,8 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
             <div className="tw-flex tw-flex-col">
               <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-5">퀴즈 전체 일정</p>
               <p className="tw-text-[12.25px] tw-text-left tw-text-black">
-                {clubData?.startAt} / 주 {clubData?.studyWeekCount.toString()}회({clubData?.studyCycle.toString()}) 총{' '}
-                {selectedQuizzes.length}개 퀴즈
+                {clubData?.startAt} / 주 {clubData?.studyWeekCount?.toString()}회({clubData?.studyCycle?.toString()}) 총{' '}
+                {selectedQuizzes?.length}개 퀴즈
               </p>
             </div>
           </div>
@@ -271,12 +290,12 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
           <div className="tw-col-start-2 tw-col-end-13">
             <div className="tw-flex tw-flex-col">
               <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-5">우리 클럽 대표퀴즈</p>
-              {selectedQuizzes.slice(0, 3).map((quiz, index) => (
+              {selectedQuizzes?.slice(0, 3).map((quiz, index) => (
                 <div key={index} className="tw-mt-3.5 tw-flex tw-items-center tw-gap-3">
                   <div className="tw-bg-[#e11837] tw-rounded-[3.5px] tw-px-[7px] tw-py-[1.75px]">
                     <p className="tw-text-[10.5px] tw-font-bold tw-text-white">대표 {index + 1}</p>
                   </div>
-                  <p className="tw-text-sm tw-text-black">{quiz.question}</p>
+                  <p className="tw-text-sm tw-text-black">{quiz.question || quiz.content}</p>
                 </div>
               ))}
             </div>
