@@ -84,7 +84,14 @@ export const quizAnswerDetail = async params => {
     `/api/v1/clubs/${params.club}/quizzes/${params.quiz}/answers-with-replies`,
     params.data,
   );
-  // const { data } = await axiosGeneralAPI().get(`/api/v1/club/quizzes/${params.id}/answers`, { params });
+  return data.data;
+};
+
+export const quizAnswerMemberDetail = async params => {
+  const { data } = await axiosGeneralAPI().get(
+    `/api/v1/clubs/${params.club}/quizzes/${params.quiz}/member-answers`,
+    params.data,
+  );
   return data.data;
 };
 

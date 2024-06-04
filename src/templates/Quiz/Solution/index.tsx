@@ -41,7 +41,6 @@ export interface QuizSolutionTemplateProps {
 
 export function QuizSolutionTemplate({ id }: QuizSolutionTemplateProps) {
   const { user } = useStore();
-  // const { clubSequence } = router.query;
   const router = useRouter();
   const { clubSequence } = router.query;
   console.log(clubSequence);

@@ -99,6 +99,28 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
     setPage(value);
   };
 
+  const getButtonText = status => {
+    console.log(status);
+    switch (status) {
+      case '0002':
+        return '가입완료';
+      case '0200':
+        return '개설 예정';
+      case '0210':
+        return '개설 연기';
+      case '0220':
+        return '취소';
+      case '0300':
+        return '모집중';
+      case '0310':
+        return '모집완료';
+      case '4000':
+        return '진행중';
+      case '0500':
+        return '완료';
+    }
+  };
+
   useDidMountEffect(() => {
     if (selectedQuiz) refetchReply();
   }, [selectedQuiz]);
@@ -193,16 +215,13 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                     <p className="tw-text-sm tw-text-black">{contents?.club?.leaderNickname}</p>
                   </div>
                   <div className="tw-flex tw-gap-4">
-                    <div
-                      className="tw-bg-gray-400 tw-rounded-[3.5px] tw-px-[24.5px] tw-py-[10.0625px] tw-cursor-pointer"
-                      onClick={() => {
-                        setIsModalOpen(true);
-                      }}
-                    >
-                      <p className="tw-text-[12.25px] tw-font-bold tw-text-white tw-text-center">학습진행중</p>
+                    <div className="tw-bg-gray-400 tw-rounded-[3.5px]  tw-w-[130px] tw-py-[10.0625px] tw-cursor-pointer">
+                      <p className="tw-text-[12.25px] tw-font-bold tw-text-white tw-text-center">
+                        {getButtonText(contents?.club?.clubStatus)}
+                      </p>
                     </div>
                     <div
-                      className="tw-bg-[#e11837] tw-rounded-[3.5px] tw-px-[24.5px] tw-py-[10.0625px] tw-cursor-pointer"
+                      className="tw-bg-[#e11837] tw-rounded-[3.5px] tw-w-[130px] tw-py-[10.0625px] tw-cursor-pointer"
                       onClick={() => router.push('/quiz/' + `${contents?.club?.clubSequence}`)}
                     >
                       <p className="tw-text-[12.25px] tw-font-bold tw-text-white tw-text-center">퀴즈상세보기</p>
@@ -271,7 +290,17 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                               지식컨텐츠 보기
                             </button>
                             <button
-                              onClick={() => window.open(selectedQuiz.contentUrl, '_blank')}
+                              onClick={() => {
+                                router.push(
+                                  {
+                                    pathname: `/quiz/all-answers/{contents?.club?.clubSequence}`,
+                                    query: {
+                                      clubSequence: selectedQuiz?.quizSequence,
+                                    },
+                                  },
+                                  `/quiz/all-answers/${contents?.club?.clubSequence}`,
+                                );
+                              }}
                               className="border border-danger tw-bg-white tw-text-black tw-p-1.5 tw-rounded tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-font-bold tw-flex tw-items-center"
                             >
                               전체 답변보기
