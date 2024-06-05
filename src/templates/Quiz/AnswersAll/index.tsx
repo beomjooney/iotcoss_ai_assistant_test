@@ -1,18 +1,14 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import React, { useEffect, useRef, useState } from 'react';
-import { CommunityCard } from 'src/stories/components';
-import { RecommendContent } from 'src/models/recommend';
-import { useQuizAnswerMemberDetail, useQuizRankDetail, useQuizRoungeInfo } from 'src/services/quiz/quiz.queries';
-import TextField from '@mui/material/TextField';
-import SearchIcon from '@mui/icons-material/Search';
+import React, { useEffect, useState } from 'react';
+import {
+  useQuizAnswerMemberDetail,
+  useQuizGetProgress,
+  useQuizRoungeInfo,
+  useQuizGetAnswer,
+} from 'src/services/quiz/quiz.queries';
 import { useRouter } from 'next/router';
 import Avatar from '@mui/material/Avatar';
-/** import icon */
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
-import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
-import StarBorderIcon from '@mui/icons-material/StarBorder';
 
 /** import pagenation */
 import Pagination from '@mui/material/Pagination';
@@ -26,6 +22,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import MentorsModal from 'src/stories/components/MentorsModal';
 
 const cx = classNames.bind(styles);
 export interface QuizAnswersAllDetailTemplateProps {
@@ -36,32 +33,19 @@ export interface QuizAnswersAllDetailTemplateProps {
 export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplateProps) {
   const router = useRouter();
   const [quizListData, setQuizListData] = useState<any[]>([]);
-  const [contents, setContents] = useState<RecommendContent[]>([]);
-  const [rankContents, setRankContents] = useState<RecommendContent[]>([]);
-  const [answerContents, setAnswerContents] = useState<RecommendContent[]>([]);
-  const [bestAnswerContents, setBestAnswerContents] = useState<RecommendContent[]>([]);
-  const [myAnswerContents, setMyAnswerContents] = useState<RecommendContent[]>([]);
+  const [contents, setContents] = useState<any>([]);
+  const [quizProgressData, setQuizProgressData] = useState<any>([]);
+  const [clubQuizThreads, setClubQuizThreads] = useState<any>([]);
   const [beforeOnePick, setBeforeOnePick] = useState(1);
   const [keyWorld, setKeyWorld] = useState('');
   const [totalElements, setTotalElements] = useState(0);
   const [selectedValue, setSelectedValue] = useState('');
   const [page, setPage] = useState(1);
-  const [params, setParams] = useState<paramProps>({ id, page });
-  let [isLiked, setIsLiked] = useState(false);
+  const [params, setParams] = useState<any>({ id, page });
+  const [quizParams, setQuizParams] = useState<any>({});
   const [totalPage, setTotalPage] = useState(1);
-
   const [selectedQuiz, setSelectedQuiz] = useState(null);
-
-  const handleQuizClick = quiz => {
-    console.log(quiz);
-    setSelectedQuiz(quiz);
-
-    setParams({
-      club: id,
-      quiz: quiz?.quizSequence,
-      data: { page, keyword: keyWorld },
-    });
-  };
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { isFetched: isParticipantListFetched, data } = useQuizRoungeInfo(id, data => {
     console.log('first get data');
@@ -76,14 +60,17 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
     });
   });
 
-  useEffect(() => {
-    if (contents?.clubQuizzes?.length > 0) {
-      console.log('content!!');
-      console.log(contents.clubQuizzes[0]);
-      console.log(contents.clubQuizzes[0].question);
-      setSelectedQuiz(contents.clubQuizzes[0]);
-    }
-  }, [contents]);
+  const { isFetched: isQuizGetanswer, refetch: refetchQuizAnswer } = useQuizGetAnswer(quizParams, data => {
+    console.log('second get data');
+    console.log('data', data);
+    setClubQuizThreads(data);
+  });
+
+  const { isFetched: isQuizAnswer, refetch: refetchQuizPrgress } = useQuizGetProgress(params, data => {
+    console.log('second get data');
+    console.log('data', data);
+    setQuizProgressData(data);
+  });
 
   const {
     isFetched: isQuizAnswerListFetched,
@@ -97,7 +84,6 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
   useEffect(() => {
     if (isSuccess) {
       console.log('quizAnswerData');
-      console.log(quizAnswerData);
       console.log(quizAnswerData.contents);
       setQuizListData(quizAnswerData.contents || []);
       setTotalPage(quizAnswerData.totalPages);
@@ -112,34 +98,39 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
     });
   }, [page]);
 
+  useEffect(() => {
+    if (contents?.clubQuizzes?.length > 0) {
+      console.log('content!!');
+      console.log(contents.clubQuizzes[0]);
+      console.log(contents.clubQuizzes[0].question);
+      setSelectedQuiz(contents.clubQuizzes[0]);
+    }
+  }, [contents]);
+
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
 
-  const getButtonText = status => {
-    switch (status) {
-      case '0002':
-        return '가입완료';
-      case '0200':
-        return '개설 예정';
-      case '0210':
-        return '개설 연기';
-      case '0220':
-        return '취소';
-      case '0300':
-        return '모집중';
-      case '0310':
-        return '모집완료';
-      case '4000':
-        return '진행중';
-      case '0500':
-        return '완료';
-    }
+  const handleClick = (memberUUID: string, quizSequence: number) => {
+    console.log(memberUUID, quizSequence);
+    setIsModalOpen(true);
+    setQuizParams({
+      club: id,
+      quiz: selectedQuiz?.quizSequence,
+      memberUUID: memberUUID,
+    });
   };
 
   useDidMountEffect(() => {
-    if (selectedQuiz) refetchReply();
+    if (selectedQuiz) {
+      refetchReply();
+      refetchQuizPrgress();
+    }
   }, [selectedQuiz]);
+
+  useDidMountEffect(() => {
+    refetchQuizAnswer();
+  }, [quizParams]);
 
   const handleQuizChange = event => {
     const value = event.target.value;
@@ -151,6 +142,12 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
       if (!selectedSession.isPublished) {
         alert('퀴즈가 공개되지 않았습니다.');
         setSelectedValue(''); // Reset to the default value
+        setParams({
+          club: id,
+          quiz: data.clubQuizzes[0]?.quizSequence,
+          data: { page, keyword: keyWorld },
+        });
+        setSelectedQuiz(contents?.clubQuizzes[0]);
         return;
       } else {
         setSelectedValue(selectedSession.publishDate.split('-').slice(1).join('-'));
@@ -165,6 +162,13 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
 
     setSelectedQuiz(selectedSession);
     console.log(selectedSession);
+  };
+
+  const onFileDownload = function (key: string, fileName: string) {
+    console.log(key);
+    setKey(key);
+    setFileName(fileName);
+    // onFileDownload(key);
   };
 
   return (
@@ -252,93 +256,37 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
                   </select>
                 </div>
               </div>
-              <div className="tw-p-4"></div>
+              <div className="tw-p-4  tw-flex tw-items-center">
+                <p className="tw-px-3 tw-text-black tw-font-bold">
+                  퀴즈제출 : <span className="tw-text-red-500">{quizProgressData?.solvedMemberCount}명</span> /{' '}
+                  {quizProgressData?.totalMemberCount}명
+                </p>
+                <p className="tw-px-3 tw-text-black tw-font-bold">
+                  오늘 제출된 답변 :{' '}
+                  <span className="tw-text-red-500">{quizProgressData?.todaySolvedMemberCount}개</span>
+                </p>
+                <p className="tw-px-3 tw-text-black tw-font-bold">
+                  피드백 현황 : <span className="tw-text-red-500">{quizProgressData?.feedbackCount}개 </span>/{' '}
+                  {quizProgressData?.totalMemberCount}개 (
+                  {quizProgressData?.totalMemberCount - quizProgressData?.feedbackCount}개 남음)
+                </p>
+              </div>
             </div>
 
             {isParticipantListFetched && (
               <>
-                <div className="tw-py-5 tw-p-4 border tw-rounded-lg tw-text-center">
-                  <p>{selectedQuiz?.question}</p>
-                </div>
-
-                <div className="tw-h-[280] tw-relative tw-overflow-hidden tw-rounded-[8.75px] tw-bg-white border border-[#e9ecf2] tw-grid tw-grid-cols-3 tw-gap-4">
-                  <div className="tw-col-span-1">
-                    <img src={contents?.club?.clubImageUrl} width={320} height={320} className="tw-object-cover" />
-                  </div>
-                  <div className="tw-col-span-2 tw-flex tw-flex-col tw-py-4 tw-pr-4">
-                    <div className="tw-col-span-2 tw-flex tw-flex-col tw-py-4 tw-pr-4">
-                      <div className="tw-flex tw-gap-[7px]">
-                        <div className="tw-bg-[#d7ecff] tw-rounded-[3.5px] tw-px-[10.5px] tw-py-[3.5px]">
-                          <p className="tw-text-[12.25px] tw-text-[#235a8d]">{contents?.club?.jobGroups[0].name}</p>
-                        </div>
-                        <div className="tw-bg-[#e4e4e4] tw-rounded-[3.5px] tw-px-[10.5px] tw-py-[3.5px]">
-                          <p className="tw-text-[12.25px] tw-text-[#313b49]">{contents?.club?.jobLevels[0].name}</p>
-                        </div>
-                        <div className="tw-bg-[#ffdede] tw-rounded-[3.5px] tw-px-[10.5px] tw-py-[3.5px]">
-                          <p className="tw-text-[12.25px] tw-text-[#b83333]">{contents?.club?.jobs[0].name}</p>
-                        </div>
-                        <div className="tw-flex-1"></div>{' '}
-                        {/* 빈 div로 flex-grow를 추가하여 버튼을 오른쪽으로 밀어냅니다. */}
-                        <button
-                          className=""
-                          onClick={() => {
-                            onChangeLike(contents?.club?.clubSequence);
-                          }}
-                        >
-                          {isLiked ? <StarIcon color="primary" /> : <StarBorderIcon color="disabled" />}
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="tw-text-[20.5px] tw-font-bold tw-text-black tw-mt-4">
-                      {contents?.club?.clubName}
-                    </div>
-                    <p className="tw-text-[12.25px] tw-mt-2 tw-text-black">{contents?.club?.description}</p>
-                    <div className="tw-mt-4">
-                      <p className="tw-text-sm tw-text-black">
-                        학습 주기 : 매주 {contents?.club?.studyCycle.toString()}요일 (총 {contents?.club?.studyCycle}회)
-                      </p>
-                      <p className="tw-text-sm tw-text-black">
-                        학습 기간 : {contents?.club?.weekCount}주 ({contents?.club?.startAt.split(' ')[0]} ~{' '}
-                        {contents?.club?.endAt.split(' ')[0]})
-                      </p>
-                      <p className="tw-text-sm tw-text-black">
-                        참여 현황 : {contents?.club?.publishedCount} / {contents?.club?.studyCount} 학습중
-                      </p>
-                      <p className="tw-text-sm tw-text-black">참여 인원 : {contents?.club?.recruitedMemberCount}명</p>
-                    </div>
-                    <div className="tw-flex tw-items-center tw-mt-auto tw-justify-between tw-w-full">
-                      <div className="tw-flex tw-items-center">
-                        <img
-                          src={contents?.club?.leaderProfileImageUrl}
-                          width={28}
-                          className="tw-mr-2 border tw-rounded-full"
-                        />
-                        <p className="tw-text-sm tw-text-black">{contents?.club?.leaderNickname}</p>
-                      </div>
-                      <div className="tw-flex tw-gap-4">
-                        <div className="tw-bg-gray-400 tw-rounded-[3.5px]  tw-w-[130px] tw-py-[10.0625px] tw-cursor-pointer">
-                          <p className="tw-text-[12.25px] tw-font-bold tw-text-white tw-text-center">
-                            {getButtonText(contents?.club?.clubStatus)}
-                          </p>
-                        </div>
-                        <div
-                          className="tw-bg-[#e11837] tw-rounded-[3.5px] tw-w-[130px] tw-py-[10.0625px] tw-cursor-pointer"
-                          onClick={() => router.push('/quiz/' + `${contents?.club?.clubSequence}`)}
-                        >
-                          <p className="tw-text-[12.25px] tw-font-bold tw-text-white tw-text-center">퀴즈상세보기</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                <div className="tw-text-black tw-font-bold tw-py-10 tw-p-4 border tw-rounded-lg tw-text-center tw-mb-4">
+                  <p>Q. {selectedQuiz?.question}</p>
                 </div>
 
                 <TableContainer className="tw-py-5" aria-label="simple table" style={{ tableLayout: 'fixed' }}>
                   <Table style={{ width: '100%' }}>
                     <TableHead style={{ backgroundColor: '#F6F7FB' }}>
                       <TableRow>
-                        <TableCell align="center">등록순</TableCell>
-                        <TableCell align="center" width={120}>
+                        <TableCell align="center" width={100}>
+                          등록순
+                        </TableCell>
+                        <TableCell align="center" width={150}>
                           이름
                         </TableCell>
                         <TableCell align="center" width={400}>
@@ -358,14 +306,13 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
                             <TableCell align="center" component="th" scope="row">
                               <div className="tw-flex tw-items-center tw-gap-3 tw-text-black">
                                 <img
-                                  className={info?.member?.profileImageUrl ? '' : 'tw-opacity-50'}
-                                  src="/assets/images/quiz/아그리파_1.png"
-                                  alt="아그리파"
+                                  className="border tw-rounded-full tw-w-8 tw-h-8"
+                                  src={info?.member?.profileImageUrl}
                                 />
                                 <div className="tw-text-black">{info?.member?.nickname}</div>
                               </div>
                             </TableCell>
-                            <TableCell padding="none" align="center" component="th" scope="row">
+                            <TableCell padding="none" align="left" component="th" scope="row">
                               <div className="tw-text-black">{info?.text}</div>
                             </TableCell>
                             <TableCell padding="none" align="center" component="th" scope="row">
@@ -374,9 +321,9 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
                             <TableCell padding="none" align="center" component="th" scope="row">
                               <button
                                 className="tw-w-24 max-lg:tw-mr-1 tw-bg-black tw-rounded-md tw-text-xs tw-text-white tw-py-2.5 tw-px-4"
-                                onClick={() => (location.href = '/quiz-my')}
+                                onClick={() => handleClick(info?.member?.memberUUID, info?.quizSequence)}
                               >
-                                AI답변보기
+                                더보기
                               </button>
                             </TableCell>
                           </TableRow>
@@ -392,6 +339,110 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
             </div>
           </div>
         </div>
+
+        <MentorsModal title={'상세 답변보기'} isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
+          {isQuizGetanswer && (
+            <div className="tw-rounded-xl">
+              <div className="tw-bg-[#F6F7FB] tw-flex tw-items-center tw-px-4 max-lg:tw-p-3 tw-py-4 tw-rounded-t-xl">
+                <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
+                  <img
+                    className="tw-w-10 tw-h-10 border tw-rounded-full"
+                    src={clubQuizThreads?.member?.profileImageUrl}
+                  />
+                  <div className="tw-text-xs tw-text-left tw-text-black">{clubQuizThreads?.member?.nickname}</div>
+                </div>
+                <div className="tw-flex-auto tw-px-10 tw-w-10/12">
+                  <div className="tw-font-bold tw-text-black">{clubQuizThreads?.question}</div>
+                </div>
+              </div>
+              {clubQuizThreads?.clubQuizThreads?.map((item, index) => {
+                const isLastItem = index === clubQuizThreads.clubQuizThreads.length - 1;
+                return (
+                  <>
+                    <div
+                      key={index}
+                      className={`border border-secondary tw-bg-white tw-flex tw-items-center tw-p-4 tw-py-3 ${
+                        isLastItem ? 'tw-rounded-bl-xl tw-rounded-br-xl' : ''
+                      }`}
+                    >
+                      <div className="tw-w-1.5/12 tw-pl-14 tw-pr-3 tw-flex tw-flex-col tw-items-center tw-justify-center">
+                        <svg
+                          width={24}
+                          height={25}
+                          viewBox="0 0 24 25"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="w-6 h-6 relative"
+                          preserveAspectRatio="none"
+                        >
+                          <path
+                            d="M6 6.32422V12.3242C6 13.1199 6.31607 13.8829 6.87868 14.4455C7.44129 15.0081 8.20435 15.3242 9 15.3242H19M19 15.3242L15 11.3242M19 15.3242L15 19.3242"
+                            stroke="#31343D"
+                            strokeWidth={2}
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </div>
+                      <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
+                        <img className="border tw-rounded-full tw-w-10 tw-h-10 " src={item?.member?.profileImageUrl} />
+                        <div className="tw-text-xs tw-text-left tw-text-black">{item?.member?.nickname}</div>
+                      </div>
+                      <div className="tw-flex-auto tw-w-9/12 tw-px-5">
+                        <div className="tw-py-2">
+                          <p className="tw-font-medium tw-text-[#9ca5b2] tw-text-sm tw-line-clamp-2">
+                            <span className="tw-text-black tw-font-bold">
+                              {item?.answerStatus === '0003' ? '최종답변' : '사전답변'}
+                            </span>{' '}
+                            <span className="tw-px-4 ">{item?.createdAt}</span>
+                          </p>
+                        </div>
+                        <div className="tw-font-medium tw-text-[#9ca5b2] tw-text-sm tw-line-clamp-2">{item?.text}</div>
+
+                        {item?.files?.length > 0 && (
+                          <div className="tw-flex  tw-py-3">
+                            <div className="tw-text-left tw-text-sm">
+                              <ul className="tw-flex tw-space-x-2">
+                                {item?.files?.map((file, index) => (
+                                  <div
+                                    key={index}
+                                    onClick={() => {
+                                      onFileDownload(file.key, file.name);
+                                    }}
+                                    className="tw-cursor-pointer tw-px-3 tw-rounded-full border tw-p-1 tw-rounded"
+                                  >
+                                    {file.name}
+                                  </div>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+                        )}
+                        <br />
+                        {item?.urls?.length > 0 && (
+                          <div className="tw-flex  tw-py-3">
+                            <div className="tw-text-left tw-text-sm">
+                              <ul className="tw-flex tw-space-x-2">
+                                {item?.urls?.map((file, index) => (
+                                  <div
+                                    key={index}
+                                    onClick={() => window.open(item?.contentUrl, '_blank')}
+                                    className="tw-cursor-pointer tw-px-3 tw-rounded-full border tw-p-1 tw-rounded"
+                                  >
+                                    {file.name}
+                                  </div>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </>
+                );
+              })}
+            </div>
+          )}
+        </MentorsModal>
       </Desktop>
     </>
   );

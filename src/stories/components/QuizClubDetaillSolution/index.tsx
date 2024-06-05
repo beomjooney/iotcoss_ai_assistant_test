@@ -394,7 +394,6 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                                         stroke="#31343D"
                                         strokeWidth={2}
                                         strokeLinejoin="round"
-                                        strokeLinejoin="round"
                                       />
                                     </svg>
                                   </div>
@@ -509,7 +508,6 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                                                 stroke="#31343D"
                                                 strokeWidth={2}
                                                 strokeLinejoin="round"
-                                                strokeLinejoin="round"
                                               />
                                             </svg>
                                           </div>
@@ -576,7 +574,6 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                                               d="M6 6.32422V12.3242C6 13.1199 6.31607 13.8829 6.87868 14.4455C7.44129 15.0081 8.20435 15.3242 9 15.3242H19M19 15.3242L15 11.3242M19 15.3242L15 19.3242"
                                               stroke="#31343D"
                                               strokeWidth={2}
-                                              strokeLinejoin="round"
                                               strokeLinejoin="round"
                                             />
                                           </svg>
@@ -691,7 +688,6 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                                           stroke="#31343D"
                                           strokeWidth={2}
                                           strokeLinejoin="round"
-                                          strokeLinejoin="round"
                                         />
                                       </svg>
                                     </div>
@@ -752,7 +748,6 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                                         d="M6 6.32422V12.3242C6 13.1199 6.31607 13.8829 6.87868 14.4455C7.44129 15.0081 8.20435 15.3242 9 15.3242H19M19 15.3242L15 11.3242M19 15.3242L15 19.3242"
                                         stroke="#31343D"
                                         strokeWidth={2}
-                                        strokeLinejoin="round"
                                         strokeLinejoin="round"
                                       />
                                     </svg>

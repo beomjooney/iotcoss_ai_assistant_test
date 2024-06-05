@@ -37,10 +37,27 @@ export const quizSolutionDetail = async (id, clubSequence) => {
   const { data } = await axiosGeneralAPI().get(`/api/v1/clubs/${clubSequence}/quizzes/${id}/my-status`);
   return data.data;
 };
+
 export const quizRoungeInfo = async id => {
   const { data } = await axiosGeneralAPI().get(`/api/v1/clubs/${id}/quizzes`);
   return data.data;
 };
+
+export const quizGetProgress = async params => {
+  const { data } = await axiosGeneralAPI().get(
+    `/api/v1/clubs/${params.club}/quizzes/${params.quiz}/progress`,
+    params.data,
+  );
+  return data.data;
+};
+
+export const quizGetAnswer = async params => {
+  const { data } = await axiosGeneralAPI().get(
+    `/api/v1/clubs/${params.club}/quizzes/${params.quiz}/answers/${params.memberUUID}`,
+  );
+  return data.data;
+};
+
 export const quizFileDownload = async id => {
   const { data } = await axiosGeneralAPI().get(`/api/v1/download/files`, {
     params: {

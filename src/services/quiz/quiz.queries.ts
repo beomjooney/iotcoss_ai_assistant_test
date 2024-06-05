@@ -15,6 +15,8 @@ import {
   quizSolutionDetailStatus,
   quizFileDownload,
   quizAnswerMemberDetail,
+  quizGetProgress,
+  quizGetAnswer,
 } from './quiz.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 import { User } from 'src/models/user';
@@ -57,6 +59,7 @@ export const useQuizRoungeInfo = (id, onSuccess?: (data: any) => void, onError?:
     enabled: !!id,
   });
 };
+
 export const useQuizFileDownload = (id, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
   // return useQuery<SeminarContent, Error>(QUERY_KEY_FACTORY('SEMINAR').detail(id), () => seminarDetail(id), {
   // TODO : 수정 해주세요. 타입에러 나요. -> 세미나 상세 Profile 컴포넌트에 셋 할때 발생
@@ -133,6 +136,26 @@ export const useQuizAnswerDetail = (params, onSuccess?: (data: any) => void, onE
       enabled: false,
     },
   );
+};
+
+//클럽퀴즈 진행현황 조회
+export const useQuizGetProgress = (params, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
+  return useQuery<any, Error>(QUERY_KEY_FACTORY('EDGE').detail(params), () => quizGetProgress(params), {
+    onSuccess,
+    onError,
+    refetchOnWindowFocus: false,
+    enabled: false,
+  });
+};
+
+//클럽퀴즈 진행현황 조회
+export const useQuizGetAnswer = (params, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
+  return useQuery<any, Error>(QUERY_KEY_FACTORY('EDGE').detail(params), () => quizGetAnswer(params), {
+    onSuccess,
+    onError,
+    refetchOnWindowFocus: false,
+    enabled: false,
+  });
 };
 
 export const useQuizAnswerMemberDetail = (
