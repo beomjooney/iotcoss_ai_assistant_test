@@ -503,58 +503,58 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
                   }
                 />
               </RadioGroup>
-              {/* <p className="tw-flex tw-items-center tw-justify-end tw-text-center tw-py-5">
-            <div className="tw-flex tw-justify-end tw-items-center tw-gap-3">
-              <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-1">
-                <svg
-                  width="14"
-                  height="15"
-                  viewBox="0 0 14 15"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="tw-flex-grow-0 tw-flex-shrink-0"
-                  preserveAspectRatio="xMidYMid meet"
-                >
-                  <circle cx="7" cy="7.5" r="6.5" fill="white" stroke="#E11837"></circle>
-                </svg>
-                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-left tw-text-[#31343d]">
-                  미제출
-                </p>
+              <div className="tw-flex tw-items-center tw-justify-end tw-text-center tw-py-5">
+                <div className="tw-flex tw-justify-end tw-items-center tw-gap-3">
+                  <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-1">
+                    <svg
+                      width="14"
+                      height="15"
+                      viewBox="0 0 14 15"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="tw-flex-grow-0 tw-flex-shrink-0"
+                      preserveAspectRatio="xMidYMid meet"
+                    >
+                      <circle cx="7" cy="7.5" r="6.5" fill="white" stroke="#E11837"></circle>
+                    </svg>
+                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-left tw-text-[#31343d]">
+                      미제출
+                    </p>
+                  </div>
+                  <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-1">
+                    <svg
+                      width="14"
+                      height="15"
+                      viewBox="0 0 14 15"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="tw-flex-grow-0 tw-flex-shrink-0"
+                      preserveAspectRatio="xMidYMid meet"
+                    >
+                      <circle cx="7" cy="7.5" r="7" fill="#FF4444"></circle>
+                    </svg>
+                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-left tw-text-[#31343d]">
+                      미채점
+                    </p>
+                  </div>
+                  <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-1">
+                    <svg
+                      width="14"
+                      height="15"
+                      viewBox="0 0 14 15"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="tw-flex-grow-0 tw-flex-shrink-0"
+                      preserveAspectRatio="xMidYMid meet"
+                    >
+                      <circle cx="7" cy="7.5" r="7" fill="#31343D"></circle>
+                    </svg>
+                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-left tw-text-[#31343d]">
+                      채점완료
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-1">
-                <svg
-                  width="14"
-                  height="15"
-                  viewBox="0 0 14 15"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="tw-flex-grow-0 tw-flex-shrink-0"
-                  preserveAspectRatio="xMidYMid meet"
-                >
-                  <circle cx="7" cy="7.5" r="7" fill="#FF4444"></circle>
-                </svg>
-                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-left tw-text-[#31343d]">
-                  미채점
-                </p>
-              </div>
-              <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-1">
-                <svg
-                  width="14"
-                  height="15"
-                  viewBox="0 0 14 15"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="tw-flex-grow-0 tw-flex-shrink-0"
-                  preserveAspectRatio="xMidYMid meet"
-                >
-                  <circle cx="7" cy="7.5" r="7" fill="#31343D"></circle>
-                </svg>
-                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-left tw-text-[#31343d]">
-                  채점완료
-                </p>
-              </div>
-            </div>
-          </p> */}
             </div>
             {/* <DataGrid columns={columns} rows={rows} />; */}
             <TableContainer>
