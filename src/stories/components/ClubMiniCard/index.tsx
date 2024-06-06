@@ -45,6 +45,7 @@ ClubMiniCardProps) => {
   const open = Boolean(anchorEl);
   const [removeIndex, setRemoveIndex] = React.useState('');
   const textInput = useRef(null);
+  console.log('item', item);
 
   const handleDropMenuClick = (event: React.MouseEvent<HTMLElement>, removeIndex) => {
     setRemoveIndex(removeIndex);
@@ -72,29 +73,27 @@ ClubMiniCardProps) => {
     },
   }));
 
-  function ClubStatus({ status }) {
-    let statusText;
-    let statusClass;
-    statusClass =
-      'tw-bg-black tw-text-white tw-text-sm tw-font-medium tw-mr-1 tw-px-2.5 tw-py-[5px] tw-py-1 tw-rounded';
-
+  const getButtonText = status => {
+    console.log(status);
     switch (status) {
-      case '0004':
-        statusText = '진행중';
-        break;
-      case '0003':
-        statusText = '진행예정';
-        break;
-      case '0005':
-        statusText = '진행완료';
-        break;
-      default:
-        // 기본값 처리
-        break;
+      case '0002':
+        return '가입완료';
+      case '0200':
+        return '개설 예정';
+      case '0210':
+        return '개설 연기';
+      case '0220':
+        return '취소';
+      case '0300':
+        return '모집중';
+      case '0310':
+        return '모집완료';
+      case '4000':
+        return '진행중';
+      case '0500':
+        return '완료';
     }
-
-    return <span className={statusClass}>{statusText}</span>;
-  }
+  };
 
   const router = useRouter();
   const classes = useStyles();
@@ -122,31 +121,20 @@ ClubMiniCardProps) => {
           >
             <Grid item xs={11}>
               <div className="tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
-                <ClubStatus status={item?.clubStatus} /> {/* 진행중 */}
-                {item?.recommendJobGroupNames.map((name, i) => (
-                  <span
-                    key={i}
-                    className="tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-[5px]  tw-rounded"
-                  >
-                    {name}
-                  </span>
-                ))}
-                {item?.recommendLevels.map((name, i) => (
-                  <span
-                    key={i}
-                    className="tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-[5px]  tw-rounded "
-                  >
-                    {name} 레벨
-                  </span>
-                ))}
-                {item?.recommendJobNames.map((name, i) => (
-                  <span
-                    className="tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-[5px]  tw-rounded "
-                    key={i}
-                  >
-                    {name}
-                  </span>
-                ))}
+                <div className="tw-flex tw-gap-[7px]">
+                  <div className="tw-bg-black tw-rounded-[3.5px] tw-px-[10.5px] tw-py-[3.5px]">
+                    <p className="tw-text-[12.25px] tw-text-white">{getButtonText(item?.clubStatus)}</p>
+                  </div>
+                  <div className="tw-bg-[#d7ecff] tw-rounded-[3.5px] tw-px-[10.5px] tw-py-[3.5px]">
+                    <p className="tw-text-[12.25px] tw-text-[#235a8d]">{item?.jobGroups[0].name}</p>
+                  </div>
+                  <div className="tw-bg-[#e4e4e4] tw-rounded-[3.5px] tw-px-[10.5px] tw-py-[3.5px]">
+                    <p className="tw-text-[12.25px] tw-text-[#313b49]">{item?.jobLevels[0].name}</p>
+                  </div>
+                  <div className="tw-bg-[#ffdede] tw-rounded-[3.5px] tw-px-[10.5px] tw-py-[3.5px]">
+                    <p className="tw-text-[12.25px] tw-text-[#b83333]">{item?.jobs[0].name}</p>
+                  </div>
+                </div>
               </div>
             </Grid>
             {/* <Grid item xs={1} className="tw-text-right">
@@ -183,27 +171,22 @@ ClubMiniCardProps) => {
               </div>
             </Grid> */}
           </Grid>
-          <h6 className="tw-mb-2 tw-text-2xl tw-font-bold tw-tracking-tight tw-text-gray-900 dark:tw-text-white">
-            {item.name}
+          <h6 className="tw-text-2xl tw-font-bold tw-tracking-tight tw-text-gray-900 dark:tw-text-white">
+            {item?.clubName}
+          </h6>
+          <h6 className="tw-mb-2 tw-text-xl tw-font-medium tw-tracking-tight tw-text-gray-900 dark:tw-text-white">
+            {item?.description}
           </h6>
 
-          <Grid
-            className=" tw-mb-3"
-            container
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-            rowSpacing={0}
-          >
-            <Grid item xs={9}>
-              <div className="tw-mb-3 tw-text-sm tw-font-semibold tw-text-gray-400 dark:tw-text-gray-400">
-                {item.studyCycle.toString()} | {item.studyCount} 주 | 학습 {item.weekCount}회
-              </div>
-            </Grid>
-            <Grid item xs={3} className="tw-text-right">
-              <div>{item?.leaderNickname}</div>
-            </Grid>
-          </Grid>
+          <div className="tw-mb-2 tw-text-base tw-font-medium tw-tracking-tight tw-text-gray-900 dark:tw-text-white">
+            <span className="tw-font-bold">{item?.leaderNickname}</span>{' '}
+            <span className="tw-text-gray-400 tw-px-3">
+              {item?.startAt.split(' ')[0]} ~ {item?.endAt.split(' ')[0]}
+            </span>
+            <span className="tw-text-gray-400">
+              | {item?.studyCycle?.toString()} | 퀴즈클럽 : {item?.weekCount} 주 | 학습 {item?.weekCount}회
+            </span>
+          </div>
         </div>
       </div>
     </Grid>

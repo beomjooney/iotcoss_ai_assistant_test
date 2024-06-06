@@ -99,12 +99,14 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
   }, []);
 
   useEffect(() => {
-    logged
-      ? setLogoutButton(
+    console.log(roles);
+    if (logged) {
+      if (roles.includes('ROLE_MANAGER')) {
+        setLogoutButton(
           <div className={cx('custom-item')} id="logoutBtn">
             <button
-              className="tw-w-28 max-lg:tw-mr-1 tw-bg-[#e11837] tw-mr-4 tw-rounded-md tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
-              onClick={() => (location.href = '/quiz-my')}
+              className="tw-w-28 max-lg:tw-mr-1 tw-bg-red-600 tw-mr-4 tw-rounded-md tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
+              onClick={() => (location.href = '/my-clubs')}
             >
               나의 클럽
             </button>
@@ -115,9 +117,25 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
               나의 퀴즈
             </button>
           </div>,
-        )
-      : setLogoutButton(null);
-  }, [logged]);
+        );
+      } else if (roles.includes('ROLE_USER')) {
+        setLogoutButton(
+          <div className={cx('custom-item')} id="logoutBtn">
+            <button
+              className="tw-w-30 max-lg:tw-mr-1 tw-bg-red-600 tw-rounded-md tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
+              onClick={() => (location.href = '/study-room')}
+            >
+              나의 학습방
+            </button>
+          </div>,
+        );
+      } else {
+        setLogoutButton(null);
+      }
+    } else {
+      setLogoutButton(null);
+    }
+  }, [logged, roles]);
 
   // useEffect(() => {
   //   roles.length > 0 && roles[0] === 'ROLE_ADMIN'
@@ -420,7 +438,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
             )}
             {/* {adminButton} */}
             {logged && (
-              <div className="row tw-flex tw-items-center tw-justify-between tw-w-[25rem]">
+              <div className="row tw-flex tw-items-center tw-justify-between">
                 <div className="col-lg-12 tw-flex tw-items-center tw-justify-end max-lg:tw-justify-end lg:tw-mb-0">
                   {logoutButton}
 

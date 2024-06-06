@@ -42,7 +42,6 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
     () => quizList?.map(item => Array(item?.makeupQuizzes?.length || 0).fill(false)) || [],
   );
 
-  console.log(contents);
   const toggleExpand = index => {
     setExpandedItems(prev => {
       const newExpandedItems = [...prev];
@@ -54,7 +53,19 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
   const toggleExpandQuizzData = (itemIndex, quizzIndex) => {
     setExpandedQuizzData(prev => {
       const newExpandedQuizzData = [...prev];
+
+      // itemIndex가 유효한지 확인하고 초기화
+      if (!newExpandedQuizzData[itemIndex]) {
+        newExpandedQuizzData[itemIndex] = [];
+      }
+
+      // quizzIndex가 유효한지 확인하고 초기화
+      if (typeof newExpandedQuizzData[itemIndex][quizzIndex] === 'undefined') {
+        newExpandedQuizzData[itemIndex][quizzIndex] = 0;
+      }
+
       newExpandedQuizzData[itemIndex][quizzIndex] = !newExpandedQuizzData[itemIndex][quizzIndex];
+      console.log(newExpandedQuizzData);
       return newExpandedQuizzData;
     });
   };

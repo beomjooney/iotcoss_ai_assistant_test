@@ -124,25 +124,6 @@ CommunityCardProps) => {
       alert(`원픽은 하나만 선택할 수 있어요.\n기존 원픽을 취소해 주세요.`);
     }
   }, [isError]);
-  // useEffect(() => {
-  //   if (isDeleteOnePick) {
-  //     setIsOnePicked(false);
-  //     // onePickCount가 0보다 클 때만 감소시킵니다.
-  //     if (onePickCount > 0) {
-  //       setOnePickCount(onePickCount - 1);
-  //     }
-  //   }
-  // }, [isDeleteOnePick]);
-
-  useEffect(() => {
-    if (isSuccess) {
-      setIsOnePicked(true);
-      setOnePickCount(onePickCount + 1);
-      update({
-        beforeOnePick: beforeOnePickInner,
-      });
-    }
-  }, [isSuccess]);
 
   // refetch();
   // useDidMountEffect(() => {

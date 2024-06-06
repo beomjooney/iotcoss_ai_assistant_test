@@ -324,7 +324,7 @@ const QuizClubListView = ({
                       <div className="tw-flex tw-justify-center tw-items-center tw-gap-3">
                         <button
                           className="tw-w-24 max-lg:tw-mr-1 tw-bg-black tw-rounded-md tw-text-xs tw-text-white tw-py-2.5 tw-px-4"
-                          onClick={() => (location.href = '/quiz-my')}
+                          onClick={() => (location.href = '/my-clubs')}
                         >
                           AI답변보기
                         </button>
@@ -529,7 +529,7 @@ const QuizClubListView = ({
                 <div className="tw-px-3 tw-py-[px] tw-flex tw-items-center">
                   <button
                     className="tw-w-32 max-lg:tw-mr-1 tw-bg-black tw-rounded-md tw-text-xs tw-text-white tw-py-2 tw-px-4"
-                    onClick={() => (location.href = '/quiz-my')}
+                    onClick={() => (location.href = '/my-clubs')}
                   >
                     AI답변 불러오기
                   </button>

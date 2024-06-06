@@ -21,7 +21,6 @@ const DefaultLayout = ({ darkBg, classOption, title, children, isFooter = true }
   const menuItem = [
     { no: 0, option: 'nav-item', title: '서비스 소개', link: '/lounge', dropdown: [], login: true },
     { no: 1, option: 'nav-item', title: '퀴즈클럽', link: '/quiz', dropdown: [], login: true },
-    { no: 2, option: 'nav-item', title: '나의 학습방', link: '/studyroom', dropdown: [], login: logged },
   ];
 
   const menuItemMobile = [

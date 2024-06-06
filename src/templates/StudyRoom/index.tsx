@@ -485,22 +485,6 @@ export function StudyRoomTemplate() {
                 >
                   나의 퀴즈클럽 진행사항을 한 눈에 보여주고 있어요!
                 </Grid>
-                {/* <Grid item xs={4} justifyContent="flex-end" className="tw-flex">
-                  <button
-                    onClick={() => (location.href = '/quiz-my')}
-                    type="button"
-                    className="tw-text-blue-600 tw-bg-white border border-primary tw-mr-3  tw-font-bold tw-rounded tw-text-sm tw-px-5 tw-py-2.5 "
-                  >
-                    내가 만든 클럽 {'>'}
-                  </button>
-                  <button
-                    onClick={() => (location.href = '/quiz-make')}
-                    type="button"
-                    className="tw-text-blue-600 tw-bg-white border border-primary tw-font-bold tw-rounded tw-text-sm tw-px-5 tw-py-2.5  "
-                  >
-                    내가 만든 퀴즈 {'>'}
-                  </button>
-                </Grid> */}
               </Grid>
             </div>
             <Box sx={{ width: '100%', typography: 'body1', marginTop: '20px', marginBottom: '20px' }}>
@@ -710,9 +694,9 @@ export function StudyRoomTemplate() {
                                         <div className="tw-col-span-1">
                                           <button
                                             onClick={() => router.push('/quiz/solution/' + `${item?.clubQuizSequence}`)}
-                                            className="tw-text-center tw-bg-blue-500 tw-text-white tw-text-blue-800 tw-text-xs tw-font-medium tw-px-3 tw-py-2 tw-rounded"
+                                            className="tw-text-center tw-bg-red-500 tw-text-white tw-text-blue-800 tw-text-xs tw-font-medium tw-px-3 tw-py-2 tw-rounded"
                                           >
-                                            GO {'>'}
+                                            GO
                                           </button>
                                         </div>
                                       </div>
@@ -947,7 +931,7 @@ export function StudyRoomTemplate() {
               <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
                 <Grid item xs={6} justifyContent="center" className="tw-flex">
                   <button
-                    onClick={() => (location.href = '/quiz-my')}
+                    onClick={() => (location.href = '/my-clubs')}
                     type="button"
                     className="tw-text-blue-600 tw-bg-white border border-primary tw-mr-3  tw-font-bold tw-rounded tw-text-sm tw-w-full tw-py-2.5 "
                   >

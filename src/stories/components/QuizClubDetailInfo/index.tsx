@@ -135,7 +135,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
           </div>
           <div className="tw-flex tw-justify-start tw-items-center tw-absolute tw-left-[87%] tw-top-[220.5px] tw-overflow-hidden tw-gap-[7px] tw-px-[24.5px] tw-py-[10.0625px] tw-rounded-[3.5px] tw-bg-[#e11837]">
             <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[12.25px] tw-font-bold tw-text-center tw-text-white">
-              {getButtonText(clubData?.clubStatus)}
+              {getButtonText(clubData?.clubStatus)} 미가입
             </p>
           </div>
         </div>
