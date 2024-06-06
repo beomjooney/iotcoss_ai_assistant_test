@@ -5,9 +5,9 @@ export const clubMyList = async params => {
   const { data, headers } = await axiosGeneralAPI().get('/api/v1/my/clubs', { params });
   // const { data, headers } = await axiosGeneralAPI().get('/seminars', { params });
   const totalPage = Number(headers['page-count']);
-
   return { data: data.data || [], nextPage: params.page + 1, totalPage };
 };
+
 export const seminarList = async params => {
   const { data, headers } = await axiosGeneralAPI().get('/api/v1/clubs', { params });
   // const { data, headers } = await axiosGeneralAPI().get('/seminars', { params });
@@ -25,7 +25,6 @@ export const clubMeWaitList = async params => {
 export const seminarMeList = async params => {
   const { data, headers } = await axiosGeneralAPI().get('/api/v1/club/crew-requests/me', { params });
   const totalPage = Number(headers['page-count']);
-
   return { data: data.data || [], nextPage: params.page + 1, totalPage };
 };
 export const seminarMeFavoriteList = async params => {
@@ -44,6 +43,18 @@ export const seminarImageList = async () => {
 // 클럽 퀴즈 목록 조회
 export const clubQuizManage = async id => {
   const { data } = await axiosGeneralAPI().get(`/api/v1/clubs/${id}/quizzes/me`);
+  return data.data;
+};
+
+// 클럽 퀴즈 목록 조회
+export const myDashboardList = async (params: any) => {
+  console.log(params);
+  console.log(params.data);
+  const { data } = await axiosGeneralAPI().get(`/api/v1/clubs/${params.clubSequence}/dashboard`, {
+    params: {
+      sortType: params.data.sortType,
+    },
+  });
   return data.data;
 };
 

@@ -85,7 +85,7 @@ function createAxios(requestConfig: RequestConfig): AxiosInstance {
           memberId: userData.sub,
           memberName: userData.nickname,
           // token: process.env['NEXT_PUBLIC_GUEST_TOKEN'],
-          roles: userData.sub !== 'Guest' ? userData.roles : [],
+          // roles: userData.sub !== 'Guest' ? userData.roles : [],
         });
         // setCookie('access_token', process.env['NEXT_PUBLIC_GUEST_TOKEN']);
         if (data.code === 'CO4007') {

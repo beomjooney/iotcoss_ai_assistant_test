@@ -101,7 +101,7 @@ ClubMiniCardProps) => {
     <Grid item xs={xs}>
       <div
         onClick={() => {
-          handleMenuItemClick(item?.sequence);
+          handleMenuItemClick(item?.clubSequence);
         }}
         className="tw-cursor-pointer tw-flex tw-flex-col border tw-items-center tw-bg-white tw-border tw-border-gray-200 tw-rounded-lg md:tw-flex-row tw-w-full "
       >
@@ -137,39 +137,6 @@ ClubMiniCardProps) => {
                 </div>
               </div>
             </Grid>
-            {/* <Grid item xs={1} className="tw-text-right">
-              <IconButton
-                aria-label="more"
-                id="long-button"
-                aria-controls={open ? 'long-menu' : undefined}
-                aria-expanded={open ? 'true' : undefined}
-                aria-haspopup="true"
-                onClick={event => handleDropMenuClick(event, item.sequence)}
-              >
-                <MoreVertIcon />
-              </IconButton>
-              <div>
-                <Menu
-                  id="lock-menu"
-                  anchorEl={anchorEl}
-                  open={open}
-                  onClose={handleClose}
-                  className={classes.root}
-                  MenuListProps={{
-                    'aria-labelledby': 'lock-button',
-                    role: 'listbox',
-                    style: {
-                      border: '1px solid rgb(218, 226, 237)',
-                      boxShadow: 'none !important',
-                      borderRadius: '12px',
-                    },
-                  }}
-                >
-                  <MenuItem onClick={event => handleMenuItemClick(event)}>퀴즈관리하기</MenuItem>
-                  <MenuItem onClick={event => handleMenuItemCrewClick(event)}>크루관리하기</MenuItem>
-                </Menu>
-              </div>
-            </Grid> */}
           </Grid>
           <h6 className="tw-text-2xl tw-font-bold tw-tracking-tight tw-text-gray-900 dark:tw-text-white">
             {item?.clubName}

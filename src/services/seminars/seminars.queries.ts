@@ -20,6 +20,7 @@ import {
   seminarMeList,
   clubAboutDetail,
   seminarParticipantList,
+  myDashboardList,
 } from './seminars.api';
 
 export interface paramProps {
@@ -38,11 +39,11 @@ export interface paramProps {
 
 export const useMyClubList = (
   params?: paramProps,
-  onSuccess?: (data: RecommendContentsResponse) => void,
+  onSuccess?: (data: any) => void,
   onError?: (error: Error) => void,
 ) => {
   const DEFAULT_SIZE = 8;
-  return useQuery<RecommendContentsResponse, Error>(
+  return useQuery<any, Error>(
     QUERY_KEY_FACTORY('SEMINAR').list({ size: DEFAULT_SIZE, ...params }),
     () => clubMyList({ size: DEFAULT_SIZE, ...params }),
     {
@@ -51,6 +52,19 @@ export const useMyClubList = (
       refetchOnWindowFocus: true,
     },
   );
+};
+
+// 내 대시보드 목록 조회
+export const useMyDashboardList = (
+  params?: paramProps,
+  onSuccess?: (data: any) => void,
+  onError?: (error: Error) => void,
+) => {
+  return useQuery<any, Error>(QUERY_KEY_FACTORY('DASHBOARD').list({ ...params }), () => myDashboardList(params), {
+    onSuccess,
+    onError,
+    refetchOnWindowFocus: false,
+  });
 };
 
 export const useSeminarList = (
@@ -65,7 +79,7 @@ export const useSeminarList = (
     {
       onSuccess,
       onError,
-      refetchOnWindowFocus: true,
+      refetchOnWindowFocus: false,
     },
   );
 };

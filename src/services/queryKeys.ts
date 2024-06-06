@@ -46,6 +46,7 @@ export const QUERY_KEYS = {
   ADMIN_CAMENITY: 'ADMIN_CAMENITY',
   SCHEDULE: 'SCHEDULE',
   TEMP: 'TEMP',
+  DASHBOARD: 'DASHBOARD',
 };
 
 export const QUERY_KEY_FACTORY = (queryKey: keyof typeof QUERY_KEYS) => {

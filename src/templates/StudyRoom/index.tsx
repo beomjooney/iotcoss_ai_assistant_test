@@ -309,10 +309,13 @@ export function StudyRoomTemplate() {
       </Badge>
     );
   }
+  // 학습방 리스트
   const { isFetched: isContentFetched, refetch: refetch } = useStudyRoomList(params, data => {
     setContents(data.data.contents || []);
     setTotalPage(data.data.totalPages);
   });
+
+  // 학습방 상세
   const { isFetched: isQuizFetched, refetch: QuizRefetch } = useStudyQuizList(quizParams, data => {
     setQuizList(data.data.contents || []);
     setQuizTotalPage(data.data.totalPages);

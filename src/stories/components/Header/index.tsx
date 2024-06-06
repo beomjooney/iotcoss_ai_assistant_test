@@ -59,9 +59,9 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
   const { logged, roles } = useSessionStore.getState();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [anchorElAlarm, setAnchorElAlarm] = useState(null);
-  const [contents, setContents] = useState<RecommendContent[]>([]);
+  const [contents, setContents] = useState<any>([]);
   const [page, setPage] = useState(1);
-  const [params, setParams] = useState<paramProps>({ page });
+  const [params, setParams] = useState<any>({ page });
   const open = Boolean(anchorEl);
   const handleClicks = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -136,30 +136,6 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
       setLogoutButton(null);
     }
   }, [logged, roles]);
-
-  // useEffect(() => {
-  //   roles.length > 0 && roles[0] === 'ROLE_ADMIN'
-  //     ? setAdminButton(
-  //         <li className={cx('custom-item')} id="logoutBtn">
-  //           <Button size="small" color="primary" onClick={() => (location.href = '/quiz-make')}>
-  //             퀴즈 만들기
-  //           </Button>
-  //         </li>,
-  //       )
-  //     : setAdminButton(null);
-  // }, [roles]);
-
-  // useEffect(() => {
-  //   roles.length > 0 && roles[0] === 'ROLE_ADMIN'
-  //     ? setAdminButton(
-  //         <li className={cx('custom-item')} id="logoutBtn">
-  //           <Button size="small" color="primary" onClick={() => (location.href = '/admin')}>
-  //             관리자용
-  //           </Button>
-  //         </li>,
-  //       )
-  //     : setAdminButton(null);
-  // }, [roles]);
 
   const handleScroll = () => {
     setScroll(window.scrollY);
@@ -282,7 +258,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
       >
         <div className="container" style={{ alignItems: 'center' }}>
           <div className={cx('header-link', 'navbar-brand')} onClick={handleGoHome}>
-            {/* <img src="/assets/images/header/image_1.png" width={130} alt="logo" className={cx('image-logo')} /> */}
+            <img src="/assets/images/header/image_1.png" width={130} alt="logo" className={cx('image-logo')} />
           </div>
           <Mobile>
             {!logged && (
