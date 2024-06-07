@@ -39,6 +39,7 @@ export * from './Quiz/Crew/index';
 export * from './Quiz/Manage/index';
 /** 퀴즈 대시보드*/
 export * from './Quiz/Dashboard/index';
+export * from './Quiz/ManageQuizClub/index';
 /** 전체 목록 전체보기*/
 export * from './Quiz/QuizListViewAll/index';
 /** 전체 답변보기 & 채점하기*/

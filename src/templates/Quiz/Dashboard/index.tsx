@@ -67,10 +67,10 @@ const useStyles = makeStyles({
     left: 0,
   },
   stickySecond: {
-    left: 100, // 이 값을 `Dessert` 열의 너비에 맞게 조정하세요.
+    left: 140, // 이 값을 `Dessert` 열의 너비에 맞게 조정하세요.
   },
   stickyThread: {
-    left: 220, // 이 값을 `Dessert` 열의 너비에 맞게 조정하세요.
+    left: 240, // 이 값을 `Dessert` 열의 너비에 맞게 조정하세요.
   },
 });
 const cx = classNames.bind(styles);
@@ -81,132 +81,14 @@ export interface QuizDashboardTemplateProps {
 
 export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
   const [page, setPage] = useState(1);
-  const [value, setValue] = React.useState(0);
-  const [contents, setContents] = useState<any>([]);
   const [myClubList, setMyClubList] = useState<any>([]);
   const [myDashboardList, setMyDashboardList] = useState<any>([]);
   const [myClubParams, setMyClubParams] = useState<any>({ clubSequence: id, data: { sortType: '0001' } });
   const [params, setParams] = useState<paramProps>({ page });
-
-  const [keyWorld, setKeyWorld] = useState('');
-  const [myKeyWorld, setMyKeyWorld] = useState('');
-  const [selectedOption, setSelectedOption] = useState('latest');
   const [selectedValue, setSelectedValue] = useState('');
 
   const handleChangeQuiz = event => {
     setSortType(event.target.value);
-  };
-  const dateInfo = {
-    sessions: [
-      { number: '1회', date: '07-01 (월)' },
-      { number: '2회', date: '07-08 (월)' },
-      { number: '3회', date: '07-15 (월)' },
-      { number: '4회', date: '07-22 (월)' },
-      { number: '5회', date: '07-29 (월)' },
-      { number: '6회', date: '08-05 (월)' },
-      { number: '7회', date: '08-12 (월)' },
-      { number: '8회', date: '08-19 (월)' },
-      { number: '9회', date: '08-19 (월)' },
-      { number: '10회', date: '08-19 (월)' },
-      { number: '11회', date: '08-19 (월)' },
-      { number: '12회', date: '08-19 (월)' },
-      { number: '12회', date: '08-19 (월)' },
-      { number: '12회', date: '08-19 (월)' },
-      { number: '12회', date: '08-19 (월)' },
-      { number: '12회', date: '08-19 (월)' },
-      { number: '12회', date: '08-19 (월)' },
-    ],
-    student: [
-      {
-        name: '김승테',
-        sessions: [
-          {
-            date: '09-03 (월)',
-            color: '#31343D',
-            text: '3',
-          },
-          {
-            date: '00-16 (월)',
-            color: '#FF8F60',
-            text: '?',
-          },
-          {
-            date: '09-18 (수)',
-            color: '#E11837',
-            text: '?',
-          },
-          {
-            date: 'D+2',
-            color: 'white',
-            borderColor: '#E11837',
-            text: '?',
-            isBold: true,
-          },
-          {
-            date: 'D+2',
-            color: 'white',
-            borderColor: '#E11837',
-            text: '?',
-            isBold: true,
-          },
-          {
-            date: 'D+2',
-            color: 'white',
-            borderColor: '#E11837',
-            text: '?',
-            isBold: true,
-          },
-          {
-            date: 'D+2',
-            color: '#F6F7FB',
-            borderColor: '#E0E4EB',
-            text: '',
-            isBold: false,
-          },
-        ],
-      },
-      {
-        name: '김승테',
-        sessions: [
-          {
-            date: '09-03 (월)',
-            color: '#31343D',
-            text: '3',
-          },
-          {
-            date: '00-16 (월)',
-            color: '#FF8F60',
-            text: '?',
-          },
-          {
-            date: '09-18 (수)',
-            color: '#E11837',
-            text: '?',
-          },
-          {
-            date: 'D+2',
-            color: 'white',
-            borderColor: '#E11837',
-            text: '?',
-            isBold: true,
-          },
-          {
-            date: 'D+2',
-            color: 'white',
-            borderColor: '#E11837',
-            text: '?',
-            isBold: true,
-          },
-          {
-            date: 'D+2',
-            color: 'white',
-            borderColor: '#E11837',
-            text: '?',
-            isBold: true,
-          },
-        ],
-      },
-    ],
   };
 
   // 퀴즈클럽 리스트
@@ -333,6 +215,7 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
               <div className="">
                 <button
                   type="button"
+                  onClick={() => router.push(`/manage-quiz-club/${id}`)}
                   className="tw-h-14  tw-text-black tw-bg-[#CED4DE] border tw-font-medium tw-rounded-md tw-text-sm tw-px-6 tw-py-2 "
                 >
                   <SettingsIcon className="tw-bg-[#CED4DE] tw-text-white" />
@@ -343,7 +226,7 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
         </div>
         <div className="tw-w-full tw-py-5 tw-cursor-pointer">
           <div
-            onClick={() => router.push('/quiz-list/20')}
+            onClick={() => router.push(`/quiz-list/${selectedClub?.clubSequence}`)}
             className="tw-h-[50px] tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white border tw-border-secondary"
           >
             <div className="tw-flex tw-justify-start tw-items-start tw-absolute tw-left-[28.21px] tw-top-[14px] tw-gap-[16.133331298828125px]">

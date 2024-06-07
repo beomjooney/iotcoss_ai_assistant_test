@@ -12,8 +12,11 @@ import PaginationItem from '@mui/material/PaginationItem';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
+import { useMyClubList } from 'src/services/seminars/seminars.queries';
+
 /**icon */
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 import { Radio, RadioGroup, FormControlLabel, TextField } from '@mui/material';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
@@ -28,101 +31,68 @@ import { Button, Typography, Profile, Modal, ArticleCard } from 'src/stories/com
 const cx = classNames.bind(styles);
 
 //comment
-import { useQuizAnswerDetail, useQuizRankDetail, useQuizSolutionDetail } from 'src/services/quiz/quiz.queries';
+import {
+  useQuizAnswerDetail,
+  useQuizRankDetail,
+  useQuizSolutionDetail,
+  useQuizMyClubInfo,
+} from 'src/services/quiz/quiz.queries';
+import useDidMountEffect from 'src/hooks/useDidMountEffect';
 
-const QuizClubListView = ({
-  clubInfo,
-  totalElements,
-  quizList,
-  border,
-  page,
-  totalPage,
-  leaders,
-  clubQuizzes,
-  handlePageChange,
-  representativeQuizzes,
-}) => {
+const QuizClubListView = ({ border, id }) => {
   const borderStyle = border ? 'border border-[#e9ecf2] tw-mt-14' : '';
   // const [activeTab, setActiveTab] = useState('myQuiz');
   const [activeTab, setActiveTab] = useState('community');
-  const [selectedOption, setSelectedOption] = useState('latest');
-  const [answerContents, setAnswerContents] = useState<RecommendContent[]>([]);
-  const [totalElementsCm, setTotalElementsCm] = useState(0);
-  const [totalPageCm, setTotalPageCm] = useState(1);
-  const [beforeOnePick, setBeforeOnePick] = useState(1);
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [myClubList, setMyClubList] = useState<any>([]);
+  const [quizList, setQuizList] = useState<any>([]);
+  const [selectedValue, setSelectedValue] = useState('');
+  const [selectedClub, setSelectedClub] = useState<any>(null);
+  const [sortType, setSortType] = useState('ASC');
+  const [totalElements, setTotalElements] = useState(0);
 
   const [params, setParams] = useState<any>({ id: '225', page });
+  const [myClubParams, setMyClubParams] = useState<any>({ clubSequence: id, sortType: 'ASC', page });
 
-  const { isFetched: isQuizAnswerListFetched } = useQuizAnswerDetail(params, data => {
-    //console.log(data);
-    setAnswerContents(data?.contents);
-    setTotalElementsCm(data?.totalElements);
-    setTotalPageCm(data?.totalPages);
-    // isOnePicked가 true인 객체를 찾고 그 객체의 clubQuizAnswerSequence 값을 가져옵니다.
-    console.log(data?.contents.find(item => item.isOnePicked === true)?.clubQuizAnswerSequence);
-    setBeforeOnePick(data?.contents.find(item => item.isOnePicked === true)?.clubQuizAnswerSequence);
+  // 퀴즈클럽 리스트
+  const { isFetched: isContentFetched, refetch: refetchMyClub } = useMyClubList({}, data => {
+    setMyClubList(data?.data?.contents || []);
   });
 
+  const { isFetched: isParticipantListFetched, data } = useQuizMyClubInfo(myClubParams, data => {
+    console.log('first get data');
+    setQuizList(data?.contents || []);
+    setTotalPage(data?.totalPages);
+    setSelectedClub(data?.contents[0]);
+    setTotalElements(data?.totalElements);
+    console.log(data);
+  });
+
+  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+  };
+
+  useDidMountEffect(() => {
+    setMyClubParams({
+      clubSequence: selectedClub?.clubSequence,
+      sortType: sortType,
+      page: page,
+    });
+  }, [sortType, selectedClub, page]);
+
+  const handleQuizChange = event => {
+    const value = event.target.value;
+    const selectedSession = myClubList?.find(session => session.clubName === value);
+
+    setSelectedValue(value);
+    setSelectedClub(selectedSession);
+    console.log(selectedSession);
+  };
+
   const handleChangeQuiz = event => {
-    setSelectedOption(event.target.value);
-  };
-
-  const handleTabClick = tab => {
-    setActiveTab(tab);
-  };
-
-  const data = {
-    title: '나의 학습 현황',
-    tabs: [
-      {
-        name: '학생',
-        status: '학습 현황',
-        sessions: [
-          { session: '1회', date: '07-01 (월)' },
-          { session: '2회', date: '07-08 (월)' },
-          { session: '3회', date: '07-15 (월)' },
-          { session: '4회', date: '07-22 (월)' },
-          { session: '5회', date: '07-29 (월)' },
-          { session: '6회', date: '08-05 (월)' },
-          { session: '7회', date: '08-12 (월)' },
-          { session: '8회', date: '08-19 (월)' },
-          { session: '8회', date: '08-19 (월)' },
-          { session: '8회', date: '08-19 (월)' },
-          { session: '8회', date: '08-19 (월)' },
-          { session: '8회', date: '08-19 (월)' },
-          { session: '8회', date: '08-19 (월)' },
-          { session: '8회', date: '08-19 (월)' },
-          { session: '8회', date: '08-19 (월)' },
-          { session: '8회', date: '08-19 (월)' },
-          { session: '8회', date: '08-19 (월)' },
-        ],
-      },
-    ],
-    progress: {
-      currentSession: '5회',
-      student: '김동서',
-      sessions: [
-        { date: '09-03 (월)', isChecked: true, status: 'completed' },
-        { date: '00-16 (월)', isChecked: true, status: 'completed' },
-        { date: '09-18 (수)', isChecked: true, status: 'completed' },
-        { date: '09-25 (수)', isChecked: true, status: 'completed' },
-        { date: 'D+2', isWarning: true, status: 'completed' },
-        { date: 'D-14', isFuture: true, status: 'upcoming' },
-        { date: 'D-21', isFuture: true, status: 'upcoming' },
-        { date: 'D-28', isFuture: true, status: 'upcoming' },
-        { date: 'D-21', isFuture: true, status: 'upcoming' },
-        { date: 'D-28', isFuture: true, status: 'upcoming' },
-        { date: 'D-28', isFuture: true, status: 'upcoming' },
-        { date: 'D-28', isFuture: true, status: 'upcoming' },
-        { date: 'D-28', isFuture: true, status: 'feature' },
-        { date: 'D-28', isFuture: true, status: 'feature' },
-        { date: 'D-28', isFuture: true, status: 'feature' },
-        { date: 'D-28', isFuture: true, status: 'feature' },
-        { date: 'D-28', isFuture: true, status: 'feature' },
-        { date: 'D-28', isFuture: true, status: 'feature' },
-      ],
-    },
+    setSortType(event.target.value);
   };
 
   return (
@@ -174,14 +144,44 @@ const QuizClubListView = ({
         </div>
 
         <Divider className="tw-mb-5" />
-        <Grid item xs={11.1} className="tw-font-bold tw-text-xl tw-text-black ">
-          <select className="form-select border-danger" aria-label="Default select example">
-            <option selected>퀴즈클럽 임베디드 시스템 [전공선택] 3학년 화요일 A반 </option>
-            <option value="1">One</option>
-            <option value="2">Two</option>
-            <option value="3">Three</option>
-          </select>
-        </Grid>
+        <div className="tw-flex tw-items-center tw-mt-6">
+          <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
+            <Grid item xs={11.1} className="tw-font-bold tw-text-xl">
+              <select
+                className="tw-h-14 form-select block w-full tw-bg-gray-100 tw-text-red-500 tw-font-bold tw-px-8"
+                onChange={handleQuizChange}
+                value={selectedValue}
+                aria-label="Default select example"
+              >
+                {isContentFetched &&
+                  myClubList?.map((session, idx) => {
+                    return (
+                      <option
+                        key={idx}
+                        className="tw-w-20 tw-bg-[#f6f7fb] tw-items-center tw-flex-shrink-0 border-left border-top border-right tw-rounded-t-lg tw-cursor-pointer"
+                        value={session?.clubName}
+                      >
+                        퀴즈클럽 : {session?.clubName}
+                      </option>
+                    );
+                  })}
+              </select>
+            </Grid>
+
+            <Grid item xs={0.9} justifyContent="flex-end" className="tw-flex">
+              {/* {contents?.isBeforeOpening ? ( */}
+              <div className="">
+                <button
+                  type="button"
+                  onClick={() => router.push(`/manage-quiz-club/${id}`)}
+                  className="tw-h-14  tw-text-black tw-bg-[#CED4DE] border tw-font-medium tw-rounded-md tw-text-sm tw-px-6 tw-py-2 "
+                >
+                  <SettingsIcon className="tw-bg-[#CED4DE] tw-text-white" />
+                </button>
+              </div>
+            </Grid>
+          </Grid>
+        </div>
         {/* Content Section */}
         <div className="tw-flex tw-flex-col tw-space-y-4 tw-rounded-lg">
           <div className={cx('content-wrap')}>
@@ -194,7 +194,7 @@ const QuizClubListView = ({
                   sm={10}
                   className="tw-text-xl tw-text-black tw-font-bold"
                 >
-                  퀴즈목록 {totalElements}
+                  퀴즈목록 ({totalElements})
                 </Grid>
 
                 <Grid container justifyContent="flex-end" xs={6} sm={2} style={{ textAlign: 'right' }}>
@@ -217,9 +217,9 @@ const QuizClubListView = ({
                     정렬 :
                   </p>
 
-                  <RadioGroup value={selectedOption} onChange={handleChangeQuiz} row>
+                  <RadioGroup value={sortType} onChange={handleChangeQuiz} row>
                     <FormControlLabel
-                      value="latest"
+                      value="DESC"
                       control={
                         <Radio
                           sx={{
@@ -237,7 +237,7 @@ const QuizClubListView = ({
                       }
                     />
                     <FormControlLabel
-                      value="oldest"
+                      value="ASC"
                       control={
                         <Radio
                           sx={{
@@ -255,7 +255,7 @@ const QuizClubListView = ({
                       }
                     />
                     <FormControlLabel
-                      value="oldest1"
+                      value="0001"
                       control={
                         <Radio
                           sx={{
@@ -288,9 +288,11 @@ const QuizClubListView = ({
                       rowSpacing={3}
                     >
                       <Grid item xs={12} sm={1}>
-                        <div className="tw-flex-auto tw-text-center tw-text-black tw-font-bold">Q{index + 1}.</div>
-                        <div className="tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold">
-                          {item?.weekNumber}주차 ({item?.dayOfWeek})
+                        <div className={`tw-font-medium ${item?.isPublished ? 'tw-text-black' : ' tw-text-gray-400'}`}>
+                          <div className="tw-flex-auto tw-text-center  tw-font-bold">Q{index + 1}.</div>
+                          <div className="tw-flex-auto tw-text-center tw-text-sm   tw-font-bold">
+                            {item?.publishDate.slice(5, 10)} ({item?.dayOfWeek})
+                          </div>
                         </div>
                       </Grid>
 
@@ -298,18 +300,34 @@ const QuizClubListView = ({
                         <div className="">
                           <div className="tw-bg-[#F6F7FB] tw-flex tw-items-center tw-px-4 max-lg:tw-p-3 tw-py-1 tw-rounded-xl">
                             <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
-                              <img className="tw-w-10 tw-h-10 " src="/assets/images/quiz/ellipse_209.png" />
-                              <div className="tw-text-xs tw-text-left tw-text-black">양황규 교수님</div>
+                              <img
+                                className="tw-w-10 tw-h-10 border tw-rounded-full"
+                                src={item?.maker?.profileImageUrl}
+                              />
+                              <div className="tw-text-xs tw-text-left tw-text-black">{item?.maker?.nickname}</div>
                             </div>
                             <div className="tw-flex-auto tw-px-5 tw-w-3/12">
-                              <div className="tw-font-medium tw-text-black">{item?.content}</div>
+                              <div
+                                className={`tw-font-medium ${
+                                  item?.isPublished ? 'tw-text-black' : ' tw-text-gray-400'
+                                }`}
+                              >
+                                {item?.question}
+                              </div>
                             </div>
                             <div className="">
                               <button
                                 onClick={() => router.push('/quiz-answers/' + `${item?.clubQuizSequence}`)}
                                 type="button"
+                                disabled={!item?.isPublished}
                                 data-tooltip-target="tooltip-default"
-                                className="max-lg:tw-w-[60px] tw-bg-white border border-danger tw-text-black tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                className={`
+                                ${
+                                  item?.isPublished
+                                    ? 'tw-bg-white border border-danger tw-text-black'
+                                    : 'tw-bg-gray-200 tw-text-white'
+                                }
+                                max-lg:tw-w-[60px]    tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded`}
                               >
                                 답변확인 및 채점하기 {'>'}
                               </button>
