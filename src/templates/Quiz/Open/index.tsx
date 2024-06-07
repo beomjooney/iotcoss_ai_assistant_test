@@ -100,31 +100,32 @@ export function QuizOpenTemplate() {
   //temp 조회
   const { refetch: refetchGetTemp }: UseQueryResult<any> = useGetTemp(data => {
     console.log('load temp', data);
-    const clubForm = data?.clubForm;
-    const quizList = data?.clubQuizzes;
-    setClubName(clubForm?.clubName);
-    setIntroductionText(clubForm?.introductionText);
-    setRecommendationText(clubForm?.recommendationText);
-    setLearningText(clubForm?.learningText);
-    setMemberIntroductionText(clubForm?.memberIntroductionText);
-    setCareerText(clubForm?.careerText);
-    setSkills(clubForm?.skills);
-    setRecommendLevels(clubForm?.jobLevels);
-    setNum(clubForm?.studyCount);
-    setQuizType(clubForm?.quizOpenType);
-    setStartDay(dayjs(clubForm?.startAt));
-    setStudyKeywords(clubForm?.studyKeywords);
-    setStudyChapter(clubForm?.studyChapter);
-    setStudySubject(clubForm?.studySubject);
-    setStudyCycleNum(clubForm?.studyCycle);
-    setRecommendLevels(clubForm?.jobLevels[0]?.code);
-    setUniversityCode(clubForm?.jobGroups[0]?.code);
-    setSelectedUniversityName(clubForm?.jobGroups[0]?.name);
-    setSelectedJobName(clubForm?.jobs[0]?.name);
-    setJobLevelName(clubForm?.jobLevels[0]?.name);
-    const selected = optionsData?.data?.jobs?.find(u => u.code === clubForm?.jobGroups[0].code);
+    const clubForm = data?.clubForm || {};
+    const quizList = data?.clubQuizzes || [];
+
+    setClubName(clubForm.clubName || '');
+    setIntroductionText(clubForm.introductionText || '');
+    setRecommendationText(clubForm.recommendationText || '');
+    setLearningText(clubForm.learningText || '');
+    setMemberIntroductionText(clubForm.memberIntroductionText || '');
+    setCareerText(clubForm.careerText || '');
+    setSkills(clubForm.skills || []);
+    setRecommendLevels(clubForm.jobLevels || []);
+    setNum(clubForm.studyCount || 0);
+    setQuizType(clubForm.quizOpenType || '');
+    setStartDay(clubForm.startAt ? dayjs(clubForm.startAt) : dayjs());
+    setStudyKeywords(clubForm.studyKeywords || []);
+    setStudyChapter(clubForm.studyChapter || '');
+    setStudySubject(clubForm.studySubject || '');
+    setStudyCycleNum(clubForm.studyCycle || 0);
+    setRecommendLevels(clubForm.jobLevels[0]?.code || '');
+    setUniversityCode(clubForm.jobGroups[0]?.code || '');
+    setSelectedUniversityName(clubForm.jobGroups[0]?.name || '');
+    setSelectedJobName(clubForm.jobs[0]?.name || '');
+    setJobLevelName(clubForm.jobLevels[0]?.name || '');
+    const selected = optionsData?.data?.jobs?.find(u => u.code === clubForm.jobGroups[0]?.code);
     setJobs(selected ? selected.jobs : []);
-    setSelectedJob(clubForm?.jobs[0]?.code);
+    setSelectedJob(clubForm.jobs[0]?.code || '');
     setButtonFlag(true);
     setScheduleData(quizList);
 
@@ -1629,9 +1630,9 @@ export function QuizOpenTemplate() {
                         />
                       </g>
                       <defs>
-                        <clippath id="tw-clip0_320_49119">
+                        <clipPath id="tw-clip0_320_49119">
                           <rect width={24} height={24} fill="white" />
-                        </clippath>
+                        </clipPath>
                       </defs>
                     </svg>
                     <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-medium tw-text-left tw-text-[#9ca5b2]">

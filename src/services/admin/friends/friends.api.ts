@@ -19,7 +19,8 @@ export const crewAcceptPost = async body => await axiosGeneralAPI().put(`/api/v1
 
 export const crewRejectPost = async body => await axiosGeneralAPI().put(`/api/v1/club/crew-requests/decision`, body);
 
-export const crewBan = async sequence => await axiosGeneralAPI().delete(`/api/v1/club/members/${sequence}/ban`);
+export const crewBan = async params =>
+  await axiosGeneralAPI().delete(`/api/v1/clubs/${params.club}/members/${params.memberUUID}/ban`);
 
 export const savePost = async body => await axiosGeneralAPI().put(`/api/v1/member/friend/requests`, body);
 

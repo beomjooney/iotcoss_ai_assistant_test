@@ -43,14 +43,15 @@ const QuizClubListView = ({ border, id }) => {
   const borderStyle = border ? 'border border-[#e9ecf2] tw-mt-14' : '';
   // const [activeTab, setActiveTab] = useState('myQuiz');
   const [activeTab, setActiveTab] = useState('community');
-  const [page, setPage] = useState(1);
-  const [totalPage, setTotalPage] = useState(1);
+
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [myClubList, setMyClubList] = useState<any>([]);
   const [quizList, setQuizList] = useState<any>([]);
   const [selectedValue, setSelectedValue] = useState('');
   const [selectedClub, setSelectedClub] = useState<any>(null);
   const [sortType, setSortType] = useState('ASC');
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
 
   const [params, setParams] = useState<any>({ id: '225', page });

@@ -1,7 +1,7 @@
 import { deleteCookie } from 'cookies-next';
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import { QUERY_KEY_FACTORY } from '../../queryKeys';
-import { deleteMember, saveMember } from './members.api';
+import { deleteMember, saveMember, saveQuiz } from './members.api';
 
 export const useSaveMember = (): UseMutationResult => {
   const queryClient = useQueryClient();
@@ -14,6 +14,20 @@ export const useSaveMember = (): UseMutationResult => {
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_MEMBERS').all),
     onSuccess: async data => {
       alert('수정이 완료되었습니다.');
+    },
+  });
+};
+export const useSaveQuiz = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  // TODO : any 타입 변경
+  return useMutation<any, any, any>(requestBody => saveQuiz(requestBody.club, requestBody.data), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_MEMBERS').all),
+    onSuccess: async data => {
+      alert('퀴즈 수정이 완료되었습니다.');
     },
   });
 };

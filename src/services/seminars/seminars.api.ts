@@ -49,10 +49,33 @@ export const clubQuizManage = async id => {
 // 클럽 퀴즈 목록 조회
 export const myDashboardList = async (params: any) => {
   console.log(params);
-  console.log(params.data);
   const { data } = await axiosGeneralAPI().get(`/api/v1/clubs/${params.clubSequence}/dashboard`, {
     params: {
       sortType: params.data.sortType,
+    },
+  });
+  return data.data;
+};
+
+// 내 회원 목록 조회
+export const myMemberRequestList = async (params: any) => {
+  console.log(params);
+  const { data } = await axiosGeneralAPI().get(`/api/v1/my/clubs/${params.clubSequence}/member-requests`, {
+    params: {
+      page: params.page,
+      size: params.size,
+    },
+  });
+  return data.data;
+};
+
+// 내 회원 목록 조회
+export const myMemberList = async (params: any) => {
+  console.log(params);
+  const { data } = await axiosGeneralAPI().get(`/api/v1/my/clubs/${params.clubSequence}/members`, {
+    params: {
+      page: params.page,
+      size: params.size,
     },
   });
   return data.data;

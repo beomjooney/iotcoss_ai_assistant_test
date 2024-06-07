@@ -9,6 +9,7 @@ const QuizBreakerInfo = ({
   avatarSrc = '',
   userName = 'Unknown User',
   questionText,
+  isPublished,
   index,
   answerText,
   knowledgeContentTitle = '[영상] CircuitBreaker를 이용한 외부 API 장애 관리',
@@ -34,7 +35,11 @@ const QuizBreakerInfo = ({
             <p className="tw-col-start-1 tw-row-start-2 tw-row-end-3 tw-mt-[2px] tw-ml-[22px] tw-text-[10px] tw-text-left tw-text-black">
               {userName}
             </p>
-            <p className="tw-col-start-2 tw-col-end-3 tw-row-start-1 tw-row-end-3 tw-text-base tw-text-left tw-text-black tw-ml-[33px] tw-flex tw-items-center">
+            <p
+              className={`tw-col-start-2 tw-col-end-3 tw-row-start-1 tw-row-end-3 tw-text-base tw-text-left  tw-ml-[33px] tw-flex tw-items-center ${
+                isPublished ? 'tw-text-black' : 'tw-text-gray-400'
+              }`}
+            >
               {questionText}
             </p>
             <svg
@@ -51,24 +56,26 @@ const QuizBreakerInfo = ({
               <path d="M6 14H22" stroke="#31343D" strokeWidth="1.5" />
               <path d="M6 18H22" stroke="#31343D" strokeWidth="1.5" />
             </svg>
-            <svg
-              onClick={e => {
-                e.stopPropagation(); // Prevent drag event
-                handleCheckboxDelete(index);
-                console.log(index);
-              }}
-              width={28}
-              height={28}
-              viewBox="0 0 28 28"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="tw-cursor-pointer tw-mr-5 tw-w-7 tw-h-7 tw-col-start-4 tw-row-start-1 tw-row-end-3 tw-place-self-center"
-              preserveAspectRatio="none"
-            >
-              <rect width={28} height={28} rx={4} fill="#31343D" />
-              <path d="M20 8L8 20" stroke="white" strokeWidth="1.5" />
-              <path d="M8 8L20 20" stroke="white" strokeWidth="1.5" />
-            </svg>
+            {!isPublished && (
+              <svg
+                onClick={e => {
+                  e.stopPropagation(); // Prevent drag event
+                  handleCheckboxDelete(index);
+                  console.log(index);
+                }}
+                width={28}
+                height={28}
+                viewBox="0 0 28 28"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="tw-cursor-pointer tw-mr-5 tw-w-7 tw-h-7 tw-col-start-4 tw-row-start-1 tw-row-end-3 tw-place-self-center"
+                preserveAspectRatio="none"
+              >
+                <rect width={28} height={28} rx={4} fill="#31343D" />
+                <path d="M20 8L8 20" stroke="white" strokeWidth="1.5" />
+                <path d="M8 8L20 20" stroke="white" strokeWidth="1.5" />
+              </svg>
+            )}
           </div>
           <div className="tw-my-3 tw-h-[107px] tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white border border-[#e9ecf2]">
             <svg
