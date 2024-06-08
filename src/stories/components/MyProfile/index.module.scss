@@ -1,0 +1,54 @@
+@use 'src/stories/assets/styles/abstracts/font';
+@use 'src/stories/assets/styles/abstracts/palette';
+
+.profile {
+  @media (min-width: 320px) and (max-width: 992px) {
+    width: 177px;
+  }
+
+  width: 256px;
+  text-align: center;
+  cursor: pointer;
+  margin-bottom: 32px;
+
+  .profile-area {
+    position: relative;
+    .profile-image__image {
+      width: 100%;
+      border: 0.5px solid palette.$Primary-Gray500 !important;
+    }
+
+    &__chips {
+      width: 100%;
+      text-align: center;
+      margin-top: 16px;
+    }
+  }
+
+  .profile-desc {
+    display: none;
+
+    &--show {
+      //display: block;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      //gap: 2px;
+    }
+
+    &__name {
+      color: #000000;
+      font-size: font.$font-size-24;
+      //font-weight: normal;
+    }
+
+    &__job {
+      font-size: font.$font-size-16;
+      color: palette.$Primary-Gray800;
+    }
+  }
+}
+
+.icon-height {
+  height: 24px;
+}
