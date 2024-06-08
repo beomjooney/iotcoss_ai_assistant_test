@@ -10,12 +10,20 @@ ReactModal.setAppElement('body');
 export interface MentorsModalProps {
   isOpen: boolean;
   title?: string;
+  isProfile?: boolean;
   closable?: boolean;
   children?: React.ReactNode;
   onAfterClose?: () => void;
 }
 
-function MentorsModal({ isOpen, title, children, closable = true, onAfterClose }: MentorsModalProps) {
+function MentorsModal({
+  isOpen,
+  title,
+  children,
+  closable = true,
+  isProfile = false,
+  onAfterClose,
+}: MentorsModalProps) {
   const [isShow, setIsShow] = useState<boolean>(false);
   const [scrollPosition, setScrollPosition] = useState<number>(0);
 
@@ -51,7 +59,7 @@ function MentorsModal({ isOpen, title, children, closable = true, onAfterClose }
               top: '50px',
               left: '50%',
               transform: 'translateX(-50%)',
-              width: '95%',
+              width: isProfile ? '55%' : '95%',
               height: '100%',
               border: '1px solid #ccc',
               background: '#fff',
@@ -91,8 +99,9 @@ function MentorsModal({ isOpen, title, children, closable = true, onAfterClose }
             content: {
               position: 'absolute',
               top: '50px',
-              left: '22.5%',
-              width: '55%',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: isProfile ? '35%' : '55%',
               height: '90%',
               border: '1px solid #ccc',
               background: '#fff',

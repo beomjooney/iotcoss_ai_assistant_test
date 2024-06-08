@@ -12,6 +12,7 @@ import Button from '@mui/material/Button';
 import { deleteCookie } from 'cookies-next';
 import Image from 'next/image';
 import MentorsModal from 'src/stories/components/MentorsModal';
+import MyProfile from 'src/stories/components/MyProfile';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 
 const cx = classNames.bind(styles);
@@ -25,17 +26,19 @@ interface MyTemplateProps {
 export function MyTemplate({ children }: MyTemplateProps) {
   const router = useRouter();
   const { user, member } = useStore();
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [nickname, setNickname] = useState<string>('');
   const [summary, setSummary] = useState<any>([]);
-  const [profile, setProfile] = useState<any>([]);
   const [showMenu, setShowMenu] = useState<ReactNode>(null);
   const [showMenuMobile, setShowMenuMobile] = useState<ReactNode>(null);
   const [isShowMentorBtn, setIsShowMentorBtn] = useState<boolean>(false);
+  const [profile, setProfile] = useState<any>([]);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [memberUUID, setMemberUUID] = useState<string>('');
+  const [isModalProfileOpen, setIsModalProfileOpen] = useState<boolean>(false);
 
   // 회원 정보 저장
   const { isFetched: isUserFetched } = useMemberSummaryInfo(data => setSummary(data));
+
   // 회원 프로필 정보
   const { isFetched: isProfileFetched, refetch: refetchProfile } = useGetProfile(memberUUID, data => {
     console.log(data?.data?.data);
@@ -150,9 +153,10 @@ export function MyTemplate({ children }: MyTemplateProps) {
     }
   }, [memberUUID]);
 
-  const handleClickProfile = () => {
+  const handleClickProfile = memberUUID => {
     setIsModalOpen(true);
-    setMemberUUID(member?.memberUUID);
+    console.log('memberUUID1', memberUUID);
+    setMemberUUID(memberUUID);
   };
 
   return (
@@ -172,7 +176,9 @@ export function MyTemplate({ children }: MyTemplateProps) {
             <div className={cx('lnb-area', 'tw-bg-gray-100', 'tw-rounded-lg')}>
               <div className="">
                 <div className="tw-p-5">
-                  <div className="tw-text-lg tw-pb-4 tw-font-semibold tw-text-black">안녕하세요! {nickname}님</div>
+                  <div className="tw-text-lg tw-pb-4 tw-font-semibold tw-text-black">
+                    안녕하세요! {summary?.member?.nickname}님
+                  </div>
                   <div className="tw-p-5 tw-mb-5 tw-bg-white tw-rounded-lg">
                     <div className="tw-flex tw-justify-between tw-mt-2 tw-gap-2 tw-text-center tw-pb-5">
                       <div className="tw-p-1 tw-flex-1 border-right">
@@ -198,7 +204,7 @@ export function MyTemplate({ children }: MyTemplateProps) {
                     <div className="tw-flex tw-justify-between tw-mt-2 tw-gap-5">
                       <button
                         className="tw-py-2.5 tw-w-full tw-bg-black tw-text-white tw-rounded"
-                        onClick={() => handleClickProfile()}
+                        onClick={() => handleClickProfile(summary?.member?.memberUUID)}
                       >
                         프로필 보기
                       </button>
@@ -353,8 +359,17 @@ export function MyTemplate({ children }: MyTemplateProps) {
           </div>
         </div>
       </Mobile>
-      <MentorsModal title={'상세 답변보기'} isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
-        {isProfileFetched && <div>ff {profile?.member?.nickname}</div>}
+      <MentorsModal
+        title={'프로필 보기'}
+        isOpen={isModalOpen}
+        isProfile={true}
+        onAfterClose={() => setIsModalOpen(false)}
+      >
+        {isProfileFetched && (
+          <div>
+            <MyProfile profile={profile} />
+          </div>
+        )}
       </MentorsModal>
     </div>
   );

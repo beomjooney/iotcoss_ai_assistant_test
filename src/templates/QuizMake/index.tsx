@@ -254,7 +254,7 @@ export function QuizMakeTemplate() {
 
   //api call
   const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
-  const { data: experienceData }: UseQueryResult<ExperiencesResponse> = useExperiences();
+  // const { data: experienceData }: UseQueryResult<ExperiencesResponse> = useExperiences();
   const { isFetched: isJobGroupFetched } = useJobGroupss(data => setJobGroups(data.data.contents || []));
   const { data: myQuizData, refetch: refetchMyJob }: UseQueryResult<any> = useMyQuiz(params, data => {
     setTotalPage(data.totalPages);

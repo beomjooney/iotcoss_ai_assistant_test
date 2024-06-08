@@ -97,7 +97,7 @@ export function QuizTemplate() {
         </div>
         <Box sx={{ width: '100%', typography: 'body1', marginBottom: '20px' }}>
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-            <Grid item xs={12} sm={9} className="tw-font-bold tw-text-3xl tw-text-black">
+            <Grid item xs={12} sm={9} className="tw-font-bold tw-text-3xl tw-text-black tw-pr-2">
               <Box className="filter-area">
                 <Tabs
                   sx={{
@@ -134,6 +134,7 @@ export function QuizTemplate() {
                             fontSize: '16px',
                             color: 'black',
                           },
+                          fontSize: '16px',
                         }}
                         className="tw-text-base"
                         key={item.id}
