@@ -1,19 +1,21 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import { ToggleLabel, Pagination, ClubCard } from 'src/stories/components';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { RecommendContent } from 'src/models/recommend';
 import { useSeminarList, paramProps } from 'src/services/seminars/seminars.queries';
-import { useContentJobTypes, useContentTypes, useJobGroups } from 'src/services/code/code.queries';
 import { useStore } from 'src/store';
 import { useRouter } from 'next/router';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/system/Box';
 import TextField from '@mui/material/TextField';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
 import SearchIcon from '@mui/icons-material/Search';
-import ToggleButton from '@mui/material/ToggleButton';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { useSessionStore } from 'src/store/session';
+import useDidMountEffect from 'src/hooks/useDidMountEffect';
+import { ExperiencesResponse } from 'src/models/experiences';
+import { useOptions } from 'src/services/experiences/experiences.queries';
 
 const cx = classNames.bind(styles);
 
@@ -21,29 +23,34 @@ export function QuizTemplate() {
   const { jobGroups, setJobGroups, contentTypes, setContentTypes } = useStore();
   const { logged } = useSessionStore.getState();
   const router = useRouter();
-  const [skillIds, setSkillIds] = useState<any[]>([]);
-  const [skillIdsClk, setSkillIdsClk] = useState<any[]>([1, 2, 3, 4, 5]);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
-  const [jobGroupsFilter, setJobGroupsFilter] = useState([]);
-  const [levelsFilter, setLevelsFilter] = useState([]);
-  const [seminarFilter, setSeminarFilter] = useState(['0002']);
   const [params, setParams] = useState<paramProps>({ page });
   const [contents, setContents] = useState<RecommendContent[]>([]);
-  const [images, setSeminarImages] = useState<any[]>([]);
-  const [recommendJobGroup, setRecommendJobGroup] = useState<any[]>([]);
-  const [contentJobType, setContentJobType] = useState<any[]>([]);
-  const [jobGroup, setJobGroup] = useState([]);
   const [active, setActive] = useState(0);
   const [contentType, setContentType] = useState(0);
-  // const { isFetched: isJobGroupFetched } = useJobGroups(data => setJobGroups(data || []));
   const [recommendLevels, setRecommendLevels] = useState([]);
   const [keyWorld, setKeyWorld] = useState('');
 
+  const { isFetched: isOptionFetched, data: optionsData }: UseQueryResult<ExperiencesResponse> = useOptions();
+
+  console.log(optionsData);
   const { isFetched: isContentFetched, refetch } = useSeminarList(params, data => {
     setContents(data.data.contents || []);
     setTotalPage(data.data.totalPages);
   });
+
+  const handleTabChange = (event, newValue) => {
+    setActive(newValue);
+    if (newValue === 0) {
+      setParams({ page });
+    } else {
+      const selectedItem = optionsData.data.jobs[newValue - 1];
+      setContentType(selectedItem.id);
+      setParams({ ...params, recommendJobGroups: selectedItem.code, page });
+    }
+    setPage(1);
+  };
 
   function searchKeyworld(value) {
     let _keyworld = value.replace('#', '');
@@ -51,52 +58,13 @@ export function QuizTemplate() {
     setKeyWorld(_keyworld);
   }
 
-  const { isFetched: isContentTypeFetched } = useContentTypes(data => {
-    setContentTypes(data.data.contents || []);
-    const contentsType = data.length >= 0 && data[0].id;
-    setParams({
-      ...params,
-      // contentsType,
-    });
-  });
-
-  const { isFetched: isContentTypeJobFetched } = useContentJobTypes(data => {
-    setContentJobType(data.data.contents || []);
-  });
-
-  useEffect(() => {
+  useDidMountEffect(() => {
     setParams({
       // ...params,
       page,
       keyword: keyWorld,
     });
   }, [page, keyWorld]);
-
-  const handleJobs = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
-    //console.log('job', event.currentTarget, newFormats);
-    setJobGroup(newFormats);
-
-    setParams({
-      ...params,
-      recommendJobGroups: contentType,
-      recommendJobs: newFormats.join(','),
-      page,
-    });
-    setPage(1);
-    //console.log(newFormats);
-  };
-
-  const handleRecommendLevels = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
-    setRecommendLevels(newFormats);
-
-    setParams({
-      ...params,
-      recommendJobGroups: contentType,
-      recommendLevels: newFormats.join(','),
-      page,
-    });
-    setPage(1);
-  };
 
   return (
     <div className={cx('seminar-container')}>
@@ -129,52 +97,51 @@ export function QuizTemplate() {
         </div>
         <Box sx={{ width: '100%', typography: 'body1', marginBottom: '20px' }}>
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-            <Grid item xs={6} sm={9} className="tw-font-bold tw-text-3xl tw-text-black">
-              <div className={cx('filter-area')}>
-                <div className={cx('mentoring-button__group', 'gap-12', 'justify-content-center')}>
-                  <ToggleLabel
+            <Grid item xs={12} sm={9} className="tw-font-bold tw-text-3xl tw-text-black">
+              <Box className="filter-area">
+                <Tabs
+                  sx={{
+                    '& .MuiTabs-indicator': { display: 'none' },
+                    '&.Mui-selected': {
+                      fontWeight: 'bold', // 선택된 탭의 폰트 웨이트를 bold로
+                      color: 'black',
+                    },
+                  }}
+                  value={active}
+                  onChange={handleTabChange}
+                  variant="scrollable"
+                  scrollButtons="auto"
+                  aria-label="scrollable auto tabs example"
+                  className="" // 커스텀 스타일 적용
+                >
+                  <Tab
                     label="전체보기"
-                    name="전체보기"
-                    value=""
-                    variant="small"
-                    checked={active === 0}
-                    isActive
-                    type="tabButton"
-                    onChange={() => {
-                      setActive(0);
-                      setParams({
-                        page,
-                      });
-                      setPage(1);
+                    className="tw-text-base"
+                    sx={{
+                      '&.Mui-selected': {
+                        fontWeight: 'bold', // 선택된 탭의 폰트 웨이트를 bold로
+                        fontSize: '16px',
+                        color: 'black',
+                      },
                     }}
-                    className={cx('fixed-width')}
                   />
-                  {isContentTypeFetched &&
-                    contentTypes.map((item, i) => (
-                      <ToggleLabel
+                  {isOptionFetched &&
+                    optionsData?.data?.jobs?.map((item, i) => (
+                      <Tab
+                        sx={{
+                          '&.Mui-selected': {
+                            fontWeight: 'bold', // 선택된 탭의 폰트 웨이트를 bold로
+                            fontSize: '16px',
+                            color: 'black',
+                          },
+                        }}
+                        className="tw-text-base"
                         key={item.id}
                         label={item.name}
-                        name={item.name}
-                        value={item.id}
-                        variant="small"
-                        checked={active === i + 1}
-                        isActive
-                        type="tabButton"
-                        onChange={() => {
-                          setActive(i + 1);
-                          setContentType(item.id);
-                          setParams({
-                            ...params,
-                            recommendJobGroups: item.id,
-                            page,
-                          });
-                          setPage(1);
-                        }}
-                        className={cx('fixed-width', 'tw-ml-4', 'max-lg:!tw-hidden')}
                       />
                     ))}
-                </div>
-              </div>
+                </Tabs>
+              </Box>
             </Grid>
             <Grid item xs={6} sm={3} className="tw-font-semi tw-text-base tw-text-black">
               <TextField
@@ -199,17 +166,6 @@ export function QuizTemplate() {
 
         {/* <Divider className="tw-mb-6 tw-border tw-bg-['#efefef']" /> */}
         <hr className="tw-y-14 tw-my-5 tw-h-[0.5px] tw-border-t tw-bg-gray-300 " />
-        {active != 0 && (
-          <div>
-            <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
-              <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천 직군</div>
-            </div>
-
-            <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
-              <span className="tw-font-bold tw-text-base tw-text-black tw-mr-4">레벨</span>
-            </div>
-          </div>
-        )}
         <article>
           <div className={cx('content-area')}>
             <Grid

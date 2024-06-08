@@ -34,7 +34,7 @@ export const useCrewAcceptPost = (): UseMutationResult => {
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CAMENITY').all),
     onSuccess: async data => {
-      //alert(',친구 수락이 되었습니다.');
+      alert('클럽 가입이 되었습니다.');
     },
   });
 };

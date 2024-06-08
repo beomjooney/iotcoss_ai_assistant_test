@@ -24,17 +24,20 @@ export async function memberInfo(memberId: string) {
 
 // 회원 요약 조회
 export async function memberSummaryInfo() {
-  const { data } = await axiosGeneralAPI().get(`/api/v1/members/activity/summary`);
+  const { data } = await axiosGeneralAPI().get(`/api/v1/my/activity/simple`);
   // const { data } = await axiosGeneralAPI().get(`/members/${memberId}`);
   return data.data;
 }
 
 // 회원 활동 조회
 export async function memberActiveSummaryInfo() {
-  const { data } = await axiosGeneralAPI().get(`/api/v1/activity/summary`);
+  const { data } = await axiosGeneralAPI().get(`/api/v1/my/activities`);
   // const { data } = await axiosGeneralAPI().get(`/members/${memberId}`);
   return data.data;
 }
+
+// 회원 정보 저장
+export const getProfile = async body => await axiosGeneralAPI().get(`/api/v1/profiles/${body}`);
 
 // 회원 정보 저장
 export const saveProfile = async body => await axiosGeneralAPI().put(`/api/v1/members/profile`, body);

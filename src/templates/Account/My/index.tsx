@@ -7,10 +7,12 @@ import { Modal } from 'src/stories/components';
 import { useStore } from 'src/store';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 import Grid from '@mui/material/Grid';
-import { useMemberSummaryInfo } from 'src/services/account/account.queries';
+import { useGetProfile, useMemberSummaryInfo } from 'src/services/account/account.queries';
 import Button from '@mui/material/Button';
 import { deleteCookie } from 'cookies-next';
 import Image from 'next/image';
+import MentorsModal from 'src/stories/components/MentorsModal';
+import useDidMountEffect from 'src/hooks/useDidMountEffect';
 
 const cx = classNames.bind(styles);
 
@@ -22,23 +24,31 @@ interface MyTemplateProps {
 
 export function MyTemplate({ children }: MyTemplateProps) {
   const router = useRouter();
-  const { user } = useStore();
+  const { user, member } = useStore();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [nickname, setNickname] = useState<string>('');
-  const [summary, setSummary] = useState({});
+  const [summary, setSummary] = useState<any>([]);
+  const [profile, setProfile] = useState<any>([]);
   const [showMenu, setShowMenu] = useState<ReactNode>(null);
   const [showMenuMobile, setShowMenuMobile] = useState<ReactNode>(null);
   const [isShowMentorBtn, setIsShowMentorBtn] = useState<boolean>(false);
+  const [memberUUID, setMemberUUID] = useState<string>('');
+
+  // 회원 정보 저장
   const { isFetched: isUserFetched } = useMemberSummaryInfo(data => setSummary(data));
+  // 회원 프로필 정보
+  const { isFetched: isProfileFetched, refetch: refetchProfile } = useGetProfile(memberUUID, data => {
+    console.log(data?.data?.data);
+    setProfile(data?.data?.data);
+  });
 
   const showMentorChangeBtn = () => {
     let isUserRole = user?.roles?.find(_ => _ === 'ROLE_USER');
     let isUser = user?.type === '0001'; // 멘티
-
     setIsShowMentorBtn(!!isUserRole && isUser);
-
     return !!isUserRole && isUser;
   };
+
   const currentPath = router.pathname;
   // TODO 위에 타이틀 보여지게 하기 - menus에 다 넣고 옵션 값에 따라 role 맞춰 보여주기
   const menus = [
@@ -132,6 +142,19 @@ export function MyTemplate({ children }: MyTemplateProps) {
     );
   };
 
+  // 프로필 정보 수정 시 변경 적용
+  useEffect(() => {
+    if (memberUUID) {
+      console.log('memberUUID', memberUUID);
+      refetchProfile();
+    }
+  }, [memberUUID]);
+
+  const handleClickProfile = () => {
+    setIsModalOpen(true);
+    setMemberUUID(member?.memberUUID);
+  };
+
   return (
     <div>
       <Desktop>
@@ -173,29 +196,15 @@ export function MyTemplate({ children }: MyTemplateProps) {
                     </div>
 
                     <div className="tw-flex tw-justify-between tw-mt-2 tw-gap-5">
-                      <Button
-                        className="tw-w-full "
-                        variant="outlined"
-                        size="large"
-                        sx={{
-                          background: 'black',
-                          color: 'white',
-                        }}
-                        onClick={() => (location.href = '/profile')}
+                      <button
+                        className="tw-py-2.5 tw-w-full tw-bg-black tw-text-white tw-rounded"
+                        onClick={() => handleClickProfile()}
                       >
                         프로필 보기
-                      </Button>
-                      <Button
-                        sx={{
-                          color: 'gray',
-                        }}
-                        size="large"
-                        className="tw-w-full border tw-text-gray-400"
-                        variant="outlined"
-                        onClick={handleLogout}
-                      >
+                      </button>
+                      <button className="tw-w-full border tw-text-gray-400 tw-rounded" onClick={handleLogout}>
                         로그아웃
-                      </Button>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -314,7 +323,7 @@ export function MyTemplate({ children }: MyTemplateProps) {
                           color: 'gray',
                           fontSize: '15px',
                         }}
-                        onClick={() => (location.href = '/profile')}
+                        onClick={() => handleClickProfile()}
                       >
                         프로필 바로가기
                       </Button>
@@ -344,6 +353,9 @@ export function MyTemplate({ children }: MyTemplateProps) {
           </div>
         </div>
       </Mobile>
+      <MentorsModal title={'상세 답변보기'} isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
+        {isProfileFetched && <div>ff {profile?.member?.nickname}</div>}
+      </MentorsModal>
     </div>
   );
 }

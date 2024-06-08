@@ -235,6 +235,7 @@ export function QuizOpenTemplate() {
     if (_keyworld == '') _keyworld = null;
     setKeyWorld(_keyworld);
   }
+
   function searchMyKeyworld(value) {
     let _keyworld = value.replace('#', '');
     if (_keyworld == '') _keyworld = null;

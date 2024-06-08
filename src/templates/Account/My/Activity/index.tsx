@@ -37,13 +37,20 @@ export function MyActivityTemplate() {
               <Desktop>
                 <div>
                   <div className="tw-grid tw-grid-cols-5 tw-gap-0 tw-p-5 tw-flex tw-items-center tw-justify-between tw-gap-5">
-                    <div className="tw-h-[300px] tw-rounded-md  border border-secondary tw-border-indigo-500 tw-col-span-3 tw-text-base tw-font-bold tw-text-gray-600 tw-text-center tw-p-5">
-                      <div className="tw-text-xl tw-py-4 tw-text-red-500">Today</div>
-                      <div className="tw-text-xl tw-py-2 tw-text-gray-400">
-                        {summary?.activityHistory?.todayDate} ({summary?.activityHistory?.dayOfWeek})
+                    <div className="tw-h-[350px] tw-rounded-md  border border-secondary tw-border-indigo-500 tw-col-span-3 tw-text-base tw-font-bold tw-text-gray-600 tw-text-center tw-p-5">
+                      <div className="tw-text-xl tw-pt-4 tw-text-red-500">Today</div>
+                      <div className="tw-text-xl tw-pb-10 tw-text-black">
+                        {summary?.todaySummary?.date} ({summary?.todaySummary?.dayOfWeek})
                       </div>
-                      <div>학습예정</div>
-                      <div className="tw-py-5">
+
+                      {summary?.todaySummary?.activities?.map((item, index) => {
+                        return (
+                          <div key={index}>
+                            {item?.name} &nbsp;&nbsp;&nbsp;&nbsp; {item?.date}
+                          </div>
+                        );
+                      })}
+                      <div className="tw-py-10">
                         <button
                           onClick={() => router.push('/studyroom')}
                           className="tw-bg-red-500 tw-rounded-md tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-14 tw-rounded"
@@ -52,7 +59,7 @@ export function MyActivityTemplate() {
                         </button>
                       </div>
                     </div>
-                    <div className="tw-h-[300px] border border-secondary tw-col-span-2 tw-text-base tw-font-bold tw-text-gray-600 tw-text-center  tw-rounded-md  tw-p-5">
+                    <div className="tw-h-[350px] border border-secondary tw-col-span-2 tw-text-base tw-font-bold tw-text-gray-600 tw-text-center  tw-rounded-md  tw-p-5">
                       <div className="tw-text-xl tw-py-4 tw-text-black">최근 획득한 배지</div>
                       <div className="tw-text-center">
                         <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
@@ -108,7 +115,7 @@ export function MyActivityTemplate() {
                   <div className="tw-h-[300px] border-3 border-primary tw-border-indigo-500 tw-text-base tw-font-bold tw-text-gray-600 tw-text-center tw-p-5">
                     <div className="tw-text-xl tw-py-4 tw-text-blue-500">Today</div>
                     <div className="tw-text-xl tw-py-2 tw-text-gray-400">
-                      {summary?.activityHistory?.todayDate} ({summary?.activityHistory?.dayOfWeek})
+                      {summary?.todaySummary?.date} ({summary?.todaySummary?.dayOfWeek})
                     </div>
                     <div>학습예정</div>
                     <div className="tw-py-5">

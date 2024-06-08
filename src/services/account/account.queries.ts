@@ -7,6 +7,7 @@ import {
   memberLogin,
   memberSummaryInfo,
   termsInfo,
+  getProfile,
 } from './account.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 import { User } from 'src/models/user';
@@ -26,6 +27,16 @@ export const useMemberSummaryInfo = (onSuccess?: (data: User) => void, onError?:
     // enabled: !!memberId && memberId !== 'Guest',
     // staleTime: 10 * 60 * 1000, // 10분 유지
   });
+
+// 회원 프로필 정보
+export const useGetProfile = (body: string, onSuccess?: (data: string) => void, onError?: (error: Error) => void) =>
+  useQuery<any, Error>(QUERY_KEY_FACTORY('TEMP').details(), () => getProfile(body), {
+    onSuccess,
+    onError,
+    refetchOnWindowFocus: false,
+    enabled: false,
+  });
+
 export const useMemberActiveSummaryInfo = (onSuccess?: (data: User) => void, onError?: (error: Error) => void) =>
   useQuery<User, Error>(QUERY_KEY_FACTORY('QUIZ').details(), () => memberActiveSummaryInfo(), {
     onSuccess,
