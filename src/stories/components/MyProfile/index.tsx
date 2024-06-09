@@ -9,7 +9,7 @@ import Tooltip from '../Tooltip';
 
 const cx = classNames.bind(styles);
 
-const MyProfile = ({ profile }: any) => {
+const MyProfile = ({ profile, badgeContents }: any) => {
   return (
     <>
       <div className="tw-relative tw-rounded-[10px] border ">
@@ -95,8 +95,24 @@ const MyProfile = ({ profile }: any) => {
           </button>
         </div>
       </div>
-      <div className="tw-mt-7 tw-h-[320px] tw-relative tw-rounded-[10px] border tw-border-[#e0e4eb] tw-p-5">
+      <div className="tw-mt-7 tw-h-[320px] tw-relative tw-rounded-[10px] border tw-border-[#e0e4eb] tw-p-5 tw-overflow-y-scroll">
         <div className="tw-text-black tw-text-base tw-font-bold">보유배지</div>
+        <div className="tw-grid tw-grid-cols-6 tw-gap-4">
+          {badgeContents.map((item, index) => (
+            <div key={index} className="tw-text-center">
+              <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
+                <img
+                  className="tw-object-cover tw-h-[80px] "
+                  src={`${process.env.NEXT_PUBLIC_GENERAL_URL}/assets/images/badge/${item?.badgeId}.png`}
+                  alt=""
+                />
+              </div>
+              <div className="tw-text-sm tw-text-black tw-font-bold tw-line-clamp-1">{item?.name}</div>
+              <div className="tw-text-sm tw-text-black tw-line-clamp-1">{item?.description}</div>
+              <div className="tw-text-sm tw-text-black">{item?.achievementAt?.split(' ')[0]}</div>
+            </div>
+          ))}
+        </div>
       </div>
     </>
   );

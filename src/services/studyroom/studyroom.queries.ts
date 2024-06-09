@@ -102,7 +102,6 @@ export const useStudyQuizBadgeList = (
       onSuccess,
       onError,
       refetchOnWindowFocus: false,
-      enabled: true,
     },
   );
 };
@@ -119,7 +118,7 @@ export const useStudyQuizOpponentBadgeList = (
       onSuccess,
       onError,
       refetchOnWindowFocus: false,
-      enabled: true,
+      enabled: false,
     },
   );
 };

@@ -14,6 +14,7 @@ import Image from 'next/image';
 import MentorsModal from 'src/stories/components/MentorsModal';
 import MyProfile from 'src/stories/components/MyProfile';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
+import { useStudyQuizOpponentBadgeList } from 'src/services/studyroom/studyroom.queries';
 
 const cx = classNames.bind(styles);
 
@@ -35,7 +36,6 @@ export function MyTemplate({ children }: MyTemplateProps) {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [memberUUID, setMemberUUID] = useState<string>('');
   const [isModalProfileOpen, setIsModalProfileOpen] = useState<boolean>(false);
-
   // 회원 정보 저장
   const { isFetched: isUserFetched } = useMemberSummaryInfo(data => setSummary(data));
 
@@ -44,6 +44,17 @@ export function MyTemplate({ children }: MyTemplateProps) {
     console.log(data?.data?.data);
     setProfile(data?.data?.data);
   });
+
+  /** get badge */
+  const [badgePage, setBadgePage] = useState(1);
+  const [badgeParams, setBadgeParams] = useState<any>({ page: badgePage, memberUUID: memberUUID });
+  const [badgeContents, setBadgeContents] = useState<any[]>([]);
+  const { isFetched: isQuizbadgeFetched, refetch: QuizRefetchBadge } = useStudyQuizOpponentBadgeList(
+    badgeParams,
+    data => {
+      setBadgeContents(data?.data?.contents);
+    },
+  );
 
   const showMentorChangeBtn = () => {
     let isUserRole = user?.roles?.find(_ => _ === 'ROLE_USER');
@@ -150,6 +161,7 @@ export function MyTemplate({ children }: MyTemplateProps) {
     if (memberUUID) {
       console.log('memberUUID', memberUUID);
       refetchProfile();
+      QuizRefetchBadge();
     }
   }, [memberUUID]);
 
@@ -157,6 +169,7 @@ export function MyTemplate({ children }: MyTemplateProps) {
     setIsModalOpen(true);
     console.log('memberUUID1', memberUUID);
     setMemberUUID(memberUUID);
+    setBadgeParams({ page: badgePage, memberUUID: memberUUID });
   };
 
   return (
@@ -367,7 +380,7 @@ export function MyTemplate({ children }: MyTemplateProps) {
       >
         {isProfileFetched && (
           <div>
-            <MyProfile profile={profile} />
+            <MyProfile profile={profile} badgeContents={badgeContents} />
           </div>
         )}
       </MentorsModal>
