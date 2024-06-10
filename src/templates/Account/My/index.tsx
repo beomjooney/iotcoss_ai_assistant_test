@@ -68,10 +68,10 @@ export function MyTemplate({ children }: MyTemplateProps) {
   const menus = [
     { no: 0, title: '나의 활동', link: '/activity', role: 'all' },
     { no: 1, title: '가입승인 대기 클럽목록', link: '/club-waiting', role: 'all' },
-    { no: 2, title: '개설신청 대기 클럽목록', link: '/admin-club', role: 'all' },
-    { no: 3, title: '즐겨찾기', link: '/favorites', role: 'all' },
+    { no: 3, title: '클럽 즐겨찾기 목록', link: '/favorites', role: 'all' },
     { no: 4, title: '내 친구관리', link: '/friends', role: 'all' },
     { no: 5, title: '포인트 적립 내역', link: '/point', role: 'all' },
+    { no: 2, title: '개설신청 대기 클럽목록', link: '/admin-club', role: 'all' },
     { no: 6, title: '개인정보관리', link: '/member-edit', role: 'all' },
     // { no: 1, title: 'MY 레벨&성향', link: '/level-tendency', role: 'all' },
     // { no: 1, title: 'MY 학습 픽', link: '/learning' , role: 'all' },

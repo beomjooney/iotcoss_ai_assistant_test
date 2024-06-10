@@ -22,13 +22,13 @@ export const clubMeWaitList = async params => {
   return { data: data.data || [], nextPage: params.page + 1, totalPage };
 };
 
-export const seminarMeList = async params => {
-  const { data, headers } = await axiosGeneralAPI().get('/api/v1/club/crew-requests/me', { params });
+export const clubWaitingList = async params => {
+  const { data, headers } = await axiosGeneralAPI().get('/api/v1/my/member-request-clubs', { params });
   const totalPage = Number(headers['page-count']);
   return { data: data.data || [], nextPage: params.page + 1, totalPage };
 };
-export const seminarMeFavoriteList = async params => {
-  const { data, headers } = await axiosGeneralAPI().get('/api/v1/favorite/clubs/me', { params });
+export const clubFavoriteList = async params => {
+  const { data, headers } = await axiosGeneralAPI().get('/api/v1/my/favorite/clubs', { params });
   const totalPage = Number(headers['page-count']);
 
   return { data: data.data || [], nextPage: params.page + 1, totalPage };

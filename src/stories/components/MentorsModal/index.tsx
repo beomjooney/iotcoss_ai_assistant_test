@@ -101,7 +101,7 @@ function MentorsModal({
               top: '50px',
               left: '50%',
               transform: 'translateX(-50%)',
-              width: isProfile ? '35%' : '55%',
+              width: isProfile ? '680px' : '55%',
               height: '90%',
               border: '1px solid #ccc',
               background: '#fff',

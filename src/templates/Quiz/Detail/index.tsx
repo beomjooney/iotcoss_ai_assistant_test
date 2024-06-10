@@ -90,7 +90,6 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
   useEffect(() => {
     setParams({
       // ...params,
-      id,
       page,
     });
   }, [page]);

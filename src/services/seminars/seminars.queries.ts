@@ -16,8 +16,8 @@ import {
   seminarDetail,
   seminarImageList,
   seminarList,
-  seminarMeFavoriteList,
-  seminarMeList,
+  clubFavoriteList,
+  clubWaitingList,
   clubAboutDetail,
   seminarParticipantList,
   myDashboardList,
@@ -136,15 +136,15 @@ export const useClubMeWaitList = (
     },
   );
 };
-export const useSeminarMeList = (
+export const useClubWaitingList = (
   params?: paramProps,
-  onSuccess?: (data: RecommendContentsResponse) => void,
+  onSuccess?: (data: any) => void,
   onError?: (error: Error) => void,
 ) => {
   const DEFAULT_SIZE = 10;
-  return useQuery<RecommendContentsResponse, Error>(
+  return useQuery<any, Error>(
     QUERY_KEY_FACTORY('SEMINAR').list({ size: DEFAULT_SIZE, ...params }),
-    () => seminarMeList({ size: DEFAULT_SIZE, ...params }),
+    () => clubWaitingList({ size: DEFAULT_SIZE, ...params }),
     {
       onSuccess,
       onError,
@@ -153,7 +153,7 @@ export const useSeminarMeList = (
   );
 };
 
-export const useSeminarMeFavoriteList = (
+export const useClubFavoriteList = (
   params?: paramProps,
   onSuccess?: (data: RecommendContentsResponse) => void,
   onError?: (error: Error) => void,
@@ -161,7 +161,7 @@ export const useSeminarMeFavoriteList = (
   const DEFAULT_SIZE = 10;
   return useQuery<RecommendContentsResponse, Error>(
     QUERY_KEY_FACTORY('SEMINAR').list({ size: DEFAULT_SIZE, ...params }),
-    () => seminarMeFavoriteList({ size: DEFAULT_SIZE, ...params }),
+    () => clubFavoriteList({ size: DEFAULT_SIZE, ...params }),
     {
       onSuccess,
       onError,

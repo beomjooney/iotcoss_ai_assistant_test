@@ -1,12 +1,11 @@
 import classNames from 'classnames/bind';
 import styles from './index.module.scss';
-import Button from 'src/stories/components/Button';
 import React, { useState } from 'react';
-import { Chip, ClubCard, Pagination, Typography } from 'src/stories/components';
+import { ClubCard, Pagination } from 'src/stories/components';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useSessionStore } from '../../../../store/session';
-import { useSeminarList, useSeminarMeList } from 'src/services/seminars/seminars.queries';
+import { useClubWaitingList } from 'src/services/seminars/seminars.queries';
 import Grid from '@mui/material/Grid';
 import { jobColorKey } from 'src/config/colors';
 
@@ -23,26 +22,14 @@ export function GrowthStoryTemplate({ hasInfoData, userType }: GrowthStoryTempla
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [params, setParams] = useState<paramProps>({ page });
-  const [contents, setContents] = useState<RecommendContent[]>([]);
+  const [contents, setContents] = useState<any[]>([]);
 
-  const { isFetched: isContentFetched } = useSeminarMeList(params, data => {
+  const { isFetched: isContentFetched } = useClubWaitingList(params, data => {
     setContents(data.data.contents || []);
     setTotalPage(data.data.totalPage);
   });
 
   const router = useRouter();
-
-  const onGrowthStory = async () => {
-    if (hasInfoData) {
-      await router.push(
-        { pathname: `/growth-story/${memberId}`, query: { type: userType === '0001' ? 'MENTEE' : 'MENTOR' } },
-        `/growth-story/${memberId}`,
-      );
-    } else {
-      // 여기서 신청은 무조건 멘티
-      await router.push({ pathname: '/growth-story', query: { type: 'MENTEE' } }, '/growth-story');
-    }
-  };
 
   return (
     <>

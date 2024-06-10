@@ -175,7 +175,7 @@ export function QuizTemplate() {
               justifyContent="space-between"
               alignItems="center"
               rowSpacing={4}
-              columnSpacing={{ xs: 1, sm: 2, md: 4 }}
+              columnSpacing={{ xs: 4, sm: 4, md: 4 }}
             >
               {isContentFetched &&
                 (contents.length > 0 ? (

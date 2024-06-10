@@ -116,10 +116,10 @@ export const quizAnswerDetail = async params => {
 };
 
 export const quizAnswerMemberDetail = async params => {
-  const { data } = await axiosGeneralAPI().get(
-    `/api/v1/clubs/${params.club}/quizzes/${params.quiz}/member-answers`,
-    params.data,
-  );
+  console.log(params);
+  const { data } = await axiosGeneralAPI().get(`/api/v1/clubs/${params.club}/quizzes/${params.quiz}/member-answers`, {
+    params: params.data,
+  });
   return data.data;
 };
 

@@ -189,7 +189,7 @@ ClubCardProps) => {
                 </Grid> */}
               </Grid>
               <div className="tw-my-[12px] tw-text-[12px] tw-font-bold tw-text-[#9a9a9a]">
-                모집마감일 : {item?.recruitDeadlineAt.split(' ')[0]}
+                모집마감일 : {item?.recruitDeadlineAt?.split(' ')[0] || 'N/A'}
               </div>
               <div className=" tw-h-[70px]">
                 <h6 className="tw-line-clamp-2 max-lg:tw-h-[112px] tw-text-2xl tw-font-bold tw-tracking-tight tw-text-gray-900">
@@ -200,7 +200,7 @@ ClubCardProps) => {
                 </div>
               </div>
               <div className="tw-text-[12px] tw-mb-[12px] tw-font-bold tw-text-[#9a9a9a]">
-                {item.studyCycle.toString()} | {item.studyCount} 주 | 학습 {item.weekCount}회
+                {item.studyCycle.toString() || 'N/A'} | {item.weekCount || 'N/A'} 주 | 학습 {item.studyCount || 'N/A'}회
               </div>
 
               <div className="tw-flex tw-items-center tw-space-x-4">

@@ -21,7 +21,7 @@ export function QuizMyTemplate() {
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [keyWorld, setKeyWorld] = useState('');
-  const [params, setParams] = useState<paramProps>({ page, clubViewFilter: '0002' });
+  const [params, setParams] = useState<any>({ page, clubViewFilter: '0002' });
 
   const { isFetched: isContentFetched, refetch } = useMyClubList(params, data => {
     setContents(data.data.contents || []);

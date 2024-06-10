@@ -24,6 +24,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import MentorsModal from 'src/stories/components/MentorsModal';
 
+import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
+
 const cx = classNames.bind(styles);
 export interface QuizAnswersAllDetailTemplateProps {
   /** 세미나 아이디 */
@@ -43,9 +45,26 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
   const [page, setPage] = useState(1);
   const [params, setParams] = useState<any>({ id, page });
   const [quizParams, setQuizParams] = useState<any>({});
+  const [listParams, setListParams] = useState<any>({ id, page });
   const [totalPage, setTotalPage] = useState(1);
   const [selectedQuiz, setSelectedQuiz] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  let [key, setKey] = useState('');
+  let [fileName, setFileName] = useState('');
+
+  const { isFetched: isParticipantListFetcheds, datas } = useQuizFileDownload(key, data => {
+    // console.log('file download', data);
+    if (data) {
+      // blob 데이터를 파일로 저장하는 로직
+      const url = window.URL.createObjectURL(new Blob([data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', fileName); // 다운로드할 파일 이름과 확장자를 설정합니다.
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  });
 
   const { isFetched: isParticipantListFetched, data } = useQuizRoungeInfo(id, data => {
     console.log('first get data');
@@ -90,12 +109,19 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
     }
   }, [isSuccess, quizAnswerData]);
 
+  useDidMountEffect(() => {
+    if (params.club) {
+      refetchReply();
+    }
+  }, [params]);
+
   useEffect(() => {
     setParams({
       club: selectedQuiz?.clubSequence,
       quiz: selectedQuiz?.quizSequence,
       data: { page, keyword: keyWorld },
     });
+    console.log('page', page);
   }, [page]);
 
   useEffect(() => {
@@ -358,86 +384,84 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
               {clubQuizThreads?.clubQuizThreads?.map((item, index) => {
                 const isLastItem = index === clubQuizThreads.clubQuizThreads.length - 1;
                 return (
-                  <>
-                    <div
-                      key={index}
-                      className={`border border-secondary tw-bg-white tw-flex tw-items-center tw-p-4 tw-py-3 ${
-                        isLastItem ? 'tw-rounded-bl-xl tw-rounded-br-xl' : ''
-                      }`}
-                    >
-                      <div className="tw-w-1.5/12 tw-pl-14 tw-pr-3 tw-flex tw-flex-col tw-items-center tw-justify-center">
-                        <svg
-                          width={24}
-                          height={25}
-                          viewBox="0 0 24 25"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="w-6 h-6 relative"
-                          preserveAspectRatio="none"
-                        >
-                          <path
-                            d="M6 6.32422V12.3242C6 13.1199 6.31607 13.8829 6.87868 14.4455C7.44129 15.0081 8.20435 15.3242 9 15.3242H19M19 15.3242L15 11.3242M19 15.3242L15 19.3242"
-                            stroke="#31343D"
-                            strokeWidth={2}
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </div>
-                      <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
-                        <img className="border tw-rounded-full tw-w-10 tw-h-10 " src={item?.member?.profileImageUrl} />
-                        <div className="tw-text-xs tw-text-left tw-text-black">{item?.member?.nickname}</div>
-                      </div>
-                      <div className="tw-flex-auto tw-w-9/12 tw-px-5">
-                        <div className="tw-py-2">
-                          <p className="tw-font-medium tw-text-[#9ca5b2] tw-text-sm tw-line-clamp-2">
-                            <span className="tw-text-black tw-font-bold">
-                              {item?.answerStatus === '0003' ? '최종답변' : '사전답변'}
-                            </span>{' '}
-                            <span className="tw-px-4 ">{item?.createdAt}</span>
-                          </p>
-                        </div>
-                        <div className="tw-font-medium tw-text-[#9ca5b2] tw-text-sm tw-line-clamp-2">{item?.text}</div>
-
-                        {item?.files?.length > 0 && (
-                          <div className="tw-flex  tw-py-3">
-                            <div className="tw-text-left tw-text-sm">
-                              <ul className="tw-flex tw-space-x-2">
-                                {item?.files?.map((file, index) => (
-                                  <div
-                                    key={index}
-                                    onClick={() => {
-                                      onFileDownload(file.key, file.name);
-                                    }}
-                                    className="tw-cursor-pointer tw-px-3 tw-rounded-full border tw-p-1 tw-rounded"
-                                  >
-                                    {file.name}
-                                  </div>
-                                ))}
-                              </ul>
-                            </div>
-                          </div>
-                        )}
-                        <br />
-                        {item?.urls?.length > 0 && (
-                          <div className="tw-flex  tw-py-3">
-                            <div className="tw-text-left tw-text-sm">
-                              <ul className="tw-flex tw-space-x-2">
-                                {item?.urls?.map((file, index) => (
-                                  <div
-                                    key={index}
-                                    onClick={() => window.open(item?.contentUrl, '_blank')}
-                                    className="tw-cursor-pointer tw-px-3 tw-rounded-full border tw-p-1 tw-rounded"
-                                  >
-                                    {file.name}
-                                  </div>
-                                ))}
-                              </ul>
-                            </div>
-                          </div>
-                        )}
-                      </div>
+                  <div
+                    key={index}
+                    className={`border border-secondary tw-bg-white tw-flex tw-items-center tw-p-4 tw-py-3 ${
+                      isLastItem ? 'tw-rounded-bl-xl tw-rounded-br-xl' : ''
+                    }`}
+                  >
+                    <div className="tw-w-1.5/12 tw-pl-14 tw-pr-3 tw-flex tw-flex-col tw-items-center tw-justify-center">
+                      <svg
+                        width={24}
+                        height={25}
+                        viewBox="0 0 24 25"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-6 h-6 relative"
+                        preserveAspectRatio="none"
+                      >
+                        <path
+                          d="M6 6.32422V12.3242C6 13.1199 6.31607 13.8829 6.87868 14.4455C7.44129 15.0081 8.20435 15.3242 9 15.3242H19M19 15.3242L15 11.3242M19 15.3242L15 19.3242"
+                          stroke="#31343D"
+                          strokeWidth={2}
+                          strokeLinejoin="round"
+                        />
+                      </svg>
                     </div>
-                  </>
+                    <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
+                      <img className="border tw-rounded-full tw-w-10 tw-h-10 " src={item?.member?.profileImageUrl} />
+                      <div className="tw-text-xs tw-text-left tw-text-black">{item?.member?.nickname}</div>
+                    </div>
+                    <div className="tw-flex-auto tw-w-9/12 tw-px-5">
+                      <div className="tw-py-2">
+                        <p className="tw-font-medium tw-text-[#9ca5b2] tw-text-sm tw-line-clamp-2">
+                          <span className="tw-text-black tw-font-bold">
+                            {item?.answerStatus === '0003' ? '최종답변' : '사전답변'}
+                          </span>{' '}
+                          <span className="tw-px-4 ">{item?.createdAt}</span>
+                        </p>
+                      </div>
+                      <div className="tw-font-medium tw-text-[#9ca5b2] tw-text-sm tw-line-clamp-2">{item?.text}</div>
+
+                      {item?.files?.length > 0 && (
+                        <div className="tw-flex  tw-py-3">
+                          <div className="tw-text-left tw-text-sm">
+                            <ul className="tw-flex tw-space-x-2">
+                              {item?.files?.map((file, index) => (
+                                <div
+                                  key={index}
+                                  onClick={() => {
+                                    onFileDownload(file.key, file.name);
+                                  }}
+                                  className="tw-cursor-pointer tw-px-3 tw-rounded-full border tw-p-1 tw-rounded"
+                                >
+                                  {file.name}
+                                </div>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      )}
+                      <br />
+                      {item?.urls?.length > 0 && (
+                        <div className="tw-flex  tw-py-3">
+                          <div className="tw-text-left tw-text-sm">
+                            <ul className="tw-flex tw-space-x-2">
+                              {item?.urls?.map((file, index) => (
+                                <div
+                                  key={index}
+                                  onClick={() => window.open(item?.contentUrl, '_blank')}
+                                  className="tw-cursor-pointer tw-px-3 tw-rounded-full border tw-p-1 tw-rounded"
+                                >
+                                  {file.name}
+                                </div>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 );
               })}
             </div>

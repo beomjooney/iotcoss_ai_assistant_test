@@ -308,7 +308,7 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                   sm={10}
                   className="tw-text-xl tw-text-black tw-font-bold"
                 >
-                  퀴즈 목록 {contents?.club?.studyCount} / {contents?.club?.publishedCount}
+                  퀴즈 목록 {contents?.club?.publishedCount} / {contents?.club?.studyCount}
                 </Grid>
                 <Grid container justifyContent="flex-end" item xs={6} sm={2} style={{ textAlign: 'right' }}>
                   <Pagination

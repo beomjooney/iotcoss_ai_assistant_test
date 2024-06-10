@@ -12,15 +12,18 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { makeStyles } from '@material-ui/core';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
+import StarIcon from '@mui/icons-material/Star';
+import { useSaveFavorite, useDeleteFavorite } from 'src/services/community/community.mutations';
 
 export interface ClubMiniCardProps {
   /** 게시판 object */
-  item: BoardType;
+  item: any;
   /** 작성자 */
-  writer: User;
   xs: number;
   /** className */
   className?: string;
+  favorite?: boolean;
   /** 댓글 작성 버튼 클릭 이벤트 */
   onReplySubmit?: (string) => void;
   /** 좋아요 클릭 이벤트 */
@@ -34,17 +37,22 @@ const cx = classNames.bind(styles);
 const ClubMiniCard = ({
   item,
   xs,
-  writer,
+  favorite = false,
   className,
   memberId,
   onPostDeleteSubmit,
 }: // eslint-disable-next-line @typescript-eslint/no-empty-function
 ClubMiniCardProps) => {
   // TODO 좋아요 여부 필드 수정 필요
+  let [isLiked, setIsLiked] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const [removeIndex, setRemoveIndex] = React.useState('');
   const textInput = useRef(null);
+
+  const { mutate: onSaveFavorite, isSuccess: isSuccessFavorite } = useSaveFavorite();
+  const { mutate: onDeleteFavorite, isSuccess: isSuccessDelete } = useDeleteFavorite();
+
   console.log('item', item);
 
   const handleDropMenuClick = (event: React.MouseEvent<HTMLElement>, removeIndex) => {
@@ -80,6 +88,8 @@ ClubMiniCardProps) => {
         return '가입완료';
       case '0200':
         return '개설 예정';
+      case '0100':
+        return '개설요청승인대기';
       case '0210':
         return '개설 연기';
       case '0220':
@@ -94,6 +104,23 @@ ClubMiniCardProps) => {
         return '완료';
     }
   };
+  const onChangeFavorite = function (postNo: number, isFavorites: boolean) {
+    //console.log(postNo, isLikes);
+    if (logged) {
+      setIsLiked(!isFavorites);
+      if (isFavorites) {
+        onSaveFavorite(postNo);
+      } else {
+        onDeleteFavorite(postNo);
+      }
+    } else {
+      alert('로그인 후 좋아요를 클릭 할 수 있습니다.');
+    }
+  };
+
+  useEffect(() => {
+    setIsLiked(item?.isFavorite);
+  }, [item]);
 
   const router = useRouter();
   const classes = useStyles();
@@ -101,7 +128,7 @@ ClubMiniCardProps) => {
     <Grid item xs={xs}>
       <div
         onClick={() => {
-          handleMenuItemClick(item?.clubSequence);
+          favorite ? '' : handleMenuItemClick(item?.clubSequence);
         }}
         className="tw-cursor-pointer tw-flex tw-flex-col border tw-items-center tw-bg-white tw-border tw-border-gray-200 tw-rounded-lg md:tw-flex-row tw-w-full "
       >
@@ -136,6 +163,17 @@ ClubMiniCardProps) => {
                   </div>
                 </div>
               </div>
+            </Grid>
+            <Grid item xs={1}>
+              {favorite && (
+                <button
+                  onClick={() => {
+                    onChangeFavorite(item?.clubSequence, item?.isFavorite);
+                  }}
+                >
+                  {isLiked ? <StarIcon color="primary" /> : <StarBorderIcon color="disabled" />}
+                </button>
+              )}
             </Grid>
           </Grid>
           <h6 className="tw-text-2xl tw-font-bold tw-tracking-tight tw-text-gray-900 dark:tw-text-white">
