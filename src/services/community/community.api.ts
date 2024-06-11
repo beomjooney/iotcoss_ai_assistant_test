@@ -139,11 +139,20 @@ export const getPost = async (postNo: number) => {
   return data;
 };
 
+//나의 댓글 삭제
 export const myReplyDelete = async (params: any) => {
   console.log(params);
   // await axiosGeneralAPI().delete(`/posts/${params.parentPostNo}/replies/${params.postReplyNo}`);
   const { data } = await axiosGeneralAPI().delete(`/api/v1/my/replies/${params.answerReplySequence}`, {
     data: params.body,
+  });
+};
+
+export const myReplyUpdate = async (params: any) => {
+  console.log(params);
+  // await axiosGeneralAPI().delete(`/posts/${params.parentPostNo}/replies/${params.postReplyNo}`);
+  const { data } = await axiosGeneralAPI().put(`/api/v1/my/replies/${params.answerReplySequence}`, {
+    body: params.body,
   });
 };
 

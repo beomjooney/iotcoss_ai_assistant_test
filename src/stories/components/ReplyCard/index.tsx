@@ -7,6 +7,7 @@ import { useSessionStore } from 'src/store/session';
 const { logged } = useSessionStore.getState();
 import Grid from '@mui/material/Grid';
 import { useMyReplyDelete } from 'src/services/community/community.mutations';
+import { useMyReplyUpdate } from 'src/services/community/community.mutations';
 
 const cx = classNames.bind(styles);
 
@@ -17,6 +18,8 @@ const ReplyCard = ({ item, refetch }) => {
   const textInput = useRef(null);
 
   const { mutate: onMyReplyDelete, isSuccess: deleteReplySuccess } = useMyReplyDelete();
+  const { mutate: onMyReplyUpdate, isSuccess: updateReplySuccess } = useMyReplyUpdate();
+
   const handleTextChange = event => {
     setText(event.target.value);
   };
@@ -32,6 +35,7 @@ const ReplyCard = ({ item, refetch }) => {
     setIsTextModify(true);
     setText(item.text);
   };
+
   const handleDelete = (item: any) => {
     // TODO 삭제 처리
     if (confirm('나의 댓글을 삭제하시겠습니까?')) {
@@ -46,6 +50,8 @@ const ReplyCard = ({ item, refetch }) => {
 
   const handleSave = (item: any) => {
     setIsTextModify(false);
+    console.log(text);
+    onMyReplyUpdate({ answerReplySequence: item?.answerReplySequence, body: text });
     //
   };
 
@@ -151,14 +157,14 @@ const ReplyCard = ({ item, refetch }) => {
                 <path
                   d="M7.85718 9.07227H12.1429"
                   stroke="#313B49"
-                  stroke-width="2"
+                  strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 ></path>
                 <path
                   d="M7.85718 11.9297H12.1429"
                   stroke="#313B49"
-                  stroke-width="2"
+                  strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 ></path>

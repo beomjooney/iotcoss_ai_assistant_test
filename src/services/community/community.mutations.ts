@@ -21,6 +21,7 @@ import {
   saveFavorite,
   deleteFavorite,
   myReplyDelete,
+  myReplyUpdate,
 } from './community.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 
@@ -290,10 +291,23 @@ export const useModifyCommunity = (): UseMutationResult => {
   });
 };
 
+//커뮤니티 업데이트 삭제
 export const useMyReplyDelete = (): UseMutationResult => {
   const queryClient = useQueryClient();
   // TODO : any 타입 변경
   return useMutation<any, any, any>(requestBody => myReplyDelete(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('REPLY').all),
+    onSuccess: async data => {},
+  });
+};
+export const useMyReplyUpdate = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  // TODO : any 타입 변경
+  return useMutation<any, any, any>(requestBody => myReplyUpdate(requestBody), {
     onError: (error, variables, context) => {
       const { code, message } = error;
       alert(`mutation error : [${code}] ${message}`);
