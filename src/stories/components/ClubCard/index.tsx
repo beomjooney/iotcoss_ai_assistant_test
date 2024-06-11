@@ -19,7 +19,7 @@ import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 
 export interface ClubCardProps {
   /** 게시판 object */
-  item: BoardType;
+  item: any;
   /** 작성자 */
   writer: User;
   xs: number;
@@ -160,21 +160,21 @@ ClubCardProps) => {
                 onChangeLike(item.clubSequence, item.isFavorite);
               }}
             >
-              {isLiked ? <StarIcon color="primary" /> : <StarBorderIcon color="disabled" />}
+              {isLiked ? <StarIcon color="error" /> : <StarBorderIcon color="disabled" />}
             </button>
             <div className="tw-flex tw-w-full tw-flex-col tw-p-[12px]">
               <Grid container direction="row" justifyContent="space-between" alignItems="center" rowSpacing={0}>
                 <Grid item xs={12}>
                   <div className="max-lg:tw-h-[100px] tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
                     <span className="tw-inline-flex tw-bg-blue-100 tw-text-blue-800 tw-text-xs tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded">
-                      {item?.jobGroups[0].name}
+                      {item?.jobGroups[0].name || 'N/A'}
                     </span>
 
                     <span className="tw-inline-flex tw-bg-gray-100 tw-text-gray-800 tw-text-xs tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
-                      {item?.jobs[0].name}
+                      {item?.jobs[0].name || 'N/A'}
                     </span>
                     <span className="tw-inline-flex tw-bg-red-100 tw-text-red-800 tw-text-xs tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
-                      {item?.jobLevels[0].name}
+                      {item?.jobLevels[0].name || 'N/A'}
                     </span>
                   </div>
                 </Grid>

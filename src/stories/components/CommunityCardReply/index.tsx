@@ -93,10 +93,11 @@ const CommunityCardReply = ({ reply, className, refetch }: CommunityCardReplyPro
       console.log(memberUUID);
       console.log(quizSequence);
       // onDeleteReply({
-      //   postReplyNo: postReplyNo,
-      //   parentPostNo: parentPostNo,
+      //   clubSequence: clubSequence,
+      //   quizSequence: quizSequence,
+      //   memberUUID: memberUUID,
+      //   body: text,
       // });
-      // setReplyCount(replyCount => replyCount - 1);
     }
   };
 

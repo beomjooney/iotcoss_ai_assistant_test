@@ -15,11 +15,11 @@ export const seminarList = async params => {
 
   return { data: data.data || [], nextPage: params.page + 1, totalPage };
 };
-export const clubMeWaitList = async params => {
-  const { data, headers } = await axiosGeneralAPI().get('/api/v1/club/crew-requests/me', { params });
-  const totalPage = Number(headers['page-count']);
+export const clubMyCommunityList = async params => {
+  const { data } = await axiosGeneralAPI().get('/api/v1/my/replies', { params });
+  // const totalPage = Number(headers['page-count']);
 
-  return { data: data.data || [], nextPage: params.page + 1, totalPage };
+  return { data: data.data };
 };
 
 export const clubWaitingList = async params => {

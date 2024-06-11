@@ -79,6 +79,12 @@ export const saveReply = async (params: any) => {
   const { data } = await axiosGeneralAPI().post(`/api/v1/reply`, params);
   return { data: data || [] };
 };
+
+export const deleteReply = async (params: any) => {
+  // await axiosGeneralAPI().delete(`/posts/${params.parentPostNo}/replies/${params.postReplyNo}`);
+  const { data } = await axiosGeneralAPI().delete(`/api/v1/reply`, { params: params });
+};
+
 export const saveReReply = async (params: any) => {
   const { data } = await axiosGeneralAPI().post(
     `/api/v1/replies/${params.clubQuizAnswerReplySequence}/reply`,
@@ -111,10 +117,6 @@ export const comprehensionSave = async (params: any) => {
   return { data: data || [] };
 };
 
-export const deleteReply = async (params: any) => {
-  await axiosGeneralAPI().delete(`/posts/${params.parentPostNo}/replies/${params.postReplyNo}`);
-};
-
 export const deletePost = async (params: any) => {
   await axiosGeneralAPI().delete(`/api/v1/quizzes/${params.postNo}`);
 };
@@ -135,6 +137,14 @@ export const modifyCommunity = async (params: any) => {
 export const getPost = async (postNo: number) => {
   const { data } = await axiosGeneralAPI().get(`/posts/${postNo}`);
   return data;
+};
+
+export const myReplyDelete = async (params: any) => {
+  console.log(params);
+  // await axiosGeneralAPI().delete(`/posts/${params.parentPostNo}/replies/${params.postReplyNo}`);
+  const { data } = await axiosGeneralAPI().delete(`/api/v1/my/replies/${params.answerReplySequence}`, {
+    data: params.body,
+  });
 };
 
 // export const saveReply = async (postNo: number) => await axiosGeneralAPI().post(`/posts/${postNo}/replies`);

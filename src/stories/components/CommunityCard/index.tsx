@@ -131,7 +131,7 @@ CommunityCardProps) => {
   // }, [postNo]);
 
   useEffect(() => {
-    console.log(board);
+    // console.log(board);
     setIsLiked(board?.isLiked);
     setIsOnePicked(board?.isOnePicked);
     setLikeCount(board?.likeCount);

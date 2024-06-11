@@ -1,17 +1,13 @@
 import classNames from 'classnames/bind';
 import styles from './index.module.scss';
 import Button from 'src/stories/components/Button';
-import React, { useState } from 'react';
-import { Chip, ClubCard, Pagination, Typography } from 'src/stories/components';
+import React, { useEffect, useState, useRef } from 'react';
+import { Pagination } from 'src/stories/components';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useSessionStore } from '../../../../store/session';
-import {
-  useClubMeWaitList,
-  useSeminarList,
-  useSeminarMeList,
-  useSeminarMeWaitList,
-} from 'src/services/seminars/seminars.queries';
+import { useClubMyCommunityList } from 'src/services/seminars/seminars.queries';
+import ReplyCard from 'src/stories/components/ReplyCard';
 import Grid from '@mui/material/Grid';
 import { jobColorKey } from 'src/config/colors';
 
@@ -26,13 +22,21 @@ export function GrowthStoryAdminTemplate({ hasInfoData, userType }: GrowthStoryT
   const { memberId } = useSessionStore.getState();
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
-  const [params, setParams] = useState<paramProps>({ page, status: '0002' });
-  const [contents, setContents] = useState<RecommendContent[]>([]);
+  const [params, setParams] = useState<any>({ page });
+  const [contents, setContents] = useState<any[]>([]);
+  const [isTextModify, setIsTextModify] = useState(false);
+  const [text, setText] = useState('');
+  const textInput = useRef(null);
 
-  const { isFetched: isContentFetched } = useClubMeWaitList(params, data => {
+  const { isFetched: isContentFetched, refetch } = useClubMyCommunityList(params, data => {
+    console.log(data);
     setContents(data.data.contents || []);
-    setTotalPage(data.data.totalPage);
+    setTotalPage(data.data.totalPages);
   });
+
+  useEffect(() => {
+    setParams({ page });
+  }, [page]);
 
   const router = useRouter();
 
@@ -40,30 +44,22 @@ export function GrowthStoryAdminTemplate({ hasInfoData, userType }: GrowthStoryT
     <div className={cx('member-edit-container')}>
       <section className={cx('content')}>
         <div className={cx('content--not-found')}>
-          <Grid container direction="row" justifyContent="left" alignItems="center" rowSpacing={3}>
-            {isContentFetched &&
-              (contents.length > 0 ? (
-                contents.map((item, index) => {
-                  return (
-                    <ClubCard
-                      key={index}
-                      item={item}
-                      xs={12}
-                      // writer={memberSample}
-                      className={cx('reply-container__item')}
-                      // memberId={memberId}
-                      // onPostDeleteSubmit={onPostDeleteSubmit}
-                    />
-                  );
-                })
-              ) : (
-                <div className="tw-text-center  tw-w-full border tw-rounded-md">
-                  <div className="tw-p-10  tw-mb-5">
-                    <div className="tw-p-10">개설신청 대기 클럽목록이 없습니다.</div>
-                  </div>
+          {isContentFetched &&
+            (contents.length > 0 ? (
+              contents.map((item, index) => {
+                return (
+                  <React.Fragment key={index}>
+                    <ReplyCard item={item} refetch={refetch} />
+                  </React.Fragment>
+                );
+              })
+            ) : (
+              <div className="tw-text-center  tw-w-full border tw-rounded-md">
+                <div className="tw-p-10  tw-mb-5">
+                  <div className="tw-p-10">커뮤니티 작성글이 없습니다.</div>
                 </div>
-              ))}
-          </Grid>
+              </div>
+            ))}
           <div className="tw-mt-10">
             <Pagination page={page} setPage={setPage} total={totalPage} />
           </div>

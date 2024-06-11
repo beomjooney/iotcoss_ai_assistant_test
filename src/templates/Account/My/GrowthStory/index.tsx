@@ -1,7 +1,8 @@
 import classNames from 'classnames/bind';
 import styles from './index.module.scss';
 import React, { useState } from 'react';
-import { ClubCard, Pagination } from 'src/stories/components';
+import ClubMiniCard from 'src/stories/components/ClubMiniCard';
+import { Pagination } from 'src/stories/components';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useSessionStore } from '../../../../store/session';
@@ -41,15 +42,20 @@ export function GrowthStoryTemplate({ hasInfoData, userType }: GrowthStoryTempla
                 (contents.length > 0 ? (
                   contents.map((item, index) => {
                     return (
-                      <ClubCard
-                        key={index}
-                        item={item}
-                        xs={12}
-                        // writer={memberSample}
-                        className={cx('reply-container__item')}
-                        // memberId={memberId}
-                        // onPostDeleteSubmit={onPostDeleteSubmit}
-                      />
+                      <React.Fragment key={index}>
+                        <div className="tw-py-2">
+                          <div className="tw-py-2 tw-text-base tw-font-medium tw-text-black">
+                            신청일 : {item.startAt.split(' ')[0]}
+                          </div>
+                          <ClubMiniCard
+                            favorite={true}
+                            item={item}
+                            xs={12}
+                            className={cx('reply-container__item')}
+                            // onPostDeleteSubmit={onPostDeleteSubmit}
+                          />
+                        </div>
+                      </React.Fragment>
                     );
                   })
                 ) : (

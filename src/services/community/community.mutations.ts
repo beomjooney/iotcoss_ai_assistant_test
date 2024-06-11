@@ -20,6 +20,7 @@ import {
   deleteQuizOnePick,
   saveFavorite,
   deleteFavorite,
+  myReplyDelete,
 } from './community.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 
@@ -286,5 +287,18 @@ export const useModifyCommunity = (): UseMutationResult => {
     onSuccess: async data => {
       // alert('커뮤니티 글쓰기가 완료되었습니다.');
     },
+  });
+};
+
+export const useMyReplyDelete = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  // TODO : any 타입 변경
+  return useMutation<any, any, any>(requestBody => myReplyDelete(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('REPLY').all),
+    onSuccess: async data => {},
   });
 };

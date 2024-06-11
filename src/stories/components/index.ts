@@ -63,3 +63,5 @@ export * from './AdminModal/index';
 export { default as AdminModal } from './AdminModal/index';
 export * from './CourseCard/index';
 export { default as CourseCard } from './CourseCard/index';
+export * from './ReplyCard/index';
+export { default as ReplyCard } from './ReplyCard/index';
