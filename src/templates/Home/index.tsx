@@ -137,7 +137,7 @@ export function HomeTemplate({ logged = false }: HomeProps) {
   const { isFetched: isUser, data } = useMemberInfo(memberId, user => {
     //console.log(data);
     setUser(user);
-    setNickName(user?.nickname);
+    setNickName(user?.nickname?.nickname);
     setPhone(user?.phoneNumber || '');
   });
 

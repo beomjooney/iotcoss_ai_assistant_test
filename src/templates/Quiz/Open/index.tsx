@@ -25,7 +25,7 @@ import { useClubQuizSave, useQuizSave, useClubTempSave } from 'src/services/quiz
 import { TagsInput } from 'react-tag-input-component';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import { useUploadImage } from 'src/services/image/image.mutations';
-import { makeStyles, withStyles } from '@mui/styles';
+import { makeStyles } from '@mui/styles';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Stack from '@mui/material/Stack';

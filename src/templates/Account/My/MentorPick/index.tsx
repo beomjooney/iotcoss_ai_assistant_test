@@ -28,7 +28,7 @@ export function MyMentorPickTemplate() {
   const [params, setParams] = useState<paramProps>({ page, isJoined: '' });
   const [contents, setContents] = useState<any[]>([]);
 
-  const { isFetched: isContentFetched } = useClubFavoriteList(params, data => {
+  const { isFetched: isContentFetched, refetch } = useClubFavoriteList(params, data => {
     setContents(data.data.contents || []);
     setTotalPage(data.data.totalPage);
   });
@@ -119,7 +119,9 @@ export function MyMentorPickTemplate() {
                         favorite={true}
                         className={cx('reply-container__item')}
                         memberId={memberId}
-                        onPostDeleteSubmit={() => {}} // Assuming a placeholder function
+                        onPostDeleteSubmit={() => {
+                          refetch();
+                        }}
                       />
                     </React.Fragment>
                   );

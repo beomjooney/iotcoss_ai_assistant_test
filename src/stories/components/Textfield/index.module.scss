@@ -24,7 +24,7 @@
     align-items: center;
     border: 1px solid palette.$Primary-Gray500;
     border-radius: 8px;
-    background-color: #fff;
+    background-color: palette.$Primary-Gray500;
     position: relative;
     &.focus {
       border: 1px solid palette.$Primary-Gray900;
@@ -152,15 +152,15 @@
   //   }
   // }
 
-   &[data-description='true'] {
-     .description {
-       font-weight: 700;
-       font-size: 10px;
-       line-height: 15px;
-       color: palette.$Primary-Blue900;
-       margin-left: 8px;
-     }
-   }
+  &[data-description='true'] {
+    .description {
+      font-weight: 700;
+      font-size: 10px;
+      line-height: 15px;
+      color: palette.$Primary-Blue900;
+      margin-left: 8px;
+    }
+  }
 
   &[data-filled='false'] {
     // .wrap-input:not(.focus) .wrap-icon {

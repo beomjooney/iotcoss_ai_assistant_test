@@ -8,6 +8,7 @@ import {
   memberSummaryInfo,
   termsInfo,
   getProfile,
+  personalInfo,
 } from './account.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 import { User } from 'src/models/user';
@@ -45,8 +46,18 @@ export const useMemberActiveSummaryInfo = (onSuccess?: (data: User) => void, onE
     // enabled: !!memberId && memberId !== 'Guest',
     // staleTime: 10 * 60 * 1000, // 10분 유지
   });
+
 export const useMemberInfo = (memberId: any, onSuccess?: (data: User) => void, onError?: (error: Error) => void) =>
   useQuery<User, Error>(QUERY_KEY_FACTORY('MEMBER').details(), () => memberInfo(memberId), {
+    onSuccess,
+    onError,
+    refetchOnWindowFocus: true,
+    enabled: !!memberId,
+    retry: false,
+  });
+
+export const usePersonalInfo = (memberId: any, onSuccess?: (data: User) => void, onError?: (error: Error) => void) =>
+  useQuery<User, Error>(QUERY_KEY_FACTORY('USER').details(), () => personalInfo(memberId), {
     onSuccess,
     onError,
     refetchOnWindowFocus: true,

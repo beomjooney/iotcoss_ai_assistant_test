@@ -18,7 +18,13 @@ export async function memberLogin() {
 
 // 회원 정보 조회
 export async function memberInfo(memberId: string) {
-  const { data } = await axiosGeneralAPI().get(`/api/v1/members/profile/${memberId}`);
+  const { data } = await axiosGeneralAPI().get(`/api/v1/profiles/${memberId}`);
+  return data.data;
+}
+
+// 회원 정보 조회
+export async function personalInfo(memberId: string) {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/my/personal`);
   return data.data;
 }
 
@@ -89,5 +95,20 @@ export const loginOtpVerification = async body => {
 // 회원 OTP
 export async function getIdVerification(params: any) {
   const { data } = await axiosGeneralAPI().get('/api/v1/member/validate', { params });
+  return data.data;
+}
+
+export async function changePhone(params: any) {
+  const { data } = await axiosGeneralAPI().put('/api/v1/my/phonenumber', params);
+  return data.data;
+}
+
+export async function changePassword(params: any) {
+  const { data } = await axiosGeneralAPI().put('/api/v1/my/password', params);
+  return data.data;
+}
+
+export async function userUpdate(params: any) {
+  const { data } = await axiosGeneralAPI().put('/api/v1/my/personal', params);
   return data.data;
 }

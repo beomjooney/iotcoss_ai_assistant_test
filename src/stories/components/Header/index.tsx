@@ -258,7 +258,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
       >
         <div className="container" style={{ alignItems: 'center' }}>
           <div className={cx('header-link', 'navbar-brand')} onClick={handleGoHome}>
-            <img src="/assets/images/header/image_1.png" width={130} alt="logo" className={cx('image-logo')} />
+            {/* <img src="/assets/images/header/image_1.png" width={130} alt="logo" className={cx('image-logo')} /> */}
           </div>
           <Mobile>
             {!logged && (

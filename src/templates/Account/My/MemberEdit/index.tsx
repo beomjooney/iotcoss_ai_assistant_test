@@ -1,6 +1,6 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import { Button, Profile, Modal, Textfield, Toggle } from 'src/stories/components';
+import { Button, Modal } from 'src/stories/components';
 import { useStore } from 'src/store';
 import React, { useEffect, useRef, useState } from 'react';
 import {
@@ -8,13 +8,13 @@ import {
   useEditUser,
   useLoginOtp,
   useLoginOtpVerification,
+  useChangePhone,
+  useChangePassword,
+  useUserUpdate,
 } from 'src/services/account/account.mutations';
-import Image from 'next/image';
 import { useUploadImage } from 'src/services/image/image.mutations';
-import { useMemberInfo, useTermsList } from 'src/services/account/account.queries';
+import { usePersonalInfo, useTermsList } from 'src/services/account/account.queries';
 import { useSessionStore } from 'src/store/session';
-import { User } from 'src/models/user';
-import Chip from '@mui/material/Chip';
 import Typography from '@mui/material/Typography';
 import _TextField from '@mui/material/TextField';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -22,13 +22,10 @@ import { useForm, Controller } from 'react-hook-form';
 import * as Yup from 'yup';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import isURL from 'validator/lib/isURL';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import Link from '@mui/material/Link';
-import CheckIcon from '@mui/icons-material/Check';
 import Divider from '@mui/material/Divider';
 import Dialog, { DialogProps } from '@mui/material/Dialog';
 import { UseQueryResult } from 'react-query';
@@ -37,21 +34,23 @@ import IconButton from '@mui/material/IconButton';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import CloseIcon from '@mui/icons-material/Close';
-import CheckBoxIcon from '@mui/icons-material/CheckBox';
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
 import TextField from '@mui/material/TextField';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import ToggleButton from '@mui/material/ToggleButton';
+import { makeStyles } from '@mui/styles';
+import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
+import InputAdornment from '@mui/material/InputAdornment';
 const cx = classNames.bind(styles);
 
 export function MemberEditTemplate() {
+  const [selectedJobName, setSelectedJobName] = useState('');
   const [open, setOpen] = React.useState(false);
   const { user, setUser } = useStore();
   const { memberId } = useSessionStore.getState();
-  const [userInfo, setUserInfo] = useState<User>(user);
+  const [userInfo, setUserInfo] = useState<any>(user);
   const [nickname, setNickname] = useState(null);
   const [phoneNumber, setPhoneNumber] = useState(null);
-  const [otpNumber, setOtpNumber] = useState('');
-  const [nicknameEditMode, setNicknameEditMode] = useState(false);
   const [phoneEditMode, setPhoneEditMode] = useState(false);
   const [emailReceiveYn, setEmailReceiveYn] = useState(false);
   const [smsReceiveYn, setSmsReceiveYn] = useState(true);
@@ -66,20 +65,16 @@ export function MemberEditTemplate() {
   const [isDisabledTimer, setIsDisabledTimer] = useState<boolean>(true);
   const [termsParams, setTermsParams] = useState<any>({ type: '0001' });
 
-  // ** SNS URL
-  const [youtubeUrl, setYoutubeUrl] = useState('');
-  const [instagramUrl, setInstagramUrl] = useState('');
-  const [twitterUrl, setTitterUrl] = useState('');
-  const [linkedUrl, setLinked] = useState('');
-  const [snsUrl, setSns] = useState('');
-  const [facebookUrl, setFacebook] = useState('');
+  const [previousPassword, setPreviousPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   // ** Timer
   const [min, setMin] = useState(0);
   const [sec, setSec] = useState(0);
   const [CheckList, setCheckList] = useState([]);
   const [CheckMarketingList, setCheckMarketingList] = useState([]);
-  const [IdList, setIdList] = useState(['serviceTerms', 'privateTerms', 'marketing']);
+  const [IdList, setIdList] = useState(['service1', 'privacy1', 'promotion2']);
   const [marketingList, setMarketingList] = useState(['email', 'sms', 'kakao']);
   const [allTerm, setAllTerm] = useState<boolean>(false);
   const [serviceTerm, setServiceTerm] = useState<boolean>(false);
@@ -91,10 +86,21 @@ export function MemberEditTemplate() {
   const [sms, setSms] = useState<boolean>(false);
   const [urlError, setUrlError] = useState('');
   const [scroll, setScroll] = React.useState<DialogProps['scroll']>('paper');
+  const [universityCode, setUniversityCode] = useState<string>('');
+  const [selectedUniversity, setSelectedUniversity] = useState<string>('');
+  const [selectedUniversityName, setSelectedUniversityName] = useState<string>('');
+  const [jobs, setJobs] = useState<string[]>([]);
+  const [selectedJob, setSelectedJob] = useState<string>('');
+  const [recommendLevels, setRecommendLevels] = useState('');
+  const [jobLevelName, setJobLevelName] = useState([]);
+  const [passwordFlag, setPasswordFlag] = useState(false);
+  // 유저 정보 조회
 
-  useMemberInfo(memberId, user => {
+  usePersonalInfo({}, user => {
     setUserInfo(user);
+    console.log(user);
   });
+
   const { mutate: onEditUser, status } = useEditUser();
   const { mutate: onSaveImage, data: imageUrl, isSuccess: imageSuccess } = useUploadImage();
   const { mutate: onDeleteMember } = useDeleteMember();
@@ -102,17 +108,34 @@ export function MemberEditTemplate() {
   //otp
   const { mutate: onLoginOtp, isSuccess } = useLoginOtp();
   const { mutate: onLoginOtpVerification, isSuccess: isVerification, data: resultData } = useLoginOtpVerification();
+  const { mutate: onChangePhone, isSuccess: isSuccessChangePhone } = useChangePhone();
+  const { mutate: onChangePassword, isSuccess: isSuccessChangePassword } = useChangePassword();
+  const { mutate: onUserUpdate, isSuccess: isSuccessUserUpdate } = useUserUpdate();
 
-  const handleNickname = e => setNickname(e.target.value);
-  const handleYoutube = e => setYoutubeUrl(e.target.value);
-  const handleInstgram = e => setInstagramUrl(e.target.value);
-  const handleFacebook = e => setFacebook(e.target.value);
-  const handleTwitter = e => setTitterUrl(e.target.value);
-  const handleLinked = e => setLinked(e.target.value);
-  const handleSns = e => setSns(e.target.value);
+  useEffect(() => {
+    if (resultData) {
+      setSmsFlag(false);
+      setIsDisabledTimer(false);
+      setPhoneEditMode(false);
+      console.log(resultData);
+      onChangePhone({ phoneNumber: phoneNumber, token: resultData?.token });
+      // setIsDisabledPhone(true);
+    }
+  }, [resultData]);
 
-  const handlePhoneNumber = e => setPhoneNumber(e.target.value);
-  const handleOtpNumber = e => setOtpNumber(e.target.value);
+  useEffect(() => {
+    if (isSuccess) {
+      setIsDisabledOtp(false);
+      setIsDisabledTimer(true);
+      setMin(3);
+      setSmsFlag(true);
+      setIsDisabledPhone(true);
+    }
+  }, [isSuccess]);
+
+  function handlePhoneNumber(value) {
+    setPhoneNumber(formatPhoneNumber(value));
+  }
 
   const handleEmailYn = e => {
     setEmailReceiveYn(!emailReceiveYn); // Toggle the value of emailReceiveYn
@@ -124,13 +147,18 @@ export function MemberEditTemplate() {
     setSmsReceiveYn(!smsReceiveYn); // Toggle the value of emailReceiveYn
   };
 
+  const handleRecommendLevels = (event, newValue) => {
+    console.log(newValue);
+    if (newValue !== null) {
+      const selectedLevel = userInfo?.jobLevelOptions?.find(item => item.code === newValue);
+      if (selectedLevel) {
+        setRecommendLevels(selectedLevel.code);
+        setJobLevelName(selectedLevel.name);
+      }
+    }
+  };
+
   //** Fouse */
-  const focusYoutube_Ref = useRef(null);
-  const focusTwitter_Ref = useRef(null);
-  const focusLinked_Ref = useRef(null);
-  const focusFacebook_Ref = useRef(null);
-  const focusInstargram_Ref = useRef(null);
-  const focusSns_Ref = useRef(null);
   const checkboxref = useRef(null);
 
   // 약관 조회
@@ -159,34 +187,6 @@ export function MemberEditTemplate() {
   };
 
   const descriptionElementRef = React.useRef<HTMLElement>(null);
-  const onChangeMarketingEach = (e, id) => {
-    console.log(id, e.target.checked);
-    if (id === 'email') {
-      setEmail(e.target.checked);
-    } else if (id === 'sms') {
-      setSms(e.target.checked);
-    } else if (id === 'kakao') {
-      setKakao(e.target.checked);
-    }
-    if (e.target.checked) {
-      setCheckMarketingList([...CheckMarketingList, id]);
-    } else {
-      setCheckMarketingList(CheckMarketingList.filter(checkedId => checkedId !== id));
-    }
-  };
-
-  const onChangeMarketingAll = (e, id) => {
-    setEmail(e.target.checked);
-    setSms(e.target.checked);
-    setKakao(e.target.checked);
-    if (e.target.checked) {
-      setCheckList([...CheckList, id]);
-      // 체크 해제할 시 CheckList에서 해당 id값이 `아닌` 값만 배열에 넣기
-    } else {
-      setCheckList(CheckList.filter(checkedId => checkedId !== id));
-    }
-    setCheckMarketingList(e.target.checked ? marketingList : []);
-  };
 
   const onChangeEach = (e, id) => {
     console.log(id, e.target.checked);
@@ -200,43 +200,44 @@ export function MemberEditTemplate() {
 
     // 체크할 시 CheckList에 id값 넣기
     if (e.target.checked) {
-      setCheckList([...CheckList, id]);
+      setCheckList(prevCheckList => [...prevCheckList, id]);
       // 체크 해제할 시 CheckList에서 해당 id값이 `아닌` 값만 배열에 넣기
     } else {
-      setCheckList(CheckList.filter(checkedId => checkedId !== id));
+      setCheckList(prevCheckList => prevCheckList.filter(checkedId => checkedId !== id));
     }
+    console.log(CheckList);
   };
-
+  const checkMandatoryTerms = list => {
+    if (!list.includes('service1') || !list.includes('privacy1')) {
+      alert('필수값 체크를 해주세요');
+      return false;
+    }
+    return true;
+  };
   const onChangeAll = e => {
     setCheckList(e.target.checked ? IdList : []);
     setCheckMarketingList(e.target.checked ? marketingList : []);
-    setAllTerm(e.target.checked);
     setServiceTerm(e.target.checked);
     setPrivateTerm(e.target.checked);
     setMarketing(e.target.checked);
-    setEmail(e.target.checked);
-    setSms(e.target.checked);
-    setKakao(e.target.checked);
+    setKakaoReceiveYn(e.target.checked);
+    setEmailReceiveYn(e.target.checked);
+    setSmsReceiveYn(e.target.checked);
+  };
+
+  const handlePasswordChange1 = value => {
+    setPreviousPassword(value);
+  };
+
+  const handlePasswordChange2 = value => {
+    setNewPassword(value);
+  };
+
+  const handlePasswordChange3 = value => {
+    setConfirmPassword(value);
   };
 
   const handleSubmit = () => {
-    if (nicknameEditMode || phoneEditMode) {
-      alert("수정 중인 정보가 있습니다. '변경 버튼'을 눌러 저장한 후 '수정 완료'해주세요.");
-      return;
-    }
-    if (phoneNumber?.length > 0 && (phoneNumber.length != 13 || !phoneNumber.startsWith('01'))) {
-      alert('휴대전화 정보가 정확하지 않습니다.');
-      return;
-    }
-
-    if (fileImageUrl) {
-      // 이미지도 변경한 경우 업로드부터 시행
-      onSaveImage(file);
-      setEditing(true);
-      return;
-    }
-
-    // 이미지 변경 안한 경우 정보만 변경
     updateMemberInfo();
   };
 
@@ -249,47 +250,20 @@ export function MemberEditTemplate() {
   const updateMemberInfo = () => {
     const profileImageUrl = imageUrl ? imageUrl.toString().slice(1) : user?.profileImageUrl;
     const params = {
-      ...userInfo,
-      nickname,
-      phoneNumber,
-      smsReceiveYn,
-      emailReceiveYn,
-      kakaoReceiveYn,
-      profileImageUrl,
+      // ...userInfo,
+      jobGroup: universityCode,
+      jobLevel: recommendLevels,
+      job: selectedJob,
+      isEmailReceive: emailReceiveYn,
+      isSmsReceive: smsReceiveYn,
+      isKakaoReceive: kakaoReceiveYn,
+      agreedTermsIds: CheckList,
     };
 
-    if ((isURL(youtubeUrl) && youtubeUrl.includes('youtube')) || youtubeUrl === '') {
-    } else {
-      alert('youtube 주소가 잘못되었습니다.');
-      return;
+    console.log(params);
+    if (checkMandatoryTerms(CheckList)) {
+      onUserUpdate(params);
     }
-
-    if ((isURL(twitterUrl) && twitterUrl.includes('twitter')) || twitterUrl === '') {
-    } else {
-      alert('twitter 주소가 잘못되었습니다.');
-      return;
-    }
-
-    if ((isURL(linkedUrl) && linkedUrl.includes('linked')) || linkedUrl === '') {
-    } else {
-      alert('linked 주소가 잘못되었습니다.');
-      return;
-    }
-
-    if ((isURL(instagramUrl) && instagramUrl.includes('instagram')) || instagramUrl === '') {
-    } else {
-      alert('instagram 주소가 잘못되었습니다.');
-      return;
-    }
-
-    if ((isURL(facebookUrl) && facebookUrl.includes('facebook')) || facebookUrl === '') {
-    } else {
-      alert('facebook 주소가 잘못되었습니다.');
-      return;
-    }
-
-    onEditUser(params);
-    setUserInfo(params);
   };
 
   // 이미지 업로드 완료 시 최종 정보 수정
@@ -298,46 +272,36 @@ export function MemberEditTemplate() {
     updateMemberInfo();
   }
 
+  function formatPhoneNumber(value) {
+    const cleaned = ('' + value).replace(/\D/g, '');
+    const match = cleaned.match(/^(\d{0,3})(\d{0,4})?(\d{0,4})?$/);
+    if (match) {
+      const intlCode = match[1] ? `${match[1]}` : '';
+      const middle = match[2] ? `-${match[2]}` : '';
+      const last = match[3] ? `-${match[3]}` : '';
+      return `${intlCode}${middle}${last}`;
+    }
+    return value;
+  }
+
   useEffect(() => {
     setUser(userInfo); // 전역 정보 업데이트
-    setNickname(userInfo.nickname);
-    setPhoneNumber(userInfo.phoneNumber);
-    setEmailReceiveYn(userInfo.emailReceiveYn);
-    setKakaoReceiveYn(userInfo.kakaoReceiveYn);
-    setSmsReceiveYn(userInfo.smsReceiveYn);
-    userInfo?.snsUrl?.map((item, index) => {
-      if (item.includes('linked')) {
-        setLinked(item);
-      } else if (item.includes('facebook')) {
-        setFacebook(item);
-      } else if (item.includes('youtube')) {
-        setYoutubeUrl(item);
-      } else if (item.includes('instagram')) {
-        setInstagramUrl(item);
-      } else if (item.includes('twitter')) {
-        setTitterUrl(item);
-      } else {
-        setSns(item);
-      }
-    });
+    setNickname(userInfo?.personalInfo?.nickname);
+    setPhoneNumber(formatPhoneNumber(userInfo?.personalInfo?.phoneNumber));
+    setEmailReceiveYn(userInfo?.personalInfo?.isEmailReceive);
+    setKakaoReceiveYn(userInfo?.personalInfo?.isKakaoReceive);
+    setSmsReceiveYn(userInfo?.personalInfo?.isSmsReceive);
+    setUniversityCode(userInfo?.personalInfo?.jobGroup?.code);
+    setSelectedUniversityName(userInfo?.personalInfo?.jobGroup?.name);
+    const selected = userInfo?.jobOptions?.find(u => u.code === userInfo?.personalInfo?.jobGroup?.code);
+    console.log(selected);
+    setJobs(selected ? selected.jobs : []);
+    setSelectedJob(userInfo?.personalInfo?.jobGroup?.code);
 
-    userInfo.snsUrl = [youtubeUrl, facebookUrl, linkedUrl, twitterUrl, snsUrl, instagramUrl].filter(v => v);
+    setCheckList(userInfo?.personalInfo?.termsAgreed?.filter(term => term.isAgreed).map(term => term.termsId));
+    setRecommendLevels(userInfo?.personalInfo?.jobLevel?.code || '');
+    // setRecommendLevels('0001' || []);
   }, [userInfo]);
-
-  useEffect(() => {
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = e => {
-      const image = e.target.result;
-      setFileImageUrl(image);
-    };
-    reader.readAsDataURL(file);
-  }, [file]);
-
-  const onFileChange = files => {
-    if (!files || files.length === 0) return;
-    setFile(files[0]);
-  };
 
   useEffect(() => {
     let timer;
@@ -391,24 +355,58 @@ export function MemberEditTemplate() {
     // setSmsFlag(false);
   };
 
-  useEffect(() => {
-    if (resultData) {
-      setSmsFlag(false);
-      setIsDisabledTimer(false);
-      setPhoneEditMode(false);
-      // setIsDisabledPhone(true);
-    }
-  }, [resultData]);
+  const handleJobChange = e => {
+    setSelectedJob(e.target.value);
+    const selectedCode = e.target.value;
+    const selected = jobs?.find(u => u.code === selectedCode);
+    setSelectedJobName(selected ? selected.name : '');
+  };
 
-  useEffect(() => {
-    if (isSuccess) {
-      setIsDisabledOtp(false);
-      setIsDisabledTimer(true);
-      setMin(3);
-      setSmsFlag(true);
-      setIsDisabledPhone(true);
+  const handleUniversityChange = e => {
+    const selectedCode = e.target.value;
+    const selected = userInfo?.jobOptions?.find(u => u.code === selectedCode);
+    console.log(selectedCode, selected);
+    setUniversityCode(selectedCode);
+    setSelectedUniversity(selectedCode);
+    setSelectedUniversityName(selected ? selected.name : '');
+    setJobs(selected ? selected.jobs : []);
+    setSelectedJob(''); // Clear the selected job when university changes
+  };
+
+  const handlePasswordChangeCancel = () => {
+    console.log('password change');
+    setPasswordFlag(false);
+  };
+  const handlePasswordChange = () => {
+    console.log('password change');
+    setPasswordFlag(true);
+  };
+  const handlePasswordChangeSubmit = () => {
+    console.log('password change');
+    // Add your password change logic here
+    if (newPassword === confirmPassword) {
+      // Password change logic
+      console.log('Password changed successfully');
+      onChangePassword({
+        currentPassword: previousPassword,
+        newPassword: newPassword,
+        newPasswordConfirm: confirmPassword,
+      });
+    } else {
+      alert('New password and confirmation do not match');
     }
-  }, [isSuccess]);
+  };
+
+  const useStyles = makeStyles(theme => ({
+    selected: {
+      '&&': {
+        backgroundColor: '#000',
+        color: 'white',
+      },
+    },
+  }));
+
+  const classes = useStyles();
 
   return (
     <div className={cx('member-edit-container tw-p-4')}>
@@ -420,167 +418,307 @@ export function MemberEditTemplate() {
               이메일
             </Grid>
             <Grid item xs={8}>
-              <div className={cx('member-info')}>
-                <TextField disabled size="small" id="outlined-disabled" value={userInfo.email || ''} />
-                {/* <Textfield id="outlined-disabled" disabled type="email" width={240} /> */}
+              <div className="tw-text-left tw-font-medium">{userInfo?.personalInfo?.email || ''}</div>
+            </Grid>
+          </Grid>
+          <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-3">
+            <Grid item xs={2}></Grid>
+            <Grid item xs={2} className="tw-text-left">
+              비밀번호
+            </Grid>
+            <Grid item xs={8}>
+              <div className="tw-text-left tw-flex tw-text-base tw-gap-3">
+                <TextField size="small" disabled id="outlined-disabled" value="sdfasdfasdf" type="password" />
+                {passwordFlag ? (
+                  <button
+                    onClick={handlePasswordChangeCancel}
+                    className="border tw-text-gray-500 tw-rounded tw-px-4 tw-py-1 tw-text-sm tw-font-medium"
+                  >
+                    취소하기
+                  </button>
+                ) : (
+                  <button
+                    onClick={handlePasswordChange}
+                    className="border tw-text-gray-500 tw-rounded tw-px-4 tw-py-1 tw-text-sm tw-font-medium"
+                  >
+                    변경하기
+                  </button>
+                )}
               </div>
             </Grid>
           </Grid>
+          {passwordFlag && (
+            <>
+              <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-3">
+                <Grid item xs={2}></Grid>
+                <Grid item xs={2} className="tw-text-left">
+                  이전비밀번호
+                </Grid>
+                <Grid item xs={8}>
+                  <div className="tw-text-left tw-flex tw-text-base tw-gap-3">
+                    <TextField
+                      onChange={e => handlePasswordChange1(e.target.value)}
+                      size="small"
+                      id="outlined-disabled"
+                      value={previousPassword}
+                      type="password"
+                    />
+                  </div>
+                </Grid>
+              </Grid>
+              <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-3">
+                <Grid item xs={2}></Grid>
+                <Grid item xs={2} className="tw-text-left">
+                  새비밀번호
+                </Grid>
+                <Grid item xs={8}>
+                  <div className="tw-text-left tw-flex tw-text-base tw-gap-3">
+                    <TextField
+                      onChange={e => handlePasswordChange2(e.target.value)}
+                      size="small"
+                      id="outlined-disabled"
+                      value={newPassword}
+                      type="password"
+                    />
+                  </div>
+                </Grid>
+              </Grid>
+              <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-3">
+                <Grid item xs={2}></Grid>
+                <Grid item xs={2} className="tw-text-left">
+                  비밀번호 확인
+                </Grid>
+                <Grid item xs={8}>
+                  <div className="tw-text-left tw-flex tw-text-base tw-gap-3">
+                    <TextField
+                      onChange={e => handlePasswordChange3(e.target.value)}
+                      size="small"
+                      id="outlined-disabled"
+                      value={confirmPassword}
+                      type="password"
+                    />
+                    <button
+                      onClick={handlePasswordChangeSubmit}
+                      className="border tw-text-gray-500 tw-rounded tw-px-4 tw-py-1 tw-text-sm tw-font-medium"
+                    >
+                      변경하기
+                    </button>
+                  </div>
+                </Grid>
+              </Grid>
+            </>
+          )}
           <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-3">
             <Grid item xs={2}></Grid>
             <Grid item xs={2} className="tw-text-left">
               이름
             </Grid>
             <Grid item xs={8}>
-              <div className="tw-text-left">{userInfo.name || ''}</div>
+              <div className="tw-text-left tw-font-medium">{userInfo?.personalInfo?.name || ''}</div>
             </Grid>
           </Grid>
           <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-3">
             <Grid item xs={2}></Grid>
-            <Grid item xs={2} className="tw-text-left">
-              닉네임
+            <Grid item xs={2} className="tw-text-left ">
+              휴대전화
             </Grid>
             <Grid item xs={8}>
-              <div className={cx('member-info')}>
-                <TextField disabled size="small" id="outlined-disabled" value={nickname || ''} />
-              </div>
-            </Grid>
-          </Grid>
-          <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-3">
-            <Grid item xs={2}></Grid>
-            <Grid item xs={2} className="tw-text-left">
-              {/* 휴대전화 */}
-            </Grid>
-            <Grid item xs={8}>
-              <div className={cx('member-info')}>
-                {phoneNumber !== userInfo.phoneNumber && !phoneEditMode && <span className={cx('change-dot')} />}
-                {/* <TextField size="small" id="outlined-disabled" value={phoneNumber || ''} /> */}
-                {/* <Textfield
-                  isUnderline={true}
-                  isPhoneNumber={true}
-                  width={240}
-                  required
+              <div className="tw-text-left tw-flex tw-text-base tw-gap-3">
+                {/* {phoneNumber !== userInfo.phoneNumber && !phoneEditMode && <span className={cx('change-dot')} />} */}
+                <TextField
+                  size="small"
                   value={phoneNumber || ''}
-                  onChange={handlePhoneNumber}
-                  // readOnly={!phoneEditMode}
-                  readOnly={isDisabledPhone}
+                  disabled={isDisabledPhone}
+                  onChange={e => handlePhoneNumber(e.target.value)}
+                  inputProps={{ readOnly: isDisabledPhone, maxLength: 13 }} // 13 is the maximum length for phone numbers with format xxx-xxxx-xxxx
                   className={cx('text-field', 'text-field--normal')}
-                /> */}
-                {/* <Button
+                />
+
+                <Button
+                  className="border !tw-text-sm !tw-px-4 tw-py-1 tw-font-medium tw-text-gray-500 "
                   type="button"
-                  color="primary"
+                  color="white"
                   disabled={false}
                   onClick={() => {
-                    // setPhoneEditMode(!phoneEditMode);
                     if (phoneNumber === '') {
                       alert('핸드폰 번호를 입력해주세요');
-                      // setPhoneEditMode(true);
-                      // setSmsFlag(false);
                     } else {
                       onLoginOtp({ phoneNumber: phoneNumber });
                     }
                   }}
-                  className={cx('change-button')}
                 >
-                  {phoneEditMode ? '인증문자 발송' : '인증 완료'}
-                </Button> */}
+                  {phoneEditMode ? '인증문자 발송' : '변경하기'}
+                </Button>
               </div>
             </Grid>
-            <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-mt-10">
+
+            <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-5">
               <Grid item xs={2}></Grid>
-              <Grid item xs={2} className="tw-text-left"></Grid>
-              <Grid item xs={8}>
-                {/* <div className="tw-float-right">
-                  <Chip label="회원탈퇴" variant="outlined" onClick={() => setIsModalOpen(true)} />
-                </div> */}
+              <Grid item xs={2} className="tw-text-left">
+                {smsFlag && '인증번호'}
+              </Grid>
+              <Grid item xs={8} className="tw-text-left">
+                {smsFlag && (
+                  <form onSubmit={handleSubmitOtp(onSubmitOtp, onErrorOtp)}>
+                    <div className={cx('tw-text-left tw-flex tw-items-center tw-gap-3')}>
+                      <TextField
+                        size="small"
+                        type="search"
+                        id="otp"
+                        name="otp"
+                        inputProps={{
+                          maxLength: 6,
+                        }}
+                        {...registerOtp('otp')}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <Button
+                                color="lite-gray"
+                                disabled={isDisabledOtp}
+                                onClick={() => handleSubmitOtp(onSubmitOtp)}
+                              >
+                                {phoneEditMode ? '인증' : '확인'}
+                              </Button>
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                      <Typography
+                        className="tw-text-right"
+                        variant="h6"
+                        sx={{ fontWeight: '600', color: 'black', mr: 2 }}
+                      >
+                        {min}:{sec < 10 ? `0${sec}` : sec}
+                      </Typography>
+                    </div>
+                  </form>
+                )}
               </Grid>
             </Grid>
           </Grid>
-
-          {smsFlag && (
-            <form onSubmit={handleSubmitOtp(onSubmitOtp, onErrorOtp)}>
-              <div className={cx('member-info-mobile', 'mb-5')}>
-                {/* <div className={cx('member-info')}> */}
-                {/* <Textfield
-                label="인증번호"
-                type="number"
-                maxLength={6}
-                isUnderline={true}
-                required
-                value={otpNumber || ''}
-                onChange={handleOtpNumber}
-                // readOnly={!phoneEditMode}
-                className={cx('text-field', 'text-field--long')}
-              /> */}
-                <_TextField
-                  sx={{
-                    width: 100,
-                    '& label': { fontSize: 14, color: '#919191', fontWeight: 'bold' },
-                    '& input': { fontWeight: 700, fontSize: '16px' },
-                  }}
-                  label="인증번호"
-                  type="search"
-                  id="otp"
-                  name="otp"
-                  variant="standard"
-                  inputProps={{
-                    maxLength: 6,
-                  }}
-                  {...registerOtp('otp')}
-                  error={errorsOtp.otp ? true : false}
-                  helperText={errorsOtp.otp?.message}
-                />
-                <Box
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'row-reverse',
-                    alignItems: 'center',
-                    p: 1,
-                    m: 1,
-                    bgcolor: 'background.paper',
-                    borderRadius: 1,
-                    marginRight: 0,
-                    paddingRight: 0,
-                    marginBottom: '-5px',
-                  }}
-                >
-                  <Button
-                    color="primary"
-                    disabled={isDisabledOtp}
-                    onClick={() => handleSubmitOtp(onSubmitOtp)}
-                    className={cx('change-button')}
-                  >
-                    {phoneEditMode ? '인증하기' : '변경'}
-                  </Button>
-                  <Typography variant="h6" sx={{ fontWeight: '600', color: 'black', mr: 2 }}>
-                    {min}:{sec < 10 ? `0${sec}` : sec}
-                  </Typography>
-                  {/* </div> */}
-                </Box>
-              </div>
-            </form>
-          )}
         </div>
       </div>
-      <div className={cx('sub-content', 'border', 'tw-rounded-lg', 'tw-mt-5')}>
+      <div className={cx('sub-content', 'border', 'tw-rounded-lg', 'tw-mt-5', 'tw-text-center')}>
+        <div className="tw-p-10 tw-pb-0 tw-text-black tw-text-base tw-font-semibold">
+          <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-3">
+            <Grid item xs={2}></Grid>
+            <Grid item xs={2} className="tw-text-left">
+              대학
+            </Grid>
+            <Grid item xs={8}>
+              <select
+                className="form-select"
+                onChange={handleUniversityChange}
+                aria-label="Default select example"
+                value={universityCode}
+              >
+                {userInfo?.jobOptions?.map((university, index) => (
+                  <option key={index} value={university.code}>
+                    {university.name}
+                  </option>
+                ))}
+              </select>
+            </Grid>
+          </Grid>
+          <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-3">
+            <Grid item xs={2}></Grid>
+            <Grid item xs={2} className="tw-text-left">
+              학과
+            </Grid>
+            <Grid item xs={8}>
+              <select
+                className="form-select"
+                aria-label="Default select example"
+                onChange={handleJobChange}
+                value={selectedJob}
+              >
+                {jobs.map((job, index) => (
+                  <option key={index} value={job.code}>
+                    {job.name}
+                  </option>
+                ))}
+              </select>
+            </Grid>
+          </Grid>
+          {/* <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-3">
+            <Grid item xs={2}></Grid>
+            <Grid item xs={2} className="tw-text-left">
+              학번
+            </Grid>
+            <Grid item xs={8}>
+              <div className="tw-text-left tw-flex tw-text-base tw-gap-3">
+                <Textfield className="tw-w-full" size="small" id="outlined-disabled" value="sdfasdfasdf" />
+              </div>
+            </Grid>
+          </Grid> */}
+          <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-3">
+            <Grid item xs={2}></Grid>
+            <Grid item xs={2} className="tw-text-left">
+              학년
+            </Grid>
+            <Grid item xs={8}>
+              <ToggleButtonGroup
+                style={{ display: 'inline' }}
+                // value={recommendLevels}
+                value={recommendLevels}
+                exclusive
+                onChange={handleRecommendLevels}
+                aria-label="text alignment"
+              >
+                {userInfo?.jobLevelOptions?.map((item, index) => (
+                  <ToggleButton
+                    classes={{ selected: classes.selected }}
+                    key={`job-2-${index}`}
+                    value={item.code}
+                    aria-label="fff"
+                    className=" tw-ring-1 tw-ring-slate-900/10"
+                    style={{
+                      borderRadius: '5px',
+                      borderLeft: '0px',
+                      margin: '5px',
+                      height: '35px',
+                      border: '0px',
+                    }}
+                    sx={{
+                      '&.Mui-selected': {
+                        backgroundColor: '#6A7380',
+                        color: '#fff',
+                      },
+                      '&.Mui-selected:hover': {
+                        backgroundColor: '#6A7380',
+                      },
+                    }}
+                  >
+                    {item.name}
+                  </ToggleButton>
+                ))}
+              </ToggleButtonGroup>
+            </Grid>
+          </Grid>
+        </div>
+      </div>
+
+      <div className={cx('sub-content', 'border tw-px-[100px]', 'tw-rounded-lg', 'tw-mt-5')}>
         <div className=" tw-p-14 max-lg:tw-p-5  tw-text-center">
           <div className="tw-text-xl tw-pb-10 tw-text-black">
-            <span className="tw-font-bold tw-text-xl">데브어스</span> 이용 약관에 동의해주세요.
+            <span className="tw-font-bold tw-text-xl"></span> 이용 약관에 동의해주세요.
           </div>
+
           <Grid container direction="row" justifyContent="space-between" alignItems="center">
             <Grid item xs={10}>
               <Box display="flex" justifyContent="flex-start">
-                {/* <FormGroup sx={{ fontWeight: 'bold' }}>
+                <FormGroup sx={{ fontWeight: 'bold' }}>
                   <FormControlLabel
                     control={
                       <Checkbox
                         value="ALL"
                         onChange={onChangeAll}
-                        checked={CheckList.length === IdList.length}
-                        icon={<CheckBoxOutlinedIcon />}
+                        checked={CheckList?.length === IdList?.length}
+                        icon={<CheckBoxOutlineBlankOutlinedIcon />}
                         checkedIcon={<CheckBoxOutlinedIcon />}
                         sx={{
-                          color: '#c7c7c7',
+                          color: '##dc2626',
                           '& .MuiSvgIcon-root': { fontSize: 24 },
                         }}
                       />
@@ -591,17 +729,18 @@ export function MemberEditTemplate() {
                       </Typography>
                     }
                   />
-                </FormGroup> */}
+                </FormGroup>
               </Box>
             </Grid>
           </Grid>
+
           <Divider variant="middle" sx={{ borderColor: 'rgba(0, 0, 0, 0.4);', margin: '5px 0px 5px 0px' }} />
           <FormGroup sx={{ fontWeight: 'bold', padding: '0px' }}>
             <FormControlLabel
               control={
                 <Checkbox
                   onChange={e => onChangeEach(e, IdList[0])}
-                  checked={CheckList.includes(IdList[0])}
+                  checked={CheckList?.includes(IdList[0])}
                   value={IdList[0]}
                   icon={<CheckBoxOutlinedIcon />}
                   checkedIcon={<CheckBoxOutlinedIcon />}
@@ -638,7 +777,7 @@ export function MemberEditTemplate() {
                     control={
                       <Checkbox
                         onChange={e => onChangeEach(e, IdList[1])}
-                        checked={CheckList.includes(IdList[1])}
+                        checked={CheckList?.includes(IdList[1])}
                         value={IdList[1]}
                         icon={<CheckBoxOutlinedIcon />}
                         checkedIcon={<CheckBoxOutlinedIcon />}
@@ -661,6 +800,35 @@ export function MemberEditTemplate() {
                           <span className="tw-underline">개인정보 처리 방침</span>
                         </Link>
                         에 동의
+                      </Typography>
+                    }
+                  />
+                </FormGroup>
+              </Box>
+            </Grid>
+          </Grid>
+
+          <Grid container direction="row" justifyContent="space-between" alignItems="center">
+            <Grid item xs={10}>
+              <Box display="flex" justifyContent="flex-start">
+                <FormGroup sx={{ fontWeight: 'bold' }}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        onChange={e => onChangeEach(e, IdList[2])}
+                        checked={CheckList?.includes(IdList[2])}
+                        value={IdList[2]}
+                        icon={<CheckBoxOutlinedIcon />}
+                        checkedIcon={<CheckBoxOutlinedIcon />}
+                        sx={{
+                          color: '#c7c7c7',
+                          '& .MuiSvgIcon-root': { fontSize: 24 },
+                        }}
+                      />
+                    }
+                    label={
+                      <Typography sx={{ fontSize: 15, color: 'black', fontWeight: 'bold' }}>
+                        (선택) 마케팅 정보 수신 및 활용에 동의
                       </Typography>
                     }
                   />
@@ -768,6 +936,14 @@ export function MemberEditTemplate() {
           </Grid>
         </div>
       </div>
+
+      <div className="tw-text-center tw-py-5 tw-flex tw-justify-between tw-gap-5 tw-text-sm">
+        <button className="tw-bg-[#6A7380] tw-text-white tw-px-10 tw-py-3 tw-rounded">회원탈퇴</button>
+        <button className="tw-bg-[#dc2626] tw-text-white tw-px-10 tw-py-3 tw-rounded" onClick={handleSubmit}>
+          저장하기
+        </button>
+      </div>
+
       <Dialog
         open={open}
         onClose={handleClose}

@@ -10,6 +10,9 @@ import {
   loginOtpVerification,
   loginSignUp,
   saveProfile,
+  changePhone,
+  changePassword,
+  userUpdate,
 } from './account.api';
 import { setCookie } from 'cookies-next';
 
@@ -148,6 +151,48 @@ export const useLoginOtpVerification = (): UseMutationResult => {
       } else {
         alert('유효하지 않은 번호입니다.');
       }
+    },
+  });
+};
+
+export const useChangePhone = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  // TODO : any 타입 변경
+  return useMutation<any, any, any>(requestBody => changePhone(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('OTP').all),
+    onSuccess: async data => {},
+  });
+};
+
+export const useChangePassword = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  // TODO : any 타입 변경
+  return useMutation<any, any, any>(requestBody => changePassword(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('OTP').all),
+    onSuccess: async data => {
+      alert('비밀번호 변경이 완료되었습니다.');
+    },
+  });
+};
+export const useUserUpdate = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  // TODO : any 타입 변경
+  return useMutation<any, any, any>(requestBody => userUpdate(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('OTP').all),
+    onSuccess: async data => {
+      alert('회원정보 수정이 완료되었습니다.');
     },
   });
 };

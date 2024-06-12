@@ -36,8 +36,8 @@ const cx = classNames.bind(styles);
 
 const ClubMiniCard = ({
   item,
-  xs,
   favorite = false,
+  xs,
   className,
   memberId,
   onPostDeleteSubmit,
@@ -54,6 +54,12 @@ ClubMiniCardProps) => {
   const { mutate: onDeleteFavorite, isSuccess: isSuccessDelete } = useDeleteFavorite();
 
   // console.log('item', item);
+
+  useEffect(() => {
+    if (isSuccessDelete) {
+      onPostDeleteSubmit();
+    }
+  }, [isSuccessDelete]);
 
   const handleDropMenuClick = (event: React.MouseEvent<HTMLElement>, removeIndex) => {
     setRemoveIndex(removeIndex);
@@ -109,10 +115,11 @@ ClubMiniCardProps) => {
 
     if (logged) {
       setIsLiked(!isLiked);
-      if (isFavorites) {
-        onSaveFavorite(postNo);
-      } else {
+      console.log(isLiked);
+      if (isLiked) {
         onDeleteFavorite(postNo);
+      } else {
+        onSaveFavorite(postNo);
       }
     } else {
       alert('로그인 후 좋아요를 클릭 할 수 있습니다.');
