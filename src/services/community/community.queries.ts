@@ -59,7 +59,7 @@ export const useRepliesList = (
   onError?: (error: Error) => void,
 ) => {
   const DEFAULT_SIZE = 6;
-  return useQuery<RepliesResponse, Error>(QUERY_KEY_FACTORY('COMMUNITY').list(params), () => repliesList(params), {
+  return useQuery<RepliesResponse, Error>(QUERY_KEY_FACTORY('REPLY_LIST').list(params), () => repliesList(params), {
     enabled: false,
     onSuccess,
     onError,

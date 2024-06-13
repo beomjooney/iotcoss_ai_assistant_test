@@ -38,7 +38,7 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
   const [beforeOnePick, setBeforeOnePick] = useState(1);
   const [keyWorld, setKeyWorld] = useState('');
   const [totalElements, setTotalElements] = useState(0);
-  const [params, setParams] = useState<paramProps>({ id, page });
+  const [params, setParams] = useState<any>({ id, page });
   let [isLiked, setIsLiked] = useState(false);
 
   const handleQuizClick = quiz => {
@@ -87,11 +87,14 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
   useEffect(() => {
     if (isSuccess) {
       console.log(quizAnswerData);
-      setAnswerContents(quizAnswerData?.answers || []);
-      setBestAnswerContents(quizAnswerData?.bestAnswer || []);
-      setMyAnswerContents(quizAnswerData?.myAnswer || []);
+      setAnswerContents(quizAnswerData?.answers);
+      setBestAnswerContents(quizAnswerData?.bestAnswer);
+      setMyAnswerContents(quizAnswerData?.myAnswer);
       setTotalElements(quizAnswerData?.totalElements);
       setTotalPage(quizAnswerData?.totalPages);
+
+      console.log(quizAnswerData?.bestAnswer);
+      console.log(quizAnswerData?.myAnswer);
     }
   }, [isSuccess, quizAnswerData]);
 
@@ -261,7 +264,6 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                 </div>
               </div>
             </div>
-
             {selectedQuiz && (
               <div>
                 {selectedQuiz.isPublished ? (
@@ -352,14 +354,13 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                 )}
               </div>
             )}
-
             <div className="tw-rounded-xl">
               {selectedQuiz?.myAnswerStatus === '0003' && (
                 <div>
                   {/* bestAnswerContents가 있을 경우에만 CommunityCard를 렌더링합니다. */}
-                  {isQuizAnswerListFetched && (
+                  {isQuizAnswerListFetched && bestAnswerContents !== null && (
                     <CommunityCard
-                      board={bestAnswerContents?.answer || []}
+                      board={bestAnswerContents || []}
                       replies={bestAnswerContents?.replies}
                       selectedQuiz={selectedQuiz}
                       className={cx('reply-container__item')}
@@ -369,10 +370,10 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                       refetchReply={refetchReply}
                     />
                   )}
-                  {isQuizAnswerListFetched && (
+                  {isQuizAnswerListFetched && myAnswerContents !== null && (
                     <CommunityCard
                       type="my"
-                      board={myAnswerContents?.answer || []}
+                      board={myAnswerContents || []}
                       replies={myAnswerContents?.replies}
                       selectedQuiz={selectedQuiz}
                       className={cx('reply-container__item')}
@@ -382,12 +383,13 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                     />
                   )}
                   {isQuizAnswerListFetched &&
+                    answerContents?.contents?.length > 0 &&
                     answerContents?.contents?.map((item, index) => {
                       return (
                         <CommunityCard
                           type="answer"
                           key={index}
-                          board={item?.answer || []}
+                          board={item || []}
                           selectedQuiz={selectedQuiz}
                           replies={item?.replies}
                           className={cx('reply-container__item ')}
@@ -400,7 +402,6 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                 </div>
               )}
             </div>
-
             <div className="tw-flex tw-justify-center tw-mt-10">
               <Pagination count={totalPage} page={page} onChange={handlePageChange} />
             </div>

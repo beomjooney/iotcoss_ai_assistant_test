@@ -95,25 +95,31 @@ CommunityCardProps) => {
   const { mutate: onSaveReply, isSuccess: replyReplySucces } = useSaveReply();
   const { mutate: onDeleteReply, isSuccess: deleteReplySucces } = useDeleteReply();
 
-  const [params, setParams] = useState<any>({ postNo, page, size: 10 });
+  const [params, setParams] = useState<any>({});
+  /** 댓글 리스트 */
+  const {
+    isFetched: isReplyFetched,
+    refetch,
+    isSuccess: replayListSuccess,
+  } = useRepliesList(params, data => {
+    console.log(data);
+    console.log(data?.data?.data?.contents);
+    setRepliesList(data?.data?.data?.contents);
+    // setTotalPage(data.data.data.clubQuizReplies.totalPages);
+  });
 
   useDidMountEffect(() => {
-    if (replyReplySucces) refetchReply();
+    if (replyReplySucces) refetch();
   }, [replyReplySucces]);
 
   useDidMountEffect(() => {
-    if (page) {
-      setParams({
-        postNo: postNo,
-        page,
-        size: 10,
-      });
+    if (params) {
+      console.log(params);
+      if (isOpen) {
+        refetch();
+      }
     }
-  }, [page]);
-
-  // useDidMountEffect(() => {
-  //   if (params) refetch();
-  // }, [params]);
+  }, [params]);
 
   // useDidMountEffect(() => {
   //   refetch();
@@ -190,6 +196,7 @@ CommunityCardProps) => {
       alert('로그인 후 좋아요를 클릭 할 수 있습니다.');
     }
   };
+
   const onChangeOnePick = function (memberUUID: string, isOnePicked) {
     if (logged) {
       const newIsOnePicked = !isOnePicked;
@@ -249,38 +256,18 @@ CommunityCardProps) => {
     }
   };
 
-  const onButtonReply = function (postNo: number) {
+  const onButtonReply = function (clubSequence: number, quizSequence: number, memberId: string) {
     setParams({
-      postNo: postNo,
-      page,
-      size: 10,
+      clubSequence: clubSequence,
+      quizSequence: quizSequence,
+      memberId: memberId,
+      // page,
+      // size: 10,
     });
-    setPostNo(postNo);
+    console.log(clubSequence, quizSequence, memberId);
+    // setPostNo(postNo);
     setIsOpened(!isOpen);
   };
-
-  function timeForToday(value) {
-    const today = new Date();
-    const timeValue = new Date(value);
-
-    const betweenTime = Math.floor((today.getTime() - timeValue.getTime()) / 1000 / 60);
-    if (betweenTime < 1) return '방금 전';
-    if (betweenTime < 60) {
-      return `${betweenTime}분 전`;
-    }
-
-    const betweenTimeHour = Math.floor(betweenTime / 60);
-    if (betweenTimeHour < 24) {
-      return `${betweenTimeHour}시간 전`;
-    }
-
-    const betweenTimeDay = Math.floor(betweenTime / 60 / 24);
-    if (betweenTimeDay < 365) {
-      return `${betweenTimeDay}일 전`;
-    }
-
-    return `${Math.floor(betweenTimeDay / 365)}년전`;
-  }
 
   const router = useRouter();
   return (
@@ -424,7 +411,7 @@ CommunityCardProps) => {
                   </div>
                 </div>
                 <>
-                  <div className="tw-py-5 tw-text-sm tw-text-left tw-text-[#313b49]">
+                  <div className="tw-pt-5 tw-text-sm tw-text-left tw-text-[#313b49]">
                     <div className="tw-py-5">
                       <svg
                         width={'100%'}
@@ -436,59 +423,60 @@ CommunityCardProps) => {
                         <line y1="0.5" x2="100%" y2="0.5" stroke="#E9ECF2" />
                       </svg>
                     </div>
-                    <div className="tw-grid tw-grid-cols-12 tw-gap-2 tw-py-5">
-                      <div className="tw-col-span-10">
-                        <textarea
-                          className="tw-form-control tw-w-full tw-py-[8px] tw-p-5"
-                          id="floatingTextarea"
-                          placeholder="댓글을 입력해주세요."
-                          ref={textInput}
-                          rows={2}
-                        ></textarea>
-                      </div>
-                      <div className="tw-col-span-2">
-                        <button
-                          onClick={() =>
-                            onReplySubmit(
-                              board?.clubQuizAnswerSequence,
-                              board?.member?.memberUUID,
-                              textInput.current.value,
-                            )
-                          }
-                          className="tw-w-full tw-h-full tw-px-2 tw-py-[17px] tw-rounded tw-bg-white border tw-border-secondary tw-border-[#e9ecf2] tw-text-sm tw-text-center tw-text-[#6a7380]"
-                          style={{ height: 'auto' }} // 버튼 높이를 textarea에 맞춤
-                        >
-                          댓글달기
-                        </button>
-                      </div>
+
+                    <div className="tw-col-span-9 tw-flex tw-items-center tw-justify-end ">
+                      <button
+                        className={cx('tw-text-[14px] tw-pl-4')}
+                        onClick={() => {
+                          onButtonReply(board?.clubSequence, board?.quizSequence, board?.member?.memberUUID);
+                        }}
+                      >
+                        댓글 {replyCount}개{isOpen ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
+                      </button>
                     </div>
 
-                    {/* <div className="tw-col-span-9 tw-flex tw-items-center tw-justify-end ">
-                        <button
-                          className={cx('tw-text-[14px] tw-pl-4')}
-                          onClick={() => {
-                            onButtonReply(board.clubQuizAnswerSequence);
-                          }}
-                        >
-                          댓글 {replyCount}개{isOpen ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
-                        </button>
-                      </div> */}
+                    {isReplyFetched && isOpen && (
+                      <div className={cx('reply-container')}>
+                        <div className="tw-grid tw-grid-cols-12 tw-gap-2 tw-py-5">
+                          <div className="tw-col-span-10">
+                            <textarea
+                              className="tw-form-control tw-w-full tw-py-[8px] tw-p-5"
+                              id="floatingTextarea"
+                              placeholder="댓글을 입력해주세요."
+                              ref={textInput}
+                              rows={2}
+                            ></textarea>
+                          </div>
+                          <div className="tw-col-span-2">
+                            <button
+                              onClick={() =>
+                                onReplySubmit(
+                                  board?.clubQuizAnswerSequence,
+                                  board?.member?.memberUUID,
+                                  textInput.current.value,
+                                )
+                              }
+                              className="tw-w-full tw-h-full tw-px-2 tw-py-[17px] tw-rounded tw-bg-white border tw-border-secondary tw-border-[#e9ecf2] tw-text-sm tw-text-center tw-text-[#6a7380]"
+                              style={{ height: 'auto' }} // 버튼 높이를 textarea에 맞춤
+                            >
+                              댓글달기
+                            </button>
+                          </div>
+                        </div>
 
-                    {/* {isReplyFetched && isOpen && ( */}
-                    <div className={cx('reply-container')}>
-                      <div className={cx('reply-container__content')}>
-                        {replies?.map((reply, i) => {
-                          return (
-                            // TODO API Response 보고 댓글 작성자로 수정 필요
-                            <CommunityCardReply key={i} reply={reply} refetch={refetchReply} />
-                          );
-                        })}
-                      </div>
-                      {/* <div className="tw-flex tw-justify-center tw-my-5">
+                        <div className={cx('reply-container__content')}>
+                          {repliesList?.map((reply, i) => {
+                            return (
+                              // TODO API Response 보고 댓글 작성자로 수정 필요
+                              <CommunityCardReply key={i} reply={reply} refetch={refetchReply} />
+                            );
+                          })}
+                        </div>
+                        {/* <div className="tw-flex tw-justify-center tw-my-5">
                           <Pagination page={page} setPage={setPage} total={totalPage} />
                         </div> */}
-                    </div>
-                    {/* )} */}
+                      </div>
+                    )}
                   </div>
                 </>
               </div>

@@ -136,14 +136,14 @@ const CommunityCardReply = ({ reply, className, refetch }: CommunityCardReplyPro
               <div className="tw-grid tw-grid-cols-12 tw-items-center tw-justify-center">
                 <div className="tw-col-span-1">
                   <img
-                    src={reply?.replier?.profileImageUrl}
+                    src={reply?.member?.profileImageUrl}
                     alt="profile"
                     className="border tw-rounded-full tw-h-10 tw-w-10"
                   />
                 </div>
                 <div className="tw-col-span-11 tw-flex tw-items-center tw-space-x-2">
-                  <div className="tw-font-medium tw-text-sm tw-text-black">{reply?.replier?.nickname}</div>
-                  <div className="tw-font-medium tw-text-sm tw-text-gray-400">{reply?.createAt}</div>
+                  <div className="tw-font-medium tw-text-sm tw-text-black">{reply?.member?.nickname}</div>
+                  <div className="tw-font-medium tw-text-sm tw-text-gray-400">{reply?.createdAt}</div>
                 </div>
               </div>
               <div className="tw-grid tw-grid-cols-12 tw-items-start tw-justify-center">
@@ -168,7 +168,7 @@ const CommunityCardReply = ({ reply, className, refetch }: CommunityCardReplyPro
                             replyModify(
                               textInput.current.value,
                               reply?.clubSequence,
-                              reply?.replier?.memberUUID,
+                              reply?.member?.memberUUID,
                               reply?.quizSequence,
                             )
                           }
@@ -210,7 +210,7 @@ const CommunityCardReply = ({ reply, className, refetch }: CommunityCardReplyPro
                           replyModifyEvent(
                             reply?.body,
                             reply?.clubSequence,
-                            reply?.replier?.memberUUID,
+                            reply?.member?.memberUUID,
                             reply?.quizSequence,
                           )
                         }
@@ -220,7 +220,7 @@ const CommunityCardReply = ({ reply, className, refetch }: CommunityCardReplyPro
                       <button
                         className={cx('tw-text-[12px]', 'tw-text-gray-400  tw-underline')}
                         onClick={() =>
-                          onReplyDeleteSubmit(reply?.clubSequence, reply?.replier?.memberUUID, reply?.quizSequence)
+                          onReplyDeleteSubmit(reply?.clubSequence, reply?.member?.memberUUID, reply?.quizSequence)
                         }
                       >
                         삭제하기
@@ -254,7 +254,7 @@ const CommunityCardReply = ({ reply, className, refetch }: CommunityCardReplyPro
                   )}
                   <div className="tw-grid tw-grid-cols-12 tw-items-start tw-justify-center">
                     <div className="tw-col-span-12 tw-pt-0">
-                      {reply?.replies.map((reply, i) => {
+                      {reply?.nestedReplies?.map((reply, i) => {
                         return <CommunityCardReReply key={i} reply={reply} />;
                       })}
                     </div>
@@ -290,7 +290,7 @@ const CommunityCardReply = ({ reply, className, refetch }: CommunityCardReplyPro
       </Desktop>
       <Mobile>
         <div className={cx('community-board-reply-container', 'row', className)}>
-          <div className="tw-grid  tw-grid-cols-12  tw-flex tw-items-center  tw-mt-2 tw-gap-2">
+          <div className="tw-grid  tw-grid-cols-12  tw-flex tw-items-center  tw-mt-2 ">
             {/* {board.postNo} */}
             <div className="tw-col-span-2 tw-flex tw-items-end tw-justify-center">
               <img
@@ -325,7 +325,7 @@ const CommunityCardReply = ({ reply, className, refetch }: CommunityCardReplyPro
           <div className="tw-grid tw-grid-cols-12 tw-items-start tw-justify-center">
             <div className="tw-col-span-1"></div>
             <div className="tw-col-span-11 tw-pt-0 tw-pb-3">
-              {reply?.replies.map((reply, i) => {
+              {reply?.nestedReplies?.map((reply, i) => {
                 return <CommunityCardReReply key={i} reply={reply} />;
               })}
             </div>

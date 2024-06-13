@@ -31,7 +31,9 @@ export const communityList = async params => {
 
 // 댓글 조회
 export const repliesList = async params => {
-  const { data } = await axiosGeneralAPI().get(`/api/v1/answers/${params.postNo}/replies`, { params });
+  const { data } = await axiosGeneralAPI().get(
+    `/api/v1/clubs/${params.clubSequence}/quizzes/${params.quizSequence}/answers/${params.memberId}/replies`,
+  );
   return { data: data || [] };
 };
 

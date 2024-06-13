@@ -109,7 +109,7 @@ export const quizGrowthDetail = async id => {
 // 퀴즈 답변
 export const quizAnswerDetail = async params => {
   const { data } = await axiosGeneralAPI().get(
-    `/api/v1/clubs/${params.club}/quizzes/${params.quiz}/answers-with-replies`,
+    `/api/v1/clubs/${params.club}/quizzes/${params.quiz}/answers`,
     params.data,
   );
   return data.data;
