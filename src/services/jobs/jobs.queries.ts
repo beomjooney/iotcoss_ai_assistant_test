@@ -1,5 +1,14 @@
 import { useQuery } from 'react-query';
-import { getQuizList, getMyQuiz, getJobs, getMyQuizReply, getQuizReply, getGetSchedule, getGetTemp } from './jobs.api';
+import {
+  getQuizList,
+  getMyQuiz,
+  getJobs,
+  getMyQuizReply,
+  getQuizReply,
+  getGetSchedule,
+  getGetTemp,
+  getMyQuizContents,
+} from './jobs.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 import { RecommendContentsResponse } from 'src/models/recommend';
 import { paramProps } from '../community/community.queries';
@@ -42,6 +51,22 @@ export const useMyQuiz = (
   return useQuery<RecommendContentsResponse, Error>(
     QUERY_KEY_FACTORY('ACCOUNT_MEMBER_LOGIN').list({ size: DEFAULT_SIZE, ...params }),
     () => getMyQuiz({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+    },
+  );
+};
+export const useMyQuizContents = (
+  params?: paramProps,
+  onSuccess?: (data: RecommendContentsResponse) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 10;
+  return useQuery<RecommendContentsResponse, Error>(
+    QUERY_KEY_FACTORY('QUIZ_CONTENTS').list({ size: DEFAULT_SIZE, ...params }),
+    () => getMyQuizContents({ size: DEFAULT_SIZE, ...params }),
     {
       onSuccess,
       onError,

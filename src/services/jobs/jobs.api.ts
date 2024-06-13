@@ -14,7 +14,12 @@ export const getQuizList = async params => {
 
 // 내 퀴즈 조회
 export const getMyQuiz = async params => {
-  const { data } = await axiosGeneralAPI().get('/api/v1/quizzes/me', { params });
+  const { data } = await axiosGeneralAPI().get('/api/v1/my/quizzes', { params });
+  return data.data;
+};
+// 내 퀴즈 조회
+export const getMyQuizContents = async params => {
+  const { data } = await axiosGeneralAPI().get('/api/v1/my/contents', { params });
   return data.data;
 };
 // 내 퀴즈 조회
