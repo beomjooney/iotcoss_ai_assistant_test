@@ -21,7 +21,7 @@ const cx = classNames.bind(styles);
 
 export function QuizTemplate() {
   const { jobGroups, setJobGroups, contentTypes, setContentTypes } = useStore();
-  const { logged } = useSessionStore.getState();
+  const { logged, roles } = useSessionStore.getState();
   const router = useRouter();
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
@@ -85,13 +85,15 @@ export function QuizTemplate() {
               관심 주제별로 성장 퀴즈를 풀고 네트워킹 할 수 있는 클럽을 만나보세요!
             </Grid>
             <Grid item xs={12} sm={2} justifyContent="flex-end" className="tw-flex">
-              <button
-                onClick={() => (location.href = '/quiz/open')}
-                type="button"
-                className="tw-text-[#FF0000] border border-danger tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
-              >
-                + 퀴즈클럽 개설하기
-              </button>
+              {roles.includes('ROLE_MANAGER') && (
+                <button
+                  onClick={() => (location.href = '/quiz/open')}
+                  type="button"
+                  className="tw-text-[#FF0000] border border-danger tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
+                >
+                  + 퀴즈클럽 개설하기
+                </button>
+              )}
             </Grid>
           </Grid>
         </div>
