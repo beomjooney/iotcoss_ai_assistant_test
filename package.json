@@ -87,7 +87,7 @@
   "scripts": {
     "dev": "env-cmd -f env/.env.local next dev -p 3001",
     "dev-prod": "env-cmd -f env/.env.prod next dev -p 3001",
-    "start": "next start -p 3000",
+    "start": "next start -p 3001",
     "build": "env-cmd -f env/.env.prod next build",
     "dev-build": "env-cmd -f env/.env.dev next build",
     "test": "react-scripts test",
