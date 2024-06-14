@@ -12,6 +12,15 @@ export const useOptions = (onSuccess?: (data: ExperiencesResponse) => void, onEr
   });
 };
 
+export const useExperiences = (onSuccess?: (data: ExperiencesResponse) => void, onError?: (error: Error) => void) => {
+  return useQuery<ExperiencesResponse, Error>(QUERY_KEY_FACTORY('EXPERIENCE').lists(), () => experienceList(), {
+    onSuccess,
+    onError,
+    refetchOnWindowFocus: false,
+    staleTime: 5 * 60 * 1000, // 5분 유지
+  });
+};
+
 export const useMyExperiences = (
   memberId: string,
   onSuccess?: (data: ExperiencesResponse) => void,
