@@ -84,14 +84,15 @@ export const saveReply = async (params: any) => {
 
 export const deleteReply = async (params: any) => {
   // await axiosGeneralAPI().delete(`/posts/${params.parentPostNo}/replies/${params.postReplyNo}`);
-  const { data } = await axiosGeneralAPI().delete(`/api/v1/reply`, { params: params });
+  const { data } = await axiosGeneralAPI().delete(`/api/v1/my/replies/${params.answerReplySequence}`, {
+    data: params.body,
+  });
 };
 
 export const saveReReply = async (params: any) => {
-  const { data } = await axiosGeneralAPI().post(
-    `/api/v1/replies/${params.clubQuizAnswerReplySequence}/reply`,
-    params.body,
-  );
+  const { data } = await axiosGeneralAPI().post(`/api/v1/replies/${params.clubQuizAnswerReplySequence}/reply`, {
+    body: params.body,
+  });
   return { data: data || [] };
 };
 export const answerSave = async (params: any) => {
@@ -122,6 +123,12 @@ export const comprehensionSave = async (params: any) => {
 export const deletePost = async (params: any) => {
   await axiosGeneralAPI().delete(`/api/v1/quizzes/${params.postNo}`);
 };
+export const deletePostContent = async (params: any) => {
+  await axiosGeneralAPI().delete(`/api/v1/my/contents/${params.contentSequence}`);
+};
+export const deletePostQuiz = async (params: any) => {
+  await axiosGeneralAPI().delete(`/api/v1/my/quizzes/${params.quizSequence}`);
+};
 
 // 글쓰기 생성
 export const saveCommunity = async (params: any) => await axiosGeneralAPI().post('/posts', params);
@@ -146,7 +153,7 @@ export const myReplyDelete = async (params: any) => {
   console.log(params);
   // await axiosGeneralAPI().delete(`/posts/${params.parentPostNo}/replies/${params.postReplyNo}`);
   const { data } = await axiosGeneralAPI().delete(`/api/v1/my/replies/${params.answerReplySequence}`, {
-    data: params.body,
+    body: params.body,
   });
 };
 
@@ -158,5 +165,25 @@ export const myReplyUpdate = async (params: any) => {
   });
 };
 
-// export const saveReply = async (postNo: number) => await axiosGeneralAPI().post(`/posts/${postNo}/replies`);
-// export const deleteLiked = async (postId: number) => await axiosGeneralAPI().delete(`/posts/${postId}/like`);
+export const deleteReReply = async (params: any) => {
+  // await axiosGeneralAPI().delete(`/posts/${params.parentPostNo}/replies/${params.postReplyNo}`);
+  const { data } = await axiosGeneralAPI().delete(`/api/v1/my/replies/${params.answerReplySequence}`, {
+    data: params.body,
+  });
+};
+
+export const myReReplyUpdate = async (params: any) => {
+  console.log(params);
+  // await axiosGeneralAPI().delete(`/posts/${params.parentPostNo}/replies/${params.postReplyNo}`);
+  const { data } = await axiosGeneralAPI().put(`/api/v1/my/replies/${params.answerReplySequence}`, {
+    body: params.body,
+  });
+};
+
+export const clubJoin = async (params: any) => {
+  console.log(params);
+  // await axiosGeneralAPI().delete(`/posts/${params.parentPostNo}/replies/${params.postReplyNo}`);
+  const { data } = await axiosGeneralAPI().post(`/api/v1/clubs/${params.clubSequence}/join`, {
+    participationCode: params.participationCode,
+  });
+};

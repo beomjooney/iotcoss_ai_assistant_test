@@ -318,7 +318,7 @@ const QuizClubListView = ({ border, id }) => {
                             </div>
                             <div className="">
                               <button
-                                onClick={() => router.push('/quiz-answers/' + `${item?.clubQuizSequence}`)}
+                                onClick={() => router.push('/quiz-answers/' + `${id}`)}
                                 type="button"
                                 disabled={!item?.isPublished}
                                 data-tooltip-target="tooltip-default"

@@ -11,6 +11,7 @@ export interface MentorsModalProps {
   isOpen: boolean;
   title?: string;
   isProfile?: boolean;
+  isQuiz?: boolean;
   closable?: boolean;
   children?: React.ReactNode;
   onAfterClose?: () => void;
@@ -22,6 +23,7 @@ function MentorsModal({
   children,
   closable = true,
   isProfile = false,
+  isQuiz = false,
   onAfterClose,
 }: MentorsModalProps) {
   const [isShow, setIsShow] = useState<boolean>(false);
@@ -101,7 +103,7 @@ function MentorsModal({
               top: '50px',
               left: '50%',
               transform: 'translateX(-50%)',
-              width: isProfile ? '680px' : '55%',
+              width: isProfile ? '680px' : isQuiz ? '750px' : '55%',
               height: '90%',
               border: '1px solid #ccc',
               background: '#fff',

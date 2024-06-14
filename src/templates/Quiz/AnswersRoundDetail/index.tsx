@@ -12,13 +12,16 @@ import Avatar from '@mui/material/Avatar';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
-import StarBorderIcon from '@mui/icons-material/StarBorder';
 
 /** import pagenation */
 import Pagination from '@mui/material/Pagination';
 import Grid from '@mui/material/Grid';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
+import { useSessionStore } from 'src/store/session';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
+import StarIcon from '@mui/icons-material/Star';
+import { useSaveFavorite, useDeleteFavorite } from 'src/services/community/community.mutations';
 
 const cx = classNames.bind(styles);
 export interface QuizAnswersRoundDetailTemplateProps {
@@ -40,6 +43,9 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
   const [totalElements, setTotalElements] = useState(0);
   const [params, setParams] = useState<any>({ id, page });
   let [isLiked, setIsLiked] = useState(false);
+  const { memberId, logged } = useSessionStore.getState();
+  const { mutate: onSaveFavorite, isSuccess: isSuccessFavorite } = useSaveFavorite();
+  const { mutate: onDeleteFavorite, isSuccess: isSuccessDelete } = useDeleteFavorite();
 
   const handleQuizClick = quiz => {
     console.log(quiz);
@@ -72,6 +78,7 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
       console.log('content!!');
       console.log(contents.clubQuizzes[0]);
       setSelectedQuiz(contents.clubQuizzes[0]);
+      setIsLiked(contents?.club?.isFavorite);
     }
   }, [contents]);
 
@@ -127,6 +134,22 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
   useDidMountEffect(() => {
     if (selectedQuiz) refetchReply();
   }, [selectedQuiz]);
+
+  const onChangeFavorite = function (postNo: number, isFavorites: boolean) {
+    console.log(postNo, isFavorites);
+
+    if (logged) {
+      setIsLiked(!isLiked);
+      console.log(isLiked);
+      if (isLiked) {
+        onDeleteFavorite(postNo);
+      } else {
+        onSaveFavorite(postNo);
+      }
+    } else {
+      alert('로그인 후 좋아요를 클릭 할 수 있습니다.');
+    }
+  };
 
   return (
     <>
@@ -185,10 +208,10 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                     <button
                       className=""
                       onClick={() => {
-                        onChangeLike(contents?.club?.clubSequence);
+                        onChangeFavorite(contents?.club?.clubSequence, contents?.club?.isFavorite);
                       }}
                     >
-                      {isLiked ? <StarIcon color="primary" /> : <StarBorderIcon color="disabled" />}
+                      {isLiked ? <StarIcon color="error" /> : <StarBorderIcon color="disabled" />}
                     </button>
                   </div>
                 </div>

@@ -35,7 +35,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
   let [isLiked, setIsLiked] = useState(false);
 
   // 퀴즈 소개 정보 조회
-  const { isFetched: isClubAboutFetched } = useClubAboutDetail(id, data => {
+  const { isFetched: isClubAboutFetched, refetch: refetchClubAbout } = useClubAboutDetail(id, data => {
     console.log(data);
     setClubAbout(data);
     console.log('clubMemberStatus', data?.clubMemberStatus);
@@ -153,6 +153,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
             <div className={cx('seminar-container')}>
               <QuizClubDetailInfo
                 border={true}
+                refetchClubAbout={refetchClubAbout}
                 clubData={clubAbout}
                 user={clubAbout?.leader}
                 selectedUniversityName={clubAbout?.jobGroups?.[0]?.name ?? 'N/A'}

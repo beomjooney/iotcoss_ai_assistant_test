@@ -1,5 +1,7 @@
 // QuizClubDetailInfo.jsx
-import React from 'react';
+import React, { useEffect } from 'react';
+
+import { useClubJoin } from 'src/services/community/community.mutations';
 
 interface QuizClubDetailInfoProps {
   border: boolean;
@@ -9,6 +11,7 @@ interface QuizClubDetailInfoProps {
   jobLevelName: any[]; // or the specific type expected
   selectedQuizzes: any[]; // or the specific type expected
   selectedJobName: string;
+  refetchClubAbout: () => void;
 }
 
 const getButtonText = status => {
@@ -38,10 +41,28 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
   selectedUniversityName,
   jobLevelName,
   selectedJobName,
+  refetchClubAbout,
 }) => {
   const borderStyle = border ? 'border border-[#e9ecf2] tw-mt-14' : '';
   const studyWeekCount = parseInt(clubData?.studyWeekCount, 10);
   const totalMeetings = studyWeekCount * clubData?.studyCycle?.length;
+  const { mutate: onClubJoin, isSuccess: clubJoinSucces } = useClubJoin();
+
+  useEffect(() => {
+    if (clubJoinSucces) {
+      refetchClubAbout();
+    }
+  }, [clubJoinSucces]);
+
+  const handlerClubJoin = (clubSequence: number) => {
+    if (window.confirm('정말로 참여하시겠습니까?')) {
+      onClubJoin({
+        clubSequence: clubSequence,
+        participationCode: '',
+      });
+    }
+  };
+
   return (
     <div className={`tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white ${borderStyle}`}>
       <div className="tw-px-[108.5px] tw-pt-[35px]">
@@ -133,11 +154,21 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
               {user?.name ? user?.name : user?.nickname} 교수
             </p>
           </div>
-          <div className="tw-flex tw-justify-start tw-items-center tw-absolute tw-left-[87%] tw-top-[220.5px] tw-overflow-hidden tw-gap-[7px] tw-px-[24.5px] tw-py-[10.0625px] tw-rounded-[3.5px] tw-bg-[#e11837]">
+          <div className="tw-flex tw-justify-start tw-items-center tw-absolute tw-right-[16%] tw-top-[220.5px] tw-overflow-hidden tw-gap-[7px] tw-px-[24.5px] tw-py-[10.0625px] tw-rounded-[3.5px] tw-bg-[#e11837]">
             <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[12.25px] tw-font-bold tw-text-center tw-text-white">
-              {getButtonText(clubData?.clubStatus)} 미가입
+              {getButtonText(clubData?.clubStatus)}
             </p>
           </div>
+          {clubData?.clubStatus === '0300' && (
+            <div className="tw-flex tw-justify-start tw-items-center tw-absolute tw-right-[4%] tw-top-[220.5px] tw-overflow-hidden tw-gap-[7px] tw-px-[24.5px] tw-py-[10.0625px] tw-rounded-[3.5px] tw-bg-[#e11837]">
+              <button
+                onClick={() => handlerClubJoin(clubData?.clubSequence)}
+                className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[12.25px] tw-font-bold tw-text-center tw-text-white"
+              >
+                참여하기
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-pt-10">

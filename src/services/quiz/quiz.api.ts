@@ -1,3 +1,4 @@
+import { size } from 'lodash';
 import { axiosGeneralAPI } from '../index';
 
 interface CamenityProps {
@@ -16,6 +17,44 @@ export async function getCamenities(args: CamenityProps) {
   return { data: data || [], nextPage: params.page + 1, totalPage };
 }
 export const savePost = async body => await axiosGeneralAPI().post(`/api/v1/quizzes`, body);
+export const saveContent = async body => await axiosGeneralAPI().post(`/api/v1/content`, body);
+
+export const saveAIQuizPost = async body => {
+  const { data } = await axiosGeneralAPI().post(`/api/v1/ai-quizzes`, body, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return data.data;
+};
+
+export const saveAIQuizAnswer = async body => {
+  const { data } = await axiosGeneralAPI().post(`/api/v1/ai-model-answers`, body);
+  return data.data;
+};
+
+export const saveAIQuizAnswerList = async body => {
+  const { data } = await axiosGeneralAPI().put(
+    `/api/v1/clubs/${body.clubSequence}/quizzes/${body.quizSequence}/answers/${body.memberUUID}/ai-evaluation`,
+  );
+  return data.data;
+};
+
+export const saveAIQuizAnswerListPut = async body => {
+  const { data } = await axiosGeneralAPI().put(
+    `/api/v1/clubs/${body.clubSequence}/quizzes/${body.quizSequence}/answers/${body.memberUUID}/grade`,
+    { grading: body.grading },
+  );
+  return data.data;
+};
+export const saveAIQuizAnswerSavePut = async body => {
+  const { data } = await axiosGeneralAPI().put(
+    `/api/v1/clubs/${body.clubSequence}/quizzes/${body.quizSequence}/answers/${body.memberUUID}/feedback`,
+    { grading: body.grading },
+  );
+  return data.data;
+};
+
 export const saveClubQuizPost = async body => await axiosGeneralAPI().post(`/api/v1/club`, body);
 export const saveClubTempPost = async body => await axiosGeneralAPI().post(`/api/v1/club/temporary`, body);
 
@@ -66,6 +105,17 @@ export const quizGetAnswer = async params => {
   const { data } = await axiosGeneralAPI().get(
     `/api/v1/clubs/${params.club}/quizzes/${params.quiz}/answers/${params.memberUUID}`,
   );
+  return data.data;
+};
+
+export const quizGetAIAnswer = async params => {
+  const { data } = await axiosGeneralAPI().get(
+    `/api/v1/clubs/${params.club}/quizzes/${params.quiz}/answers/${params.memberUUID}/with-ai-feedback`,
+  );
+  return data.data;
+};
+export const quizGetAIAnswerGet = async params => {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/quizzes/${params.quiz}/ai-answer`);
   return data.data;
 };
 
@@ -120,6 +170,21 @@ export const quizAnswerMemberDetail = async params => {
   const { data } = await axiosGeneralAPI().get(`/api/v1/clubs/${params.club}/quizzes/${params.quiz}/member-answers`, {
     params: params.data,
   });
+  return data.data;
+};
+
+export const quizAnswerMemberAIDetail = async params => {
+  console.log(params);
+  const { data } = await axiosGeneralAPI().get(
+    `/api/v1/my/clubs/${params.club}/quizzes/${params.quiz}/member-answers`,
+    {
+      params: {
+        page: params.page,
+        size: params.size,
+        keyword: params.keyword,
+      },
+    },
+  );
   return data.data;
 };
 

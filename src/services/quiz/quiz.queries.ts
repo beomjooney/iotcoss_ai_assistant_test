@@ -18,6 +18,9 @@ import {
   quizGetProgress,
   quizGetAnswer,
   quizMyClubInfo,
+  quizGetAIAnswer,
+  quizAnswerMemberAIDetail,
+  quizGetAIAnswerGet,
 } from './quiz.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 import { User } from 'src/models/user';
@@ -171,6 +174,24 @@ export const useQuizGetAnswer = (params, onSuccess?: (data: any) => void, onErro
     enabled: false,
   });
 };
+//클럽퀴즈 진행현황 조회
+export const useQuizGetAIAnswer = (params, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
+  return useQuery<any, Error>(QUERY_KEY_FACTORY('EDGE').detail(params), () => quizGetAIAnswer(params), {
+    onSuccess,
+    onError,
+    refetchOnWindowFocus: false,
+    enabled: false,
+  });
+};
+//클럽퀴즈 진행현황 조회
+export const useQuizGetAIAnswerGet = (params, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
+  return useQuery<any, Error>(QUERY_KEY_FACTORY('QUIZ_CONTENTS').detail(params), () => quizGetAIAnswerGet(params), {
+    onSuccess,
+    onError,
+    refetchOnWindowFocus: false,
+    enabled: false,
+  });
+};
 
 export const useQuizAnswerMemberDetail = (
   params,
@@ -183,6 +204,25 @@ export const useQuizAnswerMemberDetail = (
   return useQuery<any, Error>(
     QUERY_KEY_FACTORY('QUIZ').detail({ size: DEFAULT_SIZE, ...params }),
     () => quizAnswerMemberDetail({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: true,
+      enabled: false,
+    },
+  );
+};
+export const useQuizAnswerMemberAIDetail = (
+  params,
+  onSuccess?: (data: any) => void,
+  onError?: (error: Error) => void,
+) => {
+  // return useQuery<SeminarContent, Error>(QUERY_KEY_FACTORY('SEMINAR').detail(id), () => seminarDetail(id), {
+  // TODO : 수정 해주세요. 타입에러 나요. -> 세미나 상세 Profile 컴포넌트에 셋 할때 발생
+  const DEFAULT_SIZE = 10;
+  return useQuery<any, Error>(
+    QUERY_KEY_FACTORY('QUIZ').detail({ size: DEFAULT_SIZE, ...params }),
+    () => quizAnswerMemberAIDetail({ size: DEFAULT_SIZE, ...params }),
     {
       onSuccess,
       onError,

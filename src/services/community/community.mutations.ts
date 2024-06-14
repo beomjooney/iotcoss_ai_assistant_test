@@ -22,6 +22,11 @@ import {
   deleteFavorite,
   myReplyDelete,
   myReplyUpdate,
+  deletePostContent,
+  deletePostQuiz,
+  deleteReReply,
+  myReReplyUpdate,
+  clubJoin,
 } from './community.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 
@@ -249,10 +254,48 @@ export const useDeleteReply = (): UseMutationResult => {
   });
 };
 
+export const useDeleteReReply = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  // TODO : any 타입 변경
+  return useMutation<any, any, any>(requestBody => deleteReReply(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('REPLY').all),
+    onSuccess: async data => {},
+  });
+};
+
 export const useDeletePost = (): UseMutationResult => {
   const queryClient = useQueryClient();
   // TODO : any 타입 변경
   return useMutation<any, any, any>(requestBody => deletePost(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('REPLY').all),
+    onSuccess: async data => {},
+  });
+};
+
+export const useDeletePostContent = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  // TODO : any 타입 변경
+  return useMutation<any, any, any>(requestBody => deletePostContent(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('REPLY').all),
+    onSuccess: async data => {},
+  });
+};
+export const useDeletePostQuiz = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  // TODO : any 타입 변경
+  return useMutation<any, any, any>(requestBody => deletePostQuiz(requestBody), {
     onError: (error, variables, context) => {
       const { code, message } = error;
       alert(`mutation error : [${code}] ${message}`);
@@ -308,6 +351,32 @@ export const useMyReplyUpdate = (): UseMutationResult => {
   const queryClient = useQueryClient();
   // TODO : any 타입 변경
   return useMutation<any, any, any>(requestBody => myReplyUpdate(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('REPLY').all),
+    onSuccess: async data => {},
+  });
+};
+
+export const useMyReReplyUpdate = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  // TODO : any 타입 변경
+  return useMutation<any, any, any>(requestBody => myReReplyUpdate(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('REPLY').all),
+    onSuccess: async data => {},
+  });
+};
+
+export const useClubJoin = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  // TODO : any 타입 변경
+  return useMutation<any, any, any>(requestBody => clubJoin(requestBody), {
     onError: (error, variables, context) => {
       const { code, message } = error;
       alert(`mutation error : [${code}] ${message}`);

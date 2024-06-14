@@ -9,7 +9,7 @@ import Grid from '@mui/material/Grid';
 import { Textfield, Button } from 'src/stories/components';
 import { useEffect, useRef, useState } from 'react';
 import { useSessionStore } from 'src/store/session';
-import { useSaveReReply, useDeleteReply } from 'src/services/community/community.mutations';
+import { useSaveReReply, useDeleteReply, useMyReplyUpdate } from 'src/services/community/community.mutations';
 import CommunityCardReReply from '../CommunityCardReReply';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 const { logged } = useSessionStore.getState();
@@ -50,12 +50,16 @@ function timeForToday(value) {
 
 const CommunityCardReply = ({ reply, className, refetch }: CommunityCardReplyProps) => {
   const textInput = useRef(null);
+
+  const { memberId } = useSessionStore();
+
   let [isOpen, setIsOpened] = useState(false);
   let [isText, setIsText] = useState(false);
   const [text, setText] = useState('');
 
   const { mutate: onSaveReReply, isSuccess: replyReplySucces } = useSaveReReply();
   const { mutate: onDeleteReply, isSuccess: deleteReplySucces } = useDeleteReply();
+  const { mutate: onModifyReply, isSuccess: modifyReplySucces } = useMyReplyUpdate();
 
   const handleTextChange = event => {
     setText(event.target.value);
@@ -73,31 +77,25 @@ const CommunityCardReply = ({ reply, className, refetch }: CommunityCardReplyPro
     setIsText(true);
   };
 
-  const replyModify = (body: string, clubSequence: number, memberUUID: string, quizSequence: number) => {
+  const replyModify = (body: string, answerReplySequence: number) => {
     if (window.confirm('정말로 수정하시겠습니까?')) {
       console.log(body);
-      console.log(clubSequence);
-      console.log(memberUUID);
-      console.log(quizSequence);
+      onModifyReply({
+        body: body,
+        answerReplySequence: answerReplySequence,
+      });
     }
-    // onDeleteReply({
-    //   postReplyNo: postReplyNo,
-    //   parentPostNo: parentPostNo,
-    // });
-    // setReplyCount(replyCount => replyCount - 1);
+    setIsText(false);
   };
 
-  const onReplyDeleteSubmit = (clubSequence: number, memberUUID: string, quizSequence: number) => {
+  const onReplyDeleteSubmit = (body: string, answerReplySequence: number) => {
     if (window.confirm('정말로 삭제하시겠습니까?')) {
-      console.log(clubSequence);
-      console.log(memberUUID);
-      console.log(quizSequence);
-      // onDeleteReply({
-      //   clubSequence: clubSequence,
-      //   quizSequence: quizSequence,
-      //   memberUUID: memberUUID,
-      //   body: text,
-      // });
+      console.log(body);
+      console.log(answerReplySequence);
+      onDeleteReply({
+        body: body,
+        answerReplySequence: answerReplySequence,
+      });
     }
   };
 
@@ -107,7 +105,9 @@ const CommunityCardReply = ({ reply, className, refetch }: CommunityCardReplyPro
 
   useEffect(() => {
     if (replyReplySucces) refetch();
-  }, [replyReplySucces]);
+    if (deleteReplySucces) refetch();
+    if (modifyReplySucces) refetch();
+  }, [replyReplySucces, deleteReplySucces, modifyReplySucces]);
 
   const onReplySubmit = (postNo: number, text: string) => {
     console.log(postNo);
@@ -164,14 +164,7 @@ const CommunityCardReply = ({ reply, className, refetch }: CommunityCardReplyPro
                       </div>
                       <div className="tw-col-span-1">
                         <button
-                          onClick={() =>
-                            replyModify(
-                              textInput.current.value,
-                              reply?.clubSequence,
-                              reply?.member?.memberUUID,
-                              reply?.quizSequence,
-                            )
-                          }
+                          onClick={() => replyModify(textInput.current.value, reply?.answerReplySequence)}
                           className="tw-w-full tw-h-full tw-px-2 tw-py-[17px] tw-rounded tw-bg-white border tw-border-secondary tw-border-[#e9ecf2] tw-text-sm tw-text-center tw-text-[#6a7380]"
                           style={{ height: 'auto' }} // 버튼 높이를 textarea에 맞춤
                         >
@@ -198,33 +191,35 @@ const CommunityCardReply = ({ reply, className, refetch }: CommunityCardReplyPro
                 <div className="tw-col-span-11 tw-pt-0 tw-pb-3">
                   {!isText && (
                     <div>
-                      <button
-                        className={cx('tw-text-[12px]', 'tw-text-gray-400 tw-mr-3 tw-underline')}
-                        onClick={() => replyOpen()}
-                      >
-                        대댓글 쓰기
-                      </button>
-                      <button
-                        className={cx('tw-text-[12px]', 'tw-text-gray-400 tw-mr-3 tw-underline')}
-                        onClick={() =>
-                          replyModifyEvent(
-                            reply?.body,
-                            reply?.clubSequence,
-                            reply?.member?.memberUUID,
-                            reply?.quizSequence,
-                          )
-                        }
-                      >
-                        수정하기
-                      </button>
-                      <button
-                        className={cx('tw-text-[12px]', 'tw-text-gray-400  tw-underline')}
-                        onClick={() =>
-                          onReplyDeleteSubmit(reply?.clubSequence, reply?.member?.memberUUID, reply?.quizSequence)
-                        }
-                      >
-                        삭제하기
-                      </button>
+                      {reply?.member?.memberUUID === memberId && reply?.postReplyStatus !== '0003' && (
+                        <>
+                          <button
+                            className={cx('tw-text-[12px]', 'tw-text-gray-400 tw-mr-3 tw-underline')}
+                            onClick={() => replyOpen()}
+                          >
+                            대댓글 쓰기
+                          </button>
+                          <button
+                            className={cx('tw-text-[12px]', 'tw-text-gray-400 tw-mr-3 tw-underline')}
+                            onClick={() =>
+                              replyModifyEvent(
+                                reply?.body,
+                                reply?.clubSequence,
+                                reply?.member?.memberUUID,
+                                reply?.quizSequence,
+                              )
+                            }
+                          >
+                            수정하기
+                          </button>
+                          <button
+                            className={cx('tw-text-[12px]', 'tw-text-gray-400  tw-underline')}
+                            onClick={() => onReplyDeleteSubmit(reply?.body, reply?.answerReplySequence)}
+                          >
+                            삭제하기
+                          </button>
+                        </>
+                      )}
                     </div>
                   )}
                 </div>
@@ -255,7 +250,7 @@ const CommunityCardReply = ({ reply, className, refetch }: CommunityCardReplyPro
                   <div className="tw-grid tw-grid-cols-12 tw-items-start tw-justify-center">
                     <div className="tw-col-span-12 tw-pt-0">
                       {reply?.nestedReplies?.map((reply, i) => {
-                        return <CommunityCardReReply key={i} reply={reply} />;
+                        return <CommunityCardReReply key={i} reply={reply} refetch={refetch} />;
                       })}
                     </div>
                   </div>

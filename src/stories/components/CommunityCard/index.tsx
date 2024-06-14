@@ -64,13 +64,14 @@ const CommunityCard = ({
   selectedQuiz,
   writer,
   className,
-  memberId,
+  // memberId,
   type,
   refetchReply,
   onPostDeleteSubmit,
 }: // eslint-disable-next-line @typescript-eslint/no-empty-function
 CommunityCardProps) => {
   const { beforeOnePick, update } = useSessionStore.getState();
+
   // TODO 좋아요 여부 필드 수정 필요
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
@@ -94,6 +95,9 @@ CommunityCardProps) => {
   /** 댓글 */
   const { mutate: onSaveReply, isSuccess: replyReplySucces } = useSaveReply();
   const { mutate: onDeleteReply, isSuccess: deleteReplySucces } = useDeleteReply();
+
+  const { memberId } = useSessionStore();
+  console.log(memberId);
 
   const [params, setParams] = useState<any>({});
   /** 댓글 리스트 */
@@ -128,6 +132,8 @@ CommunityCardProps) => {
   useEffect(() => {
     if (isError) {
       alert(`원픽은 하나만 선택할 수 있어요.\n기존 원픽을 취소해 주세요.`);
+      setIsOnePicked(false);
+      setOnePickCount(prevCount => prevCount - 1);
     }
   }, [isError]);
 
@@ -173,11 +179,22 @@ CommunityCardProps) => {
     if (logged) {
       const newIsOnePicked = !isLiked;
       console.log(newIsOnePicked);
-      setIsLiked(newIsOnePicked);
+
+      setIsLiked(prevIsLiked => {
+        if (prevIsLiked !== newIsOnePicked) {
+          // Ensure state update only if there is a change
+          return newIsOnePicked;
+        }
+        return prevIsLiked;
+      });
+
+      setLikeCount(prevCount => {
+        const newCount = newIsOnePicked ? prevCount + 1 : prevCount > 0 ? prevCount - 1 : 0;
+        return newCount;
+      });
 
       if (newIsOnePicked) {
         // 좋아요를 누른 경우
-        setLikeCount(prevCount => prevCount + 1);
         onSaveLikeReply({
           club: selectedQuiz.clubSequence,
           quiz: selectedQuiz.quizSequence,
@@ -185,7 +202,6 @@ CommunityCardProps) => {
         });
       } else {
         // 좋아요를 취소한 경우
-        setLikeCount(prevCount => (prevCount > 0 ? prevCount - 1 : 0));
         onDeleteLikeReply({
           club: selectedQuiz.clubSequence,
           quiz: selectedQuiz.quizSequence,
@@ -205,12 +221,12 @@ CommunityCardProps) => {
 
       if (newIsOnePicked) {
         // 좋아요를 누른 경우
-        setOnePickCount(prevCount => prevCount + 1);
         onSaveOnePick({
           club: selectedQuiz.clubSequence,
           quiz: selectedQuiz.quizSequence,
           memberUUID: memberUUID,
         });
+        setOnePickCount(prevCount => prevCount + 1);
       } else {
         // 좋아요를 취소한 경우
         setOnePickCount(prevCount => (prevCount > 0 ? prevCount - 1 : 0));
@@ -292,17 +308,19 @@ CommunityCardProps) => {
               </div>
               <div className="tw-grow">
                 <div className="tw-pt-4 tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
-                  <div className="tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2 ">
-                    {type === 'best' ? (
+                  {type === 'best' ? (
+                    <div className="tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2 ">
                       <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-bold tw-text-left tw-text-white tw-px-2 tw-rounded tw-py-1 tw-bg-[#e11837]">
                         BEST
                       </p>
-                    ) : type === 'my' ? (
+                    </div>
+                  ) : type === 'my' ? (
+                    <div className="tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2 ">
                       <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-bold tw-text-left tw-text-red-600">
                         내 답변
                       </p>
-                    ) : null}
-                  </div>
+                    </div>
+                  ) : null}
                   <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-bold tw-text-left tw-text-[#313b49]">
                     {board?.answerStatus === '0003' ? '최종답변' : '사전답변'}
                   </p>
@@ -453,6 +471,7 @@ CommunityCardProps) => {
                                 onReplySubmit(
                                   board?.clubQuizAnswerSequence,
                                   board?.member?.memberUUID,
+                                  // memberId
                                   textInput.current.value,
                                 )
                               }
@@ -468,7 +487,7 @@ CommunityCardProps) => {
                           {repliesList?.map((reply, i) => {
                             return (
                               // TODO API Response 보고 댓글 작성자로 수정 필요
-                              <CommunityCardReply key={i} reply={reply} refetch={refetchReply} />
+                              <CommunityCardReply key={i} reply={reply} refetch={refetch} />
                             );
                           })}
                         </div>

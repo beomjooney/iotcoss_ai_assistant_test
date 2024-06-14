@@ -108,7 +108,7 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
 
   useDidMountEffect(() => {
     setMyClubParams({
-      clubSequence: selectedClub?.clubSequence,
+      clubSequence: selectedClub?.clubSequence || id,
       data: { sortType: sortType },
     });
   }, [sortType, selectedClub]);
@@ -226,7 +226,7 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
         </div>
         <div className="tw-w-full tw-py-5 tw-cursor-pointer">
           <div
-            onClick={() => router.push(`/quiz-list/${selectedClub?.clubSequence}`)}
+            onClick={() => router.push(`/quiz-list/${id}`)}
             className="tw-h-[50px] tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white border tw-border-secondary"
           >
             <div className="tw-flex tw-justify-start tw-items-start tw-absolute tw-left-[28.21px] tw-top-[14px] tw-gap-[16.133331298828125px]">

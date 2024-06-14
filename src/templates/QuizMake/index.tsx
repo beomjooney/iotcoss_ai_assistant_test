@@ -1,17 +1,14 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import { Toggle, Pagination, Chip, MentorsModal, Textfield } from 'src/stories/components';
+import { Toggle, Pagination, Chip, MentorsModal, AIQuizList } from 'src/stories/components';
 import React, { useEffect, useState, useRef } from 'react';
-import { RecommendContent, SeminarImages } from 'src/models/recommend';
-import { useStore } from 'src/store';
 import { useRouter } from 'next/router';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/system/Box';
 import SearchIcon from '@mui/icons-material/Search';
 import { UseQueryResult } from 'react-query';
 import { useMyQuiz, useMyQuizContents } from 'src/services/jobs/jobs.queries';
-import { useQuizSave } from 'src/services/quiz/quiz.mutations';
-import { useContentJobTypes, useContentTypes } from 'src/services/code/code.queries';
+import { useQuizSave, useAIQuizSave, useAIQuizAnswer, useQuizContentSave } from 'src/services/quiz/quiz.mutations';
 import { useDeletePost } from 'src/services/community/community.mutations';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import { makeStyles } from '@material-ui/core';
@@ -29,51 +26,22 @@ import { Radio, RadioGroup, FormControlLabel, TextField } from '@mui/material';
 import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded';
 import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded';
 import { useOptions } from 'src/services/experiences/experiences.queries';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const studyStatus = [
   {
-    id: '0001',
+    id: '0100',
     name: '아티클',
   },
   {
-    id: '0002',
+    id: '0200',
     name: '영상',
   },
   {
-    id: '0003',
+    id: '0300',
     name: '첨부파일',
   },
 ];
-
-const gradeStatus = [
-  {
-    id: '0001',
-    name: '1학년',
-  },
-  {
-    id: '0002',
-    name: '2학년',
-  },
-  {
-    id: '0003',
-    name: '3학년',
-  },
-  {
-    id: '0004',
-    name: '4학년',
-  },
-  {
-    id: '0005',
-    name: '취업준비생',
-  },
-  {
-    id: '0006',
-    name: '상관없음',
-  },
-];
-
-const options = ['삭제하기'];
-// const options = ['삭제하기', '퀴즈 비공개'];
 
 export type ArticleLikeUser = {
   userId: string;
@@ -106,11 +74,12 @@ export function QuizMakeTemplate() {
   const router = useRouter();
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isContentModalOpen, setIsContentModalOpen] = useState<boolean>(false);
   const [contentJobType, setContentJobType] = useState<any[]>([]);
   const [jobGroup, setJobGroup] = useState([]);
-  const [active, setActive] = useState('0001');
+  const [active, setActive] = useState('0100');
   const [activeQuiz, setActiveQuiz] = useState('0001');
-  const [contentType, setContentType] = useState('0001');
+  const [contentType, setContentType] = useState('0100');
   const [jobGroups, setJobGroups] = useState<any[]>([]);
   const [jobs, setJobs] = useState([]);
   const [page, setPage] = useState(1);
@@ -131,12 +100,12 @@ export function QuizMakeTemplate() {
   const [removeIndex, setRemoveIndex] = React.useState('');
 
   const [expanded, setExpanded] = useState(0); // 현재 확장된 Accordion의 인덱스
-  const [selectedButton, setSelectedButton] = React.useState(null);
+  const [isModify, setIsModify] = useState(false);
 
   const [selected1, setSelected1] = useState([]);
   const [selected2, setSelected2] = useState([]);
   const [selected3, setSelected3] = useState([]);
-  const [quizCount, setQuizCount] = useState('');
+  const [quizCount, setQuizCount] = useState('0');
   const [aiQuiz, setAiQuiz] = useState(false);
   const [quizSortType, setQuizSortType] = useState('0001');
   const [sortType, setSortType] = useState('DESC');
@@ -149,7 +118,7 @@ export function QuizMakeTemplate() {
 
   const [selectedSubject, setSelectedSubject] = useState('');
   const [selectedChapter, setSelectedChapter] = useState('');
-  const [jobLevel, setJobLevel] = useState([]);
+  const [jobLevel, setJobLevel] = useState('');
   const [contentUrl, setContentUrl] = useState('');
   const [contentTitle, setContentTitle] = useState('');
   const [sortQuizType, setSortQuizType] = useState('ASC');
@@ -157,6 +126,11 @@ export function QuizMakeTemplate() {
   const [modelAnswerFinal, setModelAnswerFinal] = useState('');
   const [quizList, setQuizList] = useState([]);
   const [editingIndex, setEditingIndex] = useState(null);
+
+  // 로딩 상태를 관리하기 위해 useState 훅 사용
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingAI, setIsLoadingAI] = useState({});
+  const [index, setIndex] = useState(0);
 
   useEffect(() => {
     console.log(quizList);
@@ -182,30 +156,80 @@ export function QuizMakeTemplate() {
       setTotalPage(data.totalPages);
     },
   );
-
   const { isFetched: isOptionFetched, data: optionsData }: UseQueryResult<any> = useOptions();
 
   //quiz delete
-  const { mutate: onDeletePost, isSuccess: deletePostSuccess } = useDeletePost();
   const { mutate: onQuizSave, isSuccess: postSuccess } = useQuizSave();
+  const { mutate: onQuizContentSave, isSuccess: postContentSuccess } = useQuizContentSave();
+  const { mutate: onAIQuizSave, isSuccess: updateSuccess, data: aiQuizData } = useAIQuizSave();
+  const { mutate: onAIQuizAnswer, isSuccess: answerSuccess, data: aiQuizAnswerData } = useAIQuizAnswer();
+
+  // useEffect(() => {
+  //   if (aiQuizAnswerData) {
+  //     const updatedQuizList = [...quizList];
+
+  //     aiQuizAnswerData.forEach((item: any) => {
+  //       if (index >= 0 && index < updatedQuizList.length) {
+  //         updatedQuizList[index].modelAnswer = item.answer;
+  //       }
+  //     });
+
+  //     console.log('updatedQuizList', updatedQuizList);
+  //     setQuizList(updatedQuizList);
+  //   }
+  // }, [aiQuizAnswerData]);
+
+  useEffect(() => {
+    if (optionsData) {
+      setJobLevel(optionsData?.data?.jobLevels[0].code);
+    }
+  }, [optionsData]);
+
+  useEffect(() => {
+    if (aiQuizData) {
+      console.log(aiQuizData);
+      if (aiQuizData?.generatedQuizzes && aiQuizData?.generatedQuizzes.length > 0) {
+        const formattedQuizList = aiQuizData.generatedQuizzes.map((quiz: any) => ({
+          question: quiz.question,
+          modelAnswerKeywords: [quiz.keyword],
+        }));
+        setQuizList(formattedQuizList);
+        console.log(formattedQuizList);
+      }
+    }
+  }, [aiQuizData]);
+
+  // 성공 상태를 감지하여 로딩 상태를 업데이트하기 위해 useEffect 훅 사용
+  useEffect(() => {
+    if (updateSuccess) {
+      setIsLoading(false);
+    }
+  }, [updateSuccess]);
+
+  useEffect(() => {
+    if (answerSuccess) {
+      // setIsLoadingAI(false);
+      setIsLoadingAI(prevState => ({ ...prevState, [index]: false }));
+    }
+  }, [answerSuccess]);
 
   useDidMountEffect(() => {
     //console.log('delete 1 !!!', params, page);
 
     setContentTitle('');
-    setContentUrl('');
+    // setContentUrl('');
     setSelectedSubject('');
     setSelectedChapter('');
     setSelected1([]);
     setSelected2([]);
     setSelectedUniversity('');
     setSelectedJob('');
-    setJobLevel([]);
+    setJobLevel('');
     setQuizList([]);
 
     refetchMyQuiz();
     refetchMyQuizContent();
-  }, [deletePostSuccess, postSuccess]);
+  }, [postSuccess, postContentSuccess]);
 
   // const { isFetched: isContentTypeFetched } = useContentTypes(data => {
   //   setContentTypes(data.data.contents || []);
@@ -220,20 +244,24 @@ export function QuizMakeTemplate() {
   //   setContentJobType(data.data.contents || []);
   // });
 
-  const handleAddClick = () => {
-    // onGetJobsData && onGetJobsData();
-    // getJobsList();
-    //console.log('modal ');
-    setQuizUrl('');
-    setQuizName('');
+  const handleAddClick = (isContent: boolean) => {
+    setIsContentModalOpen(isContent);
+    setContentUrl('');
+    setContentTitle('');
     setJobGroup([]);
     setJobs([]);
     setRecommendLevels([]);
     setExperienceIds([]);
     setSelected([]);
+    setUniversityCode('');
+    setSelectedUniversity('');
+    setSelectedUniversityName('');
+    setSelectedJobName('');
+    setSelectedJob('');
+    setActiveQuiz(optionsData?.data?.jobLevels[0].code);
+    setJobLevel(optionsData?.data?.jobLevels[0].code);
 
     setIsModalOpen(true);
-    // setChapterNo(chapterNo);
   };
 
   useEffect(() => {
@@ -262,41 +290,95 @@ export function QuizMakeTemplate() {
     setKeyWorld(_keyworld);
   }
 
-  const handleMenuItemClick = (index: number) => {
-    console.log(index, removeIndex);
-    // if (index === 0) {
-    if (window.confirm('정말로 삭제하시겠습니까?')) {
-      onDeletePost({
-        postNo: index,
-      });
+  const handleAIAnswerClick = async (quizIndex, quiz) => {
+    if (!contentUrl) {
+      alert('지식컨텐츠 URL을 입력하세요.');
+      return;
     }
-    // }
+
+    if (!selectedJob || selectedJob.length === 0) {
+      alert('하나 이상의 학과를 선택하세요.');
+      return;
+    }
+
+    // Find the specific quiz in quizList and create formattedQuizList
+    const formattedQuizList = quizList
+      .filter(q => q.question === quiz)
+      .map((q, index) => ({
+        no: index + 1,
+        question: q.question,
+      }));
+
+    const params = {
+      contentType: contentType,
+      contentUrl: contentUrl,
+      job: selectedJob,
+      quizzes: formattedQuizList,
+    };
+
+    console.log('ai quiz click', params);
+    // setIsLoadingAI(true);
+
+    setIndex(quizIndex);
+    setIsLoadingAI(prevState => ({ ...prevState, [quizIndex]: true }));
+    try {
+      await onAIQuizAnswer(params); // Ensure this function returns a promise
+    } catch (error) {
+      console.error('Error generating AI answer:', error);
+    } finally {
+      console.log('!!!!!!!!!!!!!!!!!!!');
+      setIsLoadingAI(prevState => ({ ...prevState, [quizIndex]: false }));
+    }
   };
 
-  // const handleAiQuizClick = () => {
-  //   console.log('ai quiz click');
-  //   // Validation check
-  //   if (!question || !modelAnswerFinal || !selected3) {
-  //     alert('퀴즈 질문, 모델 답변, 모델 키워드를 입력해주세요.');
-  //     return;
-  //   }
+  const handleAIQuizClick = () => {
+    console.log('ai quiz click');
+    // 유효성 검사
+    if (!quizSortType) {
+      alert('퀴즈 유형을 선택하세요.');
+      return;
+    }
 
-  //   const params = {
-  //     question: question,
-  //     modelAnswerFinal: modelAnswerFinal,
-  //     modelAnswerKeywords: selected3,
-  //   };
+    if (!contentUrl) {
+      alert('콘텐츠 URL을 입력하세요.');
+      return;
+    }
 
-  //   // Add to quiz list
-  //   setQuizList(prevQuizList => [...prevQuizList, params]);
+    if (!selectedUniversity || selectedUniversity.length === 0) {
+      alert('하나 이상의 대학을 선택하세요.');
+      return;
+    }
 
-  //   // Reset fields
-  //   setQuestion('');
-  //   setModelAnswerFinal('');
-  //   setSelected3([]);
-  // };
+    if (!selectedJob || selectedJob.length === 0) {
+      alert('하나 이상의 학과를 선택하세요.');
+      return;
+    }
 
-  const handleAiQuizClick = () => {
+    if (!quizCount) {
+      alert('퀴즈 수를 입력하세요.');
+      return;
+    }
+
+    console.log('AI 퀴즈 클릭');
+    const formData = new FormData();
+    formData.append('contentType', contentType);
+    formData.append('contentUrl', contentUrl);
+    formData.append('jobGroups', selectedUniversity);
+    formData.append('jobs', selectedJob);
+    formData.append('quizCount', quizCount);
+
+    // 로딩 상태를 true로 설정
+    setIsLoading(true);
+    onAIQuizSave(formData);
+  };
+
+  const handleQuizClick = () => {
+    // Validation check
+    if (!question || !selected3) {
+      alert('퀴즈 질문,  키워드를 입력해주세요.');
+      return;
+    }
+
     if (editingIndex !== null) {
       const updatedQuizzes = quizList.map((quiz, index) =>
         index === editingIndex ? { question, modelAnswer: modelAnswerFinal, modelAnswerKeywords: selected3 } : quiz,
@@ -310,6 +392,7 @@ export function QuizMakeTemplate() {
     setQuestion('');
     setModelAnswerFinal('');
     setSelected3([]);
+    setIsModify(false);
   };
 
   const handleEditQuiz = index => {
@@ -318,33 +401,53 @@ export function QuizMakeTemplate() {
     setModelAnswerFinal(quizToEdit.modelAnswer);
     setSelected3(quizToEdit.modelAnswerKeywords);
     setEditingIndex(index);
+    setIsModify(true);
   };
 
   const handleQuizInsertClick = async () => {
-    if (
-      !contentTitle ||
-      !contentUrl ||
-      !selectedSubject ||
-      !selectedChapter ||
-      !selected1.length ||
-      !selected2.length ||
-      !selectedUniversity ||
-      !selectedJob ||
-      !jobLevel
-    ) {
-      alert('모든 필드를 입력해주세요.');
+    console.log(selectedUniversity);
+    console.log(isContentModalOpen);
+
+    if (!contentTitle) {
+      alert('콘텐츠 제목을 입력해주세요.');
       return false;
     }
-
-    if (!quizList.length) {
-      alert('퀴즈를 추가해주세요.');
+    if (!contentUrl) {
+      alert('콘텐츠 URL을 입력해주세요.');
       return false;
     }
-
-    const params = {
-      content: {
-        isNew: true,
-        // contentType: contentType,
+    if (!selectedSubject) {
+      alert('선택된 과목을 입력해주세요.');
+      return false;
+    }
+    if (!selectedChapter) {
+      alert('선택된 챕터를 입력해주세요.');
+      return false;
+    }
+    if (!selected1.length) {
+      alert('선택된 기술을 입력해주세요.');
+      return false;
+    }
+    if (!selected2.length) {
+      alert('선택된 키워드를 입력해주세요.');
+      return false;
+    }
+    if (!selectedUniversity) {
+      alert('선택된 대학교를 입력해주세요.');
+      return false;
+    }
+    if (!selectedJob) {
+      alert('선택된 직업을 입력해주세요.');
+      return false;
+    }
+    if (!jobLevel) {
+      alert('직업 레벨을 입력해주세요.');
+      return false;
+    }
+    if (!isContentModalOpen) {
+      console.log('content modal');
+      const params = {
+        contentType: contentType,
         description: contentTitle,
         url: contentUrl,
         studySubject: selectedSubject,
@@ -354,12 +457,45 @@ export function QuizMakeTemplate() {
         jobs: [selectedJob],
         jobLevels: [jobLevel],
         studyKeywords: selected2,
-      },
-      quizzes: quizList,
-    };
+      };
+      onQuizContentSave(params);
+      setActiveTab('지식컨텐츠');
+    } else {
+      if (!quizList.length) {
+        alert('퀴즈를 추가해주세요.');
+        return false;
+      }
 
+      console.log('quiz modal');
+      // modelAnswer를 modelAnswerAI로 변경하고 기존 modelAnswer 제거
+      const updatedQuizList = quizList.map(({ modelAnswer, ...rest }) => ({
+        ...rest,
+        modelAnswerFinal: modelAnswer,
+        modelAnswerAi: '',
+      }));
+
+      const params = {
+        content: {
+          isNew: true,
+          // contentType: contentType,
+          description: contentTitle,
+          url: contentUrl,
+          studySubject: selectedSubject,
+          studyChapter: selectedChapter,
+          skills: selected1,
+          jobGroups: [selectedUniversity],
+          jobs: [selectedJob],
+          jobLevels: [jobLevel],
+          studyKeywords: selected2,
+        },
+        quizzes: updatedQuizList,
+      };
+
+      console.log(params);
+      onQuizSave(params);
+      setActiveTab('퀴즈목록');
+    }
     setIsModalOpen(false);
-    onQuizSave(params);
   };
 
   const [activeTab, setActiveTab] = useState('퀴즈목록');
@@ -393,12 +529,27 @@ export function QuizMakeTemplate() {
   const handleContentUrlChange = event => {
     setContentUrl(event.target.value);
   };
+  const handleQuizCountChange = event => {
+    const value = event.target.value;
+    if (/^\d*$/.test(value)) {
+      if (value > 10) {
+        alert('숫자는 10 이하로 입력해주세요.');
+      } else {
+        setQuizCount(value);
+      }
+    }
+  };
   const handleInputChapterChange = event => {
     setSelectedChapter(event.target.value);
   };
 
   const handleChangeQuizType = event => {
     setSortQuizType(event.target.value);
+    setQuizList([]);
+    setQuestion('');
+    setModelAnswerFinal('');
+    setSelected3([]);
+    setQuizCount('0');
   };
   const handleQuestionChange = event => {
     setQuestion(event.target.value);
@@ -407,10 +558,30 @@ export function QuizMakeTemplate() {
     setModelAnswerFinal(event.target.value);
   };
 
+  const updateQuizList = newQuiz => {
+    const index = quizList.findIndex(quiz => quiz.question === newQuiz.question);
+
+    if (index !== -1) {
+      // 중복된 경우 덮어쓰기
+      const updatedQuizList = [...quizList];
+      updatedQuizList[index] = newQuiz;
+      setQuizList(updatedQuizList);
+    } else {
+      // 새로운 퀴즈 추가
+      setQuizList([...quizList, newQuiz]);
+    }
+
+    console.log([...quizList, newQuiz]);
+  };
+
   const handleDeleteQuiz = questionToDelete => {
+    console.log(quizList);
     // Handle delete action
     const updatedQuizzes = quizList.filter(quiz => quiz.question !== questionToDelete);
     setQuizList(updatedQuizzes);
+    setQuestion('');
+    setModelAnswerFinal('');
+    setSelected3([]);
   };
 
   return (
@@ -428,7 +599,7 @@ export function QuizMakeTemplate() {
               <Grid item xs={12} sm={4} justifyContent="flex-end" className="tw-flex">
                 <button
                   type="button"
-                  onClick={() => handleAddClick()}
+                  onClick={() => handleAddClick(true)}
                   className=" tw-text-[#e11837] tw-mr-3 tw-font-bold tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
                   style={{ border: '1px solid', color: '#e11837', width: '150px' }}
                 >
@@ -436,7 +607,7 @@ export function QuizMakeTemplate() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => handleAddClick()}
+                  onClick={() => handleAddClick(false)}
                   style={{ border: '1px solid', color: 'black', width: '150px' }}
                   className="tw-text-black tw-bg-white tw-font-bold tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
                 >
@@ -530,7 +701,7 @@ export function QuizMakeTemplate() {
                       }
                     />
                     <FormControlLabel
-                      value="oldest"
+                      value="0002"
                       control={
                         <Radio
                           sx={{
@@ -548,7 +719,7 @@ export function QuizMakeTemplate() {
                       }
                     />
                     <FormControlLabel
-                      value="0002"
+                      value="0003"
                       control={
                         <Radio
                           sx={{
@@ -566,7 +737,7 @@ export function QuizMakeTemplate() {
                       }
                     />
                     <FormControlLabel
-                      value="0003"
+                      value="0004"
                       control={
                         <Radio
                           sx={{
@@ -584,7 +755,7 @@ export function QuizMakeTemplate() {
                       }
                     />
                     <FormControlLabel
-                      value="0004"
+                      value="0005"
                       control={
                         <Radio
                           sx={{
@@ -604,7 +775,12 @@ export function QuizMakeTemplate() {
                   </RadioGroup>
                 </div>
               </div>
-              <KnowledgeComponent contents={myQuizData?.contents} />
+
+              {myQuizData?.contents?.map((data, index) => (
+                <div key={index}>
+                  <KnowledgeComponent data={data} refetchMyQuiz={refetchMyQuiz} />
+                </div>
+              ))}
 
               <div className="tw-mt-10">
                 <Pagination page={page} setPage={setPage} total={totalPage} />
@@ -666,16 +842,23 @@ export function QuizMakeTemplate() {
                   </RadioGroup>
                 </div>
               </div>
-
-              <ArticleList myQuizData={myQuizContentData} />
-
+              {myQuizContentData?.contents?.map((data, index) => (
+                <div key={index}>
+                  <ArticleList data={data} refetchMyQuizContent={refetchMyQuizContent} />
+                </div>
+              ))}
               <div className="tw-mt-10">
                 <Pagination page={quizPage} setPage={setQuizPage} total={totalQuizPage} />
               </div>
             </div>
           )}
         </div>
-        <MentorsModal title={'퀴즈 직접 등록하기'} isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
+        <MentorsModal
+          isQuiz={true}
+          title={'퀴즈 직접 등록하기'}
+          isOpen={isModalOpen}
+          onAfterClose={() => setIsModalOpen(false)}
+        >
           <div>
             <Accordion
               disableGutters
@@ -861,237 +1044,179 @@ export function QuizMakeTemplate() {
                 />
               </AccordionDetails>
             </Accordion>
-            <Accordion
-              defaultExpanded
-              disableGutters
-              sx={{ backgroundColor: '#e9ecf2' }}
-              // expanded={expanded === 2}
-              // onChange={handleChange(2)}
-            >
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <div className="tw-text-lg tw-font-bold">퀴즈 정보 입력</div>
-              </AccordionSummary>
-              <AccordionDetails sx={{ backgroundColor: 'white', padding: 3 }}>
-                <div className="tw-flex tw-justify-start tw-items-center tw-w-[1120px] tw-h-12 tw-gap-6">
-                  <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-3">
-                    <RadioGroup value={sortQuizType} onChange={handleChangeQuizType} row>
-                      <FormControlLabel
-                        value="ASC"
-                        control={
-                          <Radio
-                            sx={{
-                              color: '#ced4de',
-                              '&.Mui-checked': { color: '#e11837' },
-                            }}
-                            icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
-                            checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
-                          />
-                        }
-                        label={
-                          <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                            수동생성
-                          </p>
-                        }
-                      />
-                      <FormControlLabel
-                        value="DESC"
-                        control={
-                          <Radio
-                            sx={{
-                              color: '#ced4de',
-                              '&.Mui-checked': { color: '#e11837' },
-                            }}
-                            icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
-                            checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
-                          />
-                        }
-                        label={
-                          <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                            AI자동생성
-                          </p>
-                        }
-                      />
-                    </RadioGroup>
-                  </div>
-                </div>
 
-                {sortQuizType === 'ASC' && (
-                  <>
-                    <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">퀴즈</div>
-                    <TextField
-                      required
-                      id="username"
-                      name="username"
-                      variant="outlined"
-                      type="search"
-                      value={question}
-                      size="small"
-                      onChange={handleQuestionChange}
-                      fullWidth
-                      sx={{
-                        '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
-                      }}
-                    />
-                    <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">모범답안</div>
-                    <TextField
-                      required
-                      id="username"
-                      name="username"
-                      value={modelAnswerFinal}
-                      onChange={handleModelAnswerChange}
-                      variant="outlined"
-                      type="search"
-                      size="small"
-                      fullWidth
-                      sx={{
-                        '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
-                      }}
-                    />
-                    <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">주요 키워드/문구</div>
-                    <TagsInput
-                      value={selected3}
-                      onChange={setSelected3}
-                      name="fruits"
-                      placeHolder="주요 키워드/문구 입력 후 엔터를 쳐주세요."
-                    />
-                    <div className="tw-text-right tw-mt-5">
-                      <button
-                        onClick={handleAiQuizClick}
-                        className="tw-px-5 tw-py-3 tw-text-sm tw-bg-red-500 tw-rounded tw-text-white"
-                      >
-                        퀴즈 생성하기
-                      </button>
-                    </div>
-                    {quizList.map((quiz, index) => (
-                      <div key={index} className="border tw-rounded-lg tw-my-5">
-                        <div className="border-bottom tw-bg-gray-100 tw-px-5 tw-py-3">
-                          <div className="tw-flex tw-justify-between tw-items-center">
-                            <div className="tw-flex-none tw-w-14 tw-items-center">
-                              <div className="tw-flex tw-flex-col tw-items-center">
-                                <img
-                                  className="tw-w-12 border tw-rounded-full"
-                                  src="/assets/images/quiz/ellipse_201.png"
-                                  alt={`Quiz ${index}`}
-                                />
-                                <p className="tw-pt-1 tw-text-sm tw-text-center tw-text-black">퀴즈 {index + 1}</p>
-                              </div>
-                            </div>
-                            <div className="tw-flex-auto tw-w-64 tw-px-5">{quiz.question}</div>
-                            <div className="tw-flex-auto tw-w-32 tw-flex tw-justify-end">
-                              <button
-                                onClick={() => handleEditQuiz(index)}
-                                className="tw-mr-3 tw-px-4 tw-py-2 tw-text-sm tw-bg-gray-300 tw-rounded-md hover:tw-bg-gray-400"
-                              >
-                                수정하기
-                              </button>
-                              <button
-                                onClick={() => handleDeleteQuiz(quiz.question)}
-                                className="tw-px-4 tw-py-2 tw-text-sm tw-bg-gray-300 tw-rounded-md hover:tw-bg-gray-400"
-                              >
-                                삭제
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="tw-flex tw-justify-start tw-items-center tw-p-5">
-                          <div className="tw-flex-none tw-w-14 tw-items-center">
-                            <div className="tw-flex tw-flex-col tw-items-center">
-                              <svg
-                                width={24}
-                                height={25}
-                                viewBox="0 0 24 25"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="w-6 h-6 relative"
-                                preserveAspectRatio="none"
-                              >
-                                <path
-                                  d="M6 6.3252V12.3252C6 13.1208 6.31607 13.8839 6.87868 14.4465C7.44129 15.0091 8.20435 15.3252 9 15.3252H19M19 15.3252L15 11.3252M19 15.3252L15 19.3252"
-                                  stroke="#CED4DE"
-                                  strokeWidth={2}
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                              </svg>
-                            </div>
-                          </div>
-                          <div className="tw-flex-none tw-w-14 tw-items-center">
-                            <div className="tw-flex tw-flex-col tw-items-center">
-                              <img
-                                className="tw-w-10 border tw-rounded-full"
-                                src="/assets/images/quiz/ellipse_202.png"
-                              />
-                              <p className="tw-pt-1 tw-text-sm tw-text-center tw-text-black">모범답안</p>
-                            </div>
-                          </div>
-                          <div className="tw-flex-col tw-items-center">
-                            <div className="tw-flex-auto tw-w-82 tw-px-5">{quiz.question}</div>
-                            <div className="tw-flex tw-p-5 tw-pb-0 tw-text-sm tw-font-bold tw-gap-2">
-                              채점기준 주요 키워드/문구 :
-                              {quiz.modelAnswerKeywords?.map((tag, tagIndex) => (
-                                <div
-                                  key={tagIndex}
-                                  className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-gray-400"
-                                >
-                                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-left tw-text-white">
-                                    {tag}
-                                  </p>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                        {/* <p className="">{quiz.modelAnswer}</p>
-                        <p>{quiz.modelKeyword}</p> */}
-                      </div>
-                    ))}
-                  </>
-                )}
-
-                {sortQuizType === 'DESC' && (
-                  <>
-                    <div className="tw-text-sm tw-font-bold tw-mt-4">생성할 퀴즈 개수</div>
-                    <div className="tw-grid tw-grid-cols-2 tw-items-center">
-                      <div className="tw-col-span-4">
-                        {' '}
-                        {/* Added col-span-4 */}
-                        <TextField
-                          required
-                          id="username"
-                          name="username"
-                          label="생성할 퀴즈 개수를 입력해주세요."
-                          variant="outlined"
-                          type="search"
-                          size="small"
-                          fullWidth
-                          sx={{
-                            '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
-                          }}
-                          margin="dense"
-                        />
-                      </div>
-                      <div className="tw-pl-4">
+            {isContentModalOpen && (
+              <Accordion
+                defaultExpanded
+                disableGutters
+                sx={{ backgroundColor: '#e9ecf2' }}
+                // expanded={expanded === 2}
+                // onChange={handleChange(2)}
+              >
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <div className="tw-text-lg tw-font-bold">퀴즈 정보 입력</div>
+                </AccordionSummary>
+                <AccordionDetails sx={{ backgroundColor: 'white', padding: 3 }}>
+                  <div className="tw-flex tw-justify-start tw-items-center tw-w-[1120px] tw-h-12 tw-gap-6">
+                    <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-3">
+                      <RadioGroup value={sortQuizType} onChange={handleChangeQuizType} row>
                         <FormControlLabel
+                          value="ASC"
                           control={
-                            <Checkbox
-                              defaultChecked
+                            <Radio
                               sx={{
                                 color: '#ced4de',
                                 '&.Mui-checked': { color: '#e11837' },
                               }}
+                              icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                              checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
                             />
                           }
-                          label={<p className="tw-text-sm tw-font-bold tw-text-left tw-text-[#31343d]">AI퀴즈</p>}
+                          label={
+                            <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                              AI자동생성
+                            </p>
+                          }
                         />
-                        <button className="tw-px-4 tw-py-3 tw-text-sm tw-bg-gray-300 tw-rounded-md hover:tw-bg-gray-400">
-                          퀴즈 생성하기
+                        <FormControlLabel
+                          value="DESC"
+                          control={
+                            <Radio
+                              sx={{
+                                color: '#ced4de',
+                                '&.Mui-checked': { color: '#e11837' },
+                              }}
+                              icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                              checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                            />
+                          }
+                          label={
+                            <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                              수동생성
+                            </p>
+                          }
+                        />
+                      </RadioGroup>
+                    </div>
+                  </div>
+
+                  {sortQuizType === 'DESC' && (
+                    <>
+                      <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">퀴즈</div>
+                      <TextField
+                        required
+                        id="username"
+                        name="username"
+                        variant="outlined"
+                        type="search"
+                        value={question}
+                        size="small"
+                        onChange={handleQuestionChange}
+                        fullWidth
+                        sx={{
+                          '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
+                        }}
+                      />
+                      <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">모범답안</div>
+                      <TextField
+                        required
+                        id="username"
+                        name="username"
+                        value={modelAnswerFinal}
+                        onChange={handleModelAnswerChange}
+                        variant="outlined"
+                        type="search"
+                        size="small"
+                        fullWidth
+                        sx={{
+                          '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
+                        }}
+                      />
+                      <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">채점기준 주요 키워드/문구</div>
+                      <TagsInput
+                        value={selected3}
+                        onChange={setSelected3}
+                        name="fruits"
+                        placeHolder="주요 키워드/문구 입력 후 엔터를 쳐주세요."
+                      />
+                      <div className="tw-text-right tw-mt-5">
+                        <button
+                          onClick={handleQuizClick}
+                          className="tw-px-5 tw-py-3 tw-text-sm tw-bg-black tw-rounded tw-text-white"
+                        >
+                          {isModify ? '수정하기' : '퀴즈 생성하기'}
                         </button>
                       </div>
+                    </>
+                  )}
+
+                  {sortQuizType === 'ASC' && (
+                    <>
+                      <div className="tw-text-sm tw-font-bold tw-mt-4">생성할 퀴즈 개수</div>
+                      <div className="tw-grid tw-grid-cols-6 tw-items-center">
+                        <div className="tw-col-span-4">
+                          {' '}
+                          {/* Added col-span-4 */}
+                          <TextField
+                            required
+                            id="username"
+                            name="username"
+                            value={quizCount}
+                            onChange={handleQuizCountChange}
+                            variant="outlined"
+                            type="search"
+                            size="small"
+                            fullWidth
+                            sx={{
+                              '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
+                            }}
+                            margin="dense"
+                          />
+                        </div>
+                        <div className="tw-pl-4 tw-col-span-1">
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                disabled
+                                defaultChecked
+                                sx={{
+                                  color: '#ced4de',
+                                  '&.Mui-checked': { color: '#e11837' },
+                                }}
+                              />
+                            }
+                            label={<p className="tw-text-sm tw-font-bold tw-text-left tw-text-[#31343d]">AI퀴즈</p>}
+                          />
+                        </div>
+                        <button
+                          disabled={isLoading} // 로딩 중일 때 버튼 비활성화
+                          onClick={handleAIQuizClick}
+                          className="tw-col-span-1 tw-px-2 tw-py-3 tw-text-sm tw-bg-black tw-rounded-md tw-text-white"
+                        >
+                          {isLoading ? <CircularProgress size={20} /> : '퀴즈 생성하기'}
+                        </button>
+                      </div>
+                    </>
+                  )}
+
+                  {quizList.map((quiz, index) => (
+                    <div key={index}>
+                      <AIQuizList
+                        contentType={contentType}
+                        contentUrl={contentUrl}
+                        selectedJob={selectedJob}
+                        quiz={quiz}
+                        index={index}
+                        sortQuizType={sortQuizType}
+                        handleDeleteQuiz={handleDeleteQuiz}
+                        handleEditQuiz={handleEditQuiz}
+                        updateQuizList={updateQuizList}
+                      />
                     </div>
-                  </>
-                )}
-              </AccordionDetails>
-            </Accordion>
+                  ))}
+                </AccordionDetails>
+              </Accordion>
+            )}
 
             <div className="tw-py-5 tw-text-center">
               {/* <button

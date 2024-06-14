@@ -33,9 +33,9 @@ export class AuthError extends ApiError {
   }
 }
 
-export class LoginError extends ApiError {
-  override name = 'LoginError';
-  override message = '로그인에 실패 했습니다.';
-  override redirectUrl = '/account/login';
-  override code = 'C4999';
-}
+// export class LoginError extends ApiError {
+//   override name = 'LoginError';
+//   override message = '로그인에 실패 했습니다.';
+//   override redirectUrl = '/account/login';
+//   override code = 'C4999';
+// }

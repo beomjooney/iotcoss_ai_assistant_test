@@ -65,3 +65,5 @@ export * from './CourseCard/index';
 export { default as CourseCard } from './CourseCard/index';
 export * from './ReplyCard/index';
 export { default as ReplyCard } from './ReplyCard/index';
+export * from './AIQuizList/index';
+export { default as AIQuizList } from './AIQuizList/index';

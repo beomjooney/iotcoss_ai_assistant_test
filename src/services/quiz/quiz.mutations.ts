@@ -9,6 +9,12 @@ import {
   saveClubQuizPost,
   quizOrder,
   saveClubTempPost,
+  saveAIQuizPost,
+  saveAIQuizAnswer,
+  saveContent,
+  saveAIQuizAnswerList,
+  saveAIQuizAnswerListPut,
+  saveAIQuizAnswerSavePut,
 } from './quiz.api';
 
 export const useQuizOrder = (): UseMutationResult => {
@@ -47,6 +53,91 @@ export const useQuizSave = (): UseMutationResult => {
       alert(`mutation error : [${code}] ${message}`);
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CAMENITY').all),
+    onSuccess: async data => {
+      // alert('수정이 완료되었습니다.');
+    },
+  });
+};
+
+export const useQuizContentSave = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => saveContent(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('PATH').all),
+    onSuccess: async data => {
+      // alert('수정이 완료되었습니다.');
+    },
+  });
+};
+
+export const useAIQuizSave = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => saveAIQuizPost(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CAMENITY').all),
+    onSuccess: async data => {
+      // alert('수정이 완료되었습니다.');
+    },
+  });
+};
+
+export const useAIQuizAnswer = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => saveAIQuizAnswer(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_GROWTHEDGE').all),
+    onSuccess: async data => {
+      // alert('수정이 완료되었습니다.');
+    },
+  });
+};
+
+export const useAIQuizAnswerList = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => saveAIQuizAnswerList(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      // alert(`mutation error : [${code}] ${message}`);
+      alert(`AI 채점 실패`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_GROWTHEDGE').all),
+    onSuccess: async data => {
+      // alert('수정이 완료되었습니다.');
+    },
+  });
+};
+
+export const useAIQuizAnswerListPut = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => saveAIQuizAnswerListPut(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_GROWTHEDGE').all),
+    onSuccess: async data => {
+      // alert('수정이 완료되었습니다.');
+    },
+  });
+};
+
+export const useAIQuizAnswerSavePut = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => saveAIQuizAnswerSavePut(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_GROWTHEDGE').all),
     onSuccess: async data => {
       // alert('수정이 완료되었습니다.');
     },
