@@ -28,6 +28,7 @@ import {
   useQuizRoungeInfo,
   useQuizGetAIAnswer,
   useQuizGetAIAnswerGet,
+  useQuizGetAIAnswerAll,
 } from 'src/services/quiz/quiz.queries';
 
 const cx = classNames.bind(styles);
@@ -56,6 +57,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
   const [quizProgressData, setQuizProgressData] = useState<any>([]);
   const [clubQuizThreads, setClubQuizThreads] = useState<any>([]);
   const [clubQuizGetThreads, setClubQuizGetThreads] = useState<any>('');
+  const [clubQuizGetThreadsAll, setClubQuizGetThreadsAll] = useState<any>('');
   const [beforeOnePick, setBeforeOnePick] = useState(1);
   const [keyWorld, setKeyWorld] = useState('');
   const [totalElements, setTotalElements] = useState(0);
@@ -63,12 +65,21 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
   const [page, setPage] = useState(1);
   const [params, setParams] = useState<any>({ id, page });
   const [quizParams, setQuizParams] = useState<any>({});
+  const [quizParamsAll, setQuizParamsAll] = useState<any>({});
   const [quizSaveParams, setQuizSaveParams] = useState<any>({});
   const [listParams, setListParams] = useState<any>({ id, page });
   const [totalPage, setTotalPage] = useState(1);
   const [selectedQuiz, setSelectedQuiz] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoadingAI, setIsLoadingAI] = useState(false);
+  const [isCompleteAI, setIsCompleteAI] = useState(false);
+
+  // Create a ref to hold the value of isCompleteAI
+  const isCompleteAIRef = useRef(isCompleteAI);
+
+  useEffect(() => {
+    isCompleteAIRef.current = isCompleteAI;
+  }, [isCompleteAI]);
 
   const {
     mutate: onAIQuizAnswerSavePut,
@@ -123,6 +134,11 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
       page,
       keyword: keyWorld,
     });
+
+    setQuizParamsAll({
+      club: id,
+      quiz: data.clubQuizzes[0]?.quizSequence,
+    });
   });
 
   const { isFetched: isQuizGetanswer, refetch: refetchQuizAnswer } = useQuizGetAIAnswer(quizParams, data => {
@@ -140,6 +156,46 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     console.log('data', data);
     setClubQuizGetThreads(data);
   });
+
+  const {
+    isFetched: isQuizGetanswerAll,
+    refetch: refetchQuizAnswerAll,
+    isSuccess: isSuccessQuizGetAnswerAll,
+  } = useQuizGetAIAnswerAll(quizParamsAll, data => {
+    console.log('fore get data');
+
+    // console.log(data?.evaluationStatuses);
+    const evaluationMap = data?.evaluationStatuses?.reduce((map, obj) => {
+      map[obj.memberUUID] = obj.aiEvaluationStatus;
+      return map;
+    }, {});
+
+    const updatedQuizData = quizListData.map(item => {
+      const memberUUID = item?.member?.memberUUID;
+      if (memberUUID && evaluationMap[memberUUID]) {
+        return {
+          ...item,
+          aiEvaluationStatus: evaluationMap[memberUUID],
+        };
+      }
+      return item;
+    });
+
+    setIsCompleteAI(data.isComplete);
+    setQuizListData(updatedQuizData);
+    console.log('data', data);
+    console.log('updatedQuizData', updatedQuizData);
+
+    setQuizParamsAll({
+      ...quizParamsAll,
+    });
+    setClubQuizGetThreadsAll(data);
+  });
+
+  // useDidMountEffect(() => {
+
+  //   console.log('updatedQuizData', updatedQuizData);
+  // }, [clubQuizGetThreadsAll]);
 
   const { isFetched: isQuizAnswer, refetch: refetchQuizPrgress } = useQuizGetProgress(params, data => {
     console.log('second get data');
@@ -213,6 +269,11 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
       keyword: keyWorld,
     });
 
+    setQuizParamsAll({
+      club: id,
+      quiz: selectedSession?.quizSequence,
+    });
+
     setSelectedQuiz(selectedSession);
     console.log(selectedSession);
   };
@@ -230,11 +291,13 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     console.log(memberUUID, quizSequence);
     setIsModalOpen(true);
     setClubQuizGetThreads('');
+
     setQuizParams({
       club: id,
       quiz: selectedQuiz?.quizSequence,
       memberUUID: memberUUID,
     });
+
     setQuizSaveParams({
       clubSequence: id,
       quizSequence: selectedQuiz?.quizSequence,
@@ -242,7 +305,57 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     });
     // refetchQuizAnswerGet();
   };
-  console.log(user);
+
+  const renderStatusMessage = status => {
+    switch (status) {
+      case '0101':
+        return '체점중';
+      case '0002':
+        return '체점완료';
+      case '1101':
+        return '체점실패';
+      case '9999':
+        return '체점실패';
+      case '0001':
+        return '체점실패';
+      default:
+        return '';
+    }
+  };
+
+  const [intervalId, setIntervalId] = useState(null);
+  const [startTime, setStartTime] = useState(null);
+
+  const handleClickTime = () => {
+    // 이미 실행 중인 interval이 있다면 정리
+    if (intervalId) {
+      clearInterval(intervalId);
+      setIntervalId(null);
+    }
+
+    // 현재 시간 저장
+    const now = Date.now();
+    setStartTime(now);
+
+    // 1초마다 실행
+    const newIntervalId = setInterval(() => {
+      const currentTime = Date.now();
+      // Create a map for quick lookup
+
+      // console.log(clubQuizGetThreadsAll);
+      if (currentTime - now >= 10000 || clubQuizGetThreadsAll?.isComplete === true) {
+        // 10초가 경과하면 정지
+        clearInterval(newIntervalId);
+        setIntervalId(null);
+      } else {
+        refetchQuizAnswerAll();
+        console.log('set interval', isCompleteAIRef.current); // Use the ref value here
+      }
+    }, 1000); // 1000 밀리초 = 1초
+
+    setIntervalId(newIntervalId);
+  };
+
   return (
     <div className={cx('seminar-detail-container')}>
       <div className={cx('container')}>
@@ -366,9 +479,12 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
             <div className="tw-flex tw-justify-end tw-gap-2">
               <button
                 className=" tw-bg-black max-lg:tw-mr-1  tw-rounded-md tw-text-sm tw-text-white tw-py-2.5 tw-px-4"
-                // onClick={() => handleClick(info?.member?.memberUUID, info?.quizSequence)}
+                onClick={() => {
+                  handleClickTime();
+                  refetchQuizAnswerAll();
+                }}
               >
-                일괄 AI피드백/채점 (개발중)
+                일괄 AI피드백/채점
               </button>
             </div>
 
@@ -376,17 +492,18 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
               <Table style={{ width: '100%' }}>
                 <TableHead style={{ backgroundColor: '#F6F7FB' }}>
                   <TableRow>
-                    <TableCell align="center" width={80}>
-                      등록순
+                    <TableCell align="center" width={60}>
+                      번호
                     </TableCell>
                     <TableCell align="center" width={135}>
                       이름
                     </TableCell>
-                    <TableCell align="center" width={400}>
+                    <TableCell align="center" width={360}>
                       답변
                     </TableCell>
                     <TableCell align="center">날짜</TableCell>
-                    <TableCell align="center" width={340}>
+                    <TableCell align="center" width={90}></TableCell>
+                    <TableCell align="center" width={320}>
                       AI채점 / 교수채점
                     </TableCell>
                     <TableCell align="center">상세보기</TableCell>
@@ -397,7 +514,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                     quizListData?.map((info, index) => (
                       <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                         <TableCell padding="none" align="center" component="th" scope="row">
-                          <div className="tw-text-black">{index + 1}</div>
+                          <div className="tw-text-black">{index + 1 + (page - 1) * 10}</div>
                         </TableCell>
                         <TableCell align="center" component="th" scope="row">
                           <div className="tw-flex tw-items-center tw-gap-3 tw-text-black">
@@ -406,10 +523,19 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                           </div>
                         </TableCell>
                         <TableCell padding="none" align="left" component="th" scope="row">
-                          <div className="tw-text-black tw-text-sm">{info?.text}</div>
+                          <div className="tw-text-black tw-text-sm tw-line-clamp-1">{info?.text}</div>
                         </TableCell>
                         <TableCell padding="none" align="center" component="th" scope="row">
                           <div className="tw-text-black">{info?.createdAt}</div>
+                        </TableCell>
+                        <TableCell padding="none" align="center" component="th" scope="row">
+                          {info?.aiEvaluationStatus && (
+                            <div>
+                              <span className="tw-bg-red-500 tw-rounded tw-text-white tw-py-1.5 tw-px-2">
+                                {renderStatusMessage(info?.aiEvaluationStatus)}
+                              </span>
+                            </div>
+                          )}
                         </TableCell>
                         <TableCell padding="none" align="center" component="th" scope="row">
                           <AIAnswerQuizList info={info} refetchReply={refetchReply} />

@@ -70,6 +70,35 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
     });
   };
 
+  const getButtonText = status => {
+    switch (status) {
+      case '0000':
+        return '임시저장';
+      case '0100':
+        return '개설요청승인대기';
+      case '0110':
+        return '개설요청승인';
+      case '0120':
+        return '개설요청반려';
+      case '0200':
+        return '진행예정';
+      case '0210':
+        return '진행연기';
+      case '0220':
+        return '진행취소';
+      case '0300':
+        return '모집중';
+      case '0310':
+        return '모집마감';
+      case '4000':
+        return '진행중';
+      case '0500':
+        return '진행완료';
+      default:
+        return '없음'; // 기본값으로 알 수 없는 상태를 반환
+    }
+  };
+
   const onChangeLike = function (postNo: number) {
     event.preventDefault();
     setIsLiked(!isLiked);
@@ -169,7 +198,9 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                     setIsModalOpen(true);
                   }}
                 >
-                  <p className="tw-text-[12.25px] tw-font-bold tw-text-white tw-text-center">학습진행중</p>
+                  <p className="tw-text-[12.25px] tw-font-bold tw-text-white tw-text-center">
+                    {getButtonText(contents?.club?.clubStatus)}
+                  </p>
                 </div>
                 <div
                   className="tw-bg-[#e11837] tw-rounded-[3.5px] tw-px-[24.5px] tw-py-[10.0625px] tw-cursor-pointer"

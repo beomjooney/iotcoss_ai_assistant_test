@@ -129,7 +129,7 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
         return '모집중';
       case '0310':
         return '모집마감';
-      case '0400':
+      case '4000':
         return '진행중';
       case '0500':
         return '진행완료';
@@ -223,7 +223,7 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                 </div>
 
                 <div className="tw-text-[20.5px] tw-font-bold tw-text-black tw-mt-4">{contents?.club?.clubName}</div>
-                <p className="tw-text-[12.25px] tw-mt-2 tw-text-black">{contents?.club?.description}</p>
+                <p className="tw-text-sm tw-mt-2 tw-text-black">{contents?.club?.description}</p>
                 <div className="tw-mt-4">
                   <p className="tw-text-sm tw-text-black">
                     학습 주기 : 매주 {contents?.club?.studyCycle.toString()}요일 (총 {contents?.club?.studyCycle}회)
@@ -241,8 +241,7 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                   <div className="tw-flex tw-items-center">
                     <img
                       src={contents?.club?.leaderProfileImageUrl}
-                      width={28}
-                      className="tw-mr-2 border tw-rounded-full"
+                      className="tw-mr-2 border tw-rounded-full tw-w-10 tw-h-10"
                     />
                     <p className="tw-text-sm tw-text-black">{contents?.club?.leaderNickname}</p>
                   </div>

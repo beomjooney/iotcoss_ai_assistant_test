@@ -114,8 +114,14 @@ export const quizGetAIAnswer = async params => {
   );
   return data.data;
 };
+
 export const quizGetAIAnswerGet = async params => {
   const { data } = await axiosGeneralAPI().get(`/api/v1/quizzes/${params.quiz}/ai-answer`);
+  return data.data;
+};
+
+export const quizGetAIAnswerAll = async params => {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/clubs/${params.club}/quizzes/${params.quiz}/evaluation/status`);
   return data.data;
 };
 
