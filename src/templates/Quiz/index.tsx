@@ -1,7 +1,7 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import { ToggleLabel, Pagination, ClubCard } from 'src/stories/components';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { RecommendContent } from 'src/models/recommend';
 import { useSeminarList, paramProps } from 'src/services/seminars/seminars.queries';
 import { useStore } from 'src/store';
@@ -31,6 +31,12 @@ export function QuizTemplate() {
   const [contentType, setContentType] = useState(0);
   const [recommendLevels, setRecommendLevels] = useState([]);
   const [keyWorld, setKeyWorld] = useState('');
+
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const { isFetched: isOptionFetched, data: optionsData }: UseQueryResult<ExperiencesResponse> = useOptions();
 
@@ -82,10 +88,10 @@ export function QuizTemplate() {
               sm={8}
               className="max-lg:tw-py-2 tw-font-light tw-text-base tw-text-black  max-lg:!tw-text-base"
             >
-              관심 주제별로 성장 퀴즈를 풀고 네트워킹 할 수 있는 클럽을 만나보세요!
+              관심 주제별로 퀴즈를 풀고 네트워킹 할 수 있는 클럽을 만나보세요!
             </Grid>
             <Grid item xs={12} sm={2} justifyContent="flex-end" className="tw-flex">
-              {roles.includes('ROLE_MANAGER') && (
+              {isClient && roles.includes('ROLE_MANAGER') && (
                 <button
                   onClick={() => (location.href = '/quiz/open')}
                   type="button"
@@ -139,7 +145,7 @@ export function QuizTemplate() {
                           fontSize: '16px',
                         }}
                         className="tw-text-base"
-                        key={item.id}
+                        key={i}
                         label={item.name}
                       />
                     ))}
@@ -183,15 +189,16 @@ export function QuizTemplate() {
                 (contents.length > 0 ? (
                   contents.map((item, index) => {
                     return (
-                      <ClubCard
-                        key={index}
-                        item={item}
-                        xs={6}
-                        // writer={memberSample}
-                        className={cx('reply-container__item')}
-                        // memberId={memberId}
-                        // onPostDeleteSubmit={onPostDeleteSubmit}
-                      />
+                      <React.Fragment key={index}>
+                        <ClubCard
+                          item={item}
+                          xs={6}
+                          // writer={memberSample}
+                          className={cx('reply-container__item')}
+                          // memberId={memberId}
+                          // onPostDeleteSubmit={onPostDeleteSubmit}
+                        />
+                      </React.Fragment>
                     );
                   })
                 ) : (

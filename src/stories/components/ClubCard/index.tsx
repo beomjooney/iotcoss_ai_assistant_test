@@ -3,15 +3,8 @@ import styles from './index.module.scss';
 import { BoardType } from 'src/config/entities';
 import React, { useEffect, useRef, useState } from 'react';
 import { User } from 'src/models/user';
-import {
-  useSaveLike,
-  useDeleteLike,
-  useSaveReply,
-  useDeleteReply,
-  useDeletePost,
-} from 'src/services/community/community.mutations';
+import { useSaveLike, useDeleteLike, useSaveReply, useDeleteReply } from 'src/services/community/community.mutations';
 import { useSessionStore } from 'src/store/session';
-const { logged } = useSessionStore.getState();
 import Grid from '@mui/material/Grid';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import StarIcon from '@mui/icons-material/Star';
@@ -44,8 +37,7 @@ const ClubCard = ({
   onPostDeleteSubmit,
 }: // eslint-disable-next-line @typescript-eslint/no-empty-function
 ClubCardProps) => {
-  // const { jobGroupName, jobGroup } = writer;
-  // const chipColor = jobColorKey(jobGroup);
+  const { logged } = useSessionStore.getState();
   const { mutate: onSaveLike, isSuccess } = useSaveLike();
   const { mutate: onDeleteLike } = useDeleteLike();
 
