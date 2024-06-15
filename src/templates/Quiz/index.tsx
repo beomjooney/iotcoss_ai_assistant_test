@@ -40,7 +40,6 @@ export function QuizTemplate() {
 
   const { isFetched: isOptionFetched, data: optionsData }: UseQueryResult<ExperiencesResponse> = useOptions();
 
-  console.log(optionsData);
   const { isFetched: isContentFetched, refetch } = useSeminarList(params, data => {
     setContents(data.data.contents || []);
     setTotalPage(data.data.totalPages);

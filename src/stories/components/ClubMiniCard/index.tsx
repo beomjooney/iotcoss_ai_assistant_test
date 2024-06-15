@@ -88,26 +88,31 @@ ClubMiniCardProps) => {
   }));
 
   const getButtonText = status => {
-    console.log(status);
     switch (status) {
-      case '0002':
-        return '가입완료';
-      case '0200':
-        return '개설 예정';
+      case '0000':
+        return '임시저장';
       case '0100':
         return '개설요청승인대기';
+      case '0110':
+        return '개설요청승인';
+      case '0120':
+        return '개설요청반려';
+      case '0200':
+        return '진행예정';
       case '0210':
-        return '개설 연기';
+        return '진행연기';
       case '0220':
-        return '취소';
+        return '진행취소';
       case '0300':
         return '모집중';
       case '0310':
-        return '모집완료';
-      case '4000':
+        return '모집마감';
+      case '0400':
         return '진행중';
       case '0500':
-        return '완료';
+        return '진행완료';
+      default:
+        return '없음'; // 기본값으로 알 수 없는 상태를 반환
     }
   };
   const onChangeFavorite = function (postNo: number, isFavorites: boolean) {
