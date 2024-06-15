@@ -161,23 +161,15 @@ export function QuizMakeTemplate() {
   //quiz delete
   const { mutate: onQuizSave, isSuccess: postSuccess } = useQuizSave();
   const { mutate: onQuizContentSave, isSuccess: postContentSuccess } = useQuizContentSave();
-  const { mutate: onAIQuizSave, isSuccess: updateSuccess, data: aiQuizData } = useAIQuizSave();
+  const { mutate: onAIQuizSave, isSuccess: updateSuccess, isError: updateError, data: aiQuizData } = useAIQuizSave();
   const { mutate: onAIQuizAnswer, isSuccess: answerSuccess, data: aiQuizAnswerData } = useAIQuizAnswer();
 
-  // useEffect(() => {
-  //   if (aiQuizAnswerData) {
-  //     const updatedQuizList = [...quizList];
-
-  //     aiQuizAnswerData.forEach((item: any) => {
-  //       if (index >= 0 && index < updatedQuizList.length) {
-  //         updatedQuizList[index].modelAnswer = item.answer;
-  //       }
-  //     });
-
-  //     console.log('updatedQuizList', updatedQuizList);
-  //     setQuizList(updatedQuizList);
-  //   }
-  // }, [aiQuizAnswerData]);
+  useEffect(() => {
+    if (updateError) {
+      alert('AI 퀴즈 생성 중 오류가 발생했습니다.');
+      setIsLoading(false);
+    }
+  }, [updateError]);
 
   useEffect(() => {
     if (optionsData) {

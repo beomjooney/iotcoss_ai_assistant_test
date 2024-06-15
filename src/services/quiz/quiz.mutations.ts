@@ -78,7 +78,7 @@ export const useAIQuizSave = (): UseMutationResult => {
   return useMutation<any, any, any>(requestBody => saveAIQuizPost(requestBody), {
     onError: (error, variables, context) => {
       const { code, message } = error;
-      alert(`mutation error : [${code}] ${message}`);
+      // alert(`mutation error : [${code}] ${message}`);
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CAMENITY').all),
     onSuccess: async data => {
