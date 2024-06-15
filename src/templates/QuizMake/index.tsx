@@ -27,6 +27,7 @@ import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded';
 import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded';
 import { useOptions } from 'src/services/experiences/experiences.queries';
 import CircularProgress from '@mui/material/CircularProgress';
+import { set } from 'lodash';
 
 const studyStatus = [
   {
@@ -252,7 +253,10 @@ export function QuizMakeTemplate() {
     setSelectedJob('');
     setActiveQuiz(optionsData?.data?.jobLevels[0].code);
     setJobLevel(optionsData?.data?.jobLevels[0].code);
-
+    setSelectedSubject('');
+    setSelectedChapter('');
+    setSelected1([]);
+    setSelected2([]);
     setIsModalOpen(true);
   };
 

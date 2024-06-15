@@ -15,6 +15,7 @@ import {
   saveAIQuizAnswerList,
   saveAIQuizAnswerListPut,
   saveAIQuizAnswerSavePut,
+  saveAIQuizAnswerEvaluation,
 } from './quiz.api';
 
 export const useQuizOrder = (): UseMutationResult => {
@@ -138,6 +139,20 @@ export const useAIQuizAnswerSavePut = (): UseMutationResult => {
       alert(`mutation error : [${code}] ${message}`);
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_GROWTHEDGE').all),
+    onSuccess: async data => {
+      // alert('수정이 완료되었습니다.');
+    },
+  });
+};
+
+export const useAIQuizAnswerEvaluation = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => saveAIQuizAnswerEvaluation(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('OTP').all),
     onSuccess: async data => {
       // alert('수정이 완료되었습니다.');
     },

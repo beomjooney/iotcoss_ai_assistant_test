@@ -55,6 +55,11 @@ export const saveAIQuizAnswerSavePut = async body => {
   return data.data;
 };
 
+export const saveAIQuizAnswerEvaluation = async body => {
+  const { data } = await axiosGeneralAPI().put(`/api/v1/clubs/${body.club}/quizzes/${body.quiz}/answers-evaluation`);
+  return data.data;
+};
+
 export const saveClubQuizPost = async body => await axiosGeneralAPI().post(`/api/v1/club`, body);
 export const saveClubTempPost = async body => await axiosGeneralAPI().post(`/api/v1/club/temporary`, body);
 

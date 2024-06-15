@@ -19,7 +19,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import MentorsModal from 'src/stories/components/MentorsModal';
 import CircularProgress from '@mui/material/CircularProgress';
-import { useAIQuizAnswerSavePut } from 'src/services/quiz/quiz.mutations';
+import { useAIQuizAnswerSavePut, useAIQuizAnswerEvaluation } from 'src/services/quiz/quiz.mutations';
 import Pagination from '@mui/material/Pagination';
 
 import {
@@ -86,6 +86,12 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     isSuccess: answerSuccessSavePut,
     data: aiQuizAnswerDataSavePut,
   } = useAIQuizAnswerSavePut();
+
+  const {
+    mutate: onAIQuizAnswerEvaluation,
+    isSuccess: answerSuccessEvaluation,
+    data: aiQuizAnswerDataEvaluation,
+  } = useAIQuizAnswerEvaluation();
 
   useEffect(() => {
     if (answerSuccessSavePut) {
@@ -209,6 +215,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     isSuccess,
     data: quizAnswerData,
   } = useQuizAnswerMemberAIDetail(params, data => {
+    //member data-list
     console.log('useQuizAnswerDetail', data.totalPages);
     setTotalElements(data.totalElements);
     setTotalPage(data.totalPages);
@@ -343,10 +350,11 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
       // Create a map for quick lookup
 
       // console.log(clubQuizGetThreadsAll);
-      if (currentTime - now >= 10000 || clubQuizGetThreadsAll?.isComplete === true) {
+      if (currentTime - now >= 60000 || isCompleteAIRef.current === true) {
         // 10초가 경과하면 정지
         clearInterval(newIntervalId);
         setIntervalId(null);
+        refetchReply();
       } else {
         refetchQuizAnswerAll();
         console.log('set interval', isCompleteAIRef.current); // Use the ref value here
@@ -480,8 +488,8 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
               <button
                 className=" tw-bg-black max-lg:tw-mr-1  tw-rounded-md tw-text-sm tw-text-white tw-py-2.5 tw-px-4"
                 onClick={() => {
+                  onAIQuizAnswerEvaluation(quizParamsAll);
                   handleClickTime();
-                  refetchQuizAnswerAll();
                 }}
               >
                 일괄 AI피드백/채점
