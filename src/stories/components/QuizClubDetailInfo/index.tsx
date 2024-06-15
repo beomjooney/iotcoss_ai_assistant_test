@@ -160,14 +160,14 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
               <Grid item xs={12}>
                 <div className="tw-flex tw-item tw-text-base tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
                   <span className="tw-inline-flex tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded">
-                    {clubData?.jobGroups[0].name || 'N/A'}
+                    {clubData?.jobGroups?.length > 0 ? clubData.jobGroups[0]?.name : 'N/A'}
                   </span>
 
                   <span className="tw-inline-flex tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
-                    {clubData?.jobs[0].name || 'N/A'}
+                    {clubData?.jobs?.length > 0 ? clubData.jobs[0]?.name : 'N/A'}
                   </span>
                   <span className="tw-inline-flex tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
-                    {clubData?.jobLevels[0].name || 'N/A'}
+                    {clubData?.jobLevels?.length > 0 ? clubData.jobLevels[0]?.name : 'N/A'}
                   </span>
                   <button
                     className="tw-inline-flex tw-ml-auto"
@@ -181,17 +181,18 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
               </Grid>
             </Grid>
             <div className=" tw-flex tw-items-center tw-pt-8">
-              <div className="tw-line-clamp-1 tw-text-xl tw-font-bold tw-text-gray-900 tw-mr-2">{clubData.name}</div>
-              <div className="tw-line-clamp-1 tw-text-base  tw-text-gray-900">{clubData.description}</div>
+              <div className="tw-line-clamp-1 tw-text-xl tw-font-bold tw-text-gray-90 tw-mr-2">{clubData?.name}</div>
+              <div className="tw-line-clamp-1 tw-text-base  tw-text-gray-900">{clubData?.description}</div>
             </div>
             <div className="tw-py-5 tw-text-black tw-text-base tw-mb-[12px] tw-font-medium">
               <div>
-                학습 기간 : 매주 {clubData.studyCycle.toString() || 'N/A'}요일 (총 {clubData.studyWeekCount || 'N/A'}주)
+                학습 기간 : 매주 {clubData?.studyCycle?.toString() || 'N/A'}요일 (총 {clubData?.studyWeekCount || 'N/A'}
+                주)
               </div>
               <div>
-                학습 참여 : {clubData.studyWeekCount || 'N/A'} 주 ({clubData.startAt} ~ {clubData.endAt})
+                학습 참여 : {clubData?.studyWeekCount || 'N/A'} 주 ({clubData?.startAt} ~ {clubData?.endAt})
               </div>
-              <div>참여 인원 : {clubData.recruitedMemberCount}명</div>
+              <div>참여 인원 : {clubData?.recruitedMemberCount}명</div>
             </div>
 
             <div className="tw-flex tw-items-center tw-text-base tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
