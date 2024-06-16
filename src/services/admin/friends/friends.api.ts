@@ -28,12 +28,18 @@ export const crewRejectPost = async params =>
 export const crewBan = async params =>
   await axiosGeneralAPI().delete(`/api/v1/clubs/${params.club}/members/${params.memberUUID}/ban`);
 
-export const savePost = async body => await axiosGeneralAPI().put(`/api/v1/member/friend/requests`, body);
+export const savePost = async body =>
+  await axiosGeneralAPI().put(`/api/v1/friend-requests/${body.memberFriendRequestSequence}/decision`, {
+    isAccept: true,
+  });
 
-export const rejectPost = async body => await axiosGeneralAPI().put(`/api/v1/member/friend/requests`, body);
+export const rejectPost = async body =>
+  await axiosGeneralAPI().put(`/api/v1/friend-requests/${body.memberFriendRequestSequence}/decision`, {
+    isAccept: false,
+  });
 
 export const deletePost = async body => {
-  await axiosGeneralAPI().delete(`/api/v1/friend-requests/${body.data.memberFriendSequence}`);
+  await axiosGeneralAPI().delete(`/api/v1/friends/${body.data.memberFriendSequence}`);
 };
 
 export const addPosts = async body => await axiosGeneralAPI().post(`/posts`, body);

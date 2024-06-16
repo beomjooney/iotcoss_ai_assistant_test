@@ -210,7 +210,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
               <div className="tw-inline-flex tw-ml-auto">
                 <div className="tw-flex tw-items-center tw-space-x-4">
                   <div className="tw-flex tw-ml-auto tw-items-center tw-space-x-4">
-                    {clubData?.clubStatus === '0300' && clubData?.memberStatus === '0000' ? (
+                    {clubData?.clubStatus === '0300' && clubData?.clubMemberStatus === '0000' ? (
                       <button
                         onClick={() => handlerClubJoin(clubData?.clubSequence)}
                         className="tw-text-[12.25px] tw-font-bold tw-text-center tw-text-white tw-bg-[#e11837] tw-px-4 tw-py-2 tw-rounded"

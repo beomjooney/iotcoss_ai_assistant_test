@@ -46,6 +46,12 @@ export function MyFriendsTemplate() {
     }
   }, [isDeleteSuccess]);
 
+  useEffect(() => {
+    if (isAcceptSuccess || isRejectSuccess) {
+      refetchRequest();
+    }
+  }, [isAcceptSuccess, isRejectSuccess]);
+
   const { isFetched: isFetchedRequest, refetch: refetchRequest } = useQuizFriendsRequest(data => {
     setContentsRequest(data?.contents);
     setTotalElements(data?.totalElements);
@@ -71,20 +77,20 @@ export function MyFriendsTemplate() {
     }
   };
 
-  const handleFriendAccept = async (sequence: number) => {
+  const handleFriendAccept = async (sequence: string) => {
     if (confirm('친구수락을 하시겠습니까?')) {
       let params = {
-        memberFriendRequestSequence: sequence.toString(),
+        memberFriendRequestSequence: sequence,
         isAccept: true,
       };
       onFriendsAccept(params);
     }
   };
 
-  const handleFriendReject = async (sequence: number) => {
+  const handleFriendReject = async (sequence: string) => {
     if (confirm('거절을 하시겠습니까?')) {
       let params = {
-        memberFriendRequestSequence: sequence.toString(),
+        memberFriendRequestSequence: sequence,
         isAccept: false,
       };
       onFriendsReject(params);
@@ -139,20 +145,26 @@ export function MyFriendsTemplate() {
                     >
                       <Grid item xs={12} sm={1}>
                         <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
-                          <img className="tw-w-10 tw-h-10 border tw-rounded-full" src={item?.member?.profileImageUrl} />
+                          <img
+                            src={item?.friend?.profileImageUrl}
+                            alt="image"
+                            className={cx('rounded-circle', 'profile-image', 'tw-h-11', 'tw-w-11 border')}
+                          />
+                        </div>
+                      </Grid>
+                      <Grid item xs={12} sm={2}>
+                        <div className="tw-text-left tw-text-base tw-font-bold tw-text-black">
+                          {item?.friend?.nickname}
                         </div>
                       </Grid>
                       <Grid item xs={12} sm={1}>
-                        <div className="tw-text-left tw-text-black">{item?.member?.nickname}</div>
+                        {/* <div className="tw-text-left tw-text-black">{item?.memberId}</div> */}
                       </Grid>
                       <Grid item xs={12} sm={2}>
-                        <div className="tw-text-left tw-text-black">{item?.memberId}</div>
+                        {/* <div className="tw-text-left tw-text-black">{item?.jobGroup?.name}</div> */}
                       </Grid>
                       <Grid item xs={12} sm={2}>
-                        <div className="tw-text-left tw-text-black">{item?.jobGroup?.name}</div>
-                      </Grid>
-                      <Grid item xs={12} sm={2}>
-                        <div className="tw-text-left tw-text-black">{item?.job?.name}</div>
+                        {/* <div className="tw-text-left tw-text-black">{item?.job?.name}</div> */}
                       </Grid>
                       <Grid
                         item
@@ -162,7 +174,7 @@ export function MyFriendsTemplate() {
                       >
                         <div className="tw-gap-3">
                           <button
-                            onClick={() => handleJoinMember(item?.member?.memberUUID)}
+                            onClick={() => handleFriendAccept(item?.friend?.memberUUID)}
                             type="button"
                             data-tooltip-target="tooltip-default"
                             className="tw-py-2 tw-px-5 tw-mr-3 tw-bg-red-600 tw-text-white max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
@@ -170,7 +182,7 @@ export function MyFriendsTemplate() {
                             승인
                           </button>
                           <button
-                            onClick={() => handleRejectMember(item?.member?.memberUUID)}
+                            onClick={() => handleFriendReject(item?.friend?.memberUUID)}
                             type="button"
                             data-tooltip-target="tooltip-default"
                             className="tw-py-2 tw-px-5 tw-bg-black border tw-text-white max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
@@ -234,7 +246,7 @@ export function MyFriendsTemplate() {
                       <div className="tw-pl-5 tw-font-bold tw-text-base tw-text-black">{item?.friend?.nickname}</div>
                     </div>
                     <div className="tw-col-span-4 tw-text-right">
-                      {item.memberFriendStatus === '0001' && (
+                      {/* {item.memberFriendStatus === '0001' && (
                         <div>
                           <button
                             onClick={() => handleFriendAccept(item.sequence)}
@@ -250,22 +262,22 @@ export function MyFriendsTemplate() {
                           </button>
                         </div>
                       )}
-                      {item.memberFriendStatus === '0003' && (
-                        <div className="">
-                          {/* <button
+                      {item.memberFriendStatus === '0003' && ( */}
+                      <div className="">
+                        {/* <button
                             onClick={() => (window.location.href = '/profile/' + `${item.friendMemberUUID}`)}
                             className="tw-bg-gray-500 tw-mr-3 tw-text-white tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
                           >
                             프로필보기
                           </button> */}
-                          <button
-                            onClick={() => handleFriendDelete(item.friend?.memberUUID)}
-                            className="tw-bg-white tw-text-black border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
-                          >
-                            삭제하기
-                          </button>
-                        </div>
-                      )}
+                        <button
+                          onClick={() => handleFriendDelete(item?.friend?.memberUUID)}
+                          className="tw-bg-white tw-text-black border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
+                        >
+                          삭제하기
+                        </button>
+                      </div>
+                      {/* )} */}
                       {/* {item.memberFriendStatus === '0003' && (
                         <div className="">
                           <button className="tw-bg-gray-500  tw-text-white tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded">

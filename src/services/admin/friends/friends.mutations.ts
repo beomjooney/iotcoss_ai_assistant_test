@@ -58,9 +58,9 @@ export const useFriendAcceptPost = (): UseMutationResult => {
       const { code, message } = error;
       alert(`mutation error : [${code}] ${message}`);
     },
-    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CAMENITY').all),
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('QUIZ_ABOUT').all),
     onSuccess: async data => {
-      alert(',친구 수락이 되었습니다.');
+      alert('친구 수락이 되었습니다.');
     },
   });
 };
@@ -71,7 +71,7 @@ export const useFriendRejectPost = (): UseMutationResult => {
       const { code, message } = error;
       alert(`mutation error : [${code}] ${message}`);
     },
-    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CAMENITY').all),
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('QUIZ_ABOUT').all),
     onSuccess: async data => {
       alert('친구 거절이 되었습니다.');
     },
