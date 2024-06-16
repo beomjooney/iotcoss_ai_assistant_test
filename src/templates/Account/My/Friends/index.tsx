@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import styles from './index.module.scss';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSessionStore } from 'src/store/session';
 // import Pagination from 'src/stories/components/Pagination';
 import { paramProps } from 'src/services/seminars/seminars.queries';
@@ -24,27 +24,37 @@ export function MyFriendsTemplate() {
   const { memberId } = useSessionStore.getState();
   const [totalPage, setTotalPage] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
+  const [totalMemberPage, setTotalMemberPage] = useState(1);
+  const [totalMemberElement, setTotalMemberElement] = useState(0);
   const [pageMember, setPageMember] = useState(1);
   const [totalPageMember, setTotalPageMember] = useState(1);
   const [totalElementsMember, setTotalElementsMember] = useState(0);
   const [page, setPage] = useState(1);
   const [totalPoint, setTotalPoint] = useState(0);
-  const [params, setParams] = useState<paramProps>({ page });
   const [contents, setContents] = useState<RecommendContent[]>([]);
   const [contentsRequest, setContentsRequest] = useState<RecommendContent[]>([]);
   const [summary, setSummary] = useState({});
 
+  const [params, setParams] = useState<any>({ page: pageMember });
   const { mutate: onFriendsDelete, isSuccess: isDeleteSuccess } = useFriendsDeletePost();
   const { mutate: onFriendsAccept, isSuccess: isAcceptSuccess } = useFriendAcceptPost();
   const { mutate: onFriendsReject, isSuccess: isRejectSuccess } = useFriendRejectPost();
+
+  useEffect(() => {
+    if (isDeleteSuccess) {
+      refetchFriends();
+    }
+  }, [isDeleteSuccess]);
 
   const { isFetched: isFetchedRequest, refetch: refetchRequest } = useQuizFriendsRequest(data => {
     setContentsRequest(data?.contents);
     setTotalElements(data?.totalElements);
     setTotalPage(data?.totalPage);
   });
-  const { isFetched, refetch } = useQuizFriends(data => {
+  const { isFetched: isFetchedFriends, refetch: refetchFriends } = useQuizFriends(params, data => {
     setContents(data?.contents);
+    setTotalMemberElement(data?.totalElements);
+    setTotalMemberPage(data?.totalPage);
     // setTotalPoint(data?.total);
   });
 
@@ -52,13 +62,12 @@ export function MyFriendsTemplate() {
     setPage(value);
   };
 
-  const handleFriendDelete = async (sequence: number) => {
+  const handleFriendDelete = async sequence => {
     if (confirm('친구를 삭제하시겠습니까?')) {
       let params = {
-        memberFriendSequence: sequence.toString(),
+        memberFriendSequence: sequence,
       };
       onFriendsDelete({ data: params });
-      await refetch();
     }
   };
 
@@ -69,7 +78,6 @@ export function MyFriendsTemplate() {
         isAccept: true,
       };
       onFriendsAccept(params);
-      await refetch();
     }
   };
 
@@ -80,8 +88,11 @@ export function MyFriendsTemplate() {
         isAccept: false,
       };
       onFriendsReject(params);
-      await refetch();
     }
+  };
+
+  const handlePageChangeMember = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPageMember(value);
   };
 
   return (
@@ -206,7 +217,7 @@ export function MyFriendsTemplate() {
             </Grid>
           </Grid>
 
-          {isFetched && (
+          {isFetchedFriends && (
             <div>
               {contents.length > 0 ? (
                 contents.map((item, index) => (
@@ -216,11 +227,11 @@ export function MyFriendsTemplate() {
                   >
                     <div className="tw-col-span-3 tw-flex  tw-items-center ">
                       <img
-                        src={item?.imageUrl}
+                        src={item?.friend?.profileImageUrl}
                         alt="image"
-                        className={cx('rounded-circle', 'profile-image', 'tw-h-12', 'tw-w-12')}
+                        className={cx('rounded-circle', 'profile-image', 'tw-h-11', 'tw-w-11 border')}
                       />
-                      <div className="tw-pl-5 tw-font-bold tw-text-lg tw-text-black">{item.nickname}</div>
+                      <div className="tw-pl-5 tw-font-bold tw-text-base tw-text-black">{item?.friend?.nickname}</div>
                     </div>
                     <div className="tw-col-span-4 tw-text-right">
                       {item.memberFriendStatus === '0001' && (
@@ -239,7 +250,7 @@ export function MyFriendsTemplate() {
                           </button>
                         </div>
                       )}
-                      {item.memberFriendStatus === '0002' && (
+                      {item.memberFriendStatus === '0003' && (
                         <div className="">
                           {/* <button
                             onClick={() => (window.location.href = '/profile/' + `${item.friendMemberUUID}`)}
@@ -248,14 +259,14 @@ export function MyFriendsTemplate() {
                             프로필보기
                           </button> */}
                           <button
-                            onClick={() => handleFriendDelete(item.sequence)}
+                            onClick={() => handleFriendDelete(item.friend?.memberUUID)}
                             className="tw-bg-white tw-text-black border tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded"
                           >
                             삭제하기
                           </button>
                         </div>
                       )}
-                      {item.memberFriendStatus === '0003' && (
+                      {/* {item.memberFriendStatus === '0003' && (
                         <div className="">
                           <button className="tw-bg-gray-500  tw-text-white tw-text-sm tw-font-right tw-px-4  tw-py-2 tw-rounded">
                             내가 친구 거절한 요청
@@ -281,7 +292,7 @@ export function MyFriendsTemplate() {
                             상대방이 친구 거절
                           </button>
                         </div>
-                      )}
+                      )} */}
                     </div>
                   </div>
                 ))
@@ -294,6 +305,18 @@ export function MyFriendsTemplate() {
               )}
             </div>
           )}
+          <div className="tw-flex tw-justify-center tw-mt-10">
+            <Pagination
+              count={totalMemberPage}
+              size="small"
+              siblingCount={0}
+              page={pageMember}
+              renderItem={item => (
+                <PaginationItem slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }} {...item} />
+              )}
+              onChange={handlePageChangeMember}
+            />
+          </div>
           <div className="tw-mt-10">{/* <Pagination page={page} setPage={setPage} total={totalPage} /> */}</div>
         </div>
       </section>

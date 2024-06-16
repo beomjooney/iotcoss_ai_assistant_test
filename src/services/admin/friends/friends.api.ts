@@ -33,7 +33,7 @@ export const savePost = async body => await axiosGeneralAPI().put(`/api/v1/membe
 export const rejectPost = async body => await axiosGeneralAPI().put(`/api/v1/member/friend/requests`, body);
 
 export const deletePost = async body => {
-  await axiosGeneralAPI().delete(`/api/v1/member/friends`, body);
+  await axiosGeneralAPI().delete(`/api/v1/friend-requests/${body.data.memberFriendSequence}`);
 };
 
 export const addPosts = async body => await axiosGeneralAPI().post(`/posts`, body);

@@ -156,8 +156,8 @@ export const quizRanking = async () => {
 };
 
 // 나의 친구 조회
-export const quizFriends = async () => {
-  const { data } = await axiosGeneralAPI().get(`/api/v1/my/friends`);
+export const quizFriends = async params => {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/my/friends`, { params });
   return data.data;
 };
 
