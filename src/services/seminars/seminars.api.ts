@@ -76,6 +76,7 @@ export const myMemberList = async (params: any) => {
     params: {
       page: params.page,
       size: params.size,
+      clubMemberSortType: params.sortType,
     },
   });
   return data.data;

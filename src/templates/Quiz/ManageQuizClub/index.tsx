@@ -864,7 +864,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                           }
                           label={
                             <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                              가입오래된
+                              가입오래된순
                             </p>
                           }
                         />
