@@ -122,12 +122,21 @@ export const useQuizFriends = (params?: any, onSuccess?: (data: any) => void, on
   );
 };
 
-export const useQuizFriendsRequest = (onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
-  return useQuery<any, Error>(QUERY_KEY_FACTORY('QUIZ').lists(), () => quizFriendsRequest(), {
-    onSuccess,
-    onError,
-    refetchOnWindowFocus: false,
-  });
+export const useQuizFriendsRequest = (
+  params?: any,
+  onSuccess?: (data: any) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 10;
+  return useQuery<any, Error>(
+    QUERY_KEY_FACTORY('QUIZ').list({ size: DEFAULT_SIZE, ...params }),
+    () => quizFriendsRequest({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+    },
+  );
 };
 
 export const useQuizGrowthDetail = (id, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
