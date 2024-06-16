@@ -38,6 +38,7 @@ import router from 'next/router';
 
 //quiz
 import { MentorsModal } from 'src/stories/components';
+import Paginations from 'src/stories/components/Pagination';
 import Box from '@mui/system/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -50,6 +51,9 @@ import { TagsInput } from 'react-tag-input-component';
 import MyProfile from 'src/stories/components/MyProfile';
 import { useGetProfile } from 'src/services/account/account.queries';
 import { useStudyQuizOpponentBadgeList } from 'src/services/studyroom/studyroom.queries';
+import { ExperiencesResponse } from 'src/models/experiences';
+import { useOptions } from 'src/services/experiences/experiences.queries';
+import { UseQueryResult } from 'react-query';
 
 export interface ManageQuizClubTemplateProps {
   /** 세미나 아이디 */
@@ -104,6 +108,8 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
   const [memberUUID, setMemberUUID] = useState<string>('');
 
   const cx = classNames.bind(styles);
+
+  const { data: optionsData }: UseQueryResult<ExperiencesResponse> = useOptions();
 
   useEffect(() => {
     // Merge new data from quizListData into allQuizData
@@ -222,6 +228,9 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
     setQuizListData(data.contents || []);
     setTotalQuizzPage(data.totalPages);
     setTotalQuizzElements(data.totalElements);
+
+    console.log(data.totalPages);
+    console.log(data.totalElements);
   });
 
   // 퀴즈클럽 리스트
@@ -520,6 +529,22 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
     console.log('memberUUID1', memberUUID);
     setMemberUUID(memberUUID);
     setBadgeParams({ page: badgePage, memberUUID: memberUUID });
+  };
+
+  const [selectedJobQuiz, setSelectedJobQuiz] = useState<string>('');
+  const [universityCodeQuiz, setUniversityCodeQuiz] = useState<string>('');
+  const [selectedLevel, setSelectedLevel] = useState('');
+
+  const handleUniversityChangeQuiz = e => {
+    setUniversityCodeQuiz(e.target.value);
+  };
+
+  const handleJobChangeQuiz = e => {
+    setSelectedJobQuiz(e.target.value);
+  };
+
+  const handleLevelChangeQuiz = e => {
+    setSelectedLevel(e.target.value);
   };
 
   return (
@@ -1089,23 +1114,65 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
           </div>
         )}
       </div>
-      <MentorsModal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
-        <Box width="100%" sx={{ borderBottom: '1px solid LightGray' }}>
-          <p className="tw-text-xl tw-font-bold tw-text-center tw-text-black tw-pb-7">퀴즈 등록하기</p>
-          <Tabs value={value} onChange={handleChange} centered>
-            <Tab disableRipple className="tw-text-black tw-text-base" label="퀴즈 검색하기" />
-            <Tab
-              disableRipple
-              // style={{ marginRight: '-1px', marginLeft: '-1px' }}
-              className="tw-text-black tw-text-base "
-              label="퀴즈 직접 등록하기"
-            />
-            <Tab disableRipple className="tw-text-black tw-text-base" label="퀴즈 만들기 불러오기" />
-          </Tabs>
-        </Box>
-        {active === 0 && (
-          <div className="">
-            <div className="tw-mt-10 tw-mb-8">
+
+      <MentorsModal title="퀴즈 등록하기" isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
+        <div className="tw-mb-8">
+          <div className="tw-grid tw-grid-cols-3 tw-gap-8 tw-pb-4">
+            <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
+              <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">대학</p>
+              <select
+                className="form-select"
+                onChange={handleUniversityChangeQuiz}
+                aria-label="Default select example"
+                value={universityCodeQuiz}
+              >
+                <option value="">대학을 선택해주세요.</option>
+                {optionsData?.data?.jobs?.map((university, index) => (
+                  <option key={index} value={university.code}>
+                    {university.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
+              <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">학과</p>
+              <select
+                className="form-select"
+                aria-label="Default select example"
+                onChange={handleJobChangeQuiz}
+                value={selectedJobQuiz}
+              >
+                <option value="">학과를 선택해주세요.</option>
+                {jobs.map((job, index) => (
+                  <option key={index} value={job.code}>
+                    {job.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
+              <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">학년</p>
+              <select
+                className="form-select"
+                aria-label="Default select example"
+                onChange={handleLevelChangeQuiz}
+                value={selectedLevel}
+              >
+                <option value="">레벨을 선택해주세요.</option>
+                {optionsData?.data?.jobLevels.map((job, index) => (
+                  <option key={index} value={job.code}>
+                    {job.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
+            <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">검색</p>
+            <div className="tw-flex-grow tw-flex-shrink tw-relative tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
               <TextField
                 size="small"
                 fullWidth
@@ -1115,7 +1182,6 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                 value={quizSearch}
                 name="quizSearch"
                 InputProps={{
-                  style: { height: '45px' },
                   startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
                 }}
                 onKeyPress={e => {
@@ -1124,266 +1190,31 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                   }
                 }}
               />
-
-              <div className="tw-grid tw-grid-cols-3 tw-gap-8 tw-pt-8 tw-pb-4">
-                <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
-                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">대학</p>
-                  <select className="form-select" aria-label="Default select example">
-                    <option>대학을 선택해주세요.</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                  </select>
-                </div>
-                <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
-                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">학과</p>
-                  <select className="form-select" aria-label="Default select example">
-                    <option>대학을 선택해주세요.</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                  </select>
-                </div>
-                <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
-                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">학년</p>
-                  <select className="form-select" aria-label="Default select example">
-                    <option>대학을 선택해주세요.</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <p className="tw-text-xl tw-font-bold tw-text-left tw-text-black tw-pb-5">퀴즈검색 {totalQuizzElements}</p>
-            {quizListData.map((item, index) => (
-              <div key={index}>
-                <QuizBreakerInfoCheck
-                  avatarSrc="https://via.placeholder.com/40"
-                  userName={item.memberNickname}
-                  questionText={item.question}
-                  index={item.quizSequence}
-                  selectedQuizIds={selectedQuizIds}
-                  handleCheckboxChange={handleCheckboxChange}
-                  hashtags={['MVVM', '해시태그']}
-                  tags={['소프트웨어융합대학', '컴퓨터공학과', '2학년']}
-                  answerText={item.modelAnswer}
-                />
-              </div>
-            ))}
-            <div className="tw-flex tw-justify-center tw-items-center tw-h-full tw-pt-5">
-              <Pagination
-                count={totalQuizzPage}
-                size="small"
-                siblingCount={0}
-                page={pageQuizz}
-                renderItem={item => (
-                  <PaginationItem slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }} {...item} />
-                )}
-                onChange={handlePageQuizChange}
-              />
-            </div>
-            {/* <Paginations page={pageQuizz} setPage={setPageQuizz} total={totalQuizzPage} showCount={5} /> */}
-          </div>
-        )}
-        {active == 1 && (
-          <div>
-            <div className="tw-font-bold tw-text-base tw-text-black tw-pt-10">필수 입력</div>
-            <div>
-              <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2 tw-mt-5">* 질문</div>
-              <TextField
-                size="small"
-                fullWidth
-                placeholder="ex) Github Actions와 기존 Github의 차이점에 대해 설명하세요."
-                onChange={handleInputQuizChange}
-                id="margin-none"
-                value={quizName}
-                ref={quizRef}
-                name="quizName"
-              />
-            </div>
-            <div>
-              <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2 tw-mt-5">
-                * 아티클 (질문에 대한 답변에 참고가 될 아티클 링크를 입력해주세요.)
-              </div>
-              <TextField
-                size="small"
-                fullWidth
-                placeholder="http://"
-                onChange={handleInputQuizUrlChange}
-                id="margin-none"
-                value={quizUrl}
-                ref={quizUrlRef}
-                name="quizUrl"
-              />
-            </div>
-            <div>
-              <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2 tw-mt-5">추천 직군</div>
-              <ToggleButtonGroup value={jobGroupPopUp} exclusive onChange={handleJobGroups} aria-label="text alignment">
-                {contentTypes?.map((item, index) => (
-                  <ToggleButton
-                    key={`job-${index}`}
-                    value={item.id}
-                    className="tw-ring-1 tw-ring-slate-900/10"
-                    sx={{
-                      borderRadius: '5px',
-                      borderLeft: '0px',
-                      margin: '5px',
-                      height: '35px',
-                      border: '0px',
-                      '&.Mui-selected': {
-                        backgroundColor: '#6A7380',
-                      },
-                      '&.Mui-selected:hover': {
-                        backgroundColor: '#6A7380',
-                      },
-                    }}
-                  >
-                    {item.name}
-                  </ToggleButton>
-                ))}
-              </ToggleButtonGroup>
-              <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2 tw-mt-5">* 추천 직무</div>
-              <ToggleButtonGroup
-                style={{ display: 'inline' }}
-                value={jobs}
-                onChange={handleJobsPopUp}
-                aria-label="text alignment"
-              >
-                {jobGroups?.map((item, index) => (
-                  <ToggleButton
-                    key={`job-${index}`}
-                    value={item.id}
-                    className="tw-ring-1 tw-ring-slate-900/10"
-                    style={{
-                      borderRadius: '5px',
-                      borderLeft: '0px',
-                      margin: '5px',
-                      height: '35px',
-                      border: '0px',
-                    }}
-                  >
-                    {item.name}
-                  </ToggleButton>
-                ))}
-              </ToggleButtonGroup>
-
-              <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2 tw-mt-5">* 추천 레벨</div>
-              <ToggleButtonGroup
-                exclusive
-                value={recommendLevelsPopUp}
-                onChange={handleRecommendLevelsPopUp}
-                aria-label="text alignment"
-              >
-                {levelGroup?.map((item, index) => (
-                  <ToggleButton
-                    key={`job-${index}`}
-                    value={item.name}
-                    aria-label="fff"
-                    className="tw-ring-1 tw-ring-slate-900/10"
-                    style={{
-                      borderRadius: '5px',
-                      borderLeft: '0px',
-                      margin: '5px',
-                      height: '35px',
-                      border: '0px',
-                    }}
-                  >
-                    {item.description}
-                  </ToggleButton>
-                ))}
-              </ToggleButtonGroup>
-
-              <div className="tw-font-bold tw-text-base tw-text-black tw-pt-10">선택 입력</div>
-
-              <div className="tw-font-semibold tw-text-sm tw-text-black tw-mb-2 tw-mt-5">관련스킬</div>
-
-              <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-mb-2">관련경험</div>
-              <ToggleButtonGroup
-                style={{ display: 'inline' }}
-                value={experienceIdsPopUp}
-                onChange={handleFormatExPopUp}
-                aria-label=""
-                color="standard"
-              >
-                {experienceData?.data?.contents?.map((item, index) => {
-                  return (
-                    <ToggleButton
-                      key={`skillIds-${index}`}
-                      value={item.name}
-                      className="tw-ring-1 tw-ring-slate-900/10"
-                      style={{
-                        borderRadius: '5px',
-                        borderLeft: '0px',
-                        margin: '5px',
-                        height: '35px',
-                        border: '0px',
-                      }}
-                    >
-                      {item.name}
-                    </ToggleButton>
-                  );
-                })}
-              </ToggleButtonGroup>
-            </div>
-            <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-mb-2">해시태그</div>
-            <TagsInput
-              value={selected}
-              onChange={setSelected}
-              name="fruits"
-              placeHolder="#해쉬태그 입력 후 엔터를 쳐주세요.
-              "
-            />
-            <div className="tw-text-center tw-mt-5">
-              <button
-                type="button"
-                onClick={() => handleQuizInsertClick()}
-                className="tw-mt-5 tw-text-white tw-bg-blue-500  tw-font-medium tw-rounded-md tw-text-base tw-px-5 tw-py-2.5"
-              >
-                퀴즈 등록하기
-              </button>
             </div>
           </div>
-        )}
-        {active === 2 && (
-          <div>
-            <div className="tw-mt-10 tw-mb-8">
-              <TextField
-                size="small"
-                fullWidth
-                label={'내 퀴즈 키워드를 입력하세요.'}
-                onChange={handleInputQuizSearchChange}
-                id="margin-none"
-                // value={quizSearch}
-                name="quizSearch"
-                InputProps={{
-                  style: { height: '45px' },
-                  startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
-                }}
-                onKeyPress={e => {
-                  if (e.key === 'Enter') {
-                    searchMyKeyworld((e.target as HTMLInputElement).value);
-                  }
-                }}
+
+          <Divider sx={{ borderColor: 'rgba(0, 0, 0, 0.5);', paddingY: '10px' }} />
+
+          <p className="tw-text-xl tw-font-bold tw-text-left tw-text-black tw-py-5">퀴즈목록 {totalQuizzElements}개</p>
+          {quizListData.map((item, index) => (
+            <div key={index}>
+              <QuizBreakerInfoCheck
+                avatarSrc="https://via.placeholder.com/40"
+                userName={item.memberNickname}
+                questionText={item.question}
+                index={item.quizSequence}
+                selectedQuizIds={selectedQuizIds}
+                handleCheckboxChange={handleCheckboxChange}
+                hashtags={['']}
+                tags={['소프트웨어융합대학', '컴퓨터공학과', '2학년']}
+                answerText={item.modelAnswer}
               />
             </div>
-            {myQuizListData?.contents.map((item, index) => (
-              <div key={index}>
-                <QuizBreakerInfoCheck
-                  avatarSrc="https://via.placeholder.com/40"
-                  userName={item.memberName}
-                  questionText={item.content}
-                  index={item.sequence}
-                  selectedQuizIds={selectedQuizIds}
-                  handleCheckboxChange={handleCheckboxChange}
-                  hashtags={['MVVM', '해시태그']}
-                  tags={['소프트웨어융합대학', '컴퓨터공학과', '2학년']}
-                  answerText="EAI는 엔터프라이즈 어플리케이션 인테그레이션의 약자입니다. 시스템이 서로 얽히고 복잡해지면서 통제가 잘 안되는 상황이 발생하여 이런 문제를 해결하기 위해 등장한 솔루션이 바로 EAI 입니다."
-                />
-              </div>
-            ))}
+          ))}
+          <div className="tw-py-10">
+            <Paginations page={pageQuizz} setPage={setPageQuizz} total={totalQuizzPage} showCount={5} />
           </div>
-        )}
+        </div>
       </MentorsModal>
 
       <MentorsModal

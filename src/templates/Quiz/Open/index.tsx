@@ -969,6 +969,7 @@ export function QuizOpenTemplate() {
   const handleUniversityChangeQuiz = e => {
     setUniversityCodeQuiz(e.target.value);
   };
+
   const handleJobChangeQuiz = e => {
     setSelectedJobQuiz(e.target.value);
   };
@@ -1859,7 +1860,9 @@ export function QuizOpenTemplate() {
               />
             </div>
           ))}
-          <Pagination page={page} setPage={setPage} total={totalPage} showCount={5} />
+          <div className="tw-py-10">
+            <Pagination page={page} setPage={setPage} total={totalPage} showCount={5} />
+          </div>
         </div>
       </MentorsModal>
     </div>

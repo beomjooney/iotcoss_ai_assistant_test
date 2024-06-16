@@ -16,7 +16,7 @@ const QuizBreakerInfo = ({
   handleCheckboxDelete,
 }) => {
   return (
-    <div className="tw-h-[193px] tw-mb-4">
+    <div className="tw-h-[200px] tw-mb-10">
       {index === null ? (
         <div>
           <div className=" tw-relative tw-overflow-visible tw-rounded-lg tw-bg-[#f6f7fb] tw-mb-3 tw-grid tw-grid-cols-[60px_1fr_100px_28px_40px] tw-grid-rows-[auto_auto] tw-h-20 tw-z-10"></div>
@@ -77,7 +77,7 @@ const QuizBreakerInfo = ({
               </svg>
             )}
           </div>
-          <div className="tw-my-3 tw-h-[107px] tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white border border-[#e9ecf2]">
+          <div className="tw-my-3 tw-h-[137px] tw-mb-4 tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white border border-[#e9ecf2]">
             <svg
               width={24}
               height={24}
@@ -101,9 +101,9 @@ const QuizBreakerInfo = ({
             <p className="tw-pr-5 tw-absolute tw-left-[119px] tw-top-[19px] tw-text-sm tw-text-left tw-text-[#31343d]">
               {answerText}
             </p>
-            <div className="tw-flex tw-justify-start tw-items-start tw-absolute tw-left-[52px] tw-top-[73px] tw-gap-3">
-              <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#31343d]">지식컨텐츠</p>
-              <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-font-medium tw-text-left tw-text-[#9ca5b2]">
+            <div className="tw-py-2 tw-flex tw-justify-start tw-items-start tw-absolute tw-left-[52px] tw-top-[73px] tw-gap-3">
+              <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#31343d]">지식컨텐츠</p>
+              <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-left tw-text-[#9ca5b2]">
                 {knowledgeContentTitle}
               </p>
             </div>
