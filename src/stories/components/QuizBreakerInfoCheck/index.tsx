@@ -49,7 +49,7 @@ const QuizBreakerInfoCheck = ({
           />
         </p>
       </div>
-      <div className="tw-my-3 tw-h-[137px] tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white border border-[#e9ecf2]">
+      <div className="tw-my-3 tw-h-[170px] tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white border border-[#e9ecf2]">
         <svg
           width={24}
           height={24}
@@ -95,9 +95,9 @@ const QuizBreakerInfoCheck = ({
         <p className="tw-pr-5 tw-absolute tw-left-[119px] tw-top-[45px] tw-text-sm tw-text-left tw-text-[#31343d]">
           {answerText}
         </p>
-        <div className="tw-flex tw-justify-start tw-items-start tw-absolute tw-left-[52px] tw-top-[100px] tw-gap-3">
-          <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#31343d]">지식컨텐츠</p>
-          <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-font-medium tw-text-left tw-text-[#9ca5b2]">
+        <div className="tw-pt-2 tw-flex tw-justify-start tw-items-start tw-absolute tw-left-[52px] tw-top-[100px] tw-gap-3">
+          <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#31343d]">지식컨텐츠</p>
+          <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-left tw-text-[#9ca5b2]">
             {knowledgeContentTitle}
           </p>
         </div>
