@@ -22,6 +22,7 @@ import {
   quizAnswerMemberAIDetail,
   quizGetAIAnswerGet,
   quizGetAIAnswerAll,
+  quizFriendsRequest,
 } from './quiz.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 import { User } from 'src/models/user';
@@ -110,6 +111,14 @@ export const useQuizRankDetail = (onSuccess?: (data: any) => void, onError?: (er
 
 export const useQuizFriends = (onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
   return useQuery<any, Error>(QUERY_KEY_FACTORY('QUIZ').lists(), () => quizFriends(), {
+    onSuccess,
+    onError,
+    // refetchOnWindowFocus: false,
+  });
+};
+
+export const useQuizFriendsRequest = (onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
+  return useQuery<any, Error>(QUERY_KEY_FACTORY('QUIZ').lists(), () => quizFriendsRequest(), {
     onSuccess,
     onError,
     // refetchOnWindowFocus: false,

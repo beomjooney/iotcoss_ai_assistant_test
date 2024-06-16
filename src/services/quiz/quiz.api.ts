@@ -161,6 +161,12 @@ export const quizFriends = async () => {
   return data.data;
 };
 
+// 나의 친구 신청 조회
+export const quizFriendsRequest = async () => {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/my/friend-requests`);
+  return data.data;
+};
+
 // 퀴즈 요약
 export const quizGrowthDetail = async id => {
   const { data } = await axiosGeneralAPI().get(`/api/v1/clubs/${id}/growth/summary`);
