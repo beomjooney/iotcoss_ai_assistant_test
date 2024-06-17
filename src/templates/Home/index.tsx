@@ -354,11 +354,11 @@ export function HomeTemplate({ logged = false }: HomeProps) {
                 filterUnits="userSpaceOnUse"
                 colorInterpolationFilters="sRGB"
               >
-                <feflood floodOpacity={0} result="BackgroundImageFix" />
-                <feblend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
-                <fegaussianblur stdDeviation={15} result="effect1_foregroundBlur_320_40043" />
+                <feFlood floodOpacity={0} result="BackgroundImageFix" />
+                <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+                <feGaussianBlur stdDeviation={15} result="effect1_foregroundBlur_320_40043" />
               </filter>
-              <radialgradient
+              <radialGradient
                 id="paint0_radial_320_40043"
                 cx={0}
                 cy={0}
@@ -368,7 +368,7 @@ export function HomeTemplate({ logged = false }: HomeProps) {
               >
                 <stop stopColor="#FAFFC5" stopOpacity="0.5" />
                 <stop offset={1} stopColor="white" stopOpacity={0} />
-              </radialgradient>
+              </radialGradient>
             </defs>
           </svg>
           <svg
@@ -393,12 +393,12 @@ export function HomeTemplate({ logged = false }: HomeProps) {
                 filterUnits="userSpaceOnUse"
                 colorInterpolationFilters="sRGB"
               >
-                <feflood floodOpacity={0} result="BackgroundImageFix" />
-                <feblend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
-                <fegaussianblur stdDeviation={15} result="effect1_foregroundBlur_320_40044" />
+                <feFlood floodOpacity={0} result="BackgroundImageFix" />
+                <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+                <feGaussianBlur stdDeviation={15} result="effect1_foregroundBlur_320_40044" />
               </filter>
-              <radialgradient
-                id="paint0_radial_320_40044"
+              <radialGradient
+                id="paint0_radial_320_400044"
                 cx={0}
                 cy={0}
                 r={1}
@@ -407,34 +407,10 @@ export function HomeTemplate({ logged = false }: HomeProps) {
               >
                 <stop stopColor="#AEC5FF" />
                 <stop offset={1} stopColor="white" stoppacity={0} />
-              </radialgradient>
+              </radialGradient>
             </defs>
           </svg>
           <div className="tw-w-[1280px] tw-h-[591px] tw-absolute tw-left-[-1px] tw-top-[-30px] tw-bg-white/20" />
-          <svg
-            width={787}
-            height={520}
-            viewBox="0 0 787 520"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="tw-absolute tw-left-[332px] tw-top-[-148px]"
-            preserveAspectRatio="xMidYMid meet"
-          >
-            <circle cx={453} cy={306} r={453} fill="url(#paint0_radial_320_40046)" />
-            <defs>
-              <radialgradient
-                id="paint0_radial_320_40046"
-                cx={0}
-                cy={0}
-                r={1}
-                gradientUnits="userSpaceOnUse"
-                gradientTransform="translate(453 306) rotate(90) scale(322.897)"
-              >
-                <stop offset="0.438441" stopColor="white" />
-                <stop offset={1} stopColor="white" stoppacity={0} />
-              </radialgradient>
-            </defs>
-          </svg>
           <p className="tw-absolute tw-left-[57px] tw-top-[95px] tw-text-sm tw-font-medium tw-text-left tw-text-black">
             Dongseo University
           </p>
@@ -459,75 +435,30 @@ export function HomeTemplate({ logged = false }: HomeProps) {
           </p>
           <div className="tw-w-48 tw-h-20">
             <div className="tw-w-48 tw-h-20 tw-absolute tw-left-[261.38px] tw-top-[373.5px] tw-rounded-lg tw-bg-[#478af5]" />
-            <p className="tw-absolute tw-left-[358px] tw-top-[385px] tw-text-lg tw-text-left tw-text-white">
-              <span className="tw-text-lg tw-font-bold tw-text-left tw-text-white">교수자 </span>
-              <br />
-              <span className="tw-text-lg tw-font-medium tw-text-left tw-text-white">체험하기</span>
-            </p>
-            <svg
-              width={42}
-              height={47}
-              viewBox="0 0 42 47"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="tw-absolute tw-left-[292.69px] tw-top-[389.45px]"
-              preserveAspectRatio="none"
-            >
-              <path
-                d="M33.6774 0L20.7988 22.6382L7.92022 0H2.27815C1.14541 0 0.236328 1.04737 0.236328 2.33391V44.6661C0.236328 45.9609 1.15262 47 2.27815 47H7.92022V15.1498L16.3472 29.9698C16.7224 30.6296 17.3717 31.0337 18.0644 31.0337H23.5333C24.2259 31.0337 24.868 30.6296 25.2504 29.9698L33.6774 15.1498V47H39.3195C40.4523 47 41.3613 45.9526 41.3613 44.6661V2.33391C41.3613 1.03912 40.445 0 39.3195 0H33.6774Z"
-                fill="url(#paint0_linear_320_40054)"
-              />
-              <defs>
-                <lineargradient
-                  id="paint0_linear_320_40054"
-                  x1="20.7988"
-                  y1={0}
-                  x2="20.7988"
-                  y2={47}
-                  gradientUnits="userSpaceOnUse"
-                >
-                  <stop stopColor="#005DE2" />
-                  <stop offset={1} stopColor="#003178" />
-                </lineargradient>
-              </defs>
-            </svg>
+            <div className="tw-absolute tw-left-[285px] tw-top-[385px] tw-text-lg tw-text-left tw-text-white">
+              <div className="tw-flex tw-items-center">
+                <img className=" tw-rounded-full tw-w-12 tw-h-12" src="/assets/images/main/teacher1.png" />
+                <div className="tw-ml-4">
+                  <span className="tw-text-lg tw-font-bold tw-text-left tw-text-white">교수자</span>
+                  <br />
+                  <span className="tw-text-lg tw-font-medium tw-text-left tw-text-white">체험하기</span>
+                </div>
+              </div>
+            </div>
           </div>
           <div className="tw-w-48 tw-h-20">
             <div className="tw-w-48 tw-h-20">
               <div className="tw-w-48 tw-h-20 tw-absolute tw-left-[46.5px] tw-top-[373.5px] tw-rounded-lg tw-bg-[#7ed869]" />
-              <p className="tw-absolute tw-left-[140px] tw-top-[385px] tw-text-lg tw-text-left tw-text-white">
-                <span className="tw-text-lg tw-font-bold tw-text-left tw-text-white">학습자</span>
-                <span className="tw-text-lg tw-font-medium tw-text-left tw-text-white"> </span>
-                <br />
-                <span className="tw-text-lg tw-font-medium tw-text-left tw-text-white">체험하기</span>
-              </p>
-              <svg
-                width={40}
-                height={45}
-                viewBox="0 0 40 45"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="tw-absolute tw-left-[76.83px] tw-top-[390.45px]"
-                preserveAspectRatio="none"
-              >
-                <path
-                  d="M20.5213 36.5848C13.0805 36.5848 7.1448 29.3931 7.9857 20.891C8.64993 14.2046 13.6246 8.89971 19.631 8.44184C24.4219 8.07871 28.69 10.6996 31.0926 14.8125C31.46 15.4361 32.0889 15.815 32.7531 15.815H39.7559C37.0919 6.23145 28.8455 -0.604941 19.2635 0.0423856C9.68161 0.689712 1.0819 9.79175 0.424735 20.9937C-0.338427 34.0981 8.95378 45 20.5213 45C29.5592 45 37.2049 38.3452 39.7559 29.1879H32.7531C32.0818 29.1879 31.4529 29.5668 31.0855 30.1983C28.8313 34.0507 24.9449 36.5927 20.5213 36.5927V36.5848Z"
-                  fill="url(#paint0_linear_320_40059)"
-                />
-                <defs>
-                  <lineargradient
-                    id="paint0_linear_320_40059"
-                    x1="17.3795"
-                    y1="11.7612"
-                    x2="30.639"
-                    y2="46.1551"
-                    gradientUnits="userSpaceOnUse"
-                  >
-                    <stop stopColor="#3EA521" />
-                    <stop offset={1} stopColor="#14842D" />
-                  </lineargradient>
-                </defs>
-              </svg>
+              <div className="tw-absolute tw-left-[70px] tw-top-[385px] tw-text-lg tw-text-left tw-text-white">
+                <div className="tw-flex tw-items-center">
+                  <img className=" tw-rounded-full tw-w-12 tw-h-12" src="/assets/images/main/teacher2.png" />
+                  <div className="tw-ml-4">
+                    <span className="tw-text-lg tw-font-bold tw-text-left tw-text-white">학습자</span>
+                    <br />
+                    <span className="tw-text-lg tw-font-medium tw-text-left tw-text-white">체험하기</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <img
@@ -542,31 +473,134 @@ export function HomeTemplate({ logged = false }: HomeProps) {
       </section>
 
       <div className={cx('main-container tw-flex tw-justify-center tw-items-center tw-pt-12')}>
-        <section className={cx('job-group-area', 'container', 'tw-pb-1 tw-flex tw-justify-center tw-items-center')}>
-          <div className="tw-w-[1100px] tw-h-[319px] tw-relative">
-            <div className="tw-w-[550px] tw-left-[558.87px] tw-top-[189px] tw-absolute tw-text-right tw-text-black tw-text-base tw-font-medium tw-leading-normal tw-font-['Inter']">
+        <div className="tw-w-[1120px] tw-h-[392px] tw-flex tw-gap-10">
+          <div
+            className="tw-w-[544px] tw-h-[392px] tw-overflow-hidden tw-rounded-[20px]"
+            style={{ filter: 'drop-shadow(-12px 13px 40px rgba(0,0,0,0.03))' }}
+          >
+            <div className="tw-w-[544px] tw-h-[496px] tw-absolute tw-left-[-1px] tw-top-[-1px] tw-bg-white" />
+            <p className="tw-w-[352px] tw-absolute tw-left-24 tw-top-[218px] tw-text-xl tw-font-bold tw-text-center tw-text-black">
+              동서대 재학생 여러분!
+            </p>
+            <p className="tw-w-[352px] tw-absolute tw-left-24 tw-top-[268px] tw-text-base tw-text-center tw-text-black">
+              <span className="tw-w-[352px] tw-text-base tw-text-center tw-text-black">
+                선배님과 교수님이 엄선한 지식을 공부하세요.
+              </span>
+              <br />
+              <span className="tw-w-[352px] tw-text-base tw-text-center tw-text-black">
+                퀴즈로 뇌를 깨우고, 엄선된 콘텐츠를 보면서
+              </span>
+              <br />
+              <span className="tw-w-[352px] tw-text-base tw-text-center tw-text-black">
+                최고의 인재로 성장할 수 있어요!
+              </span>
+            </p>
+            <img
+              src="/assets/images/main/user-interaction-1.png"
+              className="tw-w-[190px] tw-h-[190px] tw-absolute tw-left-44 tw-top-[27px] tw-object-cover"
+            />
+          </div>
+          <div
+            className="tw-w-[544px] tw-h-[392px] tw-overflow-hidden tw-rounded-[20px]"
+            style={{ filter: 'drop-shadow(-12px 13px 40px rgba(0,0,0,0.03))' }}
+          >
+            <div className="tw-w-[544px] tw-h-[496px] tw-absolute tw-left-[-1px] tw-top-[-1px] tw-bg-white" />
+            <p className="tw-w-[352px] tw-absolute tw-left-24 tw-top-[219px] tw-text-xl tw-font-bold tw-text-center tw-text-black">
+              동서대 선배님! 교수님!
+            </p>
+            <p className="tw-w-[352px] tw-absolute tw-left-24 tw-top-[269px] tw-text-base tw-text-center tw-text-black">
+              <span className="tw-w-[352px] tw-text-base tw-text-center tw-text-black">
+                후배들이 기다리고 있습니다.
+              </span>
+              <br />
+              <span className="tw-w-[352px] tw-text-base tw-text-center tw-text-black">
+                함께 활동하면서 자연스럽게 친분을 쌓고,{' '}
+              </span>
+              <br />
+              <span className="tw-w-[352px] tw-text-base tw-text-center tw-text-black">
+                선배님의 지식을 전수해주세요!
+              </span>
+            </p>
+            <img
+              src="/assets/images/main/branding-badge-1.png"
+              className="tw-w-[161px] tw-h-[161px] tw-absolute tw-left-[191px] tw-top-[34px] tw-object-cover"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className={cx('main-container tw-flex tw-justify-center tw-items-center tw-pt-12')}>
+        <div
+          className="tw-w-[1120px] tw-h-[400px] tw-relative tw-overflow-hidden"
+          style={{
+            backgroundImage: 'url(/assets/images/main/background.png)',
+            backgroundPosition: 'center',
+            borderRadius: '20px',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.0)',
+          }}
+          //style={{
+
+          // backgroundImage: 'url(/assets/images/main/background.png)',
+          // backgroundPosition: 'center',
+          // objectFit: 'cover',
+          // borderRadius: '20px',
+          //}}
+        >
+          <div className="tw-w-[497.13px] tw-h-[213px]">
+            <div className="tw-w-[550px] tw-left-[528.87px] tw-top-[250px] tw-absolute tw-text-right tw-text-black tw-text-base tw-font-medium tw-leading-normal tw-font-['Inter']">
               동서대 출신 상위 1% 선배들이 모교와 후배를 위하여 힘을 보탭니다.
               <br />
               실무보다 좋은 수업은 없습니다. 각 분야에 진출한 동서대 최고의 선배들의
               <br />
               경험이 녹아 있는 생생한 퀴즈를 풀면서 함께 성장해보세요.
             </div>
-            <div className="tw-w-[126.77px] tw-left-[973.23px] tw-top-[29px] tw-absolute tw-text-right tw-text-black tw-text-sm tw-font-medium tw-leading-[21px]">
+            <p className="tw-w-[146.77px] tw-absolute tw-left-[928.36px] tw-top-[118px] tw-text-base tw-font-bold tw-text-right tw-text-black">
               Dongseo University
-            </div>
-            <div className="tw-w-[480px] tw-left-[625.80px] tw-top-[50px] tw-absolute tw-text-right">
-              <span className="tw-text-black tw-text-[32px] tw-font-bold tw-font-['Noto Sans CJK KR']">Before</span>
-              <span className="tw-text-black tw-text-[32px] tw-font-['Noto Sans CJK KR']"> Dongseo </span>
-              <span className="tw-text-black tw-text-[32px] tw-font-bold tw-font-['Noto Sans CJK KR']">After</span>
-              <span className="tw-text-black tw-text-[32px] tw-font-['Noto Sans CJK KR']"> Dongse</span>
-            </div>
-            <div className="tw-w-[80.85px] tw-h-[3px] tw-left-[1019.15px] tw-top-[112px] tw-absolute tw-bg-rose-600" />
-            <img
-              className="tw-w-[511.07px] tw-h-[319px] tw-left-0 tw-top-0 tw-absolute"
-              src="/assets/images/main/image_3.png"
-            />
+            </p>
+            <p className="tw-w-[497px] tw-absolute tw-left-[578px] tw-top-[139px] tw-text-[32px] tw-text-right tw-text-black">
+              <span className="tw-w-[497px] tw-text-[32px] tw-font-bold tw-text-right tw-text-black">Before</span>
+              <span className="tw-w-[497px] tw-text-[32px] tw-text-right tw-text-black"> Dongseo </span>
+              <span className="tw-w-[497px] tw-text-[32px] tw-font-bold tw-text-right tw-text-black">After</span>
+              <span className="tw-w-[497px] tw-text-[32px] tw-text-right tw-text-black"> Dongseo</span>
+            </p>
+            <div className="tw-w-[79px] tw-h-[3px] tw-absolute tw-left-[860.5px] tw-top-[193.5px] tw-bg-[#e11837]" />
+            <div className="tw-w-[103px] tw-h-[3px] tw-absolute tw-left-[617.5px] tw-top-[193.5px] tw-bg-[#e11837]" />
           </div>
-        </section>
+          <img
+            src="/assets/images/main/dsu_1.png"
+            className="tw-w-[404px] tw-h-[404px] tw-absolute tw-left-[50px] tw-top-[-4px] tw-object-cover"
+          />
+        </div>
+
+        {/* <div
+            className="w-[1120px] h-[400px] relative overflow-hidden rounded-[20px] bg-[#fdfdff]"
+            style={{ boxShadow: '-5px 10px 20px 0 rgba(0,0,0,0.03)' }}
+          >
+            <div className="tw-w-[1100px] tw-h-[319px] tw-relative">
+              <div className="tw-w-[550px] tw-left-[558.87px] tw-top-[189px] tw-absolute tw-text-right tw-text-black tw-text-base tw-font-medium tw-leading-normal tw-font-['Inter']">
+                동서대 출신 상위 1% 선배들이 모교와 후배를 위하여 힘을 보탭니다.
+                <br />
+                실무보다 좋은 수업은 없습니다. 각 분야에 진출한 동서대 최고의 선배들의
+                <br />
+                경험이 녹아 있는 생생한 퀴즈를 풀면서 함께 성장해보세요.
+              </div>
+              <div className="tw-w-[126.77px] tw-left-[973.23px] tw-top-[29px] tw-absolute tw-text-right tw-text-black tw-text-sm tw-font-medium tw-leading-[21px]">
+                Dongseo University
+              </div>
+              <div className="tw-w-[480px] tw-left-[625.80px] tw-top-[50px] tw-absolute tw-text-right">
+                <span className="tw-text-black tw-text-[32px] tw-font-bold tw-font-['Noto Sans CJK KR']">Before</span>
+                <span className="tw-text-black tw-text-[32px] tw-font-['Noto Sans CJK KR']"> Dongseo </span>
+                <span className="tw-text-black tw-text-[32px] tw-font-bold tw-font-['Noto Sans CJK KR']">After</span>
+                <span className="tw-text-black tw-text-[32px] tw-font-['Noto Sans CJK KR']"> Dongse</span>
+              </div>
+              <div className="tw-w-[89px] tw-h-[3px] tw-left-[660.15px] tw-top-[112px] tw-absolute tw-bg-rose-600" />
+              <div className="tw-w-[80.85px] tw-h-[3px] tw-left-[819.15px] tw-top-[112px] tw-absolute tw-bg-rose-600" />
+              <img
+                className="tw-w-[404px] tw-h-[404px] tw-left-0 tw-top-0 tw-absolute"
+                src="/assets/images/main/dsu_1.png"
+              />
+            </div>
+          </div> */}
       </div>
       {isUser && (
         <div>

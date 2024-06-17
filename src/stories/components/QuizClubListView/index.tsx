@@ -220,24 +220,6 @@ const QuizClubListView = ({ border, id }) => {
 
                   <RadioGroup value={sortType} onChange={handleChangeQuiz} row>
                     <FormControlLabel
-                      value="DESC"
-                      control={
-                        <Radio
-                          sx={{
-                            color: '#ced4de',
-                            '&.Mui-checked': { color: '#e11837' },
-                          }}
-                          icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
-                          checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
-                        />
-                      }
-                      label={
-                        <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                          최신순
-                        </p>
-                      }
-                    />
-                    <FormControlLabel
                       value="ASC"
                       control={
                         <Radio
@@ -255,6 +237,25 @@ const QuizClubListView = ({ border, id }) => {
                         </p>
                       }
                     />
+                    <FormControlLabel
+                      value="DESC"
+                      control={
+                        <Radio
+                          sx={{
+                            color: '#ced4de',
+                            '&.Mui-checked': { color: '#e11837' },
+                          }}
+                          icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                          checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                        />
+                      }
+                      label={
+                        <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                          최신순
+                        </p>
+                      }
+                    />
+
                     <FormControlLabel
                       value="0001"
                       control={

@@ -193,9 +193,9 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
               <div className="tw-flex tw-gap-4">
                 <div
                   className="tw-bg-gray-400 tw-rounded-[3.5px] tw-px-[24.5px] tw-py-[10.0625px] tw-cursor-pointer"
-                  onClick={() => {
-                    setIsModalOpen(true);
-                  }}
+                  // onClick={() => {
+                  //   setIsModalOpen(true);
+                  // }}
                 >
                   <p className="tw-text-[12.25px] tw-font-bold tw-text-white tw-text-center">
                     {getButtonText(contents?.club?.clubStatus)}
