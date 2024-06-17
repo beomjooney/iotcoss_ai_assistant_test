@@ -186,8 +186,7 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
               <div className="tw-flex tw-items-center">
                 <img
                   src={contents?.club?.leaderProfileImageUrl}
-                  width={28}
-                  className="tw-mr-2 border tw-rounded-full"
+                  className="tw-mr-2 border tw-rounded-full tw-w-9 tw-h-9"
                 />
                 <p className="tw-text-sm tw-text-black">{contents?.club?.leaderNickname}</p>
               </div>
