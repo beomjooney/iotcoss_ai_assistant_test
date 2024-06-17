@@ -197,17 +197,17 @@ export const useClubQuizCrewManage = (params, onSuccess?: (data: any) => void, o
     {
       onSuccess,
       onError,
-      refetchOnWindowFocus: true,
+      refetchOnWindowFocus: false,
     },
   );
 };
 
-export const useSeminarDetail = (id, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
+export const useMyProgress = (id, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
   // return useQuery<SeminarContent, Error>(QUERY_KEY_FACTORY('SEMINAR').detail(id), () => seminarDetail(id), {
   return useQuery<any, Error>(QUERY_KEY_FACTORY('SEMINAR').detail(id), () => seminarDetail(id), {
     onSuccess,
     onError,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
     enabled: !!id,
   });
 };
@@ -217,7 +217,7 @@ export const useClubAboutDetail = (id, onSuccess?: (data: any) => void, onError?
   return useQuery<any, Error>(QUERY_KEY_FACTORY('QUIZ_ABOUT').detail(id), () => clubAboutDetail(id), {
     onSuccess,
     onError,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
     enabled: !!id,
   });
 };

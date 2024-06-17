@@ -2,7 +2,7 @@ import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { useStore } from 'src/store';
-import { paramProps, useSeminarDetail, useClubAboutDetail } from 'src/services/seminars/seminars.queries';
+import { paramProps, useMyProgress, useClubAboutDetail } from 'src/services/seminars/seminars.queries';
 import { RecommendContent } from 'src/models/recommend';
 import { useParticipantSeminar } from 'src/services/seminars/seminars.mutations';
 import { useSessionStore } from 'src/store/session';
@@ -42,7 +42,8 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
     console.log('clubStatus ', data?.clubStatus);
   });
 
-  const { isFetched: isParticipantListFetched, isLoading } = useSeminarDetail(id, data => {
+  //my-progress
+  const { isFetched: isParticipantListFetched, isLoading } = useMyProgress(id, data => {
     console.log(data);
     setContents(data);
   });
@@ -122,6 +123,9 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
   // - clubStatus : 0200(개설 예정), 0210 (개설 연기), 0220 (취소), 0300(모집중), 0310(모집완료)
 
   // 클럽 퀴즈 풀기 화면 조건
+  console.log('clubStatus', clubAbout?.clubStatus);
+  console.log('clubMemberStatus', clubAbout?.clubMemberStatus);
+
   const isQuizScreen =
     (clubAbout?.clubStatus === '4000' || clubAbout?.clubStatus === '0500') &&
     clubAbout?.clubMemberStatus === '0002' &&
