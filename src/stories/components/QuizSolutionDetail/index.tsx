@@ -276,7 +276,6 @@ BannerProps) => {
   };
 
   const [fileList, setFileList] = useState([]);
-  const handleConfirm = () => {};
 
   const handleDeleteFile = index => {
     setFileList(prevFileList => prevFileList.filter((_, i) => i !== index));

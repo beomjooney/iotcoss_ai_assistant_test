@@ -56,7 +56,7 @@ export function QuizSolutionTemplate({ id }: QuizSolutionTemplateProps) {
   const [applicationButton, setApplicationButton] = useState<ReactNode>(null);
   const { memberId, logged } = useSessionStore.getState();
 
-  const { isFetched: isParticipantListFetched, data } = useQuizSolutionDetail(id, 12);
+  const { isFetched: isParticipantListFetched, data } = useQuizSolutionDetail(id, clubSequence);
   // const { isFetched: isParticipantListStatusFetched, data: quizSolutionDetailStatus } = useQuizSolutionDetailStatus(id);
 
   const { mutate: onParticipant } = useParticipantSeminar();

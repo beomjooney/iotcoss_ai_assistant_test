@@ -199,10 +199,11 @@ ClubMiniCardProps) => {
           <div className="tw-mb-2 tw-text-base tw-font-medium tw-tracking-tight tw-text-gray-900 dark:tw-text-white">
             <span className="tw-font-bold">{item?.leaderNickname}</span>{' '}
             <span className="tw-text-gray-400 tw-px-3">
-              {item?.startAt.split(' ')[0]} ~ {item?.endAt.split(' ')[0]}
+              {item?.startAt} ~ {item?.endAt}
             </span>
             <span className="tw-text-gray-400">
-              | {item?.studyCycle?.toString()} | 퀴즈클럽 : {item?.weekCount} 주 | 학습 {item?.weekCount}회
+              {item?.studyCycle?.length > 0 ? `| ${item?.studyCycle.toString()} ` : ''} | &nbsp;퀴즈클럽 :{' '}
+              {item?.weekCount} 주 | 학습 : {item?.weekCount}회
             </span>
           </div>
         </div>
