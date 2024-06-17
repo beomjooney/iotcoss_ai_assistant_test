@@ -121,12 +121,12 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
       } else if (roles.includes('ROLE_USER')) {
         setLogoutButton(
           <div className={cx('custom-item')} id="logoutBtn">
-            <button
+            {/* <button
               className="tw-w-30 max-lg:tw-mr-1 tw-bg-red-600 tw-rounded-md tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
               onClick={() => (location.href = '/study-room')}
             >
               나의 학습방
-            </button>
+            </button> */}
           </div>,
         );
       } else {

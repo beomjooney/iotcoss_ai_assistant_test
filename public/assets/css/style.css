@@ -1844,6 +1844,7 @@ span.sub-title {
 }
 
 .container {
+  width: 1150px;
   padding-left: 10px;
   padding-right: 10px;
 }
