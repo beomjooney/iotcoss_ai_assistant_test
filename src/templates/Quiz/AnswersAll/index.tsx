@@ -68,13 +68,18 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
 
   const { isFetched: isParticipantListFetched, data } = useQuizRoungeInfo(id, data => {
     console.log('first get data');
-    setSelectedQuiz(data.clubQuizzes[0]);
-    console.log(data.clubQuizzes[0]);
+    const index = data?.clubQuizzes?.findIndex(item => item.myAnswerStatus === '0003');
+    setSelectedQuiz(data.clubQuizzes[index]);
+    const result = data?.clubQuizzes?.find(item => item.myAnswerStatus === '0003');
+    const selectedSession = result ? result.publishDate : null;
+    console.log('selectedSession 1', selectedSession);
+    setSelectedValue(selectedSession);
+    console.log(data.clubQuizzes[index]);
     setContents(data);
 
     setParams({
       club: id,
-      quiz: data.clubQuizzes[0]?.quizSequence,
+      quiz: data.clubQuizzes[index]?.quizSequence,
       data: { page, keyword: keyWorld },
     });
   });
@@ -126,10 +131,14 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
 
   useEffect(() => {
     if (contents?.clubQuizzes?.length > 0) {
+      const index = contents?.clubQuizzes?.findIndex(item => item.myAnswerStatus === '0003');
       console.log('content!!');
-      console.log(contents.clubQuizzes[0]);
-      console.log(contents.clubQuizzes[0].question);
-      setSelectedQuiz(contents.clubQuizzes[0]);
+      console.log(contents.clubQuizzes[index]);
+      setSelectedQuiz(contents.clubQuizzes[index]);
+      const result = contents.clubQuizzes.find(item => item.myAnswerStatus === '0003');
+      const selectedSession = result ? result.publishDate : null;
+      console.log(selectedSession);
+      setSelectedValue(selectedSession);
     }
   }, [contents]);
 
@@ -163,20 +172,29 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
     const selectedSession = contents.clubQuizzes.find(
       session => session.publishDate.split('-').slice(1).join('-') === value,
     );
+    //const result = contents.clubQuizzes.find(item => item.myAnswerStatus === '0003');
+    //const selectedSession = result ? result.publishDate : null;
 
     if (selectedSession) {
       if (!selectedSession.isPublished) {
         alert('퀴즈가 공개되지 않았습니다.');
-        setSelectedValue(''); // Reset to the default value
+        const result = contents.clubQuizzes.find(item => item.myAnswerStatus === '0003');
+        const selectedSessionValue = result ? result.publishDate : null;
+        console.log('selectedSessionValue 2', selectedSessionValue);
+        setSelectedValue(selectedSessionValue); // Reset to the default value
+
+        const index = data?.clubQuizzes?.findIndex(item => item.myAnswerStatus === '0003');
         setParams({
           club: id,
-          quiz: data.clubQuizzes[0]?.quizSequence,
+          quiz: data.clubQuizzes[index]?.quizSequence,
           data: { page, keyword: keyWorld },
         });
-        setSelectedQuiz(contents?.clubQuizzes[0]);
+        setSelectedQuiz(contents?.clubQuizzes[index]);
         return;
       } else {
         setSelectedValue(selectedSession.publishDate.split('-').slice(1).join('-'));
+        console.log(selectedSession);
+        console.log(selectedSession.publishDate.split('-').slice(1).join('-'));
       }
     }
 
@@ -258,7 +276,7 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
                   <select
                     className="form-select block w-full tw-bg-gray-100 tw-text-red-500 tw-font-bold"
                     onChange={handleQuizChange}
-                    value={selectedValue}
+                    value={selectedValue.split('-').slice(1).join('-')}
                     aria-label="Default select example"
                   >
                     {contents?.clubQuizzes?.map((session, idx) => {

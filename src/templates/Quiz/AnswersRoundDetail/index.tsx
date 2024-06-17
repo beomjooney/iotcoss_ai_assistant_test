@@ -60,13 +60,15 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
 
   const { isFetched: isParticipantListFetched, data } = useQuizRoungeInfo(id, data => {
     console.log('first get data');
-    setSelectedQuiz(data.clubQuizzes[0]);
+    const index = data.clubQuizzes.findIndex(item => item.myAnswerStatus === '0003');
+    //clubQuizzes[0]
+    setSelectedQuiz(data.clubQuizzes[index]);
     console.log(data);
     setContents(data);
 
     setParams({
       club: id,
-      quiz: data.clubQuizzes[0]?.quizSequence,
+      quiz: data.clubQuizzes[index]?.quizSequence,
       data: { page, keyword: keyWorld },
     });
   });
@@ -75,9 +77,10 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
 
   useEffect(() => {
     if (contents?.clubQuizzes?.length > 0) {
+      const index = contents?.clubQuizzes?.findIndex(item => item.myAnswerStatus === '0003');
       console.log('content!!');
-      console.log(contents.clubQuizzes[0]);
-      setSelectedQuiz(contents.clubQuizzes[0]);
+      console.log(contents?.clubQuizzes[index]);
+      setSelectedQuiz(contents?.clubQuizzes[index]);
       setIsLiked(contents?.club?.isFavorite);
     }
   }, [contents]);

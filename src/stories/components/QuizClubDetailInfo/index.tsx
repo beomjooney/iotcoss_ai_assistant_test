@@ -54,7 +54,7 @@ const getMemberText = status => {
     case '0001':
       return '승인대기중';
     case '0002':
-      return '승인';
+      return '승인대기중';
     case '0003':
       return '거절';
     case '0004':
