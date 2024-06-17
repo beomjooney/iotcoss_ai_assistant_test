@@ -401,9 +401,9 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
 
             {!logged && (
               <li className={cx('custom-item')}>
-                <button className="tw-mr-2 tw-bg-[#e11837] tw-rounded-md tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded">
+                {/* <button className="tw-mr-2 tw-bg-[#e11837] tw-rounded-md tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded">
                   나의 학습방
-                </button>
+                </button> */}
                 <button
                   className="tw-bg-white tw-rounded-md border tw-text-sm tw-text-gray-500 tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
                   onClick={handleClick}

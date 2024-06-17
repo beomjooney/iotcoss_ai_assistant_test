@@ -624,7 +624,7 @@ export function StudyRoomTemplate() {
                               </div>
                             </Grid>
                             <Grid item xs={4}>
-                              <div className="tw-bg-gray-50 tw-rounded-md tw-h-[400px] tw-p-5 tw-text-black ">
+                              <div className="tw-bg-gray-50 tw-rounded-t-lg tw-w-[360px] tw-h-[400px] tw-p-5 tw-text-black ">
                                 <div className="tw-font-bold tw-text-base tw-pb-5">나의 학습 캘린더</div>
                                 <div className="tw-bg-white">
                                   <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -673,7 +673,7 @@ export function StudyRoomTemplate() {
                                   })}
                                 </div>
                               )}
-                              <div className="tw-bg-gray-50 tw-rounded-md tw-h-[430px] tw-p-5 tw-text-black ">
+                              <div className="tw-bg-gray-50 tw-rounded-b-lg  tw-w-[360px]  tw-h-[430px] tw-p-5 tw-text-black ">
                                 <div className="tw-font-bold tw-text-base tw-pb-5">내가 풀어야 할 퀴즈</div>
                                 {/* {isQuizFetched && (
                         {quizList.map((item,i)=> (
