@@ -607,7 +607,7 @@ export function StudyRoomTemplate() {
                                       {quizStatusList.map((item, i) => (
                                         <div key={i}>
                                           <div
-                                            className={`tw-pb-1 tw-text-sm ${
+                                            className={`tw-text-sm ${
                                               item.isComplete ? 'tw-text-gray-500' : 'tw-text-red-500'
                                             }`}
                                           >
