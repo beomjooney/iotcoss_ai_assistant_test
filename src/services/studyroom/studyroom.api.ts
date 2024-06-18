@@ -8,21 +8,29 @@ export const clubMyList = async params => {
 
   return { data: data.data || [], nextPage: params.page + 1, totalPage };
 };
-export const studyRoomList = async params => {
-  const { data, headers } = await axiosGeneralAPI().get('/api/v1/studyroom/clubs', { params });
-  // const { data, headers } = await axiosGeneralAPI().get('/seminars', { params });
-  const totalPage = Number(headers['page-count']);
 
-  return { data: data.data || [], nextPage: params.page + 1, totalPage };
+export const studyRoomList = async params => {
+  const { data, headers } = await axiosGeneralAPI().get('/api/v1/study/clubs', { params });
+  return { data: data.data || [] };
+};
+
+export const studyProgress = async params => {
+  const { data, headers } = await axiosGeneralAPI().get('/api/v1/study/progresses', { params });
+  return { data: data.data || [] };
+};
+
+export const studyReminder = async params => {
+  const { data, headers } = await axiosGeneralAPI().get('/api/v1/study/reminder', { params });
+  return { data: data.data || [] };
 };
 
 export const studyQuizList = async params => {
-  const { data, headers } = await axiosGeneralAPI().get('/api/v1/studyroom/quizzes', { params });
-  const totalPage = Number(headers['page-count']);
-  return { data: data.data || [], nextPage: params.page + 1, totalPage };
+  const { data, headers } = await axiosGeneralAPI().get('/api/v1/study/completed-quizzes', { params });
+  return { data: data.data || [] };
 };
+
 export const studyQuizBadgeList = async params => {
-  const { data } = await axiosGeneralAPI().get('/api/v1/badges/me', { params });
+  const { data } = await axiosGeneralAPI().get('/api/v1/my/badges', { params });
   return { data: data.data };
 };
 
@@ -32,7 +40,7 @@ export const studyQuizOpponentBadgeList = async params => {
 };
 
 export const studyQuizCalendarList = async params => {
-  const { data, headers } = await axiosGeneralAPI().get('/api/v1/studyroom/calendar', { params });
+  const { data, headers } = await axiosGeneralAPI().get('/api/v1/study/calendar', { params });
   return data.data;
 };
 export const seminarMeWaitList = async params => {

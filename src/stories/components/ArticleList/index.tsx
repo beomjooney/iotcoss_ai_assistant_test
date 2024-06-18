@@ -116,7 +116,7 @@ const ArticleList: React.FC<any> = ({ data, refetchMyQuizContent }) => {
 
             <div className="tw-flex tw-justify-between">
               <div className="tw-flex">
-                <p className="text-sm  tw-text-sm tw-font-bold tw-text-left tw-text-black tw-pr-3">URL :</p>
+                <p className="text-sm  tw-text-sm tw-font-bold tw-text-left tw-text-black tw-w-20">URL :</p>
                 <p className=" text-sm tw-text-sm tw-text-left tw-text-gray-500 tw-line-clamp-1">{data.url}</p>
               </div>
               <div className="tw-flex tw-justify-start tw-items-center tw-gap-2">

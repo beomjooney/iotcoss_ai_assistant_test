@@ -22,6 +22,8 @@ import {
   studyQuizCalendarList,
   studyQuizBadgeList,
   studyQuizOpponentBadgeList,
+  studyReminder,
+  studyProgress,
 } from './studyroom.api';
 
 export interface paramProps {
@@ -52,7 +54,7 @@ export const useMyClubList = (
     {
       onSuccess,
       onError,
-      refetchOnWindowFocus: true,
+      refetchOnWindowFocus: false,
     },
   );
 };
@@ -69,7 +71,39 @@ export const useStudyRoomList = (
     {
       onSuccess,
       onError,
-      refetchOnWindowFocus: true,
+      refetchOnWindowFocus: false,
+    },
+  );
+};
+export const useStudyProgress = (
+  params?: paramProps,
+  onSuccess?: (data: RecommendContentsResponse) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 10;
+  return useQuery<RecommendContentsResponse, Error>(
+    QUERY_KEY_FACTORY('TEMP').list({ size: DEFAULT_SIZE, ...params }),
+    () => studyProgress({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+    },
+  );
+};
+export const useStudyReminder = (
+  params?: paramProps,
+  onSuccess?: (data: RecommendContentsResponse) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 10;
+  return useQuery<RecommendContentsResponse, Error>(
+    QUERY_KEY_FACTORY('SEMINAR').list({ size: DEFAULT_SIZE, ...params }),
+    () => studyReminder({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
     },
   );
 };
@@ -78,14 +112,14 @@ export const useStudyQuizList = (
   onSuccess?: (data: RecommendContentsResponse) => void,
   onError?: (error: Error) => void,
 ) => {
-  const DEFAULT_SIZE = 3;
+  const DEFAULT_SIZE = 10;
   return useQuery<RecommendContentsResponse, Error>(
-    QUERY_KEY_FACTORY('SEMINAR').list({ size: DEFAULT_SIZE, ...params }),
+    QUERY_KEY_FACTORY('ADMIN_CODE_LIST').list({ size: DEFAULT_SIZE, ...params }),
     () => studyQuizList({ size: DEFAULT_SIZE, ...params }),
     {
       onSuccess,
       onError,
-      refetchOnWindowFocus: true,
+      refetchOnWindowFocus: false,
     },
   );
 };

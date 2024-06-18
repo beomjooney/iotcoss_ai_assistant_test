@@ -30,7 +30,7 @@ const Footer = () => {
       <Desktop>
         <div className="main-container tw-flex tw-justify-center tw-bg-[#31343d]">
           <footer className={cx('footer-section ')}>
-            <div className="tw-w-[1920px] tw-h-[229px] tw-relative tw-overflow-hidden tw-bg-[#31343d]">
+            <div className="tw-w-[1920px] tw-h-[229px] tw-relative tw-overflow-hidden tw-bg-[#31343d] tw-fixed tw-bottom-0">
               <div className="tw-absolute tw-left-[-1px] tw-top-0" />
               <img
                 src="/assets/images/main/logo-1.png"
