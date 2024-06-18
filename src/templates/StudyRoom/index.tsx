@@ -242,7 +242,7 @@ export function StudyRoomTemplate() {
   const [reminderContents, setReminderContents] = useState<any[]>([]);
   const [badgeContents, setBadgeContents] = useState<RecommendContent[]>([]);
   const [quizList, setQuizList] = useState<RecommendContent[]>([]);
-  const [active, setActive] = useState(1);
+  const [active, setActive] = useState(0);
   const [contentType, setContentType] = useState(0);
   const [value, onChange] = useState<Date>(new Date());
   const day = moment(value).format('YYYY-MM-DD');
