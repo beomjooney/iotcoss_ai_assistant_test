@@ -207,7 +207,7 @@ export function StudyRoomTemplate() {
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [viewFilter, setViewFilter] = useState('0002');
-  const [clubViewFilter, setClubViewFilter] = useState('0002');
+  const [clubViewFilter, setClubViewFilter] = useState('0001');
   const [params, setParams] = useState<any>({ page, clubViewFilter: '0002' });
   // completed-quizzes
   const [quizSortType, setQuizSortType] = useState('ASC');
