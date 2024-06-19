@@ -122,7 +122,7 @@ const AIQuizList = ({
         <div className="tw-flex tw-justify-between tw-items-center">
           <div className="tw-flex-none tw-w-14 tw-items-center">
             <div className="tw-flex tw-flex-col tw-items-center">
-              <img className="tw-w-10 border tw-rounded-full" src="/assets/images/quiz/ellipse_201.png" alt={`Quiz`} />
+              <img className="tw-w-10 border tw-rounded-full" src="/assets/images/main/ellipse_201.png" alt={`Quiz`} />
               <p className="tw-pt-1 tw-text-sm tw-text-center tw-text-black">퀴즈 {index + 1}</p>
             </div>
           </div>
@@ -169,7 +169,7 @@ const AIQuizList = ({
         </div>
         <div className="tw-flex-none tw-w-14 tw-items-center">
           <div className="tw-flex tw-flex-col tw-items-center">
-            <img className="tw-w-9 border tw-rounded-full" src="/assets/images/quiz/ellipse_202.png" />
+            <img className="tw-w-9 border tw-rounded-full" src="/assets/images/main/ellipse_202.png" />
             <p className="tw-pt-1 tw-text-sm tw-text-center tw-text-black">모범답안</p>
           </div>
         </div>
