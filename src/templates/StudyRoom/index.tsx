@@ -84,7 +84,7 @@ const useStyles = makeStyles(theme => ({
     left: 0,
   },
   stickySecond: {
-    left: 100, // 이 값을 `Dessert` 열의 너비에 맞게 조정하세요.
+    left: 120, // 이 값을 `Dessert` 열의 너비에 맞게 조정하세요.
   },
   stickyThread: {
     left: 220, // 이 값을 `Dessert` 열의 너비에 맞게 조정하세요.
@@ -274,7 +274,7 @@ export function StudyRoomTemplate() {
   const [highlightedDays, setHighlightedDays] = React.useState([]); // 년월일 형식의 문자열로 변경
   const [calendarList, setCalendarList] = React.useState([]);
   const [quizStatusList, setQuizStatusList] = React.useState([]);
-  const [calendarParams, setCalendarParams] = useState<paramProps>({ calendarYearMonth });
+  const [calendarParams, setCalendarParams] = useState<any>({ calendarYearMonth });
 
   const [expandedItems, setExpandedItems] = useState(() => Array(quizList?.length || 0).fill(false));
 
@@ -320,7 +320,7 @@ export function StudyRoomTemplate() {
 
   // 나의학습내역
   const { isFetched: isProgressFetched, refetch: refetchProgress } = useStudyProgress(progressParams, data => {
-    console.log(data);
+    console.log('refetchProgress', data.data.contents);
     setProgressContents(data.data.contents || []);
     setProgressTotalPage(data.data.totalPages);
   });
@@ -778,11 +778,11 @@ export function StudyRoomTemplate() {
                           </RadioGroup>
                           <div className="tw-pb-5">
                             {/* <CourseCard key={index} data={course} /> */}
-                            {isContentFetched &&
-                              contents.map((course, index) => (
+                            {isProgressFetched &&
+                              progressContents?.map((course, index) => (
                                 <div key={index} className="tw-pb-5">
-                                  <CourseCard key={index} data={course} />
-                                  <TableContainer>
+                                  <CourseCard key={index} data={course.club} border={true} />
+                                  <TableContainer className="border tw-rounded-b-lg">
                                     <Table
                                       className={classes.table}
                                       aria-label="simple table"
@@ -792,7 +792,7 @@ export function StudyRoomTemplate() {
                                         <TableRow>
                                           <TableCell
                                             align="center"
-                                            width={100}
+                                            width={120}
                                             className={`${classes.sticky} ${classes.stickyFirst}`}
                                           >
                                             학생
@@ -805,14 +805,14 @@ export function StudyRoomTemplate() {
                                             학습현황
                                           </TableCell>
 
-                                          {dateInfo.sessions.map((session, index) => (
+                                          {course.schedules.map((session, index) => (
                                             <TableCell key={index} width={100} align="right">
                                               <div>
-                                                <p className="tw-text-base tw-font-medium tw-text-center tw-text-[#31343d] tw-left-[15px] tw-top-0">
-                                                  {session.number}
+                                                <p className="tw-pb-1 tw-text-sm tw-font-bold tw-text-center tw-text-[#31343d] tw-left-[15px] tw-top-0">
+                                                  {session.order}회
                                                 </p>
-                                                <p className="tw-w-full tw-h-3.5 tw-text-xs tw-font-medium tw-text-center tw-text-[#9ca5b2] tw-bottom-0">
-                                                  {session.date}
+                                                <p className="tw-w-full tw-h-3.5 tw-text-sm tw-font-medium tw-text-center tw-text-[#9ca5b2] tw-bottom-0">
+                                                  {moment(session.publishDate).format('MM-DD')} ({session.dayOfWeek})
                                                 </p>
                                               </div>
                                             </TableCell>
@@ -827,14 +827,17 @@ export function StudyRoomTemplate() {
                                           >
                                             <TableCell
                                               align="center"
-                                              width={100}
                                               component="th"
                                               scope="row"
                                               className={`${classes.stickyWhite} ${classes.stickyFirst}`}
                                             >
-                                              <div className="tw-flex tw-items-center tw-gap-3">
-                                                <img src="/assets/images/quiz/아그리파_1.png" alt="아그리파" />
-                                                <div>test</div>
+                                              <div className="tw-flex tw-items-center tw-gap-3 ">
+                                                <img
+                                                  src={course.participantProgress.member.profileImageUrl}
+                                                  className="tw-w-9 tw-h-9 tw-rounded-full "
+                                                  alt="아그리파"
+                                                />
+                                                <div>{course.participantProgress.member.nickname}</div>
                                               </div>
                                             </TableCell>
                                             <TableCell
@@ -846,53 +849,93 @@ export function StudyRoomTemplate() {
                                             >
                                               <div className="tw-grid tw-grid-cols-5 tw-gap-1 tw-justify-center tw-items-center">
                                                 <div className="tw-col-span-3 progress tw-rounded tw-h-2 tw-p-0">
-                                                  <span style={{ width: `70%` }}>
+                                                  <span
+                                                    style={{
+                                                      width: `${
+                                                        ((course?.participantProgress?.studyCount || 0) /
+                                                          (course?.participantProgress?.totalStudyCount || 0)) *
+                                                        100
+                                                      }%`,
+                                                    }}
+                                                  >
                                                     <span className="progress-line"></span>
                                                   </span>
                                                 </div>
-                                                <div className="tw-col-span-2">5회</div>
+                                                <div className="tw-col-span-2">
+                                                  {course.participantProgress.studyCount}회
+                                                </div>
                                               </div>
                                             </TableCell>
-                                            {info.sessions.map((info, index) => (
-                                              <TableCell
-                                                padding="none"
-                                                key={index}
-                                                align="center"
-                                                width={100}
-                                                component="th"
-                                                scope="row"
-                                              >
-                                                <div className="tw-h-12 tw-flex tw-justify-center tw-items-center">
-                                                  <svg
-                                                    width="20"
-                                                    height="20"
-                                                    viewBox="0 0 20 20"
-                                                    fill="none"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    className="tw-left-[-1px] tw-top-[-1px]"
-                                                    preserveAspectRatio="xMidYMid meet"
-                                                  >
-                                                    <circle
-                                                      cx="10"
-                                                      cy="10"
-                                                      r="9.5"
-                                                      fill={info.color}
-                                                      stroke={info.borderColor || info.color}
-                                                    ></circle>
-                                                    <text
-                                                      x="10" // x 좌표, 원의 중심
-                                                      y="10" // y 좌표, 원의 중심을 약간 조정해야 할 수 있습니다
-                                                      textAnchor="middle" // 텍스트를 x 좌표의 중앙에 정렬
-                                                      dominantBaseline="central" // 텍스트를 y 좌표의 중앙에 정렬
-                                                      fill="white" // 텍스트 색상
-                                                      className="tw-text-xs tw-font-medium tw-text-center"
+                                            {course.participantProgress.results.map((info, index) => {
+                                              // 상태에 따른 스타일 설정
+                                              let borderColor = '';
+                                              let color = '';
+                                              let text = '';
+
+                                              switch (info.status) {
+                                                case '0003':
+                                                  borderColor = '#31343D';
+                                                  color = '#31343D';
+                                                  text = 'v';
+                                                  break;
+                                                case '0001':
+                                                  borderColor = '#E0E4EB';
+                                                  color = '#f6f7fb';
+                                                  text = ' ';
+                                                  break;
+                                                case '0002':
+                                                  borderColor = '#E11837';
+                                                  color = 'white';
+                                                  text = '?';
+                                                  break;
+                                              }
+
+                                              return (
+                                                <TableCell
+                                                  padding="none"
+                                                  key={index}
+                                                  align="center"
+                                                  width={100}
+                                                  component="th"
+                                                  scope="row"
+                                                >
+                                                  <div className="tw-h-10 tw-flex tw-justify-center tw-items-center">
+                                                    <svg
+                                                      width="20"
+                                                      height="20"
+                                                      viewBox="0 0 20 20"
+                                                      fill="none"
+                                                      xmlns="http://www.w3.org/2000/svg"
+                                                      className="tw-left-[-1px] tw-top-[-1px]"
+                                                      preserveAspectRatio="xMidYMid meet"
                                                     >
-                                                      {info.text}
-                                                    </text>
-                                                  </svg>
-                                                </div>
-                                              </TableCell>
-                                            ))}
+                                                      <circle
+                                                        cx="10"
+                                                        cy="10"
+                                                        r="9.5"
+                                                        fill={color}
+                                                        stroke={borderColor}
+                                                      ></circle>
+                                                      <text
+                                                        x="10" // x 좌표, 원의 중심
+                                                        y="10" // y 좌표, 원의 중심을 약간 조정해야 할 수 있습니다
+                                                        textAnchor="middle" // 텍스트를 x 좌표의 중앙에 정렬
+                                                        dominantBaseline="central" // 텍스트를 y 좌표의 중앙에 정렬
+                                                        fill="white" // 텍스트 색상
+                                                        className="tw-text-xs tw-font-medium tw-text-center"
+                                                      >
+                                                        {text}
+                                                      </text>
+                                                    </svg>
+                                                  </div>
+                                                  <div className="tw-text-sm tw-text-gray-300">
+                                                    {info.status === '0001'
+                                                      ? 'D-' + info.relativeDaysToPublishDate
+                                                      : moment(info.publishDate).format('MM-DD')}
+                                                  </div>
+                                                </TableCell>
+                                              );
+                                            })}
                                           </TableRow>
                                         ))}
                                       </TableBody>

@@ -167,7 +167,7 @@ export const useStudyQuizCalendarList = (
     {
       onSuccess,
       onError,
-      refetchOnWindowFocus: true,
+      refetchOnWindowFocus: false,
     },
   );
 };
