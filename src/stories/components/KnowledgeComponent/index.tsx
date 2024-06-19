@@ -127,7 +127,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz }) => {
             ))}
           </div>
           <div className="tw-flex tw-px-8">
-            <p className="text-sm tw-font-bold tw-left-[52px] tw-top-[58px] tw-text-sm tw-pr-3 tw-text-left tw-text-[#31343d]">
+            <p className="tw-w-[80px] text-sm tw-font-bold tw-left-[52px] tw-top-[58px] tw-text-sm tw-pr-3 tw-text-left tw-text-[#31343d]">
               모범답안 :
             </p>
             <p className="tw-w-[973px] text-sm tw-left-[119px] tw-top-[58px] tw-text-sm tw-text-left tw-text-[#31343d]">

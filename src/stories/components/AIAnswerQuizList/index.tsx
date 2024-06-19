@@ -75,10 +75,12 @@ const AIAnswerQuizList = ({ info, refetchReply }) => {
   };
 
   const handleClick = () => {
-    if (value.trim() === '') {
-      alert('교수채점을 해주세요.');
-      return;
-    }
+    console.log(valueAI);
+
+    // if (valueAI.trim() === '') {
+    //   alert('교수채점을 해주세요.');
+    //   return;
+    // }
 
     const params = {
       clubSequence: info.clubSequence,
