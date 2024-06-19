@@ -1150,7 +1150,7 @@ export function QuizMakeTemplate() {
                     <>
                       <div className="tw-text-sm tw-font-bold tw-mt-4">생성할 퀴즈 개수</div>
                       <div className="tw-grid tw-grid-cols-6 tw-items-center">
-                        <div className="tw-col-span-4">
+                        <div className="tw-col-span-5 tw-mr-5">
                           {' '}
                           {/* Added col-span-4 */}
                           <TextField
@@ -1169,25 +1169,10 @@ export function QuizMakeTemplate() {
                             margin="dense"
                           />
                         </div>
-                        <div className="tw-pl-4 tw-col-span-1">
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                disabled
-                                defaultChecked
-                                sx={{
-                                  color: '#ced4de',
-                                  '&.Mui-checked': { color: '#e11837' },
-                                }}
-                              />
-                            }
-                            label={<p className="tw-text-sm tw-font-bold tw-text-left tw-text-[#31343d]">AI퀴즈</p>}
-                          />
-                        </div>
                         <button
                           disabled={isLoading} // 로딩 중일 때 버튼 비활성화
                           onClick={handleAIQuizClick}
-                          className="tw-col-span-1 tw-px-2 tw-py-3 tw-text-sm tw-bg-black tw-rounded-md tw-text-white"
+                          className="tw-mt-1 tw-col-span-1 tw-px-2 tw-py-2.5 tw-text-sm tw-bg-black tw-rounded-md tw-text-white"
                         >
                           {isLoading ? <CircularProgress size={20} /> : '퀴즈 생성하기'}
                         </button>
@@ -1229,14 +1214,14 @@ export function QuizMakeTemplate() {
               >
                 {expanded === 2 ? '완료' : '다음'}
               </button> */}
-
-              <button
-                onClick={handleQuizInsertClick}
-                className="tw-text-white tw-text-sm tw-px-10 tw-py-3 tw-text-base tw-bg-red-500 tw-rounded-md hover:tw-bg-gray-400"
-                style={{ marginLeft: 'auto' }} // 오른쪽 정렬
-              >
-                지식컨텐츠 저장
-              </button>
+              <div className="tw-text-right">
+                <button
+                  onClick={handleQuizInsertClick}
+                  className="tw-text-white tw-text-sm tw-px-10 tw-py-3 tw-text-base tw-bg-red-500 tw-rounded-md hover:tw-bg-gray-400"
+                >
+                  지식컨텐츠 저장
+                </button>
+              </div>
             </div>
           </div>
         </MentorsModal>

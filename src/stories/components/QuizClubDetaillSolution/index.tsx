@@ -90,7 +90,7 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
         return '모집중';
       case '0310':
         return '모집마감';
-      case '4000':
+      case '0400':
         return '진행중';
       case '0500':
         return '진행완료';

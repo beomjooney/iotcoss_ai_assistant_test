@@ -4,11 +4,16 @@ import { Menu, MenuItem } from '@mui/material';
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import { useDeletePostContent } from 'src/services/community/community.mutations';
+import { useContentSaveLike, useContentDeleteLike } from 'src/services/community/community.mutations';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
+import StarIcon from '@mui/icons-material/Star';
 
 const cx = classNames.bind(styles);
 
 const ArticleList: React.FC<any> = ({ data, refetchMyQuizContent }) => {
   const [anchorEl, setAnchorEl] = useState(null);
+  let [isLiked, setIsLiked] = useState(false);
+  let [likeCount, setLikeCount] = useState(0);
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
@@ -19,6 +24,13 @@ const ArticleList: React.FC<any> = ({ data, refetchMyQuizContent }) => {
   };
 
   const { mutate: onDeletePostContent, isSuccess: deletePostContentSuccess } = useDeletePostContent();
+  const { mutate: onSaveLike, isSuccess } = useContentSaveLike();
+  const { mutate: onDeleteLike } = useContentDeleteLike();
+
+  useEffect(() => {
+    setIsLiked(data?.isLiked);
+    setLikeCount(data?.likeCount);
+  }, [data]);
 
   console.log(data);
   useEffect(() => {
@@ -26,6 +38,18 @@ const ArticleList: React.FC<any> = ({ data, refetchMyQuizContent }) => {
       refetchMyQuizContent();
     }
   }, [deletePostContentSuccess]);
+
+  const onChangeLike = function (postNo: number) {
+    event.preventDefault();
+    setIsLiked(!isLiked);
+    if (isLiked) {
+      onDeleteLike(postNo);
+      setLikeCount(likeCount - 1);
+    } else {
+      onSaveLike(postNo);
+      setLikeCount(likeCount + 1);
+    }
+  };
 
   const handleDelete = contentSequence => {
     // Handle delete action
@@ -116,27 +140,21 @@ const ArticleList: React.FC<any> = ({ data, refetchMyQuizContent }) => {
 
             <div className="tw-flex tw-justify-between">
               <div className="tw-flex">
-                <p className="text-sm  tw-text-sm tw-font-bold tw-text-left tw-text-black tw-pr-3">URL :</p>
+                <p className="text-sm  tw-text-sm tw-font-bold tw-text-left tw-text-black tw-w-20">URL :</p>
                 <p className=" text-sm tw-text-sm tw-text-left tw-text-gray-500 tw-line-clamp-1">{data.url}</p>
               </div>
               <div className="tw-flex tw-justify-start tw-items-center tw-gap-2">
                 <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-1">
-                  <svg
-                    width={20}
-                    height={21}
-                    viewBox="0 0 20 21"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="flex-grow-0 flex-shrink-0 w-5 h-5 relative"
-                    preserveAspectRatio="xMidYMid meet"
+                  <button
+                    className="tw-flex-grow-0 tw-flex-shrink-0 "
+                    onClick={() => {
+                      onChangeLike(data.contentSequence);
+                    }}
                   >
-                    <path
-                      d="M18.3337 8.20008L12.342 7.68341L10.0003 2.16675L7.65866 7.69175L1.66699 8.20008L6.21699 12.1417L4.85033 18.0001L10.0003 14.8917L15.1503 18.0001L13.792 12.1417L18.3337 8.20008ZM10.0003 13.3334L6.86699 15.2251L7.70033 11.6584L4.93366 9.25842L8.58366 8.94175L10.0003 5.58341L11.4253 8.95008L15.0753 9.26675L12.3087 11.6667L13.142 15.2334L10.0003 13.3334Z"
-                      fill="#9CA5B2"
-                    />
-                  </svg>
+                    {isLiked ? <StarIcon color="error" /> : <StarBorderIcon color="disabled" />}
+                  </button>
                   <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#9ca5b2]">
-                    {data.starCount}
+                    {likeCount}
                   </p>
                 </div>
               </div>

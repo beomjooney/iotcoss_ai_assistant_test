@@ -127,7 +127,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
   console.log('clubMemberStatus', clubAbout?.clubMemberStatus);
 
   const isQuizScreen =
-    (clubAbout?.clubStatus === '4000' || clubAbout?.clubStatus === '0500') &&
+    (clubAbout?.clubStatus === '0400' || clubAbout?.clubStatus === '0500') &&
     clubAbout?.clubMemberStatus === '0002' &&
     isParticipantListFetched;
 

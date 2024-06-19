@@ -27,6 +27,8 @@ import {
   deleteReReply,
   myReReplyUpdate,
   clubJoin,
+  saveContentLiked,
+  deleteContentLiked,
 } from './community.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 
@@ -34,6 +36,20 @@ export const useSaveLike = (): UseMutationResult => {
   const queryClient = useQueryClient();
   // TODO : any 타입 변경
   return useMutation<any, any, any>((postId: number) => saveLiked(postId), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('LIKE').all),
+    onSuccess: async data => {
+      // alert('좋아요.~');
+    },
+  });
+};
+export const useContentSaveLike = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  // TODO : any 타입 변경
+  return useMutation<any, any, any>((postId: number) => saveContentLiked(postId), {
     onError: (error, variables, context) => {
       const { code, message } = error;
       alert(`mutation error : [${code}] ${message}`);
@@ -134,6 +150,20 @@ export const useDeleteLike = (): UseMutationResult => {
   const queryClient = useQueryClient();
   // TODO : any 타입 변경
   return useMutation<any, any, any>((postId: number) => deleteLiked(postId), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('LIKE').all),
+    onSuccess: async data => {
+      // alert('좋아요. 취소요~');
+    },
+  });
+};
+export const useContentDeleteLike = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  // TODO : any 타입 변경
+  return useMutation<any, any, any>((postId: number) => deleteContentLiked(postId), {
     onError: (error, variables, context) => {
       const { code, message } = error;
       alert(`mutation error : [${code}] ${message}`);

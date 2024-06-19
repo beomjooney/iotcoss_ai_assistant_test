@@ -122,11 +122,11 @@ const AIQuizList = ({
         <div className="tw-flex tw-justify-between tw-items-center">
           <div className="tw-flex-none tw-w-14 tw-items-center">
             <div className="tw-flex tw-flex-col tw-items-center">
-              <img className="tw-w-12 border tw-rounded-full" src="/assets/images/quiz/ellipse_201.png" alt={`Quiz`} />
+              <img className="tw-w-10 border tw-rounded-full" src="/assets/images/quiz/ellipse_201.png" alt={`Quiz`} />
               <p className="tw-pt-1 tw-text-sm tw-text-center tw-text-black">퀴즈 {index + 1}</p>
             </div>
           </div>
-          <div className="tw-flex-auto tw-w-[350px] tw-px-5">{quizList?.question}</div>
+          <div className="tw-flex-auto tw-px-5 tw-text-sm">{quizList?.question}</div>
           <div className="tw-flex-auto tw-w-32 tw-flex tw-justify-end">
             {sortQuizType === 'DESC' && (
               <button
@@ -145,7 +145,7 @@ const AIQuizList = ({
           </div>
         </div>
       </div>
-      <div className="tw-flex tw-justify-start tw-items-center tw-p-5">
+      <div className="tw-flex tw-justify-start tw-items-center tw-px-5 tw-pt-5">
         <div className="tw-flex-none tw-w-14 tw-items-center">
           <div className="tw-flex tw-flex-col tw-items-center">
             <svg
@@ -169,7 +169,7 @@ const AIQuizList = ({
         </div>
         <div className="tw-flex-none tw-w-14 tw-items-center">
           <div className="tw-flex tw-flex-col tw-items-center">
-            <img className="tw-w-10 border tw-rounded-full" src="/assets/images/quiz/ellipse_202.png" />
+            <img className="tw-w-9 border tw-rounded-full" src="/assets/images/quiz/ellipse_202.png" />
             <p className="tw-pt-1 tw-text-sm tw-text-center tw-text-black">모범답안</p>
           </div>
         </div>
@@ -177,20 +177,20 @@ const AIQuizList = ({
           {quizList?.modelAnswer && quizList.modelAnswer.trim() !== '' ? (
             <p className="tw-p-5 tw-text-sm tw-font-medium tw-text-left">{quizList.modelAnswer}</p>
           ) : (
-            <div className="tw-text-center">
+            <div className="tw-text-center tw-pb-5">
               <button
                 onClick={() => {
                   // Add your button click handler logic here
                   handleAIAnswerClick(index, quizList.question);
                 }}
-                className="tw-mt-2 tw-w-[140px] tw-px-4 tw-py-3 tw-text-white tw-bg-black tw-rounded tw-text-sm"
+                className="tw-mt-2 tw-w-[140px] tw-px-4 tw-py-2 tw-text-white tw-bg-black tw-rounded tw-text-sm"
               >
                 {isLoadingAI ? <CircularProgress color="info" size={18} /> : '모범 답안 생성'}
               </button>
             </div>
           )}
 
-          <div className="tw-flex tw-p-5 tw-pb-0 tw-text-sm tw-font-bold tw-gap-2">
+          <div className="tw-flex tw-items-center tw-p-5 tw-pb-0 tw-text-sm tw-font-bold tw-gap-2">
             채점기준 주요 키워드/문구 :
             {Array.isArray(quizList?.modelAnswerKeywords) ? (
               quizList.modelAnswerKeywords.map((tag, tagIndex) => (
