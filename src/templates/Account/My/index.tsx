@@ -70,7 +70,7 @@ export function MyTemplate({ children }: MyTemplateProps) {
     { no: 1, title: '가입승인 대기 클럽목록', link: '/club-waiting', role: 'all' },
     { no: 3, title: '클럽 즐겨찾기 목록', link: '/favorites', role: 'all' },
     { no: 4, title: '내 친구관리', link: '/friends', role: 'all' },
-    { no: 5, title: '포인트 적립 내역', link: '/point', role: 'all' },
+    // { no: 5, title: '포인트 적립 내역', link: '/point', role: 'all' },
     { no: 2, title: '커뮤니티 작성글', link: '/admin-club', role: 'all' },
     { no: 6, title: '개인정보관리', link: '/member-edit', role: 'all' },
     // { no: 1, title: 'MY 레벨&성향', link: '/level-tendency', role: 'all' },

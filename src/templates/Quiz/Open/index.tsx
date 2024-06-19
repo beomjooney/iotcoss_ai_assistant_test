@@ -1844,7 +1844,9 @@ export function QuizOpenTemplate() {
 
           <Divider sx={{ borderColor: 'rgba(0, 0, 0, 0.5);', paddingY: '10px' }} />
 
-          <p className="tw-text-xl tw-font-bold tw-text-left tw-text-black tw-py-5">퀴즈목록 {totalElements}개</p>
+          <p className="tw-text-xl tw-font-bold tw-text-left tw-text-black tw-py-5">
+            퀴즈목록 전체 : {totalElements}개 - (퀴즈선택 : {selectedQuizIds.length} / {scheduleData.length})
+          </p>
           {quizListData.map((item, index) => (
             <div key={index}>
               <QuizBreakerInfoCheck
