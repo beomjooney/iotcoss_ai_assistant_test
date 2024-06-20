@@ -651,7 +651,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                           >
                             {item?.threadType === '0001' && '사전 답변'}
                             {item?.threadType === '0002' && '사후 답변'}
-                            {item?.threadType === '0003' && 'AI 모범 답변'}
+                            {item?.threadType === '0003' && 'AI답변'}
                             {item?.threadType === '0004' && '교수님 피드백'}
                           </span>
                           <span className="tw-px-4">{item?.createdAt.replace('T', ' | ').split('.')[0]}</span>
@@ -710,9 +710,9 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                       refetchQuizAnswerGet();
                       setIsLoadingAI(true);
                     }}
-                    className="tw-w-[130px] tw-ml-3 tw-rounded tw-bg-black tw-text-white tw-text-sm tw-text-black tw-py-2 tw-px-4"
+                    className="tw-w-[140px] tw-ml-3 tw-rounded tw-bg-black tw-text-white tw-text-sm tw-text-black tw-py-2 tw-px-4"
                   >
-                    {isLoadingAI ? <CircularProgress color="info" size={18} /> : 'AI답변 불러오기'}
+                    {isLoadingAI ? <CircularProgress color="info" size={18} /> : 'AI피드백 불러오기'}
                   </button>
                 </div>
                 <div className="tw-ml-auto">점수 : </div>
@@ -737,7 +737,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                 placeholder="피드백을 입력해주세요."
                 value={clubQuizGetThreads}
                 ref={textInput}
-                rows={3}
+                rows={4}
               ></textarea>
 
               <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-5 tw-py-3">
