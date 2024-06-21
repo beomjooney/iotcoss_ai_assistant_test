@@ -29,6 +29,9 @@ import {
   clubJoin,
   saveContentLiked,
   deleteContentLiked,
+  hidePostQuiz,
+  publishPostQuiz,
+  recoverPostQuiz,
 } from './community.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 
@@ -322,6 +325,7 @@ export const useDeletePostContent = (): UseMutationResult => {
     onSuccess: async data => {},
   });
 };
+
 export const useDeletePostQuiz = (): UseMutationResult => {
   const queryClient = useQueryClient();
   // TODO : any 타입 변경
@@ -330,7 +334,46 @@ export const useDeletePostQuiz = (): UseMutationResult => {
       const { code, message } = error;
       alert(`mutation error : [${code}] ${message}`);
     },
-    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('REPLY').all),
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('QUIZ').all),
+    onSuccess: async data => {},
+  });
+};
+
+export const useRecoverPostQuiz = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  // TODO : any 타입 변경
+  return useMutation<any, any, any>(requestBody => recoverPostQuiz(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('QUIZ').all),
+    onSuccess: async data => {},
+  });
+};
+
+export const useHidePostQuiz = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  // TODO : any 타입 변경
+  return useMutation<any, any, any>(requestBody => hidePostQuiz(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('QUIZ').all),
+    onSuccess: async data => {},
+  });
+};
+
+export const usePublishPostQuiz = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  // TODO : any 타입 변경
+  return useMutation<any, any, any>(requestBody => publishPostQuiz(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('QUIZ').all),
     onSuccess: async data => {},
   });
 };

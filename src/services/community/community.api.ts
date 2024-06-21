@@ -133,6 +133,15 @@ export const deletePostContent = async (params: any) => {
 export const deletePostQuiz = async (params: any) => {
   await axiosGeneralAPI().delete(`/api/v1/my/quizzes/${params.quizSequence}`);
 };
+export const recoverPostQuiz = async (params: any) => {
+  await axiosGeneralAPI().put(`/api/v1/my/quizzes/${params.quizSequence}/restore`);
+};
+export const hidePostQuiz = async (params: any) => {
+  await axiosGeneralAPI().put(`/api/v1/my/quizzes/${params.quizSequence}/hide`);
+};
+export const publishPostQuiz = async (params: any) => {
+  await axiosGeneralAPI().put(`/api/v1/my/quizzes/${params.quizSequence}/open`);
+};
 
 // 글쓰기 생성
 export const saveCommunity = async (params: any) => await axiosGeneralAPI().post('/posts', params);

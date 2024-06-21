@@ -239,7 +239,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
         <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-pt-10">
           <div className="tw-col-start-1 tw-col-end-2 tw-flex tw-justify-center">
             <img
-              src="/assets/images/quiz/success_perspective_matte.png"
+              src="/assets/images/quiz/Success_perspective_matte.png"
               className="tw-max-w-[22.75px] tw-max-h-[23.19px] tw-object-cover"
             />
           </div>
@@ -254,7 +254,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
         <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-pt-10">
           <div className="tw-col-start-1 tw-col-end-1 tw-flex tw-justify-center">
             <img
-              src="/assets/images/quiz/user_perspective_matte.png"
+              src="/assets/images/quiz/User_perspective_matte.png"
               className="tw-max-w-[22.75px] tw-max-h-[23.19px] tw-object-cover"
             />
           </div>
@@ -270,7 +270,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
         <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-pt-10">
           <div className="tw-col-start-1 tw-col-end-1 tw-flex tw-justify-center">
             <img
-              src="/assets/images/quiz/trophy_perspective_matte.png"
+              src="/assets/images/quiz/Trophy_perspective_matte.png"
               className="tw-max-w-[22.75px] tw-max-h-[23.19px] tw-object-cover"
             />
           </div>
@@ -300,12 +300,12 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
                       <div
                         className={`tw-bg-[#d7ecff] tw-flex tw-text-sm tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-[8.75px] tw-px-[10.5px] tw-py-[3.5px] tw-rounded-[3.5px] `}
                       >
-                        <p className="">{user?.jobGroup?.name}</p>
+                        <p className="">{user?.jobGroup?.name || 'N/A'}</p>
                       </div>
                       <div
                         className={`tw-bg-[#e4e4e4] tw-flex tw-text-sm tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-[8.75px] tw-px-[10.5px] tw-py-[3.5px] tw-rounded-[3.5px] `}
                       >
-                        <p className="">{user?.job?.name}</p>
+                        <p className="">{user?.job?.name || 'N/A'}</p>
                       </div>
                     </div>
                   </div>
@@ -384,17 +384,15 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
             />
           </div>
           <div className="tw-col-start-2 tw-col-end-13">
-            <div className="tw-flex tw-flex-col">
-              <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-5">우리 클럽 대표퀴즈</p>
-              {selectedQuizzes?.slice(0, 3).map((quiz, index) => (
-                <div key={index} className="tw-mt-3.5 tw-flex tw-items-center tw-gap-3">
-                  <div className="tw-bg-[#e11837] tw-rounded-[3.5px] tw-px-[7px] tw-py-[1.75px]">
-                    <p className="tw-text-sm tw-font-bold tw-text-white">대표 {index + 1}</p>
-                  </div>
-                  <p className="tw-text-sm tw-text-black">{quiz.question || quiz.content}</p>
+            <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-5">우리 클럽 대표퀴즈</p>
+            {selectedQuizzes?.slice(0, 3).map((quiz, index) => (
+              <div key={index} className="tw-mt-3.5 tw-flex tw-items-start tw-gap-5">
+                <div className="flex-none tw-w-16 tw-text-center tw-bg-[#e11837] tw-rounded-[3.5px] tw-py-1">
+                  <p className="tw-text-sm tw-font-bold tw-text-white">대표 {index + 1}</p>
                 </div>
-              ))}
-            </div>
+                <div className="flex-initial tw-w-full tw-text-base tw-text-black">{quiz.question || quiz.content}</div>
+              </div>
+            ))}
           </div>
         </div>
       </div>

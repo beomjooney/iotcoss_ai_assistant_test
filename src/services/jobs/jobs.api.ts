@@ -23,6 +23,11 @@ export const getMyQuizContents = async params => {
   return data.data;
 };
 // 내 퀴즈 조회
+export const getMyQuizThresh = async params => {
+  const { data } = await axiosGeneralAPI().get('/api/v1/my/quizzes/trashbin', { params });
+  return data.data;
+};
+// 내 퀴즈 조회
 export const getGetSchedule = async params => {
   const { data } = await axiosGeneralAPI().get('/api/v1/club/quiz-schedule', { params });
   return data.data;

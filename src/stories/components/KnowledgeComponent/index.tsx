@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, MenuItem } from '@mui/material';
-import { useDeletePostQuiz } from 'src/services/community/community.mutations';
-const KnowledgeComponent = ({ data, refetchMyQuiz }) => {
+import {
+  useDeletePostQuiz,
+  useHidePostQuiz,
+  usePublishPostQuiz,
+  useRecoverPostQuiz,
+} from 'src/services/community/community.mutations';
+const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh = false }) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = event => {
@@ -13,12 +18,16 @@ const KnowledgeComponent = ({ data, refetchMyQuiz }) => {
   };
 
   const { mutate: onDeletePostQuiz, isSuccess: deletePostQuizSuccess } = useDeletePostQuiz();
+  const { mutate: onRecoverPostQuiz, isSuccess: recoverPostQuizSuccess } = useRecoverPostQuiz();
+  const { mutate: onHidePostQuiz, isSuccess: hidePostQuizSuccess } = useHidePostQuiz();
+  const { mutate: onPublishPostQuiz, isSuccess: publishPostQuizSuccess } = usePublishPostQuiz();
 
   useEffect(() => {
-    if (deletePostQuizSuccess) {
+    if (deletePostQuizSuccess || hidePostQuizSuccess || publishPostQuizSuccess || recoverPostQuizSuccess) {
       refetchMyQuiz();
+      refetchMyQuizThresh();
     }
-  }, [deletePostQuizSuccess]);
+  }, [deletePostQuizSuccess, hidePostQuizSuccess, publishPostQuizSuccess, recoverPostQuizSuccess]);
 
   const handleDelete = contentSequence => {
     // Handle delete action
@@ -31,12 +40,50 @@ const KnowledgeComponent = ({ data, refetchMyQuiz }) => {
     handleClose();
   };
 
+  const handleRecover = contentSequence => {
+    // Handle delete action
+    console.log('Delete clicked', contentSequence);
+    if (window.confirm('정말로 복구 하시겠습니까?')) {
+      onRecoverPostQuiz({
+        quizSequence: data.quizSequence,
+      });
+    }
+    handleClose();
+  };
+
+  const handleHide = contentSequence => {
+    // Handle delete action
+    console.log('Delete clicked', contentSequence);
+    if (window.confirm('정말로 비공개하시겠습니까?')) {
+      onHidePostQuiz({
+        quizSequence: data.quizSequence,
+      });
+    }
+    handleClose();
+  };
+
+  const handlePublish = contentSequence => {
+    // Handle delete action
+    console.log('Delete clicked', contentSequence);
+    if (window.confirm('정말로 공개하시겠습니까?')) {
+      onPublishPostQuiz({
+        quizSequence: data.quizSequence,
+      });
+    }
+    handleClose();
+  };
+
   return (
     <div>
       <div className="tw-pb-6">
         <div className="tw-flex tw-justify-between tw-items-center tw-px-8  tw-h-20 tw-overflow-hidden tw-rounded-lg tw-bg-[#f6f7fb]">
-          <p className=" tw-text-base tw-text-left tw-text-black">{data.question}</p>
-          <div className="tw-flex tw-justify-end tw-items-center tw-gap-5">
+          <div className="tw-flex tw-items-center tw-gap-5  tw-text-base tw-text-left tw-text-black">
+            <div className="tw-text-sm tw-text-center tw-text-[#9ca5b2] tw-w-14 tw-text-white tw-bg-black tw-rounded tw-py-1  ">
+              {data.publishStatus === '0001' ? '비공개' : '공개'}
+            </div>
+            <div className=" tw-text-left tw-text-black">{data.question}</div>
+          </div>
+          <div className="tw-flex tw-justify-end tw-items-center tw-gap-4">
             <p className="tw-text-sm tw-text-right tw-text-[#9ca5b2]">{data.createdAt}</p>
             <svg
               onClick={handleClick}
@@ -98,7 +145,22 @@ const KnowledgeComponent = ({ data, refetchMyQuiz }) => {
                 },
               }}
             >
-              <MenuItem onClick={handleDelete}>삭제하기</MenuItem>
+              {thresh ? (
+                <>
+                  <MenuItem onClick={handleRecover}>복구하기</MenuItem>
+                  <MenuItem onClick={handleDelete}>영구 삭제하기</MenuItem>
+                </>
+              ) : (
+                <>
+                  <MenuItem onClick={handleDelete}>퀴즈 수정하기</MenuItem>
+                  <MenuItem onClick={handleDelete}>삭제하기</MenuItem>
+                  {data.publishStatus === '0001' ? (
+                    <MenuItem onClick={handlePublish}>퀴즈 공개</MenuItem>
+                  ) : (
+                    <MenuItem onClick={handleHide}>퀴즈 비공개</MenuItem>
+                  )}
+                </>
+              )}
             </Menu>
 
             {/* Render tags */}

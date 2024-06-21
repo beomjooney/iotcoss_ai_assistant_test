@@ -8,6 +8,7 @@ import {
   getGetSchedule,
   getGetTemp,
   getMyQuizContents,
+  getMyQuizThresh,
 } from './jobs.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 import { RecommendContentsResponse } from 'src/models/recommend';
@@ -67,6 +68,22 @@ export const useMyQuizContents = (
   return useQuery<RecommendContentsResponse, Error>(
     QUERY_KEY_FACTORY('QUIZ_CONTENTS').list({ size: DEFAULT_SIZE, ...params }),
     () => getMyQuizContents({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+    },
+  );
+};
+export const useMyQuizThresh = (
+  params?: paramProps,
+  onSuccess?: (data: RecommendContentsResponse) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 10;
+  return useQuery<RecommendContentsResponse, Error>(
+    QUERY_KEY_FACTORY('MY_SEMINAR_PARTICIPANTS').list({ size: DEFAULT_SIZE, ...params }),
+    () => getMyQuizThresh({ size: DEFAULT_SIZE, ...params }),
     {
       onSuccess,
       onError,

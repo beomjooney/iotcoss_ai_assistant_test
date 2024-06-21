@@ -49,8 +49,13 @@ export const saveAIQuizAnswerListPut = async body => {
 };
 export const saveAIQuizAnswerSavePut = async body => {
   const { data } = await axiosGeneralAPI().put(
-    `/api/v1/clubs/${body.clubSequence}/quizzes/${body.quizSequence}/answers/${body.memberUUID}/feedback`,
-    { grading: body.grading },
+    `/api/v1/clubs/${body.quizSaveParams.clubSequence}/quizzes/${body.quizSaveParams.quizSequence}/answers/${body.quizSaveParams.memberUUID}/feedback`,
+    body.formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    },
   );
   return data.data;
 };

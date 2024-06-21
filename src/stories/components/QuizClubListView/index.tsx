@@ -317,7 +317,7 @@ const QuizClubListView = ({ border, id }) => {
                                 {item?.question}
                               </div>
                             </div>
-                            <div className="">
+                            <div className="tw-pr-4">
                               <button
                                 onClick={() => router.push('/quiz-answers/' + `${id}`)}
                                 type="button"

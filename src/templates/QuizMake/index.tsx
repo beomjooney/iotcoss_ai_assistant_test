@@ -7,7 +7,7 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/system/Box';
 import SearchIcon from '@mui/icons-material/Search';
 import { UseQueryResult } from 'react-query';
-import { useMyQuiz, useMyQuizContents } from 'src/services/jobs/jobs.queries';
+import { useMyQuiz, useMyQuizContents, useMyQuizThresh } from 'src/services/jobs/jobs.queries';
 import { useQuizSave, useAIQuizSave, useAIQuizAnswer, useQuizContentSave } from 'src/services/quiz/quiz.mutations';
 import { useDeletePost } from 'src/services/community/community.mutations';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
@@ -85,10 +85,13 @@ export function QuizMakeTemplate() {
   const [jobs, setJobs] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
+  const [pageThresh, setPageThresh] = useState(1);
+  const [totalThreshPage, setTotalThreshPage] = useState(1);
   const [quizPage, setQuizPage] = useState(1);
   const [totalQuizPage, setTotalQuizPage] = useState(1);
   const [params, setParams] = useState<any>({ page, quizSortType: '0001' });
   const [quizParams, setQuizParams] = useState<any>({ quizPage, sortType: 'DESC' });
+  const [quizThreshParams, setQuizThreshParams] = useState<any>({ quizPage, sortType: 'DESC' });
   const [recommendLevels, setRecommendLevels] = useState([]);
   const [quizUrl, setQuizUrl] = React.useState('');
   const [quizName, setQuizName] = React.useState('');
@@ -109,6 +112,7 @@ export function QuizMakeTemplate() {
   const [quizCount, setQuizCount] = useState('0');
   const [aiQuiz, setAiQuiz] = useState(false);
   const [quizSortType, setQuizSortType] = useState('0001');
+  const [quizThreshSortType, setQuizThreshSortType] = useState('0001');
   const [sortType, setSortType] = useState('DESC');
 
   const [universityCode, setUniversityCode] = useState('');
@@ -140,6 +144,9 @@ export function QuizMakeTemplate() {
   const handleChangeQuiz = event => {
     setQuizSortType(event.target.value);
   };
+  const handleChangeQuizThresh = event => {
+    setQuizThreshSortType(event.target.value);
+  };
   const handleChangeSortType = event => {
     setSortType(event.target.value);
   };
@@ -147,9 +154,10 @@ export function QuizMakeTemplate() {
   // api call
   const { data: myQuizData, refetch: refetchMyQuiz }: UseQueryResult<any> = useMyQuiz(params, data => {
     setContents(data.content);
-    setTotalPage(data.totalPages);
+    setTotalQuizPage(data.totalPages);
   });
 
+  //지식 컨텐츠 가져오기
   const { data: myQuizContentData, refetch: refetchMyQuizContent }: UseQueryResult<any> = useMyQuizContents(
     quizParams,
     data => {
@@ -157,6 +165,16 @@ export function QuizMakeTemplate() {
       setTotalPage(data.totalPages);
     },
   );
+
+  // 휴지통 가져오기
+  const { data: myQuizThresh, refetch: refetchMyQuizThresh }: UseQueryResult<any> = useMyQuizThresh(
+    quizThreshParams,
+    data => {
+      console.log(data.contents);
+      setTotalThreshPage(data.totalPages);
+    },
+  );
+
   const { isFetched: isOptionFetched, data: optionsData }: UseQueryResult<any> = useOptions();
 
   //quiz delete
@@ -224,19 +242,6 @@ export function QuizMakeTemplate() {
     refetchMyQuizContent();
   }, [postSuccess, postContentSuccess]);
 
-  // const { isFetched: isContentTypeFetched } = useContentTypes(data => {
-  //   setContentTypes(data.data.contents || []);
-  //   const contentsType = data.length >= 0 && data[0].id;
-  //   // setParams({
-  //   //   ...params,
-  //   //   contentsType,
-  //   // });
-  // });
-
-  // const { isFetched: isContentTypeJobFetched } = useContentJobTypes(data => {
-  //   setContentJobType(data.data.contents || []);
-  // });
-
   const handleAddClick = (isContent: boolean) => {
     setIsContentModalOpen(isContent);
     setContentUrl('');
@@ -267,6 +272,14 @@ export function QuizMakeTemplate() {
       quizSortType: quizSortType,
     });
   }, [page, keyWorld, quizSortType]);
+
+  useEffect(() => {
+    setQuizThreshParams({
+      page: pageThresh,
+      keyword: keyWorld,
+      quizSortType: quizThreshSortType,
+    });
+  }, [pageThresh, keyWorld, quizThreshSortType]);
 
   useEffect(() => {
     setQuizParams({
@@ -774,7 +787,11 @@ export function QuizMakeTemplate() {
 
               {myQuizData?.contents?.map((data, index) => (
                 <div key={index}>
-                  <KnowledgeComponent data={data} refetchMyQuiz={refetchMyQuiz} />
+                  <KnowledgeComponent
+                    data={data}
+                    refetchMyQuizThresh={refetchMyQuizThresh}
+                    refetchMyQuiz={refetchMyQuiz}
+                  />
                 </div>
               ))}
 
@@ -786,7 +803,73 @@ export function QuizMakeTemplate() {
 
           {/* 퀴즈목록에 해당하는 div */}
           {activeTab === '휴지통' && (
-            <div className={cx('container, tw-h-[50vh] tw-text-center')}>데이터가 없습니다.</div>
+            <div>
+              <div className="tw-flex tw-justify-start tw-items-center tw-w-[1120px] tw-h-12 tw-gap-6 tw-mb-8">
+                <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-3">
+                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                    정렬 :
+                  </p>
+
+                  <RadioGroup value={quizThreshSortType} onChange={handleChangeQuizThresh} row>
+                    <FormControlLabel
+                      value="0001"
+                      control={
+                        <Radio
+                          sx={{
+                            color: '#ced4de',
+                            '&.Mui-checked': { color: '#e11837' },
+                          }}
+                          icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                          checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                        />
+                      }
+                      label={
+                        <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                          최신순
+                        </p>
+                      }
+                    />
+                    <FormControlLabel
+                      value="0002"
+                      control={
+                        <Radio
+                          sx={{
+                            color: '#ced4de',
+                            '&.Mui-checked': { color: '#e11837' },
+                          }}
+                          icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                          checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                        />
+                      }
+                      label={
+                        <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                          오래된순
+                        </p>
+                      }
+                    />
+                  </RadioGroup>
+                </div>
+              </div>
+
+              {myQuizThresh?.contents?.map((data, index) => (
+                <div key={index}>
+                  <KnowledgeComponent
+                    thresh={true}
+                    data={data}
+                    refetchMyQuizThresh={refetchMyQuizThresh}
+                    refetchMyQuiz={refetchMyQuiz}
+                  />
+                </div>
+              ))}
+
+              {myQuizThresh?.contents?.length === 0 && (
+                <div className="tw-text-center tw-text-[#919191] border tw-p-20">데이터가 없습니다.</div>
+              )}
+
+              <div className="tw-mt-10">
+                <Pagination page={pageThresh} setPage={setPageThresh} total={totalThreshPage} />
+              </div>
+            </div>
           )}
 
           {/* 휴지통에 해당하는 div */}

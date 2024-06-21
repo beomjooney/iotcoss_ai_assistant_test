@@ -298,6 +298,9 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     console.log(memberUUID, quizSequence);
     setIsModalOpen(true);
     setClubQuizGetThreads('');
+    setGrade('');
+    setInputList([]);
+    setFileList([]);
 
     setQuizParams({
       club: id,
@@ -372,7 +375,10 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     fileInputRef.current.click();
   };
   const handleAddInput = () => {
-    setInputList([...inputList, { id: Date.now(), value: '' }]);
+    setInputList([...inputList, { id: Date.now(), value: '', url: '' }]);
+  };
+  const handleDeleteInput = id => {
+    setInputList(inputList.filter(input => input.id !== id));
   };
   const handleFileChange = event => {
     const files = Array.from(event.target.files);
@@ -388,8 +394,89 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     setFileList(prevFileList => [...prevFileList, ...files]);
   };
 
+  const handleInputChange = (id, event) => {
+    const newInputList = inputList.map(input => {
+      if (input.id === id) {
+        return { ...input, url: event.target.value };
+      }
+      return input;
+    });
+    setInputList(newInputList);
+  };
+  const handleInputContentChange = (id, event) => {
+    const newInputList = inputList.map(input => {
+      if (input.id === id) {
+        return { ...input, value: event.target.value };
+      }
+      return input;
+    });
+    console.log(newInputList); // Updated to log newInputList instead of inputList
+    setInputList(newInputList);
+  };
+
   const handleDeleteFile = index => {
     setFileList(prevFileList => prevFileList.filter((_, i) => i !== index));
+  };
+
+  const [grade, setGrade] = useState('');
+
+  const handlerSave = () => {
+    const formData = new FormData();
+
+    // Validate clubQuizGetThreads
+    if (!clubQuizGetThreads || typeof clubQuizGetThreads !== 'string') {
+      alert('Invalid feedback');
+      return;
+    }
+    formData.append('feedback', clubQuizGetThreads);
+
+    // Validate fileList
+    if (!Array.isArray(fileList) || fileList.some(file => !(file instanceof File))) {
+      alert('Invalid file list');
+      return;
+    }
+    fileList.forEach((file, index) => {
+      formData.append('files', file);
+    });
+
+    // Validate grade
+    if (grade === '') {
+      alert('Invalid grade');
+      return;
+    }
+    formData.append('grading', grade);
+    formData.append('isNew', grade);
+
+    // Validate inputList
+    if (!Array.isArray(inputList)) {
+      alert('Invalid input list');
+      return;
+    }
+    for (let i = 0; i < inputList.length; i++) {
+      const input = inputList[i];
+      if (!input.url || typeof input.url !== 'string') {
+        alert(`Invalid URL at index ${i}`);
+        return;
+      }
+      if (!input.value || typeof input.value !== 'string') {
+        alert(`Invalid description at index ${i}`);
+        return;
+      }
+      formData.append(`contents[${i}].url`, input.url);
+      formData.append(`contents[${i}].description`, input.value);
+      formData.append(`contents[${i}].isNew`, 'true');
+    }
+
+    // To log the formData contents
+    for (const [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+
+    const body = { quizSaveParams, formData };
+    console.log(body);
+
+    // Uncomment and replace with actual API call
+    onAIQuizAnswerSavePut(body);
   };
 
   return (
@@ -718,6 +805,8 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                 <div className="tw-ml-auto">점수 : </div>
                 <input
                   maxLength={3}
+                  value={grade}
+                  onChange={e => setGrade(e.target.value)}
                   style={{
                     padding: 0,
                     height: 35,
@@ -815,6 +904,47 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                   />
                 </div>
               </div>
+
+              {inputList.length > 0 && (
+                <div className="tw-flex  tw-py-2">
+                  <div className="tw-flex-none tw-w-30  tw-text-sm tw-mt-2">업로드된 링크 : </div>
+                  <div className="tw-flex-1 tw-text-left tw-pl-5">
+                    {inputList.map((input, index) => (
+                      <div key={input.id} style={{ marginBottom: '10px' }}>
+                        <div className="tw-flex tw-items-center tw-gap-2">
+                          <input
+                            type="text"
+                            className="border tw-w-full tw-rounded tw-text-sm tw-p-2"
+                            value={input.url}
+                            placeholder="http://"
+                            onChange={event => handleInputChange(input.id, event)}
+                          />
+                          <input
+                            type="text"
+                            className="border tw-w-full tw-rounded tw-text-sm tw-p-2"
+                            value={input.value}
+                            placeholder="지식컨텐츠 제목을 입력하세요."
+                            onChange={event => handleInputContentChange(input.id, event)}
+                          />
+                          <button
+                            className="tw-text-white tw-bg-black tw-rounded tw-w-[90px] tw-py-2 tw-ml-2"
+                            onClick={() => handleDeleteInput(input.id)}
+                          >
+                            -
+                          </button>
+                          <button
+                            className="tw-text-white tw-bg-black tw-rounded tw-w-[90px] tw-py-2"
+                            onClick={handleAddInput}
+                          >
+                            +
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {fileList.length > 0 && (
                 <div className="tw-flex  tw-py-2">
                   <div className="tw-flex tw-w-34 tw-text-sm tw-items-center">업로드된 파일 : </div>
@@ -847,11 +977,11 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                 </button>
                 <button
                   onClick={() => {
-                    // onAIQuizAnswerSavePut(quizSaveParams);
+                    handlerSave();
                   }}
                   className="tw-bg-red-500 tw-text-white tw-text-sm tw-text-black tw-py-3 tw-px-4 tw-w-40 tw-rounded"
                 >
-                  저장하기 (개발중)
+                  저장하기
                 </button>
               </div>
             </div>
