@@ -117,11 +117,7 @@ export function QuizMakeTemplate() {
   const [quizCount, setQuizCount] = useState('0');
   const [aiQuiz, setAiQuiz] = useState(false);
   const [quizSortType, setQuizSortType] = useState('0001');
-<<<<<<< HEAD
   const [quizThreshSortType, setQuizThreshSortType] = useState('0001');
-=======
-  const [contentSortType, setContentSortType] = useState('');
->>>>>>> 9fef90859a1f3530a25f2700cb0e2a2ca5a6c781
   const [sortType, setSortType] = useState('DESC');
 
   const [universityCode, setUniversityCode] = useState('');
