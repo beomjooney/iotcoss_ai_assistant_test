@@ -27,6 +27,10 @@ import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded';
 import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded';
 import { useOptions } from 'src/services/experiences/experiences.queries';
 import CircularProgress from '@mui/material/CircularProgress';
+
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
+
 import { set } from 'lodash';
 
 const studyStatus = [
@@ -76,6 +80,7 @@ export function QuizMakeTemplate() {
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isContentModalOpen, setIsContentModalOpen] = useState<boolean>(false);
+  const [isContentModalClick, setIsContentModalClick] = useState<boolean>(false);
   const [contentJobType, setContentJobType] = useState<any[]>([]);
   const [jobGroup, setJobGroup] = useState([]);
   const [active, setActive] = useState('0100');
@@ -112,7 +117,11 @@ export function QuizMakeTemplate() {
   const [quizCount, setQuizCount] = useState('0');
   const [aiQuiz, setAiQuiz] = useState(false);
   const [quizSortType, setQuizSortType] = useState('0001');
+<<<<<<< HEAD
   const [quizThreshSortType, setQuizThreshSortType] = useState('0001');
+=======
+  const [contentSortType, setContentSortType] = useState('');
+>>>>>>> 9fef90859a1f3530a25f2700cb0e2a2ca5a6c781
   const [sortType, setSortType] = useState('DESC');
 
   const [universityCode, setUniversityCode] = useState('');
@@ -932,380 +941,396 @@ export function QuizMakeTemplate() {
             </div>
           )}
         </div>
+
         <MentorsModal
           isQuiz={true}
-          title={'퀴즈 직접 등록하기'}
+          title={'퀴즈 만들기'}
           isOpen={isModalOpen}
-          onAfterClose={() => setIsModalOpen(false)}
+          isContentModalClick={isContentModalClick}
+          onAfterClose={() => {
+            setIsModalOpen(false);
+            setIsContentModalClick(false);
+          }}
         >
-          <div>
-            <Accordion
-              disableGutters
-              sx={{ backgroundColor: '#e9ecf2' }}
-              defaultExpanded
-              // expanded={expanded === 0}
-              // onChange={handleChange(0)}
-            >
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <div className="tw-text-lg tw-font-bold">지식컨텐츠 정보 입력</div>
-              </AccordionSummary>
-              <AccordionDetails sx={{ backgroundColor: 'white', padding: 3 }}>
-                <div className="tw-text-sm tw-font-bold tw-py-2">지식컨텐츠 유형</div>
-                <div className={cx('mentoring-button__group', 'tw-px-0', 'tw-justify-center', 'tw-items-center')}>
-                  {studyStatus.map((item, i) => (
+          <div className={`${isContentModalClick ? 'tw-flex' : ' '}`}>
+            <div className="">
+              <Accordion
+                disableGutters
+                sx={{ backgroundColor: '#e9ecf2' }}
+                defaultExpanded
+                // expanded={expanded === 0}
+                // onChange={handleChange(0)}
+              >
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <div className="tw-flex tw-justify-between tw-items-center tw-w-full">
+                    <div className="tw-text-lg tw-font-bold">지식컨텐츠 정보 입력</div>
+                    {!isContentModalOpen && (
+                      <button
+                        onClick={e => {
+                          e.stopPropagation(); // This stops the event from propagating to the AccordionSummary
+                          setIsContentModalClick(true);
+                        }}
+                        className="tw-text-sm tw-bg-black tw-p-2 tw-rounded tw-mr-5 tw-text-white"
+                      >
+                        지식컨텐츠 불러오기
+                      </button>
+                    )}
+                  </div>
+                </AccordionSummary>
+                <AccordionDetails sx={{ backgroundColor: 'white', padding: 3 }}>
+                  <div className="tw-text-sm tw-font-bold tw-py-2">지식컨텐츠 유형</div>
+                  <div className={cx('mentoring-button__group', 'tw-px-0', 'tw-justify-center', 'tw-items-center')}>
+                    {studyStatus.map((item, i) => (
+                      <Toggle
+                        key={item.id}
+                        label={item.name}
+                        name={item.name}
+                        value={item.id}
+                        variant="small"
+                        checked={active === item.id}
+                        isActive
+                        type="tabButton"
+                        onChange={() => {
+                          setActive(item.id);
+                          setContentType(item.id);
+                        }}
+                        className={cx('tw-mr-2 !tw-w-[90px]')}
+                      />
+                    ))}
+                  </div>
+
+                  <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식컨텐츠 URL</div>
+                  <TextField
+                    required
+                    value={contentUrl}
+                    onChange={handleContentUrlChange}
+                    id="username"
+                    name="username"
+                    variant="outlined"
+                    type="search"
+                    size="small"
+                    fullWidth
+                    sx={{
+                      '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
+                    }}
+                  />
+                  <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식컨텐츠 제목</div>
+                  <TextField
+                    required
+                    id="username"
+                    value={contentTitle}
+                    onChange={handleContentTitleChange}
+                    name="username"
+                    variant="outlined"
+                    type="search"
+                    size="small"
+                    fullWidth
+                    sx={{
+                      '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
+                    }}
+                  />
+                </AccordionDetails>
+              </Accordion>
+              <Accordion disableGutters defaultExpanded sx={{ backgroundColor: '#e9ecf2' }}>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <div className="tw-text-lg tw-font-bold">지식컨텐츠 태깅</div>
+                </AccordionSummary>
+                <AccordionDetails sx={{ backgroundColor: 'white', padding: 3 }}>
+                  <div className="tw-text-sm tw-font-bold tw-py-2">추천 대학</div>
+                  <select
+                    className="form-select"
+                    onChange={handleUniversityChange}
+                    aria-label="Default select example"
+                    value={universityCode}
+                  >
+                    <option>대학을 선택해주세요.</option>
+                    {optionsData?.data?.jobs?.map((university, index) => (
+                      <option key={index} value={university.code}>
+                        {university.name}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">추천 학과</div>
+                  <select
+                    className="form-select"
+                    aria-label="Default select example"
+                    disabled={jobs.length === 0}
+                    onChange={handleJobChange}
+                    value={selectedJob}
+                  >
+                    <option disabled value="">
+                      학과를 선택해주세요.
+                    </option>
+                    {jobs.map((job, index) => (
+                      <option key={index} value={job.code}>
+                        {job.name}
+                      </option>
+                    ))}
+                  </select>
+
+                  <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">추천 학년</div>
+                  {optionsData?.data?.jobLevels?.map((item, i) => (
                     <Toggle
-                      key={item.id}
+                      key={item.code}
                       label={item.name}
                       name={item.name}
-                      value={item.id}
+                      value={item.code}
                       variant="small"
-                      checked={active === item.id}
+                      checked={activeQuiz === item.code}
                       isActive
                       type="tabButton"
                       onChange={() => {
-                        setActive(item.id);
-                        setContentType(item.id);
-                        // setParams({
-                        //   ...params,
-                        //   viewFilter: item.id,
-                        //   page,
-                        // });
-                        // setPage(1);
+                        setActiveQuiz(item.code);
+                        console.log(item);
+                        setJobLevel(item.code);
                       }}
-                      className={cx('tw-mr-2 !tw-w-[90px]')}
+                      className={cx('tw-mr-3 !tw-w-[85px]')}
                     />
                   ))}
-                </div>
-
-                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식컨텐츠 URL</div>
-                <TextField
-                  required
-                  value={contentUrl}
-                  onChange={handleContentUrlChange}
-                  id="username"
-                  name="username"
-                  variant="outlined"
-                  type="search"
-                  size="small"
-                  fullWidth
-                  sx={{
-                    '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
-                  }}
-                />
-                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식컨텐츠 제목</div>
-                <TextField
-                  required
-                  id="username"
-                  value={contentTitle}
-                  onChange={handleContentTitleChange}
-                  name="username"
-                  variant="outlined"
-                  type="search"
-                  size="small"
-                  fullWidth
-                  sx={{
-                    '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
-                  }}
-                />
-              </AccordionDetails>
-            </Accordion>
-            <Accordion
-              disableGutters
-              defaultExpanded
-              sx={{ backgroundColor: '#e9ecf2' }}
-              // expanded={expanded === 1}
-              // onChange={handleChange(1)}
-            >
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <div className="tw-text-lg tw-font-bold">지식컨텐츠 태깅</div>
-              </AccordionSummary>
-              <AccordionDetails sx={{ backgroundColor: 'white', padding: 3 }}>
-                <div className="tw-text-sm tw-font-bold tw-py-2">추천 대학</div>
-                <select
-                  className="form-select"
-                  onChange={handleUniversityChange}
-                  aria-label="Default select example"
-                  value={universityCode}
-                >
-                  <option>대학을 선택해주세요.</option>
-                  {optionsData?.data?.jobs?.map((university, index) => (
-                    <option key={index} value={university.code}>
-                      {university.name}
-                    </option>
-                  ))}
-                </select>
-                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">추천 학과</div>
-                <select
-                  className="form-select"
-                  aria-label="Default select example"
-                  disabled={jobs.length === 0}
-                  onChange={handleJobChange}
-                  value={selectedJob}
-                >
-                  <option disabled value="">
-                    학과를 선택해주세요.
-                  </option>
-                  {jobs.map((job, index) => (
-                    <option key={index} value={job.code}>
-                      {job.name}
-                    </option>
-                  ))}
-                </select>
-
-                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">추천 학년</div>
-                {optionsData?.data?.jobLevels?.map((item, i) => (
-                  <Toggle
-                    key={item.code}
-                    label={item.name}
-                    name={item.name}
-                    value={item.code}
-                    variant="small"
-                    checked={activeQuiz === item.code}
-                    isActive
-                    type="tabButton"
-                    onChange={() => {
-                      setActiveQuiz(item.code);
-                      console.log(item);
-                      setJobLevel(item.code);
-                      // setParams({
-                      //   ...params,
-                      //   viewFilter: item.id,
-                      //   page,
-                      // });
-                      // setPage(1);
+                  <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">학습 주제</div>
+                  <TextField
+                    required
+                    id="username"
+                    name="username"
+                    variant="outlined"
+                    type="search"
+                    value={selectedSubject}
+                    size="small"
+                    onChange={handleInputSubjectChange}
+                    fullWidth
+                    sx={{
+                      '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
                     }}
-                    className={cx('tw-mr-2 !tw-w-[90px]')}
                   />
-                ))}
-                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">학습 주제</div>
-                <TextField
-                  required
-                  id="username"
-                  name="username"
-                  variant="outlined"
-                  type="search"
-                  value={selectedSubject}
-                  size="small"
-                  onChange={handleInputSubjectChange}
-                  fullWidth
-                  sx={{
-                    '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
-                  }}
-                />
-                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">학습 챕터</div>
-                <TextField
-                  required
-                  id="username"
-                  name="username"
-                  value={selectedChapter}
-                  onChange={handleInputChapterChange}
-                  variant="outlined"
-                  type="search"
-                  size="small"
-                  fullWidth
-                  sx={{
-                    '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
-                  }}
-                />
-                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">학습 키워드</div>
-                <TagsInput
-                  value={selected1}
-                  onChange={setSelected1}
-                  name="fruits"
-                  placeHolder="학습 키워드 입력 후 엔터를 쳐주세요."
-                />
-                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">스킬</div>
-                <TagsInput
-                  value={selected2}
-                  onChange={setSelected2}
-                  name="fruits"
-                  placeHolder="스킬 입력 후 엔터를 쳐주세요."
-                />
-              </AccordionDetails>
-            </Accordion>
-
-            {isContentModalOpen && (
-              <Accordion
-                defaultExpanded
-                disableGutters
-                sx={{ backgroundColor: '#e9ecf2' }}
-                // expanded={expanded === 2}
-                // onChange={handleChange(2)}
-              >
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <div className="tw-text-lg tw-font-bold">퀴즈 정보 입력</div>
-                </AccordionSummary>
-                <AccordionDetails sx={{ backgroundColor: 'white', padding: 3 }}>
-                  <div className="tw-flex tw-justify-start tw-items-center tw-w-[1120px] tw-h-12 tw-gap-6">
-                    <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-3">
-                      <RadioGroup value={sortQuizType} onChange={handleChangeQuizType} row>
-                        <FormControlLabel
-                          value="ASC"
-                          control={
-                            <Radio
-                              sx={{
-                                color: '#ced4de',
-                                '&.Mui-checked': { color: '#e11837' },
-                              }}
-                              icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
-                              checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
-                            />
-                          }
-                          label={
-                            <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                              AI자동생성
-                            </p>
-                          }
-                        />
-                        <FormControlLabel
-                          value="DESC"
-                          control={
-                            <Radio
-                              sx={{
-                                color: '#ced4de',
-                                '&.Mui-checked': { color: '#e11837' },
-                              }}
-                              icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
-                              checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
-                            />
-                          }
-                          label={
-                            <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                              수동생성
-                            </p>
-                          }
-                        />
-                      </RadioGroup>
-                    </div>
-                  </div>
-
-                  {sortQuizType === 'DESC' && (
-                    <>
-                      <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">퀴즈</div>
-                      <TextField
-                        required
-                        id="username"
-                        name="username"
-                        variant="outlined"
-                        type="search"
-                        value={question}
-                        size="small"
-                        onChange={handleQuestionChange}
-                        fullWidth
-                        sx={{
-                          '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
-                        }}
-                      />
-                      <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">모범답안</div>
-                      <TextField
-                        required
-                        id="username"
-                        name="username"
-                        value={modelAnswerFinal}
-                        onChange={handleModelAnswerChange}
-                        variant="outlined"
-                        type="search"
-                        size="small"
-                        fullWidth
-                        sx={{
-                          '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
-                        }}
-                      />
-                      <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">채점기준 주요 키워드/문구</div>
-                      <TagsInput
-                        value={selected3}
-                        onChange={setSelected3}
-                        name="fruits"
-                        placeHolder="주요 키워드/문구 입력 후 엔터를 쳐주세요."
-                      />
-                      <div className="tw-text-right tw-mt-5">
-                        <button
-                          onClick={handleQuizClick}
-                          className="tw-px-5 tw-py-3 tw-text-sm tw-bg-black tw-rounded tw-text-white"
-                        >
-                          {isModify ? '수정하기' : '퀴즈 생성하기'}
-                        </button>
-                      </div>
-                    </>
-                  )}
-
-                  {sortQuizType === 'ASC' && (
-                    <>
-                      <div className="tw-text-sm tw-font-bold tw-mt-4">생성할 퀴즈 개수</div>
-                      <div className="tw-grid tw-grid-cols-6 tw-items-center">
-                        <div className="tw-col-span-5 tw-mr-5">
-                          {' '}
-                          {/* Added col-span-4 */}
-                          <TextField
-                            required
-                            id="username"
-                            name="username"
-                            value={quizCount}
-                            onChange={handleQuizCountChange}
-                            variant="outlined"
-                            type="search"
-                            size="small"
-                            fullWidth
-                            sx={{
-                              '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
-                            }}
-                            margin="dense"
-                          />
-                        </div>
-                        <button
-                          disabled={isLoading} // 로딩 중일 때 버튼 비활성화
-                          onClick={handleAIQuizClick}
-                          className="tw-mt-1 tw-col-span-1 tw-px-2 tw-py-2.5 tw-text-sm tw-bg-black tw-rounded-md tw-text-white"
-                        >
-                          {isLoading ? <CircularProgress size={20} /> : '퀴즈 생성하기'}
-                        </button>
-                      </div>
-                    </>
-                  )}
-
-                  {quizList.map((quiz, index) => (
-                    <div key={index}>
-                      <AIQuizList
-                        contentType={contentType}
-                        contentUrl={contentUrl}
-                        selectedJob={selectedJob}
-                        quiz={quiz}
-                        index={index}
-                        sortQuizType={sortQuizType}
-                        handleDeleteQuiz={handleDeleteQuiz}
-                        handleEditQuiz={handleEditQuiz}
-                        updateQuizList={updateQuizList}
-                      />
-                    </div>
-                  ))}
+                  <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">학습 챕터</div>
+                  <TextField
+                    required
+                    id="username"
+                    name="username"
+                    value={selectedChapter}
+                    onChange={handleInputChapterChange}
+                    variant="outlined"
+                    type="search"
+                    size="small"
+                    fullWidth
+                    sx={{
+                      '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
+                    }}
+                  />
+                  <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">학습 키워드</div>
+                  <TagsInput
+                    value={selected1}
+                    onChange={setSelected1}
+                    name="fruits"
+                    placeHolder="학습 키워드 입력 후 엔터를 쳐주세요."
+                  />
+                  <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">스킬</div>
+                  <TagsInput
+                    value={selected2}
+                    onChange={setSelected2}
+                    name="fruits"
+                    placeHolder="스킬 입력 후 엔터를 쳐주세요."
+                  />
                 </AccordionDetails>
               </Accordion>
-            )}
 
-            <div className="tw-py-5 tw-text-center">
-              {/* <button
-                onClick={handlePreviousAccordion}
-                className="tw-text-sm tw-px-10 tw-py-2 tw-text-base tw-bg-gray-300 tw-rounded-md hover:tw-bg-gray-400"
-                style={{ marginRight: 'auto' }} // 왼쪽 정렬
-              >
-                이전
-              </button> */}
-              {/* <button
-                onClick={handleNextAccordion}
-                className="tw-px-10 tw-py-2 tw-text-base tw-bg-gray-300 tw-rounded-md hover:tw-bg-gray-400"
-                style={{ marginLeft: 'auto' }} // 오른쪽 정렬
-              >
-                {expanded === 2 ? '완료' : '다음'}
-              </button> */}
-              <div className="tw-text-right">
-                <button
-                  onClick={handleQuizInsertClick}
-                  className="tw-text-white tw-text-sm tw-px-10 tw-py-3 tw-text-base tw-bg-red-500 tw-rounded-md hover:tw-bg-gray-400"
-                >
-                  지식컨텐츠 저장
-                </button>
+              {isContentModalOpen && (
+                <Accordion defaultExpanded disableGutters sx={{ backgroundColor: '#e9ecf2' }}>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <div className="tw-text-lg tw-font-bold">퀴즈 정보 입력</div>
+                  </AccordionSummary>
+                  <AccordionDetails sx={{ backgroundColor: 'white', padding: 3 }}>
+                    <div className="tw-flex tw-justify-start tw-items-center tw-w-[1120px] tw-h-12 tw-gap-6">
+                      <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-3">
+                        <RadioGroup value={sortQuizType} onChange={handleChangeQuizType} row>
+                          <FormControlLabel
+                            value="ASC"
+                            control={
+                              <Radio
+                                sx={{
+                                  color: '#ced4de',
+                                  '&.Mui-checked': { color: '#e11837' },
+                                }}
+                                icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                                checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                              />
+                            }
+                            label={
+                              <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                                AI자동생성
+                              </p>
+                            }
+                          />
+                          <FormControlLabel
+                            value="DESC"
+                            control={
+                              <Radio
+                                sx={{
+                                  color: '#ced4de',
+                                  '&.Mui-checked': { color: '#e11837' },
+                                }}
+                                icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                                checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                              />
+                            }
+                            label={
+                              <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                                수동생성
+                              </p>
+                            }
+                          />
+                        </RadioGroup>
+                      </div>
+                    </div>
+
+                    {sortQuizType === 'DESC' && (
+                      <>
+                        <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">퀴즈</div>
+                        <TextField
+                          required
+                          id="username"
+                          name="username"
+                          variant="outlined"
+                          type="search"
+                          value={question}
+                          size="small"
+                          onChange={handleQuestionChange}
+                          fullWidth
+                          sx={{
+                            '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
+                          }}
+                        />
+                        <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">모범답안</div>
+                        <TextField
+                          required
+                          id="username"
+                          name="username"
+                          value={modelAnswerFinal}
+                          onChange={handleModelAnswerChange}
+                          variant="outlined"
+                          type="search"
+                          size="small"
+                          fullWidth
+                          sx={{
+                            '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
+                          }}
+                        />
+                        <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">채점기준 주요 키워드/문구</div>
+                        <TagsInput
+                          value={selected3}
+                          onChange={setSelected3}
+                          name="fruits"
+                          placeHolder="주요 키워드/문구 입력 후 엔터를 쳐주세요."
+                        />
+                        <div className="tw-text-right tw-mt-5">
+                          <button
+                            onClick={handleQuizClick}
+                            className="tw-px-5 tw-py-3 tw-text-sm tw-bg-black tw-rounded tw-text-white"
+                          >
+                            {isModify ? '수정하기' : '퀴즈 생성하기'}
+                          </button>
+                        </div>
+                      </>
+                    )}
+
+                    {sortQuizType === 'ASC' && (
+                      <>
+                        <div className="tw-text-sm tw-font-bold tw-mt-4">생성할 퀴즈 개수</div>
+                        <div className="tw-grid tw-grid-cols-6 tw-items-center">
+                          <div className="tw-col-span-5 tw-mr-5">
+                            {' '}
+                            {/* Added col-span-4 */}
+                            <TextField
+                              required
+                              id="username"
+                              name="username"
+                              value={quizCount}
+                              onChange={handleQuizCountChange}
+                              variant="outlined"
+                              type="search"
+                              size="small"
+                              fullWidth
+                              sx={{
+                                '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
+                              }}
+                              margin="dense"
+                            />
+                          </div>
+                          <button
+                            disabled={isLoading} // 로딩 중일 때 버튼 비활성화
+                            onClick={handleAIQuizClick}
+                            className="tw-mt-1 tw-col-span-1 tw-px-2 tw-py-2.5 tw-text-sm tw-bg-black tw-rounded-md tw-text-white"
+                          >
+                            {isLoading ? <CircularProgress size={20} /> : '퀴즈 생성하기'}
+                          </button>
+                        </div>
+                      </>
+                    )}
+
+                    {quizList.map((quiz, index) => (
+                      <div key={index}>
+                        <AIQuizList
+                          contentType={contentType}
+                          contentUrl={contentUrl}
+                          selectedJob={selectedJob}
+                          quiz={quiz}
+                          index={index}
+                          sortQuizType={sortQuizType}
+                          handleDeleteQuiz={handleDeleteQuiz}
+                          handleEditQuiz={handleEditQuiz}
+                          updateQuizList={updateQuizList}
+                        />
+                      </div>
+                    ))}
+                  </AccordionDetails>
+                </Accordion>
+              )}
+
+              <div className="tw-py-5 tw-text-center">
+                <div className="tw-text-right">
+                  <button
+                    onClick={handleQuizInsertClick}
+                    className="tw-text-white tw-text-sm tw-px-10 tw-py-3 tw-text-base tw-bg-red-500 tw-rounded-md hover:tw-bg-gray-400"
+                  >
+                    지식컨텐츠 저장
+                  </button>
+                </div>
               </div>
             </div>
+            {isContentModalClick && (
+              <div className="tw-flex-1 tw-p-5 tw-ml-5 tw-w-full">
+                <div className="tw-text-lg tw-font-bold tw-mb-5 tw-text-black">템플릿 불러오기</div>
+                <FormControl>
+                  <RadioGroup
+                    aria-labelledby=""
+                    defaultValue=""
+                    name="radio-buttons-group"
+                    value={contentSortType}
+                    onChange={handleChangeContent}
+                  >
+                    {myQuizContentData?.contents?.map((data, index) => (
+                      <FormControlLabel
+                        key={index}
+                        className="tw-w-full border tw-p-2 tw-mb-2 tw-rounded-lg"
+                        style={{ width: '330px' }}
+                        value={data.contentSequence}
+                        control={<Radio />}
+                        label={data.description}
+                        onClick={() => {
+                          console.log(data);
+                          handleClickContent(data);
+                          // setContentSortType(data.contentSequence);
+                        }}
+                      />
+                    ))}
+                  </RadioGroup>
+                </FormControl>
+
+                <div className="tw-mt-5">
+                  <Pagination page={quizPage} setPage={setQuizPage} total={totalQuizPage} />
+                </div>
+              </div>
+            )}
           </div>
         </MentorsModal>
       </div>

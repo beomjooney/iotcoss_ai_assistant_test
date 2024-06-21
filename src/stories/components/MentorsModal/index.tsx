@@ -9,6 +9,7 @@ ReactModal.setAppElement('body');
 
 export interface MentorsModalProps {
   isOpen: boolean;
+  isContentModalClick: boolean;
   title?: string;
   isProfile?: boolean;
   isQuiz?: boolean;
@@ -24,6 +25,7 @@ function MentorsModal({
   closable = true,
   isProfile = false,
   isQuiz = false,
+  isContentModalClick = false,
   onAfterClose,
 }: MentorsModalProps) {
   const [isShow, setIsShow] = useState<boolean>(false);
@@ -103,7 +105,7 @@ function MentorsModal({
               top: '50px',
               left: '50%',
               transform: 'translateX(-50%)',
-              width: isProfile ? '680px' : isQuiz ? '750px' : '55%',
+              width: isContentModalClick ? '1000px' : isProfile ? '680px' : isQuiz ? '750px' : '55%',
               height: '90%',
               border: '1px solid #ccc',
               background: '#fff',
@@ -130,7 +132,9 @@ function MentorsModal({
               </div>
             </>
           )}
-          <div className={cx('content')}>{children}</div>
+          <div className={cx('content')}>
+            <div>{children}</div>
+          </div>
         </ReactModal>
       </Desktop>
     </>
