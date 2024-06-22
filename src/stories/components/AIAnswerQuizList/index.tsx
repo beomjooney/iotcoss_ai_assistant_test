@@ -97,7 +97,7 @@ const AIAnswerQuizList = ({ info, refetchReply }) => {
       <input
         maxLength={3}
         disabled
-        value={valueAI}
+        value={valueAI || ''}
         style={{
           padding: 0,
           height: 35,
@@ -109,9 +109,9 @@ const AIAnswerQuizList = ({ info, refetchReply }) => {
         className="tw-bg-[#F6F7FB] tw-rounded tw-mr-2"
         aria-label="Recipient's username with two button addons"
       />
-      <p className="tw-text-xl tw-text-center tw-text-[#31343d]">/</p>
+      <span className="tw-text-xl tw-text-center tw-text-[#31343d]">/</span>
       <input
-        value={value}
+        value={value || ''}
         onChange={e => setValue(e.target.value)}
         maxLength={3}
         style={{ padding: 0, height: 35, width: 45, textAlign: 'center' }}

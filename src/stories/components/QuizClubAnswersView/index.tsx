@@ -360,19 +360,19 @@ const QuizClubListView = ({
             <div className="tw-h-20 tw-overflow-hidden tw-rounded-tl-lg tw-rounded-tr-lg tw-bg-[#f6f7fb] tw-border tw-relative">
               <div className="tw-flex tw-flex-col tw-justify-start tw-items-center tw-absolute tw-top-[13px] tw-left-4 tw-gap-[3px]">
                 <img className="tw-flex-grow-0 tw-flex-shrink-0" src="/assets/images/quiz/ellipse_209_2.png" />
-                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[10px] tw-text-center tw-text-black">
+                <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[10px] tw-text-center tw-text-black">
                   양황규 교수님
-                </p>
+                </div>
               </div>
-              <p className="tw-left-[94px] tw-top-7 tw-text-base tw-font-bold tw-text-left tw-text-black tw-absolute">
+              <div className="tw-left-[94px] tw-top-7 tw-text-base tw-font-bold tw-text-left tw-text-black tw-absolute">
                 Spring에서 적용가능한 Circuit breaker 라이브러리와 특징에 대해서 설명하세요.
-              </p>
+              </div>
             </div>
           </div>
           <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[880px] tw-h-[156px] tw-relative tw-overflow-hidden border tw-border-r tw-border-b tw-border-l tw-border-[#e9ecf2]">
-            <p className="tw-absolute tw-left-[149px] tw-top-[114px] tw-text-xs tw-text-left tw-text-[#478af5]">
+            <div className="tw-absolute tw-left-[149px] tw-top-[114px] tw-text-xs tw-text-left tw-text-[#478af5]">
               ㄴ 첨부된 파일 : 240000_퀴즈과제제출_김승태.pdf
-            </p>
+            </div>
             <svg
               width="24"
               height="24"
@@ -399,23 +399,23 @@ const QuizClubListView = ({
                 />
               </div>
               <div className="tw-flex tw-justify-start tw-items-start tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-3">
-                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-font-bold tw-text-left tw-text-[#31343d]">
+                <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-font-bold tw-text-left tw-text-[#31343d]">
                   사전답변
-                </p>
+                </div>
                 <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#9ca5b2]">
                   24.06.12ㅣ18:30:25
                 </p>
               </div>
             </div>
-            <p className="tw-w-[691px] tw-absolute tw-left-[149px] tw-top-[60px] tw-text-sm tw-text-left tw-text-[#31343d]">
+            <div className="tw-w-[691px] tw-absolute tw-left-[149px] tw-top-[60px] tw-text-sm tw-text-left tw-text-[#31343d]">
               EAI는 엔터프라이즈 어플리케이션 인테그레이션의 약자입니다. 시스템이 서로 얽히고 복잡해지면서 통제가 잘
               안되는 상황이 발생하여 이런 문제를 해결하기 위해 등장한 솔루션이 바로 EAI 입니다.
-            </p>
+            </div>
           </div>
           <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[880px] tw-h-[156px] tw-relative tw-overflow-hidden border-left border-right border-bottom tw-border-[#e9ecf2]">
-            <p className="tw-absolute tw-left-[149px] tw-top-[114px] tw-text-xs tw-text-left tw-text-[#478af5]">
+            <div className="tw-absolute tw-left-[149px] tw-top-[114px] tw-text-xs tw-text-left tw-text-[#478af5]">
               ㄴ 첨부된 파일 : 240000_퀴즈과제제출_김승태.pdf
-            </p>
+            </div>
             <svg
               width="24"
               height="24"

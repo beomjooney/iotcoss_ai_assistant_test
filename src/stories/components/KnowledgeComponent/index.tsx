@@ -146,12 +146,12 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
               }}
             >
               {thresh ? (
-                <>
+                <div>
                   <MenuItem onClick={handleRecover}>복구하기</MenuItem>
                   <MenuItem onClick={handleDelete}>영구 삭제하기</MenuItem>
-                </>
+                </div>
               ) : (
-                <>
+                <div>
                   <MenuItem onClick={handleDelete}>퀴즈 수정하기</MenuItem>
                   <MenuItem onClick={handleDelete}>삭제하기</MenuItem>
                   {data.publishStatus === '0001' ? (
@@ -159,7 +159,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                   ) : (
                     <MenuItem onClick={handleHide}>퀴즈 비공개</MenuItem>
                   )}
-                </>
+                </div>
               )}
             </Menu>
 

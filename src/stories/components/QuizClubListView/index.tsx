@@ -47,7 +47,7 @@ const QuizClubListView = ({ border, id }) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [myClubList, setMyClubList] = useState<any>([]);
   const [quizList, setQuizList] = useState<any>([]);
-  const [selectedValue, setSelectedValue] = useState('');
+  const [selectedValue, setSelectedValue] = useState(id);
   const [selectedClub, setSelectedClub] = useState<any>(null);
   const [sortType, setSortType] = useState('ASC');
   const [page, setPage] = useState(1);
@@ -85,7 +85,7 @@ const QuizClubListView = ({ border, id }) => {
 
   const handleQuizChange = event => {
     const value = event.target.value;
-    const selectedSession = myClubList?.find(session => session.clubName === value);
+    const selectedSession = myClubList?.find(session => session.clubSequence === Number(value));
 
     setSelectedValue(value);
     setSelectedClub(selectedSession);
@@ -160,7 +160,7 @@ const QuizClubListView = ({ border, id }) => {
                       <option
                         key={idx}
                         className="tw-w-20 tw-bg-[#f6f7fb] tw-items-center tw-flex-shrink-0 border-left border-top border-right tw-rounded-t-lg tw-cursor-pointer"
-                        value={session?.clubName}
+                        value={session?.clubSequence}
                       >
                         퀴즈클럽 : {session?.clubName}
                       </option>
@@ -190,6 +190,7 @@ const QuizClubListView = ({ border, id }) => {
               <Grid container direction="row" alignItems="center" rowSpacing={0}>
                 <Grid
                   container
+                  item
                   justifyContent="flex-start"
                   xs={6}
                   sm={10}
@@ -198,7 +199,7 @@ const QuizClubListView = ({ border, id }) => {
                   퀴즈목록 ({totalElements})
                 </Grid>
 
-                <Grid container justifyContent="flex-end" xs={6} sm={2} style={{ textAlign: 'right' }}>
+                <Grid container justifyContent="flex-end" item xs={6} sm={2} style={{ textAlign: 'right' }}>
                   <Pagination
                     count={totalPage}
                     size="small"

@@ -81,7 +81,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
   const [params, setParams] = useState<paramProps>({ page });
   const [quizList, setQuizList] = useState<any>([]);
   const [keyWorld, setKeyWorld] = useState('');
-  const [selectedValue, setSelectedValue] = useState('');
+  const [selectedValue, setSelectedValue] = useState(id);
   const [activeTab, setActiveTab] = useState('myQuiz');
 
   const [pageQuiz, setPageQuiz] = useState(1);
@@ -342,7 +342,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
 
   const handleQuizChange = event => {
     const value = event.target.value;
-    const selectedSession = myClubList?.find(session => session.clubName === value);
+    const selectedSession = myClubList?.find(session => session.clubSequence === Number(value));
 
     setSelectedValue(value);
     setSelectedClub(selectedSession);
@@ -627,7 +627,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                       <option
                         key={idx}
                         className="tw-w-20 tw-bg-[#f6f7fb] tw-items-center tw-flex-shrink-0 border-left border-top border-right tw-rounded-t-lg tw-cursor-pointer"
-                        value={session?.clubName}
+                        value={session?.clubSequence}
                       >
                         퀴즈클럽 : {session?.clubName}
                       </option>

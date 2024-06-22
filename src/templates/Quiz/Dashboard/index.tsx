@@ -1,25 +1,11 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import Divider from '@mui/material/Divider';
-import {
-  paramProps,
-  useClubQuizManage,
-  useMyClubList,
-  useMyDashboardList,
-} from 'src/services/seminars/seminars.queries';
-import { useContentJobTypes, useContentTypes, useJobGroups, useJobGroupss } from 'src/services/code/code.queries';
-import Tooltip from 'src/stories/components/Tooltip';
-import { RecommendContent } from 'src/models/recommend';
-import { useSessionStore } from 'src/store/session';
+import { paramProps, useMyClubList, useMyDashboardList } from 'src/services/seminars/seminars.queries';
 import Grid from '@mui/material/Grid';
 
-/** drag list */
-import ReactDragList from 'react-drag-list';
-import { useQuizOrder } from 'src/services/quiz/quiz.mutations';
-
 /**import quiz modal  */
-import { useJobs, useMyQuiz, useQuizList } from 'src/services/jobs/jobs.queries';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -37,7 +23,12 @@ import TableRow from '@material-ui/core/TableRow';
 
 import router from 'next/router';
 
-const useStyles = makeStyles({
+export interface QuizDashboardTemplateProps {
+  /** 세미나 아이디 */
+  id?: any;
+}
+
+const useStyles = makeStyles(theme => ({
   table: {
     minWidth: 650,
   },
@@ -72,12 +63,8 @@ const useStyles = makeStyles({
   stickyThread: {
     left: 240, // 이 값을 `Dessert` 열의 너비에 맞게 조정하세요.
   },
-});
+}));
 const cx = classNames.bind(styles);
-export interface QuizDashboardTemplateProps {
-  /** 세미나 아이디 */
-  id?: any;
-}
 
 export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
   const [page, setPage] = useState(1);
@@ -85,7 +72,7 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
   const [myDashboardList, setMyDashboardList] = useState<any>([]);
   const [myClubParams, setMyClubParams] = useState<any>({ clubSequence: id, data: { sortType: '0001' } });
   const [params, setParams] = useState<paramProps>({ page });
-  const [selectedValue, setSelectedValue] = useState('');
+  const [selectedValue, setSelectedValue] = useState(id);
 
   const handleChangeQuiz = event => {
     setSortType(event.target.value);
@@ -93,6 +80,7 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
 
   // 퀴즈클럽 리스트
   const { isFetched: isContentFetched, refetch: refetchMyClub } = useMyClubList({}, data => {
+    console.log(data?.data?.contents);
     setMyClubList(data?.data?.contents || []);
   });
 
@@ -115,7 +103,9 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
 
   const handleQuizChange = event => {
     const value = event.target.value;
-    const selectedSession = myClubList?.find(session => session.clubName === value);
+    const selectedSession = myClubList?.find(session => {
+      return session.clubSequence === Number(value);
+    });
 
     setSelectedValue(value);
     setSelectedClub(selectedSession);
@@ -201,7 +191,7 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
                       <option
                         key={idx}
                         className="tw-w-20 tw-bg-[#f6f7fb] tw-items-center tw-flex-shrink-0 border-left border-top border-right tw-rounded-t-lg tw-cursor-pointer"
-                        value={session?.clubName}
+                        value={session?.clubSequence}
                       >
                         퀴즈클럽 : {session?.clubName}
                       </option>
