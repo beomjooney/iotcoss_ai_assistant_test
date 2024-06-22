@@ -320,7 +320,7 @@ const QuizClubListView = ({ border, id }) => {
                             </div>
                             <div className="tw-pr-4">
                               <button
-                                onClick={() => router.push('/quiz-answers/' + `${id}`)}
+                                onClick={() => router.push('/quiz-answers/' + `${item?.clubSequence}`)}
                                 type="button"
                                 disabled={!item?.isPublished}
                                 data-tooltip-target="tooltip-default"
