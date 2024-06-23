@@ -669,7 +669,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                 activeTab === 'myQuiz' ? 'tw-font-bold tw-text-black' : 'tw-text-[#9ca5b2]'
               }`}
             >
-              마이퀴즈
+              학생목록
             </p>
           </div>
           {/* Divider Line */}
