@@ -526,8 +526,8 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                       anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                     >
                       <MenuItem onClick={() => (location.href = '/quiz-make')}>내가 만든 퀴즈</MenuItem>
-                      <Divider />
-                      <MenuItem onClick={() => (location.href = '/account/my/point')}>내 포인트 내역</MenuItem>
+                      {/* <Divider />
+                      <MenuItem onClick={() => (location.href = '/account/my/point')}>내 포인트 내역</MenuItem> */}
                       {/* <Divider />
                       <MenuItem onClick={() => (location.href = '/profile')}>내 프로필</MenuItem> */}
                       <Divider />

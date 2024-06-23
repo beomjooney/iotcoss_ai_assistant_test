@@ -142,6 +142,9 @@ export const hidePostQuiz = async (params: any) => {
 export const publishPostQuiz = async (params: any) => {
   await axiosGeneralAPI().put(`/api/v1/my/quizzes/${params.quizSequence}/open`);
 };
+export const quizModify = async (params: any) => {
+  await axiosGeneralAPI().put(`/api/v1/my/quizzes/${params.quizSequence}`, params.quizzes);
+};
 
 // 글쓰기 생성
 export const saveCommunity = async (params: any) => await axiosGeneralAPI().post('/posts', params);

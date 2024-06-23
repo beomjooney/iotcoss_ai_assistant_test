@@ -1004,11 +1004,6 @@ export function QuizOpenTemplate() {
                   </p>
                 </div>
                 <div className="tw-flex tw-justify-end tw-items-center tw-gap-4">
-                  {/* <button className="tw-flex tw-justify-center tw-items-center tw-w-40 tw-relative tw-overflow-hidden tw-gap-2 tw-px-7 tw-py-[11.5px] tw-rounded tw-bg-[#31343d]">
-                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-center tw-text-white">
-                      템플릿 불러오기
-                    </p>
-                  </button> */}
                   <button
                     onClick={handlerClubTemp}
                     className="border tw-flex tw-justify-center tw-items-center tw-w-40 tw-relative tw-overflow-hidden tw-gap-2 tw-px-6 tw-py-[11.5px] tw-rounded tw-bg-white tw-border tw-border-gray-400"

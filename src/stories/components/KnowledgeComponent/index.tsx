@@ -1,13 +1,64 @@
+import styles from './index.module.scss';
 import React, { useState, useEffect } from 'react';
 import { Menu, MenuItem } from '@mui/material';
+import { Radio, RadioGroup, FormControlLabel, TextField } from '@mui/material';
+import { Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import { MentorsModal, Toggle } from 'src/stories/components';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   useDeletePostQuiz,
   useHidePostQuiz,
   usePublishPostQuiz,
+  useQuizModify,
   useRecoverPostQuiz,
 } from 'src/services/community/community.mutations';
+import classNames from 'classnames/bind';
+import { useOptions } from 'src/services/experiences/experiences.queries';
+import { UseQueryResult } from 'react-query';
+import { TagsInput } from 'react-tag-input-component';
+import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded';
+import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded';
+
+const studyStatus = [
+  {
+    id: '0100',
+    name: '아티클',
+  },
+  {
+    id: '0200',
+    name: '영상',
+  },
+  {
+    id: '0300',
+    name: '첨부파일',
+  },
+];
+
 const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh = false }) => {
   const [anchorEl, setAnchorEl] = useState(null);
+  const [updateFlag, setUpdateFlag] = useState(false);
+  const [active, setActive] = useState('0100');
+  const [contentType, setContentType] = useState('0100');
+  const [contentUrl, setContentUrl] = useState('');
+  const [contentTitle, setContentTitle] = useState('');
+  const [universityCode, setUniversityCode] = useState('');
+  const [selectedSubject, setSelectedSubject] = useState('');
+  const [selectedChapter, setSelectedChapter] = useState('');
+  const [jobLevel, setJobLevel] = useState('0001');
+  const [activeQuiz, setActiveQuiz] = useState('0001');
+  const [selected1, setSelected1] = useState([]);
+  const [selected2, setSelected2] = useState([]);
+  const [selected3, setSelected3] = useState([]);
+  const [selectedUniversity, setSelectedUniversity] = useState('');
+  const [selectedUniversityName, setSelectedUniversityName] = useState('');
+  const [jobs, setJobs] = useState([]);
+  const [selectedJob, setSelectedJob] = useState('');
+  const [selectedJobName, setSelectedJobName] = useState('');
+  const [question, setQuestion] = useState('');
+  const [modelAnswerFinal, setModelAnswerFinal] = useState('');
+  const [modelAnswerAi, setModelAnswerAi] = useState('');
+  const [isModify, setIsModify] = useState(false);
+  const [editingIndex, setEditingIndex] = useState(null);
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
@@ -17,10 +68,13 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
     setAnchorEl(null);
   };
 
+  const { isFetched: isOptionFetched, data: optionsData }: UseQueryResult<any> = useOptions();
+
   const { mutate: onDeletePostQuiz, isSuccess: deletePostQuizSuccess } = useDeletePostQuiz();
   const { mutate: onRecoverPostQuiz, isSuccess: recoverPostQuizSuccess } = useRecoverPostQuiz();
   const { mutate: onHidePostQuiz, isSuccess: hidePostQuizSuccess } = useHidePostQuiz();
   const { mutate: onPublishPostQuiz, isSuccess: publishPostQuizSuccess } = usePublishPostQuiz();
+  const { mutate: onQuizModify, isSuccess: quizModifySuccess } = useQuizModify();
 
   useEffect(() => {
     if (deletePostQuizSuccess || hidePostQuizSuccess || publishPostQuizSuccess || recoverPostQuizSuccess) {
@@ -28,6 +82,12 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
       refetchMyQuizThresh();
     }
   }, [deletePostQuizSuccess, hidePostQuizSuccess, publishPostQuizSuccess, recoverPostQuizSuccess]);
+
+  useEffect(() => {
+    if (quizModifySuccess) {
+      refetchMyQuiz();
+    }
+  }, [quizModifySuccess]);
 
   const handleDelete = contentSequence => {
     // Handle delete action
@@ -73,6 +133,118 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
     handleClose();
   };
 
+  const cx = classNames.bind(styles);
+
+  const handleUniversityChange = e => {
+    const selectedCode = e.target.value;
+    const selected = optionsData?.data?.jobs?.find(u => u.code === selectedCode);
+    setUniversityCode(selectedCode);
+    setSelectedUniversity(selectedCode);
+    setSelectedUniversityName(selected ? selected.name : '');
+    setJobs(selected ? selected.jobs : []);
+    setSelectedJob(''); // Clear the selected job when university changes
+  };
+
+  const handleJobChange = e => {
+    setSelectedJob(e.target.value);
+    const selectedCode = e.target.value;
+    const selected = jobs?.find(u => u.code === selectedCode);
+    setSelectedJobName(selected ? selected.name : '');
+  };
+
+  const handleUpdate = contentSequence => {
+    // Handle delete action
+    console.log('Delete clicked', contentSequence);
+    setUpdateFlag(true);
+    console.log(data);
+    setContentType(data.content.contentType);
+    setContentUrl(data.content.url);
+    setContentTitle(data.content.description);
+    setQuestion(data.question);
+    setModelAnswerFinal(data.modelAnswer);
+    setModelAnswerAi(data.modelAnswerAi);
+    setSelected1(data.keywords);
+    setSelected2(data.content.studyKeywords);
+    setSelected2(data.skills);
+
+    setUniversityCode(data.jobGroups[0].code);
+    const selected = optionsData?.data?.jobs?.find(u => u.code === data.jobGroups[0].code);
+    setJobs(selected ? selected.jobs : []);
+    setSelectedJob(selected?.jobs[0]?.code || '');
+    setJobLevel(data.jobLevels && data.jobLevels.length > 0 ? data.jobLevels[0].code : '');
+
+    handleClose();
+    // onDeletePostQuiz({
+    //   quizSequence: data.quizSequence,
+    // });
+  };
+
+  const handleQuizInsertClick = async () => {
+    // if (!contentTitle) {
+    //   alert('콘텐츠 제목을 입력해주세요.');
+    //   return false;
+    // }
+    // if (!contentUrl) {
+    //   alert('콘텐츠 URL을 입력해주세요.');
+    //   return false;
+    // }
+    // if (!selectedSubject) {
+    //   alert('선택된 과목을 입력해주세요.');
+    //   return false;
+    // }
+    // if (!selectedChapter) {
+    //   alert('선택된 챕터를 입력해주세요.');
+    //   return false;
+    // }
+    // if (!selected1.length) {
+    //   alert('선택된 기술을 입력해주세요.');
+    //   return false;
+    // }
+    // if (!selected2.length) {
+    //   alert('선택된 키워드를 입력해주세요.');
+    //   return false;
+    // }
+    // if (!selectedUniversity) {
+    //   alert('선택된 대학교를 입력해주세요.');
+    //   return false;
+    // }
+    // if (!selectedJob) {
+    //   alert('선택된 직업을 입력해주세요.');
+    //   return false;
+    // }
+    // if (!jobLevel) {
+    //   alert('직업 레벨을 입력해주세요.');
+    //   return false;
+    // }
+
+    const params = {
+      content: {
+        isNew: false,
+        contentSequence: data.content.contentSequence,
+        // contentType: contentType,
+        description: contentTitle,
+        url: contentUrl,
+        studySubject: selectedSubject,
+        studyChapter: selectedChapter,
+        skills: selected1,
+        studyKeywords: selected2,
+      },
+      question: question,
+      modelAnswerFinal: modelAnswerFinal,
+      modelAnswerKeywords: selected3,
+      jobGroups: [universityCode],
+      jobs: [selectedJob],
+      jobLevels: [jobLevel],
+    };
+    const body = {
+      quizzes: params,
+      quizSequence: data.quizSequence,
+    };
+
+    onQuizModify(body);
+    setUpdateFlag(false);
+  };
+
   return (
     <div>
       <div className="tw-pb-6">
@@ -83,7 +255,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
             </div>
             <div className=" tw-text-left tw-text-black">{data.question}</div>
           </div>
-          <div className="tw-flex tw-justify-end tw-items-center tw-gap-4">
+          <div className="tw-flex tw-w-48 tw-justify-end tw-items-center tw-gap-5">
             <p className="tw-text-sm tw-text-right tw-text-[#9ca5b2]">{data.createdAt}</p>
             <svg
               onClick={handleClick}
@@ -152,7 +324,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                 </div>
               ) : (
                 <div>
-                  <MenuItem onClick={handleDelete}>퀴즈 수정하기</MenuItem>
+                  <MenuItem onClick={handleUpdate}>퀴즈 수정하기</MenuItem>
                   <MenuItem onClick={handleDelete}>삭제하기</MenuItem>
                   {data.publishStatus === '0001' ? (
                     <MenuItem onClick={handlePublish}>퀴즈 공개</MenuItem>
@@ -169,11 +341,11 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                 <div className="tw-bg-[#d7ecff] tw-rounded-[3.5px] tw-px-[10.5px] ">
                   <p className="tw-text-[12.25px] tw-text-[#235a8d]">{data?.jobGroups[0]?.name || 'N/A'}</p>
                 </div>
-                <div className="tw-bg-[#e4e4e4] tw-rounded-[3.5px] tw-px-[10.5px]">
-                  <p className="tw-text-[12.25px] tw-text-[#313b49]">{data?.jobLevels[0]?.name || 'N/A'}</p>
-                </div>
                 <div className="tw-bg-[#ffdede] tw-rounded-[3.5px] tw-px-[10.5px] ">
                   <p className="tw-text-[12.25px] tw-text-[#b83333]">{data?.jobs[0]?.name || 'N/A'}</p>
+                </div>
+                <div className="tw-bg-[#e4e4e4] tw-rounded-[3.5px] tw-px-[10.5px]">
+                  <p className="tw-text-[12.25px] tw-text-[#313b49]">{data?.jobLevels[0]?.name || 'N/A'}</p>
                 </div>
               </div>
             </div>
@@ -266,6 +438,252 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
           </div>
         </div>
       </div>
+
+      <MentorsModal
+        isQuiz={true}
+        title={'퀴즈 수정하기'}
+        isContentModalClick={false}
+        isOpen={updateFlag}
+        onAfterClose={() => {
+          setUpdateFlag(false);
+        }}
+      >
+        <div>
+          <div className="">
+            <Accordion
+              disableGutters
+              sx={{ backgroundColor: '#e9ecf2' }}
+              defaultExpanded
+              // expanded={expanded === 0}
+              // onChange={handleChange(0)}
+            >
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <div className="tw-flex tw-justify-between tw-items-center tw-w-full">
+                  <div className="tw-text-lg tw-font-bold">지식컨텐츠 정보 입력</div>
+                </div>
+              </AccordionSummary>
+              <AccordionDetails sx={{ backgroundColor: 'white', padding: 3 }}>
+                <div className="tw-text-sm tw-font-bold tw-py-2">지식컨텐츠 유형</div>
+                <div className={cx('mentoring-button__group', 'tw-px-0', 'tw-justify-center', 'tw-items-center')}>
+                  {studyStatus.map((item, i) => (
+                    <Toggle
+                      key={item.id}
+                      label={item.name}
+                      name={item.name}
+                      value={item.id}
+                      variant="small"
+                      checked={contentType === item.id}
+                      isActive
+                      type="tabButton"
+                      onChange={() => {
+                        setContentType(item.id);
+                      }}
+                      className={cx('tw-mr-2 !tw-w-[90px]')}
+                    />
+                  ))}
+                </div>
+
+                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식컨텐츠 URL</div>
+                <TextField
+                  required
+                  value={contentUrl}
+                  onChange={e => setContentUrl(e.target.value)}
+                  id="username"
+                  name="username"
+                  variant="outlined"
+                  type="search"
+                  size="small"
+                  fullWidth
+                  sx={{
+                    '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
+                  }}
+                />
+                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식컨텐츠 제목</div>
+                <TextField
+                  required
+                  id="username"
+                  value={contentTitle}
+                  onChange={e => setContentTitle(e.target.value)}
+                  name="username"
+                  variant="outlined"
+                  type="search"
+                  size="small"
+                  fullWidth
+                  sx={{
+                    '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
+                  }}
+                />
+              </AccordionDetails>
+            </Accordion>
+            <Accordion disableGutters defaultExpanded sx={{ backgroundColor: '#e9ecf2' }}>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <div className="tw-text-lg tw-font-bold">지식컨텐츠 태깅</div>
+              </AccordionSummary>
+              <AccordionDetails sx={{ backgroundColor: 'white', padding: 3 }}>
+                <div className="tw-text-sm tw-font-bold tw-py-2">추천 대학</div>
+                <select
+                  className="form-select"
+                  onChange={handleUniversityChange}
+                  aria-label="Default select example"
+                  value={universityCode}
+                >
+                  <option>대학을 선택해주세요.</option>
+                  {optionsData?.data?.jobs?.map((university, index) => (
+                    <option key={index} value={university.code}>
+                      {university.name}
+                    </option>
+                  ))}
+                </select>
+                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">추천 학과</div>
+                <select
+                  className="form-select"
+                  aria-label="Default select example"
+                  disabled={jobs.length === 0}
+                  onChange={handleJobChange}
+                  value={selectedJob}
+                >
+                  <option disabled value="">
+                    학과를 선택해주세요.
+                  </option>
+                  {jobs.map((job, index) => (
+                    <option key={index} value={job.code}>
+                      {job.name}
+                    </option>
+                  ))}
+                </select>
+
+                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">추천 학년</div>
+                {optionsData?.data?.jobLevels?.map((item, i) => (
+                  <Toggle
+                    key={item.code}
+                    label={item.name}
+                    name={item.name}
+                    value={item.code}
+                    variant="small"
+                    checked={activeQuiz === item.code}
+                    isActive
+                    type="tabButton"
+                    onChange={() => {
+                      setActiveQuiz(item.code);
+                      console.log(item.code);
+                      setJobLevel(item.code);
+                    }}
+                    className={cx('tw-mr-3 !tw-w-[85px]')}
+                  />
+                ))}
+                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">학습 주제</div>
+                <TextField
+                  required
+                  id="username"
+                  name="username"
+                  variant="outlined"
+                  type="search"
+                  value={selectedSubject}
+                  size="small"
+                  onChange={e => setSelectedSubject(e.target.value)}
+                  fullWidth
+                  sx={{
+                    '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
+                  }}
+                />
+                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">학습 챕터</div>
+                <TextField
+                  required
+                  id="username"
+                  name="username"
+                  value={selectedChapter}
+                  onChange={e => setSelectedChapter(e.target.value)}
+                  variant="outlined"
+                  type="search"
+                  size="small"
+                  fullWidth
+                  sx={{
+                    '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
+                  }}
+                />
+                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">학습 키워드</div>
+                <TagsInput
+                  value={selected1}
+                  onChange={setSelected1}
+                  name="fruits"
+                  placeHolder="학습 키워드 입력 후 엔터를 쳐주세요."
+                />
+                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">스킬</div>
+                <TagsInput
+                  value={selected2}
+                  onChange={setSelected2}
+                  name="fruits"
+                  placeHolder="스킬 입력 후 엔터를 쳐주세요."
+                />
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion defaultExpanded disableGutters sx={{ backgroundColor: '#e9ecf2' }}>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <div className="tw-text-lg tw-font-bold">퀴즈 정보 입력</div>
+              </AccordionSummary>
+              <AccordionDetails sx={{ backgroundColor: 'white', padding: 3 }}>
+                <div className="tw-text-sm tw-font-bold tw-pb-2">퀴즈</div>
+                <TextField
+                  required
+                  id="username"
+                  name="username"
+                  variant="outlined"
+                  type="search"
+                  value={question}
+                  size="small"
+                  onChange={e => setQuestion(e.target.value)}
+                  fullWidth
+                  sx={{
+                    '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
+                  }}
+                />
+                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">모범답안</div>
+                <TextField
+                  required
+                  id="username"
+                  name="username"
+                  value={modelAnswerFinal}
+                  onChange={e => setModelAnswerFinal(e.target.value)}
+                  variant="outlined"
+                  type="search"
+                  size="small"
+                  fullWidth
+                  sx={{
+                    '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
+                  }}
+                />
+                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">채점기준 주요 키워드/문구</div>
+                <TagsInput
+                  value={selected3}
+                  onChange={setSelected3}
+                  name="fruits"
+                  placeHolder="주요 키워드/문구 입력 후 엔터를 쳐주세요."
+                />
+                {/* <div className="tw-text-right tw-mt-5">
+                  <button
+                    onClick={handleQuizClick}
+                    className="tw-px-5 tw-py-3 tw-text-sm tw-bg-black tw-rounded tw-text-white"
+                  >
+                    {isModify ? '수정하기' : '퀴즈 생성하기'}
+                  </button>
+                </div> */}
+              </AccordionDetails>
+            </Accordion>
+
+            <div className="tw-py-5 tw-text-center">
+              <div className="tw-text-center">
+                <button
+                  onClick={handleQuizInsertClick}
+                  className="tw-text-white tw-text-sm tw-px-10 tw-py-3 tw-text-base tw-bg-red-500 tw-rounded-md hover:tw-bg-gray-400"
+                >
+                  퀴즈 수정하기
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </MentorsModal>
     </div>
   );
 };

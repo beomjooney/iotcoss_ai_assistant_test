@@ -9,17 +9,13 @@ import SearchIcon from '@mui/icons-material/Search';
 import { UseQueryResult } from 'react-query';
 import { useMyQuiz, useMyQuizContents } from 'src/services/jobs/jobs.queries';
 import { useQuizSave, useAIQuizSave, useAIQuizAnswer, useQuizContentSave } from 'src/services/quiz/quiz.mutations';
-import { useDeletePost } from 'src/services/community/community.mutations';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
-import { makeStyles } from '@material-ui/core';
-import { Desktop, Mobile } from 'src/hooks/mediaQuery';
-import Checkbox from '@mui/material/Checkbox';
 import KnowledgeComponent from 'src/stories/components/KnowledgeComponent';
 import ArticleList from 'src/stories/components/ArticleList';
 import { Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import * as Yup from 'yup';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { TagsInput } from 'react-tag-input-component';
 import { Radio, RadioGroup, FormControlLabel, TextField } from '@mui/material';
@@ -29,9 +25,6 @@ import { useOptions } from 'src/services/experiences/experiences.queries';
 import CircularProgress from '@mui/material/CircularProgress';
 
 import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
-
-import { set } from 'lodash';
 
 const studyStatus = [
   {
@@ -122,7 +115,6 @@ export function QuizMakeTemplate() {
   const [selectedUniversityName, setSelectedUniversityName] = useState('');
   const [selectedJobName, setSelectedJobName] = useState('');
   const [selectedJob, setSelectedJob] = useState('');
-
   const [selectedSubject, setSelectedSubject] = useState('');
   const [selectedChapter, setSelectedChapter] = useState('');
   const [jobLevel, setJobLevel] = useState('');
@@ -163,6 +155,7 @@ export function QuizMakeTemplate() {
     setJobLevel(data.jobLevels && data.jobLevels.length > 0 ? data.jobLevels[0].code : []);
 
     setUniversityCode(data.jobGroups[0].code);
+    setSelected1(data.studyKeywords);
 
     const selected = optionsData?.data?.jobs?.find(u => u.code === data.jobGroups[0].code);
     setJobs(selected ? selected.jobs : []);
@@ -252,19 +245,6 @@ export function QuizMakeTemplate() {
     refetchMyQuiz();
     refetchMyQuizContent();
   }, [postSuccess, postContentSuccess]);
-
-  // const { isFetched: isContentTypeFetched } = useContentTypes(data => {
-  //   setContentTypes(data.data.contents || []);
-  //   const contentsType = data.length >= 0 && data[0].id;
-  //   // setParams({
-  //   //   ...params,
-  //   //   contentsType,
-  //   // });
-  // });
-
-  // const { isFetched: isContentTypeJobFetched } = useContentJobTypes(data => {
-  //   setContentJobType(data.data.contents || []);
-  // });
 
   const handleAddClick = (isContent: boolean) => {
     setIsContentModalOpen(isContent);
