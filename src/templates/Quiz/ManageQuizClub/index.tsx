@@ -1195,7 +1195,10 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
 
           <Divider sx={{ borderColor: 'rgba(0, 0, 0, 0.5);', paddingY: '10px' }} />
 
-          <p className="tw-text-xl tw-font-bold tw-text-left tw-text-black tw-py-5">퀴즈목록 {totalQuizzElements}개</p>
+          <p className="tw-text-xl tw-font-bold tw-text-left tw-text-black tw-py-5">
+            {/* 퀴즈목록 {totalQuizzElements}개 */}
+            퀴즈목록 전체 : {totalQuizzElements}개 - (퀴즈선택 : {selectedQuizIds.length} / {quizList.length})
+          </p>
           {quizListData.map((item, index) => (
             <div key={index}>
               <QuizBreakerInfoCheck
