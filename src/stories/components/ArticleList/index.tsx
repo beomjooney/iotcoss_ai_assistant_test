@@ -115,7 +115,7 @@ const ArticleList: React.FC<any> = ({ data, refetchMyQuizContent }) => {
 
             {/* Render tags */}
             <div className="tw-py-5 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
-              <div className="tw-flex tw-gap-3">
+              <div className="tw-flex tw-gap-2">
                 <div className="tw-bg-[#d7ecff] tw-rounded-[3.5px] tw-px-[10.5px] ">
                   <p className="tw-text-[12.25px] tw-text-[#235a8d]">{data?.jobGroups[0]?.name || 'N/A'}</p>
                 </div>
@@ -125,17 +125,14 @@ const ArticleList: React.FC<any> = ({ data, refetchMyQuizContent }) => {
                 <div className="tw-bg-[#ffdede] tw-rounded-[3.5px] tw-px-[10.5px] ">
                   <p className="tw-text-[12.25px] tw-text-[#b83333]">{data?.jobs[0]?.name || 'N/A'}</p>
                 </div>
+                {data.skills?.map((tag, tagIndex) => (
+                  <div key={tagIndex} className="border tw-rounded-[3.5px] tw-px-[10.5px]">
+                    <p className="tw-text-[12.25px]">{tag}</p>
+                  </div>
+                ))}
               </div>
             </div>
 
-            {data.skills?.map((tag, tagIndex) => (
-              <div
-                key={tagIndex}
-                className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#d7ecff]"
-              >
-                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#235a8d]">{tag}</p>
-              </div>
-            ))}
             {/* Render hashtags */}
 
             <div className="tw-flex tw-justify-between">

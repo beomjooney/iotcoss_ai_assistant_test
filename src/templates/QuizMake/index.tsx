@@ -74,7 +74,6 @@ export function QuizMakeTemplate() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isContentModalOpen, setIsContentModalOpen] = useState<boolean>(false);
   const [isContentModalClick, setIsContentModalClick] = useState<boolean>(false);
-  const [contentJobType, setContentJobType] = useState<any[]>([]);
   const [jobGroup, setJobGroup] = useState([]);
   const [active, setActive] = useState('0100');
   const [activeQuiz, setActiveQuiz] = useState('0001');
@@ -88,15 +87,12 @@ export function QuizMakeTemplate() {
   const [params, setParams] = useState<any>({ page, quizSortType: '0001' });
   const [quizParams, setQuizParams] = useState<any>({ quizPage, sortType: 'DESC' });
   const [recommendLevels, setRecommendLevels] = useState([]);
-  const [quizUrl, setQuizUrl] = React.useState('');
-  const [quizName, setQuizName] = React.useState('');
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [contents, setContents] = useState<any[]>([]);
   const [experienceIds, setExperienceIds] = useState<any[]>([]);
   const [selected, setSelected] = useState([]);
   const open = Boolean(anchorEl);
   const [keyWorld, setKeyWorld] = useState('');
-  const [removeIndex, setRemoveIndex] = React.useState('');
 
   const [expanded, setExpanded] = useState(0); // 현재 확장된 Accordion의 인덱스
   const [isModify, setIsModify] = useState(false);
@@ -131,10 +127,6 @@ export function QuizMakeTemplate() {
   const [isLoadingAI, setIsLoadingAI] = useState({});
   const [index, setIndex] = useState(0);
 
-  useEffect(() => {
-    console.log(quizList);
-  }, [quizList]);
-
   const handleChangeQuiz = event => {
     setQuizSortType(event.target.value);
   };
@@ -149,17 +141,16 @@ export function QuizMakeTemplate() {
     setContentType(data.contentType);
     setContentUrl(data.url);
     setContentTitle(data.description);
-    setContentTitle(data.description);
-    setSelectedSubject(data.subject);
-    setSelectedChapter(data.chapter);
+    setSelectedSubject(data.studySubject);
+    setSelectedChapter(data.studyChapter);
     setJobLevel(data.jobLevels && data.jobLevels.length > 0 ? data.jobLevels[0].code : []);
-
     setUniversityCode(data.jobGroups[0].code);
     setSelected1(data.studyKeywords);
 
     const selected = optionsData?.data?.jobs?.find(u => u.code === data.jobGroups[0].code);
     setJobs(selected ? selected.jobs : []);
     setSelectedJob(selected?.jobs[0]?.code || '');
+    setSelected2(data.skills);
   };
 
   const handleChangeSortType = event => {
@@ -176,7 +167,7 @@ export function QuizMakeTemplate() {
     quizParams,
     data => {
       console.log(data.contents);
-      setTotalPage(data.totalPages);
+      setTotalQuizPage(data.totalPages);
     },
   );
   const { isFetched: isOptionFetched, data: optionsData }: UseQueryResult<any> = useOptions();
@@ -229,8 +220,6 @@ export function QuizMakeTemplate() {
   }, [answerSuccess]);
 
   useDidMountEffect(() => {
-    //console.log('delete 1 !!!', params, page);
-
     setContentTitle('');
     // setContentUrl('');
     setSelectedSubject('');
@@ -267,6 +256,7 @@ export function QuizMakeTemplate() {
     setSelected1([]);
     setSelected2([]);
     setIsModalOpen(true);
+    setContentSortType('');
   };
 
   useEffect(() => {
@@ -1235,7 +1225,6 @@ export function QuizMakeTemplate() {
                         label={data.description}
                         onClick={() => {
                           handleClickContent(data);
-                          // setContentSortType(data.contentSequence);
                         }}
                       />
                     ))}

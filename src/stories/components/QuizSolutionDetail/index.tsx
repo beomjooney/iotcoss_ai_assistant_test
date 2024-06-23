@@ -230,6 +230,13 @@ BannerProps) => {
     const inputData = inputList.map(input => input.value).filter(value => value !== '');
     console.log(inputData);
 
+    const invalidUrls = inputData.filter(value => !value.startsWith('http://') && !value.startsWith('https://'));
+
+    if (invalidUrls.length > 0) {
+      alert('일부 URL이 잘못되었습니다. http:// 또는 https://로 시작해야 합니다');
+      return;
+    }
+
     if (activeStep === 0) {
       const formData = new FormData();
       formData.append('preAnswer', introductionMessage);
@@ -239,7 +246,6 @@ BannerProps) => {
       });
 
       setActiveStep(prevActiveStep => prevActiveStep + 1);
-      console.log(formData);
       // FormData 내용을 콘솔에 출력
       onAnswerSave({
         formData,
@@ -295,18 +301,14 @@ BannerProps) => {
       <Desktop>
         <div className={cx('content tw-px-44 ', className, '')}>
           <div className=" tw-my-10 container !tw-pl-0 !tw-pr-0">
-            <div className="tw-h-[60px] border border-danger tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white tw-border-[0.5px] tw-border-[#e11837]">
-              <div className="tw-flex tw-justify-start tw-items-center tw-absolute tw-left-7 tw-top-[17px] tw-gap-4">
-                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[17.229293823242188px] tw-font-medium tw-text-left tw-text-[#e11837]">
-                  퀴즈클럽
-                </p>
-                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[17.229293823242188px] tw-font-medium tw-text-left tw-text-black">
-                  {data?.clubName}
-                </p>
-                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">
-                  {data?.clubDescription}
-                </p>
+            <div className="tw-h-[60px] tw-flex  tw-gap-4 tw-items-center tw-px-5 border border-danger tw-rounded-lg">
+              <div className="tw-text-[17.229293823242188px] tw-font-medium tw-text-left tw-text-[#e11837]">
+                퀴즈클럽
               </div>
+              <div className=" tw-text-[17.229293823242188px] tw-font-medium tw-text-left tw-text-black">
+                {data?.clubName}
+              </div>
+              <div className="tw-text-sm tw-text-left tw-text-black tw-mt-1">{data?.clubDescription}</div>
             </div>
           </div>
           <div className="container tw-p-40 tw-leading-normal tw-text-black tw-text-xl tw-pt-10 tw-pb-10 tw-bg-gray-100">

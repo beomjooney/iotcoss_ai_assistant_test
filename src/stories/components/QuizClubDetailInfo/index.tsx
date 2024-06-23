@@ -50,11 +50,11 @@ const getButtonText = status => {
 const getMemberText = status => {
   switch (status) {
     case '0000':
-      return '없음';
+      return '가입마감';
     case '0001':
       return '승인대기중';
     case '0002':
-      return '승인대기중';
+      return '승인됨';
     case '0003':
       return '거절';
     case '0004':
@@ -219,14 +219,20 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
                       </button>
                     ) : (
                       <>
-                        <p className="tw-text-sm tw-text-center tw-bg-red-500 tw-text-white tw-rounded tw-px-9 tw-py-2.5">
+                        {/* <p className="tw-text-sm tw-text-center tw-bg-red-500 tw-text-white tw-rounded tw-px-9 tw-py-2.5">
                           {getButtonText(clubData?.clubStatus)}
-                        </p>
-                        {clubData?.clubMemberStatus !== '0000' && (
+                        </p> */}
+                        {/* {clubData?.clubMemberStatus !== '0000' && (
                           <p className="tw-text-sm tw-text-center tw-bg-black tw-text-white tw-rounded tw-px-9 tw-py-2.5">
                             {getMemberText(clubData?.clubMemberStatus)}
                           </p>
-                        )}
+                        )} */}
+                        {/* <button className="tw-text-[12.25px] tw-font-bold tw-text-center tw-text-white tw-bg-[#e11837] tw-px-4 tw-py-2 tw-rounded">
+                          {getButtonText(clubData?.clubStatus)}
+                        </button> */}
+                        <button className="tw-text-[12.25px] tw-font-bold tw-text-center tw-text-white tw-bg-black tw-px-4 tw-py-2 tw-rounded">
+                          {getMemberText(clubData?.clubMemberStatus)}
+                        </button>
                       </>
                     )}
                   </div>

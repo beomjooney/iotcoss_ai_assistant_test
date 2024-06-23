@@ -154,29 +154,25 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
 
   const handleUpdate = contentSequence => {
     // Handle delete action
-    console.log('Delete clicked', contentSequence);
+    console.log('Delete clicked', data);
     setUpdateFlag(true);
-    console.log(data);
     setContentType(data.content.contentType);
     setContentUrl(data.content.url);
     setContentTitle(data.content.description);
     setQuestion(data.question);
     setModelAnswerFinal(data.modelAnswer);
     setModelAnswerAi(data.modelAnswerAi);
-    setSelected1(data.keywords);
-    setSelected2(data.content.studyKeywords);
-    setSelected2(data.skills);
-
+    setSelectedSubject(data.content?.studySubject);
+    setSelectedChapter(data.content?.studyChapter);
+    setSelected2(data.content?.skills);
     setUniversityCode(data.jobGroups[0].code);
+
     const selected = optionsData?.data?.jobs?.find(u => u.code === data.jobGroups[0].code);
     setJobs(selected ? selected.jobs : []);
     setSelectedJob(selected?.jobs[0]?.code || '');
     setJobLevel(data.jobLevels && data.jobLevels.length > 0 ? data.jobLevels[0].code : '');
-
+    setSelected3(data?.modelAnswerKeywords);
     handleClose();
-    // onDeletePostQuiz({
-    //   quizSequence: data.quizSequence,
-    // });
   };
 
   const handleQuizInsertClick = async () => {
@@ -565,7 +561,6 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                     type="tabButton"
                     onChange={() => {
                       setActiveQuiz(item.code);
-                      console.log(item.code);
                       setJobLevel(item.code);
                     }}
                     className={cx('tw-mr-3 !tw-w-[85px]')}
