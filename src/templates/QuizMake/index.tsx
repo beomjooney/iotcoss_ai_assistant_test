@@ -1220,7 +1220,7 @@ export function QuizMakeTemplate() {
                 <div className="tw-text-right">
                   <button
                     onClick={handleQuizInsertClick}
-                    className="tw-text-white tw-text-sm tw-px-7 tw-py-3 tw-text-base tw-bg-[#CA001f] tw-rounded-md hover:tw-bg-gray-400"
+                    className="tw-text-white tw-text-sm tw-px-7 tw-py-3 tw-text-base tw-bg-[#CA001f] tw-rounded-md"
                   >
                     등록하기
                   </button>

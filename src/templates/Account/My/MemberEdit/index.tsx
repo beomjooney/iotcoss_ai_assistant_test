@@ -718,6 +718,9 @@ export function MemberEditTemplate() {
                         icon={<CheckBoxOutlineBlankOutlinedIcon />}
                         checkedIcon={<CheckBoxOutlinedIcon />}
                         sx={{
+                          '&.Mui-checked': {
+                            color: '#CA001f', // 체크된 상태의 색상
+                          },
                           color: '##dc2626',
                           '& .MuiSvgIcon-root': { fontSize: 24 },
                         }}
@@ -746,6 +749,9 @@ export function MemberEditTemplate() {
                   checkedIcon={<CheckBoxOutlinedIcon />}
                   ref={checkboxref}
                   sx={{
+                    '&.Mui-checked': {
+                      color: '#CA001f', // 체크된 상태의 색상
+                    },
                     color: '#c7c7c7',
                     '& .MuiSvgIcon-root': { fontSize: 24 },
                   }}
@@ -782,6 +788,9 @@ export function MemberEditTemplate() {
                         icon={<CheckBoxOutlinedIcon />}
                         checkedIcon={<CheckBoxOutlinedIcon />}
                         sx={{
+                          '&.Mui-checked': {
+                            color: '#CA001f', // 체크된 상태의 색상
+                          },
                           color: '#c7c7c7',
                           '& .MuiSvgIcon-root': { fontSize: 24 },
                         }}
@@ -821,6 +830,9 @@ export function MemberEditTemplate() {
                         icon={<CheckBoxOutlinedIcon />}
                         checkedIcon={<CheckBoxOutlinedIcon />}
                         sx={{
+                          '&.Mui-checked': {
+                            color: '#CA001f', // 체크된 상태의 색상
+                          },
                           color: '#c7c7c7',
                           '& .MuiSvgIcon-root': { fontSize: 24 },
                         }}
@@ -881,6 +893,9 @@ export function MemberEditTemplate() {
                         icon={<CheckBoxOutlinedIcon />}
                         checkedIcon={<CheckBoxOutlinedIcon />}
                         sx={{
+                          '&.Mui-checked': {
+                            color: '#CA001f', // 체크된 상태의 색상
+                          },
                           color: '#c7c7c7',
                           '& .MuiSvgIcon-root': { fontSize: 24 },
                         }}
@@ -902,6 +917,9 @@ export function MemberEditTemplate() {
                         icon={<CheckBoxOutlinedIcon />}
                         checkedIcon={<CheckBoxOutlinedIcon />}
                         sx={{
+                          '&.Mui-checked': {
+                            color: '#CA001f', // 체크된 상태의 색상
+                          },
                           color: '#c7c7c7',
                           '& .MuiSvgIcon-root': { fontSize: 24 },
                         }}
@@ -923,6 +941,9 @@ export function MemberEditTemplate() {
                         icon={<CheckBoxOutlinedIcon />}
                         checkedIcon={<CheckBoxOutlinedIcon />}
                         sx={{
+                          '&.Mui-checked': {
+                            color: '#CA001f', // 체크된 상태의 색상
+                          },
                           color: '#c7c7c7',
                           '& .MuiSvgIcon-root': { fontSize: 24 },
                         }}
