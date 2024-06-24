@@ -212,7 +212,7 @@ export const quizAnswerMemberAIDetail = async params => {
 
 // 알람 히스토리
 export const quizAlarmHistory = async params => {
-  const { data } = await axiosGeneralAPI().get(`/api/v1/events`, { params });
+  const { data } = await axiosGeneralAPI().get(`/api/v1/activity/alarms`, { params });
   return data.data;
 };
 

@@ -2,7 +2,6 @@ import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import React, { ReactNode, useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Button } from '../../components';
 import { useRouter } from 'next/router';
 import { useSessionStore } from '../../../store/session';
 import { deleteCookie } from 'cookies-next';
@@ -35,12 +34,10 @@ import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import Badge from '@mui/material/Badge';
 import Popover from '@mui/material/Popover';
 // import Button from '@mui/material/Button';
-import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
-import { useStudyRoomList } from 'src/services/studyroom/studyroom.queries';
 import { useQuizAlarmHistory } from 'src/services/quiz/quiz.queries';
+import { useCheckAlarm } from 'src/services/community/community.mutations';
 
 export interface NavbarProps {
   /** 테마 색상 */
@@ -87,9 +84,18 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
   const [isShowMenu, setIsShowMenu] = useState<boolean>(false);
 
   //**alarm */
-  // const { isFetched: isContentFetched, refetch: refetch } = useQuizAlarmHistory(params, data => {
-  //   setContents(data);
-  // });
+  const { isFetched: isContentFetched, refetch: refetch } = useQuizAlarmHistory(params, data => {
+    console.log(data);
+    setContents(data);
+  });
+
+  const { mutate: onCheckAlarm, isSuccess: isSuccessCheck } = useCheckAlarm();
+
+  useEffect(() => {
+    if (isSuccessCheck) {
+      refetch();
+    }
+  }, [isSuccessCheck]);
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
@@ -446,7 +452,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                           <div className="tw-bg-gray-100 tw-text-gray-500 tw-py-4 tw-text-center tw-text-sm">
                             최근 30일동안의 알림만 보관되며,이후 자동삭제됩니다.
                           </div>
-                          {contents?.eventsByDate?.map((item, index) => {
+                          {contents?.contents?.map((item, index) => {
                             return (
                               // TODO API Response 보고 댓글 작성자로 수정 필요
                               <div key={index} role="tw-list" className=" tw-divide-y tw-divide-gray-100 border-bottom">
@@ -454,13 +460,17 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                                   <div className="tw-min-w-0 tw-p-3 tw-font-semibold">
                                     {item?.date} {item?.dayOfWeek}
                                   </div>
-                                  {item?.events.map((items, index) => {
+                                  {item?.activities.map((items, index) => {
                                     return (
-                                      <div key={index} className="border-top tw-p-3 tw-text-black tw-text-sm">
+                                      <div
+                                        onClick={() => onCheckAlarm(items?.activityHistorySequence)}
+                                        key={index}
+                                        className="tw-cursor-pointer border-top tw-p-3 tw-text-black tw-text-sm"
+                                      >
                                         {!items?.isChecked && (
                                           <div className="tw-bottom-auto tw-left-auto tw-right-0 tw-top-0 tw-z-10 tw-inline-block tw-rounded-full tw-bg-red-600 tw-p-[3px] tw-text-sm tw-mx-2 tw-mr-3"></div>
                                         )}
-                                        {items?.message}
+                                        {items?.activityMessage}
                                       </div>
                                     );
                                   })}

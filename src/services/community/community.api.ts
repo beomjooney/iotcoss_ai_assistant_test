@@ -124,6 +124,11 @@ export const comprehensionSave = async (params: any) => {
   return { data: data || [] };
 };
 
+export const checkAlarm = async (params: any) => {
+  const { data } = await axiosGeneralAPI().put(`/api/v1/activity/alarms/${params}/check`);
+  return { data: data || [] };
+};
+
 export const deletePost = async (params: any) => {
   await axiosGeneralAPI().delete(`/api/v1/quizzes/${params.postNo}`);
 };
