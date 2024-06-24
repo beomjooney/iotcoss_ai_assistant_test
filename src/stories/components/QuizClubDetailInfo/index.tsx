@@ -5,9 +5,13 @@ import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import { useClubJoin } from 'src/services/community/community.mutations';
 import { useSessionStore } from 'src/store/session';
-import { useSaveLike, useDeleteLike, useSaveReply, useDeleteReply } from 'src/services/community/community.mutations';
+import { useSaveLike, useDeleteLike } from 'src/services/community/community.mutations';
 import { getClubStatusMessage } from 'src/utils/clubStatus';
+import { Button, Modal } from 'src/stories/components';
+import styles from './index.module.scss';
+import classNames from 'classnames/bind';
 
+const cx = classNames.bind(styles);
 interface QuizClubDetailInfoProps {
   border: boolean;
   user: any; // or the specific type expected
@@ -35,6 +39,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
   const totalMeetings = studyWeekCount * clubData?.studyCycle?.length;
   const { mutate: onClubJoin, isSuccess: clubJoinSucces } = useClubJoin();
   let [isLiked, setIsLiked] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const { mutate: onSaveLike, isSuccess } = useSaveLike();
   const { mutate: onDeleteLike } = useDeleteLike();
@@ -50,12 +55,13 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
   }, [clubJoinSucces]);
 
   const handlerClubJoin = (clubSequence: number) => {
-    if (window.confirm('정말로 참여하시겠습니까?')) {
-      onClubJoin({
-        clubSequence: clubSequence,
-        participationCode: '',
-      });
-    }
+    setIsModalOpen(true);
+    // if (window.confirm('정말로 참여하시겠습니까?')) {
+    onClubJoin({
+      clubSequence: clubSequence,
+      participationCode: '',
+    });
+    // }
   };
 
   const onChangeLike = function (postNo: number) {
@@ -130,14 +136,18 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
                       onChangeLike(clubData.clubSequence, clubData.isFavorite);
                     }}
                   >
-                    {isLiked ? <StarIcon color="error" /> : <StarBorderIcon color="disabled" />}
+                    {isLiked ? (
+                      <StarIcon sx={{ fontSize: 24 }} color="error" />
+                    ) : (
+                      <StarBorderIcon sx={{ fontSize: 24 }} color="disabled" />
+                    )}
                   </button>
                 </div>
               </Grid>
             </Grid>
             <div className=" tw-flex tw-items-center tw-pt-8">
-              <div className="tw-line-clamp-1 tw-text-xl tw-font-bold tw-text-gray-90 tw-mr-2">{clubData?.name}</div>
-              <div className="tw-line-clamp-1 tw-text-base  tw-text-gray-900">{clubData?.description}</div>
+              <div className="tw-line-clamp-1 tw-text-xl tw-font-bold  tw-text-[#000000] tw-mr-2">{clubData?.name}</div>
+              <div className="tw-line-clamp-1 tw-text-base  tw-text-[#000000]">{clubData?.description}</div>
             </div>
             <div className="tw-py-5 tw-text-black tw-text-base tw-mb-[12px] tw-font-medium">
               <div>
@@ -346,6 +356,29 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
           </div>
         </div>
       </div>
+      <Modal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)} title="" maxWidth="900px">
+        <div className={cx('seminar-check-popup')}>
+          <div className={cx('mb-5')}>
+            <span className={cx('text-bold', 'tw-text-xl', 'tw-font-bold')}>가입 신청이 완료되었습니다!</span>
+          </div>
+          <div>가입 신청 후 클럽장 승인이 완료될때까지 기다려주세요!</div>
+          <div>승인 완료 후 MY페이지나 퀴즈클럽 페이지 상단에서 가입된 클럽을 확인하실 수 있습니다.</div>
+          <br></br>
+          <br></br>
+          <br></br>
+          <br></br>
+          <div className="tw-mt-5">
+            <Button
+              color="red"
+              label="확인"
+              size="modal"
+              onClick={() => {
+                setIsModalOpen(false);
+              }}
+            />
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

@@ -79,14 +79,17 @@ export function LoginTemplate({ onSubmitLogin }: LoginTemplateProps) {
           required
           id="username"
           name="username"
-          label="학번 혹은 이메일을 입력해주세요."
+          placeholder="이메일을 입렧해주세요."
           variant="outlined"
           type="search"
           fullWidth
           sx={{
+            backgroundColor: '#F6F7FB',
+            borderRadius: '10px',
             marginTop: '10px',
             '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
-            // '& input': { height: ' 0.8em;' },
+            '& fieldset': { border: 'none' },
+            '& input': { height: ' 0.8em;' },
           }}
           margin="dense"
           {...register('username')}
@@ -98,15 +101,18 @@ export function LoginTemplate({ onSubmitLogin }: LoginTemplateProps) {
           required
           id="password"
           name="password"
-          label="비밀번호를 입력해주세요."
+          placeholder="비밀번호를 입력해주세요."
           type="password"
           fullWidth
           margin="dense"
           variant="outlined"
           sx={{
+            backgroundColor: '#F6F7FB',
+            borderRadius: '10px',
             marginTop: '10px',
+            '& fieldset': { border: 'none' },
             '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
-            // '& input': { height: ' 0.8em;' },
+            '& input': { height: ' 0.8em;' },
           }}
           {...register('password')}
           error={errors.password ? true : false}
@@ -114,23 +120,7 @@ export function LoginTemplate({ onSubmitLogin }: LoginTemplateProps) {
         />
 
         <Grid container spacing={3} direction="row" justifyContent="space-between" alignItems="center">
-          <Grid item xs={6}>
-            {/* <Box display="flex" justifyContent="flex-start">
-              <FormGroup sx={{ fontWeight: 'bold' }}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      defaultChecked
-                      sx={{
-                        '& .MuiSvgIcon-root': { fontSize: 24 },
-                      }}
-                    />
-                  }
-                  label={<Typography>자동 로그인</Typography>}
-                />
-              </FormGroup>
-            </Box> */}
-          </Grid>
+          <Grid item xs={6}></Grid>
           <Grid item xs={6}>
             <Box display="flex" justifyContent="flex-end" sx={{ fontWeight: 'bold' }}>
               <Typography sx={{ fontSize: 12, textDecoration: 'underline' }} className="tw-py-3">
@@ -139,10 +129,13 @@ export function LoginTemplate({ onSubmitLogin }: LoginTemplateProps) {
             </Box>
           </Grid>
         </Grid>
-        <div style={{ marginBottom: '20px', marginTop: '20px' }}>
-          <Button color="red" size="medium" onClick={() => handleSubmit(onSubmit)}>
-            <Typography sx={{ fontWeight: '600', fontSize: 16 }}>로그인</Typography>
-          </Button>
+        <div style={{ marginBottom: '20px', marginTop: '20px', textAlign: 'center' }}>
+          <button
+            className="tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-bg-[#e11837] tw-text-white"
+            onClick={() => handleSubmit(onSubmit)}
+          >
+            로그인
+          </button>
         </div>
       </form>
       {/* <Button size="medium" onClick={() => router.push('/account/signup')}>
@@ -150,10 +143,12 @@ export function LoginTemplate({ onSubmitLogin }: LoginTemplateProps) {
       </Button> */}
       <Divider className={cx('sign-color', 'tw-py-3')}>또는</Divider>
       <div style={{ marginBottom: '20px', marginTop: '20px' }}>
-        <Button type="submit" size="medium" color="kakao" onClick={handleLogin}>
-          <img src="/assets/images/account/kakao.svg" alt="카카오 로그인" className={cx('image-login')} />
-          <Typography sx={{ fontWeight: '600', fontSize: 16 }}>카카오 3초만에 시작하기</Typography>
-        </Button>
+        <button
+          className="tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-bg-black tw-text-white"
+          onClick={handleLogin}
+        >
+          <Typography sx={{ fontWeight: '600', fontSize: 16 }}>학번으로 로그인</Typography>
+        </button>
       </div>
       <Box display="flex" justifyContent="center" sx={{ fontWeight: 'bold' }}>
         <Typography sx={{ fontSize: 14 }}>동서대학교 devus 계정이 없으신가요?</Typography>

@@ -111,16 +111,16 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
         setLogoutButton(
           <div className={cx('custom-item')} id="logoutBtn">
             <button
-              className="tw-w-28 max-lg:tw-mr-1 tw-bg-red-600 tw-mr-4 tw-rounded-md tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
-              onClick={() => (location.href = '/my-clubs')}
-            >
-              나의 클럽
-            </button>
-            <button
-              className="tw-w-28 max-lg:tw-mr-1 tw-bg-[#31343d] tw-rounded-md tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
+              className=" tw-m tw-text-base tw-text-black tw-font-bold tw-pr-10"
               onClick={() => (location.href = '/quiz-make')}
             >
-              나의 퀴즈
+              My 퀴즈
+            </button>
+            <button
+              className="tw-text-base tw-text-black tw-font-bold tw-px-3 tw-pr-5"
+              onClick={() => (location.href = '/my-clubs')}
+            >
+              My 클럽
             </button>
           </div>,
         );
