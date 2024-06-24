@@ -25,7 +25,7 @@ export function MyMentorPickTemplate() {
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [sortType, setSortType] = useState('');
-  const [params, setParams] = useState<paramProps>({ page, isJoined: '' });
+  const [params, setParams] = useState<any>({ page, isJoined: '' });
   const [contents, setContents] = useState<any[]>([]);
 
   const { isFetched: isContentFetched, refetch } = useClubFavoriteList(params, data => {
@@ -46,7 +46,7 @@ export function MyMentorPickTemplate() {
 
   return (
     <div className={cx('member-edit-container')}>
-      <section className={cx('content')}>
+      <section className={cx('content tw-px-0')}>
         <div className={cx('content--not-found')}>
           <Grid container direction="row" justifyContent="left" alignItems="center" rowSpacing={3}>
             <RadioGroup className="tw-items-center tw-py-5 tw-gap-3" value={sortType} onChange={handleChangeQuiz} row>

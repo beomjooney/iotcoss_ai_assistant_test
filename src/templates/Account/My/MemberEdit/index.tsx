@@ -98,7 +98,6 @@ export function MemberEditTemplate() {
 
   usePersonalInfo({}, user => {
     setUserInfo(user);
-    console.log(user);
   });
 
   const { mutate: onEditUser, status } = useEditUser();
@@ -114,12 +113,13 @@ export function MemberEditTemplate() {
 
   useEffect(() => {
     if (resultData) {
-      setSmsFlag(false);
-      setIsDisabledTimer(false);
-      setPhoneEditMode(false);
-      console.log(resultData);
-      onChangePhone({ phoneNumber: phoneNumber, token: resultData?.token });
-      // setIsDisabledPhone(true);
+      if (resultData.result === true) {
+        console.log('inner');
+        setSmsFlag(false);
+        setIsDisabledTimer(false);
+        setPhoneEditMode(false);
+        onChangePhone({ phoneNumber: phoneNumber, token: resultData?.token });
+      }
     }
   }, [resultData]);
 

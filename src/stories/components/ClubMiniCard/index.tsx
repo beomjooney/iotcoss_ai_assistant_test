@@ -94,7 +94,7 @@ ClubMiniCardProps) => {
   const router = useRouter();
   const classes = useStyles();
   return (
-    <Grid item xs={xs}>
+    <Grid item xs={xs} className="tw-w-full">
       <div
         onClick={() => {
           favorite ? '' : handleMenuItemClick(item?.clubSequence);
@@ -106,7 +106,7 @@ ClubMiniCardProps) => {
           src={item?.clubImageUrl}
           alt=""
         />
-        <div className="tw-flex tw-w-full tw-flex-col tw-justify-between tw-p-4 tw-pb-0 tw-leading-normal">
+        <div className="tw-flex tw-w-full tw-flex-col tw-justify-between tw-px-4  tw-leading-normal">
           <Grid
             className=" tw-mb-3"
             container
@@ -152,7 +152,7 @@ ClubMiniCardProps) => {
             {item?.description}
           </h6>
 
-          <div className="tw-mb-2 tw-text-base tw-font-medium tw-tracking-tight tw-text-gray-900 dark:tw-text-white">
+          <div className="tw-mb-2 tw-text-sm tw-font-medium tw-tracking-tight tw-text-gray-900 dark:tw-text-white">
             <span className="tw-font-bold">{item?.leaderNickname}</span>{' '}
             <span className="tw-text-gray-400 tw-px-3">
               {item?.startAt} ~ {item?.endAt}

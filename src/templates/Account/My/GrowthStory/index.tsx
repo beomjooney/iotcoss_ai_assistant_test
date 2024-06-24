@@ -35,46 +35,42 @@ export function GrowthStoryTemplate({ hasInfoData, userType }: GrowthStoryTempla
   return (
     <>
       <div className={cx('member-edit-container')}>
-        <section className={cx('content')}>
-          <div className={cx('content--not-found')}>
-            <Grid container direction="row" justifyContent="left" alignItems="center" rowSpacing={3}>
-              {isContentFetched &&
-                (contents.length > 0 ? (
-                  contents.map((item, index) => {
-                    return (
-                      <React.Fragment key={index}>
-                        <div className="tw-py-2">
-                          <div className="tw-py-2 tw-text-base tw-font-medium tw-text-black">
-                            신청일 : {item.startAt.split(' ')[0]}
-                          </div>
-                          <ClubMiniCard
-                            favorite={true}
-                            item={item}
-                            xs={12}
-                            className={cx('reply-container__item')}
-                            // onPostDeleteSubmit={onPostDeleteSubmit}
-                          />
-                        </div>
-                      </React.Fragment>
-                    );
-                  })
-                ) : (
-                  <div className="tw-text-center  tw-w-full border tw-rounded-md">
-                    <div className="tw-p-10  tw-mb-5">
-                      <div className="tw-p-10">아직 가입하신 클럽이 없습니다.</div>
-                      <button
-                        onClick={() => (location.href = '/quiz')}
-                        className="tw-mr-2 tw-bg-[#2474ED] tw-rounded-md border tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
-                      >
-                        클럽 가입하러가기
-                      </button>
+        <section className={cx('content tw-px-0 tw-pt-0')}>
+          {isContentFetched &&
+            (contents.length > 0 ? (
+              contents.map((item, index) => {
+                return (
+                  <React.Fragment key={index}>
+                    <div className="tw-pb-4">
+                      <div className="tw-pb-2 tw-text-base tw-font-medium tw-text-black">
+                        신청일 : {item.startAt.split(' ')[0]}
+                      </div>
+                      <ClubMiniCard
+                        favorite={true}
+                        item={item}
+                        xs={12}
+                        className={cx('reply-container__item')}
+                        // onPostDeleteSubmit={onPostDeleteSubmit}
+                      />
                     </div>
-                  </div>
-                ))}
-            </Grid>
-            <div className="tw-mt-10">
-              <Pagination page={page} setPage={setPage} total={totalPage} />
-            </div>
+                  </React.Fragment>
+                );
+              })
+            ) : (
+              <div className="tw-text-center  tw-w-full border tw-rounded-md">
+                <div className="tw-p-10  tw-mb-5">
+                  <div className="tw-p-10">아직 가입하신 클럽이 없습니다.</div>
+                  <button
+                    onClick={() => (location.href = '/quiz')}
+                    className="tw-mr-2 tw-bg-[#2474ED] tw-rounded-md border tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
+                  >
+                    클럽 가입하러가기
+                  </button>
+                </div>
+              </div>
+            ))}
+          <div className="tw-mt-10">
+            <Pagination page={page} setPage={setPage} total={totalPage} />
           </div>
         </section>
       </div>
