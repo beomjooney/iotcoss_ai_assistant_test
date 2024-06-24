@@ -57,6 +57,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [anchorElAlarm, setAnchorElAlarm] = useState(null);
   const [contents, setContents] = useState<any>([]);
+  const [alarmCount, setAlarmCount] = useState<number>(0);
   const [page, setPage] = useState(1);
   const [params, setParams] = useState<any>({ page });
   const open = Boolean(anchorEl);
@@ -85,7 +86,16 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
 
   //**alarm */
   const { isFetched: isContentFetched, refetch: refetch } = useQuizAlarmHistory(params, data => {
-    console.log(data);
+    let falseCount = 0;
+    // jsonData를 반복하여 각 활동의 isChecked 값을 확인
+    data?.contents?.forEach(day => {
+      day.activities.forEach(activity => {
+        if (!activity.isChecked) {
+          falseCount++;
+        }
+      });
+    });
+    setAlarmCount(falseCount);
     setContents(data);
   });
 
@@ -433,7 +443,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                         color="inherit"
                       >
                         {contents?.totalElements !== 0 ? (
-                          <Badge badgeContent={contents?.totalElements} color="error" className="tw-px-0">
+                          <Badge badgeContent={alarmCount} color="error" className="tw-px-0">
                             <NotificationsNoneIcon sx={{ fontSize: 30 }} />
                           </Badge>
                         ) : (
