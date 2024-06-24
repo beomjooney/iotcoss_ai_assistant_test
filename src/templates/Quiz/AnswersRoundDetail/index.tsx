@@ -22,6 +22,7 @@ import { useSessionStore } from 'src/store/session';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import StarIcon from '@mui/icons-material/Star';
 import { useSaveFavorite, useDeleteFavorite } from 'src/services/community/community.mutations';
+import { getButtonText } from 'src/utils/clubStatus';
 
 const cx = classNames.bind(styles);
 export interface QuizAnswersRoundDetailTemplateProps {
@@ -112,34 +113,6 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
     setPage(value);
   };
 
-  const getButtonText = status => {
-    switch (status) {
-      case '0000':
-        return '임시저장';
-      case '0100':
-        return '개설요청승인대기';
-      case '0110':
-        return '개설요청승인';
-      case '0120':
-        return '개설요청반려';
-      case '0200':
-        return '진행예정';
-      case '0210':
-        return '진행연기';
-      case '0220':
-        return '진행취소';
-      case '0300':
-        return '모집중';
-      case '0310':
-        return '모집마감';
-      case '0400':
-        return '진행중';
-      case '0500':
-        return '진행완료';
-      default:
-        return '없음'; // 기본값으로 알 수 없는 상태를 반환
-    }
-  };
   useDidMountEffect(() => {
     if (selectedQuiz) refetchReply();
   }, [selectedQuiz]);

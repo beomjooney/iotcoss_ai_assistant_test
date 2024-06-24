@@ -6,63 +6,18 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import { useClubJoin } from 'src/services/community/community.mutations';
 import { useSessionStore } from 'src/store/session';
 import { useSaveLike, useDeleteLike, useSaveReply, useDeleteReply } from 'src/services/community/community.mutations';
+import { getClubStatusMessage } from 'src/utils/clubStatus';
 
 interface QuizClubDetailInfoProps {
   border: boolean;
-  clubData: any; // or the specific type expected
   user: any; // or the specific type expected
+  clubData: any; // or the specific type expected
   selectedUniversityName: string;
   jobLevelName: any[]; // or the specific type expected
   selectedQuizzes: any[]; // or the specific type expected
   selectedJobName: string;
   refetchClubAbout: () => void;
 }
-
-const getButtonText = status => {
-  switch (status) {
-    case '0000':
-      return '임시저장';
-    case '0100':
-      return '개설요청승인대기';
-    case '0110':
-      return '개설요청승인';
-    case '0120':
-      return '개설요청반려';
-    case '0200':
-      return '진행예정';
-    case '0210':
-      return '진행연기';
-    case '0220':
-      return '진행취소';
-    case '0300':
-      return '모집중';
-    case '0310':
-      return '모집마감';
-    case '0400':
-      return '진행중';
-    case '0500':
-      return '진행완료';
-    default:
-      return '없음'; // 기본값으로 알 수 없는 상태를 반환
-  }
-};
-
-const getMemberText = status => {
-  switch (status) {
-    case '0000':
-      return '가입마감';
-    case '0001':
-      return '승인대기중';
-    case '0002':
-      return '승인됨';
-    case '0003':
-      return '거절';
-    case '0004':
-      return '강퇴';
-    case '0009':
-      return '탈퇴';
-  }
-};
 
 const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
   clubData,
@@ -219,19 +174,8 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
                       </button>
                     ) : (
                       <>
-                        {/* <p className="tw-text-sm tw-text-center tw-bg-red-500 tw-text-white tw-rounded tw-px-9 tw-py-2.5">
-                          {getButtonText(clubData?.clubStatus)}
-                        </p> */}
-                        {/* {clubData?.clubMemberStatus !== '0000' && (
-                          <p className="tw-text-sm tw-text-center tw-bg-black tw-text-white tw-rounded tw-px-9 tw-py-2.5">
-                            {getMemberText(clubData?.clubMemberStatus)}
-                          </p>
-                        )} */}
-                        {/* <button className="tw-text-[12.25px] tw-font-bold tw-text-center tw-text-white tw-bg-[#e11837] tw-px-4 tw-py-2 tw-rounded">
-                          {getButtonText(clubData?.clubStatus)}
-                        </button> */}
                         <button className="tw-text-[12.25px] tw-font-bold tw-text-center tw-text-white tw-bg-black tw-px-4 tw-py-2 tw-rounded">
-                          {getMemberText(clubData?.clubMemberStatus)}
+                          {getClubStatusMessage(clubData?.clubAboutStatus)}
                         </button>
                       </>
                     )}
