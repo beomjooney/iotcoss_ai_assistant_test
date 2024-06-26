@@ -156,8 +156,9 @@ export function QuizMakeTemplate() {
     setContentTitle(data.description);
     setSelectedSubject(data.studySubject);
     setSelectedChapter(data.studyChapter);
-    setJobLevel(data.jobLevels && data.jobLevels.length > 0 ? data.jobLevels[0].code : []);
-    setUniversityCode(data.jobGroups[0].code);
+    setJobLevel(data.jobLevels && data.jobLevels.length > 0 ? data.jobLevels[0].code : '0001');
+    setSelectedUniversity(data.jobGroups[0].code);
+    // setUniversityCode(data.jobGroups[0].code);
     setSelected1(data.studyKeywords);
 
     const selected = optionsData?.data?.jobs?.find(u => u.code === data.jobGroups[0].code);
@@ -449,11 +450,11 @@ export function QuizMakeTemplate() {
       return false;
     }
     if (!selected1.length) {
-      alert('선택된 기술을 입력해주세요.');
+      alert('선택된 키워드를 입력해주세요.');
       return false;
     }
     if (!selected2.length) {
-      alert('선택된 키워드를 입력해주세요.');
+      alert('선택된 기술을 입력해주세요.');
       return false;
     }
     if (!selectedUniversity) {
