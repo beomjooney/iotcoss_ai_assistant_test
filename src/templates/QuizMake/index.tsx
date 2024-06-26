@@ -7,7 +7,7 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/system/Box';
 import SearchIcon from '@mui/icons-material/Search';
 import { UseQueryResult } from 'react-query';
-import { useMyQuiz, useMyQuizContents } from 'src/services/jobs/jobs.queries';
+import { useMyQuiz, useMyQuizContents, useMyQuizThresh } from 'src/services/jobs/jobs.queries';
 import { useQuizSave, useAIQuizSave, useAIQuizAnswer, useQuizContentSave } from 'src/services/quiz/quiz.mutations';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import KnowledgeComponent from 'src/stories/components/KnowledgeComponent';
@@ -82,6 +82,9 @@ export function QuizMakeTemplate() {
   const [contentType, setContentType] = useState('0100');
   const [jobGroups, setJobGroups] = useState<any[]>([]);
   const [jobs, setJobs] = useState([]);
+  const [pageThresh, setPageThresh] = useState(1);
+  const [totalPageThresh, setTotalPageThresh] = useState(1);
+  const [paramsThresh, setParamsThresh] = useState<any>({ pageThresh, quizSortType: '0001' });
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [quizPage, setQuizPage] = useState(1);
@@ -174,6 +177,14 @@ export function QuizMakeTemplate() {
     data => {
       console.log(data.contents);
       setTotalQuizPage(data.totalPages);
+    },
+  );
+
+  const { data: myQuizThreshData, refetch: refetchMyQuizThresh }: UseQueryResult<any> = useMyQuizThresh(
+    paramsThresh,
+    data => {
+      console.log(data.contents);
+      setTotalPageThresh(data.totalPages);
     },
   );
   const { isFetched: isOptionFetched, data: optionsData }: UseQueryResult<any> = useOptions();
@@ -808,7 +819,27 @@ export function QuizMakeTemplate() {
 
           {/* 퀴즈목록에 해당하는 div */}
           {activeTab === '휴지통' && (
-            <div className={cx('container, tw-h-[50vh] tw-text-center')}>데이터가 없습니다.</div>
+            <div>
+              {myQuizThreshData?.contents?.length > 0 ? (
+                <div>
+                  {myQuizThreshData?.contents?.map((data, index) => (
+                    <div key={index}>
+                      <KnowledgeComponent
+                        data={data}
+                        thresh={true}
+                        refetchMyQuiz={refetchMyQuiz}
+                        refetchMyQuizThresh={refetchMyQuizThresh}
+                      />
+                    </div>
+                  ))}
+                  <div className="tw-mt-10">
+                    <Pagination page={pageThresh} setPage={setPageThresh} total={totalPageThresh} />
+                  </div>
+                </div>
+              ) : (
+                <div className={cx('container', 'tw-h-[50vh]', 'tw-text-center')}>데이터가 없습니다.</div>
+              )}
+            </div>
           )}
 
           {/* 휴지통에 해당하는 div */}
