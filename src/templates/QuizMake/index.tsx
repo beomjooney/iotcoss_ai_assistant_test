@@ -109,6 +109,7 @@ export function QuizMakeTemplate() {
   const [aiQuiz, setAiQuiz] = useState(false);
   const [quizSortType, setQuizSortType] = useState('0001');
   const [contentSortType, setContentSortType] = useState('');
+  const [threshSortType, setThreshSortType] = useState('0001');
   const [sortType, setSortType] = useState('DESC');
 
   const [universityCode, setUniversityCode] = useState('');
@@ -138,6 +139,9 @@ export function QuizMakeTemplate() {
 
   const handleChangeQuiz = event => {
     setQuizSortType(event.target.value);
+  };
+  const handleChangeThresh = event => {
+    setThreshSortType(event.target.value);
   };
 
   const handleChangeContent = event => {
@@ -283,6 +287,14 @@ export function QuizMakeTemplate() {
       quizSortType: quizSortType,
     });
   }, [page, keyWorld, quizSortType]);
+
+  useEffect(() => {
+    setParamsThresh({
+      page: pageThresh,
+      keyword: keyWorld,
+      quizSortType: threshSortType,
+    });
+  }, [pageThresh, keyWorld, threshSortType]);
 
   useEffect(() => {
     setQuizParams({
@@ -820,6 +832,52 @@ export function QuizMakeTemplate() {
           {/* 퀴즈목록에 해당하는 div */}
           {activeTab === '휴지통' && (
             <div>
+              <div className="tw-flex tw-justify-start tw-items-center tw-w-[1120px] tw-h-12 tw-gap-6 tw-mb-8">
+                <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-3">
+                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                    정렬 :
+                  </p>
+
+                  <RadioGroup value={threshSortType} onChange={handleChangeThresh} row>
+                    <FormControlLabel
+                      value="0001"
+                      control={
+                        <Radio
+                          sx={{
+                            color: '#ced4de',
+                            '&.Mui-checked': { color: '#e11837' },
+                          }}
+                          icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                          checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                        />
+                      }
+                      label={
+                        <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                          최신순
+                        </p>
+                      }
+                    />
+                    <FormControlLabel
+                      value="0002"
+                      control={
+                        <Radio
+                          sx={{
+                            color: '#ced4de',
+                            '&.Mui-checked': { color: '#e11837' },
+                          }}
+                          icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                          checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                        />
+                      }
+                      label={
+                        <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                          오래된순
+                        </p>
+                      }
+                    />
+                  </RadioGroup>
+                </div>
+              </div>
               {myQuizThreshData?.contents?.length > 0 ? (
                 <div>
                   {myQuizThreshData?.contents?.map((data, index) => (
