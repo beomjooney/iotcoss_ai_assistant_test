@@ -796,7 +796,7 @@ export function QuizMakeTemplate() {
 
               {myQuizData?.contents?.map((data, index) => (
                 <div key={index}>
-                  <KnowledgeComponent data={data} refetchMyQuiz={refetchMyQuiz} />
+                  <KnowledgeComponent data={data} refetchMyQuiz={refetchMyQuiz} refetchMyQuizThresh={() => {}} />
                 </div>
               ))}
 
