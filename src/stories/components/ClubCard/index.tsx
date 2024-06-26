@@ -158,14 +158,14 @@ ClubCardProps) => {
               <Grid container direction="row" justifyContent="space-between" alignItems="center" rowSpacing={0}>
                 <Grid item xs={12}>
                   <div className="max-lg:tw-h-[100px] tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
-                    <span className="tw-inline-flex tw-bg-blue-100 tw-text-blue-800 tw-text-xs tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded">
+                    <span className="tw-inline-flex tw-bg-blue-100 tw-text-blue-800 tw-text-xs tw-font-medium tw-mr-1 tw-px-2.5 tw-py-1 tw-rounded">
                       {item?.jobGroups[0].name || 'N/A'}
                     </span>
 
-                    <span className="tw-inline-flex tw-bg-gray-100 tw-text-gray-800 tw-text-xs tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
+                    <span className="tw-inline-flex tw-bg-gray-100 tw-text-gray-800 tw-text-xs tw-font-medium tw-mr-1 tw-px-2.5 tw-py-1 tw-rounded ">
                       {item?.jobs[0].name || 'N/A'}
                     </span>
-                    <span className="tw-inline-flex tw-bg-red-100 tw-text-red-800 tw-text-xs tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
+                    <span className="tw-inline-flex tw-bg-red-100 tw-text-red-800 tw-text-xs tw-font-medium tw-mr-1 tw-px-2.5 tw-py-1 tw-rounded ">
                       {item?.jobLevels[0].name || 'N/A'}
                     </span>
                   </div>

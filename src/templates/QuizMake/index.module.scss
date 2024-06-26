@@ -2,6 +2,10 @@
 @use '../../stories/assets/styles/abstracts/palette';
 @use '../../stories/assets/styles/abstracts/mixin';
 
+.custom-tags-input {
+  height: 48px;
+}
+
 .seminar-container {
   @include mixin.initflexWrapContainer;
   .slide__button {

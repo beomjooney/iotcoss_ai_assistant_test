@@ -7,11 +7,8 @@ import { RecommendContent } from 'src/models/recommend';
 import { useParticipantSeminar } from 'src/services/seminars/seminars.mutations';
 import { useSessionStore } from 'src/store/session';
 import { useClubDetailQuizList } from 'src/services/quiz/quiz.queries';
-import { useQuizDeleteLike, useQuizLike, useSaveLike } from 'src/services/community/community.mutations';
 import QuizClubDetailInfo from 'src/stories/components/QuizClubDetailInfo';
 import QuizClubDetaillSolution from 'src/stories/components/QuizClubDetaillSolution';
-
-import router from 'next/router';
 
 const cx = classNames.bind(styles);
 export interface QuizDetailTemplateProps {
@@ -32,7 +29,6 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
   const [totalPage, setTotalPage] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
   const [params, setParams] = useState<paramProps>({ page });
-  let [isLiked, setIsLiked] = useState(false);
 
   // 퀴즈 소개 정보 조회
   const { isFetched: isClubAboutFetched, refetch: refetchClubAbout } = useClubAboutDetail(id, data => {
@@ -56,8 +52,6 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
   });
 
   const { mutate: onParticipant } = useParticipantSeminar();
-  const { mutate: onSaveLike, isSuccess: isSuccessLike } = useQuizLike();
-  const { mutate: onDeleteLike, isSuccess: isSuccessDelete } = useQuizDeleteLike();
 
   const handleParticipant = () => {
     //console.log('club join');
@@ -74,16 +68,6 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
     }
   };
 
-  const handlerTodayQuizSolution = () => {
-    console.log(user);
-    if (user.phoneNumber === null || user.phoneNumber === '') {
-      setIsModalOpen(true);
-    } else {
-      const firstItemWithNullAnswer = quizList.find(item => item.answer.answerStatus === '0000');
-      router.push('/quiz/solution/' + `${firstItemWithNullAnswer?.clubQuizSequence}`);
-    }
-  };
-
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
@@ -94,10 +78,6 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
       page,
     });
   }, [page]);
-
-  useEffect(() => {
-    refetch();
-  }, [isSuccessLike, isSuccessDelete]);
 
   useEffect(() => {
     if (!logged) {
@@ -118,23 +98,10 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
   // - clubMemberStatus : 0000/0009(미가입), 0001(신청 중 - 버튼 텍스트 변경 및 버튼 비활성화), 0003(거절), 0004(강퇴 - 버튼 비활성화)
   // - clubStatus : 상관 없음
 
-  // 조건 2
-  // - clubMemberStatus : 0002 (가입완료)
-  // - clubStatus : 0200(개설 예정), 0210 (개설 연기), 0220 (취소), 0300(모집중), 0310(모집완료)
-
-  // 클럽 퀴즈 풀기 화면 조건
   console.log('clubStatus', clubAbout?.clubStatus);
   console.log('clubMemberStatus', clubAbout?.clubMemberStatus);
 
-  const isQuizScreen =
-    (clubAbout?.clubStatus === '0400' || clubAbout?.clubStatus === '0500') &&
-    clubAbout?.clubMemberStatus === '0002' &&
-    isParticipantListFetched;
-
-  // 클럽 상세 보기 화면 조건
-  const isClubDetailScreen =
-    ['0000', '0009', '0001', '0003', '0004'].includes(clubMemberStatus) ||
-    (clubMemberStatus === '0002' && ['0200', '0210', '0220', '0300', '0310'].includes(clubAbout?.clubStatus));
+  const isQuizScreen = clubAbout?.clubAboutStatus === '0401' && isParticipantListFetched;
 
   return (
     <div className={cx('seminar-detail-container')}>
@@ -152,8 +119,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
           />
         ) : (
           // 클럽 상세 보기 화면
-          isClubAboutFetched &&
-          isClubDetailScreen && (
+          isClubAboutFetched && (
             <div className={cx('seminar-container')}>
               <QuizClubDetailInfo
                 border={true}

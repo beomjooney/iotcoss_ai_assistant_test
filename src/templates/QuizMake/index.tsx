@@ -23,7 +23,8 @@ import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded';
 import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded';
 import { useOptions } from 'src/services/experiences/experiences.queries';
 import CircularProgress from '@mui/material/CircularProgress';
-
+import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
+import { styled } from '@mui/material/styles';
 import FormControl from '@mui/material/FormControl';
 
 const studyStatus = [
@@ -70,6 +71,7 @@ export function QuizMakeTemplate() {
   // const { contentTypes, setContentTypes } = useStore();
 
   const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false); // Need this for the react-tooltip
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isContentModalOpen, setIsContentModalOpen] = useState<boolean>(false);
@@ -126,6 +128,10 @@ export function QuizMakeTemplate() {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingAI, setIsLoadingAI] = useState({});
   const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handleChangeQuiz = event => {
     setQuizSortType(event.target.value);
@@ -579,6 +585,19 @@ export function QuizMakeTemplate() {
     setSelected3([]);
   };
 
+  const BootstrapTooltip = styled(({ className, ...props }: TooltipProps) => (
+    <Tooltip {...props} arrow classes={{ popper: className }} />
+  ))(({ theme }) => ({
+    [`& .${tooltipClasses.arrow}`]: {
+      color: '#D8ECFF',
+    },
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: '#D8ECFF',
+      color: '#478AF5',
+      fontSize: '11px',
+    },
+  }));
+
   return (
     <>
       <div className={cx('seminar-container')}>
@@ -592,22 +611,26 @@ export function QuizMakeTemplate() {
                 <div>나와 학습자들의 성장을 돕기위해 내가 만든 퀴즈 리스트예요!</div>
               </Grid>
               <Grid item xs={12} sm={4} justifyContent="flex-end" className="tw-flex">
-                <button
-                  type="button"
-                  onClick={() => handleAddClick(true)}
-                  className=" tw-text-[#e11837] tw-mr-3 tw-font-bold tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
-                  style={{ border: '1px solid', color: '#e11837', width: '150px' }}
-                >
-                  + 퀴즈 만들기
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleAddClick(false)}
-                  style={{ border: '1px solid', color: 'black', width: '150px' }}
-                  className="tw-text-black tw-bg-white tw-font-bold tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
-                >
-                  + 지식컨텐츠 등록
-                </button>
+                <BootstrapTooltip title="지식콘텐츠 등록과 퀴즈만들기를 동시에 할 수 있어요!" placement="top">
+                  <button
+                    type="button"
+                    onClick={() => handleAddClick(true)}
+                    className=" tw-text-[#e11837] tw-mr-3 tw-font-bold tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
+                    style={{ border: '1px solid #B8B8B8', color: '#e11837', width: '150px' }}
+                  >
+                    + 퀴즈 만들기
+                  </button>
+                </BootstrapTooltip>
+                <BootstrapTooltip title="지식콘텐츠만 미리 등록해 놓고, 나중에 활용할 수 있어요!" placement="top">
+                  <button
+                    type="button"
+                    onClick={() => handleAddClick(false)}
+                    style={{ border: '1px solid #B8B8B8', color: 'black', width: '150px' }}
+                    className="tw-text-black tw-bg-white tw-font-bold tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
+                  >
+                    + 지식컨텐츠 등록
+                  </button>
+                </BootstrapTooltip>
               </Grid>
             </Grid>
           </div>
@@ -773,7 +796,7 @@ export function QuizMakeTemplate() {
 
               {myQuizData?.contents?.map((data, index) => (
                 <div key={index}>
-                  <KnowledgeComponent data={data} refetchMyQuiz={refetchMyQuiz} />
+                  <KnowledgeComponent data={data} refetchMyQuiz={refetchMyQuiz} refetchMyQuizThresh={() => {}} />
                 </div>
               ))}
 
@@ -1197,9 +1220,9 @@ export function QuizMakeTemplate() {
                 <div className="tw-text-right">
                   <button
                     onClick={handleQuizInsertClick}
-                    className="tw-text-white tw-text-sm tw-px-10 tw-py-3 tw-text-base tw-bg-red-500 tw-rounded-md hover:tw-bg-gray-400"
+                    className="tw-text-white tw-text-sm tw-px-7 tw-py-3 tw-text-base tw-bg-[#CA001f] tw-rounded-md"
                   >
-                    지식컨텐츠 저장
+                    등록하기
                   </button>
                 </div>
               </div>
@@ -1232,7 +1255,7 @@ export function QuizMakeTemplate() {
                 </FormControl>
 
                 <div className="tw-mt-5">
-                  <Pagination page={quizPage} setPage={setQuizPage} total={totalQuizPage} />
+                  <Pagination page={quizPage} setPage={setQuizPage} showCount={5} total={totalQuizPage} />
                 </div>
               </div>
             )}

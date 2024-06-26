@@ -524,6 +524,7 @@ BannerProps) => {
                         {inputList.map((input, index) => (
                           <div key={input.id} style={{ marginBottom: '10px' }}>
                             <input
+                              placeholder="https://"
                               type="text"
                               className="border tw-w-full tw-rounded tw-text-sm tw-p-2 "
                               value={input.value}

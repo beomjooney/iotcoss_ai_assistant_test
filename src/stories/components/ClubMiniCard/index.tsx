@@ -7,14 +7,11 @@ import { useSessionStore } from 'src/store/session';
 const { logged } = useSessionStore.getState();
 import Grid from '@mui/material/Grid';
 import { useRouter } from 'next/router';
-import IconButton from '@mui/material/IconButton';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { makeStyles } from '@material-ui/core';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import StarIcon from '@mui/icons-material/Star';
 import { useSaveFavorite, useDeleteFavorite } from 'src/services/community/community.mutations';
+import { getButtonText } from 'src/utils/clubStatus';
 
 export interface ClubMiniCardProps {
   /** 게시판 object */
@@ -61,22 +58,9 @@ ClubMiniCardProps) => {
     }
   }, [isSuccessDelete]);
 
-  const handleDropMenuClick = (event: React.MouseEvent<HTMLElement>, removeIndex) => {
-    setRemoveIndex(removeIndex);
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
   const handleMenuItemClick = index => {
     // router.push('/quiz-manage/' + removeIndex);
     router.push('/quiz-dashboard/' + index);
-    setAnchorEl(null);
-  };
-  const handleMenuItemCrewClick = (event: React.MouseEvent<HTMLElement>) => {
-    router.push('/crew-manage/' + removeIndex);
     setAnchorEl(null);
   };
   const useStyles = makeStyles(theme => ({
@@ -87,34 +71,6 @@ ClubMiniCardProps) => {
     },
   }));
 
-  const getButtonText = status => {
-    switch (status) {
-      case '0000':
-        return '임시저장';
-      case '0100':
-        return '개설요청승인대기';
-      case '0110':
-        return '개설요청승인';
-      case '0120':
-        return '개설요청반려';
-      case '0200':
-        return '진행예정';
-      case '0210':
-        return '진행연기';
-      case '0220':
-        return '진행취소';
-      case '0300':
-        return '모집중';
-      case '0310':
-        return '모집마감';
-      case '0400':
-        return '진행중';
-      case '0500':
-        return '진행완료';
-      default:
-        return '없음'; // 기본값으로 알 수 없는 상태를 반환
-    }
-  };
   const onChangeFavorite = function (postNo: number, isFavorites: boolean) {
     console.log(postNo, isFavorites);
 
@@ -138,7 +94,7 @@ ClubMiniCardProps) => {
   const router = useRouter();
   const classes = useStyles();
   return (
-    <Grid item xs={xs}>
+    <Grid item xs={xs} className="tw-w-full">
       <div
         onClick={() => {
           favorite ? '' : handleMenuItemClick(item?.clubSequence);
@@ -150,7 +106,7 @@ ClubMiniCardProps) => {
           src={item?.clubImageUrl}
           alt=""
         />
-        <div className="tw-flex tw-w-full tw-flex-col tw-justify-between tw-p-4 tw-pb-0 tw-leading-normal">
+        <div className="tw-flex tw-w-full tw-flex-col tw-justify-between tw-px-4  tw-leading-normal">
           <Grid
             className=" tw-mb-3"
             container
@@ -196,7 +152,7 @@ ClubMiniCardProps) => {
             {item?.description}
           </h6>
 
-          <div className="tw-mb-2 tw-text-base tw-font-medium tw-tracking-tight tw-text-gray-900 dark:tw-text-white">
+          <div className="tw-mb-2 tw-text-sm tw-font-medium tw-tracking-tight tw-text-gray-900 dark:tw-text-white">
             <span className="tw-font-bold">{item?.leaderNickname}</span>{' '}
             <span className="tw-text-gray-400 tw-px-3">
               {item?.startAt} ~ {item?.endAt}

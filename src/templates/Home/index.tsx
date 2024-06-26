@@ -134,7 +134,7 @@ export function HomeTemplate({ logged = false }: HomeProps) {
   /** get profile */
   const { user, setUser } = useStore();
   const { memberId } = useSessionStore.getState();
-  console.log(user, memberId);
+  // console.log(user, memberId);
   const { isFetched: isUser, data } = useMemberInfo(memberId, user => {
     //console.log(data);
     setUser(user);

@@ -89,7 +89,18 @@ const Pagination = ({ total = 1, showCount = 8, page = 1, onChange, className, s
       <ul className={cx('pagination')}>
         {total > 1 && (
           <li className={cx('pagination__item', 'pagination__item--next')} onClick={() => changePage(page - 1)}>
-            <a>&lt;</a>
+            <a className="tw-flex tw-items-center tw-justify-center tw-h-full">
+              <svg
+                width={8}
+                height={12}
+                viewBox="0 0 8 12"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                preserveAspectRatio="none"
+              >
+                <path d="M7 11L2 6L7 1" stroke="#9CA5B2" stroke-width="1.5" />
+              </svg>
+            </a>
           </li>
         )}
         {isMore ? (
@@ -103,7 +114,18 @@ const Pagination = ({ total = 1, showCount = 8, page = 1, onChange, className, s
         )}
         {total > 1 && (
           <li className={cx('pagination__item', 'pagination__item--next')} onClick={() => changePage(page + 1)}>
-            <a>&gt;</a>
+            <a className="tw-flex tw-items-center tw-justify-center tw-h-full">
+              <svg
+                width={8}
+                height={12}
+                viewBox="0 0 8 12"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                preserveAspectRatio="none"
+              >
+                <path d="M1 1L6 6L1 11" stroke="#9CA5B2" strokeWidth="1.5" />
+              </svg>
+            </a>
           </li>
         )}
       </ul>

@@ -2,7 +2,7 @@
 @use 'src/stories/assets/styles/abstracts/palette';
 @use 'src/stories/assets/styles/abstracts/mixin';
 
-$size: 35px;
+$size: 36px;
 
 .pagination-container {
   .pagination {
@@ -12,9 +12,9 @@ $size: 35px;
       width: $size;
       height: $size;
       text-align: center;
-      border: 1px solid palette.$Primary-Gray500;
+      border: 1px solid #e0e4eb;
       border-radius: 5px;
-      color: palette.$Primary-Gray800;
+      color: #9ca5b2;
       cursor: pointer;
 
       a {
@@ -24,7 +24,8 @@ $size: 35px;
 
       &--active {
         border: none;
-        background: palette.$Primary-Blue900;
+        font-weight: bold;
+        background: #9ca5b2;
         color: white;
       }
 
