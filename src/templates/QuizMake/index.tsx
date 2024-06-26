@@ -442,7 +442,7 @@ export function QuizMakeTemplate() {
       return false;
     }
     if (!selectedSubject) {
-      alert('선택된 과목을 입력해주세요.');
+      alert('선택된 주제를 입력해주세요.');
       return false;
     }
     if (!selectedChapter) {
