@@ -158,7 +158,7 @@ export const useQuizAlarmHistory = (params, onSuccess?: (data: any) => void, onE
     {
       onSuccess,
       onError,
-      refetchOnWindowFocus: true,
+      refetchOnWindowFocus: false,
       enabled: true,
     },
   );

@@ -145,7 +145,7 @@ export function LoginTemplate({ onSubmitLogin }: LoginTemplateProps) {
       <div style={{ marginBottom: '20px', marginTop: '20px' }}>
         <button
           className="tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-bg-black tw-text-white"
-          onClick={handleLogin}
+          // onClick={handleLogin}
         >
           <Typography sx={{ fontWeight: '600', fontSize: 16 }}>학번으로 로그인</Typography>
         </button>

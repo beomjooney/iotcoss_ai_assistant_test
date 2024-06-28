@@ -1,15 +1,70 @@
 import classNames from 'classnames/bind';
 import styles from './index.module.scss';
-import Chip from '../Chip';
-import { jobColorKey } from '../../../config/colors';
-import Image from 'next/image';
-import Link from 'next/link';
-import { Typography } from '../index';
-import Tooltip from '../Tooltip';
+import ProfileModal from 'src/stories/components/ProfileModal';
+import TextField from '@mui/material/TextField';
+import React, { useEffect, useRef, useState } from 'react';
+import { UseQueryResult } from 'react-query';
+import { useOptions } from 'src/services/experiences/experiences.queries';
+import { Toggle } from 'src/stories/components';
+import { useSaveProfile } from 'src/services/account/account.mutations';
 
 const cx = classNames.bind(styles);
 
 const MyProfile = ({ profile, badgeContents }: any) => {
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [jobs, setJobs] = useState([]);
+  const [selectedJob, setSelectedJob] = useState('');
+  const [nickName, setNickName] = useState<string>('');
+  const [phone, setPhone] = useState<string>('');
+  const phoneRef = useRef(null);
+  const [activeQuiz, setActiveQuiz] = useState('0001');
+  const [memberId, setMemberId] = useState('');
+  const [customSkills, setCustomSkills] = useState([]);
+  const [fileImageUrl, setFileImageUrl] = useState(null);
+
+  const [universityCode, setUniversityCode] = useState('');
+  const [selectedUniversity, setSelectedUniversity] = useState('');
+  const [jobLevel, setJobLevel] = useState('0001');
+  const [introductionMessage, setIntroductionMessage] = useState('');
+  const textInput = useRef(null);
+
+  const { isFetched: isOptionFetched, data: optionsData }: UseQueryResult<any> = useOptions();
+
+  /**save profile */
+  const { mutate: onSave, isSuccess: onSuccess } = useSaveProfile();
+
+  const handleProfileSave = async => {
+    // fileImageUrl이 null인 경우 imageUrl을 사용하도록 조건문 추가
+
+    const params = {
+      jobGroup: universityCode,
+      job: selectedJob,
+      memberId: memberId,
+      jobLevel: jobLevel,
+      introductionMessage: introductionMessage,
+    };
+
+    console.log(params);
+    onSave(params);
+    setIsModalOpen(false);
+  };
+
+  const handleUniversityChange = e => {
+    const selectedCode = e.target.value;
+    const selected = optionsData?.data?.jobs?.find(u => u.code === selectedCode);
+    setUniversityCode(selectedCode);
+    setSelectedUniversity(selectedCode);
+    setJobs(selected ? selected.jobs : []);
+    // setSelectedJob(''); // Clear the selected job when university changes
+  };
+
+  const handleJobChange = e => {
+    setSelectedJob(e.target.value);
+    const selectedCode = e.target.value;
+    // const selected = jobs?.find(u => u.code === selectedCode);
+    // setSelectedJob(selected ? selected.name : '');
+  };
+
   return (
     <>
       <div className="tw-relative tw-rounded-[10px] border ">
@@ -40,7 +95,7 @@ const MyProfile = ({ profile, badgeContents }: any) => {
             </div>
           </div>
           <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">
-            {profile?.member?.introduction || 'N/A'}
+            {profile?.introductionMessage || 'N/A'}
           </p>
         </div>
         <div className="tw-w-[120px] tw-h-[120px]" style={{ filter: 'drop-shadow(0px 2px 5px rgba(0,0,0,0.15))' }}>
@@ -90,7 +145,23 @@ const MyProfile = ({ profile, badgeContents }: any) => {
               fill="#E9ECF2"
             />
           </svg>
-          <button className="tw-my-8 border tw-py-3 tw-px-5 tw-rounded tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-center tw-text-[#6a7380]">
+          <button
+            onClick={() => {
+              setIsModalOpen(true);
+              setUniversityCode(profile.jobGroup?.code || '');
+              const selected = optionsData?.data?.jobs?.find(u => u.code === profile.jobGroup?.code);
+              setJobs(selected ? selected.jobs : []);
+              console.log(selected);
+              const selected_code = selected.jobs?.find(u => u.code === profile.job?.code);
+              console.log(selected_code);
+              setSelectedJob(selected_code.code);
+              setIntroductionMessage(profile.introductionMessage || '');
+              setMemberId(profile?.memberId || '');
+              console.log(profile?.jobLevels[0]?.code);
+              setJobLevel(profile?.jobLevels[0]?.code || '');
+            }}
+            className="tw-my-8 border tw-py-3 tw-px-5 tw-rounded tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-center tw-text-[#6a7380]"
+          >
             프로필 수정
           </button>
         </div>
@@ -114,6 +185,214 @@ const MyProfile = ({ profile, badgeContents }: any) => {
           ))}
         </div>
       </div>
+
+      <ProfileModal
+        isOpen={isModalOpen}
+        onAfterClose={() => {
+          setIsModalOpen(false);
+        }}
+      >
+        <div className="tw-font-bold tw-text-xl tw-text-black tw-mt-0 tw-mb-5 tw-text-center">
+          {profile?.member?.nickname}님 데브어스에 오신 것을 환영합니다!
+        </div>
+        <div className="tw-font-semibold tw-text-base tw-text-black tw-mt-0  tw-text-center">
+          대학,학과, 학번 및 학년 등 개인상세정보를 입력해주세요.
+        </div>
+        <div className="tw-font-semibold tw-text-base  tw-text-black tw-mt-0 tw-mb-10 tw-text-center">
+          이후 마이페이지에서 수정이 가능합니다.
+        </div>
+
+        <div className="border tw-p-7 tw-rounded-xl">
+          <div className="tw-font-bold tw-text-base tw-text-black">개인정보</div>
+
+          <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
+            <img
+              className="tw-w-32 tw-h-32 tw-ring-1 tw-rounded-full"
+              src={fileImageUrl ?? profile?.member?.profileImageUrl}
+              alt=""
+            />
+          </div>
+          {/* <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
+            <button color="primary" className="tw-bg-blue-500 tw-px-5 tw-py-2 tw-rounded-md">
+              <label htmlFor={`input-file`} className="tw-text-white tw-text-sm">
+                사진 변경
+              </label>
+              <input
+                hidden
+                id={`input-file`}
+                accept="image/*"
+                type="file"
+                onChange={e => onFileChange(e.target?.files)}
+              />
+            </button>
+          </div> */}
+          <div className="tw-mt-2 tw-border-t tw-border-gray-100">
+            <dl className="tw-divide-y tw-divide-gray-100">
+              <div className="tw-px-4 tw-py-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
+                <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">이메일</dt>
+                <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                  {profile?.email}
+                </dd>
+              </div>
+              <div className="tw-px-4 tw-py-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
+                <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">이름</dt>
+                <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">{profile?.member?.nickname}</dd>
+              </div>
+              <div className="tw-px-4 tw-py-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
+                <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">전화번호</dt>
+                <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">{profile?.phoneNumber}</dd>
+              </div>
+              <div className="tw-px-4 tw-py-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
+                <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">학번</dt>
+                <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                  <TextField
+                    inputRef={phoneRef} // ref를 할당합니다.
+                    size="small"
+                    id="outlined-basic"
+                    label=""
+                    name="companyName"
+                    variant="outlined"
+                    onChange={e => setMemberId(e.target.value)}
+                    value={memberId}
+                    inputProps={{
+                      maxLength: 13,
+                      style: {
+                        height: '20px',
+                      },
+                    }}
+                  />
+                </dd>
+              </div>
+              <div className="tw-px-4 tw-pt-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">대학</dt>
+                <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                  <select
+                    className="form-select"
+                    onChange={handleUniversityChange}
+                    aria-label="Default select example"
+                    value={universityCode}
+                  >
+                    <option>대학을 선택해주세요.</option>
+                    {optionsData?.data?.jobs?.map((university, index) => (
+                      <option key={index} value={university.code}>
+                        {university.name}
+                      </option>
+                    ))}
+                  </select>
+                </dd>
+              </div>
+              <div className="tw-mt-2 tw-px-4 tw-py-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">학과</dt>
+                <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                  <select
+                    className="form-select"
+                    aria-label="Default select example"
+                    disabled={jobs.length === 0}
+                    onChange={handleJobChange}
+                    value={selectedJob}
+                  >
+                    <option disabled value="">
+                      학과를 선택해주세요.
+                    </option>
+                    {jobs.map((job, index) => (
+                      <option key={index} value={job.code}>
+                        {job.name}
+                      </option>
+                    ))}
+                  </select>
+                </dd>
+              </div>
+              <div className="tw-mt-2 tw-px-4 tw-pt-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+                <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">학년</dt>
+                <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                  {optionsData?.data?.jobLevels?.map((item, i) => (
+                    <Toggle
+                      key={i}
+                      label={item.name}
+                      name={item.name}
+                      value={item.code}
+                      variant="small"
+                      checked={jobLevel === item.code}
+                      isActive
+                      type="tabButton"
+                      onChange={() => {
+                        setActiveQuiz(item.code);
+                        console.log(item);
+                        setJobLevel(item.code);
+                      }}
+                      className={cx('tw-mr-3 !tw-w-[75px] tw-line-clamp-1')}
+                    />
+                  ))}
+                </dd>
+              </div>
+
+              <div className="tw-px-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0">
+                <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900"></dt>
+                <dd className="tw-mt-0 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                  {jobLevel?.toString() === '0001' && (
+                    <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                      0레벨 : 직무스킬 학습 중. 상용서비스 개발 경험 없음.
+                    </div>
+                  )}
+                  {jobLevel?.toString() === '0002' && (
+                    <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                      1레벨 : 상용서비스 단위모듈 수준 개발 가능. 서비스 개발 리딩 시니어 필요.
+                    </div>
+                  )}
+                  {jobLevel?.toString() === '0003' && (
+                    <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                      2레벨 : 상용 서비스 개발 1인분 가능한 사람. 소규모 서비스 독자 개발 가능.
+                    </div>
+                  )}
+                  {jobLevel?.toString() === '0004' && (
+                    <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                      3레벨 : 상용서비스 개발 리더. 담당직무분야 N명 업무가이드 및 리딩 가능.
+                    </div>
+                  )}
+                  {jobLevel?.toString() === '0005' && (
+                    <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                      4레벨 : 다수 상용서비스 개발 리더. 수십명 혹은 수백명 수준의 개발자 총괄 리더.
+                    </div>
+                  )}
+                  {jobLevel?.toString() === '0006' && (
+                    <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                      5레벨 : 본인 오픈소스/방법론 등이 범용적 사용, 수백명이상 다수 직군 리딩.
+                    </div>
+                  )}
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+        <div className="border tw-p-7 tw-rounded-xl tw-mt-5 ">
+          <div className="tw-font-bold tw-text-base tw-text-black">자기소개(선택정보)</div>
+          <div className="tw-px-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-mt-8">
+            <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">한줄소개</dt>
+            <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+              <textarea
+                value={introductionMessage}
+                className="tw-form-control tw-w-full tw-py-[8px] tw-p-5"
+                id="floatingTextarea"
+                placeholder="댓글을 입력해주세요."
+                ref={textInput}
+                rows={2} // 두 줄 높이로 설정
+                onChange={e => {
+                  setIntroductionMessage(e.target.value);
+                }}
+              ></textarea>
+            </dd>
+          </div>
+        </div>
+        <div className="tw-p-3 tw-rounded-xl tw-mt-5 tw-text-center">
+          <button
+            type="button"
+            onClick={() => handleProfileSave()}
+            className="tw-text-sm tw-bg-black tw-text-white tw-py-2 tw-px-4 tw-rounded"
+          >
+            수정하기
+          </button>
+        </div>
+      </ProfileModal>
     </>
   );
 };

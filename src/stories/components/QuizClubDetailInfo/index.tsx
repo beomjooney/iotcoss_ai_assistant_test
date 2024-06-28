@@ -10,6 +10,7 @@ import { getClubStatusMessage } from 'src/utils/clubStatus';
 import { Button, Modal } from 'src/stories/components';
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
+import { TextField } from '@mui/material';
 
 const cx = classNames.bind(styles);
 interface QuizClubDetailInfoProps {
@@ -40,6 +41,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
   const { mutate: onClubJoin, isSuccess: clubJoinSucces } = useClubJoin();
   let [isLiked, setIsLiked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [participationCode, setParticipationCode] = useState<string>('');
 
   const { mutate: onSaveLike, isSuccess } = useSaveLike();
   const { mutate: onDeleteLike } = useDeleteLike();
@@ -54,14 +56,12 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
     }
   }, [clubJoinSucces]);
 
-  const handlerClubJoin = (clubSequence: number) => {
+  const handlerClubJoin = (clubSequence: number, isPublic: boolean) => {
     setIsModalOpen(true);
-    // if (window.confirm('정말로 참여하시겠습니까?')) {
-    onClubJoin({
-      clubSequence: clubSequence,
-      participationCode: '',
-    });
-    // }
+    // onClubJoin({
+    //   clubSequence: clubSequence,
+    //   participationCode: '',
+    // });
   };
 
   const onChangeLike = function (postNo: number) {
@@ -177,7 +177,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
                   <div className="tw-flex tw-ml-auto tw-items-center tw-space-x-4">
                     {clubData?.clubStatus === '0300' && clubData?.clubMemberStatus === '0000' ? (
                       <button
-                        onClick={() => handlerClubJoin(clubData?.clubSequence)}
+                        onClick={() => handlerClubJoin(clubData?.clubSequence, clubData?.isPublic)}
                         className="tw-text-[12.25px] tw-font-bold tw-text-center tw-text-white tw-bg-[#e11837] tw-px-4 tw-py-2 tw-rounded"
                       >
                         참여하기
@@ -358,25 +358,72 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
       </div>
       <Modal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)} title="" maxWidth="900px">
         <div className={cx('seminar-check-popup')}>
-          <div className={cx('mb-5')}>
-            <span className={cx('text-bold', 'tw-text-xl', 'tw-font-bold')}>가입 신청이 완료되었습니다!</span>
-          </div>
-          <div>가입 신청 후 클럽장 승인이 완료될때까지 기다려주세요!</div>
-          <div>승인 완료 후 MY페이지나 퀴즈클럽 페이지 상단에서 가입된 클럽을 확인하실 수 있습니다.</div>
-          <br></br>
-          <br></br>
-          <br></br>
-          <br></br>
-          <div className="tw-mt-5">
-            <Button
-              color="red"
-              label="확인"
-              size="modal"
-              onClick={() => {
-                setIsModalOpen(false);
-              }}
-            />
-          </div>
+          {clubData?.isPublic ? (
+            <div>
+              <div className={cx('mb-5')}>
+                <span className={cx('text-bold', 'tw-text-xl', 'tw-font-bold')}>가입 신청이 완료되었습니다!</span>
+              </div>
+              <div>가입 신청 후 클럽장 승인이 완료될때까지 기다려주세요!</div>
+              <div>승인 완료 후 MY페이지나 퀴즈클럽 페이지 상단에서 가입된 클럽을 확인하실 수 있습니다.</div>
+              <br></br>
+              <br></br>
+              <br></br>
+              <br></br>
+              <div className="tw-mt-5">
+                <Button
+                  color="red"
+                  label="확인"
+                  size="modal"
+                  onClick={() => {
+                    setIsModalOpen(false);
+                    onClubJoin({
+                      clubSequence: clubData?.clubSequence,
+                      participationCode: participationCode,
+                    });
+                  }}
+                />
+              </div>
+            </div>
+          ) : (
+            <div>
+              <div className={cx('mb-5')}>
+                <span className={cx('text-bold', 'tw-text-xl', 'tw-font-bold')}>참여코드를 입력해주세요.</span>
+              </div>
+              <div>
+                <TextField
+                  placeholder="참여코드를 입력해주세요."
+                  value={participationCode}
+                  onChange={e => {
+                    setParticipationCode(e.target.value);
+                  }}
+                />
+              </div>
+              <br></br>
+              <br></br>
+              <br></br>
+              <br></br>
+              <div className="tw-mt-5">
+                <Button
+                  color="red"
+                  label="확인"
+                  size="modal"
+                  onClick={() => {
+                    if (participationCode.length === 0) {
+                      alert('참여코드를 입력해주세요.');
+                    } else {
+                      console.log(participationCode, clubData?.clubSequence);
+                      onClubJoin({
+                        clubSequence: clubData?.clubSequence,
+                        participationCode: participationCode,
+                      });
+                      setIsModalOpen(false);
+                      setParticipationCode('');
+                    }
+                  }}
+                />
+              </div>
+            </div>
+          )}
         </div>
       </Modal>
     </div>
