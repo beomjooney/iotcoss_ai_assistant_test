@@ -33,7 +33,7 @@ const MyProfile = ({ profile, badgeContents }: any) => {
   /**save profile */
   const { mutate: onSave, isSuccess: onSuccess } = useSaveProfile();
 
-  const handleProfileSave = async => {
+  const handleProfileSave = () => {
     // fileImageUrl이 null인 경우 imageUrl을 사용하도록 조건문 추가
 
     const params = {
@@ -386,8 +386,15 @@ const MyProfile = ({ profile, badgeContents }: any) => {
         <div className="tw-p-3 tw-rounded-xl tw-mt-5 tw-text-center">
           <button
             type="button"
+            onClick={() => setIsModalOpen(false)}
+            className="tw-w-[150px] tw-mr-3 tw-text-sm tw-bg-black tw-text-white tw-py-3 tw-px-5 tw-rounded"
+          >
+            다음에 하기
+          </button>
+          <button
+            type="button"
             onClick={() => handleProfileSave()}
-            className="tw-text-sm tw-bg-black tw-text-white tw-py-2 tw-px-4 tw-rounded"
+            className="tw-w-[150px] tw-text-sm tw-bg-red-600 tw-text-white tw-py-3 tw-px-5 tw-rounded"
           >
             수정하기
           </button>
