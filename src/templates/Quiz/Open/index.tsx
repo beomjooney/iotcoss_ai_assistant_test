@@ -64,6 +64,7 @@ export function QuizOpenTemplate() {
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [jobGroupsFilter, setJobGroupsFilter] = useState([]);
+  const [participationCode, setParticipationCode] = useState('');
   const [levelsFilter, setLevelsFilter] = useState([]);
   const [jobGroups, setJobGroups] = useState<any[]>([]);
   const [seminarFilter, setSeminarFilter] = useState(['0002']);
@@ -143,7 +144,7 @@ export function QuizOpenTemplate() {
 
   const [skillIdsPopUp, setSkillIdsPopUp] = useState<any[]>([]);
   const [experienceIdsPopUp, setExperienceIdsPopUp] = useState<any[]>([]);
-  const [isPublic, setIsPublic] = useState('공개');
+  const [isPublic, setIsPublic] = useState('0001');
   const [studyKeywords, setStudyKeywords] = useState([]);
   const [studyChapter, setStudyChapter] = useState('');
   const [studySubject, setStudySubject] = useState('');
@@ -306,6 +307,10 @@ export function QuizOpenTemplate() {
 
   const handleIsPublic = (event: React.MouseEvent<HTMLElement>, newFormats: string) => {
     setIsPublic(newFormats);
+    console.log(newFormats);
+    if (newFormats === '0002') {
+      setIsPublic('0002');
+    }
   };
 
   useDidMountEffect(() => {
@@ -606,7 +611,7 @@ export function QuizOpenTemplate() {
       jobs: [selectedJobCode],
       jobLevels: [recommendLevels],
       isPublic: true,
-      participationCode: '',
+      participationCode: participationCode,
       studyCycle: studyCycleNum,
       startAt: startDay.format('YYYY-MM-DD') + ' 00:00:00',
       studyCount: num,
@@ -1151,40 +1156,63 @@ export function QuizOpenTemplate() {
                             aria-label=""
                             color="standard"
                           >
-                            {privateGroup?.map((item, index) => (
-                              <ToggleButton
-                                classes={{ selected: classes.selected }}
-                                key={`job-4-${index}`}
-                                value={item.name}
-                                className="tw-ring-1 tw-ring-slate-900/10"
-                                style={{
-                                  width: 70,
-                                  borderRadius: '5px',
-                                  borderLeft: '0px',
-                                  margin: '5px',
-                                  height: '35px',
-                                  border: '0px',
-                                }}
-                                sx={{
-                                  '&.Mui-selected': {
-                                    backgroundColor: '#6A7380',
-                                    color: '#fff',
-                                  },
-                                  '&.Mui-selected:hover': {
-                                    backgroundColor: '#6A7380',
-                                  },
-                                }}
-                              >
-                                {item.name}
-                              </ToggleButton>
-                            ))}
+                            <ToggleButton
+                              classes={{ selected: classes.selected }}
+                              value="0001"
+                              className="tw-ring-1 tw-ring-slate-900/10"
+                              style={{
+                                width: 70,
+                                borderRadius: '5px',
+                                borderLeft: '0px',
+                                margin: '5px',
+                                height: '35px',
+                                border: '0px',
+                              }}
+                              sx={{
+                                '&.Mui-selected': {
+                                  backgroundColor: '#6A7380',
+                                  color: '#fff',
+                                },
+                                '&.Mui-selected:hover': {
+                                  backgroundColor: '#6A7380',
+                                },
+                              }}
+                            >
+                              공개
+                            </ToggleButton>
+                            <ToggleButton
+                              classes={{ selected: classes.selected }}
+                              value="0002"
+                              className="tw-ring-1 tw-ring-slate-900/10"
+                              style={{
+                                width: 70,
+                                borderRadius: '5px',
+                                borderLeft: '0px',
+                                margin: '5px',
+                                height: '35px',
+                                border: '0px',
+                              }}
+                              sx={{
+                                '&.Mui-selected': {
+                                  backgroundColor: '#6A7380',
+                                  color: '#fff',
+                                },
+                                '&.Mui-selected:hover': {
+                                  backgroundColor: '#6A7380',
+                                },
+                              }}
+                            >
+                              비공개
+                            </ToggleButton>
                           </ToggleButtonGroup>
                           <TextField
                             fullWidth
                             className="tw-pl-1"
                             size="small"
-                            disabled
-                            label={'입장코드를 설정해주세요.'}
+                            value={participationCode}
+                            onChange={e => setParticipationCode(e.target.value)}
+                            disabled={isPublic === '0001'}
+                            placeholder="입장코드를 설정해주세요."
                             id="margin-none"
                           />
                         </div>
