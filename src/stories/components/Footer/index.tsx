@@ -28,7 +28,7 @@ const Footer = () => {
       </Mobile>
       <div className="footer-bottom footer-border"></div>
       <Desktop>
-        <div className="main-container tw-flex tw-justify-center tw-bg-[#31343d]">
+        <div className="main-container tw-flex tw-justify-center tw-bg-[#31343d]" style={{ zIndex: 1 }}>
           <footer className={cx('footer-section ')}>
             <div className="main-container tw-flex tw-justify-center tw-bg-[#31343d]">
               <footer className={cx('footer-section')}>
