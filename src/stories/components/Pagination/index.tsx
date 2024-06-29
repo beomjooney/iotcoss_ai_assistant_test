@@ -98,7 +98,7 @@ const Pagination = ({ total = 1, showCount = 8, page = 1, onChange, className, s
                 xmlns="http://www.w3.org/2000/svg"
                 preserveAspectRatio="none"
               >
-                <path d="M7 11L2 6L7 1" stroke="#9CA5B2" stroke-width="1.5" />
+                <path d="M7 11L2 6L7 1" stroke="#9CA5B2" strokeWidth="1.5" />
               </svg>
             </a>
           </li>
