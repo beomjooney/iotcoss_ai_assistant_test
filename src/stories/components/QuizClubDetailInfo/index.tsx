@@ -180,7 +180,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
                         onClick={() => handlerClubJoin(clubData?.clubSequence, clubData?.isPublic)}
                         className="tw-text-[12.25px] tw-font-bold tw-text-center tw-text-white tw-bg-[#e11837] tw-px-4 tw-py-2 tw-rounded"
                       >
-                        참여 하기
+                        참여하기
                       </button>
                     ) : (
                       <>
