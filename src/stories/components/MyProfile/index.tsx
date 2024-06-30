@@ -7,25 +7,27 @@ import { UseQueryResult } from 'react-query';
 import { useOptions } from 'src/services/experiences/experiences.queries';
 import { Toggle } from 'src/stories/components';
 import { useSaveProfile } from 'src/services/account/account.mutations';
+import { useUploadImage } from 'src/services/image/image.mutations';
 
 const cx = classNames.bind(styles);
 
-const MyProfile = ({ profile, badgeContents }: any) => {
+const MyProfile = ({ profile, badgeContents, refetchProfile }: any) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [jobs, setJobs] = useState([]);
   const [selectedJob, setSelectedJob] = useState('');
-  const [nickName, setNickName] = useState<string>('');
-  const [phone, setPhone] = useState<string>('');
   const phoneRef = useRef(null);
   const [activeQuiz, setActiveQuiz] = useState('0001');
   const [memberId, setMemberId] = useState('');
-  const [customSkills, setCustomSkills] = useState([]);
-  const [fileImageUrl, setFileImageUrl] = useState(null);
 
   const [universityCode, setUniversityCode] = useState('');
   const [selectedUniversity, setSelectedUniversity] = useState('');
   const [jobLevel, setJobLevel] = useState('0001');
   const [introductionMessage, setIntroductionMessage] = useState('');
+
+  /**file image  */
+  const [file, setFile] = useState(null);
+  const [fileImageUrl, setFileImageUrl] = useState(null);
+
   const textInput = useRef(null);
 
   const { isFetched: isOptionFetched, data: optionsData }: UseQueryResult<any> = useOptions();
@@ -33,13 +35,24 @@ const MyProfile = ({ profile, badgeContents }: any) => {
   /**save profile */
   const { mutate: onSave, isSuccess: onSuccess } = useSaveProfile();
 
+  /**image */
+  const { mutate: onSaveImage, data: imageUrl, isSuccess: imageSuccess } = useUploadImage();
+
+  useEffect(() => {
+    if (onSuccess) {
+      refetchProfile();
+    }
+  }, [onSuccess]);
+
   const handleProfileSave = () => {
     // fileImageUrl이 null인 경우 imageUrl을 사용하도록 조건문 추가
+    const profileImageKey = imageUrl || profile?.member?.profileImageUrl;
 
     const params = {
+      profileImageUrl: profileImageKey,
       jobGroup: universityCode,
       job: selectedJob,
-      memberId: memberId,
+      memberId: profile?.email,
       jobLevel: jobLevel,
       introductionMessage: introductionMessage,
     };
@@ -63,6 +76,22 @@ const MyProfile = ({ profile, badgeContents }: any) => {
     const selectedCode = e.target.value;
     // const selected = jobs?.find(u => u.code === selectedCode);
     // setSelectedJob(selected ? selected.name : '');
+  };
+
+  useEffect(() => {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const image = e.target.result;
+      setFileImageUrl(image);
+    };
+    reader.readAsDataURL(file);
+    onSaveImage(file);
+  }, [file]);
+
+  const onFileChange = files => {
+    if (!files || files.length === 0) return;
+    setFile(files[0]);
   };
 
   return (
@@ -130,21 +159,6 @@ const MyProfile = ({ profile, badgeContents }: any) => {
               </p>
             </div>
           </div>
-          <svg
-            width={24}
-            height={24}
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="tw-w-6 tw-h-6 tw-absolute tw-left-32 tw-top-32"
-            preserveAspectRatio="none"
-          >
-            <circle cx={12} cy={12} r="11.5" fill="#9CA5B2" stroke="#CED4DE" />
-            <path
-              d="M14.9856 6.60537C15.1382 6.42488 15.3269 6.27796 15.5398 6.17398C15.7526 6.07001 15.9849 6.01125 16.2218 6.00146C16.4588 5.99168 16.6952 6.03107 16.916 6.11713C17.1368 6.2032 17.3371 6.33404 17.5042 6.50133C17.6713 6.66862 17.8015 6.86868 17.8865 7.08877C17.9715 7.30885 18.0095 7.54413 17.998 7.7796C17.9865 8.01508 17.9257 8.24559 17.8196 8.45644C17.7136 8.66729 17.5644 8.85385 17.3818 9.00424L9.29473 17.1004L6 18L6.89856 14.7016L14.9856 6.60537Z"
-              fill="#E9ECF2"
-            />
-          </svg>
           <button
             onClick={() => {
               setIsModalOpen(true);
@@ -204,14 +218,36 @@ const MyProfile = ({ profile, badgeContents }: any) => {
 
         <div className="border tw-p-7 tw-rounded-xl">
           <div className="tw-font-bold tw-text-base tw-text-black">개인정보</div>
-
-          <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
+          <div className=" tw-mt-7 tw-ml-7 tw-relative tw-flex tw-flex-col tw-items-center">
+            <img
+              src={fileImageUrl ?? profile?.member?.profileImageUrl}
+              className="border tw-rounded-full tw-w-[120px] tw-h-[120px] tw-object-cover"
+            />
+            <svg
+              onClick={() => document.getElementById('input-file').click()}
+              width={24}
+              height={24}
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="tw-w-6 tw-h-6 tw-mt-[-20px] tw-ml-20 tw-cursor-pointer "
+              preserveAspectRatio="none"
+            >
+              <circle cx={12} cy={12} r="11.5" fill="#9CA5B2" stroke="#CED4DE" />
+              <path
+                d="M14.9856 6.60537C15.1382 6.42488 15.3269 6.27796 15.5398 6.17398C15.7526 6.07001 15.9849 6.01125 16.2218 6.00146C16.4588 5.99168 16.6952 6.03107 16.916 6.11713C17.1368 6.2032 17.3371 6.33404 17.5042 6.50133C17.6713 6.66862 17.8015 6.86868 17.8865 7.08877C17.9715 7.30885 18.0095 7.54413 17.998 7.7796C17.9865 8.01508 17.9257 8.24559 17.8196 8.45644C17.7136 8.66729 17.5644 8.85385 17.3818 9.00424L9.29473 17.1004L6 18L6.89856 14.7016L14.9856 6.60537Z"
+                fill="#E9ECF2"
+              />
+            </svg>
+            <input hidden id="input-file" accept="image/*" type="file" onChange={e => onFileChange(e.target?.files)} />
+          </div>
+          {/* <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
             <img
               className="tw-w-32 tw-h-32 tw-ring-1 tw-rounded-full"
               src={fileImageUrl ?? profile?.member?.profileImageUrl}
               alt=""
             />
-          </div>
+          </div> */}
           {/* <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
             <button color="primary" className="tw-bg-blue-500 tw-px-5 tw-py-2 tw-rounded-md">
               <label htmlFor={`input-file`} className="tw-text-white tw-text-sm">
@@ -242,7 +278,7 @@ const MyProfile = ({ profile, badgeContents }: any) => {
                 <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">전화번호</dt>
                 <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">{profile?.phoneNumber}</dd>
               </div>
-              <div className="tw-px-4 tw-py-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
+              {/* <div className="tw-px-4 tw-py-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
                 <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">학번</dt>
                 <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
                   <TextField
@@ -262,7 +298,7 @@ const MyProfile = ({ profile, badgeContents }: any) => {
                     }}
                   />
                 </dd>
-              </div>
+              </div> */}
               <div className="tw-px-4 tw-pt-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
                 <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">대학</dt>
                 <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
