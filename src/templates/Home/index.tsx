@@ -322,7 +322,7 @@ export function HomeTemplate({ logged = false }: HomeProps) {
 
   const openChatbot = () => {
     const width = 400;
-    const height = 600;
+    const height = 700;
     const left = window.screen.width - width;
     const top = window.screen.height - height;
 
