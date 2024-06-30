@@ -59,7 +59,7 @@ const MyProfile = ({ profile, badgeContents, refetchProfile }: any) => {
 
     const formData = new FormData();
     console.log(file);
-    formData.append('profileImage', file);
+    formData.append('profileImage', file || '');
     formData.append('jobGroup', universityCode);
     formData.append('job', selectedJob);
     formData.append('memberId', profile?.email);
@@ -128,7 +128,7 @@ const MyProfile = ({ profile, badgeContents, refetchProfile }: any) => {
               </div>
               <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-3 tw-py-1 tw-rounded tw-bg-[#ffdede]">
                 <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#b83333]">
-                  {profile?.jobLevels?.name || 'N/A'}
+                  {profile?.jobLevels[0]?.name || 'N/A'}
                 </p>
               </div>
             </div>
@@ -421,7 +421,7 @@ const MyProfile = ({ profile, badgeContents, refetchProfile }: any) => {
                 id="floatingTextarea"
                 placeholder="댓글을 입력해주세요."
                 ref={textInput}
-                rows={2} // 두 줄 높이로 설정
+                rows={3} // 두 줄 높이로 설정
                 onChange={e => {
                   setIntroductionMessage(e.target.value);
                 }}
