@@ -48,17 +48,26 @@ const MyProfile = ({ profile, badgeContents, refetchProfile }: any) => {
     // fileImageUrl이 null인 경우 imageUrl을 사용하도록 조건문 추가
     const profileImageKey = imageUrl || profile?.member?.profileImageUrl;
 
-    const params = {
-      profileImageUrl: profileImageKey,
-      jobGroup: universityCode,
-      job: selectedJob,
-      memberId: profile?.email,
-      jobLevel: jobLevel,
-      introductionMessage: introductionMessage,
-    };
+    // const params = {
+    //   profileImageUrl: profileImageKey,
+    //   jobGroup: universityCode,
+    //   job: selectedJob,
+    //   memberId: profile?.email,
+    //   jobLevel: jobLevel,
+    //   introductionMessage: introductionMessage,
+    // };
 
-    console.log(params);
-    onSave(params);
+    const formData = new FormData();
+    console.log(file);
+    formData.append('profileImage', file);
+    formData.append('jobGroup', universityCode);
+    formData.append('job', selectedJob);
+    formData.append('memberId', profile?.email);
+    formData.append('jobLevel', jobLevel);
+    formData.append('introductionMessage', introductionMessage);
+
+    console.log('formData', formData);
+    onSave(formData);
     setIsModalOpen(false);
   };
 
@@ -91,6 +100,7 @@ const MyProfile = ({ profile, badgeContents, refetchProfile }: any) => {
 
   const onFileChange = files => {
     if (!files || files.length === 0) return;
+    console.log(files[0]);
     setFile(files[0]);
   };
 

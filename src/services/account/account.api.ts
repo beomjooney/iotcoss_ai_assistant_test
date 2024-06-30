@@ -46,7 +46,10 @@ export async function memberActiveSummaryInfo() {
 export const getProfile = async body => await axiosGeneralAPI().get(`/api/v1/profiles/${body}`);
 
 // 회원 정보 저장
-export const saveProfile = async body => await axiosGeneralAPI().put(`/api/v1/my/profile`, body);
+export const saveProfile = async body =>
+  await axiosGeneralAPI().put(`/api/v1/my/profile`, body, {
+    headers: { 'content-type': 'multipart/form-data' },
+  });
 
 // 회원 정보 수정
 export const editInfo = async (memberId, body) => await axiosGeneralAPI().put(`/members/${memberId}`, body);
