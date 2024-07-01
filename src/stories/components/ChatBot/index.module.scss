@@ -1,0 +1,135 @@
+@use 'src/stories/assets/styles/abstracts/font';
+@use 'src/stories/assets/styles/abstracts/palette';
+@use 'src/stories/assets/styles/abstracts/mixin';
+
+$header-size: 80px;
+$space-size: 5px;
+
+.community-board-container {
+  border: 1px solid palette.$Primary-Gray500;
+  border-radius: 5px;
+  padding: 40px;
+
+  .board-header {
+    position: relative;
+
+    .profile-wrap {
+      .profile-image {
+        width: $header-size;
+        height: $header-size;
+        float: left;
+        border: 0.5px solid #d2d8dd !important;
+      }
+
+      .profile-area {
+        width: 70%;
+        margin-left: $space-size;
+        height: $header-size;
+        position: relative;
+        float: left;
+
+        .profile-desc {
+          text-align: left;
+          position: absolute;
+          bottom: 0;
+
+          &__name {
+            font-size: font.$font-size-18 !important;
+            font-weight: normal;
+            line-height: 1.5em;
+          }
+
+          &__job {
+            font-size: font.$font-size-12 !important;
+            color: palette.$Primary-Gray800;
+          }
+        }
+      }
+    }
+
+    .date-area {
+      text-align: right;
+      font-size: font.$font-size-14 !important;
+      color: palette.$Primary-Gray800;
+
+      * {
+        margin: 0;
+      }
+    }
+  }
+
+  .board-content {
+    @include mixin.initEditorContent;
+    font-size: font.$font-size-16 !important;
+    padding: $space-size 0;
+    color: black;
+
+    img {
+      width: 100%;
+    }
+  }
+
+  .board-tags {
+    align-items: flex-start;
+    display: flex;
+    gap: 8px;
+    width: fit-content;
+    color: palette.$Primary-Gray600;
+    font-size: font.$font-size-14;
+  }
+
+  .board-footer {
+    font-size: font.$font-size-14 !important;
+    margin-top: $space-size;
+    margin-bottom: 13px;
+
+    button {
+      background: none;
+      border: none;
+      padding: 0;
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    &__reaction {
+      .reaction__count {
+        color: palette.$Primary-Gray600;
+        margin-left: 4px;
+        line-height: 22.5px;
+
+        &--active {
+          color: palette.$Primary-Blue900;
+        }
+      }
+    }
+
+    &__reply {
+      color: black;
+      line-height: 22.5px;
+      float: right;
+    }
+  }
+
+  .reply-container {
+    border-top: 1px solid palette.$Primary-Gray500;
+    border-bottom: 1px solid palette.$Primary-Gray500;
+    &__content {
+      padding-top: 13px;
+    }
+
+    &__form {
+      padding-top: 13px;
+
+      .form-button {
+        position: relative;
+        button {
+          position: absolute;
+          width: 80%;
+          height: 100%;
+        }
+      }
+    }
+  }
+}
