@@ -233,7 +233,7 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                         {session?.order}회
                       </p>
                       <p className="tw-text-xs tw-font-medium tw-text-center tw-text-[#9ca5b2] tw-pt-1">
-                        {session?.publishDate.split('-').slice(1).join('-')}
+                        {session?.publishDate?.split('-').slice(1).join('-') || 'N/A'}
                       </p>
                     </div>
                     <div className="tw-pt-3 tw-pb-2">
@@ -293,7 +293,13 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                         session?.answerStatus === '0002' ? 'tw-text-[#e11837]' : 'tw-text-[#9ca5b2]'
                       }`}
                     >
-                      {session?.completedDate ? session?.completedDate : 'D' + session?.relativeDaysToPublishDate}
+                      {session?.completedDate
+                        ? session?.completedDate
+                        : session?.relativeDaysToPublishDate != null
+                        ? session.relativeDaysToPublishDate > 0
+                          ? 'D+' + session.relativeDaysToPublishDate
+                          : 'D' + session.relativeDaysToPublishDate
+                        : 'N/A'}
                     </p>
                   </div>
                 ))}
