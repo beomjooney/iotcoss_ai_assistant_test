@@ -1,69 +1,18 @@
 import styles from './index.module.scss';
-import { Button, Typography } from 'src/stories/components';
 import classNames from 'classnames/bind';
-import SectionHeader from 'src/stories/components/SectionHeader';
 import { useContentJobTypes, useContentTypes, useJobGroups, useJobGroupss } from 'src/services/code/code.queries';
 import { useEffect, useRef, useState } from 'react';
 import { useStore } from 'src/store';
 import { useRouter } from 'next/router';
 import { useSessionStore } from '../../store/session';
 import Grid from '@mui/material/Grid';
-import ProfileModal from 'src/stories/components/ProfileModal';
 import { User } from 'src/models/user';
-import { useMemberInfo } from 'src/services/account/account.queries';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import ToggleButton from '@mui/material/ToggleButton';
-import TextField from '@mui/material/TextField';
+import ChatbotModal from 'src/stories/components/ChatBot';
 
 /** date picker */
-import dayjs, { Dayjs } from 'dayjs';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import React from 'react';
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
-
-import Autocomplete from '@mui/material/Autocomplete';
-import { useSkills } from 'src/services/skill/skill.queries';
-import { SkillResponse } from 'src/models/skills';
-import { UseQueryResult } from 'react-query';
-import { Divider } from 'antd';
-import { useUploadImage } from 'src/services/image/image.mutations';
-import { useSaveProfile } from 'src/services/account/account.mutations';
-import useDidMountEffect from 'src/hooks/useDidMountEffect';
-import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 
 const cx = classNames.bind(styles);
-
-const levelGroup = [
-  {
-    name: '0',
-    description: '레벨 0',
-  },
-  {
-    name: '1',
-    description: '레벨 1',
-  },
-  {
-    name: '2',
-    description: '레벨 2',
-  },
-  {
-    name: '3',
-    description: '레벨 3',
-  },
-  {
-    name: '4',
-    description: '레벨 4',
-  },
-  {
-    name: '5',
-    description: '레벨 5',
-  },
-];
-
 export interface HomeProps {
   logged: boolean;
   // hasUserResumeStory: boolean;
@@ -73,252 +22,11 @@ export interface HomeProps {
 export function HomeTemplate({ logged = false }: HomeProps) {
   const router = useRouter();
   // const { jobGroups, setJobGroups } = useStore();
-  const [vodList, setVodList] = useState([]);
-  const [topicList, setTopicList] = useState([]);
-  const [mentorList, setMentorList] = useState([]);
-  const [phone, setPhone] = useState<string>('');
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-
-  /**skill data */
-  const { data: skillData }: UseQueryResult<SkillResponse> = useSkills();
-  const fixedOptions = [];
-  const [selectedSkills, setSelectedSkills] = useState([]);
-
-  const recommendLevelsRef = useRef(null);
-  const jobGroupRef = useRef(null);
-  const phoneRef = useRef(null);
-
-  /** introduce message */
-  const [introductionMessage, setIntroductionMessage] = useState<string>('');
-  const [nickName, setNickName] = useState<string>('');
-  const onMessageChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, no?: number) => {
-    const { name, value } = event.currentTarget;
-    setIntroductionMessage(value);
-  };
-  const onNickNameChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, no?: number) => {
-    const { name, value } = event.currentTarget;
-    setNickName(value);
-  };
-
-  const onPhoneChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, no?: number) => {
-    const { name, value } = event.currentTarget;
-    setPhone(value);
-  };
-
-  /**work start end */
-  const [startDate, setStartDate] = React.useState<Dayjs | null>(null);
-  const [endDate, setEndDatealue] = React.useState<Dayjs | null>(null);
-  const [isFreelance, setIsFreelance] = useState<boolean>(false);
-  const [isCurrent, setIsCurrent] = useState<boolean>(false);
-
-  /** job & level */
-  const [jobGroup, setJobGroup] = useState([]);
-  const [recommendJobGroups, setRecommendJobGroups] = useState([]);
-  const [recommendLevels, setRecommendLevels] = useState('');
-  const { isFetched: isContentTypeFetched } = useContentTypes(data => {
-    setJobGroup(data.data.contents || []);
-  });
-  /**image */
-  const { mutate: onSaveImage, data: imageUrl, isSuccess: imageSuccess } = useUploadImage();
-
-  /** job */
-  const [contentJobType, setContentJobType] = useState<any[]>([]);
-  const { isFetched: isContentTypeJobFetched } = useContentJobTypes(data => {
-    setContentJobType(data.data.contents || []);
-  });
-
-  /**file image  */
-  const [file, setFile] = useState(null);
-  const [fileImageUrl, setFileImageUrl] = useState(null);
-
+  const { token } = useSessionStore.getState();
   /** get profile */
-  const { user, setUser } = useStore();
-  const { memberId } = useSessionStore.getState();
-  // console.log(user, memberId);
-  const { isFetched: isUser, data } = useMemberInfo(memberId, user => {
-    //console.log(data);
-    setUser(user);
-    setNickName(user?.nickname?.nickname);
-    setPhone(user?.phoneNumber || '');
-  });
+  // const { user, setUser } = useStore();
 
-  // console.log('profileList', isUser, data?.jobGroup, !!!data?.jobGroup);
-  // console.log('data', data);
-  // const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-
-  /**save profile */
-  const { mutate: onSave } = useSaveProfile();
-
-  // 클릭 이벤트 핸들러를 정의합니다.
-  const handleUserButton = async () => {
-    if (logged) {
-      // 조건에 따라 원하는 동작을 수행합니다.
-      router.push('/quiz');
-    } else {
-      // 다른 조건에 대한 동작을 수행할 수 있습니다.
-      router.push('/account/login');
-    }
-  };
-
-  const handleRecommendLevels = (event: React.MouseEvent<HTMLElement>, newFormats: string) => {
-    setRecommendLevels(newFormats);
-  };
-
-  const handleJobGroups = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
-    setRecommendJobGroups(newFormats);
-  };
-
-  const [formFields, setFormFields] = useState([
-    { companyName: '', startDate: '', endDate: '', isCurrent: false, isFreelance: false, isDelete: false },
-  ]);
-
-  const handleAddFields = () => {
-    const values = [
-      ...formFields,
-      { companyName: '', startDate: today, endDate: today, isCurrent: false, isFreelance: false, isDelete: false },
-    ];
-    setFormFields(values);
-  };
-
-  const handleProfileSave = async () => {
-    //console.log(imageUrl);
-    //console.log(fileImageUrl);
-
-    console.log(phone);
-    // 전화번호 유효성 검사
-    const regex = /^01(?:0|1|[6-9])-(?:\d{3}|\d{4})-\d{4}$/;
-    if (!regex.test(phone) || phone === '') {
-      alert('유효하지 않은 전화번호입니다.');
-      setPhone('');
-      phoneRef.current.focus();
-      return 0;
-    }
-
-    if (recommendJobGroups.length === 0) {
-      alert('직군 필수 입력값을 선택해주세요.');
-      jobGroupRef.current.focus();
-      return 0;
-    }
-
-    if (recommendLevels === '') {
-      alert('레벨 필수 입력값을 선택해주세요.');
-      recommendLevelsRef.current.focus();
-      return 0;
-    }
-    // fileImageUrl이 null인 경우 imageUrl을 사용하도록 조건문 추가
-    const profileImageKey = imageUrl || user?.profileImageUrl;
-
-    //console.log(profileImageKey);
-    const params = {
-      nickname: nickName,
-      phoneNumber: phone,
-      careers: formFields[0].companyName ? formFields : [],
-      jobGroupType: recommendJobGroups,
-      level: recommendLevels,
-      customSkills: selectedSkills,
-      introductionMessage: introductionMessage,
-      profileImageUrl: profileImageKey,
-    };
-    onSave(params);
-    // if (data !== null && data !== undefined) {
-    //   data.jobGroup = '0000';
-    // }
-    setIsOpen(false);
-    console.log(
-      'ㅇㅇ',
-      data.jobGroup,
-      !!!data.jobGroup,
-      data?.jobGroup === undefined ? false : true,
-      !!!data.jobGroup && data?.jobGroup === undefined ? false : true,
-    );
-  };
-
-  const handleRemoveFields = (index: number) => {
-    if (formFields.length === 1) {
-      alert('At least one form must remain');
-      return;
-    }
-    const values = [...formFields].splice(index, 1);
-    setFormFields(values);
-  };
-
-  const handleInputChange = (index: number, e: React.ChangeEvent<HTMLInputElement>, key, id) => {
-    const values = [...formFields];
-    if (key === 'text') {
-      if (e.target.name === 'companyName') {
-        values[index].companyName = e.target.value;
-      }
-    } else if (key === 'startDate' || key === 'endDate') {
-      const datetime = e.format('YYYY-MM-DD');
-      values[index][key] = datetime;
-    } else if (key === 'isFreelance') {
-      values[index][key] = !values[index][key];
-      // setIsFreelance(!isFreelance);
-    } else if (key === 'job') {
-      // 이 부분을 수정하여 id를 사용하도록 변경
-      values[index][key] = id;
-    } else {
-      values[index][key] = !values[index][key];
-      // setIsCurrent(!isCurrent);
-    }
-    // values[index].sequence = index + 1;
-    setFormFields(values);
-  };
-
-  const handleSkillsChange = (event, newValue) => {
-    // newValue 배열에서 각 객체의 name 속성을 추출하여 새로운 배열을 만듭니다.
-    const selectedSkillNames = newValue.map(option => option.name);
-    setSelectedSkills(selectedSkillNames);
-    //console.log(selectedSkillNames);
-    // 여기에서 선택된 값(newValue)을 처리하거나 원하는 작업을 수행할 수 있습니다.
-  };
-  const handleJobChange = (index, event, newValue) => {
-    handleInputChange(index, event, 'job', newValue.id);
-  };
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    //console.log(formFields);
-  };
-
-  const dateNow = new Date();
-  const today = dateNow.toISOString().slice(0, 10);
-
-  useDidMountEffect(() => {
-    console.log('useEffect', data?.jobGroup);
-    if (data?.jobGroup === undefined || data?.jobGroup === '') {
-      console.log('useEffect 1');
-      setIsOpen(false);
-    } else if (data?.jobGroup === null) {
-      console.log('useEffect 2');
-      setIsOpen(true);
-    } else {
-      setIsOpen(false);
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = e => {
-      const image = e.target.result;
-      setFileImageUrl(image);
-    };
-    reader.readAsDataURL(file);
-    onSaveImage(file);
-  }, [file]);
-
-  const onFileChange = files => {
-    if (!files || files.length === 0) return;
-    setFile(files[0]);
-  };
-
-  useEffect(() => {
-    if (phone.length === 11) {
-      setPhone(phone.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3'));
-    } else if (phone.length === 13) {
-      setPhone(phone.replace(/-/g, '').replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3'));
-    }
-  }, [phone]);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const openChatbot = () => {
     const width = 450;
@@ -576,22 +284,18 @@ export function HomeTemplate({ logged = false }: HomeProps) {
             className="tw-w-[404px] tw-h-[404px] tw-absolute tw-left-[50px] tw-top-[-4px] tw-object-cover"
           />
         </div>
-        <div>
-          <div
-            className="tw-fixed tw-bottom-0 tw-right-0 tw-w-16 tw-h-16 tw-mr-10 tw-mb-8 tw-cursor-pointer tw-z-10"
-            onClick={openChatbot}
-          >
-            <img src="/assets/images/main/chatbot.png" />
+        {!modalIsOpen && (
+          <div>
+            <div
+              className="tw-fixed tw-bottom-0 tw-right-0 tw-w-16 tw-h-16 tw-mr-10 tw-mb-8 tw-cursor-pointer tw-z-10"
+              onClick={() => setModalIsOpen(true)}
+            >
+              <img src="/assets/images/main/chatbot.png" />
+            </div>
           </div>
-        </div>
+        )}
+        <ChatbotModal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)} token={token} />
       </div>
-      {isUser && (
-        <div>
-          <ProfileModal isOpen={isOpen}>
-            <div></div>
-          </ProfileModal>
-        </div>
-      )}
     </div>
   );
 }

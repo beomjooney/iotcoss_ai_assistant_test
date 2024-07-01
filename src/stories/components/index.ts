@@ -67,3 +67,5 @@ export * from './ReplyCard/index';
 export { default as ReplyCard } from './ReplyCard/index';
 export * from './AIQuizList/index';
 export { default as AIQuizList } from './AIQuizList/index';
+export * from './ChatBot/index';
+export { default as ChatBot } from './ChatBot/index';
