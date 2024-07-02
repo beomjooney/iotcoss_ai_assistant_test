@@ -380,11 +380,14 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
       style={{ cursor: item?.isPublished ? 'default' : 'move' }} // 조건부 스타일 적용
     >
       <QuizBreakerInfo
+        publishDate={item?.publishDate}
+        dayOfWeek={item?.dayOfWeek}
         avatarSrc={item?.maker?.profileImageUrl}
         userName={item?.maker?.nickname}
         questionText={item?.question}
         index={item?.quizSequence !== undefined ? item?.quizSequence : null}
         answerText={item?.modelAnswer}
+        handleAddClick={handleAddClick}
         isPublished={item?.isPublished}
         handleCheckboxDelete={handleCheckboxDelete}
       />
@@ -1073,11 +1076,14 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                     </RadioGroup>
                   </div>
                 </div>
-                <Grid container direction="row" justifyContent="left" alignItems="flex-start" rowSpacing={4}>
+                <Grid container direction="row" justifyContent="left" alignItems="start" rowSpacing={4}>
                   <Grid item xs={1}>
                     {quizList?.map((item, index) => {
                       return (
-                        <div key={index} className="tw-h-[209px] tw-flex tw-flex-col tw-items-center tw-justify-center">
+                        <div
+                          key={index}
+                          className="tw-h-[223.25px] tw-flex tw-flex-col tw-items-center tw-justify-center tw-mb-4"
+                        >
                           <div className=" tw-text-center tw-text-black tw-font-bold">Q{index + 1}.</div>
                           <div className="tw-text-center tw-text-sm tw-text-black tw-font-bold">
                             {item?.publishDate.slice(5, 10)} ({item.dayOfWeek})

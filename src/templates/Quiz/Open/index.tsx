@@ -585,6 +585,10 @@ export function QuizOpenTemplate() {
         index={item.quizSequence !== undefined ? item.quizSequence : null}
         answerText={item.modelAnswer}
         handleCheckboxDelete={handleCheckboxDelete}
+        handleAddClick={handleAddClick}
+        publishDate={item.publishDate}
+        dayOfWeek={item.dayOfWeek}
+        isPublished={item.isPublished}
       />
     </div>
   );

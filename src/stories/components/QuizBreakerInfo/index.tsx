@@ -2,26 +2,40 @@ import React from 'react';
 import Tooltip from 'src/stories/components/Tooltip';
 import classNames from 'classnames/bind';
 import styles from './index.module.scss';
+import { Grid } from '@mui/material';
 
 const cx = classNames.bind(styles);
 
 const QuizBreakerInfo = ({
   avatarSrc = '',
   userName = 'Unknown User',
+  publishDate,
+  dayOfWeek,
   questionText,
   isPublished,
   index,
   answerText,
   knowledgeContentTitle = '[영상] CircuitBreaker를 이용한 외부 API 장애 관리',
   handleCheckboxDelete,
+  handleAddClick,
 }) => {
   return (
-    <div className="tw-h-[200px] tw-mb-10">
+    <div className="tw-mb-1">
+      {/* <Grid container direction="row" justifyContent="left" alignItems="center" rowSpacing={4}>
+        <Grid item xs={1}>
+          <div className=" tw-text-center tw-text-black tw-font-bold">Q{index + 1}.</div>
+          <div className="tw-text-center tw-text-sm tw-text-black tw-font-bold">
+            {publishDate.slice(5, 10)} ({dayOfWeek})
+          </div>
+        </Grid> */}
+      {/* <Grid item xs={11}> */}
       {index === null ? (
         <div>
           <div className=" tw-relative tw-overflow-visible tw-rounded-lg tw-bg-[#f6f7fb] tw-mb-3 tw-grid tw-grid-cols-[60px_1fr_100px_28px_40px] tw-grid-rows-[auto_auto] tw-h-20 tw-z-10"></div>
-          <div className="tw-flex tw-items-center tw-justify-center tw-my-3 tw-h-[107px] tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white border border-[#e9ecf2]">
-            퀴즈 등록해주세요.
+          <div className=" tw-flex tw-items-center tw-justify-center tw-my-3 tw-h-[107px] tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white border border-[#e9ecf2]">
+            <button onClick={handleAddClick} className="tw-text-sm tw-text-[#9ca5b2]">
+              + 퀴즈 등록해주세요.
+            </button>
           </div>
         </div>
       ) : (
@@ -98,7 +112,7 @@ const QuizBreakerInfo = ({
             <p className="tw-absolute tw-left-[52px] tw-top-[19px] tw-text-sm tw-font-medium tw-text-left tw-text-[#31343d]">
               모범답안 :
             </p>
-            <p className="tw-pr-5 tw-absolute tw-left-[119px] tw-top-[19px] tw-text-sm tw-text-left tw-text-[#31343d]">
+            <p className="tw-pr-5 tw-line-clamp-3 tw-absolute tw-left-[119px] tw-top-[19px] tw-text-sm tw-text-left tw-text-[#31343d]">
               {answerText}
             </p>
             <div className="tw-py-2 tw-flex tw-justify-start tw-items-start tw-absolute tw-left-[52px] tw-top-[73px] tw-gap-3">
@@ -110,6 +124,8 @@ const QuizBreakerInfo = ({
           </div>
         </div>
       )}
+      {/* </Grid> */}
+      {/* </Grid> */}
     </div>
   );
 };

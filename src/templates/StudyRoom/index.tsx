@@ -695,169 +695,176 @@ export function StudyRoomTemplate() {
                           </RadioGroup>
                           <div className="tw-pb-5">
                             {/* <CourseCard key={index} data={course} /> */}
-                            {isProgressFetched &&
-                              progressContents?.map((course, index) => (
-                                <div key={index} className="tw-pb-5">
-                                  <CourseCard key={index} data={course.club} border={true} />
-                                  <TableContainer className="border tw-rounded-b-lg">
-                                    <Table
-                                      className={classes.table}
-                                      aria-label="simple table"
-                                      style={{ tableLayout: 'fixed' }}
-                                    >
-                                      <TableHead style={{ backgroundColor: '#F6F7FB' }}>
-                                        <TableRow>
-                                          <TableCell
-                                            align="center"
-                                            width={120}
-                                            className={`${classes.sticky} ${classes.stickyFirst}`}
-                                          >
-                                            학생
-                                          </TableCell>
-                                          <TableCell
-                                            align="center"
-                                            width={120}
-                                            className={`${classes.stickyBoard} ${classes.stickySecond}`}
-                                          >
-                                            학습현황
-                                          </TableCell>
 
-                                          {course.schedules.map((session, index) => (
-                                            <TableCell key={index} width={100} align="right">
-                                              <div>
-                                                <p className="tw-pb-1 tw-text-sm tw-font-bold tw-text-center tw-text-[#31343d] tw-left-[15px] tw-top-0">
-                                                  {session.order}회
-                                                </p>
-                                                <p className="tw-w-full tw-h-3.5 tw-text-sm tw-font-medium tw-text-center tw-text-[#9ca5b2] tw-bottom-0">
-                                                  {moment(session.publishDate).format('MM-DD')} ({session.dayOfWeek})
-                                                </p>
-                                              </div>
+                            {isProgressFetched ? (
+                              progressContents && progressContents.length > 0 ? (
+                                progressContents.map((course, index) => (
+                                  <div key={index} className="tw-pb-5">
+                                    <CourseCard key={index} data={course.club} border={true} />
+                                    <TableContainer className="border tw-rounded-b-lg">
+                                      <Table
+                                        className={classes.table}
+                                        aria-label="simple table"
+                                        style={{ tableLayout: 'fixed' }}
+                                      >
+                                        <TableHead style={{ backgroundColor: '#F6F7FB' }}>
+                                          <TableRow>
+                                            <TableCell
+                                              align="center"
+                                              width={120}
+                                              className={`${classes.sticky} ${classes.stickyFirst}`}
+                                            >
+                                              학생
                                             </TableCell>
-                                          ))}
-                                        </TableRow>
-                                      </TableHead>
-                                      <TableBody>
-                                        <TableRow
-                                          key={index}
-                                          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                        >
-                                          <TableCell
-                                            align="center"
-                                            component="th"
-                                            scope="row"
-                                            className={`${classes.stickyWhite} ${classes.stickyFirst}`}
-                                          >
-                                            <div className="tw-flex tw-items-center tw-gap-3 ">
-                                              <img
-                                                src={course.participantProgress.member.profileImageUrl}
-                                                className="tw-w-9 tw-h-9 tw-rounded-full "
-                                                alt="아그리파"
-                                              />
-                                              <div>{course.participantProgress.member.nickname}</div>
-                                            </div>
-                                          </TableCell>
-                                          <TableCell
-                                            align="center"
-                                            width={120}
-                                            component="th"
-                                            scope="row"
-                                            className={`${classes.stickyWhiteBoard} ${classes.stickySecond}`}
-                                          >
-                                            <div className="tw-grid tw-grid-cols-5 tw-gap-1 tw-justify-center tw-items-center">
-                                              <div className="tw-col-span-3 progress tw-rounded tw-h-2 tw-p-0">
-                                                <span
-                                                  style={{
-                                                    width: `${
-                                                      ((course?.participantProgress?.studyCount || 0) /
-                                                        (course?.participantProgress?.totalStudyCount || 0)) *
-                                                      100
-                                                    }%`,
-                                                  }}
-                                                >
-                                                  <span className="progress-line"></span>
-                                                </span>
-                                              </div>
-                                              <div className="tw-col-span-2">
-                                                {course.participantProgress.studyCount}회
-                                              </div>
-                                            </div>
-                                          </TableCell>
-                                          {course.participantProgress.results.map((info, index) => {
-                                            // 상태에 따른 스타일 설정
-                                            let borderColor = '';
-                                            let color = '';
-                                            let text = '';
+                                            <TableCell
+                                              align="center"
+                                              width={120}
+                                              className={`${classes.stickyBoard} ${classes.stickySecond}`}
+                                            >
+                                              학습현황
+                                            </TableCell>
 
-                                            switch (info.status) {
-                                              case '0003':
-                                                borderColor = '#31343D';
-                                                color = '#31343D';
-                                                text = 'v';
-                                                break;
-                                              case '0001':
-                                                borderColor = '#E0E4EB';
-                                                color = '#f6f7fb';
-                                                text = ' ';
-                                                break;
-                                              case '0002':
-                                                borderColor = '#E11837';
-                                                color = 'white';
-                                                text = '?';
-                                                break;
-                                            }
-
-                                            return (
-                                              <TableCell
-                                                padding="none"
-                                                key={index}
-                                                align="center"
-                                                width={100}
-                                                component="th"
-                                                scope="row"
-                                              >
-                                                <div className="tw-h-10 tw-flex tw-justify-center tw-items-center">
-                                                  <svg
-                                                    width="20"
-                                                    height="20"
-                                                    viewBox="0 0 20 20"
-                                                    fill="none"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    className="tw-left-[-1px] tw-top-[-1px]"
-                                                    preserveAspectRatio="xMidYMid meet"
-                                                  >
-                                                    <circle
-                                                      cx="10"
-                                                      cy="10"
-                                                      r="9.5"
-                                                      fill={color}
-                                                      stroke={borderColor}
-                                                    ></circle>
-                                                    <text
-                                                      x="10" // x 좌표, 원의 중심
-                                                      y="10" // y 좌표, 원의 중심을 약간 조정해야 할 수 있습니다
-                                                      textAnchor="middle" // 텍스트를 x 좌표의 중앙에 정렬
-                                                      dominantBaseline="central" // 텍스트를 y 좌표의 중앙에 정렬
-                                                      fill="white" // 텍스트 색상
-                                                      className="tw-text-xs tw-font-medium tw-text-center"
-                                                    >
-                                                      {text}
-                                                    </text>
-                                                  </svg>
-                                                </div>
-                                                <div className="tw-text-sm tw-text-gray-300">
-                                                  {info.status === '0001'
-                                                    ? 'D-' + info.relativeDaysToPublishDate
-                                                    : moment(info.publishDate).format('MM-DD')}
+                                            {course.schedules.map((session, index) => (
+                                              <TableCell key={index} width={100} align="right">
+                                                <div>
+                                                  <p className="tw-pb-1 tw-text-sm tw-font-bold tw-text-center tw-text-[#31343d] tw-left-[15px] tw-top-0">
+                                                    {session.order}회
+                                                  </p>
+                                                  <p className="tw-w-full tw-h-3.5 tw-text-sm tw-font-medium tw-text-center tw-text-[#9ca5b2] tw-bottom-0">
+                                                    {moment(session.publishDate).format('MM-DD')} ({session.dayOfWeek})
+                                                  </p>
                                                 </div>
                                               </TableCell>
-                                            );
-                                          })}
-                                        </TableRow>
-                                      </TableBody>
-                                    </Table>
-                                  </TableContainer>
-                                </div>
-                              ))}
+                                            ))}
+                                          </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                          <TableRow
+                                            key={index}
+                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                          >
+                                            <TableCell
+                                              align="center"
+                                              component="th"
+                                              scope="row"
+                                              className={`${classes.stickyWhite} ${classes.stickyFirst}`}
+                                            >
+                                              <div className="tw-flex tw-items-center tw-gap-3 ">
+                                                <img
+                                                  src={course.participantProgress.member.profileImageUrl}
+                                                  className="tw-w-9 tw-h-9 tw-rounded-full "
+                                                  alt="아그리파"
+                                                />
+                                                <div>{course.participantProgress.member.nickname}</div>
+                                              </div>
+                                            </TableCell>
+                                            <TableCell
+                                              align="center"
+                                              width={120}
+                                              component="th"
+                                              scope="row"
+                                              className={`${classes.stickyWhiteBoard} ${classes.stickySecond}`}
+                                            >
+                                              <div className="tw-grid tw-grid-cols-5 tw-gap-1 tw-justify-center tw-items-center">
+                                                <div className="tw-col-span-3 progress tw-rounded tw-h-2 tw-p-0">
+                                                  <span
+                                                    style={{
+                                                      width: `${
+                                                        ((course?.participantProgress?.studyCount || 0) /
+                                                          (course?.participantProgress?.totalStudyCount || 0)) *
+                                                        100
+                                                      }%`,
+                                                    }}
+                                                  >
+                                                    <span className="progress-line"></span>
+                                                  </span>
+                                                </div>
+                                                <div className="tw-col-span-2">
+                                                  {course.participantProgress.studyCount}회
+                                                </div>
+                                              </div>
+                                            </TableCell>
+                                            {course.participantProgress.results.map((info, index) => {
+                                              let borderColor = '';
+                                              let color = '';
+                                              let text = '';
+
+                                              switch (info.status) {
+                                                case '0003':
+                                                  borderColor = '#31343D';
+                                                  color = '#31343D';
+                                                  text = 'v';
+                                                  break;
+                                                case '0001':
+                                                  borderColor = '#E0E4EB';
+                                                  color = '#f6f7fb';
+                                                  text = ' ';
+                                                  break;
+                                                case '0002':
+                                                  borderColor = '#E11837';
+                                                  color = 'white';
+                                                  text = '?';
+                                                  break;
+                                              }
+
+                                              return (
+                                                <TableCell
+                                                  padding="none"
+                                                  key={index}
+                                                  align="center"
+                                                  width={100}
+                                                  component="th"
+                                                  scope="row"
+                                                >
+                                                  <div className="tw-h-10 tw-flex tw-justify-center tw-items-center">
+                                                    <svg
+                                                      width="20"
+                                                      height="20"
+                                                      viewBox="0 0 20 20"
+                                                      fill="none"
+                                                      xmlns="http://www.w3.org/2000/svg"
+                                                      className="tw-left-[-1px] tw-top-[-1px]"
+                                                      preserveAspectRatio="xMidYMid meet"
+                                                    >
+                                                      <circle
+                                                        cx="10"
+                                                        cy="10"
+                                                        r="9.5"
+                                                        fill={color}
+                                                        stroke={borderColor}
+                                                      ></circle>
+                                                      <text
+                                                        x="10"
+                                                        y="10"
+                                                        textAnchor="middle"
+                                                        dominantBaseline="central"
+                                                        fill="white"
+                                                        className="tw-text-xs tw-font-medium tw-text-center"
+                                                      >
+                                                        {text}
+                                                      </text>
+                                                    </svg>
+                                                  </div>
+                                                  <div className="tw-text-sm tw-text-gray-300">
+                                                    {info.status === '0001'
+                                                      ? 'D-' + info.relativeDaysToPublishDate
+                                                      : moment(info.publishDate).format('MM-DD')}
+                                                  </div>
+                                                </TableCell>
+                                              );
+                                            })}
+                                          </TableRow>
+                                        </TableBody>
+                                      </Table>
+                                    </TableContainer>
+                                  </div>
+                                ))
+                              ) : (
+                                <section className="tw-text-center tw-h-[200px] tw-flex tw-items-center tw-justify-center tw-text-[#9ca5b2]">
+                                  데이터가 없습니다.
+                                </section>
+                              )
+                            ) : null}
                           </div>
                           <Pagination page={progressPage} setPage={setProgressPage} total={progressTotalPage} />
                         </>
@@ -910,6 +917,11 @@ export function StudyRoomTemplate() {
                               }
                             />
                           </RadioGroup>
+                          {quizList.length === 0 && (
+                            <section className="tw-text-center tw-h-[200px] tw-flex tw-items-center tw-justify-center tw-text-[#9ca5b2]">
+                              데이터가 없습니다.
+                            </section>
+                          )}
                           {quizList.map((item, index) => (
                             <div key={index} className="tw-pb-7 tw-text-black tw-text-sm">
                               <div className="tw-pb-3">
@@ -1065,6 +1077,12 @@ export function StudyRoomTemplate() {
                               }
                             />
                           </RadioGroup>
+
+                          {myQuizContentData?.contents?.length === 0 && (
+                            <section className="tw-text-center tw-h-[200px] tw-flex tw-items-center tw-justify-center tw-text-[#9ca5b2]">
+                              데이터가 없습니다.
+                            </section>
+                          )}
                           {myQuizContentData?.contents?.map((data, index) => (
                             <div key={index}>
                               <ArticleList data={data} refetchMyQuizContent={refetchMyQuizContent} />
@@ -1146,6 +1164,11 @@ export function StudyRoomTemplate() {
                             성장을 위한 활동을 통해 얻는 실행력 배지들을 모아보세요.
                           </div>
                           <div className="tw-grid tw-grid-cols-10 tw-gap-4">
+                            {badgeContents?.contents?.length === 0 && (
+                              <section className="tw-text-center tw-h-[200px] tw-flex tw-items-center tw-justify-center tw-text-[#9ca5b2]">
+                                데이터가 없습니다.
+                              </section>
+                            )}
                             {badgeContents.map((item, index) => (
                               <div key={index} className="tw-text-center">
                                 <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
@@ -1155,7 +1178,9 @@ export function StudyRoomTemplate() {
                                     alt=""
                                   />
                                 </div>
-                                <div className="tw-text-sm tw-text-black tw-font-bold">{item?.name}</div>
+                                <div className="tw-text-sm tw-text-black tw-font-bold  tw-line-clamp-1">
+                                  {item?.name}
+                                </div>
                                 <div className="tw-text-sm tw-text-black tw-line-clamp-1">{item?.description}</div>
                                 <div className="tw-text-sm tw-text-black">{item?.achievementAt?.split(' ')[0]}</div>
                               </div>

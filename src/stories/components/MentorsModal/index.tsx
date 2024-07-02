@@ -33,13 +33,14 @@ function MentorsModal({
 
   useEffect(() => {
     setIsShow(isOpen);
-    if (isOpen) {
-      setScrollPosition(window.scrollY); // 모달이 열릴 때 현재 스크롤 위치 저장
-      document.body.style.overflow = 'hidden'; // 모달이 열릴 때 스크롤 막기
-    } else {
-      window.scrollTo(0, scrollPosition); // 모달이 닫힐 때 이전 스크롤 위치로 스크롤 이동
-      document.body.style.overflow = 'visible'; // 모달이 닫힐 때 스크롤 허용
-    }
+    // if (isOpen) {
+    //   setScrollPosition(window.scrollY); // 모달이 열릴 때 현재 스크롤 위치 저장
+    //   document.body.style.overflow = 'hidden'; // 모달이 열릴 때 스크롤 막기
+    // } else {
+    //   setScrollPosition(window.scrollY);
+    //   // window.scrollTo(0, scrollPosition); // 모달이 닫힐 때 이전 스크롤 위치로 스크롤 이동
+    // }
+    document.body.style.overflow = 'visible'; // 모달이 닫힐 때 스크롤 허용
   }, [isOpen]);
 
   return (
@@ -90,6 +91,7 @@ function MentorsModal({
         <ReactModal
           isOpen={isShow}
           onAfterClose={onAfterClose}
+          onRequestClose={() => setIsShow(false)} // ESC를 누르거나 모달 외부를 클릭하여 닫을 수 있음
           style={{
             overlay: {
               position: 'fixed',

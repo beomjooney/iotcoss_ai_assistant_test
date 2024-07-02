@@ -116,7 +116,7 @@ ClubMiniCardProps) => {
             rowSpacing={0}
           >
             <Grid item xs={11}>
-              <div className="tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
+              <div className="tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500">
                 <div className="tw-flex tw-gap-[7px]">
                   <div className="tw-bg-black tw-rounded-[3.5px] tw-px-[10.5px] tw-py-[3.5px]">
                     <p className="tw-text-[12.25px] tw-text-white">{getButtonText(item?.clubStatus)}</p>
@@ -145,14 +145,10 @@ ClubMiniCardProps) => {
               )}
             </Grid>
           </Grid>
-          <h6 className="tw-text-2xl tw-font-bold tw-tracking-tight tw-text-gray-900 dark:tw-text-white">
-            {item?.clubName}
-          </h6>
-          <h6 className="tw-mb-2 tw-text-xl tw-font-medium tw-tracking-tight tw-text-gray-900 dark:tw-text-white">
-            {item?.description}
-          </h6>
+          <h6 className="tw-text-2xl tw-font-bold tw-tracking-tight tw-text-gray-900 ">{item?.clubName}</h6>
+          <h6 className="tw-mb-2 tw-text-xl tw-font-medium tw-tracking-tight tw-text-gray-900">{item?.description}</h6>
 
-          <div className="tw-mb-2 tw-text-sm tw-font-medium tw-tracking-tight tw-text-gray-900 dark:tw-text-white">
+          <div className="tw-mb-2 tw-text-sm tw-font-medium tw-tracking-tight tw-text-gray-900">
             <span className="tw-font-bold">{item?.leaderNickname}</span>{' '}
             <span className="tw-text-gray-400 tw-px-3">
               {item?.startAt} ~ {item?.endAt}
