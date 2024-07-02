@@ -371,8 +371,8 @@ BannerProps) => {
               </div>
               {(activeStep === 0 || activeStep === 2) && (
                 <div>
-                  <div className="tw-flex tw-items-center tw-space-x-4 tw-mb-8 ">
-                    <div className="tw-w-2/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
+                  <div className="tw-flex tw-items-center tw-mb-8 ">
+                    <div className="tw-w-[100px] tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                       <img
                         className="tw-w-9 tw-h-9 tw-ring-1 tw-rounded-full"
                         src={data?.member?.profileImageUrl}
@@ -380,7 +380,7 @@ BannerProps) => {
                       />
                       <div className="tw-text-xs tw-text-left tw-text-black tw-mt-2">{data?.member?.nickname}</div>
                     </div>
-                    <div className="tw-text-lg tw-font-semibold tw-text-black tw-text-left tw-mt-1">
+                    <div className="tw-text-lg tw-font-semibold tw-text-black tw-text-left">
                       <div>{data?.question}</div>
                     </div>
                   </div>

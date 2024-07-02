@@ -17,14 +17,6 @@ import { useRouter } from 'next/router';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/system/Box';
 import Divider from '@mui/material/Divider';
-import { useSessionStore } from 'src/store/session';
-import { useDeleteLike, useSaveLike } from 'src/services/community/community.mutations';
-import { styled } from '@mui/material/styles';
-import Paper from '@mui/material/Paper';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import Collapse from '@mui/material/Collapse';
-import IconButton from '@mui/material/IconButton';
 
 import { Radio, RadioGroup, FormControlLabel, TextField } from '@mui/material';
 import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded';
@@ -133,8 +125,8 @@ export function StudyRoomTemplate() {
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [viewFilter, setViewFilter] = useState('0002');
-  const [clubViewFilter, setClubViewFilter] = useState('0001');
-  const [params, setParams] = useState<any>({ page, clubViewFilter: '0002' });
+  const [clubViewFilter, setClubViewFilter] = useState('');
+  const [params, setParams] = useState<any>({ page, clubViewFilter: '' });
   // completed-quizzes
   const [quizSortType, setQuizSortType] = useState('ASC');
   const [quizPage, setQuizPage] = useState(1);
@@ -143,7 +135,7 @@ export function StudyRoomTemplate() {
   /**progress */
   const [progressPage, setProgressPage] = useState(1);
   const [progressTotalPage, setProgressTotalPage] = useState(1);
-  const [progressClubViewFilter, setProgressClubViewFilter] = useState('0001');
+  const [progressClubViewFilter, setProgressClubViewFilter] = useState('');
   const [progressParams, setProgressParams] = useState<any>({
     page: progressPage,
     clubViewFilter: progressClubViewFilter,
@@ -152,7 +144,6 @@ export function StudyRoomTemplate() {
   const [sortType, setSortType] = useState('ASC');
   const [contentPage, setContentPage] = useState(1);
   const [contentTotalPage, setContentTotalPage] = useState(1);
-  const [contentClubViewFilter, setContentClubViewFilter] = useState('0001');
   const [contentParams, setContentParams] = useState<any>({
     page: contentPage,
     sortType: sortType,
@@ -289,16 +280,14 @@ export function StudyRoomTemplate() {
 
   useEffect(() => {
     setParams({
-      // ...params,
       page,
       clubViewFilter: clubViewFilter,
     });
   }, [page, clubViewFilter]);
 
   useEffect(() => {
-    setParams({
-      // ...params,
-      page,
+    setProgressParams({
+      page: progressPage,
       clubViewFilter: progressClubViewFilter,
     });
   }, [progressPage, progressClubViewFilter]);
@@ -311,7 +300,6 @@ export function StudyRoomTemplate() {
 
   useEffect(() => {
     setQuizParams({
-      // ...params,
       page: quizPage,
       sortType: quizSortType,
     });
@@ -447,7 +435,7 @@ export function StudyRoomTemplate() {
                                   정렬 :
                                 </p>
                                 <FormControlLabel
-                                  value="0001"
+                                  value=""
                                   control={
                                     <Radio
                                       sx={{
@@ -460,7 +448,7 @@ export function StudyRoomTemplate() {
                                   }
                                   label={
                                     <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                                      최신순
+                                      전체
                                     </p>
                                   }
                                 />
@@ -478,7 +466,43 @@ export function StudyRoomTemplate() {
                                   }
                                   label={
                                     <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                                      좋아요순
+                                      진행중
+                                    </p>
+                                  }
+                                />
+                                <FormControlLabel
+                                  value="0001"
+                                  control={
+                                    <Radio
+                                      sx={{
+                                        color: '#ced4de',
+                                        '&.Mui-checked': { color: '#e11837' },
+                                      }}
+                                      icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                                      checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                                    />
+                                  }
+                                  label={
+                                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                                      학습 예정
+                                    </p>
+                                  }
+                                />
+                                <FormControlLabel
+                                  value="0003"
+                                  control={
+                                    <Radio
+                                      sx={{
+                                        color: '#ced4de',
+                                        '&.Mui-checked': { color: '#e11837' },
+                                      }}
+                                      icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                                      checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                                    />
+                                  }
+                                  label={
+                                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                                      학습 완료
                                     </p>
                                   }
                                 />
@@ -639,7 +663,7 @@ export function StudyRoomTemplate() {
                               정렬 :
                             </p>
                             <FormControlLabel
-                              value="0001"
+                              value=""
                               control={
                                 <Radio
                                   sx={{
@@ -688,7 +712,7 @@ export function StudyRoomTemplate() {
                               }
                               label={
                                 <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                                  학습완료
+                                  학습 완료
                                 </p>
                               }
                             />
