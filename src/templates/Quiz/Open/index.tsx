@@ -1889,8 +1889,16 @@ export function QuizOpenTemplate() {
               />
             </div>
           ))}
-          <div className="tw-py-10">
+          <div className="tw-pt-5">
             <Pagination page={page} setPage={setPage} total={totalPage} showCount={5} />
+          </div>
+          <div className="tw-py-10  tw-flex tw-items-center tw-justify-center ">
+            <button
+              className="tw-px-10 tw-text-sm tw-bg-[#E11837] tw-text-white tw-font-bold tw-py-3 tw-rounded tw-gap-1"
+              onClick={() => setIsModalOpen(false)}
+            >
+              등록하기
+            </button>
           </div>
         </div>
       </MentorsModal>

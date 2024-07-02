@@ -70,7 +70,7 @@ export function MyActivityTemplate() {
                           />
                         </div>
                         <div className="tw-text-sm tw-text-black tw-font-bold">{summary?.lastAchievedBadge?.name}</div>
-                        <div className="tw-text-sm tw-text-black tw-line-clamp-1">
+                        <div className="tw-text-sm tw-text-black tw-py-4">
                           {summary?.lastAchievedBadge?.description}
                         </div>
                         <div className="tw-text-sm tw-text-black">
@@ -78,12 +78,12 @@ export function MyActivityTemplate() {
                         </div>
                       </div>
                       <div className="tw-py-5">
-                        <button
+                        {/* <button
                           onClick={() => router.push('/profile')}
                           className="tw-bg-[#c1a876] tw-rounded-md tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-14 tw-rounded"
                         >
                           배지 전체보기
-                        </button>
+                        </button> */}
                       </div>
                     </div>
                   </div>

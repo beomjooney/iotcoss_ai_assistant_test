@@ -92,7 +92,7 @@ const QuizBreakerInfoCheck = ({
         <p className="tw-absolute tw-left-[52px] tw-top-[45px] tw-text-sm tw-font-medium tw-text-left tw-text-[#31343d]">
           모범답안 :
         </p>
-        <p className="tw-pr-5 tw-absolute tw-left-[119px] tw-top-[45px] tw-text-sm tw-text-left tw-text-[#31343d]">
+        <p className="tw-pr-5 tw-line-clamp-3 tw-absolute tw-left-[119px] tw-top-[45px] tw-text-sm tw-text-left tw-text-[#31343d]">
           {answerText}
         </p>
         <div className="tw-pt-2 tw-flex tw-justify-start tw-items-start tw-absolute tw-left-[52px] tw-top-[100px] tw-gap-3">
