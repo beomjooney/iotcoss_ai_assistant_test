@@ -45,7 +45,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
   const [selectedSubject, setSelectedSubject] = useState('');
   const [selectedChapter, setSelectedChapter] = useState('');
   const [jobLevel, setJobLevel] = useState('0001');
-  const [activeQuiz, setActiveQuiz] = useState('0001');
+  const [activeQuiz, setActiveQuiz] = useState('');
   const [selected1, setSelected1] = useState([]);
   const [selected2, setSelected2] = useState([]);
   const [selected3, setSelected3] = useState([]);
@@ -166,6 +166,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
     setSelectedChapter(data.content?.studyChapter);
     setSelected2(data.content?.skills);
     setUniversityCode(data.jobGroups[0].code);
+    setActiveQuiz(data.jobLevels && data.jobLevels.length > 0 ? data.jobLevels[0].code : '');
 
     const selected = optionsData?.data?.jobs?.find(u => u.code === data.jobGroups[0].code);
     setJobs(selected ? selected.jobs : []);
@@ -670,7 +671,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
               <div className="tw-text-center">
                 <button
                   onClick={handleQuizInsertClick}
-                  className="tw-text-white tw-text-sm tw-px-10 tw-py-3 tw-text-base tw-bg-red-500 tw-rounded-md hover:tw-bg-gray-400"
+                  className="tw-text-white tw-text-sm tw-px-10 tw-py-3 tw-text-base tw-bg-red-500 tw-rounded-md"
                 >
                   퀴즈 수정하기
                 </button>
