@@ -317,7 +317,7 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                   sm={10}
                   className="tw-text-xl tw-text-black tw-font-bold"
                 >
-                  퀴즈 목록 {contents?.club?.studyCount} / {contents?.club?.publishedCount}
+                  퀴즈 목록 {contents?.club?.publishedCount} / {contents?.club?.studyCount}
                 </Grid>
                 <Grid container justifyContent="flex-end" item xs={6} sm={2} style={{ textAlign: 'right' }}>
                   <Pagination
@@ -360,9 +360,11 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                                   item?.answer?.answerStatus === '0003' ? 'tw-text-gray' : 'tw-text-[#f44]'
                                 } tw-font-bold`}
                               >
-                                {item?.answer?.relativeDaysToPublishDate === 0
-                                  ? 'D-' + item?.answer?.relativeDaysToPublishDate
-                                  : 'D' + item?.answer?.relativeDaysToPublishDate}
+                                {item?.answer?.relativeDaysToPublishDate !== undefined
+                                  ? item?.answer?.relativeDaysToPublishDate <= 0
+                                    ? `D-${Math.abs(item?.answer?.relativeDaysToPublishDate)}`
+                                    : `D+${item?.answer?.relativeDaysToPublishDate}`
+                                  : ''}
                               </div>
                             </Grid>
 
@@ -470,9 +472,11 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                                       item?.answer?.answerStatus === '0003' ? 'tw-text-gray' : 'tw-text-[#f44]'
                                     } tw-font-bold`}
                                   >
-                                    {item?.answer?.relativeDaysToPublishDate === 0
-                                      ? 'D-' + item?.answer?.relativeDaysToPublishDate
-                                      : 'D' + item?.answer?.relativeDaysToPublishDate}
+                                    {item?.answer?.relativeDaysToPublishDate !== undefined
+                                      ? item?.answer?.relativeDaysToPublishDate <= 0
+                                        ? `D-${Math.abs(item?.answer?.relativeDaysToPublishDate)}`
+                                        : `D+${item?.answer?.relativeDaysToPublishDate}`
+                                      : ''}
                                   </div>
                                 </Grid>
 
@@ -652,9 +656,11 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                                 item?.answer?.answerStatus === '0003' ? 'tw-text-gray' : 'tw-text-[#f44]'
                               } tw-font-bold`}
                             >
-                              {item?.answer?.relativeDaysToPublishDate === 0
-                                ? 'D-' + item?.answer?.relativeDaysToPublishDate
-                                : 'D' + item?.answer?.relativeDaysToPublishDate}
+                              {item?.answer?.relativeDaysToPublishDate !== undefined
+                                ? item?.answer?.relativeDaysToPublishDate <= 0
+                                  ? `D${item?.answer?.relativeDaysToPublishDate}`
+                                  : `D+${item?.answer?.relativeDaysToPublishDate}`
+                                : ''}
                             </div>
                           </Grid>
 

@@ -1,10 +1,8 @@
 import './index.module.scss';
 import { HomeTemplate } from '../src/templates';
 import { useSessionStore } from '../src/store/session';
-// import { useMemberInfo } from '../src/services/account/account.queries';
+import { useMemberInfo } from '../src/services/account/account.queries';
 import { useStore } from 'src/store';
-import { useMentor } from '../src/services/mentors/mentors.queries';
-import { useState } from 'react';
 
 export function IndexPage() {
   const { memberType, memberId, name, logged, job } = useSessionStore(state => ({
@@ -13,11 +11,12 @@ export function IndexPage() {
     name: state.name,
     logged: state.logged,
   }));
-  // const { setUser, setHasResumeStory, user } = useStore();
-  // const { data } = useMemberInfo(memberId, data => {
-  //   console.log('inputData', data);
-  //   setUser({ user: data });
-  // });
+
+  const { setUser } = useStore();
+  const { data } = useMemberInfo(memberId, data => {
+    console.log('inputData', data);
+    setUser({ user: data });
+  });
 
   // TODO 로그인 수정 변경
   // console.log(user, data, user.jobGroup, !!user?.jobGroup);
