@@ -25,6 +25,11 @@ export function HomeTemplate({ logged = false }: HomeProps) {
   const { token } = useSessionStore.getState();
   /** get profile */
   // const { user, setUser } = useStore();
+  const [isClient, setIsClient] = useState(false); // 클라이언트 사이드에서만 렌더링하도록 상태 추가
+
+  useEffect(() => {
+    setIsClient(true); // 클라이언트 사이드에서 상태를 true로 설정
+  }, []);
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
@@ -284,7 +289,7 @@ export function HomeTemplate({ logged = false }: HomeProps) {
             className="tw-w-[404px] tw-h-[404px] tw-absolute tw-left-[50px] tw-top-[-4px] tw-object-cover"
           />
         </div>
-        {!modalIsOpen && (
+        {isClient && !modalIsOpen && logged && (
           <div>
             <div
               className="tw-fixed tw-bottom-0 tw-right-0 tw-w-16 tw-h-16 tw-mr-10 tw-mb-8 tw-cursor-pointer tw-z-10"
@@ -294,7 +299,7 @@ export function HomeTemplate({ logged = false }: HomeProps) {
             </div>
           </div>
         )}
-        <ChatbotModal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)} token={token} />
+        {isClient && <ChatbotModal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)} token={token} />}
       </div>
     </div>
   );
