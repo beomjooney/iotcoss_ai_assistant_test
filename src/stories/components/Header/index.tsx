@@ -83,7 +83,6 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
   const [logoutButton, setLogoutButton] = useState<ReactNode>(null);
   const [adminButton, setAdminButton] = useState<ReactNode>(null);
   const [isShowMenu, setIsShowMenu] = useState<boolean>(false);
-  console.log(user);
 
   //**alarm */
   const { isFetched: isContentFetched, refetch: refetch } = useQuizAlarmHistory(params, data => {
