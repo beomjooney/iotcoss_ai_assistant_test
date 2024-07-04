@@ -12,6 +12,7 @@ import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 import TextField, { TextFieldProps } from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const cx = classNames.bind(styles);
 
@@ -23,7 +24,11 @@ export function QuizMyTemplate() {
   const [keyWorld, setKeyWorld] = useState('');
   const [params, setParams] = useState<any>({ page, clubViewFilter: '0001' });
 
-  const { isFetched: isContentFetched, refetch } = useMyClubList(params, data => {
+  const {
+    isFetched: isContentFetched,
+    isLoading,
+    refetch,
+  } = useMyClubList(params, data => {
     setContents(data.data.contents || []);
     setTotalPage(data.data.totalPages);
   });
@@ -157,24 +162,20 @@ export function QuizMyTemplate() {
                     rowSpacing={3}
                     columnSpacing={{ xs: 1, sm: 2, md: 3 }}
                   >
-                    {isContentFetched &&
+                    {isLoading ? (
+                      <div className="tw-flex tw-justify-center tw-items-center tw-py-40">
+                        <CircularProgress />
+                      </div>
+                    ) : (
+                      isContentFetched &&
                       (contents.length > 0 ? (
-                        contents.map((item, index) => {
-                          return (
-                            <ClubMiniCard
-                              key={index}
-                              item={item}
-                              xs={12}
-                              // writer={memberSample}
-                              className={cx('reply-container__item')}
-                              // memberId={memberId}
-                              // onPostDeleteSubmit={onPostDeleteSubmit}
-                            />
-                          );
-                        })
+                        contents.map((item, index) => (
+                          <ClubMiniCard key={index} item={item} xs={12} className={cx('reply-container__item')} />
+                        ))
                       ) : (
                         <div className={cx('content--empty tw-py-40')}>데이터가 없습니다.</div>
-                      ))}
+                      ))
+                    )}
                   </Grid>
                 </section>
                 <Pagination page={page} setPage={setPage} total={totalPage} />

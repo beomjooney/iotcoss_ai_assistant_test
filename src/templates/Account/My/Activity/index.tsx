@@ -1,20 +1,13 @@
 import classNames from 'classnames/bind';
 import styles from './index.module.scss';
-import MentorPick from 'src/stories/components/MentorPick';
-import Button from 'src/stories/components/Button';
-import { useMyMentorList } from 'src/services/mentors/mentors.queries';
 import React, { useState } from 'react';
 import { useSessionStore } from 'src/store/session';
-import Link from 'next/link';
-import Pagination from 'src/stories/components/Pagination';
-import Grid from '@mui/material/Grid';
-import { useSeminarMeFavoriteList } from 'src/services/seminars/seminars.queries';
-import Chip from '@mui/material/Chip';
-import { jobColorKey } from 'src/config/colors';
-import ClubCard from 'src/stories/components/ClubCard';
 import { useMemberActiveSummaryInfo } from 'src/services/account/account.queries';
 import router from 'next/router';
 import { Mobile, Desktop } from 'src/hooks/mediaQuery';
+import { useQuizActivityHistory } from 'src/services/quiz/quiz.queries';
+import { Pagination } from 'src/stories/components';
+import { useEffect } from 'react';
 
 const cx = classNames.bind(styles);
 
@@ -23,11 +16,25 @@ export function MyActivityTemplate() {
 
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
-  const [params, setParams] = useState<paramProps>({ page });
-  const [contents, setContents] = useState<RecommendContent[]>([]);
+  const [params, setParams] = useState<any>({ page });
+  const [contents, setContents] = useState<any>([]);
 
   const [summary, setSummary] = useState({});
   const { isFetched: isUserFetched } = useMemberActiveSummaryInfo(data => setSummary(data));
+
+  const { isFetched: isContentFetched, refetch: refetch } = useQuizActivityHistory(params, data => {
+    console.log(data);
+    setContents(data);
+    setTotalPage(data?.totalPage);
+    setPage(data?.page);
+  });
+
+  useEffect(() => {
+    setParams({
+      page,
+    });
+  }, [page]);
+
   return (
     <div className={cx('member-edit-container')}>
       <section className={cx('content')}>
@@ -87,25 +94,32 @@ export function MyActivityTemplate() {
                       </div>
                     </div>
                   </div>
-                  <div className="tw-font-bold tw-text-xl tw-text-black tw-py-10">나의 활동로그</div>
-                  <div className="border tw-rounded-md">
-                    {summary?.eventsByDate?.map((item, index) => {
-                      return (
-                        // TODO API Response 보고 댓글 작성자로 수정 필요
-                        <div key={index} role="tw-list" className=" tw-divide-y tw-divide-gray-100 border-bottom">
-                          <div className="tw-justify-between  ">
-                            <div className="tw-min-w-0 tw-p-3 tw-font-semibold">{item?.date}</div>
-                            {item?.events.map((items, index) => {
-                              return (
-                                <div key={index} className="border-top tw-p-3 tw-text-black">
-                                  {items?.message}
-                                </div>
-                              );
-                            })}
+                  <div className="tw-font-bold tw-text-xl tw-text-black tw-py-5">나의 활동로그</div>
+                  {isContentFetched ? (
+                    contents?.contents?.length > 0 ? (
+                      contents.contents.map((item, index) => (
+                        <div key={index} role="tw-list" className="tw-divide-y tw-divide-gray-100 border-bottom">
+                          <div className="tw-justify-between">
+                            <div className="tw-min-w-0 tw-p-3 tw-font-semibold">
+                              {item?.date} {item?.dayOfWeek}
+                            </div>
+                            {item?.activities.map((activity, idx) => (
+                              <div key={idx} className="border-top tw-p-3 tw-text-black tw-text-sm">
+                                {activity?.activityMessage}
+                              </div>
+                            ))}
                           </div>
                         </div>
-                      );
-                    })}
+                      ))
+                    ) : (
+                      <div className="tw-p-3 tw-text-center tw-text-gray-500">활동내역이 없습니다.</div>
+                    )
+                  ) : (
+                    <div className="tw-p-3 tw-text-center tw-text-gray-500">Loading...</div>
+                  )}
+
+                  <div className="tw-mt-10">
+                    <Pagination page={page} setPage={setPage} total={totalPage} />
                   </div>
                 </div>
               </Desktop>
@@ -157,23 +171,31 @@ export function MyActivityTemplate() {
                 </div>
                 <div className="tw-font-bold tw-text-xl tw-text-black tw-py-10">나의 활동로그</div>
                 <div className="border tw-rounded-md">
-                  {summary?.eventsByDate?.map((item, index) => {
-                    return (
-                      // TODO API Response 보고 댓글 작성자로 수정 필요
-                      <div key={index} role="tw-list" className=" tw-divide-y tw-divide-gray-100 border-bottom">
-                        <div className="tw-justify-between  ">
-                          <div className="tw-min-w-0 tw-p-3 tw-font-semibold">{item?.date}</div>
-                          {item?.events.map((items, index) => {
-                            return (
-                              <div key={index} className="border-top tw-p-3 tw-text-black">
-                                {items?.message}
+                  {isContentFetched ? (
+                    contents?.contents?.length > 0 ? (
+                      contents.contents.map((item, index) => (
+                        <div key={index} role="tw-list" className="tw-divide-y tw-divide-gray-100 border-bottom">
+                          <div className="tw-justify-between">
+                            <div className="tw-min-w-0 tw-p-3 tw-font-semibold">
+                              {item?.date} {item?.dayOfWeek}
+                            </div>
+                            {item?.activities.map((activity, idx) => (
+                              <div key={idx} className="tw-cursor-pointer border-top tw-p-3 tw-text-black tw-text-sm">
+                                {!activity?.isChecked && (
+                                  <div className="tw-bottom-auto tw-left-auto tw-right-0 tw-top-0 tw-z-10 tw-inline-block tw-rounded-full tw-bg-red-600 tw-p-[3px] tw-text-sm tw-mx-2 tw-mr-3"></div>
+                                )}
+                                {activity?.activityMessage}
                               </div>
-                            );
-                          })}
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
+                      ))
+                    ) : (
+                      <div className="tw-p-3 tw-text-center tw-text-gray-500">활동내역이 없습니다.</div>
+                    )
+                  ) : (
+                    <div className="tw-p-3 tw-text-center tw-text-gray-500">Loading...</div>
+                  )}
                 </div>
               </Mobile>
             </>

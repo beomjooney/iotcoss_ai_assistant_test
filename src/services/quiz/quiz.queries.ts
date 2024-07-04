@@ -23,6 +23,7 @@ import {
   quizGetAIAnswerGet,
   quizGetAIAnswerAll,
   quizFriendsRequest,
+  quizActivityHistory,
 } from './quiz.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 import { User } from 'src/models/user';
@@ -155,6 +156,19 @@ export const useQuizAlarmHistory = (params, onSuccess?: (data: any) => void, onE
   return useQuery<any, Error>(
     QUERY_KEY_FACTORY('QUIZ').detail({ size: DEFAULT_SIZE, ...params }),
     () => quizAlarmHistory({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+      enabled: true,
+    },
+  );
+};
+export const useQuizActivityHistory = (params, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
+  const DEFAULT_SIZE = 10;
+  return useQuery<any, Error>(
+    QUERY_KEY_FACTORY('QUIZ_LIST').detail({ size: DEFAULT_SIZE, ...params }),
+    () => quizActivityHistory({ size: DEFAULT_SIZE, ...params }),
     {
       onSuccess,
       onError,

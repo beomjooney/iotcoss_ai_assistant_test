@@ -16,6 +16,7 @@ import { useSessionStore } from 'src/store/session';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import { ExperiencesResponse } from 'src/models/experiences';
 import { useOptions } from 'src/services/experiences/experiences.queries';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const cx = classNames.bind(styles);
 
@@ -40,7 +41,11 @@ export function QuizTemplate() {
 
   const { isFetched: isOptionFetched, data: optionsData }: UseQueryResult<ExperiencesResponse> = useOptions();
 
-  const { isFetched: isContentFetched, refetch } = useSeminarList(params, data => {
+  const {
+    isFetched: isContentFetched,
+    isLoading,
+    refetch,
+  } = useSeminarList(params, data => {
     setContents(data.data.contents || []);
     setTotalPage(data.data.totalPages);
   });
@@ -184,7 +189,12 @@ export function QuizTemplate() {
               rowSpacing={4}
               columnSpacing={{ xs: 4, sm: 4, md: 4 }}
             >
-              {isContentFetched &&
+              {isLoading ? (
+                <div className="tw-flex tw-justify-center tw-items-center tw-py-96">
+                  <CircularProgress />
+                </div>
+              ) : (
+                isContentFetched &&
                 (contents.length > 0 ? (
                   contents.map((item, index) => {
                     return (
@@ -202,7 +212,8 @@ export function QuizTemplate() {
                   })
                 ) : (
                   <div className={cx('content--empty')}>데이터가 없습니다.</div>
-                ))}
+                ))
+              )}
             </Grid>
             <div className="tw-mt-10">
               <Pagination page={page} setPage={setPage} total={totalPage} />

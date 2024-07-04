@@ -215,6 +215,10 @@ export const quizAlarmHistory = async params => {
   const { data } = await axiosGeneralAPI().get(`/api/v1/activity/alarms`, { params });
   return data.data;
 };
+export const quizActivityHistory = async params => {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/activity/alarms`, { params });
+  return data.data;
+};
 
 // 내 퀴즈 답변
 export const clubDetailQuizList = async (params, id) => {
