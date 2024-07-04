@@ -20,24 +20,35 @@ const DefaultLayout = ({ darkBg, classOption, title, children, isFooter = true }
   const { memberId, logged } = useSessionStore.getState();
   const menuItem = [
     { no: 0, option: 'nav-item', title: '서비스 소개', link: '/', dropdown: [], login: true },
-    // { no: 0, option: 'nav-item', title: '서비스 소개', link: '/lounge', dropdown: [], login: true },
     { no: 1, option: 'nav-item', title: '퀴즈클럽', link: '/quiz', dropdown: [], login: true },
     { no: 1, option: 'nav-item', title: 'My 학습방', link: '/studyroom', dropdown: [], login: logged },
+    {
+      no: 1,
+      option: 'nav-item',
+      title: 'My 퀴즈',
+      link: '/quiz-make',
+      dropdown: [],
+      login: logged,
+      role: 'ROLE_MANAGER',
+    },
+    {
+      no: 1,
+      option: 'nav-item',
+      title: 'My 클럽',
+      link: '/my-clubs',
+      dropdown: [],
+      login: logged,
+      role: 'ROLE_MANAGER',
+    },
   ];
 
-  const menuItemMobile = [
-    // { no: 0, option: 'nav-item', title: '서비스 소개', link: '/lounge', dropdown: [], login: true },
-    { no: 0, option: 'nav-item', title: '서비스 소개', link: '/', dropdown: [], login: true },
-    { no: 1, option: 'nav-item', title: '퀴즈클럽', link: '/quiz', dropdown: [], login: true },
-    { no: 2, option: 'nav-item', title: '나의 학습방', link: '/studyroom', dropdown: [], login: logged },
-  ];
   return (
     <div>
       <Desktop>
         <Header darkBg={darkBg} classOption={classOption} title={title} menuItem={menuItem} />
       </Desktop>
       <Mobile>
-        <Header darkBg={darkBg} classOption={classOption} title={title} menuItem={menuItemMobile} />
+        <Header darkBg={darkBg} classOption={classOption} title={title} menuItem={menuItem} />
       </Mobile>
       <section className="hero-section ptb-100">{children}</section>
       {isFooter && <Footer />}

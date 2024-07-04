@@ -118,22 +118,22 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
     console.log(roles);
     if (logged) {
       if (roles.includes('ROLE_MANAGER')) {
-        setLogoutButton(
-          <div className={cx('custom-item')} id="logoutBtn">
-            <button
-              className=" tw-m tw-text-base tw-text-black tw-font-bold tw-pr-10"
-              onClick={() => (location.href = '/quiz-make')}
-            >
-              My 퀴즈
-            </button>
-            <button
-              className="tw-text-base tw-text-black tw-font-bold tw-px-3 tw-pr-5"
-              onClick={() => (location.href = '/my-clubs')}
-            >
-              My 클럽
-            </button>
-          </div>,
-        );
+        // setLogoutButton(
+        //   <div className={cx('custom-item')} id="logoutBtn">
+        //     <button
+        //       className=" tw-m tw-text-base tw-text-black tw-font-bold tw-pr-10"
+        //       onClick={() => (location.href = '/quiz-make')}
+        //     >
+        //       My 퀴즈
+        //     </button>
+        //     <button
+        //       className="tw-text-base tw-text-black tw-font-bold tw-px-3 tw-pr-5"
+        //       onClick={() => (location.href = '/my-clubs')}
+        //     >
+        //       My 클럽
+        //     </button>
+        //   </div>,
+        // );
       } else if (roles.includes('ROLE_USER')) {
         setLogoutButton(
           <div className={cx('custom-item')} id="logoutBtn">
@@ -189,10 +189,10 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
     <Box role="presentation">
       <div
         className="pt-3 pb-3 footer-nav-wrap text-white"
-        style={{ textAlign: 'left', paddingLeft: '20px', backgroundColor: '#a9abaf' }}
+        style={{ textAlign: 'left', paddingLeft: '20px', backgroundColor: 'black' }}
       >
         <Typography type="H3" weight="bold">
-          데브어스
+          DSU QuizUp
         </Typography>
       </div>
       <Divider />
@@ -213,7 +213,8 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
       <Divider variant="inset" component="li" />
       {menuItem?.map((item, index) => {
         return (
-          item?.login && (
+          item?.login &&
+          (!item.role || roles.includes(item.role)) && (
             <div key={index}>
               <Link href={item.link} className="nav-link">
                 <ListItem
@@ -254,6 +255,16 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
           )
         );
       })}
+      <Link href="/" className="nav-link">
+        <ListItem disablePadding sx={{ justifyContent: 'start !important', padding: '0.5 !important' }}>
+          <ListItemButton onClick={handleLogout}>
+            <ListItemIcon>
+              <Logout />
+            </ListItemIcon>
+            로그아웃
+          </ListItemButton>
+        </ListItem>
+      </Link>
       <ListItemButton>
         <li className={cx('custom-item', 'pt-3')}>
           {/* <Button size="small" color="primary" onClick={handleClick}>
@@ -279,9 +290,6 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
           <Mobile>
             {!logged && (
               <div className={cx('custom-item', 'max-lg:!tw-pl-26')}>
-                <button className="tw-mr-2 tw-bg-[#2474ED] tw-rounded-md tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded">
-                  퀴즈만들기
-                </button>
                 <button
                   className="tw-bg-white tw-rounded-md tw-text-sm tw-text-gray-500 tw-font-bold tw-py-2.5 tw-px-5 tw-mr-4 tw-rounded"
                   onClick={handleClick}
@@ -381,24 +389,26 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
           >
             <ul className={cx('nav-custom', 'navbar-custom-mobile', 'navbar-nav', 'tw-text-lg', 'tw-text-left')}>
               {/* <ul className={cx('nav-custom', 'navbar-custom-mobile', 'navbar-nav', 'tw-text-lg', 'tw-text-left')}> */}
-              {menuItem?.map((item, index) => {
-                return (
-                  item?.login && (
+              {menuItem.map((item, index) => {
+                if (item.login && (!item.role || roles.includes(item.role))) {
+                  return (
                     <li key={`item-` + index} className={item.option}>
-                      <Link href={item.link} className="nav-link">
+                      <Link href={item.link}>
                         <a
+                          className="nav-link"
                           onClick={() => {
                             if (item.dropdown.length === 0) setIsShowMenu(!isShowMenu);
                           }}
                         >
-                          <div className="tw-mr-10 tw-text-base tw-text-black tw-font-extrabold">{item.title}</div>
+                          <div className="tw-mr-2 tw-text-base tw-text-black tw-font-extrabold">{item.title}</div>
                         </a>
                       </Link>
-                      <div className="dropdown-menu submenu" aria-labelledby="navbarDropdownHome">
-                        {item.dropdown.map((menu, index) => {
-                          return (
-                            <Link key={`menu-` + index} href={menu.link} className="dropdown-item">
+                      {item.dropdown.length > 0 && (
+                        <div className="dropdown-menu submenu" aria-labelledby="navbarDropdownHome">
+                          {item.dropdown.map((menu, index) => (
+                            <Link key={`menu-` + index} href={menu.link}>
                               <a
+                                className="dropdown-item"
                                 onClick={() => {
                                   setIsShowMenu(!isShowMenu);
                                 }}
@@ -406,12 +416,13 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                                 <div className="tw-text-base tw-font-bold">{menu.title}</div>
                               </a>
                             </Link>
-                          );
-                        })}
-                      </div>
+                          ))}
+                        </div>
+                      )}
                     </li>
-                  )
-                );
+                  );
+                }
+                return null;
               })}
             </ul>
 

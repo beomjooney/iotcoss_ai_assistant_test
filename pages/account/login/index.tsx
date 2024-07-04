@@ -67,7 +67,3 @@ LoginPage.LayoutProps = {
   classOption: 'custom-header',
   title: '데브어스',
 };
-
-// export async function getServerSideProps(ctx: NextPageContext) {
-//   console.log(ctx);
-// }
