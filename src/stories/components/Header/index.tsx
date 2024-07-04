@@ -114,45 +114,6 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
     };
   }, []);
 
-  useEffect(() => {
-    console.log(roles);
-    if (logged) {
-      if (roles.includes('ROLE_MANAGER')) {
-        // setLogoutButton(
-        //   <div className={cx('custom-item')} id="logoutBtn">
-        //     <button
-        //       className=" tw-m tw-text-base tw-text-black tw-font-bold tw-pr-10"
-        //       onClick={() => (location.href = '/quiz-make')}
-        //     >
-        //       My 퀴즈
-        //     </button>
-        //     <button
-        //       className="tw-text-base tw-text-black tw-font-bold tw-px-3 tw-pr-5"
-        //       onClick={() => (location.href = '/my-clubs')}
-        //     >
-        //       My 클럽
-        //     </button>
-        //   </div>,
-        // );
-      } else if (roles.includes('ROLE_USER')) {
-        setLogoutButton(
-          <div className={cx('custom-item')} id="logoutBtn">
-            {/* <button
-              className="tw-w-30 max-lg:tw-mr-1 tw-bg-red-600 tw-rounded-md tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
-              onClick={() => (location.href = '/study-room')}
-            >
-              나의 학습방
-            </button> */}
-          </div>,
-        );
-      } else {
-        setLogoutButton(null);
-      }
-    } else {
-      setLogoutButton(null);
-    }
-  }, [logged, roles]);
-
   const handleScroll = () => {
     setScroll(window.scrollY);
   };
@@ -288,73 +249,19 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
             <img src="/assets/images/header/image_1.png" width={130} alt="logo" className={cx('image-logo')} />
           </div>
           <Mobile>
-            {!logged && (
-              <div className={cx('custom-item', 'max-lg:!tw-pl-26')}>
-                <button
-                  className="tw-bg-white tw-rounded-md tw-text-sm tw-text-gray-500 tw-font-bold tw-py-2.5 tw-px-5 tw-mr-4 tw-rounded"
-                  onClick={handleClick}
-                >
-                  로그인
-                </button>
-                <IconButton
-                  sx={{
-                    padding: '0 !important',
-                    '& .MuiSvgIcon-root': { color: '#000', fontSize: 28, padding: '0px' },
-                  }}
-                  size="large"
-                  aria-label="open drawer"
-                  onClick={handleOpenMenu}
-                  edge="start"
-                >
-                  <MenuIcon />
-                </IconButton>
-              </div>
-            )}
-            {logged && (
-              <div className="row tw-flex tw-items-center tw-justify-between tw-w-80 max-lg:tw-w-0">
-                <div className="col-lg-12 tw-flex tw-items-center tw-justify-start max-lg:tw-justify-end lg:tw-mb-0 max-lg:tw-px-0">
-                  {logoutButton}
-                  <Tooltip title="Alarm">
-                    <div className="tw-px-2">
-                      <IconButton
-                        onClick={handleIconClick}
-                        size="large"
-                        aria-label="show 17 new notifications"
-                        color="inherit"
-                      >
-                        <Badge badgeContent={17} color="error" className="tw-px-0">
-                          <NotificationsNoneIcon sx={{ fontSize: 30 }} />
-                        </Badge>
-                      </IconButton>
-                      <Popover
-                        anchorEl={anchorElAlarm}
-                        open={Boolean(anchorElAlarm)}
-                        onClose={handleCloseAlarm}
-                        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                      ></Popover>
-                    </div>
-                  </Tooltip>
-                  <li className={cx('nav-item', 'tw-mr-8')}>
-                    <Tooltip title="Account settings">
-                      <IconButton
-                        onClick={handleClicks}
-                        size="small"
-                        sx={{ ml: 0, p: 0 }}
-                        aria-controls={open ? 'account-menu' : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={open ? 'true' : undefined}
-                      >
-                        <Avatar sx={{ width: 32, height: 32 }} src={user?.member?.profileImageUrl}>
-                          M
-                        </Avatar>
-                      </IconButton>
-                    </Tooltip>
-                  </li>
+            <div>
+              {!logged && (
+                <div className={cx('custom-item', 'max-lg:!tw-pl-26')}>
+                  <button
+                    className="tw-bg-white tw-rounded-md tw-text-sm tw-text-gray-500 tw-font-bold tw-py-2.5 tw-px-5 tw-mr-4 tw-rounded"
+                    onClick={handleClick}
+                  >
+                    로그인
+                  </button>
                   <IconButton
                     sx={{
                       padding: '0 !important',
-                      '& .MuiSvgIcon-root': { color: '#000', fontSize: 28, padding: 0 },
+                      '& .MuiSvgIcon-root': { color: '#000', fontSize: 28, padding: '0px' },
                     }}
                     size="large"
                     aria-label="open drawer"
@@ -364,8 +271,64 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                     <MenuIcon />
                   </IconButton>
                 </div>
-              </div>
-            )}
+              )}
+              {logged && (
+                <div className="row tw-flex tw-items-center tw-justify-between tw-w-80 max-lg:tw-w-0">
+                  <div className="col-lg-12 tw-flex tw-items-center tw-justify-start max-lg:tw-justify-end lg:tw-mb-0 max-lg:tw-px-0">
+                    {logoutButton}
+                    <Tooltip title="Alarm">
+                      <div className="tw-px-2">
+                        <IconButton
+                          onClick={handleIconClick}
+                          size="large"
+                          aria-label="show 17 new notifications"
+                          color="inherit"
+                        >
+                          <Badge badgeContent={17} color="error" className="tw-px-0">
+                            <NotificationsNoneIcon sx={{ fontSize: 30 }} />
+                          </Badge>
+                        </IconButton>
+                        <Popover
+                          anchorEl={anchorElAlarm}
+                          open={Boolean(anchorElAlarm)}
+                          onClose={handleCloseAlarm}
+                          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                        ></Popover>
+                      </div>
+                    </Tooltip>
+                    <li className={cx('nav-item', 'tw-mr-8')}>
+                      <Tooltip title="Account settings">
+                        <IconButton
+                          onClick={handleClicks}
+                          size="small"
+                          sx={{ ml: 0, p: 0 }}
+                          aria-controls={open ? 'account-menu' : undefined}
+                          aria-haspopup="true"
+                          aria-expanded={open ? 'true' : undefined}
+                        >
+                          <Avatar sx={{ width: 32, height: 32 }} src={user?.member?.profileImageUrl}>
+                            M
+                          </Avatar>
+                        </IconButton>
+                      </Tooltip>
+                    </li>
+                    <IconButton
+                      sx={{
+                        padding: '0 !important',
+                        '& .MuiSvgIcon-root': { color: '#000', fontSize: 28, padding: 0 },
+                      }}
+                      size="large"
+                      aria-label="open drawer"
+                      onClick={handleOpenMenu}
+                      edge="start"
+                    >
+                      <MenuIcon />
+                    </IconButton>
+                  </div>
+                </div>
+              )}
+            </div>
           </Mobile>
           <SwipeableDrawer
             anchor={'right'}
@@ -388,7 +351,6 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
             id="navbarSupportedContent"
           >
             <ul className={cx('nav-custom', 'navbar-custom-mobile', 'navbar-nav', 'tw-text-lg', 'tw-text-left')}>
-              {/* <ul className={cx('nav-custom', 'navbar-custom-mobile', 'navbar-nav', 'tw-text-lg', 'tw-text-left')}> */}
               {menuItem.map((item, index) => {
                 if (item.login && (!item.role || roles.includes(item.role))) {
                   return (
@@ -428,9 +390,6 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
 
             {!logged && (
               <li className={cx('custom-item')}>
-                {/* <button className="tw-mr-2 tw-bg-[#e11837] tw-rounded-md tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded">
-                  나의 학습방
-                </button> */}
                 <button
                   className="tw-bg-white tw-rounded-md border tw-text-sm tw-text-gray-500 tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
                   onClick={handleClick}
@@ -439,7 +398,6 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                 </button>
               </li>
             )}
-            {/* {adminButton} */}
             {logged && (
               <div className="row tw-flex tw-items-center tw-justify-between">
                 <div className="col-lg-12 tw-flex tw-items-center tw-justify-end max-lg:tw-justify-end lg:tw-mb-0">
