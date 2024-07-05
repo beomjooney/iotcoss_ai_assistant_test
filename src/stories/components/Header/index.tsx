@@ -404,7 +404,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                   {logoutButton}
 
                   <Tooltip title="">
-                    <div className="tw-px-2">
+                    <div className="tw-px-4">
                       <IconButton
                         onClick={handleIconClick}
                         size="large"
@@ -471,7 +471,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                         aria-haspopup="true"
                         aria-expanded={open ? 'true' : undefined}
                       >
-                        <Avatar sx={{ width: 32, height: 32 }} src={user?.member?.profileImageUrl}>
+                        <Avatar className="border" sx={{ width: 34, height: 34 }} src={user?.member?.profileImageUrl}>
                           M
                         </Avatar>
                       </IconButton>

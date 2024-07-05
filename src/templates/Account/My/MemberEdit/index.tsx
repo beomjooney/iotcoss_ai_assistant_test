@@ -52,7 +52,7 @@ export function MemberEditTemplate() {
   const [nickname, setNickname] = useState(null);
   const [phoneNumber, setPhoneNumber] = useState(null);
   const [phoneEditMode, setPhoneEditMode] = useState(false);
-  const [emailReceiveYn, setEmailReceiveYn] = useState(false);
+  const [emailReceiveYn, setEmailReceiveYn] = useState(true);
   const [smsReceiveYn, setSmsReceiveYn] = useState(true);
   const [kakaoReceiveYn, setKakaoReceiveYn] = useState(true);
   const [edting, setEditing] = useState(false);
@@ -98,6 +98,7 @@ export function MemberEditTemplate() {
 
   usePersonalInfo({}, user => {
     setUserInfo(user);
+    console.log(user);
   });
 
   const { mutate: onEditUser, status } = useEditUser();
@@ -141,7 +142,7 @@ export function MemberEditTemplate() {
     setEmailReceiveYn(!emailReceiveYn); // Toggle the value of emailReceiveYn
   };
   const handleKakaoYn = e => {
-    setKakaoReceiveYn(!handleKakaoYn); // Toggle the value of emailReceiveYn
+    setKakaoReceiveYn(!kakaoReceiveYn); // Toggle the value of emailReceiveYn
   };
   const handleSmsYn = e => {
     setSmsReceiveYn(!smsReceiveYn); // Toggle the value of emailReceiveYn
@@ -291,12 +292,14 @@ export function MemberEditTemplate() {
     setEmailReceiveYn(userInfo?.personalInfo?.isEmailReceive);
     setKakaoReceiveYn(userInfo?.personalInfo?.isKakaoReceive);
     setSmsReceiveYn(userInfo?.personalInfo?.isSmsReceive);
-    setUniversityCode(userInfo?.personalInfo?.jobGroup?.code);
     setSelectedUniversityName(userInfo?.personalInfo?.jobGroup?.name);
     const selected = userInfo?.jobOptions?.find(u => u.code === userInfo?.personalInfo?.jobGroup?.code);
-    console.log(selected);
     setJobs(selected ? selected.jobs : []);
-    setSelectedJob(userInfo?.personalInfo?.jobGroup?.code);
+    setUniversityCode(userInfo?.personalInfo?.jobGroup?.code);
+    setSelectedJob(userInfo?.personalInfo?.job?.code);
+
+    console.log(selected);
+    console.log(selected);
 
     setCheckList(userInfo?.personalInfo?.termsAgreed?.filter(term => term.isAgreed).map(term => term.termsId));
     setRecommendLevels(userInfo?.personalInfo?.jobLevel?.code || '');
@@ -599,8 +602,8 @@ export function MemberEditTemplate() {
           </Grid>
         </div>
       </div>
-      <div className={cx('sub-content', 'border', 'tw-rounded-lg', 'tw-mt-5', 'tw-text-center')}>
-        <div className="tw-p-10 tw-pb-0 tw-text-black tw-text-base tw-font-semibold">
+      <div className={cx('sub-content', 'border', 'tw-rounded-lg', 'tw-my-10', 'tw-text-center')}>
+        <div className="tw-p-10 tw-text-black tw-text-base tw-font-semibold">
           <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-3">
             <Grid item xs={2}></Grid>
             <Grid item xs={2} className="tw-text-left">
@@ -652,12 +655,12 @@ export function MemberEditTemplate() {
               </div>
             </Grid>
           </Grid> */}
-          <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-3">
+          <Grid container direction="row" justifyContent="flex-start" alignItems="flex-start" className="tw-py-3">
             <Grid item xs={2}></Grid>
             <Grid item xs={2} className="tw-text-left">
               학년
             </Grid>
-            <Grid item xs={8}>
+            <Grid item xs={8} style={{ padding: 0, margin: 0 }} className="tw-text-left">
               <ToggleButtonGroup
                 style={{ display: 'inline' }}
                 // value={recommendLevels}
@@ -676,7 +679,7 @@ export function MemberEditTemplate() {
                     style={{
                       borderRadius: '5px',
                       borderLeft: '0px',
-                      margin: '5px',
+                      marginRight: '4px',
                       height: '35px',
                       border: '0px',
                     }}
@@ -694,14 +697,50 @@ export function MemberEditTemplate() {
                   </ToggleButton>
                 ))}
               </ToggleButtonGroup>
+              <div className="tw-gap-4 tw-px-0 tw-py-3">
+                <dt className="tw-text-sm tw-leading-6 tw-text-gray-900"></dt>
+                <dd className="tw-mt-0 tw-font-medium tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                  {recommendLevels?.toString() === '0001' && (
+                    <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                      1학년 : 직무스킬 학습 중. 상용서비스 개발 경험 없음.
+                    </div>
+                  )}
+                  {recommendLevels?.toString() === '0002' && (
+                    <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                      2학년 : 상용서비스 단위모듈 수준 개발 가능. 서비스 개발 리딩 시니어 필요.
+                    </div>
+                  )}
+                  {recommendLevels?.toString() === '0003' && (
+                    <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                      3학년 : 상용 서비스 개발 1인분 가능한 사람. 소규모 서비스 독자 개발 가능.
+                    </div>
+                  )}
+                  {recommendLevels?.toString() === '0004' && (
+                    <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                      4학년 : 상용서비스 개발 리더. 담당직무분야 N명 업무가이드 및 리딩 가능.
+                    </div>
+                  )}
+                  {recommendLevels?.toString() === '0005' && (
+                    <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                      입문 : 다수 상용서비스 개발 리더. 수십명 혹은 수백명 수준의 개발자 총괄 리더.
+                    </div>
+                  )}
+                  {recommendLevels?.toString() === '0006' && (
+                    <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
+                      5레벨 : 본인 오픈소스/방법론 등이 범용적 사용, 수백명이상 다수 직군 리딩.
+                    </div>
+                  )}
+                </dd>
+              </div>
             </Grid>
           </Grid>
         </div>
       </div>
 
       <div className={cx('sub-content', 'border tw-px-[100px]', 'tw-rounded-lg', 'tw-mt-5')}>
-        <div className=" tw-p-14 max-lg:tw-p-5  tw-text-center">
+        <div className=" tw-p-14 max-lg:tw-p-5 ">
           <div className="tw-text-xl tw-pb-10 tw-text-black">
+            <span className="tw-text-xl tw-font-bold tw-text-left text-black">동서대학교 QuizUp </span>
             <span className="tw-font-bold tw-text-xl"></span> 이용 약관에 동의해주세요.
           </div>
 
@@ -959,7 +998,12 @@ export function MemberEditTemplate() {
       </div>
 
       <div className="tw-text-center tw-py-5 tw-flex tw-justify-between tw-gap-5 tw-text-sm">
-        <button className="tw-bg-[#6A7380] tw-text-white tw-px-10 tw-py-3 tw-rounded">회원탈퇴</button>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="tw-bg-[#6A7380] tw-text-white tw-px-10 tw-py-3 tw-rounded"
+        >
+          회원탈퇴
+        </button>
         <button className="tw-bg-[#dc2626] tw-text-white tw-px-10 tw-py-3 tw-rounded" onClick={handleSubmit}>
           저장하기
         </button>
@@ -1003,15 +1047,15 @@ export function MemberEditTemplate() {
       </div> */}
       <Modal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)} title="회원탈퇴 신청" maxWidth="700px">
         <div className={cx('seminar-check-popup')}>
-          <div className={cx('mb-5')}>
+          <div className="tw-py-20">
             <span className={cx('text-bold')}>회원탈퇴를 원하신다면 </span>
             아래 탈퇴하기 버튼을 눌러주세요.
             <br />
-            <span>세미나 신청 취소를 해야만 탈퇴할 수 있습니다.</span>
+            {/* <span> 탈퇴할 수 있습니다.</span> */}
           </div>
           <div>
             <Button
-              color="primary"
+              color="red"
               label="탈퇴하기"
               size="modal"
               className={cx('mr-2')}
