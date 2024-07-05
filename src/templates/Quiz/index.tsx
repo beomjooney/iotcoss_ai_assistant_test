@@ -185,14 +185,23 @@ export function QuizTemplate() {
               container
               direction="row"
               justifyContent="space-between"
-              alignItems="center"
               rowSpacing={4}
               columnSpacing={{ xs: 4, sm: 4, md: 4 }}
+              alignItems="center"
             >
               {isLoading ? (
-                <div className="tw-flex tw-justify-center tw-items-center tw-py-96">
-                  <CircularProgress />
-                </div>
+                <Grid
+                  item
+                  xs={12}
+                  className="tw-flex tw-justify-center tw-items-center tw-py-96"
+                  container
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <div className="tw-flex tw-justify-center tw-items-center tw-py-96">
+                    <CircularProgress />
+                  </div>
+                </Grid>
               ) : (
                 isContentFetched &&
                 (contents.length > 0 ? (
