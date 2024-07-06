@@ -73,8 +73,8 @@ function createAxios(requestConfig: RequestConfig): AxiosInstance {
       } = error;
       const originalConfig = config;
 
-      console.log('error');
-      console.log(data);
+      // console.log('error');
+      // console.log(data);
       if (status === 401) {
         const { update } = useSessionStore.getState();
         const userData: UserInfo = jwt_decode(process.env['NEXT_PUBLIC_GUEST_TOKEN']);

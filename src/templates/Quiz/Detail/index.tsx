@@ -98,8 +98,8 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
   // - clubMemberStatus : 0000/0009(미가입), 0001(신청 중 - 버튼 텍스트 변경 및 버튼 비활성화), 0003(거절), 0004(강퇴 - 버튼 비활성화)
   // - clubStatus : 상관 없음
 
-  console.log('clubStatus', clubAbout?.clubStatus);
-  console.log('clubMemberStatus', clubAbout?.clubMemberStatus);
+  // console.log('clubStatus', clubAbout?.clubStatus);
+  // console.log('clubMemberStatus', clubAbout?.clubMemberStatus);
 
   const isQuizScreen = clubAbout?.clubAboutStatus === '0401' && isParticipantListFetched;
 

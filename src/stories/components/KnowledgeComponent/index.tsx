@@ -252,7 +252,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
             </div>
             <div className=" tw-text-left tw-text-black">{data.question}</div>
           </div>
-          <div className="tw-flex tw-w-48 tw-justify-end tw-items-center tw-gap-5">
+          <div className="tw-flex tw-w-64 tw-justify-end tw-items-center tw-gap-5">
             <p className="tw-text-sm tw-text-right tw-text-[#9ca5b2]">{data.createdAt}</p>
             <svg
               onClick={handleClick}
@@ -358,8 +358,8 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
             ))}
           </div>
           <div className="tw-flex tw-px-8">
-            <p className="tw-w-[80px] text-sm tw-font-bold tw-left-[52px] tw-top-[58px] tw-text-sm tw-pr-3 tw-text-left tw-text-[#31343d]">
-              모범답안 :
+            <p className="tw-w-[85px] text-sm tw-font-bold tw-left-[52px] tw-top-[58px] tw-text-sm tw-pr-3 tw-text-left tw-text-[#31343d]">
+              모범답안
             </p>
             <p className="tw-w-[973px] text-sm tw-left-[119px] tw-top-[58px] tw-text-sm tw-text-left tw-text-[#31343d]">
               {data.modelAnswer}

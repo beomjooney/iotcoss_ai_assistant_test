@@ -1050,7 +1050,7 @@ export function StudyRoomTemplate() {
                               </Grid>
                             </div>
                           ))}
-                          <Pagination page={page} setPage={setPage} total={totalPage} />
+                          <Pagination page={quizPage} setPage={setQuizPage} total={quizTotalPage} />
                         </div>
                       )}
                       {active === 3 && (
