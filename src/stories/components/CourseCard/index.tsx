@@ -26,7 +26,10 @@ const CourseCard = ({ data, border = false }) => {
 
   return (
     <div
-      className={`tw-h-[142px] tw-relative tw-overflow-hidden  tw-bg-white ${
+      onClick={() => {
+        window.location.href = `/quiz/${data.clubSequence}`;
+      }}
+      className={`tw-h-[142px] tw-cursor-pointer tw-relative tw-overflow-hidden  tw-bg-white ${
         border ? 'border-left border-right border-top tw-rounded-t-lg' : 'border tw-rounded-lg'
       }`}
     >
@@ -56,7 +59,8 @@ const CourseCard = ({ data, border = false }) => {
         <div className="tw-flex tw-justify-end tw-items-center tw-ml-auto tw-pr-4">
           <button
             className="tw-absolute tw-pl-2 tw-pt-2"
-            onClick={() => {
+            onClick={event => {
+              event.stopPropagation();
               onChangeLike(data.clubSequence, data.isFavorite);
             }}
           >
