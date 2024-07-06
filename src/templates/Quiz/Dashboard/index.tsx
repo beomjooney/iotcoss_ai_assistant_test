@@ -451,7 +451,7 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
                             {session?.order}회
                           </p>
                           <p className="tw-w-full tw-h-3.5 tw-text-xs tw-font-medium tw-text-center tw-text-[#9ca5b2] tw-bottom-0">
-                            {session?.publishDate.slice(5)} ({session?.dayOfWeek})
+                            {session?.publishDate?.slice(5)} ({session?.dayOfWeek})
                           </p>
                         </div>
                       </TableCell>
