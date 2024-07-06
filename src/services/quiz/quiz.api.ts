@@ -140,6 +140,11 @@ export const quizFileDownload = async id => {
     params: {
       fileKeys: id,
     },
+    responseType: 'blob',
+    headers: {
+      Accept: '*/*',
+      'Content-Type': 'multipart/form-data',
+    },
   });
   return data;
 };
