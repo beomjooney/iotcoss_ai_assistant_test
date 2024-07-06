@@ -85,19 +85,22 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
   const [isShowMenu, setIsShowMenu] = useState<boolean>(false);
 
   //**alarm */
-  const { isFetched: isContentFetched, refetch: refetch } = useQuizAlarmHistory(params, data => {
-    let falseCount = 0;
-    // jsonData를 반복하여 각 활동의 isChecked 값을 확인
-    data?.contents?.forEach(day => {
-      day.activities.forEach(activity => {
-        if (!activity.isChecked) {
-          falseCount++;
-        }
+  const { isFetched: isContentFetched, refetch: refetch } = useQuizAlarmHistory(
+    { params: params, logged: logged },
+    data => {
+      let falseCount = 0;
+      // jsonData를 반복하여 각 활동의 isChecked 값을 확인
+      data?.contents?.forEach(day => {
+        day.activities.forEach(activity => {
+          if (!activity.isChecked) {
+            falseCount++;
+          }
+        });
       });
-    });
-    setAlarmCount(falseCount);
-    setContents(data);
-  });
+      setAlarmCount(falseCount);
+      setContents(data);
+    },
+  );
 
   const { mutate: onCheckAlarm, isSuccess: isSuccessCheck } = useCheckAlarm();
 

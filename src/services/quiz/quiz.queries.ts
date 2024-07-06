@@ -154,16 +154,17 @@ export const useQuizGrowthDetail = (id, onSuccess?: (data: any) => void, onError
 export const useQuizAlarmHistory = (params, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
   const DEFAULT_SIZE = 30;
   return useQuery<any, Error>(
-    QUERY_KEY_FACTORY('QUIZ').detail({ size: DEFAULT_SIZE, ...params }),
-    () => quizAlarmHistory({ size: DEFAULT_SIZE, ...params }),
+    QUERY_KEY_FACTORY('QUIZ').detail({ size: DEFAULT_SIZE, ...params.params }),
+    () => quizAlarmHistory({ size: DEFAULT_SIZE, ...params.params }),
     {
       onSuccess,
       onError,
       refetchOnWindowFocus: false,
-      enabled: true,
+      enabled: params.logged,
     },
   );
 };
+
 export const useQuizActivityHistory = (params, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
   const DEFAULT_SIZE = 10;
   return useQuery<any, Error>(
