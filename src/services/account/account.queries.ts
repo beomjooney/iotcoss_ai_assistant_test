@@ -51,7 +51,7 @@ export const useMemberInfo = (memberId: any, onSuccess?: (data: User) => void, o
   useQuery<User, Error>(QUERY_KEY_FACTORY('MEMBER').details(), () => memberInfo(memberId), {
     onSuccess,
     onError,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
     enabled: !!memberId,
     retry: false,
   });
@@ -60,7 +60,7 @@ export const usePersonalInfo = (memberId: any, onSuccess?: (data: User) => void,
   useQuery<User, Error>(QUERY_KEY_FACTORY('USER').details(), () => personalInfo(memberId), {
     onSuccess,
     onError,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
     enabled: !!memberId,
     retry: false,
   });
