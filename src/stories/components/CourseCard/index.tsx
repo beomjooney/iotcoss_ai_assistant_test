@@ -22,6 +22,7 @@ const CourseCard = ({ data, border = false }) => {
     } else {
       onSaveLike(postNo);
     }
+    // refetch();
   };
 
   return (
