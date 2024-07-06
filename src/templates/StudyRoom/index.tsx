@@ -776,7 +776,7 @@ export function StudyRoomTemplate() {
                                               <div className="tw-flex tw-items-center tw-gap-3 ">
                                                 <img
                                                   src={course.participantProgress.member.profileImageUrl}
-                                                  className="tw-w-9 tw-h-9 tw-rounded-full "
+                                                  className="tw-w-9 tw-h-9 tw-rounded-full border"
                                                   alt="아그리파"
                                                 />
                                                 <div>{course.participantProgress.member.nickname}</div>
@@ -1050,7 +1050,7 @@ export function StudyRoomTemplate() {
                               </Grid>
                             </div>
                           ))}
-                          <Pagination page={quizPage} setPage={setQuizPage} total={quizTotalPage} />
+                          <Pagination page={quizPage} setPage={setPage} total={totalPage} />
                         </div>
                       )}
                       {active === 3 && (

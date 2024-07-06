@@ -1015,6 +1015,7 @@ export function QuizMakeTemplate() {
                           setContentType(item.id);
                         }}
                         className={cx('tw-mr-2 !tw-w-[90px]')}
+                        disabled={item.id === '0200' || item.id === '0300'}
                       />
                     ))}
                   </div>
