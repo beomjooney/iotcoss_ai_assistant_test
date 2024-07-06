@@ -55,7 +55,7 @@ export const saveProfile = async body =>
 export const editInfo = async (memberId, body) => await axiosGeneralAPI().put(`/members/${memberId}`, body);
 
 // 회원 정보 삭제
-export const deleteMember = async memberId => await axiosGeneralAPI().delete(`/members/${memberId}`);
+export const deleteMember = async memberId => await axiosGeneralAPI().delete(`/api/v1/member`);
 
 // 서비스 이용 약관 조회
 export async function termsInfo(params: any) {
