@@ -78,7 +78,7 @@ export function QuizMakeTemplate() {
   const [isContentModalClick, setIsContentModalClick] = useState<boolean>(false);
   const [jobGroup, setJobGroup] = useState([]);
   const [active, setActive] = useState('0100');
-  const [activeQuiz, setActiveQuiz] = useState('0001');
+  const [activeQuiz, setActiveQuiz] = useState('');
   const [contentType, setContentType] = useState('0100');
   const [jobGroups, setJobGroups] = useState<any[]>([]);
   const [jobs, setJobs] = useState([]);
@@ -252,6 +252,7 @@ export function QuizMakeTemplate() {
     setSelectedJob('');
     setJobLevel('');
     setQuizList([]);
+    setQuizCount('0');
 
     refetchMyQuiz();
     refetchMyQuizContent();
@@ -271,8 +272,8 @@ export function QuizMakeTemplate() {
     setSelectedUniversityName('');
     setSelectedJobName('');
     setSelectedJob('');
-    setActiveQuiz(optionsData?.data?.jobLevels[0].code);
-    setJobLevel(optionsData?.data?.jobLevels[0].code);
+    setActiveQuiz('');
+    setJobLevel('');
     setSelectedSubject('');
     setSelectedChapter('');
     setSelected1([]);
@@ -379,8 +380,8 @@ export function QuizMakeTemplate() {
       return;
     }
 
-    if (!quizCount) {
-      alert('퀴즈 수를 입력하세요.');
+    if (parseInt(quizCount) < 1) {
+      alert('생성 퀴즈 개수는 1개 이상 설정해야 합니다.');
       return;
     }
 
@@ -517,6 +518,16 @@ export function QuizMakeTemplate() {
       };
 
       console.log(params);
+
+      for (let index = 0; index < params.quizzes.length; index++) {
+        const quiz = params.quizzes[index];
+        console.log(quiz);
+        if (quiz.modelAnswerFinal === undefined) {
+          alert(`퀴즈 ${index + 1}에 모범 답변이 없습니다.`);
+          return false; // Exit the function if modelAnswerFinal is undefined
+        }
+      }
+
       onQuizSave(params);
       setActiveTab('퀴즈목록');
     }
