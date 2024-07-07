@@ -68,9 +68,9 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
 
   const { isFetched: isParticipantListFetched, data } = useQuizRoungeInfo(id, data => {
     console.log('first get data');
-    const index = data?.clubQuizzes?.findIndex(item => item.myAnswerStatus === '0003');
+    const index = data?.clubQuizzes?.findIndex(item => item.isPublished === true);
     setSelectedQuiz(data.clubQuizzes[index]);
-    const result = data?.clubQuizzes?.find(item => item.myAnswerStatus === '0003');
+    const result = data?.clubQuizzes?.find(item => item.isPublished === true);
     const selectedSession = result ? result.publishDate : null;
     console.log('selectedSession 1', selectedSession);
     setSelectedValue(selectedSession);
@@ -131,11 +131,11 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
 
   useEffect(() => {
     if (contents?.clubQuizzes?.length > 0) {
-      const index = contents?.clubQuizzes?.findIndex(item => item.myAnswerStatus === '0003');
+      const index = contents?.clubQuizzes?.findIndex(item => item.isPublished === true);
       console.log('content!!');
       console.log(contents.clubQuizzes[index]);
       setSelectedQuiz(contents.clubQuizzes[index]);
-      const result = contents.clubQuizzes.find(item => item.myAnswerStatus === '0003');
+      const result = contents.clubQuizzes.find(item => item.isPublished === true);
       const selectedSession = result ? result.publishDate : null;
       console.log(selectedSession);
       setSelectedValue(selectedSession);
@@ -178,12 +178,12 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
     if (selectedSession) {
       if (!selectedSession.isPublished) {
         alert('퀴즈가 공개되지 않았습니다.');
-        const result = contents.clubQuizzes.find(item => item.myAnswerStatus === '0003');
+        const result = contents.clubQuizzes.find(item => item.isPublished === true);
         const selectedSessionValue = result ? result.publishDate : null;
         console.log('selectedSessionValue 2', selectedSessionValue);
         setSelectedValue(selectedSessionValue); // Reset to the default value
 
-        const index = data?.clubQuizzes?.findIndex(item => item.myAnswerStatus === '0003');
+        const index = data?.clubQuizzes?.findIndex(item => item.isPublished === true);
         setParams({
           club: id,
           quiz: data.clubQuizzes[index]?.quizSequence,
@@ -192,9 +192,7 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
         setSelectedQuiz(contents?.clubQuizzes[index]);
         return;
       } else {
-        setSelectedValue(selectedSession.publishDate.split('-').slice(1).join('-'));
-        console.log(selectedSession);
-        console.log(selectedSession.publishDate.split('-').slice(1).join('-'));
+        setSelectedValue(selectedSession.publishDate);
       }
     }
 
@@ -276,7 +274,7 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
                   <select
                     className="form-select block w-full tw-bg-gray-100 tw-text-red-500 tw-font-bold"
                     onChange={handleQuizChange}
-                    value={selectedValue.split('-').slice(1).join('-')}
+                    value={selectedValue?.split('-').slice(1).join('-')}
                     aria-label="Default select example"
                   >
                     {contents?.clubQuizzes?.map((session, idx) => {
@@ -287,7 +285,7 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
                         <option
                           key={idx}
                           className={`tw-w-20 tw-bg-[#f6f7fb] tw-items-center tw-flex-shrink-0 border-left border-top border-right tw-rounded-t-lg tw-cursor-pointer
-          ${isSelected ? 'tw-bg-red-500 tw-text-white' : ''}
+          ${isSelected ? 'tw-bg-red-500' : ''}
           ${isPublished ? 'tw-bg-white tw-text-gray-200' : ''}
         `}
                           value={session?.publishDate.split('-').slice(1).join('-')}

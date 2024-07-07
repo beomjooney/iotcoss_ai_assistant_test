@@ -77,10 +77,10 @@ const AIAnswerQuizList = ({ info, refetchReply }) => {
   const handleClick = () => {
     console.log(valueAI);
 
-    // if (valueAI.trim() === '') {
-    //   alert('교수채점을 해주세요.');
-    //   return;
-    // }
+    if (value === null) {
+      alert('AI채점/교수 채점 기준을 입력하세요.');
+      return;
+    }
 
     const params = {
       clubSequence: info.clubSequence,

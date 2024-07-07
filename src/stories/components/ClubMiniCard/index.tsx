@@ -101,11 +101,7 @@ ClubMiniCardProps) => {
         }}
         className="tw-cursor-pointer tw-flex tw-flex-col border tw-items-center tw-bg-white tw-border tw-border-gray-200 tw-rounded-lg md:tw-flex-row tw-w-full "
       >
-        <img
-          className="tw-object-cover tw-w-[200px] tw-rounded-l-lg tw-h-[145px] md:tw-h-[145px] md:tw-w-[200px]"
-          src={item?.clubImageUrl}
-          alt=""
-        />
+        <img className="tw-w-[300px] tw-h-[145px] tw-rounded-l-lg tw-object-cover" src={item?.clubImageUrl} alt="" />
         <div className="tw-flex tw-w-full tw-flex-col tw-justify-between tw-px-4  tw-leading-normal">
           <Grid
             className=" tw-mb-3"

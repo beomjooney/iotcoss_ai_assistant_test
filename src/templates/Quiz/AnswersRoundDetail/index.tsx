@@ -61,7 +61,7 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
 
   const { isFetched: isParticipantListFetched, data } = useQuizRoungeInfo(id, data => {
     console.log('first get data');
-    const index = data.clubQuizzes.findIndex(item => item.myAnswerStatus === '0003');
+    const index = data.clubQuizzes.findIndex(item => item.isPublished === true);
     //clubQuizzes[0]
     setSelectedQuiz(data.clubQuizzes[index]);
     console.log(data);
@@ -78,8 +78,7 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
 
   useEffect(() => {
     if (contents?.clubQuizzes?.length > 0) {
-      const index = contents?.clubQuizzes?.findIndex(item => item.myAnswerStatus === '0003');
-      console.log('content!!');
+      const index = contents?.clubQuizzes?.findIndex(item => item.isPublished === true);
       console.log(contents?.clubQuizzes[index]);
       setSelectedQuiz(contents?.clubQuizzes[index]);
       setIsLiked(contents?.club?.isFavorite);
@@ -251,7 +250,7 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                           key={idx}
                           onClick={() => !isPublished && handleQuizClick(session)}
                           className={`tw-w-20 tw-bg-[#f6f7fb] tw-items-center tw-flex-shrink-0 border-left border-top border-right tw-rounded-t-lg tw-cursor-pointer
-          ${isSelected ? 'tw-bg-red-500 tw-text-white' : ''}
+          ${isSelected ? 'tw-bg-red-500' : ''}
           ${isPublished ? 'tw-bg-white tw-text-gray-200' : ''}
         `}
                         >

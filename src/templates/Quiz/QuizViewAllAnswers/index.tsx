@@ -73,6 +73,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
   const [selectedQuiz, setSelectedQuiz] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoadingAI, setIsLoadingAI] = useState(false);
+  const [isLoadingAIAll, setIsLoadingAIAll] = useState(false);
   const [isCompleteAI, setIsCompleteAI] = useState(false);
   const [isHideAI, setIsHideAI] = useState(true);
   const [isAIData, setIsAIData] = useState({});
@@ -142,29 +143,38 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
 
   useEffect(() => {
     if (contents?.clubQuizzes?.length > 0) {
+      const index = contents?.clubQuizzes?.findIndex(item => item.isPublished === true);
+
       console.log('content!!');
-      console.log(contents.clubQuizzes[0]);
-      console.log(contents.clubQuizzes[0].question);
-      setSelectedQuiz(contents.clubQuizzes[0]);
+      console.log(contents.clubQuizzes[index]);
+      console.log(contents.clubQuizzes[index].question);
+      setSelectedQuiz(contents.clubQuizzes[index]);
     }
   }, [contents]);
 
   const { isFetched: isParticipantListFetched, data } = useQuizRoungeInfo(id, data => {
     console.log('first get data');
-    setSelectedQuiz(data.clubQuizzes[0]);
-    console.log(data.clubQuizzes[0]?.quizSequence);
+    const index = data?.clubQuizzes?.findIndex(item => item.isPublished === true);
+    setSelectedQuiz(data.clubQuizzes[index]);
+    const result = data?.clubQuizzes?.find(item => item.isPublished === true);
+    const selectedSession = result ? result.publishDate : null;
+    console.log('selectedSession 1', selectedSession);
+    setSelectedValue(selectedSession);
+    console.log(data.clubQuizzes[index]);
     setContents(data);
+
+    setSelectedValue;
 
     setParams({
       club: id,
-      quiz: data.clubQuizzes[0]?.quizSequence,
+      quiz: data.clubQuizzes[index]?.quizSequence,
       page,
       keyword: keyWorld,
     });
 
     setQuizParamsAll({
       club: id,
-      quiz: data.clubQuizzes[0]?.quizSequence,
+      quiz: data.clubQuizzes[index]?.quizSequence,
     });
   });
 
@@ -284,7 +294,12 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     if (selectedSession) {
       if (!selectedSession.isPublished) {
         alert('퀴즈가 공개되지 않았습니다.');
-        setSelectedValue(''); // Reset to the default value
+        const result = contents.clubQuizzes.find(item => item.isPublished === true);
+        const selectedSessionValue = result ? result.publishDate : null;
+        console.log('selectedSessionValue 2', selectedSessionValue);
+        setSelectedValue(selectedSessionValue); // Reset to the default value
+
+        const index = data?.clubQuizzes?.findIndex(item => item.isPublished === true);
         setParams({
           club: id,
           quiz: data.clubQuizzes[0]?.quizSequence,
@@ -387,6 +402,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
         // 10초가 경과하면 정지
         clearInterval(newIntervalId);
         setIntervalId(null);
+        setIsLoadingAIAll(false);
         refetchReply();
       } else {
         refetchQuizAnswerAll();
@@ -631,7 +647,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
               <select
                 className="form-select block w-full tw-bg-gray-100 tw-text-red-500 tw-font-bold"
                 onChange={handleQuizChange}
-                value={selectedValue}
+                value={selectedValue.split('-').slice(1).join('-')}
                 aria-label="Default select example"
               >
                 {contents?.clubQuizzes?.map((session, idx) => {
@@ -642,7 +658,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                     <option
                       key={idx}
                       className={`tw-w-20 tw-bg-[#f6f7fb] tw-items-center tw-flex-shrink-0 border-left border-top border-right tw-rounded-t-lg tw-cursor-pointer
-          ${isSelected ? 'tw-bg-red-500 tw-text-white' : ''}
+          ${isSelected ? 'tw-bg-red-500' : ''}
           ${isPublished ? 'tw-bg-white tw-text-gray-200' : ''}
         `}
                       value={session?.publishDate.split('-').slice(1).join('-')}
@@ -677,13 +693,14 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
             </div>
             <div className="tw-flex tw-justify-end tw-gap-2">
               <button
-                className=" tw-bg-black max-lg:tw-mr-1  tw-rounded-md tw-text-sm tw-text-white tw-py-2.5 tw-px-4"
+                className="tw-w-[150px] tw-bg-black max-lg:tw-mr-1  tw-rounded-md tw-text-sm tw-text-white tw-py-2.5 tw-px-4"
                 onClick={() => {
                   onAIQuizAnswerEvaluation(quizParamsAll);
                   handleClickTime();
+                  setIsLoadingAIAll(true);
                 }}
               >
-                일괄 AI피드백/채점
+                {isLoadingAIAll ? <CircularProgress color="info" size={18} /> : '일괄 AI피드백/채점'}
               </button>
             </div>
 
