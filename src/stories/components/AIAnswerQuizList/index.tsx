@@ -34,6 +34,12 @@ const AIAnswerQuizList = ({ info, refetchReply }) => {
   } = useAIQuizAnswerListPut();
 
   useEffect(() => {
+    if (answerSuccessPut) {
+      alert('AI 채점과 교수 채점이 저장되었습니다.');
+    }
+  }, [answerSuccessPut]);
+
+  useEffect(() => {
     if (aiQuizAnswerData) {
       refetchReply();
       // setValueAI(aiQuizAnswerData?.grading);
