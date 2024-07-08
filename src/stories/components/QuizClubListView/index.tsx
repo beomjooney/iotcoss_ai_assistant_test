@@ -174,7 +174,7 @@ const QuizClubListView = ({ border, id }) => {
               <div className="">
                 <button
                   type="button"
-                  onClick={() => router.push(`/manage-quiz-club/${id}`)}
+                  onClick={() => router.push(`/manage-quiz-club/${selectedValue}`)}
                   className="tw-h-14  tw-text-black tw-bg-[#CED4DE] border tw-font-medium tw-rounded-md tw-text-sm tw-px-6 tw-py-2 "
                 >
                   <SettingsIcon className="tw-bg-[#CED4DE] tw-text-white" />
@@ -294,7 +294,7 @@ const QuizClubListView = ({ border, id }) => {
                         <div className={`tw-font-medium ${item?.isPublished ? 'tw-text-black' : ' tw-text-gray-400'}`}>
                           <div className="tw-flex-auto tw-text-center  tw-font-bold">Q{index + 1}.</div>
                           <div className="tw-flex-auto tw-text-center tw-text-sm   tw-font-bold">
-                            {item?.publishDate.slice(5, 10)} ({item?.dayOfWeek})
+                            {item?.publishDate?.slice(5, 10)} ({item?.dayOfWeek})
                           </div>
                         </div>
                       </Grid>

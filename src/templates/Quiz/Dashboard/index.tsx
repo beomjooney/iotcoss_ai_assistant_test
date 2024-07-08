@@ -107,6 +107,7 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
       return session.clubSequence === Number(value);
     });
 
+    console.log('value', value);
     setSelectedValue(value);
     setSelectedClub(selectedSession);
     console.log(selectedSession);
@@ -205,7 +206,7 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
               <div className="">
                 <button
                   type="button"
-                  onClick={() => router.push(`/manage-quiz-club/${id}`)}
+                  onClick={() => router.push(`/manage-quiz-club/${selectedValue}`)}
                   className="tw-h-14  tw-text-black tw-bg-[#CED4DE] border tw-font-medium tw-rounded-md tw-text-sm tw-px-6 tw-py-2 "
                 >
                   <SettingsIcon className="tw-bg-[#CED4DE] tw-text-white" />
@@ -216,7 +217,7 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
         </div>
         <div className="tw-w-full tw-py-5 tw-cursor-pointer">
           <div
-            onClick={() => router.push(`/quiz-list/${id}`)}
+            onClick={() => router.push(`/quiz-list/${selectedValue}`)}
             className="tw-h-[50px] tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white border tw-border-secondary"
           >
             <div className="tw-flex tw-justify-start tw-items-start tw-absolute tw-left-[28.21px] tw-top-[14px] tw-gap-[16.133331298828125px]">

@@ -1094,7 +1094,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                         >
                           <div className=" tw-text-center tw-text-black tw-font-bold">Q{index + 1}.</div>
                           <div className="tw-text-center tw-text-sm tw-text-black tw-font-bold">
-                            {item?.publishDate.slice(5, 10)} ({item.dayOfWeek})
+                            {item?.publishDate?.slice(5, 10)} ({item.dayOfWeek})
                           </div>
                         </div>
                       );
