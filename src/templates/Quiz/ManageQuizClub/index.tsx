@@ -65,6 +65,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
   const { mutate: onCrewAccept, isSuccess: isAcceptSuccess } = useCrewAcceptPost();
   const { mutate: onCrewReject, isSuccess: isRejectSuccess } = useCrewRejectPost();
 
+  console.log('clubsequence : ', id);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
@@ -236,7 +237,8 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
   // 퀴즈클럽 리스트
   const { isFetched: isContentFetched, refetch: refetchMyClub } = useMyClubList({}, data => {
     setMyClubList(data?.data?.contents || []);
-    setSelectedClub(data?.data?.contents[0]);
+    const foundClub = data?.data?.contents?.find(club => club.clubSequence === parseInt(id));
+    setSelectedClub(foundClub);
   });
 
   // 내 요청 회원 목록 조회
@@ -249,6 +251,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
     },
   );
 
+  console.log(myClubMemberParams);
   // 내 회원 목록 조회
   const { isFetched: isMemberFetched, refetch: refetchMyMember } = useMyMemberList(myClubMemberParams, data => {
     console.log(data);
@@ -305,6 +308,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
       sortType: sortType,
       page: page,
     });
+
     setMyClubMemberParams({
       clubSequence: selectedClub?.clubSequence,
       sortType: sortType,
@@ -705,6 +709,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                 <div className={cx('container', 'tw-mt-10')}>
                   <Grid container direction="row" alignItems="center" rowSpacing={0}>
                     <Grid
+                      item
                       container
                       justifyContent="flex-start"
                       xs={6}
@@ -714,7 +719,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                       클럽 가입 신청 ({totalElements})
                     </Grid>
 
-                    <Grid container justifyContent="flex-end" xs={6} sm={2} style={{ textAlign: 'right' }}>
+                    <Grid item container justifyContent="flex-end" xs={6} sm={2} style={{ textAlign: 'right' }}>
                       <Pagination
                         count={totalPage}
                         size="small"
@@ -732,6 +737,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                     return (
                       <React.Fragment key={index}>
                         <Grid
+                          item
                           className="tw-py-2 border-bottom tw-text-base"
                           key={index}
                           container
@@ -793,6 +799,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                 <div className={cx('container', 'tw-mt-10')}>
                   <Grid container direction="row" alignItems="center" rowSpacing={0}>
                     <Grid
+                      item
                       container
                       justifyContent="flex-start"
                       xs={6}
@@ -802,7 +809,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                       클럽 학생 목록 ({totalElementsMember})
                     </Grid>
 
-                    <Grid container justifyContent="flex-end" xs={6} sm={2} style={{ textAlign: 'right' }}>
+                    <Grid item container justifyContent="flex-end" xs={6} sm={2} style={{ textAlign: 'right' }}>
                       <Pagination
                         count={totalPageMember}
                         size="small"
@@ -972,6 +979,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
               <div className={cx('container', 'tw-mt-10')}>
                 <Grid container direction="row" alignItems="center" rowSpacing={0}>
                   <Grid
+                    item
                     container
                     justifyContent="flex-start"
                     xs={6}
@@ -981,7 +989,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                     퀴즈 목록 ({totalQuizElements})
                   </Grid>
 
-                  <Grid container justifyContent="flex-end" xs={6} sm={2} style={{ textAlign: 'right' }}>
+                  <Grid item container justifyContent="flex-end" xs={6} sm={2} style={{ textAlign: 'right' }}>
                     <Pagination
                       count={totalQuizPage}
                       size="small"

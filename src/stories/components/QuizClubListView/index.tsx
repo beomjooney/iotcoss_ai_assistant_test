@@ -320,7 +320,25 @@ const QuizClubListView = ({ border, id }) => {
                             </div>
                             <div className="tw-pr-4">
                               <button
-                                onClick={() => router.push('/quiz-answers/' + `${item?.clubSequence}`)}
+                                // onClick={() =>
+                                //   router.push(
+                                //     '/quiz-answers/' +
+                                //       `${item?.clubSequence}` +
+                                //       '?publishDate=' +
+                                //       `${item?.publishDate}`,
+                                //   )
+                                // }
+                                onClick={() => {
+                                  router.push(
+                                    {
+                                      pathname: `/quiz-answers/${item?.clubSequence}`,
+                                      query: {
+                                        publishDate: item?.publishDate,
+                                      },
+                                    },
+                                    `/quiz-answers/${item?.clubSequence}`,
+                                  );
+                                }}
                                 type="button"
                                 disabled={!item?.isPublished}
                                 data-tooltip-target="tooltip-default"

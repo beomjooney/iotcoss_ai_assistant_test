@@ -1,8 +1,8 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/router';
 import { useStore } from 'src/store';
-import { paramProps, useMySeminarList, useSeminarDetail, useSeminarList } from 'src/services/seminars/seminars.queries';
 import { RecommendContent } from 'src/models/recommend';
 import { useSessionStore } from 'src/store/session';
 import { useClubDetailQuizList } from 'src/services/quiz/quiz.queries';
@@ -40,6 +40,9 @@ export interface QuizViewAllAnswersTemplateProps {
 
 export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplateProps) {
   const { user } = useStore();
+  const router = useRouter();
+  const { publishDate } = router.query;
+  console.log(publishDate);
   const [value, setValue] = React.useState(0);
   const [isBookmark, setIsBookmark] = useState(true);
   const [quizList, setQuizList] = useState<RecommendContent[]>([]);
@@ -62,7 +65,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
   const [beforeOnePick, setBeforeOnePick] = useState(1);
   const [keyWorld, setKeyWorld] = useState('');
   const [totalElements, setTotalElements] = useState(0);
-  const [selectedValue, setSelectedValue] = useState('');
+  const [selectedValue, setSelectedValue] = useState(publishDate || '');
   const [page, setPage] = useState(1);
   const [params, setParams] = useState<any>({ id, page });
   const [quizParams, setQuizParams] = useState<any>({});
@@ -141,29 +144,34 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     });
   }, [page]);
 
-  useEffect(() => {
-    if (contents?.clubQuizzes?.length > 0) {
-      const index = contents?.clubQuizzes?.findIndex(item => item.isPublished === true);
+  // useEffect(() => {
+  //   if (contents?.clubQuizzes?.length > 0) {
+  //     const index = contents?.clubQuizzes?.findIndex(item => item.isPublished === true);
 
-      console.log('content!!');
-      console.log(contents.clubQuizzes[index]);
-      console.log(contents.clubQuizzes[index].question);
-      setSelectedQuiz(contents.clubQuizzes[index]);
-    }
-  }, [contents]);
+  //     console.log('content!!');
+  //     console.log(contents.clubQuizzes[index]);
+  //     console.log(contents.clubQuizzes[index].question);
+  //     setSelectedQuiz(contents.clubQuizzes[index]);
+  //   }
+  // }, [contents]);
 
   const { isFetched: isParticipantListFetched, data } = useQuizRoungeInfo(id, data => {
     console.log('first get data');
-    const index = data?.clubQuizzes?.findIndex(item => item.isPublished === true);
+
+    let index; // `index` 변수 선언
+    if (publishDate) {
+      index = data?.clubQuizzes?.findIndex(item => item.publishDate === publishDate);
+      console.log('index', publishDate, index);
+    } else {
+      index = data?.clubQuizzes?.findIndex(item => item.isPublished === true);
+      console.log('index', publishDate, index);
+    }
     setSelectedQuiz(data.clubQuizzes[index]);
-    const result = data?.clubQuizzes?.find(item => item.isPublished === true);
-    const selectedSession = result ? result.publishDate : null;
+    const selectedSession = data.clubQuizzes[index] ? data.clubQuizzes[index].publishDate : null;
     console.log('selectedSession 1', selectedSession);
-    setSelectedValue(selectedSession);
+    setSelectedValue(publishDate || selectedSession);
     console.log(data.clubQuizzes[index]);
     setContents(data);
-
-    setSelectedValue;
 
     setParams({
       club: id,
@@ -287,9 +295,12 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
 
   const handleQuizChange = event => {
     const value = event.target.value;
+    console.log('value', value);
     const selectedSession = contents.clubQuizzes.find(
       session => session.publishDate.split('-').slice(1).join('-') === value,
     );
+
+    console.log('selectedSession', selectedSession);
 
     if (selectedSession) {
       if (!selectedSession.isPublished) {
@@ -309,7 +320,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
         setSelectedQuiz(contents?.clubQuizzes[0]);
         return;
       } else {
-        setSelectedValue(selectedSession.publishDate.split('-').slice(1).join('-'));
+        setSelectedValue(selectedSession.publishDate);
       }
     }
 
@@ -332,7 +343,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
   useEffect(() => {
     if (isSuccess) {
       console.log('quizAnswerData');
-      console.log(quizAnswerData.contents);
+      // console.log(quizAnswerData.contents);
       setQuizListData(quizAnswerData.contents || []);
       setTotalPage(quizAnswerData.totalPages);
     }
@@ -471,7 +482,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
 
     // Validate clubQuizGetThreads
     if (!clubQuizGetThreads || typeof clubQuizGetThreads !== 'string') {
-      alert('Invalid feedback');
+      alert('피드백을 입력해주세요.');
       return;
     }
     formData.append('feedback', clubQuizGetThreads);
@@ -497,7 +508,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
 
     // Validate grade
     if (grade === '') {
-      alert('Invalid grade');
+      alert('점수를 입력해주세요.');
       return;
     }
     formData.append('grading', grade);
@@ -647,7 +658,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
               <select
                 className="form-select block w-full tw-bg-gray-100 tw-text-red-500 tw-font-bold"
                 onChange={handleQuizChange}
-                value={selectedValue.split('-').slice(1).join('-')}
+                value={selectedValue?.split('-').slice(1).join('-')}
                 aria-label="Default select example"
               >
                 {contents?.clubQuizzes?.map((session, idx) => {
@@ -658,7 +669,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                     <option
                       key={idx}
                       className={`tw-w-20 tw-bg-[#f6f7fb] tw-items-center tw-flex-shrink-0 border-left border-top border-right tw-rounded-t-lg tw-cursor-pointer
-          ${isSelected ? 'tw-bg-red-500' : ''}
+          ${isSelected ? 'tw-bg-red-500 tw-text-white' : ''}
           ${isPublished ? 'tw-bg-white tw-text-gray-200' : ''}
         `}
                       value={session?.publishDate.split('-').slice(1).join('-')}

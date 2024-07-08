@@ -8,11 +8,8 @@ import {
   useQuizGetAnswer,
 } from 'src/services/quiz/quiz.queries';
 import { useRouter } from 'next/router';
-import Avatar from '@mui/material/Avatar';
-
 /** import pagenation */
 import Pagination from '@mui/material/Pagination';
-import Grid from '@mui/material/Grid';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 
@@ -34,6 +31,8 @@ export interface QuizAnswersAllDetailTemplateProps {
 
 export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplateProps) {
   const router = useRouter();
+  const { publishDate } = router.query;
+  console.log('publishDate', publishDate);
   const [quizListData, setQuizListData] = useState<any[]>([]);
   const [contents, setContents] = useState<any>([]);
   const [quizProgressData, setQuizProgressData] = useState<any>([]);
@@ -41,7 +40,7 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
   const [beforeOnePick, setBeforeOnePick] = useState(1);
   const [keyWorld, setKeyWorld] = useState('');
   const [totalElements, setTotalElements] = useState(0);
-  const [selectedValue, setSelectedValue] = useState('');
+  const [selectedValue, setSelectedValue] = useState(publishDate || '');
   const [page, setPage] = useState(1);
   const [params, setParams] = useState<any>({ id, page });
   const [quizParams, setQuizParams] = useState<any>({});
@@ -68,12 +67,18 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
 
   const { isFetched: isParticipantListFetched, data } = useQuizRoungeInfo(id, data => {
     console.log('first get data');
-    const index = data?.clubQuizzes?.findIndex(item => item.isPublished === true);
+    let index; // `index` 변수 선언
+    if (publishDate) {
+      index = data?.clubQuizzes?.findIndex(item => item.publishDate === publishDate);
+      console.log('index', publishDate, index);
+    } else {
+      index = data?.clubQuizzes?.findIndex(item => item.isPublished === true);
+      console.log('index', publishDate, index);
+    }
     setSelectedQuiz(data.clubQuizzes[index]);
-    const result = data?.clubQuizzes?.find(item => item.isPublished === true);
-    const selectedSession = result ? result.publishDate : null;
+    const selectedSession = data.clubQuizzes[index] ? data.clubQuizzes[index].publishDate : null;
     console.log('selectedSession 1', selectedSession);
-    setSelectedValue(selectedSession);
+    setSelectedValue(publishDate || selectedSession);
     console.log(data.clubQuizzes[index]);
     setContents(data);
 
@@ -102,17 +107,10 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
     isSuccess,
     data: quizAnswerData,
   } = useQuizAnswerMemberDetail(params, data => {
-    console.log('useQuizAnswerDetail');
+    console.log('useQuizAnswerDetail', data);
+    setQuizListData(data.contents || []);
+    setTotalPage(data.totalPages);
   });
-
-  useEffect(() => {
-    if (isSuccess) {
-      console.log('quizAnswerData');
-      console.log(quizAnswerData.contents);
-      setQuizListData(quizAnswerData.contents || []);
-      setTotalPage(quizAnswerData.totalPages);
-    }
-  }, [isSuccess, quizAnswerData]);
 
   useDidMountEffect(() => {
     if (params.club) {
@@ -129,18 +127,18 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
     console.log('page', page);
   }, [page]);
 
-  useEffect(() => {
-    if (contents?.clubQuizzes?.length > 0) {
-      const index = contents?.clubQuizzes?.findIndex(item => item.isPublished === true);
-      console.log('content!!');
-      console.log(contents.clubQuizzes[index]);
-      setSelectedQuiz(contents.clubQuizzes[index]);
-      const result = contents.clubQuizzes.find(item => item.isPublished === true);
-      const selectedSession = result ? result.publishDate : null;
-      console.log(selectedSession);
-      setSelectedValue(selectedSession);
-    }
-  }, [contents]);
+  // useEffect(() => {
+  //   if (contents?.clubQuizzes?.length > 0) {
+  //     const index = contents?.clubQuizzes?.findIndex(item => item.isPublished === true);
+  //     console.log('content!!');
+  //     console.log(contents.clubQuizzes[index]);
+  //     setSelectedQuiz(contents.clubQuizzes[index]);
+  //     const result = contents.clubQuizzes.find(item => item.isPublished === true);
+  //     const selectedSession = result ? result.publishDate : null;
+  //     console.log(selectedSession);
+  //     setSelectedValue(selectedSession);
+  //   }
+  // }, [contents]);
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
@@ -285,7 +283,7 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
                         <option
                           key={idx}
                           className={`tw-w-20 tw-bg-[#f6f7fb] tw-items-center tw-flex-shrink-0 border-left border-top border-right tw-rounded-t-lg tw-cursor-pointer
-          ${isSelected ? 'tw-bg-red-500' : ''}
+          ${isSelected ? 'tw-bg-red-500 tw-text-white' : ''}
           ${isPublished ? 'tw-bg-white tw-text-gray-200' : ''}
         `}
                           value={session?.publishDate.split('-').slice(1).join('-')}

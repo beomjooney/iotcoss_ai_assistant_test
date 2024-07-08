@@ -298,14 +298,25 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                               onClick={() => {
                                 router.push(
                                   {
-                                    pathname: `/quiz/all-answers/{contents?.club?.clubSequence}`,
+                                    pathname: `/quiz/all-answers/${selectedQuiz?.clubSequence}`,
                                     query: {
-                                      clubSequence: selectedQuiz?.quizSequence,
+                                      publishDate: selectedQuiz?.publishDate,
                                     },
                                   },
-                                  `/quiz/all-answers/${contents?.club?.clubSequence}`,
+                                  `/quiz/all-answers/${selectedQuiz?.clubSequence}`,
                                 );
                               }}
+                              // onClick={() => {
+                              //   router.push(
+                              //     {
+                              //       pathname: `/quiz/all-answers/{contents?.club?.clubSequence}`,
+                              //       query: {
+                              //         clubSequence: selectedQuiz?.quizSequence,
+                              //       },
+                              //     },
+                              //     `/quiz/all-answers/${contents?.club?.clubSequence}`,
+                              //   );
+                              // }}
                               className="border border-danger tw-bg-white tw-text-black tw-p-1.5 tw-rounded tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-font-bold tw-flex tw-items-center"
                             >
                               전체 답변보기

@@ -33,7 +33,6 @@ import { useStore } from 'src/store';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import Badge from '@mui/material/Badge';
 import Popover from '@mui/material/Popover';
-// import Button from '@mui/material/Button';
 import ListItem from '@mui/material/ListItem';
 import Divider from '@mui/material/Divider';
 import { useQuizAlarmHistory } from 'src/services/quiz/quiz.queries';
@@ -85,22 +84,19 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
   const [isShowMenu, setIsShowMenu] = useState<boolean>(false);
 
   //**alarm */
-  const { isFetched: isContentFetched, refetch: refetch } = useQuizAlarmHistory(
-    { params: params, logged: logged },
-    data => {
-      let falseCount = 0;
-      // jsonData를 반복하여 각 활동의 isChecked 값을 확인
-      data?.contents?.forEach(day => {
-        day.activities.forEach(activity => {
-          if (!activity.isChecked) {
-            falseCount++;
-          }
-        });
+  const { isFetched: isContentFetched, refetch: refetch } = useQuizAlarmHistory(params, data => {
+    let falseCount = 0;
+    // jsonData를 반복하여 각 활동의 isChecked 값을 확인
+    data?.contents?.forEach(day => {
+      day.activities.forEach(activity => {
+        if (!activity.isChecked) {
+          falseCount++;
+        }
       });
-      setAlarmCount(falseCount);
-      setContents(data);
-    },
-  );
+    });
+    setAlarmCount(falseCount);
+    setContents(data);
+  });
 
   const { mutate: onCheckAlarm, isSuccess: isSuccessCheck } = useCheckAlarm();
 
@@ -407,7 +403,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                   {logoutButton}
 
                   <Tooltip title="">
-                    <div className="tw-px-4">
+                    <div className="tw-px-2">
                       <IconButton
                         onClick={handleIconClick}
                         size="large"
@@ -474,7 +470,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                         aria-haspopup="true"
                         aria-expanded={open ? 'true' : undefined}
                       >
-                        <Avatar className="border" sx={{ width: 34, height: 34 }} src={user?.member?.profileImageUrl}>
+                        <Avatar sx={{ width: 32, height: 32 }} src={user?.member?.profileImageUrl}>
                           M
                         </Avatar>
                       </IconButton>
