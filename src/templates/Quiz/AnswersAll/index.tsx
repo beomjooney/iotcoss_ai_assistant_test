@@ -400,11 +400,11 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
                 return (
                   <div
                     key={index}
-                    className={`border border-secondary tw-bg-white tw-flex tw-items-center tw-p-4 tw-py-3 ${
+                    className={`border-bottom border-left border-right border-secondary tw-bg-white tw-flex tw-items-center tw-p-4 tw-py-3 ${
                       isLastItem ? 'tw-rounded-bl-xl tw-rounded-br-xl' : ''
                     }`}
                   >
-                    <div className="tw-w-1.5/12 tw-pl-14 tw-pr-3 tw-flex tw-flex-col tw-items-center tw-justify-center">
+                    <div className="tw-w-1.5/12 tw-pl-5 tw-pr-3 tw-flex tw-flex-col tw-items-center tw-justify-center">
                       <svg
                         width={24}
                         height={25}
@@ -424,18 +424,31 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
                     </div>
                     <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                       <img className="border tw-rounded-full tw-w-10 tw-h-10 " src={item?.member?.profileImageUrl} />
-                      <div className="tw-text-xs tw-text-left tw-text-black">{item?.member?.nickname}</div>
+                      <div className="tw-text-xs tw-text-left tw-text-black tw-mt-2">{item?.member?.nickname}</div>
                     </div>
                     <div className="tw-flex-auto tw-w-9/12 tw-px-5">
                       <div className="tw-py-2">
                         <p className="tw-font-medium tw-text-[#9ca5b2] tw-text-sm tw-line-clamp-2">
                           <span className="tw-text-black tw-font-bold">
-                            {item?.answerStatus === '0003' ? '최종답변' : '사전답변'}
+                            {(() => {
+                              switch (item?.threadType) {
+                                case '0001':
+                                  return '사전답변';
+                                case '0002':
+                                  return '사후답변';
+                                case '0003':
+                                  return 'AI 모범 답변';
+                                case '0004':
+                                  return '교수님 평가';
+                                default:
+                                  return '알 수 없는 상태';
+                              }
+                            })()}
                           </span>{' '}
-                          <span className="tw-px-4 ">{item?.createdAt}</span>
+                          <span className="tw-px-4">{item?.createdAt}</span>
                         </p>
                       </div>
-                      <div className="tw-font-medium tw-text-[#9ca5b2] tw-text-sm tw-line-clamp-2">{item?.text}</div>
+                      <div className="tw-font-medium tw-text-[#9ca5b2] tw-text-sm">{item?.text}</div>
 
                       {item?.files?.length > 0 && (
                         <div className="tw-flex  tw-py-3">
