@@ -98,6 +98,7 @@ export const quizMyClubInfo = async params => {
       page: params.page,
       size: params.size,
       sortType: params.sortType,
+      isPublished: params.isPublished,
     },
   });
   return data.data;

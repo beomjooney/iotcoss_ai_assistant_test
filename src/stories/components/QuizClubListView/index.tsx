@@ -50,12 +50,18 @@ const QuizClubListView = ({ border, id }) => {
   const [selectedValue, setSelectedValue] = useState(id);
   const [selectedClub, setSelectedClub] = useState<any>(null);
   const [sortType, setSortType] = useState('ASC');
+  const [isPublished, setIsPublished] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
 
   const [params, setParams] = useState<any>({ id: '225', page });
-  const [myClubParams, setMyClubParams] = useState<any>({ clubSequence: id, sortType: 'ASC', page });
+  const [myClubParams, setMyClubParams] = useState<any>({
+    clubSequence: id,
+    sortType: 'ASC',
+    isPublished: false,
+    page,
+  });
 
   // 퀴즈클럽 리스트
   const { isFetched: isContentFetched, refetch: refetchMyClub } = useMyClubList({}, data => {
@@ -80,8 +86,9 @@ const QuizClubListView = ({ border, id }) => {
       clubSequence: selectedClub?.clubSequence,
       sortType: sortType,
       page: page,
+      isPublished: isPublished,
     });
-  }, [sortType, selectedClub, page]);
+  }, [sortType, selectedClub, page, isPublished]);
 
   const handleQuizChange = event => {
     const value = event.target.value;
@@ -93,7 +100,13 @@ const QuizClubListView = ({ border, id }) => {
   };
 
   const handleChangeQuiz = event => {
-    setSortType(event.target.value);
+    if (event.target.value === '') {
+      setSortType('');
+      setIsPublished(true);
+    } else {
+      setIsPublished(false);
+      setSortType(event.target.value);
+    }
   };
 
   return (
@@ -258,7 +271,7 @@ const QuizClubListView = ({ border, id }) => {
                     />
 
                     <FormControlLabel
-                      value="0001"
+                      value=""
                       control={
                         <Radio
                           sx={{

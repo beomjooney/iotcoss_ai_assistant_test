@@ -40,6 +40,13 @@ import QuizClubDetailInfo from 'src/stories/components/QuizClubDetailInfo';
 import ReactDragList from 'react-drag-list';
 import { useStore } from 'src/store';
 
+import FormControl from '@mui/material/FormControl';
+import ListItemText from '@mui/material/ListItemText';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+
+import { Toggle } from 'src/stories/components';
+
 //group
 import { dayGroup, privateGroup, levelGroup, openGroup, images } from './group';
 import { update } from 'lodash';
@@ -84,9 +91,10 @@ export function QuizOpenTemplate() {
   const [selectedLevel, setSelectedLevel] = useState('');
   const [selectedLevelName, setSelectedLevelName] = useState('');
   const [jobs, setJobs] = useState([]);
-  const [selectedJob, setSelectedJob] = useState('');
+  const [selectedJob, setSelectedJob] = useState([]);
   const [totalElements, setTotalElements] = useState(0);
   const [buttonFlag, setButtonFlag] = useState(false);
+  const [personName, setPersonName] = useState([]);
 
   const { data: optionsData }: UseQueryResult<ExperiencesResponse> = useOptions();
   const { isFetched: isQuizData, refetch } = useQuizList(params, data => {
@@ -115,7 +123,8 @@ export function QuizOpenTemplate() {
     setMemberIntroductionText(clubForm.memberIntroductionText || '');
     setCareerText(clubForm.careerText || '');
     setSkills(clubForm.skills || []);
-    setRecommendLevels(clubForm.jobLevels || []);
+    const extractedCodes = clubForm.jobLevels.map(item => item.code);
+    setRecommendLevels(extractedCodes || []);
     setNum(clubForm.studyCount || 0);
     setQuizType(clubForm.quizOpenType || '');
     setStartDay(clubForm.startAt ? dayjs(clubForm.startAt) : dayjs());
@@ -123,14 +132,17 @@ export function QuizOpenTemplate() {
     setStudyChapter(clubForm.studyChapter || '');
     setStudySubject(clubForm.studySubject || '');
     setStudyCycleNum(clubForm.studyCycle || 0);
-    setRecommendLevels(clubForm.jobLevels[0]?.code || '');
     setUniversityCode(clubForm.jobGroups[0]?.code || '');
     setSelectedUniversityName(clubForm.jobGroups[0]?.name || '');
     setSelectedJobName(clubForm.jobs[0]?.name || '');
     setJobLevelName(clubForm.jobLevels[0]?.name || '');
     const selected = optionsData?.data?.jobs?.find(u => u.code === clubForm.jobGroups[0]?.code);
     setJobs(selected ? selected.jobs : []);
-    setSelectedJob(clubForm.jobs[0]?.code || '');
+    const jobsCode = clubForm.jobs.map(item => item.code);
+    setSelectedJob(jobsCode || []);
+    const jobsName = clubForm.jobs.map(item => item.name);
+    console.log(jobsName);
+    setPersonName(jobsName || []);
     setButtonFlag(true);
     setScheduleData(quizList);
 
@@ -149,8 +161,8 @@ export function QuizOpenTemplate() {
   const [studyChapter, setStudyChapter] = useState('');
   const [studySubject, setStudySubject] = useState('');
   const [skills, setSkills] = useState([]);
-  const [selectedJobQuiz, setSelectedJobQuiz] = useState<string>('');
   const [universityCodeQuiz, setUniversityCodeQuiz] = useState<string>('');
+  const [selectedJobQuiz, setSelectedJobQuiz] = useState<string>('');
 
   const [keyWorld, setKeyWorld] = useState('');
   const [myKeyWorld, setMyKeyWorld] = useState('');
@@ -239,6 +251,25 @@ export function QuizOpenTemplate() {
     }
   }, [selectedImage, onSaveImage]);
 
+  const handleChanges = (event: SelectChangeEvent<typeof personName>) => {
+    const {
+      target: { value },
+    } = event;
+    const jobsList = typeof value === 'string' ? value.split(',') : value;
+    setPersonName(jobsList);
+
+    // Convert selected names to corresponding codes
+    const selectedCodes = jobsList
+      .map(name => {
+        const job = jobs.find(job => job.name === name);
+        return job ? job.code : null;
+      })
+      .filter(code => code !== null);
+
+    setSelectedJob(selectedCodes);
+    console.log(selectedCodes);
+  };
+
   function searchKeyworld(value) {
     let _keyworld = value.replace('#', '');
     if (_keyworld == '') _keyworld = null;
@@ -273,23 +304,6 @@ export function QuizOpenTemplate() {
   const [learningText, setLearningText] = useState<string>('');
   const [memberIntroductionText, setMemberIntroductionText] = useState<string>('');
   const [careerText, setCareerText] = useState<string>('');
-
-  const handleRecommendLevelsPopUp = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
-    if (newFormats) {
-      setRecommendLevelsPopUp(newFormats);
-    }
-  };
-
-  const handleRecommendLevels = (event, newValue) => {
-    console.log(newValue);
-    if (newValue !== null) {
-      const selectedLevel = optionsData?.data?.jobLevels?.find(item => item.code === newValue);
-      if (selectedLevel) {
-        setRecommendLevels(selectedLevel.code);
-        setJobLevelName(selectedLevel.name);
-      }
-    }
-  };
 
   const handleQuizType = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
     if (newFormats) {
@@ -330,7 +344,7 @@ export function QuizOpenTemplate() {
       articleUrl: quizUrl,
       recommendJobGroups: [jobGroupPopUp],
       recommendJobs: jobs,
-      recommendLevels: [recommendLevelsPopUp],
+      recommendLevels: recommendLevels,
       relatedSkills: skillIdsPopUp,
       relatedExperiences: experienceIdsPopUp,
       hashTags: selected,
@@ -354,7 +368,7 @@ export function QuizOpenTemplate() {
     }
 
     if (recommendLevels?.length === 0 || recommendLevels?.length === undefined) {
-      alert('추천 레벨을 선택해주세요.');
+      alert('추천 학년을 선택해주세요.');
       return;
     }
 
@@ -782,13 +796,13 @@ export function QuizOpenTemplate() {
   };
 
   const handlerClubSaveTemp = () => {
-    const selectedJobCode = jobs.find(j => j.code === selectedJob)?.code || '';
+    // const selectedJobCode = jobs.find(j => j.code === selectedJob)?.code || '';
     const clubFormParams = {
       clubName: clubName || '',
       clubImageUrl: imageUrl || '',
       jobGroups: [universityCode] || [],
-      jobs: [selectedJobCode] || [],
-      jobLevels: recommendLevels && recommendLevels.length > 0 ? [recommendLevels] : [],
+      jobs: selectedJob || [],
+      jobLevels: recommendLevels || [],
       isPublic: true,
       participationCode: '',
       studyCycle: studyCycleNum || '',
@@ -814,7 +828,7 @@ export function QuizOpenTemplate() {
       clubForm: clubFormParams,
       clubQuizzes: scheduleData,
     };
-    console.log(scheduleData);
+    console.log(params);
 
     onTempSave(params);
   };
@@ -916,6 +930,13 @@ export function QuizOpenTemplate() {
     setSelectedSessions([]);
   };
 
+  const newCheckItem = (id, index, prevState) => {
+    const newState = [...prevState];
+    if (index > -1) newState.splice(index, 1);
+    else newState.push(id);
+    return newState;
+  };
+
   function renderDatesAndSessionsModify() {
     return (
       <div className="tw-grid tw-grid-cols-12 tw-gap-4 tw-p-3">
@@ -959,7 +980,8 @@ export function QuizOpenTemplate() {
     setSelectedUniversity(selectedCode);
     setSelectedUniversityName(selected ? selected.name : '');
     setJobs(selected ? selected.jobs : []);
-    setSelectedJob(''); // Clear the selected job when university changes
+    setSelectedJob([]); // Clear the selected job when university changes
+    setPersonName([]); // Clear the selected job when university changes
   };
 
   const handleJobChange = e => {
@@ -1089,50 +1111,64 @@ export function QuizOpenTemplate() {
                         ))}
                       </select>
 
-                      <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천 레벨</div>
+                      <div className="tw-mb-[12px] tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
+                        추천 학년
+                      </div>
 
-                      <ToggleButtonGroup
-                        style={{ display: 'inline' }}
-                        // value={recommendLevels}
-                        value={recommendLevels}
-                        exclusive
-                        onChange={handleRecommendLevels}
-                        aria-label="text alignment"
-                      >
-                        {optionsData?.data?.jobLevels?.map((item, index) => (
-                          <ToggleButton
-                            classes={{ selected: classes.selected }}
-                            key={`job-2-${index}`}
-                            value={item.code}
-                            aria-label="fff"
-                            className=" tw-ring-1 tw-ring-slate-900/10"
-                            style={{
-                              borderRadius: '5px',
-                              borderLeft: '0px',
-                              margin: '5px',
-                              height: '35px',
-                              border: '0px',
-                            }}
-                            sx={{
-                              '&.Mui-selected': {
-                                backgroundColor: '#6A7380',
-                                color: '#fff',
-                              },
-                              '&.Mui-selected:hover': {
-                                backgroundColor: '#6A7380',
-                              },
-                            }}
-                          >
-                            {item.name}
-                          </ToggleButton>
-                        ))}
-                      </ToggleButtonGroup>
+                      {optionsData?.data?.jobLevels?.map((item, i) => (
+                        <Toggle
+                          key={item.code}
+                          label={item.name}
+                          name={item.name}
+                          value={item.code}
+                          variant="small"
+                          checked={recommendLevels.indexOf(item.code) >= 0}
+                          isActive
+                          type="tabButton"
+                          onChange={() => {
+                            const index = recommendLevels.indexOf(item.code);
+                            setRecommendLevels(prevState => newCheckItem(item.code, index, prevState));
+                          }}
+                          className={cx('tw-mr-2 !tw-w-[85px] !tw-h-[37px]')}
+                        />
+                      ))}
                     </div>
 
                     <div>
                       <div>
                         <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천 학과</div>
-                        <select
+                        <FormControl sx={{ width: '100%' }} size="small">
+                          <Select
+                            className="tw-w-full tw-text-black"
+                            size="small"
+                            labelId="demo-multiple-checkbox-label"
+                            id="demo-multiple-checkbox"
+                            multiple
+                            displayEmpty
+                            renderValue={selected => {
+                              if (selected.length === 0) {
+                                return (
+                                  <span style={{ color: 'gray' }}>추천 대학을 먼저 선택하고, 학과를 선택해주세요.</span>
+                                );
+                              }
+                              return selected.join(', ');
+                            }}
+                            disabled={jobs.length === 0}
+                            value={personName}
+                            onChange={handleChanges}
+                            MenuProps={{
+                              disableScrollLock: true,
+                            }}
+                          >
+                            {jobs.map((job, index) => (
+                              <MenuItem key={index} value={job.name}>
+                                <Checkbox checked={personName.indexOf(job.name) > -1} />
+                                <ListItemText primary={job.name} />
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                        {/* <select
                           className="form-select"
                           aria-label="Default select example"
                           disabled={jobs.length === 0}
@@ -1147,19 +1183,13 @@ export function QuizOpenTemplate() {
                               {job.name}
                             </option>
                           ))}
-                        </select>
+                        </select> */}
 
                         <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
                           공개/비공개 설정
                         </div>
                         <div className="tw-flex tw-items-center tw-gap-2 tw-mt-1">
-                          <ToggleButtonGroup
-                            value={isPublic}
-                            onChange={handleIsPublic}
-                            exclusive
-                            aria-label=""
-                            color="standard"
-                          >
+                          <ToggleButtonGroup value={isPublic} onChange={handleIsPublic} exclusive aria-label="">
                             <ToggleButton
                               classes={{ selected: classes.selected }}
                               value="0001"
@@ -1174,11 +1204,8 @@ export function QuizOpenTemplate() {
                               }}
                               sx={{
                                 '&.Mui-selected': {
-                                  backgroundColor: '#6A7380',
+                                  backgroundColor: '#000',
                                   color: '#fff',
-                                },
-                                '&.Mui-selected:hover': {
-                                  backgroundColor: '#6A7380',
                                 },
                               }}
                             >
@@ -1198,11 +1225,8 @@ export function QuizOpenTemplate() {
                               }}
                               sx={{
                                 '&.Mui-selected': {
-                                  backgroundColor: '#6A7380',
+                                  backgroundColor: '#000',
                                   color: '#fff',
-                                },
-                                '&.Mui-selected:hover': {
-                                  backgroundColor: '#6A7380',
                                 },
                               }}
                             >
@@ -1245,11 +1269,8 @@ export function QuizOpenTemplate() {
                           }}
                           sx={{
                             '&.Mui-selected': {
-                              backgroundColor: '#6A7380',
+                              backgroundColor: '#000',
                               color: '#fff',
-                            },
-                            '&.Mui-selected:hover': {
-                              backgroundColor: '#6A7380',
                             },
                           }}
                         >
@@ -1288,11 +1309,8 @@ export function QuizOpenTemplate() {
                                 }}
                                 sx={{
                                   '&.Mui-selected': {
-                                    backgroundColor: '#6A7380',
+                                    backgroundColor: '#000',
                                     color: '#fff',
-                                  },
-                                  '&.Mui-selected:hover': {
-                                    backgroundColor: '#6A7380',
                                   },
                                 }}
                               >

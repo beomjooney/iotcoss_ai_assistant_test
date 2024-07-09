@@ -16,8 +16,11 @@ import classNames from 'classnames/bind';
 import { useOptions } from 'src/services/experiences/experiences.queries';
 import { UseQueryResult } from 'react-query';
 import { TagsInput } from 'react-tag-input-component';
-import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded';
-import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded';
+
+import FormControl from '@mui/material/FormControl';
+import ListItemText from '@mui/material/ListItemText';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Checkbox from '@mui/material/Checkbox';
 
 const studyStatus = [
   {
@@ -44,7 +47,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
   const [universityCode, setUniversityCode] = useState('');
   const [selectedSubject, setSelectedSubject] = useState('');
   const [selectedChapter, setSelectedChapter] = useState('');
-  const [jobLevel, setJobLevel] = useState('0001');
+  const [jobLevel, setJobLevel] = useState([]);
   const [activeQuiz, setActiveQuiz] = useState('');
   const [selected1, setSelected1] = useState([]);
   const [selected2, setSelected2] = useState([]);
@@ -52,13 +55,12 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
   const [selectedUniversity, setSelectedUniversity] = useState('');
   const [selectedUniversityName, setSelectedUniversityName] = useState('');
   const [jobs, setJobs] = useState([]);
-  const [selectedJob, setSelectedJob] = useState('');
+  const [selectedJob, setSelectedJob] = useState([]);
   const [selectedJobName, setSelectedJobName] = useState('');
   const [question, setQuestion] = useState('');
   const [modelAnswerFinal, setModelAnswerFinal] = useState('');
   const [modelAnswerAi, setModelAnswerAi] = useState('');
-  const [isModify, setIsModify] = useState(false);
-  const [editingIndex, setEditingIndex] = useState(null);
+  const [personName, setPersonName] = useState([]);
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
@@ -100,6 +102,25 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
     handleClose();
   };
 
+  const handleChange = (event: SelectChangeEvent<typeof personName>) => {
+    const {
+      target: { value },
+    } = event;
+    const jobsList = typeof value === 'string' ? value.split(',') : value;
+    setPersonName(jobsList);
+
+    // Convert selected names to corresponding codes
+    const selectedCodes = jobsList
+      .map(name => {
+        const job = jobs.find(job => job.name === name);
+        return job ? job.code : null;
+      })
+      .filter(code => code !== null);
+
+    setSelectedJob(selectedCodes);
+    console.log(selectedCodes);
+  };
+
   const handleRecover = contentSequence => {
     // Handle delete action
     console.log('Delete clicked', contentSequence);
@@ -135,6 +156,12 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
 
   const cx = classNames.bind(styles);
 
+  const newCheckItem = (id, index, prevState) => {
+    const newState = [...prevState];
+    if (index > -1) newState.splice(index, 1);
+    else newState.push(id);
+    return newState;
+  };
   const handleUniversityChange = e => {
     const selectedCode = e.target.value;
     const selected = optionsData?.data?.jobs?.find(u => u.code === selectedCode);
@@ -142,14 +169,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
     setSelectedUniversity(selectedCode);
     setSelectedUniversityName(selected ? selected.name : '');
     setJobs(selected ? selected.jobs : []);
-    setSelectedJob(''); // Clear the selected job when university changes
-  };
-
-  const handleJobChange = e => {
-    setSelectedJob(e.target.value);
-    const selectedCode = e.target.value;
-    const selected = jobs?.find(u => u.code === selectedCode);
-    setSelectedJobName(selected ? selected.name : '');
+    setSelectedJob([]); // Clear the selected job when university changes
   };
 
   const handleUpdate = contentSequence => {
@@ -170,8 +190,14 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
 
     const selected = optionsData?.data?.jobs?.find(u => u.code === data.jobGroups[0].code);
     setJobs(selected ? selected.jobs : []);
-    setSelectedJob(selected?.jobs[0]?.code || '');
-    setJobLevel(data.jobLevels && data.jobLevels.length > 0 ? data.jobLevels[0].code : '');
+    const jobsCode = data.jobs.map(item => item.code);
+    setSelectedJob(jobsCode || []);
+    const jobsName = data.jobs.map(item => item.name);
+    console.log(jobsName);
+    setPersonName(jobsName || []);
+    // Extracting the codes from the data array
+    const extractedCodes = data.jobLevels.map(item => item.code);
+    setJobLevel(extractedCodes || []);
     setSelected3(data?.modelAnswerKeywords);
     handleClose();
   };
@@ -230,8 +256,8 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
       modelAnswerFinal: modelAnswerFinal,
       modelAnswerKeywords: selected3,
       jobGroups: [universityCode],
-      jobs: [selectedJob],
-      jobLevels: [jobLevel],
+      jobs: selectedJob,
+      jobLevels: jobLevel,
     };
     const body = {
       quizzes: params,
@@ -333,17 +359,25 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
             </Menu>
 
             {/* Render tags */}
-            <div className="tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
+            <div className="tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500">
               <div className="tw-flex tw-gap-3">
                 <div className="tw-bg-[#d7ecff] tw-rounded-[3.5px] tw-px-[10.5px] ">
                   <p className="tw-text-[12.25px] tw-text-[#235a8d]">{data?.jobGroups[0]?.name || 'N/A'}</p>
                 </div>
-                <div className="tw-bg-[#ffdede] tw-rounded-[3.5px] tw-px-[10.5px] ">
-                  <p className="tw-text-[12.25px] tw-text-[#b83333]">{data?.jobs[0]?.name || 'N/A'}</p>
-                </div>
-                <div className="tw-bg-[#e4e4e4] tw-rounded-[3.5px] tw-px-[10.5px]">
-                  <p className="tw-text-[12.25px] tw-text-[#313b49]">{data?.jobLevels[0]?.name || 'N/A'}</p>
-                </div>
+
+                {data?.jobs?.length > 0 &&
+                  data.jobs.map((job, index) => (
+                    <div key={index} className="tw-bg-[#ffdede] tw-rounded-[3.5px] tw-px-[10.5px]">
+                      <p className="tw-text-[12.25px] tw-text-[#b83333]">{job.name}</p>
+                    </div>
+                  ))}
+
+                {data?.jobLevels?.length > 0 &&
+                  data.jobLevels.map((jobLevel, index) => (
+                    <div key={index} className="tw-bg-[#e4e4e4] tw-rounded-[3.5px] tw-px-[10.5px]">
+                      <p className="tw-text-[12.25px] tw-text-[#313b49]">{jobLevel.name || 'N/A'}</p>
+                    </div>
+                  ))}
               </div>
             </div>
 
@@ -532,22 +566,35 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                   ))}
                 </select>
                 <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">추천 학과</div>
-                <select
-                  className="form-select"
-                  aria-label="Default select example"
-                  disabled={jobs.length === 0}
-                  onChange={handleJobChange}
-                  value={selectedJob}
-                >
-                  <option disabled value="">
-                    학과를 선택해주세요.
-                  </option>
-                  {jobs.map((job, index) => (
-                    <option key={index} value={job.code}>
-                      {job.name}
-                    </option>
-                  ))}
-                </select>
+                <FormControl sx={{ width: '100%' }} size="small">
+                  <Select
+                    className="tw-w-full tw-text-black"
+                    size="small"
+                    labelId="demo-multiple-checkbox-label"
+                    id="demo-multiple-checkbox"
+                    multiple
+                    displayEmpty
+                    renderValue={selected => {
+                      if (selected.length === 0) {
+                        return <span style={{ color: 'gray' }}>추천 대학을 먼저 선택하고, 학과를 선택해주세요.</span>;
+                      }
+                      return selected.join(', ');
+                    }}
+                    disabled={jobs.length === 0}
+                    value={personName}
+                    onChange={handleChange}
+                    MenuProps={{
+                      disableScrollLock: true,
+                    }}
+                  >
+                    {jobs.map((job, index) => (
+                      <MenuItem key={index} value={job.name}>
+                        <Checkbox checked={personName.indexOf(job.name) > -1} />
+                        <ListItemText primary={job.name} />
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
 
                 <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">추천 학년</div>
                 {optionsData?.data?.jobLevels?.map((item, i) => (
@@ -557,12 +604,12 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                     name={item.name}
                     value={item.code}
                     variant="small"
-                    checked={activeQuiz === item.code}
+                    checked={jobLevel.indexOf(item.code) >= 0}
                     isActive
                     type="tabButton"
                     onChange={() => {
-                      setActiveQuiz(item.code);
-                      setJobLevel(item.code);
+                      const index = jobLevel.indexOf(item.code);
+                      setJobLevel(prevState => newCheckItem(item.code, index, prevState));
                     }}
                     className={cx('tw-mr-3 !tw-w-[85px]')}
                   />

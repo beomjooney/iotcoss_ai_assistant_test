@@ -54,7 +54,18 @@ const AIQuizList = ({
 }) => {
   const [isLoadingAI, setIsLoadingAI] = useState(false);
   const [quizList, setQuizList] = useState({});
-  const { mutate: onAIQuizAnswer, isSuccess: answerSuccess, data: aiQuizAnswerData } = useAIQuizAnswer();
+  const {
+    mutate: onAIQuizAnswer,
+    isSuccess: answerSuccess,
+    isError: answerError,
+    data: aiQuizAnswerData,
+  } = useAIQuizAnswer();
+
+  useEffect(() => {
+    if (answerError) {
+      setIsLoadingAI(false);
+    }
+  }, [answerError]);
 
   useEffect(() => {
     if (quiz) {

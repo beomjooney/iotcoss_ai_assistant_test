@@ -32,7 +32,6 @@ const ArticleList: React.FC<any> = ({ data, refetchMyQuizContent }) => {
     setLikeCount(data?.likeCount);
   }, [data]);
 
-  console.log(data);
   useEffect(() => {
     if (deletePostContentSuccess) {
       refetchMyQuizContent();
@@ -114,17 +113,25 @@ const ArticleList: React.FC<any> = ({ data, refetchMyQuizContent }) => {
             </div>
 
             {/* Render tags */}
-            <div className="tw-py-5 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
-              <div className="tw-flex tw-gap-2">
+            <div className="tw-py-5 tw-text-sm tw-font-normal tw-text-gray-500">
+              <div className="tw-flex tw-gap-2 tw-flex-wrap">
                 <div className="tw-bg-[#d7ecff] tw-rounded-[3.5px] tw-px-[10.5px] ">
                   <p className="tw-text-[12.25px] tw-text-[#235a8d]">{data?.jobGroups[0]?.name || 'N/A'}</p>
                 </div>
-                <div className="tw-bg-[#e4e4e4] tw-rounded-[3.5px] tw-px-[10.5px]">
-                  <p className="tw-text-[12.25px] tw-text-[#313b49]">{data?.jobLevels[0]?.name || 'N/A'}</p>
-                </div>
-                <div className="tw-bg-[#ffdede] tw-rounded-[3.5px] tw-px-[10.5px] ">
-                  <p className="tw-text-[12.25px] tw-text-[#b83333]">{data?.jobs[0]?.name || 'N/A'}</p>
-                </div>
+
+                {data?.jobs?.length > 0 &&
+                  data.jobs.map((job, index) => (
+                    <div key={index} className="tw-bg-[#ffdede] tw-rounded-[3.5px] tw-px-[10.5px]">
+                      <p className="tw-text-[12.25px] tw-text-[#b83333]">{job.name || 'N/A'}</p>
+                    </div>
+                  ))}
+
+                {data?.jobLevels?.length > 0 &&
+                  data.jobLevels.map((jobLevel, index) => (
+                    <div key={index} className="tw-bg-[#e4e4e4] tw-rounded-[3.5px] tw-px-[10.5px]">
+                      <p className="tw-text-[12.25px] tw-text-[#313b49]">{jobLevel.name || 'N/A'}</p>
+                    </div>
+                  ))}
                 {data.skills?.map((tag, tagIndex) => (
                   <div key={tagIndex} className="border tw-rounded-[3.5px] tw-px-[10.5px]">
                     <p className="tw-text-[12.25px]">{tag}</p>

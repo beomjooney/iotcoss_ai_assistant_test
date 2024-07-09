@@ -101,7 +101,11 @@ ClubMiniCardProps) => {
         }}
         className="tw-cursor-pointer tw-flex tw-flex-col border tw-items-center tw-bg-white tw-border tw-border-gray-200 tw-rounded-lg md:tw-flex-row tw-w-full "
       >
-        <img className="tw-w-[300px] tw-h-[145px] tw-rounded-l-lg tw-object-cover" src={item?.clubImageUrl} alt="" />
+        <img
+          className="!tw-w-[180px] tw-h-[145px] tw-rounded-l-lg tw-object-cover tw-min-w-[180px]"
+          src={item?.clubImageUrl || 'assets/images/banner/Rectangle_193.png'}
+          alt=""
+        />
         <div className="tw-flex tw-w-full tw-flex-col tw-justify-between tw-px-4  tw-leading-normal">
           <Grid
             className=" tw-mb-3"
@@ -120,12 +124,19 @@ ClubMiniCardProps) => {
                   <div className="tw-bg-[#d7ecff] tw-rounded-[3.5px] tw-px-[10.5px] tw-py-[3.5px]">
                     <p className="tw-text-[12.25px] tw-text-[#235a8d]">{item?.jobGroups[0].name || 'N/A'}</p>
                   </div>
-                  <div className="tw-bg-[#e4e4e4] tw-rounded-[3.5px] tw-px-[10.5px] tw-py-[3.5px]">
-                    <p className="tw-text-[12.25px] tw-text-[#313b49]">{item?.jobLevels[0].name || 'N/A'}</p>
-                  </div>
-                  <div className="tw-bg-[#ffdede] tw-rounded-[3.5px] tw-px-[10.5px] tw-py-[3.5px]">
-                    <p className="tw-text-[12.25px] tw-text-[#b83333]">{item?.jobs[0].name || 'N/A'}</p>
-                  </div>
+                  {item?.jobs?.length > 0 &&
+                    item.jobs.map((job, index) => (
+                      <div key={index} className="tw-bg-[#ffdede] tw-rounded-[3.5px] tw-px-[10.5px] tw-py-[3.5px]">
+                        <p className="tw-text-[12.25px] tw-text-[#b83333]">{job.name}</p>
+                      </div>
+                    ))}
+
+                  {item?.jobLevels?.length > 0 &&
+                    item.jobLevels.map((jobLevel, index) => (
+                      <div key={index} className="tw-bg-[#e4e4e4] tw-rounded-[3.5px] tw-px-[10.5px] tw-py-[3.5px]">
+                        <p className="tw-text-[12.25px] tw-text-[#313b49]">{jobLevel.name || 'N/A'}</p>
+                      </div>
+                    ))}
                 </div>
               </div>
             </Grid>

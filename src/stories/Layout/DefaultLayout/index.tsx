@@ -12,11 +12,9 @@ export interface DefaultLayoutProps {
   title?: string;
   /** 페이지 내용 */
   children: ReactNode | string;
-  /** 푸터 사용 여부 */
-  isFooter?: boolean;
 }
 
-const DefaultLayout = ({ darkBg, classOption, title, children, isFooter = true }: DefaultLayoutProps) => {
+const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutProps) => {
   const { memberId, logged } = useSessionStore.getState();
   const menuItem = [
     { no: 0, option: 'nav-item', title: '서비스 소개', link: '/', dropdown: [], login: true },
@@ -51,7 +49,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children, isFooter = true }
         <Header darkBg={darkBg} classOption={classOption} title={title} menuItem={menuItem} />
       </Mobile>
       <section className="hero-section ptb-100">{children}</section>
-      {isFooter && <Footer />}
+      <Footer />
     </div>
   );
 };
