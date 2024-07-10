@@ -402,12 +402,12 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
 
           <div className="tw-flex  tw-justify-between tw-px-8 tw-py-5">
             <div className="tw-flex tw-justify-start tw-items-start">
-              <p className=" tw-text-sm tw-text-left tw-text-[#31343d] tw-pr-3 tw-font-bold">지식컨텐츠</p>
+              <p className="tw-w-[85px] tw-text-sm tw-text-left tw-text-[#31343d] tw-pr-3 tw-font-bold">지식컨텐츠</p>
               <p
                 onClick={() => window.open(data?.contentUrl, '_blank')}
                 className="tw-cursor-pointer tw-text-sm tw-font-medium tw-text-left tw-text-[#9ca5b2]"
               >
-                {data?.contentDescription}
+                {data?.content?.url}
               </p>
             </div>
             <div className="tw-flex tw-justify-start tw-items-center tw-gap-2">
