@@ -674,7 +674,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
         `}
                       value={session?.publishDate.split('-').slice(1).join('-')}
                     >
-                      {session?.order}.회 {session?.publishDate.split('-').slice(1).join('-')} ({session?.dayOfWeek})
+                      {session?.order}회. {session?.publishDate.split('-').slice(1).join('-')} ({session?.dayOfWeek})
                     </option>
                   );
                 })}
