@@ -397,7 +397,7 @@ export function QuizMakeTemplate() {
     const formData = new FormData();
     formData.append('contentType', contentType);
     formData.append('contentUrl', contentUrl);
-    formData.append('jobGroups', selectedUniversity);
+    formData.append('jobLevels', jobLevel.join(','));
     formData.append('jobs', selectedJob.join(','));
     formData.append('quizCount', quizCount);
 
@@ -1038,7 +1038,7 @@ export function QuizMakeTemplate() {
                           setContentType(item.id);
                         }}
                         className={cx('tw-mr-2 !tw-w-[90px]')}
-                        disabled={item.id === '0200' || item.id === '0300'}
+                        disabled={item.id === '0300'}
                       />
                     ))}
                   </div>

@@ -470,7 +470,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                         aria-haspopup="true"
                         aria-expanded={open ? 'true' : undefined}
                       >
-                        <Avatar sx={{ width: 32, height: 32 }} src={user?.member?.profileImageUrl}>
+                        <Avatar sx={{ width: 32, height: 32 }} className="border" src={user?.member?.profileImageUrl}>
                           M
                         </Avatar>
                       </IconButton>
