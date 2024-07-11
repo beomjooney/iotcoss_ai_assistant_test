@@ -177,6 +177,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
     console.log('Delete clicked', data);
     setUpdateFlag(true);
     setContentType(data.content.contentType);
+    // setContentType('0200');
     setContentUrl(data.content.url);
     setContentTitle(data.content.description);
     setQuestion(data.question);
@@ -510,25 +511,49 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                         setContentType(item.id);
                       }}
                       className={cx('tw-mr-2 !tw-w-[90px]')}
+                      disabled
                     />
                   ))}
                 </div>
 
-                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식컨텐츠 URL</div>
-                <TextField
-                  required
-                  value={contentUrl}
-                  onChange={e => setContentUrl(e.target.value)}
-                  id="username"
-                  name="username"
-                  variant="outlined"
-                  type="search"
-                  size="small"
-                  fullWidth
-                  sx={{
-                    '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
-                  }}
-                />
+                {contentType === '0300' ? (
+                  <div>
+                    <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">파일 업로드</div>
+                    <div className="tw-flex tw-items-center tw-justify-between tw-gap-1 tw-text-center">
+                      <div>
+                        {fileList.length > 0 ? (
+                          <div>
+                            {fileList.map((file, index) => (
+                              <div key={index}>{file.name}</div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div>파일을 정보가 없습니다.</div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식컨텐츠 URL</div>
+                    <TextField
+                      required
+                      disabled
+                      value={contentUrl}
+                      onChange={e => setContentUrl(e.target.value)}
+                      id="username"
+                      name="username"
+                      variant="outlined"
+                      type="search"
+                      size="small"
+                      fullWidth
+                      sx={{
+                        '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
+                      }}
+                    />
+                  </div>
+                )}
+
                 <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식컨텐츠 제목</div>
                 <TextField
                   required
@@ -536,6 +561,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                   value={contentTitle}
                   onChange={e => setContentTitle(e.target.value)}
                   name="username"
+                  disabled
                   variant="outlined"
                   type="search"
                   size="small"
