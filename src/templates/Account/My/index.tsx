@@ -165,6 +165,7 @@ export function MyTemplate({ children }: MyTemplateProps) {
   }, [memberUUID]);
 
   const handleClickProfile = memberUUID => {
+    refetchProfile();
     setIsModalOpen(true);
     console.log('memberUUID1', memberUUID);
     setMemberUUID(memberUUID);
@@ -208,7 +209,7 @@ export function MyTemplate({ children }: MyTemplateProps) {
                       <div className="tw-p-1 tw-flex-1">
                         <div className="tw-text-[12px]  tw-font-bold">참여중 클럽</div>
                         <div className="tw-text-lg tw-font-bold tw-text-red-500  tw-py-1">
-                          {summary?.joinedClubCount?.toLocaleString()}P
+                          {summary?.joinedClubCount?.toLocaleString()}
                         </div>
                       </div>
                     </div>
