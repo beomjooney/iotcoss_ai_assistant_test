@@ -70,6 +70,7 @@ export const useQuizRoungeInfo = (id, onSuccess?: (data: any) => void, onError?:
 
 export const useQuizMyClubInfo = (params, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
   const DEFAULT_SIZE = 50;
+  console.log('params0', params);
   return useQuery<any, Error>(
     QUERY_KEY_FACTORY('SEMINAR').detail({ size: DEFAULT_SIZE, ...params }),
     () => quizMyClubInfo({ size: DEFAULT_SIZE, ...params }),

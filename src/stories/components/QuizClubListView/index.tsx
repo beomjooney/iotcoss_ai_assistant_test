@@ -48,9 +48,9 @@ const QuizClubListView = ({ border, id }) => {
   const [myClubList, setMyClubList] = useState<any>([]);
   const [quizList, setQuizList] = useState<any>([]);
   const [selectedValue, setSelectedValue] = useState(id);
-  const [selectedClub, setSelectedClub] = useState<any>(null);
+  const [selectedClub, setSelectedClub] = useState<any>(id);
   const [sortType, setSortType] = useState('ASC');
-  const [isPublished, setIsPublished] = useState(false);
+  const [isPublished, setIsPublished] = useState('');
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
@@ -59,7 +59,7 @@ const QuizClubListView = ({ border, id }) => {
   const [myClubParams, setMyClubParams] = useState<any>({
     clubSequence: id,
     sortType: 'ASC',
-    isPublished: false,
+    isPublished: '',
     page,
   });
 
@@ -69,10 +69,10 @@ const QuizClubListView = ({ border, id }) => {
   });
 
   const { isFetched: isParticipantListFetched, data } = useQuizMyClubInfo(myClubParams, data => {
-    console.log('first get data');
+    console.log('first get data', data);
     setQuizList(data?.contents || []);
     setTotalPage(data?.totalPages);
-    setSelectedClub(data?.contents[0]);
+    // setSelectedClub(data?.contents[0].clubSequence);
     setTotalElements(data?.totalElements);
     console.log(data);
   });
@@ -83,28 +83,27 @@ const QuizClubListView = ({ border, id }) => {
 
   useDidMountEffect(() => {
     setMyClubParams({
-      clubSequence: selectedClub?.clubSequence,
+      clubSequence: selectedClub,
       sortType: sortType,
       page: page,
       isPublished: isPublished,
     });
-  }, [sortType, selectedClub, page, isPublished]);
+  }, [sortType, page, selectedClub]);
 
   const handleQuizChange = event => {
     const value = event.target.value;
-    const selectedSession = myClubList?.find(session => session.clubSequence === Number(value));
-
     setSelectedValue(value);
-    setSelectedClub(selectedSession);
-    console.log(selectedSession);
+    setSelectedClub(value);
+    setIsPublished('');
+    setSortType('ASC');
   };
 
   const handleChangeQuiz = event => {
     if (event.target.value === '') {
       setSortType('');
-      setIsPublished(true);
+      setIsPublished('true');
     } else {
-      setIsPublished(false);
+      setIsPublished('');
       setSortType(event.target.value);
     }
   };
@@ -305,7 +304,7 @@ const QuizClubListView = ({ border, id }) => {
                     >
                       <Grid item xs={12} sm={1}>
                         <div className={`tw-font-medium ${item?.isPublished ? 'tw-text-black' : ' tw-text-gray-400'}`}>
-                          <div className="tw-flex-auto tw-text-center  tw-font-bold">Q{index + 1}.</div>
+                          <div className="tw-flex-auto tw-text-center  tw-font-bold">Q{item?.order}.</div>
                           <div className="tw-flex-auto tw-text-center tw-text-sm   tw-font-bold">
                             {item?.publishDate?.slice(5, 10)} ({item?.dayOfWeek})
                           </div>

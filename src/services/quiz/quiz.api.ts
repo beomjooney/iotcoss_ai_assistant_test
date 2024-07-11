@@ -93,6 +93,7 @@ export const quizRoungeInfo = async id => {
 };
 
 export const quizMyClubInfo = async params => {
+  console.log('params', params);
   const { data } = await axiosGeneralAPI().get(`/api/v1/my/clubs/${params.clubSequence}/quizzes`, {
     params: {
       page: params.page,

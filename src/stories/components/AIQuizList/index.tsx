@@ -112,7 +112,7 @@ const AIQuizList = ({
     const params = {
       contentType: contentType,
       contentUrl: contentUrl,
-      job: selectedJob,
+      jobs: selectedJob,
       quizzes: [
         {
           no: index + 1,

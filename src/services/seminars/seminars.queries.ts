@@ -44,7 +44,7 @@ export const useMyClubList = (
   onSuccess?: (data: any) => void,
   onError?: (error: Error) => void,
 ) => {
-  const DEFAULT_SIZE = 8;
+  const DEFAULT_SIZE = 100;
   return useQuery<any, Error>(
     QUERY_KEY_FACTORY('SEMINAR').list({ size: DEFAULT_SIZE, ...params }),
     () => clubMyList({ size: DEFAULT_SIZE, ...params }),

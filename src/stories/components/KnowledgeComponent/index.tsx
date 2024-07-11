@@ -56,11 +56,11 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
   const [selectedUniversityName, setSelectedUniversityName] = useState('');
   const [jobs, setJobs] = useState([]);
   const [selectedJob, setSelectedJob] = useState([]);
-  const [selectedJobName, setSelectedJobName] = useState('');
   const [question, setQuestion] = useState('');
   const [modelAnswerFinal, setModelAnswerFinal] = useState('');
   const [modelAnswerAi, setModelAnswerAi] = useState('');
   const [personName, setPersonName] = useState([]);
+  const [fileList, setFileList] = useState([]);
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
