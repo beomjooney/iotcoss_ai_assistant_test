@@ -7,6 +7,7 @@ import { Tabs, Tab, Accordion, AccordionSummary, AccordionDetails, TextField } f
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Toggle } from 'src/stories/components';
 import CircularProgress from '@mui/material/CircularProgress';
+import { TagsInput } from 'react-tag-input-component';
 
 const cx = classNames.bind(styles);
 Modal.setAppElement('#__next'); // Modal 접근성 설정
@@ -55,6 +56,7 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
   const [editedQuestion, setEditedQuestion] = useState('');
   const [quizList, setQuizList] = useState([]);
   const [isLoadingAI, setIsLoadingAI] = useState(false);
+  const [selectedKeyword, setSelectedKeyword] = useState(['react']);
 
   const handleAIQuizClick = () => {
     setIsLoading(true);
@@ -436,9 +438,12 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
                           </div>
                         </div>
                         <div className="tw-p-5 tw-flex-col tw-items-center tw-w-full">
-                          <div className="tw-flex tw-items-center tw-p-5 tw-pb-0 tw-text-sm tw-font-bold tw-gap-2">
-                            채점기준 주요 키워드/문구 :
-                          </div>
+                          <TagsInput
+                            value={selectedKeyword}
+                            onChange={setSelectedKeyword}
+                            name="fruits"
+                            placeHolder="채점기준 주요 키워드/문구를 입력하고 엔터 입력"
+                          />
                         </div>
                       </div>
                     </div>
