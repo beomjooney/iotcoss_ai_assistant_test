@@ -54,7 +54,7 @@ const studyStatus = [
     name: '영상',
   },
   {
-    id: '0300',
+    id: '0320',
     name: '첨부파일',
   },
 ];
@@ -374,7 +374,7 @@ export function QuizMakeTemplate() {
       return;
     }
 
-    if (contentType !== '0300' && !contentUrl) {
+    if (contentType !== '0320' && !contentUrl) {
       alert('콘텐츠 URL을 입력해주세요.');
       return false;
     }
@@ -401,7 +401,7 @@ export function QuizMakeTemplate() {
 
     console.log('AI 퀴즈 클릭');
     const formData = new FormData();
-    if (contentType === '0300') {
+    if (contentType === '0320') {
       formData.append('file', fileList[0]);
     } else {
       formData.append('contentUrl', contentUrl);
@@ -457,7 +457,7 @@ export function QuizMakeTemplate() {
       return false;
     }
 
-    if (contentType !== '0300' && !contentUrl) {
+    if (contentType !== '0320' && !contentUrl) {
       alert('콘텐츠 URL을 입력해주세요.');
       return false;
     }
@@ -525,7 +525,7 @@ export function QuizMakeTemplate() {
       const params = {
         content: {
           isNew: true,
-          // contentType: contentType,
+          contentType: contentType,
           description: contentTitle,
           url: contentUrl,
           studySubject: selectedSubject,
@@ -1078,7 +1078,7 @@ export function QuizMakeTemplate() {
                       />
                     ))}
                   </div>
-                  {active === '0300' ? (
+                  {active === '0320' ? (
                     <div>
                       <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">파일 업로드</div>
                       <div className="tw-flex tw-items-center tw-justify-between tw-gap-1 tw-text-center">

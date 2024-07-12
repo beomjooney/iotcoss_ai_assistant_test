@@ -32,7 +32,7 @@ const studyStatus = [
     name: '영상',
   },
   {
-    id: '0300',
+    id: '0320',
     name: '첨부파일',
   },
 ];
@@ -245,7 +245,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
       content: {
         isNew: false,
         contentSequence: data.content.contentSequence,
-        // contentType: contentType,
+        contentType: contentType,
         description: contentTitle,
         url: contentUrl,
         studySubject: selectedSubject,
@@ -516,7 +516,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                   ))}
                 </div>
 
-                {contentType === '0300' ? (
+                {contentType === '0320' ? (
                   <div>
                     <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">파일 업로드</div>
                     <div className="tw-flex tw-items-center tw-justify-between tw-gap-1 tw-text-center">
