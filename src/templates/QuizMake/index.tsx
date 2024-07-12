@@ -1384,8 +1384,6 @@ export function QuizMakeTemplate() {
                         <div className="tw-text-sm tw-font-bold tw-mt-4">생성할 퀴즈 개수</div>
                         <div className="tw-grid tw-grid-cols-6 tw-items-center">
                           <div className="tw-col-span-5 tw-mr-5">
-                            {' '}
-                            {/* Added col-span-4 */}
                             <TextField
                               required
                               id="username"

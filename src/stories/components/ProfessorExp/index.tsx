@@ -26,6 +26,22 @@ const studyStatus = [
   },
 ];
 
+const generatedQuizzes = [
+  {
+    question:
+      'React Query에서 데이터를 캐시하고 쿼리에 대한 종속성이 변경될 때 자동으로 다시 가져올 수 있게 하는 중요한 개념은 무엇인가요?',
+    keyword: 'queryKey',
+  },
+  {
+    question: 'React Query에서 데이터를 가져오기 위해 사용하는 훅은 무엇인가요?',
+    keyword: 'useQuery',
+  },
+  {
+    question: '특정 쿼리 키에 대한 모든 정보를 무효화시키기 위해 사용하는 메서드는 무엇인가요?',
+    keyword: 'invalidate',
+  },
+];
+
 const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) => {
   const [isShow, setIsShow] = useState<boolean>(false);
   const [scrollPosition, setScrollPosition] = useState<number>(0);
@@ -34,6 +50,11 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
   const [contentTitle, setContentTitle] = useState('');
   const [contentUrl, setContentUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedQuizIndex, setSelectedQuizIndex] = useState(null);
+  const [selectedQuiz, setSelectedQuiz] = useState(null);
+  const [editedQuestion, setEditedQuestion] = useState('');
+  const [quizList, setQuizList] = useState([]);
+  const [isLoadingAI, setIsLoadingAI] = useState(false);
 
   const handleAIQuizClick = () => {
     setIsLoading(true);
@@ -44,6 +65,33 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
+  };
+
+  const handleQuizClick = (e, index) => {
+    e.stopPropagation(); // 이벤트 버블링 중지
+    console.log('수정하기');
+    setSelectedQuizIndex(index);
+    setEditedQuestion(generatedQuizzes[index].question); // 클릭 시 수정할 질문을 초기화
+  };
+  const handleQuizMoveClick = question => {
+    setSelectedQuiz(question);
+  };
+
+  const handleInputChange = e => {
+    e.stopPropagation(); // 이벤트 버블링 중지
+    setEditedQuestion(e.target.value);
+  };
+
+  const handleInputClick = e => {
+    e.stopPropagation(); // 이벤트 버블링 중지
+  };
+
+  const handleSaveClick = (e, index) => {
+    e.stopPropagation(); // 이벤트 버블링 중지
+    const updatedQuizzes = [...generatedQuizzes];
+    updatedQuizzes[selectedQuizIndex].question = editedQuestion;
+    setSelectedQuizIndex(null); // 수정 완료 후 선택 해제
+    // 여기서 updatedQuizzes를 상태로 관리하거나 부모 컴포넌트로 전달하는 로직을 추가하세요
   };
 
   return (
@@ -89,73 +137,75 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
         </div>
       )}
       <div className={cx('content tw-bg-[#fdfdff] tw-h-[90%]  tw-flex tw-flex-col tw-items-center')}>
-        <Tabs
-          TabIndicatorProps={{
-            sx: {
-              backgroundColor: 'black',
-            },
-          }}
-          value={value}
-          onChange={handleChange}
-          aria-label="wrapped label tabs example"
-        >
-          <Tab
-            value="one"
-            label={
-              <div>
-                <span className="tw-text-lg tw-font-bold tw-normal-case">Step 1</span> <br />
-                <span className="!tw-mt-5 tw-text-sm">AI 퀴즈만들기</span>
-              </div>
-            }
-            wrapped
-            sx={{
-              marginRight: 4,
-              '&:hover': {
-                color: 'black',
-              },
-              '&.Mui-selected': {
-                color: 'black',
+        <div>
+          <Tabs
+            TabIndicatorProps={{
+              sx: {
+                backgroundColor: 'black',
               },
             }}
-          />
-          <Tab
-            value="two"
-            label={
-              <div>
-                <span className="tw-text-lg tw-font-bold tw-normal-case">Step 2</span> <br />
-                <span className="!tw-mt-5 tw-text-sm">AI 모범답안 만들기</span>
-              </div>
-            }
-            wrapped
-            sx={{
-              marginRight: 4,
-              '&:hover': {
-                color: 'black',
-              },
-              '&.Mui-selected': {
-                color: 'black',
-              },
-            }}
-          />
-          <Tab
-            value="three"
-            label={
-              <div>
-                <span className="tw-text-lg tw-font-bold tw-normal-case">Step 3</span> <br />
-                <span className="!tw-mt-5 tw-text-sm">AI 채점/피드백</span>
-              </div>
-            }
-            wrapped
-            sx={{
-              '&:hover': {
-                color: 'black',
-              },
-              '&.Mui-selected': {
-                color: 'black',
-              },
-            }}
-          />
-        </Tabs>
+            value={value}
+            onChange={handleChange}
+            aria-label="wrapped label tabs example"
+          >
+            <Tab
+              value="one"
+              label={
+                <div>
+                  <span className="tw-text-lg tw-font-bold tw-normal-case">Step 1</span> <br />
+                  <span className="!tw-mt-5 tw-text-sm">AI 퀴즈만들기</span>
+                </div>
+              }
+              wrapped
+              sx={{
+                marginRight: 4,
+                '&:hover': {
+                  color: 'black',
+                },
+                '&.Mui-selected': {
+                  color: 'black',
+                },
+              }}
+            />
+            <Tab
+              value="two"
+              label={
+                <div>
+                  <span className="tw-text-lg tw-font-bold tw-normal-case">Step 2</span> <br />
+                  <span className="!tw-mt-5 tw-text-sm">AI 모범답안 만들기</span>
+                </div>
+              }
+              wrapped
+              sx={{
+                marginRight: 4,
+                '&:hover': {
+                  color: 'black',
+                },
+                '&.Mui-selected': {
+                  color: 'black',
+                },
+              }}
+            />
+            <Tab
+              value="three"
+              label={
+                <div>
+                  <span className="tw-text-lg tw-font-bold tw-normal-case">Step 3</span> <br />
+                  <span className="!tw-mt-5 tw-text-sm">AI 채점/피드백</span>
+                </div>
+              }
+              wrapped
+              sx={{
+                '&:hover': {
+                  color: 'black',
+                },
+                '&.Mui-selected': {
+                  color: 'black',
+                },
+              }}
+            />
+          </Tabs>
+        </div>
         <div className="tw-w-full tw-px-20 tw-h-full tw-p-5 tw-mt-5">
           {value === 'one' && (
             <div className="tw-w-full tw-h-full">
@@ -236,9 +286,65 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
                   >
                     {isLoading ? <CircularProgress size={20} /> : '퀴즈 생성하기'}
                   </button>
+
+                  {generatedQuizzes.map((item, i) => (
+                    <div
+                      key={i}
+                      onClick={() => handleQuizMoveClick(item.question)}
+                      className={`tw-cursor-pointer tw-rounded-lg tw-bg-[#F6F7FB] border tw-px-5 tw-py-3 tw-my-5 ${
+                        selectedQuiz === item.question ? 'border-dark' : ''
+                      }`}
+                    >
+                      <div className="tw-flex tw-justify-between tw-items-center">
+                        <div className="tw-flex-none tw-w-14 tw-items-center">
+                          <div className="tw-flex tw-flex-col tw-items-center">
+                            <img
+                              className="tw-w-10 border tw-rounded-full"
+                              src="/assets/images/main/ellipse_201.png"
+                              alt={`Quiz`}
+                            />
+                            <p className="tw-pt-1 tw-text-sm tw-text-center tw-text-black">퀴즈 {i + 1}</p>
+                          </div>
+                        </div>
+                        <div className="tw-flex-auto tw-px-5 tw-text-base tw-w-full">
+                          {selectedQuizIndex === i ? (
+                            <TextField
+                              fullWidth
+                              type="text"
+                              multiline
+                              rows={2}
+                              value={editedQuestion}
+                              onChange={handleInputChange}
+                              onClick={handleInputClick}
+                              className="tw-bg-white tw-w-full tw-border tw-rounded-md tw-px-2 tw-py-1"
+                            />
+                          ) : (
+                            item.question
+                          )}
+                        </div>
+                        <div className="tw-flex-auto tw-w-32 tw-flex tw-justify-end">
+                          {selectedQuizIndex === i ? (
+                            <button
+                              onClick={e => handleSaveClick(e, i)}
+                              className="tw-w-28 tw-px-4 tw-py-3 tw-text-sm tw-bg-white border tw-rounded-md"
+                            >
+                              저장하기
+                            </button>
+                          ) : (
+                            <button
+                              onClick={e => handleQuizClick(e, i)}
+                              className="tw-w-28 tw-px-4 tw-py-3 tw-text-sm tw-bg-white border tw-rounded-md"
+                            >
+                              수정하기
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </AccordionDetails>
               </Accordion>
-              <div className="tw-flex tw-justify-end tw-items-center tw-w-full tw-mt-3">
+              <div className="tw-flex tw-justify-end tw-items-center tw-w-full tw-mt-5 tw-pb-10">
                 <button
                   onClick={() => {
                     setValue('two');
@@ -250,7 +356,97 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
               </div>
             </div>
           )}
-          {value === 'two' && <div>Step 2</div>}
+          {value === 'two' && (
+            <div>
+              <div className="tw-w-full tw-h-full">
+                <Accordion
+                  disableGutters
+                  sx={{ backgroundColor: '#e9ecf2' }}
+                  defaultExpanded
+                  // expanded={expanded === 0}
+                  // onChange={handleChange(0)}
+                >
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <div className="tw-flex tw-justify-between tw-items-center tw-w-full">
+                      <div className="tw-text-lg tw-font-bold">퀴즈 답안정보 입력</div>
+                    </div>
+                  </AccordionSummary>
+                  <AccordionDetails sx={{ backgroundColor: 'white', padding: 3 }}>
+                    <div className="border tw-rounded-lg tw-my-5">
+                      <div className="border-bottom  tw-bg-[#F6F7FB]  tw-px-5 tw-py-3">
+                        <div className="tw-flex tw-justify-between tw-items-center">
+                          <div className="tw-flex-none tw-w-14 tw-items-center">
+                            <div className="tw-flex tw-flex-col tw-items-center">
+                              <img
+                                className="tw-w-10 border tw-rounded-full"
+                                src="/assets/images/main/ellipse_201.png"
+                                alt={`Quiz`}
+                              />
+                              <p className="tw-pt-1 tw-text-sm tw-text-center tw-text-black">퀴즈 1</p>
+                            </div>
+                          </div>
+                          <div className="tw-flex-auto tw-px-5 tw-w-[500px] tw-text-base">{selectedQuiz}</div>
+                          <div className="tw-flex-auto !tw-w-[320px] tw-flex tw-justify-end">
+                            <button
+                              onClick={() => {
+                                // handleEditQuiz(index);
+                              }}
+                              className="tw-mr-3 tw-px-4 tw-py-2.5 tw-text-sm tw-bg-gray-300 tw-rounded-md "
+                            >
+                              수정하기
+                            </button>
+                            <button
+                              onClick={() => {
+                                // Add your button click handler logic here
+                                // handleAIAnswerClick(index, quizList.question);
+                              }}
+                              className="tw-w-[140px] tw-px-4 tw-py-2.5 tw-text-sm tw-bg-black tw-text-white tw-rounded-md"
+                            >
+                              {isLoadingAI ? <CircularProgress color="info" size={18} /> : 'AI 모범답안생성'}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="tw-flex tw-justify-start tw-items-center tw-px-5 tw-pt-5">
+                        <div className="tw-flex-none tw-w-14 tw-items-center">
+                          <div className="tw-flex tw-flex-col tw-items-center">
+                            <svg
+                              width={24}
+                              height={25}
+                              viewBox="0 0 24 25"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="w-6 h-6 relative"
+                              preserveAspectRatio="none"
+                            >
+                              <path
+                                d="M6 6.3252V12.3252C6 13.1208 6.31607 13.8839 6.87868 14.4465C7.44129 15.0091 8.20435 15.3252 9 15.3252H19M19 15.3252L15 11.3252M19 15.3252L15 19.3252"
+                                stroke="#CED4DE"
+                                strokeWidth={2}
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          </div>
+                        </div>
+                        <div className="tw-flex-none tw-w-14 tw-items-center">
+                          <div className="tw-flex tw-flex-col tw-items-center">
+                            <img className="tw-w-9 border tw-rounded-full" src="/assets/images/main/ellipse_202.png" />
+                            <p className="tw-pt-1 tw-text-sm tw-text-center tw-text-black">모범답안</p>
+                          </div>
+                        </div>
+                        <div className="tw-p-5 tw-flex-col tw-items-center tw-w-full">
+                          <div className="tw-flex tw-items-center tw-p-5 tw-pb-0 tw-text-sm tw-font-bold tw-gap-2">
+                            채점기준 주요 키워드/문구 :
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </AccordionDetails>
+                </Accordion>
+              </div>
+            </div>
+          )}
           {value === 'three' && <div>Step 3</div>}
         </div>
       </div>
