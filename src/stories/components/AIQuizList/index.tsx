@@ -98,9 +98,9 @@ const AIQuizList = ({
   }, [answerSuccess]);
 
   const handleAIAnswerClick = async (quizIndex, quiz) => {
-    if (!contentUrl) {
-      alert('콘텐츠 URL을 입력하세요.');
-      return;
+    if (contentType !== '0320' && !contentUrl) {
+      alert('콘텐츠 URL을 입력해주세요.');
+      return false;
     }
 
     if (!selectedJob || selectedJob.length === 0) {
