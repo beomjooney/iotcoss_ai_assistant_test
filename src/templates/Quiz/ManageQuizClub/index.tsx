@@ -952,7 +952,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                                 data-tooltip-target="tooltip-default"
                                 className="tw-py-2 tw-mr-3 tw-bg-black tw-text-white max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
                               >
-                                프로필보기
+                                프로필 보기
                               </button>
                               <button
                                 onClick={() => handleDeleteMember(item?.member?.memberUUID)}

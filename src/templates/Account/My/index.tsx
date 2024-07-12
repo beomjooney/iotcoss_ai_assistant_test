@@ -15,6 +15,7 @@ import MentorsModal from 'src/stories/components/MentorsModal';
 import MyProfile from 'src/stories/components/MyProfile';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import { useStudyQuizOpponentBadgeList } from 'src/services/studyroom/studyroom.queries';
+import { useSessionStore } from 'src/store/session';
 
 const cx = classNames.bind(styles);
 
@@ -26,7 +27,8 @@ interface MyTemplateProps {
 
 export function MyTemplate({ children }: MyTemplateProps) {
   const router = useRouter();
-  const { user, member } = useStore();
+  const { user } = useStore();
+  const { memberId } = useSessionStore();
   const [nickname, setNickname] = useState<string>('');
   const [summary, setSummary] = useState<any>([]);
   const [showMenu, setShowMenu] = useState<ReactNode>(null);
@@ -34,7 +36,7 @@ export function MyTemplate({ children }: MyTemplateProps) {
   const [isShowMentorBtn, setIsShowMentorBtn] = useState<boolean>(false);
   const [profile, setProfile] = useState<any>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [memberUUID, setMemberUUID] = useState<string>('');
+  const [memberUUID, setMemberUUID] = useState<string>(memberId);
   const [isModalProfileOpen, setIsModalProfileOpen] = useState<boolean>(false);
   // 회원 정보 저장
   const { isFetched: isUserFetched } = useMemberSummaryInfo(data => setSummary(data));
