@@ -8,6 +8,7 @@ import { useSessionStore } from '../../store/session';
 import Grid from '@mui/material/Grid';
 import { User } from 'src/models/user';
 import ChatbotModal from 'src/stories/components/ChatBot';
+import ProfessorExpModal from 'src/stories/components/ProfessorExp';
 
 /** date picker */
 import React from 'react';
@@ -25,12 +26,13 @@ export function HomeTemplate({ logged = false }: HomeProps) {
   const { token } = useSessionStore.getState();
   /** get profile */
   // const { user, setUser } = useStore();
-  const [isClient, setIsClient] = useState(false); // 클라이언트 사이드에서만 렌더링하도록 상태 추가
+  const [isClient, setIsClient] = useState(false); // 클라이언트 사이드에서만 렌어링하도록 상태 추가
 
   useEffect(() => {
     setIsClient(true); // 클라이언트 사이드에서 상태를 true로 설정
   }, []);
 
+  const [modalIsProfessor, setModalIsProfessor] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   return (
@@ -89,7 +91,13 @@ export function HomeTemplate({ logged = false }: HomeProps) {
             <br />
             학습자는 관리자만 따라가면 대한민국 최고의 전문가로 성장할 수 있습니다.
           </p>
-          <div className="tw-w-36 md:tw-w-48 tw-h-12 md:tw-h-20">
+          <div
+            onClick={() => {
+              console.log(modalIsProfessor);
+              setModalIsProfessor(true);
+            }}
+            className="tw-cursor-pointer tw-w-36 md:tw-w-48 tw-h-12 md:tw-h-20"
+          >
             <div className="tw-w-36 md:tw-w-48 tw-h-12 md:tw-h-20 tw-absolute tw-left-[170px] md:tw-left-[261.38px] tw-top-[210px] md:tw-top-[373.5px] tw-rounded-lg tw-bg-[#478af5]" />
             <div className="tw-absolute tw-left-[185px] md:tw-left-[285px] tw-top-[217px] md:tw-top-[385px] tw-text-xs md:tw-text-lg tw-text-left tw-text-white">
               <div className="tw-flex tw-items-center">
@@ -241,6 +249,15 @@ export function HomeTemplate({ logged = false }: HomeProps) {
             className="tw-w-[200px] md:tw-w-[404px] tw-h-[200px] md:tw-h-[404px] tw-absolute tw-left-[calc(50%-100px)] md:tw-left-[50px] tw-top-[-4px] tw-object-cover"
           />
         </div>
+
+        {isClient && modalIsProfessor && (
+          <ProfessorExpModal
+            title="교수자 체험하기"
+            isOpen={modalIsProfessor}
+            onRequestClose={() => setModalIsProfessor(false)}
+          />
+        )}
+
         {isClient && !modalIsOpen && logged && (
           <div>
             <div
