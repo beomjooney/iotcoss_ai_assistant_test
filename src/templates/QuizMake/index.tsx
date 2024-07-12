@@ -1078,7 +1078,7 @@ export function QuizMakeTemplate() {
                       />
                     ))}
                   </div>
-                  {active === '0300' ? (
+                  {active === '0320' ? (
                     <div>
                       <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">파일 업로드</div>
                       <div className="tw-flex tw-items-center tw-justify-between tw-gap-1 tw-text-center">
