@@ -133,8 +133,8 @@ const ArticleList: React.FC<any> = ({ data, refetchMyQuizContent }) => {
                     </div>
                   ))}
                 {data.skills?.map((tag, tagIndex) => (
-                  <div key={tagIndex} className="border tw-rounded-[3.5px] tw-px-[10.5px]">
-                    <p className="tw-text-[12.25px]">{tag}</p>
+                  <div key={tagIndex} className="tw-rounded-[3.5px] tw-px-[5px]">
+                    <p className="tw-text-[12.25px]">#{tag}</p>
                   </div>
                 ))}
               </div>

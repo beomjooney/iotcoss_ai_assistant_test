@@ -189,6 +189,7 @@ export function QuizMakeTemplate() {
   const handleClickContent = data => {
     console.log(data);
     setContentType(data.contentType);
+    setActive(data.contentType);
     setContentUrl(data.url);
     setContentTitle(data.description);
     setSelectedSubject(data.studySubject || '');
