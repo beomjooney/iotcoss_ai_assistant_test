@@ -91,6 +91,7 @@ function MentorsModal({
         <ReactModal
           isOpen={isShow}
           onAfterClose={onAfterClose}
+          shouldCloseOnOverlayClick={false} // 모달 외부 클릭으로 모달이 닫히지 않도록 설정
           onRequestClose={() => setIsShow(false)} // ESC를 누르거나 모달 외부를 클릭하여 닫을 수 있음
           style={{
             overlay: {

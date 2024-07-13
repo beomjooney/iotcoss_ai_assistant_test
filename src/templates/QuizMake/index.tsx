@@ -94,9 +94,9 @@ export function QuizMakeTemplate() {
   const [isContentModalOpen, setIsContentModalOpen] = useState<boolean>(false);
   const [isContentModalClick, setIsContentModalClick] = useState<boolean>(false);
   const [jobGroup, setJobGroup] = useState([]);
-  const [active, setActive] = useState('0100');
+  const [active, setActive] = useState('');
   const [activeQuiz, setActiveQuiz] = useState('');
-  const [contentType, setContentType] = useState('0100');
+  const [contentType, setContentType] = useState('');
   const [jobGroups, setJobGroups] = useState<any[]>([]);
   const [jobs, setJobs] = useState([]);
   const [pageThresh, setPageThresh] = useState(1);
