@@ -28,7 +28,7 @@ const studyStatus = [
     name: '아티클',
   },
   {
-    id: '0200',
+    id: '0210',
     name: '영상',
   },
   {

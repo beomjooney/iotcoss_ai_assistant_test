@@ -50,7 +50,7 @@ const studyStatus = [
     name: '아티클',
   },
   {
-    id: '0200',
+    id: '0210',
     name: '영상',
   },
   {
@@ -1414,6 +1414,8 @@ export function QuizMakeTemplate() {
                     {quizList.map((quiz, index) => (
                       <div key={index}>
                         <AIQuizList
+                          fileList={fileList}
+                          jobLevel={jobLevel}
                           contentType={contentType}
                           contentUrl={contentUrl}
                           selectedJob={selectedJob}

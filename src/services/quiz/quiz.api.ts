@@ -29,7 +29,11 @@ export const saveAIQuizPost = async body => {
 };
 
 export const saveAIQuizAnswer = async body => {
-  const { data } = await axiosGeneralAPI().post(`/api/v1/ai-model-answers`, body);
+  const { data } = await axiosGeneralAPI().post(`/api/v1/ai-model-answers`, body, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
   return data.data;
 };
 

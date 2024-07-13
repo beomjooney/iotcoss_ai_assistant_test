@@ -51,6 +51,8 @@ const AIQuizList = ({
   handleEditQuiz,
   handleDeleteQuiz,
   updateQuizList,
+  fileList,
+  jobLevel,
 }) => {
   const [isLoadingAI, setIsLoadingAI] = useState(false);
   const [quizList, setQuizList] = useState({});
@@ -111,8 +113,8 @@ const AIQuizList = ({
     // Find the specific quiz in quizList and create formattedQuizList
     const params = {
       contentType: contentType,
-      contentUrl: contentUrl,
       jobs: selectedJob,
+      jobLevels: jobLevel,
       quizzes: [
         {
           no: index + 1,
@@ -121,10 +123,24 @@ const AIQuizList = ({
       ],
     };
 
+    const formData = new FormData();
+
+    if (contentType === '0320') {
+      formData.append('file', fileList[0]);
+    } else {
+      params['contentUrl'] = contentUrl;
+    }
+
+    // 객체를 JSON 문자열로 변환합니다.
+    const jsonString = JSON.stringify(params);
+    // FormData에 JSON 문자열을 추가하면서 명시적으로 'Content-Type'을 설정합니다.
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    formData.append('request', blob);
+
     console.log('ai quiz click', params);
     setIsLoadingAI(true);
 
-    onAIQuizAnswer(params); // Ensure this function returns a promise
+    onAIQuizAnswer(formData); // Ensure this function returns a promise
   };
 
   return (

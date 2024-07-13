@@ -691,7 +691,7 @@ export function QuizOpenTemplate() {
         alert('정기 자동 오픈에서 확인 버튼 눌러주세요.');
         return;
       }
-    } else if (quizType == '0200' || quizType == '0300') {
+    } else if (quizType == '0210' || quizType == '0300') {
       if (buttonFlag == false) {
         alert('수동 오픈에서 확인 버튼 눌러주세요.');
         return;
@@ -1374,7 +1374,7 @@ export function QuizOpenTemplate() {
                     </div>
                   )}
 
-                  {quizType == '0200' && (
+                  {quizType == '0210' && (
                     <div className="tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-[#f6f7fb] tw-pb-5">
                       <div className="tw-flex tw-p-5 ...">
                         <div className="tw-flex-none tw-w-1/4 tw-h-14 ...">

@@ -54,9 +54,11 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
   const [selectedQuizIndex, setSelectedQuizIndex] = useState(null);
   const [selectedQuiz, setSelectedQuiz] = useState(null);
   const [editedQuestion, setEditedQuestion] = useState('');
+  const [editedAnswer, setEditedAnswer] = useState('');
   const [quizList, setQuizList] = useState([]);
   const [isLoadingAI, setIsLoadingAI] = useState(false);
   const [selectedKeyword, setSelectedKeyword] = useState(['react']);
+  const [aiFeedback, setAiFeedback] = useState('');
 
   const handleAIQuizClick = () => {
     setIsLoading(true);
@@ -84,7 +86,16 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
     setEditedQuestion(e.target.value);
   };
 
+  const handleAnswerChange = e => {
+    e.stopPropagation(); // 이벤트 버블링 중지
+    setEditedAnswer(e.target.value);
+  };
+
   const handleInputClick = e => {
+    e.stopPropagation(); // 이벤트 버블링 중지
+  };
+
+  const handleAnswerClick = e => {
     e.stopPropagation(); // 이벤트 버블링 중지
   };
 
@@ -358,7 +369,7 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
               </div>
             </div>
           )}
-          {value === 'two' && (
+          {(value === 'two' || value === 'three') && (
             <div>
               <div className="tw-w-full tw-h-full">
                 <Accordion
@@ -370,7 +381,9 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
                 >
                   <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                     <div className="tw-flex tw-justify-between tw-items-center tw-w-full">
-                      <div className="tw-text-lg tw-font-bold">퀴즈 답안정보 입력</div>
+                      <div className="tw-text-lg tw-font-bold">
+                        {value === 'two' ? '퀴즈 답안정보 입력' : '학습자 답안정보 입력'}
+                      </div>
                     </div>
                   </AccordionSummary>
                   <AccordionDetails sx={{ backgroundColor: 'white', padding: 3 }}>
@@ -387,22 +400,22 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
                               <p className="tw-pt-1 tw-text-sm tw-text-center tw-text-black">퀴즈 1</p>
                             </div>
                           </div>
-                          <div className="tw-flex-auto tw-px-5 tw-w-[500px] tw-text-base">{selectedQuiz}</div>
-                          <div className="tw-flex-auto !tw-w-[320px] tw-flex tw-justify-end">
-                            <button
-                              onClick={() => {
-                                // handleEditQuiz(index);
-                              }}
-                              className="tw-mr-3 tw-px-4 tw-py-2.5 tw-text-sm tw-bg-gray-300 tw-rounded-md "
-                            >
-                              수정하기
-                            </button>
+                          <div className="tw-flex-auto tw-px-5 tw-w-[370px] tw-text-base">{selectedQuiz}</div>
+                          <div className="tw-flex-auto !tw-w-[310px] tw-items-center tw-flex tw-justify-end tw-gap-2">
+                            <div className="tw-text-sm tw-font-bold">답안글자수</div>
+                            <select className="tw-pl-1 tw-text-sm">
+                              <option value="100">100이내</option>
+                              <option value="200">200이내</option>
+                              <option value="300">300이내</option>
+                              <option value="400">400이내</option>
+                              <option value="500">500이내</option>
+                            </select>
                             <button
                               onClick={() => {
                                 // Add your button click handler logic here
                                 // handleAIAnswerClick(index, quizList.question);
                               }}
-                              className="tw-w-[140px] tw-px-4 tw-py-2.5 tw-text-sm tw-bg-black tw-text-white tw-rounded-md"
+                              className="tw-w-[140px] tw-px-4 tw-py-[9px] tw-text-sm tw-bg-black tw-text-white tw-rounded-md"
                             >
                               {isLoadingAI ? <CircularProgress color="info" size={18} /> : 'AI 모범답안생성'}
                             </button>
@@ -447,12 +460,68 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
                         </div>
                       </div>
                     </div>
+                    {value === 'three' && (
+                      <>
+                        <div className="border tw-rounded-lg tw-my-5">
+                          <div className="border-bottom  tw-bg-[#F6F7FB]  tw-px-5 tw-py-3">
+                            <div className="tw-flex tw-justify-between tw-items-center tw-text-lg tw-font-bold">
+                              학습자 답변
+                            </div>
+                          </div>
+                          <div className="tw-flex tw-justify-start tw-items-center tw-p-5 tw-pt-5">
+                            <TextField
+                              fullWidth
+                              type="text"
+                              multiline
+                              rows={4}
+                              value={editedAnswer}
+                              onChange={handleAnswerChange}
+                              onClick={handleAnswerClick}
+                              className="tw-bg-white tw-w-full tw-border tw-rounded-md tw-px-2 tw-py-1"
+                            />
+                          </div>
+                          <div className="tw-flex tw-justify-start tw-items-center tw-p-5 tw-pt-0">
+                            <button className="tw-w-[140px] tw-mr-5 tw-px-4 tw-py-2.5 tw-text-sm tw-bg-black tw-text-white tw-rounded-md">
+                              AI채점/피드백
+                            </button>
+                            <div className="tw-text-sm tw-mr-2">AI채점 :</div>
+                            <TextField
+                              disabled
+                              size="small"
+                              id="outlined-basic"
+                              variant="outlined"
+                              className="tw-w-[80px]"
+                            />
+                          </div>
+                        </div>
+                        <div className="border tw-rounded-lg tw-mt-5">
+                          <div className="border-bottom  tw-bg-[#F6F7FB]  tw-px-5 tw-py-3">
+                            <div className="tw-flex tw-justify-between tw-items-center tw-text-lg tw-font-bold">
+                              AI피드백
+                            </div>
+                          </div>
+                          <div className="tw-flex tw-justify-start tw-items-center tw-p-5 tw-pt-5">{aiFeedback}</div>
+                        </div>
+                      </>
+                    )}
                   </AccordionDetails>
                 </Accordion>
+
+                <div className="tw-flex tw-justify-end tw-items-center tw-w-full tw-mt-5 tw-pb-10">
+                  {value === 'two' && (
+                    <button
+                      onClick={() => {
+                        setValue('three');
+                      }}
+                      className="tw-w-[120px] tw-mt-1 tw-px-2 tw-py-3 tw-text-sm  tw-bg-[#313B49] tw-rounded tw-text-white"
+                    >
+                      다음
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           )}
-          {value === 'three' && <div>Step 3</div>}
         </div>
       </div>
     </ReactModal>
