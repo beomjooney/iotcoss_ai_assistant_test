@@ -250,8 +250,8 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
         url: contentUrl,
         studySubject: selectedSubject,
         studyChapter: selectedChapter,
-        skills: selected1,
-        studyKeywords: selected2,
+        skills: selected2,
+        studyKeywords: selected1,
       },
       question: question,
       modelAnswerFinal: modelAnswerFinal,
@@ -383,7 +383,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
             </div>
 
             {/* Render hashtags */}
-            {data.skills?.map((hashtag, hashtagIndex) => (
+            {data?.content?.skills?.map((hashtag, hashtagIndex) => (
               <div
                 key={hashtagIndex}
                 className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-border tw-border-[#ced4de]"
