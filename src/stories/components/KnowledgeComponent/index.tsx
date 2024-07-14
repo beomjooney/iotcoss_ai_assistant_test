@@ -408,7 +408,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                     </div>
                   ))}
                 {data?.content?.skills?.map((hashtag, hashtagIndex) => (
-                  <div key={hashtagIndex} className=" tw-rounded-[3.5px] tw-px-[10.5px]">
+                  <div key={hashtagIndex} className=" tw-rounded-[3.5px] tw-px-[5px]">
                     <p className="tw-text-[12.25px] tw-text-[#313b49]">#{hashtag}</p>
                   </div>
                 ))}
@@ -432,7 +432,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                   onClick={() => {
                     onFileDownload(data?.content?.url, data?.content?.name);
                   }}
-                  className="tw-cursor-pointer tw-text-sm tw-font-medium tw-text-left tw-text-[#9ca5b2]"
+                  className="tw-cursor-pointer tw-underline tw-text-sm tw-font-medium tw-text-left tw-text-[#9ca5b2]"
                 >
                   {data?.content?.name}
                 </p>
@@ -612,6 +612,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                 <select
                   className="form-select"
                   onChange={handleUniversityChange}
+                  disabled
                   aria-label="Default select example"
                   value={universityCode}
                 >
@@ -627,6 +628,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                   <Select
                     className="tw-w-full tw-text-black"
                     size="small"
+                    disabled
                     labelId="demo-multiple-checkbox-label"
                     id="demo-multiple-checkbox"
                     multiple
@@ -637,7 +639,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                       }
                       return selected.join(', ');
                     }}
-                    disabled={jobs.length === 0}
+                    // disabled={jobs.length === 0}
                     value={personName}
                     onChange={handleChange}
                     MenuProps={{
@@ -663,6 +665,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                     variant="small"
                     checked={jobLevel.indexOf(item.code) >= 0}
                     isActive
+                    disabled
                     type="tabButton"
                     onChange={() => {
                       const index = jobLevel.indexOf(item.code);
@@ -680,6 +683,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                   type="search"
                   value={selectedSubject}
                   size="small"
+                  disabled
                   onChange={e => setSelectedSubject(e.target.value)}
                   fullWidth
                   sx={{
@@ -697,24 +701,31 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                   type="search"
                   size="small"
                   fullWidth
+                  disabled
                   sx={{
                     '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
                   }}
                 />
                 <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">학습 키워드</div>
-                <TagsInput
-                  value={selected1}
-                  onChange={setSelected1}
-                  name="fruits"
-                  placeHolder="학습 키워드 입력 후 엔터를 쳐주세요."
-                />
-                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">스킬</div>
-                <TagsInput
-                  value={selected2}
-                  onChange={setSelected2}
-                  name="fruits"
-                  placeHolder="스킬 입력 후 엔터를 쳐주세요."
-                />
+
+                <div className="tw-flex tw-gap-2 tw-flex-wrap">
+                  {selected1.length > 0 &&
+                    selected1.map((job, index) => (
+                      <div key={index} className="tw-bg-gray-400 tw-rounded-[3.5px]  tw-px-3 tw-py-1">
+                        <p className="tw-text-[12.25px] tw-text-white">{job || 'N/A'}</p>
+                      </div>
+                    ))}
+                </div>
+                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">관련 기술</div>
+                <div className="tw-flex tw-gap-2 tw-flex-wrap">
+                  {selected2.length > 0 &&
+                    selected2.map((job, index) => (
+                      <div key={index} className="tw-bg-gray-400  tw-rounded-[3.5px] tw-px-3 tw-py-1">
+                        <p className="tw-text-[12.25px] tw-text-white">{job || 'N/A'}</p>
+                      </div>
+                    ))}
+                </div>
+                {/* <TagsInput value={selected2} onChange={setSelected2} name="fruits" disabled placeHolder="" /> */}
               </AccordionDetails>
             </Accordion>
 

@@ -31,6 +31,8 @@ import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
+import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
+import { is } from 'ramda';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -145,6 +147,9 @@ export function QuizMakeTemplate() {
   const [quizList, setQuizList] = useState([]);
   const [editingIndex, setEditingIndex] = useState(null);
   const [fileList, setFileList] = useState([]);
+  const [fileName, setFileName] = useState('');
+  const [fileNameCopy, setFileNameCopy] = useState('');
+  const [key, setKey] = useState('');
 
   // 로딩 상태를 관리하기 위해 useState 훅 사용
   const [isLoading, setIsLoading] = useState(false);
@@ -207,8 +212,11 @@ export function QuizMakeTemplate() {
     console.log(jobsName);
     setPersonName(jobsName || []);
 
-    setSelectedJob(selected?.jobs[0]?.code || '');
+    setSelectedJob(selected?.jobs.map(item => item.code) || []);
     setSelected2(data.skills);
+    setFileName(data.name);
+    setFileNameCopy(data.name);
+    // setFileName(data.name);
   };
 
   const handleChangeSortType = event => {
@@ -243,6 +251,25 @@ export function QuizMakeTemplate() {
   const { mutate: onQuizContentSave, isSuccess: postContentSuccess } = useQuizContentSave();
   const { mutate: onAIQuizSave, isSuccess: updateSuccess, isError: updateError, data: aiQuizData } = useAIQuizSave();
   const { mutate: onAIQuizAnswer, isSuccess: answerSuccess, data: aiQuizAnswerData } = useAIQuizAnswer();
+
+  const { isFetched: isParticipantListFetcheds, isSuccess: isParticipantListSuccess } = useQuizFileDownload(
+    key,
+    data => {
+      console.log('file download', data, fileName);
+      if (data) {
+        // blob 데이터를 파일로 저장하는 로직
+        const url = window.URL.createObjectURL(new Blob([data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', fileName); // 다운로드할 파일 이름과 확장자를 설정합니다.
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setKey('');
+        setFileName('');
+      }
+    },
+  );
 
   useEffect(() => {
     if (updateError) {
@@ -297,6 +324,8 @@ export function QuizMakeTemplate() {
     setJobLevel([]);
     setQuizList([]);
     setQuizCount('0');
+    setFileName('');
+    setFileNameCopy('');
 
     refetchMyQuiz();
     refetchMyQuizContent();
@@ -501,13 +530,20 @@ export function QuizMakeTemplate() {
         url: contentUrl,
         studySubject: selectedSubject,
         studyChapter: selectedChapter,
-        skills: selected1,
+        skills: selected2,
         jobGroups: [selectedUniversity],
         jobs: selectedJob,
         jobLevels: jobLevel,
-        studyKeywords: selected2,
+        studyKeywords: selected1,
       };
-      onQuizContentSave(params);
+
+      const formData = new FormData();
+      formData.append('file', fileList[0]);
+      const jsonString = JSON.stringify(params);
+      const blob = new Blob([jsonString], { type: 'application/json' });
+      formData.append('request', blob);
+
+      onQuizContentSave(formData);
       setActiveTab('지식컨텐츠');
     } else {
       if (!quizList.length) {
@@ -682,11 +718,17 @@ export function QuizMakeTemplate() {
     setFileList([file]); // 하나의 파일만 받도록 설정
   };
 
+  const onFileDownload = function (key: string, fileName: string) {
+    console.log(key);
+    setKey(key);
+    setFileName(fileName);
+  };
+
   return (
     <>
       <div className={cx('seminar-container')}>
         <div className={cx('container')}>
-          <div className="xl:tw-py-[60px] tw-pt-[50px]">
+          <div className="tw-py-[60px] tw-pt-[50px]">
             <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
               <Grid item xs={12} sm={2} className="tw-font-bold sm:tw-text-3xl tw-text-2xl tw-text-black">
                 나의 퀴즈
@@ -698,7 +740,7 @@ export function QuizMakeTemplate() {
                 <BootstrapTooltip title="지식콘텐츠 등록과 퀴즈만들기를 동시에 할 수 있어요!" placement="top">
                   <button
                     type="button"
-                    onClick={() => handleAddClick(true)}
+                    onClick={() => handleAddClick(false)}
                     className=" tw-text-[#e11837] tw-mr-3 tw-font-bold tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
                     style={{ border: '1px solid #B8B8B8', color: '#e11837', width: '150px' }}
                   >
@@ -708,7 +750,7 @@ export function QuizMakeTemplate() {
                 <BootstrapTooltip title="지식콘텐츠만 미리 등록해 놓고, 나중에 활용할 수 있어요!" placement="top">
                   <button
                     type="button"
-                    onClick={() => handleAddClick(false)}
+                    onClick={() => handleAddClick(true)}
                     style={{ border: '1px solid #B8B8B8', color: 'black', width: '150px' }}
                     className="tw-text-black tw-bg-white tw-font-bold tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
                   >
@@ -1024,7 +1066,8 @@ export function QuizMakeTemplate() {
 
         <MentorsModal
           isQuiz={true}
-          title={'퀴즈 만들기'}
+          // title={'퀴즈 만들기'}
+          title={isContentModalOpen ? '지식컨텐츠 만들기' : '퀴즈 만들기'}
           isOpen={isModalOpen}
           isContentModalClick={isContentModalClick}
           onAfterClose={() => {
@@ -1037,29 +1080,49 @@ export function QuizMakeTemplate() {
             setFileList([]);
             setQuizList([]);
             setSortQuizType('ASC');
+            setFileName('');
+            setFileNameCopy('');
           }}
         >
           <div className={`${isContentModalClick ? 'tw-flex' : ' '}`}>
             <div className="">
-              <Accordion
-                disableGutters
-                sx={{ backgroundColor: '#e9ecf2' }}
-                defaultExpanded
-                // expanded={expanded === 0}
-                // onChange={handleChange(0)}
-              >
+              <Accordion disableGutters sx={{ backgroundColor: '#e9ecf2' }} defaultExpanded>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                   <div className="tw-flex tw-justify-between tw-items-center tw-w-full">
                     <div className="tw-text-lg tw-font-bold">지식컨텐츠 정보 입력</div>
                     {!isContentModalOpen && (
                       <button
                         onClick={e => {
-                          e.stopPropagation(); // This stops the event from propagating to the AccordionSummary
-                          setIsContentModalClick(true);
+                          if (isContentModalClick) {
+                            console.log('지식컨텐츠 닫기');
+                            e.stopPropagation(); // This stops the event from propagating to the AccordionSummary
+                            setIsContentModalClick(false);
+                            setActive('');
+                            setContentType('');
+                            setContentUrl('');
+                            setContentTitle('');
+                            setFileList([]);
+                            setQuizList([]);
+                            setSortQuizType('ASC');
+                            setFileName('');
+                            setFileNameCopy('');
+                            setJobLevel([]);
+                            setSelected1([]);
+                            setSelected2([]);
+                            setSelectedSubject('');
+                            setSelectedChapter('');
+                            setPersonName([]);
+                            setUniversityCode('');
+                            setJobs([]);
+                            setContentSortType('');
+                          } else {
+                            e.stopPropagation(); // This stops the event from propagating to the AccordionSummary
+                            setIsContentModalClick(true);
+                          }
                         }}
                         className="tw-text-sm tw-bg-black tw-p-2 tw-rounded tw-mr-5 tw-text-white"
                       >
-                        지식컨텐츠 불러오기
+                        {isContentModalClick ? '지식컨텐츠 닫기' : '지식컨텐츠 불러오기'}
                       </button>
                     )}
                   </div>
@@ -1074,6 +1137,7 @@ export function QuizMakeTemplate() {
                         name={item.name}
                         value={item.id}
                         variant="small"
+                        disabled={isContentModalClick}
                         checked={active === item.id}
                         isActive
                         type="tabButton"
@@ -1089,18 +1153,17 @@ export function QuizMakeTemplate() {
                     <div>
                       <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">파일 업로드</div>
                       <div className="tw-flex tw-items-center tw-justify-between tw-gap-1 tw-text-center">
-                        <div>
-                          {fileList.length > 0 ? (
-                            <div>
-                              {fileList.map((file, index) => (
-                                <div key={index}>{file.name}</div>
-                              ))}
-                            </div>
-                          ) : (
-                            <div>파일을 추가해주세요. (pdf)</div>
-                          )}
+                        <div className="tw-flex tw-items-center tw-justify-between tw-gap-1 tw-text-center">
+                          <div
+                            className="tw-cursor-pointer tw-underline"
+                            onClick={() => {
+                              onFileDownload(contentUrl, fileName);
+                            }}
+                          >
+                            {fileNameCopy || '파일정보가 없습니다.'}
+                          </div>
                         </div>
-                        <div className="tw-flex tw-items-center tw-gap-2 border tw-px-4 tw-py-2 tw-rounded">
+                        {/* <div className="tw-flex tw-items-center tw-gap-2 border tw-px-4 tw-py-2 tw-rounded">
                           <svg
                             width={16}
                             height={16}
@@ -1132,7 +1195,7 @@ export function QuizMakeTemplate() {
                             style={{ display: 'none' }}
                             onChange={handleFileChange}
                           />
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   ) : (
@@ -1158,6 +1221,7 @@ export function QuizMakeTemplate() {
                   <TextField
                     required
                     id="username"
+                    disabled={isContentModalClick}
                     value={contentTitle}
                     onChange={handleContentTitleChange}
                     name="username"
@@ -1181,6 +1245,7 @@ export function QuizMakeTemplate() {
                     className="form-select"
                     onChange={handleUniversityChange}
                     aria-label="Default select example"
+                    disabled={isContentModalClick}
                     value={universityCode}
                   >
                     <option>대학을 선택해주세요.</option>
@@ -1205,7 +1270,7 @@ export function QuizMakeTemplate() {
                         }
                         return selected.join(', ');
                       }}
-                      disabled={jobs.length === 0}
+                      disabled={jobs.length === 0 || isContentModalClick}
                       value={personName}
                       onChange={handleChange}
                       MenuProps={{
@@ -1227,6 +1292,7 @@ export function QuizMakeTemplate() {
                       key={item.code}
                       label={item.name}
                       name={item.name}
+                      disabled={isContentModalClick}
                       value={item.code}
                       variant="small"
                       // checked={activeQuiz === item.code}
@@ -1246,6 +1312,7 @@ export function QuizMakeTemplate() {
                     id="username"
                     name="username"
                     variant="outlined"
+                    disabled={isContentModalClick}
                     type="search"
                     value={selectedSubject}
                     size="small"
@@ -1261,6 +1328,7 @@ export function QuizMakeTemplate() {
                     id="username"
                     name="username"
                     value={selectedChapter}
+                    disabled={isContentModalClick}
                     onChange={handleInputChapterChange}
                     variant="outlined"
                     type="search"
@@ -1270,30 +1338,55 @@ export function QuizMakeTemplate() {
                       '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
                     }}
                   />
-                  <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">학습 키워드</div>
-                  <TagsInput
-                    value={selected1}
-                    onChange={setSelected1}
-                    name="fruits"
-                    placeHolder="학습 키워드 입력 후 엔터를 쳐주세요."
-                  />
-                  <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">스킬</div>
-                  <TagsInput
-                    value={selected2}
-                    onChange={setSelected2}
-                    name="fruits"
-                    placeHolder="스킬 입력 후 엔터를 쳐주세요."
-                  />
+                  {isContentModalClick ? (
+                    <>
+                      <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">학습 키워드</div>
+                      <div className="tw-flex tw-gap-2 tw-flex-wrap">
+                        {selected1.length > 0 &&
+                          selected1.map((job, index) => (
+                            <div key={index} className="tw-bg-gray-400 tw-rounded-[3.5px]  tw-px-3 tw-py-1">
+                              <p className="tw-text-[12.25px] tw-text-white">{job || 'N/A'}</p>
+                            </div>
+                          ))}
+                      </div>
+                      <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">스킬</div>
+                      <div className="tw-flex tw-gap-2 tw-flex-wrap">
+                        {selected2.length > 0 &&
+                          selected2.map((job, index) => (
+                            <div key={index} className="tw-bg-gray-400  tw-rounded-[3.5px] tw-px-3 tw-py-1">
+                              <p className="tw-text-[12.25px] tw-text-white">{job || 'N/A'}</p>
+                            </div>
+                          ))}
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">학습 키워드</div>
+                      <TagsInput
+                        value={selected1}
+                        onChange={setSelected1}
+                        name="fruits"
+                        placeHolder="학습 키워드 입력 후 엔터를 쳐주세요."
+                      />
+                      <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">스킬</div>
+                      <TagsInput
+                        value={selected2}
+                        onChange={setSelected2}
+                        name="fruits"
+                        placeHolder="스킬 입력 후 엔터를 쳐주세요."
+                      />
+                    </>
+                  )}
                 </AccordionDetails>
               </Accordion>
 
-              {isContentModalOpen && (
+              {!isContentModalOpen && (
                 <Accordion defaultExpanded disableGutters sx={{ backgroundColor: '#e9ecf2' }}>
                   <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                     <div className="tw-text-lg tw-font-bold">퀴즈 정보 입력</div>
                   </AccordionSummary>
                   <AccordionDetails sx={{ backgroundColor: 'white', padding: 3 }}>
-                    <div className="tw-flex tw-justify-start tw-items-center tw-w-[1120px] tw-h-12 tw-gap-6">
+                    <div className="tw-flex tw-justify-start tw-items-center tw-h-12 tw-gap-6">
                       <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-3">
                         <RadioGroup value={sortQuizType} onChange={handleChangeQuizType} row>
                           <FormControlLabel
@@ -1412,7 +1505,7 @@ export function QuizMakeTemplate() {
                             onClick={handleAIQuizClick}
                             className="tw-mt-1 tw-col-span-1 tw-px-2 tw-py-2.5 tw-text-sm tw-bg-black tw-rounded-md tw-text-white"
                           >
-                            {isLoading ? <CircularProgress size={20} /> : '퀴즈 생성하기'}
+                            {isLoading ? <CircularProgress size={20} /> : '퀴즈 생성'}
                           </button>
                         </div>
                       </>
