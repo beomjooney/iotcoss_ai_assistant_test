@@ -44,6 +44,7 @@ import { useAIQuizAnswer } from 'src/services/quiz/quiz.mutations';
 const AIQuizList = ({
   contentUrl,
   contentType,
+  contentSequence,
   selectedJob,
   quiz,
   sortQuizType,
@@ -51,6 +52,7 @@ const AIQuizList = ({
   handleEditQuiz,
   handleDeleteQuiz,
   updateQuizList,
+  isContentModalClick,
   fileList,
   jobLevel,
 }) => {
@@ -112,6 +114,8 @@ const AIQuizList = ({
 
     // Find the specific quiz in quizList and create formattedQuizList
     const params = {
+      isNew: isContentModalClick ? false : true,
+      contentSequence: contentSequence,
       contentType: contentType,
       jobs: selectedJob,
       jobLevels: jobLevel,
@@ -153,7 +157,9 @@ const AIQuizList = ({
               <p className="tw-pt-1 tw-text-sm tw-text-center tw-text-black">퀴즈 {index + 1}</p>
             </div>
           </div>
-          <div className="tw-flex-auto tw-px-5 tw-text-sm">{quizList?.question}</div>
+          <div className={`tw-flex-auto tw-px-5 tw-text-sm ${isContentModalClick ? 'tw-w-[250px]' : ''}`}>
+            {quizList?.question}
+          </div>
           <div className="tw-flex-auto tw-w-32 tw-flex tw-justify-end">
             {sortQuizType === 'DESC' && (
               <button
@@ -202,7 +208,9 @@ const AIQuizList = ({
         </div>
         <div className="tw-p-5 tw-flex-col tw-items-center tw-w-full">
           {quizList?.modelAnswer && quizList.modelAnswer.trim() !== '' ? (
-            <p className="tw-p-5 tw-text-sm tw-font-medium tw-text-left">{quizList.modelAnswer}</p>
+            <p className={`tw-p-5 tw-text-sm tw-font-medium tw-text-left ${isContentModalClick ? 'tw-w-[250px]' : ''}`}>
+              {quizList.modelAnswer}
+            </p>
           ) : (
             <div className="tw-text-center tw-pb-5">
               <button
@@ -210,7 +218,7 @@ const AIQuizList = ({
                   // Add your button click handler logic here
                   handleAIAnswerClick(index, quizList.question);
                 }}
-                className="tw-mt-2 tw-w-[140px] tw-px-4 tw-py-2 tw-text-white tw-bg-black tw-rounded tw-text-sm"
+                className="tw-mt-2  tw-w-[140px] tw-px-4 tw-py-2 tw-text-white tw-bg-black tw-rounded tw-text-sm"
               >
                 {isLoadingAI ? <CircularProgress color="info" size={18} /> : '모범 답안 생성'}
               </button>

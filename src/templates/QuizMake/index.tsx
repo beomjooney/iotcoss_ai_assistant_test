@@ -117,6 +117,7 @@ export function QuizMakeTemplate() {
   const [selected, setSelected] = useState([]);
   const open = Boolean(anchorEl);
   const [keyWorld, setKeyWorld] = useState('');
+  const [contentSequence, setContentSequence] = useState('');
 
   const [expanded, setExpanded] = useState(0); // 현재 확장된 Accordion의 인덱스
   const [isModify, setIsModify] = useState(false);
@@ -124,7 +125,7 @@ export function QuizMakeTemplate() {
   const [selected1, setSelected1] = useState([]);
   const [selected2, setSelected2] = useState([]);
   const [selected3, setSelected3] = useState([]);
-  const [quizCount, setQuizCount] = useState('0');
+  const [quizCount, setQuizCount] = useState(1);
   const [aiQuiz, setAiQuiz] = useState(false);
   const [quizSortType, setQuizSortType] = useState('0001');
   const [contentSortType, setContentSortType] = useState('');
@@ -148,7 +149,7 @@ export function QuizMakeTemplate() {
   const [editingIndex, setEditingIndex] = useState(null);
   const [fileList, setFileList] = useState([]);
   const [fileName, setFileName] = useState('');
-  const [fileNameCopy, setFileNameCopy] = useState('');
+  const [fileNameCopy, setFileNameCopy] = useState([]);
   const [key, setKey] = useState('');
 
   // 로딩 상태를 관리하기 위해 useState 훅 사용
@@ -204,6 +205,7 @@ export function QuizMakeTemplate() {
     setSelectedUniversity(data.jobGroups[0]?.code || '');
     setUniversityCode(data.jobGroups[0]?.code || '');
     setSelected1(data.studyKeywords);
+    setContentSequence(data.contentSequence);
 
     const selected = optionsData?.data?.jobs?.find(u => u.code === data.jobGroups[0]?.code);
     setJobs(selected ? selected.jobs : []);
@@ -216,6 +218,8 @@ export function QuizMakeTemplate() {
     setSelected2(data.skills);
     setFileName(data.name);
     setFileNameCopy(data.name);
+    setQuizCount(1);
+    setQuizList([]);
     // setFileName(data.name);
   };
 
@@ -323,9 +327,9 @@ export function QuizMakeTemplate() {
     setSelectedJob([]);
     setJobLevel([]);
     setQuizList([]);
-    setQuizCount('0');
+    setQuizCount(1);
     setFileName('');
-    setFileNameCopy('');
+    setFileNameCopy([]);
 
     refetchMyQuiz();
     refetchMyQuizContent();
@@ -424,22 +428,36 @@ export function QuizMakeTemplate() {
       return;
     }
 
-    if (parseInt(quizCount) < 1) {
+    if (quizCount < 1) {
       alert('생성 퀴즈 개수는 1개 이상 설정해야 합니다.');
       return;
     }
 
     console.log('AI 퀴즈 클릭');
     const formData = new FormData();
+
+    const params = {
+      isNew: isContentModalClick ? false : true,
+      contentSequence: contentSequence,
+      contentType: contentType,
+      jobs: selectedJob,
+      jobLevels: jobLevel,
+      quizCount: quizCount,
+    };
+
     if (contentType === '0320') {
       formData.append('file', fileList[0]);
     } else {
-      formData.append('contentUrl', contentUrl);
+      params['contentUrl'] = contentUrl;
     }
-    formData.append('contentType', contentType);
-    formData.append('jobLevels', jobLevel.join(','));
-    formData.append('jobs', selectedJob.join(','));
-    formData.append('quizCount', quizCount);
+
+    const jsonString = JSON.stringify(params);
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    formData.append('request', blob);
+    // formData.append('contentType', contentType);
+    // formData.append('jobLevels', jobLevel.join(','));
+    // formData.append('jobs', selectedJob.join(','));
+    // formData.append('quizCount', quizCount);
 
     // 로딩 상태를 true로 설정
     setIsLoading(true);
@@ -501,12 +519,12 @@ export function QuizMakeTemplate() {
       alert('챕터를 입력해주세요.');
       return false;
     }
-    if (!selected1.length) {
-      alert('키워드를 입력해주세요.');
-      return false;
-    }
+    // if (!selected1.length) {
+    //   alert('학습 키워드를 입력해주세요.');
+    //   return false;
+    // }
     if (!selected2.length) {
-      alert('기술을 입력해주세요.');
+      alert('학습 기술을 입력해주세요.');
       return false;
     }
     if (!selectedUniversity) {
@@ -522,8 +540,9 @@ export function QuizMakeTemplate() {
       alert('추천 학년을 입력해주세요.');
       return false;
     }
-    if (!isContentModalOpen) {
-      console.log('content modal');
+    if (isContentModalOpen) {
+      // 콘텐츠 등록
+      console.log('지식컨텐츠');
       const params = {
         contentType: contentType,
         description: contentTitle,
@@ -546,6 +565,8 @@ export function QuizMakeTemplate() {
       onQuizContentSave(formData);
       setActiveTab('지식컨텐츠');
     } else {
+      // 콘텐츠 등록
+      console.log('퀴즈 등록');
       if (!quizList.length) {
         alert('퀴즈를 추가해주세요.');
         return false;
@@ -561,7 +582,8 @@ export function QuizMakeTemplate() {
 
       const params = {
         content: {
-          isNew: true,
+          isNew: isContentModalClick ? false : true,
+          contentSequence: contentSequence,
           contentType: contentType,
           description: contentTitle,
           url: contentUrl,
@@ -652,7 +674,7 @@ export function QuizMakeTemplate() {
     setQuestion('');
     setModelAnswerFinal('');
     setSelected3([]);
-    setQuizCount('0');
+    setQuizCount(1);
   };
   const handleQuestionChange = event => {
     setQuestion(event.target.value);
@@ -716,6 +738,7 @@ export function QuizMakeTemplate() {
     }
 
     setFileList([file]); // 하나의 파일만 받도록 설정
+    setFileNameCopy([file]); // 하나의 파일만 받도록 설정
   };
 
   const onFileDownload = function (key: string, fileName: string) {
@@ -1052,6 +1075,7 @@ export function QuizMakeTemplate() {
                   </RadioGroup>
                 </div>
               </div>
+              {/* 지식컨텐츠 */}
               {myQuizContentData?.contents?.map((data, index) => (
                 <div key={index}>
                   <ArticleList data={data} refetchMyQuizContent={refetchMyQuizContent} />
@@ -1081,7 +1105,9 @@ export function QuizMakeTemplate() {
             setQuizList([]);
             setSortQuizType('ASC');
             setFileName('');
-            setFileNameCopy('');
+            setFileNameCopy([]);
+            setQuizCount(1);
+            setPage(1);
           }}
         >
           <div className={`${isContentModalClick ? 'tw-flex' : ' '}`}>
@@ -1160,42 +1186,58 @@ export function QuizMakeTemplate() {
                               onFileDownload(contentUrl, fileName);
                             }}
                           >
-                            {fileNameCopy || '파일정보가 없습니다.'}
+                            {!isContentModalClick ? (
+                              <div>
+                                {fileList.length > 0 ? (
+                                  <div>
+                                    {fileList.map((file, index) => (
+                                      <div key={index}>{file.name}</div>
+                                    ))}
+                                  </div>
+                                ) : (
+                                  <div>파일을 추가해주세요. (pdf)</div>
+                                )}
+                              </div>
+                            ) : (
+                              <div>{fileNameCopy || '파일정보가 없습니다.'}</div>
+                            )}
                           </div>
                         </div>
-                        {/* <div className="tw-flex tw-items-center tw-gap-2 border tw-px-4 tw-py-2 tw-rounded">
-                          <svg
-                            width={16}
-                            height={16}
-                            viewBox="0 0 16 16"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="w-4 h-4 absolute left-0 top-0.5"
-                            preserveAspectRatio="xMidYMid meet"
-                          >
-                            <g clipPath="url(#clip0_679_9101)">
-                              <path
-                                d="M2.61042 6.86336C2.55955 6.9152 2.49887 6.95638 2.4319 6.98449C2.36494 7.01259 2.29304 7.02707 2.22042 7.02707C2.14779 7.02707 2.0759 7.01259 2.00894 6.98449C1.94197 6.95638 1.88128 6.9152 1.83042 6.86336C1.72689 6.75804 1.66887 6.61625 1.66887 6.46856C1.66887 6.32087 1.72689 6.17909 1.83042 6.07376L6.65522 1.20016C7.74322 0.355364 8.83762 -0.050236 9.92722 0.00496403C11.3 0.075364 12.3688 0.598564 13.276 1.45696C14.2008 2.33216 14.7992 3.58096 14.7992 5.09456C14.7992 6.25616 14.4616 7.27856 13.7488 8.18576L6.94642 15.1938C6.25842 15.7578 5.49362 16.0306 4.67442 15.9978C3.63442 15.9546 2.86082 15.6186 2.28562 15.0498C1.61202 14.385 1.19922 13.5682 1.19922 12.4698C1.19922 11.5962 1.50082 10.7898 2.12322 10.033L8.11042 3.92016C8.59042 3.40816 9.06002 3.10416 9.54002 3.03056C9.86039 2.9801 10.1883 3.00876 10.495 3.11403C10.8018 3.21931 11.0781 3.39801 11.3 3.63456C11.7256 4.08496 11.908 4.64656 11.844 5.28576C11.8 5.72176 11.6216 6.12336 11.2936 6.50816L5.78962 12.1466C5.73909 12.1986 5.6787 12.24 5.61198 12.2685C5.54527 12.2969 5.47355 12.3118 5.40102 12.3123C5.3285 12.3127 5.25661 12.2987 5.18954 12.2711C5.12248 12.2435 5.06159 12.2028 5.01042 12.1514C4.90625 12.0467 4.84737 11.9052 4.84647 11.7575C4.84557 11.6099 4.90273 11.4677 5.00562 11.3618L10.4832 5.75216C10.6432 5.56416 10.7272 5.37456 10.7472 5.17296C10.7792 4.85296 10.7024 4.61696 10.5032 4.40656C10.4026 4.29881 10.2769 4.21759 10.1374 4.17014C9.99779 4.12268 9.84865 4.11046 9.70322 4.13456C9.50882 4.16416 9.23682 4.34096 8.90162 4.69776L2.93922 10.7834C2.50962 11.3074 2.30162 11.8634 2.30162 12.4706C2.30162 13.2338 2.57762 13.7802 3.05522 14.2514C3.43522 14.6274 3.95122 14.8514 4.71922 14.8834C5.26322 14.905 5.76722 14.725 6.20562 14.3698L12.9232 7.44976C13.4392 6.78816 13.6968 6.00976 13.6968 5.09536C13.6968 3.90976 13.2352 2.94816 12.5224 2.27296C11.7944 1.58336 10.9624 1.17696 9.87202 1.12096C9.06562 1.07936 8.22002 1.39296 7.37842 2.03776L2.61042 6.86336Z"
-                                fill="#31343D"
-                              />
-                            </g>
-                            <defs>
-                              <clipPath id="clip0_679_9101">
-                                <rect width={16} height={16} fill="white" />
-                              </clipPath>
-                            </defs>
-                          </svg>
-                          <button className=" tw-text-sm tw-text-left tw-text-[#31343d]" onClick={handleButtonClick}>
-                            파일추가
-                          </button>
-                          <input
-                            accept=".pdf"
-                            type="file"
-                            ref={fileInputRef}
-                            style={{ display: 'none' }}
-                            onChange={handleFileChange}
-                          />
-                        </div> */}
+                        {!isContentModalClick && (
+                          <div className="tw-flex tw-items-center tw-gap-2 border tw-px-4 tw-py-2 tw-rounded">
+                            <svg
+                              width={16}
+                              height={16}
+                              viewBox="0 0 16 16"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="w-4 h-4 absolute left-0 top-0.5"
+                              preserveAspectRatio="xMidYMid meet"
+                            >
+                              <g clipPath="url(#clip0_679_9101)">
+                                <path
+                                  d="M2.61042 6.86336C2.55955 6.9152 2.49887 6.95638 2.4319 6.98449C2.36494 7.01259 2.29304 7.02707 2.22042 7.02707C2.14779 7.02707 2.0759 7.01259 2.00894 6.98449C1.94197 6.95638 1.88128 6.9152 1.83042 6.86336C1.72689 6.75804 1.66887 6.61625 1.66887 6.46856C1.66887 6.32087 1.72689 6.17909 1.83042 6.07376L6.65522 1.20016C7.74322 0.355364 8.83762 -0.050236 9.92722 0.00496403C11.3 0.075364 12.3688 0.598564 13.276 1.45696C14.2008 2.33216 14.7992 3.58096 14.7992 5.09456C14.7992 6.25616 14.4616 7.27856 13.7488 8.18576L6.94642 15.1938C6.25842 15.7578 5.49362 16.0306 4.67442 15.9978C3.63442 15.9546 2.86082 15.6186 2.28562 15.0498C1.61202 14.385 1.19922 13.5682 1.19922 12.4698C1.19922 11.5962 1.50082 10.7898 2.12322 10.033L8.11042 3.92016C8.59042 3.40816 9.06002 3.10416 9.54002 3.03056C9.86039 2.9801 10.1883 3.00876 10.495 3.11403C10.8018 3.21931 11.0781 3.39801 11.3 3.63456C11.7256 4.08496 11.908 4.64656 11.844 5.28576C11.8 5.72176 11.6216 6.12336 11.2936 6.50816L5.78962 12.1466C5.73909 12.1986 5.6787 12.24 5.61198 12.2685C5.54527 12.2969 5.47355 12.3118 5.40102 12.3123C5.3285 12.3127 5.25661 12.2987 5.18954 12.2711C5.12248 12.2435 5.06159 12.2028 5.01042 12.1514C4.90625 12.0467 4.84737 11.9052 4.84647 11.7575C4.84557 11.6099 4.90273 11.4677 5.00562 11.3618L10.4832 5.75216C10.6432 5.56416 10.7272 5.37456 10.7472 5.17296C10.7792 4.85296 10.7024 4.61696 10.5032 4.40656C10.4026 4.29881 10.2769 4.21759 10.1374 4.17014C9.99779 4.12268 9.84865 4.11046 9.70322 4.13456C9.50882 4.16416 9.23682 4.34096 8.90162 4.69776L2.93922 10.7834C2.50962 11.3074 2.30162 11.8634 2.30162 12.4706C2.30162 13.2338 2.57762 13.7802 3.05522 14.2514C3.43522 14.6274 3.95122 14.8514 4.71922 14.8834C5.26322 14.905 5.76722 14.725 6.20562 14.3698L12.9232 7.44976C13.4392 6.78816 13.6968 6.00976 13.6968 5.09536C13.6968 3.90976 13.2352 2.94816 12.5224 2.27296C11.7944 1.58336 10.9624 1.17696 9.87202 1.12096C9.06562 1.07936 8.22002 1.39296 7.37842 2.03776L2.61042 6.86336Z"
+                                  fill="#31343D"
+                                />
+                              </g>
+                              <defs>
+                                <clipPath id="clip0_679_9101">
+                                  <rect width={16} height={16} fill="white" />
+                                </clipPath>
+                              </defs>
+                            </svg>
+                            <button className=" tw-text-sm tw-text-left tw-text-[#31343d]" onClick={handleButtonClick}>
+                              파일추가
+                            </button>
+                            <input
+                              accept=".pdf"
+                              type="file"
+                              ref={fileInputRef}
+                              style={{ display: 'none' }}
+                              onChange={handleFileChange}
+                            />
+                          </div>
+                        )}
                       </div>
                     </div>
                   ) : (
@@ -1340,8 +1382,8 @@ export function QuizMakeTemplate() {
                   />
                   {isContentModalClick ? (
                     <>
-                      <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">학습 키워드</div>
-                      <div className="tw-flex tw-gap-2 tw-flex-wrap">
+                      <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2 ">학습 키워드</div>
+                      <div className="tw-flex tw-gap-2 tw-flex-wrap  tw-w-[500px]">
                         {selected1.length > 0 &&
                           selected1.map((job, index) => (
                             <div key={index} className="tw-bg-gray-400 tw-rounded-[3.5px]  tw-px-3 tw-py-1">
@@ -1510,7 +1552,6 @@ export function QuizMakeTemplate() {
                         </div>
                       </>
                     )}
-
                     {quizList.map((quiz, index) => (
                       <div key={index}>
                         <AIQuizList
@@ -1519,6 +1560,8 @@ export function QuizMakeTemplate() {
                           contentType={contentType}
                           contentUrl={contentUrl}
                           selectedJob={selectedJob}
+                          isContentModalClick={isContentModalClick}
+                          contentSequence={contentSequence}
                           quiz={quiz}
                           index={index}
                           sortQuizType={sortQuizType}
@@ -1544,9 +1587,9 @@ export function QuizMakeTemplate() {
               </div>
             </div>
             {isContentModalClick && (
-              <div className="tw-flex-1 tw-p-5 tw-ml-5 tw-w-full">
+              <div className="tw-flex-1 tw-p-5 tw-pr-0 tw-ml-5 tw-w-full">
                 <div className="tw-text-lg tw-font-bold tw-mb-5 tw-text-black">템플릿 불러오기</div>
-                <FormControl>
+                <FormControl fullWidth>
                   <RadioGroup
                     aria-labelledby=""
                     defaultValue=""
@@ -1556,9 +1599,10 @@ export function QuizMakeTemplate() {
                   >
                     {myQuizContentData?.contents?.map((data, index) => (
                       <FormControlLabel
+                        sx={{ marginLeft: 0, marginRight: 0 }}
                         key={index}
-                        className="tw-w-full border tw-p-2 tw-mb-2 tw-rounded-lg"
-                        style={{ width: '330px' }}
+                        className="border tw-p-2 tw-mb-2 tw-rounded-lg"
+                        style={{ width: '100%' }}
                         value={data.contentSequence}
                         control={<Radio />}
                         label={data.description}

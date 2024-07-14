@@ -7,6 +7,7 @@ import { useDeletePostContent } from 'src/services/community/community.mutations
 import { useContentSaveLike, useContentDeleteLike } from 'src/services/community/community.mutations';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import StarIcon from '@mui/icons-material/Star';
+import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
 
 const cx = classNames.bind(styles);
 
@@ -14,6 +15,8 @@ const ArticleList: React.FC<any> = ({ data, refetchMyQuizContent }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   let [isLiked, setIsLiked] = useState(false);
   let [likeCount, setLikeCount] = useState(0);
+  const [key, setKey] = useState('');
+  const [fileName, setFileName] = useState('');
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
@@ -26,6 +29,25 @@ const ArticleList: React.FC<any> = ({ data, refetchMyQuizContent }) => {
   const { mutate: onDeletePostContent, isSuccess: deletePostContentSuccess } = useDeletePostContent();
   const { mutate: onSaveLike, isSuccess } = useContentSaveLike();
   const { mutate: onDeleteLike } = useContentDeleteLike();
+
+  const { isFetched: isParticipantListFetcheds, isSuccess: isParticipantListSuccess } = useQuizFileDownload(
+    key,
+    data => {
+      console.log('file download', data, fileName);
+      if (data) {
+        // blob 데이터를 파일로 저장하는 로직
+        const url = window.URL.createObjectURL(new Blob([data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', fileName); // 다운로드할 파일 이름과 확장자를 설정합니다.
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setKey('');
+        setFileName('');
+      }
+    },
+  );
 
   useEffect(() => {
     setIsLiked(data?.isLiked);
@@ -59,6 +81,12 @@ const ArticleList: React.FC<any> = ({ data, refetchMyQuizContent }) => {
       });
     }
     handleClose();
+  };
+
+  const onFileDownload = function (key: string, fileName: string) {
+    console.log(key);
+    setKey(key);
+    setFileName(fileName);
   };
 
   return (
@@ -144,14 +172,18 @@ const ArticleList: React.FC<any> = ({ data, refetchMyQuizContent }) => {
 
             <div className="tw-flex tw-justify-between">
               <div className="tw-flex">
-                <p className="tw-text-sm tw-font-bold tw-text-left tw-text-black tw-w-20">URL :</p>
+                <p className="tw-text-sm tw-font-bold tw-text-left tw-text-black tw-w-12">URL :</p>
                 <p
                   onClick={() => {
-                    window.open(data.url, '_blank');
+                    if (data.contentType === '0320') {
+                      onFileDownload(data.url, data.name);
+                    } else {
+                      window.open(data.url, '_blank');
+                    }
                   }}
-                  className="tw-cursor-pointer tw-text-sm tw-text-left tw-text-gray-500 tw-line-clamp-0"
+                  className="tw-underline tw-cursor-pointer tw-text-sm tw-text-left tw-text-gray-500 tw-line-clamp-0"
                 >
-                  {data.url}
+                  {data.contentType === '0320' ? data.name : data.url}
                 </p>
               </div>
               <div className="tw-flex tw-justify-start tw-items-center tw-gap-2">
