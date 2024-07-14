@@ -540,6 +540,12 @@ export function QuizMakeTemplate() {
         quizzes: updatedQuizList,
       };
 
+      const formData = new FormData();
+      formData.append('file', fileList[0]);
+      const jsonString = JSON.stringify(params);
+      const blob = new Blob([jsonString], { type: 'application/json' });
+      formData.append('request', blob);
+
       console.log(params);
 
       for (let index = 0; index < params.quizzes.length; index++) {
@@ -551,7 +557,7 @@ export function QuizMakeTemplate() {
         }
       }
 
-      onQuizSave(params);
+      onQuizSave(formData);
       setActiveTab('퀴즈목록');
     }
     setIsModalOpen(false);

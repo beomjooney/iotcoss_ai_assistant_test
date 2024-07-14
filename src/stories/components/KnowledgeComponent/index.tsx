@@ -21,6 +21,7 @@ import FormControl from '@mui/material/FormControl';
 import ListItemText from '@mui/material/ListItemText';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
+import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
 
 const studyStatus = [
   {
@@ -61,6 +62,8 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
   const [modelAnswerAi, setModelAnswerAi] = useState('');
   const [personName, setPersonName] = useState([]);
   const [fileList, setFileList] = useState([]);
+  let [key, setKey] = useState('');
+  let [fileName, setFileName] = useState('');
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
@@ -77,6 +80,25 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
   const { mutate: onHidePostQuiz, isSuccess: hidePostQuizSuccess } = useHidePostQuiz();
   const { mutate: onPublishPostQuiz, isSuccess: publishPostQuizSuccess } = usePublishPostQuiz();
   const { mutate: onQuizModify, isSuccess: quizModifySuccess } = useQuizModify();
+
+  const { isFetched: isParticipantListFetcheds, isSuccess: isParticipantListSuccess } = useQuizFileDownload(
+    key,
+    data => {
+      console.log('file download', data, fileName);
+      if (data) {
+        // blob 데이터를 파일로 저장하는 로직
+        const url = window.URL.createObjectURL(new Blob([data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', fileName); // 다운로드할 파일 이름과 확장자를 설정합니다.
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setKey('');
+        setFileName('');
+      }
+    },
+  );
 
   useEffect(() => {
     if (deletePostQuizSuccess || hidePostQuizSuccess || publishPostQuizSuccess || recoverPostQuizSuccess) {
@@ -269,6 +291,12 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
     setUpdateFlag(false);
   };
 
+  const onFileDownload = function (key: string, fileName: string) {
+    console.log(key);
+    setKey(key);
+    setFileName(fileName);
+  };
+
   return (
     <div>
       <div className="tw-pb-6">
@@ -361,7 +389,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
 
             {/* Render tags */}
             <div className="tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500">
-              <div className="tw-flex tw-gap-3">
+              <div className="tw-flex tw-flex-wrap tw-gap-3">
                 <div className="tw-bg-[#d7ecff] tw-rounded-[3.5px] tw-px-[10.5px] ">
                   <p className="tw-text-[12.25px] tw-text-[#235a8d]">{data?.jobGroups[0]?.name || 'N/A'}</p>
                 </div>
@@ -379,18 +407,13 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                       <p className="tw-text-[12.25px] tw-text-[#313b49]">{jobLevel.name || 'N/A'}</p>
                     </div>
                   ))}
+                {data?.content?.skills?.map((hashtag, hashtagIndex) => (
+                  <div key={hashtagIndex} className=" tw-rounded-[3.5px] tw-px-[10.5px]">
+                    <p className="tw-text-[12.25px] tw-text-[#313b49]">#{hashtag}</p>
+                  </div>
+                ))}
               </div>
             </div>
-
-            {/* Render hashtags */}
-            {data?.content?.skills?.map((hashtag, hashtagIndex) => (
-              <div
-                key={hashtagIndex}
-                className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-border tw-border-[#ced4de]"
-              >
-                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#ced4de]">#{hashtag}</p>
-              </div>
-            ))}
           </div>
           <div className="tw-flex tw-px-8">
             <p className="tw-w-[85px] text-sm tw-font-bold tw-left-[52px] tw-top-[58px] tw-text-sm tw-pr-3 tw-text-left tw-text-[#31343d]">
@@ -404,12 +427,23 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
           <div className="tw-flex  tw-justify-between tw-px-8 tw-py-5">
             <div className="tw-flex tw-justify-start tw-items-start">
               <p className="tw-w-[85px] tw-text-sm tw-text-left tw-text-[#31343d] tw-pr-3 tw-font-bold">지식컨텐츠</p>
-              <p
-                onClick={() => window.open(data?.contentUrl, '_blank')}
-                className="tw-cursor-pointer tw-text-sm tw-font-medium tw-text-left tw-text-[#9ca5b2]"
-              >
-                {data?.content?.url}
-              </p>
+              {data?.content?.contentType === '0320' ? (
+                <p
+                  onClick={() => {
+                    onFileDownload(data?.content?.url, data?.content?.name);
+                  }}
+                  className="tw-cursor-pointer tw-text-sm tw-font-medium tw-text-left tw-text-[#9ca5b2]"
+                >
+                  {data?.content?.name}
+                </p>
+              ) : (
+                <p
+                  onClick={() => window.open(data?.content?.url, '_blank')}
+                  className="tw-cursor-pointer tw-text-sm tw-font-medium tw-text-left tw-text-[#9ca5b2]"
+                >
+                  {data?.content?.url}
+                </p>
+              )}
             </div>
             <div className="tw-flex tw-justify-start tw-items-center tw-gap-2">
               <div className="tw-w-10 tw-h-[21px]">
@@ -520,16 +554,13 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                   <div>
                     <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">파일 업로드</div>
                     <div className="tw-flex tw-items-center tw-justify-between tw-gap-1 tw-text-center">
-                      <div>
-                        {fileList.length > 0 ? (
-                          <div>
-                            {fileList.map((file, index) => (
-                              <div key={index}>{file.name}</div>
-                            ))}
-                          </div>
-                        ) : (
-                          <div>파일을 정보가 없습니다.</div>
-                        )}
+                      <div
+                        className="tw-cursor-pointer tw-underline"
+                        onClick={() => {
+                          onFileDownload(data?.content?.url, data?.content?.name);
+                        }}
+                      >
+                        {data.content.name || '파일정보가 없습니다.'}
                       </div>
                     </div>
                   </div>
