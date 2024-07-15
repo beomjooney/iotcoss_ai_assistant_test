@@ -21,6 +21,7 @@ import {
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 
 const AIAnswerQuizList = ({ info, refetchReply }) => {
+  console.log(info);
   const [page, setPage] = useState(1);
   const [isLoadingAI, setIsLoadingAI] = useState(false);
   const [value, setValue] = useState('');
@@ -68,6 +69,12 @@ const AIAnswerQuizList = ({ info, refetchReply }) => {
 
   const handleAIAnswerClick = async () => {
     // Find the specific quiz in quizList and create formattedQuizList
+
+    if (info?.answerStatus !== '0003') {
+      alert('답변이 없습니다.');
+      return;
+    }
+
     const params = {
       clubSequence: info.clubSequence,
       quizSequence: info.quizSequence,
@@ -134,7 +141,6 @@ const AIAnswerQuizList = ({ info, refetchReply }) => {
       <button
         className="tw-w-[110px] tw-bg-black max-lg:tw-mr-1  tw-rounded-md tw-text-sm tw-text-white tw-py-2.5  tw-ml-2"
         onClick={() => {
-          // Add your button click handler logic here
           handleAIAnswerClick();
         }}
       >

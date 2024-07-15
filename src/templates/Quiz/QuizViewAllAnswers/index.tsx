@@ -95,6 +95,8 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      setKey('');
+      setFileName('');
     }
   });
 
@@ -143,17 +145,6 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
       page,
     });
   }, [page]);
-
-  // useEffect(() => {
-  //   if (contents?.clubQuizzes?.length > 0) {
-  //     const index = contents?.clubQuizzes?.findIndex(item => item.isPublished === true);
-
-  //     console.log('content!!');
-  //     console.log(contents.clubQuizzes[index]);
-  //     console.log(contents.clubQuizzes[index].question);
-  //     setSelectedQuiz(contents.clubQuizzes[index]);
-  //   }
-  // }, [contents]);
 
   const { isFetched: isParticipantListFetched, data } = useQuizRoungeInfo(id, data => {
     console.log('first get data');
@@ -487,12 +478,6 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     }
     formData.append('feedback', clubQuizGetThreads);
 
-    // Validate fileList
-    // if (!Array.isArray(fileList) || fileList.some(file => !(file instanceof File))) {
-    //   alert('Invalid file list');
-    //   return;
-    // }
-
     console.log(fileList);
     let _index = 0;
     fileList.forEach((file, index) => {
@@ -579,7 +564,6 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     console.log(key);
     setKey(key);
     setFileName(fileName);
-    // onFileDownload(key);
   };
 
   return (
@@ -739,7 +723,11 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                 <TableBody>
                   {isQuizAnswerListFetched &&
                     quizListData?.map((info, index) => (
-                      <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                      <TableRow
+                        key={index}
+                        className={`${info?.answerStatus === '0003' ? '' : 'tw-bg-gray-100'}`}
+                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                      >
                         <TableCell padding="none" align="center" component="th" scope="row">
                           <div className="tw-text-black">{index + 1 + (page - 1) * 10}</div>
                         </TableCell>
@@ -750,10 +738,12 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                           </div>
                         </TableCell>
                         <TableCell padding="none" align="left" component="th" scope="row">
-                          <div className="tw-text-black tw-text-sm tw-line-clamp-1">{info?.text}</div>
+                          <div className="tw-text-black tw-text-sm tw-line-clamp-1">
+                            {info?.answerStatus === '0003' ? info?.text : 'AI피드백/채점을 할 수 없습니다.'}
+                          </div>
                         </TableCell>
                         <TableCell padding="none" align="center" component="th" scope="row">
-                          <div className="tw-text-black">{info?.createdAt}</div>
+                          <div className="tw-text-black tw-line-clamp-1">{info?.createdAt}</div>
                         </TableCell>
                         <TableCell padding="none" align="center" component="th" scope="row">
                           {info?.aiEvaluationStatus && (
@@ -835,7 +825,9 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                     </div>
                     <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col">
                       <img className="border tw-rounded-full tw-w-10 tw-h-10 " src={item?.member?.profileImageUrl} />
-                      <div className="tw-text-xs tw-text-left tw-text-black tw-pt-2">{item?.member?.nickname}</div>
+                      <div className="tw-text-xs tw-text-center tw-text-black tw-pt-2">
+                        {item?.member?.nickname || 'N/A'}
+                      </div>
                     </div>
                     <div className="tw-flex-auto tw-w-9/12 tw-px-5">
                       <div className="tw-py-2">
@@ -845,12 +837,12 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                               item?.threadType === '0003' ? 'tw-text-red-500' : 'tw-text-black'
                             }`}
                           >
-                            {item?.threadType === '0001' && '사전 답변'}
-                            {item?.threadType === '0002' && '사후 답변'}
-                            {item?.threadType === '0003' && 'AI답변'}
-                            {item?.threadType === '0004' && item?.member?.nickname}
+                            {item?.threadType === '0001' && '사전답변'}
+                            {item?.threadType === '0002' && '사후답변'}
+                            {item?.threadType === '0003' && 'AI 모범답변'}
+                            {item?.threadType === '0004' && '교수님 평가'}
                           </span>
-                          <span className="tw-px-4">{item?.createdAt.replace('T', ' | ').split('.')[0]}</span>
+                          <span className="tw-px-4">{item?.createdAt?.replace('T', ' | ').split('.')[0] || 'N/A'}</span>
 
                           {item?.threadType === '0003' && (
                             <>
