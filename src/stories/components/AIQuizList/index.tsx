@@ -66,10 +66,10 @@ const AIQuizList = ({
   } = useAIQuizAnswer();
 
   useEffect(() => {
-    if (answerError) {
+    if (answerSuccess || answerError) {
       setIsLoadingAI(false);
     }
-  }, [answerError]);
+  }, [answerSuccess, answerError]);
 
   useEffect(() => {
     if (quiz) {
@@ -94,12 +94,6 @@ const AIQuizList = ({
       updateQuizList(updatedQuizList);
     }
   }, [aiQuizAnswerData]);
-
-  useEffect(() => {
-    if (answerSuccess) {
-      setIsLoadingAI(false);
-    }
-  }, [answerSuccess]);
 
   const handleAIAnswerClick = async (quizIndex, quiz) => {
     if (contentType !== '0320' && !contentUrl) {

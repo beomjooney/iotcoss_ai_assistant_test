@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Modal from 'react-modal';
 import ReactModal from 'react-modal';
 import classNames from 'classnames/bind';
@@ -8,6 +8,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Toggle } from 'src/stories/components';
 import CircularProgress from '@mui/material/CircularProgress';
 import { TagsInput } from 'react-tag-input-component';
+import { useAIQuizSave, useAIQuizAnswer, useAIQuizAnswerFeedback } from 'src/services/quiz/quiz.mutations';
 
 const cx = classNames.bind(styles);
 Modal.setAppElement('#__next'); // Modal 접근성 설정
@@ -18,28 +19,12 @@ const studyStatus = [
     name: '아티클',
   },
   {
-    id: '0200',
+    id: '0210',
     name: '영상',
   },
   {
     id: '0320',
     name: '첨부파일',
-  },
-];
-
-const generatedQuizzes = [
-  {
-    question:
-      'React Query에서 데이터를 캐시하고 쿼리에 대한 종속성이 변경될 때 자동으로 다시 가져올 수 있게 하는 중요한 개념은 무엇인가요?',
-    keyword: 'queryKey',
-  },
-  {
-    question: 'React Query에서 데이터를 가져오기 위해 사용하는 훅은 무엇인가요?',
-    keyword: 'useQuery',
-  },
-  {
-    question: '특정 쿼리 키에 대한 모든 정보를 무효화시키기 위해 사용하는 메서드는 무엇인가요?',
-    keyword: 'invalidate',
   },
 ];
 
@@ -54,36 +39,163 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
   const [selectedQuizIndex, setSelectedQuizIndex] = useState(null);
   const [selectedQuiz, setSelectedQuiz] = useState(null);
   const [editedQuestion, setEditedQuestion] = useState('');
+  const [editedModifyQuestion, setEditedModifyQuestion] = useState('');
   const [editedAnswer, setEditedAnswer] = useState('');
   const [quizList, setQuizList] = useState([]);
   const [isLoadingAI, setIsLoadingAI] = useState(false);
-  const [selectedKeyword, setSelectedKeyword] = useState(['react']);
+  const [isLoadingFeedback, setIsLoadingFeedback] = useState(false);
   const [aiFeedback, setAiFeedback] = useState('');
+  const [fileList, setFileList] = useState([]);
+  const [key, setKey] = useState('');
+  const [fileName, setFileName] = useState('');
+  const [quizKeyWorlds, setQuizKeyWorlds] = useState([]);
+  const [modelAnswer, setModelAnswer] = useState('');
+  const [flag, setFlag] = useState(false);
+
+  const { mutate: onAIQuizSave, isSuccess: updateSuccess, isError: updateError, data: aiQuizData } = useAIQuizSave();
+  const {
+    mutate: onAIQuizAnswer,
+    isSuccess: answerSuccess,
+    isError: answerError,
+    data: aiQuizAnswerData,
+  } = useAIQuizAnswer();
+  const {
+    mutate: onAIQuizAnswerFeedback,
+    isSuccess: answerFeedbackSuccess,
+    isError: answerFeedbackError,
+    data: aiQuizAnswerFeedbackData,
+  } = useAIQuizAnswerFeedback();
+
+  useEffect(() => {
+    if (answerFeedbackSuccess) {
+      setIsLoadingFeedback(false);
+    }
+    if (answerFeedbackError) {
+      alert('AI 피드백 생성 중 오류가 발생했습니다.');
+      setIsLoadingFeedback(false);
+    }
+  }, [answerFeedbackSuccess, answerFeedbackError]);
+
+  useEffect(() => {
+    if (answerSuccess) {
+      setIsLoadingAI(false);
+    }
+
+    if (answerError) {
+      alert('AI 퀴즈 생성 중 오류가 발생했습니다.');
+      setIsLoadingAI(false);
+    }
+  }, [answerSuccess, answerError]);
+
+  useEffect(() => {
+    if (aiQuizData) {
+      setQuizList((aiQuizData as any).generatedQuizzes);
+      setQuizKeyWorlds((aiQuizData as any).contentKeywords);
+    }
+  }, [aiQuizData]);
+
+  useEffect(() => {
+    if (updateSuccess) {
+      setIsLoading(false);
+    }
+  }, [updateSuccess]);
+
+  useEffect(() => {
+    if (aiQuizAnswerData) {
+      console.log(aiQuizAnswerData);
+      setModelAnswer(aiQuizAnswerData[0].answer);
+    }
+  }, [aiQuizAnswerData]);
 
   const handleAIQuizClick = () => {
+    console.log('ai quiz click');
+    // 유효성 검사
+    if (!contentType) {
+      alert('지식컨텐츠 유형을 선택하세요.');
+      return;
+    }
+
+    if (contentType === '0320' && !fileList[0]) {
+      alert('파일을 추가해주세요.');
+      return;
+    }
+
+    if (!contentTitle) {
+      alert('지식컨텐츠 제목을 입력해주세요.');
+      return;
+    }
+
+    console.log('AI 퀴즈 클릭');
+    const formData = new FormData();
+
+    const params = {
+      isNew: true,
+      contentType: contentType,
+      jobs: [],
+      jobLevels: [],
+      quizCount: 3,
+    };
+
+    if (contentType === '0320') {
+      formData.append('file', fileList[0]);
+    } else {
+      params['contentUrl'] = contentUrl;
+    }
+
+    const jsonString = JSON.stringify(params);
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    formData.append('request', blob);
+
+    // 로딩 상태를 true로 설정
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
+    onAIQuizSave(formData);
   };
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    setValue(newValue);
+    // setValue(newValue);
+    // if (newValue === 'one') {
+    //   setModelAnswer('');
+    // }
+  };
+
+  const handleQuizMoveClick = question => {
+    setSelectedQuiz(question);
   };
 
   const handleQuizClick = (e, index) => {
     e.stopPropagation(); // 이벤트 버블링 중지
-    console.log('수정하기');
     setSelectedQuizIndex(index);
-    setEditedQuestion(generatedQuizzes[index].question); // 클릭 시 수정할 질문을 초기화
+    setEditedQuestion(quizList[index].question);
   };
-  const handleQuizMoveClick = question => {
-    setSelectedQuiz(question);
+  const handleQuizModifyClick = e => {
+    e.stopPropagation(); // 이벤트 버블링 중지
+    setFlag(true);
+    setEditedModifyQuestion(modelAnswer);
+  };
+
+  const handleSaveClick = (e, index) => {
+    e.stopPropagation(); // 이벤트 버블링 중지
+    const updatedQuizList = [...quizList];
+    updatedQuizList[index].question = editedQuestion;
+    setQuizList(updatedQuizList);
+    setSelectedQuizIndex(null);
+    setEditedQuestion('');
+  };
+
+  const handleModifySaveClick = e => {
+    e.stopPropagation(); // 이벤트 버블링 중지
+    setFlag(false);
+    setModelAnswer(editedModifyQuestion);
   };
 
   const handleInputChange = e => {
     e.stopPropagation(); // 이벤트 버블링 중지
     setEditedQuestion(e.target.value);
+  };
+
+  const handleModifyInputChange = e => {
+    e.stopPropagation(); // 이벤트 버블링 중지
+    setEditedModifyQuestion(e.target.value);
   };
 
   const handleAnswerChange = e => {
@@ -95,16 +207,122 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
     e.stopPropagation(); // 이벤트 버블링 중지
   };
 
+  const handleModifyInputClick = e => {
+    e.stopPropagation(); // 이벤트 버블링 중지
+  };
+
   const handleAnswerClick = e => {
     e.stopPropagation(); // 이벤트 버블링 중지
   };
 
-  const handleSaveClick = (e, index) => {
-    e.stopPropagation(); // 이벤트 버블링 중지
-    const updatedQuizzes = [...generatedQuizzes];
-    updatedQuizzes[selectedQuizIndex].question = editedQuestion;
-    setSelectedQuizIndex(null); // 수정 완료 후 선택 해제
-    // 여기서 updatedQuizzes를 상태로 관리하거나 부모 컴포넌트로 전달하는 로직을 추가하세요
+  const handleContentUrlChange = event => {
+    setContentUrl(event.target.value);
+  };
+
+  const fileInputRef = useRef(null);
+  const handleButtonClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleFileChange = event => {
+    const file = event.target.files[0];
+    const allowedExtensions = /(\.pdf)$/i;
+
+    if (!allowedExtensions.exec(file.name)) {
+      alert('허용되지 않는 파일 형식입니다.');
+      event.target.value = ''; // input 초기화
+      return;
+    }
+
+    setFileList([file]); // 하나의 파일만 받도록 설정
+  };
+
+  const onFileDownload = function (key: string, fileName: string) {
+    console.log(key);
+    setKey(key);
+    setFileName(fileName);
+  };
+
+  useEffect(() => {
+    if (updateError) {
+      alert('AI 퀴즈 생성 중 오류가 발생했습니다.');
+      setIsLoading(false);
+    }
+  }, [updateError]);
+
+  const handleAIAnswerClick = async (quizIndex, quiz) => {
+    if (contentType !== '0320' && !contentUrl) {
+      alert('콘텐츠 URL을 입력해주세요.');
+      return false;
+    }
+
+    // Find the specific quiz in quizList and create formattedQuizList
+    const params = {
+      isNew: true,
+      contentType: contentType,
+      jobs: [],
+      jobLevels: [],
+      quizzes: [
+        {
+          no: quizIndex,
+          question: quiz,
+        },
+      ],
+    };
+
+    const formData = new FormData();
+
+    if (contentType === '0320') {
+      formData.append('file', fileList[0]);
+    } else {
+      params['contentUrl'] = contentUrl;
+    }
+
+    // 객체를 JSON 문자열로 변환합니다.
+    const jsonString = JSON.stringify(params);
+    // FormData에 JSON 문자열을 추가하면서 명시적으로 'Content-Type'을 설정합니다.
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    formData.append('request', blob);
+
+    console.log('ai quiz click', params);
+    setIsLoadingAI(true);
+
+    onAIQuizAnswer(formData); // Ensure this function returns a promise
+  };
+
+  const handleAIFeedbackClick = () => {
+    if (!editedAnswer) {
+      alert(' 학습자 답변을 입력해주세요.');
+      return false;
+    }
+
+    // Find the specific quiz in quizList and create formattedQuizList
+    const params = {
+      contentType: contentType,
+      modelAnswer: modelAnswer,
+      question: selectedQuiz,
+      studentAnswer: editedAnswer,
+    };
+
+    const formData = new FormData();
+
+    if (contentType === '0320') {
+      formData.append('file', fileList[0]);
+    } else {
+      params['contentUrl'] = contentUrl;
+    }
+
+    // 객체를 JSON 문자열로 변환합니다.
+    const jsonString = JSON.stringify(params);
+    // FormData에 JSON 문자열을 추가하면서 명시적으로 'Content-Type'을 설정합니다.
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    formData.append('request', blob);
+
+    console.log('ai quiz click', params);
+    setIsLoadingAI(true);
+
+    onAIQuizAnswerFeedback(formData); // Ensure this function returns a promise
+    setIsLoadingFeedback(true);
   };
 
   return (
@@ -255,25 +473,83 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
                     ))}
                   </div>
 
-                  <div>
-                    <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식컨텐츠 URL</div>
-                    <TextField
-                      required
-                      disabled
-                      value={contentUrl}
-                      onChange={e => setContentUrl(e.target.value)}
-                      id="username"
-                      name="username"
-                      variant="outlined"
-                      type="search"
-                      size="small"
-                      fullWidth
-                      sx={{
-                        '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
-                      }}
-                    />
-                  </div>
-
+                  {contentType === '0320' ? (
+                    <div>
+                      <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">파일 업로드</div>
+                      <div className="tw-flex tw-items-center tw-justify-between tw-gap-1 tw-text-center">
+                        <div className="tw-flex tw-items-center tw-justify-between tw-gap-1 tw-text-center">
+                          {fileList.length > 0 ? (
+                            <div>
+                              {fileList.map((file, index) => (
+                                <div
+                                  className="tw-cursor-pointer tw-underline"
+                                  onClick={() => {
+                                    onFileDownload(contentUrl, fileName);
+                                  }}
+                                  key={index}
+                                >
+                                  {file.name}
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <div>파일을 추가해주세요. (pdf)</div>
+                          )}
+                        </div>
+                        <div className="tw-flex tw-items-center tw-gap-2 border tw-px-4 tw-py-2 tw-rounded">
+                          <svg
+                            width={16}
+                            height={16}
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="w-4 h-4 absolute left-0 top-0.5"
+                            preserveAspectRatio="xMidYMid meet"
+                          >
+                            <g clipPath="url(#clip0_679_9101)">
+                              <path
+                                d="M2.61042 6.86336C2.55955 6.9152 2.49887 6.95638 2.4319 6.98449C2.36494 7.01259 2.29304 7.02707 2.22042 7.02707C2.14779 7.02707 2.0759 7.01259 2.00894 6.98449C1.94197 6.95638 1.88128 6.9152 1.83042 6.86336C1.72689 6.75804 1.66887 6.61625 1.66887 6.46856C1.66887 6.32087 1.72689 6.17909 1.83042 6.07376L6.65522 1.20016C7.74322 0.355364 8.83762 -0.050236 9.92722 0.00496403C11.3 0.075364 12.3688 0.598564 13.276 1.45696C14.2008 2.33216 14.7992 3.58096 14.7992 5.09456C14.7992 6.25616 14.4616 7.27856 13.7488 8.18576L6.94642 15.1938C6.25842 15.7578 5.49362 16.0306 4.67442 15.9978C3.63442 15.9546 2.86082 15.6186 2.28562 15.0498C1.61202 14.385 1.19922 13.5682 1.19922 12.4698C1.19922 11.5962 1.50082 10.7898 2.12322 10.033L8.11042 3.92016C8.59042 3.40816 9.06002 3.10416 9.54002 3.03056C9.86039 2.9801 10.1883 3.00876 10.495 3.11403C10.8018 3.21931 11.0781 3.39801 11.3 3.63456C11.7256 4.08496 11.908 4.64656 11.844 5.28576C11.8 5.72176 11.6216 6.12336 11.2936 6.50816L5.78962 12.1466C5.73909 12.1986 5.6787 12.24 5.61198 12.2685C5.54527 12.2969 5.47355 12.3118 5.40102 12.3123C5.3285 12.3127 5.25661 12.2987 5.18954 12.2711C5.12248 12.2435 5.06159 12.2028 5.01042 12.1514C4.90625 12.0467 4.84737 11.9052 4.84647 11.7575C4.84557 11.6099 4.90273 11.4677 5.00562 11.3618L10.4832 5.75216C10.6432 5.56416 10.7272 5.37456 10.7472 5.17296C10.7792 4.85296 10.7024 4.61696 10.5032 4.40656C10.4026 4.29881 10.2769 4.21759 10.1374 4.17014C9.99779 4.12268 9.84865 4.11046 9.70322 4.13456C9.50882 4.16416 9.23682 4.34096 8.90162 4.69776L2.93922 10.7834C2.50962 11.3074 2.30162 11.8634 2.30162 12.4706C2.30162 13.2338 2.57762 13.7802 3.05522 14.2514C3.43522 14.6274 3.95122 14.8514 4.71922 14.8834C5.26322 14.905 5.76722 14.725 6.20562 14.3698L12.9232 7.44976C13.4392 6.78816 13.6968 6.00976 13.6968 5.09536C13.6968 3.90976 13.2352 2.94816 12.5224 2.27296C11.7944 1.58336 10.9624 1.17696 9.87202 1.12096C9.06562 1.07936 8.22002 1.39296 7.37842 2.03776L2.61042 6.86336Z"
+                                fill="#31343D"
+                              />
+                            </g>
+                            <defs>
+                              <clipPath id="clip0_679_9101">
+                                <rect width={16} height={16} fill="white" />
+                              </clipPath>
+                            </defs>
+                          </svg>
+                          <button className=" tw-text-sm tw-text-left tw-text-[#31343d]" onClick={handleButtonClick}>
+                            파일추가
+                          </button>
+                          <input
+                            accept=".pdf"
+                            type="file"
+                            ref={fileInputRef}
+                            style={{ display: 'none' }}
+                            onChange={handleFileChange}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식컨텐츠 URL</div>
+                      <TextField
+                        required
+                        value={contentUrl}
+                        onChange={handleContentUrlChange}
+                        id="username"
+                        name="username"
+                        variant="outlined"
+                        type="search"
+                        size="small"
+                        fullWidth
+                        sx={{
+                          '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
+                        }}
+                      />
+                    </div>
+                  )}
                   <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식컨텐츠 제목</div>
                   <TextField
                     required
@@ -281,7 +557,6 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
                     value={contentTitle}
                     onChange={e => setContentTitle(e.target.value)}
                     name="username"
-                    disabled
                     variant="outlined"
                     type="search"
                     size="small"
@@ -300,7 +575,7 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
                     {isLoading ? <CircularProgress size={20} /> : '퀴즈 생성하기'}
                   </button>
 
-                  {generatedQuizzes.map((item, i) => (
+                  {aiQuizData?.generatedQuizzes.map((item, i) => (
                     <div
                       key={i}
                       onClick={() => handleQuizMoveClick(item.question)}
@@ -360,6 +635,10 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
               <div className="tw-flex tw-justify-end tw-items-center tw-w-full tw-mt-5 tw-pb-10">
                 <button
                   onClick={() => {
+                    if (selectedQuiz === null) {
+                      alert('퀴즈를 선택해주세요.');
+                      return;
+                    }
                     setValue('two');
                   }}
                   className="tw-w-[120px] tw-mt-1 tw-px-2 tw-py-3 tw-text-sm  tw-bg-[#313B49] tw-rounded tw-text-white"
@@ -401,25 +680,45 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
                             </div>
                           </div>
                           <div className="tw-flex-auto tw-px-5 tw-w-[370px] tw-text-base">{selectedQuiz}</div>
-                          <div className="tw-flex-auto !tw-w-[310px] tw-items-center tw-flex tw-justify-end tw-gap-2">
-                            <div className="tw-text-sm tw-font-bold">답안글자수</div>
-                            <select className="tw-pl-1 tw-text-sm">
-                              <option value="100">100이내</option>
-                              <option value="200">200이내</option>
-                              <option value="300">300이내</option>
-                              <option value="400">400이내</option>
-                              <option value="500">500이내</option>
-                            </select>
-                            <button
-                              onClick={() => {
-                                // Add your button click handler logic here
-                                // handleAIAnswerClick(index, quizList.question);
-                              }}
-                              className="tw-w-[140px] tw-px-4 tw-py-[9px] tw-text-sm tw-bg-black tw-text-white tw-rounded-md"
-                            >
-                              {isLoadingAI ? <CircularProgress color="info" size={18} /> : 'AI 모범답안생성'}
-                            </button>
-                          </div>
+                          {modelAnswer ? (
+                            <>
+                              {flag ? (
+                                <button
+                                  onClick={e => handleModifySaveClick(e)}
+                                  className="tw-w-28 tw-px-4 tw-py-3 tw-text-sm tw-bg-white border tw-rounded-md"
+                                >
+                                  저장하기
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={e => handleQuizModifyClick(e)}
+                                  className="tw-w-28 tw-px-4 tw-py-3 tw-text-sm tw-bg-white border tw-rounded-md"
+                                >
+                                  수정하기
+                                </button>
+                              )}
+                            </>
+                          ) : (
+                            <div className="tw-flex-auto !tw-w-[310px] tw-items-center tw-flex tw-justify-end tw-gap-2">
+                              <div className="tw-text-sm tw-font-bold">답안글자수</div>
+                              <select className="tw-pl-1 tw-text-sm">
+                                <option value="100">100이내</option>
+                                <option value="200">200이내</option>
+                                <option value="300">300이내</option>
+                                <option value="400">400이내</option>
+                                <option value="500">500이내</option>
+                              </select>
+                              <button
+                                onClick={() => {
+                                  // Add your button click handler logic here
+                                  handleAIAnswerClick(1, selectedQuiz);
+                                }}
+                                className="tw-w-[140px] tw-px-4 tw-py-[9px] tw-text-sm tw-bg-black tw-text-white tw-rounded-md"
+                              >
+                                {isLoadingAI ? <CircularProgress color="info" size={18} /> : 'AI 모범답안생성'}
+                              </button>
+                            </div>
+                          )}
                         </div>
                       </div>
                       <div className="tw-flex tw-justify-start tw-items-center tw-px-5 tw-pt-5">
@@ -451,12 +750,37 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
                           </div>
                         </div>
                         <div className="tw-p-5 tw-flex-col tw-items-center tw-w-full">
-                          <TagsInput
-                            value={selectedKeyword}
-                            onChange={setSelectedKeyword}
-                            name="fruits"
-                            placeHolder="채점기준 주요 키워드/문구를 입력하고 엔터 입력"
-                          />
+                          <div className="tw-py-5">
+                            {flag ? (
+                              <TextField
+                                fullWidth
+                                type="text"
+                                multiline
+                                rows={4}
+                                value={editedModifyQuestion}
+                                onChange={handleModifyInputChange}
+                                onClick={handleModifyInputClick}
+                                className="tw-bg-white tw-w-full tw-border tw-rounded-md tw-px-2 tw-py-1"
+                              />
+                            ) : (
+                              <>
+                                {modelAnswer ? (
+                                  <div className="tw-py-5">{modelAnswer}</div>
+                                ) : (
+                                  <div className="tw-py-5">AI 모범답안버튼을 클릭해주세요.</div>
+                                )}
+                              </>
+                            )}
+                          </div>
+
+                          <div className="tw-py-2">
+                            <TagsInput
+                              value={quizKeyWorlds}
+                              onChange={setQuizKeyWorlds}
+                              name="fruits"
+                              placeHolder="채점기준, 키워드/문구를 입력하고 엔터 입력"
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -473,16 +797,19 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
                               fullWidth
                               type="text"
                               multiline
-                              rows={4}
+                              rows={3}
                               value={editedAnswer}
                               onChange={handleAnswerChange}
                               onClick={handleAnswerClick}
-                              className="tw-bg-white tw-w-full tw-border tw-rounded-md tw-px-2 tw-py-1"
+                              className="tw-bg-white tw-w-full tw-border tw-rounded-md tw-py-2"
                             />
                           </div>
                           <div className="tw-flex tw-justify-start tw-items-center tw-p-5 tw-pt-0">
-                            <button className="tw-w-[140px] tw-mr-5 tw-px-4 tw-py-2.5 tw-text-sm tw-bg-black tw-text-white tw-rounded-md">
-                              AI채점/피드백
+                            <button
+                              onClick={handleAIFeedbackClick}
+                              className="tw-w-[140px] tw-mr-5 tw-px-4 tw-py-2.5 tw-text-sm tw-bg-black tw-text-white tw-rounded-md"
+                            >
+                              {isLoadingFeedback ? <CircularProgress color="info" size={18} /> : 'AI채점/피드백'}
                             </button>
                             <div className="tw-text-sm tw-mr-2">AI채점 :</div>
                             <TextField
@@ -491,6 +818,7 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
                               id="outlined-basic"
                               variant="outlined"
                               className="tw-w-[80px]"
+                              value={aiQuizAnswerFeedbackData?.grading}
                             />
                           </div>
                         </div>
@@ -500,7 +828,9 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
                               AI피드백
                             </div>
                           </div>
-                          <div className="tw-flex tw-justify-start tw-items-center tw-p-5 tw-pt-5">{aiFeedback}</div>
+                          <div className="tw-flex tw-justify-start tw-items-center tw-p-5 tw-my-5">
+                            {aiQuizAnswerFeedbackData?.feedback}
+                          </div>
                         </div>
                       </>
                     )}
@@ -509,14 +839,50 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
 
                 <div className="tw-flex tw-justify-end tw-items-center tw-w-full tw-mt-5 tw-pb-10">
                   {value === 'two' && (
-                    <button
-                      onClick={() => {
-                        setValue('three');
-                      }}
-                      className="tw-w-[120px] tw-mt-1 tw-px-2 tw-py-3 tw-text-sm  tw-bg-[#313B49] tw-rounded tw-text-white"
-                    >
-                      다음
-                    </button>
+                    <div>
+                      <button
+                        onClick={() => {
+                          setValue('one');
+                        }}
+                        className="tw-w-[120px] tw-mt-1 tw-mr-3 tw-px-2 tw-py-3 tw-text-sm  tw-bg-gray-400 tw-rounded tw-text-white"
+                      >
+                        이전
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          if (modelAnswer) {
+                            setValue('three');
+                          } else {
+                            alert('AI 모범답안생성 버튼을 클릭해주세요.');
+                          }
+                        }}
+                        className="tw-w-[120px] tw-mt-1 tw-px-2 tw-py-3 tw-text-sm  tw-bg-[#313B49] tw-rounded tw-text-white"
+                      >
+                        다음
+                      </button>
+                    </div>
+                  )}
+
+                  {value === 'three' && (
+                    <div>
+                      <button
+                        onClick={() => {
+                          setValue('two');
+                        }}
+                        className="tw-w-[120px] tw-mt-1 tw-mr-3 tw-px-2 tw-py-3 tw-text-sm  tw-bg-gray-400 tw-rounded tw-text-white"
+                      >
+                        이전
+                      </button>
+                      <button
+                        onClick={() => {
+                          onRequestClose();
+                        }}
+                        className="tw-w-[120px] tw-mt-1 tw-px-2 tw-py-3 tw-text-sm  tw-bg-[#313B49] tw-rounded tw-text-white"
+                      >
+                        종료
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>

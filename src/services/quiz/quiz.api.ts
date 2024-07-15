@@ -42,6 +42,15 @@ export const saveAIQuizAnswer = async body => {
   return data.data;
 };
 
+export const saveAIQuizAnswerFeedback = async body => {
+  const { data } = await axiosGeneralAPI().post(`/api/v1/ai-feedback`, body, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return data.data;
+};
+
 export const saveAIQuizAnswerList = async body => {
   const { data } = await axiosGeneralAPI().put(
     `/api/v1/clubs/${body.clubSequence}/quizzes/${body.quizSequence}/answers/${body.memberUUID}/ai-evaluation`,

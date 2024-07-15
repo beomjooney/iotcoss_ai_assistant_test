@@ -16,6 +16,7 @@ import {
   saveAIQuizAnswerListPut,
   saveAIQuizAnswerSavePut,
   saveAIQuizAnswerEvaluation,
+  saveAIQuizAnswerFeedback,
 } from './quiz.api';
 
 export const useQuizOrder = (): UseMutationResult => {
@@ -93,9 +94,23 @@ export const useAIQuizAnswer = (): UseMutationResult => {
   return useMutation<any, any, any>(requestBody => saveAIQuizAnswer(requestBody), {
     onError: (error, variables, context) => {
       const { code, message } = error;
-      alert(`mutation error : [${code}] ${message}`);
+      // alert(`mutation error : [${code}] ${message}`);
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_GROWTHEDGE').all),
+    onSuccess: async data => {
+      // alert('수정이 완료되었습니다.');
+    },
+  });
+};
+
+export const useAIQuizAnswerFeedback = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => saveAIQuizAnswerFeedback(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('QUIZ_CONTENTS').all),
     onSuccess: async data => {
       // alert('수정이 완료되었습니다.');
     },
