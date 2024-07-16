@@ -494,7 +494,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     // Validate grade
     if (grade === '') {
       alert('점수를 입력해주세요.');
-      return;
+      return false;
     }
     formData.append('grading', grade);
     // formData.append('isNew', grade);
@@ -502,27 +502,31 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     // Validate inputList
     if (!Array.isArray(inputList)) {
       alert('Invalid input list');
-      return;
+      return false;
     }
 
     for (let i = 0; i < inputList.length; i++) {
       const input = inputList[i];
 
+      if (input.url === '' && input.value === '') {
+        continue;
+      }
+
       if (!input.url || typeof input.url !== 'string') {
-        alert(`인덱스 ${i}에서 유효하지 않은 URL`);
-        return;
+        alert(`${i + 1}번째 지식컨텐츠 URL이 유효하지 않습니다.`);
+        return false;
       }
 
       // URL validation: must start with http:// or https://
       const urlPattern = /^(http:\/\/|https:\/\/)/;
       if (!urlPattern.test(input.url)) {
         alert(`인덱스 ${i}에서 URL이 http:// 또는 https://로 시작해야 합니다`);
-        return;
+        return false;
       }
 
       if (!input.value || typeof input.value !== 'string') {
         alert(`인덱스 ${i}에서 유효하지 않은 설명`);
-        return;
+        return false;
       }
 
       formData.append(`contents[${i}].url`, input.url);
@@ -829,7 +833,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                         {item?.member?.nickname || 'N/A'}
                       </div>
                     </div>
-                    <div className="tw-flex-auto tw-w-9/12 tw-px-5">
+                    <div className="tw-flex-auto tw-w-9/12 tw-px-3  ">
                       <div className="tw-py-2">
                         <div className="tw-font-medium tw-text-[#9ca5b2] tw-text-sm">
                           <span
@@ -893,7 +897,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                                 key={index}
                                 className="tw-cursor-pointer tw-text-[#fca380] tw-underline tw-p-1 tw-mb-1"
                               >
-                                ㄴ지식컨텐츠 : {file.description}
+                                ㄴ지식컨텐츠 : {file.url}
                               </div>
                             ))}
                           </ul>
@@ -991,7 +995,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                         지식콘텐츠 추가
                       </button>
                     </div>
-                    <div className="tw-flex tw-items-center tw-gap-1">
+                    {/* <div className="tw-flex tw-items-center tw-gap-1">
                       <svg
                         width={17}
                         height={15}
@@ -1009,9 +1013,9 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                         />
                       </svg>
                       <button onClick={handleAddInput} className="tw-text-sm tw-text-left tw-text-[#31343d]">
-                        지식콘텐츠 불러오기
+                        지식컨텐츠 불러오기
                       </button>
-                    </div>
+                    </div> */}
                     <div className="tw-flex tw-items-center tw-gap-1">
                       <svg
                         width={16}
