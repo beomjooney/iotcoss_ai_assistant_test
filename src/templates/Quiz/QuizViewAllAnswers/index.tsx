@@ -833,7 +833,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                         {item?.member?.nickname || 'N/A'}
                       </div>
                     </div>
-                    <div className="tw-flex-auto tw-w-9/12 tw-px-3  ">
+                    <div className="tw-flex-auto tw-w-9/12 tw-px-3">
                       <div className="tw-py-2">
                         <div className="tw-font-medium tw-text-[#9ca5b2] tw-text-sm">
                           <span
