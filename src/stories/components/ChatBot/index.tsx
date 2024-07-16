@@ -5,8 +5,8 @@ Modal.setAppElement('#__next'); // Modal 접근성 설정
 
 const ChatbotModal = ({ isOpen, onRequestClose, token }) => {
   console.log(token);
-  // const url = `http://3.39.99.82:9998/aichatbot?accessToken=${token}`;
-  const url = `http://localhost:3000/aichatbot?accessToken=${token}`;
+  const url = `http://3.39.99.82:9998/aichatbot?accessToken=${token}`;
+  // const url = `http://localhost:3000/aichatbot?accessToken=${token}`;
 
   // useEffect(() => {
   //   if (isOpen) {
