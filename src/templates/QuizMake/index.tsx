@@ -404,7 +404,7 @@ export function QuizMakeTemplate() {
     console.log('ai quiz click');
     // 유효성 검사
     if (!quizSortType) {
-      alert('지식컨텐츠 유형을 선택하세요.');
+      alert('퀴즈 유형을 선택하세요.');
       return;
     }
 
@@ -1180,29 +1180,28 @@ export function QuizMakeTemplate() {
                       <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">파일 업로드</div>
                       <div className="tw-flex tw-items-center tw-justify-between tw-gap-1 tw-text-center">
                         <div className="tw-flex tw-items-center tw-justify-between tw-gap-1 tw-text-center">
-                          {!isContentModalClick ? (
-                            <div>
-                              {fileList.length > 0 ? (
-                                <div>
-                                  {fileList.map((file, index) => (
-                                    <div
-                                      className="tw-cursor-pointer tw-underline"
-                                      onClick={() => {
-                                        onFileDownload(contentUrl, fileName);
-                                      }}
-                                      key={index}
-                                    >
-                                      {file.name}
-                                    </div>
-                                  ))}
-                                </div>
-                              ) : (
-                                <div>파일을 추가해주세요. (pdf)</div>
-                              )}
-                            </div>
-                          ) : (
-                            <div>{fileNameCopy || '파일정보가 없습니다.'}</div>
-                          )}
+                          <div
+                            className="tw-cursor-pointer tw-underline"
+                            onClick={() => {
+                              onFileDownload(contentUrl, fileName);
+                            }}
+                          >
+                            {!isContentModalClick ? (
+                              <div>
+                                {fileList.length > 0 ? (
+                                  <div>
+                                    {fileList.map((file, index) => (
+                                      <div key={index}>{file.name}</div>
+                                    ))}
+                                  </div>
+                                ) : (
+                                  <div>파일을 추가해주세요. (pdf)</div>
+                                )}
+                              </div>
+                            ) : (
+                              <div>{fileNameCopy || '파일정보가 없습니다.'}</div>
+                            )}
+                          </div>
                         </div>
                         {!isContentModalClick && (
                           <div className="tw-flex tw-items-center tw-gap-2 border tw-px-4 tw-py-2 tw-rounded">

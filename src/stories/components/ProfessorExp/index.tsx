@@ -50,6 +50,7 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
   const [fileName, setFileName] = useState('');
   const [quizKeyWorlds, setQuizKeyWorlds] = useState([]);
   const [modelAnswer, setModelAnswer] = useState('');
+  const [quizCount, setQuizCount] = useState(3);
   const [flag, setFlag] = useState(false);
 
   const { mutate: onAIQuizSave, isSuccess: updateSuccess, isError: updateError, data: aiQuizData } = useAIQuizSave();
@@ -133,7 +134,7 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
       contentType: contentType,
       jobs: [],
       jobLevels: [],
-      quizCount: 3,
+      quizCount: quizCount,
     };
 
     if (contentType === '0320') {
@@ -156,6 +157,10 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
     // if (newValue === 'one') {
     //   setModelAnswer('');
     // }
+  };
+
+  const handleQuizCountChange = e => {
+    setQuizCount(e.target.value);
   };
 
   const handleQuizMoveClick = question => {
@@ -472,7 +477,6 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
                       />
                     ))}
                   </div>
-
                   {contentType === '0320' ? (
                     <div>
                       <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">파일 업로드</div>
@@ -565,16 +569,34 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
                       '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
                     }}
                   />
-
                   <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">퀴즈만들기</div>
-                  <button
-                    disabled={isLoading} // 로딩 중일 때 버튼 비활성화
-                    onClick={handleAIQuizClick}
-                    className="tw-w-[120px] tw-mt-1 tw-col-span-1 tw-px-2 tw-py-3 tw-text-sm tw-bg-[#313B49] tw-rounded tw-text-white"
-                  >
-                    {isLoading ? <CircularProgress size={20} /> : '퀴즈 생성하기'}
-                  </button>
-
+                  <div className="tw-flex tw-items-center tw-gap-2 tw-text-sm">
+                    생성할 퀴즈 개수 :
+                    <select
+                      className="form-select tw-w-[100px] tw-h-[40px]"
+                      onChange={handleQuizCountChange}
+                      aria-label="Default select example"
+                      value={quizCount}
+                    >
+                      <option value={1}>1</option>
+                      <option value={2}>2</option>
+                      <option value={3}>3</option>
+                      <option value={4}>4</option>
+                      <option value={5}>5</option>
+                      <option value={6}>6</option>
+                      <option value={7}>7</option>
+                      <option value={8}>8</option>
+                      <option value={9}>9</option>
+                      <option value={10}>10</option>
+                    </select>
+                    <button
+                      disabled={isLoading} // 로딩 중일 때 버튼 비활성화
+                      onClick={handleAIQuizClick}
+                      className="tw-w-[120px] tw-mt-1 tw-col-span-1 tw-px-2 tw-py-3 tw-text-sm tw-bg-[#313B49] tw-rounded tw-text-white"
+                    >
+                      {isLoading ? <CircularProgress size={20} /> : '퀴즈 생성하기'}
+                    </button>
+                  </div>
                   {aiQuizData?.generatedQuizzes.map((item, i) => (
                     <div
                       key={i}
