@@ -138,7 +138,14 @@ ClubCardProps) => {
       <Desktop>
         <Grid item xs={xs}>
           <a
-            href={'/quiz/' + `${item.clubSequence}`}
+            href={logged ? '/quiz/' + `${item.clubSequence}` : '#'}
+            onClick={e => {
+              if (!logged) {
+                e.preventDefault();
+                // 로그인되지 않은 경우 추가 작업 수행 (예: 경고 메시지 표시)
+                alert('로그인 후 이동할 수 있습니다.');
+              }
+            }}
             className=" tw-flex tw-flex-col tw-bg-white border tw-rounded-lg md:tw-flex-row tw-w-full tw-h-[230px]"
           >
             <img

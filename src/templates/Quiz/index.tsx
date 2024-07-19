@@ -17,6 +17,8 @@ import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import { ExperiencesResponse } from 'src/models/experiences';
 import { useOptions } from 'src/services/experiences/experiences.queries';
 import CircularProgress from '@mui/material/CircularProgress';
+import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
 
 const cx = classNames.bind(styles);
 
@@ -76,12 +78,14 @@ export function QuizTemplate() {
     });
   }, [page, keyWorld]);
 
+  console.log('logged', logged);
+
   return (
     <div className={cx('seminar-container')}>
       {/* <Banner title="커리어멘토스 세미나" subTitle="커멘세미나" /> */}
 
       <div className={cx('container')}>
-        <div className="tw-py-[60px] max-lg:tw-py-[50px]">
+        <div className="tw-py-[40px] max-lg:tw-py-[40px]">
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
             <Grid item xs={12} sm={2} className="tw-font-bold tw-text-4xl tw-text-black max-lg:!tw-text-2xl">
               퀴즈클럽
@@ -180,7 +184,11 @@ export function QuizTemplate() {
         {/* <Divider className="tw-mb-6 tw-border tw-bg-['#efefef']" /> */}
         <hr className="tw-y-14 tw-my-5 tw-h-[0.5px] tw-border-t tw-bg-gray-300 " />
         <article>
-          <div className={cx('content-area')}>
+          <div className={cx('content-area', logged ? '' : 'tw-max-h-[14rem] tw-overflow-hidden tw-relative')}>
+            {!logged && (
+              <div className="tw-absolute tw-bottom-0 tw-left-0 tw-right-0 tw-h-[300px] tw-bg-gradient-to-t tw-from-white tw-to-transparent tw-pointer-events-none"></div>
+            )}
+
             <Grid
               container
               direction="row"
@@ -228,6 +236,35 @@ export function QuizTemplate() {
               <Pagination page={page} setPage={setPage} total={totalPage} />
             </div>
           </div>
+          {!logged && (
+            <div className="tw-flex tw-flex-col tw-gap-5 tw-max-w-sm tw-px-4 tw-mx-auto tw-py-14">
+              <div className="tw-w-full tw-flex tw-flex-col tw-gap-2 tw-text-center">
+                <p className="tw-text-2xl tw-text-color-text-bold tw-font-bold tw-text-black">
+                  퀴즈 클럽이 궁금하다면?
+                </p>
+              </div>
+              <div>
+                <div className="tw-flex tw-flex-row tw-justify-center tw-items-center tw-gap-2">
+                  <p className="tw-text-sm tw-text-color-slate-900 tw-py-3">이미 회원이신가요?</p>
+                </div>
+                <button
+                  className="tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-bg-[#e11837] tw-text-white"
+                  onClick={() => router.push('/account/login')}
+                >
+                  로그인
+                </button>
+              </div>
+              <Divider className={cx('sign-color', 'tw-py-1')}>또는</Divider>
+              <div>
+                <button
+                  className="tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-bg-black tw-text-white"
+                  onClick={() => router.push('/account/signup')}
+                >
+                  <Typography sx={{ fontWeight: '600', fontSize: 16 }}>이메일로 가입하기</Typography>
+                </button>
+              </div>
+            </div>
+          )}
         </article>
       </div>
     </div>

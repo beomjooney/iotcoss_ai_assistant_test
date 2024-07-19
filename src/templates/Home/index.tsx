@@ -113,7 +113,12 @@ export function HomeTemplate({ logged = false }: HomeProps) {
               </div>
             </div>
           </div>
-          <div className="tw-w-36 md:tw-w-48 tw-h-12 md:tw-h-20">
+          <div
+            onClick={() => {
+              router.push('/quiz');
+            }}
+            className="tw-cursor-pointer tw-w-36 md:tw-w-48 tw-h-12 md:tw-h-20"
+          >
             <div className="tw-w-36 md:tw-w-48 tw-h-12 md:tw-h-20 tw-absolute tw-left-[24px] md:tw-left-[46.5px] tw-top-[210px] md:tw-top-[373.5px] tw-rounded-lg tw-bg-[#7ed869]" />
             <div className="tw-absolute tw-left-[44px] md:tw-left-[70px] tw-top-[217px] md:tw-top-[385px] tw-text-xs md:tw-text-lg tw-text-left tw-text-white">
               <div className="tw-flex tw-items-center">

@@ -70,7 +70,7 @@ export function QuizGrowthTemplate({ id }: QuizGrowthTemplateProps) {
   return (
     <div className={cx('seminar-detail-container')}>
       <div className={cx('container')}>
-        <div className="tw-py-[60px] max-lg:tw-py-[50px]">
+        <div className="tw-py-[40px] max-lg:tw-py-[40px]">
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
             <Grid item xs={12} sm={2} className="tw-font-bold tw-text-3xl tw-text-black max-lg:!tw-text-2xl">
               퀴즈클럽
