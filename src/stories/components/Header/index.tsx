@@ -76,6 +76,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
   };
 
   const router = useRouter();
+  const { update } = useSessionStore.getState();
   const { user, setUser } = useStore();
   const [scroll, setScroll] = useState(0);
   const [headerTop, setHeaderTop] = useState(0);
@@ -144,6 +145,13 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
   };
   const handleOpenMenu = () => {
     setMenuOpen(true);
+  };
+
+  const handleThemeChange = event => {
+    console.log(event.target.value);
+    update({
+      theme: event.target.value,
+    });
   };
 
   const mobileList = (menuItem: any) => (
@@ -248,6 +256,13 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
           <div className={cx('header-link', 'navbar-brand')} onClick={handleGoHome}>
             <img src="/assets/images/header/image_1.png" width={130} alt="logo" className={cx('image-logo')} />
           </div>
+          <select
+            className="tw-bg-white tw-w-[100px] tw-rounded-md tw-text-sm tw-text-gray-500 tw-font-bold tw-py-2.5 tw-px-5 tw-mr-4 tw-rounded"
+            onChange={handleThemeChange}
+          >
+            <option value="dsu-1">라이트</option>
+            <option value="dsu-2">다크</option>
+          </select>
           <Mobile>
             <div>
               {!logged && (

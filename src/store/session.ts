@@ -5,6 +5,7 @@ import { getCookie } from 'cookies-next';
 export interface Session {
   token?: string;
   memberType: string;
+  theme?: string;
   memberId?: string;
   beforeOnePick?: string;
   job?: string;
@@ -17,6 +18,7 @@ export interface Session {
 export interface SessionStore {
   token?: string;
   memberType?: string;
+  theme?: string;
   memberId?: string;
   memberName?: string;
   beforeOnePick?: string;
@@ -32,6 +34,7 @@ const useSessionStore = create<any>(
     set => ({
       token: getCookie('access_token') ? String(getCookie('access_token')) : process.env['NEXT_PUBLIC_GUEST_TOKEN'],
       memberType: 'Guest',
+      theme: 'dsu-1',
       memberId: undefined,
       memberName: undefined,
       beforeOnePick: undefined,

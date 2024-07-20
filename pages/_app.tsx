@@ -45,6 +45,7 @@ function CustomApp({ Component, pageProps = {}, session }: AppPropsWithLayout) {
   if (!accessToken && accessToken === '') {
     update({
       token: process.env['NEXT_PUBLIC_GUEST_TOKEN'],
+      theme: 'dsu-1',
       memberType: 'Guest',
       memberId: undefined,
       memberName: undefined,
