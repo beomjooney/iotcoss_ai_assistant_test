@@ -3,9 +3,14 @@ import { HomeTemplate } from '../src/templates';
 import { useSessionStore } from '../src/store/session';
 import { useMemberInfo, useMyProfile } from '../src/services/account/account.queries';
 import { useStore } from 'src/store';
-import { useState } from 'react';
+import { useColorPresets, useColorPresetName } from 'src/utils/use-theme-color';
+import { usePresets } from 'src/utils/color-presets';
+import { useEffect } from 'react';
 
 export function IndexPage() {
+  const COLOR_PRESETS = usePresets();
+  const { colorPresetName, setColorPresetName } = useColorPresetName();
+  const { setColorPresets } = useColorPresets();
   const { memberType, memberId, name, logged, job } = useSessionStore(state => ({
     memberType: state.memberType,
     memberId: state.memberId,
@@ -15,14 +20,23 @@ export function IndexPage() {
 
   const { setUser } = useStore();
   const { data } = useMemberInfo(memberId, data => {
-    console.log('inputData', data);
+    console.log('useMemberInfo', data);
     setUser({ user: data });
   });
 
   const { data: myProfileData } = useMyProfile(data => {
-    console.log('inputData', data);
+    console.log('useMyProfile : ', data);
   });
-  console.log('myProfile', myProfileData?.tenant);
+
+  useEffect(() => {
+    if (myProfileData) {
+      if (myProfileData?.tenant?.tenantName === 'devus') {
+        setColorPresetName('yellow');
+        setColorPresets(COLOR_PRESETS[5].colors);
+      }
+    }
+  }, [myProfileData]);
+  // console.log('myProfile', myProfileData?.tenant);
 
   // TODO 로그인 수정 변경
   return (
