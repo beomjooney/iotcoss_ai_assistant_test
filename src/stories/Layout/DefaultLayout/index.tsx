@@ -1,7 +1,8 @@
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode } from 'react';
 import { Footer, Header } from '../../components';
 import { Mobile, Desktop } from 'src/hooks/mediaQuery';
 import { useSessionStore } from 'src/store/session';
+import { useState, useEffect } from 'react';
 
 export interface DefaultLayoutProps {
   /** 테마 색상 */
@@ -15,7 +16,10 @@ export interface DefaultLayoutProps {
 }
 
 const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutProps) => {
-  const { memberId, logged } = useSessionStore.getState();
+  const { logged } = useSessionStore.getState();
+  const [isContentRendered, setIsContentRendered] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
   const menuItem = [
     { no: 0, option: 'nav-item', title: '서비스 소개', link: '/', dropdown: [], login: true },
     { no: 1, option: 'nav-item', title: '퀴즈클럽', link: '/quiz', dropdown: [], login: true },
@@ -40,6 +44,16 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
     },
   ];
 
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (isMounted) {
+      setIsContentRendered(true);
+    }
+  }, [isMounted]);
+
   return (
     <div>
       <Desktop>
@@ -49,7 +63,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
         <Header darkBg={darkBg} classOption={classOption} title={title} menuItem={menuItem} />
       </Mobile>
       <section className="hero-section ptb-100">{children}</section>
-      <Footer />
+      {isContentRendered && <Footer />}
     </div>
   );
 };

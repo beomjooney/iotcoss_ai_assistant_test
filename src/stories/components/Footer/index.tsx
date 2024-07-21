@@ -1,11 +1,3 @@
-import styles from './index.module.scss';
-import classNames from 'classnames/bind';
-import { Typography } from '../index';
-import { Desktop, Mobile } from 'src/hooks/mediaQuery';
-import Divider from '@mui/material/Divider';
-
-const cx = classNames.bind(styles);
-
 const Footer = () => {
   return (
     <footer className="tw-border-b-4 border-heading mt-9 md:mt-11 lg:mt-16 3xl:mt-20 pt-2.5 lg:pt-0 2xl:pt-2">

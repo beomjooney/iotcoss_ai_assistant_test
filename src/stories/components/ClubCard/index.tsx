@@ -9,6 +9,7 @@ import Grid from '@mui/material/Grid';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import StarIcon from '@mui/icons-material/Star';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
+import Footer from '../Footer';
 
 export interface ClubCardProps {
   /** 게시판 object */
@@ -216,7 +217,6 @@ ClubCardProps) => {
           </a>
         </Grid>
       </Desktop>
-      <Mobile></Mobile>
     </>
   );
 };

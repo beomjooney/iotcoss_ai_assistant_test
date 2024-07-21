@@ -106,11 +106,11 @@ export const useMyMemberList = (
 
 export const useSeminarList = (
   params?: paramProps,
-  onSuccess?: (data: RecommendContentsResponse) => void,
+  onSuccess?: (data: any) => void,
   onError?: (error: Error) => void,
 ) => {
   const DEFAULT_SIZE = 8;
-  return useQuery<RecommendContentsResponse, Error>(
+  return useQuery<any, Error>(
     QUERY_KEY_FACTORY('SEMINAR').list({ size: DEFAULT_SIZE, ...params }),
     () => seminarList({ size: DEFAULT_SIZE, ...params }),
     {

@@ -21,11 +21,11 @@ import { useOptions } from 'src/services/experiences/experiences.queries';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
+import { UseQueryResult } from 'react-query';
 
 const cx = classNames.bind(styles);
 
 export function QuizTemplate() {
-  const { jobGroups, setJobGroups, contentTypes, setContentTypes } = useStore();
   const { logged, roles } = useSessionStore.getState();
   const router = useRouter();
   const [page, setPage] = useState(1);
@@ -34,7 +34,6 @@ export function QuizTemplate() {
   const [contents, setContents] = useState<RecommendContent[]>([]);
   const [active, setActive] = useState(0);
   const [contentType, setContentType] = useState(0);
-  const [recommendLevels, setRecommendLevels] = useState([]);
   const [keyWorld, setKeyWorld] = useState('');
 
   const [isClient, setIsClient] = useState(false);
@@ -183,7 +182,6 @@ export function QuizTemplate() {
           </Grid>
         </Box>
 
-        {/* <Divider className="tw-mb-6 tw-border tw-bg-['#efefef']" /> */}
         <hr className="tw-y-14 tw-my-5 tw-h-[0.5px] tw-border-t tw-bg-gray-300 " />
         <article>
           <div
