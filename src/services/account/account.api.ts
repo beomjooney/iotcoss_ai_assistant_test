@@ -23,6 +23,12 @@ export async function memberInfo(memberId: string) {
 }
 
 // 회원 정보 조회
+export async function myProfile() {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/my/profile`);
+  return data.data;
+}
+
+// 회원 정보 조회
 export async function personalInfo(memberId: string) {
   const { data } = await axiosGeneralAPI().get(`/api/v1/my/personal`);
   return data.data;

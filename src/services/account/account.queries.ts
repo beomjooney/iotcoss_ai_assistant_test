@@ -9,6 +9,7 @@ import {
   termsInfo,
   getProfile,
   personalInfo,
+  myProfile,
 } from './account.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 import { User } from 'src/models/user';
@@ -53,6 +54,15 @@ export const useMemberInfo = (memberId: any, onSuccess?: (data: User) => void, o
     onError,
     refetchOnWindowFocus: false,
     enabled: !!memberId,
+    retry: false,
+  });
+
+export const useMyProfile = (memberId: any, onSuccess?: (data: any) => void, onError?: (error: Error) => void) =>
+  useQuery<any, Error>(QUERY_KEY_FACTORY('EDGE_INFO').details(), () => myProfile(), {
+    onSuccess,
+    onError,
+    refetchOnWindowFocus: false,
+    enabled: true,
     retry: false,
   });
 

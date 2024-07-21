@@ -1,8 +1,9 @@
 import './index.module.scss';
 import { HomeTemplate } from '../src/templates';
 import { useSessionStore } from '../src/store/session';
-import { useMemberInfo } from '../src/services/account/account.queries';
+import { useMemberInfo, useMyProfile } from '../src/services/account/account.queries';
 import { useStore } from 'src/store';
+import { useState } from 'react';
 
 export function IndexPage() {
   const { memberType, memberId, name, logged, job } = useSessionStore(state => ({
@@ -18,22 +19,25 @@ export function IndexPage() {
     setUser({ user: data });
   });
 
-  // TODO 로그인 수정 변경
-  // console.log(user, data, user.jobGroup, !!user?.jobGroup);
-  // 홈 화면에 추가 입력 로그인 시 호출
-  // const { data: userResumeStory } = useMentor(logged ? memberId : null);
-  // console.log(userResumeStory, data, !!userResumeStory);
-  // console.log(`memberType: ${memberType}, memberId: ${memberId}, name: ${name}, logged: ${logged}`);
+  const { data: myProfileData } = useMyProfile(data => {
+    console.log('inputData', data);
+  });
+  console.log('myProfile', myProfileData?.tenant);
 
-  // return <HomeTemplate logged={logged} userType={userResumeStory?.type} />;
-  // return <HomeTemplate logged={logged} hasUserResumeStory={!!userResumeStory} userType={userResumeStory?.type} />;
+  // TODO 로그인 수정 변경
   return (
-    <HomeTemplate
-      logged={logged}
-      // job={!!user?.jobGroup}
-      // hasUserResumeStory={!!userResumeStory}
-      // userType={userResumeStory?.type}
-    />
+    <div>
+      {myProfileData?.tenant?.tenantName === 'devus' || myProfileData?.tenant?.tenantName === null ? (
+        <HomeTemplate
+          logged={logged}
+          // job={!!user?.jobGroup}
+          // hasUserResumeStory={!!userResumeStory}
+          // userType={userResumeStory?.type}
+        />
+      ) : (
+        <div>test</div>
+      )}
+    </div>
   );
 }
 

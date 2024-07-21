@@ -5917,6 +5917,8 @@ a.close.disabled {
 .align-text-top {
   vertical-align: text-top !important;
 }
+
+/*
 .bg-primary {
   background-color: #007bff !important;
 }
@@ -5926,6 +5928,8 @@ button.bg-primary:focus,
 button.bg-primary:hover {
   background-color: #0062cc !important;
 }
+*/
+
 .bg-secondary {
   background-color: #6c757d !important;
 }

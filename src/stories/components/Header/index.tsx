@@ -37,6 +37,11 @@ import ListItem from '@mui/material/ListItem';
 import Divider from '@mui/material/Divider';
 import { useQuizAlarmHistory } from 'src/services/quiz/quiz.queries';
 import { useCheckAlarm } from 'src/services/community/community.mutations';
+import { setCookie } from 'cookies-next';
+import { useTheme } from 'next-themes';
+import { usePresets } from 'src/utils/color-presets';
+import { useColorPresets, useColorPresetName } from 'src/utils/use-theme-color';
+import cn from 'src/utils/class-names';
 
 export interface NavbarProps {
   /** 테마 색상 */
@@ -52,7 +57,10 @@ export interface NavbarProps {
 const cx = classNames.bind(styles);
 
 const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
+  const { theme } = useTheme();
+  const COLOR_PRESETS = usePresets();
   const { logged, roles } = useSessionStore.getState();
+  const { colorPresetName, setColorPresetName } = useColorPresetName();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [anchorElAlarm, setAnchorElAlarm] = useState(null);
   const [contents, setContents] = useState<any>([]);
@@ -84,6 +92,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
   const [logoutButton, setLogoutButton] = useState<ReactNode>(null);
   const [adminButton, setAdminButton] = useState<ReactNode>(null);
   const [isShowMenu, setIsShowMenu] = useState<boolean>(false);
+  const { setColorPresets } = useColorPresets();
 
   //**alarm */
   const { isFetched: isContentFetched, refetch: refetch } = useQuizAlarmHistory(params, data => {
@@ -148,10 +157,14 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
   };
 
   const handleThemeChange = event => {
-    console.log(event.target.value);
+    console.log('handleThemeChange', event.target.value);
     update({
       theme: event.target.value,
     });
+    setCookie('theme', event.target.value);
+
+    setColorPresets(event.target.value);
+    // setColorPresetName(event.target?.name.toLowerCase());
   };
 
   const mobileList = (menuItem: any) => (
@@ -256,13 +269,33 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
           <div className={cx('header-link', 'navbar-brand')} onClick={handleGoHome}>
             <img src="/assets/images/header/image_1.png" width={130} alt="logo" className={cx('image-logo')} />
           </div>
-          <select
-            className="tw-bg-white tw-w-[100px] tw-rounded-md tw-text-sm tw-text-gray-500 tw-font-bold tw-py-2.5 tw-px-5 tw-mr-4 tw-rounded"
-            onChange={handleThemeChange}
-          >
-            <option value="dsu-1">라이트</option>
-            <option value="dsu-2">다크</option>
-          </select>
+          {COLOR_PRESETS.map(preset => (
+            <div key={preset?.name} className="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-1 tw-mr-4">
+              <button
+                title={preset?.name}
+                onClick={() => {
+                  setColorPresets(preset?.colors);
+                  setColorPresetName(preset?.name.toLowerCase());
+                }}
+                className={cn(
+                  'tw-grid tw-h-auto tw-w-[30px] tw-place-content-center tw-gap-2 tw-rounded tw-border-2 tw-border-transparent tw-py-1.5 tw-shadow-sm tw-transition tw-duration-300 focus-visible:tw-outline-none',
+                  colorPresetName?.toLowerCase() === preset?.name?.toLowerCase()
+                    ? 'tw-ring-1 tw-ring-primary tw-ring-offset-2 dark:tw-ring-offset-gray-100'
+                    : 'hover:border-primary',
+                )}
+                style={{ backgroundColor: preset.colors.default }}
+              ></button>
+              <span
+                className={cn(
+                  'tw-line-clamp-1',
+                  colorPresetName?.toLowerCase() === preset?.name?.toLowerCase() ? 'font-semibold' : 'font-medium',
+                )}
+                style={{ color: preset.colors.default }}
+              >
+                {theme === 'dark' && preset.name === 'Black' ? 'White' : preset.name}
+              </span>
+            </div>
+          ))}
           <Mobile>
             <div>
               {!logged && (
@@ -359,7 +392,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
           <div
             className={cx(
               'collapse navbar-collapse main-menu',
-              'navbar-mobile  tw-mt-2.5 tw-mb-2.5 tw-ml-16',
+              'navbar-mobile  tw-mt-2.5 tw-mb-2.5',
               'tw-justify-end',
               isShowMenu ? 'show' : '',
             )}
@@ -369,7 +402,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
               {menuItem.map((item, index) => {
                 if (item.login && (!item.role || roles.includes(item.role))) {
                   return (
-                    <li key={`item-` + index} className={item.option}>
+                    <li key={`item-` + index} className={cn(item.option)}>
                       <Link href={item.link}>
                         <a
                           className="nav-link"

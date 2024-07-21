@@ -34,7 +34,6 @@ const useSessionStore = create<any>(
     set => ({
       token: getCookie('access_token') ? String(getCookie('access_token')) : process.env['NEXT_PUBLIC_GUEST_TOKEN'],
       memberType: 'Guest',
-      theme: 'dsu-1',
       memberId: undefined,
       memberName: undefined,
       beforeOnePick: undefined,

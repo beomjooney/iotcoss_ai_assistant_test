@@ -23,6 +23,7 @@ import { AuthError, ForbiddenError, NotFoundError } from '../src/services/error'
 import { Session, useSessionStore } from '../src/store/session';
 import jwt_decode from 'jwt-decode';
 import { UserInfo } from '../src/models/account';
+import { ThemeProvider } from '../src/stories/components/theme-provider';
 
 /** import gtag */
 import * as gtag from 'src/lib/gtag';
@@ -40,12 +41,11 @@ export type AppPropsWithLayout<P = Record<string, unknown>> = AppProps<P> & {
 };
 
 function CustomApp({ Component, pageProps = {}, session }: AppPropsWithLayout) {
-  const { update, memberId, job, memberType, token, logged } = useSessionStore.getState();
+  const { update, memberId, job, memberType, token, logged, theme } = useSessionStore.getState();
   const accessToken = getCookie('access_token');
   if (!accessToken && accessToken === '') {
     update({
       token: process.env['NEXT_PUBLIC_GUEST_TOKEN'],
-      theme: 'dsu-1',
       memberType: 'Guest',
       memberId: undefined,
       memberName: undefined,
@@ -111,14 +111,16 @@ function CustomApp({ Component, pageProps = {}, session }: AppPropsWithLayout) {
         {/* Global Site Tag (gtag.js) - Google Analytics */}
       </Head>
       <main className="app">
-        <QueryClientProvider client={queryClient}>
-          <Hydrate state={pageProps.dehydratedState}>
-            <Layout {...LayoutProps}>
-              <Component {...pageProps} />
-            </Layout>
-          </Hydrate>
-          <ReactQueryDevtools initialIsOpen={false} />
-        </QueryClientProvider>
+        <ThemeProvider>
+          <QueryClientProvider client={queryClient}>
+            <Hydrate state={pageProps.dehydratedState}>
+              <Layout {...LayoutProps}>
+                <Component {...pageProps} />
+              </Layout>
+            </Hydrate>
+            <ReactQueryDevtools initialIsOpen={false} />
+          </QueryClientProvider>
+        </ThemeProvider>
       </main>
     </>
   );
@@ -152,6 +154,7 @@ CustomApp.getStaticProps = async ({ Component, ctx }: AppContext) => {
 
   try {
     const token = String(getCookie('access_token'));
+    console.log('token static', token);
     let userData: UserInfo;
     if (token) {
       userData = jwt_decode(token);

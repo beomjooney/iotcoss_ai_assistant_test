@@ -9,6 +9,8 @@ import Grid from '@mui/material/Grid';
 import { User } from 'src/models/user';
 import ChatbotModal from 'src/stories/components/ChatBot';
 import ProfessorExpModal from 'src/stories/components/ProfessorExp';
+import { useColorPresets, useApplyColorPreset } from 'src/utils/use-theme-color';
+import { usePresets } from 'src/utils/color-presets';
 
 /** date picker */
 import React from 'react';
@@ -22,16 +24,13 @@ export interface HomeProps {
 
 export function HomeTemplate({ logged = false }: HomeProps) {
   const router = useRouter();
-  const { token, theme, update } = useSessionStore.getState();
-  /** get profile */
-  // const { user, setUser } = useStore();
-  const [isClient, setIsClient] = useState(false); // 클라이언트 사이드에서만 렌어링하도록 상태 추가
-  console.log('theme1', theme);
-  // update({
-  //   theme: 'light',
-  // });
-  console.log('theme2', theme);
+  const { token } = useSessionStore.getState();
 
+  const { colorPresets } = useColorPresets();
+  const COLOR_PRESETS = usePresets();
+  useApplyColorPreset<any>(colorPresets ?? COLOR_PRESETS[0].colors);
+
+  const [isClient, setIsClient] = useState(false); // 클라이언트 사이드에서만 렌어링하도록 상태 추가
   useEffect(() => {
     setIsClient(true); // 클라이언트 사이드에서 상태를 true로 설정
   }, []);
@@ -102,10 +101,8 @@ export function HomeTemplate({ logged = false }: HomeProps) {
             }}
             className=" tw-cursor-pointer tw-w-36 md:tw-w-48 tw-h-12 md:tw-h-20"
           >
-            <div
-              className={`tw-bg-${theme} tw-w-36 md:tw-w-48 tw-h-12 md:tw-h-20 tw-absolute tw-left-[170px] md:tw-left-[261.38px] tw-top-[210px] md:tw-top-[373.5px] tw-rounded-lg `}
-            />
             {/* <div className=" tw-bg-[#478af5] tw-w-36 md:tw-w-48 tw-h-12 md:tw-h-20 tw-absolute tw-left-[170px] md:tw-left-[261.38px] tw-top-[210px] md:tw-top-[373.5px] tw-rounded-lg " /> */}
+            <div className="tw-bg-primary tw-w-36 md:tw-w-48 tw-h-12 md:tw-h-20 tw-absolute tw-left-[170px] md:tw-left-[261.38px] tw-top-[210px] md:tw-top-[373.5px] tw-rounded-lg " />
             <div className="tw-absolute tw-left-[185px] md:tw-left-[285px] tw-top-[217px] md:tw-top-[385px] tw-text-xs md:tw-text-lg tw-text-left tw-text-white">
               <div className="tw-flex tw-items-center">
                 <img
