@@ -1,0 +1,146 @@
+@use 'src/stories/assets/styles/abstracts/font';
+@use 'src/stories/assets/styles/abstracts/palette';
+@use 'src/stories/assets/styles/abstracts/mixin';
+
+.check-area {
+  &__item {
+    margin-right: 24px;
+
+    span {
+      font-weight: 500;
+      font-size: 8px;
+      line-height: 18px;
+      color: black;
+    }
+  }
+}
+
+.career-main {
+  .main-container {
+    display: block;
+    margin: 0 auto;
+
+    .border-bottom {
+      border-bottom: 1px solid palette.$Primary-Gray500;
+    }
+
+    .growth-area {
+      display: flex;
+      gap: 32px;
+      margin-bottom: 50px;
+    }
+
+    .recommended-area {
+      display: flex;
+      gap: 32px;
+    }
+  }
+
+  .user-wrap {
+    width: 100%;
+    margin: 10px auto;
+    position: relative;
+  }
+  .user-wrap img {
+    width: 100%;
+    vertical-align: middle;
+  }
+  .user-text {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    width: 100%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    font-family: 'ypseo';
+    text-align: center;
+  }
+
+  .title {
+    @media (min-width: 320px) and (max-width: 992px) {
+      // color: palette.$Primary-Gray900;
+      line-height: 72px;
+      font-size: 2em;
+      display: inline-block;
+      width: 252px;
+    }
+
+    color: palette.$Primary-Gray900;
+    line-height: 72px;
+
+    &--highlight {
+      @media (min-width: 320px) and (max-width: 992px) {
+        color: palette.$Primary-Blue900;
+        line-height: 0px;
+        font-size: 2em;
+      }
+      color: palette.$Primary-Blue900;
+      line-height: 72px;
+    }
+    &__desc {
+      font-weight: 600;
+      font-size: 15px;
+      line-height: 24px;
+      color: black;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .action-btn {
+      position: absolute;
+      bottom: 158px;
+      left: 24%;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .top-banner {
+      // height: 312px;
+      width: 100%;
+    }
+  }
+
+  @media (min-width: 320px) and (max-width: 992px) {
+    .action-btn {
+      position: absolute;
+      bottom: 80px;
+      left: 18%;
+    }
+  }
+
+  .absolute-content {
+    position: absolute !important;
+  }
+  .fit-content {
+    width: fit-content;
+    @media (min-width: 320px) and (max-width: 992px) {
+      display: inline-block;
+    }
+  }
+
+  .color-primary {
+    color: palette.$Primary-Blue900;
+  }
+
+  .content-wrap {
+    row-gap: 60px;
+  }
+
+  .text-height {
+    line-height: normal;
+  }
+
+  section {
+    text-align: center;
+    @include mixin.initflexWrapContainer;
+  }
+
+  .job-group-area {
+    @media (min-width: 1200px) {
+      .job-group__wrap {
+        // width: 1110px;
+        margin: 0 auto;
+      }
+    }
+  }
+}
