@@ -27,15 +27,13 @@ export function IndexPage() {
   // TODO 로그인 수정 변경
   return (
     <div>
-      {myProfileData?.tenant?.tenantName === 'devus' || myProfileData?.tenant?.tenantName === null ? (
+      {(myProfileData?.tenant?.tenantName === 'devus' || myProfileData?.tenant?.tenantName === null) && (
         <HomeTemplate
           logged={logged}
           // job={!!user?.jobGroup}
           // hasUserResumeStory={!!userResumeStory}
           // userType={userResumeStory?.type}
         />
-      ) : (
-        <div>test</div>
       )}
     </div>
   );

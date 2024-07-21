@@ -24,6 +24,8 @@ import { Session, useSessionStore } from '../src/store/session';
 import jwt_decode from 'jwt-decode';
 import { UserInfo } from '../src/models/account';
 import { ThemeProvider } from '../src/stories/components/theme-provider';
+import { useColorPresets, useApplyColorPreset } from 'src/utils/use-theme-color';
+import { usePresets } from 'src/utils/color-presets';
 
 /** import gtag */
 import * as gtag from 'src/lib/gtag';
@@ -65,6 +67,11 @@ function CustomApp({ Component, pageProps = {}, session }: AppPropsWithLayout) {
   const [queryClient] = useState(() => new QueryClient());
   const Layout = Component.Layout ?? DefaultLayout;
   const LayoutProps = Component.LayoutProps ?? {};
+
+  /**color change */
+  const { colorPresets } = useColorPresets();
+  const COLOR_PRESETS = usePresets();
+  useApplyColorPreset<any>(colorPresets ?? COLOR_PRESETS[0].colors);
 
   /**gtag */
   const router = useRouter();

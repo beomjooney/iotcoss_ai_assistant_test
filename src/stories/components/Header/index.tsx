@@ -156,17 +156,6 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
     setMenuOpen(true);
   };
 
-  const handleThemeChange = event => {
-    console.log('handleThemeChange', event.target.value);
-    update({
-      theme: event.target.value,
-    });
-    setCookie('theme', event.target.value);
-
-    setColorPresets(event.target.value);
-    // setColorPresetName(event.target?.name.toLowerCase());
-  };
-
   const mobileList = (menuItem: any) => (
     <Box role="presentation">
       <div

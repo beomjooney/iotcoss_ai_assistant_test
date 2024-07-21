@@ -1,16 +1,10 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import { useContentJobTypes, useContentTypes, useJobGroups, useJobGroupss } from 'src/services/code/code.queries';
 import { useEffect, useRef, useState } from 'react';
-import { useStore } from 'src/store';
 import { useRouter } from 'next/router';
 import { useSessionStore } from '../../store/session';
-import Grid from '@mui/material/Grid';
-import { User } from 'src/models/user';
 import ChatbotModal from 'src/stories/components/ChatBot';
 import ProfessorExpModal from 'src/stories/components/ProfessorExp';
-import { useColorPresets, useApplyColorPreset } from 'src/utils/use-theme-color';
-import { usePresets } from 'src/utils/color-presets';
 
 /** date picker */
 import React from 'react';
@@ -25,10 +19,6 @@ export interface HomeProps {
 export function HomeTemplate({ logged = false }: HomeProps) {
   const router = useRouter();
   const { token } = useSessionStore.getState();
-
-  const { colorPresets } = useColorPresets();
-  const COLOR_PRESETS = usePresets();
-  useApplyColorPreset<any>(colorPresets ?? COLOR_PRESETS[0].colors);
 
   const [isClient, setIsClient] = useState(false); // 클라이언트 사이드에서만 렌어링하도록 상태 추가
   useEffect(() => {
