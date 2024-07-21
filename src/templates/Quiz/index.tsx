@@ -1,3 +1,5 @@
+'use client';
+
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import { ToggleLabel, Pagination, ClubCard } from 'src/stories/components';
@@ -41,7 +43,7 @@ export function QuizTemplate() {
     setIsClient(true);
   }, []);
 
-  const { isFetched: isOptionFetched, data: optionsData }: UseQueryResult<ExperiencesResponse> = useOptions();
+  const { isFetched: isOptionFetched, data: optionsData }: UseQueryResult<any> = useOptions();
 
   const {
     isFetched: isContentFetched,
@@ -184,8 +186,10 @@ export function QuizTemplate() {
         {/* <Divider className="tw-mb-6 tw-border tw-bg-['#efefef']" /> */}
         <hr className="tw-y-14 tw-my-5 tw-h-[0.5px] tw-border-t tw-bg-gray-300 " />
         <article>
-          <div className={cx('content-area', logged ? '' : 'tw-max-h-[14rem] tw-overflow-hidden tw-relative')}>
-            {!logged && (
+          <div
+            className={cx('content-area', isClient && logged ? '' : 'tw-max-h-[14rem] tw-overflow-hidden tw-relative')}
+          >
+            {isClient && !logged && (
               <div className="tw-absolute tw-bottom-0 tw-left-0 tw-right-0 tw-h-[300px] tw-bg-gradient-to-t tw-from-white tw-to-transparent tw-pointer-events-none"></div>
             )}
 
@@ -236,7 +240,7 @@ export function QuizTemplate() {
               <Pagination page={page} setPage={setPage} total={totalPage} />
             </div>
           </div>
-          {!logged && (
+          {isClient && !logged && (
             <div className="tw-flex tw-flex-col tw-gap-5 tw-max-w-sm tw-px-4 tw-mx-auto tw-py-14">
               <div className="tw-w-full tw-flex tw-flex-col tw-gap-2 tw-text-center">
                 <p className="tw-text-2xl tw-text-color-text-bold tw-font-bold tw-text-black">

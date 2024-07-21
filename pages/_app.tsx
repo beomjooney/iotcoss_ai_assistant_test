@@ -166,7 +166,6 @@ CustomApp.getStaticProps = async ({ Component, ctx }: AppContext) => {
     if (token) {
       userData = jwt_decode(token);
     }
-
     session = {
       logged: userData.sub !== 'Guest',
       memberType: userData.sub,
@@ -211,6 +210,5 @@ CustomApp.getStaticProps = async ({ Component, ctx }: AppContext) => {
       }
     }
   }
-
   return { ...pageProps, session };
 };

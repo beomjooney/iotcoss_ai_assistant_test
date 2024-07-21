@@ -67,7 +67,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
   const [alarmCount, setAlarmCount] = useState<number>(0);
   const [page, setPage] = useState(1);
   const [params, setParams] = useState<any>({ page, logged });
-  console.log(logged);
+
   const open = Boolean(anchorEl);
   const handleClicks = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);

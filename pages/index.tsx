@@ -10,10 +10,9 @@ import { useEffect } from 'react';
 
 export function IndexPage() {
   const COLOR_PRESETS = usePresets();
-  const { colorPresetName, setColorPresetName } = useColorPresetName();
+  const { setColorPresetName } = useColorPresetName();
   const { setColorPresets } = useColorPresets();
-  const { memberType, memberId, name, logged, job } = useSessionStore(state => ({
-    memberType: state.memberType,
+  const { memberId, logged } = useSessionStore(state => ({
     memberId: state.memberId,
     name: state.name,
     logged: state.logged,
@@ -52,9 +51,9 @@ export function IndexPage() {
       }
     }
   }, [myProfileData]);
+
   const renderTemplate = () => {
     const tenantName = myProfileData?.tenant?.tenantName;
-
     switch (tenantName) {
       case 'devus':
       case null:
