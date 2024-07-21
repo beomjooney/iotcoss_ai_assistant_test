@@ -38,11 +38,11 @@ export const usePresets = () => {
     {
       name: 'Black',
       colors: {
-        lighter: theme === 'light' ? presetLight.lighter : presetDark.lighter,
-        light: theme === 'light' ? presetLight.light : presetDark.light,
-        default: theme === 'light' ? presetLight.default : presetDark.default,
-        dark: theme === 'light' ? presetLight.dark : presetDark.dark,
-        foreground: theme === 'light' ? presetLight.foreground : presetDark.foreground,
+        lighter: theme !== 'light' ? presetLight.lighter : presetDark.lighter,
+        light: theme !== 'light' ? presetLight.light : presetDark.light,
+        default: theme !== 'light' ? presetLight.default : presetDark.default,
+        dark: theme !== 'light' ? presetLight.dark : presetDark.dark,
+        foreground: theme !== 'light' ? presetLight.foreground : presetDark.foreground,
       },
     },
     {

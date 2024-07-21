@@ -1,5 +1,6 @@
 import './index.module.scss';
 import { HomeTemplate } from '../src/templates';
+import { HomeSejongTemplate } from '../src/templates/HomeSeJong';
 import { useSessionStore } from '../src/store/session';
 import { useMemberInfo, useMyProfile } from '../src/services/account/account.queries';
 import { useStore } from 'src/store';
@@ -30,27 +31,44 @@ export function IndexPage() {
 
   useEffect(() => {
     if (myProfileData) {
-      if (myProfileData?.tenant?.tenantName === 'devus') {
-        setColorPresetName('yellow');
-        setColorPresets(COLOR_PRESETS[5].colors);
+      const tenantName = myProfileData?.tenant?.tenantName;
+      switch (tenantName) {
+        case 'devus':
+          setColorPresetName('blue');
+          setColorPresets(COLOR_PRESETS[0].colors);
+          break;
+        case 'sejong':
+          setColorPresetName('black');
+          setColorPresets(COLOR_PRESETS[1].colors);
+          break;
+        case 'example':
+          setColorPresetName('teal');
+          setColorPresets(COLOR_PRESETS[2].colors);
+          break;
+        default:
+          setColorPresetName('blue');
+          setColorPresets(COLOR_PRESETS[0].colors);
+          break;
       }
     }
   }, [myProfileData]);
-  // console.log('myProfile', myProfileData?.tenant);
+  const renderTemplate = () => {
+    const tenantName = myProfileData?.tenant?.tenantName;
+
+    switch (tenantName) {
+      case 'devus':
+      case null:
+      case 'example':
+        return <HomeTemplate logged={logged} />;
+      case 'sejong':
+        return <HomeSejongTemplate logged={logged} />;
+      default:
+        return null;
+    }
+  };
 
   // TODO 로그인 수정 변경
-  return (
-    <div>
-      {(myProfileData?.tenant?.tenantName === 'devus' || myProfileData?.tenant?.tenantName === null) && (
-        <HomeTemplate
-          logged={logged}
-          // job={!!user?.jobGroup}
-          // hasUserResumeStory={!!userResumeStory}
-          // userType={userResumeStory?.type}
-        />
-      )}
-    </div>
-  );
+  return <div>{renderTemplate()}</div>;
 }
 
 export default IndexPage;
