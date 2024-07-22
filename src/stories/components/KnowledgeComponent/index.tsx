@@ -208,6 +208,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
     setSelectedSubject(data.content?.studySubject);
     setSelectedChapter(data.content?.studyChapter);
     setSelected2(data.content?.skills);
+    setSelected1(data.content?.studyKeywords);
     setUniversityCode(data.jobGroups[0].code);
     setActiveQuiz(data.jobLevels && data.jobLevels.length > 0 ? data.jobLevels[0].code : '');
 

@@ -56,6 +56,7 @@ export function IndexPage() {
     const tenantName = myProfileData?.tenant?.tenantName;
     switch (tenantName) {
       case 'devus':
+      case 'dsu':
       case null:
       case 'example':
         return <HomeTemplate logged={logged} />;
@@ -67,7 +68,7 @@ export function IndexPage() {
   };
 
   // TODO 로그인 수정 변경
-  return <div>{renderTemplate()}</div>;
+  return <div className="tw-h-[1400px]">{renderTemplate()}</div>;
 }
 
 export default IndexPage;
