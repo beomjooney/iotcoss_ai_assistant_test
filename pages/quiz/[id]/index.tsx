@@ -1,3 +1,4 @@
+import React, { useEffect, useRef } from 'react';
 import './index.module.scss';
 import { QuizDetailTemplate } from 'src/templates';
 import { useSessionStore } from 'src/store/session';
@@ -10,7 +11,11 @@ export function QuizDetailPage() {
   const router = useRouter();
   const id = router.query['id'].toString();
 
-  return <QuizDetailTemplate id={id} />;
+  return (
+    <div className="tw-h-[2500px]">
+      <QuizDetailTemplate id={id} />
+    </div>
+  );
 }
 
 export default QuizDetailPage;
