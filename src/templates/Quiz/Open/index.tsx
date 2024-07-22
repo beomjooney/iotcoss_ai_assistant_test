@@ -136,6 +136,7 @@ export function QuizOpenTemplate() {
     setSelectedUniversityName(clubForm.jobGroups[0]?.name || '');
     setSelectedJobName(clubForm.jobs[0]?.name || '');
     setJobLevelName(clubForm.jobLevels[0]?.name || '');
+    setLevelNames(clubForm.jobLevels.map(item => item.name));
     const selected = optionsData?.data?.jobs?.find(u => u.code === clubForm.jobGroups[0]?.code);
     setJobs(selected ? selected.jobs : []);
     const jobsCode = clubForm.jobs.map(item => item.code);
@@ -468,6 +469,7 @@ export function QuizOpenTemplate() {
   const [studyCycleNum, setStudyCycleNum] = useState([]);
   const [recommendLevels, setRecommendLevels] = useState([]);
   const [universityCode, setUniversityCode] = useState<string>('');
+  const [levelNames, setLevelNames] = useState([]);
 
   const [quizType, setQuizType] = useState('0100');
   const [recommendLevelsPopUp, setRecommendLevelsPopUp] = useState([]);
@@ -728,14 +730,6 @@ export function QuizOpenTemplate() {
     setNum(event.target.value);
   };
 
-  const handleInputQuizChange = event => {
-    setQuizName(event.target.value);
-  };
-
-  const handleInputQuizUrlChange = event => {
-    setQuizUrl(event.target.value);
-  };
-
   const handleInputQuizSearchChange = event => {
     setQuizSearch(event.target.value);
   };
@@ -759,17 +753,6 @@ export function QuizOpenTemplate() {
   const onMessageChange5 = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, no?: number) => {
     const { name, value } = event.currentTarget;
     setCareerText(value);
-  };
-
-  const handleJobGroups = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
-    //console.log(event.currentTarget);
-    setJobGroupPopUp(newFormats);
-    //console.log(newFormats);
-  };
-  const handleJobsPopUp = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
-    //console.log(event.currentTarget);
-    setJobs(newFormats);
-    //console.log(newFormats);
   };
 
   const handlerClubTemp = async () => {
@@ -984,19 +967,6 @@ export function QuizOpenTemplate() {
     setPersonName([]); // Clear the selected job when university changes
   };
 
-  const handleJobChange = e => {
-    setSelectedJob(e.target.value);
-    const selectedCode = e.target.value;
-    const selected = jobs?.find(u => u.code === selectedCode);
-    setSelectedJobName(selected ? selected.name : '');
-  };
-  const handleLevelChange = e => {
-    setSelectedLevel(e.target.value);
-    const selectedCode = e.target.value;
-    const selected = optionsData?.data?.jobLevels?.find(u => u.code === selectedCode);
-    setSelectedLevelName(selected ? selected.name : '');
-  };
-
   const handleUniversityChangeQuiz = e => {
     setUniversityCodeQuiz(e.target.value);
   };
@@ -1128,6 +1098,13 @@ export function QuizOpenTemplate() {
                           onChange={() => {
                             const index = recommendLevels.indexOf(item.code);
                             setRecommendLevels(prevState => newCheckItem(item.code, index, prevState));
+                            if (index >= 0) {
+                              // Remove the name if the code is already in the array
+                              setLevelNames(prevNames => prevNames.filter(name => name !== item.name));
+                            } else {
+                              // Add the name if the code is not in the array
+                              setLevelNames(prevNames => [...prevNames, item.name]);
+                            }
                           }}
                           className={cx('tw-mr-2 !tw-w-[85px] !tw-h-[37px]')}
                         />
@@ -1663,20 +1640,13 @@ export function QuizOpenTemplate() {
                   <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
                     <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">학과</p>
                     <div className="tw-flex-grow tw-flex-shrink tw-relative tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
-                      <TextField size="small" fullWidth id="margin-none" value={selectedJobName} disabled />
+                      <TextField size="small" fullWidth id="margin-none" value={personName} disabled />
                     </div>
                   </div>
                   <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
                     <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">학년</p>
                     <div className="tw-flex-grow tw-flex-shrink tw-relative tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
-                      <TextField
-                        size="small"
-                        fullWidth
-                        disabled
-                        id="margin-none"
-                        value={jobLevelName}
-                        name="clubName"
-                      />
+                      <TextField size="small" fullWidth disabled id="margin-none" value={levelNames} name="clubName" />
                     </div>
                   </div>
                 </div>

@@ -29,8 +29,6 @@ const studyStatus = [
 ];
 
 const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) => {
-  const [isShow, setIsShow] = useState<boolean>(false);
-  const [scrollPosition, setScrollPosition] = useState<number>(0);
   const [value, setValue] = useState('one');
   const [contentType, setContentType] = useState('');
   const [contentTitle, setContentTitle] = useState('');
@@ -44,7 +42,6 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
   const [quizList, setQuizList] = useState([]);
   const [isLoadingAI, setIsLoadingAI] = useState(false);
   const [isLoadingFeedback, setIsLoadingFeedback] = useState(false);
-  const [aiFeedback, setAiFeedback] = useState('');
   const [fileList, setFileList] = useState([]);
   const [key, setKey] = useState('');
   const [fileName, setFileName] = useState('');
@@ -52,6 +49,19 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
   const [modelAnswer, setModelAnswer] = useState('');
   const [quizCount, setQuizCount] = useState(3);
   const [flag, setFlag] = useState(false);
+
+  useEffect(() => {
+    document.body.style.cssText = `
+      position: fixed;
+      top: -${window.scrollY}px;
+      overflow-y: scroll;
+      width: 100%;`;
+    return () => {
+      const scrollY = document.body.style.top;
+      document.body.style.cssText = '';
+      window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
+    };
+  }, []);
 
   const { mutate: onAIQuizSave, isSuccess: updateSuccess, isError: updateError, data: aiQuizData } = useAIQuizSave();
   const {
