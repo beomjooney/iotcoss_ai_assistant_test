@@ -120,7 +120,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
         ) : (
           // 클럽 상세 보기 화면
           isClubAboutFetched && (
-            <div className={cx('seminar-container')}>
+            <div>
               <QuizClubDetailInfo
                 border={true}
                 refetchClubAbout={refetchClubAbout}

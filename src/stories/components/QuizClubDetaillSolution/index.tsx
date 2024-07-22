@@ -307,7 +307,7 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
             </div>
           </div>
           <div className={cx('content-wrap')}>
-            <div className={cx('container', 'tw-mt-10')}>
+            <div className={cx('tw-mt-10')}>
               <Grid container direction="row" alignItems="center" rowSpacing={0}>
                 <Grid
                   item

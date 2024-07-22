@@ -2,7 +2,11 @@ import './index.module.scss';
 import { StudyRoomTemplate } from 'src/templates';
 
 export function StudyRoomPage() {
-  return <StudyRoomTemplate />;
+  return (
+    <div className="tw-h-[3000px]">
+      <StudyRoomTemplate />
+    </div>
+  );
 }
 
 export default StudyRoomPage;

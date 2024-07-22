@@ -8,6 +8,11 @@ $article-width: 100%;
 $navbar-space: 0px;
 $top-space: $navbar-space + 0px;
 
+.seminar-container {
+  @include mixin.initflexWrapContainer;
+  height: 1750px;
+}
+
 .text-bold {
   font-weight: bold !important;
 }
@@ -266,7 +271,6 @@ $top-space: $navbar-space + 0px;
 
 .seminar-detail-container {
   position: relative;
-
   .sticky {
     position: -webkit-sticky; /* 사파리 브라우저 지원 */
     position: sticky;

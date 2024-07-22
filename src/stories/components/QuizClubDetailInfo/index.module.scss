@@ -4,6 +4,7 @@
 
 .seminar-container {
   @include mixin.initflexWrapContainer;
+  height: 1700px;
   .slide__button {
     background: none !important;
     font-weight: 900;
