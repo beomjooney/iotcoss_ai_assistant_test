@@ -14,6 +14,10 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import Typography from '@mui/material/Typography';
 import { useLogin } from 'src/services/account/account.mutations';
+import { usePresets } from 'src/utils/color-presets';
+import { useEffect } from 'react';
+import { useColorPresets } from 'src/utils/use-theme-color';
+import { useColorPresetName } from 'src/utils/use-theme-color';
 
 interface LoginTemplateProps {
   onSubmitLogin: () => void;
@@ -21,9 +25,26 @@ interface LoginTemplateProps {
 
 const cx = classNames.bind(styles);
 
-export function LoginTemplate({ onSubmitLogin }: LoginTemplateProps) {
+interface LoginTemplateProps {
+  title: string;
+  tenantName: string;
+  onSubmitLogin: () => void;
+}
+
+export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: LoginTemplateProps) {
   const { mutate: onLogin, isSuccess } = useLogin();
   const router = useRouter();
+  const COLOR_PRESETS = usePresets();
+  const { setColorPresetName } = useColorPresetName();
+  const { setColorPresets } = useColorPresets();
+
+  useEffect(() => {
+    if (!COLOR_PRESETS || COLOR_PRESETS.length === 0) return;
+
+    const preset = COLOR_PRESETS.find(preset => preset.name === tenantName) || COLOR_PRESETS[0];
+    setColorPresetName(preset.name);
+    setColorPresets(preset.colors);
+  }, []);
 
   const handleLogin = async () => {
     location.href = `${process.env['NEXT_PUBLIC_GENERAL_API_URL']}/oauth2/authorize/kakao?redirect_uri=${process.env['NEXT_PUBLIC_REDIRECT_URL']}`;
@@ -70,7 +91,7 @@ export function LoginTemplate({ onSubmitLogin }: LoginTemplateProps) {
     <div className={cx('login-container')}>
       <div className={cx('logo-area')}>
         {/* <img src="/assets/images/cm_CI_co_1000x225.png" alt="footer logo" width={162} className="img-fluid mb-3" /> */}
-        <p className={cx('logo-area__text')}>로그인</p>
+        <p className={cx('tw-font-bold tw-text-[26px] tw-text-black tw-py-5 tw-text-center')}>{title} 로그인</p>
         {/* <Divider className={cx('sign-color')}>또는 이메일 로그인</Divider> */}
       </div>
       <form onSubmit={handleSubmit(onSubmit, onError)}>
@@ -131,7 +152,8 @@ export function LoginTemplate({ onSubmitLogin }: LoginTemplateProps) {
         </Grid>
         <div style={{ marginBottom: '20px', marginTop: '20px', textAlign: 'center' }}>
           <button
-            className="tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-bg-[#e11837] tw-text-white"
+            className="tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-bg-primary tw-text-white"
+            // className="tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-bg-[#e11837] tw-text-white"
             onClick={() => handleSubmit(onSubmit)}
           >
             로그인
@@ -150,9 +172,9 @@ export function LoginTemplate({ onSubmitLogin }: LoginTemplateProps) {
           <Typography sx={{ fontWeight: '600', fontSize: 16 }}>학번으로 로그인</Typography>
         </button>
       </div>
-      <Box display="flex" justifyContent="center" sx={{ fontWeight: 'bold' }}>
-        <Typography sx={{ fontSize: 14 }}>동서대학교 devus 계정이 없으신가요?</Typography>
-      </Box>
+      {/* <Box display="flex" justifyContent="center" sx={{ fontWeight: 'bold' }}>
+        <Typography sx={{ fontSize: 14 }}>{title} 계정이 없으신가요?</Typography>
+      </Box> */}
       <Box display="flex" justifyContent="center" sx={{ fontWeight: 'bold' }}>
         <Typography
           onClick={() => router.push('/account/signup')}

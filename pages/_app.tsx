@@ -106,7 +106,7 @@ function CustomApp({ Component, pageProps = {}, session }: AppPropsWithLayout) {
         }}
       />
       <Head>
-        <title>DSU DevUs</title>
+        <title>DevUs</title>
         <meta name="description" content="DSU DevUs" />
         <meta name="keywords" content="DSU DevUs, devus" />
         <meta name="application-name" content="DSU DevUs" />

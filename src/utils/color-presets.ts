@@ -45,8 +45,19 @@ export const usePresets = () => {
         foreground: theme !== 'light' ? presetLight.foreground : presetDark.foreground,
       },
     },
+
     {
-      name: 'Teal',
+      name: 'dsu',
+      colors: {
+        lighter: '#ffe4e6', // Rose 100
+        light: '#fda4af', // Rose 300
+        default: '#e11d48', // Rose 600
+        dark: '#be123c', // Rose 700
+        foreground: '#ffffff',
+      },
+    },
+    {
+      name: 'sejong',
       colors: {
         lighter: '#ccfbf1', // Teal 100
         light: '#5eead4', // Teal 300
@@ -56,22 +67,12 @@ export const usePresets = () => {
       },
     },
     {
-      name: 'Violet',
+      name: 'b2b',
       colors: {
         lighter: '#ede9fe', // Violet 100
         light: '#a5b4fc', // Violet 300
         default: '#7c3aed', // Violet 600
         dark: '#4c1d95', // Violet 900
-        foreground: '#ffffff',
-      },
-    },
-    {
-      name: 'Rose',
-      colors: {
-        lighter: '#ffe4e6', // Rose 100
-        light: '#fda4af', // Rose 300
-        default: '#e11d48', // Rose 600
-        dark: '#be123c', // Rose 700
         foreground: '#ffffff',
       },
     },

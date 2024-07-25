@@ -14,7 +14,7 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
-    domains: ['devus.co.kr', 'k.kakaocdn.net', '3.39.99.82'],
+    domains: ['devus.co.kr', 'k.kakaocdn.net', '3.39.99.82', 'dsu.localhost', 'localhost'],
   },
   async headers() {
     return [
