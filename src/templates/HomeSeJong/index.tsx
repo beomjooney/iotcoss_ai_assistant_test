@@ -12,8 +12,6 @@ import React from 'react';
 const cx = classNames.bind(styles);
 export interface HomeSejongProps {
   logged: boolean;
-  // hasUserResumeStory: boolean;
-  // userType: any; // 0001 멘티
 }
 
 export function HomeSejongTemplate({ logged = false }: HomeSejongProps) {

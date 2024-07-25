@@ -31,7 +31,7 @@ export function IndexPage() {
   // TODO 로그인 수정 변경
   return (
     <div className="tw-h-[1400px]">
-      <HomeB2bTemplate logged={logged} />
+      <HomeB2bTemplate logged={logged} tenantName="b2b" />
     </div>
   );
 }

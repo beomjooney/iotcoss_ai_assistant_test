@@ -28,7 +28,7 @@ export function IndexPage() {
   // TODO 로그인 수정 변경
   return (
     <div className="tw-h-[1400px]">
-      <HomeTemplate logged={logged} />
+      <HomeTemplate logged={logged} tenantName="dsu" />
     </div>
   );
 }

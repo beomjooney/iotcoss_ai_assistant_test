@@ -5,6 +5,9 @@ import { useRouter } from 'next/router';
 import { useSessionStore } from '../../store/session';
 import ChatbotModal from 'src/stories/components/ChatBot';
 import ProfessorExpModal from 'src/stories/components/ProfessorExp';
+import { useColorPresets } from 'src/utils/use-theme-color';
+import { useColorPresetName } from 'src/utils/use-theme-color';
+import { usePresets } from 'src/utils/color-presets';
 
 /** date picker */
 import React from 'react';
@@ -12,17 +15,24 @@ import React from 'react';
 const cx = classNames.bind(styles);
 export interface HomeB2bProps {
   logged: boolean;
-  // hasUserResumeStory: boolean;
-  // userType: any; // 0001 멘티
+  tenantName: string;
 }
 
-export function HomeB2bTemplate({ logged = false }: HomeB2bProps) {
+export function HomeB2bTemplate({ logged = false, tenantName = '' }: HomeB2bProps) {
   const router = useRouter();
   const { token } = useSessionStore.getState();
+  const COLOR_PRESETS = usePresets();
+  const { setColorPresetName } = useColorPresetName();
+  const { setColorPresets } = useColorPresets();
 
   const [isClient, setIsClient] = useState(false); // 클라이언트 사이드에서만 렌어링하도록 상태 추가
   useEffect(() => {
     setIsClient(true); // 클라이언트 사이드에서 상태를 true로 설정
+    if (!COLOR_PRESETS || COLOR_PRESETS.length === 0) return;
+
+    const preset = COLOR_PRESETS.find(preset => preset.name === tenantName) || COLOR_PRESETS[0];
+    setColorPresetName(preset.name);
+    setColorPresets(preset.colors);
   }, []);
 
   const [modalIsProfessor, setModalIsProfessor] = useState(false);

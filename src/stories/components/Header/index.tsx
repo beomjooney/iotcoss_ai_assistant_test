@@ -93,6 +93,15 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
   const [adminButton, setAdminButton] = useState<ReactNode>(null);
   const [isShowMenu, setIsShowMenu] = useState<boolean>(false);
   const { setColorPresets } = useColorPresets();
+  const [baseUrl, setBaseUrl] = useState('');
+
+  useEffect(() => {
+    // This code runs only on the client side
+    if (typeof window !== 'undefined') {
+      setBaseUrl(window.location.origin);
+      // console.log(window.location.origin);
+    }
+  }, [router]);
 
   //**alarm */
   const { isFetched: isContentFetched, refetch: refetch } = useQuizAlarmHistory(params, data => {
@@ -133,7 +142,8 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
     if (logged) {
       await router.push('/account/my/activity');
     } else {
-      await router.push('/account/login');
+      // await router.push(`${baseUrl}/account/login`);
+      location.href = `${baseUrl}/account/login`;
     }
   };
 

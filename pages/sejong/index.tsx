@@ -28,6 +28,14 @@ export function IndexPage() {
     console.log('useMyProfile : ', data);
   });
 
+  useEffect(() => {
+    if (!COLOR_PRESETS || COLOR_PRESETS.length === 0) return;
+
+    const preset = COLOR_PRESETS.find(preset => preset.name === 'sejong') || COLOR_PRESETS[0];
+    setColorPresetName(preset.name);
+    setColorPresets(preset.colors);
+  }, []);
+
   // TODO 로그인 수정 변경
   return (
     <div className="tw-h-[1400px]">
