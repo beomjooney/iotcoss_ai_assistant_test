@@ -2,8 +2,11 @@ const express = require('express');
 const next = require('next');
 const vhost = require('vhost');
 
-const port = process.env.PORT || 3001;
+// const port = process.env.PORT || 3001;
+const port = process.env.NEXT_PUBLIC_PORT || 3001;
+const env = process.env.NEXT_PUBLIC_ENV || 'local';
 const dev = process.env.NODE_ENV !== 'production';
+
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
@@ -80,10 +83,15 @@ app.prepare().then(() => {
   //   return handle(req, res)
   // })
 
-  mainServer.use(vhost('dsu.localhost', adminServer));
-  mainServer.use(vhost('sejong.localhost', sejongServer));
-  mainServer.use(vhost('b2b.localhost', b2bServer));
-  mainServer.use(vhost('localhost', mainServer));
+  if (env === 'local') {
+    mainServer.use(vhost('dsu.localhost', adminServer));
+    mainServer.use(vhost('sejong.localhost', sejongServer));
+    mainServer.use(vhost('b2b.localhost', b2bServer));
+  } else if (env === 'dev') {
+    mainServer.use(vhost('dsu.3.39.99.82', adminServer));
+    mainServer.use(vhost('sejong.3.39.99.82', sejongServer));
+    mainServer.use(vhost('b2b.3.39.99.82', b2bServer));
+  }
   // mainServer.use(vhost('lvh.me', memberServer))
   // mainServer.use(vhost('www.lvh.me', memberServer))
   mainServer.listen(port, err => {
