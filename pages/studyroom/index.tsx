@@ -3,7 +3,7 @@ import { StudyRoomTemplate } from 'src/templates';
 
 export function StudyRoomPage() {
   return (
-    <div className="tw-h-[2600px]">
+    <div className="tw-h-[1700px]">
       <StudyRoomTemplate />
     </div>
   );

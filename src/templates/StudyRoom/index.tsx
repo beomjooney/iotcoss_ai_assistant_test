@@ -152,11 +152,11 @@ export function StudyRoomTemplate() {
   /**badge */
   const [badgeClubViewFilter, setBadgeClubViewFilter] = useState('0001');
   const [badgeParams, setBadgeParams] = useState<any>({ page: badgePage, isAchieved: true });
-  const [contents, setContents] = useState<RecommendContent[]>([]);
-  const [progressContents, setProgressContents] = useState<RecommendContent[]>([]);
+  const [contents, setContents] = useState<any[]>([]);
+  const [progressContents, setProgressContents] = useState<any[]>([]);
   const [reminderContents, setReminderContents] = useState<any[]>([]);
-  const [badgeContents, setBadgeContents] = useState<RecommendContent[]>([]);
-  const [quizList, setQuizList] = useState<RecommendContent[]>([]);
+  const [badgeContents, setBadgeContents] = useState<any[]>([]);
+  const [quizList, setQuizList] = useState<any[]>([]);
   const [active, setActive] = useState(0);
   const [contentType, setContentType] = useState(0);
   const [value, onChange] = useState<Date>(new Date());
@@ -233,14 +233,14 @@ export function StudyRoomTemplate() {
     setProgressTotalPage(data.data.totalPages);
   });
 
-  // 학습방 상세
+  // 내가푼 퀴즈
   const { isFetched: isQuizFetched, refetch: QuizRefetch } = useStudyQuizList(quizParams, data => {
     console.log(data);
     setQuizList(data.data.contents || []);
     setQuizTotalPage(data.data.totalPages);
   });
 
-  // 나의 퀴즈 컨텐츠 리스트
+  //지식컨텐츠
   const { data: myQuizContentData, refetch: refetchMyQuizContent }: UseQueryResult<any> = useMyQuizContents(
     contentParams,
     data => {

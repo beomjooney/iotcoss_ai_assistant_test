@@ -64,7 +64,7 @@ export const useStudyRoomList = (
   onSuccess?: (data: RecommendContentsResponse) => void,
   onError?: (error: Error) => void,
 ) => {
-  const DEFAULT_SIZE = 10;
+  const DEFAULT_SIZE = 8;
   return useQuery<RecommendContentsResponse, Error>(
     QUERY_KEY_FACTORY('SEMINAR').list({ size: DEFAULT_SIZE, ...params }),
     () => studyRoomList({ size: DEFAULT_SIZE, ...params }),
@@ -80,7 +80,7 @@ export const useStudyProgress = (
   onSuccess?: (data: RecommendContentsResponse) => void,
   onError?: (error: Error) => void,
 ) => {
-  const DEFAULT_SIZE = 10;
+  const DEFAULT_SIZE = 5;
   return useQuery<RecommendContentsResponse, Error>(
     QUERY_KEY_FACTORY('TEMP').list({ size: DEFAULT_SIZE, ...params }),
     () => studyProgress({ size: DEFAULT_SIZE, ...params }),
@@ -112,7 +112,7 @@ export const useStudyQuizList = (
   onSuccess?: (data: RecommendContentsResponse) => void,
   onError?: (error: Error) => void,
 ) => {
-  const DEFAULT_SIZE = 10;
+  const DEFAULT_SIZE = 6;
   return useQuery<RecommendContentsResponse, Error>(
     QUERY_KEY_FACTORY('ADMIN_CODE_LIST').list({ size: DEFAULT_SIZE, ...params }),
     () => studyQuizList({ size: DEFAULT_SIZE, ...params }),
