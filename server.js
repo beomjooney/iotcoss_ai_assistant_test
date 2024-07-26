@@ -87,10 +87,12 @@ app.prepare().then(() => {
     mainServer.use(vhost('dsu.localhost', adminServer));
     mainServer.use(vhost('sejong.localhost', sejongServer));
     mainServer.use(vhost('b2b.localhost', b2bServer));
+    mainServer.use(vhost('localhost', mainServer));
   } else if (env === 'dev') {
     mainServer.use(vhost('dsu.3.39.99.82', adminServer));
     mainServer.use(vhost('sejong.3.39.99.82', sejongServer));
     mainServer.use(vhost('b2b.3.39.99.82', b2bServer));
+    mainServer.use(vhost('3.39.99.82', mainServer));
   }
   // mainServer.use(vhost('lvh.me', memberServer))
   // mainServer.use(vhost('www.lvh.me', memberServer))
