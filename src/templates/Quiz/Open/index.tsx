@@ -623,13 +623,15 @@ export function QuizOpenTemplate() {
     const _selectedUniversityCode =
       optionsData?.data?.jobs?.find(u => u.code === selectedUniversity)?.code || universityCode;
     setUniversityCode(_selectedUniversityCode);
-    const selectedJobCode = jobs.find(j => j.code === selectedJob)?.code || 'None';
+    console.log(jobs);
+    // const selectedJobCode = jobs.find(j => j.code === selectedJob)?.code || 'None';
+    console.log('selectedJob', selectedJob);
     const clubFormParams = {
       clubName: clubName,
       clubImageUrl: imageUrl,
       jobGroups: [_selectedUniversityCode],
-      jobs: [selectedJobCode],
-      jobLevels: [recommendLevels],
+      jobs: selectedJob,
+      jobLevels: recommendLevels,
       isPublic: true,
       participationCode: participationCode,
       studyCycle: studyCycleNum,
@@ -690,7 +692,7 @@ export function QuizOpenTemplate() {
         return;
       }
       if (buttonFlag == false) {
-        alert('정기 자동 오픈에서 확인 버튼 눌러주세요.');
+        alert('클럽퀴즈 회차 입력의 확인버튼을 눌러주세요. ');
         return;
       }
     } else if (quizType == '0210' || quizType == '0300') {
@@ -833,6 +835,7 @@ export function QuizOpenTemplate() {
       startDate: startDay.format('YYYY-MM-DD'),
     });
     setButtonFlag(true);
+    setSelectedQuizIds([]);
   };
   const handlerClubMakeManual = () => {
     const weeks = [];

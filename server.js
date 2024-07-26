@@ -48,7 +48,19 @@ app.prepare().then(() => {
     return app.render(req, res, '/b2b/account/login', req.query);
   });
 
-  b2bServer.all('*', (req, res) => {
+  mainServer.all('*', (req, res) => {
+    return handle(req, res);
+  });
+
+  mainServer.get('/', (req, res) => {
+    return app.render(req, res, '/', req.query);
+  });
+
+  mainServer.get('/account/login', (req, res) => {
+    return app.render(req, res, '/account/login', req.query);
+  });
+
+  mainServer.all('*', (req, res) => {
     return handle(req, res);
   });
 
@@ -71,6 +83,7 @@ app.prepare().then(() => {
   mainServer.use(vhost('dsu.localhost', adminServer));
   mainServer.use(vhost('sejong.localhost', sejongServer));
   mainServer.use(vhost('b2b.localhost', b2bServer));
+  mainServer.use(vhost('localhost', mainServer));
   // mainServer.use(vhost('lvh.me', memberServer))
   // mainServer.use(vhost('www.lvh.me', memberServer))
   mainServer.listen(port, err => {

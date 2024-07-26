@@ -1,6 +1,6 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import { Toggle, Pagination, Chip, MentorsModal, AIQuizList } from 'src/stories/components';
+import { Toggle, Pagination, MentorsModal, AIQuizList } from 'src/stories/components';
 import React, { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Grid from '@mui/material/Grid';
@@ -73,8 +73,6 @@ export function QuizMakeTemplate() {
   } = useForm({
     resolver: yupResolver(validationSchema),
   });
-
-  // const { contentTypes, setContentTypes } = useStore();
 
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false); // Need this for the react-tooltip
@@ -1069,8 +1067,8 @@ export function QuizMakeTemplate() {
             </div>
             {/* 지식컨텐츠 */}
             <div>
-              {myQuizContentData.contents.length > 0 ? (
-                myQuizContentData.contents.map((data, index) => (
+              {myQuizContentData?.contents.length > 0 ? (
+                myQuizContentData?.contents.map((data, index) => (
                   <div key={index}>
                     <ArticleList data={data} refetchMyQuizContent={refetchMyQuizContent} />
                   </div>

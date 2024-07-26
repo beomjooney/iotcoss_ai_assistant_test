@@ -48,7 +48,7 @@ export const useMyQuiz = (
   onSuccess?: (data: RecommendContentsResponse) => void,
   onError?: (error: Error) => void,
 ) => {
-  const DEFAULT_SIZE = 10;
+  const DEFAULT_SIZE = 5;
   return useQuery<RecommendContentsResponse, Error>(
     QUERY_KEY_FACTORY('ACCOUNT_MEMBER_LOGIN').list({ size: DEFAULT_SIZE, ...params }),
     () => getMyQuiz({ size: DEFAULT_SIZE, ...params }),
@@ -64,7 +64,7 @@ export const useMyQuizContents = (
   onSuccess?: (data: RecommendContentsResponse) => void,
   onError?: (error: Error) => void,
 ) => {
-  const DEFAULT_SIZE = 5;
+  const DEFAULT_SIZE = 8;
   return useQuery<RecommendContentsResponse, Error>(
     QUERY_KEY_FACTORY('QUIZ_CONTENTS').list({ size: DEFAULT_SIZE, ...params }),
     () => getMyQuizContents({ size: DEFAULT_SIZE, ...params }),
@@ -80,7 +80,7 @@ export const useMyQuizThresh = (
   onSuccess?: (data: RecommendContentsResponse) => void,
   onError?: (error: Error) => void,
 ) => {
-  const DEFAULT_SIZE = 10;
+  const DEFAULT_SIZE = 5;
   return useQuery<RecommendContentsResponse, Error>(
     QUERY_KEY_FACTORY('MY_SEMINAR_PARTICIPANTS').list({ size: DEFAULT_SIZE, ...params }),
     () => getMyQuizThresh({ size: DEFAULT_SIZE, ...params }),
