@@ -31,6 +31,7 @@ app.prepare().then(() => {
     return handle(req, res);
   });
 
+  sejongServer.use('/assets', express.static('public/assets'));
   sejongServer.get('/', (req, res) => {
     return app.render(req, res, '/sejong', req.query);
   });
@@ -43,6 +44,7 @@ app.prepare().then(() => {
     return handle(req, res);
   });
 
+  b2bServer.use('/assets', express.static('public/assets'));
   b2bServer.get('/', (req, res) => {
     return app.render(req, res, '/b2b', req.query);
   });
@@ -51,6 +53,7 @@ app.prepare().then(() => {
     return app.render(req, res, '/b2b/account/login', req.query);
   });
 
+  mainServer.use('/assets', express.static('public/assets'));
   mainServer.all('*', (req, res) => {
     return handle(req, res);
   });

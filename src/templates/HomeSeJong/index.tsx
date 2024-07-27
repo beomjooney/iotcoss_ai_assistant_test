@@ -12,9 +12,10 @@ import React from 'react';
 const cx = classNames.bind(styles);
 export interface HomeSejongProps {
   logged: boolean;
+  tenantName: string;
 }
 
-export function HomeSejongTemplate({ logged = false }: HomeSejongProps) {
+export function HomeSejongTemplate({ logged = false, tenantName = '' }: HomeSejongProps) {
   const router = useRouter();
   const { token } = useSessionStore.getState();
 

@@ -53,15 +53,16 @@ export function IndexPage() {
   }, [myProfileData]);
 
   const renderTemplate = () => {
-    const tenantName = myProfileData?.tenant?.tenantName;
+    const tenantName = myProfileData?.tenant?.tenantName || '';
     switch (tenantName) {
       case 'devus':
       case 'dsu':
       case null:
+      case '':
       case 'example':
-        return <HomeTemplate logged={logged} />;
+        return <HomeTemplate logged={logged} tenantName={tenantName} />;
       case 'sejong':
-        return <HomeSejongTemplate logged={logged} />;
+        return <HomeSejongTemplate logged={logged} tenantName={tenantName} />;
       default:
         return null;
     }
