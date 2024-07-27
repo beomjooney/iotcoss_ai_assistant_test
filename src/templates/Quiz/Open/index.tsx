@@ -676,9 +676,13 @@ export function QuizOpenTemplate() {
     //   return;
     // }
 
+    console.log(setQuizType);
     if (num == 0) {
-      alert('클럽퀴즈 회차 입력');
-      return;
+      if (quizType == '0200') {
+      } else {
+        alert('클럽퀴즈 회차 입력');
+        return;
+      }
     }
 
     if (clubName === '') {
