@@ -419,7 +419,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                           <div className="tw-w-[90px] tw-text-center tw-text-base tw-text-black tw-font-extrabold">
                             <div
                               className={`${activeIndex === index ? 'border-bottom-3 tw-border-black pb-3' : ''}`}
-                              style={{ paddingBottom: activeIndex === index ? '10px' : '0px' }}
+                              style={{ paddingBottom: activeIndex === index ? '10px' : '10px' }}
                             >
                               {item.title}
                             </div>

@@ -31,19 +31,6 @@ function MentorsModal({
   const [isShow, setIsShow] = useState<boolean>(false);
 
   useEffect(() => {
-    document.body.style.cssText = `
-      position: fixed;
-      top: -${window.scrollY}px;
-      overflow-y: scroll;
-      width: 100%;`;
-    return () => {
-      const scrollY = document.body.style.top;
-      document.body.style.cssText = '';
-      window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
-    };
-  }, []);
-
-  useEffect(() => {
     setIsShow(isOpen);
     // if (isOpen) {
     //   setScrollPosition(window.scrollY); // 모달이 열릴 때 현재 스크롤 위치 저장

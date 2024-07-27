@@ -706,6 +706,11 @@ span.sub-title {
   color: #fafafa;
   opacity: 0.8;
 }
+
+.ReactModal__Body--open {
+  overflow-y: hidden;
+}
+
 .affix {
   background-color: #202877;
   -webkit-transition: padding 0.2s ease-out;
