@@ -607,7 +607,7 @@ span.sub-title {
   right: -15px;
 }
 .main-menu ul > li a {
-  margin: 0 0 0 20px;
+  /* margin: 0 0 0 20px; */
   font-size: 16px;
   color: #000;
   display: block;

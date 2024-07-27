@@ -94,6 +94,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
   const [isShowMenu, setIsShowMenu] = useState<boolean>(false);
   const { setColorPresets } = useColorPresets();
   const [baseUrl, setBaseUrl] = useState('');
+  const [activeIndex, setActiveIndex] = useState(null);
 
   useEffect(() => {
     // This code runs only on the client side
@@ -411,10 +412,18 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                         <a
                           className="nav-link"
                           onClick={() => {
+                            setActiveIndex(index);
                             if (item.dropdown.length === 0) setIsShowMenu(!isShowMenu);
                           }}
                         >
-                          <div className="tw-mr-2 tw-text-base tw-text-black tw-font-extrabold">{item.title}</div>
+                          <div className="tw-w-[90px] tw-text-center tw-text-base tw-text-black tw-font-extrabold">
+                            <div
+                              className={`${activeIndex === index ? 'border-bottom-3 tw-border-black pb-3' : ''}`}
+                              style={{ paddingBottom: activeIndex === index ? '10px' : '0px' }}
+                            >
+                              {item.title}
+                            </div>
+                          </div>
                         </a>
                       </Link>
                       {item.dropdown.length > 0 && (

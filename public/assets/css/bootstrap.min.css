@@ -6015,6 +6015,10 @@ button.bg-dark:hover {
 .border-bottom {
   border-bottom: 1px solid #dee2e6 !important;
 }
+.border-bottom-3 {
+  width: 90px;
+  border-bottom: 3px solid black !important ;
+}
 .border-left {
   border-left: 1px solid #dee2e6 !important;
 }

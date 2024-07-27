@@ -208,7 +208,11 @@ ClubCardProps) => {
               </div>
 
               <div className="tw-flex tw-items-center tw-space-x-4">
-                <img className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full" src={item?.leaderProfileImageUrl} alt="" />
+                <img
+                  className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full"
+                  src={item?.leaderProfileImageUrl || '/assets/avatars/3.jpg'}
+                  alt=""
+                />
                 <div className="tw-text-sm tw-font-semibold tw-text-black">
                   <div>{item?.leaderNickname}</div>
                 </div>
