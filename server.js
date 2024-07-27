@@ -15,8 +15,16 @@ app.prepare().then(() => {
   const sejongServer = express();
   const b2bServer = express();
 
+  mainServer.use(express.static('public'));
+  adminServer.use(express.static('public'));
+  sejongServer.use(express.static('public'));
+  b2bServer.use(express.static('public'));
+
   // Serve static files from 'public/assets'
   adminServer.use('/assets', express.static('public/assets'));
+  sejongServer.use('/assets', express.static('public/assets'));
+  b2bServer.use('/assets', express.static('public/assets'));
+  mainServer.use('/assets', express.static('public/assets'));
 
   adminServer.get('/', (req, res) => {
     return app.render(req, res, '/dsu', req.query);
@@ -30,7 +38,6 @@ app.prepare().then(() => {
     return handle(req, res);
   });
 
-  sejongServer.use('/assets', express.static('public/assets'));
   sejongServer.get('/', (req, res) => {
     return app.render(req, res, '/sejong', req.query);
   });
@@ -43,7 +50,6 @@ app.prepare().then(() => {
     return handle(req, res);
   });
 
-  b2bServer.use('/assets', express.static('public/assets'));
   b2bServer.get('/', (req, res) => {
     return app.render(req, res, '/b2b', req.query);
   });
@@ -52,7 +58,6 @@ app.prepare().then(() => {
     return app.render(req, res, '/b2b/account/login', req.query);
   });
 
-  mainServer.use('/assets', express.static('public/assets'));
   mainServer.get('/', (req, res) => {
     return app.render(req, res, '/', req.query);
   });
