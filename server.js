@@ -4,7 +4,6 @@ const vhost = require('vhost');
 
 // const port = process.env.PORT || 3001;
 const port = process.env.NEXT_PUBLIC_PORT || 3001;
-const env = process.env.NEXT_PUBLIC_ENV || 'local';
 const dev = process.env.NODE_ENV !== 'production';
 
 const app = next({ dev });
@@ -54,10 +53,6 @@ app.prepare().then(() => {
   });
 
   mainServer.use('/assets', express.static('public/assets'));
-  mainServer.all('*', (req, res) => {
-    return handle(req, res);
-  });
-
   mainServer.get('/', (req, res) => {
     return app.render(req, res, '/', req.query);
   });
