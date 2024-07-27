@@ -52,24 +52,12 @@ export function IndexPage() {
     }
   }, [myProfileData]);
 
-  const renderTemplate = () => {
-    const tenantName = myProfileData?.tenant?.tenantName || '';
-    switch (tenantName) {
-      case 'devus':
-      case 'dsu':
-      case null:
-      case '':
-      case 'example':
-        return <HomeTemplate logged={logged} tenantName={tenantName} />;
-      case 'sejong':
-        return <HomeSejongTemplate logged={logged} tenantName={tenantName} />;
-      default:
-        return null;
-    }
-  };
-
   // TODO 로그인 수정 변경
-  return <div className="tw-h-[1400px]">{renderTemplate()}</div>;
+  return (
+    <div className="tw-h-[1400px]">
+      <HomeTemplate logged={logged} tenantName="dsu" />
+    </div>
+  );
 }
 
 export default IndexPage;
