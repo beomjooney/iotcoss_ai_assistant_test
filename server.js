@@ -10,16 +10,11 @@ const app = next({ dev });
 const handle = app.getRequestHandler();
 
 app.prepare().then(() => {
+  const mainServer = express();
   const devServer = express();
   const adminServer = express();
   const sejongServer = express();
   const b2bServer = express();
-
-  // Serve static files from '.next/static'
-  adminServer.use('/_next/static', express.static(path.join(__dirname, '.next/static')));
-  sejongServer.use('/_next/static', express.static(path.join(__dirname, '.next/static')));
-  b2bServer.use('/_next/static', express.static(path.join(__dirname, '.next/static')));
-  devServer.use('/_next/static', express.static(path.join(__dirname, '.next/static')));
 
   // Serve static files from 'public/assets'
   adminServer.use('/assets', express.static('public/assets'));
@@ -59,6 +54,10 @@ app.prepare().then(() => {
     return app.render(req, res, '/b2b/account/login', req.query);
   });
 
+  b2bServer.all('*', (req, res) => {
+    return handle(req, res);
+  });
+
   devServer.get('/', (req, res) => {
     return app.render(req, res, '/', req.query);
   });
@@ -91,11 +90,11 @@ app.prepare().then(() => {
   mainServer.use(vhost('sejong.localhost', sejongServer));
   mainServer.use(vhost('b2b.localhost', b2bServer));
   mainServer.use(vhost('localhost', devServer));
+
   // mainServer.use(vhost('lvh.me', memberServer))
   // mainServer.use(vhost('www.lvh.me', memberServer))
   mainServer.listen(port, err => {
     if (err) throw err;
-
     console.log(`> Ready on http://localhost:${port}`);
   });
 });
