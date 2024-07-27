@@ -10,7 +10,7 @@ const app = next({ dev });
 const handle = app.getRequestHandler();
 
 app.prepare().then(() => {
-  const mainServer = express();
+  const devServer = express();
   const adminServer = express();
   const sejongServer = express();
   const b2bServer = express();
@@ -19,13 +19,13 @@ app.prepare().then(() => {
   adminServer.use('/_next/static', express.static(path.join(__dirname, '.next/static')));
   sejongServer.use('/_next/static', express.static(path.join(__dirname, '.next/static')));
   b2bServer.use('/_next/static', express.static(path.join(__dirname, '.next/static')));
-  mainServer.use('/_next/static', express.static(path.join(__dirname, '.next/static')));
+  devServer.use('/_next/static', express.static(path.join(__dirname, '.next/static')));
 
   // Serve static files from 'public/assets'
   adminServer.use('/assets', express.static('public/assets'));
   sejongServer.use('/assets', express.static('public/assets'));
   b2bServer.use('/assets', express.static('public/assets'));
-  mainServer.use('/assets', express.static('public/assets'));
+  devServer.use('/assets', express.static('public/assets'));
 
   adminServer.get('/', (req, res) => {
     return app.render(req, res, '/dsu', req.query);
@@ -59,15 +59,15 @@ app.prepare().then(() => {
     return app.render(req, res, '/b2b/account/login', req.query);
   });
 
-  mainServer.get('/', (req, res) => {
+  devServer.get('/', (req, res) => {
     return app.render(req, res, '/', req.query);
   });
 
-  mainServer.get('/account/login', (req, res) => {
+  devServer.get('/account/login', (req, res) => {
     return app.render(req, res, '/account/login', req.query);
   });
 
-  mainServer.all('*', (req, res) => {
+  devServer.all('*', (req, res) => {
     return handle(req, res);
   });
 
@@ -90,7 +90,7 @@ app.prepare().then(() => {
   mainServer.use(vhost('dsu.localhost', adminServer));
   mainServer.use(vhost('sejong.localhost', sejongServer));
   mainServer.use(vhost('b2b.localhost', b2bServer));
-  mainServer.use(vhost('localhost', mainServer));
+  mainServer.use(vhost('localhost', devServer));
   // mainServer.use(vhost('lvh.me', memberServer))
   // mainServer.use(vhost('www.lvh.me', memberServer))
   mainServer.listen(port, err => {
