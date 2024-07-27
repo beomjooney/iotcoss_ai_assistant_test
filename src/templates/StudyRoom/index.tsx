@@ -972,7 +972,7 @@ export function StudyRoomTemplate() {
                                     <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                       <img
                                         className="tw-w-10 tw-h-10 border tw-rounded-full"
-                                        src={item?.quiz?.maker?.profileImageUrl}
+                                        src={item?.quiz?.maker?.profileImageUrl || '/assets/avatars/1.jpg'}
                                       />
                                       <div className="tw-text-xs tw-text-left tw-text-black">
                                         {item?.quiz?.maker?.nickname}
@@ -1016,7 +1016,7 @@ export function StudyRoomTemplate() {
                                     <div className="tw-w-1/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                       <img
                                         className="border tw-rounded-full tw-w-10 tw-h-10 "
-                                        src={item?.member?.profileImageUrl}
+                                        src={item?.member?.profileImageUrl || '/assets/avatars/3.jpg'}
                                       />
                                       <div className="tw-text-xs tw-text-left tw-text-black">
                                         {item?.member?.nickname}
