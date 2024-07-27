@@ -11,15 +11,12 @@ import Checkbox from '@mui/material/Checkbox';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import React, { useEffect, useRef, useState } from 'react';
-import Link from '@mui/material/Link';
 import Dialog, { DialogProps } from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import DialogContentText from '@mui/material/DialogContentText';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import CheckIcon from '@mui/icons-material/Check';
 import Divider from '@mui/material/Divider';
 import { UseQueryResult } from 'react-query';
 import { useIdVerification, useTermsList } from 'src/services/account/account.queries';
@@ -27,18 +24,35 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { useLoginOtp, useLoginOtpVerification, useLoginSignUp } from 'src/services/account/account.mutations';
-import isURL from 'validator/lib/isURL';
 import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
 import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
-import { isReadable } from 'stream';
-import useDidMountEffect from 'src/hooks/useDidMountEffect';
+
 interface SignUpTemplateProps {
   onSubmitLogin: () => void;
 }
 
 const cx = classNames.bind(styles);
 
+function getSubdomain() {
+  const { host } = typeof window !== 'undefined' && window.location;
+  console.log(host);
+
+  if (host) {
+    // 호스트 이름에 '.'이 있으면 공백을 반환
+    if (!host.includes('.')) {
+      return ''; // 공백 반환
+    }
+
+    const subdomain = host.split(':')[0];
+    console.log(subdomain);
+    return subdomain;
+  }
+
+  return null; // 서브도메인이 없는 경우
+}
+
 export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
+  const router = useRouter();
   const [open, setOpen] = React.useState(false);
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
   const [isDisabledPhone, setIsDisabledPhone] = useState<boolean>(false);
@@ -59,25 +73,8 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
   const [marketing, setMarketing] = useState<boolean>(false);
   const [email1, setEmail1] = useState<boolean>(false);
   const [kakao, setKakao] = useState<boolean>(false);
-  const [snsFlag, setSnsFlag] = useState(false);
   const [sms, setSms] = useState<boolean>(false);
-  const [urlError, setUrlError] = useState('');
-
-  // ** SNS URL
-  const [youtubeUrl, setYoutubeUrl] = useState();
-  const [instagramUrl, setInstagramUrl] = useState();
-  const [twitterUrl, setTitterUrl] = useState();
-  const [linkedUrl, setLinked] = useState();
-  const [facebookUrl, setFacebook] = useState();
-  const [snsUrl, setSns] = useState();
-
-  //** Fouse */
-  const focusYoutube_Ref = useRef(null);
-  const focusTwitter_Ref = useRef(null);
-  const focusLinked_Ref = useRef(null);
-  const focusFacebook_Ref = useRef(null);
-  const focusInstargram_Ref = useRef(null);
-  const focusSns_Ref = useRef(null);
+  const [subdomain, setSubdomain] = useState('');
 
   // ** Timer
   const [min, setMin] = useState(0);
@@ -90,6 +87,11 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
   const { mutate: onLoginOtp, isSuccess } = useLoginOtp();
   const { mutate: onLoginOtpVerification, isSuccess: isVerification, data: resultData } = useLoginOtpVerification();
   const { mutate: onLoginIdVerification, isSuccess: isIdSuccess, data: resultIdData } = useLoginOtpVerification();
+
+  useEffect(() => {
+    const subdomain = getSubdomain();
+    setSubdomain(subdomain);
+  }, []);
 
   useEffect(() => {
     if (isSignUpSuccess) {
@@ -110,8 +112,6 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
       alert('중복된 이메일 입니다.');
     }
   });
-
-  const router = useRouter();
 
   // 체크할 시 CheckList에 id 값 전체 넣기, 체크 해제할 시 CheckList에 빈 배열 넣기
   const onChangeAll = e => {
@@ -248,6 +248,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
       smsReceiveYn: sms,
       kakaoReceiveYn: kakao,
       token: resultData.token,
+      tenantUri: subdomain,
     });
   };
 
@@ -406,7 +407,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
 
   return (
     <div className={cx('login-container')}>
-      <p className="tw-text-3xl tw-font-bold tw-text-center tw-text-black tw-pb-5">회원가입</p>
+      <p className="tw-text-3xl tw-font-bold tw-text-center tw-text-black tw-pb-10">회원가입</p>
       <form onSubmit={handleSubmitId(onSubmitId, onErrorId)}>
         <div className="tw-flex tw-items-center">
           <label htmlFor="name" className="tw-text-gray-700 tw-font-bold tw-w-40">
@@ -575,8 +576,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
 
         <Divider variant="middle" sx={{ borderColor: 'rgba(0, 0, 0, 0.5);', margin: '40px 0px' }} />
 
-        <p className="tw-text-xl tw-text-center tw-text-black tw-pb-5">
-          <span className="tw-text-xl tw-font-bold tw-text-left text-black">동서대학교 QuizUp </span>
+        <p className="tw-text-xl tw-text-center tw-text-black tw-pb-10">
           <span className="tw-text-xl tw-text-left tw-text-black">이용 약관에 동의해주세요.</span>
         </p>
         <Grid container direction="row" justifyContent="space-between" alignItems="center">
