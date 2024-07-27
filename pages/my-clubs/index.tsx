@@ -2,7 +2,11 @@ import './index.module.scss';
 import { QuizMyTemplate } from 'src/templates';
 
 export function QuizMyPage() {
-  return <QuizMyTemplate />;
+  return (
+    <div className="tw-h-[2000px]">
+      <QuizMyTemplate />
+    </div>
+  );
 }
 
 export default QuizMyPage;
