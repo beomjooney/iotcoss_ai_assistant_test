@@ -15,10 +15,11 @@ app.prepare().then(() => {
   const sejongServer = express();
   const b2bServer = express();
 
-  mainServer.use(express.static('public'));
-  adminServer.use(express.static('public'));
-  sejongServer.use(express.static('public'));
-  b2bServer.use(express.static('public'));
+  // Serve static files from '.next/static'
+  adminServer.use('/_next/static', express.static(path.join(__dirname, '.next/static')));
+  sejongServer.use('/_next/static', express.static(path.join(__dirname, '.next/static')));
+  b2bServer.use('/_next/static', express.static(path.join(__dirname, '.next/static')));
+  mainServer.use('/_next/static', express.static(path.join(__dirname, '.next/static')));
 
   // Serve static files from 'public/assets'
   adminServer.use('/assets', express.static('public/assets'));
