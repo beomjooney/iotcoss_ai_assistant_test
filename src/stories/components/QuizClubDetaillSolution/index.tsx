@@ -144,7 +144,7 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
             <p className="tw-text-[12.25px] tw-mt-2 tw-text-black">{contents?.club?.description}</p>
             <div className="tw-mt-4">
               <p className="tw-text-sm tw-text-black">
-                학습 주기 : 매주 {contents?.club?.studyCycle.toString()}요일 (총 {contents?.club?.studyWeekCount}회)
+                학습 주기 : 매주 {contents?.club?.studyCycle.toString()}요일 (총 {contents?.club?.weekCount}회)
               </p>
               <p className="tw-text-sm tw-text-black">
                 학습 기간 : {contents?.club?.weekCount}주 ({contents?.club?.startAt.split(' ')[0]} ~{' '}
@@ -378,7 +378,7 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                                   <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                     <img
                                       className="tw-w-10 tw-h-10 border tw-rounded-full"
-                                      src={item?.maker?.profileImageUrl}
+                                      src={item?.maker?.profileImageUrl || '/assets/avatars/1.jpg'}
                                     />
                                     <div className="tw-text-xs tw-text-left tw-text-black">{item?.maker?.nickname}</div>
                                   </div>
@@ -422,7 +422,7 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                                   <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                     <img
                                       className="border tw-rounded-full tw-w-10 tw-h-10 "
-                                      src={item?.answer?.member?.profileImageUrl}
+                                      src={item?.answer?.member?.profileImageUrl || '/assets/avatars/1.jpg'}
                                     />
                                     <div className="tw-text-xs tw-text-left tw-text-black">
                                       {item?.answer?.member?.nickname}
