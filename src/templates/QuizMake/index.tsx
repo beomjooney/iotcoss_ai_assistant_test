@@ -25,6 +25,7 @@ import { useOptions } from 'src/services/experiences/experiences.queries';
 import CircularProgress from '@mui/material/CircularProgress';
 import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
 import { styled } from '@mui/material/styles';
+import validator from 'validator';
 
 import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
@@ -489,9 +490,23 @@ export function QuizMakeTemplate() {
       return false;
     }
 
-    if (contentType !== '0320' && !contentUrl) {
-      alert('콘텐츠 URL을 입력해주세요.');
-      return false;
+    if (contentType !== '0320') {
+      if (!contentUrl) {
+        alert('콘텐츠 URL을 입력해주세요.');
+        return false;
+      }
+
+      if (validator.isURL(contentUrl)) {
+      } else {
+        alert('유효한 URL을 입력해주세요.');
+        return false;
+      }
+
+      const urlPattern = /^(http:\/\/|https:\/\/)/;
+      if (!urlPattern.test(contentUrl)) {
+        alert(`URL이 http:// 또는 https://로 시작해야 합니다`);
+        return false;
+      }
     }
 
     console.log(selectedSubject);
