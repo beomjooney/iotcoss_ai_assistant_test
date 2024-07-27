@@ -420,7 +420,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
             <p className="tw-w-[85px] text-sm tw-font-bold tw-left-[52px] tw-top-[58px] tw-text-sm tw-pr-3 tw-text-left tw-text-[#31343d]">
               모범답안
             </p>
-            <p className="tw-w-[973px] text-sm tw-left-[119px] tw-top-[58px] tw-text-sm tw-text-left tw-text-[#31343d]">
+            <p className="tw-w-[973px] text-sm tw-left-[119px] tw-top-[58px] tw-text-sm tw-text-left tw-text-[#31343d] tw-line-clamp-2">
               {data.modelAnswer}
             </p>
           </div>

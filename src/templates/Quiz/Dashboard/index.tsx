@@ -470,15 +470,11 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
                         className={`${classes.stickyWhite} ${classes.stickyFirst}`}
                       >
                         <div className="tw-flex tw-items-center">
-                          {info?.member?.profileImageUrl ? (
-                            <img
-                              src={info.member.profileImageUrl}
-                              className="tw-w-10 tw-h-10 border tw-rounded-full"
-                              alt="Profile"
-                            />
-                          ) : (
-                            <div className="tw-w-10 tw-h-10"></div> // 여기에 높이와 너비를 맞춘 빈 div 추가
-                          )}
+                          <img
+                            src={info?.member?.profileImageUrl || '/assets/avatars/3.jpg'}
+                            className="tw-w-10 tw-h-10 border tw-rounded-full"
+                            alt="Profile"
+                          />
                           <div className="tw-ml-2">{info?.member?.nickname}</div>
                         </div>
                       </TableCell>

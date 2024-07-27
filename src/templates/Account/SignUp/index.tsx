@@ -86,10 +86,16 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
   const [params, setParams] = useState<any>({ email });
   const [shouldRefetch, setShouldRefetch] = useState(false);
 
-  const { mutate: onLoginSignUp } = useLoginSignUp();
+  const { mutate: onLoginSignUp, isSuccess: isSignUpSuccess } = useLoginSignUp();
   const { mutate: onLoginOtp, isSuccess } = useLoginOtp();
   const { mutate: onLoginOtpVerification, isSuccess: isVerification, data: resultData } = useLoginOtpVerification();
   const { mutate: onLoginIdVerification, isSuccess: isIdSuccess, data: resultIdData } = useLoginOtpVerification();
+
+  useEffect(() => {
+    if (isSignUpSuccess) {
+      router.push('/account/login');
+    }
+  }, [isSignUpSuccess]);
 
   const {
     data: clubQuizList,

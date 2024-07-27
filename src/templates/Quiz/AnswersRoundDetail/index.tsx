@@ -201,7 +201,7 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                 <p className="tw-text-sm tw-mt-2 tw-text-black">{contents?.club?.description}</p>
                 <div className="tw-mt-4">
                   <p className="tw-text-sm tw-text-black">
-                    학습 주기 : 매주 {contents?.club?.studyCycle.toString()}요일 (총 {contents?.club?.studyCycle}회)
+                    학습 주기 : 매주 {contents?.club?.studyCycle.toString()}요일 (총 {contents?.club?.studyWeekCount}회)
                   </p>
                   <p className="tw-text-sm tw-text-black">
                     학습 기간 : {contents?.club?.weekCount}주 ({contents?.club?.startAt.split(' ')[0]} ~{' '}
@@ -215,7 +215,7 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                 <div className="tw-flex tw-items-center tw-mt-auto tw-justify-between tw-w-full">
                   <div className="tw-flex tw-items-center">
                     <img
-                      src={contents?.club?.leaderProfileImageUrl}
+                      src={contents?.club?.leaderProfileImageUrl || '/assets/avatars/1.jpg'}
                       className="tw-mr-2 border tw-rounded-full tw-w-10 tw-h-10"
                     />
                     <p className="tw-text-sm tw-text-black">{contents?.club?.leaderNickname}</p>
@@ -230,7 +230,7 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                       className="tw-bg-[#e11837] tw-rounded-[3.5px] tw-w-[130px] tw-py-[10.0625px] tw-cursor-pointer"
                       onClick={() => router.push('/quiz/' + `${contents?.club?.clubSequence}`)}
                     >
-                      <p className="tw-text-[12.25px] tw-font-bold tw-text-white tw-text-center">퀴즈상세보기</p>
+                      <p className="tw-text-[12.25px] tw-font-bold tw-text-white tw-text-center">클럽상세보기</p>
                     </div>
                   </div>
                 </div>
@@ -276,7 +276,7 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                         <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                           <img
                             className="border tw-rounded-full tw-w-10 tw-h-10"
-                            src={selectedQuiz?.maker?.profileImageUrl}
+                            src={selectedQuiz?.maker?.profileImageUrl || '/assets/avatars/1.jpg'}
                             alt="프로필 이미지"
                           />
                           <div className="tw-text-xs tw-text-left tw-text-black">{selectedQuiz?.maker?.nickname}</div>

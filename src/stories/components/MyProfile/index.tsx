@@ -114,25 +114,24 @@ const MyProfile = ({ profile, badgeContents, refetchProfile }: any) => {
             </span>
             <span className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xl tw-text-left tw-text-black">님</span>
           </p>
-          <div className="tw-flex tw-justify-start tw-items-start tw-flex-grow-0 tw-flex-shrink-0 tw-gap-2">
-            <div className="tw-flex tw-justify-start tw-items-start tw-flex-grow-0 tw-flex-shrink-0 tw-gap-2">
-              <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-3 tw-py-1 tw-rounded tw-bg-[#d7ecff]">
-                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#235a8d]">
-                  {profile?.jobGroup?.name || 'N/A'}
-                </p>
+          <div className="tw-flex tw-justify-start tw-items-start tw-flex-grow-0 tw-flex-shrink-0 tw-gap-2 tw-flex-wrap">
+            <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-3 tw-py-1 tw-rounded tw-bg-[#d7ecff]">
+              <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#235a8d]">
+                {profile?.jobGroup?.name || 'N/A'}
               </div>
-              <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-3 tw-py-1 tw-rounded tw-bg-[#e4e4e4]">
-                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#313b49]">
-                  {profile?.job?.name || 'N/A'}
-                </p>
+            </div>
+            <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-3 tw-py-1 tw-rounded tw-bg-[#e4e4e4]">
+              <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#313b49]">
+                {profile?.job?.name || 'N/A'}
               </div>
-              <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-3 tw-py-1 tw-rounded tw-bg-[#ffdede]">
-                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#b83333]">
-                  {profile?.jobLevels[0]?.name || 'N/A'}
-                </p>
+            </div>
+            <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-3 tw-py-1 tw-rounded tw-bg-[#ffdede]">
+              <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#b83333]">
+                {profile?.jobLevels[0]?.name || 'N/A'}
               </div>
             </div>
           </div>
+
           <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">
             {profile?.introductionMessage || 'N/A'}
           </p>
@@ -176,9 +175,9 @@ const MyProfile = ({ profile, badgeContents, refetchProfile }: any) => {
               const selected = optionsData?.data?.jobs?.find(u => u.code === profile.jobGroup?.code);
               setJobs(selected ? selected.jobs : []);
               console.log(selected);
-              const selected_code = selected.jobs?.find(u => u.code === profile.job?.code);
+              const selected_code = selected?.jobs?.find(u => u.code === profile.job?.code);
               console.log(selected_code);
-              setSelectedJob(selected_code.code);
+              setSelectedJob(selected_code?.code);
               setIntroductionMessage(profile.introductionMessage || '');
               setMemberId(profile?.memberId || '');
               console.log(profile?.jobLevels[0]?.code);

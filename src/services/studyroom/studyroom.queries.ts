@@ -80,7 +80,7 @@ export const useStudyProgress = (
   onSuccess?: (data: RecommendContentsResponse) => void,
   onError?: (error: Error) => void,
 ) => {
-  const DEFAULT_SIZE = 5;
+  const DEFAULT_SIZE = 4;
   return useQuery<RecommendContentsResponse, Error>(
     QUERY_KEY_FACTORY('TEMP').list({ size: DEFAULT_SIZE, ...params }),
     () => studyProgress({ size: DEFAULT_SIZE, ...params }),

@@ -155,6 +155,11 @@ CommunityCardProps) => {
 
   const onReplySubmit = (postNo: number, member: string, text: string) => {
     if (logged) {
+      if (!text.trim()) {
+        alert('댓글을 입력해주세요.');
+        return;
+      }
+
       onSaveReply({
         clubSequence: selectedQuiz.clubSequence,
         quizSequence: selectedQuiz.quizSequence,
@@ -162,7 +167,7 @@ CommunityCardProps) => {
         body: text,
       });
       textInput.current.value = '';
-      // setReplyCount(replyCount => replyCount + 1);
+      setReplyCount(replyCount => replyCount + 1);
       // setParams({
       //   postNo: postNo,
       //   page,
@@ -299,7 +304,7 @@ CommunityCardProps) => {
               <div className="tw-flex-none tw-w-2/12 tw-items-center">
                 <div className="tw-flex tw-items-center tw-space-x-2 tw-h-14">
                   <img
-                    src={board?.member?.profileImageUrl}
+                    src={board?.member?.profileImageUrl || '/assets/avatars/2.jpg'}
                     alt="profile"
                     className="border tw-rounded-full tw-h-10 tw-w-10"
                   />
@@ -467,14 +472,13 @@ CommunityCardProps) => {
                           </div>
                           <div className="tw-col-span-2">
                             <button
-                              onClick={() =>
+                              onClick={() => {
                                 onReplySubmit(
                                   board?.clubQuizAnswerSequence,
                                   board?.member?.memberUUID,
-                                  // memberId
                                   textInput.current.value,
-                                )
-                              }
+                                );
+                              }}
                               className="tw-w-full tw-h-full tw-px-2 tw-py-[17px] tw-rounded tw-bg-white border tw-border-secondary tw-border-[#e9ecf2] tw-text-sm tw-text-center tw-text-[#6a7380]"
                               style={{ height: 'auto' }} // 버튼 높이를 textarea에 맞춤
                             >

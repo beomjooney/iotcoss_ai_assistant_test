@@ -755,7 +755,12 @@ export function StudyRoomTemplate() {
                                                     {session.order}회
                                                   </p>
                                                   <p className="tw-w-full tw-h-3.5 tw-text-sm tw-font-medium tw-text-center tw-text-[#9ca5b2] tw-bottom-0">
-                                                    {moment(session.publishDate).format('MM-DD')} ({session.dayOfWeek})
+                                                    {session.publishDate ? (
+                                                      <>
+                                                        {moment(session.publishDate).format('MM-DD')} (
+                                                        {session.dayOfWeek})
+                                                      </>
+                                                    ) : null}
                                                   </p>
                                                 </div>
                                               </TableCell>
@@ -775,7 +780,10 @@ export function StudyRoomTemplate() {
                                             >
                                               <div className="tw-flex tw-items-center tw-gap-3 ">
                                                 <img
-                                                  src={course.participantProgress.member.profileImageUrl}
+                                                  src={
+                                                    course?.participantProgress?.member?.profileImageUrl ||
+                                                    '/assets/avatars/3.jpg'
+                                                  }
                                                   className="tw-w-9 tw-h-9 tw-rounded-full border"
                                                   alt="아그리파"
                                                 />
@@ -870,9 +878,11 @@ export function StudyRoomTemplate() {
                                                     </svg>
                                                   </div>
                                                   <div className="tw-text-sm tw-text-gray-300">
-                                                    {info.status === '0001'
-                                                      ? 'D-' + info.relativeDaysToPublishDate
-                                                      : moment(info.publishDate).format('MM-DD')}
+                                                    {info.publishDate
+                                                      ? info.status === '0001'
+                                                        ? 'D-' + info.relativeDaysToPublishDate
+                                                        : moment(info.publishDate).format('MM-DD')
+                                                      : null}
                                                   </div>
                                                 </TableCell>
                                               );
