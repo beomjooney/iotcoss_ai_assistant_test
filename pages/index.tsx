@@ -1,14 +1,26 @@
 import './index.module.scss';
 import { HomeTemplate } from '../src/templates';
 import { HomeSejongTemplate } from '../src/templates/HomeSeJong';
-import { useSessionStore } from '../src/store/session';
+import { Session, useSessionStore } from '../src/store/session';
 import { useMemberInfo, useMyProfile } from '../src/services/account/account.queries';
 import { useStore } from 'src/store';
 import { useColorPresets, useColorPresetName } from 'src/utils/use-theme-color';
 import { usePresets } from 'src/utils/color-presets';
 import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { setCookie } from 'cookies-next';
+import { GetServerSideProps } from 'next';
 
-export function IndexPage() {
+export function IndexPage({ session }: { session: Session }) {
+  const { update } = useSessionStore.getState();
+
+  useEffect(() => {
+    // session이 존재하는 경우에만 상태 업데이트를 수행
+    if (session) {
+      update(session);
+    }
+  }, [session, update]); // 의존성 배열에 session과 update 포함
+
   const COLOR_PRESETS = usePresets();
   const { setColorPresetName } = useColorPresetName();
   const { setColorPresets } = useColorPresets();
@@ -66,4 +78,32 @@ IndexPage.LayoutProps = {
   darkBg: true,
   classOption: 'custom-header',
   title: '데브어스',
+};
+
+export const getServerSideProps: GetServerSideProps = async context => {
+  try {
+    const { authStore } = context.query;
+    let session: Session;
+    console.log('authStore', authStore);
+    const authData = authStore || null;
+
+    console.log('authData', authData);
+    // const parsedAuthStore = atob(authData);
+    // 2. Base64 디코딩 (Node.js 환경에서는 Buffer를 사용)
+    const decodedAuthStore = Buffer.from(authData, 'base64').toString('utf-8');
+    console.log('parsedAuthStore', decodedAuthStore);
+
+    session = JSON.parse(decodedAuthStore);
+
+    console.log('session', session);
+
+    return {
+      props: { session },
+    };
+  } catch (err) {
+    console.log(err);
+    return {
+      props: {},
+    };
+  }
 };

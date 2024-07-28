@@ -18,6 +18,11 @@ import { usePresets } from 'src/utils/color-presets';
 import { useEffect } from 'react';
 import { useColorPresets } from 'src/utils/use-theme-color';
 import { useColorPresetName } from 'src/utils/use-theme-color';
+import { useSessionStore } from 'src/store/session';
+import jwt_decode from 'jwt-decode';
+import { getCookie } from 'cookies-next';
+import { UserInfo } from '../../../../src/models/account';
+import { deleteCookie } from 'cookies-next';
 
 interface LoginTemplateProps {
   onSubmitLogin: () => void;
@@ -33,6 +38,7 @@ interface LoginTemplateProps {
 
 export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: LoginTemplateProps) {
   const { mutate: onLogin, isSuccess, data: loginData } = useLogin();
+
   const router = useRouter();
   const COLOR_PRESETS = usePresets();
   const { setColorPresetName } = useColorPresetName();
@@ -53,27 +59,18 @@ export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: Lo
       onSubmitLogin();
 
       const authStore = localStorage.getItem('auth-store');
+      const json = JSON.parse(authStore);
+      const jsonString = JSON.stringify(json.state);
+      // const encodedJson = btoa(jsonString);
 
-      // JSON 객체를 문자열로 변환하고 URL 인코딩
-      const jsonString = JSON.stringify(authStore);
-      const encodedJson = encodeURIComponent(jsonString);
-      // 쿼리 파라미터를 포함한 URL을 생성
-      const url = {
-        pathname: loginData?.redirections?.home_url,
-        query: {
-          accessToken: loginData?.access_token,
-          authStore: encodedJson,
-        },
-      };
+      // 1. Base64 인코딩 (Node.js 환경에서는 Buffer를 사용)
+      const encodedJson = Buffer.from(jsonString).toString('base64');
 
-      // 실제 브라우저의 URL에는 쿼리 파라미터를 숨김
-      const as = loginData?.redirections?.home_url;
+      deleteCookie('access_token');
+      localStorage.removeItem('auth-store');
+      localStorage.removeItem('app-storage');
 
-      // router.push를 사용하여 리다이렉션 수행
-      router.push(url, as).catch(err => console.error('Router push error:', err));
-
-      // location.href =
-      //   loginData?.redirections?.home_url + `?accessToken=${loginData?.access_token}&authStore=${encodedJson}`;
+      location.href = loginData?.redirections?.home_url + `?authStore=${encodedJson}`;
     }
   }, [loginData]);
 

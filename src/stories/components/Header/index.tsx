@@ -88,7 +88,6 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
   const { user, setUser } = useStore();
   const [scroll, setScroll] = useState(0);
   const [headerTop, setHeaderTop] = useState(0);
-  const [buttonName, setButtonName] = useState<string>('로그인');
   const [logoutButton, setLogoutButton] = useState<ReactNode>(null);
   const [adminButton, setAdminButton] = useState<ReactNode>(null);
   const [isShowMenu, setIsShowMenu] = useState<boolean>(false);

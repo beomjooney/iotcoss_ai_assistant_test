@@ -27,26 +27,41 @@ export function HomeTemplate({ logged = false, tenantName = '' }: HomeProps) {
   const { setColorPresets } = useColorPresets();
   const [isClient, setIsClient] = useState(false); // 클라이언트 사이드에서만 렌어링하도록 상태 추가
 
-  useEffect(() => {
-    // URL 쿼리 파라미터에서 accessToken 추출
-    const { accessToken, authStore } = router.query;
+  // useEffect(() => {
+  //   // URL 쿼리 파라미터에서 accessToken 추출
+  //   const { authStore } = router.query;
 
-    if (accessToken) {
-      console.log('AccessToken:', accessToken);
-      console.log('authStore:', authStore);
-      setCookie('access_token', accessToken);
+  //   if (authStore) {
+  //     // 인코딩된 JSON 문자열을 디코딩하고 파싱
+  //     const parsedAuthStore = JSON.parse(decodeURIComponent(authStore));
+  //     console.log('AuthStore:', parsedAuthStore);
+  //     localStorage.setItem('auth-store', parsedAuthStore);
 
-      // 인코딩된 JSON 문자열을 디코딩하고 파싱
-      const parsedAuthStore = JSON.parse(decodeURIComponent(authStore));
-      console.log('AuthStore:', parsedAuthStore);
-      localStorage.setItem('auth-store', parsedAuthStore);
+  //     const json = JSON.parse(parsedAuthStore);
+  //     console.log(json?.state?.token);
 
-      // 필요한 로직 수행 예: 서버에 토큰 전송하여 사용자 정보 가져오기
-      // fetchUserData(accessToken);
-    } else {
-      console.log('No access token found in query parameters.');
-    }
-  }, [router.query]);
+  //     setCookie('access_token', json?.state?.token);
+  //     localStorage.setItem('accessToken', json?.state?.token);
+  //   } else {
+  //     console.log('No access token found in query parameters.');
+  //   }
+  // }, [router.query]);
+  //   if (authStore) {
+  //     console.log('AccessToken:', accessToken);
+  //     console.log('authStore:', authStore);
+  //     setCookie('access_token', accessToken);
+
+  //     // 인코딩된 JSON 문자열을 디코딩하고 파싱
+  //     const parsedAuthStore = JSON.parse(decodeURIComponent(authStore));
+  //     console.log('AuthStore:', parsedAuthStore);
+  //     localStorage.setItem('auth-store', parsedAuthStore);
+
+  //     // 필요한 로직 수행 예: 서버에 토큰 전송하여 사용자 정보 가져오기
+  //     // fetchUserData(accessToken);
+  //   } else {
+  //     console.log('No access token found in query parameters.');
+  //   }
+  // }, [router.query]);
 
   useEffect(() => {
     setIsClient(true); // 클라이언트 사이드에서 상태를 true로 설정
