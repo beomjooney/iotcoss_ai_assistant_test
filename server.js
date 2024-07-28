@@ -15,12 +15,14 @@ app.prepare().then(() => {
   const adminServer = express();
   const sejongServer = express();
   const b2bServer = express();
+  const devusServer = express();
 
   // Serve static files from 'public/assets'
   adminServer.use('/assets', express.static('public/assets'));
   sejongServer.use('/assets', express.static('public/assets'));
   b2bServer.use('/assets', express.static('public/assets'));
   devServer.use('/assets', express.static('public/assets'));
+  devusServer.use('/assets', express.static('public/assets'));
 
   adminServer.get('/', (req, res) => {
     return app.render(req, res, '/dsu', req.query);
@@ -70,6 +72,18 @@ app.prepare().then(() => {
     return handle(req, res);
   });
 
+  devusServer.get('/', (req, res) => {
+    return app.render(req, res, '/', req.query);
+  });
+
+  devusServer.get('/account/login', (req, res) => {
+    return app.render(req, res, '/account/login', req.query);
+  });
+
+  devusServer.all('*', (req, res) => {
+    return handle(req, res);
+  });
+
   // adminServer.get('/*', (req, res) => {
   //   return app.render(req, res, `/dsu${req.path}`, req.query);
   // });
@@ -87,6 +101,7 @@ app.prepare().then(() => {
   // })
 
   mainServer.use(vhost('dsu.localhost', adminServer));
+  mainServer.use(vhost('devus.localhost', devusServer));
   mainServer.use(vhost('sejong.localhost', sejongServer));
   mainServer.use(vhost('b2b.localhost', b2bServer));
   mainServer.use(vhost('localhost', devServer));

@@ -8,6 +8,7 @@ import ProfessorExpModal from 'src/stories/components/ProfessorExp';
 import { useColorPresets } from 'src/utils/use-theme-color';
 import { useColorPresetName } from 'src/utils/use-theme-color';
 import { usePresets } from 'src/utils/color-presets';
+import { setCookie } from 'cookies-next';
 /** date picker */
 import React from 'react';
 
@@ -18,12 +19,35 @@ export interface HomeProps {
 }
 
 export function HomeTemplate({ logged = false, tenantName = '' }: HomeProps) {
+  console.log('HomeTemplate');
   const router = useRouter();
   const { token } = useSessionStore.getState();
   const COLOR_PRESETS = usePresets();
   const { setColorPresetName } = useColorPresetName();
   const { setColorPresets } = useColorPresets();
   const [isClient, setIsClient] = useState(false); // 클라이언트 사이드에서만 렌어링하도록 상태 추가
+
+  useEffect(() => {
+    // URL 쿼리 파라미터에서 accessToken 추출
+    const { accessToken, authStore } = router.query;
+
+    if (accessToken) {
+      console.log('AccessToken:', accessToken);
+      console.log('authStore:', authStore);
+      setCookie('access_token', accessToken);
+
+      // 인코딩된 JSON 문자열을 디코딩하고 파싱
+      const parsedAuthStore = JSON.parse(decodeURIComponent(authStore));
+      console.log('AuthStore:', parsedAuthStore);
+      localStorage.setItem('auth-store', parsedAuthStore);
+
+      // 필요한 로직 수행 예: 서버에 토큰 전송하여 사용자 정보 가져오기
+      // fetchUserData(accessToken);
+    } else {
+      console.log('No access token found in query parameters.');
+    }
+  }, [router.query]);
+
   useEffect(() => {
     setIsClient(true); // 클라이언트 사이드에서 상태를 true로 설정
     if (!COLOR_PRESETS || COLOR_PRESETS.length === 0) return;
