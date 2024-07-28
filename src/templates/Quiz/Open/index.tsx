@@ -48,8 +48,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { Toggle } from 'src/stories/components';
 
 //group
-import { dayGroup, privateGroup, levelGroup, openGroup, images } from './group';
-import { update } from 'lodash';
+import { dayGroup, privateGroup, levelGroup, openGroup, images, scheduleDataDummy } from './group';
 
 const cx = classNames.bind(styles);
 
@@ -335,7 +334,7 @@ export function QuizOpenTemplate() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const handleAddClick = () => {
-    if (scheduleData.length > 1) setIsModalOpen(true);
+    if (scheduleData.length >= 1) setIsModalOpen(true);
     else alert('퀴즈 생성 주기를 입력해주세요.');
   };
 
@@ -626,6 +625,7 @@ export function QuizOpenTemplate() {
     console.log(jobs);
     // const selectedJobCode = jobs.find(j => j.code === selectedJob)?.code || 'None';
     console.log('selectedJob', selectedJob);
+
     const clubFormParams = {
       clubName: clubName,
       clubImageUrl: imageUrl,
@@ -636,8 +636,8 @@ export function QuizOpenTemplate() {
       participationCode: participationCode,
       studyCycle: studyCycleNum,
       startAt: startDay.format('YYYY-MM-DD') + ' 00:00:00',
-      studyCount: num,
-      studyWeekCount: num,
+      studyCount: quizType === '0200' ? 12 : num,
+      studyWeekCount: quizType === '0200' ? 12 : num,
       studySubject: studySubject,
       studyChapter: studyChapter,
       skills: skills,
@@ -679,8 +679,11 @@ export function QuizOpenTemplate() {
     console.log(setQuizType);
     if (num == 0) {
       if (quizType == '0200') {
+        if (scheduleData.length == 0) {
+          setScheduleData(scheduleDataDummy);
+        }
       } else {
-        alert('클럽퀴즈 회차 입력');
+        alert('클럽퀴즈 회차를 입력 해주세요.');
         return;
       }
     }
@@ -1702,7 +1705,7 @@ export function QuizOpenTemplate() {
                           <div className=" tw-text-center tw-text-black tw-font-bold">Q{index + 1}.</div>
                           {item.weekNumber && (
                             <div className="tw-text-center tw-text-sm tw-text-black tw-font-bold">
-                              {item.weekNumber} 주차 ({item.dayOfWeek})
+                              {item.weekNumber} 주차 {item.dayOfWeek ? `(${item.dayOfWeek})` : ''}
                             </div>
                           )}
                         </div>
@@ -1759,8 +1762,8 @@ export function QuizOpenTemplate() {
                 clubData={paramss?.clubForm}
                 user={user}
                 selectedUniversityName={selectedUniversityName}
-                jobLevelName={jobLevelName}
-                selectedJobName={selectedJobName}
+                jobLevelName={levelNames}
+                selectedJobName={personName}
                 selectedQuizzes={scheduleData}
               />
               <div className="tw-container tw-py-10 tw-px-10 tw-mx-0 tw-min-w-full tw-flex tw-flex-col tw-items-center">

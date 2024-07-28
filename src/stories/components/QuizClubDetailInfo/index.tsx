@@ -34,6 +34,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
   selectedJobName,
   refetchClubAbout,
 }) => {
+  console.log(clubData);
   const { logged } = useSessionStore.getState();
   const borderStyle = border ? 'border border-[#e9ecf2] tw-mt-14' : '';
   const studyWeekCount = parseInt(clubData?.studyWeekCount, 10);
@@ -121,14 +122,14 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
               <Grid item xs={12}>
                 <div className="tw-flex tw-item tw-text-base tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
                   <span className="tw-inline-flex tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded">
-                    {clubData?.jobGroups?.length > 0 ? clubData.jobGroups[0]?.name : 'N/A'}
+                    {selectedUniversityName || 'N/A'}
                   </span>
 
-                  <span className="tw-inline-flex tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
-                    {clubData?.jobs?.length > 0 ? clubData.jobs[0]?.name : 'N/A'}
-                  </span>
                   <span className="tw-inline-flex tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
-                    {clubData?.jobLevels?.length > 0 ? clubData.jobLevels[0]?.name : 'N/A'}
+                    {selectedJobName || 'N/A'}
+                  </span>
+                  <span className="tw-inline-flex tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
+                    {jobLevelName.toString() || 'N/A'}
                   </span>
                   <button
                     className="tw-inline-flex tw-ml-auto"
@@ -157,18 +158,18 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
               <div>
                 학습 참여 : {clubData?.studyWeekCount || 'N/A'} 주 ({clubData?.startAt} ~ {clubData?.endAt})
               </div>
-              <div>참여 인원 : {clubData?.recruitedMemberCount}명</div>
+              <div>참여 인원 : {clubData?.recruitedMemberCount || '00'}명</div>
             </div>
 
             <div className="tw-flex tw-items-center tw-text-base tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
               <div className="tw-inline-flex tw-items-center tw-gap-4">
                 <img
                   className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full"
-                  src={clubData?.leader?.profileImageUrl}
+                  src={clubData?.leader?.profileImageUrl || '/assets/avatars/1.jpg'}
                   alt=""
                 />
                 <div className="tw-text-sm tw-font-semibold tw-text-black">
-                  <div>{clubData?.leader?.nickname}</div>
+                  <div>{clubData?.leader?.nickname || 'N/A'}</div>
                 </div>
               </div>
 
@@ -248,7 +249,10 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
         <div className="tw-bg-[#f6f7fb] tw-w-full tw-overflow-hidden tw-px-[108.13px] tw-pt-[40px]">
           <div className=" tw-rounded-[8.75px] tw-py-[40px]">
             <div className="tw-flex tw-items-start tw-gap-[16px]">
-              <img className="tw-w-28 tw-h-28 border tw-rounded-full" src={user?.profileImageUrl} />
+              <img
+                className="tw-w-28 tw-h-28 border tw-rounded-full"
+                src={user?.profileImageUrl || '/assets/avatars/1.jpg'}
+              />
               <div>
                 <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-[14px]  tw-gap-3">
                   <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[21.875px] tw-font-bold tw-text-left tw-text-black">

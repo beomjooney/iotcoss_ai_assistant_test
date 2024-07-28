@@ -52,6 +52,93 @@ export const dayGroup = [
   },
 ];
 
+export const scheduleDataDummy = [
+  {
+    order: 1,
+    weekNumber: 1,
+    publishDate: null,
+    dayOfWeek: null,
+    quizSequence: null,
+  },
+  {
+    order: 2,
+    weekNumber: 2,
+    publishDate: null,
+    dayOfWeek: null,
+    quizSequence: null,
+  },
+  {
+    order: 3,
+    weekNumber: 3,
+    publishDate: null,
+    dayOfWeek: null,
+    quizSequence: null,
+  },
+  {
+    order: 4,
+    weekNumber: 4,
+    publishDate: null,
+    dayOfWeek: null,
+    quizSequence: null,
+  },
+  {
+    order: 5,
+    weekNumber: 5,
+    publishDate: null,
+    dayOfWeek: null,
+    quizSequence: null,
+  },
+  {
+    order: 6,
+    weekNumber: 6,
+    publishDate: null,
+    dayOfWeek: null,
+    quizSequence: null,
+  },
+  {
+    order: 7,
+    weekNumber: 7,
+    publishDate: null,
+    dayOfWeek: null,
+    quizSequence: null,
+  },
+  {
+    order: 8,
+    weekNumber: 8,
+    publishDate: null,
+    dayOfWeek: null,
+    quizSequence: null,
+  },
+  {
+    order: 9,
+    weekNumber: 9,
+    publishDate: null,
+    dayOfWeek: null,
+    quizSequence: null,
+  },
+  {
+    order: 10,
+    weekNumber: 10,
+    publishDate: null,
+    dayOfWeek: null,
+    quizSequence: null,
+  },
+  {
+    order: 11,
+    weekNumber: 11,
+    publishDate: null,
+    dayOfWeek: null,
+    quizSequence: null,
+  },
+  {
+    order: 12,
+    weekNumber: 12,
+    publishDate: null,
+    dayOfWeek: null,
+    quizSequence: null,
+  },
+];
+
 export const images = [
   '/assets/images/banner/Rectangle_190.png',
   '/assets/images/banner/Rectangle_191.png',

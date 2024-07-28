@@ -21,7 +21,7 @@ function getClubStatusMessage(status) {
     case '0600':
       return '종료';
     default:
-      return '알 수 없는 상태';
+      return '모집 대기중';
   }
 }
 
