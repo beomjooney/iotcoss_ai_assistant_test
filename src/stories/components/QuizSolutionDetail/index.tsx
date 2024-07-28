@@ -258,7 +258,7 @@ BannerProps) => {
     }
     if (activeStep === 2) {
       const formData = new FormData();
-      formData.append('postAnswer', introductionMessage);
+      formData.append('postAnswer', postIntroductionMessage);
       formData.append('urls', inputData.toString());
       fileList.forEach((file, index) => {
         formData.append('files', file);

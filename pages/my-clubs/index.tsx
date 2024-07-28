@@ -3,7 +3,7 @@ import { QuizMyTemplate } from 'src/templates';
 
 export function QuizMyPage() {
   return (
-    <div className="tw-h-[2400px]">
+    <div className="tw-h-[2000px]">
       <QuizMyTemplate />
     </div>
   );
