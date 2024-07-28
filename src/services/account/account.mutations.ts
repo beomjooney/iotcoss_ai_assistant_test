@@ -145,13 +145,7 @@ export const useLoginOtpVerification = (): UseMutationResult => {
       alert(`mutation error : [${code}] ${message}`);
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('OTP').all),
-    onSuccess: async data => {
-      if (data.result) {
-        alert('인증에 성공했습니다.');
-      } else {
-        alert('유효하지 않은 번호입니다.');
-      }
-    },
+    onSuccess: async data => {},
   });
 };
 

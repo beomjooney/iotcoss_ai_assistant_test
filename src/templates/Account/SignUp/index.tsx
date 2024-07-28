@@ -86,7 +86,21 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
   const { mutate: onLoginSignUp, isSuccess: isSignUpSuccess } = useLoginSignUp();
   const { mutate: onLoginOtp, isSuccess } = useLoginOtp();
   const { mutate: onLoginOtpVerification, isSuccess: isVerification, data: resultData } = useLoginOtpVerification();
-  const { mutate: onLoginIdVerification, isSuccess: isIdSuccess, data: resultIdData } = useLoginOtpVerification();
+
+  useEffect(() => {
+    if (resultData) {
+      console.log('resultData', resultData);
+      if (resultData?.result) {
+        alert('인증에 성공했습니다.');
+        setIsDisabledTimer(false);
+        setIsDisabledPhone(true);
+        setSmsFlag(false);
+        setIsDisabled(true);
+      } else {
+        alert('인증에 실패했습니다.');
+      }
+    }
+  }, [resultData]);
 
   useEffect(() => {
     const subdomain = getSubdomain();
@@ -236,6 +250,12 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
       alert('본인인증을 해주세요.');
       return;
     }
+
+    if (resultData.token === null) {
+      alert('인증번호를 인증해주세요.');
+      return;
+    }
+
     onLoginSignUp({
       // ...data,
       email: email,
@@ -265,16 +285,6 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
       setSmsFlag(true);
     }
   }, [isSuccess]);
-
-  useEffect(() => {
-    if (resultData) {
-      setIsDisabledTimer(false);
-      setIsDisabledPhone(true);
-      // setSmsSend('인증완료');
-      setSmsFlag(false);
-      setIsDisabled(true);
-    }
-  }, [resultData]);
 
   const {
     register: registerId,
