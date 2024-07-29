@@ -6,9 +6,8 @@ import { paramProps } from 'src/services/seminars/seminars.queries';
 import { useContentJobTypes, useJobGroupss } from 'src/services/code/code.queries';
 import { useRouter } from 'next/router';
 import Grid from '@mui/material/Grid';
-import Box from '@mui/system/Box';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
+import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
+import { styled } from '@mui/material/styles';
 import TextField, { TextFieldProps } from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -616,6 +615,19 @@ export function QuizOpenTemplate() {
     onClubQuizSave(params);
   };
 
+  const BootstrapTooltip = styled(({ className, ...props }: TooltipProps) => (
+    <Tooltip {...props} arrow classes={{ popper: className }} />
+  ))(({ theme }) => ({
+    [`& .${tooltipClasses.arrow}`]: {
+      color: '#D8ECFF',
+    },
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: '#D8ECFF',
+      color: '#478AF5',
+      fontSize: '11px',
+    },
+  }));
+
   const handleNextOne = () => {
     window.scrollTo(0, 0);
 
@@ -636,8 +648,8 @@ export function QuizOpenTemplate() {
       participationCode: participationCode,
       studyCycle: studyCycleNum,
       startAt: startDay.format('YYYY-MM-DD') + ' 00:00:00',
-      studyCount: quizType === '0200' ? 12 : num,
-      studyWeekCount: quizType === '0200' ? 12 : num,
+      studyCount: num,
+      studyWeekCount: num,
       studySubject: studySubject,
       studyChapter: studyChapter,
       skills: skills,
@@ -678,14 +690,8 @@ export function QuizOpenTemplate() {
 
     console.log(setQuizType);
     if (num == 0) {
-      if (quizType == '0200') {
-        if (scheduleData.length == 0) {
-          setScheduleData(scheduleDataDummy);
-        }
-      } else {
-        alert('클럽퀴즈 회차를 입력 해주세요.');
-        return;
-      }
+      alert('클럽퀴즈 회차를 입력 해주세요.');
+      return;
     }
 
     if (clubName === '') {
@@ -850,6 +856,21 @@ export function QuizOpenTemplate() {
       weeks.push({
         order: i + 1,
         quizSequence: null,
+      });
+    }
+    setScheduleData(weeks);
+    setButtonFlag(true);
+  };
+
+  const handlerClubMakeProfessorManual = () => {
+    const weeks = [];
+    for (let i = 0; i < num; i++) {
+      weeks.push({
+        order: i + 1,
+        weekNumber: i + 1,
+        quizSequence: null,
+        publishDate: null,
+        dayOfWeek: null,
       });
     }
     setScheduleData(weeks);
@@ -1261,7 +1282,20 @@ export function QuizOpenTemplate() {
                             },
                           }}
                         >
-                          {item.description}
+                          <BootstrapTooltip
+                            title={
+                              item.name === '0100'
+                                ? ''
+                                : item.name === '0200'
+                                ? '클럽 관리자가 퀴즈 오픈을 수동으로 설정할 수 있어요!'
+                                : item.name === '0300'
+                                ? '학습자가 이전 퀴즈를 모두 학습/답변하였을 경우에 다음 퀴즈가 자동으로 오픈이 돼요!'
+                                : ''
+                            }
+                            placement="top"
+                          >
+                            {item?.description}
+                          </BootstrapTooltip>
                         </ToggleButton>
                       ))}
                     </ToggleButtonGroup>
@@ -1361,7 +1395,7 @@ export function QuizOpenTemplate() {
                     </div>
                   )}
 
-                  {quizType == '0210' && (
+                  {quizType == '0200' && (
                     <div className="tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-[#f6f7fb] tw-pb-5">
                       <div className="tw-flex tw-p-5 ...">
                         <div className="tw-flex-none tw-w-1/4 tw-h-14 ...">
@@ -1392,7 +1426,7 @@ export function QuizOpenTemplate() {
                         <div className="tw-flex-none tw-h-14 ... tw-ml-5 ">
                           <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">&nbsp;</p>
                           <button
-                            onClick={handlerClubMakeManual}
+                            onClick={handlerClubMakeProfessorManual}
                             className="tw-flex tw-justify-center tw-items-center tw-w-20 tw-relative tw-overflow-hidden tw-gap-2 tw-px-7 tw-py-[10px] tw-rounded tw-bg-[#31343d]"
                           >
                             <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-center tw-text-white">
