@@ -45,7 +45,6 @@ export type AppPropsWithLayout<P = Record<string, unknown>> = AppProps<P> & {
 function CustomApp({ Component, pageProps = {}, session }: AppPropsWithLayout) {
   const { update, memberId, job, memberType, token, logged, theme } = useSessionStore.getState();
   const accessToken = getCookie('access_token');
-  console.log('CustomApp');
   if (!accessToken && accessToken === '') {
     update({
       token: process.env['NEXT_PUBLIC_GUEST_TOKEN'],

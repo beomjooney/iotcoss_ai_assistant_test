@@ -83,7 +83,7 @@ export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: Lo
   };
 
   const validationSchema = Yup.object().shape({
-    username: Yup.string().required('Email is required').email('Email is invalid'),
+    // username: Yup.string().required('Email is required').email('Email is invalid'),
     password: Yup.string()
       .required('Password is required')
       .min(4, 'Password must be at least 4 characters')
@@ -124,7 +124,7 @@ export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: Lo
           required
           id="username"
           name="username"
-          placeholder="이메일을 입렧해주세요."
+          placeholder="학번 또는 이메일을 입렧해주세요."
           variant="outlined"
           type="search"
           fullWidth
