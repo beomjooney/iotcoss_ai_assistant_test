@@ -43,9 +43,7 @@ function getSubdomain() {
       return ''; // 공백 반환
     }
 
-    const subdomain = host.split(':')[0];
-    console.log(subdomain);
-    return subdomain;
+    return host;
   }
 
   return null; // 서브도메인이 없는 경우

@@ -15,13 +15,9 @@ import * as Yup from 'yup';
 import Typography from '@mui/material/Typography';
 import { useLogin } from 'src/services/account/account.mutations';
 import { usePresets } from 'src/utils/color-presets';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useColorPresets } from 'src/utils/use-theme-color';
 import { useColorPresetName } from 'src/utils/use-theme-color';
-import { useSessionStore } from 'src/store/session';
-import jwt_decode from 'jwt-decode';
-import { getCookie } from 'cookies-next';
-import { UserInfo } from '../../../../src/models/account';
 import { deleteCookie } from 'cookies-next';
 
 interface LoginTemplateProps {
@@ -36,6 +32,23 @@ interface LoginTemplateProps {
   onSubmitLogin: () => void;
 }
 
+function getSubdomain() {
+  const { host } = typeof window !== 'undefined' && window.location;
+  console.log(host);
+
+  if (host) {
+    // 호스트 이름에 '.'이 있으면 공백을 반환
+    if (!host.includes('.')) {
+      return ''; // 공백 반환
+    }
+
+    console.log(host);
+    return host;
+  }
+
+  return null; // 서브도메인이 없는 경우
+}
+
 export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: LoginTemplateProps) {
   const { mutate: onLogin, isSuccess, data: loginData } = useLogin();
 
@@ -43,6 +56,7 @@ export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: Lo
   const COLOR_PRESETS = usePresets();
   const { setColorPresetName } = useColorPresetName();
   const { setColorPresets } = useColorPresets();
+  const [subdomain, setSubdomain] = useState('');
 
   useEffect(() => {
     if (!COLOR_PRESETS || COLOR_PRESETS.length === 0) return;
@@ -50,6 +64,10 @@ export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: Lo
     const preset = COLOR_PRESETS.find(preset => preset.name === tenantName) || COLOR_PRESETS[0];
     setColorPresetName(preset.name);
     setColorPresets(preset.colors);
+
+    const subdomain = getSubdomain();
+    console.log('subdomain', subdomain);
+    setSubdomain(subdomain);
   }, []);
 
   useEffect(() => {
@@ -103,6 +121,7 @@ export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: Lo
     onLogin(
       paramsWithDefault({
         ...data,
+        tenant_uri: subdomain,
       }),
     );
   };
@@ -218,6 +237,7 @@ const paramsWithDefault = (params: any) => {
     username: '',
     password: '',
     grant_type: 'password',
+    tenant_uri: '',
   };
   return {
     ...defaultParams,
