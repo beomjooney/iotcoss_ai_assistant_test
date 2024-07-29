@@ -20,7 +20,7 @@ interface QuizClubDetailInfoProps {
   selectedUniversityName: string;
   jobLevelName: any[]; // or the specific type expected
   selectedQuizzes: any[]; // or the specific type expected
-  selectedJobName: string;
+  selectedJobName: any[];
   refetchClubAbout: () => void;
 }
 
@@ -34,6 +34,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
   selectedJobName,
   refetchClubAbout,
 }) => {
+  console.log(user);
   console.log(clubData);
   const { logged } = useSessionStore.getState();
   const borderStyle = border ? 'border border-[#e9ecf2] tw-mt-14' : '';
@@ -126,7 +127,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
                   </span>
 
                   <span className="tw-inline-flex tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
-                    {selectedJobName || 'N/A'}
+                    {selectedJobName.toString() || 'N/A'}
                   </span>
                   <span className="tw-inline-flex tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
                     {jobLevelName.toString() || 'N/A'}
@@ -165,11 +166,11 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
               <div className="tw-inline-flex tw-items-center tw-gap-4">
                 <img
                   className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full"
-                  src={clubData?.leader?.profileImageUrl || '/assets/avatars/1.jpg'}
+                  src={user?.member?.profileImageUrl || '/assets/avatars/1.jpg'}
                   alt=""
                 />
                 <div className="tw-text-sm tw-font-semibold tw-text-black">
-                  <div>{clubData?.leader?.nickname || 'N/A'}</div>
+                  <div>{user?.member?.nickname || 'N/A'}</div>
                 </div>
               </div>
 
