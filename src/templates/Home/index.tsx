@@ -19,7 +19,6 @@ export interface HomeProps {
 }
 
 export function HomeTemplate({ logged = false, tenantName = '' }: HomeProps) {
-  console.log('HomeTemplate');
   const router = useRouter();
   const { token } = useSessionStore.getState();
   const COLOR_PRESETS = usePresets();

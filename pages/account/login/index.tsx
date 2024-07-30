@@ -49,28 +49,6 @@ export function LoginPage(props: LoginPageProps) {
       roles: userData.roles,
       token: token,
     });
-
-    // const authStore = localStorage.getItem('auth-store');
-
-    // // JSON 객체를 문자열로 변환하고 URL 인코딩
-    // const jsonString = JSON.stringify(authStore);
-    // const encodedJson = encodeURIComponent(jsonString);
-
-    // console.log(String(getCookie('access_token')));
-    // console.log(authStore);
-
-    // console.log('token', accessToken);
-    // // 쿼리 파라미터를 포함한 URL을 생성
-    // const _url = {
-    //   pathname: url,
-    //   query: {
-    //     accessToken: token,
-    //     authStore: encodedJson,
-    //   },
-    // };
-
-    // location.href = url + `?accessToken=${accessToken}&authStore=${encodedJson}`;
-    // router.push(_url, url).catch(err => console.error('Router push error:', err));
   };
 
   const onSubmitLogin = async () => {

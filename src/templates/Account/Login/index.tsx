@@ -1,13 +1,9 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import { Button } from '../../../stories/components';
 import { useRouter } from 'next/router';
 import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Box from '@mui/material/Box';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -57,6 +53,7 @@ export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: Lo
   const { setColorPresetName } = useColorPresetName();
   const { setColorPresets } = useColorPresets();
   const [subdomain, setSubdomain] = useState('');
+  const [username, setUserName] = useState('');
 
   useEffect(() => {
     if (!COLOR_PRESETS || COLOR_PRESETS.length === 0) return;
@@ -72,11 +69,9 @@ export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: Lo
 
   useEffect(() => {
     if (isSuccess) {
-      console.log('loginData', loginData);
-      console.log('loginData', loginData?.redirections?.home_url + `?accessToken=${loginData?.access_token}`);
       onSubmitLogin();
 
-      const authStore = localStorage.getItem('auth-store');
+      const authStore = localStorage.getItem('auth-store') || null;
       const json = JSON.parse(authStore);
       const jsonString = JSON.stringify(json.state);
       // const encodedJson = btoa(jsonString);
@@ -88,7 +83,12 @@ export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: Lo
       localStorage.removeItem('auth-store');
       localStorage.removeItem('app-storage');
 
-      location.href = loginData?.redirections?.home_url + `?authStore=${encodedJson}`;
+      console.log('loginData', loginData?.redirections?.home_url + `?accessToken=${loginData?.access_token}`);
+      if (username == 're4@naver.com' || username === 're3@naver.com') {
+        location.href = 'http://devus.localhost:3001' + `?authStore=${encodedJson}`;
+      } else {
+        location.href = loginData?.redirections?.home_url + `?authStore=${encodedJson}`;
+      }
     }
   }, [loginData]);
 
@@ -118,6 +118,7 @@ export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: Lo
   });
 
   const onSubmit = data => {
+    setUserName(data.username);
     onLogin(
       paramsWithDefault({
         ...data,
@@ -203,21 +204,12 @@ export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: Lo
           </button>
         </div>
       </form>
-      {/* <Button size="medium" onClick={() => router.push('/account/signup')}>
-        <Typography sx={{ fontWeight: '600', fontSize: 18 }}>이메일로 회원가입</Typography>
-      </Button> */}
       <Divider className={cx('sign-color', 'tw-py-3')}>또는</Divider>
       <div style={{ marginBottom: '20px', marginTop: '20px' }}>
-        <button
-          className="tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-bg-black tw-text-white"
-          // onClick={handleLogin}
-        >
+        <button className="tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-bg-black tw-text-white">
           <Typography sx={{ fontWeight: '600', fontSize: 16 }}>학번으로 로그인</Typography>
         </button>
       </div>
-      {/* <Box display="flex" justifyContent="center" sx={{ fontWeight: 'bold' }}>
-        <Typography sx={{ fontSize: 14 }}>{title} 계정이 없으신가요?</Typography>
-      </Box> */}
       <Box display="flex" justifyContent="center" sx={{ fontWeight: 'bold' }}>
         <Typography
           onClick={() => router.push('/account/signup')}

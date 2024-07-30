@@ -11,29 +11,29 @@ const handle = app.getRequestHandler();
 
 app.prepare().then(() => {
   const mainServer = express();
-  const devServer = express();
-  const adminServer = express();
+  const dsuServer = express();
   const sejongServer = express();
   const b2bServer = express();
+  const localServer = express();
   const devusServer = express();
 
   // Serve static files from 'public/assets'
-  adminServer.use('/assets', express.static('public/assets'));
+  dsuServer.use('/assets', express.static('public/assets'));
   sejongServer.use('/assets', express.static('public/assets'));
   b2bServer.use('/assets', express.static('public/assets'));
-  devServer.use('/assets', express.static('public/assets'));
+  localServer.use('/assets', express.static('public/assets'));
   devusServer.use('/assets', express.static('public/assets'));
 
-  adminServer.get('/', (req, res) => {
+  dsuServer.get('/', (req, res) => {
     return app.render(req, res, '/dsu', req.query);
   });
 
-  adminServer.get('/account/login', (req, res) => {
+  dsuServer.get('/account/login', (req, res) => {
     // return app.render(req, res, '/dsu/account/login', req.query);
-    return app.render(req, res, '/login', req.query);
+    return app.render(req, res, '/account/login', req.query);
   });
 
-  adminServer.all('*', (req, res) => {
+  dsuServer.all('*', (req, res) => {
     return handle(req, res);
   });
 
@@ -42,7 +42,7 @@ app.prepare().then(() => {
   });
 
   sejongServer.get('/account/login', (req, res) => {
-    return app.render(req, res, '/login', req.query);
+    return app.render(req, res, '/account/login', req.query);
     // return app.render(req, res, '/sejong/account/login', req.query);
   });
 
@@ -55,7 +55,7 @@ app.prepare().then(() => {
   });
 
   b2bServer.get('/account/login', (req, res) => {
-    return app.render(req, res, '/login', req.query);
+    return app.render(req, res, '/account/login', req.query);
     // return app.render(req, res, '/b2b/account/login', req.query);
   });
 
@@ -63,15 +63,15 @@ app.prepare().then(() => {
     return handle(req, res);
   });
 
-  devServer.get('/', (req, res) => {
+  localServer.get('/', (req, res) => {
     return app.render(req, res, '/', req.query);
   });
 
-  devServer.get('/account/login', (req, res) => {
+  localServer.get('/account/login', (req, res) => {
     return app.render(req, res, '/account/login', req.query);
   });
 
-  devServer.all('*', (req, res) => {
+  localServer.all('*', (req, res) => {
     return handle(req, res);
   });
 
@@ -103,11 +103,11 @@ app.prepare().then(() => {
   //   return handle(req, res)
   // })
 
-  mainServer.use(vhost('dsu.localhost', adminServer));
+  mainServer.use(vhost('dsu.localhost', dsuServer));
   mainServer.use(vhost('devus.localhost', devusServer));
   mainServer.use(vhost('sejong.localhost', sejongServer));
   mainServer.use(vhost('b2b.localhost', b2bServer));
-  mainServer.use(vhost('localhost', devServer));
+  mainServer.use(vhost('localhost', localServer));
 
   // mainServer.use(vhost('lvh.me', memberServer))
   // mainServer.use(vhost('www.lvh.me', memberServer))

@@ -83,19 +83,21 @@ IndexPage.LayoutProps = {
 export const getServerSideProps: GetServerSideProps = async context => {
   try {
     const { authStore } = context.query;
-    let session: Session;
-    console.log('authStore', authStore);
-    const authData = authStore || null;
+    let session: Session | null = null;
 
-    console.log('authData', authData);
-    // const parsedAuthStore = atob(authData);
-    // 2. Base64 디코딩 (Node.js 환경에서는 Buffer를 사용)
-    const decodedAuthStore = Buffer.from(authData, 'base64').toString('utf-8');
-    console.log('parsedAuthStore', decodedAuthStore);
+    if (authStore) {
+      // console.log('authStore', authStore);
+      const authData = authStore;
 
-    session = JSON.parse(decodedAuthStore);
-
-    console.log('session', session);
+      // console.log('authData', authData);
+      // 2. Base64 디코딩 (Node.js 환경에서는 Buffer를 사용)
+      const decodedAuthStore = Buffer.from(authData, 'base64').toString('utf-8');
+      // console.log('parsedAuthStore', decodedAuthStore);
+      session = JSON.parse(decodedAuthStore);
+      console.log('session', session);
+    } else {
+      console.log('No authStore provided');
+    }
 
     return {
       props: { session },
