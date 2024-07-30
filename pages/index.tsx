@@ -37,33 +37,19 @@ export function IndexPage({ session }: { session: Session }) {
     setUser({ user: data });
   });
 
-  const { data: myProfileData } = useMyProfile(data => {
-    console.log('useMyProfile : ', data);
-  });
+  console.log('index page');
+
+  // const { data: myProfileData } = useMyProfile(data => {
+  //   console.log('useMyProfile : ', data);
+  // });
 
   useEffect(() => {
-    if (myProfileData) {
-      const tenantName = myProfileData?.tenant?.tenantName;
-      switch (tenantName) {
-        case 'devus':
-          setColorPresetName('blue');
-          setColorPresets(COLOR_PRESETS[0].colors);
-          break;
-        case 'sejong':
-          setColorPresetName('black');
-          setColorPresets(COLOR_PRESETS[1].colors);
-          break;
-        case 'example':
-          setColorPresetName('teal');
-          setColorPresets(COLOR_PRESETS[2].colors);
-          break;
-        default:
-          setColorPresetName('blue');
-          setColorPresets(COLOR_PRESETS[0].colors);
-          break;
-      }
-    }
-  }, [myProfileData]);
+    if (!COLOR_PRESETS || COLOR_PRESETS.length === 0) return;
+
+    const preset = COLOR_PRESETS.find(preset => preset.name === 'devus') || COLOR_PRESETS[0];
+    setColorPresetName(preset.name);
+    setColorPresets(preset.colors);
+  }, []);
 
   // TODO 로그인 수정 변경
   return (
@@ -87,13 +73,13 @@ export const getServerSideProps: GetServerSideProps = async context => {
     let session: Session | null = null;
 
     if (authStore) {
-      // console.log('authStore', authStore);
+      console.log('authStore', authStore);
       const authData = authStore;
 
-      // console.log('authData', authData);
+      console.log('authData', authData);
       // 2. Base64 디코딩 (Node.js 환경에서는 Buffer를 사용)
       const decodedAuthStore = Buffer.from(authData, 'base64').toString('utf-8');
-      // console.log('parsedAuthStore', decodedAuthStore);
+      console.log('parsedAuthStore', decodedAuthStore);
       session = JSON.parse(decodedAuthStore);
       console.log('session', session);
     } else {

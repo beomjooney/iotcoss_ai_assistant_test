@@ -55,39 +55,57 @@ export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: Lo
   const [subdomain, setSubdomain] = useState('');
   const [username, setUserName] = useState('');
 
+  console.log('login page');
   useEffect(() => {
-    if (!COLOR_PRESETS || COLOR_PRESETS.length === 0) return;
-
-    const preset = COLOR_PRESETS.find(preset => preset.name === tenantName) || COLOR_PRESETS[0];
-    setColorPresetName(preset.name);
-    setColorPresets(preset.colors);
-
     const subdomain = getSubdomain();
     console.log('subdomain', subdomain);
     setSubdomain(subdomain);
+
+    if (!COLOR_PRESETS || COLOR_PRESETS.length === 0) return;
+
+    const preset = COLOR_PRESETS.find(preset => preset.name === subdomain.split('.')[0]) || COLOR_PRESETS[0];
+    setColorPresetName(preset.name);
+    setColorPresets(preset.colors);
+
+    console.log(preset.name);
   }, []);
 
   useEffect(() => {
     if (isSuccess) {
       onSubmitLogin();
 
-      const authStore = localStorage.getItem('auth-store') || null;
-      const json = JSON.parse(authStore);
-      const jsonString = JSON.stringify(json.state);
-      // const encodedJson = btoa(jsonString);
+      const authStore = localStorage.getItem('auth-store');
+      if (authStore) {
+        try {
+          const json = JSON.parse(authStore);
+          if (json && json.state) {
+            const jsonString = JSON.stringify(json.state);
+            // 1. Base64 인코딩 (Node.js 환경에서는 Buffer를 사용)
+            const encodedJson = Buffer.from(jsonString).toString('base64');
 
-      // 1. Base64 인코딩 (Node.js 환경에서는 Buffer를 사용)
-      const encodedJson = Buffer.from(jsonString).toString('base64');
+            // Continue with your logic here
+            deleteCookie('access_token');
+            localStorage.removeItem('auth-store');
+            localStorage.removeItem('app-storage');
 
-      deleteCookie('access_token');
-      localStorage.removeItem('auth-store');
-      localStorage.removeItem('app-storage');
+            console.log('loginData', loginData?.redirections?.home_url + `?accessToken=${loginData?.access_token}`);
+            if (username == 're4@naver.com' || username === 're3@naver.com') {
+              location.href = 'http://devus.localhost:3001' + `?authStore=${encodedJson}`;
+            } else {
+              location.href = loginData?.redirections?.home_url + `?authStore=${encodedJson}`;
+            }
 
-      console.log('loginData', loginData?.redirections?.home_url + `?accessToken=${loginData?.access_token}`);
-      if (username == 're4@naver.com' || username === 're3@naver.com') {
-        location.href = 'http://devus.localhost:3001' + `?authStore=${encodedJson}`;
+            deleteCookie('access_token');
+            localStorage.removeItem('auth-store');
+            localStorage.removeItem('app-storage');
+          } else {
+            console.error('Invalid authStore format: missing state property');
+          }
+        } catch (error) {
+          console.error('Failed to parse authStore:', error);
+        }
       } else {
-        location.href = loginData?.redirections?.home_url + `?authStore=${encodedJson}`;
+        console.warn('authStore is not available in localStorage');
       }
     }
   }, [loginData]);

@@ -1,22 +1,31 @@
 import './index.module.scss';
-import { HomeTemplate } from '../../src/templates';
 import { HomeSejongTemplate } from '../../src/templates/HomeSeJong';
-import { useSessionStore } from '../../src/store/session';
 import { useMemberInfo, useMyProfile } from '../../src/services/account/account.queries';
 import { useStore } from 'src/store';
 import { useColorPresets, useColorPresetName } from 'src/utils/use-theme-color';
 import { usePresets } from 'src/utils/color-presets';
 import { useEffect } from 'react';
+import { Session, useSessionStore } from '../../src/store/session';
+import { GetServerSideProps } from 'next';
 
-export function IndexPage() {
+export function IndexPage({ session }: { session: Session }) {
   const COLOR_PRESETS = usePresets();
   const { setColorPresetName } = useColorPresetName();
   const { setColorPresets } = useColorPresets();
+  const { update } = useSessionStore.getState();
+
   const { memberId, logged } = useSessionStore(state => ({
     memberId: state.memberId,
     name: state.name,
     logged: state.logged,
   }));
+
+  useEffect(() => {
+    // session이 존재하는 경우에만 상태 업데이트를 수행
+    if (session) {
+      update(session);
+    }
+  }, [session, update]); // 의존성 배열에 session과 update 포함
 
   const { setUser } = useStore();
   const { data } = useMemberInfo(memberId, data => {
@@ -39,7 +48,7 @@ export function IndexPage() {
   // TODO 로그인 수정 변경
   return (
     <div className="tw-h-[1400px]">
-      <HomeSejongTemplate logged={logged} />
+      <HomeSejongTemplate logged={logged} tenantName="sejong" />
     </div>
   );
 }
@@ -50,4 +59,34 @@ IndexPage.LayoutProps = {
   darkBg: true,
   classOption: 'custom-header',
   title: '데브어스',
+};
+
+export const getServerSideProps: GetServerSideProps = async context => {
+  try {
+    const { authStore } = context.query;
+    let session: Session | null = null;
+
+    if (authStore) {
+      console.log('authStore', authStore);
+      const authData = authStore;
+
+      console.log('authData', authData);
+      // 2. Base64 디코딩 (Node.js 환경에서는 Buffer를 사용)
+      const decodedAuthStore = Buffer.from(authData, 'base64').toString('utf-8');
+      console.log('parsedAuthStore', decodedAuthStore);
+      session = JSON.parse(decodedAuthStore);
+      console.log('session', session);
+    } else {
+      console.log('No authStore provided');
+    }
+
+    return {
+      props: { session },
+    };
+  } catch (err) {
+    console.log(err);
+    return {
+      props: {},
+    };
+  }
 };

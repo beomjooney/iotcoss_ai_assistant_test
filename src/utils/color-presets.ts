@@ -77,7 +77,7 @@ export const usePresets = () => {
       },
     },
     {
-      name: 'Yellow',
+      name: 'devus',
       colors: {
         lighter: '#fef9c3', // Yellow 100
         light: '#fde047', // Yellow 300
