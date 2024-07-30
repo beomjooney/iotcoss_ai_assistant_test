@@ -29,7 +29,8 @@ app.prepare().then(() => {
   });
 
   adminServer.get('/account/login', (req, res) => {
-    return app.render(req, res, '/dsu/account/login', req.query);
+    // return app.render(req, res, '/dsu/account/login', req.query);
+    return app.render(req, res, '/login', req.query);
   });
 
   adminServer.all('*', (req, res) => {
@@ -41,7 +42,8 @@ app.prepare().then(() => {
   });
 
   sejongServer.get('/account/login', (req, res) => {
-    return app.render(req, res, '/sejong/account/login', req.query);
+    return app.render(req, res, '/login', req.query);
+    // return app.render(req, res, '/sejong/account/login', req.query);
   });
 
   sejongServer.all('*', (req, res) => {
@@ -53,7 +55,8 @@ app.prepare().then(() => {
   });
 
   b2bServer.get('/account/login', (req, res) => {
-    return app.render(req, res, '/b2b/account/login', req.query);
+    return app.render(req, res, '/login', req.query);
+    // return app.render(req, res, '/b2b/account/login', req.query);
   });
 
   b2bServer.all('*', (req, res) => {
