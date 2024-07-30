@@ -7,8 +7,6 @@ import { useStore } from 'src/store';
 import { useColorPresets, useColorPresetName } from 'src/utils/use-theme-color';
 import { usePresets } from 'src/utils/color-presets';
 import { useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { setCookie } from 'cookies-next';
 import { GetServerSideProps } from 'next';
 
 export function IndexPage({ session }: { session: Session }) {

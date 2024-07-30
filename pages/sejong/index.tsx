@@ -20,12 +20,20 @@ export function IndexPage({ session }: { session: Session }) {
     logged: state.logged,
   }));
 
+  // session이 존재하는 경우에만 상태 업데이트를 수행
   useEffect(() => {
-    // session이 존재하는 경우에만 상태 업데이트를 수행
     if (session) {
       update(session);
     }
-  }, [session, update]); // 의존성 배열에 session과 update 포함
+  }, [session, update]);
+
+  // 색상 설정
+  useEffect(() => {
+    if (!COLOR_PRESETS || COLOR_PRESETS.length === 0) return;
+    const preset = COLOR_PRESETS.find(preset => preset.name === 'sejong') || COLOR_PRESETS[0];
+    setColorPresetName(preset.name);
+    setColorPresets(preset.colors);
+  }, []);
 
   const { setUser } = useStore();
   const { data } = useMemberInfo(memberId, data => {
@@ -36,14 +44,6 @@ export function IndexPage({ session }: { session: Session }) {
   const { data: myProfileData } = useMyProfile(data => {
     console.log('useMyProfile : ', data);
   });
-
-  useEffect(() => {
-    if (!COLOR_PRESETS || COLOR_PRESETS.length === 0) return;
-
-    const preset = COLOR_PRESETS.find(preset => preset.name === 'sejong') || COLOR_PRESETS[0];
-    setColorPresetName(preset.name);
-    setColorPresets(preset.colors);
-  }, []);
 
   // TODO 로그인 수정 변경
   return (
