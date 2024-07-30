@@ -21,6 +21,7 @@ export function IndexPage({ session }: { session: Session }) {
     }
   }, [session, update]); // 의존성 배열에 session과 update 포함
 
+  //First Color Change
   const COLOR_PRESETS = usePresets();
   const { setColorPresetName } = useColorPresetName();
   const { setColorPresets } = useColorPresets();

@@ -37,6 +37,7 @@ export interface paramProps {
   excludeSeminarIds?: any; // 콤마(,)로 구분
   enabled?: boolean;
   lecturerMemberId?: string;
+  recruitType?: string;
 }
 
 export const useMyClubList = (
