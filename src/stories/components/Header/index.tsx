@@ -268,7 +268,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
           <div className={cx('header-link', 'navbar-brand')} onClick={handleGoHome}>
             <img src="/assets/images/header/image_1.png" width={130} alt="logo" className={cx('image-logo')} />
           </div>
-          {COLOR_PRESETS.map(preset => (
+          {/* {COLOR_PRESETS.map(preset => (
             <div key={preset?.name} className="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-1 tw-mr-4">
               <button
                 title={preset?.name}
@@ -294,11 +294,11 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                 {theme === 'dark' && preset.name === 'Black' ? 'White' : preset.name}
               </span>
             </div>
-          ))}
+          ))} */}
           <Mobile>
             <div>
               {!logged && (
-                <div className={cx('custom-item', 'max-lg:!tw-pl-26')}>
+                <div className={cx('max-lg:!tw-pl-26')}>
                   <button
                     className="tw-bg-white tw-rounded-md tw-text-sm tw-text-gray-500 tw-font-bold tw-py-2.5 tw-px-5 tw-mr-4 tw-rounded"
                     onClick={handleClick}
@@ -388,206 +388,215 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
           >
             {mobileList(menuItem)}
           </SwipeableDrawer>
-          <div
-            className={cx(
-              'collapse navbar-collapse main-menu',
-              'navbar-mobile  tw-mt-2.5 tw-mb-2.5',
-              'tw-justify-end',
-              isShowMenu ? 'show' : '',
-            )}
-            id="navbarSupportedContent"
-          >
-            <ul className={cx('nav-custom', 'navbar-custom-mobile', 'navbar-nav', 'tw-text-lg', 'tw-text-left')}>
-              {menuItem.map((item, index) => {
-                if (item.login && (!item.role || roles.includes(item.role))) {
-                  return (
-                    <li key={`item-` + index} className={cn(item.option)}>
-                      <Link href={item.link}>
-                        <a
-                          className="nav-link"
-                          onClick={() => {
-                            setActiveIndex(index);
-                            if (item.dropdown.length === 0) setIsShowMenu(!isShowMenu);
-                          }}
-                        >
-                          <div className="tw-w-[90px] tw-text-center tw-text-base tw-text-black tw-font-extrabold">
-                            <div
-                              className={`${activeIndex === index ? 'border-bottom-3 tw-border-black pb-3' : ''}`}
-                              style={{ paddingBottom: activeIndex === index ? '10px' : '10px' }}
-                            >
-                              {item.title}
-                            </div>
-                          </div>
-                        </a>
-                      </Link>
-                      {item.dropdown.length > 0 && (
-                        <div className="dropdown-menu submenu" aria-labelledby="navbarDropdownHome">
-                          {item.dropdown.map((menu, index) => (
-                            <Link key={`menu-` + index} href={menu.link}>
-                              <a
-                                className="dropdown-item"
-                                onClick={() => {
-                                  setIsShowMenu(!isShowMenu);
-                                }}
+          <Desktop>
+            <div
+              className={cx(
+                'collapse navbar-collapse main-menu',
+                'navbar-mobile  tw-mt-2.5 tw-mb-2.5',
+                'tw-justify-end',
+                isShowMenu ? 'show' : '',
+              )}
+              id="navbarSupportedContent"
+            >
+              <ul className={cx('nav-custom', 'navbar-custom-mobile', 'navbar-nav', 'tw-text-lg', 'tw-text-left')}>
+                {menuItem.map((item, index) => {
+                  if (item.login && (!item.role || roles.includes(item.role))) {
+                    return (
+                      <li key={`item-` + index} className={cn(item.option)}>
+                        <Link href={item.link}>
+                          <a
+                            className="nav-link"
+                            onClick={() => {
+                              setActiveIndex(index);
+                              if (item.dropdown.length === 0) setIsShowMenu(!isShowMenu);
+                            }}
+                          >
+                            <div className="tw-w-[90px] tw-text-center tw-text-base tw-text-black tw-font-extrabold">
+                              <div
+                                className={`${activeIndex === index ? 'border-bottom-3 tw-border-black pb-3' : ''}`}
+                                style={{ paddingBottom: activeIndex === index ? '10px' : '10px' }}
                               >
-                                <div className="tw-text-base tw-font-bold">{menu.title}</div>
-                              </a>
-                            </Link>
-                          ))}
-                        </div>
-                      )}
-                    </li>
-                  );
-                }
-                return null;
-              })}
-            </ul>
-
-            {!logged && (
-              <li className={cx('custom-item')}>
-                <button
-                  className="tw-bg-white tw-rounded-md border tw-text-sm tw-text-gray-500 tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
-                  onClick={handleClick}
-                >
-                  로그인
-                </button>
-              </li>
-            )}
-            {logged && (
-              <div className="row tw-flex tw-items-center tw-justify-between">
-                <div className="col-lg-12 tw-flex tw-items-center tw-justify-end max-lg:tw-justify-end lg:tw-mb-0">
-                  {logoutButton}
-
-                  <Tooltip title="">
-                    <div className="tw-px-2">
-                      <IconButton
-                        onClick={handleIconClick}
-                        size="large"
-                        aria-label="show 17 new notifications"
-                        color="inherit"
-                      >
-                        {contents?.totalElements !== 0 ? (
-                          <Badge badgeContent={alarmCount} color="error" className="tw-px-0">
-                            <NotificationsNoneIcon sx={{ fontSize: 30 }} />
-                          </Badge>
-                        ) : (
-                          <NotificationsNoneIcon sx={{ fontSize: 30 }} />
-                        )}
-                      </IconButton>
-                      <Popover
-                        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                        anchorEl={anchorElAlarm}
-                        open={Boolean(anchorElAlarm)}
-                        onClose={handleCloseAlarm}
-                        disableScrollLock={true}
-                      >
-                        <div className="popover-content tw-w-[370px]" style={{ maxHeight: '400px', overflowY: 'auto' }}>
-                          <div className="tw-bg-gray-100 tw-text-gray-500 tw-py-4 tw-text-center tw-text-sm">
-                            최근 30일동안의 알림만 보관되며,이후 자동삭제됩니다.
-                          </div>
-                          {contents?.contents?.map((item, index) => {
-                            return (
-                              // TODO API Response 보고 댓글 작성자로 수정 필요
-                              <div key={index} role="tw-list" className=" tw-divide-y tw-divide-gray-100 border-bottom">
-                                <div className="tw-justify-between  ">
-                                  <div className="tw-min-w-0 tw-p-3 tw-font-semibold">
-                                    {item?.date} {item?.dayOfWeek}
-                                  </div>
-                                  {item?.activities.map((items, index) => {
-                                    return (
-                                      <div
-                                        onClick={() => onCheckAlarm(items?.activityHistorySequence)}
-                                        key={index}
-                                        className="tw-cursor-pointer border-top tw-p-3 tw-text-black tw-text-sm"
-                                      >
-                                        {!items?.isChecked && (
-                                          <div className="tw-bottom-auto tw-left-auto tw-right-0 tw-top-0 tw-z-10 tw-inline-block tw-rounded-full tw-bg-red-600 tw-p-[3px] tw-text-sm tw-mx-2 tw-mr-3"></div>
-                                        )}
-                                        {items?.activityMessage}
-                                      </div>
-                                    );
-                                  })}
-                                </div>
+                                {item.title}
                               </div>
-                            );
-                          })}
-                        </div>
-                      </Popover>
-                    </div>
-                  </Tooltip>
-                  <div className={cx('nav-item')}>
+                            </div>
+                          </a>
+                        </Link>
+                        {item.dropdown.length > 0 && (
+                          <div className="dropdown-menu submenu" aria-labelledby="navbarDropdownHome">
+                            {item.dropdown.map((menu, index) => (
+                              <Link key={`menu-` + index} href={menu.link}>
+                                <a
+                                  className="dropdown-item"
+                                  onClick={() => {
+                                    setIsShowMenu(!isShowMenu);
+                                  }}
+                                >
+                                  <div className="tw-text-base tw-font-bold">{menu.title}</div>
+                                </a>
+                              </Link>
+                            ))}
+                          </div>
+                        )}
+                      </li>
+                    );
+                  }
+                  return null;
+                })}
+              </ul>
+
+              {!logged && (
+                <li className={cx('custom-item')}>
+                  <button
+                    className="tw-bg-white tw-rounded-md border tw-text-sm tw-text-gray-500 tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
+                    onClick={handleClick}
+                  >
+                    로그인
+                  </button>
+                </li>
+              )}
+              {logged && (
+                <div className="row tw-flex tw-items-center tw-justify-between">
+                  <div className="col-lg-12 tw-flex tw-items-center tw-justify-end max-lg:tw-justify-end lg:tw-mb-0">
+                    {logoutButton}
+
                     <Tooltip title="">
-                      <IconButton
-                        onClick={handleClicks}
-                        size="small"
-                        sx={{ ml: 0, p: 0 }}
-                        aria-controls={open ? 'account-menu' : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={open ? 'true' : undefined}
-                      >
-                        <Avatar sx={{ width: 32, height: 32 }} className="border" src={user?.member?.profileImageUrl}>
-                          M
-                        </Avatar>
-                      </IconButton>
+                      <div className="tw-px-2">
+                        <IconButton
+                          onClick={handleIconClick}
+                          size="large"
+                          aria-label="show 17 new notifications"
+                          color="inherit"
+                        >
+                          {contents?.totalElements !== 0 ? (
+                            <Badge badgeContent={alarmCount} color="error" className="tw-px-0">
+                              <NotificationsNoneIcon sx={{ fontSize: 30 }} />
+                            </Badge>
+                          ) : (
+                            <NotificationsNoneIcon sx={{ fontSize: 30 }} />
+                          )}
+                        </IconButton>
+                        <Popover
+                          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                          anchorEl={anchorElAlarm}
+                          open={Boolean(anchorElAlarm)}
+                          onClose={handleCloseAlarm}
+                          disableScrollLock={true}
+                        >
+                          <div
+                            className="popover-content tw-w-[370px]"
+                            style={{ maxHeight: '400px', overflowY: 'auto' }}
+                          >
+                            <div className="tw-bg-gray-100 tw-text-gray-500 tw-py-4 tw-text-center tw-text-sm">
+                              최근 30일동안의 알림만 보관되며,이후 자동삭제됩니다.
+                            </div>
+                            {contents?.contents?.map((item, index) => {
+                              return (
+                                // TODO API Response 보고 댓글 작성자로 수정 필요
+                                <div
+                                  key={index}
+                                  role="tw-list"
+                                  className=" tw-divide-y tw-divide-gray-100 border-bottom"
+                                >
+                                  <div className="tw-justify-between  ">
+                                    <div className="tw-min-w-0 tw-p-3 tw-font-semibold">
+                                      {item?.date} {item?.dayOfWeek}
+                                    </div>
+                                    {item?.activities.map((items, index) => {
+                                      return (
+                                        <div
+                                          onClick={() => onCheckAlarm(items?.activityHistorySequence)}
+                                          key={index}
+                                          className="tw-cursor-pointer border-top tw-p-3 tw-text-black tw-text-sm"
+                                        >
+                                          {!items?.isChecked && (
+                                            <div className="tw-bottom-auto tw-left-auto tw-right-0 tw-top-0 tw-z-10 tw-inline-block tw-rounded-full tw-bg-red-600 tw-p-[3px] tw-text-sm tw-mx-2 tw-mr-3"></div>
+                                          )}
+                                          {items?.activityMessage}
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </Popover>
+                      </div>
                     </Tooltip>
-                    <Menu
-                      disableScrollLock={true}
-                      anchorEl={anchorEl}
-                      id="account-menu"
-                      open={open}
-                      onClose={handleClose}
-                      onClick={handleClose}
-                      PaperProps={{
-                        elevation: 0,
-                        sx: {
-                          overflow: 'visible',
-                          filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-                          mt: 1.5,
-                          width: '200px',
-                          paddingLeft: '8px',
-                          '& .MuiAvatar-root': {
-                            width: 32,
-                            height: 32,
-                            ml: -0.5,
-                            mr: 1,
+                    <div className={cx('nav-item')}>
+                      <Tooltip title="">
+                        <IconButton
+                          onClick={handleClicks}
+                          size="small"
+                          sx={{ ml: 0, p: 0 }}
+                          aria-controls={open ? 'account-menu' : undefined}
+                          aria-haspopup="true"
+                          aria-expanded={open ? 'true' : undefined}
+                        >
+                          <Avatar sx={{ width: 32, height: 32 }} className="border" src={user?.member?.profileImageUrl}>
+                            M
+                          </Avatar>
+                        </IconButton>
+                      </Tooltip>
+                      <Menu
+                        disableScrollLock={true}
+                        anchorEl={anchorEl}
+                        id="account-menu"
+                        open={open}
+                        onClose={handleClose}
+                        onClick={handleClose}
+                        PaperProps={{
+                          elevation: 0,
+                          sx: {
+                            overflow: 'visible',
+                            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                            mt: 1.5,
+                            width: '200px',
+                            paddingLeft: '8px',
+                            '& .MuiAvatar-root': {
+                              width: 32,
+                              height: 32,
+                              ml: -0.5,
+                              mr: 1,
+                            },
+                            '&:before': {
+                              content: '""',
+                              display: 'block',
+                              position: 'absolute',
+                              top: 0,
+                              right: 14,
+                              width: 10,
+                              height: 10,
+                              bgcolor: 'background.paper',
+                              transform: 'translateY(-50%) rotate(45deg)',
+                              zIndex: 0,
+                            },
                           },
-                          '&:before': {
-                            content: '""',
-                            display: 'block',
-                            position: 'absolute',
-                            top: 0,
-                            right: 14,
-                            width: 10,
-                            height: 10,
-                            bgcolor: 'background.paper',
-                            transform: 'translateY(-50%) rotate(45deg)',
-                            zIndex: 0,
-                          },
-                        },
-                      }}
-                      transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                      anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-                    >
-                      {/* <MenuItem onClick={() => (location.href = '/quiz-make')}>내가 만든 퀴즈</MenuItem> */}
-                      {/* <Divider />
+                        }}
+                        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                      >
+                        {/* <MenuItem onClick={() => (location.href = '/quiz-make')}>내가 만든 퀴즈</MenuItem> */}
+                        {/* <Divider />
                       <MenuItem onClick={() => (location.href = '/account/my/point')}>내 포인트 내역</MenuItem> */}
-                      {/* <Divider />
+                        {/* <Divider />
                       <MenuItem onClick={() => (location.href = '/profile')}>내 프로필</MenuItem> */}
-                      <MenuItem onClick={handleClick}>마이페이지</MenuItem>
-                      <Divider />
-                      <MenuItem onClick={handleLogout}>
-                        <ListItemIcon>
-                          <Logout fontSize="small" />
-                        </ListItemIcon>
-                        Logout
-                      </MenuItem>
-                    </Menu>
+                        <MenuItem onClick={handleClick}>마이페이지</MenuItem>
+                        <Divider />
+                        <MenuItem onClick={handleLogout}>
+                          <ListItemIcon>
+                            <Logout fontSize="small" />
+                          </ListItemIcon>
+                          Logout
+                        </MenuItem>
+                      </Menu>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          </Desktop>
         </div>
       </nav>
     </header>
