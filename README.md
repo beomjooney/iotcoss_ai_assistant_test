@@ -22,27 +22,33 @@
 
 
 ## 로그인시 컬러 변경 로직 /pages/index.tsx
+```
   //First Color Change
   const COLOR_PRESETS = usePresets();
   const { setColorPresetName } = useColorPresetName();
   const { setColorPresets } = useColorPresets();
+```
 
 ## subdomain 변경시 색상 변경 로직 /pages/dsu/index.tsx
+```
   useEffect(() => {
     if (!COLOR_PRESETS || COLOR_PRESETS.length === 0) return;
     const preset = COLOR_PRESETS.find(preset => preset.name === 'sejong') || COLOR_PRESETS[0];
     setColorPresetName(preset.name);
     setColorPresets(preset.colors);
   }, []);
+```
 
 ## subdomain 변경시 로직 /pages/dsu/index.tsx
+  ```
   // session이 존재하는 경우에만 상태 업데이트를 수행
   useEffect(() => {
     if (session) {
       update(session);
     }
   }, [session, update]);
-
+```
+```
 export const getServerSideProps: GetServerSideProps = async context => {
   try {
     const { authStore } = context.query;
@@ -72,3 +78,4 @@ export const getServerSideProps: GetServerSideProps = async context => {
     };
   }
 };
+```
