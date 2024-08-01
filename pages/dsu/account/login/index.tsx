@@ -31,10 +31,7 @@ export function LoginPage(props: LoginPageProps) {
       token: token,
     });
 
-    setCookie('access_token', router.query['token']);
-    // router.query['token'] && window.history.replaceState(null, '', '/account/login');
-    // await router.push('/');
-    location.href = '/';
+    // location.href = '/';
   };
 
   const authLoginUpdate = async () => {
