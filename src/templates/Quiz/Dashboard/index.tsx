@@ -179,9 +179,9 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
         </>
         <div className="tw-flex tw-items-center tw-mt-6">
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-            <Grid item xs={11.1} className="tw-font-bold tw-text-xl">
+            <Grid item xs={11} className="tw-font-bold tw-text-xl">
               <select
-                className="tw-h-14 form-select block w-full tw-bg-gray-100 tw-text-red-500 tw-font-bold tw-px-8"
+                className="tw-h-14 form-select block w-full  tw-text-red-500 tw-font-bold tw-px-8"
                 onChange={handleQuizChange}
                 value={selectedValue}
                 aria-label="Default select example"
@@ -201,7 +201,7 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
               </select>
             </Grid>
 
-            <Grid item xs={0.9} justifyContent="flex-end" className="tw-flex">
+            <Grid item xs={1} justifyContent="flex-end" className="tw-flex">
               {/* {contents?.isBeforeOpening ? ( */}
               <div className="">
                 <button

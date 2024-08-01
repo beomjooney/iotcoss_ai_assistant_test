@@ -42,6 +42,15 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       login: logged,
       role: 'ROLE_MANAGER',
     },
+    {
+      no: 1,
+      option: 'nav-item',
+      title: 'My 강의클럽',
+      link: '/my-lecture-clubs',
+      dropdown: [],
+      login: logged,
+      role: 'ROLE_MANAGER',
+    },
   ];
 
   useEffect(() => {

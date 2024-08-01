@@ -33,11 +33,15 @@ export * from './Profile/index';
 export * from './Profile/Opponent/index';
 export * from './StudyRoom/index';
 export * from './QuizMy/index';
+export * from './QuizMyLectureClubs/index';
 export * from './QuizMake/index';
 export * from './Quiz/AnswersAll/index';
 export * from './Quiz/Open/index';
 export * from './Quiz/Crew/index';
 export * from './Quiz/Manage/index';
+/** 강의 대시보드 */
+export * from './Lecture/Dashboard/index';
+export * from './Lecture/ViewAllLecture/index';
 /** 퀴즈 대시보드*/
 export * from './Quiz/Dashboard/index';
 export * from './Quiz/ManageQuizClub/index';

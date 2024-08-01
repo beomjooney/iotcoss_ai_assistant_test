@@ -34,7 +34,10 @@ const CourseCard = ({ data, border = false }) => {
         border ? 'border-left border-right border-top tw-rounded-t-lg' : 'border tw-rounded-lg'
       }`}
     >
-      <img src={data.clubImageUrl} className="tw-w-[132px] tw-h-[142px] tw-object-cover tw-float-left" />
+      <img
+        src={data.clubImageUrl || 'assets/images/banner/Rectangle_193.png'}
+        className="tw-w-[132px] tw-h-[142px] tw-object-cover tw-float-left"
+      />
 
       <div className="tw-flex tw-justify-start tw-items-start tw-gap-1 tw-ml-[148px] tw-mt-4">
         <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-black">
