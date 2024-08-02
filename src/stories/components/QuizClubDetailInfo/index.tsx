@@ -49,8 +49,8 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
   const { mutate: onDeleteLike } = useDeleteLike();
 
   useEffect(() => {
-    setIsLiked(clubData.isFavorite);
-  }, [clubData.isFavorite]);
+    setIsLiked(clubData?.isFavorite);
+  }, [clubData?.isFavorite]);
 
   useEffect(() => {
     if (clubJoinSucces) {

@@ -31,6 +31,8 @@ export * from './ToggleLabel/index';
 export { default as ToggleLabel } from './ToggleLabel/index';
 export * from './ClubCard/index';
 export { default as ClubCard } from './ClubCard/index';
+export * from './LectureCard/index';
+export { default as LectureCard } from './LectureCard/index';
 export * from './CommunityCard/index';
 export { default as CommunityCard } from './CommunityCard/index';
 export * from './CommunityCardReply/index';

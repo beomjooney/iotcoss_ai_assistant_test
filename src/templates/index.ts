@@ -28,6 +28,7 @@ export * from './Service/index';
 export * from './Contents/index';
 export * from './Seminar/index';
 export * from './Quiz/index';
+export * from './Lecture/index';
 export * from './Lounge/index';
 export * from './Profile/index';
 export * from './Profile/Opponent/index';
@@ -42,7 +43,9 @@ export * from './Quiz/Manage/index';
 /** 강의 대시보드 */
 export * from './Lecture/Dashboard/index';
 export * from './Lecture/ViewAllLecture/index';
+export * from './Lecture/LectureListViewAll/index';
 export * from './Lecture/Open/index';
+export * from './Lecture/Detail/index';
 /** 퀴즈 대시보드*/
 export * from './Quiz/Dashboard/index';
 export * from './Quiz/ManageQuizClub/index';

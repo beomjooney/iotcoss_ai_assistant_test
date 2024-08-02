@@ -33,7 +33,7 @@ import NavigatePrevIcon from '@mui/icons-material/NavigateBefore';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import LectureBreakerInfo from 'src/stories/components/LectureBreakerInfo';
-import QuizClubDetailInfo from 'src/stories/components/QuizClubDetailInfo';
+import LectureDetailInfo from 'src/stories/components/LectureDetailInfo';
 /** drag list */
 import ReactDragList from 'react-drag-list';
 import { useStore } from 'src/store';
@@ -555,7 +555,7 @@ export function LectureOpenTemplate() {
 
   const steps = ['Step 1.클럽 세부사항 설정', 'Step 2.퀴즈 선택', 'Step 3. 개설될 클럽 미리보기'];
 
-  const [activeStep, setActiveStep] = React.useState(1);
+  const [activeStep, setActiveStep] = React.useState(2);
   const [skipped, setSkipped] = React.useState(new Set<number>());
   const [quizUrl, setQuizUrl] = React.useState('');
   const [quizName, setQuizName] = React.useState('');
@@ -574,10 +574,10 @@ export function LectureOpenTemplate() {
       .map((item, index) => (item.quizSequence === null ? index + 1 : null))
       .filter(index => index !== null);
 
-    if (nullQuizSequences.length > 0) {
-      alert(`${nullQuizSequences.join(', ')} 번째 퀴즈를 등록해주세요.`);
-      return;
-    }
+    // if (nullQuizSequences.length > 0) {
+    //   alert(`${nullQuizSequences.join(', ')} 번째 퀴즈를 등록해주세요.`);
+    //   return;
+    // }
 
     let newSkipped = skipped;
     if (isStepSkipped(activeStep)) {
@@ -1753,7 +1753,9 @@ export function LectureOpenTemplate() {
         {activeStep === 2 && (
           <>
             <article>
-              <QuizClubDetailInfo
+              <LectureDetailInfo
+                selectedImageBanner={selectedImageBanner}
+                selectedImage={selectedImage}
                 border={true}
                 clubData={paramss?.clubForm}
                 user={user}
