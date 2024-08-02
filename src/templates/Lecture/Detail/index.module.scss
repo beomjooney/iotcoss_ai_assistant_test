@@ -1,0 +1,517 @@
+@use '../../../stories/assets/styles/abstracts/font';
+@use '../../../stories/assets/styles/abstracts/palette';
+@use '../../../stories/assets/styles/abstracts/mixin';
+
+$banner-height: 216px;
+$aside-width: 352px;
+$article-width: 100%;
+$navbar-space: 0px;
+$top-space: $navbar-space + 0px;
+
+.seminar-container {
+  @include mixin.initflexWrapContainer;
+  height: 1750px;
+}
+
+.text-bold {
+  font-weight: bold !important;
+}
+
+.border-bottom-zero {
+  border-bottom: 0px !important;
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+}
+
+.seminar-detail-container-mobile {
+  position: relative;
+
+  .sticky {
+    position: -webkit-relative; /* 사파리 브라우저 지원 */
+    position: relative;
+  }
+
+  .content-wrap {
+    width: 100%;
+    margin-top: 15px;
+    .content {
+      > * {
+        width: 100%;
+      }
+
+      .tabs {
+        background-color: white;
+        z-index: 100;
+        &.sticky {
+          top: 10px;
+        }
+        button {
+          width: 30%;
+          border: 1px solid palette.$Primary-Gray600;
+          font-weight: 400;
+          font-size: font.$font-size-14;
+          line-height: 21px;
+          color: palette.$Primary-Gray600;
+          padding-bottom: 8px !important;
+
+          &[aria-selected='true'] {
+            color: palette.$Primary-Gray900;
+            font-size: font.$font-size-14;
+          }
+        }
+      }
+    }
+
+    article {
+      display: inline-block;
+
+      .seminar-tabpanel {
+        position: relative;
+        color: black;
+        padding: 10px 0px;
+        &:not(.seminar-tabpanel-4) {
+          border-bottom: 0.5px solid palette.$Primary-Gray600;
+        }
+
+        img {
+          width: 100%;
+        }
+
+        &__html-content {
+          padding-top: 24px;
+          padding-left: 32px;
+          @include mixin.initEditorContent;
+
+          h2 {
+            transform: translateX(-32px);
+          }
+
+          h3 {
+            &::before {
+              width: 24px;
+              height: 24px;
+              line-height: 24px;
+              display: inline-block;
+              transform: translate(-32px, -2px);
+              position: absolute;
+              content: '';
+              background-image: url('../../../../public/assets/images/icons/seminar-check.svg');
+            }
+          }
+        }
+
+        &-0 {
+          &__title {
+            font-weight: 700;
+            font-size: 20px;
+            line-height: 30px;
+          }
+        }
+
+        &-1 {
+          padding: 60px 40px;
+          &__profile {
+            margin-bottom: 0;
+            padding: 0;
+          }
+          &__info {
+            color: palette.$Primary-Gray900;
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 21px;
+            letter-spacing: -0.005em;
+
+            &-desc {
+              white-space: pre-line;
+            }
+
+            button {
+              width: 256px;
+              height: 56px;
+              font-weight: 700;
+              font-size: 16px;
+              line-height: 24px;
+            }
+          }
+        }
+
+        &-4 {
+          position: relative;
+          padding: 60px 0;
+
+          .seminar-content {
+            padding: 60px 0;
+            //@include mixin.initFlexWrap(32px);
+            row-gap: 30px;
+            //justify-content: flex-start;
+          }
+
+          button {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+          }
+        }
+      }
+    }
+  }
+
+  @include mixin.initflexWrapContainer;
+
+  .text-highlight {
+    color: palette.$Primary-Blue900;
+  }
+
+  aside {
+    width: 100%;
+    display: inline-block;
+    padding: 0 16px 16px 20px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+    // float: right;
+
+    &.sticky {
+      top: 10px;
+    }
+
+    > div {
+      padding: 20px 0;
+      &:not(.recruitment-area) {
+        border-bottom: 0.5px solid palette.$Primary-Gray500;
+      }
+    }
+
+    .top-area {
+      float: left;
+      padding-right: 25px;
+      width: 100%;
+      @include mixin.initFlexWrap(5px);
+      justify-content: flex-start;
+      max-height: 94px;
+      margin-bottom: 20px;
+
+      &__bookmark {
+        position: absolute;
+        right: 16px;
+      }
+    }
+
+    .title-area {
+      &__title {
+        font-size: font.$font-size-18 !important;
+        font-weight: bold;
+        color: black;
+        margin-bottom: 2px;
+        line-height: 27px;
+      }
+
+      &__tags {
+        font-weight: 400;
+        font-size: font.$font-size-14 !important;
+        line-height: 21px;
+        color: palette.$Primary-Gray600;
+      }
+    }
+
+    .mentor-area {
+      color: black;
+      font-size: font.$font-size-18 !important;
+      font-weight: bold;
+    }
+
+    .detail-area {
+      color: black;
+      font-size: font.$font-size-14 !important;
+      position: relative;
+
+      .text-bold {
+        font-weight: 700;
+        //font-size: 18px;
+        line-height: 27px;
+      }
+
+      p {
+        margin: 0;
+      }
+
+      &--highlight {
+        font-size: font.$font-size-18 !important;
+        font-weight: bold;
+      }
+
+      &--time {
+        color: palette.$Primary-Blue900;
+        right: 0;
+        text-align: right;
+        bottom: 21px;
+      }
+    }
+
+    .recruitment-area {
+      position: relative;
+      color: black;
+      font-size: font.$font-size-16 !important;
+
+      p {
+        margin-bottom: 0;
+
+        &.phone-desc {
+          font-size: font.toRem(14px);
+        }
+      }
+
+      &__price {
+        position: absolute;
+        right: 0;
+        margin-right: 5px;
+      }
+    }
+  }
+}
+
+.seminar-detail-container {
+  position: relative;
+  .sticky {
+    position: -webkit-sticky; /* 사파리 브라우저 지원 */
+    position: sticky;
+  }
+
+  .content-wrap {
+    width: $article-width;
+    margin-top: $top-space;
+    .content {
+      > * {
+        width: $article-width;
+      }
+
+      .tabs {
+        background-color: white;
+        z-index: 100;
+        &.sticky {
+          top: $navbar-space;
+        }
+        button {
+          width: 170px;
+          border: 1px solid palette.$Primary-Gray600;
+          border-radius: 5px 5px 0px 0px;
+          font-weight: 600;
+          font-size: font.$font-size-16;
+          line-height: 21px;
+          color: palette.$Primary-Gray600;
+
+          &[aria-selected='true'] {
+            color: palette.$Primary-Gray900;
+            border-bottom: 0px;
+            font-size: font.$font-size-16;
+          }
+        }
+      }
+    }
+
+    article {
+      display: inline-block;
+
+      .seminar-tabpanel {
+        position: relative;
+        color: black;
+        padding: 20px 20px;
+        &:not(.seminar-tabpanel-4) {
+          border-bottom: 0.5px solid palette.$Primary-Gray600;
+        }
+
+        img {
+          width: 100%;
+        }
+
+        &__html-content {
+          padding-top: 24px;
+          padding-left: 32px;
+          @include mixin.initEditorContent;
+
+          h2 {
+            transform: translateX(-32px);
+          }
+
+          h3 {
+            &::before {
+              width: 24px;
+              height: 24px;
+              line-height: 24px;
+              display: inline-block;
+              transform: translate(-32px, -2px);
+              position: absolute;
+              content: '';
+              background-image: url('../../../../public/assets/images/icons/seminar-check.svg');
+            }
+          }
+        }
+
+        &-0 {
+          &__title {
+            font-weight: 700;
+            font-size: 20px;
+            line-height: 30px;
+          }
+        }
+
+        &-1 {
+          padding: 60px 40px;
+          &__profile {
+            margin-bottom: 0;
+            padding: 0;
+          }
+          &__info {
+            padding-left: 56px;
+            color: palette.$Primary-Gray900;
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 21px;
+            letter-spacing: -0.005em;
+
+            &-desc {
+              white-space: pre-line;
+            }
+
+            button {
+              width: 256px;
+              height: 56px;
+              font-weight: 700;
+              font-size: 16px;
+              line-height: 24px;
+            }
+          }
+        }
+
+        &-4 {
+          position: relative;
+          padding: 60px 0;
+
+          .seminar-content {
+            padding: 60px 0;
+            //@include mixin.initFlexWrap(32px);
+            row-gap: 30px;
+            //justify-content: flex-start;
+          }
+
+          button {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+          }
+        }
+      }
+    }
+  }
+
+  @include mixin.initflexWrapContainer;
+
+  .text-highlight {
+    color: palette.$Primary-Blue900;
+  }
+
+  aside {
+    width: 352px;
+    display: inline-block;
+    padding: 0 16px 16px 20px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+    float: right;
+
+    &.sticky {
+      // top: $top-space;
+    }
+
+    > div {
+      padding: 20px 0;
+      &:not(.recruitment-area) {
+        border-bottom: 0.5px solid palette.$Primary-Gray500;
+      }
+    }
+
+    .top-area {
+      float: left;
+      padding-right: 25px;
+      width: 100%;
+      @include mixin.initFlexWrap(5px);
+      justify-content: flex-start;
+      max-height: 94px;
+      margin-bottom: 20px;
+
+      &__bookmark {
+        position: absolute;
+        right: 16px;
+      }
+    }
+
+    .title-area {
+      &__title {
+        font-size: font.$font-size-18 !important;
+        font-weight: bold;
+        color: black;
+        margin-bottom: 2px;
+        line-height: 27px;
+      }
+
+      &__tags {
+        font-weight: 400;
+        font-size: font.$font-size-14 !important;
+        line-height: 21px;
+        color: palette.$Primary-Gray600;
+      }
+    }
+
+    .mentor-area {
+      color: black;
+      font-size: font.$font-size-18 !important;
+      font-weight: bold;
+    }
+
+    .detail-area {
+      color: black;
+      font-size: font.$font-size-14 !important;
+      position: relative;
+
+      .text-bold {
+        font-weight: 700;
+        //font-size: 18px;
+        line-height: 27px;
+      }
+
+      p {
+        margin: 0;
+      }
+
+      &--highlight {
+        font-size: font.$font-size-18 !important;
+        font-weight: bold;
+      }
+
+      &--time {
+        color: palette.$Primary-Blue900;
+        right: 0;
+        text-align: right;
+        bottom: 21px;
+      }
+    }
+
+    .recruitment-area {
+      position: relative;
+      color: black;
+      font-size: font.$font-size-16 !important;
+
+      p {
+        margin-bottom: 0;
+
+        &.phone-desc {
+          font-size: font.toRem(14px);
+        }
+      }
+
+      &__price {
+        position: absolute;
+        right: 0;
+        margin-right: 5px;
+      }
+    }
+  }
+}
