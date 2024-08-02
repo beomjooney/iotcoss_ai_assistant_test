@@ -6060,7 +6060,7 @@ button.bg-dark:hover {
   border-color: #f8f9fa !important;
 }
 .border-dark {
-  border-color: #343a40 !important;
+  border-color: #000 !important;
 }
 .border-white {
   border-color: #fff !important;

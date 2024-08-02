@@ -14,6 +14,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useSessionStore } from 'src/store/session';
+import { useRouter } from 'next/router';
 
 const cx = classNames.bind(styles);
 
@@ -55,6 +56,8 @@ export function QuizMyLectureClubsTemplate() {
     });
   }, [page, keyWorld]);
 
+  const router = useRouter();
+
   return (
     <>
       <Desktop>
@@ -63,7 +66,7 @@ export function QuizMyLectureClubsTemplate() {
             <div className="tw-py-[60px]">
               <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
                 <Grid item xs={12} sm={2} className="tw-font-bold tw-text-3xl tw-text-black">
-                  My강의클럽
+                  강의클럽
                 </Grid>
                 <Grid item xs={12} sm={8} className="tw-font-semi tw-text-base tw-text-black">
                   내가 운영중인 강의클럽을 한 눈에 보여주고 있어요!
@@ -71,7 +74,7 @@ export function QuizMyLectureClubsTemplate() {
                 <Grid item xs={12} sm={2} justifyContent="flex-end" className="tw-flex">
                   {isClient && roles.includes('ROLE_MANAGER') && (
                     <button
-                      onClick={() => (location.href = '/quiz/open')}
+                      onClick={() => router.push('/lecture/open')}
                       type="button"
                       className="tw-text-blue-700 border border-primary tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
                     >

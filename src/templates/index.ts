@@ -42,6 +42,7 @@ export * from './Quiz/Manage/index';
 /** 강의 대시보드 */
 export * from './Lecture/Dashboard/index';
 export * from './Lecture/ViewAllLecture/index';
+export * from './Lecture/Open/index';
 /** 퀴즈 대시보드*/
 export * from './Quiz/Dashboard/index';
 export * from './Quiz/ManageQuizClub/index';

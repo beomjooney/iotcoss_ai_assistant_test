@@ -774,7 +774,7 @@ export function QuizMakeTemplate() {
                   style={{ border: '1px solid #B8B8B8', color: 'black', width: '150px' }}
                   className="tw-text-black tw-bg-white tw-font-bold tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
                 >
-                  + 지식컨텐츠 등록
+                  +지식컨텐츠 등록
                 </button>
               </BootstrapTooltip>
             </Grid>
