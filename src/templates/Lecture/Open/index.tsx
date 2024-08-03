@@ -58,6 +58,7 @@ for (let i = 0; i < 2; i++) {
   defaultScheduleData.push({
     order: i + 1,
     weekNumber: i + 1,
+    urlList: [],
     quizSequence: null,
     publishDate: null,
     dayOfWeek: null,
@@ -374,9 +375,21 @@ export function LectureOpenTemplate() {
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
+  // const handleAddClick = () => {
+  //   if (scheduleData.length >= 1) setIsModalOpen(true);
+  //   else alert('퀴즈 생성 주기를 입력해주세요.');
+  // };
+
+  // Function to handle adding new data
   const handleAddClick = () => {
-    if (scheduleData.length >= 1) setIsModalOpen(true);
-    else alert('퀴즈 생성 주기를 입력해주세요.');
+    const newOrder = scheduleData.length + 1; // Determine the new order based on the current length of scheduleData
+    const newData = {
+      order: newOrder,
+      quizSequence: null,
+    };
+
+    // Update scheduleData with the new data
+    setScheduleData([...scheduleData, newData]);
   };
 
   const handleQuizInsertClick = () => {
@@ -482,16 +495,26 @@ export function LectureOpenTemplate() {
     });
   };
 
-  const handleCheckboxDelete = quizSequence => {
-    setSelectedQuizIds(prevSelectedQuizIds => {
-      const updatedSelectedQuizIds = prevSelectedQuizIds.filter(id => id !== quizSequence);
-      console.log('After Deletion, Selected Quiz IDs:', updatedSelectedQuizIds);
-      setScheduleData(prevSelectedQuizzes =>
-        prevSelectedQuizzes.map(quiz => (quiz.quizSequence === quizSequence ? { ...quiz, quizSequence: null } : quiz)),
-      );
-      return updatedSelectedQuizIds;
-    });
+  // Function to handle deleting data based on order
+  const handleCheckboxDelete = orderToDelete => {
+    console.log('delete', orderToDelete);
+    // Filter out the item with the given order
+    const updatedData = scheduleData.filter(item => item.order !== orderToDelete);
+
+    // Update state with the filtered data
+    setScheduleData(updatedData);
   };
+
+  // const handleCheckboxDelete = quizSequence => {
+  //   setSelectedQuizIds(prevSelectedQuizIds => {
+  //     const updatedSelectedQuizIds = prevSelectedQuizIds.filter(id => id !== quizSequence);
+  //     console.log('After Deletion, Selected Quiz IDs:', updatedSelectedQuizIds);
+  //     setScheduleData(prevSelectedQuizzes =>
+  //       prevSelectedQuizzes.map(quiz => (quiz.quizSequence === quizSequence ? { ...quiz, quizSequence: null } : quiz)),
+  //     );
+  //     return updatedSelectedQuizIds;
+  //   });
+  // };
 
   useEffect(() => {
     setParams({
@@ -555,7 +578,7 @@ export function LectureOpenTemplate() {
 
   const steps = ['Step 1.클럽 세부사항 설정', 'Step 2.퀴즈 선택', 'Step 3. 개설될 클럽 미리보기'];
 
-  const [activeStep, setActiveStep] = React.useState(2);
+  const [activeStep, setActiveStep] = React.useState(1);
   const [skipped, setSkipped] = React.useState(new Set<number>());
   const [quizUrl, setQuizUrl] = React.useState('');
   const [quizName, setQuizName] = React.useState('');
@@ -589,14 +612,46 @@ export function LectureOpenTemplate() {
     setSkipped(newSkipped);
   };
   const [updateKey, setUpdateKey] = useState(0); // 상태 업데이트 강제 트리거를 위한 키
-  const handleUpdate = (evt: any, updated: any) => {
-    // 인덱스로 일정 항목을 보유할 맵
-    const scheduleMap = updated.reduce((acc, item, index) => {
-      acc[index] = item;
-      return acc;
-    }, {});
 
-    // 관련 필드만 추출하고 'order'로 정렬
+  const scheduleUrlAdd = (order: any, updated: any) => {
+    console.log('scheduleUrlAdd', order, updated);
+
+    setScheduleData(
+      scheduleData.map(item => {
+        // Update the urlList of the item with matching order
+        if (item.order === order) {
+          return { ...item, urlList: [...item.urlList, updated] };
+        }
+        return item;
+      }),
+    );
+  };
+
+  // Function to handle removing a URL from the list
+  const handleRemoveInput = (order, urlIndex) => {
+    console.log('handleRemoveInput', order, urlIndex);
+    setScheduleData(prevData =>
+      prevData.map(item => {
+        if (item.order === order) {
+          // Return the item with the URL at urlIndex removed from urlList
+          return {
+            ...item,
+            urlList: item.urlList.filter((_, index) => index !== urlIndex),
+          };
+        }
+        return item;
+      }),
+    );
+  };
+
+  const handleUpdate = (evt: any, updated: any) => {
+    console.log('handleUpdate', updated);
+    // 인덱스로 일정 항목을 보유할 맵
+    // const scheduleMap = updated.reduce((acc, item, index) => {
+    //   acc[index] = item;
+    //   return acc;
+    // }, {});
+    // // 관련 필드만 추출하고 'order'로 정렬
     const sortedReducedData = updated
       .map(({ order, dayOfWeek, weekNumber, publishDate }) => ({
         order,
@@ -605,24 +660,23 @@ export function LectureOpenTemplate() {
         publishDate,
       }))
       .sort((a, b) => a.order - b.order);
-
-    // 정렬된 데이터와 원본 항목의 추가 속성을 병합
-    const mergeData = sortedReducedData.map((item, index) => ({
-      ...item,
-      quizSequence: scheduleMap[index].quizSequence,
-      question: scheduleMap[index].question,
-      leaderUri: scheduleMap[index].leaderUri,
-      leaderUUID: scheduleMap[index].leaderUUID,
-      leaderProfileImageUrl: scheduleMap[index].leaderProfileImageUrl,
-      leaderNickname: scheduleMap[index].leaderNickname,
-      contentUrl: scheduleMap[index].contentUrl,
-      contentTitle: scheduleMap[index].contentTitle,
-      modelAnswer: scheduleMap[index].modelAnswer,
-      quizUri: scheduleMap[index].quizUri,
-    }));
-
-    // 상태 업데이트
-    setScheduleData(mergeData);
+    console.log(sortedReducedData);
+    // // 정렬된 데이터와 원본 항목의 추가 속성을 병합
+    // const mergeData = sortedReducedData.map((item, index) => ({
+    //   ...item,
+    //   quizSequence: scheduleMap[index].quizSequence,
+    //   question: scheduleMap[index].question,
+    //   leaderUri: scheduleMap[index].leaderUri,
+    //   leaderUUID: scheduleMap[index].leaderUUID,
+    //   leaderProfileImageUrl: scheduleMap[index].leaderProfileImageUrl,
+    //   leaderNickname: scheduleMap[index].leaderNickname,
+    //   contentUrl: scheduleMap[index].contentUrl,
+    //   contentTitle: scheduleMap[index].contentTitle,
+    //   modelAnswer: scheduleMap[index].modelAnswer,
+    //   quizUri: scheduleMap[index].quizUri,
+    // }));
+    // // 상태 업데이트
+    // setScheduleData(mergeData);
   };
 
   useEffect(() => {
@@ -635,10 +689,13 @@ export function LectureOpenTemplate() {
   const dragList = (item: any, index: any) => (
     <div key={item.order} className="simple-drag-row">
       <LectureBreakerInfo
+        handleRemoveInput={handleRemoveInput}
+        scheduleUrlAdd={scheduleUrlAdd}
         avatarSrc={item.leaderProfileImageUrl}
+        urlList={item.urlList}
         userName={item.leaderNickname}
         questionText={item.question}
-        index={item.quizSequence !== undefined ? item.quizSequence : null}
+        order={item.order !== undefined ? item.order : null}
         answerText={item.modelAnswer}
         handleCheckboxDelete={handleCheckboxDelete}
         handleAddClick={handleAddClick}
@@ -1660,7 +1717,7 @@ export function LectureOpenTemplate() {
                         size="small"
                         value={participationCode}
                         onChange={e => setParticipationCode(e.target.value)}
-                        placeholder="강의자료 URL을 입력해주세요."
+                        placeholder="강의자료 URL을 입력해주세요. http://"
                         id="margin-none"
                         InputProps={{
                           endAdornment: (
