@@ -189,7 +189,7 @@ const LectureListView = ({ border, id }) => {
         </div>
         <div className="tw-flex tw-flex-col tw-space-y-4 tw-rounded-lg">
           <div className={cx('content-wrap')}>
-            <div className={cx('container', 'tw-mt-10')}>
+            <div className={cx('', 'tw-mt-10')}>
               <Grid container direction="row" alignItems="center" rowSpacing={0}>
                 <Grid
                   container
@@ -215,8 +215,8 @@ const LectureListView = ({ border, id }) => {
                   />
                 </Grid>
               </Grid>
-              <Divider className="tw-py-3 tw-mb-3" />
-              <div className="tw-flex tw-justify-start tw-items-center tw-w-[1120px] tw-h-12 tw-gap-6">
+              <Divider className="tw-py-3 tw-mb-5" />
+              <div className="tw-flex tw-justify-start tw-items-center tw-w-[1120px] tw-h-12 tw-gap-6  tw-my-5">
                 <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-3">
                   <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
                     정렬 :
@@ -237,7 +237,7 @@ const LectureListView = ({ border, id }) => {
                       }
                       label={
                         <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                          오래된순
+                          모두보기
                         </p>
                       }
                     />
@@ -255,7 +255,7 @@ const LectureListView = ({ border, id }) => {
                       }
                       label={
                         <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                          최신순
+                          강의자료에서 답변
                         </p>
                       }
                     />
@@ -274,7 +274,7 @@ const LectureListView = ({ border, id }) => {
                       }
                       label={
                         <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                          진행중인 퀴즈만 보기
+                          일반 서치 답변
                         </p>
                       }
                     />
@@ -283,84 +283,95 @@ const LectureListView = ({ border, id }) => {
               </div>
               {quizList.map((item, index) => {
                 return (
-                  <React.Fragment key={index}>
-                    <Grid
-                      className="tw-pt-8"
-                      key={index}
-                      container
-                      direction="row"
-                      justifyContent="left"
-                      alignItems="center"
-                      rowSpacing={3}
-                    >
-                      <Grid item xs={12} sm={1}>
+                  <div className="" key={index}>
+                    <div className="tw-bg-[#F6F7FB] tw-flex tw-items-center tw-px-4 tw-py-1 tw-rounded-xl tw-my-5">
+                      <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
+                        <img className="tw-w-10 tw-h-10 border tw-rounded-full" src={item?.maker?.profileImageUrl} />
+                        <div className="tw-text-xs tw-text-left tw-text-black">{item?.maker?.nickname}</div>
+                      </div>
+                      <div className="tw-flex-auto tw-px-5 tw-w-3/12">
                         <div className={`tw-font-medium ${item?.isPublished ? 'tw-text-black' : ' tw-text-gray-400'}`}>
-                          <div className="tw-flex-auto tw-text-center  tw-font-bold">Q{item?.order}.</div>
-                          <div className="tw-flex-auto tw-text-center tw-text-sm   tw-font-bold">
-                            {item?.publishDate?.slice(5, 10)} ({item?.dayOfWeek})
-                          </div>
+                          {item?.question}
                         </div>
-                      </Grid>
-
-                      <Grid item xs={12} sm={11}>
-                        <div className="">
-                          <div className="tw-bg-[#F6F7FB] tw-flex tw-items-center tw-px-4 max-lg:tw-p-3 tw-py-1 tw-rounded-xl">
-                            <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
-                              <img
-                                className="tw-w-10 tw-h-10 border tw-rounded-full"
-                                src={item?.maker?.profileImageUrl}
-                              />
-                              <div className="tw-text-xs tw-text-left tw-text-black">{item?.maker?.nickname}</div>
-                            </div>
-                            <div className="tw-flex-auto tw-px-5 tw-w-3/12">
-                              <div
-                                className={`tw-font-medium ${
-                                  item?.isPublished ? 'tw-text-black' : ' tw-text-gray-400'
-                                }`}
-                              >
-                                {item?.question}
-                              </div>
-                            </div>
-                            <div className="tw-pr-4">
-                              <button
-                                // onClick={() =>
-                                //   router.push(
-                                //     '/quiz-answers/' +
-                                //       `${item?.clubSequence}` +
-                                //       '?publishDate=' +
-                                //       `${item?.publishDate}`,
-                                //   )
-                                // }
-                                onClick={() => {
-                                  router.push(
-                                    {
-                                      pathname: `/quiz-answers/${item?.clubSequence}`,
-                                      query: {
-                                        publishDate: item?.publishDate,
-                                      },
-                                    },
-                                    `/quiz-answers/${item?.clubSequence}`,
-                                  );
-                                }}
-                                type="button"
-                                disabled={!item?.isPublished}
-                                data-tooltip-target="tooltip-default"
-                                className={`
-                                ${
-                                  item?.isPublished
-                                    ? 'tw-bg-white border border-danger tw-text-black'
-                                    : 'tw-bg-gray-200 tw-text-white'
-                                }
-                                max-lg:tw-w-[60px]    tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded`}
-                              >
-                                답변확인 및 채점하기 {'>'}
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </Grid>
-                    </Grid>
-                  </React.Fragment>
+                      </div>
+                      <div className="tw-pr-4">
+                        <button
+                          onClick={() => {
+                            router.push(
+                              {
+                                pathname: `/quiz-answers/${item?.clubSequence}`,
+                                query: {
+                                  publishDate: item?.publishDate,
+                                },
+                              },
+                              `/quiz-answers/${item?.clubSequence}`,
+                            );
+                          }}
+                          type="button"
+                          disabled={!item?.isPublished}
+                          data-tooltip-target="tooltip-default"
+                          className="tw-bg-black tw-text-white max-lg:tw-w-[60px] tw-text-base tw-font-medium tw-px-3 tw-py-2 tw-rounded"
+                        >
+                          추가 질문하기
+                        </button>
+                      </div>
+                    </div>
+                    <div className="tw-flex border tw-border tw-px-4 tw-py-5 tw-rounded-lg tw-mt-3">
+                      <div className="tw-w-1/12 tw-text-lg tw-font-medium  tw-flex tw-items-start tw-justify-center">
+                        <svg
+                          width={24}
+                          height={24}
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="w-6 h-6 relative"
+                          preserveAspectRatio="xMidYMid meet"
+                        >
+                          <path
+                            d="M6 4V11.3362C6 12.309 6.29176 13.242 6.81109 13.9299C7.33042 14.6178 8.03479 15.0043 8.76923 15.0043H18M18 15.0043L14.3077 10.1135M18 15.0043L14.3077 19.8951"
+                            stroke="#9CA5B2"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                      </div>
+                      <div className="tw-w-1/12 tw-text-base tw-text-black  tw-font-bold  ">AI답변 : </div>
+                      <div className="tw-text-base tw-text-black ">
+                        (강의자료) EAI는 엔터프라이즈 어플리케이션 인테그레이션의 약자입니다. 시스템이 서로 얽히고
+                        복잡해지면서 통제가 잘 안되는 상황이 발생하여 이런 문제를 해결하기 위해 등장한 솔루션이 바로 EAI
+                        입니다.{' '}
+                      </div>
+                    </div>
+                    <div className="tw-flex border tw-border tw-px-4 tw-py-5 tw-rounded-lg tw-mt-5">
+                      <div className="tw-w-1/12 tw-text-lg tw-font-medium  tw-flex tw-items-start tw-justify-center">
+                        <svg
+                          width={24}
+                          height={24}
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="w-6 h-6 relative"
+                          preserveAspectRatio="xMidYMid meet"
+                        >
+                          <path
+                            d="M6 4V11.3362C6 12.309 6.29176 13.242 6.81109 13.9299C7.33042 14.6178 8.03479 15.0043 8.76923 15.0043H18M18 15.0043L14.3077 10.1135M18 15.0043L14.3077 19.8951"
+                            stroke="#9CA5B2"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                      </div>
+                      <div className="tw-w-[120px] tw-text-base tw-text-black  tw-font-bold tw-text-blue-700 ">
+                        교수답변 :{' '}
+                      </div>
+                      <div className="tw-text-base tw-text-black ">
+                        EAI는 엔터프라이즈 어플리케이션 인테그레이션의 약자입니다. 시스템이 서로 얽히고 복잡해지면서
+                        통제가 잘 안되는 상황이 발생하여 이런 문제를 해결하기 위해 등장한 솔루션이 바로 EAI 입니다.
+                      </div>
+                    </div>
+                  </div>
                 );
               })}
             </div>

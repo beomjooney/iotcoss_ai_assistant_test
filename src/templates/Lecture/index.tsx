@@ -103,7 +103,7 @@ export function LectureTemplate() {
                 <button
                   onClick={() => router.push('/lecture/open')}
                   type="button"
-                  className="tw-text-primary-500 border border-primary tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
+                  className="tw-text-blue-600 border border-primary tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
                 >
                   + 강의 개설하기
                 </button>
@@ -222,6 +222,8 @@ export function LectureTemplate() {
                           xs={6}
                           // writer={memberSample}
                           className={cx('reply-container__item')}
+                          selectedImage="/assets/images/banner/Rectangle_190.png"
+                          selectedImageBanner="/assets/images/banner/Rectangle_201.png"
                           // memberId={memberId}
                           // onPostDeleteSubmit={onPostDeleteSubmit}
                         />
