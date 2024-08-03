@@ -181,7 +181,7 @@ export function LectureTemplate() {
           </Grid>
         </Box>
 
-        <hr className="tw-y-14 tw-my-5 tw-h-[0.5px] tw-border-t tw-bg-gray-300 " />
+        <hr className="tw-y-14 tw-mt-7 tw-mb-10 tw-h-[0.5px] tw-border-t tw-bg-gray-300 " />
         <article>
           <div
             className={cx('content-area', isClient && logged ? '' : 'tw-max-h-[14rem] tw-overflow-hidden tw-relative')}
@@ -220,12 +220,9 @@ export function LectureTemplate() {
                         <LectureCard
                           item={item}
                           xs={6}
-                          // writer={memberSample}
                           className={cx('reply-container__item')}
                           selectedImage="/assets/images/banner/Rectangle_190.png"
                           selectedImageBanner="/assets/images/banner/Rectangle_201.png"
-                          // memberId={memberId}
-                          // onPostDeleteSubmit={onPostDeleteSubmit}
                         />
                       </React.Fragment>
                     );
