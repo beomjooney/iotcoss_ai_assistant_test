@@ -21,10 +21,34 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
   const [isMounted, setIsMounted] = useState(false);
 
   const menuItem = [
-    { no: 0, option: 'nav-item', title: '서비스 소개', link: '/', dropdown: [], login: true },
-    { no: 1, option: 'nav-item', title: '퀴즈클럽', link: '/quiz', dropdown: [], login: true },
-    { no: 1, option: 'nav-item', title: '강의클럽', link: '/lecture', dropdown: [], login: true },
-    { no: 1, option: 'nav-item', title: 'My 학습방', link: '/studyroom', dropdown: [], login: logged },
+    { no: 0, option: 'nav-item', title: '서비스 소개', link: '/', dropdown: [], login: true, tenantName: '' },
+    {
+      no: 1,
+      option: 'nav-item',
+      title: '퀴즈클럽',
+      link: '/quiz',
+      dropdown: [],
+      login: true,
+      tenantName: 'dsu,devus,3',
+    },
+    {
+      no: 1,
+      option: 'nav-item',
+      title: '강의클럽',
+      link: '/lecture',
+      dropdown: [],
+      login: true,
+      tenantName: 'sejong,3',
+    },
+    {
+      no: 1,
+      option: 'nav-item',
+      title: 'My 학습방',
+      link: '/studyroom',
+      dropdown: [],
+      login: logged,
+      tenantName: 'dsu,devus,3,sejong',
+    },
     {
       no: 1,
       option: 'nav-item',
@@ -33,6 +57,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       dropdown: [],
       login: logged,
       role: 'ROLE_MANAGER',
+      tenantName: 'dsu,devus,3',
     },
     {
       no: 1,
@@ -42,6 +67,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       dropdown: [],
       login: logged,
       role: 'ROLE_MANAGER',
+      tenantName: 'sejong,3',
     },
     {
       no: 1,
@@ -51,6 +77,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       dropdown: [],
       login: logged,
       role: 'ROLE_MANAGER',
+      tenantName: 'sejong,3',
     },
   ];
 

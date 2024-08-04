@@ -59,7 +59,8 @@ const cx = classNames.bind(styles);
 const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
   const { theme } = useTheme();
   const COLOR_PRESETS = usePresets();
-  const { logged, roles } = useSessionStore.getState();
+  const { logged, roles, tenantName } = useSessionStore.getState();
+  console.log(tenantName);
   const { colorPresetName, setColorPresetName } = useColorPresetName();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [anchorElAlarm, setAnchorElAlarm] = useState(null);
@@ -400,7 +401,11 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
             >
               <ul className={cx('nav-custom', 'navbar-custom-mobile', 'navbar-nav', 'tw-text-lg', 'tw-text-left')}>
                 {menuItem.map((item, index) => {
-                  if (item.login && (!item.role || roles.includes(item.role))) {
+                  if (
+                    item.login &&
+                    (!item.role || roles.includes(item.role)) &&
+                    (item.tenantName.includes(tenantName) || item.tenantName === '')
+                  ) {
                     return (
                       <li key={`item-` + index} className={cn(item.option)}>
                         <Link href={item.link}>

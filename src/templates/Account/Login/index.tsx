@@ -15,6 +15,7 @@ import { useEffect, useState } from 'react';
 import { useColorPresets } from 'src/utils/use-theme-color';
 import { useColorPresetName } from 'src/utils/use-theme-color';
 import { deleteCookie } from 'cookies-next';
+import { useSessionStore } from '../../../../src/store/session';
 
 interface LoginTemplateProps {
   onSubmitLogin: () => void;
@@ -47,7 +48,7 @@ function getSubdomain() {
 
 export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: LoginTemplateProps) {
   const { mutate: onLogin, isSuccess, data: loginData } = useLogin();
-
+  const { update } = useSessionStore.getState();
   const router = useRouter();
   const COLOR_PRESETS = usePresets();
   const { setColorPresetName } = useColorPresetName();
@@ -75,6 +76,10 @@ export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: Lo
       onSubmitLogin();
 
       console.log(loginData);
+      update({
+        tenantName: loginData?.tenant_uri?.split('.')[0],
+      });
+
       if (!loginData?.tenant_uri?.includes(tenantName)) {
         const authStore = localStorage.getItem('auth-store');
         if (authStore) {

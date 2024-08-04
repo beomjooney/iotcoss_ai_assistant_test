@@ -184,7 +184,7 @@ export function LectureTemplate() {
         <hr className="tw-y-14 tw-mt-7 tw-mb-10 tw-h-[0.5px] tw-border-t tw-bg-gray-300 " />
         <article>
           <div
-            className={cx('content-area', isClient && logged ? '' : 'tw-max-h-[14rem] tw-overflow-hidden tw-relative')}
+            className={cx('content-area', isClient && logged ? '' : 'tw-max-h-[16rem] tw-overflow-hidden tw-relative')}
           >
             {isClient && !logged && (
               <div className="tw-absolute tw-bottom-0 tw-left-0 tw-right-0 tw-h-[300px] tw-bg-gradient-to-t tw-from-white tw-to-transparent tw-pointer-events-none"></div>
@@ -240,7 +240,7 @@ export function LectureTemplate() {
             <div className="tw-flex tw-flex-col tw-gap-5 tw-max-w-sm tw-px-4 tw-mx-auto tw-py-14">
               <div className="tw-w-full tw-flex tw-flex-col tw-gap-2 tw-text-center">
                 <p className="tw-text-2xl tw-text-color-text-bold tw-font-bold tw-text-black">
-                  퀴즈 클럽이 궁금하다면?
+                  강의 클럽이 궁금하다면?
                 </p>
               </div>
               <div>

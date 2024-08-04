@@ -141,7 +141,7 @@ LectureCardProps) => {
           >
             <div
               style={{ backgroundImage: `url(${selectedImageBanner})` }}
-              className="border tw-w-[544px] tw-h-[235px] tw-relative tw-overflow-hidden tw-rounded-lg  tw-bg-cover tw-bg-no-repeat tw-bg-center tw-border tw-border-[#e9ecf2]"
+              className="border  tw-h-[235px] tw-relative tw-overflow-hidden tw-rounded-lg  tw-bg-cover tw-bg-no-repeat tw-bg-center tw-border tw-border-[#e9ecf2]"
             >
               <div className="tw-absolute tw-inset-0 tw-bg-white tw-opacity-90 tw-rounded-lg md:tw-rounded-none md:tw-rounded-r-lg"></div>
               <svg
@@ -168,7 +168,7 @@ LectureCardProps) => {
                   </linearGradient>
                 </defs>
               </svg>
-              <div className="tw-w-[544px] tw-h-60 tw-absolute tw-left-[-1px] tw-top-[-1px]" />
+              <div className=" tw-h-60 tw-absolute tw-left-[-1px] tw-top-[-1px]" />
               <button
                 className="tw-w-6 tw-h-6 tw-absolute tw-left-[504px] tw-top-4"
                 onClick={() => {

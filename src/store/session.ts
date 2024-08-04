@@ -9,6 +9,7 @@ export interface Session {
   memberId?: string;
   beforeOnePick?: string;
   job?: string;
+  tenantName?: string;
   memberName?: string;
   userAgent?: string;
   logged: boolean;
@@ -21,11 +22,29 @@ export interface SessionStore {
   theme?: string;
   memberId?: string;
   memberName?: string;
+  tenantName?: string;
   beforeOnePick?: string;
   job?: string;
   logged?: boolean;
   roles?: any[];
   update: (session: Session) => void;
+}
+
+function getSubdomain() {
+  const { host } = typeof window !== 'undefined' && window.location;
+  console.log(host);
+
+  if (host) {
+    // 호스트 이름에 '.'이 있으면 공백을 반환
+    if (!host.includes('.')) {
+      return ''; // 공백 반환
+    }
+
+    console.log(host);
+    return host;
+  }
+
+  return null; // 서브도메인이 없는 경우
 }
 
 // TODO : TYPE
@@ -37,6 +56,7 @@ const useSessionStore = create<any>(
       memberId: undefined,
       memberName: undefined,
       beforeOnePick: undefined,
+      tenantName: getSubdomain()?.split('.')[0],
       logged: false,
       roles: [],
       update(session) {
