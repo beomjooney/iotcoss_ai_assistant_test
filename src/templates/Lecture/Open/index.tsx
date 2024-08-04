@@ -59,6 +59,7 @@ for (let i = 0; i < 2; i++) {
     order: i + 1,
     weekNumber: i + 1,
     urlList: [],
+    fileList: [],
     quizSequence: null,
     publishDate: null,
     dayOfWeek: null,
@@ -626,6 +627,36 @@ export function LectureOpenTemplate() {
       }),
     );
   };
+  const scheduleFileAdd = (order: any, updated: any) => {
+    console.log('scheduleFileAdd', order, updated);
+
+    setScheduleData(
+      scheduleData.map(item => {
+        // Update the urlList of the item with matching order
+        if (item.order === order) {
+          return { ...item, fileList: [...item.fileList, updated] };
+        }
+        return item;
+      }),
+    );
+  };
+
+  // Function to handle removing a URL from the list
+  const handleRemoveFile = (order, fileIndex) => {
+    console.log('handleRemoveFile', order, fileIndex);
+    setScheduleData(prevData =>
+      prevData.map(item => {
+        if (item.order === order) {
+          // Return the item with the URL at urlIndex removed from urlList
+          return {
+            ...item,
+            fileList: item.fileList.filter((_, index) => index !== fileIndex),
+          };
+        }
+        return item;
+      }),
+    );
+  };
 
   // Function to handle removing a URL from the list
   const handleRemoveInput = (order, urlIndex) => {
@@ -691,8 +722,11 @@ export function LectureOpenTemplate() {
       <LectureBreakerInfo
         handleRemoveInput={handleRemoveInput}
         scheduleUrlAdd={scheduleUrlAdd}
+        scheduleFileAdd={scheduleFileAdd}
+        handleRemoveFile={handleRemoveFile}
         avatarSrc={item.leaderProfileImageUrl}
         urlList={item.urlList}
+        fileList={item.fileList}
         userName={item.leaderNickname}
         questionText={item.question}
         order={item.order !== undefined ? item.order : null}

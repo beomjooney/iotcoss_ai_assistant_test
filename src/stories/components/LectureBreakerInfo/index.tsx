@@ -33,19 +33,21 @@ const LectureBreakerInfo = ({
   scheduleUrlAdd,
   urlList,
   handleAddClick,
+  scheduleFileAdd,
+  handleRemoveFile,
+  fileList,
 }) => {
   const [isPublic, setIsPublic] = useState('0001');
   const [clubName, setClubName] = useState('');
   const [participationCode, setParticipationCode] = useState('');
   const [input, setInput] = useState('');
   const [inputList, setInputList] = useState([]);
-  const [fileList, setFileList] = useState([]);
 
   const handleInputChange = e => {
     setClubName(e.target.value);
   };
 
-  const handleFileChange = event => {
+  const handleFileChange = (event, order) => {
     const file = event.target.files[0];
     const allowedExtensions = /(\.pdf)$/i;
 
@@ -54,8 +56,8 @@ const LectureBreakerInfo = ({
       event.target.value = ''; // input 초기화
       return;
     }
-
-    setFileList([file]); // 하나의 파일만 받도록 설정
+    scheduleFileAdd(order, file.name);
+    // setFileList([file]); // 하나의 파일만 받도록 설정
   };
 
   const handleIsPublic = (event: React.MouseEvent<HTMLElement>, newFormats: string) => {
@@ -260,7 +262,7 @@ const LectureBreakerInfo = ({
                       type="file"
                       ref={fileInputRef}
                       style={{ display: 'none' }}
-                      onChange={handleFileChange}
+                      onChange={e => handleFileChange(e, order)}
                     />
                   </div>
                   <TextField
@@ -287,13 +289,91 @@ const LectureBreakerInfo = ({
                 <div className="tw-w-[130px] tw-py-5"></div>
                 <div className="tw-w-11/12 tw-py-5">
                   <div className="tw-mt-3 tw-w-full tw-flex tw-justify-start tw-px-5 tw-items-center">
+                    {fileList.length > 0 && (
+                      <div className="tw-flex tw-py-2">
+                        <div className="tw-flex tw-text-sm tw-items-center" style={{ minWidth: '6.1rem' }}>
+                          업로드된 파일 :
+                        </div>
+                        <div className="tw-text-left tw-pl-5 tw-text-sm tw-flex tw-flex-wrap tw-gap-2">
+                          {fileList.map((file, index) => (
+                            <div key={index} className="border tw-px-3 tw-p-1 tw-rounded">
+                              <span className="tw-text-blue-600">{file}</span>
+                              <button
+                                className="tw-ml-2 tw-cursor-pointer"
+                                onClick={() => handleRemoveFile(order, index)}
+                              >
+                                <svg
+                                  width={8}
+                                  height={8}
+                                  viewBox="0 0 6 6"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  className="flex-grow-0 flex-shrink-0"
+                                  preserveAspectRatio="none"
+                                >
+                                  <path
+                                    d="M5.39571 0L3 2.39571L0.604286 0L0 0.604286L2.39571 3L0 5.39571L0.604286 6L3 3.60429L5.39571 6L6 5.39571L3.60429 3L6 0.604286L5.39571 0Z"
+                                    fill="#6A7380"
+                                  />
+                                </svg>
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="tw-flex">
+                <div className="tw-w-[130px] tw-py-5"></div>
+                <div className="tw-w-11/12 tw-py-5">
+                  <div className="tw-mt-3 tw-w-full tw-flex tw-justify-start tw-px-5 tw-items-center">
+                    {urlList.length > 0 && (
+                      <div className="tw-flex tw-py-2">
+                        <div className="tw-flex tw-text-sm tw-items-center" style={{ minWidth: '6.1rem' }}>
+                          첨부된 URL :
+                        </div>
+                        <div className="tw-text-left tw-pl-5 tw-text-sm tw-flex tw-flex-wrap tw-gap-2">
+                          {urlList.map((file, index) => (
+                            <div key={index} className="border tw-px-3 tw-p-1 tw-rounded">
+                              <span className="tw-text-[#FF8F60]">{file}</span>
+                              <button className="tw-ml-2 tw-cursor-pointer" onClick={() => handleDeleteInput(index)}>
+                                <svg
+                                  width={8}
+                                  height={8}
+                                  viewBox="0 0 6 6"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  className="flex-grow-0 flex-shrink-0"
+                                  preserveAspectRatio="none"
+                                >
+                                  <path
+                                    d="M5.39571 0L3 2.39571L0.604286 0L0 0.604286L2.39571 3L0 5.39571L0.604286 6L3 3.60429L5.39571 6L6 5.39571L3.60429 3L6 0.604286L5.39571 0Z"
+                                    fill="#6A7380"
+                                  />
+                                </svg>
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* <div className="tw-flex">
+                <div className="tw-w-[130px] tw-py-5"></div>
+                <div className="tw-w-11/12 tw-py-5">
+                  <div className="tw-mt-3 tw-w-full tw-flex tw-justify-start tw-px-5 tw-items-center">
                     {urlList?.length > 0 && (
                       <div className="tw-flex ">
                         <div className="tw-text-left tw-text-sm">
                           <ul className="">
                             {urlList?.map((file, index) => (
                               <div key={index} className="tw-flex tw-items-center tw-text-gray-500  tw-p-1  tw-mb-1">
-                                <div className="tw-mr-2">ㄴ첨부된 URL :</div>
+                                <div className="tw-mr-2">ㄴ첨부된 URL : </div>
                                 <div className="tw-ml-2tw-rounded tw-flex border tw-px-2  tw-items-center">
                                   <span className=" tw-p-1 tw-mr-2 tw-text-[#FF8F60] ">{file}</span>{' '}
                                   <span className="tw-cursor-pointer" onClick={() => handleDeleteInput(index)}>
@@ -321,7 +401,7 @@ const LectureBreakerInfo = ({
                     )}
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

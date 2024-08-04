@@ -497,7 +497,7 @@ export function QuizOpenTemplate() {
 
   useEffect(() => {
     if (clubSuccess) {
-      router.push('/quiz');
+      // router.push('/quiz');
     }
   }, [clubSuccess]);
 

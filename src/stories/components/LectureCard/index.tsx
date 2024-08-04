@@ -130,75 +130,85 @@ LectureCardProps) => {
     <>
       <Desktop>
         <Grid item xs={xs}>
-          <div
-            style={{ backgroundImage: `url(${selectedImageBanner})` }}
-            className="border tw-w-[544px] tw-h-[235px] tw-relative tw-overflow-hidden tw-rounded-lg  tw-bg-cover tw-bg-no-repeat tw-bg-center tw-border tw-border-[#e9ecf2]"
+          <a
+            href={logged ? '/lecture/' + `${item.clubSequence}` : '#'}
+            onClick={e => {
+              if (!logged) {
+                e.preventDefault();
+                alert('로그인 후 이동할 수 있습니다.');
+              }
+            }}
           >
-            <div className="tw-absolute tw-inset-0 tw-bg-white tw-opacity-90 tw-rounded-lg md:tw-rounded-none md:tw-rounded-r-lg"></div>
-            <svg
-              width={320}
-              height={320}
-              viewBox="0 0 275 240"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="tw-absolute tw-left-[268px] tw-top-[-44px] tw-opacity-50"
-              preserveAspectRatio="xMidYMid meet"
+            <div
+              style={{ backgroundImage: `url(${selectedImageBanner})` }}
+              className="border tw-w-[544px] tw-h-[235px] tw-relative tw-overflow-hidden tw-rounded-lg  tw-bg-cover tw-bg-no-repeat tw-bg-center tw-border tw-border-[#e9ecf2]"
             >
-              <circle opacity="0.5" cx={163} cy={120} r={163} fill="url(#paint0_linear_3000_19130)" />
-              <defs>
-                <linearGradient
-                  id="paint0_linear_3000_19130"
-                  x1={163}
-                  y1={-43}
-                  x2={163}
-                  y2={283}
-                  gradientUnits="userSpaceOnUse"
-                >
-                  <stop stop-color="white" stop-opacity={0} />
-                  <stop offset={1} stop-color="#2A46AC" stop-opacity="0.5" />
-                </linearGradient>
-              </defs>
-            </svg>
-            <div className="tw-w-[544px] tw-h-60 tw-absolute tw-left-[-1px] tw-top-[-1px]" />
-            <button
-              className="tw-w-6 tw-h-6 tw-absolute tw-left-[504px] tw-top-4"
-              onClick={() => {
-                onChangeLike(item.clubSequence);
-              }}
-            >
-              {isLiked ? <StarIcon color="error" /> : <StarBorderIcon color="disabled" />}
-            </button>
-            <div className="tw-w-[262px] tw-h-6">
-              <p className="tw-w-[262px] tw-h-6 tw-absolute tw-left-7 tw-top-[62px] tw-text-xl tw-font-bold tw-text-left tw-text-black">
-                객체 지향 프로그래밍
-              </p>
-            </div>
-            <p className="tw-absolute tw-left-7 tw-top-[152px] tw-text-sm tw-text-left tw-text-[#31343d]">
-              <span className="tw-text-sm tw-text-left tw-text-[#31343d]">2024.00.00 ~ 2024.00.00</span>
-              <br />
-              <span className="tw-text-sm tw-text-left tw-text-[#31343d]">화, 목ㅣ퀴즈클럽 12주ㅣ학습 24회</span>
-            </p>
-            <div className="tw-flex tw-justify-start tw-items-start tw-absolute tw-left-7 tw-top-5 tw-gap-1">
-              <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#d7ecff]">
-                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#235a8d]">개발</p>
-              </div>
-              <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#e4e4e4]">
-                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#5f5f5f]">
-                  백엔드개발자
+              <div className="tw-absolute tw-inset-0 tw-bg-white tw-opacity-90 tw-rounded-lg md:tw-rounded-none md:tw-rounded-r-lg"></div>
+              <svg
+                width={320}
+                height={320}
+                viewBox="0 0 275 240"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="tw-absolute tw-left-[268px] tw-top-[-44px] tw-opacity-50"
+                preserveAspectRatio="xMidYMid meet"
+              >
+                <circle opacity="0.5" cx={163} cy={120} r={163} fill="url(#paint0_linear_3000_19130)" />
+                <defs>
+                  <linearGradient
+                    id="paint0_linear_3000_19130"
+                    x1={163}
+                    y1={-43}
+                    x2={163}
+                    y2={283}
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop stopColor="white" stopOpacity={0} />
+                    <stop offset={1} stopColor="#2A46AC" stopOpacity="0.5" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div className="tw-w-[544px] tw-h-60 tw-absolute tw-left-[-1px] tw-top-[-1px]" />
+              <button
+                className="tw-w-6 tw-h-6 tw-absolute tw-left-[504px] tw-top-4"
+                onClick={() => {
+                  onChangeLike(item.clubSequence);
+                }}
+              >
+                {isLiked ? <StarIcon color="error" /> : <StarBorderIcon color="disabled" />}
+              </button>
+              <div className="tw-w-[262px] tw-h-6">
+                <p className="tw-w-[262px] tw-h-6 tw-absolute tw-left-7 tw-top-[62px] tw-text-xl tw-font-bold tw-text-left tw-text-black">
+                  객체 지향 프로그래밍
                 </p>
               </div>
-              <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#fffdc8]">
-                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#806024]">1레벨</p>
+              <p className="tw-absolute tw-left-7 tw-top-[152px] tw-text-sm tw-text-left tw-text-[#31343d]">
+                <span className="tw-text-sm tw-text-left tw-text-[#31343d]">2024.00.00 ~ 2024.00.00</span>
+                <br />
+                <span className="tw-text-sm tw-text-left tw-text-[#31343d]">화, 목ㅣ퀴즈클럽 12주ㅣ학습 24회</span>
+              </p>
+              <div className="tw-flex tw-justify-start tw-items-start tw-absolute tw-left-7 tw-top-5 tw-gap-1">
+                <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#d7ecff]">
+                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#235a8d]">개발</p>
+                </div>
+                <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#e4e4e4]">
+                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#5f5f5f]">
+                    백엔드개발자
+                  </p>
+                </div>
+                <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#fffdc8]">
+                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#806024]">1레벨</p>
+                </div>
               </div>
+              <img
+                className="tw-absolute tw-left-[329.5px] tw-top-[17.5px] tw-w-[200px] tw-h-[200px] tw-rounded-full"
+                src="/assets/avatars/3.jpg"
+              />
+              <p className="tw-absolute tw-left-7 tw-top-[202px] tw-text-sm tw-font-bold tw-text-left tw-text-black">
+                소Ganzi
+              </p>
             </div>
-            <img
-              className="tw-absolute tw-left-[329.5px] tw-top-[17.5px] tw-w-[200px] tw-h-[200px] tw-rounded-full"
-              src="/assets/avatars/3.jpg"
-            />
-            <p className="tw-absolute tw-left-7 tw-top-[202px] tw-text-sm tw-font-bold tw-text-left tw-text-black">
-              소Ganzi
-            </p>
-          </div>
+          </a>
         </Grid>
         {/* <Grid item xs={xs}>
           <a
