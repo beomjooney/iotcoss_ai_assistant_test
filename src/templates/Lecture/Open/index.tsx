@@ -121,7 +121,7 @@ export function LectureOpenTemplate() {
       return;
     }
 
-    setFileList([file]); // 하나의 파일만 받도록 설정
+    setFileList([...fileList, file.name]); // 하나의 파일만 받도록 설정
   };
 
   const fileInputRef = useRef(null);
@@ -129,8 +129,11 @@ export function LectureOpenTemplate() {
     fileInputRef.current.click();
   };
 
-  const handleAddInput = () => {
-    setInputList([...inputList, { id: Date.now(), value: '', url: '' }]);
+  const handleAddInput = input => {
+    if (participationCode !== '') {
+      setInputList([...inputList, input]); // Add current input to the list
+      setParticipationCode(''); // Clear the input field after adding
+    }
   };
 
   const handleDeleteInput = id => {
@@ -387,6 +390,8 @@ export function LectureOpenTemplate() {
     const newData = {
       order: newOrder,
       quizSequence: null,
+      urlList: [],
+      fileList: [],
     };
 
     // Update scheduleData with the new data
@@ -502,8 +507,16 @@ export function LectureOpenTemplate() {
     // Filter out the item with the given order
     const updatedData = scheduleData.filter(item => item.order !== orderToDelete);
 
+    // Step 1: Sort the array based on the current order value
+    const sortedData = updatedData.sort((a, b) => a.order - b.order);
+
+    // Step 2: Assign new order values sequentially
+    sortedData.forEach((item, index) => {
+      item.order = index + 1;
+    });
+
     // Update state with the filtered data
-    setScheduleData(updatedData);
+    setScheduleData(sortedData);
   };
 
   // const handleCheckboxDelete = quizSequence => {
@@ -656,6 +669,16 @@ export function LectureOpenTemplate() {
         return item;
       }),
     );
+  };
+
+  // Function to handle removing a URL from the list
+  const handleRemoveFileLocal = fileIndex => {
+    setFileList(fileList.filter((_, i) => i !== fileIndex));
+  };
+
+  // Function to handle removing a URL from the list
+  const handleRemoveInputLocal = inputIndex => {
+    setInputList(inputList.filter((_, i) => i !== inputIndex));
   };
 
   // Function to handle removing a URL from the list
@@ -1585,11 +1608,11 @@ export function LectureOpenTemplate() {
                   <Grid item xs={1}>
                     {scheduleData.map((item, index) => {
                       return (
-                        <div key={index} className="tw-h-[209px] tw-flex tw-flex-col tw-items-center tw-justify-start">
+                        <div key={index} className="tw-h-[412px] tw-flex tw-flex-col tw-items-center tw-justify-start">
                           {/* <div className=" tw-text-center tw-text-black tw-font-bold tw-mt-5">강의</div> */}
-                          {item.weekNumber && (
+                          {item.order && (
                             <div className="tw-text-center tw-text-lg tw-text-black tw-font-bold tw-mt-4">
-                              {item.weekNumber} 회차 {item.dayOfWeek ? `(${item.dayOfWeek})` : ''}
+                              {item.order} 회차
                               <div className="tw-flex tw-justify-center tw-mt-2">
                                 <svg
                                   width={20}
@@ -1649,7 +1672,7 @@ export function LectureOpenTemplate() {
 
                   <div className="tw-w-11/12 tw-mt-5">
                     <div className="tw-h-24 tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white border tw-border-[#e9ecf2]">
-                      <div className="tw-absolute tw-top-7 tw-left-1/2 tw-transform tw--translate-x-1/2 tw-flex tw-justify-center tw-items-center tw-gap-2">
+                      <div className="tw-absolute tw-top-9 tw-left-1/2 tw-transform tw--translate-x-1/2 tw-flex tw-justify-center tw-items-center tw-gap-2">
                         <svg
                           width={24}
                           height={24}
@@ -1675,7 +1698,7 @@ export function LectureOpenTemplate() {
                           </defs>
                         </svg>
                         <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-medium tw-text-left tw-text-[#9ca5b2]">
-                          <button type="button" onClick={handleAddClick} className="tw-text-black tw-text-sm ">
+                          <button type="button" onClick={handleAddClick} className="tw-text-black tw-text-base ">
                             강의회차 추가하기
                           </button>
                         </p>
@@ -1756,7 +1779,7 @@ export function LectureOpenTemplate() {
                         InputProps={{
                           endAdornment: (
                             <InputAdornment position="end">
-                              <IconButton onClick={handleAddInput}>
+                              <IconButton onClick={() => handleAddInput(participationCode)}>
                                 <AddIcon />
                               </IconButton>
                             </InputAdornment>
@@ -1766,7 +1789,88 @@ export function LectureOpenTemplate() {
                     </div>
                   </div>
 
-                  <div className="tw-w-full tw-flex tw-justify-end tw-px-5 tw-items-center">
+                  <div className="tw-flex">
+                    <div className="tw-w-[130px] tw-py-5"></div>
+                    <div className="tw-w-11/12 tw-pt-5">
+                      <div className="tw-w-full tw-flex tw-justify-start tw-px-5 tw-items-center">
+                        {fileList?.length > 0 && (
+                          <div className="tw-flex tw-py-2">
+                            <div className="tw-flex tw-text-sm tw-items-center" style={{ minWidth: '6.1rem' }}>
+                              업로드된 파일 :
+                            </div>
+                            <div className="tw-text-left tw-pl-5 tw-text-sm tw-flex tw-flex-wrap tw-gap-2">
+                              {fileList.map((file, index) => (
+                                <div key={index} className="border tw-px-3 tw-p-1 tw-rounded">
+                                  <span className="tw-text-blue-600">{file}</span>
+                                  <button
+                                    className="tw-ml-2 tw-cursor-pointer"
+                                    onClick={() => handleRemoveFileLocal(index)}
+                                  >
+                                    <svg
+                                      width={8}
+                                      height={8}
+                                      viewBox="0 0 6 6"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      className="flex-grow-0 flex-shrink-0"
+                                      preserveAspectRatio="none"
+                                    >
+                                      <path
+                                        d="M5.39571 0L3 2.39571L0.604286 0L0 0.604286L2.39571 3L0 5.39571L0.604286 6L3 3.60429L5.39571 6L6 5.39571L3.60429 3L6 0.604286L5.39571 0Z"
+                                        fill="#6A7380"
+                                      />
+                                    </svg>
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="tw-flex">
+                    <div className="tw-w-[130px] tw-py-5"></div>
+                    <div className="tw-w-11/12">
+                      <div className="tw-w-full tw-flex tw-justify-start tw-px-5 tw-items-center">
+                        {inputList?.length > 0 && (
+                          <div className="tw-flex tw-py-2">
+                            <div className="tw-flex tw-text-sm tw-items-center" style={{ minWidth: '6.1rem' }}>
+                              첨부된 URL :
+                            </div>
+                            <div className="tw-text-left tw-pl-5 tw-text-sm tw-flex tw-flex-wrap tw-gap-2">
+                              {inputList.map((file, index) => (
+                                <div key={index} className="border tw-px-3 tw-p-1 tw-rounded">
+                                  <span className="tw-text-[#FF8F60]">{file}</span>
+                                  <button
+                                    className="tw-ml-2 tw-cursor-pointer"
+                                    onClick={() => handleRemoveInputLocal(index)}
+                                  >
+                                    <svg
+                                      width={8}
+                                      height={8}
+                                      viewBox="0 0 6 6"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      className="flex-grow-0 flex-shrink-0"
+                                      preserveAspectRatio="none"
+                                    >
+                                      <path
+                                        d="M5.39571 0L3 2.39571L0.604286 0L0 0.604286L2.39571 3L0 5.39571L0.604286 6L3 3.60429L5.39571 6L6 5.39571L3.60429 3L6 0.604286L5.39571 0Z"
+                                        fill="#6A7380"
+                                      />
+                                    </svg>
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* <div className="tw-w-full tw-flex tw-justify-end tw-px-5 tw-items-center">
                     {inputList.length > 0 && (
                       <div className="tw-mt-3 tw-flex  tw-py-2 tw-w-[664px]">
                         <div className="tw-flex-1 tw-text-left tw-pl-5">
@@ -1791,13 +1895,6 @@ export function LectureOpenTemplate() {
                                     ),
                                   }}
                                 />
-                                {/* <input
-                                type="text"
-                                className="border tw-w-full tw-rounded tw-text-sm tw-p-2"
-                                value={input.url}
-                                placeholder="http://"
-
-                              /> */}
                                 <button
                                   className="tw-text-white tw-bg-black tw-rounded tw-w-[60px] tw-py-2 tw-ml-2"
                                   onClick={() => handleDeleteInput(input.id)}
@@ -1810,7 +1907,7 @@ export function LectureOpenTemplate() {
                         </div>
                       </div>
                     )}
-                  </div>
+                  </div> */}
                 </div>
 
                 <div className="tw-container tw-py-10 tw-px-10 tw-mx-0 tw-min-w-full tw-flex tw-flex-col tw-items-center">
