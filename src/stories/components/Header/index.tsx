@@ -267,7 +267,11 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
       >
         <div className="container" style={{ alignItems: 'center' }}>
           <div className={cx('header-link', 'navbar-brand')} onClick={handleGoHome}>
-            <img src="/assets/images/header/image_1.png" width={130} alt="logo" className={cx('image-logo')} />
+            {tenantName === 'sejong' ? (
+              <img src="/assets/images/header/SEJONG_DevUs.png" width={200} alt="logo" className={cx('image-logo')} />
+            ) : (
+              <img src="/assets/images/header/image_2.png" width={130} alt="logo" className={cx('image-logo')} />
+            )}
           </div>
           {/* {COLOR_PRESETS.map(preset => (
             <div key={preset?.name} className="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-1 tw-mr-4">

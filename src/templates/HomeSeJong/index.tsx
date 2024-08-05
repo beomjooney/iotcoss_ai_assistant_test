@@ -67,15 +67,14 @@ export function HomeSejongTemplate({ logged = false, tenantName = '' }: HomeSejo
             {/* SVG Content */}
           </svg>
           <div className="tw-w-full md:tw-w-[1280px] tw-h-[391px] tw-absolute tw-left-0 md:tw-left-[-1px] tw-top-0 md:tw-top-[-30px] tw-bg-white/20" />
-          <p className="tw-absolute tw-left-[24px] tw-top-[40px] md:tw-left-[57px] md:tw-top-[95px] tw-text-sm tw-font-medium tw-text-left tw-text-black">
-            SejongUniversity
+          <p className="tw-absolute tw-left-[24px] tw-top-[40px] md:tw-left-[57px] md:tw-top-[85px] tw-text-base tw-font-medium tw-text-left tw-text-black">
+            Sejong University
           </p>
           <p className="tw-absolute tw-left-[24px] tw-top-[60px] md:tw-left-[57px] md:tw-top-[116px] tw-text-xl md:tw-text-[32px] tw-text-left tw-text-black">
-            <span className="tw-text-xl md:tw-text-[32px] tw-text-left tw-text-black">MY </span>
-            <span className="tw-text-xl md:tw-text-[32px] tw-font-bold tw-text-left tw-text-black">BRIGHT</span>
-            <span className="tw-text-xl md:tw-text-[32px] tw-text-left tw-text-black"> FUTURE</span>
+            <span className="tw-text-xl md:tw-text-[32px] tw-text-left tw-text-black">CREATIVE </span>
+            <span className="tw-text-xl md:tw-text-[32px] tw-font-bold tw-text-left tw-text-black">LEADERSHIP</span>
           </p>
-          <div className="tw-w-[48px] md:tw-w-[81px] tw-h-[2px] md:tw-h-[3px] tw-absolute tw-left-[60px] md:tw-left-[139px] tw-top-[90px] md:tw-top-[177px] tw-bg-[#e11837]" />
+          <div className="tw-w-[48px] md:tw-w-[190px] tw-h-[2px] md:tw-h-[3px] tw-absolute tw-left-[60px] md:tw-left-[210px] tw-top-[90px] md:tw-top-[160px] tw-bg-[#e11837]" />
           <p className="tw-absolute tw-left-[24px] tw-top-[110px] md:tw-left-[57px] md:tw-top-[209px] tw-text-sm md:tw-text-base tw-font-medium tw-text-left tw-text-black">
             각 분야의 전문가들이 메이커로서 핵심 질문과 아티클을 답으로 제시합니다.
             <br />
@@ -128,12 +127,12 @@ export function HomeSejongTemplate({ logged = false, tenantName = '' }: HomeSejo
             </div>
           </div>
           <img
-            className="tw-hidden lg:tw-block tw-w-[180px] md:tw-w-[314px] tw-h-[240px] md:tw-h-[533px] tw-absolute tw-left-[calc(50%-90px)] md:tw-left-[769px] tw-top-[100px] md:tw-top-[43px]"
-            src="/assets/images/main/image_2.png"
+            className="tw-hidden lg:tw-block tw-w-[180px] md:tw-w-[550px] tw-h-[550px] md:tw-h-[550px] tw-absolute tw-left-[calc(50%-90px)] md:tw-left-[570px] tw-top-[100px] md:tw-top-[43px]"
+            src="/assets/images/main/AuthorityMark.png"
           />
           <img
-            src="/assets/images/main/image_1.png"
-            className="tw-hidden lg:tw-block tw-w-[200px] md:tw-w-[406px] tw-h-[240px] md:tw-h-[479px] tw-absolute tw-left-[calc(50%-100px)] md:tw-left-[582px] tw-top-[100px] md:tw-top-[43px] tw-object-cover"
+            src="/assets/images/main/sejong-1.png"
+            className="tw-hidden lg:tw-block tw-w-[200px] md:tw-w-[290px] tw-h-[290px] md:tw-h-[479px] tw-absolute tw-left-[calc(50%-100px)] md:tw-left-[735px] tw-top-[100px] md:tw-top-[43px] tw-object-cover"
           />
         </div>
       </section>
@@ -179,11 +178,11 @@ export function HomeSejongTemplate({ logged = false, tenantName = '' }: HomeSejo
                 src="/assets/images/main/branding-badge-1.png"
                 className="tw-w-[120px] md:tw-w-[190px] tw-h-[120px] md:tw-h-[190px] tw-object-cover"
               />
-              <p className="tw-w-[352px] 6 md:tw-left-24  md:tw-top-[219px] tw-text-xl md:tw-text-xl tw-font-bold tw-text-center tw-text-black">
+              <p className="tw-w-[352px] tw-text-xl md:tw-text-xl tw-font-bold tw-text-center tw-text-black tw-mt-4 md:tw-mt-6">
                 세종대 선배님! 교수님!
               </p>
-              <p className="tw-w-[352px] md:tw-left-24 tw-text-base md:tw-text-base tw-text-center tw-text-black">
-                <span className="tw-w-[352px] tw-text-base tw-text-center tw-text-black">
+              <p className="tw-w-[352px] md:tw-left-24 tw-text-base md:tw-text-base tw-text-center tw-text-black tw-mt-2 md:tw-mt-4">
+                <span className="tw-w-[352px] tw-text-base tw-text-center tw-text-black ">
                   후배들이 기다리고 있습니다.
                 </span>
                 <br />
@@ -214,36 +213,29 @@ export function HomeSejongTemplate({ logged = false, tenantName = '' }: HomeSejo
         >
           <div className="tw-w-[250px] md:tw-w-[497.13px] tw-h-[113px]  md:tw-h-[213px]">
             <div className="tw-w-[300px] md:tw-w-[550px] tw-left-[calc(50%-150px)] md:tw-left-[528.87px] tw-top-[240px] md:tw-top-[250px] tw-absolute tw-text-center md:tw-text-right tw-text-black tw-text-base md:tw-text-base tw-font-medium tw-leading-normal tw-font-['Inter']">
-              세종대 출신 상위 1% 선배들이 모교와 후배를 위하여 힘을 보탭니다.
+              새로운 경쟁력으로 우뚝 선 글로벌 세종!
               <br />
-              실무보다 좋은 수업은 없습니다. 각 분야에 진출한 세종대 최고의 선배들의
+              세종대 출신 선배들이 모교와 후배를 위하여 힘을 보탭니다.
+              <br />
+              실무보다 좋은 수업은 없습니다. 각 분야에 진출한 동서대 최고의 선배들의
               <br />
               경험이 녹아 있는 생생한 퀴즈를 풀면서 함께 성장해보세요.
             </div>
-            <p className="tw-w-[120px] md:tw-w-[146.77px] tw-absolute tw-left-[calc(50%-60px)] md:tw-left-[928.36px] tw-top-[80px] md:tw-top-[118px] tw-text-xs md:tw-text-base tw-font-bold tw-text-center md:tw-text-right tw-text-black">
+            <p className="tw-w-[120px] md:tw-w-[146.77px] tw-absolute tw-left-[calc(50%-60px)] md:tw-left-[928.36px] tw-top-[75px] md:tw-top-[108px] tw-text-xs md:tw-text-base tw-font-bold tw-text-center md:tw-text-right tw-text-black">
               Sejong University
             </p>
             <p className="tw-w-[300px] md:tw-w-[497px] tw-absolute tw-left-[calc(50%-150px)] md:tw-left-[578px] tw-top-[200px] md:tw-top-[139px] tw-text-lg md:tw-text-[32px] tw-text-center md:tw-text-right tw-text-black">
-              <span className="tw-w-[300px] md:tw-w-[497px] tw-text-lg md:tw-text-[32px] tw-font-bold tw-text-center md:tw-text-right tw-text-black">
-                Before
-              </span>
-              <span className="tw-w-[300px] md:tw-w-[497px] tw-text-lg md:tw-text-[32px] tw-text-center md:tw-text-right tw-text-black">
-                {' '}
-                Sejong{' '}
+              <span className="tw-w-[300px] md:tw-w-[497px] tw-text-lg md:tw-text-[32px] tw-text-center md:tw-text-right tw-text-black tw-pr-3">
+                BUILDING the
               </span>
               <span className="tw-w-[300px] md:tw-w-[497px] tw-text-lg md:tw-text-[32px] tw-font-bold tw-text-center md:tw-text-right tw-text-black">
-                After
-              </span>
-              <span className="tw-w-[300px] md:tw-w-[497px] tw-text-lg md:tw-text-[32px] tw-text-center md:tw-text-right tw-text-black">
-                {' '}
-                Sejong
+                FUTURE
               </span>
             </p>
-            <div className="tw-w-[60px] md:tw-w-[79px] tw-h-[2px] md:tw-h-[3px] tw-absolute tw-left-[calc(50%-30px)] md:tw-left-[860.5px] tw-top-[120px] md:tw-top-[193.5px] tw-bg-[#e11837]" />
-            <div className="tw-w-[80px] md:tw-w-[103px] tw-h-[2px] md:tw-h-[3px] tw-absolute tw-left-[calc(50%-40px)] md:tw-left-[617.5px] tw-top-[120px] md:tw-top-[193.5px] tw-bg-[#e11837]" />
+            <div className="tw-w-[60px] md:tw-w-[120px] tw-h-[2px] md:tw-h-[3px] tw-absolute tw-left-[calc(50%-30px)] md:tw-left-[955.5px] tw-top-[100px] md:tw-top-[183.5px] tw-bg-[#e11837]" />
           </div>
           <img
-            src="/assets/images/main/dsu_1.png"
+            src="/assets/images/main/se01_1.png"
             className="tw-w-[200px] md:tw-w-[404px] tw-h-[200px] md:tw-h-[404px] tw-absolute tw-left-[calc(50%-100px)] md:tw-left-[50px] tw-top-[-4px] tw-object-cover"
           />
         </div>
