@@ -17,6 +17,7 @@ import {
   saveAIQuizAnswerSavePut,
   saveAIQuizAnswerEvaluation,
   saveAIQuizAnswerFeedback,
+  saveLectureTempPost,
 } from './quiz.api';
 
 export const useQuizOrder = (): UseMutationResult => {
@@ -191,6 +192,19 @@ export const useClubQuizSave = (): UseMutationResult => {
 export const useClubTempSave = (): UseMutationResult => {
   const queryClient = useQueryClient();
   return useMutation<any, any, any>(requestBody => saveClubTempPost(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('TEMP').all),
+    onSuccess: async data => {
+      alert('임시저장 되었습니다.');
+    },
+  });
+};
+export const useLectureTempSave = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => saveLectureTempPost(requestBody), {
     onError: (error, variables, context) => {
       const { code, message } = error;
       alert(`mutation error : [${code}] ${message}`);

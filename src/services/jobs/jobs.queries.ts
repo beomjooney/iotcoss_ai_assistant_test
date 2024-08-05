@@ -9,6 +9,7 @@ import {
   getGetTemp,
   getMyQuizContents,
   getMyQuizThresh,
+  getLectureGetTemp,
 } from './jobs.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 import { RecommendContentsResponse } from 'src/models/recommend';
@@ -106,6 +107,15 @@ export const useGetSchedule = (
 
 export const useGetTemp = (onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
   return useQuery<any, Error>(QUERY_KEY_FACTORY('TEMP').details(), () => getGetTemp(), {
+    onSuccess,
+    onError,
+    enabled: false,
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useLectureGetTemp = (onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
+  return useQuery<any, Error>(QUERY_KEY_FACTORY('TEMP').details(), () => getLectureGetTemp(), {
     onSuccess,
     onError,
     enabled: false,

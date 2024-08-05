@@ -18,9 +18,9 @@ import { ExperiencesResponse } from 'src/models/experiences';
 import { useOptions } from 'src/services/experiences/experiences.queries';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
-import { useMyQuiz, useQuizList, useGetSchedule, useGetTemp } from 'src/services/jobs/jobs.queries';
+import { useMyQuiz, useQuizList, useGetSchedule, useLectureGetTemp } from 'src/services/jobs/jobs.queries';
 import Checkbox from '@mui/material/Checkbox';
-import { useClubQuizSave, useQuizSave, useClubTempSave } from 'src/services/quiz/quiz.mutations';
+import { useClubQuizSave, useQuizSave, useClubTempSave, useLectureTempSave } from 'src/services/quiz/quiz.mutations';
 import { TagsInput } from 'react-tag-input-component';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import { useUploadImage } from 'src/services/image/image.mutations';
@@ -50,6 +50,7 @@ import { Toggle } from 'src/stories/components';
 
 //group
 import { images, imageBanner } from './group';
+import validator from 'validator';
 
 const cx = classNames.bind(styles);
 
@@ -57,17 +58,18 @@ const defaultScheduleData = [];
 for (let i = 0; i < 2; i++) {
   defaultScheduleData.push({
     order: i + 1,
-    weekNumber: i + 1,
+    clubName: '',
     urlList: [],
     fileList: [],
-    quizSequence: null,
-    publishDate: null,
-    dayOfWeek: null,
+    clubStudyType: '0001',
+    clubStudyUrl: '',
+    studyDate: '',
   });
 }
 
 export function LectureOpenTemplate() {
   const [startDay, setStartDay] = React.useState<Dayjs | null>(dayjs());
+  const [endDay, setEndDay] = React.useState<Dayjs | null>(dayjs());
 
   const onChangeHandleFromToStartDate = date => {
     if (date) {
@@ -79,12 +81,23 @@ export function LectureOpenTemplate() {
       setStartDay(formattedDate);
     }
   };
+  const onChangeHandleFromToEndDate = date => {
+    if (date) {
+      // Convert date to a Dayjs object
+      const formattedDate = dayjs(date);
+      // Format the date as 'YYYY-MM-DD'
+      const formattedDateString = formattedDate.format('YYYY-MM-DD');
+      // Set both today and todayEnd
+      setEndDay(formattedDate);
+    }
+  };
 
   const router = useRouter();
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [jobGroupsFilter, setJobGroupsFilter] = useState([]);
   const [participationCode, setParticipationCode] = useState('');
+  const [urlCode, setUrlCode] = useState('');
   const [levelsFilter, setLevelsFilter] = useState([]);
   const [jobGroups, setJobGroups] = useState<any[]>([]);
   const [seminarFilter, setSeminarFilter] = useState(['0002']);
@@ -106,22 +119,28 @@ export function LectureOpenTemplate() {
   const [jobs, setJobs] = useState([]);
   const [selectedJob, setSelectedJob] = useState([]);
   const [totalElements, setTotalElements] = useState(0);
-  const [buttonFlag, setButtonFlag] = useState(false);
   const [personName, setPersonName] = useState([]);
   const [inputList, setInputList] = useState([]);
   const [fileList, setFileList] = useState([]);
+  const [lectureLanguage, setLectureLanguage] = useState('kor');
+  const [contentLanguage, setContentLanguage] = useState('kor');
+  const [lectureAILanguage, setLectureAILanguage] = useState('kor');
 
   const handleFileChange = event => {
-    const file = event.target.files[0];
+    const files = Array.from(event.target.files);
     const allowedExtensions = /(\.pdf)$/i;
 
-    if (!allowedExtensions.exec(file.name)) {
-      alert('허용되지 않는 파일 형식입니다.');
-      event.target.value = ''; // input 초기화
-      return;
+    for (let i = 0; i < files.length; i++) {
+      if (!allowedExtensions.exec(files[i].name)) {
+        alert('허용되지 않는 파일 형식입니다.');
+        event.target.value = ''; // input 초기화
+        return;
+      }
     }
 
-    setFileList([...fileList, file.name]); // 하나의 파일만 받도록 설정
+    setFileList(prevFileList => [...prevFileList, ...files]);
+    // setFileList([...fileList, files]); // 하나의 파일만 받도록 설정
+    // console.log([...fileList, files]);
   };
 
   const fileInputRef = useRef(null);
@@ -130,9 +149,15 @@ export function LectureOpenTemplate() {
   };
 
   const handleAddInput = input => {
-    if (participationCode !== '') {
+    if (!validator.isURL(input)) {
+      // setErrorMessage('Is Valid URL');
+      alert('올바른 URL을 입력해주세요.');
+      return;
+    }
+
+    if (urlCode !== '') {
       setInputList([...inputList, input]); // Add current input to the list
-      setParticipationCode(''); // Clear the input field after adding
+      setUrlCode(''); // Clear the input field after adding
     }
   };
 
@@ -155,49 +180,49 @@ export function LectureOpenTemplate() {
   });
 
   //temp 조회
-  const { refetch: refetchGetTemp }: UseQueryResult<any> = useGetTemp(data => {
+  const { refetch: refetchGetTemp }: UseQueryResult<any> = useLectureGetTemp(data => {
     console.log('load temp', data);
-    const clubForm = data?.clubForm || {};
-    const quizList = data?.clubQuizzes || [];
+    // const clubForm = data?.clubForm || {};
+    // const quizList = data?.clubQuizzes || [];
 
-    setClubName(clubForm.clubName || '');
-    setIntroductionText(clubForm.introductionText || '');
-    setRecommendationText(clubForm.recommendationText || '');
-    setLearningText(clubForm.learningText || '');
-    setMemberIntroductionText(clubForm.memberIntroductionText || '');
-    setCareerText(clubForm.careerText || '');
-    setSkills(clubForm.skills || []);
-    const extractedCodes = clubForm.jobLevels.map(item => item.code);
-    setRecommendLevels(extractedCodes || []);
-    setNum(clubForm.studyCount || 0);
-    setQuizType(clubForm.quizOpenType || '');
-    setStartDay(clubForm.startAt ? dayjs(clubForm.startAt) : dayjs());
-    setStudyKeywords(clubForm.studyKeywords || []);
-    setStudyChapter(clubForm.studyChapter || '');
-    setStudySubject(clubForm.studySubject || '');
-    setStudyCycleNum(clubForm.studyCycle || 0);
-    setUniversityCode(clubForm.jobGroups[0]?.code || '');
-    setSelectedUniversityName(clubForm.jobGroups[0]?.name || '');
-    setSelectedJobName(clubForm.jobs[0]?.name || '');
-    setJobLevelName(clubForm.jobLevels[0]?.name || '');
-    setLevelNames(clubForm.jobLevels.map(item => item.name));
-    const selected = optionsData?.data?.jobs?.find(u => u.code === clubForm.jobGroups[0]?.code);
-    setJobs(selected ? selected.jobs : []);
-    const jobsCode = clubForm.jobs.map(item => item.code);
-    setSelectedJob(jobsCode || []);
-    const jobsName = clubForm.jobs.map(item => item.name);
-    console.log(jobsName);
-    setPersonName(jobsName || []);
-    setButtonFlag(true);
-    setScheduleData(quizList);
+    // setClubName(clubForm.clubName || '');
+    // setIntroductionText(clubForm.introductionText || '');
+    // setRecommendationText(clubForm.recommendationText || '');
+    // setLearningText(clubForm.learningText || '');
+    // setMemberIntroductionText(clubForm.memberIntroductionText || '');
+    // setCareerText(clubForm.careerText || '');
+    // setSkills(clubForm.skills || []);
+    // const extractedCodes = clubForm.jobLevels.map(item => item.code);
+    // setRecommendLevels(extractedCodes || []);
+    // setNum(clubForm.studyCount || 0);
+    // setQuizType(clubForm.quizOpenType || '');
+    // setStartDay(clubForm.startAt ? dayjs(clubForm.startAt) : dayjs());
+    // setStudyKeywords(clubForm.studyKeywords || []);
+    // setStudyChapter(clubForm.studyChapter || '');
+    // setStudySubject(clubForm.studySubject || '');
+    // setStudyCycleNum(clubForm.studyCycle || 0);
+    // setUniversityCode(clubForm.jobGroups[0]?.code || '');
+    // setSelectedUniversityName(clubForm.jobGroups[0]?.name || '');
+    // setSelectedJobName(clubForm.jobs[0]?.name || '');
+    // setJobLevelName(clubForm.jobLevels[0]?.name || '');
+    // setLevelNames(clubForm.jobLevels.map(item => item.name));
+    // const selected = optionsData?.data?.jobs?.find(u => u.code === clubForm.jobGroups[0]?.code);
+    // setJobs(selected ? selected.jobs : []);
+    // const jobsCode = clubForm.jobs.map(item => item.code);
+    // setSelectedJob(jobsCode || []);
+    // const jobsName = clubForm.jobs.map(item => item.name);
+    // console.log(jobsName);
+    // setPersonName(jobsName || []);
+    // setButtonFlag(true);
+    // setScheduleData(quizList);
 
-    // Filter out items with quizSequence not null and extract quizSequence values
-    const quizSequenceNumbers = quizList.filter(item => item.quizSequence !== null).map(item => item.quizSequence);
-    setSelectedQuizIds(quizSequenceNumbers);
+    // // Filter out items with quizSequence not null and extract quizSequence values
+    // const quizSequenceNumbers = quizList.filter(item => item.quizSequence !== null).map(item => item.quizSequence);
+    // setSelectedQuizIds(quizSequenceNumbers);
   });
 
   //temp 등록
-  const { mutate: onTempSave, isSuccess: tempSucces } = useClubTempSave();
+  const { mutate: onTempSave, isSuccess: tempSucces } = useLectureTempSave();
 
   const [skillIdsPopUp, setSkillIdsPopUp] = useState<any[]>([]);
   const [experienceIdsPopUp, setExperienceIdsPopUp] = useState<any[]>([]);
@@ -220,9 +245,15 @@ export function LectureOpenTemplate() {
   const quizRef = useRef(null);
   const quizUrlRef = useRef(null);
 
-  const { mutate: onSaveImage, data: imageUrl, isSuccess: imageSuccess } = useUploadImage();
-  const [selectedImage, setSelectedImage] = useState('/assets/images/banner/Rectangle_190.png');
-  const [selectedImageBanner, setSelectedImageBanner] = useState('/assets/images/banner/Rectangle_200.png');
+  const [selectedImage, setSelectedImage] = useState('');
+  const [selectedImageCheck, setSelectedImageCheck] = useState(null);
+  const [selectedImageBanner, setSelectedImageBanner] = useState('');
+  const [selectedImageBannerCheck, setSelectedImageBannerCheck] = useState(null);
+  const [selectedImageProfile, setSelectedImageProfile] = useState('/assets/images/account/default_profile_image.png');
+  const [selectedImageProfileCheck, setSelectedImageProfileCheck] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [previewBanner, setPreviewBanner] = useState(null);
+  const [previewProfile, setPreviewProfile] = useState(null);
 
   const [contentJobType, setContentJobType] = useState<any[]>([]);
   const [contentTypes, setContentTypes] = useState<any[]>([]);
@@ -273,30 +304,6 @@ export function LectureOpenTemplate() {
     });
   }, [myKeyWorld]);
 
-  useEffect(() => {
-    const fetchImage = async () => {
-      try {
-        const imageUrl = `${process.env.NEXT_PUBLIC_GENERAL_URL}${selectedImage}`;
-        const response = await fetch(imageUrl);
-        if (!response.ok) {
-          throw new Error('Failed to fetch image');
-        }
-        const data = await response.blob();
-        const ext = selectedImage.split('.').pop(); // Extract extension from the selectedImage
-        const filename = selectedImage.split('/').pop(); // Extract filename from the selectedImage
-        const metadata = { type: `image/${ext}` };
-        const imageFile = new File([data], filename, metadata);
-        onSaveImage(imageFile);
-      } catch (error) {
-        console.error('Error fetching or saving image:', error);
-      }
-    };
-
-    if (selectedImage) {
-      fetchImage();
-    }
-  }, [selectedImage, onSaveImage]);
-
   const handleChanges = (event: SelectChangeEvent<typeof personName>) => {
     const {
       target: { value },
@@ -316,33 +323,63 @@ export function LectureOpenTemplate() {
     console.log(selectedCodes);
   };
 
-  function searchKeyworld(value) {
-    let _keyworld = value.replace('#', '');
-    if (_keyworld == '') _keyworld = null;
-    setKeyWorld(_keyworld);
-  }
-
-  function searchMyKeyworld(value) {
-    let _keyworld = value.replace('#', '');
-    if (_keyworld == '') _keyworld = null;
-    setMyKeyWorld(_keyworld);
-  }
-
-  const handleImageClick = async image => {
-    //console.log('image select', `${process.env['NEXT_PUBLIC_GENERAL_URL']}` + image);
-    setSelectedImage(image);
-    // if (!image || image.length === 0) return;
-    // let imageUrl = `${process.env['NEXT_PUBLIC_GENERAL_URL']}` + image;
-    // const response = await fetch(imageUrl);
-    // const data = await response.blob();
-    // const ext = imageUrl.split('.').pop(); // url 구조에 맞게 수정할 것
-    // const filename = imageUrl.split('/').pop(); // url 구조에 맞게 수정할 것
-    // const metadata = { type: `image/${ext}` };
-    // onSaveImage(new File([data], filename!, metadata));
+  const handleImageChange = (event, type) => {
+    console.log(type);
+    const file = event.target.files[0];
+    if (file) {
+      if (type === 'card') {
+        setSelectedImageCheck(file);
+      } else if (type === 'banner') {
+        setSelectedImageBannerCheck(file);
+      } else if (type === 'profile') {
+        setSelectedImageProfileCheck(file);
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (type === 'card') {
+          setPreview(reader.result);
+        } else if (type === 'banner') {
+          console.log('banner');
+          setPreviewBanner(reader.result);
+        } else if (type === 'profile') {
+          setPreviewProfile(reader.result);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
   };
-  const handleFormatExPopUp = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
-    setExperienceIdsPopUp(newFormats);
-    //console.log(newFormats);
+
+  const handleProfileDelete = e => {
+    setSelectedImageProfileCheck(null);
+    setPreviewProfile(null);
+  };
+
+  // 파일 이름 추출 함수
+  const extractFileName = path => {
+    const parts = path.split('/');
+    return parts[parts.length - 1];
+  };
+
+  const handleImageClick = async (image, type) => {
+    // console.log('image select', `${process.env['NEXT_PUBLIC_GENERAL_URL']}` + image);
+    const response = await fetch(`${process.env['NEXT_PUBLIC_GENERAL_URL']}` + image);
+    const blob = await response.blob();
+    const file = new File([blob], extractFileName(image), { type: blob.type });
+    console.log('file', file);
+
+    if (type === 'card') {
+      setPreview(image);
+      setSelectedImage(image);
+      setSelectedImageCheck(file);
+    } else if (type === 'banner') {
+      setPreviewBanner(image);
+      setSelectedImageBanner(image);
+      setSelectedImageBannerCheck(file);
+    } else if (type === 'profile') {
+      setPreviewProfile(image);
+      setSelectedImageProfile(image);
+      setSelectedImageProfileCheck(file);
+    }
   };
 
   const [introductionText, setIntroductionText] = useState<string>('');
@@ -350,20 +387,6 @@ export function LectureOpenTemplate() {
   const [learningText, setLearningText] = useState<string>('');
   const [memberIntroductionText, setMemberIntroductionText] = useState<string>('');
   const [careerText, setCareerText] = useState<string>('');
-
-  const handleQuizType = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
-    if (newFormats) {
-      setScheduleData([]);
-      setNum(0);
-      setSelectedQuizIds([]);
-      setStudyCycleNum([]);
-      setQuizType(newFormats);
-    }
-  };
-
-  const handleStudyCycle = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
-    setStudyCycleNum(newFormats);
-  };
 
   const handleIsPublic = (event: React.MouseEvent<HTMLElement>, newFormats: string) => {
     setIsPublic(newFormats);
@@ -389,9 +412,12 @@ export function LectureOpenTemplate() {
     const newOrder = scheduleData.length + 1; // Determine the new order based on the current length of scheduleData
     const newData = {
       order: newOrder,
-      quizSequence: null,
+      clubName: '',
+      clubStudyType: '0001',
+      clubStudyUrl: '',
       urlList: [],
       fileList: [],
+      studyDate: '',
     };
 
     // Update scheduleData with the new data
@@ -437,98 +463,6 @@ export function LectureOpenTemplate() {
     onQuizSave(params);
     setActive(2);
   };
-
-  //new logic
-  const handleCheckboxChange = quizSequence => {
-    // Filter out items with quizSequence as null and count them
-    const nullQuizSequenceCount = scheduleData.filter(item => item.quizSequence === null).length;
-
-    if (!selectedQuizIds.includes(quizSequence) && nullQuizSequenceCount <= 0) {
-      alert('퀴즈를 추가 할 수 없습니다.');
-      return;
-    }
-
-    setSelectedQuizIds(prevSelectedQuizIds => {
-      const updatedSelectedQuizIds = prevSelectedQuizIds.includes(quizSequence)
-        ? prevSelectedQuizIds.filter(id => id !== quizSequence)
-        : [...prevSelectedQuizIds, quizSequence];
-
-      setScheduleData(prevSelectedQuizzes => {
-        const alreadySelected = prevSelectedQuizzes.some(quiz => quiz.quizSequence === quizSequence);
-
-        if (alreadySelected) {
-          // When unchecked, set quizSequence to null
-          return prevSelectedQuizzes.map(quiz =>
-            quiz.quizSequence === quizSequence ? { ...quiz, quizSequence: null } : quiz,
-          );
-        } else {
-          const newQuiz = allQuizData.find(quiz => quiz.quizSequence === quizSequence);
-          const reconstructedQuiz = newQuiz
-            ? {
-                quizSequence: newQuiz.quizSequence,
-                question: newQuiz.question,
-                leaderUri: newQuiz.memberUri,
-                leaderUUID: newQuiz.memberUUID,
-                leaderProfileImageUrl: newQuiz.memberProfileImageUrl,
-                leaderNickname: newQuiz.memberNickname,
-                contentUrl: newQuiz.contentUrl,
-                contentTitle: newQuiz.contentTitle,
-                modelAnswer: newQuiz.modelAnswer,
-                quizUri: newQuiz.quizUri,
-              }
-            : null;
-
-          console.log(newQuiz);
-          console.log(reconstructedQuiz);
-
-          // Find the first item with null values in scheduleData
-          const firstNullItemIndex = scheduleData.findIndex(item => item.quizSequence === null);
-
-          if (firstNullItemIndex !== -1 && newQuiz) {
-            // Update the first null item with the new quiz data
-            const updatedScheduleData = [...scheduleData];
-            updatedScheduleData[firstNullItemIndex] = {
-              ...updatedScheduleData[firstNullItemIndex],
-              ...reconstructedQuiz,
-            };
-            console.log(updatedScheduleData);
-            setScheduleData(updatedScheduleData);
-            return updatedScheduleData;
-          }
-        }
-      });
-      return updatedSelectedQuizIds;
-    });
-  };
-
-  // Function to handle deleting data based on order
-  const handleCheckboxDelete = orderToDelete => {
-    console.log('delete', orderToDelete);
-    // Filter out the item with the given order
-    const updatedData = scheduleData.filter(item => item.order !== orderToDelete);
-
-    // Step 1: Sort the array based on the current order value
-    const sortedData = updatedData.sort((a, b) => a.order - b.order);
-
-    // Step 2: Assign new order values sequentially
-    sortedData.forEach((item, index) => {
-      item.order = index + 1;
-    });
-
-    // Update state with the filtered data
-    setScheduleData(sortedData);
-  };
-
-  // const handleCheckboxDelete = quizSequence => {
-  //   setSelectedQuizIds(prevSelectedQuizIds => {
-  //     const updatedSelectedQuizIds = prevSelectedQuizIds.filter(id => id !== quizSequence);
-  //     console.log('After Deletion, Selected Quiz IDs:', updatedSelectedQuizIds);
-  //     setScheduleData(prevSelectedQuizzes =>
-  //       prevSelectedQuizzes.map(quiz => (quiz.quizSequence === quizSequence ? { ...quiz, quizSequence: null } : quiz)),
-  //     );
-  //     return updatedSelectedQuizIds;
-  //   });
-  // };
 
   useEffect(() => {
     setParams({
@@ -640,6 +574,35 @@ export function LectureOpenTemplate() {
       }),
     );
   };
+
+  const lectureNameChange = (order: any, updated: any) => {
+    console.log('scheduleUrlAdd', order, updated);
+
+    setScheduleData(
+      scheduleData.map(item => {
+        // Update the urlList of the item with matching order
+        if (item.order === order) {
+          return { ...item, clubName: updated };
+        }
+        return item;
+      }),
+    );
+  };
+
+  const handleUrlChange = (order: any, updated: any) => {
+    console.log('scheduleUrlAdd', order, updated);
+
+    setScheduleData(
+      scheduleData.map(item => {
+        // Update the urlList of the item with matching order
+        if (item.order === order) {
+          return { ...item, clubStudyUrl: updated };
+        }
+        return item;
+      }),
+    );
+  };
+
   const scheduleFileAdd = (order: any, updated: any) => {
     console.log('scheduleFileAdd', order, updated);
 
@@ -647,7 +610,7 @@ export function LectureOpenTemplate() {
       scheduleData.map(item => {
         // Update the urlList of the item with matching order
         if (item.order === order) {
-          return { ...item, fileList: [...item.fileList, updated] };
+          return { ...item, fileList: [...item.fileList, ...updated] };
         }
         return item;
       }),
@@ -671,14 +634,46 @@ export function LectureOpenTemplate() {
     );
   };
 
-  // Function to handle removing a URL from the list
+  const handleStartDayChange = (order, startDay) => {
+    console.log('handleRemoveFile', order, startDay);
+    setScheduleData(prevData =>
+      prevData.map(item => {
+        if (item.order === order) {
+          // Return the item with the URL at urlIndex removed from urlList
+          return {
+            ...item,
+            studyDate: startDay,
+          };
+        }
+        return item;
+      }),
+    );
+  };
+
   const handleRemoveFileLocal = fileIndex => {
     setFileList(fileList.filter((_, i) => i !== fileIndex));
   };
 
-  // Function to handle removing a URL from the list
   const handleRemoveInputLocal = inputIndex => {
     setInputList(inputList.filter((_, i) => i !== inputIndex));
+  };
+
+  // Function to handle deleting data based on order
+  const handleCheckboxDelete = orderToDelete => {
+    console.log('delete', orderToDelete);
+    // Filter out the item with the given order
+    const updatedData = scheduleData.filter(item => item.order !== orderToDelete);
+
+    // Step 1: Sort the array based on the current order value
+    const sortedData = updatedData.sort((a, b) => a.order - b.order);
+
+    // Step 2: Assign new order values sequentially
+    sortedData.forEach((item, index) => {
+      item.order = index + 1;
+    });
+
+    // Update state with the filtered data
+    setScheduleData(sortedData);
   };
 
   // Function to handle removing a URL from the list
@@ -691,6 +686,22 @@ export function LectureOpenTemplate() {
           return {
             ...item,
             urlList: item.urlList.filter((_, index) => index !== urlIndex),
+          };
+        }
+        return item;
+      }),
+    );
+  };
+
+  const handleTypeChange = (order, type) => {
+    console.log('handleTypeChange', order, type);
+    setScheduleData(prevData =>
+      prevData.map(item => {
+        if (item.order === order) {
+          // Return the item with the URL at urlIndex removed from urlList
+          return {
+            ...item,
+            clubStudyType: type,
           };
         }
         return item;
@@ -737,12 +748,16 @@ export function LectureOpenTemplate() {
     // 상태 업데이트 후 추가 작업 수행
     console.log('scheduleData가 업데이트되었습니다.', scheduleData);
     // setUpdateKey를 호출하여 강제 리렌더링
-    setUpdateKey(prevKey => prevKey + 1);
+    // setUpdateKey(prevKey => prevKey + 1);
   }, [scheduleData]);
 
   const dragList = (item: any, index: any) => (
     <div key={item.order} className="simple-drag-row">
       <LectureBreakerInfo
+        handleStartDayChange={handleStartDayChange}
+        handleUrlChange={handleUrlChange}
+        handleTypeChange={handleTypeChange}
+        lectureNameChange={lectureNameChange}
         handleRemoveInput={handleRemoveInput}
         scheduleUrlAdd={scheduleUrlAdd}
         scheduleFileAdd={scheduleFileAdd}
@@ -787,7 +802,7 @@ export function LectureOpenTemplate() {
   const handleNextOne = () => {
     window.scrollTo(0, 0);
 
-    handlerClubMakeProfessorManual();
+    // handlerClubMakeProfessorManual();
 
     const _selectedUniversityCode =
       optionsData?.data?.jobs?.find(u => u.code === selectedUniversity)?.code || universityCode;
@@ -798,7 +813,6 @@ export function LectureOpenTemplate() {
 
     const clubFormParams = {
       clubName: clubName,
-      clubImageUrl: imageUrl,
       jobGroups: [_selectedUniversityCode],
       jobs: selectedJob,
       jobLevels: recommendLevels,
@@ -871,40 +885,10 @@ export function LectureOpenTemplate() {
   const handleInputStudySubjectChange = event => {
     setStudySubject(event.target.value);
   };
-  const handleInputStudyChapterChange = event => {
-    setStudyChapter(event.target.value);
-  };
-  const handleInputChange = event => {
-    setClubName(event.target.value);
-  };
-
-  const handleNumChange = event => {
-    setNum(event.target.value);
-  };
-
-  const handleInputQuizSearchChange = event => {
-    setQuizSearch(event.target.value);
-  };
 
   const onMessageChange1 = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, no?: number) => {
     const { name, value } = event.currentTarget;
     setIntroductionText(value);
-  };
-  const onMessageChange2 = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, no?: number) => {
-    const { name, value } = event.currentTarget;
-    setRecommendationText(value);
-  };
-  const onMessageChange3 = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, no?: number) => {
-    const { name, value } = event.currentTarget;
-    setLearningText(value);
-  };
-  const onMessageChange4 = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, no?: number) => {
-    const { name, value } = event.currentTarget;
-    setMemberIntroductionText(value);
-  };
-  const onMessageChange5 = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, no?: number) => {
-    const { name, value } = event.currentTarget;
-    setCareerText(value);
   };
 
   const handlerClubTemp = async () => {
@@ -930,88 +914,95 @@ export function LectureOpenTemplate() {
     setSelectedQuizIds([]);
   };
 
+  //임시저장
   const handlerClubSaveTemp = () => {
     // const selectedJobCode = jobs.find(j => j.code === selectedJob)?.code || '';
     const clubFormParams = {
       clubName: clubName || '',
-      clubImageUrl: imageUrl || '',
       jobGroups: [universityCode] || [],
       jobs: selectedJob || [],
       jobLevels: recommendLevels || [],
-      isPublic: true,
-      participationCode: '',
-      studyCycle: studyCycleNum || '',
       startAt: (startDay ? startDay.format('YYYY-MM-DD') : '') + ' 00:00:00',
-      studyCount: num,
+      endAt: (endDay ? endDay.format('YYYY-MM-DD') : '') + ' 00:00:00',
       studySubject: studySubject || '',
-      studyChapter: studyChapter || '',
-      skills: skills || '',
-      introductionText: introductionText || '',
-      recommendationText: recommendationText || '',
-      learningText: learningText || '',
-      memberIntroductionText: memberIntroductionText || '',
-      careerText: careerText || '',
       studyKeywords: studyKeywords || '',
-      quizOpenType: quizType,
-      description: '',
-      answerPublishType: '0001',
-      clubTemplatePublishType: '0001',
-      clubRecruitType: '0100',
+      isPublic: 'true',
+      participationCode: '',
+      lectureLanguage: lectureLanguage || '',
+      contentLanguage: contentLanguage || '',
+      aiConversationLanguage: lectureAILanguage || '',
+      description: introductionText || '',
+      useCurrentProfileImage: 'false',
     };
 
-    const params = {
-      clubForm: clubFormParams,
-      clubQuizzes: scheduleData,
-    };
-    console.log(params);
+    const formData = new FormData();
+    formData.append('clubName', clubFormParams.clubName);
+    formData.append('jobGroups', clubFormParams.jobGroups.toString());
+    formData.append('jobs', clubFormParams.jobs.toString());
+    formData.append('startAt', clubFormParams.startAt);
+    formData.append('endAt', clubFormParams.endAt);
+    formData.append('studySubject', clubFormParams.studySubject);
+    formData.append('studyKeywords', clubFormParams.studyKeywords.toString());
+    formData.append('isPublic', clubFormParams.isPublic);
+    formData.append('participationCode', clubFormParams.participationCode);
+    formData.append('lectureLanguage', clubFormParams.lectureLanguage);
+    formData.append('contentLanguage', clubFormParams.contentLanguage);
+    formData.append('aiConversationLanguage', clubFormParams.aiConversationLanguage);
+    formData.append('description', clubFormParams.description);
+    // formData.append('clubImageUrl', clubFormParams.clubImageUrl.toString());
+    // formData.append('backgroundImageUrl', clubFormParams.backgroundImageUrl.toString());
+    // formData.append('useCurrentProfileImage', clubFormParams.useCurrentProfileImage.toString());
+    // formData.append('profileImageUrl', clubFormParams.profileImageUrl.toString());
+    formData.append('backgroundImageFile', selectedImageBannerCheck);
+    formData.append('clubImageFile', selectedImageProfileCheck);
+    formData.append('instructorProfileImageFile', selectedImageCheck);
 
-    onTempSave(params);
-  };
+    console.log(clubFormParams);
+    // const params = {
+    //   clubForm: clubFormParams,
+    //   clubQuizzes: scheduleData,
+    // };
+    // console.log(params);
 
-  const handlerClubMake = () => {
-    if (studyCycleNum.length === 0) {
-      alert('요일을 입력해주세요.');
-      return;
-    }
+    //     fileList.forEach((file, index) => {
+    //   formData.append('files', file);
+    // });
+    console.log('scheduleData', scheduleData);
 
-    console.log(studyCycleNum);
-    console.log(num);
-    console.log(startDay.format('YYYY-MM-DD'));
+    let shouldStop = false;
+    scheduleData.forEach((item, i) => {
+      if (shouldStop) return;
+      item.fileList.forEach((file, j) => {
+        formData.append('clubStudies[' + i + '].uploadFiles', file);
+      });
 
-    setDayParams({
-      // ...params,
-      studyCycle: studyCycleNum.join(','),
-      studyWeekCount: num,
-      startDate: startDay.format('YYYY-MM-DD'),
+      // if (item.studyDate === '') {
+      //   alert(i + 1 + '번째 강의 시작일을 입력해주세요.');
+      //   shouldStop = true;
+      //   return;
+      // }
+
+      formData.append('clubStudies[' + i + '].isNew', 'true');
+      formData.append('clubStudies[' + i + '].studyOrder', (i + 1).toString());
+      formData.append('clubStudies[' + i + '].clubStudyName', item.clubName);
+      formData.append('clubStudies[' + i + '].clubStudyType', item.clubStudyType);
+      formData.append('clubStudies[' + i + '].clubStudyUrl', item.clubstudyUrl || '');
+      formData.append('clubStudies[' + i + '].contentUrls', item.urlList.toString());
+      formData.append('clubStudies[' + i + '].studyDate', item.studyDate);
     });
-    setButtonFlag(true);
-    setSelectedQuizIds([]);
-  };
-  const handlerClubMakeManual = () => {
-    const weeks = [];
-    for (let i = 0; i < num; i++) {
-      weeks.push({
-        order: i + 1,
-        quizSequence: null,
-      });
-    }
-    setScheduleData(weeks);
-    setButtonFlag(true);
-  };
 
-  const handlerClubMakeProfessorManual = () => {
-    const weeks = [];
-    for (let i = 0; i < 2; i++) {
-      weeks.push({
-        order: i + 1,
-        weekNumber: i + 1,
-        quizSequence: null,
-        publishDate: null,
-        dayOfWeek: null,
-      });
+    formData.append('lectureUrls', inputList.toString());
+    fileList.forEach((file, j) => {
+      formData.append('lectureFiles', file);
+    });
+    formData.append('lectureFileKeys', '');
+
+    // To log the formData contents
+    for (const [key, value] of formData.entries()) {
+      console.log(key, value);
     }
-    setScheduleData(weeks);
-    setButtonFlag(true);
+
+    // onTempSave(formData);
   };
 
   const useStyles = makeStyles(theme => ({
@@ -1022,23 +1013,6 @@ export function LectureOpenTemplate() {
       },
     },
   }));
-
-  // 주어진 요일로부터 원하는 횟수만큼의 날짜를 생성하는 함수
-  function renderDatesAndSessionsView() {
-    return (
-      <div className="tw-grid tw-grid-cols-12 tw-gap-4 tw-p-4">
-        {scheduleData.map((session, index) => (
-          <div key={index} className="tw-flex-shrink-0">
-            <p className="tw-text-base tw-font-medium tw-text-center tw-text-[#31343d]">{index + 1}회</p>
-            <p className="tw-text-xs tw-font-medium tw-text-center tw-text-[#9ca5b2]">
-              {session.publishDate}
-              {/* {session.replace(/\((.*?)요일\)/, '($1)')} */}
-            </p>
-          </div>
-        ))}
-      </div>
-    );
-  }
 
   const handleInputDayChange = (index, part, value) => {
     const updatedScheduleData = [...scheduleData];
@@ -1209,7 +1183,7 @@ export function LectureOpenTemplate() {
                 <TextField
                   size="small"
                   fullWidth
-                  onChange={handleInputChange}
+                  onChange={e => setClubName(e.target.value)}
                   id="margin-none"
                   value={clubName}
                   name="clubName"
@@ -1300,8 +1274,8 @@ export function LectureOpenTemplate() {
                           slotProps={{
                             textField: { size: 'small', style: { backgroundColor: 'white', width: '100%' } },
                           }}
-                          value={startDay}
-                          onChange={e => onChangeHandleFromToStartDate(e)}
+                          value={endDay}
+                          onChange={e => onChangeHandleFromToEndDate(e)}
                         />
                       </LocalizationProvider>
                     </div>
@@ -1355,7 +1329,7 @@ export function LectureOpenTemplate() {
                         value={studyKeywords}
                         onChange={setStudyKeywords}
                         name="fruits"
-                        placeHolder="학습 키워드를 입력해주세요. 입력 후 엔터를 쳐주세요"
+                        placeHolder="학습 키워드 입력 후 엔터"
                       />
                     </div>
 
@@ -1445,9 +1419,12 @@ export function LectureOpenTemplate() {
                     <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
                       <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">강의언어</p>
                       <div className="tw-flex-grow tw-flex-shrink tw-relative tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
-                        <select className="tw-px-5 tw-w-full tw-text-black">
-                          <option value="ko">한국어</option>
-                          <option value="en">영어</option>
+                        <select
+                          className="tw-px-5 tw-w-full tw-text-black"
+                          onChange={e => setLectureLanguage(e.target.value)}
+                        >
+                          <option value="kor">한국어</option>
+                          <option value="eng">영어</option>
                         </select>
                       </div>
                     </div>
@@ -1456,9 +1433,12 @@ export function LectureOpenTemplate() {
                         콘텐츠언어
                       </p>
                       <div className="tw-flex-grow tw-flex-shrink tw-relative tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
-                        <select className="tw-px-5 tw-w-full tw-text-black">
-                          <option value="ko">한국어</option>
-                          <option value="en">영어</option>
+                        <select
+                          className="tw-px-5 tw-w-full tw-text-black"
+                          onChange={e => setContentLanguage(e.target.value)}
+                        >
+                          <option value="kor">한국어</option>
+                          <option value="eng">영어</option>
                         </select>
                       </div>
                     </div>
@@ -1467,9 +1447,12 @@ export function LectureOpenTemplate() {
                         AI대화언어
                       </p>
                       <div className="tw-flex-grow tw-flex-shrink tw-relative tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
-                        <select className="tw-px-5 tw-w-full tw-text-black">
-                          <option value="ko">한국어</option>
-                          <option value="en">영어</option>
+                        <select
+                          className="tw-px-5 tw-w-full tw-text-black"
+                          onChange={e => setLectureAILanguage(e.target.value)}
+                        >
+                          <option value="kor">한국어</option>
+                          <option value="eng">영어</option>
                         </select>
                       </div>
                     </div>
@@ -1495,6 +1478,11 @@ export function LectureOpenTemplate() {
               <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">강의 꾸미기</div>
               <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-my-5">강의 카드 이미지 선택</div>
               <div className="tw-grid tw-grid-flow-col tw-gap-0 tw-content-end">
+                {preview ? (
+                  <img src={preview} alt="Image Preview" className="tw-w-[100px] tw-h-[100px] tw-rounded-lg border" />
+                ) : (
+                  <div className="tw-w-[100px] tw-h-[100px] tw-rounded-lg border"></div>
+                )}
                 {images.map((image, index) => (
                   <img
                     key={index}
@@ -1504,13 +1492,55 @@ export function LectureOpenTemplate() {
                       selectedImage === image ? 'selected' : ''
                     } tw-object-cover tw-w-[100px] tw-rounded-lg tw-h-[100px] md:tw-h-[100px] md:tw-w-[100px] md:tw-rounded-lg`}
                     style={{ opacity: selectedImage !== image ? 0.2 : 1 }}
-                    onClick={() => handleImageClick(image)}
+                    onClick={() => handleImageClick(image, 'card')}
                   />
                 ))}
+                <div className="tw-flex tw-items-center tw-justify-center tw-w-[100px] tw-h-[100px]">
+                  <label
+                    htmlFor="dropzone-file"
+                    className="tw-flex tw-flex-col tw-items-center tw-justify-center  tw-w-[100px] tw-h-[100px] tw-border-2 tw-border-gray-300 tw-border-dashed tw-rounded-lg tw-cursor-pointer tw-bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                  >
+                    <div className="tw-flex tw-flex-col tw-items-center tw-justify-center tw-pt-5 tw-pb-6">
+                      <svg
+                        className="tw-w-8 tw-h-8 tw-mb-4 tw-text-gray-500 dark:text-gray-400"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 20 16"
+                      >
+                        <path
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                        />
+                      </svg>
+                      <p className="tw-mb-2 tw-text-sm tw-text-gray-500 dark:text-gray-400">
+                        <span className="tw-font-semibold">image upload</span>
+                      </p>
+                    </div>
+                    <input
+                      id="dropzone-file"
+                      type="file"
+                      className="tw-hidden"
+                      onChange={e => handleImageChange(e, 'card')}
+                    />
+                  </label>
+                </div>
               </div>
 
               <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-5">강의 배경 이미지 선택</div>
               <div className="tw-grid tw-grid-flow-col tw-gap-0 tw-content-end">
+                {previewBanner ? (
+                  <img
+                    src={previewBanner}
+                    alt="Image Preview"
+                    className="tw-w-[100px] tw-h-[100px] tw-rounded-lg border"
+                  />
+                ) : (
+                  <div className="tw-w-[100px] tw-h-[100px] tw-rounded-lg border"></div>
+                )}
                 {imageBanner.map((image, index) => (
                   <img
                     key={index}
@@ -1518,35 +1548,82 @@ export function LectureOpenTemplate() {
                     alt={`Image ${index + 1}`}
                     className={`image-item ${
                       selectedImageBanner === image ? 'selected' : ''
-                    } tw-object-cover tw-w-[260px] tw-rounded-lg tw-h-[100px] md:tw-h-[100px] md:tw-w-[260px] md:tw-rounded-lg`}
+                    } tw-object-cover tw-w-[260px] tw-rounded-lg tw-h-[100px] md:tw-h-[100px] md:tw-w-[200px] md:tw-rounded-lg`}
                     style={{ opacity: selectedImageBanner !== image ? 0.2 : 1 }}
-                    onClick={() => handleImageClick(image)}
+                    onClick={() => handleImageClick(image, 'banner')}
                   />
                 ))}
+                <div className="tw-flex tw-items-center tw-justify-center tw-w-[100px] tw-h-[100px]">
+                  <label
+                    htmlFor="dropzone-file2"
+                    className="tw-flex tw-flex-col tw-items-center tw-justify-center  tw-w-[100px] tw-h-[100px] tw-border-2 tw-border-gray-300 tw-border-dashed tw-rounded-lg tw-cursor-pointer tw-bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                  >
+                    <div className="tw-flex tw-flex-col tw-items-center tw-justify-center tw-pt-5 tw-pb-6">
+                      <svg
+                        className="tw-w-8 tw-h-8 tw-mb-4 tw-text-gray-500 dark:text-gray-400"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 20 16"
+                      >
+                        <path
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                        />
+                      </svg>
+                      <p className="tw-mb-2 tw-text-sm tw-text-gray-500 dark:text-gray-400">
+                        <span className="tw-font-semibold">image upload</span>
+                      </p>
+                    </div>
+                    <input
+                      id="dropzone-file2"
+                      type="file"
+                      className="tw-hidden"
+                      onChange={e => handleImageChange(e, 'banner')}
+                    />
+                  </label>
+                </div>
               </div>
 
               <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-5">
                 강의내 교수 프로필 이미지
               </div>
 
-              <img
-                src="/assets/images/account/default_profile_image.png"
-                alt="Image"
-                className="tw-w-[100px] tw-h-[100px] tw-rounded-lg"
-              />
+              {previewProfile ? (
+                <img
+                  src={previewProfile}
+                  alt="Image Preview"
+                  className="border tw-w-[100px] tw-h-[100px] tw-rounded-full"
+                />
+              ) : (
+                <img
+                  src="/assets/images/account/default_profile_image.png"
+                  alt="Image"
+                  className="tw-w-[100px] tw-h-[100px] tw-rounded-full border"
+                />
+              )}
+
               <div className="tw-text-sm tw-font-bold tw-text-black tw-mt-5 tw-my-5">
                 직접 업로드를 하지 않으면 현재 프로필 이미지 사용합니다.
               </div>
-
               <button
-                onClick={() => router.push('/lecture/open')}
+                onClick={() => document.getElementById('dropzone-file3').click()}
                 type="button"
                 className="tw-text-black tw-mr-5 border border-dark tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
               >
                 + 직접 업로드
               </button>
+              <input
+                id="dropzone-file3"
+                type="file"
+                className="tw-hidden"
+                onChange={e => handleImageChange(e, 'profile')}
+              />
               <button
-                onClick={() => router.push('/lecture/open')}
+                onClick={e => handleProfileDelete(e)}
                 type="button"
                 className="tw-text-black border tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
               >
@@ -1772,14 +1849,14 @@ export function LectureOpenTemplate() {
                         fullWidth
                         className="tw-pl-1"
                         size="small"
-                        value={participationCode}
-                        onChange={e => setParticipationCode(e.target.value)}
+                        value={urlCode}
+                        onChange={e => setUrlCode(e.target.value)}
                         placeholder="강의자료 URL을 입력해주세요. http://"
                         id="margin-none"
                         InputProps={{
                           endAdornment: (
                             <InputAdornment position="end">
-                              <IconButton onClick={() => handleAddInput(participationCode)}>
+                              <IconButton onClick={() => handleAddInput(urlCode)}>
                                 <AddIcon />
                               </IconButton>
                             </InputAdornment>
@@ -1788,12 +1865,11 @@ export function LectureOpenTemplate() {
                       />
                     </div>
                   </div>
-
-                  <div className="tw-flex">
-                    <div className="tw-w-[130px] tw-py-5"></div>
-                    <div className="tw-w-11/12 tw-pt-5">
-                      <div className="tw-w-full tw-flex tw-justify-start tw-px-5 tw-items-center">
-                        {fileList?.length > 0 && (
+                  {fileList?.length > 0 && (
+                    <div className="tw-flex">
+                      <div className="tw-w-[130px] tw-py-5"></div>
+                      <div className="tw-w-11/12 tw-pt-5">
+                        <div className="tw-w-full tw-flex tw-justify-start tw-px-5 tw-items-center">
                           <div className="tw-flex tw-py-2">
                             <div className="tw-flex tw-text-sm tw-items-center" style={{ minWidth: '6.1rem' }}>
                               업로드된 파일 :
@@ -1801,7 +1877,7 @@ export function LectureOpenTemplate() {
                             <div className="tw-text-left tw-pl-5 tw-text-sm tw-flex tw-flex-wrap tw-gap-2">
                               {fileList.map((file, index) => (
                                 <div key={index} className="border tw-px-3 tw-p-1 tw-rounded">
-                                  <span className="tw-text-blue-600">{file}</span>
+                                  <span className="tw-text-blue-600">{file.name}</span>
                                   <button
                                     className="tw-ml-2 tw-cursor-pointer"
                                     onClick={() => handleRemoveFileLocal(index)}
@@ -1825,15 +1901,15 @@ export function LectureOpenTemplate() {
                               ))}
                             </div>
                           </div>
-                        )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="tw-flex">
-                    <div className="tw-w-[130px] tw-py-5"></div>
-                    <div className="tw-w-11/12">
-                      <div className="tw-w-full tw-flex tw-justify-start tw-px-5 tw-items-center">
-                        {inputList?.length > 0 && (
+                  )}
+                  {inputList?.length > 0 && (
+                    <div className="tw-flex">
+                      <div className="tw-w-[130px] tw-py-5"></div>
+                      <div className="tw-w-11/12">
+                        <div className="tw-w-full tw-flex tw-justify-start tw-px-5 tw-items-center">
                           <div className="tw-flex tw-py-2">
                             <div className="tw-flex tw-text-sm tw-items-center" style={{ minWidth: '6.1rem' }}>
                               첨부된 URL :
@@ -1865,11 +1941,10 @@ export function LectureOpenTemplate() {
                               ))}
                             </div>
                           </div>
-                        )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-
+                  )}
                   {/* <div className="tw-w-full tw-flex tw-justify-end tw-px-5 tw-items-center">
                     {inputList.length > 0 && (
                       <div className="tw-mt-3 tw-flex  tw-py-2 tw-w-[664px]">

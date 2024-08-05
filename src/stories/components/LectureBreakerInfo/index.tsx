@@ -8,6 +8,11 @@ import { makeStyles } from '@mui/styles';
 import { TextField, InputAdornment, IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { useEffect } from 'react';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs, { Dayjs } from 'dayjs';
+import validator from 'validator';
 
 const useStyles = makeStyles(theme => ({
   selected: {
@@ -36,28 +41,66 @@ const LectureBreakerInfo = ({
   scheduleFileAdd,
   handleRemoveFile,
   fileList,
+  lectureNameChange,
+  handleTypeChange,
+  handleUrlChange,
+  handleStartDayChange,
 }) => {
   const [isPublic, setIsPublic] = useState('0001');
   const [clubName, setClubName] = useState('');
-  const [participationCode, setParticipationCode] = useState('');
+  const [onlineUrl, setOnlineUrl] = useState('');
   const [input, setInput] = useState('');
   const [inputList, setInputList] = useState([]);
+  const [startDay, setStartDay] = React.useState<Dayjs | null>(dayjs());
 
-  const handleInputChange = e => {
+  const onChangeHandleFromToStartDate = date => {
+    if (date) {
+      // Convert date to a Dayjs object
+      const formattedDate = dayjs(date);
+      // Format the date as 'YYYY-MM-DD'
+      const formattedDateString = formattedDate.format('YYYY-MM-DD');
+      // Set both today and todayEnd
+      setStartDay(formattedDate);
+      handleStartDayChange(order, formattedDateString);
+    }
+  };
+
+  const handleInputChange = (order, e) => {
     setClubName(e.target.value);
+    // lectureNameChange(order, e.target.value);
+  };
+
+  const handleInputComplete = order => {
+    console.log(order);
+    lectureNameChange(order, clubName);
+  };
+
+  const handleInputUrlComplete = order => {
+    console.log(order);
+    if (!validator.isURL(onlineUrl)) {
+      // setErrorMessage('Is Valid URL');
+      alert('올바른 URL을 입력해주세요.');
+      return;
+    }
+    handleUrlChange(order, onlineUrl);
   };
 
   const handleFileChange = (event, order) => {
-    const file = event.target.files[0];
+    // const file = event.target.files[0];
+    const files = Array.from(event.target.files);
     const allowedExtensions = /(\.pdf)$/i;
 
-    if (!allowedExtensions.exec(file.name)) {
-      alert('허용되지 않는 파일 형식입니다.');
-      event.target.value = ''; // input 초기화
-      return;
+    for (let i = 0; i < files.length; i++) {
+      if (!allowedExtensions.exec(files[i].name)) {
+        alert('허용되지 않는 파일 형식입니다.');
+        event.target.value = ''; // input 초기화
+        return;
+      }
     }
-    scheduleFileAdd(order, file.name);
+
+    scheduleFileAdd(order, files);
     // setFileList([file]); // 하나의 파일만 받도록 설정
+    // setFileList(prevFileList => [...prevFileList, ...files]);
   };
 
   const handleIsPublic = (event: React.MouseEvent<HTMLElement>, newFormats: string) => {
@@ -65,7 +108,10 @@ const LectureBreakerInfo = ({
     console.log(newFormats);
     if (newFormats === '0002') {
       setIsPublic('0002');
+    } else {
+      setOnlineUrl('');
     }
+    handleTypeChange(order, newFormats);
   };
 
   const fileInputRef = useRef(null);
@@ -74,6 +120,12 @@ const LectureBreakerInfo = ({
   };
 
   const handleAddInput = index => {
+    if (!validator.isURL(input)) {
+      // setErrorMessage('Is Valid URL');
+      alert('올바른 URL을 입력해주세요.');
+      return;
+    }
+
     if (input !== '') {
       scheduleUrlAdd(order, input);
       setInputList([...inputList, input]); // Add current input to the list
@@ -85,6 +137,10 @@ const LectureBreakerInfo = ({
     console.log(order);
     handleRemoveInput(order, id);
     // setInputList(inputList.filter((_, i) => i !== id));
+  };
+
+  const handleDragStart = event => {
+    event.stopPropagation();
   };
 
   const classes = useStyles();
@@ -105,7 +161,9 @@ const LectureBreakerInfo = ({
             <TextField
               size="small"
               fullWidth
-              onChange={handleInputChange}
+              onChange={e => handleInputChange(order, e)}
+              onBlur={() => handleInputComplete(order)}
+              onDragStart={handleDragStart}
               id="margin-none"
               value={clubName}
               name="clubName"
@@ -222,11 +280,24 @@ const LectureBreakerInfo = ({
                     fullWidth
                     className="tw-pl-1"
                     size="small"
-                    value={participationCode}
-                    onChange={e => setParticipationCode(e.target.value)}
+                    value={onlineUrl}
+                    disabled={isPublic === '0001'}
+                    onChange={e => setOnlineUrl(e.target.value)}
+                    onBlur={() => handleInputUrlComplete(order)}
                     placeholder="온라인 강의 URL을 입력해주세요."
                     id="margin-none"
                   />
+                  <div className="tw-flex tw-text-black tw-text-base tw-pl-4 tw-w-[140px]">시작일 : </div>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      format="YYYY-MM-DD"
+                      slotProps={{
+                        textField: { size: 'small', style: { backgroundColor: 'white', width: '350px' } },
+                      }}
+                      value={startDay}
+                      onChange={e => onChangeHandleFromToStartDate(e)}
+                    />
+                  </LocalizationProvider>
                 </div>
               </div>
               <div className="tw-mt-3 tw-w-full tw-flex tw-justify-start tw-items-center">
@@ -297,7 +368,7 @@ const LectureBreakerInfo = ({
                         <div className="tw-text-left tw-pl-5 tw-text-sm tw-flex tw-flex-wrap tw-gap-2">
                           {fileList.map((file, index) => (
                             <div key={index} className="border tw-px-3 tw-p-1 tw-rounded">
-                              <span className="tw-text-blue-600">{file}</span>
+                              <span className="tw-text-blue-600">{file.name}</span>
                               <button
                                 className="tw-ml-2 tw-cursor-pointer"
                                 onClick={() => handleRemoveFile(order, index)}

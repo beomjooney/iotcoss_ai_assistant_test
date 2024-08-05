@@ -85,6 +85,10 @@ export const saveAIQuizAnswerEvaluation = async body => {
 export const saveClubQuizPost = async body => await axiosGeneralAPI().post(`/api/v1/club`, body);
 
 export const saveClubTempPost = async body => await axiosGeneralAPI().post(`/api/v1/club/temporary`, body);
+export const saveLectureTempPost = async body =>
+  await axiosGeneralAPI().put(`/api/v1/lecture-club/temporary`, body, {
+    headers: { 'content-type': 'multipart/form-data' },
+  });
 
 export const deletePost = async postNo => await axiosGeneralAPI().delete(`/posts/${postNo}`);
 

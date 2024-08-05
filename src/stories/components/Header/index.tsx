@@ -60,7 +60,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
   const { theme } = useTheme();
   const COLOR_PRESETS = usePresets();
   const { logged, roles, tenantName } = useSessionStore.getState();
-  console.log(tenantName);
+  // console.log(tenantName);
   const { colorPresetName, setColorPresetName } = useColorPresetName();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [anchorElAlarm, setAnchorElAlarm] = useState(null);
