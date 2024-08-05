@@ -107,7 +107,7 @@ export function HomeSejongTemplate({ logged = false, tenantName = '' }: HomeSejo
           </div>
           <div
             onClick={() => {
-              router.push('/quiz');
+              router.push('/lecture');
             }}
             className="tw-cursor-pointer tw-w-36 md:tw-w-48 tw-h-12 md:tw-h-20"
           >
