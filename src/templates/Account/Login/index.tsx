@@ -16,6 +16,7 @@ import { useColorPresets } from 'src/utils/use-theme-color';
 import { useColorPresetName } from 'src/utils/use-theme-color';
 import { deleteCookie } from 'cookies-next';
 import { useSessionStore } from '../../../../src/store/session';
+import { getFirstSubdomain } from 'src/utils';
 
 interface LoginTemplateProps {
   onSubmitLogin: () => void;
@@ -29,23 +30,6 @@ interface LoginTemplateProps {
   onSubmitLogin: () => void;
 }
 
-function getSubdomain() {
-  const { host } = typeof window !== 'undefined' && window.location;
-  console.log(host);
-
-  if (host) {
-    // 호스트 이름에 '.'이 있으면 공백을 반환
-    if (!host.includes('.')) {
-      return ''; // 공백 반환
-    }
-
-    console.log(host);
-    return host;
-  }
-
-  return null; // 서브도메인이 없는 경우
-}
-
 export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: LoginTemplateProps) {
   const { mutate: onLogin, isSuccess, data: loginData } = useLogin();
   const { update } = useSessionStore.getState();
@@ -56,15 +40,11 @@ export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: Lo
   const [subdomain, setSubdomain] = useState('');
   const [username, setUserName] = useState('');
 
-  console.log('login page');
+  console.log('login page', getFirstSubdomain());
   useEffect(() => {
-    const subdomain = getSubdomain();
-    console.log('subdomain', subdomain);
-    setSubdomain(subdomain);
-
     if (!COLOR_PRESETS || COLOR_PRESETS.length === 0) return;
 
-    const preset = COLOR_PRESETS.find(preset => preset.name === subdomain.split('.')[0]) || COLOR_PRESETS[0];
+    const preset = COLOR_PRESETS.find(preset => preset.name === getFirstSubdomain()) || COLOR_PRESETS[0];
     setColorPresetName(preset.name);
     setColorPresets(preset.colors);
 
@@ -145,7 +125,7 @@ export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: Lo
     onLogin(
       paramsWithDefault({
         ...data,
-        tenant_uri: subdomain,
+        tenant_uri: getFirstSubdomain(),
       }),
     );
   };

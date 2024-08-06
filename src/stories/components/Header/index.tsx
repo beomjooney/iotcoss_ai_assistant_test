@@ -42,6 +42,7 @@ import { useTheme } from 'next-themes';
 import { usePresets } from 'src/utils/color-presets';
 import { useColorPresets, useColorPresetName } from 'src/utils/use-theme-color';
 import cn from 'src/utils/class-names';
+import { getFirstSubdomain } from 'src/utils';
 
 export interface NavbarProps {
   /** 테마 색상 */
@@ -83,6 +84,8 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
   const handleIconClick = event => {
     setAnchorElAlarm(event.currentTarget);
   };
+
+  console.log(getFirstSubdomain());
 
   const router = useRouter();
   const { update } = useSessionStore.getState();
@@ -266,8 +269,8 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
         } ${scroll > headerTop ? 'affix' : ''}`}
       >
         <div className="container" style={{ alignItems: 'center' }}>
-          <div className={cx('header-link', 'navbar-brand')} onClick={handleGoHome}>
-            {tenantName === 'sejong' ? (
+          <div className={cx('header-link')} onClick={handleGoHome}>
+            {getFirstSubdomain() === 'sejong' ? (
               <img src="/assets/images/header/SEJONG_DevUs.png" width={200} alt="logo" className={cx('image-logo')} />
             ) : (
               <img src="/assets/images/header/image_1.png" width={130} alt="logo" className={cx('image-logo')} />
@@ -405,11 +408,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
             >
               <ul className={cx('nav-custom', 'navbar-custom-mobile', 'navbar-nav', 'tw-text-lg', 'tw-text-left')}>
                 {menuItem.map((item, index) => {
-                  if (
-                    item.login &&
-                    (!item.role || roles.includes(item.role)) &&
-                    (item.tenantName.includes(tenantName) || item.tenantName === '')
-                  ) {
+                  if (item.login && (!item.role || roles.includes(item.role))) {
                     return (
                       <li key={`item-` + index} className={cn(item.option)}>
                         <Link href={item.link}>
