@@ -38,7 +38,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       link: '/lecture',
       dropdown: [],
       login: true,
-      tenantName: 'sejong,3',
+      tenantName: 'dsu,sejong,3',
     },
     {
       no: 1,
@@ -67,7 +67,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       dropdown: [],
       login: logged,
       role: 'ROLE_MANAGER',
-      tenantName: 'sejong,3',
+      tenantName: 'dsu,sejong,3',
     },
     {
       no: 1,
@@ -77,7 +77,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       dropdown: [],
       login: logged,
       role: 'ROLE_MANAGER',
-      tenantName: 'sejong,3',
+      tenantName: 'dsu,sejong,3',
     },
   ];
 
