@@ -75,43 +75,43 @@ export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: Lo
     if (isSuccess) {
       onSubmitLogin();
 
-      console.log(loginData);
-      update({
-        tenantName: loginData?.tenant_uri?.split('.')[0],
-      });
+      // console.log(loginData);
+      // update({
+      //   tenantName: loginData?.tenant_uri?.split('.')[0],
+      // });
 
-      if (!loginData?.tenant_uri?.includes(tenantName)) {
-        const authStore = localStorage.getItem('auth-store');
-        if (authStore) {
-          try {
-            const json = JSON.parse(authStore);
-            if (json && json.state) {
-              const jsonString = JSON.stringify(json.state);
-              // 1. Base64 인코딩 (Node.js 환경에서는 Buffer를 사용)
-              const encodedJson = Buffer.from(jsonString).toString('base64');
-              // Continue with your logic here
-              deleteCookie('access_token');
-              localStorage.removeItem('auth-store');
-              localStorage.removeItem('app-storage');
-              console.log('loginData', loginData?.redirections?.home_url + `?accessToken=${loginData?.access_token}`);
-              if (username == 're4@naver.com' || username === 're3@naver.com') {
-                location.href = 'http://devus.localhost:3001' + `?authStore=${encodedJson}`;
-              } else {
-                location.href = loginData?.redirections?.home_url + `?authStore=${encodedJson}`;
-              }
-              deleteCookie('access_token');
-              localStorage.removeItem('auth-store');
-              localStorage.removeItem('app-storage');
-            } else {
-              console.error('Invalid authStore format: missing state property');
-            }
-          } catch (error) {
-            console.error('Failed to parse authStore:', error);
-          }
-        } else {
-          console.warn('authStore is not available in localStorage');
-        }
-      }
+      // if (!loginData?.tenant_uri?.includes(tenantName)) {
+      //   const authStore = localStorage.getItem('auth-store');
+      //   if (authStore) {
+      //     try {
+      //       const json = JSON.parse(authStore);
+      //       if (json && json.state) {
+      //         const jsonString = JSON.stringify(json.state);
+      //         // 1. Base64 인코딩 (Node.js 환경에서는 Buffer를 사용)
+      //         const encodedJson = Buffer.from(jsonString).toString('base64');
+      //         // Continue with your logic here
+      //         deleteCookie('access_token');
+      //         localStorage.removeItem('auth-store');
+      //         localStorage.removeItem('app-storage');
+      //         console.log('loginData', loginData?.redirections?.home_url + `?accessToken=${loginData?.access_token}`);
+      //         if (username == 're4@naver.com' || username === 're3@naver.com') {
+      //           // location.href = 'http://devus.localhost:3001' + `?authStore=${encodedJson}`;
+      //         } else {
+      //           // location.href = loginData?.redirections?.home_url + `?authStore=${encodedJson}`;
+      //         }
+      //         deleteCookie('access_token');
+      //         localStorage.removeItem('auth-store');
+      //         localStorage.removeItem('app-storage');
+      //       } else {
+      //         console.error('Invalid authStore format: missing state property');
+      //       }
+      //     } catch (error) {
+      //       console.error('Failed to parse authStore:', error);
+      //     }
+      //   } else {
+      //     console.warn('authStore is not available in localStorage');
+      //   }
+      // }
     }
   }, [loginData]);
 
@@ -145,7 +145,7 @@ export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: Lo
     onLogin(
       paramsWithDefault({
         ...data,
-        tenant_uri: subdomain,
+        tenant_uri: 'dsu.tb.devus.co.kr:9999',
       }),
     );
   };
