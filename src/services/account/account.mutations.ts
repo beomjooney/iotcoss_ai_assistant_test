@@ -78,6 +78,8 @@ export const useLogin = (): UseMutationResult => {
         alert('로그인 실패 횟수 초과');
       } else if (code === 'C06002') {
         alert('잘못된 사용자 또는 암호 입니다.');
+      } else if (code === 'CO4001') {
+        alert('Tenant not found');
       }
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('LOGIN').all),
