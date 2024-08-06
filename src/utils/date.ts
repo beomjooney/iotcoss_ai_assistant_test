@@ -16,7 +16,7 @@ export function getFirstSubdomain() {
   if (host) {
     // 'localhost'를 제외하고, 최소한 두 개의 부분을 가진 경우에만 처리
     if (!host.includes('.')) {
-      return 'dsu-local'; // 공백 반환
+      return 'b2c'; // 공백 반환
     }
     // 호스트 이름을 점(.)으로 분리하고 첫 번째 부분을 반환
     return host.split('.')[0];
