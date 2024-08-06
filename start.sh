@@ -14,5 +14,5 @@ echo "Stopping PM2 daemon..."
 #pm2 kill
 
 pm2 stop "devus"
-pm2 start npm --name "devus" -- start 
+pm2 start yarn --name "devus" -- start-prod
 
