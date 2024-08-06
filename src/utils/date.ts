@@ -16,10 +16,18 @@ export function getFirstSubdomain() {
   if (host) {
     // 'localhost'를 제외하고, 최소한 두 개의 부분을 가진 경우에만 처리
     if (!host.includes('.')) {
-      return 'b2c'; // 공백 반환
+      return ''; // 공백 반환
     }
+
     // 호스트 이름을 점(.)으로 분리하고 첫 번째 부분을 반환
-    return host.split('.')[0];
+    const subdomain = host.split('.')[0];
+
+    // 'tb'인 경우 공백 반환
+    if (subdomain === 'tb') {
+      return '';
+    }
+
+    return subdomain;
   }
   return null; // host가 없는 경우
 }
