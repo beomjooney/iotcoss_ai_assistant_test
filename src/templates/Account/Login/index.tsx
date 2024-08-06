@@ -75,10 +75,10 @@ export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: Lo
     if (isSuccess) {
       onSubmitLogin();
 
-      // console.log(loginData);
-      // update({
-      //   tenantName: loginData?.tenant_uri?.split('.')[0],
-      // });
+      console.log(loginData);
+      update({
+        tenantName: loginData?.tenant_uri?.split('.')[0],
+      });
 
       // if (!loginData?.tenant_uri?.includes(tenantName)) {
       //   const authStore = localStorage.getItem('auth-store');
@@ -95,9 +95,9 @@ export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: Lo
       //         localStorage.removeItem('app-storage');
       //         console.log('loginData', loginData?.redirections?.home_url + `?accessToken=${loginData?.access_token}`);
       //         if (username == 're4@naver.com' || username === 're3@naver.com') {
-      //           // location.href = 'http://devus.localhost:3001' + `?authStore=${encodedJson}`;
+      //           location.href = 'http://devus.localhost:3001' + `?authStore=${encodedJson}`;
       //         } else {
-      //           // location.href = loginData?.redirections?.home_url + `?authStore=${encodedJson}`;
+      //           location.href = loginData?.redirections?.home_url + `?authStore=${encodedJson}`;
       //         }
       //         deleteCookie('access_token');
       //         localStorage.removeItem('auth-store');
@@ -145,7 +145,7 @@ export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: Lo
     onLogin(
       paramsWithDefault({
         ...data,
-        tenant_uri: 'dsu.tb.devus.co.kr:9999',
+        tenant_uri: subdomain,
       }),
     );
   };

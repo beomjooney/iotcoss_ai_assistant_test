@@ -49,7 +49,7 @@ export function LoginPage(props: LoginPageProps) {
       roles: userData.roles,
       token: token,
     });
-    // location.href = '/';
+    location.href = '/';
   };
 
   const onSubmitLogin = async () => {
