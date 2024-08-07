@@ -85,7 +85,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
     setAnchorElAlarm(event.currentTarget);
   };
 
-  console.log(getFirstSubdomain());
+  // console.log(getFirstSubdomain());
 
   const router = useRouter();
   const { update } = useSessionStore.getState();

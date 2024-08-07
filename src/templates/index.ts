@@ -28,6 +28,7 @@ export * from './Service/index';
 export * from './Contents/index';
 export * from './Seminar/index';
 export * from './Quiz/index';
+export * from './Blog/index';
 export * from './Lecture/index';
 export * from './Lounge/index';
 export * from './Profile/index';
