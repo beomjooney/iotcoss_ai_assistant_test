@@ -26,28 +26,13 @@ import * as Yup from 'yup';
 import { useLoginOtp, useLoginOtpVerification, useLoginSignUp } from 'src/services/account/account.mutations';
 import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
 import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
+import { getFirstSubdomain } from 'src/utils/date';
 
 interface SignUpTemplateProps {
   onSubmitLogin: () => void;
 }
 
 const cx = classNames.bind(styles);
-
-function getSubdomain() {
-  const { host } = typeof window !== 'undefined' && window.location;
-  console.log(host);
-
-  if (host) {
-    // 호스트 이름에 '.'이 있으면 공백을 반환
-    if (!host.includes('.')) {
-      return ''; // 공백 반환
-    }
-
-    return host;
-  }
-
-  return null; // 서브도메인이 없는 경우
-}
 
 export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
   const router = useRouter();
@@ -101,7 +86,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
   }, [resultData]);
 
   useEffect(() => {
-    const subdomain = getSubdomain();
+    const subdomain = getFirstSubdomain();
     setSubdomain(subdomain);
   }, []);
 
