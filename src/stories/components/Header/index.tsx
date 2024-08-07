@@ -269,7 +269,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
         } ${scroll > headerTop ? 'affix' : ''}`}
       >
         <div className="container" style={{ alignItems: 'center' }}>
-          <div className={cx('header-link')} onClick={handleGoHome}>
+          <div className={cx('header-link')}>
             {getFirstSubdomain() === 'sejong' ? (
               <img src="/assets/images/header/SEJONG_DevUs.png" width={200} alt="logo" className={cx('image-logo')} />
             ) : (
