@@ -1,6 +1,5 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import { MentorsModal, Pagination } from 'src/stories/components';
 import React, { useEffect, useState, useRef } from 'react';
 import { paramProps } from 'src/services/seminars/seminars.queries';
 import { useContentJobTypes, useJobGroupss } from 'src/services/code/code.queries';
@@ -9,7 +8,6 @@ import Grid from '@mui/material/Grid';
 import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
 import { styled } from '@mui/material/styles';
 import TextField, { TextFieldProps } from '@mui/material/TextField';
-import SearchIcon from '@mui/icons-material/Search';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
 import { UseQueryResult } from 'react-query';
@@ -23,7 +21,6 @@ import Checkbox from '@mui/material/Checkbox';
 import { useClubQuizSave, useQuizSave, useClubTempSave, useLectureTempSave } from 'src/services/quiz/quiz.mutations';
 import { TagsInput } from 'react-tag-input-component';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
-import { useUploadImage } from 'src/services/image/image.mutations';
 import { makeStyles } from '@mui/styles';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
@@ -400,13 +397,6 @@ export function LectureOpenTemplate() {
     refetchMyJob();
   }, [postSucces]);
 
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-
-  // const handleAddClick = () => {
-  //   if (scheduleData.length >= 1) setIsModalOpen(true);
-  //   else alert('퀴즈 생성 주기를 입력해주세요.');
-  // };
-
   // Function to handle adding new data
   const handleAddClick = () => {
     const newOrder = scheduleData.length + 1; // Determine the new order based on the current length of scheduleData
@@ -422,46 +412,6 @@ export function LectureOpenTemplate() {
 
     // Update scheduleData with the new data
     setScheduleData([...scheduleData, newData]);
-  };
-
-  const handleQuizInsertClick = () => {
-    const params = {
-      content: quizName,
-      articleUrl: quizUrl,
-      recommendJobGroups: [jobGroupPopUp],
-      recommendJobs: jobs,
-      recommendLevels: recommendLevels,
-      relatedSkills: skillIdsPopUp,
-      relatedExperiences: experienceIdsPopUp,
-      hashTags: selected,
-    };
-
-    if (quizName === '') {
-      alert('질문을 입력해주세요.');
-      quizRef.current.focus();
-      return;
-    }
-
-    if (quizUrl === '') {
-      alert('아티클을 입력해주세요.');
-      quizUrlRef.current.focus();
-      return;
-    }
-
-    if (jobGroup?.length === 0 || jobGroup?.length === undefined) {
-      alert('추천 직군을 선택해주세요.');
-      return;
-    }
-
-    if (recommendLevels?.length === 0 || recommendLevels?.length === undefined) {
-      alert('추천 학년을 선택해주세요.');
-      return;
-    }
-
-    setQuizUrl('');
-    setQuizName('');
-    onQuizSave(params);
-    setActive(2);
   };
 
   useEffect(() => {
@@ -490,8 +440,6 @@ export function LectureOpenTemplate() {
   const { isFetched: isJobGroupsFetched } = useJobGroupss(data => setJobGroups(data.data.contents || []));
   const { user, setUser } = useStore();
 
-  const PAGE_NAME = 'contents';
-
   useEffect(() => {
     if (active == 0) {
       refetch();
@@ -518,19 +466,12 @@ export function LectureOpenTemplate() {
   // @ts-ignore
   const [value, setValue] = React.useState(0);
 
-  const handleChange = (event, newIndex) => {
-    //console.log('SubTab - index', newIndex, event);
-    setActive(newIndex);
-    setValue(newIndex);
-  };
+  const steps = ['Step.1 강의 정보입력', 'Step.2 강의 커리큘럼 입력', 'Step.3 개설될 강의 미리보기'];
 
-  const steps = ['Step 1.클럽 세부사항 설정', 'Step 2.퀴즈 선택', 'Step 3. 개설될 클럽 미리보기'];
-
-  const [activeStep, setActiveStep] = React.useState(1);
+  const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set<number>());
   const [quizUrl, setQuizUrl] = React.useState('');
   const [quizName, setQuizName] = React.useState('');
-  const [quizSearch, setQuizSearch] = React.useState('');
 
   const isStepSkipped = (step: number) => {
     return skipped.has(step);
@@ -936,44 +877,35 @@ export function LectureOpenTemplate() {
     };
 
     const formData = new FormData();
-    formData.append('clubName', clubFormParams.clubName);
-    formData.append('jobGroups', clubFormParams.jobGroups.toString());
-    formData.append('jobs', clubFormParams.jobs.toString());
-    formData.append('startAt', clubFormParams.startAt);
-    formData.append('endAt', clubFormParams.endAt);
-    formData.append('studySubject', clubFormParams.studySubject);
-    formData.append('studyKeywords', clubFormParams.studyKeywords.toString());
-    formData.append('isPublic', clubFormParams.isPublic);
-    formData.append('participationCode', clubFormParams.participationCode);
-    formData.append('lectureLanguage', clubFormParams.lectureLanguage);
-    formData.append('contentLanguage', clubFormParams.contentLanguage);
-    formData.append('aiConversationLanguage', clubFormParams.aiConversationLanguage);
-    formData.append('description', clubFormParams.description);
-    // formData.append('clubImageUrl', clubFormParams.clubImageUrl.toString());
-    // formData.append('backgroundImageUrl', clubFormParams.backgroundImageUrl.toString());
-    // formData.append('useCurrentProfileImage', clubFormParams.useCurrentProfileImage.toString());
-    // formData.append('profileImageUrl', clubFormParams.profileImageUrl.toString());
-    formData.append('backgroundImageFile', selectedImageBannerCheck);
-    formData.append('clubImageFile', selectedImageProfileCheck);
-    formData.append('instructorProfileImageFile', selectedImageCheck);
+    formData.append('clubForm.clubName', clubFormParams.clubName);
+    formData.append('clubForm.jobGroups', clubFormParams.jobGroups.toString());
+    formData.append('clubForm.jobs', clubFormParams.jobs.toString());
+    formData.append('clubForm.jobLevels', clubFormParams.jobLevels.toString());
+    formData.append('clubForm.startAt', clubFormParams.startAt);
+    formData.append('clubForm.endAt', clubFormParams.endAt);
+    formData.append('clubForm.studySubject', clubFormParams.studySubject);
+    formData.append('clubForm.studyKeywords', clubFormParams.studyKeywords.toString());
+    formData.append('clubForm.isPublic', clubFormParams.isPublic);
+    formData.append('clubForm.participationCode', clubFormParams.participationCode);
+    formData.append('clubForm.lectureLanguage', clubFormParams.lectureLanguage);
+    formData.append('clubForm.contentLanguage', clubFormParams.contentLanguage);
+    formData.append('clubForm.aiConversationLanguage', clubFormParams.aiConversationLanguage);
+    formData.append('clubForm.description', clubFormParams.description);
+    formData.append('clubForm.useCurrentProfileImage', clubFormParams.useCurrentProfileImage);
+
+    formData.append('clubForm.clubImageFile', selectedImageProfileCheck);
+    formData.append('clubForm.backgroundImageFile', selectedImageBannerCheck);
+    formData.append('clubForm.instructorProfileImageFile', selectedImageCheck);
 
     console.log(clubFormParams);
-    // const params = {
-    //   clubForm: clubFormParams,
-    //   clubQuizzes: scheduleData,
-    // };
-    // console.log(params);
-
-    //     fileList.forEach((file, index) => {
-    //   formData.append('files', file);
-    // });
     console.log('scheduleData', scheduleData);
 
     let shouldStop = false;
     scheduleData.forEach((item, i) => {
       if (shouldStop) return;
       item.fileList.forEach((file, j) => {
-        formData.append('clubStudies[' + i + '].uploadFiles', file);
+        formData.append('clubStudies[' + i + '].files[' + j + '].isNew', 'false');
+        formData.append('clubStudies[' + i + '].files[' + j + '].file', file);
       });
 
       // if (item.studyDate === '') {
@@ -987,7 +919,7 @@ export function LectureOpenTemplate() {
       formData.append('clubStudies[' + i + '].clubStudyName', item.clubName);
       formData.append('clubStudies[' + i + '].clubStudyType', item.clubStudyType);
       formData.append('clubStudies[' + i + '].clubStudyUrl', item.clubstudyUrl || '');
-      formData.append('clubStudies[' + i + '].contentUrls', item.urlList.toString());
+      // formData.append('clubStudies[' + i + '].contentUrls', item.urlList.toString());
       formData.append('clubStudies[' + i + '].studyDate', item.studyDate);
     });
 
@@ -1137,6 +1069,7 @@ export function LectureOpenTemplate() {
                   강의 개설하기
                 </Typography>
               </Breadcrumbs>
+
               <div className="tw-flex tw-justify-between tw-items-center tw-left-0 !tw-mt-0 tw-gap-4">
                 <div className="tw-flex tw-justify-start tw-items-center tw-gap-4">
                   <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-2xl tw-font-extrabold tw-text-left tw-text-black">
@@ -1159,6 +1092,34 @@ export function LectureOpenTemplate() {
               </div>
             </Stack>
             <Divider sx={{ borderColor: 'rgba(0, 0, 0, 0.5);', paddingY: '10px' }} />
+            <div className="tw-flex tw-justify-between tw-items-center tw-w-full tw-my-10">
+              {steps.map((step, index) => (
+                <div key={index} className="tw-w-1/3">
+                  <div className="tw-px-2">
+                    <div
+                      className={`tw-flex tw-justify-center tw-items-center tw-w-full tw-relative tw-overflow-hidden tw-gap-2 tw-px-6 tw-py-1  ${
+                        index < activeStep
+                          ? 'tw-bg-gray-300 tw-text-white'
+                          : index === activeStep
+                          ? 'tw-bg-blue-600  tw-text-white'
+                          : 'tw-bg-gray-300 tw-text-white'
+                      }`}
+                    ></div>
+                    <div
+                      className={`tw-flex tw-text-sm tw-justify-center tw-items-center tw-w-full tw-relative tw-overflow-hidden tw-gap-2 tw-px-6 tw-py-[11.5px] tw-rounded ${
+                        index < activeStep
+                          ? ' tw-text-gray-400'
+                          : index === activeStep
+                          ? ' tw-text-black tw-font-bold'
+                          : ' tw-text-gray-400'
+                      }`}
+                    >
+                      {step}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </Desktop>
         <Mobile>
@@ -2001,7 +1962,7 @@ export function LectureOpenTemplate() {
                       임시 저장하기
                     </button>
                     <button
-                      className="tw-w-[150px] tw-bg-[#E11837] tw-text-white  tw-text-sm tw-font-bold tw-py-3 tw-px-4 tw-rounded tw-flex tw-items-center tw-justify-center tw-gap-1"
+                      className="tw-w-[150px] tw-bg-blue-600 tw-text-white  tw-text-sm tw-font-bold tw-py-3 tw-px-4 tw-rounded tw-flex tw-items-center tw-justify-center tw-gap-1"
                       onClick={handleNextTwo}
                     >
                       {activeStep === steps.length - 1 ? '성장퀴즈 클럽 개설하기 >' : '다음'}
@@ -2037,7 +1998,7 @@ export function LectureOpenTemplate() {
                     이전
                   </button>
                   <button
-                    className="tw-w-[240px] tw-text-sm tw-bg-[#E11837] tw-text-white tw-font-bold tw-py-3 tw-px-4 tw-rounded tw-flex tw-items-center tw-justify-center tw-gap-1"
+                    className="tw-w-[240px] tw-text-sm tw-bg-blue-600 tw-text-white tw-font-bold tw-py-3 tw-px-4 tw-rounded tw-flex tw-items-center tw-justify-center tw-gap-1"
                     onClick={handleNextThree}
                   >
                     {activeStep === steps.length - 1 ? '클럽 개설하기' : '다음'}

@@ -92,8 +92,11 @@ export function BlogTemplate({ logged = false, tenantName = '' }: BlogProps) {
         body: JSON.stringify({
           model: 'gpt-4o',
           messages: [{ role: 'user', content: question }],
-          temperature: 0.5,
-          // max_tokens: 200,
+          temperature: 0.7, // Controls the randomness of the output (0.0 - 1.0)
+          max_tokens: 2048, // Limits the length of the response
+          top_p: 1.0, // Controls the diversity via nucleus sampling (0.0 - 1.0)
+          frequency_penalty: 0.0, // Decreases the likelihood of repeating the same line (0.0 - 2.0)
+          presence_penalty: 0.0, // Increases the likelihood of talking about new topics (0.0 - 2.0)
         }),
       });
 
