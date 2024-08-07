@@ -524,7 +524,7 @@ export function LectureOpenTemplate() {
     setValue(newIndex);
   };
 
-  const steps = ['Step 1.클럽 세부사항 설정', 'Step 2.퀴즈 선택', 'Step 3. 개설될 클럽 미리보기'];
+  const steps = ['Step.1 강의 정보입력', 'Step.2 강의 커리큘럼 입력', 'Step.3 개설될 강의 미리보기'];
 
   const [activeStep, setActiveStep] = React.useState(1);
   const [skipped, setSkipped] = React.useState(new Set<number>());
@@ -1137,6 +1137,7 @@ export function LectureOpenTemplate() {
                   강의 개설하기
                 </Typography>
               </Breadcrumbs>
+
               <div className="tw-flex tw-justify-between tw-items-center tw-left-0 !tw-mt-0 tw-gap-4">
                 <div className="tw-flex tw-justify-start tw-items-center tw-gap-4">
                   <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-2xl tw-font-extrabold tw-text-left tw-text-black">
@@ -1159,6 +1160,34 @@ export function LectureOpenTemplate() {
               </div>
             </Stack>
             <Divider sx={{ borderColor: 'rgba(0, 0, 0, 0.5);', paddingY: '10px' }} />
+            <div className="tw-flex tw-justify-between tw-items-center tw-w-full tw-my-10">
+              {steps.map((step, index) => (
+                <div key={index} className="tw-w-1/3">
+                  <div className="tw-px-2">
+                    <div
+                      className={`tw-flex tw-justify-center tw-items-center tw-w-full tw-relative tw-overflow-hidden tw-gap-2 tw-px-6 tw-py-1  ${
+                        index < activeStep
+                          ? 'tw-bg-gray-300 tw-text-white'
+                          : index === activeStep
+                          ? 'tw-bg-blue-600  tw-text-white'
+                          : 'tw-bg-gray-300 tw-text-white'
+                      }`}
+                    ></div>
+                    <div
+                      className={`tw-flex tw-text-sm tw-justify-center tw-items-center tw-w-full tw-relative tw-overflow-hidden tw-gap-2 tw-px-6 tw-py-[11.5px] tw-rounded ${
+                        index < activeStep
+                          ? ' tw-text-gray-400'
+                          : index === activeStep
+                          ? ' tw-text-black tw-font-bold'
+                          : ' tw-text-gray-400'
+                      }`}
+                    >
+                      {step}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </Desktop>
         <Mobile>
@@ -2001,7 +2030,7 @@ export function LectureOpenTemplate() {
                       임시 저장하기
                     </button>
                     <button
-                      className="tw-w-[150px] tw-bg-[#E11837] tw-text-white  tw-text-sm tw-font-bold tw-py-3 tw-px-4 tw-rounded tw-flex tw-items-center tw-justify-center tw-gap-1"
+                      className="tw-w-[150px] tw-bg-blue-600 tw-text-white  tw-text-sm tw-font-bold tw-py-3 tw-px-4 tw-rounded tw-flex tw-items-center tw-justify-center tw-gap-1"
                       onClick={handleNextTwo}
                     >
                       {activeStep === steps.length - 1 ? '성장퀴즈 클럽 개설하기 >' : '다음'}
