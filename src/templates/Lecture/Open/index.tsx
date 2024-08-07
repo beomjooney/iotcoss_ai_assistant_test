@@ -2007,7 +2007,7 @@ export function LectureOpenTemplate() {
                     이전
                   </button>
                   <button
-                    className="tw-w-[240px] tw-text-sm tw-bg-[#E11837] tw-text-white tw-font-bold tw-py-3 tw-px-4 tw-rounded tw-flex tw-items-center tw-justify-center tw-gap-1"
+                    className="tw-w-[240px] tw-text-sm tw-bg-blue-600 tw-text-white tw-font-bold tw-py-3 tw-px-4 tw-rounded tw-flex tw-items-center tw-justify-center tw-gap-1"
                     onClick={handleNextThree}
                   >
                     {activeStep === steps.length - 1 ? '클럽 개설하기' : '다음'}

@@ -63,6 +63,8 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
     }
   }, [clubJoinSucces]);
 
+  console.log(user);
+
   const handlerClubJoin = (clubSequence: number, isPublic: boolean) => {
     setIsModalOpen(true);
     // onClubJoin({
@@ -148,7 +150,7 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
                   )}
                 </button>
               </div>
-              <div className="tw-text-black tw-text-3xl tw-font-bold tw-py-3">임베디드 시스템</div>
+              <div className="tw-text-black tw-text-3xl tw-font-bold tw-py-3">{clubData?.clubName || 'N/A'} </div>
             </Grid>
             <Grid item xs={4} container justifyContent="flex-end">
               <div className="">
@@ -182,13 +184,15 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
         <div className="tw-flex tw-items-end tw-gap-[16px]">
           <img
             className="tw-w-40 tw-h-40 border tw-rounded-full"
-            src={user?.profileImageUrl || '/assets/avatars/1.jpg'}
+            src={user?.member?.profileImageUrl || '/assets/avatars/1.jpg'}
           />
           <div className="tw-flex">
-            <div className="tw-flex tw-text-sm tw-text-black border tw-py-1 tw-px-2  tw-mr-5 tw-rounded-lg">교수자</div>
+            <div className="tw-flex tw-justify-center tw-items-center tw-text-sm text-black border tw-py-1 tw-px-2  tw-mr-5 tw-rounded-lg">
+              교수자
+            </div>
             <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-[14px]  tw-gap-3">
               <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[21.875px] tw-font-bold tw-text-left tw-text-black">
-                {user?.name ? user?.name : user?.nickname || 'N/A'}
+                {user?.member?.nickname || 'N/A'}
               </p>
             </div>
             <p className="tw-text-[12.25px] tw-text-[#6a7380]">{user?.position}</p>
