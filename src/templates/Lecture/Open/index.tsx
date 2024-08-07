@@ -1,6 +1,5 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import { MentorsModal, Pagination } from 'src/stories/components';
 import React, { useEffect, useState, useRef } from 'react';
 import { paramProps } from 'src/services/seminars/seminars.queries';
 import { useContentJobTypes, useJobGroupss } from 'src/services/code/code.queries';
@@ -9,7 +8,6 @@ import Grid from '@mui/material/Grid';
 import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
 import { styled } from '@mui/material/styles';
 import TextField, { TextFieldProps } from '@mui/material/TextField';
-import SearchIcon from '@mui/icons-material/Search';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
 import { UseQueryResult } from 'react-query';
@@ -23,7 +21,6 @@ import Checkbox from '@mui/material/Checkbox';
 import { useClubQuizSave, useQuizSave, useClubTempSave, useLectureTempSave } from 'src/services/quiz/quiz.mutations';
 import { TagsInput } from 'react-tag-input-component';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
-import { useUploadImage } from 'src/services/image/image.mutations';
 import { makeStyles } from '@mui/styles';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
@@ -400,13 +397,6 @@ export function LectureOpenTemplate() {
     refetchMyJob();
   }, [postSucces]);
 
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-
-  // const handleAddClick = () => {
-  //   if (scheduleData.length >= 1) setIsModalOpen(true);
-  //   else alert('퀴즈 생성 주기를 입력해주세요.');
-  // };
-
   // Function to handle adding new data
   const handleAddClick = () => {
     const newOrder = scheduleData.length + 1; // Determine the new order based on the current length of scheduleData
@@ -422,46 +412,6 @@ export function LectureOpenTemplate() {
 
     // Update scheduleData with the new data
     setScheduleData([...scheduleData, newData]);
-  };
-
-  const handleQuizInsertClick = () => {
-    const params = {
-      content: quizName,
-      articleUrl: quizUrl,
-      recommendJobGroups: [jobGroupPopUp],
-      recommendJobs: jobs,
-      recommendLevels: recommendLevels,
-      relatedSkills: skillIdsPopUp,
-      relatedExperiences: experienceIdsPopUp,
-      hashTags: selected,
-    };
-
-    if (quizName === '') {
-      alert('질문을 입력해주세요.');
-      quizRef.current.focus();
-      return;
-    }
-
-    if (quizUrl === '') {
-      alert('아티클을 입력해주세요.');
-      quizUrlRef.current.focus();
-      return;
-    }
-
-    if (jobGroup?.length === 0 || jobGroup?.length === undefined) {
-      alert('추천 직군을 선택해주세요.');
-      return;
-    }
-
-    if (recommendLevels?.length === 0 || recommendLevels?.length === undefined) {
-      alert('추천 학년을 선택해주세요.');
-      return;
-    }
-
-    setQuizUrl('');
-    setQuizName('');
-    onQuizSave(params);
-    setActive(2);
   };
 
   useEffect(() => {
@@ -490,8 +440,6 @@ export function LectureOpenTemplate() {
   const { isFetched: isJobGroupsFetched } = useJobGroupss(data => setJobGroups(data.data.contents || []));
   const { user, setUser } = useStore();
 
-  const PAGE_NAME = 'contents';
-
   useEffect(() => {
     if (active == 0) {
       refetch();
@@ -518,19 +466,12 @@ export function LectureOpenTemplate() {
   // @ts-ignore
   const [value, setValue] = React.useState(0);
 
-  const handleChange = (event, newIndex) => {
-    //console.log('SubTab - index', newIndex, event);
-    setActive(newIndex);
-    setValue(newIndex);
-  };
-
   const steps = ['Step.1 강의 정보입력', 'Step.2 강의 커리큘럼 입력', 'Step.3 개설될 강의 미리보기'];
 
-  const [activeStep, setActiveStep] = React.useState(1);
+  const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set<number>());
   const [quizUrl, setQuizUrl] = React.useState('');
   const [quizName, setQuizName] = React.useState('');
-  const [quizSearch, setQuizSearch] = React.useState('');
 
   const isStepSkipped = (step: number) => {
     return skipped.has(step);
