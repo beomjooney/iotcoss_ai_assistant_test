@@ -877,44 +877,35 @@ export function LectureOpenTemplate() {
     };
 
     const formData = new FormData();
-    formData.append('clubName', clubFormParams.clubName);
-    formData.append('jobGroups', clubFormParams.jobGroups.toString());
-    formData.append('jobs', clubFormParams.jobs.toString());
-    formData.append('startAt', clubFormParams.startAt);
-    formData.append('endAt', clubFormParams.endAt);
-    formData.append('studySubject', clubFormParams.studySubject);
-    formData.append('studyKeywords', clubFormParams.studyKeywords.toString());
-    formData.append('isPublic', clubFormParams.isPublic);
-    formData.append('participationCode', clubFormParams.participationCode);
-    formData.append('lectureLanguage', clubFormParams.lectureLanguage);
-    formData.append('contentLanguage', clubFormParams.contentLanguage);
-    formData.append('aiConversationLanguage', clubFormParams.aiConversationLanguage);
-    formData.append('description', clubFormParams.description);
-    // formData.append('clubImageUrl', clubFormParams.clubImageUrl.toString());
-    // formData.append('backgroundImageUrl', clubFormParams.backgroundImageUrl.toString());
-    // formData.append('useCurrentProfileImage', clubFormParams.useCurrentProfileImage.toString());
-    // formData.append('profileImageUrl', clubFormParams.profileImageUrl.toString());
-    formData.append('backgroundImageFile', selectedImageBannerCheck);
-    formData.append('clubImageFile', selectedImageProfileCheck);
-    formData.append('instructorProfileImageFile', selectedImageCheck);
+    formData.append('clubForm.clubName', clubFormParams.clubName);
+    formData.append('clubForm.jobGroups', clubFormParams.jobGroups.toString());
+    formData.append('clubForm.jobs', clubFormParams.jobs.toString());
+    formData.append('clubForm.jobLevels', clubFormParams.jobLevels.toString());
+    formData.append('clubForm.startAt', clubFormParams.startAt);
+    formData.append('clubForm.endAt', clubFormParams.endAt);
+    formData.append('clubForm.studySubject', clubFormParams.studySubject);
+    formData.append('clubForm.studyKeywords', clubFormParams.studyKeywords.toString());
+    formData.append('clubForm.isPublic', clubFormParams.isPublic);
+    formData.append('clubForm.participationCode', clubFormParams.participationCode);
+    formData.append('clubForm.lectureLanguage', clubFormParams.lectureLanguage);
+    formData.append('clubForm.contentLanguage', clubFormParams.contentLanguage);
+    formData.append('clubForm.aiConversationLanguage', clubFormParams.aiConversationLanguage);
+    formData.append('clubForm.description', clubFormParams.description);
+    formData.append('clubForm.useCurrentProfileImage', clubFormParams.useCurrentProfileImage);
+
+    formData.append('clubForm.clubImageFile', selectedImageProfileCheck);
+    formData.append('clubForm.backgroundImageFile', selectedImageBannerCheck);
+    formData.append('clubForm.instructorProfileImageFile', selectedImageCheck);
 
     console.log(clubFormParams);
-    // const params = {
-    //   clubForm: clubFormParams,
-    //   clubQuizzes: scheduleData,
-    // };
-    // console.log(params);
-
-    //     fileList.forEach((file, index) => {
-    //   formData.append('files', file);
-    // });
     console.log('scheduleData', scheduleData);
 
     let shouldStop = false;
     scheduleData.forEach((item, i) => {
       if (shouldStop) return;
       item.fileList.forEach((file, j) => {
-        formData.append('clubStudies[' + i + '].uploadFiles', file);
+        formData.append('clubStudies[' + i + '].files[' + j + '].isNew', 'false');
+        formData.append('clubStudies[' + i + '].files[' + j + '].file', file);
       });
 
       // if (item.studyDate === '') {
@@ -928,7 +919,7 @@ export function LectureOpenTemplate() {
       formData.append('clubStudies[' + i + '].clubStudyName', item.clubName);
       formData.append('clubStudies[' + i + '].clubStudyType', item.clubStudyType);
       formData.append('clubStudies[' + i + '].clubStudyUrl', item.clubstudyUrl || '');
-      formData.append('clubStudies[' + i + '].contentUrls', item.urlList.toString());
+      // formData.append('clubStudies[' + i + '].contentUrls', item.urlList.toString());
       formData.append('clubStudies[' + i + '].studyDate', item.studyDate);
     });
 
