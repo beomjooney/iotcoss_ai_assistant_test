@@ -1,6 +1,6 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, forwardRef } from 'react';
 import { paramProps } from 'src/services/seminars/seminars.queries';
 import { useContentJobTypes, useJobGroupss } from 'src/services/code/code.queries';
 import { useRouter } from 'next/router';
@@ -803,152 +803,46 @@ export function LectureOpenTemplate() {
     // setUpdateKey(prevKey => prevKey + 1);
   }, [scheduleData]);
 
-  const containerRef = useRef();
+  const containerRef = useRef(null);
 
   const _onListChange = newList => {
     setScheduleData(newList);
   };
 
-  const Item = ({ item, itemSelected, dragHandleProps }) => {
+  const Item = React.forwardRef(({ item, itemSelected, dragHandleProps }, ref) => {
     const { onMouseDown, onTouchStart } = dragHandleProps;
 
     return (
-      <div>
-        <div key={item.studyOrder}>
-          {/* <div
-            className="disable-select dragHandle"
-            style={{
-              fontWeight: '600',
-              transform: 'rotate(90deg)',
-              width: '20px',
-              height: '20px',
-              backgroundColor: 'black',
-            }}
-            onTouchStart={e => {
-              e.preventDefault();
-              console.log('touchStart');
-              e.target.style.backgroundColor = 'blue';
-              // document.body.style.overflow = 'hidden';
-              onTouchStart(e);
-            }}
-            onMouseDown={e => {
-              console.log('mouseDown');
-              // document.body.style.overflow = 'hidden';
-              onMouseDown(e);
-            }}
-            onTouchEnd={e => {
-              e.target.style.backgroundColor = 'black';
-              // document.body.style.overflow = 'visible';
-            }}
-            onMouseUp={() => {
-              // document.body.style.overflow = 'visible';
-            }}
-          ></div> */}
-          <LectureBreakerInfo
-            onMouseDown={onMouseDown}
-            onTouchStart={onTouchStart}
-            handleStartDayChange={handleStartDayChange}
-            handleUrlChange={handleUrlChange}
-            handleTypeChange={handleTypeChange}
-            lectureNameChange={lectureNameChange}
-            handleRemoveInput={handleRemoveInput}
-            scheduleUrlAdd={scheduleUrlAdd}
-            scheduleFileAdd={scheduleFileAdd}
-            handleRemoveFile={handleRemoveFile}
-            onFileDownload={onFileDownload}
-            item={item}
-            avatarSrc={item.leaderProfileImageUrl}
-            urlList={item.urls}
-            fileList={item.files}
-            userName={item.leaderNickname}
-            questionText={item.question}
-            order={item.studyOrder !== undefined ? item.studyOrder : null}
-            answerText={item.modelAnswer}
-            handleCheckboxDelete={handleCheckboxDelete}
-            handleAddClick={handleAddClick}
-            publishDate={item.publishDate}
-            dayOfWeek={item.dayOfWeek}
-            isPublished={item.isPublished}
-          />
-        </div>
+      <div key={item.studyOrder} ref={ref}>
+        <LectureBreakerInfo
+          onMouseDown={onMouseDown}
+          onTouchStart={onTouchStart}
+          handleStartDayChange={handleStartDayChange}
+          handleUrlChange={handleUrlChange}
+          handleTypeChange={handleTypeChange}
+          lectureNameChange={lectureNameChange}
+          handleRemoveInput={handleRemoveInput}
+          scheduleUrlAdd={scheduleUrlAdd}
+          scheduleFileAdd={scheduleFileAdd}
+          handleRemoveFile={handleRemoveFile}
+          onFileDownload={onFileDownload}
+          item={item}
+          // avatarSrc={item.leaderProfileImageUrl}
+          urlList={item.urls}
+          fileList={item.files}
+          userName={item.leaderNickname}
+          questionText={item.question}
+          order={item.studyOrder !== undefined ? item.studyOrder : null}
+          answerText={item.modelAnswer}
+          handleCheckboxDelete={handleCheckboxDelete}
+          handleAddClick={handleAddClick}
+          publishDate={item.publishDate}
+          dayOfWeek={item.dayOfWeek}
+          isPublished={item.isPublished}
+        />
       </div>
-      // <div
-      //   className="disable-select"
-      //   style={{
-      //     border: '1px solid black',
-      //     margin: '4px',
-      //     padding: '10px',
-      //     display: 'flex',
-      //     justifyContent: 'space-around',
-      //     background: '#fff',
-      //     userSelect: 'none',
-      //   }}
-      // >
-      //   {item.id}
-      //   <div
-      //     className="disable-select dragHandle"
-      //     style={{
-      //       fontWeight: '600',
-      //       transform: 'rotate(90deg)',
-      //       width: '20px',
-      //       height: '20px',
-      //       backgroundColor: 'black',
-      //     }}
-      //     onTouchStart={e => {
-      //       e.preventDefault();
-      //       console.log('touchStart');
-      //       e.target.style.backgroundColor = 'blue';
-      //       document.body.style.overflow = 'hidden';
-      //       onTouchStart(e);
-      //     }}
-      //     onMouseDown={e => {
-      //       console.log('mouseDown');
-      //       document.body.style.overflow = 'hidden';
-      //       onMouseDown(e);
-      //     }}
-      //     onTouchEnd={e => {
-      //       e.target.style.backgroundColor = 'black';
-      //       document.body.style.overflow = 'visible';
-      //     }}
-      //     onMouseUp={() => {
-      //       document.body.style.overflow = 'visible';
-      //     }}
-      //   ></div>
-      // </div>
     );
-  };
-
-  const dragList = (item: any, index: any) => (
-    // <div>
-    //   <div key={item.studyOrder} className="simple-drag-row">
-    //     <LectureBreakerInfo
-    //       handleStartDayChange={handleStartDayChange}
-    //       handleUrlChange={handleUrlChange}
-    //       handleTypeChange={handleTypeChange}
-    //       lectureNameChange={lectureNameChange}
-    //       handleRemoveInput={handleRemoveInput}
-    //       scheduleUrlAdd={scheduleUrlAdd}
-    //       scheduleFileAdd={scheduleFileAdd}
-    //       handleRemoveFile={handleRemoveFile}
-    //       onFileDownload={onFileDownload}
-    //       item={item}
-    //       avatarSrc={item.leaderProfileImageUrl}
-    //       urlList={item.urls}
-    //       fileList={item.files}
-    //       userName={item.leaderNickname}
-    //       questionText={item.question}
-    //       order={item.studyOrder !== undefined ? item.studyOrder : null}
-    //       answerText={item.modelAnswer}
-    //       handleCheckboxDelete={handleCheckboxDelete}
-    //       handleAddClick={handleAddClick}
-    //       publishDate={item.publishDate}
-    //       dayOfWeek={item.dayOfWeek}
-    //       isPublished={item.isPublished}
-    //     />
-    //   </div>
-    // </div>
-    <div key={item.studyOrder}>adsfdsadsaf</div>
-  );
+  });
 
   const handleNextThree = () => {
     console.log('NextLast');
@@ -973,9 +867,7 @@ export function LectureOpenTemplate() {
 
   const handleNextOne = () => {
     window.scrollTo(0, 0);
-
     // handlerClubMakeProfessorManual();
-
     const _selectedUniversityCode =
       optionsData?.data?.jobs?.find(u => u.code === selectedUniversity)?.code || universityCode;
     setUniversityCode(_selectedUniversityCode);
@@ -1925,7 +1817,7 @@ export function LectureOpenTemplate() {
                       onUpdate={handleUpdate}
                       key={updateKey} // 상태 업데이트를 강제 트리거
                     /> */}
-                    <div ref={containerRef} style={{ touchAction: 'pan-y', background: 'beige' }}>
+                    <div ref={containerRef} style={{ touchAction: 'pan-y' }}>
                       <DraggableList
                         itemKey="studyOrder"
                         template={Item}
@@ -1933,9 +1825,6 @@ export function LectureOpenTemplate() {
                         onMoveEnd={newList => _onListChange(newList)}
                         container={() => containerRef.current}
                       />
-                      {/* {list.map((item) => (
-          <Item item={item} />
-        ))} */}
                     </div>
                   </Grid>
                 </Grid>

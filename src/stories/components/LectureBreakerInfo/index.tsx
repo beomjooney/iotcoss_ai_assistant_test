@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const LectureBreakerInfo = ({
-  avatarSrc = '',
+  // avatarSrc = '',
   userName = 'Unknown User',
   publishDate,
   dayOfWeek,
