@@ -25,6 +25,7 @@ interface LectureDetailInfoProps {
   refetchClubAbout: () => void;
   selectedImageBanner: string;
   selectedImage: string;
+  selectedProfile: string;
 }
 
 const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
@@ -38,8 +39,9 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
   refetchClubAbout,
   selectedImageBanner,
   selectedImage,
+  selectedProfile,
 }) => {
-  console.log(user);
+  // console.log(user);
   console.log(clubData);
   const { logged } = useSessionStore.getState();
   const borderStyle = border ? 'border border-[#e9ecf2] tw-mt-14' : '';
@@ -120,11 +122,22 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
         <Divider sx={{ borderColor: 'rgba(0, 0, 0, 0.5);', paddingY: '10px' }} />
       </div>
       <div className="tw-mt-[40px] ">
-        <div
-          style={{ backgroundImage: `url(${selectedImageBanner})` }}
-          className="tw-bg-cover tw-bg-center tw-w-full tw-overflow-hidden tw-px-[108.13px] tw-pt-[40px] tw-py-5"
-        >
-          <Grid container direction="row" justifyContent="space-between" alignItems="start" rowSpacing={0}>
+        <div className="tw-relative tw-w-full tw-overflow-hidden tw-px-[108.13px] tw-pt-[40px] tw-py-5">
+          <div
+            style={{
+              backgroundImage: `url(${selectedImageBanner})`,
+              opacity: 0.3, // Adjust the opacity as needed
+            }}
+            className="tw-absolute tw-inset-0 tw-bg-cover tw-bg-center"
+          ></div>
+          <Grid
+            container
+            direction="row"
+            justifyContent="space-between"
+            alignItems="start"
+            rowSpacing={0}
+            className="tw-relative tw-z-10"
+          >
             <Grid item xs={8}>
               <div className="tw-flex tw-item tw-text-base tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
                 <span className="tw-inline-flex tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded">
@@ -135,9 +148,9 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
                   {selectedJobName.toString() || 'N/A'}
                 </span>
                 <span className="tw-inline-flex tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
-                  {jobLevelName.toString() || 'N/A'}
+                  {jobLevelName || 'N/A'}
                 </span>
-                <button
+                {/* <button
                   className="tw-inline-flex"
                   onClick={() => {
                     onChangeLike(clubData.clubSequence, clubData.isFavorite);
@@ -148,9 +161,9 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
                   ) : (
                     <StarBorderIcon sx={{ fontSize: 24 }} color="disabled" />
                   )}
-                </button>
+                </button> */}
               </div>
-              <div className="tw-text-black tw-text-3xl tw-font-bold tw-py-3">{clubData?.clubName || 'N/A'} </div>
+              <div className="tw-text-black tw-text-3xl tw-font-bold tw-py-3">{clubData?.clubName || 'N/A'}</div>
             </Grid>
             <Grid item xs={4} container justifyContent="flex-end">
               <div className="">
@@ -168,7 +181,7 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
                     </button>
                   ) : (
                     <>
-                      <button className="tw-w-40 tw-text-[12.25px] tw-font-bold tw-text-center tw-text-white tw-bg-primary tw-px-4 tw-py-4 tw-rounded">
+                      <button className="tw-w-40 tw-text-[12.25px] tw-bg-blue-600 tw-font-bold tw-text-center tw-text-white tw-bg-primary tw-px-4 tw-py-4 tw-rounded">
                         {getClubStatusMessage(clubData?.clubAboutStatus)}
                       </button>
                     </>
@@ -182,10 +195,7 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
 
       <div className="tw-px-[108.5px] tw-absolute tw-top-[330px] tw-left-0 tw-right-0 tw-bottom-0 tw-rounded-[8.75px] tw-py-[40px]">
         <div className="tw-flex tw-items-end tw-gap-[16px]">
-          <img
-            className="tw-w-40 tw-h-40 border tw-rounded-full"
-            src={user?.member?.profileImageUrl || '/assets/avatars/1.jpg'}
-          />
+          <img className="tw-w-40 tw-h-40 border tw-rounded-full" src={selectedProfile || '/assets/avatars/1.jpg'} />
           <div className="tw-flex">
             <div className="tw-flex tw-justify-center tw-items-center tw-text-sm text-black border tw-py-1 tw-px-2  tw-mr-5 tw-rounded-lg">
               교수자
@@ -202,12 +212,18 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
 
       <div className="tw-px-[108.5px] tw-py-5 tw-mt-[90px]">
         <div className="tw-flex tw-justify-start tw-items-center border tw-p-3 tw-rounded-lg tw-gap-3">
-          <div className="tw-flex tw-text-sm tw-text-black">강의언어 : </div>
-          <div className="tw-flex tw-text-sm tw-text-black border tw-py-1 tw-px-2  tw-mr-5 tw-rounded-lg">한국어</div>
-          <div className="tw-flex tw-text-sm tw-text-black">콘텐츠언어 : </div>
-          <div className="tw-flex tw-text-sm tw-text-black border tw-py-1 tw-px-2  tw-mr-5 tw-rounded-lg">한국어</div>
-          <div className="tw-flex tw-text-sm tw-text-black">AI대화언어 : </div>
-          <div className="tw-flex tw-text-sm tw-text-black border tw-py-1 tw-px-2  tw-mr-5 tw-rounded-lg">한국어</div>
+          <div className="tw-flex tw-text-sm tw-text-black">강의 언어 : </div>
+          <div className="tw-flex tw-text-sm tw-text-black border tw-py-1 tw-px-2  tw-mr-5 tw-rounded-lg">
+            {clubData?.lectureLanguage === 'kor' ? '한국어' : '영어'}
+          </div>
+          <div className="tw-flex tw-text-sm tw-text-black">콘텐츠 언어 : </div>
+          <div className="tw-flex tw-text-sm tw-text-black border tw-py-1 tw-px-2  tw-mr-5 tw-rounded-lg">
+            {clubData?.contentLanguage === 'kor' ? '한국어' : '영어'}
+          </div>
+          <div className="tw-flex tw-text-sm tw-text-black">AI 대화언어 : </div>
+          <div className="tw-flex tw-text-sm tw-text-black border tw-py-1 tw-px-2  tw-mr-5 tw-rounded-lg">
+            {clubData?.aiConversationLanguage === 'kor' ? '한국어' : '영어'}
+          </div>
         </div>
       </div>
 
@@ -240,7 +256,7 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
             <div className="tw-col-start-2 tw-col-end-12">
               <div className="tw-flex tw-flex-col">
                 <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-5">학습 키워드</p>
-                <p className="tw-text-sm tw-text-left tw-text-black">{clubData?.careerText}</p>
+                <p className="tw-text-sm tw-text-left tw-text-black">{clubData?.studyKeywords?.toString() || 'N/A'}</p>
               </div>
             </div>
           </div>
@@ -257,7 +273,7 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
             <div className="tw-col-start-2 tw-col-end-12">
               <div className="tw-flex tw-flex-col">
                 <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-5">강의 소개</p>
-                <p className="tw-text-sm tw-text-left tw-text-black">{clubData?.careerText}</p>
+                <p className="tw-text-sm tw-text-left tw-text-black">{clubData?.description}</p>
               </div>
             </div>
           </div>
@@ -274,10 +290,7 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
             <div className="tw-col-start-2 tw-col-end-12">
               <div className="tw-flex tw-flex-col">
                 <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-5">강의 일정</p>
-                <p className="tw-text-sm tw-text-left tw-text-black">
-                  {clubData?.startAt} / 주 {clubData?.studyWeekCount?.toString()}회({clubData?.studyCycle?.toString()})
-                  총 {selectedQuizzes?.length}개 퀴즈
-                </p>
+                <p className="tw-text-sm tw-text-left tw-text-black">시작일 : {clubData?.startAt?.replace('T', ' ')}</p>
               </div>
             </div>
           </div>

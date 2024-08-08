@@ -45,13 +45,15 @@ const LectureBreakerInfo = ({
   handleTypeChange,
   handleUrlChange,
   handleStartDayChange,
+  onFileDownload,
+  onMouseDown,
+  onTouchStart,
+  item,
 }) => {
-  const [isPublic, setIsPublic] = useState('0001');
-  const [clubName, setClubName] = useState('');
-  const [onlineUrl, setOnlineUrl] = useState('');
+  // const [isPublic, setIsPublic] = useState('0100');
+  // const [onlineUrl, setOnlineUrl] = useState('');
   const [input, setInput] = useState('');
   const [inputList, setInputList] = useState([]);
-  const [startDay, setStartDay] = React.useState<Dayjs | null>(dayjs());
 
   const onChangeHandleFromToStartDate = date => {
     if (date) {
@@ -60,33 +62,18 @@ const LectureBreakerInfo = ({
       // Format the date as 'YYYY-MM-DD'
       const formattedDateString = formattedDate.format('YYYY-MM-DD');
       // Set both today and todayEnd
-      setStartDay(formattedDate);
       handleStartDayChange(order, formattedDateString);
     }
   };
 
   const handleInputChange = (order, e) => {
-    setClubName(e.target.value);
-    // lectureNameChange(order, e.target.value);
+    lectureNameChange(order, e.target.value);
   };
-
-  const handleInputComplete = order => {
-    console.log(order);
-    lectureNameChange(order, clubName);
-  };
-
-  const handleInputUrlComplete = order => {
-    console.log(order);
-    if (!validator.isURL(onlineUrl)) {
-      // setErrorMessage('Is Valid URL');
-      alert('올바른 URL을 입력해주세요.');
-      return;
-    }
-    handleUrlChange(order, onlineUrl);
+  const handleInputOnlineUrlChange = (order, e) => {
+    handleUrlChange(order, e.target.value);
   };
 
   const handleFileChange = (event, order) => {
-    // const file = event.target.files[0];
     const files = Array.from(event.target.files);
     const allowedExtensions = /(\.pdf)$/i;
 
@@ -99,19 +86,12 @@ const LectureBreakerInfo = ({
     }
 
     scheduleFileAdd(order, files);
-    // setFileList([file]); // 하나의 파일만 받도록 설정
-    // setFileList(prevFileList => [...prevFileList, ...files]);
   };
 
   const handleIsPublic = (event: React.MouseEvent<HTMLElement>, newFormats: string) => {
-    setIsPublic(newFormats);
-    console.log(newFormats);
-    if (newFormats === '0002') {
-      setIsPublic('0002');
-    } else {
-      setOnlineUrl('');
+    if (newFormats !== null) {
+      handleTypeChange(order, newFormats);
     }
-    handleTypeChange(order, newFormats);
   };
 
   const fileInputRef = useRef(null);
@@ -120,6 +100,11 @@ const LectureBreakerInfo = ({
   };
 
   const handleAddInput = index => {
+    if (!input.startsWith('http://') && !input.startsWith('https://')) {
+      alert('URL은 http:// 또는 https://로 시작해야 합니다.');
+      return;
+    }
+
     if (!validator.isURL(input)) {
       // setErrorMessage('Is Valid URL');
       alert('올바른 URL을 입력해주세요.');
@@ -139,22 +124,10 @@ const LectureBreakerInfo = ({
     // setInputList(inputList.filter((_, i) => i !== id));
   };
 
-  const handleDragStart = event => {
-    event.stopPropagation();
-  };
-
   const classes = useStyles();
 
   return (
     <div className="tw-mb-1">
-      {/* <Grid container direction="row" justifyContent="left" alignItems="center" rowSpacing={4}>
-        <Grid item xs={1}>
-          <div className=" tw-text-center tw-text-black tw-font-bold">Q{index + 1}.</div>
-          <div className="tw-text-center tw-text-sm tw-text-black tw-font-bold">
-            {publishDate.slice(5, 10)} ({dayOfWeek})
-          </div>
-        </Grid> */}
-      {/* <Grid item xs={11}> */}
       <div>
         <div className="tw-relative tw-overflow-visible tw-rounded-lg tw-bg-[#f6f7fb] tw-mb-3 tw-h-20 tw-z-10">
           <div className="tw-flex tw-justify-center tw-items-center tw-h-full tw-gap-2 tw-px-5">
@@ -162,12 +135,11 @@ const LectureBreakerInfo = ({
               size="small"
               fullWidth
               onChange={e => handleInputChange(order, e)}
-              onBlur={() => handleInputComplete(order)}
-              onDragStart={handleDragStart}
               id="margin-none"
-              value={clubName}
+              value={item.clubStudyName}
               name="clubName"
               placeholder="강의제목을 입력해주세요."
+              onDragStart={e => e.preventDefault()} // Prevent default drag behavior on TextField
               sx={{ backgroundColor: 'white', marginRight: '30px' }}
             />
             <div className="tw-flex tw-items-center tw-justify-center">
@@ -177,15 +149,33 @@ const LectureBreakerInfo = ({
                 viewBox="0 0 28 28"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                className="tw-mr-3 tw-w-7 tw-h-7"
+                className="tw-mr-3 tw-w-7 tw-h-7 tw-cursor-pointer"
                 preserveAspectRatio="none"
+                onTouchStart={e => {
+                  e.preventDefault();
+                  console.log('touchStart');
+                  e.target.style.backgroundColor = 'blue';
+                  // document.body.style.overflow = 'hidden';
+                  onTouchStart(e);
+                }}
+                onMouseDown={e => {
+                  console.log('mouseDown');
+                  // document.body.style.overflow = 'hidden';
+                  onMouseDown(e);
+                }}
+                onTouchEnd={e => {
+                  e.target.style.backgroundColor = 'black';
+                  // document.body.style.overflow = 'visible';
+                }}
+                onMouseUp={() => {
+                  // document.body.style.overflow = 'visible';
+                }}
               >
                 <rect x="0.5" y="0.5" width={27} height={27} rx="3.5" stroke="#31343D" />
                 <path d="M6 10H22" stroke="#31343D" strokeWidth="1.5" />
                 <path d="M6 14H22" stroke="#31343D" strokeWidth="1.5" />
                 <path d="M6 18H22" stroke="#31343D" strokeWidth="1.5" />
               </svg>
-
               <svg
                 onClick={e => {
                   e.stopPropagation(); // Prevent drag event
@@ -230,12 +220,12 @@ const LectureBreakerInfo = ({
             </div>
             <div className="tw-w-11/12 tw-py-5">
               <div className="tw-w-full tw-flex tw-justify-start tw-items-center">
-                <div className="tw-flex tw-text-black tw-text-base tw-w-[140px]">강의유형 설정 : </div>
+                <div className="tw-flex tw-text-black tw-text-base tw-w-[140px] tw-line-clamp-1">강의유형 설정 : </div>
                 <div className="tw-flex tw-items-center tw-gap-2 tw-w-full tw-px-5">
-                  <ToggleButtonGroup value={isPublic} onChange={handleIsPublic} exclusive aria-label="">
+                  <ToggleButtonGroup value={item.clubStudyType} onChange={handleIsPublic} exclusive aria-label="">
                     <ToggleButton
                       classes={{ selected: classes.selected }}
-                      value="0001"
+                      value="0100"
                       className="tw-ring-1 tw-ring-slate-900/10"
                       style={{
                         width: 70,
@@ -256,7 +246,7 @@ const LectureBreakerInfo = ({
                     </ToggleButton>
                     <ToggleButton
                       classes={{ selected: classes.selected }}
-                      value="0002"
+                      value="0200"
                       className="tw-ring-1 tw-ring-slate-900/10"
                       style={{
                         width: 70,
@@ -280,10 +270,9 @@ const LectureBreakerInfo = ({
                     fullWidth
                     className="tw-pl-1"
                     size="small"
-                    value={onlineUrl}
-                    disabled={isPublic === '0001'}
-                    onChange={e => setOnlineUrl(e.target.value)}
-                    onBlur={() => handleInputUrlComplete(order)}
+                    value={item.clubStudyUrl}
+                    disabled={item.clubStudyType === '0100'}
+                    onChange={e => handleInputOnlineUrlChange(order, e)}
                     placeholder="온라인 강의 URL을 입력해주세요."
                     id="margin-none"
                   />
@@ -294,7 +283,7 @@ const LectureBreakerInfo = ({
                       slotProps={{
                         textField: { size: 'small', style: { backgroundColor: 'white', width: '350px' } },
                       }}
-                      value={startDay}
+                      value={dayjs(item?.studyDate)}
                       onChange={e => onChangeHandleFromToStartDate(e)}
                     />
                   </LocalizationProvider>
@@ -368,7 +357,14 @@ const LectureBreakerInfo = ({
                         <div className="tw-text-left tw-pl-5 tw-text-sm tw-flex tw-flex-wrap tw-gap-2">
                           {fileList.map((file, index) => (
                             <div key={index} className="border tw-px-3 tw-p-1 tw-rounded">
-                              <span className="tw-text-blue-600">{file.name}</span>
+                              <span
+                                className="tw-text-blue-600 tw-cursor-pointer"
+                                onClick={() => {
+                                  onFileDownload(file.fileKey, file.name);
+                                }}
+                              >
+                                {file.name}
+                              </span>
                               <button
                                 className="tw-ml-2 tw-cursor-pointer"
                                 onClick={() => handleRemoveFile(order, index)}
@@ -402,13 +398,13 @@ const LectureBreakerInfo = ({
                   <div className="tw-w-full tw-flex tw-justify-start tw-px-5 tw-items-center">
                     {urlList?.length > 0 && (
                       <div className="tw-flex tw-py-2">
-                        <div className="tw-flex tw-text-sm tw-items-center" style={{ minWidth: '6.1rem' }}>
+                        <div className="tw-flex tw-text-sm tw-items-start" style={{ minWidth: '6.1rem' }}>
                           첨부된 URL :
                         </div>
                         <div className="tw-text-left tw-pl-5 tw-text-sm tw-flex tw-flex-wrap tw-gap-2">
                           {urlList.map((file, index) => (
                             <div key={index} className="border tw-px-3 tw-p-1 tw-rounded">
-                              <span className="tw-text-[#FF8F60]">{file}</span>
+                              <span className="tw-text-[#FF8F60]">{file.url}</span>
                               <button className="tw-ml-2 tw-cursor-pointer" onClick={() => handleDeleteInput(index)}>
                                 <svg
                                   width={8}
@@ -437,8 +433,6 @@ const LectureBreakerInfo = ({
           </div>
         </div>
       </div>
-      {/* </Grid> */}
-      {/* </Grid> */}
     </div>
   );
 };
