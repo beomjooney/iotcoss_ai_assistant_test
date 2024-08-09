@@ -572,7 +572,7 @@ export function LectureOpenTemplate() {
 
   useEffect(() => {
     if (clubSuccess) {
-      router.push('/quiz');
+      router.push('/lecture');
     }
   }, [clubSuccess]);
 
