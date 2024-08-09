@@ -118,7 +118,7 @@ export function LectureOpenTemplate() {
   const [selectedJobQuiz, setSelectedJobQuiz] = useState<string>('');
 
   const steps = ['Step.1 강의 정보입력', 'Step.2 강의 커리큘럼 입력', 'Step.3 개설될 강의 미리보기'];
-  const [activeStep, setActiveStep] = React.useState(1);
+  const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set<number>());
   const [quizUrl, setQuizUrl] = React.useState('');
   const [quizName, setQuizName] = React.useState('');
@@ -871,79 +871,7 @@ export function LectureOpenTemplate() {
   }));
 
   const handleNextOne = () => {
-    window.scrollTo(0, 0);
-    // handlerClubMakeProfessorManual();
-    const _selectedUniversityCode =
-      optionsData?.data?.jobs?.find(u => u.code === selectedUniversity)?.code || universityCode;
-    setUniversityCode(_selectedUniversityCode);
-    console.log(jobs);
-    // const selectedJobCode = jobs.find(j => j.code === selectedJob)?.code || 'None';
-    console.log('selectedJob', selectedJob);
-
-    const clubFormParams = {
-      clubName: clubName,
-      jobGroups: [_selectedUniversityCode],
-      jobs: selectedJob,
-      jobLevels: recommendLevels,
-      isPublic: true,
-      participationCode: participationCode,
-      startAt: startDay.format('YYYY-MM-DD') + ' 00:00:00',
-      studyCount: num,
-      studyWeekCount: num,
-      studySubject: studySubject,
-      studyChapter: studyChapter,
-      skills: skills,
-      introductionText: introductionText,
-      recommendationText: recommendationText,
-      learningText: learningText,
-      memberIntroductionText: memberIntroductionText,
-      careerText: careerText,
-      studyKeywords: studyKeywords,
-      quizOpenType: quizType,
-      description: '',
-      answerPublishType: '0001',
-      clubTemplatePublishType: '0001',
-      clubRecruitType: '0100',
-    };
-
-    //scheduleData null insert
-    const updatedData = scheduleData.map(item => ({
-      ...item,
-      ...(item.quizSequence === undefined && { quizSequence: null }),
-    }));
-    setScheduleData(updatedData);
-
-    const params = {
-      clubForm: clubFormParams,
-      clubQuizzes: scheduleData,
-    };
-    console.log(params);
-    console.log(scheduleData);
-
-    setParamss(params);
-    console.log(quizType);
-    console.log('next', params);
-    // if (jobGroup.length === 0) {
-    //   alert('등록을 원하는 분야를 선택해주세요.');
-    //   return;
-    // }
-
-    console.log(setQuizType);
-
-    // if (clubName === '') {
-    //   alert('클럽 이름을 입력해주세요.');
-    //   return;
-    // }
-
-    let newSkipped = skipped;
-
-    if (isStepSkipped(activeStep)) {
-      newSkipped = new Set(newSkipped.values());
-      newSkipped.delete(activeStep);
-    }
-
-    setActiveStep(prevActiveStep => prevActiveStep + 1);
-    setSkipped(newSkipped);
+    handlerClubSaveTemp('validation');
   };
 
   const handleBack = () => {
@@ -970,6 +898,80 @@ export function LectureOpenTemplate() {
   //임시저장
   const handlerClubSaveTemp = type => {
     // const selectedJobCode = jobs.find(j => j.code === selectedJob)?.code || '';
+
+    // 필수 항목 체크
+    if (!clubName) {
+      alert('클럽 이름을 입력해주세요');
+      return false;
+    }
+
+    if (!universityCode) {
+      alert('학교를 선택해주세요');
+      return false;
+    }
+
+    if (!selectedJob || selectedJob.length === 0) {
+      alert('최소 하나의 학과를 선택해주세요');
+      return false;
+    }
+
+    if (startDay && endDay) {
+      if (startDay.isSame(endDay, 'day')) {
+        alert('시작 날짜와 종료 날짜가 같습니다.');
+        return false;
+      } else if (startDay.isAfter(endDay)) {
+        alert('시작 날짜가 종료 날짜 이후일 수 없습니다.');
+        return false;
+      }
+    }
+
+    if (!recommendLevels || recommendLevels.length === 0) {
+      alert('최소 하나의 학년을 선택해주세요');
+      return false;
+    }
+
+    // startAt이 endAt보다 앞서야 하고, 두 날짜는 같을 수 없음
+    if (startDay && endDay) {
+      const startDate = new Date(params.startAt);
+      const endDate = new Date(params.endAt);
+
+      if (startDate >= endDate) {
+        alert('종료 날짜는 시작 날짜보다 늦어야 합니다');
+        return false;
+      }
+    }
+
+    if (!studySubject) {
+      alert('학습 주제를 입력해주세요');
+      return false;
+    }
+
+    if (studyKeywords.length === 0) {
+      alert('학습 키워드를 입력해주세요');
+      return false;
+    }
+
+    if (isPublic === '0002') {
+      if (!participationCode) {
+        alert('참여 코드를 입력해주세요');
+        return false;
+      }
+    }
+
+    if (!introductionText) {
+      alert('설명을 입력해주세요');
+      return false;
+    }
+
+    if (!selectedImage) {
+      alert('강의 카드 이미지를 선택해주세요.');
+      return false;
+    }
+    if (!selectedImageBanner) {
+      alert('강의 배경 이미지를 선택해주세요.');
+      return false;
+    }
+
     const clubFormParams = {
       clubName: clubName || '',
       jobGroups: [universityCode] || [],
@@ -1021,60 +1023,108 @@ export function LectureOpenTemplate() {
 
     let shouldStop = false;
 
-    scheduleData.forEach((item, i) => {
+    for (let i = 0; i < scheduleData.length; i++) {
+      const item = scheduleData[i];
+
       if (shouldStop) return;
-      item?.files?.forEach((file, j) => {
-        if (file.serialNumber) {
-          formData.append('clubStudies[' + i + '].files[' + j + '].serialNumber', file.serialNumber);
-          formData.append('clubStudies[' + i + '].files[' + j + '].isNew', 'false');
-        } else {
-          formData.append('clubStudies[' + i + '].files[' + j + '].isNew', 'true');
-          formData.append('clubStudies[' + i + '].files[' + j + '].file', file);
+
+      if (item?.files) {
+        for (let j = 0; j < item.files.length; j++) {
+          const file = item.files[j];
+          if (file.serialNumber) {
+            formData.append(`clubStudies[${i}].files[${j}].serialNumber`, file.serialNumber);
+            formData.append(`clubStudies[${i}].files[${j}].isNew`, 'false');
+          } else {
+            formData.append(`clubStudies[${i}].files[${j}].isNew`, 'true');
+            formData.append(`clubStudies[${i}].files[${j}].file`, file);
+          }
         }
-      });
+      }
 
-      item?.urls?.forEach((url, k) => {
-        formData.append('clubStudies[' + i + '].urls[' + k + '].isNew', 'true');
-        formData.append('clubStudies[' + i + '].urls[' + k + '].url', url.url);
-      });
+      if (item?.urls) {
+        for (let k = 0; k < item.urls.length; k++) {
+          const url = item.urls[k];
+          formData.append(`clubStudies[${i}].urls[${k}].isNew`, 'true');
+          formData.append(`clubStudies[${i}].urls[${k}].url`, url.url);
+        }
+      }
 
-      // if (item.studyDate === '') {
-      //   alert(i + 1 + '번째 강의 시작일을 입력해주세요.');
-      //   shouldStop = true;
-      //   return;
-      // }
+      if (activeStep === 1) {
+        if (item.studyDate === '') {
+          alert(`${i + 1}번째 강의 시작일을 입력해주세요.`);
+          shouldStop = true;
+          return; // 함수 전체를 종료
+        }
+
+        if (item.clubStudyName === '') {
+          alert(`${i + 1}번째 강의 이름을 입력해주세요.`);
+          shouldStop = true;
+          return; // 함수 전체를 종료
+        }
+      }
 
       // 임시저장 로직에 false 추가, isNew 속성이 없으면 true로 설정
       if (item.isNew === undefined) {
-        formData.append('clubStudies[' + i + '].isNew', 'true');
+        formData.append(`clubStudies[${i}].isNew`, 'true');
       } else {
-        formData.append('clubStudies[' + i + '].isNew', item.isNew);
-        formData.append('clubStudies[' + i + '].clubStudySequence', item.clubStudySequence);
+        formData.append(`clubStudies[${i}].isNew`, item.isNew);
+        formData.append(`clubStudies[${i}].clubStudySequence`, item.clubStudySequence);
       }
 
-      // formData.append('clubStudies[' + i + '].isNew', 'true');
-      formData.append('clubStudies[' + i + '].studyOrder', (i + 1).toString());
-      formData.append('clubStudies[' + i + '].clubStudyName', item.clubStudyName);
-      formData.append('clubStudies[' + i + '].clubStudyType', item.clubStudyType);
-      formData.append('clubStudies[' + i + '].clubStudyUrl', item.clubStudyUrl || '');
-      // formData.append('clubStudies[' + i + '].contentUrls', item.urlList.toString());
-      formData.append('clubStudies[' + i + '].studyDate', item.studyDate);
-    });
+      formData.append(`clubStudies[${i}].studyOrder`, (i + 1).toString());
+      formData.append(`clubStudies[${i}].clubStudyName`, item.clubStudyName);
+      formData.append(`clubStudies[${i}].clubStudyType`, item.clubStudyType);
+      formData.append(`clubStudies[${i}].clubStudyUrl`, item.clubStudyUrl || '');
+      formData.append(`clubStudies[${i}].studyDate`, item.studyDate);
+    }
 
-    lectureContents.urls?.forEach((url, i) => {
-      formData.append('lectureContents.urls[' + i + '].isNew', 'true');
-      formData.append('lectureContents.urls[' + i + '].url', url.url);
-    });
+    // scheduleData.forEach((item, i) => {
+    //   if (shouldStop) return;
+    //   item?.files?.forEach((file, j) => {
+    //     if (file.serialNumber) {
+    //       formData.append('clubStudies[' + i + '].files[' + j + '].serialNumber', file.serialNumber);
+    //       formData.append('clubStudies[' + i + '].files[' + j + '].isNew', 'false');
+    //     } else {
+    //       formData.append('clubStudies[' + i + '].files[' + j + '].isNew', 'true');
+    //       formData.append('clubStudies[' + i + '].files[' + j + '].file', file);
+    //     }
+    //   });
 
-    lectureContents.files?.forEach((fileEntry, i) => {
-      if (fileEntry.serialNumber) {
-        formData.append('lectureContents.files[' + i + '].serialNumber', fileEntry.serialNumber);
-        formData.append('lectureContents.files[' + i + '].isNew', 'false');
-      } else {
-        formData.append('lectureContents.files[' + i + '].isNew', 'true');
-        formData.append('lectureContents.files[' + i + '].file', fileEntry.file);
-      }
-    });
+    //   item?.urls?.forEach((url, k) => {
+    //     formData.append('clubStudies[' + i + '].urls[' + k + '].isNew', 'true');
+    //     formData.append('clubStudies[' + i + '].urls[' + k + '].url', url.url);
+    //   });
+
+    //   if (activeStep === 1) {
+    //     if (item.studyDate === '') {
+    //       alert(i + 1 + '번째 강의 시작일을 입력해주세요.');
+    //       shouldStop = true;
+    //       return false;
+    //     }
+
+    //     if (item.clubStudyName === '') {
+    //       alert(i + 1 + '번째 강의 이름을 입력해주세요.');
+    //       shouldStop = true;
+    //       return false;
+    //     }
+    //   }
+
+    //   // 임시저장 로직에 false 추가, isNew 속성이 없으면 true로 설정
+    //   if (item.isNew === undefined) {
+    //     formData.append('clubStudies[' + i + '].isNew', 'true');
+    //   } else {
+    //     formData.append('clubStudies[' + i + '].isNew', item.isNew);
+    //     formData.append('clubStudies[' + i + '].clubStudySequence', item.clubStudySequence);
+    //   }
+
+    //   // formData.append('clubStudies[' + i + '].isNew', 'true');
+    //   formData.append('clubStudies[' + i + '].studyOrder', (i + 1).toString());
+    //   formData.append('clubStudies[' + i + '].clubStudyName', item.clubStudyName);
+    //   formData.append('clubStudies[' + i + '].clubStudyType', item.clubStudyType);
+    //   formData.append('clubStudies[' + i + '].clubStudyUrl', item.clubStudyUrl || '');
+    //   // formData.append('clubStudies[' + i + '].contentUrls', item.urlList.toString());
+    //   formData.append('clubStudies[' + i + '].studyDate', item.studyDate);
+    // });
 
     // To log the formData contents
     for (const [key, value] of formData.entries()) {
@@ -1083,8 +1133,11 @@ export function LectureOpenTemplate() {
 
     if (type === 'temp') {
       onTempSave(formData);
-    } else {
+    } else if (type === 'save') {
       onLectureSave(formData);
+    } else if (type === 'validation') {
+      setActiveStep(prevActiveStep => prevActiveStep + 1);
+      window.scrollTo(0, 0);
     }
   };
 
@@ -2102,7 +2155,7 @@ export function LectureOpenTemplate() {
                     </button>
                     <button
                       className="tw-w-[150px] border tw-font-bold tw-py-3  tw-text-sm tw-px-4 tw-rounded tw-text-black tw-font-bold"
-                      onClick={() => handlerClubSaveTemp()}
+                      onClick={() => handlerClubSaveTemp('temp')}
                     >
                       임시 저장하기
                     </button>
