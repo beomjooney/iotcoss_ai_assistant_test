@@ -74,6 +74,7 @@ const LectureBreakerInfo = ({
   };
 
   const handleFileChange = (event, order) => {
+    console.log('files', event.target.files);
     const files = Array.from(event.target.files);
     const allowedExtensions = /(\.pdf)$/i;
 
@@ -96,6 +97,7 @@ const LectureBreakerInfo = ({
 
   const fileInputRef = useRef(null);
   const handleButtonClick = () => {
+    console.log('fileInputRef', fileInputRef);
     fileInputRef.current.click();
   };
 
@@ -157,18 +159,6 @@ const LectureBreakerInfo = ({
                   e.target.style.backgroundColor = 'blue';
                   // document.body.style.overflow = 'hidden';
                   onTouchStart(e);
-                }}
-                onMouseDown={e => {
-                  console.log('mouseDown');
-                  // document.body.style.overflow = 'hidden';
-                  onMouseDown(e);
-                }}
-                onTouchEnd={e => {
-                  e.target.style.backgroundColor = 'black';
-                  // document.body.style.overflow = 'visible';
-                }}
-                onMouseUp={() => {
-                  // document.body.style.overflow = 'visible';
                 }}
               >
                 <rect x="0.5" y="0.5" width={27} height={27} rx="3.5" stroke="#31343D" />

@@ -18,7 +18,13 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 import { useMyQuiz, useQuizList, useGetSchedule, useLectureGetTemp } from 'src/services/jobs/jobs.queries';
 import Checkbox from '@mui/material/Checkbox';
-import { useClubQuizSave, useQuizSave, useClubTempSave, useLectureTempSave } from 'src/services/quiz/quiz.mutations';
+import {
+  useClubQuizSave,
+  useQuizSave,
+  useClubTempSave,
+  useLectureTempSave,
+  useLectureSave,
+} from 'src/services/quiz/quiz.mutations';
 import { TagsInput } from 'react-tag-input-component';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import { makeStyles } from '@mui/styles';
@@ -282,9 +288,12 @@ export function LectureOpenTemplate() {
     // Add fileList and urlList to each item in the data array
     const updatedData = lectureList.map(item => ({
       ...item,
+      isNew: 'false',
       fileList: [],
       urlList: [],
     }));
+
+    console.log('updatedData', updatedData);
 
     setScheduleData(updatedData);
     setLectureContents(lectureContents);
@@ -296,9 +305,8 @@ export function LectureOpenTemplate() {
 
   //temp 등록
   const { mutate: onTempSave, isSuccess: tempSucces } = useLectureTempSave();
-
   const { mutate: onQuizSave, isSuccess: postSucces } = useQuizSave();
-  const { mutate: onClubQuizSave, isError, isSuccess: clubSuccess } = useClubQuizSave();
+  const { mutate: onLectureSave, isError, isSuccess: clubSuccess } = useLectureSave();
 
   //quiz new logic
   const [selectedQuizIds, setSelectedQuizIds] = useState([]);
@@ -846,10 +854,7 @@ export function LectureOpenTemplate() {
 
   const handleNextThree = () => {
     console.log('NextLast');
-    console.log(quizListParam);
-    const params = { ...paramss, clubQuizzes: scheduleData };
-    console.log(params);
-    onClubQuizSave(params);
+    handlerClubSaveTemp('save');
   };
 
   const BootstrapTooltip = styled(({ className, ...props }: TooltipProps) => (
@@ -963,7 +968,7 @@ export function LectureOpenTemplate() {
   };
 
   //임시저장
-  const handlerClubSaveTemp = () => {
+  const handlerClubSaveTemp = type => {
     // const selectedJobCode = jobs.find(j => j.code === selectedJob)?.code || '';
     const clubFormParams = {
       clubName: clubName || '',
@@ -1039,7 +1044,15 @@ export function LectureOpenTemplate() {
       //   return;
       // }
 
-      formData.append('clubStudies[' + i + '].isNew', 'true');
+      // 임시저장 로직에 false 추가, isNew 속성이 없으면 true로 설정
+      if (item.isNew === undefined) {
+        formData.append('clubStudies[' + i + '].isNew', 'true');
+      } else {
+        formData.append('clubStudies[' + i + '].isNew', item.isNew);
+        formData.append('clubStudies[' + i + '].clubStudySequence', item.clubStudySequence);
+      }
+
+      // formData.append('clubStudies[' + i + '].isNew', 'true');
       formData.append('clubStudies[' + i + '].studyOrder', (i + 1).toString());
       formData.append('clubStudies[' + i + '].clubStudyName', item.clubStudyName);
       formData.append('clubStudies[' + i + '].clubStudyType', item.clubStudyType);
@@ -1047,17 +1060,6 @@ export function LectureOpenTemplate() {
       // formData.append('clubStudies[' + i + '].contentUrls', item.urlList.toString());
       formData.append('clubStudies[' + i + '].studyDate', item.studyDate);
     });
-
-    // formData.append('lectureUrls', inputList.toString());
-    // fileList.forEach((file, i) => {
-    //   formData.append('lectureContents.files[' + i + '].isNew', 'true');
-    //   formData.append('lectureContents.files[' + i + '].file', file);
-    // });
-
-    // inputList.forEach((url, i) => {
-    //   formData.append('lectureContents.urls[' + i + '].isNew', 'true');
-    //   formData.append('lectureContents.urls[' + i + '].url', url);
-    // });
 
     lectureContents.urls?.forEach((url, i) => {
       formData.append('lectureContents.urls[' + i + '].isNew', 'true');
@@ -1079,7 +1081,11 @@ export function LectureOpenTemplate() {
       console.log(key, value);
     }
 
-    onTempSave(formData);
+    if (type === 'temp') {
+      onTempSave(formData);
+    } else {
+      onLectureSave(formData);
+    }
   };
 
   const useStyles = makeStyles(theme => ({
@@ -1138,6 +1144,34 @@ export function LectureOpenTemplate() {
     else newState.push(id);
     return newState;
   };
+
+  const dragList = (item: any, index: any) => (
+    <div key={item.order} className="simple-drag-row">
+      <LectureBreakerInfo
+        handleStartDayChange={handleStartDayChange}
+        handleUrlChange={handleUrlChange}
+        handleTypeChange={handleTypeChange}
+        lectureNameChange={lectureNameChange}
+        handleRemoveInput={handleRemoveInput}
+        scheduleUrlAdd={scheduleUrlAdd}
+        scheduleFileAdd={scheduleFileAdd}
+        handleRemoveFile={handleRemoveFile}
+        // avatarSrc={item.leaderProfileImageUrl}
+        item={item}
+        urlList={item.urls}
+        fileList={item.files}
+        userName={item.clubStudyName}
+        questionText={item.question}
+        order={item.studyOrder !== undefined ? item.studyOrder : null}
+        answerText={item.modelAnswer}
+        handleCheckboxDelete={handleCheckboxDelete}
+        handleAddClick={handleAddClick}
+        publishDate={item.publishDate}
+        dayOfWeek={item.dayOfWeek}
+        isPublished={item.isPublished}
+      />
+    </div>
+  );
 
   function renderDatesAndSessionsModify() {
     return (
@@ -1728,7 +1762,7 @@ export function LectureOpenTemplate() {
                   <div className="tw-row-span-2">
                     <button
                       className="tw-w-[150px] border tw-mr-4 tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded tw-text-sm"
-                      onClick={() => handlerClubSaveTemp()}
+                      onClick={() => handlerClubSaveTemp('temp')}
                     >
                       임시 저장하기
                     </button>
@@ -1806,26 +1840,26 @@ export function LectureOpenTemplate() {
                     })}
                   </Grid>
                   <Grid item xs={11}>
-                    {/* <ReactDragList
+                    <ReactDragList
                       dataSource={scheduleData}
                       rowKey="studyOrder"
                       row={dragList}
                       disabled={isDisabled}
-                      handles={true}
+                      handles={false}
                       className="simple-drag"
                       rowClassName="simple-drag-row"
                       onUpdate={handleUpdate}
                       key={updateKey} // 상태 업데이트를 강제 트리거
-                    /> */}
-                    <div ref={containerRef} style={{ touchAction: 'pan-y' }}>
+                    />
+                    {/* <div ref={containerRef} style={{ touchAction: 'pan-y' }}>
                       <DraggableList
                         itemKey="studyOrder"
                         template={Item}
                         list={scheduleData}
                         onMoveEnd={newList => _onListChange(newList)}
-                        container={() => containerRef.current}
+                        // container={() => containerRef.current}
                       />
-                    </div>
+                    </div> */}
                   </Grid>
                 </Grid>
 

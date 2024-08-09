@@ -18,6 +18,7 @@ import {
   saveAIQuizAnswerEvaluation,
   saveAIQuizAnswerFeedback,
   saveLectureTempPost,
+  saveLecturePost,
 } from './quiz.api';
 
 export const useQuizOrder = (): UseMutationResult => {
@@ -212,6 +213,19 @@ export const useLectureTempSave = (): UseMutationResult => {
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('TEMP').all),
     onSuccess: async data => {
       alert('임시저장 되었습니다.');
+    },
+  });
+};
+export const useLectureSave = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => saveLecturePost(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('TEMP').all),
+    onSuccess: async data => {
+      alert('클럽이 개설 되었습니다.\n관리자가 클럽 승인대기 중입니다.');
     },
   });
 };

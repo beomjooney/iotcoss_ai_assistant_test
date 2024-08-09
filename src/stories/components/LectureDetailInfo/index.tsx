@@ -147,9 +147,7 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
                 <span className="tw-inline-flex tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
                   {selectedJobName.toString() || 'N/A'}
                 </span>
-                <span className="tw-inline-flex tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
-                  {jobLevelName || 'N/A'}
-                </span>
+
                 {/* <button
                   className="tw-inline-flex"
                   onClick={() => {
@@ -163,6 +161,9 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
                   )}
                 </button> */}
               </div>
+              <span className="tw-my-2 tw-inline-flex tw-bg-gray-200 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
+                {jobLevelName.toString() || 'N/A'}
+              </span>
               <div className="tw-text-black tw-text-3xl tw-font-bold tw-py-3">{clubData?.clubName || 'N/A'}</div>
             </Grid>
             <Grid item xs={4} container justifyContent="flex-end">

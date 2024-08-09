@@ -90,6 +90,11 @@ export const saveLectureTempPost = async body =>
     headers: { 'content-type': 'multipart/form-data' },
   });
 
+export const saveLecturePost = async body =>
+  await axiosGeneralAPI().post(`/api/v1/lecture-club`, body, {
+    headers: { 'content-type': 'multipart/form-data' },
+  });
+
 export const deletePost = async postNo => await axiosGeneralAPI().delete(`/posts/${postNo}`);
 
 export const addPosts = async body => await axiosGeneralAPI().post(`/posts`, body);
