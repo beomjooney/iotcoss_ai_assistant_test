@@ -479,7 +479,8 @@ export function LectureOpenTemplate() {
       url = path;
     } else {
       console.log('false');
-      url = `${process.env['NEXT_PUBLIC_GENERAL_URL']}` + image;
+      // url = `${process.env['NEXT_PUBLIC_GENERAL_URL']}` + image;
+      url = image;
     }
     const response = await fetch(url);
     const blob = await response.blob();
