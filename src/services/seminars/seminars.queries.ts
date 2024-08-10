@@ -38,6 +38,7 @@ export interface paramProps {
   enabled?: boolean;
   lecturerMemberId?: string;
   recruitType?: string;
+  clubType?: string;
 }
 
 export const useMyClubList = (

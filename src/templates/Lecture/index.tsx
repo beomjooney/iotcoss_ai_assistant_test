@@ -28,7 +28,7 @@ export function LectureTemplate() {
   const router = useRouter();
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
-  const [params, setParams] = useState<paramProps>({ page });
+  const [params, setParams] = useState<paramProps>({ page, clubType: '0200' });
   const [contents, setContents] = useState<RecommendContent[]>([]);
   const [active, setActive] = useState(0);
   const [contentType, setContentType] = useState(0);
@@ -54,7 +54,7 @@ export function LectureTemplate() {
   const handleTabChange = (event, newValue) => {
     setActive(newValue);
     if (newValue === 0) {
-      setParams({ page });
+      setParams({ page, clubType: '0200' });
     } else {
       const selectedItem = optionsData.data.jobs[newValue - 1];
       setContentType(selectedItem.id);
@@ -73,6 +73,7 @@ export function LectureTemplate() {
     setParams({
       // ...params,
       page,
+      clubType: '0200',
       keyword: keyWorld,
     });
   }, [page, keyWorld]);
