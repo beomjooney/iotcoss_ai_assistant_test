@@ -1,6 +1,6 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import { Toggle, Pagination, MentorsModal, AIQuizList } from 'src/stories/components';
+import { Toggle, Pagination, MentorsModal, AIQuizList, Tag } from 'src/stories/components';
 import React, { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Grid from '@mui/material/Grid';
@@ -1418,19 +1418,21 @@ export function QuizMakeTemplate() {
                 ) : (
                   <>
                     <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">학습 키워드</div>
-                    <TagsInput
+                    {/* <TagsInput
                       value={selected1}
                       onChange={setSelected1}
                       name="fruits"
                       placeHolder="학습 키워드 입력 후 엔터를 쳐주세요."
-                    />
+                    /> */}
+                    <Tag value={selected1} onChange={setSelected1} placeHolder="학습 키워드 입력 후 엔터를 쳐주세요." />
                     <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">스킬</div>
-                    <TagsInput
+                    <Tag value={selected2} onChange={setSelected2} placeHolder="스킬 입력 후 엔터를 쳐주세요." />
+                    {/* <TagsInput
                       value={selected2}
                       onChange={setSelected2}
                       name="fruits"
                       placeHolder="스킬 입력 후 엔터를 쳐주세요."
-                    />
+                    /> */}
                   </>
                 )}
               </AccordionDetails>

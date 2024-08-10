@@ -50,7 +50,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
-import { Toggle } from 'src/stories/components';
+import { Toggle, Tag } from 'src/stories/components';
 
 //group
 import { images, imageBanner } from './group';
@@ -118,7 +118,7 @@ export function LectureOpenTemplate() {
   const [selectedJobQuiz, setSelectedJobQuiz] = useState<string>('');
 
   const steps = ['Step.1 강의 정보입력', 'Step.2 강의 커리큘럼 입력', 'Step.3 개설될 강의 미리보기'];
-  const [activeStep, setActiveStep] = React.useState(1);
+  const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set<number>());
   const [quizUrl, setQuizUrl] = React.useState('');
   const [quizName, setQuizName] = React.useState('');
@@ -1518,12 +1518,13 @@ export function LectureOpenTemplate() {
                       <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2 tw-mb-3">
                         학습 키워드
                       </div>
-                      <TagsInput
+                      <Tag value={studyKeywords} onChange={setStudyKeywords} placeHolder="학습 키워드 입력 후 엔터" />
+                      {/* <TagsInput
                         value={studyKeywords}
                         onChange={setStudyKeywords}
                         name="fruits"
                         placeHolder="학습 키워드 입력 후 엔터"
-                      />
+                      /> */}
                     </div>
 
                     <div>

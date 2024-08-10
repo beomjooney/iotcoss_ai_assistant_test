@@ -1,6 +1,6 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import { MentorsModal, Pagination } from 'src/stories/components';
+import { MentorsModal, Pagination, Tag } from 'src/stories/components';
 import React, { useEffect, useState, useRef } from 'react';
 import { paramProps } from 'src/services/seminars/seminars.queries';
 import { useContentJobTypes, useJobGroupss } from 'src/services/code/code.queries';
@@ -1502,48 +1502,27 @@ export function QuizOpenTemplate() {
                     name="studyChapter"
                   />
                   <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">학습 키워드</div>
-                  <TagsInput
+                  {/* <TagsInput
                     value={studyKeywords}
                     onChange={setStudyKeywords}
                     name="fruits"
                     placeHolder="학습 키워드를 입력해주세요. 입력 후 엔터를 쳐주세요"
+                  /> */}
+                  <Tag
+                    value={studyKeywords}
+                    onChange={setStudyKeywords}
+                    placeHolder="학습 키워드 입력 후 엔터를 쳐주세요."
                   />
                   <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">관련기술</div>
 
-                  {/* <ToggleButtonGroup
-                    style={{ display: 'inline' }}
-                    value={skillIds}
-                    onChange={handleFormat}
-                    aria-label=""
-                    color="standard"
-                  >
-                    {optionsData?.data?.skills?.map((item, index) => {
-                      return (
-                        <ToggleButton
-                          classes={{ selected: classes.selected }}
-                          key={`skillIds-${index}`}
-                          value={item}
-                          className="tw-ring-1 tw-ring-slate-900/10"
-                          style={{
-                            borderRadius: '5px',
-                            borderLeft: '0px',
-                            margin: '5px',
-                            height: '35px',
-                            border: '0px',
-                          }}
-                        >
-                          {item}
-                        </ToggleButton>
-                      );
-                    })}
-                  </ToggleButtonGroup> */}
                   <div className="tw-px-1">
-                    <TagsInput
+                    {/* <TagsInput
                       value={skills}
                       onChange={setSkills}
                       name="fruits"
                       placeHolder="관련기술 입력 후 엔터를 쳐주세요"
-                    />
+                    /> */}
+                    <Tag value={skills} onChange={setSkills} placeHolder="관련기술 입력 후 엔터를 쳐주세요." />
                   </div>
                   <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">클럽 기본정보 입력</div>
                   <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">
