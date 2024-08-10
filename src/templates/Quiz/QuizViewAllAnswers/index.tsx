@@ -882,24 +882,29 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                       <div className="tw-flex  tw-py-2">
                         <div className="tw-text-left tw-text-sm">
                           <ul className="">
-                            {item?.contents?.map((file, index) => (
-                              <div
-                                onClick={() => {
-                                  let url = file.url;
-                                  // Ensure the URL is absolute
-                                  if (!/^https?:\/\//i.test(url)) {
-                                    // If the URL does not start with 'http://' or 'https://', prepend the base URL
-                                    url = new URL(url, window.location.origin).href;
-                                  }
-                                  console.log(url); // Log the corrected URL to the console
-                                  window.open(url, '_blank'); // Open the corrected URL in a new tab
-                                }}
-                                key={index}
-                                className="tw-cursor-pointer tw-text-[#fca380] tw-underline tw-p-1 tw-mb-1"
-                              >
-                                ㄴ지식컨텐츠 : {file.url}
-                              </div>
-                            ))}
+                            {item?.contents?.map((file, index) => {
+                              // Skip rendering if file.url is null or undefined
+                              if (!file.url) return null;
+
+                              return (
+                                <div
+                                  onClick={() => {
+                                    let url = file.url;
+                                    // Ensure the URL is absolute
+                                    if (!/^https?:\/\//i.test(url)) {
+                                      // If the URL does not start with 'http://' or 'https://', prepend the base URL
+                                      url = new URL(url, window.location.origin).href;
+                                    }
+                                    console.log(url); // Log the corrected URL to the console
+                                    window.open(url, '_blank'); // Open the corrected URL in a new tab
+                                  }}
+                                  key={index}
+                                  className="tw-cursor-pointer tw-text-[#fca380] tw-underline tw-p-1 tw-mb-1"
+                                >
+                                  ㄴ지식컨텐츠 : {file.url}
+                                </div>
+                              );
+                            })}
                           </ul>
                         </div>
                       </div>
