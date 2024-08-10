@@ -100,7 +100,7 @@ export const useLoginSignUp = (): UseMutationResult => {
     onSuccess: async data => {
       // alert('회원가입이 정상적으로 되었습니다.');
       alert('회원가입이 정상적으로 되었습니다.');
-      location.href = '/account/login';
+      // location.href = '/account/login';
       // alert('좋아요.~');
     },
   });

@@ -50,7 +50,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
-import { Toggle } from 'src/stories/components';
+import { Toggle, Tag } from 'src/stories/components';
 
 //group
 import { images, imageBanner } from './group';
@@ -1518,12 +1518,13 @@ export function LectureOpenTemplate() {
                       <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2 tw-mb-3">
                         학습 키워드
                       </div>
-                      <TagsInput
+                      <Tag value={studyKeywords} onChange={setStudyKeywords} placeHolder="학습 키워드 입력 후 엔터" />
+                      {/* <TagsInput
                         value={studyKeywords}
                         onChange={setStudyKeywords}
                         name="fruits"
                         placeHolder="학습 키워드 입력 후 엔터"
-                      />
+                      /> */}
                     </div>
 
                     <div>
