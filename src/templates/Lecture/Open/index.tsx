@@ -1823,7 +1823,7 @@ export function LectureOpenTemplate() {
                       임시 저장하기
                     </button>
                     <button
-                      className="tw-w-[150px]  tw-bg-gray-200 tw-text-gray-400 tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-text-sm tw-rounded"
+                      className="tw-w-[150px]  tw-bg-blue-600 tw-text-gray-400 tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-text-sm tw-rounded"
                       onClick={handleNextOne}
                     >
                       {activeStep === steps.length - 1 ? '성장퀴즈 클럽 개설하기' : '다음'}{' '}
