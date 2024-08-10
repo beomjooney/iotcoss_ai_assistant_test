@@ -1,6 +1,6 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, forwardRef } from 'react';
 import { paramProps } from 'src/services/seminars/seminars.queries';
 import { useContentJobTypes, useJobGroupss } from 'src/services/code/code.queries';
 import { useRouter } from 'next/router';
@@ -18,7 +18,13 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 import { useMyQuiz, useQuizList, useGetSchedule, useLectureGetTemp } from 'src/services/jobs/jobs.queries';
 import Checkbox from '@mui/material/Checkbox';
-import { useClubQuizSave, useQuizSave, useClubTempSave, useLectureTempSave } from 'src/services/quiz/quiz.mutations';
+import {
+  useClubQuizSave,
+  useQuizSave,
+  useClubTempSave,
+  useLectureTempSave,
+  useLectureSave,
+} from 'src/services/quiz/quiz.mutations';
 import { TagsInput } from 'react-tag-input-component';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import { makeStyles } from '@mui/styles';
@@ -33,6 +39,7 @@ import LectureBreakerInfo from 'src/stories/components/LectureBreakerInfo';
 import LectureDetailInfo from 'src/stories/components/LectureDetailInfo';
 /** drag list */
 import ReactDragList from 'react-drag-list';
+import DraggableList from 'react-draggable-list';
 import { useStore } from 'src/store';
 
 import { InputAdornment, IconButton } from '@mui/material';
@@ -48,48 +55,27 @@ import { Toggle } from 'src/stories/components';
 //group
 import { images, imageBanner } from './group';
 import validator from 'validator';
+import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
 
 const cx = classNames.bind(styles);
 
 const defaultScheduleData = [];
 for (let i = 0; i < 2; i++) {
   defaultScheduleData.push({
-    order: i + 1,
-    clubName: '',
-    urlList: [],
-    fileList: [],
-    clubStudyType: '0001',
+    studyOrder: i + 1,
+    clubStudyName: '',
+    urls: [],
+    files: [],
+    clubStudyType: '0100',
     clubStudyUrl: '',
-    studyDate: '',
+    studyDate: dayjs().format('YYYY-MM-DD'),
   });
 }
 
 export function LectureOpenTemplate() {
+  const router = useRouter();
   const [startDay, setStartDay] = React.useState<Dayjs | null>(dayjs());
   const [endDay, setEndDay] = React.useState<Dayjs | null>(dayjs());
-
-  const onChangeHandleFromToStartDate = date => {
-    if (date) {
-      // Convert date to a Dayjs object
-      const formattedDate = dayjs(date);
-      // Format the date as 'YYYY-MM-DD'
-      const formattedDateString = formattedDate.format('YYYY-MM-DD');
-      // Set both today and todayEnd
-      setStartDay(formattedDate);
-    }
-  };
-  const onChangeHandleFromToEndDate = date => {
-    if (date) {
-      // Convert date to a Dayjs object
-      const formattedDate = dayjs(date);
-      // Format the date as 'YYYY-MM-DD'
-      const formattedDateString = formattedDate.format('YYYY-MM-DD');
-      // Set both today and todayEnd
-      setEndDay(formattedDate);
-    }
-  };
-
-  const router = useRouter();
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [jobGroupsFilter, setJobGroupsFilter] = useState([]);
@@ -112,7 +98,6 @@ export function LectureOpenTemplate() {
   const [selectedUniversityName, setSelectedUniversityName] = useState('');
   const [selectedJobName, setSelectedJobName] = useState('');
   const [selectedLevel, setSelectedLevel] = useState('');
-  const [selectedLevelName, setSelectedLevelName] = useState('');
   const [jobs, setJobs] = useState([]);
   const [selectedJob, setSelectedJob] = useState([]);
   const [totalElements, setTotalElements] = useState(0);
@@ -122,6 +107,55 @@ export function LectureOpenTemplate() {
   const [lectureLanguage, setLectureLanguage] = useState('kor');
   const [contentLanguage, setContentLanguage] = useState('kor');
   const [lectureAILanguage, setLectureAILanguage] = useState('kor');
+  const [skillIdsPopUp, setSkillIdsPopUp] = useState<any[]>([]);
+  const [experienceIdsPopUp, setExperienceIdsPopUp] = useState<any[]>([]);
+  const [isPublic, setIsPublic] = useState('0001');
+  const [studyKeywords, setStudyKeywords] = useState([]);
+  const [studyChapter, setStudyChapter] = useState('');
+  const [studySubject, setStudySubject] = useState('');
+  const [skills, setSkills] = useState([]);
+  const [universityCodeQuiz, setUniversityCodeQuiz] = useState<string>('');
+  const [selectedJobQuiz, setSelectedJobQuiz] = useState<string>('');
+
+  const steps = ['Step.1 강의 정보입력', 'Step.2 강의 커리큘럼 입력', 'Step.3 개설될 강의 미리보기'];
+  const [activeStep, setActiveStep] = React.useState(1);
+  const [skipped, setSkipped] = React.useState(new Set<number>());
+  const [quizUrl, setQuizUrl] = React.useState('');
+  const [quizName, setQuizName] = React.useState('');
+
+  const [recommendLevels, setRecommendLevels] = useState([]);
+  const [universityCode, setUniversityCode] = useState<string>('');
+  const [levelNames, setLevelNames] = useState([]);
+
+  const [quizType, setQuizType] = useState('0100');
+  const [recommendLevelsPopUp, setRecommendLevelsPopUp] = useState([]);
+  const [clubName, setClubName] = useState<string>('');
+  const [num, setNum] = useState(0);
+  const [active, setActive] = useState(0);
+
+  const [keyWorld, setKeyWorld] = useState('');
+  const [myKeyWorld, setMyKeyWorld] = useState('');
+
+  const onChangeHandleFromToStartDate = date => {
+    if (date) {
+      // Convert date to a Dayjs object
+      const formattedDate = dayjs(date);
+      // Format the date as 'YYYY-MM-DD'
+      const formattedDateString = formattedDate.format('YYYY-MM-DD');
+      // Set both today and todayEnd
+      setStartDay(formattedDate);
+    }
+  };
+  const onChangeHandleFromToEndDate = date => {
+    if (date) {
+      // Convert date to a Dayjs object
+      const formattedDate = dayjs(date);
+      // Format the date as 'YYYY-MM-DD'
+      const formattedDateString = formattedDate.format('YYYY-MM-DD');
+      // Set both today and todayEnd
+      setEndDay(formattedDate);
+    }
+  };
 
   const handleFileChange = event => {
     const files = Array.from(event.target.files);
@@ -135,9 +169,17 @@ export function LectureOpenTemplate() {
       }
     }
 
-    setFileList(prevFileList => [...prevFileList, ...files]);
-    // setFileList([...fileList, files]); // 하나의 파일만 받도록 설정
-    // console.log([...fileList, files]);
+    setLectureContents(prevContents => ({
+      ...prevContents,
+      files: [
+        ...(prevContents.files || []),
+        ...files.map(file => ({
+          isNew: 'true',
+          file: file,
+          name: file.name,
+        })),
+      ],
+    }));
   };
 
   const fileInputRef = useRef(null);
@@ -146,20 +188,31 @@ export function LectureOpenTemplate() {
   };
 
   const handleAddInput = input => {
+    if (!input.startsWith('http://') && !input.startsWith('https://')) {
+      alert('URL은 http:// 또는 https://로 시작해야 합니다.');
+      return;
+    }
+
     if (!validator.isURL(input)) {
       // setErrorMessage('Is Valid URL');
       alert('올바른 URL을 입력해주세요.');
       return;
     }
 
+    console.log(lectureContents);
     if (urlCode !== '') {
-      setInputList([...inputList, input]); // Add current input to the list
+      setLectureContents(prevContents => ({
+        ...prevContents,
+        urls: [
+          ...(prevContents.urls || []),
+          {
+            isNew: 'true',
+            url: input,
+          },
+        ],
+      }));
       setUrlCode(''); // Clear the input field after adding
     }
-  };
-
-  const handleDeleteInput = id => {
-    setInputList(inputList.filter(input => input.id !== id));
   };
 
   const { data: optionsData }: UseQueryResult<ExperiencesResponse> = useOptions();
@@ -176,42 +229,74 @@ export function LectureOpenTemplate() {
     setScheduleData(data);
   });
 
-  //temp 조회
+  // jobLevels 코드에 해당하는 이름을 찾는 함수
+  const getJobLevelNames = (jobLevelCodes, jobLevels) => {
+    return jobLevelCodes.map(code => {
+      const jobLevel = jobLevels.find(level => level.code === code.toString().padStart(4, '0'));
+      return jobLevel ? jobLevel.name : '';
+    });
+  };
+
+  //불러오기
   const { refetch: refetchGetTemp }: UseQueryResult<any> = useLectureGetTemp(data => {
     console.log('load temp', data);
-    // const clubForm = data?.clubForm || {};
-    // const quizList = data?.clubQuizzes || [];
+    const clubForm = data?.clubForm || {};
+    const lectureList = data?.clubStudies || [];
+    const lectureContents = data?.lectureContents || [];
+    setParamss(clubForm);
 
-    // setClubName(clubForm.clubName || '');
-    // setIntroductionText(clubForm.introductionText || '');
-    // setRecommendationText(clubForm.recommendationText || '');
-    // setLearningText(clubForm.learningText || '');
-    // setMemberIntroductionText(clubForm.memberIntroductionText || '');
-    // setCareerText(clubForm.careerText || '');
-    // setSkills(clubForm.skills || []);
-    // const extractedCodes = clubForm.jobLevels.map(item => item.code);
-    // setRecommendLevels(extractedCodes || []);
-    // setNum(clubForm.studyCount || 0);
-    // setQuizType(clubForm.quizOpenType || '');
-    // setStartDay(clubForm.startAt ? dayjs(clubForm.startAt) : dayjs());
-    // setStudyKeywords(clubForm.studyKeywords || []);
-    // setStudyChapter(clubForm.studyChapter || '');
-    // setStudySubject(clubForm.studySubject || '');
-    // setStudyCycleNum(clubForm.studyCycle || 0);
-    // setUniversityCode(clubForm.jobGroups[0]?.code || '');
-    // setSelectedUniversityName(clubForm.jobGroups[0]?.name || '');
-    // setSelectedJobName(clubForm.jobs[0]?.name || '');
-    // setJobLevelName(clubForm.jobLevels[0]?.name || '');
-    // setLevelNames(clubForm.jobLevels.map(item => item.name));
-    // const selected = optionsData?.data?.jobs?.find(u => u.code === clubForm.jobGroups[0]?.code);
-    // setJobs(selected ? selected.jobs : []);
-    // const jobsCode = clubForm.jobs.map(item => item.code);
-    // setSelectedJob(jobsCode || []);
-    // const jobsName = clubForm.jobs.map(item => item.name);
-    // console.log(jobsName);
-    // setPersonName(jobsName || []);
-    // setButtonFlag(true);
-    // setScheduleData(quizList);
+    setClubName(clubForm.clubName || '');
+    setStartDay(clubForm.startAt ? dayjs(clubForm.startAt) : dayjs());
+    setEndDay(clubForm.endAt ? dayjs(clubForm.endAt) : dayjs());
+    setIsPublic(clubForm.isPublic ? '0001' : '0002');
+    setStudyKeywords(clubForm.studyKeywords || []);
+    setStudySubject(clubForm.studySubject || '');
+    setUniversityCode(clubForm.jobGroups || '');
+    setRecommendLevels(clubForm.jobLevels || '');
+    console.log(clubForm.jobLevels.map(item => item.name));
+    const selectedLevel = optionsData?.data?.jobLevels?.find(u => u.code === clubForm.jobLevels.toString());
+
+    // clubForm.jobLevels의 이름 리스트 생성
+    const jobLevelNames = getJobLevelNames(clubForm.jobLevels, optionsData?.data?.jobLevels || []);
+    console.log('jobLevelNames', jobLevelNames);
+    setLevelNames(jobLevelNames);
+
+    const selected = optionsData?.data?.jobs?.find(u => u.code === clubForm.jobGroups.toString());
+    setSelectedUniversityName(selected?.name || '');
+    setJobs(selected ? selected.jobs : []);
+    setSelectedJob(clubForm.jobs || []);
+
+    const names = selected.jobs
+      .filter(department => clubForm.jobs.includes(department.code))
+      .map(department => department.name);
+
+    setPersonName(names || []);
+    setIntroductionText(clubForm.description || '');
+
+    setLectureLanguage(clubForm.lectureLanguage);
+    setContentLanguage(clubForm.contentLanguage);
+    setLectureAILanguage(clubForm.aiConversationLanguage);
+
+    setPreview(clubForm.clubImageUrl);
+    setPreviewBanner(clubForm.backgroundImageUrl);
+    setPreviewProfile(clubForm.instructorProfileImageUrl);
+
+    setSelectedImage('');
+    setSelectedImageBanner('');
+    setSelectedImageProfile('');
+
+    // Add fileList and urlList to each item in the data array
+    const updatedData = lectureList.map(item => ({
+      ...item,
+      isNew: 'false',
+      fileList: [],
+      urlList: [],
+    }));
+
+    console.log('updatedData', updatedData);
+
+    setScheduleData(updatedData);
+    setLectureContents(lectureContents);
 
     // // Filter out items with quizSequence not null and extract quizSequence values
     // const quizSequenceNumbers = quizList.filter(item => item.quizSequence !== null).map(item => item.quizSequence);
@@ -220,21 +305,8 @@ export function LectureOpenTemplate() {
 
   //temp 등록
   const { mutate: onTempSave, isSuccess: tempSucces } = useLectureTempSave();
-
-  const [skillIdsPopUp, setSkillIdsPopUp] = useState<any[]>([]);
-  const [experienceIdsPopUp, setExperienceIdsPopUp] = useState<any[]>([]);
-  const [isPublic, setIsPublic] = useState('0001');
-  const [studyKeywords, setStudyKeywords] = useState([]);
-  const [studyChapter, setStudyChapter] = useState('');
-  const [studySubject, setStudySubject] = useState('');
-  const [skills, setSkills] = useState([]);
-  const [universityCodeQuiz, setUniversityCodeQuiz] = useState<string>('');
-  const [selectedJobQuiz, setSelectedJobQuiz] = useState<string>('');
-
-  const [keyWorld, setKeyWorld] = useState('');
-  const [myKeyWorld, setMyKeyWorld] = useState('');
   const { mutate: onQuizSave, isSuccess: postSucces } = useQuizSave();
-  const { mutate: onClubQuizSave, isError, isSuccess: clubSuccess } = useClubQuizSave();
+  const { mutate: onLectureSave, isError, isSuccess: clubSuccess } = useLectureSave();
 
   //quiz new logic
   const [selectedQuizIds, setSelectedQuizIds] = useState([]);
@@ -251,13 +323,50 @@ export function LectureOpenTemplate() {
   const [preview, setPreview] = useState(null);
   const [previewBanner, setPreviewBanner] = useState(null);
   const [previewProfile, setPreviewProfile] = useState(null);
+  const [isDisabled, setIsDisabled] = useState(false);
 
   const [contentJobType, setContentJobType] = useState<any[]>([]);
-  const [contentTypes, setContentTypes] = useState<any[]>([]);
+  const [lectureContents, setLectureContents] = useState({
+    files: [],
+    urls: [],
+  });
+
   const { isFetched: isContentTypeJobFetched } = useContentJobTypes(data => {
     setContentJobType(data.data.contents || []);
   });
 
+  let [key, setKey] = useState('');
+  let [fileName, setFileName] = useState('');
+
+  const { isFetched: isParticipantListFetcheds, isSuccess: isParticipantListSuccess } = useQuizFileDownload(
+    key,
+    data => {
+      console.log('file download', data, fileName);
+      if (data) {
+        // blob 데이터를 파일로 저장하는 로직
+        const url = window.URL.createObjectURL(new Blob([data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', fileName); // 다운로드할 파일 이름과 확장자를 설정합니다.
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setKey('');
+        setFileName('');
+      }
+    },
+  );
+
+  const onFileDownload = function (key: string, fileName: string) {
+    console.log(key, fileName);
+    setKey(key);
+    setFileName(fileName);
+    // onFileDownload(key);
+  };
+
+  useEffect(() => {
+    console.log('lectureContents', lectureContents);
+  }, [lectureContents]);
   const { mutate: onClubTempSave, isSuccess: tempSuccess } = useClubTempSave();
   useEffect(() => {
     // Merge new data from quizListData into allQuizData
@@ -347,8 +456,8 @@ export function LectureOpenTemplate() {
   };
 
   const handleProfileDelete = e => {
-    setSelectedImageProfileCheck(null);
     setPreviewProfile(null);
+    setSelectedImageProfileCheck(null);
   };
 
   // 파일 이름 추출 함수
@@ -357,9 +466,22 @@ export function LectureOpenTemplate() {
     return parts[parts.length - 1];
   };
 
-  const handleImageClick = async (image, type) => {
+  useEffect(() => {
+    handleImageClick(selectedImageProfile, 'profile', false);
+  }, []);
+
+  const handleImageClick = async (image, type, path) => {
     // console.log('image select', `${process.env['NEXT_PUBLIC_GENERAL_URL']}` + image);
-    const response = await fetch(`${process.env['NEXT_PUBLIC_GENERAL_URL']}` + image);
+    console.log('path', path);
+    console.log('image', image);
+    let url;
+    if (path) {
+      url = path;
+    } else {
+      console.log('false');
+      url = `${process.env['NEXT_PUBLIC_GENERAL_URL']}` + image;
+    }
+    const response = await fetch(url);
     const blob = await response.blob();
     const file = new File([blob], extractFileName(image), { type: blob.type });
     console.log('file', file);
@@ -373,6 +495,7 @@ export function LectureOpenTemplate() {
       setSelectedImageBanner(image);
       setSelectedImageBannerCheck(file);
     } else if (type === 'profile') {
+      console.log('profile');
       setPreviewProfile(image);
       setSelectedImageProfile(image);
       setSelectedImageProfileCheck(file);
@@ -386,10 +509,14 @@ export function LectureOpenTemplate() {
   const [careerText, setCareerText] = useState<string>('');
 
   const handleIsPublic = (event: React.MouseEvent<HTMLElement>, newFormats: string) => {
-    setIsPublic(newFormats);
-    console.log(newFormats);
-    if (newFormats === '0002') {
-      setIsPublic('0002');
+    if (newFormats !== null) {
+      setIsPublic(newFormats);
+      if (newFormats === '0002') {
+        setIsPublic('0002');
+      } else {
+        setIsPublic('0001');
+        setParticipationCode('');
+      }
     }
   };
 
@@ -401,13 +528,13 @@ export function LectureOpenTemplate() {
   const handleAddClick = () => {
     const newOrder = scheduleData.length + 1; // Determine the new order based on the current length of scheduleData
     const newData = {
-      order: newOrder,
-      clubName: '',
-      clubStudyType: '0001',
+      studyOrder: newOrder,
+      clubStudyName: '',
+      clubStudyType: '0100',
       clubStudyUrl: '',
-      urlList: [],
-      fileList: [],
-      studyDate: '',
+      urls: [],
+      files: [],
+      studyDate: dayjs().format('YYYY-MM-DD'),
     };
 
     // Update scheduleData with the new data
@@ -424,19 +551,6 @@ export function LectureOpenTemplate() {
     });
   }, [page, jobGroupsFilter, levelsFilter, seminarFilter]);
 
-  const [jobGroup, setJobGroup] = useState([]);
-  const [jobLevelName, setJobLevelName] = useState([]);
-  const [jobGroupPopUp, setJobGroupPopUp] = useState([]);
-  const [studyCycleNum, setStudyCycleNum] = useState([]);
-  const [recommendLevels, setRecommendLevels] = useState([]);
-  const [universityCode, setUniversityCode] = useState<string>('');
-  const [levelNames, setLevelNames] = useState([]);
-
-  const [quizType, setQuizType] = useState('0100');
-  const [recommendLevelsPopUp, setRecommendLevelsPopUp] = useState([]);
-  const [clubName, setClubName] = useState<string>('');
-  const [num, setNum] = useState(0);
-  const [active, setActive] = useState(0);
   const { isFetched: isJobGroupsFetched } = useJobGroupss(data => setJobGroups(data.data.contents || []));
   const { user, setUser } = useStore();
 
@@ -458,20 +572,9 @@ export function LectureOpenTemplate() {
 
   useEffect(() => {
     if (clubSuccess) {
-      router.push('/quiz');
+      router.push('/lecture');
     }
   }, [clubSuccess]);
-
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const [value, setValue] = React.useState(0);
-
-  const steps = ['Step.1 강의 정보입력', 'Step.2 강의 커리큘럼 입력', 'Step.3 개설될 강의 미리보기'];
-
-  const [activeStep, setActiveStep] = React.useState(0);
-  const [skipped, setSkipped] = React.useState(new Set<number>());
-  const [quizUrl, setQuizUrl] = React.useState('');
-  const [quizName, setQuizName] = React.useState('');
 
   const isStepSkipped = (step: number) => {
     return skipped.has(step);
@@ -508,8 +611,17 @@ export function LectureOpenTemplate() {
     setScheduleData(
       scheduleData.map(item => {
         // Update the urlList of the item with matching order
-        if (item.order === order) {
-          return { ...item, urlList: [...item.urlList, updated] };
+        if (item.studyOrder === order) {
+          return {
+            ...item,
+            urls: [
+              ...(item.urls || []),
+              {
+                isNew: 'true',
+                url: updated,
+              },
+            ],
+          };
         }
         return item;
       }),
@@ -522,8 +634,8 @@ export function LectureOpenTemplate() {
     setScheduleData(
       scheduleData.map(item => {
         // Update the urlList of the item with matching order
-        if (item.order === order) {
-          return { ...item, clubName: updated };
+        if (item.studyOrder === order) {
+          return { ...item, clubStudyName: updated };
         }
         return item;
       }),
@@ -536,7 +648,7 @@ export function LectureOpenTemplate() {
     setScheduleData(
       scheduleData.map(item => {
         // Update the urlList of the item with matching order
-        if (item.order === order) {
+        if (item.studyOrder === order) {
           return { ...item, clubStudyUrl: updated };
         }
         return item;
@@ -550,8 +662,8 @@ export function LectureOpenTemplate() {
     setScheduleData(
       scheduleData.map(item => {
         // Update the urlList of the item with matching order
-        if (item.order === order) {
-          return { ...item, fileList: [...item.fileList, ...updated] };
+        if (item.studyOrder === order) {
+          return { ...item, files: [...(item.files || []), ...updated] };
         }
         return item;
       }),
@@ -563,11 +675,11 @@ export function LectureOpenTemplate() {
     console.log('handleRemoveFile', order, fileIndex);
     setScheduleData(prevData =>
       prevData.map(item => {
-        if (item.order === order) {
+        if (item.studyOrder === order) {
           // Return the item with the URL at urlIndex removed from urlList
           return {
             ...item,
-            fileList: item.fileList.filter((_, index) => index !== fileIndex),
+            files: item.files.filter((_, index) => index !== fileIndex),
           };
         }
         return item;
@@ -579,7 +691,7 @@ export function LectureOpenTemplate() {
     console.log('handleRemoveFile', order, startDay);
     setScheduleData(prevData =>
       prevData.map(item => {
-        if (item.order === order) {
+        if (item.studyOrder === order) {
           // Return the item with the URL at urlIndex removed from urlList
           return {
             ...item,
@@ -592,25 +704,32 @@ export function LectureOpenTemplate() {
   };
 
   const handleRemoveFileLocal = fileIndex => {
-    setFileList(fileList.filter((_, i) => i !== fileIndex));
+    // setFileList(fileList.filter((_, i) => i !== fileIndex));
+    setLectureContents(prevContents => ({
+      ...prevContents,
+      files: prevContents.files.filter((_, i) => i !== fileIndex),
+    }));
   };
 
   const handleRemoveInputLocal = inputIndex => {
-    setInputList(inputList.filter((_, i) => i !== inputIndex));
+    setLectureContents(prevContents => ({
+      ...prevContents,
+      urls: prevContents.urls.filter((_, i) => i !== inputIndex),
+    }));
   };
 
   // Function to handle deleting data based on order
   const handleCheckboxDelete = orderToDelete => {
     console.log('delete', orderToDelete);
     // Filter out the item with the given order
-    const updatedData = scheduleData.filter(item => item.order !== orderToDelete);
+    const updatedData = scheduleData.filter(item => item.studyOrder !== orderToDelete);
 
     // Step 1: Sort the array based on the current order value
-    const sortedData = updatedData.sort((a, b) => a.order - b.order);
+    const sortedData = updatedData.sort((a, b) => a.studyOrder - b.studyOrder);
 
     // Step 2: Assign new order values sequentially
     sortedData.forEach((item, index) => {
-      item.order = index + 1;
+      item.studyOrder = index + 1;
     });
 
     // Update state with the filtered data
@@ -622,11 +741,11 @@ export function LectureOpenTemplate() {
     console.log('handleRemoveInput', order, urlIndex);
     setScheduleData(prevData =>
       prevData.map(item => {
-        if (item.order === order) {
+        if (item.studyOrder === order) {
           // Return the item with the URL at urlIndex removed from urlList
           return {
             ...item,
-            urlList: item.urlList.filter((_, index) => index !== urlIndex),
+            urls: item.urls.filter((_, index) => index !== urlIndex),
           };
         }
         return item;
@@ -638,7 +757,7 @@ export function LectureOpenTemplate() {
     console.log('handleTypeChange', order, type);
     setScheduleData(prevData =>
       prevData.map(item => {
-        if (item.order === order) {
+        if (item.studyOrder === order) {
           // Return the item with the URL at urlIndex removed from urlList
           return {
             ...item,
@@ -692,39 +811,50 @@ export function LectureOpenTemplate() {
     // setUpdateKey(prevKey => prevKey + 1);
   }, [scheduleData]);
 
-  const dragList = (item: any, index: any) => (
-    <div key={item.order} className="simple-drag-row">
-      <LectureBreakerInfo
-        handleStartDayChange={handleStartDayChange}
-        handleUrlChange={handleUrlChange}
-        handleTypeChange={handleTypeChange}
-        lectureNameChange={lectureNameChange}
-        handleRemoveInput={handleRemoveInput}
-        scheduleUrlAdd={scheduleUrlAdd}
-        scheduleFileAdd={scheduleFileAdd}
-        handleRemoveFile={handleRemoveFile}
-        avatarSrc={item.leaderProfileImageUrl}
-        urlList={item.urlList}
-        fileList={item.fileList}
-        userName={item.leaderNickname}
-        questionText={item.question}
-        order={item.order !== undefined ? item.order : null}
-        answerText={item.modelAnswer}
-        handleCheckboxDelete={handleCheckboxDelete}
-        handleAddClick={handleAddClick}
-        publishDate={item.publishDate}
-        dayOfWeek={item.dayOfWeek}
-        isPublished={item.isPublished}
-      />
-    </div>
-  );
+  const containerRef = useRef(null);
+
+  const _onListChange = newList => {
+    setScheduleData(newList);
+  };
+
+  const Item = React.forwardRef(({ item, itemSelected, dragHandleProps }, ref) => {
+    const { onMouseDown, onTouchStart } = dragHandleProps;
+
+    return (
+      <div key={item.studyOrder} ref={ref}>
+        <LectureBreakerInfo
+          onMouseDown={onMouseDown}
+          onTouchStart={onTouchStart}
+          handleStartDayChange={handleStartDayChange}
+          handleUrlChange={handleUrlChange}
+          handleTypeChange={handleTypeChange}
+          lectureNameChange={lectureNameChange}
+          handleRemoveInput={handleRemoveInput}
+          scheduleUrlAdd={scheduleUrlAdd}
+          scheduleFileAdd={scheduleFileAdd}
+          handleRemoveFile={handleRemoveFile}
+          onFileDownload={onFileDownload}
+          item={item}
+          // avatarSrc={item.leaderProfileImageUrl}
+          urlList={item.urls}
+          fileList={item.files}
+          userName={item.leaderNickname}
+          questionText={item.question}
+          order={item.studyOrder !== undefined ? item.studyOrder : null}
+          answerText={item.modelAnswer}
+          handleCheckboxDelete={handleCheckboxDelete}
+          handleAddClick={handleAddClick}
+          publishDate={item.publishDate}
+          dayOfWeek={item.dayOfWeek}
+          isPublished={item.isPublished}
+        />
+      </div>
+    );
+  });
 
   const handleNextThree = () => {
     console.log('NextLast');
-    console.log(quizListParam);
-    const params = { ...paramss, clubQuizzes: scheduleData };
-    console.log(params);
-    onClubQuizSave(params);
+    handlerClubSaveTemp('save');
   };
 
   const BootstrapTooltip = styled(({ className, ...props }: TooltipProps) => (
@@ -741,82 +871,7 @@ export function LectureOpenTemplate() {
   }));
 
   const handleNextOne = () => {
-    window.scrollTo(0, 0);
-
-    // handlerClubMakeProfessorManual();
-
-    const _selectedUniversityCode =
-      optionsData?.data?.jobs?.find(u => u.code === selectedUniversity)?.code || universityCode;
-    setUniversityCode(_selectedUniversityCode);
-    console.log(jobs);
-    // const selectedJobCode = jobs.find(j => j.code === selectedJob)?.code || 'None';
-    console.log('selectedJob', selectedJob);
-
-    const clubFormParams = {
-      clubName: clubName,
-      jobGroups: [_selectedUniversityCode],
-      jobs: selectedJob,
-      jobLevels: recommendLevels,
-      isPublic: true,
-      participationCode: participationCode,
-      studyCycle: studyCycleNum,
-      startAt: startDay.format('YYYY-MM-DD') + ' 00:00:00',
-      studyCount: num,
-      studyWeekCount: num,
-      studySubject: studySubject,
-      studyChapter: studyChapter,
-      skills: skills,
-      introductionText: introductionText,
-      recommendationText: recommendationText,
-      learningText: learningText,
-      memberIntroductionText: memberIntroductionText,
-      careerText: careerText,
-      studyKeywords: studyKeywords,
-      quizOpenType: quizType,
-      description: '',
-      answerPublishType: '0001',
-      clubTemplatePublishType: '0001',
-      clubRecruitType: '0100',
-    };
-
-    //scheduleData null insert
-    const updatedData = scheduleData.map(item => ({
-      ...item,
-      ...(item.quizSequence === undefined && { quizSequence: null }),
-    }));
-    setScheduleData(updatedData);
-
-    const params = {
-      clubForm: clubFormParams,
-      clubQuizzes: scheduleData,
-    };
-    console.log(params);
-    console.log(scheduleData);
-
-    setParamss(params);
-    console.log(quizType);
-    console.log('next', params);
-    // if (jobGroup.length === 0) {
-    //   alert('등록을 원하는 분야를 선택해주세요.');
-    //   return;
-    // }
-
-    console.log(setQuizType);
-
-    // if (clubName === '') {
-    //   alert('클럽 이름을 입력해주세요.');
-    //   return;
-    // }
-
-    let newSkipped = skipped;
-
-    if (isStepSkipped(activeStep)) {
-      newSkipped = new Set(newSkipped.values());
-      newSkipped.delete(activeStep);
-    }
-
-    setActiveStep(prevActiveStep => prevActiveStep + 1);
-    setSkipped(newSkipped);
+    handlerClubSaveTemp('validation');
   };
 
   const handleBack = () => {
@@ -837,43 +892,102 @@ export function LectureOpenTemplate() {
   };
 
   const handlerQuizInit = async () => {
-    const newData = scheduleData.map(item => ({
-      ...item,
-      quizSequence: null,
-      quizUri: null,
-      leaderUUID: null,
-      leaderUri: null,
-      leaderNickname: null,
-      leaderProfileImageUrl: null,
-      question: null,
-      modelAnswer: null,
-      contentTitle: null,
-      contentUrl: null,
-    }));
-
-    setScheduleData(newData);
-    setSelectedQuizIds([]);
+    setScheduleData(defaultScheduleData);
   };
 
   //임시저장
-  const handlerClubSaveTemp = () => {
+  const handlerClubSaveTemp = type => {
     // const selectedJobCode = jobs.find(j => j.code === selectedJob)?.code || '';
+
+    // 필수 항목 체크
+    if (!clubName) {
+      alert('클럽 이름을 입력해주세요');
+      return false;
+    }
+
+    if (!universityCode) {
+      alert('학교를 선택해주세요');
+      return false;
+    }
+
+    if (!selectedJob || selectedJob.length === 0) {
+      alert('최소 하나의 학과를 선택해주세요');
+      return false;
+    }
+
+    if (startDay && endDay) {
+      if (startDay.isSame(endDay, 'day')) {
+        alert('시작 날짜와 종료 날짜가 같습니다.');
+        return false;
+      } else if (startDay.isAfter(endDay)) {
+        alert('시작 날짜가 종료 날짜 이후일 수 없습니다.');
+        return false;
+      }
+    }
+
+    if (!recommendLevels || recommendLevels.length === 0) {
+      alert('최소 하나의 학년을 선택해주세요');
+      return false;
+    }
+
+    // startAt이 endAt보다 앞서야 하고, 두 날짜는 같을 수 없음
+    if (startDay && endDay) {
+      const startDate = new Date(params.startAt);
+      const endDate = new Date(params.endAt);
+
+      if (startDate >= endDate) {
+        alert('종료 날짜는 시작 날짜보다 늦어야 합니다');
+        return false;
+      }
+    }
+
+    if (!studySubject) {
+      alert('학습 주제를 입력해주세요');
+      return false;
+    }
+
+    if (studyKeywords.length === 0) {
+      alert('학습 키워드를 입력해주세요');
+      return false;
+    }
+
+    if (isPublic === '0002') {
+      if (!participationCode) {
+        alert('참여 코드를 입력해주세요');
+        return false;
+      }
+    }
+
+    if (!introductionText) {
+      alert('설명을 입력해주세요');
+      return false;
+    }
+
+    if (!selectedImage) {
+      alert('강의 카드 이미지를 선택해주세요.');
+      return false;
+    }
+    if (!selectedImageBanner) {
+      alert('강의 배경 이미지를 선택해주세요.');
+      return false;
+    }
+
     const clubFormParams = {
       clubName: clubName || '',
       jobGroups: [universityCode] || [],
       jobs: selectedJob || [],
       jobLevels: recommendLevels || [],
-      startAt: (startDay ? startDay.format('YYYY-MM-DD') : '') + ' 00:00:00',
-      endAt: (endDay ? endDay.format('YYYY-MM-DD') : '') + ' 00:00:00',
+      startAt: (startDay ? startDay.format('YYYY-MM-DD') : '') + 'T00:00:00',
+      endAt: (endDay ? endDay.format('YYYY-MM-DD') : '') + 'T00:00:00',
       studySubject: studySubject || '',
       studyKeywords: studyKeywords || '',
-      isPublic: 'true',
-      participationCode: '',
+      isPublic: isPublic === '0001' ? 'true' : 'false',
+      participationCode: participationCode || '',
       lectureLanguage: lectureLanguage || '',
       contentLanguage: contentLanguage || '',
       aiConversationLanguage: lectureAILanguage || '',
       description: introductionText || '',
-      useCurrentProfileImage: 'false',
+      useCurrentProfileImage: 'true',
     };
 
     const formData = new FormData();
@@ -893,48 +1007,138 @@ export function LectureOpenTemplate() {
     formData.append('clubForm.description', clubFormParams.description);
     formData.append('clubForm.useCurrentProfileImage', clubFormParams.useCurrentProfileImage);
 
-    formData.append('clubForm.clubImageFile', selectedImageProfileCheck);
-    formData.append('clubForm.backgroundImageFile', selectedImageBannerCheck);
-    formData.append('clubForm.instructorProfileImageFile', selectedImageCheck);
+    if (selectedImage) {
+      console.log('selectedImage', selectedImage);
+      formData.append('clubForm.clubImageFile', selectedImageCheck);
+    }
+    if (selectedImageBanner) {
+      formData.append('clubForm.backgroundImageFile', selectedImageBannerCheck);
+    }
+    if (selectedImageProfile) {
+      formData.append('clubForm.instructorProfileImageFile', selectedImageProfileCheck);
+    }
 
     console.log(clubFormParams);
     console.log('scheduleData', scheduleData);
 
     let shouldStop = false;
-    scheduleData.forEach((item, i) => {
+
+    for (let i = 0; i < scheduleData.length; i++) {
+      const item = scheduleData[i];
+
       if (shouldStop) return;
-      item.fileList.forEach((file, j) => {
-        formData.append('clubStudies[' + i + '].files[' + j + '].isNew', 'false');
-        formData.append('clubStudies[' + i + '].files[' + j + '].file', file);
-      });
 
-      // if (item.studyDate === '') {
-      //   alert(i + 1 + '번째 강의 시작일을 입력해주세요.');
-      //   shouldStop = true;
-      //   return;
-      // }
+      if (item?.files) {
+        for (let j = 0; j < item.files.length; j++) {
+          const file = item.files[j];
+          if (file.serialNumber) {
+            formData.append(`clubStudies[${i}].files[${j}].serialNumber`, file.serialNumber);
+            formData.append(`clubStudies[${i}].files[${j}].isNew`, 'false');
+          } else {
+            formData.append(`clubStudies[${i}].files[${j}].isNew`, 'true');
+            formData.append(`clubStudies[${i}].files[${j}].file`, file);
+          }
+        }
+      }
 
-      formData.append('clubStudies[' + i + '].isNew', 'true');
-      formData.append('clubStudies[' + i + '].studyOrder', (i + 1).toString());
-      formData.append('clubStudies[' + i + '].clubStudyName', item.clubName);
-      formData.append('clubStudies[' + i + '].clubStudyType', item.clubStudyType);
-      formData.append('clubStudies[' + i + '].clubStudyUrl', item.clubstudyUrl || '');
-      // formData.append('clubStudies[' + i + '].contentUrls', item.urlList.toString());
-      formData.append('clubStudies[' + i + '].studyDate', item.studyDate);
-    });
+      if (item?.urls) {
+        for (let k = 0; k < item.urls.length; k++) {
+          const url = item.urls[k];
+          formData.append(`clubStudies[${i}].urls[${k}].isNew`, 'true');
+          formData.append(`clubStudies[${i}].urls[${k}].url`, url.url);
+        }
+      }
 
-    formData.append('lectureUrls', inputList.toString());
-    fileList.forEach((file, j) => {
-      formData.append('lectureFiles', file);
-    });
-    formData.append('lectureFileKeys', '');
+      if (activeStep === 1) {
+        if (item.studyDate === '') {
+          alert(`${i + 1}번째 강의 시작일을 입력해주세요.`);
+          shouldStop = true;
+          return; // 함수 전체를 종료
+        }
+
+        if (item.clubStudyName === '') {
+          alert(`${i + 1}번째 강의 이름을 입력해주세요.`);
+          shouldStop = true;
+          return; // 함수 전체를 종료
+        }
+      }
+
+      // 임시저장 로직에 false 추가, isNew 속성이 없으면 true로 설정
+      if (item.isNew === undefined) {
+        formData.append(`clubStudies[${i}].isNew`, 'true');
+      } else {
+        formData.append(`clubStudies[${i}].isNew`, item.isNew);
+        formData.append(`clubStudies[${i}].clubStudySequence`, item.clubStudySequence);
+      }
+
+      formData.append(`clubStudies[${i}].studyOrder`, (i + 1).toString());
+      formData.append(`clubStudies[${i}].clubStudyName`, item.clubStudyName);
+      formData.append(`clubStudies[${i}].clubStudyType`, item.clubStudyType);
+      formData.append(`clubStudies[${i}].clubStudyUrl`, item.clubStudyUrl || '');
+      formData.append(`clubStudies[${i}].studyDate`, item.studyDate);
+    }
+
+    // scheduleData.forEach((item, i) => {
+    //   if (shouldStop) return;
+    //   item?.files?.forEach((file, j) => {
+    //     if (file.serialNumber) {
+    //       formData.append('clubStudies[' + i + '].files[' + j + '].serialNumber', file.serialNumber);
+    //       formData.append('clubStudies[' + i + '].files[' + j + '].isNew', 'false');
+    //     } else {
+    //       formData.append('clubStudies[' + i + '].files[' + j + '].isNew', 'true');
+    //       formData.append('clubStudies[' + i + '].files[' + j + '].file', file);
+    //     }
+    //   });
+
+    //   item?.urls?.forEach((url, k) => {
+    //     formData.append('clubStudies[' + i + '].urls[' + k + '].isNew', 'true');
+    //     formData.append('clubStudies[' + i + '].urls[' + k + '].url', url.url);
+    //   });
+
+    //   if (activeStep === 1) {
+    //     if (item.studyDate === '') {
+    //       alert(i + 1 + '번째 강의 시작일을 입력해주세요.');
+    //       shouldStop = true;
+    //       return false;
+    //     }
+
+    //     if (item.clubStudyName === '') {
+    //       alert(i + 1 + '번째 강의 이름을 입력해주세요.');
+    //       shouldStop = true;
+    //       return false;
+    //     }
+    //   }
+
+    //   // 임시저장 로직에 false 추가, isNew 속성이 없으면 true로 설정
+    //   if (item.isNew === undefined) {
+    //     formData.append('clubStudies[' + i + '].isNew', 'true');
+    //   } else {
+    //     formData.append('clubStudies[' + i + '].isNew', item.isNew);
+    //     formData.append('clubStudies[' + i + '].clubStudySequence', item.clubStudySequence);
+    //   }
+
+    //   // formData.append('clubStudies[' + i + '].isNew', 'true');
+    //   formData.append('clubStudies[' + i + '].studyOrder', (i + 1).toString());
+    //   formData.append('clubStudies[' + i + '].clubStudyName', item.clubStudyName);
+    //   formData.append('clubStudies[' + i + '].clubStudyType', item.clubStudyType);
+    //   formData.append('clubStudies[' + i + '].clubStudyUrl', item.clubStudyUrl || '');
+    //   // formData.append('clubStudies[' + i + '].contentUrls', item.urlList.toString());
+    //   formData.append('clubStudies[' + i + '].studyDate', item.studyDate);
+    // });
 
     // To log the formData contents
     for (const [key, value] of formData.entries()) {
       console.log(key, value);
     }
 
-    // onTempSave(formData);
+    if (type === 'temp') {
+      onTempSave(formData);
+    } else if (type === 'save') {
+      onLectureSave(formData);
+    } else if (type === 'validation') {
+      setActiveStep(prevActiveStep => prevActiveStep + 1);
+      window.scrollTo(0, 0);
+    }
   };
 
   const useStyles = makeStyles(theme => ({
@@ -993,6 +1197,34 @@ export function LectureOpenTemplate() {
     else newState.push(id);
     return newState;
   };
+
+  const dragList = (item: any, index: any) => (
+    <div key={item.order} className="simple-drag-row">
+      <LectureBreakerInfo
+        handleStartDayChange={handleStartDayChange}
+        handleUrlChange={handleUrlChange}
+        handleTypeChange={handleTypeChange}
+        lectureNameChange={lectureNameChange}
+        handleRemoveInput={handleRemoveInput}
+        scheduleUrlAdd={scheduleUrlAdd}
+        scheduleFileAdd={scheduleFileAdd}
+        handleRemoveFile={handleRemoveFile}
+        // avatarSrc={item.leaderProfileImageUrl}
+        item={item}
+        urlList={item.urls}
+        fileList={item.files}
+        userName={item.clubStudyName}
+        questionText={item.question}
+        order={item.studyOrder !== undefined ? item.studyOrder : null}
+        answerText={item.modelAnswer}
+        handleCheckboxDelete={handleCheckboxDelete}
+        handleAddClick={handleAddClick}
+        publishDate={item.publishDate}
+        dayOfWeek={item.dayOfWeek}
+        isPublished={item.isPublished}
+      />
+    </div>
+  );
 
   function renderDatesAndSessionsModify() {
     return (
@@ -1355,22 +1587,6 @@ export function LectureOpenTemplate() {
                             id="margin-none"
                           />
                         </div>
-                        {/* <select
-                          className="form-select"
-                          aria-label="Default select example"
-                          disabled={jobs.length === 0}
-                          onChange={handleJobChange}
-                          value={selectedJob}
-                        >
-                          <option disabled value="">
-                            학과를 선택해주세요.
-                          </option>
-                          {jobs.map((job, index) => (
-                            <option key={index} value={job.code}>
-                              {job.name}
-                            </option>
-                          ))}
-                        </select> */}
                       </div>
                     </div>
                   </div>
@@ -1383,6 +1599,7 @@ export function LectureOpenTemplate() {
                         <select
                           className="tw-px-5 tw-w-full tw-text-black"
                           onChange={e => setLectureLanguage(e.target.value)}
+                          value={lectureLanguage}
                         >
                           <option value="kor">한국어</option>
                           <option value="eng">영어</option>
@@ -1397,6 +1614,7 @@ export function LectureOpenTemplate() {
                         <select
                           className="tw-px-5 tw-w-full tw-text-black"
                           onChange={e => setContentLanguage(e.target.value)}
+                          value={contentLanguage}
                         >
                           <option value="kor">한국어</option>
                           <option value="eng">영어</option>
@@ -1411,6 +1629,7 @@ export function LectureOpenTemplate() {
                         <select
                           className="tw-px-5 tw-w-full tw-text-black"
                           onChange={e => setLectureAILanguage(e.target.value)}
+                          value={lectureAILanguage}
                         >
                           <option value="kor">한국어</option>
                           <option value="eng">영어</option>
@@ -1453,7 +1672,7 @@ export function LectureOpenTemplate() {
                       selectedImage === image ? 'selected' : ''
                     } tw-object-cover tw-w-[100px] tw-rounded-lg tw-h-[100px] md:tw-h-[100px] md:tw-w-[100px] md:tw-rounded-lg`}
                     style={{ opacity: selectedImage !== image ? 0.2 : 1 }}
-                    onClick={() => handleImageClick(image, 'card')}
+                    onClick={() => handleImageClick(image, 'card', false)}
                   />
                 ))}
                 <div className="tw-flex tw-items-center tw-justify-center tw-w-[100px] tw-h-[100px]">
@@ -1511,7 +1730,7 @@ export function LectureOpenTemplate() {
                       selectedImageBanner === image ? 'selected' : ''
                     } tw-object-cover tw-w-[260px] tw-rounded-lg tw-h-[100px] md:tw-h-[100px] md:tw-w-[200px] md:tw-rounded-lg`}
                     style={{ opacity: selectedImageBanner !== image ? 0.2 : 1 }}
-                    onClick={() => handleImageClick(image, 'banner')}
+                    onClick={() => handleImageClick(image, 'banner', false)}
                   />
                 ))}
                 <div className="tw-flex tw-items-center tw-justify-center tw-w-[100px] tw-h-[100px]">
@@ -1596,7 +1815,7 @@ export function LectureOpenTemplate() {
                   <div className="tw-row-span-2">
                     <button
                       className="tw-w-[150px] border tw-mr-4 tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded tw-text-sm"
-                      onClick={() => handlerClubSaveTemp()}
+                      onClick={() => handlerClubSaveTemp('temp')}
                     >
                       임시 저장하기
                     </button>
@@ -1634,7 +1853,7 @@ export function LectureOpenTemplate() {
                       className="tw-flex tw-justify-center tw-items-center tw-w-[124px] tw-relative tw-overflow-hidden tw-gap-2 tw-px-7 tw-py-[11.5px] tw-rounded tw-bg-[#e9ecf2]"
                     >
                       <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-center tw-text-[#6a7380]">
-                        초기화
+                        강의 초기화
                       </p>
                     </button>
                   </div>
@@ -1648,9 +1867,9 @@ export function LectureOpenTemplate() {
                       return (
                         <div key={index} className="tw-h-[412px] tw-flex tw-flex-col tw-items-center tw-justify-start">
                           {/* <div className=" tw-text-center tw-text-black tw-font-bold tw-mt-5">강의</div> */}
-                          {item.order && (
+                          {item.studyOrder && (
                             <div className="tw-text-center tw-text-lg tw-text-black tw-font-bold tw-mt-4">
-                              {item.order} 회차
+                              {index + 1} 회차
                               <div className="tw-flex tw-justify-center tw-mt-2">
                                 <svg
                                   width={20}
@@ -1676,14 +1895,24 @@ export function LectureOpenTemplate() {
                   <Grid item xs={11}>
                     <ReactDragList
                       dataSource={scheduleData}
-                      rowKey="order"
+                      rowKey="studyOrder"
                       row={dragList}
+                      disabled={isDisabled}
                       handles={false}
                       className="simple-drag"
                       rowClassName="simple-drag-row"
                       onUpdate={handleUpdate}
                       key={updateKey} // 상태 업데이트를 강제 트리거
                     />
+                    {/* <div ref={containerRef} style={{ touchAction: 'pan-y' }}>
+                      <DraggableList
+                        itemKey="studyOrder"
+                        template={Item}
+                        list={scheduleData}
+                        onMoveEnd={newList => _onListChange(newList)}
+                        // container={() => containerRef.current}
+                      />
+                    </div> */}
                   </Grid>
                 </Grid>
 
@@ -1826,7 +2055,7 @@ export function LectureOpenTemplate() {
                       />
                     </div>
                   </div>
-                  {fileList?.length > 0 && (
+                  {lectureContents.files?.length > 0 && (
                     <div className="tw-flex">
                       <div className="tw-w-[130px] tw-py-5"></div>
                       <div className="tw-w-11/12 tw-pt-5">
@@ -1836,9 +2065,16 @@ export function LectureOpenTemplate() {
                               업로드된 파일 :
                             </div>
                             <div className="tw-text-left tw-pl-5 tw-text-sm tw-flex tw-flex-wrap tw-gap-2">
-                              {fileList.map((file, index) => (
+                              {lectureContents.files.map((fileEntry, index) => (
                                 <div key={index} className="border tw-px-3 tw-p-1 tw-rounded">
-                                  <span className="tw-text-blue-600">{file.name}</span>
+                                  <span
+                                    onClick={() => {
+                                      onFileDownload(fileEntry.fileKey, fileEntry.name);
+                                    }}
+                                    className="tw-text-blue-600 tw-cursor-pointer"
+                                  >
+                                    {fileEntry?.file?.name || fileEntry.name}
+                                  </span>
                                   <button
                                     className="tw-ml-2 tw-cursor-pointer"
                                     onClick={() => handleRemoveFileLocal(index)}
@@ -1866,7 +2102,7 @@ export function LectureOpenTemplate() {
                       </div>
                     </div>
                   )}
-                  {inputList?.length > 0 && (
+                  {lectureContents?.urls?.length > 0 && (
                     <div className="tw-flex">
                       <div className="tw-w-[130px] tw-py-5"></div>
                       <div className="tw-w-11/12">
@@ -1876,9 +2112,9 @@ export function LectureOpenTemplate() {
                               첨부된 URL :
                             </div>
                             <div className="tw-text-left tw-pl-5 tw-text-sm tw-flex tw-flex-wrap tw-gap-2">
-                              {inputList.map((file, index) => (
+                              {lectureContents?.urls?.map((file, index) => (
                                 <div key={index} className="border tw-px-3 tw-p-1 tw-rounded">
-                                  <span className="tw-text-[#FF8F60]">{file}</span>
+                                  <span className="tw-text-[#FF8F60]">{file.url}</span>
                                   <button
                                     className="tw-ml-2 tw-cursor-pointer"
                                     onClick={() => handleRemoveInputLocal(index)}
@@ -1906,44 +2142,6 @@ export function LectureOpenTemplate() {
                       </div>
                     </div>
                   )}
-                  {/* <div className="tw-w-full tw-flex tw-justify-end tw-px-5 tw-items-center">
-                    {inputList.length > 0 && (
-                      <div className="tw-mt-3 tw-flex  tw-py-2 tw-w-[664px]">
-                        <div className="tw-flex-1 tw-text-left tw-pl-5">
-                          {inputList.map((input, index) => (
-                            <div key={input.id} style={{ marginBottom: '10px' }}>
-                              <div className="tw-flex tw-items-center tw-gap-2">
-                                <TextField
-                                  fullWidth
-                                  className="tw-pl-1"
-                                  size="small"
-                                  value={participationCode}
-                                  placeholder="강의자료 URL을 입력해주세요."
-                                  onChange={event => handleInputChange(input.id, event)}
-                                  id="margin-none"
-                                  InputProps={{
-                                    endAdornment: (
-                                      <InputAdornment position="end">
-                                        <IconButton onClick={handleAddInput}>
-                                          <AddIcon />
-                                        </IconButton>
-                                      </InputAdornment>
-                                    ),
-                                  }}
-                                />
-                                <button
-                                  className="tw-text-white tw-bg-black tw-rounded tw-w-[60px] tw-py-2 tw-ml-2"
-                                  onClick={() => handleDeleteInput(input.id)}
-                                >
-                                  삭제
-                                </button>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div> */}
                 </div>
 
                 <div className="tw-container tw-py-10 tw-px-10 tw-mx-0 tw-min-w-full tw-flex tw-flex-col tw-items-center">
@@ -1957,7 +2155,7 @@ export function LectureOpenTemplate() {
                     </button>
                     <button
                       className="tw-w-[150px] border tw-font-bold tw-py-3  tw-text-sm tw-px-4 tw-rounded tw-text-black tw-font-bold"
-                      onClick={() => handlerClubSaveTemp()}
+                      onClick={() => handlerClubSaveTemp('temp')}
                     >
                       임시 저장하기
                     </button>
@@ -1978,10 +2176,11 @@ export function LectureOpenTemplate() {
           <>
             <article>
               <LectureDetailInfo
-                selectedImageBanner={selectedImageBanner}
-                selectedImage={selectedImage}
+                selectedImageBanner={previewBanner}
+                selectedImage={preview}
+                selectedProfile={previewProfile}
                 border={true}
-                clubData={paramss?.clubForm}
+                clubData={paramss}
                 user={user}
                 selectedUniversityName={selectedUniversityName}
                 jobLevelName={levelNames}

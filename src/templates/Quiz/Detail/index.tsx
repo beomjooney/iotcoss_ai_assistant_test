@@ -115,6 +115,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
             page={page}
             handlePageChange={handlePageChange}
             contents={contents}
+            clubAbout={clubAbout}
             quizList={quizList}
           />
         ) : (

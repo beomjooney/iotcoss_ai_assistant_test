@@ -25,7 +25,7 @@ export function QuizMyLectureClubsTemplate() {
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [keyWorld, setKeyWorld] = useState('');
-  const [params, setParams] = useState<any>({ page, clubViewFilter: '0001' });
+  const [params, setParams] = useState<any>({ page, clubViewFilter: '0002', clubType: '0200' });
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -104,7 +104,8 @@ export function QuizMyLectureClubsTemplate() {
                             setActive(0);
                             setParams({
                               page,
-                              clubViewFilter: '0001',
+                              clubViewFilter: '0002',
+                              clubType: '0200',
                             });
                             setPage(1);
                           }}
@@ -122,7 +123,8 @@ export function QuizMyLectureClubsTemplate() {
                             setActive(1);
                             setParams({
                               page,
-                              clubViewFilter: '0002',
+                              clubViewFilter: '0003',
+                              clubType: '0200',
                             });
                             setPage(1);
                           }}

@@ -32,7 +32,16 @@ const cx = classNames.bind(styles);
 
 //comment
 
-const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, page, totalPage, handlePageChange }) => {
+const QuizClubDetaillSolution = ({
+  totalElements,
+  clubAbout,
+  contents,
+  quizList,
+  border,
+  page,
+  totalPage,
+  handlePageChange,
+}) => {
   const borderStyle = border ? 'border border-[#e9ecf2] tw-mt-14' : '';
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   let [isLiked, setIsLiked] = useState(contents?.club?.isFavorite);
@@ -114,7 +123,12 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
         </div>
         <div className="tw-h-[280] tw-relative tw-overflow-hidden tw-rounded-[8.75px] tw-bg-white border border-[#e9ecf2] tw-grid tw-grid-cols-3 tw-gap-4">
           <div className="tw-col-span-1">
-            <img src={contents?.club?.clubImageUrl} width={320} height={320} className="tw-object-cover  tw-h-full" />
+            <img
+              src={clubAbout?.clubImageUrl || '/assets/images/banner/Rectangle_190.png'}
+              width={320}
+              height={320}
+              className="tw-object-cover  tw-h-full"
+            />
           </div>
           <div className="tw-col-span-2 tw-flex tw-flex-col tw-py-4 tw-pr-4">
             <div className="tw-col-span-2 tw-flex tw-flex-col tw-py-4 tw-pr-4">
@@ -186,7 +200,6 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
         </div>
 
         {/* Content Section */}
-        {/* {activeTab === 'myQuiz' && ( */}
         <div className="tw-flex tw-flex-col tw-space-y-4 tw-rounded-lg tw-py-4 tw-overflow-hidden">
           <p className="tw-text-xl tw-font-bold tw-text-black tw-py-4">나의 학습 현황</p>
           <div className="tw-overflow-auto tw-rounded-lg">
@@ -333,6 +346,12 @@ const QuizClubDetaillSolution = ({ totalElements, contents, quizList, border, pa
                 </Grid>
               </Grid>
               <Divider className="tw-py-3 tw-mb-3" />
+
+              {quizList.length === 0 && (
+                <div className="tw-p-10 tw-rounded-lg border tw-mt-10 tw-text-center tw-text-gray-500 tw-text-base tw-font-medium">
+                  아직 오픈된 퀴즈가 없습니다.
+                </div>
+              )}
               {quizList?.map((item, index) => {
                 return (
                   <React.Fragment key={index}>

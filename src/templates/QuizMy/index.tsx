@@ -22,7 +22,7 @@ export function QuizMyTemplate() {
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [keyWorld, setKeyWorld] = useState('');
-  const [params, setParams] = useState<any>({ page, clubViewFilter: '0001' });
+  const [params, setParams] = useState<any>({ page, clubViewFilter: '0001', clubType: '0100' });
 
   const {
     isFetched: isContentFetched,
@@ -84,6 +84,7 @@ export function QuizMyTemplate() {
                             setParams({
                               page,
                               clubViewFilter: '0001',
+                              clubType: '0100',
                             });
                             setPage(1);
                           }}
@@ -102,6 +103,7 @@ export function QuizMyTemplate() {
                             setParams({
                               page,
                               clubViewFilter: '0002',
+                              clubType: '0100',
                             });
                             setPage(1);
                           }}
@@ -120,6 +122,7 @@ export function QuizMyTemplate() {
                             setParams({
                               ...params,
                               clubViewFilter: '0003',
+                              clubType: '0100',
                               page,
                             });
                             setPage(1);

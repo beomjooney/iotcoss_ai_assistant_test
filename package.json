@@ -57,6 +57,7 @@
     "react-data-grid": "^7.0.0-beta.43",
     "react-dom": "^18.2.0",
     "react-drag-list": "^1.1.0",
+    "react-draggable-list": "^4.2.1",
     "react-elastic-carousel": "^0.11.5",
     "react-flow-renderer": "^10.3.16",
     "react-hook-form": "^7.41.0",
