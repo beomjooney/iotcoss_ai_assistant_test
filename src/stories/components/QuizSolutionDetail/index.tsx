@@ -270,7 +270,8 @@ BannerProps) => {
         quiz: data?.quizSequence,
       });
 
-      router.push(`/quiz/${data?.clubSequence}`);
+      // router.push(`/quiz/${data?.clubSequence}`);
+      location.href = `/quiz/${data?.clubSequence}`;
       // router.push(
       //   {
       //     pathname: `/quiz/growth/${data?.clubSequence}`,

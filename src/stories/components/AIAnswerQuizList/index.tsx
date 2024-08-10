@@ -89,9 +89,10 @@ const AIAnswerQuizList = ({ info, refetchReply }) => {
 
   const handleClick = () => {
     console.log(valueAI);
+    console.log('value', value);
 
-    if (value === null) {
-      alert('AI채점/교수 채점 기준을 입력하세요.');
+    if (value === null || value === '') {
+      alert('교수 채점 기준을 입력하세요.');
       return;
     }
 
