@@ -30,7 +30,7 @@ export function QuizTemplate() {
   const router = useRouter();
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
-  const [params, setParams] = useState<paramProps>({ page, recruitType: '0300' });
+  const [params, setParams] = useState<paramProps>({ page });
   const [contents, setContents] = useState<RecommendContent[]>([]);
   const [active, setActive] = useState(0);
   const [contentType, setContentType] = useState(0);
@@ -56,7 +56,7 @@ export function QuizTemplate() {
   const handleTabChange = (event, newValue) => {
     setActive(newValue);
     if (newValue === 0) {
-      setParams({ page, recruitType: '0300' });
+      setParams({ page });
     } else {
       const selectedItem = optionsData.data.jobs[newValue - 1];
       setContentType(selectedItem.id);
@@ -76,7 +76,6 @@ export function QuizTemplate() {
       // ...params,
       page,
       keyword: keyWorld,
-      recruitType: '0300',
     });
   }, [page, keyWorld]);
 
