@@ -1138,6 +1138,7 @@ export function LectureOpenTemplate() {
       onLectureSave(formData);
     } else if (type === 'validation') {
       setActiveStep(prevActiveStep => prevActiveStep + 1);
+      setParamss(clubFormParams);
       window.scrollTo(0, 0);
     }
   };
