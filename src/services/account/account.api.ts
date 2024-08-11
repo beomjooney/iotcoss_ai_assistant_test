@@ -104,7 +104,7 @@ export const loginOtpVerification = async body => {
 // 회원 OTP
 export async function getIdVerification(params: any) {
   const { data } = await axiosGeneralAPI().get('/api/v1/member/validate', { params });
-  return data.data;
+  return data;
 }
 
 export async function changePhone(params: any) {
