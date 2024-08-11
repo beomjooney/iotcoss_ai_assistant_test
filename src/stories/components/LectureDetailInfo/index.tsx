@@ -144,18 +144,58 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
             <Grid item xs={8}>
               <div className="tw-flex tw-item tw-text-base tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
                 <span className="tw-inline-flex tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded">
-                  {clubData?.jobGroups[0].name || 'N/A'}
+                  {clubData?.jobGroups[0].name || selectedUniversityName || 'N/A'}
                 </span>
 
-                {clubData?.jobs?.length > 0 &&
-                  clubData.jobs.map((job, index) => (
-                    <span
-                      key={index}
-                      className="tw-inline-flex tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
-                    >
-                      {job.name || 'N/A'}
-                    </span>
-                  ))}
+                {selectedJobName.length > 0 ? (
+                  <>
+                    {selectedJobName.map((jobLevel, index) => (
+                      <span
+                        key={index}
+                        className="tw-inline-flex tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
+                      >
+                        {jobLevel}
+                      </span>
+                    ))}
+                  </>
+                ) : (
+                  <>
+                    {clubData?.jobs?.length > 0 &&
+                      clubData.jobs.map((job, index) => (
+                        <span
+                          key={index}
+                          className="tw-inline-flex tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
+                        >
+                          {job.name || 'N/A'}
+                        </span>
+                      ))}
+                  </>
+                )}
+
+                {jobLevelName.length > 0 ? (
+                  <>
+                    {jobLevelName.map((jobLevel, index) => (
+                      <span
+                        key={index}
+                        className=" tw-inline-flex tw-bg-gray-200 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
+                      >
+                        {jobLevel}
+                      </span>
+                    ))}
+                  </>
+                ) : (
+                  <>
+                    {clubData?.jobLevels?.length > 0 &&
+                      clubData.jobLevels.map((jobLevel, index) => (
+                        <span
+                          key={index}
+                          className="tw-my-2 tw-inline-flex tw-bg-gray-200 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
+                        >
+                          {jobLevel.name || 'N/A'}
+                        </span>
+                      ))}
+                  </>
+                )}
 
                 <button
                   className="tw-inline-flex"
@@ -171,16 +211,9 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
                 </button>
               </div>
 
-              {clubData?.jobLevels?.length > 0 &&
-                clubData.jobLevels.map((jobLevel, index) => (
-                  <span
-                    key={index}
-                    className="tw-my-2 tw-inline-flex tw-bg-gray-200 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
-                  >
-                    {jobLevel.name || 'N/A'}
-                  </span>
-                ))}
-              <div className="tw-text-black tw-text-3xl tw-font-bold tw-py-3">{clubData?.name || 'N/A'}</div>
+              <div className="tw-text-black tw-text-3xl tw-font-bold tw-py-3">
+                {clubData?.name || clubData?.clubName || 'N/A'}
+              </div>
             </Grid>
             <Grid item xs={4} container justifyContent="flex-end">
               <div className="">
@@ -214,7 +247,7 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
         <div className="tw-flex tw-items-end tw-gap-[16px]">
           <img
             className="tw-w-40 tw-h-40 border tw-rounded-full"
-            src={clubData?.leader?.profileImageUrl || '/assets/avatars/1.jpg'}
+            src={clubData?.leader?.profileImageUrl || user?.member?.profileImageUrl || '/assets/avatars/1.jpg'}
           />
           <div className="tw-flex">
             <div className="tw-flex tw-justify-center tw-items-center tw-text-sm text-black border tw-py-1 tw-px-2  tw-mr-5 tw-rounded-lg">
@@ -222,7 +255,7 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
             </div>
             <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-[14px]  tw-gap-3">
               <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[21.875px] tw-font-bold tw-text-left tw-text-black">
-                {user?.nickname || 'N/A'}
+                {user?.nickname || user?.member?.nickname || 'N/A'}
               </p>
             </div>
             <p className="tw-text-[12.25px] tw-text-[#6a7380]">{user?.position}</p>
@@ -259,7 +292,9 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
             <div className="tw-col-start-2 tw-col-end-12 ">
               <div className="tw-flex tw-flex-col">
                 <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-5">학습 주제</p>
-                <p className="tw-text-sm tw-text-left tw-text-black">{clubData?.memberIntroductionText || 'N/A'}</p>
+                <p className="tw-text-sm tw-text-left tw-text-black">
+                  {clubData?.studySubject || clubData?.studySubject || 'N/A'}
+                </p>
               </div>
             </div>
           </div>

@@ -56,16 +56,15 @@ export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: Lo
       onSubmitLogin();
 
       //redirection 처리
-      console.log('loginData?.tenant_uri', loginData?.tenant_uri);
-      console.log('getFirstSubdomain()', getFirstSubdomain());
-
       update({
         tenantName: loginData?.tenant_uri?.split('.')[0],
       });
 
-      //login 추가 localhost 일때는 다 로그인 처리 해야됨
+      // Check if running in the local environment
+      const isLocalEnv = process.env.NEXT_PUBLIC_ENV === 'local';
+      console.log('loginData?.tenant_uri', loginData?.tenant_uri, getFirstSubdomain(), isLocalEnv);
 
-      if (loginData?.tenant_uri === getFirstSubdomain()) {
+      if (loginData?.tenant_uri === getFirstSubdomain() || isLocalEnv) {
         location.href = '/';
       } else {
         const authStore = localStorage.getItem('auth-store');
