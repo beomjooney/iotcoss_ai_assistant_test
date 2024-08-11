@@ -127,6 +127,12 @@ LectureCardProps) => {
     return `${Math.floor(betweenTimeDay / 365)}년전`;
   }
 
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   return (
     <>
       <Desktop>
@@ -140,6 +146,9 @@ LectureCardProps) => {
               }
             }}
           >
+            {isClient && !logged && (
+              <div className="tw-absolute tw-bottom-0 tw-left-0 tw-right-0 tw-h-[300px] tw-bg-gradient-to-t tw-from-white tw-to-transparent tw-pointer-events-none"></div>
+            )}
             <div
               style={{ backgroundImage: `url(${item.backgroundImage || '/assets/images/banner/Rectangle_200.png'})` }}
               className="border  tw-h-[235px] tw-relative tw-overflow-hidden tw-rounded-lg  tw-bg-cover tw-bg-no-repeat tw-bg-center tw-border tw-border-[#e9ecf2]"
