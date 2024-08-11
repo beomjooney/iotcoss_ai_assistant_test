@@ -77,7 +77,7 @@ export const useLogin = (): UseMutationResult => {
       if (code === 'C06000') {
         alert('로그인 실패 횟수 초과');
       } else if (code === 'C06002') {
-        alert('잘못된 사용자 또는 암호 입니다.');
+        alert('이메일 계정 또는 암호가 일치하지 않습니다. 다시 한번 확인해 주세요.');
       }
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('LOGIN').all),

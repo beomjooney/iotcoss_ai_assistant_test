@@ -9,10 +9,18 @@ import { Session, useSessionStore } from '../../src/store/session';
 import { GetServerSideProps } from 'next';
 
 export function IndexPage({ session }: { session: Session }) {
+  // redirection 처리
+  const { update } = useSessionStore.getState();
+  useEffect(() => {
+    // session이 존재하는 경우에만 상태 업데이트를 수행
+    if (session) {
+      update(session);
+    }
+  }, [session, update]); // 의존성 배열에 session과 update 포함
+
   const COLOR_PRESETS = usePresets();
   const { setColorPresetName } = useColorPresetName();
   const { setColorPresets } = useColorPresets();
-  const { update } = useSessionStore.getState();
 
   const { memberId, logged } = useSessionStore(state => ({
     memberId: state.memberId,
