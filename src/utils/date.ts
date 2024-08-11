@@ -28,8 +28,8 @@ export function getFirstSubdomain() {
     }
 
     //test
-    return '';
-    // return subdomain;
+    // return '';
+    return subdomain;
   }
   return null; // host가 없는 경우
 }

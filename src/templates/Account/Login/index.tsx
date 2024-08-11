@@ -63,6 +63,8 @@ export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: Lo
         tenantName: loginData?.tenant_uri?.split('.')[0],
       });
 
+      //login 추가 localhost 일때는 다 로그인 처리 해야됨
+
       if (loginData?.tenant_uri === getFirstSubdomain()) {
         location.href = '/';
       } else {
