@@ -3,6 +3,7 @@ import { Footer, Header } from '../../components';
 import { Mobile, Desktop } from 'src/hooks/mediaQuery';
 import { useSessionStore } from 'src/store/session';
 import { useState, useEffect } from 'react';
+import { getFirstSubdomain } from 'src/utils';
 
 export interface DefaultLayoutProps {
   /** 테마 색상 */
@@ -19,9 +20,17 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
   const { logged } = useSessionStore.getState();
   const [isContentRendered, setIsContentRendered] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const subDomain = getFirstSubdomain();
 
   const menuItem = [
-    { no: 0, option: 'nav-item', title: '서비스 소개', link: '/', dropdown: [], login: true },
+    {
+      no: 0,
+      option: 'nav-item',
+      title: '서비스 소개',
+      link: subDomain ? `/${subDomain}` : '/',
+      dropdown: [],
+      login: true,
+    },
     {
       no: 1,
       option: 'nav-item',
