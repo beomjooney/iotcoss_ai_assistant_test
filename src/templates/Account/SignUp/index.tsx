@@ -66,9 +66,20 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
   const [params, setParams] = useState<any>({ email });
   const [shouldRefetch, setShouldRefetch] = useState(false);
 
-  const { mutate: onLoginSignUp, isSuccess: isSignUpSuccess } = useLoginSignUp();
+  const { mutate: onLoginSignUp, isSuccess: isSignUpSuccess, data: signUpData } = useLoginSignUp();
   const { mutate: onLoginOtp, isSuccess } = useLoginOtp();
   const { mutate: onLoginOtpVerification, isSuccess: isVerification, data: resultData } = useLoginOtpVerification();
+
+  useEffect(() => {
+    if (signUpData) {
+      console.log('resultData', signUpData.data);
+      if (signUpData.data.responseCode === 'CO4015') {
+        alert('권한 요청 없습니다.');
+      } else {
+        router.push('/account/login');
+      }
+    }
+  }, [signUpData]);
 
   useEffect(() => {
     if (resultData) {
@@ -92,7 +103,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
 
   useEffect(() => {
     if (isSignUpSuccess) {
-      router.push('/account/login');
+      // router.push('/account/login');
     }
   }, [isSignUpSuccess]);
 
@@ -102,11 +113,15 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
     error,
   }: UseQueryResult<any> = useIdVerification(params, data => {
     console.log('data', data);
-    if (data) {
+    if (data.responseCode === '1400') {
+      alert('현재 도메인에는 메일을 사용할 수 없습니다.');
+    } else if (data.responseCode === '1401') {
+      alert('중복된 이메일 입니다.');
+    } else if (data.responseCode === '1402') {
+      alert('유효하지 않은 이메일 형식입니다.');
+    } else {
       alert('가입가능한 이메일입니다.');
       setIsDisabledEmail(true);
-    } else {
-      alert('중복된 이메일 입니다.');
     }
   });
 
@@ -223,6 +238,11 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
   });
 
   const onSubmit = data => {
+    if (!isDisabledEmail) {
+      alert('이메일 중복확인을 해주세요.');
+      return;
+    }
+
     if (!serviceTerm) {
       alert('서비스이용약관을 선택 해주세요.');
       return;
@@ -290,7 +310,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
     event.preventDefault();
     console.log('id3133', data);
     setEmail(data.memberId);
-    setParams({ email: data.memberId });
+    setParams({ email: data.memberId, tenantUri: subdomain });
     setShouldRefetch(true);
   };
 
@@ -420,7 +440,11 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <Button color="lite-gray" onClick={() => handleSubmitId(onSubmitId)}>
+                  <Button
+                    className="tw-bg-blue-600"
+                    disabled={isDisabledEmail}
+                    onClick={() => handleSubmitId(onSubmitId)}
+                  >
                     <Typography sx={{ fontSize: 12 }}>중복확인</Typography>
                   </Button>
                 </InputAdornment>
@@ -452,7 +476,11 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <Button color="lite-gray" disabled={isDisabledPhone} onClick={() => handleSubmitPhone(onSubmitPhone)}>
+                  <Button
+                    className="tw-bg-blue-600"
+                    disabled={isDisabledPhone}
+                    onClick={() => handleSubmitPhone(onSubmitPhone)}
+                  >
                     <Typography sx={{ fontSize: 12 }}>인증문자 발송</Typography>
                   </Button>
                 </InputAdornment>
@@ -486,7 +514,11 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <Button disabled={isDisabledOtp} onClick={() => handleSubmitOtp(onSubmitOtp)}>
+                      <Button
+                        className="tw-bg-blue-600"
+                        disabled={isDisabledOtp}
+                        onClick={() => handleSubmitOtp(onSubmitOtp)}
+                      >
                         <Typography sx={{ fontSize: 12 }}>인증하기</Typography>
                       </Button>
                     </InputAdornment>

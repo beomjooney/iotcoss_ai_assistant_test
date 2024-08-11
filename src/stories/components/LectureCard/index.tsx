@@ -30,6 +30,7 @@ const LectureCard = ({
   className,
 }: // eslint-disable-next-line @typescript-eslint/no-empty-function
 LectureCardProps) => {
+  console.log('item', item);
   const { logged } = useSessionStore.getState();
   const { mutate: onSaveLike, isSuccess } = useSaveLike();
   const { mutate: onDeleteLike } = useDeleteLike();
@@ -140,7 +141,7 @@ LectureCardProps) => {
             }}
           >
             <div
-              style={{ backgroundImage: `url(${selectedImageBanner})` }}
+              style={{ backgroundImage: `url(${item.backgroundImage || '/assets/images/banner/Rectangle_200.png'})` }}
               className="border  tw-h-[235px] tw-relative tw-overflow-hidden tw-rounded-lg  tw-bg-cover tw-bg-no-repeat tw-bg-center tw-border tw-border-[#e9ecf2]"
             >
               <div className="tw-absolute tw-inset-0 tw-bg-white tw-opacity-90 tw-rounded-lg md:tw-rounded-none md:tw-rounded-r-lg"></div>
@@ -178,34 +179,56 @@ LectureCardProps) => {
                 {isLiked ? <StarIcon color="error" /> : <StarBorderIcon color="disabled" />}
               </button>
               <div className="tw-w-[262px] tw-h-6">
-                <p className="tw-w-[262px] tw-h-6 tw-absolute tw-left-7 tw-top-[62px] tw-text-xl tw-font-bold tw-text-left tw-text-black">
-                  객체 지향 프로그래밍
+                <p className="tw-w-[262px] tw-h-6 tw-absolute tw-left-5 tw-top-[62px] tw-text-xl tw-font-bold tw-text-left tw-text-black">
+                  {item.clubName}
                 </p>
               </div>
-              <p className="tw-absolute tw-left-7 tw-top-[152px] tw-text-sm tw-text-left tw-text-[#31343d]">
-                <span className="tw-text-sm tw-text-left tw-text-[#31343d]">2024.00.00 ~ 2024.00.00</span>
+              <p className="tw-absolute tw-left-5 tw-top-[152px] tw-text-sm tw-text-left tw-text-[#31343d]">
+                <span className="tw-text-sm tw-text-left tw-text-[#31343d]">
+                  {item.startAt.split(' ')[0]}~{item.endAt.split(' ')[0]}
+                </span>
                 <br />
-                <span className="tw-text-sm tw-text-left tw-text-[#31343d]">화, 목ㅣ퀴즈클럽 12주ㅣ학습 24회</span>
+                <span className="tw-text-sm tw-text-left tw-text-[#31343d]">
+                  강의클럽 {item.weekCount}주{/* 화, 목ㅣ 강의클럽 {item.weekCount}주ㅣ학습 24회 */}
+                </span>
               </p>
-              <div className="tw-flex tw-justify-start tw-items-start tw-absolute tw-left-7 tw-top-5 tw-gap-1">
-                <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#d7ecff]">
-                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#235a8d]">개발</p>
-                </div>
+              <div className="tw-flex tw-justify-start tw-items-start tw-absolute tw-left-5 tw-top-5 tw-gap-1">
                 <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#e4e4e4]">
                   <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#5f5f5f]">
-                    백엔드개발자
+                    {item?.jobGroups[0].name || 'N/A'}
                   </p>
                 </div>
-                <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#fffdc8]">
-                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#806024]">1레벨</p>
-                </div>
+
+                {item?.jobs?.length > 0 &&
+                  item.jobs.map((job, index) => (
+                    <div
+                      key={index}
+                      className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#d7ecff]"
+                    >
+                      <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#235a8d]">
+                        {job.name || 'N/A'}
+                      </p>
+                    </div>
+                  ))}
+
+                {item?.jobLevels?.length > 0 &&
+                  item.jobLevels.map((jobLevel, index) => (
+                    <div
+                      key={index}
+                      className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#fffdc8]"
+                    >
+                      <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#806024]">
+                        {jobLevel.name || 'N/A'}
+                      </p>
+                    </div>
+                  ))}
               </div>
               <img
                 className="tw-absolute tw-left-[329.5px] tw-top-[17.5px] tw-w-[200px] tw-h-[200px] tw-rounded-full"
-                src="/assets/avatars/3.jpg"
+                src={item.leaderProfileImageUrl || '/assets/avatars/3.jpg'}
               />
-              <p className="tw-absolute tw-left-7 tw-top-[202px] tw-text-sm tw-font-bold tw-text-left tw-text-black">
-                소Ganzi
+              <p className="tw-absolute tw-left-5 tw-top-[202px] tw-text-sm tw-font-bold tw-text-left tw-text-black">
+                {item.leaderNickname}
               </p>
             </div>
           </a>
