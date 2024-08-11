@@ -20,6 +20,7 @@ import {
   saveLectureTempPost,
   saveLecturePost,
 } from './quiz.api';
+import router from 'next/router';
 
 export const useQuizOrder = (): UseMutationResult => {
   const queryClient = useQueryClient();
@@ -185,7 +186,14 @@ export const useClubQuizSave = (): UseMutationResult => {
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CAMENITY').all),
     onSuccess: async data => {
-      // alert('클럽이 개설 되었습니다.\n관리자가 클럽 승인대기 중입니다.');
+      console.log('data', data);
+      const { responseCode, message } = data;
+      if (responseCode === '0000') {
+        alert('클럽이 개설 되었습니다.\n관리자가 클럽 승인대기 중입니다.');
+        router.push('/quiz');
+      } else {
+        alert(`error : [${responseCode}] ${message}`);
+      }
     },
   });
 };
@@ -212,7 +220,15 @@ export const useLectureTempSave = (): UseMutationResult => {
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('TEMP').all),
     onSuccess: async data => {
-      alert('임시저장 되었습니다.');
+      console.log('data', data);
+      const { responseCode, message } = data;
+      if (responseCode === '0000') {
+        alert('임시저장이 되었습니다.');
+      } else if (responseCode === '1420') {
+        alert('강의 회차 등록 시 시작일이 중복됩니다. 다른 날짜를 선택해 주세요.');
+      } else {
+        alert(`error : [${responseCode}] ${message}`);
+      }
     },
   });
 };
@@ -225,7 +241,14 @@ export const useLectureSave = (): UseMutationResult => {
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('TEMP').all),
     onSuccess: async data => {
-      // alert('클럽이 개설 되었습니다.\n관리자가 클럽 승인대기 중입니다.');
+      console.log('data', data);
+      const { responseCode, message } = data;
+      if (responseCode === '0000') {
+        alert('클럽이 개설 되었습니다.\n관리자가 클럽 승인대기 중입니다.');
+        router.push('/lecture');
+      } else {
+        alert(`error : [${responseCode}] ${message}`);
+      }
     },
   });
 };

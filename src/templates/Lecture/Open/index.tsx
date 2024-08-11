@@ -68,14 +68,14 @@ for (let i = 0; i < 2; i++) {
     files: [],
     clubStudyType: '0100',
     clubStudyUrl: '',
-    studyDate: dayjs().format('YYYY-MM-DD'),
+    studyDate: dayjs().add(i, 'day').format('YYYY-MM-DD'), // i 만큼 날짜를 증가시킴
   });
 }
 
 export function LectureOpenTemplate() {
   const router = useRouter();
   const [startDay, setStartDay] = React.useState<Dayjs | null>(dayjs());
-  const [endDay, setEndDay] = React.useState<Dayjs | null>(dayjs());
+  const [endDay, setEndDay] = React.useState<Dayjs | null>(dayjs().add(1, 'day'));
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [jobGroupsFilter, setJobGroupsFilter] = useState([]);
@@ -231,7 +231,7 @@ export function LectureOpenTemplate() {
 
   // jobLevels 코드에 해당하는 이름을 찾는 함수
   const getJobLevelNames = (jobLevelCodes, jobLevels) => {
-    return jobLevelCodes.map(code => {
+    return jobLevelCodes?.map(code => {
       const jobLevel = jobLevels.find(level => level.code === code.toString().padStart(4, '0'));
       return jobLevel ? jobLevel.name : '';
     });
@@ -253,20 +253,20 @@ export function LectureOpenTemplate() {
     setStudySubject(clubForm.studySubject || '');
     setUniversityCode(clubForm.jobGroups || '');
     setRecommendLevels(clubForm.jobLevels || '');
-    console.log(clubForm.jobLevels.map(item => item.name));
-    const selectedLevel = optionsData?.data?.jobLevels?.find(u => u.code === clubForm.jobLevels.toString());
+    console.log(clubForm?.jobLevels?.map(item => item.name));
+    const selectedLevel = optionsData?.data?.jobLevels?.find(u => u.code === clubForm?.jobLevels?.toString());
 
     // clubForm.jobLevels의 이름 리스트 생성
     const jobLevelNames = getJobLevelNames(clubForm.jobLevels, optionsData?.data?.jobLevels || []);
     console.log('jobLevelNames', jobLevelNames);
     setLevelNames(jobLevelNames);
 
-    const selected = optionsData?.data?.jobs?.find(u => u.code === clubForm.jobGroups.toString());
+    const selected = optionsData?.data?.jobs?.find(u => u.code === clubForm?.jobGroups?.toString());
     setSelectedUniversityName(selected?.name || '');
     setJobs(selected ? selected.jobs : []);
     setSelectedJob(clubForm.jobs || []);
 
-    const names = selected.jobs
+    const names = selected?.jobs
       .filter(department => clubForm.jobs.includes(department.code))
       .map(department => department.name);
 
@@ -434,8 +434,10 @@ export function LectureOpenTemplate() {
     const file = event.target.files[0];
     if (file) {
       if (type === 'card') {
+        setSelectedImage('');
         setSelectedImageCheck(file);
       } else if (type === 'banner') {
+        setSelectedImageBanner('');
         setSelectedImageBannerCheck(file);
       } else if (type === 'profile') {
         setSelectedImageProfileCheck(file);
@@ -453,6 +455,7 @@ export function LectureOpenTemplate() {
       };
       reader.readAsDataURL(file);
     }
+    event.target.value = null;
   };
 
   const handleProfileDelete = e => {
@@ -535,7 +538,8 @@ export function LectureOpenTemplate() {
       clubStudyUrl: '',
       urls: [],
       files: [],
-      studyDate: dayjs().format('YYYY-MM-DD'),
+      studyDate: '',
+      // studyDate: dayjs().format('YYYY-MM-DD'),
     };
 
     // Update scheduleData with the new data
@@ -570,18 +574,6 @@ export function LectureOpenTemplate() {
       refetchMyJob();
     }
   }, [active]);
-
-  useEffect(() => {
-    if (clubSuccess) {
-      console.log('clubDatas', clubDatas);
-      if (clubDatas.data.responseCode === 'C00200') {
-        alert('강의클럽이 개설 되었습니다.\n관리자가 클럽 승인대기 중입니다.');
-        router.push('/lecture');
-      } else {
-        alert(clubDatas.data.responseCode + ' ' + clubDatas.data.message);
-      }
-    }
-  }, [clubSuccess]);
 
   const isStepSkipped = (step: number) => {
     return skipped.has(step);
@@ -951,11 +943,11 @@ export function LectureOpenTemplate() {
       return false;
     }
 
-    if (!selectedImage) {
+    if (!preview) {
       alert('강의 카드 이미지를 선택해주세요.');
       return false;
     }
-    if (!selectedImageBanner) {
+    if (!previewBanner) {
       alert('강의 배경 이미지를 선택해주세요.');
       return false;
     }
@@ -978,6 +970,7 @@ export function LectureOpenTemplate() {
       useCurrentProfileImage: 'true',
     };
 
+    console.log(clubFormParams);
     const formData = new FormData();
     formData.append('clubForm.clubName', clubFormParams.clubName);
     formData.append('clubForm.jobGroups', clubFormParams.jobGroups.toString());
@@ -1063,7 +1056,10 @@ export function LectureOpenTemplate() {
       formData.append(`clubStudies[${i}].clubStudyName`, item.clubStudyName);
       formData.append(`clubStudies[${i}].clubStudyType`, item.clubStudyType);
       formData.append(`clubStudies[${i}].clubStudyUrl`, item.clubStudyUrl || '');
-      formData.append(`clubStudies[${i}].studyDate`, item.studyDate);
+
+      // 현재 날짜 값에 하루를 더하기
+      const nextDay = dayjs(item.studyDate).add(1, 'day').format('YYYY-MM-DD');
+      formData.append(`clubStudies[${i}].studyDate`, nextDay);
     }
 
     // scheduleData.forEach((item, i) => {
@@ -1485,7 +1481,7 @@ export function LectureOpenTemplate() {
                           setLevelNames(prevNames => prevNames.filter(name => name !== item.name));
                         } else {
                           // Add the name if the code is not in the array
-                          setLevelNames(prevNames => [...prevNames, item.name]);
+                          setLevelNames(prevNames => [...(prevNames ? prevNames : []), item.name]);
                         }
                       }}
                       className={cx('tw-mr-2 !tw-w-[85px] !tw-h-[37px]')}

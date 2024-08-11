@@ -495,18 +495,6 @@ export function QuizOpenTemplate() {
     }
   }, [active]);
 
-  useEffect(() => {
-    if (clubSuccess) {
-      console.log('clubDatas', clubDatas);
-      if (clubDatas.data.responseCode === 'C00200') {
-        alert('클럽이 개설 되었습니다.\n관리자가 클럽 승인대기 중입니다.');
-        router.push('/quiz');
-      } else {
-        alert(clubDatas.data.responseCode + ' ' + clubDatas.data.message);
-      }
-    }
-  }, [clubSuccess]);
-
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const [value, setValue] = React.useState(0);

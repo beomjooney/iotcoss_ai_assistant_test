@@ -82,18 +82,25 @@ export const saveAIQuizAnswerEvaluation = async body => {
   const { data } = await axiosGeneralAPI().put(`/api/v1/clubs/${body.club}/quizzes/${body.quiz}/answers-evaluation`);
   return data.data;
 };
-export const saveClubQuizPost = async body => await axiosGeneralAPI().post(`/api/v1/club`, body);
+export const saveClubQuizPost = async body => {
+  const { data } = await axiosGeneralAPI().post(`/api/v1/club`, body);
+  return data;
+};
 
 export const saveClubTempPost = async body => await axiosGeneralAPI().post(`/api/v1/club/temporary`, body);
-export const saveLectureTempPost = async body =>
-  await axiosGeneralAPI().put(`/api/v1/lecture-club/temporary`, body, {
+export const saveLectureTempPost = async body => {
+  const { data } = await axiosGeneralAPI().put(`/api/v1/lecture-club/temporary`, body, {
     headers: { 'content-type': 'multipart/form-data' },
   });
+  return data;
+};
 
-export const saveLecturePost = async body =>
-  await axiosGeneralAPI().post(`/api/v1/lecture-club`, body, {
+export const saveLecturePost = async body => {
+  const { data } = await axiosGeneralAPI().post(`/api/v1/lecture-club`, body, {
     headers: { 'content-type': 'multipart/form-data' },
   });
+  return data;
+};
 
 export const deletePost = async postNo => await axiosGeneralAPI().delete(`/posts/${postNo}`);
 
