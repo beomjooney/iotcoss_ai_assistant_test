@@ -575,6 +575,7 @@ export function LectureOpenTemplate() {
     if (clubSuccess) {
       console.log('clubDatas', clubDatas);
       if (clubDatas.data.responseCode === 'C00200') {
+        alert('강의클럽이 개설 되었습니다.\n관리자가 클럽 승인대기 중입니다.');
         router.push('/lecture');
       } else {
         alert(clubDatas.data.responseCode + ' ' + clubDatas.data.message);

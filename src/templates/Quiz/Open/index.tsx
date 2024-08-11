@@ -166,7 +166,7 @@ export function QuizOpenTemplate() {
   const [keyWorld, setKeyWorld] = useState('');
   const [myKeyWorld, setMyKeyWorld] = useState('');
   const { mutate: onQuizSave, isSuccess: postSucces } = useQuizSave();
-  const { mutate: onClubQuizSave, isError, isSuccess: clubSuccess } = useClubQuizSave();
+  const { mutate: onClubQuizSave, isError, isSuccess: clubSuccess, data: clubDatas } = useClubQuizSave();
 
   //quiz new logic
   const [selectedQuizIds, setSelectedQuizIds] = useState([]);
@@ -497,7 +497,13 @@ export function QuizOpenTemplate() {
 
   useEffect(() => {
     if (clubSuccess) {
-      router.push('/quiz');
+      console.log('clubDatas', clubDatas);
+      if (clubDatas.data.responseCode === 'C00200') {
+        alert('클럽이 개설 되었습니다.\n관리자가 클럽 승인대기 중입니다.');
+        router.push('/quiz');
+      } else {
+        alert(clubDatas.data.responseCode + ' ' + clubDatas.data.message);
+      }
     }
   }, [clubSuccess]);
 
