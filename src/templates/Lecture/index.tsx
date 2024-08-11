@@ -221,8 +221,9 @@ export function LectureTemplate() {
                           item={item}
                           xs={6}
                           className={cx('reply-container__item')}
-                          selectedImage="/assets/images/banner/Rectangle_190.png"
-                          selectedImageBanner="/assets/images/banner/Rectangle_201.png"
+                          selectedImage=""
+                          selectedImageBanner=""
+                          // selectedImageBanner="/assets/images/banner/Rectangle_201.png"
                         />
                       </React.Fragment>
                     );
