@@ -589,26 +589,7 @@ export function LectureOpenTemplate() {
 
   const handleNextTwo = () => {
     console.log('next');
-    console.log(scheduleData);
-
-    const newData = [...scheduleData];
-    const nullQuizSequences = scheduleData
-      .map((item, index) => (item.quizSequence === null ? index + 1 : null))
-      .filter(index => index !== null);
-
-    // if (nullQuizSequences.length > 0) {
-    //   alert(`${nullQuizSequences.join(', ')} 번째 퀴즈를 등록해주세요.`);
-    //   return;
-    // }
-
-    let newSkipped = skipped;
-    if (isStepSkipped(activeStep)) {
-      newSkipped = new Set(newSkipped.values());
-      newSkipped.delete(activeStep);
-    }
-
-    setActiveStep(prevActiveStep => prevActiveStep + 1);
-    setSkipped(newSkipped);
+    handlerClubSaveTemp('validation');
   };
   const [updateKey, setUpdateKey] = useState(0); // 상태 업데이트 강제 트리거를 위한 키
 
