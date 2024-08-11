@@ -16,7 +16,7 @@ export function getFirstSubdomain() {
   if (host) {
     // 'localhost'를 제외하고, 최소한 두 개의 부분을 가진 경우에만 처리
     if (!host.includes('.')) {
-      return 'test'; // 공백 반환
+      return ''; // 공백 반환
     }
 
     // 호스트 이름을 점(.)으로 분리하고 첫 번째 부분을 반환
@@ -28,7 +28,7 @@ export function getFirstSubdomain() {
     }
 
     //test
-    return 'test';
+    return '';
     // return subdomain;
   }
   return null; // host가 없는 경우
