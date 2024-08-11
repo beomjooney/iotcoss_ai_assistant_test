@@ -130,9 +130,9 @@ export function LectureDetailTemplate({ id }: LectureDetailTemplateProps) {
                 refetchClubAbout={refetchClubAbout}
                 clubData={clubAbout}
                 user={clubAbout?.leader}
-                selectedUniversityName={clubAbout?.jobGroups?.[0]?.name ?? 'N/A'}
-                jobLevelName={clubAbout?.jobGroups?.[0]?.name ?? 'N/A'}
-                selectedJobName={clubAbout?.jobs?.[0]?.name ?? 'N/A'}
+                selectedUniversityName={''}
+                jobLevelName={[]}
+                selectedJobName={[]}
                 selectedQuizzes={clubAbout?.clubQuizzes}
                 // selectedImageBanner={clubAbout?.imageBanner}
                 // selectedImage={clubAbout?.image}
