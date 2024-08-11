@@ -151,7 +151,7 @@ ClubCardProps) => {
           >
             <img
               className="tw-object-cover tw-min-w-[230px] tw-w-[225px] tw-rounded-t-lg tw-h-[240px] md:tw-h-[230px] md:tw-w-[230px] md:tw-rounded-none md:tw-rounded-l-lg"
-              src={item?.clubImageUrl || 'assets/images/banner/Rectangle_193.png'}
+              src={item?.clubImageUrl || '/assets/images/banner/Rectangle_193.png'}
               alt=""
             />
             <button

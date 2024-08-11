@@ -252,12 +252,12 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
             <div className="tw-flex tw-items-start tw-gap-[16px]">
               <img
                 className="tw-w-28 tw-h-28 border tw-rounded-full"
-                src={user?.profileImageUrl || '/assets/avatars/1.jpg'}
+                src={user?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
               />
               <div>
                 <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-[14px]  tw-gap-3">
                   <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[21.875px] tw-font-bold tw-text-left tw-text-black">
-                    {user?.name ? user?.name : user?.nickname} 교수님
+                    {user?.name || user?.member.nickname} 교수님
                   </p>
 
                   <div className="tw-flex tw-justify-start tw-items-start tw-flex-grow-0 tw-flex-shrink-0">
