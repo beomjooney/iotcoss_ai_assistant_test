@@ -306,7 +306,7 @@ export function LectureOpenTemplate() {
   //temp 등록
   const { mutate: onTempSave, isSuccess: tempSucces } = useLectureTempSave();
   const { mutate: onQuizSave, isSuccess: postSucces } = useQuizSave();
-  const { mutate: onLectureSave, isError, isSuccess: clubSuccess } = useLectureSave();
+  const { mutate: onLectureSave, isError, isSuccess: clubSuccess, data: clubDatas } = useLectureSave();
 
   //quiz new logic
   const [selectedQuizIds, setSelectedQuizIds] = useState([]);
@@ -573,7 +573,12 @@ export function LectureOpenTemplate() {
 
   useEffect(() => {
     if (clubSuccess) {
-      router.push('/lecture');
+      console.log('clubDatas', clubDatas);
+      if (clubDatas.data.responseCode === 'C00200') {
+        router.push('/lecture');
+      } else {
+        alert(clubDatas.data.responseCode + ' ' + clubDatas.data.message);
+      }
     }
   }, [clubSuccess]);
 
@@ -730,7 +735,7 @@ export function LectureOpenTemplate() {
 
     // Step 2: Assign new order values sequentially
     sortedData.forEach((item, index) => {
-      item.studyOrder = index + 1;
+      item.studyOrder = index;
     });
 
     // Update state with the filtered data
