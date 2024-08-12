@@ -166,11 +166,11 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
               <div className="tw-inline-flex tw-items-center tw-gap-4">
                 <img
                   className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full"
-                  src={user?.member?.profileImageUrl || '/assets/avatars/1.jpg'}
+                  src={user?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
                   alt=""
                 />
                 <div className="tw-text-sm tw-font-semibold tw-text-black">
-                  <div>{user?.member?.nickname || 'N/A'}</div>
+                  <div>{user?.nickname || 'N/A'}</div>
                 </div>
               </div>
 
@@ -257,7 +257,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
               <div>
                 <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-[14px]  tw-gap-3">
                   <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[21.875px] tw-font-bold tw-text-left tw-text-black">
-                    {user?.name || user?.member.nickname} 교수님
+                    {user?.nickname || user?.member?.nickname} 교수님
                   </p>
 
                   <div className="tw-flex tw-justify-start tw-items-start tw-flex-grow-0 tw-flex-shrink-0">
