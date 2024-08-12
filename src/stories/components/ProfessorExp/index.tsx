@@ -5,7 +5,7 @@ import classNames from 'classnames/bind';
 import styles from './index.module.scss';
 import { Tabs, Tab, Accordion, AccordionSummary, AccordionDetails, TextField } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Toggle } from 'src/stories/components';
+import { Toggle, Tag } from 'src/stories/components';
 import CircularProgress from '@mui/material/CircularProgress';
 import { TagsInput } from 'react-tag-input-component';
 import { useAIQuizSave, useAIQuizAnswer, useAIQuizAnswerFeedback } from 'src/services/quiz/quiz.mutations';
@@ -806,10 +806,15 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
                           </div>
 
                           <div className="tw-py-2">
-                            <TagsInput
+                            {/* <TagsInput
                               value={quizKeyWorlds}
                               onChange={setQuizKeyWorlds}
                               name="fruits"
+                              placeHolder="채점기준, 키워드/문구를 입력하고 엔터 입력"
+                            /> */}
+                            <Tag
+                              value={quizKeyWorlds}
+                              onChange={setQuizKeyWorlds}
                               placeHolder="채점기준, 키워드/문구를 입력하고 엔터 입력"
                             />
                           </div>

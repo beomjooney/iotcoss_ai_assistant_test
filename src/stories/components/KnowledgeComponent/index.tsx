@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Menu, MenuItem } from '@mui/material';
 import { Radio, RadioGroup, FormControlLabel, TextField } from '@mui/material';
 import { Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
-import { MentorsModal, Toggle } from 'src/stories/components';
+import { MentorsModal, Toggle, Tag } from 'src/stories/components';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   useDeletePostQuiz,
@@ -766,10 +766,15 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                   }}
                 />
                 <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">채점기준 주요 키워드/문구</div>
-                <TagsInput
+                {/* <TagsInput
                   value={selected3}
                   onChange={setSelected3}
                   name="fruits"
+                  placeHolder="주요 키워드/문구 입력 후 엔터를 쳐주세요."
+                /> */}
+                <Tag
+                  value={selected3}
+                  onChange={setSelected3}
                   placeHolder="주요 키워드/문구 입력 후 엔터를 쳐주세요."
                 />
                 {/* <div className="tw-text-right tw-mt-5">

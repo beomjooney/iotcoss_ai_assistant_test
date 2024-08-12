@@ -1,11 +1,7 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
-import BannerDetail from 'src/stories/components/BannerDetail';
-import { jobColorKey } from 'src/config/colors';
-import Chip from 'src/stories/components/Chip';
-import { useStore } from 'src/store';
-import { Pagination, MentorsModal } from 'src/stories/components';
+import { Pagination, MentorsModal, Tag } from 'src/stories/components';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import { paramProps, useClubQuizManage } from 'src/services/seminars/seminars.queries';
@@ -1469,13 +1465,14 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
               </ToggleButtonGroup>
             </div>
             <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-mb-2">해시태그</div>
-            <TagsInput
+            {/* <TagsInput
               value={selected}
               onChange={setSelected}
               name="fruits"
               placeHolder="#해쉬태그 입력 후 엔터를 쳐주세요.
               "
-            />
+            /> */}
+            <Tag value={selected} onChange={setSelected} placeHolder="해시태그 입력 후 엔터를 쳐주세요." />
             <div className="tw-text-center tw-mt-5">
               <button
                 type="button"
