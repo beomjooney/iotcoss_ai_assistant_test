@@ -114,7 +114,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
         <div className=" tw-flex tw-flex-col tw-bg-white border tw-rounded-lg md:tw-flex-row tw-w-full ">
           <img
             className="tw-object-cover border-right  tw-w-[280px] tw-rounded-t-lg tw-h-[280px]"
-            src={clubData?.clubImageUrl}
+            src={clubData?.clubImageUrl || '/assets/images/banner/Rectangle_190.png'}
             alt=""
           />
 
