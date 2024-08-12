@@ -47,6 +47,7 @@ export * from './Lecture/ViewAllLecture/index';
 export * from './Lecture/LectureListViewAll/index';
 export * from './Lecture/Open/index';
 export * from './Lecture/Detail/index';
+export * from './Lecture/ManageLectureClub/index';
 /** 퀴즈 대시보드*/
 export * from './Quiz/Dashboard/index';
 export * from './Quiz/ManageQuizClub/index';

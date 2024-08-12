@@ -55,12 +55,12 @@ import { ExperiencesResponse } from 'src/models/experiences';
 import { useOptions } from 'src/services/experiences/experiences.queries';
 import { UseQueryResult } from 'react-query';
 
-export interface ManageQuizClubTemplateProps {
+export interface ManageLectureClubTemplateProps {
   /** 세미나 아이디 */
   id?: any;
 }
 
-export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
+export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps) {
   const { mutate: onCrewBan, isSuccess: isBanSuccess } = useCrewBanDelete();
   const { mutate: onCrewAccept, isSuccess: isAcceptSuccess } = useCrewAcceptPost();
   const { mutate: onCrewReject, isSuccess: isRejectSuccess } = useCrewRejectPost();
@@ -580,7 +580,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                   />
                 </svg>
                 <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[10.5px] tw-text-left tw-text-[#313b49]">
-                  퀴즈클럽 대시보드
+                  강의클럽 대시보드
                 </p>
                 <svg
                   width={17}
@@ -597,12 +597,12 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                   />
                 </svg>
                 <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[10.5px] tw-text-left tw-text-[#313b49]">
-                  퀴즈클럽 관리하기
+                  강의클럽 관리하기
                 </p>
               </div>
               <div className="tw-flex tw-justify-start tw-items-center tw-left-0 tw-top-[31.5px] tw-gap-3.5">
                 <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[21px] tw-font-bold tw-text-left tw-text-black">
-                  퀴즈클럽 관리하기
+                  강의클럽 관리하기
                 </p>
               </div>
               <Divider className="tw-py-2 tw-bg-['#efefef']" />
@@ -623,7 +623,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
             <Grid item xs={11.1} className="tw-font-bold tw-text-xl">
               <select
-                className="tw-h-14 form-select block w-full tw-bg-gray-100 tw-text-red-500 tw-font-bold tw-px-8"
+                className="tw-h-14 form-select block w-full tw-bg-gray-100 tw-font-bold tw-px-8"
                 onChange={handleQuizChange}
                 value={selectedValue}
                 aria-label="Default select example"
@@ -636,7 +636,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                         className="tw-w-20 tw-bg-[#f6f7fb] tw-items-center tw-flex-shrink-0 border-left border-top border-right tw-rounded-t-lg tw-cursor-pointer"
                         value={session?.clubSequence}
                       >
-                        퀴즈클럽 : {session?.clubName}
+                        강의명 : {session?.clubName}
                       </option>
                     );
                   })}
@@ -697,7 +697,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                 activeTab === 'community' ? 'tw-font-bold tw-text-black' : 'tw-text-[#9ca5b2]'
               }`}
             >
-              퀴즈관리
+              강의관리
             </p>
           </div>
         </div>
@@ -1275,4 +1275,4 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
   );
 }
 
-export default ManageQuizClubTemplate;
+export default ManageLectureClubTemplate;
