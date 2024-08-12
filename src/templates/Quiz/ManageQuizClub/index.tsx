@@ -733,6 +733,13 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                     </Grid>
                   </Grid>
                   <Divider className="tw-py-3 tw-mb-3" />
+
+                  {myMemberRequestList.length === 0 && (
+                    <div className=" tw-mt-10 tw-text-center tw-text-black  tw-py-20 border tw-text-base tw-rounded tw-bg-white">
+                      클럽 가입 신청이 없습니다.
+                    </div>
+                  )}
+
                   {myMemberRequestList?.map((item, index) => {
                     return (
                       <React.Fragment key={index}>
@@ -757,7 +764,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                           <Grid item xs={12} sm={1}>
                             <div className="tw-text-left tw-text-black">{item?.member?.nickname}</div>
                           </Grid>
-                          <Grid item xs={12} sm={2}>
+                          <Grid item xs={12} sm={3}>
                             <div className="tw-text-left tw-text-black">{item?.memberId}</div>
                           </Grid>
                           <Grid item xs={12} sm={2}>
@@ -769,7 +776,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                           <Grid
                             item
                             xs={12}
-                            sm={4}
+                            sm={3}
                             style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end' }}
                           >
                             <div className="tw-gap-3">
@@ -906,9 +913,18 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                       </RadioGroup>
                     </div>
                   </div>
+
+                  {myMemberList.length === 0 && (
+                    <div className="tw-h-[500px]">
+                      <div className=" tw-mt-10 tw-text-center tw-text-black  tw-py-20 border tw-text-base tw-rounded tw-bg-white">
+                        클럽 학생이 없습니다.
+                      </div>
+                    </div>
+                  )}
+
                   {myMemberList.map((item, index) => {
                     return (
-                      <React.Fragment key={index}>
+                      <div key={index} className="tw-h-[800px]">
                         <Grid
                           className="tw-py-2 border-bottom tw-text-base"
                           key={index}
@@ -965,7 +981,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                             </div>
                           </Grid>
                         </Grid>
-                      </React.Fragment>
+                      </div>
                     );
                   })}
                 </div>

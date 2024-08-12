@@ -152,7 +152,7 @@ export const useStudyQuizOpponentBadgeList = (
       onSuccess,
       onError,
       refetchOnWindowFocus: false,
-      enabled: true,
+      enabled: false,
     },
   );
 };
