@@ -15,6 +15,7 @@ import {
   userUpdate,
 } from './account.api';
 import { setCookie } from 'cookies-next';
+import router from 'next/router';
 
 export const useSaveProfile = (): UseMutationResult => {
   const queryClient = useQueryClient();
@@ -98,6 +99,14 @@ export const useLoginSignUp = (): UseMutationResult => {
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('LOGIN').all),
     onSuccess: async data => {
+      console.log('data', data);
+      const { responseCode, message } = data;
+      if (responseCode === '0000') {
+        alert('회원가입이 정상적으로 되었습니다.');
+        router.push('/account/login');
+      } else {
+        alert(`error : [${responseCode}] ${message}`);
+      }
       // alert('회원가입이 정상적으로 되었습니다.');
       // alert('회원가입이 정상적으로 되었습니다.');
       // location.href = '/account/login';
