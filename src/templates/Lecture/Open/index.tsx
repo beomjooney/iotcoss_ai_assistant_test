@@ -167,6 +167,11 @@ export function LectureOpenTemplate() {
         event.target.value = ''; // input 초기화
         return;
       }
+      if (files[i].size > maxFileSize) {
+        alert('파일 크기는 50MB를 초과할 수 없습니다.');
+        event.target.value = ''; // input 초기화
+        return;
+      }
     }
 
     setLectureContents(prevContents => ({
