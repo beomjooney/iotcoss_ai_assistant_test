@@ -132,18 +132,20 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
                   <span className="tw-inline-flex tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
                     {jobLevelName.toString() || 'N/A'}
                   </span>
-                  <button
-                    className="tw-inline-flex tw-ml-auto"
-                    onClick={() => {
-                      onChangeLike(clubData.clubSequence, clubData.isFavorite);
-                    }}
-                  >
-                    {isLiked ? (
-                      <StarIcon sx={{ fontSize: 24 }} color="error" />
-                    ) : (
-                      <StarBorderIcon sx={{ fontSize: 24 }} color="disabled" />
-                    )}
-                  </button>
+                  {clubData.clubSequence && (
+                    <button
+                      className="tw-inline-flex tw-ml-auto"
+                      onClick={() => {
+                        onChangeLike(clubData.clubSequence, clubData.isFavorite);
+                      }}
+                    >
+                      {isLiked ? (
+                        <StarIcon sx={{ fontSize: 24 }} color="error" />
+                      ) : (
+                        <StarBorderIcon sx={{ fontSize: 24 }} color="disabled" />
+                      )}
+                    </button>
+                  )}
                 </div>
               </Grid>
             </Grid>
@@ -170,7 +172,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
                   alt=""
                 />
                 <div className="tw-text-sm tw-font-semibold tw-text-black">
-                  <div>{user?.nickname || 'N/A'}</div>
+                  <div>{user?.nickname || user?.member?.nickname} 교수님</div>
                 </div>
               </div>
 

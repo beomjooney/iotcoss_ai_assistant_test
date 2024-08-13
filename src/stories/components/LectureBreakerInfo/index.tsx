@@ -77,10 +77,17 @@ const LectureBreakerInfo = ({
     console.log('files', event.target.files);
     const files = Array.from(event.target.files);
     const allowedExtensions = /(\.pdf)$/i;
+    const maxFileSize = 50 * 1024 * 1024; // 50MB in bytes
 
     for (let i = 0; i < files.length; i++) {
       if (!allowedExtensions.exec(files[i].name)) {
         alert('허용되지 않는 파일 형식입니다.');
+        event.target.value = ''; // input 초기화
+        return;
+      }
+
+      if (files[i].size > maxFileSize) {
+        alert('파일 크기는 50MB를 초과할 수 없습니다.');
         event.target.value = ''; // input 초기화
         return;
       }
