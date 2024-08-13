@@ -30,9 +30,9 @@ export function IndexPage({ session }: { session: Session }) {
     setUser({ user: data });
   });
 
-  const { data: myProfileData } = useMyProfile(data => {
-    console.log('useMyProfile : ', data);
-  });
+  // const { data: myProfileData } = useMyProfile(data => {
+  //   console.log('useMyProfile : ', data);
+  // });
 
   // TODO 로그인 수정 변경
   return (

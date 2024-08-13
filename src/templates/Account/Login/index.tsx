@@ -65,7 +65,7 @@ export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: Lo
       console.log('loginData?.tenant_uri', loginData?.tenant_uri, getFirstSubdomain(), isLocalEnv);
 
       if (loginData?.tenant_uri === getFirstSubdomain() || isLocalEnv) {
-        // location.href = '/';
+        location.href = '/';
       } else {
         const authStore = localStorage.getItem('auth-store');
         if (authStore) {
