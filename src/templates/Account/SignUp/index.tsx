@@ -70,16 +70,16 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
   const { mutate: onLoginOtp, isSuccess } = useLoginOtp();
   const { mutate: onLoginOtpVerification, isSuccess: isVerification, data: resultData } = useLoginOtpVerification();
 
-  useEffect(() => {
-    if (signUpData) {
-      console.log('resultData', signUpData.data);
-      if (signUpData.data.responseCode === 'CO4015') {
-        alert('권한 요청 없습니다.');
-      } else {
-        router.push('/account/login');
-      }
-    }
-  }, [signUpData]);
+  // useEffect(() => {
+  //   if (signUpData) {
+  //     console.log('resultData', signUpData.data);
+  //     if (signUpData.data.responseCode === 'CO4015') {
+  //       alert('권한 요청 없습니다.');
+  //     } else {
+  //       router.push('/account/login');
+  //     }
+  //   }
+  // }, [signUpData]);
 
   useEffect(() => {
     if (resultData) {

@@ -3,9 +3,10 @@ import Modal from 'react-modal';
 
 Modal.setAppElement('#__next'); // Modal 접근성 설정
 
-const ChatbotModal = ({ isOpen, onRequestClose, token }) => {
+const ChatbotModal = ({ isOpen, onRequestClose, token, role }) => {
   console.log(token);
-  const url = `http://3.39.99.82:9998/aichatbot?accessToken=${token}`;
+  console.log(role);
+  const url = `http://3.39.99.82:9998/aichatbot?role=${role}&accessToken=${token}`;
   // const url = `http://localhost:3000/aichatbot?accessToken=${token}`;
 
   // useEffect(() => {
