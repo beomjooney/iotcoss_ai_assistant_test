@@ -47,7 +47,7 @@ export function LoginPage(props: LoginPageProps) {
       memberId: userData.sub,
       memberName: userData.nickname,
       roles: userData.roles,
-      token: token,
+      token: String(getCookie('access_token')),
     });
 
     location.href = '/';
