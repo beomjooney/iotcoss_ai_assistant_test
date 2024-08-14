@@ -17,7 +17,7 @@ export interface HomeSejongProps {
 
 export function HomeSejongTemplate({ logged = false, tenantName = '' }: HomeSejongProps) {
   const router = useRouter();
-  const { token, roles } = useSessionStore.getState();
+  const { token } = useSessionStore.getState();
 
   const [isClient, setIsClient] = useState(false); // 클라이언트 사이드에서만 렌어링하도록 상태 추가
   useEffect(() => {
@@ -258,14 +258,7 @@ export function HomeSejongTemplate({ logged = false, tenantName = '' }: HomeSejo
             </div>
           </div>
         )}
-        {isClient && (
-          <ChatbotModal
-            isOpen={modalIsOpen}
-            onRequestClose={() => setModalIsOpen(false)}
-            token={token}
-            role={roles?.indexOf('ROLE_ADMIN') >= 0 ? 'professor' : 'student'}
-          />
-        )}
+        {isClient && <ChatbotModal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)} token={token} />}
       </div>
     </div>
   );
