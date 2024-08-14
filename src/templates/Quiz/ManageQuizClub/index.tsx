@@ -254,7 +254,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
   console.log(myClubMemberParams);
   // 내 회원 목록 조회
   const { isFetched: isMemberFetched, refetch: refetchMyMember } = useMyMemberList(myClubMemberParams, data => {
-    console.log(data);
+    console.log('isMemberFetched', data);
     setTotalPageMember(data?.totalPages);
     setTotalElementsMember(data?.totalElements);
     setMyMemberList(data?.contents || []);
@@ -400,8 +400,10 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const handleAddClick = () => {
-    if (quizList.length > 1) setIsModalOpen(true);
-    else alert('퀴즈 생성 주기를 입력해주세요.');
+    // console.log('quizList.length', quizList.length);
+    // if (quizList.length > 1) setIsModalOpen(true);
+    // else alert('퀴즈 생성 주기를 입력해주세요.');
+    setIsModalOpen(true);
   };
 
   function handleDeleteMember(memberUUID: any): void {
@@ -922,11 +924,11 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                     </div>
                   )}
 
-                  {myMemberList.map((item, index) => {
-                    return (
-                      <div key={index} className="tw-h-[800px]">
+                  <div className="tw-h-[800px]">
+                    {myMemberList.map((item, index) => {
+                      return (
                         <Grid
-                          className="tw-py-2 border-bottom tw-text-base"
+                          className="tw-py-2 border-bottom tw-text-base "
                           key={index}
                           container
                           direction="row"
@@ -981,9 +983,9 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                             </div>
                           </Grid>
                         </Grid>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             </div>

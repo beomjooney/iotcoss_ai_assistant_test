@@ -34,8 +34,8 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
   selectedJobName,
   refetchClubAbout,
 }) => {
-  console.log(user);
-  console.log(clubData);
+  console.log('club detail user ', user);
+  console.log('club detail clubData', clubData);
   const { logged } = useSessionStore.getState();
   const borderStyle = border ? 'border border-[#e9ecf2] tw-mt-14' : '';
   const studyWeekCount = parseInt(clubData?.studyWeekCount, 10);
@@ -155,11 +155,11 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
             </div>
             <div className="tw-py-5 tw-text-black tw-text-base tw-mb-[12px] tw-font-medium">
               <div>
-                학습 기간 : 매주 {clubData?.studyCycle?.toString() || 'N/A'}요일 (총 {clubData?.studyWeekCount || 'N/A'}
+                학습 기간 : 매주 {clubData?.studyCycle?.toString() || 'N/A'}요일 (총 {clubData?.studyWeekCount}
                 주)
               </div>
               <div>
-                학습 참여 : {clubData?.studyWeekCount || 'N/A'} 주 ({clubData?.startAt} ~ {clubData?.endAt})
+                학습 참여 : {clubData?.studyWeekCount} 주 ({clubData?.startAt} ~ {clubData?.endAt})
               </div>
               <div>참여 인원 : {clubData?.recruitedMemberCount || '00'}명</div>
             </div>
