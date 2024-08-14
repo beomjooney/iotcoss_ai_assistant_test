@@ -141,6 +141,15 @@ const AIQuizList = ({
     onAIQuizAnswer(formData); // Ensure this function returns a promise
   };
 
+  const handleDeleteQuizLoading = question => {
+    if (isLoadingAI) {
+      alert('모범 답안 생성중에는 삭제할 수 없습니다.');
+      return;
+    } else {
+      handleDeleteQuiz(question);
+    }
+  };
+
   return (
     <div className="border tw-rounded-lg tw-my-5">
       <div className="border-bottom tw-bg-gray-100 tw-px-5 tw-py-3">
@@ -164,7 +173,7 @@ const AIQuizList = ({
               </button>
             )}
             <button
-              onClick={() => handleDeleteQuiz(quizList?.question)}
+              onClick={() => handleDeleteQuizLoading(quizList?.question)}
               className="tw-px-4 tw-py-2 tw-text-sm tw-bg-gray-300 tw-rounded-md"
             >
               삭제
