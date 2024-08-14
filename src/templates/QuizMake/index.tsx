@@ -17,7 +17,6 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { TagsInput } from 'react-tag-input-component';
 import { Radio, RadioGroup, FormControlLabel, TextField } from '@mui/material';
 import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded';
 import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded';
@@ -182,7 +181,7 @@ export function QuizMakeTemplate() {
     setContentType(data.contentType);
     setActive(data.contentType);
     setContentUrl(data.url);
-    setContentTitle(data.description);
+    setContentTitle(data.description || '');
     setSelectedSubject(data.studySubject || '');
     setSelectedChapter(data.studyChapter || '');
     // setJobLevel(data.jobLevels && data.jobLevels.length > 0 ? data.jobLevels[0].code : '0001');
@@ -636,13 +635,6 @@ export function QuizMakeTemplate() {
     console.log(selected);
   };
 
-  const handleJobChange = e => {
-    setSelectedJob(e.target.value);
-    const selectedCode = e.target.value;
-    const selected = jobs?.find(u => u.code === selectedCode);
-    setSelectedJobName(selected ? selected.name : '');
-  };
-
   const handleInputSubjectChange = event => {
     setSelectedSubject(event.target.value);
   };
@@ -698,13 +690,13 @@ export function QuizMakeTemplate() {
   };
 
   const handleDeleteQuiz = questionToDelete => {
-    console.log(quizList);
     // Handle delete action
     const updatedQuizzes = quizList.filter(quiz => quiz.question !== questionToDelete);
     setQuizList(updatedQuizzes);
     setQuestion('');
     setModelAnswerFinal('');
     setSelected3([]);
+    console.log(quizList);
   };
 
   const BootstrapTooltip = styled(({ className, ...props }: TooltipProps) => (
@@ -1259,6 +1251,7 @@ export function QuizMakeTemplate() {
                     <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식컨텐츠 URL</div>
                     <TextField
                       required
+                      disabled={isContentModalClick}
                       value={contentUrl}
                       onChange={handleContentUrlChange}
                       id="username"
