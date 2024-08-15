@@ -271,7 +271,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
         <div className="container" style={{ alignItems: 'center' }}>
           <div className={cx('header-link')}>
             {getFirstSubdomain() === 'sejong' ? (
-              <img src="/assets/images/header/SEJONG_DevUs.png" width={200} alt="logo" className={cx('image-logo')} />
+              <img src="/assets/images/header/sejong_logo.png" width={300} alt="logo" className={cx('image-logo')} />
             ) : (
               <img src="/assets/images/header/image_1.png" width={130} alt="logo" className={cx('image-logo')} />
             )}
