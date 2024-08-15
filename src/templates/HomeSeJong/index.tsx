@@ -29,7 +29,10 @@ export function HomeSejongTemplate({ logged = false, tenantName = '' }: HomeSejo
 
   return (
     <div className={cx('career-main')}>
-      <div className="tw-text-white tw-bg-[url('/assets/images/main/Union.webp')] tw-bg-cover tw-bg-center tw-bg-no-repeat">
+      <div
+        className="tw-text-white tw-bg-[url('/assets/images/main/Union.webp')]  tw-bg-cover tw-bg-center tw-bg-no-repeat"
+        style={{ height: '650px' }}
+      >
         <section
           className={cx(
             'top-banner',
