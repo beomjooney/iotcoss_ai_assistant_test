@@ -55,7 +55,7 @@ export function IndexPage({ session }: { session: Session }) {
 
   // TODO 로그인 수정 변경
   return (
-    <div className="tw-h-[1400px]">
+    <div className="tw-h-[2500px]">
       <HomeSejongTemplate logged={logged} tenantName="sejong" />
     </div>
   );
