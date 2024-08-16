@@ -69,6 +69,7 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 import { makeStyles } from '@mui/styles';
 import { images, imageBanner } from './group';
+import LectureBreakerInfo from 'src/stories/components/LectureBreakerInfo';
 
 export interface ManageLectureClubTemplateProps {
   /** 세미나 아이디 */
@@ -98,8 +99,9 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
   const [quizList, setQuizList] = useState<any>([]);
   const [keyWorld, setKeyWorld] = useState('');
   const [selectedValue, setSelectedValue] = useState(id);
+
   // const [activeTab, setActiveTab] = useState('myQuiz');
-  const [activeTab, setActiveTab] = useState('lecture');
+  const [activeTab, setActiveTab] = useState('community');
 
   const [pageQuiz, setPageQuiz] = useState(1);
   const [totalQuizPage, setTotalQuizPage] = useState(1);
@@ -236,15 +238,74 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
     setSortType(event.target.value);
   };
 
-  const handleChangeQuizType = event => {
-    setSortQuizType(event.target.value);
-  };
-
   // 퀴즈 소개 정보 조회
   const { isFetched: isClubAboutFetched, refetch: refetchClubAbout } = useLectureAboutDetail(ids, data => {
     console.log(data);
     setClubAbout(data);
     console.log('useLectureAboutDetail', data);
+
+    const clubForm = data?.clubForm || {};
+    const lectureList = data?.clubStudies || [];
+    const lectureContents = data?.lectureContents || [];
+
+    console.log('load temp', data);
+    console.log('lectureList', lectureList);
+
+    setParamss(clubForm);
+
+    setClubName(clubForm.clubName || '');
+    setStartDay(clubForm.startAt ? dayjs(clubForm.startAt) : dayjs());
+    setEndDay(clubForm.endAt ? dayjs(clubForm.endAt) : dayjs());
+    setIsPublic(clubForm.isPublic ? '0001' : '0002');
+    console.log('load temp', clubForm.studyKeywords);
+    setStudyKeywords(['산', '아래']);
+    setStudySubject(clubForm.studySubject || '');
+    setUniversityCode(clubForm.jobGroups || '');
+    setRecommendLevels(clubForm.jobLevels || '');
+    console.log(clubForm?.jobLevels?.map(item => item.name));
+    const selectedLevel = optionsData?.data?.jobLevels?.find(u => u.code === clubForm?.jobLevels?.toString());
+
+    // clubForm.jobLevels의 이름 리스트 생성
+    const jobLevelNames = getJobLevelNames(clubForm.jobLevels, optionsData?.data?.jobLevels || []);
+    console.log('jobLevelNames', jobLevelNames);
+    setLevelNames(jobLevelNames);
+
+    const selected = optionsData?.data?.jobs?.find(u => u.code === clubForm?.jobGroups?.toString());
+    setSelectedUniversityName(selected?.name || '');
+    setJobs(selected ? selected.jobs : []);
+    setSelectedJob(clubForm.jobs || []);
+
+    const names = selected?.jobs
+      .filter(department => clubForm.jobs.includes(department.code))
+      .map(department => department.name);
+
+    setPersonName(names || []);
+    setIntroductionText(clubForm.description || '');
+
+    setLectureLanguage(clubForm.lectureLanguage);
+    setContentLanguage(clubForm.contentLanguage);
+    setLectureAILanguage(clubForm.aiConversationLanguage);
+
+    setPreview(clubForm.clubImageUrl);
+    setPreviewBanner(clubForm.backgroundImageUrl);
+    setPreviewProfile(clubForm.instructorProfileImageUrl);
+
+    setSelectedImage('');
+    setSelectedImageBanner('');
+    setSelectedImageProfile('');
+
+    // Add fileList and urlList to each item in the data array
+    const updatedData = lectureList.map(item => ({
+      ...item,
+      isNew: 'false',
+      fileList: [],
+      urlList: [],
+    }));
+
+    console.log('updatedData', updatedData);
+
+    setScheduleData(updatedData);
+    setLectureContents(lectureContents);
   });
 
   //퀴즈 리스트
@@ -384,18 +445,8 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
     setPageMember(value);
   };
 
-  const handleCheckboxDelete = quizSequence => {
-    setSelectedQuizIds(prevSelectedQuizIds => {
-      const updatedSelectedQuizIds = prevSelectedQuizIds.filter(id => id !== quizSequence);
-      console.log('After Deletion, Selected Quiz IDs:', updatedSelectedQuizIds);
-      setQuizList(prevSelectedQuizzes =>
-        prevSelectedQuizzes.map(quiz => (quiz.quizSequence === quizSequence ? { ...quiz, quizSequence: null } : quiz)),
-      );
-      return updatedSelectedQuizIds;
-    });
-  };
-
   //수정
+  const [paramss, setParamss] = useState<any>({});
   const [levelNames, setLevelNames] = useState([]);
   const [lectureLanguage, setLectureLanguage] = useState('kor');
   const [contentLanguage, setContentLanguage] = useState('kor');
@@ -426,10 +477,16 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
   const [isDisabled, setIsDisabled] = useState(false);
   const [activeStep, setActiveStep] = React.useState(0);
   const steps = ['Step.1 강의 정보입력', 'Step.2 강의 커리큘럼 입력', 'Step.3 개설될 강의 미리보기'];
-  const [contentJobType, setContentJobType] = useState<any[]>([]);
   const [urlCode, setUrlCode] = useState('');
   let [key, setKey] = useState('');
   let [fileName, setFileName] = useState('');
+
+  const getJobLevelNames = (jobLevelCodes, jobLevels) => {
+    return jobLevelCodes?.map(code => {
+      const jobLevel = jobLevels.find(level => level.code === code.toString().padStart(4, '0'));
+      return jobLevel ? jobLevel.name : '';
+    });
+  };
 
   const handleFileChange = event => {
     const files = Array.from(event.target.files);
@@ -892,24 +949,180 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
     setStudySubject(event.target.value);
   };
 
+  const handleUrlChange = (order: any, updated: any) => {
+    console.log('scheduleUrlAdd', order, updated);
+
+    setScheduleData(
+      scheduleData.map(item => {
+        // Update the urlList of the item with matching order
+        if (item.studyOrder === order) {
+          return { ...item, clubStudyUrl: updated };
+        }
+        return item;
+      }),
+    );
+  };
+
+  const scheduleFileAdd = (order: any, updated: any) => {
+    console.log('scheduleFileAdd', order, updated);
+
+    setScheduleData(
+      scheduleData.map(item => {
+        // Update the urlList of the item with matching order
+        if (item.studyOrder === order) {
+          return { ...item, files: [...(item.files || []), ...updated] };
+        }
+        return item;
+      }),
+    );
+  };
+
+  // Function to handle removing a URL from the list
+  const handleRemoveFile = (order, fileIndex) => {
+    console.log('handleRemoveFile', order, fileIndex);
+    setScheduleData(prevData =>
+      prevData.map(item => {
+        if (item.studyOrder === order) {
+          // Return the item with the URL at urlIndex removed from urlList
+          return {
+            ...item,
+            files: item.files.filter((_, index) => index !== fileIndex),
+          };
+        }
+        return item;
+      }),
+    );
+  };
+
+  const handleStartDayChange = (order, startDay) => {
+    console.log('handleRemoveFile', order, startDay);
+    setScheduleData(prevData =>
+      prevData.map(item => {
+        if (item.studyOrder === order) {
+          // Return the item with the URL at urlIndex removed from urlList
+          return {
+            ...item,
+            studyDate: startDay,
+          };
+        }
+        return item;
+      }),
+    );
+  };
+
+  // Function to handle deleting data based on order
+  const handleCheckboxDelete = orderToDelete => {
+    console.log('delete', orderToDelete);
+    // Filter out the item with the given order
+    const updatedData = scheduleData.filter(item => item.studyOrder !== orderToDelete);
+
+    // Step 1: Sort the array based on the current order value
+    const sortedData = updatedData.sort((a, b) => a.studyOrder - b.studyOrder);
+
+    // Step 2: Assign new order values sequentially
+    sortedData.forEach((item, index) => {
+      item.studyOrder = index;
+    });
+
+    // Update state with the filtered data
+    setScheduleData(sortedData);
+  };
+
+  // Function to handle removing a URL from the list
+  const handleRemoveInput = (order, urlIndex) => {
+    console.log('handleRemoveInput', order, urlIndex);
+    setScheduleData(prevData =>
+      prevData.map(item => {
+        if (item.studyOrder === order) {
+          // Return the item with the URL at urlIndex removed from urlList
+          return {
+            ...item,
+            urls: item.urls.filter((_, index) => index !== urlIndex),
+          };
+        }
+        return item;
+      }),
+    );
+  };
+
+  const handleTypeChange = (order, type) => {
+    console.log('handleTypeChange', order, type);
+    setScheduleData(prevData =>
+      prevData.map(item => {
+        if (item.studyOrder === order) {
+          // Return the item with the URL at urlIndex removed from urlList
+          return {
+            ...item,
+            clubStudyType: type,
+          };
+        }
+        return item;
+      }),
+    );
+  };
+
+  const lectureNameChange = (order: any, updated: any) => {
+    console.log('scheduleUrlAdd', order, updated);
+
+    setScheduleData(
+      scheduleData.map(item => {
+        // Update the urlList of the item with matching order
+        if (item.studyOrder === order) {
+          return { ...item, clubStudyName: updated };
+        }
+        return item;
+      }),
+    );
+  };
+
+  const scheduleUrlAdd = (order: any, updated: any) => {
+    console.log('scheduleUrlAdd', order, updated);
+
+    setScheduleData(
+      scheduleData.map(item => {
+        // Update the urlList of the item with matching order
+        if (item.studyOrder === order) {
+          return {
+            ...item,
+            urls: [
+              ...(item.urls || []),
+              {
+                isNew: 'true',
+                url: updated,
+              },
+            ],
+          };
+        }
+        return item;
+      }),
+    );
+  };
+
   //
   const dragList = (item: any, index: any) => (
-    <div
-      key={item.key}
-      className={`simple-drag-row ${item?.isPublished ? '' : 'drag-disabled'}`}
-      style={{ cursor: item?.isPublished ? 'default' : 'move' }} // 조건부 스타일 적용
-    >
-      <QuizBreakerInfo
-        publishDate={item?.publishDate}
-        dayOfWeek={item?.dayOfWeek}
-        avatarSrc={item?.maker?.profileImageUrl}
-        userName={item?.maker?.nickname}
-        questionText={item?.question}
-        index={item?.quizSequence !== undefined ? item?.quizSequence : null}
-        answerText={item?.modelAnswer}
-        handleAddClick={handleAddClick}
-        isPublished={item?.isPublished}
+    <div key={item.order} className="simple-drag-row">
+      <LectureBreakerInfo
+        handleStartDayChange={handleStartDayChange}
+        handleUrlChange={handleUrlChange}
+        handleTypeChange={handleTypeChange}
+        lectureNameChange={lectureNameChange}
+        handleRemoveInput={handleRemoveInput}
+        scheduleUrlAdd={scheduleUrlAdd}
+        scheduleFileAdd={scheduleFileAdd}
+        handleRemoveFile={handleRemoveFile}
+        // avatarSrc={item.leaderProfileImageUrl}
+        item={item}
+        urlList={item.urls}
+        fileList={item.files}
+        userName={item.clubStudyName}
+        questionText={item.question}
+        order={item.studyOrder !== undefined ? item.studyOrder : null}
+        answerText={item.modelAnswer}
         handleCheckboxDelete={handleCheckboxDelete}
+        handleAddClick={handleAddClick}
+        publishDate={item.publishDate}
+        dayOfWeek={item.dayOfWeek}
+        isPublished={item.isPublished}
       />
     </div>
   );
