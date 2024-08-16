@@ -111,29 +111,6 @@ ClubCardProps) => {
     setIsOpened(!isOpen);
   };
 
-  function timeForToday(value) {
-    const today = new Date();
-    const timeValue = new Date(value);
-
-    const betweenTime = Math.floor((today.getTime() - timeValue.getTime()) / 1000 / 60);
-    if (betweenTime < 1) return '방금 전';
-    if (betweenTime < 60) {
-      return `${betweenTime}분 전`;
-    }
-
-    const betweenTimeHour = Math.floor(betweenTime / 60);
-    if (betweenTimeHour < 24) {
-      return `${betweenTimeHour}시간 전`;
-    }
-
-    const betweenTimeDay = Math.floor(betweenTime / 60 / 24);
-    if (betweenTimeDay < 365) {
-      return `${betweenTimeDay}일 전`;
-    }
-
-    return `${Math.floor(betweenTimeDay / 365)}년전`;
-  }
-
   return (
     <>
       <Desktop>
@@ -170,25 +147,25 @@ ClubCardProps) => {
                       {item?.jobGroups[0].name || 'N/A'}
                     </span>
 
-                    {item?.jobs?.length > 0 &&
-                      item.jobs.map((job, index) => (
-                        <span
-                          key={index}
-                          className="tw-inline-flex tw-bg-gray-100 tw-text-gray-800 tw-text-xs tw-font-medium tw-mr-1 tw-px-2 tw-py-1 tw-rounded "
-                        >
-                          {job.name || 'N/A'}
-                        </span>
-                      ))}
+                    {/* {item?.jobs?.length > 0 &&
+                      item.jobs.map((job, index) => ( */}
+                    <span
+                      // key={index}
+                      className="tw-inline-flex tw-bg-gray-100 tw-text-gray-800 tw-text-xs tw-font-medium tw-mr-1 tw-px-2 tw-py-1 tw-rounded "
+                    >
+                      {item?.jobLevels?.[0]?.name || 'N/A'}
+                    </span>
+                    {/* ))} */}
 
-                    {item?.jobLevels?.length > 0 &&
-                      item.jobLevels.map((jobLevel, index) => (
-                        <span
-                          key={index}
-                          className="tw-inline-flex tw-bg-red-100 tw-text-red-800 tw-text-xs tw-font-medium tw-mr-1 tw-px-2 tw-py-1 tw-rounded "
-                        >
-                          {jobLevel.name || 'N/A'}
-                        </span>
-                      ))}
+                    {/* {item?.jobLevels?.length > 0 &&
+                      item.jobLevels.map((jobLevel, index) => ( */}
+                    <span
+                      // key={index}
+                      className="tw-inline-flex tw-bg-red-100 tw-text-red-800 tw-text-xs tw-font-medium tw-mr-1 tw-px-2 tw-py-1 tw-rounded "
+                    >
+                      {item?.jobLevels?.[0]?.name || 'N/A'}
+                    </span>
+                    {/* ))} */}
                   </div>
                 </Grid>
               </Grid>
