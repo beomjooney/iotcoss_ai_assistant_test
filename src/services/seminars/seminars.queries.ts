@@ -23,6 +23,8 @@ import {
   myDashboardList,
   myMemberList,
   myMemberRequestList,
+  lectureAboutDetail,
+  lectureMyList,
 } from './seminars.api';
 
 export interface paramProps {
@@ -41,6 +43,22 @@ export interface paramProps {
   clubType?: string;
 }
 
+export const useMyLectureList = (
+  params?: paramProps,
+  onSuccess?: (data: any) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 10;
+  return useQuery<any, Error>(
+    QUERY_KEY_FACTORY('SEMINAR').list({ size: DEFAULT_SIZE, ...params }),
+    () => lectureMyList({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+    },
+  );
+};
 export const useMyClubList = (
   params?: paramProps,
   onSuccess?: (data: any) => void,
@@ -215,12 +233,19 @@ export const useMyProgress = (id, onSuccess?: (data: any) => void, onError?: (er
 };
 
 export const useClubAboutDetail = (id, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
-  // return useQuery<SeminarContent, Error>(QUERY_KEY_FACTORY('SEMINAR').detail(id), () => seminarDetail(id), {
   return useQuery<any, Error>(QUERY_KEY_FACTORY('QUIZ_ABOUT').detail(id), () => clubAboutDetail(id), {
     onSuccess,
     onError,
     refetchOnWindowFocus: false,
     enabled: !!id,
+  });
+};
+
+export const useLectureAboutDetail = (id, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
+  return useQuery<any, Error>(QUERY_KEY_FACTORY('QUIZ_ABOUT').detail(id), () => lectureAboutDetail(id), {
+    onSuccess,
+    onError,
+    refetchOnWindowFocus: false,
   });
 };
 

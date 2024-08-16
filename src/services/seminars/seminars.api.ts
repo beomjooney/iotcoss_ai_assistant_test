@@ -1,6 +1,13 @@
 import { axiosGeneralAPI } from '../index';
 
 // 세미나 목록 조회
+export const lectureMyList = async params => {
+  const { data, headers } = await axiosGeneralAPI().get('/api/v1/my/clubs', { params: { clubType: '0200' } });
+  // const { data, headers } = await axiosGeneralAPI().get('/seminars', { params });
+  const totalPage = Number(headers['page-count']);
+  return { data: data.data || [], nextPage: params.page + 1, totalPage };
+};
+// 세미나 목록 조회
 export const clubMyList = async params => {
   const { data, headers } = await axiosGeneralAPI().get('/api/v1/my/clubs', { params });
   // const { data, headers } = await axiosGeneralAPI().get('/seminars', { params });
@@ -97,6 +104,12 @@ export const seminarDetail = async id => {
 // club 상세 조회
 export const clubAboutDetail = async id => {
   const { data } = await axiosGeneralAPI().get(`/api/v1/clubs/${id}/about`);
+  return data.data;
+};
+
+// lecture 상세 조회
+export const lectureAboutDetail = async id => {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/lecture-club/${id}`);
   return data.data;
 };
 
