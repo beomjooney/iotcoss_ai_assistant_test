@@ -1,7 +1,12 @@
 import './index.module.scss';
 import { QuizMakeTemplate } from 'src/templates';
+import { useEffect } from 'react';
 
-export function QuizMakePage() {
+export function QuizMakePage({ setActiveIndex }: { setActiveIndex: (index: number) => void }) {
+  useEffect(() => {
+    setActiveIndex(4);
+  }, []);
+
   return <QuizMakeTemplate />;
 }
 

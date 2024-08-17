@@ -53,11 +53,13 @@ export interface NavbarProps {
   title?: string;
   /** 하위 메뉴 */
   menuItem?: any[];
+  activeIndex?: number;
+  setActiveIndex?: (index: number) => void;
 }
 
 const cx = classNames.bind(styles);
 
-const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
+const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIndex }: NavbarProps) => {
   const { theme } = useTheme();
   const COLOR_PRESETS = usePresets();
   const { logged, roles, tenantName } = useSessionStore.getState();
@@ -97,10 +99,23 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
   const [isShowMenu, setIsShowMenu] = useState<boolean>(false);
   const { setColorPresets } = useColorPresets();
   const [baseUrl, setBaseUrl] = useState('');
-  const [activeIndex, setActiveIndex] = useState(null);
+  const savedIndex = localStorage.getItem('activeIndex');
+
+  // 컴포넌트가 마운트될 때 localStorage에서 activeIndex를 불러옴
+  useEffect(() => {
+    const savedIndex = localStorage.getItem('activeIndex');
+    if (savedIndex !== null) {
+      setActiveIndex(parseInt(savedIndex, 10));
+    }
+  }, []);
+
+  // activeIndex가 변경될 때마다 localStorage에 저장
+  useEffect(() => {
+    localStorage.setItem('activeIndex', activeIndex.toString());
+  }, [activeIndex]);
 
   useEffect(() => {
-    // This code runs only on the client side
+    // 이 코드는 클라이언트 측에서만 실행됩니다
     if (typeof window !== 'undefined') {
       setBaseUrl(window.location.origin);
       // console.log(window.location.origin);
@@ -269,7 +284,8 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
         } ${scroll > headerTop ? 'affix' : ''}`}
       >
         <div className="container" style={{ alignItems: 'center' }}>
-          <div className={cx('header-link')}>
+          {/* <div className={cx('header-link')}> */}
+          <div>
             {getFirstSubdomain() === 'sejong' ? (
               <img src="/assets/images/header/sejong_logo.png" width={300} alt="logo" className={cx('image-logo')} />
             ) : (
@@ -423,6 +439,7 @@ const Header = ({ darkBg, classOption, title, menuItem }: NavbarProps) => {
                               <div
                                 className={`${activeIndex === index ? 'border-bottom-3 tw-border-black pb-3' : ''}`}
                                 style={{ paddingBottom: activeIndex === index ? '10px' : '10px' }}
+                                onClick={() => setActiveIndex(index)}
                               >
                                 {item.title}
                               </div>

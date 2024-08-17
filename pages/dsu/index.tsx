@@ -8,7 +8,7 @@ import { usePresets } from 'src/utils/color-presets';
 import { useEffect } from 'react';
 import { GetServerSideProps } from 'next';
 import { Session, useSessionStore } from '../../src/store/session';
-export function IndexPage({ session }: { session: Session }) {
+export function IndexPage({ session, setActiveIndex }: { session: Session; setActiveIndex: (index: number) => void }) {
   // redirection 처리
   const { update } = useSessionStore.getState();
   useEffect(() => {
@@ -33,6 +33,10 @@ export function IndexPage({ session }: { session: Session }) {
   // const { data: myProfileData } = useMyProfile(data => {
   //   console.log('useMyProfile : ', data);
   // });
+
+  useEffect(() => {
+    setActiveIndex(0);
+  }, []);
 
   // TODO 로그인 수정 변경
   return (
