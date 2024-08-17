@@ -853,15 +853,23 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
         }
       }
 
-      if (activeStep === 1) {
-        if (item.studyDate === '') {
-          alert(`${i + 1}번째 강의 시작일을 입력해주세요.`);
-          shouldStop = true;
-          return; // 함수 전체를 종료
-        }
+      if (item.studyDate === '') {
+        alert(`${i + 1}번째 강의 시작일을 입력해주세요.`);
+        shouldStop = true;
+        return; // 함수 전체를 종료
+      }
 
-        if (item.clubStudyName === '') {
-          alert(`${i + 1}번째 강의 이름을 입력해주세요.`);
+      if (item.clubStudyName === '') {
+        alert(`${i + 1}번째 강의 이름을 입력해주세요.`);
+        shouldStop = true;
+        return; // 함수 전체를 종료
+      }
+
+      // studyDate가 순차적인지 확인하는 로직 추가
+      if (i > 0) {
+        const prevItem = scheduleData[i - 1];
+        if (dayjs(item.studyDate).isBefore(dayjs(prevItem.studyDate))) {
+          alert(`${i + 1}번째 강의 시작일이 이전 강의 시작일보다 이전입니다. 날짜를 확인해주세요.`);
           shouldStop = true;
           return; // 함수 전체를 종료
         }
@@ -1126,8 +1134,20 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const handleAddClick = () => {
-    if (quizList.length > 1) setIsModalOpen(true);
-    else alert('퀴즈 생성 주기를 입력해주세요.');
+    const newOrder = scheduleData.length + 1; // Determine the new order based on the current length of scheduleData
+    const newData = {
+      studyOrder: newOrder,
+      clubStudyName: '',
+      clubStudyType: '0100',
+      clubStudyUrl: '',
+      urls: [],
+      files: [],
+      studyDate: '',
+      // studyDate: dayjs().format('YYYY-MM-DD'),
+    };
+
+    // Update scheduleData with the new data
+    setScheduleData([...scheduleData, newData]);
   };
 
   function handleDeleteMember(memberUUID: any): void {
