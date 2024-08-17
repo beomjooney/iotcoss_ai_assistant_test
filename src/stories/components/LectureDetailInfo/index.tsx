@@ -189,7 +189,7 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
                       clubData.jobLevels.map((jobLevel, index) => (
                         <span
                           key={index}
-                          className="tw-my-2 tw-inline-flex tw-bg-gray-200 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
+                          className=" tw-inline-flex tw-bg-gray-200 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
                         >
                           {jobLevel.name || 'N/A'}
                         </span>

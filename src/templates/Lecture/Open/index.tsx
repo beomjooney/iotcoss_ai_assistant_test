@@ -1216,42 +1216,6 @@ export function LectureOpenTemplate() {
     </div>
   );
 
-  function renderDatesAndSessionsModify() {
-    return (
-      <div className="tw-grid tw-grid-cols-12 tw-gap-4 tw-p-3">
-        {scheduleData.map((session, index) => (
-          <div key={index} className="tw-flex-grow tw-flex-shrink relative">
-            <div className="tw-text-center">
-              <Checkbox checked={selectedSessions.includes(index)} onChange={() => handleCheckboxDayChange(index)} />
-              <p className="tw-text-base tw-font-medium tw-text-center tw-text-[#31343d]">{index + 1}회</p>
-              <div className="tw-flex tw-justify-center tw-items-center  tw-left-0 tw-top-0 tw-overflow-hidden tw-gap-1 tw-px-0 tw-py-[3px] tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
-                <input
-                  style={{ padding: 0, height: 25, width: 25, textAlign: 'center' }}
-                  type="text"
-                  maxLength={2}
-                  className="form-control tw-text-sm"
-                  value={session.publishDate.split('-')[1]}
-                  onChange={e => handleInputDayChange(index, 'month', e.target.value)}
-                ></input>
-                <input
-                  style={{ padding: 0, height: 25, width: 25, textAlign: 'center' }}
-                  type="text"
-                  className="form-control tw-text-sm"
-                  value={session.publishDate.split('-')[2]}
-                  onChange={e => handleInputDayChange(index, 'day', e.target.value)}
-                ></input>
-                <p className="tw-text-xs tw-font-medium tw-text-center tw-text-[#9ca5b2]">{session.dayOfWeek}</p>
-              </div>
-            </div>
-            <div className="tw-w-6 tw-h-6 tw-left-[21px] tw-top-0 tw-overflow-hidden">
-              <div className="tw-w-4 tw-h-4 tw-left-[2.77px] tw-top-[2.77px] tw-rounded tw-bg-white tw-border-[1.45px] tw-border-[#ced4de]"></div>
-            </div>
-          </div>
-        ))}
-      </div>
-    );
-  }
-
   const handleUniversityChange = e => {
     const selectedCode = e.target.value;
     const selected = optionsData?.data?.jobs?.find(u => u.code === selectedCode);
@@ -1261,18 +1225,6 @@ export function LectureOpenTemplate() {
     setJobs(selected ? selected.jobs : []);
     setSelectedJob([]); // Clear the selected job when university changes
     setPersonName([]); // Clear the selected job when university changes
-  };
-
-  const handleUniversityChangeQuiz = e => {
-    setUniversityCodeQuiz(e.target.value);
-  };
-
-  const handleJobChangeQuiz = e => {
-    setSelectedJobQuiz(e.target.value);
-  };
-
-  const handleLevelChangeQuiz = e => {
-    setSelectedLevel(e.target.value);
   };
 
   const classes = useStyles();

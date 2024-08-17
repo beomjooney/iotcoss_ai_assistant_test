@@ -60,31 +60,6 @@ LectureCardProps) => {
 
   const textInput = useRef(null);
 
-  const onReplySubmit = (postNo: number, text: string) => {
-    if (logged) {
-      onSaveReply({
-        postNo: postNo,
-        data: {
-          body: text,
-        },
-      });
-      textInput.current.value = '';
-      setReplyCount(replyCount => replyCount + 1);
-    } else {
-      alert('로그인 후 댓글을 입력할 수 있습니다.');
-    }
-  };
-
-  const onReplyDeleteSubmit = (postReplyNo: number, parentPostNo: number) => {
-    if (window.confirm('정말로 삭제하시겠습니까?')) {
-      onDeleteReply({
-        postReplyNo: postReplyNo,
-        parentPostNo: parentPostNo,
-      });
-      setReplyCount(replyCount => replyCount - 1);
-    }
-  };
-
   const onChangeLike = function (postNo: number) {
     event.preventDefault();
     if (logged) {
@@ -103,29 +78,6 @@ LectureCardProps) => {
     setPostNo(postNo);
     setIsOpened(!isOpen);
   };
-
-  function timeForToday(value) {
-    const today = new Date();
-    const timeValue = new Date(value);
-
-    const betweenTime = Math.floor((today.getTime() - timeValue.getTime()) / 1000 / 60);
-    if (betweenTime < 1) return '방금 전';
-    if (betweenTime < 60) {
-      return `${betweenTime}분 전`;
-    }
-
-    const betweenTimeHour = Math.floor(betweenTime / 60);
-    if (betweenTimeHour < 24) {
-      return `${betweenTimeHour}시간 전`;
-    }
-
-    const betweenTimeDay = Math.floor(betweenTime / 60 / 24);
-    if (betweenTimeDay < 365) {
-      return `${betweenTimeDay}일 전`;
-    }
-
-    return `${Math.floor(betweenTimeDay / 365)}년전`;
-  }
 
   const [isClient, setIsClient] = useState(false);
 
@@ -208,29 +160,29 @@ LectureCardProps) => {
                   </p>
                 </div>
 
-                {item?.jobs?.length > 0 &&
-                  item.jobs.map((job, index) => (
-                    <div
-                      key={index}
-                      className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#d7ecff]"
-                    >
-                      <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#235a8d]">
-                        {job.name || 'N/A'}
-                      </p>
-                    </div>
-                  ))}
+                {/* {item?.jobs?.length > 0 &&
+                  item.jobs.map((job, index) => ( */}
+                <div
+                  // key={index}
+                  className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#d7ecff]"
+                >
+                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#235a8d]">
+                    {item?.jobs[0]?.name || 'N/A'}
+                  </p>
+                </div>
+                {/* ))} */}
 
-                {item?.jobLevels?.length > 0 &&
-                  item.jobLevels.map((jobLevel, index) => (
-                    <div
-                      key={index}
-                      className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#fffdc8]"
-                    >
-                      <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#806024]">
-                        {jobLevel.name || 'N/A'}
-                      </p>
-                    </div>
-                  ))}
+                {/* {item?.jobLevels?.length > 0 &&
+                  item.jobLevels.map((jobLevel, index) => ( */}
+                <div
+                  // key={index}
+                  className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#fffdc8]"
+                >
+                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#806024]">
+                    {item?.jobLevels?.[0]?.name || 'N/A'}
+                  </p>
+                </div>
+                {/* ))} */}
               </div>
               <img
                 className="tw-absolute tw-left-[329.5px] tw-top-[17.5px] tw-w-[200px] tw-h-[200px] tw-rounded-full"

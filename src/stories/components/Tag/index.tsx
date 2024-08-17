@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import CloseIcon from '@mui/icons-material/Close'; // Importing Close icon from MUI
 import { InputAdornment, IconButton } from '@mui/material';
@@ -14,9 +14,13 @@ export interface TagProps {
 function TagRoot(props: TagProps) {
   const { value = [], onChange, placeHolder } = props;
   const [inputValue, setInputValue] = useState<string>(''); // String to store the input value
-  const [tags, setTags] = useState<string[]>(value); // Array to store the tags
+  const [tags, setTags] = useState([]); // Array to store the tags
 
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setTags(value);
+  }, [value]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);

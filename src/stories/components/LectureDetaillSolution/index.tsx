@@ -147,7 +147,7 @@ const LectureDetaillSolution = ({
                   {isLiked ? <StarIcon color="primary" /> : <StarBorderIcon color="disabled" />}
                 </button>
               </div>
-              <div className="tw-text-black tw-text-3xl tw-font-bold tw-py-3">임베디드 시스템</div>
+              <div className="tw-text-black tw-text-3xl tw-font-bold tw-py-3">{contents?.club?.name}</div>
             </Grid>
             <Grid item xs={4} container justifyContent="flex-end">
               <div className="">
