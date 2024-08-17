@@ -2,8 +2,8 @@ import React, { ReactNode } from 'react';
 import { Footer, Header } from '../../components';
 import { Mobile, Desktop } from 'src/hooks/mediaQuery';
 import { useSessionStore } from 'src/store/session';
-import { useState, useEffect } from 'react';
 import { getFirstSubdomain } from 'src/utils';
+import { useState, useEffect, isValidElement, cloneElement } from 'react';
 
 export interface DefaultLayoutProps {
   /** 테마 색상 */
@@ -94,15 +94,45 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
     }
   }, [isMounted]);
 
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  // 클라이언트에서만 localStorage를 사용할 수 있도록 useEffect 내부에서 설정
+  useEffect(() => {
+    const savedIndex = localStorage.getItem('activeIndex');
+    if (savedIndex !== null) {
+      setActiveIndex(parseInt(savedIndex, 10));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('activeIndex', activeIndex.toString());
+  }, [activeIndex]);
+
+  const renderChildrenWithProps = () => {
+    if (isValidElement(children)) {
+      return cloneElement(children as React.ReactElement<any>, { setActiveIndex });
+    }
+    return children;
+  };
+
   return (
     <div>
       <Desktop>
-        <Header darkBg={darkBg} classOption={classOption} title={title} menuItem={menuItem} />
+        <Header
+          darkBg={darkBg}
+          classOption={classOption}
+          title={title}
+          menuItem={menuItem}
+          activeIndex={activeIndex}
+          setActiveIndex={setActiveIndex}
+        />
       </Desktop>
       <Mobile>
         <Header darkBg={darkBg} classOption={classOption} title={title} menuItem={menuItem} />
       </Mobile>
-      <section className="hero-section ptb-100">{children}</section>
+
+      {/* <section className="hero-section ptb-100">{children}</section> */}
+      <section className="hero-section ptb-100"> {renderChildrenWithProps()}</section>
       {isContentRendered && <Footer />}
     </div>
   );

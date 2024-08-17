@@ -9,7 +9,7 @@ import { usePresets } from 'src/utils/color-presets';
 import { useEffect } from 'react';
 import { GetServerSideProps } from 'next';
 
-export function IndexPage({ session }: { session: Session }) {
+export function IndexPage({ session, setActiveIndex }: { session: Session; setActiveIndex: (index: number) => void }) {
   const { update } = useSessionStore.getState();
 
   useEffect(() => {
@@ -36,6 +36,10 @@ export function IndexPage({ session }: { session: Session }) {
   });
 
   console.log('index page');
+
+  useEffect(() => {
+    setActiveIndex(0);
+  }, []);
 
   // const { data: myProfileData } = useMyProfile(data => {
   //   console.log('useMyProfile : ', data);

@@ -1,7 +1,11 @@
 import './index.module.scss';
 import { StudyRoomTemplate } from 'src/templates';
+import { useEffect } from 'react';
 
-export function StudyRoomPage() {
+export function StudyRoomPage({ setActiveIndex }: { setActiveIndex: (index: number) => void }) {
+  useEffect(() => {
+    setActiveIndex(3);
+  }, []);
   return (
     <div className="tw-h-[1800px]">
       <StudyRoomTemplate />

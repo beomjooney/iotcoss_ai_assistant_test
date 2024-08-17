@@ -8,7 +8,7 @@ import { useColorPresets, useColorPresetName } from 'src/utils/use-theme-color';
 import { usePresets } from 'src/utils/color-presets';
 import { useEffect } from 'react';
 
-export function IndexPage() {
+export function IndexPage({ setActiveIndex }: { setActiveIndex: (index: number) => void }) {
   const { memberId, logged } = useSessionStore(state => ({
     memberId: state.memberId,
     name: state.name,
@@ -20,6 +20,10 @@ export function IndexPage() {
     console.log('useMemberInfo', data);
     setUser({ user: data });
   });
+
+  useEffect(() => {
+    setActiveIndex(0);
+  }, []);
 
   // const { data: myProfileData } = useMyProfile(data => {
   //   console.log('useMyProfile : ', data);
