@@ -101,47 +101,48 @@ export function LectureDetailTemplate({ id }: LectureDetailTemplateProps) {
   // console.log('clubStatus', clubAbout?.clubStatus);
   // console.log('clubMemberStatus', clubAbout?.clubMemberStatus);
 
-  const isQuizScreen = clubAbout?.clubAboutStatus === '0401' && isParticipantListFetched;
+  const isQuizScreen = clubAbout?.clubAboutStatus === '0401';
+  console.log('isQuizScreen', isQuizScreen, clubAbout?.clubAboutStatus);
 
   return (
     <div className={cx('seminar-detail-container')}>
       <div className={cx('container')}>
         {/* 퀴즈 풀기 화면 */}
-        {isParticipantListFetched && isQuizScreen ? (
-          <LectureDetaillSolution
-            border={false}
-            totalElements={totalElements}
-            totalPage={totalPage}
-            page={page}
-            handlePageChange={handlePageChange}
-            contents={contents}
-            quizList={quizList}
-            // selectedImageBanner={clubAbout?.imageBanner}
-            // selectedImage={clubAbout?.image}
-            selectedImageBanner="/assets/images/banner/Rectangle_200.png"
-            selectedImage="/assets/images/banner/Rectangle_190.png"
-          />
-        ) : (
-          // 클럽 상세 보기 화면
-          isClubAboutFetched && (
-            <div>
-              <LectureDetailInfo
-                border={true}
-                refetchClubAbout={refetchClubAbout}
-                clubData={clubAbout}
-                user={clubAbout?.leader}
-                selectedUniversityName={''}
-                jobLevelName={[]}
-                selectedJobName={[]}
-                selectedQuizzes={clubAbout?.clubQuizzes}
+        {isQuizScreen
+          ? isParticipantListFetched && (
+              <LectureDetaillSolution
+                border={false}
+                totalElements={totalElements}
+                totalPage={totalPage}
+                page={page}
+                handlePageChange={handlePageChange}
+                contents={contents}
+                quizList={quizList}
                 // selectedImageBanner={clubAbout?.imageBanner}
                 // selectedImage={clubAbout?.image}
                 selectedImageBanner="/assets/images/banner/Rectangle_200.png"
                 selectedImage="/assets/images/banner/Rectangle_190.png"
               />
-            </div>
-          )
-        )}
+            )
+          : // 클럽 상세 보기 화면
+            isClubAboutFetched && (
+              <div>
+                <LectureDetailInfo
+                  border={true}
+                  refetchClubAbout={refetchClubAbout}
+                  clubData={clubAbout}
+                  user={clubAbout?.leader}
+                  selectedUniversityName={''}
+                  jobLevelName={[]}
+                  selectedJobName={[]}
+                  selectedQuizzes={clubAbout?.clubQuizzes}
+                  // selectedImageBanner={clubAbout?.imageBanner}
+                  // selectedImage={clubAbout?.image}
+                  selectedImageBanner="/assets/images/banner/Rectangle_200.png"
+                  selectedImage="/assets/images/banner/Rectangle_190.png"
+                />
+              </div>
+            )}
       </div>
     </div>
   );

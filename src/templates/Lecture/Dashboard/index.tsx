@@ -2,7 +2,7 @@ import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import React, { useState } from 'react';
 import Divider from '@mui/material/Divider';
-import { paramProps, useMyClubList, useMyDashboardList } from 'src/services/seminars/seminars.queries';
+import { paramProps, useMyLectureList, useMyDashboardList } from 'src/services/seminars/seminars.queries';
 import Grid from '@mui/material/Grid';
 
 /**import quiz modal  */
@@ -82,7 +82,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   };
 
   // 퀴즈클럽 리스트
-  const { isFetched: isContentFetched, refetch: refetchMyClub } = useMyClubList({}, data => {
+  const { isFetched: isContentFetched, refetch: refetchMyClub } = useMyLectureList({}, data => {
     console.log(data?.data?.contents);
     setMyClubList(data?.data?.contents || []);
   });

@@ -70,6 +70,7 @@ import ToggleButton from '@mui/material/ToggleButton';
 import { makeStyles } from '@mui/styles';
 import { images, imageBanner } from './group';
 import LectureBreakerInfo from 'src/stories/components/LectureBreakerInfo';
+import { useLectureModify } from 'src/services/quiz/quiz.mutations';
 
 export interface ManageLectureClubTemplateProps {
   /** 세미나 아이디 */
@@ -481,6 +482,8 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
   let [key, setKey] = useState('');
   let [fileName, setFileName] = useState('');
 
+  const { mutate: onLectureModify, isError, isSuccess: clubSuccess, data: clubDatas } = useLectureModify();
+
   const getJobLevelNames = (jobLevelCodes, jobLevels) => {
     return jobLevelCodes?.map(code => {
       const jobLevel = jobLevels.find(level => level.code === code.toString().padStart(4, '0'));
@@ -692,8 +695,8 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
     }
   };
 
-  const handleNextOne = () => {
-    handlerClubSaveTemp('validation');
+  const handleSave = () => {
+    handlerClubSaveTemp('save');
   };
 
   const handlerClubSaveTemp = type => {
@@ -887,14 +890,8 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
       console.log(key, value);
     }
 
-    if (type === 'temp') {
-      onTempSave(formData);
-    } else if (type === 'save') {
-      onLectureSave(formData);
-    } else if (type === 'validation') {
-      setActiveStep(prevActiveStep => prevActiveStep + 1);
-      setParamss(clubFormParams);
-      window.scrollTo(0, 0);
+    if (type === 'save') {
+      onLectureModify({ formData, id: selectedClub?.clubSequence });
     }
   };
 
@@ -1756,7 +1753,7 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
                   <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">강의 기본정보</div>
                   <button
                     className="tw-w-[150px] border tw-text-gray-500 tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-text-sm tw-rounded"
-                    onClick={handleNextOne}
+                    onClick={() => handleSave()}
                   >
                     수정하기
                   </button>
@@ -2198,26 +2195,6 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
                 >
                   삭제
                 </button>
-
-                <div className="tw-container tw-py-10 tw-px-10 tw-mx-0 tw-min-w-full tw-flex tw-flex-col tw-items-center">
-                  <div className="tw-grid tw-grid-rows-3 tw-grid-flow-col tw-gap-4">
-                    <div className="tw-row-span-2">
-                      <button
-                        className="tw-w-[150px] border tw-mr-4 tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-rounded tw-text-sm"
-                        onClick={() => handlerClubSaveTemp('temp')}
-                      >
-                        임시 저장하기
-                      </button>
-                      <button
-                        className="tw-w-[150px]  tw-bg-blue-600 tw-text-white tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-text-sm tw-rounded"
-                        onClick={handleNextOne}
-                      >
-                        {activeStep === steps.length - 1 ? '성장퀴즈 클럽 개설하기' : '다음'}{' '}
-                        <NavigateNextIcon fontSize="small" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -2231,7 +2208,7 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
                   <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">강의 커리큘럼</div>
                   <button
                     className="tw-w-[150px] border tw-text-gray-500 tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-text-sm tw-rounded"
-                    onClick={handleNextOne}
+                    onClick={() => handleSave()}
                   >
                     수정하기
                   </button>
@@ -2521,31 +2498,6 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
                     </div>
                   </div>
                 )}
-              </div>
-
-              <div className="tw-container tw-py-10 tw-px-10 tw-mx-0 tw-min-w-full tw-flex tw-flex-col tw-items-center">
-                <div className="tw-flex tw-gap-5 tw-mt-3">
-                  <button
-                    onClick={handleBack}
-                    className="border tw-w-[150px] tw-btn-outline-secondary tw-text-sm tw-outline-blue-500 tw-bg-white tw-text-black tw-font-bold tw-py-3 tw-px-4 tw-rounded tw-flex tw-items-center tw-justify-center tw-gap-1"
-                  >
-                    <NavigatePrevIcon fontSize="small" />
-                    이전
-                  </button>
-                  <button
-                    className="tw-w-[150px] border tw-font-bold tw-py-3  tw-text-sm tw-px-4 tw-rounded tw-text-black tw-font-bold"
-                    onClick={() => handlerClubSaveTemp('temp')}
-                  >
-                    임시 저장하기
-                  </button>
-                  <button
-                    className="tw-w-[150px] tw-bg-blue-600 tw-text-white  tw-text-sm tw-font-bold tw-py-3 tw-px-4 tw-rounded tw-flex tw-items-center tw-justify-center tw-gap-1"
-                    onClick={handleNextTwo}
-                  >
-                    {activeStep === steps.length - 1 ? '성장퀴즈 클럽 개설하기 >' : '다음'}
-                    <NavigateNextIcon fontSize="small" />
-                  </button>
-                </div>
               </div>
             </article>
           </div>
