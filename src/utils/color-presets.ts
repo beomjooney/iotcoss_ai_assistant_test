@@ -57,7 +57,7 @@ export const usePresets = () => {
       },
     },
     {
-      name: 'sejong',
+      name: 'iotcoss',
       colors: {
         lighter: '#ccfbf1', // Teal 100
         light: '#5eead4', // Teal 300

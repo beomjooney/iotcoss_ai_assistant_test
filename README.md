@@ -3,6 +3,7 @@
 ## Command Info
 
 ---
+
 - Run
   - `yarn dev`
 - Build
@@ -21,6 +22,7 @@
 ```
 
 ## Login후 subdomain query param sender account/login/index.tsx
+
 ```
 useEffect(() => {
     if (isSuccess) {
@@ -62,7 +64,9 @@ useEffect(() => {
     }
   }, [loginData]);
 ```
+
 ## 로그인시 컬러 변경 로직 /pages/index.tsx
+
 ```
   //First Color Change
   const COLOR_PRESETS = usePresets();
@@ -71,6 +75,7 @@ useEffect(() => {
 ```
 
 ## subdomain 변경시 색상 변경 로직 /pages/dsu/index.tsx
+
 ```
   useEffect(() => {
     if (!COLOR_PRESETS || COLOR_PRESETS.length === 0) return;
@@ -81,14 +86,16 @@ useEffect(() => {
 ```
 
 ## subdomain 변경시 로직 /pages/dsu/index.tsx
-  ```
-  // session이 존재하는 경우에만 상태 업데이트를 수행
-  useEffect(() => {
-    if (session) {
-      update(session);
-    }
-  }, [session, update]);
+
 ```
+// session이 존재하는 경우에만 상태 업데이트를 수행
+useEffect(() => {
+  if (session) {
+    update(session);
+  }
+}, [session, update]);
+```
+
 ```
 export const getServerSideProps: GetServerSideProps = async context => {
   try {
