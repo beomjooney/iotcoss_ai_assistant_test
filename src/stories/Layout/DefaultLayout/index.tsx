@@ -67,7 +67,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
     {
       no: 1,
       option: 'nav-item',
-      title: 'My 클럽',
+      title: 'My 퀴즈클럽',
       link: '/my-clubs',
       dropdown: [],
       login: logged,
