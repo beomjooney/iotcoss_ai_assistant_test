@@ -247,7 +247,9 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
         <div className="tw-flex tw-items-end tw-gap-[16px]">
           <img
             className="tw-w-40 tw-h-40 border tw-rounded-full"
-            src={clubData?.leader?.profileImageUrl || selectedProfile}
+            src={
+              clubData?.leader?.profileImageUrl || selectedProfile || '/assets/images/account/default_profile_image.png'
+            }
           />
           <div className="tw-flex">
             <div className="tw-flex tw-justify-center tw-items-center tw-text-sm text-black border tw-py-1 tw-px-2  tw-mr-5 tw-rounded-lg">
