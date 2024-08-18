@@ -100,7 +100,7 @@ export const useLoginSignUp = (): UseMutationResult => {
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('LOGIN').all),
     onSuccess: async data => {
       console.log('data', data);
-      const { responseCode, message } = data;
+      const { responseCode, message } = data.data;
       if (responseCode === '0000') {
         alert('회원가입이 정상적으로 되었습니다.');
         router.push('/account/login');
