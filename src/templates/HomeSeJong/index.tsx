@@ -254,7 +254,7 @@ export function HomeSejongTemplate({ logged = false, tenantName = '' }: HomeSejo
           </div>
         </div>
       </section>
-      <div className={cx('container tw-pt-24')}>
+      <div className={cx('container tw-pt-14')}>
         <div className="tw-w-full tw-relative tw-overflow-hidden">
           <img src="/assets/images/main/bottom.png" className="tw-w-full tw-object-cover" />
         </div>
