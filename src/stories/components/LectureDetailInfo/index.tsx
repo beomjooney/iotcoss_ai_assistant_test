@@ -245,7 +245,10 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
 
       <div className="tw-px-[108.5px] tw-absolute tw-top-[330px] tw-left-0 tw-right-0 tw-bottom-0 tw-rounded-[8.75px] tw-py-[40px]">
         <div className="tw-flex tw-items-end tw-gap-[16px]">
-          <img className="tw-w-40 tw-h-40 border tw-rounded-full" src={selectedProfile} />
+          <img
+            className="tw-w-40 tw-h-40 border tw-rounded-full"
+            src={clubData?.leader?.profileImageUrl || selectedProfile}
+          />
           <div className="tw-flex">
             <div className="tw-flex tw-justify-center tw-items-center tw-text-sm text-black border tw-py-1 tw-px-2  tw-mr-5 tw-rounded-lg">
               교수자
