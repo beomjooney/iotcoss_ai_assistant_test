@@ -104,7 +104,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   const { isFetched: isDashboardFetched, refetch: refetchMyDashboard } = useMyLectureDashboardList(
     myClubSequenceParams,
     data => {
-      console.log(data);
+      console.log('useMyLectureDashboardList', data);
       setMyDashboardList(data || []);
     },
   );
@@ -270,7 +270,9 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                       >
                         <line x1="0.5" y1="0.5" x2="0.5" y2="16.5" stroke="#9CA5B2" />
                       </svg>
-                      <p className="tw-flex tw-text-xl tw-font-bold tw-text-left tw-text-[#2474ed]">1회차. 06-04(화)</p>
+                      <p className="tw-flex tw-text-xl tw-font-bold tw-text-left tw-text-[#2474ed]">
+                        {myDashboardList?.studyOrder}회차. {myDashboardList?.studyDate} ({myDashboardList?.dayOfWeek})
+                      </p>
                     </div>
                     <p
                       onClick={() => router.push(`/view-all-lecture/${selectedValue}`)}
@@ -282,12 +284,12 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                   <div className="tw-flex tw-justify-between tw-items-center tw-gap-3 tw-px-5 tw-my-5 tw-h-[100px] tw-relative tw-rounded-lg tw-bg-white border border-[#e9ecf2]">
                     <div className=" tw-flex">
                       <p className=" tw-text-base tw-text-center tw-text-black tw-mr-5 tw-font-bold">
-                        1회차 임베디드 시스템 관련 강의제목
+                        {myDashboardList?.studyOrder}회차 {myDashboardList?.clubStudyName}
                       </p>
                       <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-gap-2">
                         <div className="tw-flex tw-justify-end tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2 tw-px-2 tw-py-1 tw-rounded tw-bg-white border border-[#2474ed]">
                           <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-font-medium tw-text-right tw-text-[#2474ed]">
-                            오프라인
+                            {myDashboardList?.clubStudyType === '0100' ? '온라인' : '오프라인'}
                           </p>
                         </div>
                         <div className="tw-flex tw-justify-end tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2 tw-px-2 tw-py-1 tw-rounded tw-bg-white border border-[#31343d]">
@@ -324,11 +326,15 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                           <div className="tw-bg-white tw-p-5 tw-w-full  tw-rounded-lg">
                             <div className=" tw-flex tw-justify-between tw-items-center">
                               <p className=" tw-text-sm tw-font-bold tw-text-left tw-text-[#31343d]">클럽인원</p>
-                              <p className="  tw-text-2xl tw-font-bold tw-text-left tw-text-black">30명</p>
+                              <p className="  tw-text-2xl tw-font-bold tw-text-left tw-text-black">
+                                {myDashboardList?.clubMemberCount}명
+                              </p>
                             </div>
                             <div className=" tw-flex tw-justify-between tw-items-center tw-mt-3">
                               <p className=" tw-text-sm tw-font-bold tw-text-left tw-text-[#31343d]">승인대기</p>
-                              <p className="  tw-text-2xl tw-font-bold tw-text-left tw-text-black">30명</p>
+                              <p className="  tw-text-2xl tw-font-bold tw-text-left tw-text-black">
+                                {myDashboardList?.memberApprovalWaitCount}명
+                              </p>
                             </div>
                           </div>
                           <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[220px] tw-h-[151px] tw-relative tw-overflow-hidden tw-rounded tw-bg-white">
@@ -354,7 +360,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                   </svg>
                                 </div>
                                 <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-bold tw-text-left tw-text-[#31343d]">
-                                  12주
+                                  {myDashboardList?.weekCount}주
                                 </p>
                               </div>
                               <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-4">
@@ -401,7 +407,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                   </svg>
                                 </div>
                                 <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-bold tw-text-left tw-text-[#31343d]">
-                                  11회
+                                  {myDashboardList?.remainingClubStudyCount}회
                                 </p>
                               </div>
                             </div>
