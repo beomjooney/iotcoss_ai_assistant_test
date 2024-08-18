@@ -92,8 +92,8 @@ function createAxios(requestConfig: RequestConfig): AxiosInstance {
           deleteCookie('access_token');
           localStorage.removeItem('auth-store');
           localStorage.removeItem('app-storage');
-          // window.location.href = '/account/login';
-          // throw new LoginError();
+          window.location.href = '/account/login';
+          throw new LoginError();
         }
       }
 

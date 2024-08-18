@@ -75,6 +75,7 @@ const cx = classNames.bind(styles);
 export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) {
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
+  const [totalElements, setTotalElements] = useState(0);
   const [myClubList, setMyClubList] = useState<any>([]);
   const [myDashboardList, setMyDashboardList] = useState<any>([]);
   const [myDashboardStudentList, setMyDashboardStudentList] = useState<any>([]);
@@ -112,16 +113,16 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   const { isFetched: isDashboardStudentFetched, refetch: refetchMyDashboardStudent } = useMyLectureDashboardStudentList(
     myClubParams,
     data => {
-      console.log(data);
-      setTotalPage(data?.totalPages);
-      setTotalElements(data?.totalElements);
+      console.log('useMyLectureDashboardStudentList', data);
+      setTotalPage(data?.students?.totalPages);
+      setTotalElements(data?.students?.totalElements);
       setMyDashboardStudentList(data || []);
     },
   );
 
   /** my quiz replies */
   const [selectedClub, setSelectedClub] = useState(null);
-  const [sortType, setSortType] = useState('0001');
+  const [sortType, setSortType] = useState('NAME');
 
   useDidMountEffect(() => {
     setMyClubParams({
@@ -676,7 +677,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                       정렬 :
                     </p>
                     <FormControlLabel
-                      value="0001"
+                      value="NAME"
                       control={
                         <Radio
                           sx={{
@@ -689,12 +690,12 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                       }
                       label={
                         <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                          가나다순
+                          이름순
                         </p>
                       }
                     />
                     <FormControlLabel
-                      value="0002"
+                      value="QUESTION_COUNT"
                       control={
                         <Radio
                           sx={{
@@ -707,12 +708,12 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                       }
                       label={
                         <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                          합산점수 높은순
+                          참여도순
                         </p>
                       }
                     />
                     <FormControlLabel
-                      value="0003"
+                      value="PARTICIPATION_RATE"
                       control={
                         <Radio
                           sx={{
@@ -725,7 +726,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                       }
                       label={
                         <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                          합산점수 낮은순
+                          질의많은순
                         </p>
                       }
                     />
@@ -733,31 +734,31 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                   <div className="tw-flex tw-items-center tw-justify-end tw-text-center tw-py-5">
                     <div className="tw-flex tw-justify-end tw-items-center tw-gap-3">
                       <div className="tw-flex tw-justify-end tw-items-center tw-gap-3">
-                        <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-gap-1">
-                          <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-1">
-                            <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-4 tw-h-4 tw-relative">
-                              <div className="tw-w-4 tw-h-4 tw-absolute tw-left-0 tw-top-[0.5px] tw-overflow-hidden tw-rounded-sm tw-bg-[#ced4de]">
-                                <p className="tw-absolute tw-left-1 tw-top-px tw-text-[8px] tw-font-medium tw-text-center tw-text-white">
-                                  N
-                                </p>
-                              </div>
-                            </div>
-                            <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-left tw-text-[#31343d]">
-                              응답완료
-                            </p>
-                          </div>
-                        </div>
                         <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-1">
                           <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-4 tw-h-4 tw-relative">
-                            <div className="tw-w-4 tw-h-4 tw-absolute tw-left-0 tw-top-[0.5px] tw-overflow-hidden tw-rounded-sm tw-bg-[#e11837]">
+                            <div className="tw-w-4 tw-h-4 tw-absolute tw-left-0 tw-top-[0.5px] tw-overflow-hidden tw-rounded-sm tw-bg-[#6a7380]">
                               <p className="tw-absolute tw-left-1 tw-top-px tw-text-[8px] tw-font-medium tw-text-center tw-text-white">
                                 N
                               </p>
                             </div>
                           </div>
                           <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-left tw-text-[#31343d]">
-                            응답대기
+                            AI답변
                           </p>
+                        </div>
+                        <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-gap-1">
+                          <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-1">
+                            <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-4 tw-h-4 tw-relative">
+                              <div className="tw-w-4 tw-h-4 tw-absolute tw-left-0 tw-top-[0.5px] tw-overflow-hidden tw-rounded-sm tw-bg-[#31343d]">
+                                <p className="tw-absolute tw-left-1 tw-top-px tw-text-[8px] tw-font-medium tw-text-center tw-text-white">
+                                  N
+                                </p>
+                              </div>
+                            </div>
+                            <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-left tw-text-[#31343d]">
+                              교수자답변
+                            </p>
+                          </div>
                         </div>
                         <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-1">
                           <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-4 tw-h-4 tw-relative">
@@ -768,7 +769,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                             </div>
                           </div>
                           <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-left tw-text-[#31343d]">
-                            미학습
+                            미답변
                           </p>
                         </div>
                       </div>
@@ -779,24 +780,24 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                   <Table className={classes.table} aria-label="simple table" style={{ tableLayout: 'fixed' }}>
                     <TableHead style={{ backgroundColor: '#F6F7FB' }}>
                       <TableRow>
-                        <TableCell align="center" width={140} className={`${classes.sticky} ${classes.stickyFirst}`}>
+                        <TableCell align="center" width={70} className={`${classes.sticky} ${classes.stickyFirst}`}>
                           <div className="tw-font-bold tw-text-base">학습자</div>
                         </TableCell>
-                        <TableCell align="center" width={120}>
+                        <TableCell align="center" width={70}>
                           <div className="tw-font-bold tw-text-base">학습 참여도</div>
                         </TableCell>
                         <TableCell
                           align="center"
-                          width={110}
+                          width={70}
                           className={`${classes.stickyBoard} ${classes.stickySecond}`}
                         >
                           <div className="tw-font-bold tw-text-base">답변/질의</div>
                         </TableCell>
 
-                        {myDashboardList?.schedules?.map((session, index) => (
-                          <TableCell key={index} width={100} align="right">
+                        {myDashboardStudentList?.schedules?.map((session, index) => (
+                          <TableCell key={index} width={90} align="right">
                             <div>
-                              <p className="tw-text-base tw-font-medium tw-text-center tw-text-[#31343d] tw-left-[15px] tw-top-0">
+                              <p className="tw-text-base tw-font-bold tw-text-center tw-text-[#31343d] tw-left-[15px] tw-top-0">
                                 {session?.order}회
                               </p>
                               <p className="tw-w-full tw-h-3.5 tw-text-xs tw-font-medium tw-text-center tw-text-[#9ca5b2] tw-bottom-0">
@@ -808,7 +809,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {myDashboardList?.participantProgresses?.map((info, index) => (
+                      {myDashboardStudentList?.students?.contents?.map((info, index) => (
                         <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                           <TableCell
                             align="center"
@@ -829,13 +830,13 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                           <TableCell align="center" width={120} component="th" scope="row">
                             <div className="tw-font-bold tw-grid tw-gap-1 tw-justify-center tw-items-center">
                               <div>
-                                10 / {''}
+                                {info?.participatedStudyCount} / {info?.totalStudyCount}
                                 <span className="tw-text-sm tw-text-gray-500">{info?.studyCount}회</span>
                               </div>
                               <div className="tw-w-[70px] progress tw-rounded tw-h-2 tw-p-0">
                                 <span
                                   style={{
-                                    width: `${(info?.studyCount / myDashboardList?.progress?.totalStudyCount) * 100}%`,
+                                    width: `${(info?.participatedStudyCount / info?.totalStudyCount) * 100}%`,
                                   }}
                                 >
                                   <span className="progress-line"></span>
@@ -853,11 +854,11 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                           >
                             <div className="">
                               <div className=" tw-gap-0 tw-justify-center tw-items-center tw-p-2">
-                                <span className="tw-font-bold">{info?.gradingFinalPoints}</span> / {info?.totalPoints}
+                                <span className="tw-font-bold">{info?.answeredCount}</span> / {info?.totalQuestionCount}
                               </div>
                             </div>
                           </TableCell>
-                          {info?.results.map((info, index) => {
+                          {info?.lectureParticipation.map((info, index) => {
                             const { fill, borderColor, text } = getCircleColor(info?.status);
                             return (
                               <TableCell
@@ -869,33 +870,22 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                 scope="row"
                               >
                                 <div className="tw-h-12 tw-flex tw-justify-center tw-items-center">
-                                  {info?.status !== '0001' && (
-                                    <svg
-                                      width="20"
-                                      height="20"
-                                      viewBox="0 0 20 20"
-                                      fill="none"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      className="tw-left-[-1px] tw-top-[-1px]"
-                                      preserveAspectRatio="xMidYMid meet"
-                                    >
-                                      <circle cx="10" cy="10" r="9.5" fill={fill} stroke={borderColor || fill}></circle>
-                                      <text
-                                        x="10"
-                                        y="10"
-                                        textAnchor="middle"
-                                        dominantBaseline="central"
-                                        fill={text}
-                                        className="tw-text-xs tw-font-medium tw-text-center"
-                                      >
-                                        {info?.status === '0004' && info?.gradingFinal}
-                                        {info?.status === '0003' && '?'}
-                                        {info?.status === '0002' && '-'}
-                                      </text>
-                                    </svg>
-                                  )}
-                                  <div className="tw-text-gray-400">
-                                    {info?.status === '0001' && 'D' + info?.relativeDaysToPublishDate}
+                                  <div className="tw-flex tw-justify-center tw-items-center">
+                                    <div className="tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-overflow-hidden tw-gap-2.5 tw-px-2  tw-py-px tw-rounded-tl-sm tw-rounded-bl-sm tw-bg-[#6a7380]">
+                                      <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-center tw-text-white">
+                                        {info?.aiAnswerCount}
+                                      </p>
+                                    </div>
+                                    <div className="tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-overflow-hidden tw-gap-2.5 tw-px-2 tw-py-px tw-bg-[#313b49]">
+                                      <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-center tw-text-white">
+                                        {info?.instructorAnswerCount}
+                                      </p>
+                                    </div>
+                                    <div className="tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-overflow-hidden tw-gap-2.5 tw-px-2 tw-py-px tw-rounded-tr-sm tw-rounded-br-sm tw-bg-white border">
+                                      <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-center tw-text-[#313b49]">
+                                        {info?.noAnswerCount}
+                                      </p>
+                                    </div>
                                   </div>
                                 </div>
                               </TableCell>

@@ -67,7 +67,7 @@ export const myDashboardList = async (params: any) => {
 // 클럽 퀴즈 목록 조회
 export const myLectureDashboardStudentList = async (params: any) => {
   console.log(params);
-  const { data } = await axiosGeneralAPI().get(`/api/v1/clubs/${params.clubSequence}/dashboard/students`, {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/lecture-clubs/${params.clubSequence}/dashboard/students`, {
     params: {
       orderBy: params.data.sortType,
       page: params.data.page,
