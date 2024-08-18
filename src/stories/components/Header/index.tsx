@@ -287,7 +287,7 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
         <div className="container" style={{ alignItems: 'center' }}>
           {/* <div className={cx('header-link')}> */}
           <div>
-            {getFirstSubdomain() === 'sejong' ? (
+            {getFirstSubdomain() === 'iotcoss' ? (
               <img src="/assets/images/header/sejong_logo.png" width={300} alt="logo" className={cx('image-logo')} />
             ) : (
               <img src="/assets/images/header/image_1.png" width={130} alt="logo" className={cx('image-logo')} />
