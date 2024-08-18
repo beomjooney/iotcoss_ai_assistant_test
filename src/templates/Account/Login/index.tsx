@@ -49,6 +49,7 @@ export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: Lo
     setColorPresets(preset.colors);
 
     console.log(preset.name);
+    localStorage.setItem('activeIndex', '0');
   }, []);
 
   useEffect(() => {

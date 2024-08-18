@@ -171,6 +171,7 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
     localStorage.removeItem('auth-store');
     localStorage.removeItem('app-storage');
     location.href = '/';
+    localStorage.setItem('activeIndex', '0');
   };
 
   const handleGoHome = async () => {
