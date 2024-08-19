@@ -456,6 +456,14 @@ export function QuizMakeTemplate() {
       return;
     }
 
+    // 중복 검사: 수정 중인 항목의 인덱스를 제외한 나머지 항목과 비교
+    const isDuplicate = quizList.some((quiz, index) => quiz.question === question && index !== editingIndex);
+
+    if (isDuplicate) {
+      alert('동일한 퀴즈 질문이 이미 존재합니다.');
+      return;
+    }
+
     if (editingIndex !== null) {
       const updatedQuizzes = quizList.map((quiz, index) =>
         index === editingIndex ? { question, modelAnswer: modelAnswerFinal, modelAnswerKeywords: selected3 } : quiz,
@@ -613,7 +621,7 @@ export function QuizMakeTemplate() {
       for (let index = 0; index < params.quizzes.length; index++) {
         const quiz = params.quizzes[index];
         console.log(quiz);
-        if (quiz.modelAnswerFinal === undefined) {
+        if (quiz.modelAnswerFinal === undefined || quiz.modelAnswerFinal === '') {
           alert(`퀴즈 ${index + 1}에 모범 답변이 없습니다.`);
           return false; // Exit the function if modelAnswerFinal is undefined
         }
@@ -1134,7 +1142,6 @@ export function QuizMakeTemplate() {
                         if (isContentModalClick) {
                           console.log('지식컨텐츠 닫기');
                           e.stopPropagation(); // This stops the event from propagating to the AccordionSummary
-
                           setIsContentModalClick(false);
                           setActive('');
                           setContentType('');

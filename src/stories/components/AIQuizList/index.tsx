@@ -96,6 +96,11 @@ const AIQuizList = ({
   }, [aiQuizAnswerData]);
 
   const handleAIAnswerClick = async (quizIndex, quiz) => {
+    if (!contentType) {
+      alert('지식컨텐츠 유형을 선택하세요.');
+      return;
+    }
+
     if (contentType !== '0320' && !contentUrl) {
       alert('콘텐츠 URL을 입력해주세요.');
       return false;
