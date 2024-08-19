@@ -2,6 +2,7 @@ import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import React, { useState } from 'react';
 import Divider from '@mui/material/Divider';
+import { PieChart } from 'react-minimal-pie-chart';
 import {
   paramProps,
   useMyLectureList,
@@ -422,57 +423,51 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                             최근 학습 질의 내역
                           </p>
                           <div className="tw-flex">
-                            <svg
-                              width={28}
-                              height={28}
-                              viewBox="0 0 28 28"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="tw-w-7 tw-h-7"
-                              preserveAspectRatio="xMidYMid meet"
-                            >
-                              <path
-                                d="M19.2095 13.5977L10.7955 5.18372L8.81445 7.16192L15.2545 13.5977L8.81445 20.0321L10.7941 22.0117L19.2095 13.5977Z"
-                                fill="#9CA5B2"
-                              />
-                            </svg>
+                            [
+                            <div className="tw-text-blue-600 tw-font-bold">
+                              {myDashboardList?.recentQuestions?.totalElements || 0}
+                            </div>
+                            ]
+                            <div className="tw-flex">
+                              <svg
+                                width={28}
+                                height={28}
+                                viewBox="0 0 28 28"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="tw-w-7 tw-h-7"
+                                preserveAspectRatio="xMidYMid meet"
+                              >
+                                <path
+                                  d="M19.2095 13.5977L10.7955 5.18372L8.81445 7.16192L15.2545 13.5977L8.81445 20.0321L10.7941 22.0117L19.2095 13.5977Z"
+                                  fill="#9CA5B2"
+                                />
+                              </svg>
+                            </div>
                           </div>
                         </div>
-                        <div className=" tw-h-[245px] tw-flex tw-justify-center tw-items-start">
-                          <div className="tw-flex tw-flex-col tw-justify-start tw-items-start tw-relative">
-                            <div className="border-bottom tw-flex-grow-0 tw-flex-shrink-0 tw-w-[554px] tw-h-[52px] tw-relative tw-overflow-hidden tw-bg-white tw-border-t-0 tw-border-r-0 tw-border-b tw-border-l-0 tw-border-[#e9ecf2]">
-                              <div className="tw-flex tw-justify-start tw-items-center tw-absolute tw-left-6 tw-top-3 tw-gap-3">
+                        <div className="tw-overflow-auto tw-h-[267px] tw-w-[300px]">
+                          {myDashboardList?.recentQuestions?.contents?.map((data, index) => (
+                            <div
+                              key={index}
+                              className="border-bottom tw-flex-grow-0 tw-flex-shrink-0  tw-h-[52px] tw-relative tw-overflow-hidden tw-bg-white tw-border-t-0 tw-border-r-0 tw-border-b tw-border-l-0 tw-border-[#e9ecf2] tw-min-w-[400px]"
+                            >
+                              <div className=" tw-text-sm tw-flex tw-justify-start tw-items-center tw-absolute tw-left-6 tw-top-3 tw-gap-3">
                                 <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
                                   <img
-                                    className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full"
-                                    src="/assets/avatars/3.jpg"
+                                    className="tw-w-8 tw-h-8 border tw-rounded-full"
+                                    src={data?.member?.profileImageUrl}
                                   />
-                                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-font-medium tw-text-left tw-text-black">
-                                    김승태
-                                  </p>
                                 </div>
-                                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#6a7380]">
-                                  EAI가 뭐야?
-                                </p>
-                              </div>
-                            </div>
-                            <div className="border-bottom tw-flex-grow-0 tw-flex-shrink-0 tw-w-[554px] tw-h-[52px] tw-relative tw-overflow-hidden tw-bg-white tw-border-t-0 tw-border-r-0 tw-border-b tw-border-l-0 tw-border-[#e9ecf2]">
-                              <div className="tw-flex tw-justify-start tw-items-center tw-absolute tw-left-6 tw-top-3 tw-gap-3">
                                 <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
-                                  <img
-                                    className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full"
-                                    src="/assets/avatars/3.jpg"
-                                  />
-                                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-font-medium tw-text-left tw-text-black">
-                                    김승태
-                                  </p>
+                                  {data?.member?.nickname}
                                 </div>
-                                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#6a7380]">
-                                  EAI가 뭐야?
-                                </p>
+                                <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
+                                  {data?.question}
+                                </div>
                               </div>
                             </div>
-                          </div>
+                          ))}
                         </div>
                       </div>
                     </div>
@@ -480,60 +475,54 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                       <div className="tw-relative tw-overflow-hidden tw-rounded-[8.07px] tw-bg-white border tw-border-[#e9ecf2]">
                         <div className="tw-flex tw-px-4 tw-justify-between tw-items-center tw-bg-[#f6f7fb] tw-h-[60.5px] tw-overflow-hidden border-bottom">
                           <p className="tw-flex tw-text-base tw-font-bold tw-text-left tw-text-gray-500">
-                            최근 학습 질의 내역
+                            최근 미응답 내역
                           </p>
                           <div className="tw-flex">
-                            <svg
-                              width={28}
-                              height={28}
-                              viewBox="0 0 28 28"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="tw-w-7 tw-h-7"
-                              preserveAspectRatio="xMidYMid meet"
-                            >
-                              <path
-                                d="M19.2095 13.5977L10.7955 5.18372L8.81445 7.16192L15.2545 13.5977L8.81445 20.0321L10.7941 22.0117L19.2095 13.5977Z"
-                                fill="#9CA5B2"
-                              />
-                            </svg>
+                            [
+                            <div className="tw-text-blue-600 tw-font-bold">
+                              {myDashboardList?.recentUnansweredQuestions?.totalElements || 0}
+                            </div>
+                            ]
+                            <div className="tw-flex">
+                              <svg
+                                width={28}
+                                height={28}
+                                viewBox="0 0 28 28"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="tw-w-7 tw-h-7"
+                                preserveAspectRatio="xMidYMid meet"
+                              >
+                                <path
+                                  d="M19.2095 13.5977L10.7955 5.18372L8.81445 7.16192L15.2545 13.5977L8.81445 20.0321L10.7941 22.0117L19.2095 13.5977Z"
+                                  fill="#9CA5B2"
+                                />
+                              </svg>
+                            </div>
                           </div>
                         </div>
-                        <div className=" tw-h-[245px] tw-flex tw-justify-center tw-items-start">
-                          <div className="tw-flex tw-flex-col tw-justify-start tw-items-start tw-relative">
-                            <div className="border-bottom tw-flex-grow-0 tw-flex-shrink-0 tw-w-[554px] tw-h-[52px] tw-relative tw-overflow-hidden tw-bg-white tw-border-t-0 tw-border-r-0 tw-border-b tw-border-l-0 tw-border-[#e9ecf2]">
-                              <div className="tw-flex tw-justify-start tw-items-center tw-absolute tw-left-6 tw-top-3 tw-gap-3">
+                        <div className="tw-overflow-auto tw-h-[267px] tw-w-[300px]">
+                          {myDashboardList?.recentUnansweredQuestions?.contents?.map((data, index) => (
+                            <div
+                              key={index}
+                              className="border-bottom tw-flex-grow-0 tw-flex-shrink-0  tw-h-[52px] tw-relative tw-overflow-hidden tw-bg-white tw-border-t-0 tw-border-r-0 tw-border-b tw-border-l-0 tw-border-[#e9ecf2] tw-min-w-[400px]"
+                            >
+                              <div className=" tw-text-sm tw-flex tw-justify-start tw-items-center tw-absolute tw-left-6 tw-top-3 tw-gap-3">
                                 <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
                                   <img
-                                    className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full"
-                                    src="/assets/avatars/3.jpg"
+                                    className="tw-w-8 tw-h-8 border tw-rounded-full"
+                                    src={data?.member?.profileImageUrl}
                                   />
-                                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-font-medium tw-text-left tw-text-black">
-                                    김승태
-                                  </p>
                                 </div>
-                                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#6a7380]">
-                                  EAI가 뭐야?
-                                </p>
-                              </div>
-                            </div>
-                            <div className="border-bottom tw-flex-grow-0 tw-flex-shrink-0 tw-w-[554px] tw-h-[52px] tw-relative tw-overflow-hidden tw-bg-white tw-border-t-0 tw-border-r-0 tw-border-b tw-border-l-0 tw-border-[#e9ecf2]">
-                              <div className="tw-flex tw-justify-start tw-items-center tw-absolute tw-left-6 tw-top-3 tw-gap-3">
                                 <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
-                                  <img
-                                    className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full"
-                                    src="/assets/avatars/3.jpg"
-                                  />
-                                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-font-medium tw-text-left tw-text-black">
-                                    김승태
-                                  </p>
+                                  {data?.member?.nickname}
                                 </div>
-                                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#6a7380]">
-                                  EAI가 뭐야?
-                                </p>
+                                <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
+                                  {data?.question}
+                                </div>
                               </div>
                             </div>
-                          </div>
+                          ))}
                         </div>
                       </div>
                     </div>
@@ -559,24 +548,56 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                           </div>
                         </div>
                         <div className=" tw-h-[175px]  tw-flex tw-justify-center tw-items-center">
-                          <Circle
+                          <div className="tw-w-[130px] tw-h-[130px]">
+                            <PieChart
+                              labelPosition={50}
+                              lengthAngle={360}
+                              lineWidth={20}
+                              paddingAngle={0}
+                              radius={50}
+                              rounded
+                              startAngle={0}
+                              data={[
+                                {
+                                  color: '#2474ed',
+                                  title: '강의자료에서 답변',
+                                  value: myDashboardList?.lectureContentBasedAnswerCount,
+                                },
+                                {
+                                  color: '#facc15',
+                                  title: '일반 서치 답변',
+                                  value: myDashboardList?.generalAnswerCount,
+                                },
+                                {
+                                  color: '#ef4444',
+                                  title: 'AI미응답',
+                                  value: myDashboardList?.noAnswerCount,
+                                },
+                              ]}
+                            />
+                            <div className="chart_inside" style={{ cursor: 'pointer' }}>
+                              <span style={{ fontSize: 'x-small', color: 'white', fontWeight: 'bold' }}>123</span>
+                              <span style={{ fontSize: 'xx-small', color: 'white' }}>calories</span>
+                            </div>
+                          </div>
+                          {/* <Circle
                             className="tw-h-[120px]"
                             trailWidth={9}
                             trailColor="#DADADA"
                             percent={myDashboardList?.participationPercentage}
                             strokeWidth={9}
                             strokeColor="#e11837"
-                          />
+                          /> */}
                           <div className="tw-flex tw-justify-center tw-items-center tw-absolute tw-h-full tw-w-full">
                             <p className="tw-text-base tw-font-bold tw-text-black">
-                              1 / {myDashboardList?.participationPercentage}개
+                              {myDashboardList?.totalQuestionCount}개
                             </p>
                           </div>
                         </div>
                         <div className="tw-flex tw-flex-col tw-justify-center tw-items-center tw-relative tw-gap-0.5">
                           <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[182px] tw-h-[21px] tw-relative">
                             <div className="tw-flex tw-justify-start tw-items-center tw-absolute tw-left-0 tw-top-[1.5px] tw-gap-2">
-                              <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#31343d]">
+                              <p className="tw-font-bold tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#31343d]">
                                 강의자료에서 답변
                               </p>
                               <svg
@@ -591,14 +612,19 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                 <line x1="0.5" y1="0.5" x2="0.5" y2="12.5" stroke="#E9ECF2" />
                               </svg>
                             </div>
-                            <p className="tw-absolute tw-left-[115px] tw-top-0 tw-text-sm tw-font-medium tw-text-left">
-                              <span className="tw-text-sm tw-font-medium tw-text-left tw-text-[#2474ed]">24</span>
-                              <span className="tw-text-sm tw-font-medium tw-text-left tw-text-[#31343d]"> / 30개</span>
+                            <p className="tw-absolute tw-left-[115px] tw-top-0 tw-text-sm tw-font-bold tw-text-left">
+                              <span className="tw-text-sm  tw-text-left tw-text-[#2474ed]">
+                                {myDashboardList?.lectureContentBasedAnswerCount}
+                              </span>
+                              <span className="tw-text-sm  tw-text-left tw-text-[#31343d]">
+                                {' '}
+                                / {myDashboardList?.totalQuestionCount}개
+                              </span>
                             </p>
                           </div>
-                          <div className="tw-mb-7 tw-flex-grow-0 tw-flex-shrink-0 tw-w-[184px] tw-h-[21px] tw-relative">
+                          <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[184px] tw-h-[21px] tw-relative">
                             <div className="tw-flex tw-justify-start tw-items-center tw-absolute tw-left-0 tw-top-[1.5px] tw-gap-2">
-                              <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[91px] tw-text-xs tw-text-left tw-text-[#31343d]">
+                              <p className="tw-font-bold tw-flex-grow-0 tw-flex-shrink-0 tw-w-[91px] tw-text-xs tw-text-left tw-text-[#31343d]">
                                 일반 서치 답변
                               </p>
                               <svg
@@ -613,9 +639,41 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                 <line x1="0.5" y1="0.5" x2="0.5" y2="12.5" stroke="#E9ECF2" />
                               </svg>
                             </div>
-                            <p className="tw-absolute tw-left-[123px] tw-top-0 tw-text-sm tw-font-medium tw-text-right">
-                              <span className="tw-text-sm tw-font-medium tw-text-right tw-text-[#2474ed]">8</span>
-                              <span className="tw-text-sm tw-font-medium tw-text-right tw-text-[#31343d]"> / 30개</span>
+                            <p className="tw-absolute tw-left-[123px] tw-top-0 tw-text-sm tw-font-bold tw-text-right">
+                              <span className="tw-text-sm  tw-text-right tw-text-yellow-400">
+                                {myDashboardList?.generalAnswerCount}
+                              </span>
+                              <span className="tw-text-sm  tw-text-right tw-text-[#31343d]">
+                                {' '}
+                                / {myDashboardList?.totalQuestionCount}개
+                              </span>
+                            </p>
+                          </div>
+                          <div className="tw-mb-7 tw-flex-grow-0 tw-flex-shrink-0 tw-w-[184px] tw-h-[21px] tw-relative">
+                            <div className="tw-flex tw-justify-start tw-items-center tw-absolute tw-left-0 tw-top-[1.5px] tw-gap-2">
+                              <p className="tw-font-bold tw-flex-grow-0 tw-flex-shrink-0 tw-w-[91px] tw-text-xs tw-text-left tw-text-[#31343d]">
+                                AI미응답
+                              </p>
+                              <svg
+                                width={1}
+                                height={13}
+                                viewBox="0 0 1 13"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="tw-flex-grow-0 tw-flex-shrink-0"
+                                preserveAspectRatio="xMidYMid meet"
+                              >
+                                <line x1="0.5" y1="0.5" x2="0.5" y2="12.5" stroke="#E9ECF2" />
+                              </svg>
+                            </div>
+                            <p className="tw-absolute tw-left-[123px] tw-top-0 tw-text-sm tw-font-bold tw-text-right">
+                              <span className="tw-text-sm  tw-text-right tw-text-red-500">
+                                {myDashboardList?.noAnswerCount}
+                              </span>
+                              <span className="tw-text-sm  tw-text-right tw-text-[#31343d]">
+                                {' '}
+                                / {myDashboardList?.totalQuestionCount}개
+                              </span>
                             </p>
                           </div>
                         </div>
@@ -877,12 +935,12 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                               >
                                 <div className="tw-h-12 tw-flex tw-justify-center tw-items-center">
                                   <div className="tw-flex tw-justify-center tw-items-center">
-                                    <div className="tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-overflow-hidden tw-gap-2.5 tw-px-2  tw-py-px tw-rounded-tl-sm tw-rounded-bl-sm tw-bg-[#6a7380]">
+                                    <div className="border tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-overflow-hidden tw-gap-2.5 tw-px-2  tw-py-px tw-rounded-tl-sm tw-rounded-bl-sm tw-bg-[#6a7380]">
                                       <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-center tw-text-white">
                                         {info?.aiAnswerCount}
                                       </p>
                                     </div>
-                                    <div className="tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-overflow-hidden tw-gap-2.5 tw-px-2 tw-py-px tw-bg-[#313b49]">
+                                    <div className="border tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-overflow-hidden tw-gap-2.5 tw-px-2 tw-py-px tw-bg-[#313b49]">
                                       <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-center tw-text-white">
                                         {info?.instructorAnswerCount}
                                       </p>

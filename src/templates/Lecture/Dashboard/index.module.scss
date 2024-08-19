@@ -93,6 +93,30 @@
   }
 }
 
+.piechart {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60px;
+  height: 60px;
+  position: relative;
+}
+
+.chart_inside {
+  width: 45px;
+  height: 45px;
+  position: absolute;
+  border-radius: 50%;
+  margin: 8px;
+  top: 0;
+  right: 0;
+  background-color: #1e262f;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
 .seminar-container {
   @include mixin.initflexWrapContainer;
   .slide__button {

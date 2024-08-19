@@ -1134,6 +1134,7 @@ export function QuizMakeTemplate() {
                         if (isContentModalClick) {
                           console.log('지식컨텐츠 닫기');
                           e.stopPropagation(); // This stops the event from propagating to the AccordionSummary
+
                           setIsContentModalClick(false);
                           setActive('');
                           setContentType('');
