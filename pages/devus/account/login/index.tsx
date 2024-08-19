@@ -50,7 +50,7 @@ export function LoginPage(props: LoginPageProps) {
       token: token,
     });
 
-    location.href = '/';
+    // location.href = '/';
   };
 
   const onSubmitLogin = async () => {

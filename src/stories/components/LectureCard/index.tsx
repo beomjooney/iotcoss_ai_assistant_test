@@ -99,7 +99,14 @@ LectureCardProps) => {
             }}
           >
             {isClient && !logged && (
-              <div className="tw-absolute tw-bottom-0 tw-left-0 tw-right-0 tw-h-[300px] tw-bg-gradient-to-t tw-from-white tw-to-transparent tw-pointer-events-none"></div>
+              <div
+                className="tw-opacity-30 tw-absolute tw-bottom-0 tw-left-0 tw-right-0 tw-h-[300px] tw-pointer-events-none"
+                style={{
+                  background:
+                    'linear-gradient(to top, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0) 70%, rgba(255, 255, 255, 0.05) 0%)',
+                  backgroundBlendMode: 'overlay',
+                }}
+              ></div>
             )}
             <div
               style={{ backgroundImage: `url(${item.backgroundImage || '/assets/images/banner/Rectangle_200.png'})` }}

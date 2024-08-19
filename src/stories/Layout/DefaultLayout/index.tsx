@@ -30,6 +30,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       link: subDomain ? `/${subDomain}` : '/',
       dropdown: [],
       login: true,
+      subdomain: 'common',
     },
     {
       no: 1,
@@ -38,6 +39,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       link: '/quiz',
       dropdown: [],
       login: true,
+      subdomain: 'dsu',
     },
     {
       no: 1,
@@ -46,6 +48,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       link: '/lecture',
       dropdown: [],
       login: true,
+      subdomain: 'iotcoss',
     },
     {
       no: 1,
@@ -54,6 +57,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       link: '/studyroom',
       dropdown: [],
       login: logged,
+      subdomain: 'common',
     },
     {
       no: 1,
@@ -63,6 +67,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       dropdown: [],
       login: logged,
       role: 'ROLE_MANAGER',
+      subdomain: 'dsu',
     },
     {
       no: 1,
@@ -72,6 +77,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       dropdown: [],
       login: logged,
       role: 'ROLE_MANAGER',
+      subdomain: 'dsu',
     },
     {
       no: 1,
@@ -80,6 +86,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       link: '/my-lecture-clubs',
       dropdown: [],
       login: logged,
+      subdomain: 'iotcoss',
       role: 'ROLE_MANAGER',
     },
   ];
