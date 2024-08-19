@@ -98,7 +98,7 @@ export const useAIQuizAnswer = (): UseMutationResult => {
   return useMutation<any, any, any>(requestBody => saveAIQuizAnswer(requestBody), {
     onError: (error, variables, context) => {
       const { code, message } = error;
-      // alert(`mutation error : [${code}] ${message}`);
+      alert(`mutation error : [${code}] ${message}`);
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_GROWTHEDGE').all),
     onSuccess: async data => {

@@ -32,7 +32,7 @@ const QuizBreakerInfo = ({
       {index === null ? (
         <div>
           <div className=" tw-relative tw-overflow-visible tw-rounded-lg tw-bg-[#f6f7fb] tw-mb-3 tw-grid tw-grid-cols-[60px_1fr_100px_28px_40px] tw-grid-rows-[auto_auto] tw-h-20 tw-z-10"></div>
-          <div className=" tw-flex tw-items-center tw-justify-center tw-my-3 tw-h-[107px] tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white border border-[#e9ecf2]">
+          <div className=" tw-flex tw-items-center tw-justify-center tw-my-3 tw-h-[137px] tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white border border-[#e9ecf2]">
             <button onClick={handleAddClick} className="tw-text-sm tw-text-[#9ca5b2]">
               + 퀴즈 등록해주세요.
             </button>

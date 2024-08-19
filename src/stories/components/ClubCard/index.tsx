@@ -180,14 +180,16 @@ ClubCardProps) => {
                   {item.description}
                 </div>
               </div>
+
               <div className="tw-text-[12px] tw-mb-[12px] tw-font-bold tw-text-[#9a9a9a]">
-                {item.studyCycle.toString() || 'N/A'} | {item.weekCount || 'N/A'} 주 | 학습 {item.studyCount || 'N/A'}회
+                {item.studyCycle.length > 0 ? `${item.studyCycle[0].toString()} | ` : ''}
+                {item.weekCount || 'N/A'}주 | 학습 {item.studyCount || '0'}회
               </div>
 
               <div className="tw-flex tw-items-center tw-space-x-4">
                 <img
-                  className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full"
-                  src={item?.leaderProfileImageUrl || '/assets/avatars/3.jpg'}
+                  className="tw-w-8 tw-h-8 border tw-rounded-full"
+                  src={item?.leaderProfileImageUrl || '/assets/images/account/default_profile_image.png'}
                   alt=""
                 />
                 <div className="tw-text-sm tw-font-semibold tw-text-black">

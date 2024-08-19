@@ -88,6 +88,7 @@
   },
   "scripts": {
     "dev": "env-cmd -f env/.env.local node server.js",
+    "prod": "env-cmd -f env/.env.prod node server.js",
     "dev-prod": "env-cmd -f env/.env.prod next dev -p 3001",
     "start-prod": "NODE_ENV=production env-cmd -f env/.env.prod  node server.js",
     "start": "next start -p 3001",

@@ -198,7 +198,7 @@ export function QuizMakeTemplate() {
     console.log(jobsName);
     setPersonName(jobsName || []);
 
-    setSelectedJob(selected?.jobs.map(item => item.code) || []);
+    setSelectedJob(data.jobs.map(item => item.code) || []);
     setSelected2(data.skills);
     setFileName(data.name);
     setFileNameCopy(data.name);
@@ -309,6 +309,7 @@ export function QuizMakeTemplate() {
     setSelected2([]);
     setSelectedUniversity('');
     setSelectedJob([]);
+    setPersonName([]);
     setJobLevel([]);
     setQuizList([]);
     setQuizCount(1);
@@ -385,10 +386,10 @@ export function QuizMakeTemplate() {
   };
 
   const handleAIQuizClick = () => {
-    console.log('ai quiz click');
+    console.log('ai quiz click', quizCount, quizSortType);
     // 유효성 검사
-    if (!quizSortType) {
-      alert('퀴즈 유형을 선택하세요.');
+    if (!contentType) {
+      alert('지식컨텐츠 유형을 선택하세요.');
       return;
     }
 
@@ -484,6 +485,11 @@ export function QuizMakeTemplate() {
     console.log(selectedUniversity);
     console.log(isContentModalOpen);
 
+    if (!contentType) {
+      alert('지식컨텐츠 유형을 선택하세요.');
+      return;
+    }
+
     if (!contentTitle) {
       alert('콘텐츠 제목을 입력해주세요.');
       return false;
@@ -522,7 +528,7 @@ export function QuizMakeTemplate() {
       return false;
     }
     if (!selected2.length) {
-      alert('학습 기술을 입력해주세요.');
+      alert('스킬을 입력해주세요.');
       return false;
     }
     if (!selectedUniversity) {

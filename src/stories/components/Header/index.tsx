@@ -102,16 +102,16 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
   const savedIndex = localStorage.getItem('activeIndex');
 
   // 컴포넌트가 마운트될 때 localStorage에서 activeIndex를 불러옴
-  useEffect(() => {
-    const savedIndex = localStorage.getItem('activeIndex');
-    if (savedIndex !== null) {
-      setActiveIndex(parseInt(savedIndex, 10));
-    }
-  }, []);
+  // useEffect(() => {
+  //   const savedIndex = localStorage.getItem('activeIndex');
+  //   if (savedIndex !== null) {
+  //     setActiveIndex(parseInt(savedIndex, 10)); // Ensure setActiveIndex is called with a valid number
+  //   }
+  // }, [setActiveIndex]); // Add setActiveIndex as a dependency
 
   // activeIndex가 변경될 때마다 localStorage에 저장
   useEffect(() => {
-    localStorage.setItem('activeIndex', activeIndex.toString());
+    localStorage.setItem('activeIndex', activeIndex);
   }, [activeIndex]);
 
   useEffect(() => {
@@ -560,9 +560,11 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
                           aria-haspopup="true"
                           aria-expanded={open ? 'true' : undefined}
                         >
-                          <Avatar sx={{ width: 32, height: 32 }} className="border" src={user?.member?.profileImageUrl}>
-                            M
-                          </Avatar>
+                          <Avatar
+                            sx={{ width: 32, height: 32 }}
+                            className="border"
+                            src={user?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
+                          ></Avatar>
                         </IconButton>
                       </Tooltip>
                       <Menu
