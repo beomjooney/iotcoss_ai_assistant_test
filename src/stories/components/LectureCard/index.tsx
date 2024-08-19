@@ -193,7 +193,7 @@ LectureCardProps) => {
               </div>
               <img
                 className="tw-absolute tw-left-[329.5px] tw-top-[17.5px] tw-w-[200px] tw-h-[200px] tw-rounded-full"
-                src={item.leaderProfileImageUrl || '/assets/avatars/3.jpg'}
+                src={item.leaderProfileImageUrl || '/assets/images/account/default_profile_image.png'}
               />
               <p className="tw-absolute tw-left-5 tw-top-[202px] tw-text-sm tw-font-bold tw-text-left tw-text-black">
                 {item.leaderNickname}
