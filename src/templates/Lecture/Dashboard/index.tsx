@@ -36,6 +36,9 @@ import PaginationItem from '@mui/material/PaginationItem';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
+//**download */
+import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
+
 import router from 'next/router';
 
 export interface LectureDashboardTemplateProps {
@@ -86,13 +89,13 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   const [lecturePage, setLecturePage] = useState(1);
   const [questionPage, setQuestionPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
+  const [totalQuestionPage, setTotalQuestionPage] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
   const [myClubList, setMyClubList] = useState<any>([]);
   const [myDashboardList, setMyDashboardList] = useState<any>([]);
   const [myDashboardStudentList, setMyDashboardStudentList] = useState<any>([]);
   const [myDashboardLectureList, setMyDashboardLectureList] = useState<any>([]);
   const [myDashboardQA, setMyDashboardQA] = useState<any>([]);
-  const [size, setSize] = useState(10);
   const [myClubParams, setMyClubParams] = useState<any>({
     clubSequence: id,
     data: { sortType: 'NAME', page: 1 },
@@ -114,6 +117,8 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   // const [activeTab, setActiveTab] = useState('myQuiz');
   const [activeTab, setActiveTab] = useState('community');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [key, setKey] = useState('');
+  const [fileName, setFileName] = useState('');
 
   const handleChangeQuiz = event => {
     setSortType(event.target.value);
@@ -161,6 +166,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   // 강의클럽 대시보드 강의별 참여 현황
   const { isFetched: isDashboardQAFetched, refetch: refetchMyDashboardQA } = useMyDashboardQA(myClubLectureQA, data => {
     console.log('useMyDashboardQA', data);
+    setTotalQuestionPage(data?.totalPages);
     setMyDashboardQA(data || []);
   });
 
@@ -208,6 +214,15 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     });
   }, [page]);
 
+  useDidMountEffect(() => {
+    console.log('questionPage', questionPage);
+    setMyClubLectureQA({
+      clubSequence: selectedClub?.clubSequence || id,
+      sequence: 46,
+      data: { questionPage: questionPage },
+    });
+  }, [questionPage]);
+
   const handleQuizChange = event => {
     const value = event.target.value;
     const selectedSession = myClubList?.find(session => {
@@ -241,6 +256,35 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
+  };
+  const handleQAPageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    console.log(value);
+    setQuestionPage(value);
+  };
+
+  const { isFetched: isParticipantListFetcheds, isSuccess: isParticipantListSuccess } = useQuizFileDownload(
+    key,
+    data => {
+      console.log('file download', data, fileName);
+      if (data) {
+        // blob 데이터를 파일로 저장하는 로직
+        const url = window.URL.createObjectURL(new Blob([data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', fileName); // 다운로드할 파일 이름과 확장자를 설정합니다.
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setKey('');
+        setFileName('');
+      }
+    },
+  );
+
+  const onFileDownload = function (key: string, fileName: string) {
+    console.log(key, fileName);
+    setKey(key);
+    setFileName(fileName);
   };
 
   return (
@@ -1192,7 +1236,13 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                             </div>
                             <div className="tw-font-bold tw-text-sm">
                               {info?.questionAnswer?.answer
-                                ? 'AI답변 : ' + info.questionAnswer.answerType + info.questionAnswer.answer
+                                ? 'AI답변 ' +
+                                  (info.questionAnswer.answerType === '0200'
+                                    ? '(강의자료) : '
+                                    : info.questionAnswer.answerType === '0300'
+                                    ? '(일반서치) : '
+                                    : '') +
+                                  info.questionAnswer.answer
                                 : ''}
                             </div>
                           </TableCell>
@@ -1217,7 +1267,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
           isOpen={isModalOpen}
           onAfterClose={() => setIsModalOpen(false)}
           title="질의응답"
-          maxWidth="900px"
+          maxWidth="1100px"
           maxHeight="800px"
         >
           <div className={cx('seminar-check-popup')}>
@@ -1284,7 +1334,45 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                             <div className="tw-font-bold tw-text-sm">{questionInfo?.question}</div>
                           </TableCell>
                           <TableCell align="left" component="th" scope="row" className="border-right">
-                            <div className="tw-font-bold tw-text-sm">{questionInfo?.answer}</div>
+                            <div className="tw-font-bold tw-text-sm">
+                              {questionInfo?.answer
+                                ? 'AI답변 : ' +
+                                  (questionInfo?.answerType === '0200'
+                                    ? '(강의자료) : '
+                                    : questionInfo?.answerType === '0300'
+                                    ? '(일반서치) : '
+                                    : '') +
+                                  questionInfo?.answer
+                                : null}
+                            </div>
+                            {questionInfo?.files?.length > 0 && (
+                              <div className="tw-mt-2 tw-text-sm tw-flex tw-justify-start tw-items-center tw-flex-wrap tw-gap-2">
+                                <div>강의자료 : </div>
+                                {questionInfo.files.map((fileEntry, index) => (
+                                  <div key={index} className="border tw-px-2 tw-py-0.5 tw-rounded">
+                                    <span
+                                      onClick={() => {
+                                        onFileDownload(fileEntry.key, fileEntry.name);
+                                      }}
+                                      className="tw-text-gray-400 tw-cursor-pointer"
+                                    >
+                                      {fileEntry?.file?.name || fileEntry.name}
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+
+                            {questionInfo?.referenceUrls && (
+                              <div className="tw-mt-2 tw-text-sm tw-flex tw-justify-start tw-items-center tw-flex-wrap tw-gap-2">
+                                <div>출처 : </div>
+                                <div className="border tw-px-2 tw-py-0.5 tw-rounded">
+                                  <span className="tw-text-gray-400 tw-cursor-pointer">
+                                    {questionInfo?.referenceUrls}
+                                  </span>
+                                </div>
+                              </div>
+                            )}
                           </TableCell>
                           <TableCell align="center" component="th" scope="row">
                             <button className="tw-text-sm tw-font-bold border tw-py-2 tw-px-3 tw-text-gray-400 tw-rounded">
@@ -1297,6 +1385,18 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                   ))}
                 </TableBody>
               </Table>
+              <div className="tw-flex tw-justify-center tw-items-center tw-mt-5">
+                <Pagination
+                  count={totalQuestionPage}
+                  size="small"
+                  siblingCount={0}
+                  page={questionPage}
+                  renderItem={item => (
+                    <PaginationItem slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }} {...item} />
+                  )}
+                  onChange={handleQAPageChange}
+                />
+              </div>
             </TableContainer>
           </div>
         </Modal>
