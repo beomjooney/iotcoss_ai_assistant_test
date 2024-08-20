@@ -425,7 +425,6 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
             >
               <ul className={cx('nav-custom', 'navbar-custom-mobile', 'navbar-nav', 'tw-text-lg', 'tw-text-left')}>
                 {menuItem.map((item, index) => {
-                  // if (item.login && (!item.role || roles.includes(item.role))) {
                   const currentSubdomain = getFirstSubdomain(); // Replace with logic to get the current subdomain
                   const isSubdomainEmpty = currentSubdomain === ''; // Check if the current subdomain is empty
 
@@ -435,7 +434,6 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
                     subdomainList.includes(currentSubdomain) || subdomainList.includes('common') || isSubdomainEmpty;
 
                   const shouldDisplayItem = isSubdomainMatch && item.login && (!item.role || roles.includes(item.role));
-
                   if (shouldDisplayItem) {
                     return (
                       <li key={`item-` + index} className={cn(item.option)}>
