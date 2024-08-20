@@ -233,7 +233,7 @@ const AIQuizList = ({
             </div>
           )}
 
-          <div className="tw-flex tw-items-center tw-p-5 tw-pb-0 tw-text-sm tw-font-bold tw-gap-2">
+          <div className="tw-flex tw-items-center tw-p-5 tw-pb-0 tw-text-sm tw-font-bold tw-gap-2 tw-flex-wrap">
             채점기준 주요 키워드/문구 :
             {Array.isArray(quizList?.modelAnswerKeywords) ? (
               quizList.modelAnswerKeywords.map((tag, tagIndex) => (

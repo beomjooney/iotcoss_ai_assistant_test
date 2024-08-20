@@ -1131,7 +1131,7 @@ export function QuizMakeTemplate() {
         }}
       >
         <div className={`${isContentModalClick ? 'tw-flex' : ' '}`}>
-          <div className="">
+          <div className="tw-w-[670px]">
             <Accordion disableGutters sx={{ backgroundColor: '#e9ecf2' }} defaultExpanded>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <div className="tw-flex tw-justify-between tw-items-center tw-w-full">
@@ -1615,7 +1615,7 @@ export function QuizMakeTemplate() {
             </div>
           </div>
           {isContentModalClick && (
-            <div className="tw-flex-1 tw-p-5 tw-pr-0 tw-ml-5 tw-w-full">
+            <div className="tw-w-[390px] tw-p-5 tw-pr-0 tw-ml-5">
               <div className="tw-text-lg tw-font-bold tw-mb-5 tw-text-black">템플릿 불러오기</div>
               <FormControl fullWidth>
                 <RadioGroup
