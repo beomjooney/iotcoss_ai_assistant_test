@@ -75,7 +75,6 @@ export function QuizOpenTemplate() {
   const [participationCode, setParticipationCode] = useState('');
   const [levelsFilter, setLevelsFilter] = useState([]);
   const [jobGroups, setJobGroups] = useState<any[]>([]);
-  const [seminarFilter, setSeminarFilter] = useState(['0002']);
   const [paramss, setParamss] = useState({});
   const [params, setParams] = useState<any>({ page });
   const [dayParams, setDayParams] = useState<any>({});
@@ -467,9 +466,8 @@ export function QuizOpenTemplate() {
       page,
       recommendJobGroups: jobGroupsFilter.join(','),
       recommendLevels: levelsFilter.join(','),
-      // seminarStatus: seminarFilter.join(','),
     });
-  }, [page, jobGroupsFilter, levelsFilter, seminarFilter]);
+  }, [page, jobGroupsFilter, levelsFilter]);
 
   const [jobGroup, setJobGroup] = useState([]);
   const [jobLevelName, setJobLevelName] = useState([]);
