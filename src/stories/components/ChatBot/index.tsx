@@ -9,6 +9,7 @@ const ChatbotModal = ({ isOpen, onRequestClose, token }) => {
   const role = roles?.includes('ROLE_ADMIN') || roles?.includes('ROLE_MANAGER') ? 'professor' : 'student';
   const url = `${process.env['NEXT_PUBLIC_AI_CHATBOT_URL']}/aichatbot?role=${role}&accessToken=${token}`;
 
+  console.log('url', url);
   useEffect(() => {
     const handleMessage = event => {
       if (event.data === 'closeChatbotModal') {
