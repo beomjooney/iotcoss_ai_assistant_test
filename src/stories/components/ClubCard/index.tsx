@@ -153,7 +153,7 @@ ClubCardProps) => {
                       // key={index}
                       className="tw-inline-flex tw-bg-gray-100 tw-text-gray-800 tw-text-xs tw-font-medium tw-mr-1 tw-px-2 tw-py-1 tw-rounded "
                     >
-                      {item?.jobLevels?.[0]?.name || 'N/A'}
+                      {item?.jobs?.[0]?.name || 'N/A'}
                     </span>
                     {/* ))} */}
 
