@@ -129,7 +129,7 @@ export function QuizOpenTemplate() {
     setMemberIntroductionText(clubForm.memberIntroductionText || '');
     setCareerText(clubForm.careerText || '');
     setSkills(clubForm.skills || []);
-    setOptionsSkills(prevState => Array.from(new Set([...prevState, ...clubForm.skills])));
+    setOptionsSkills(prevState => Array.from(new Set([...prevState, ...(clubForm?.skills || [])])));
     const extractedCodes = clubForm.jobLevels.map(item => item.code);
     setRecommendLevels(extractedCodes || []);
     setNum(clubForm.studyCount || 0);
@@ -467,7 +467,7 @@ export function QuizOpenTemplate() {
       page,
       recommendJobGroups: jobGroupsFilter.join(','),
       recommendLevels: levelsFilter.join(','),
-      seminarStatus: seminarFilter.join(','),
+      // seminarStatus: seminarFilter.join(','),
     });
   }, [page, jobGroupsFilter, levelsFilter, seminarFilter]);
 
