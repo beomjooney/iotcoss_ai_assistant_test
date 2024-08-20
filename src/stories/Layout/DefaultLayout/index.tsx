@@ -53,7 +53,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
     {
       no: 1,
       option: 'nav-item',
-      title: 'My 학습방',
+      title: 'My학습방',
       link: '/studyroom',
       dropdown: [],
       login: logged,
@@ -62,7 +62,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
     {
       no: 1,
       option: 'nav-item',
-      title: 'My 퀴즈',
+      title: 'My퀴즈',
       link: '/quiz-make',
       dropdown: [],
       login: logged,
@@ -72,7 +72,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
     {
       no: 1,
       option: 'nav-item',
-      title: 'My 퀴즈클럽',
+      title: 'My퀴즈클럽',
       link: '/my-clubs',
       dropdown: [],
       login: logged,
@@ -82,7 +82,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
     {
       no: 1,
       option: 'nav-item',
-      title: 'My 강의클럽',
+      title: 'My강의클럽',
       link: '/my-lecture-clubs',
       dropdown: [],
       login: logged,
