@@ -7,7 +7,7 @@ Modal.setAppElement('#__next'); // Modal 접근성 설정
 const ChatbotModal = ({ isOpen, onRequestClose, token }) => {
   const { roles } = useSessionStore.getState();
   const role = roles?.includes('ROLE_ADMIN') || roles?.includes('ROLE_MANAGER') ? 'professor' : 'student';
-  const url = `${process.env['NEXT_PUBLIC_GENERAL_API_URL']}/aichatbot?role=${role}&accessToken=${token}`;
+  const url = `${process.env['NEXT_PUBLIC_AI_CHATBOT_URL']}/aichatbot?role=${role}&accessToken=${token}`;
 
   useEffect(() => {
     const handleMessage = event => {
