@@ -27,6 +27,8 @@ import {
   lectureMyList,
   myLectureDashboardList,
   myLectureDashboardStudentList,
+  myDashboardLecture,
+  myDashboardQA,
 } from './seminars.api';
 
 export interface paramProps {
@@ -123,6 +125,43 @@ export const useMyLectureDashboardStudentList = (
       onSuccess,
       onError,
       refetchOnWindowFocus: false,
+    },
+  );
+};
+
+// 내 대시보드 목록 조회
+export const useMyDashboardLecture = (
+  params?: paramProps,
+  onSuccess?: (data: any) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 10;
+  return useQuery<any, Error>(
+    QUERY_KEY_FACTORY('DASHBOARD_LECTURE').list({ size: DEFAULT_SIZE, ...params }),
+    () => myDashboardLecture({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+    },
+  );
+};
+
+// 내 대시보드 목록 조회
+export const useMyDashboardQA = (
+  params?: paramProps,
+  onSuccess?: (data: any) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 10;
+  return useQuery<any, Error>(
+    QUERY_KEY_FACTORY('DASHBOARD_QA').list({ size: DEFAULT_SIZE, ...params }),
+    () => myDashboardQA({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+      enabled: true,
     },
   );
 };

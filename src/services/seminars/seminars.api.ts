@@ -78,6 +78,35 @@ export const myLectureDashboardStudentList = async (params: any) => {
 };
 
 // 클럽 퀴즈 목록 조회
+export const myDashboardLecture = async (params: any) => {
+  console.log(params);
+  const { data } = await axiosGeneralAPI().get(`/api/v1/lecture-clubs/${params.clubSequence}/dashboard/studies`, {
+    params: {
+      orderBy: params.data.orderBy,
+      page: params.data.page,
+      size: params.size,
+      sortType: params.data.sortType,
+    },
+  });
+  return data.data;
+};
+
+// 클럽 퀴즈 목록 조회
+export const myDashboardQA = async (params: any) => {
+  console.log(params);
+  const { data } = await axiosGeneralAPI().get(
+    `/api/v1/lecture-clubs/${params.clubSequence}/dashboard/${params.sequence}/questions`,
+    {
+      params: {
+        page: params.data.questionPage,
+        size: params.size,
+      },
+    },
+  );
+  return data.data;
+};
+
+// 클럽 퀴즈 목록 조회
 export const myLectureDashboardList = async (params: any) => {
   console.log(params);
   const { data } = await axiosGeneralAPI().get(`/api/v1/lecture-clubs/${params.clubSequence}/dashboard`, {});

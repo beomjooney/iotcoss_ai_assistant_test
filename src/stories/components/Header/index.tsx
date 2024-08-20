@@ -429,13 +429,12 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
                   const currentSubdomain = getFirstSubdomain(); // Replace with logic to get the current subdomain
                   const isSubdomainEmpty = currentSubdomain === ''; // Check if the current subdomain is empty
 
-                  const shouldDisplayItem =
-                    (isSubdomainEmpty ||
-                      item.subdomain === 'common' ||
-                      !item.subdomain ||
-                      item.subdomain === currentSubdomain) &&
-                    item.login &&
-                    (!item.role || roles.includes(item.role));
+                  // Split the subdomain string into an array and check if the currentSubdomain is included
+                  const subdomainList = item.subdomain ? item.subdomain.split(',') : [];
+                  const isSubdomainMatch =
+                    subdomainList.includes(currentSubdomain) || subdomainList.includes('common') || isSubdomainEmpty;
+
+                  const shouldDisplayItem = isSubdomainMatch && item.login && (!item.role || roles.includes(item.role));
 
                   if (shouldDisplayItem) {
                     return (

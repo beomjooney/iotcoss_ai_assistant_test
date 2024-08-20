@@ -39,7 +39,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       link: '/quiz',
       dropdown: [],
       login: true,
-      subdomain: 'dsu',
+      subdomain: 'dsu,iotcoss',
     },
     {
       no: 1,
@@ -67,7 +67,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       dropdown: [],
       login: logged,
       role: 'ROLE_MANAGER',
-      subdomain: 'dsu',
+      subdomain: 'dsu,iotcoss',
     },
     {
       no: 1,
@@ -77,7 +77,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       dropdown: [],
       login: logged,
       role: 'ROLE_MANAGER',
-      subdomain: 'dsu',
+      subdomain: 'dsu,iotcoss',
     },
     {
       no: 1,

@@ -8,6 +8,8 @@ import {
   useMyLectureList,
   useMyLectureDashboardList,
   useMyLectureDashboardStudentList,
+  useMyDashboardLecture,
+  useMyDashboardQA,
 } from 'src/services/seminars/seminars.queries';
 import Grid from '@mui/material/Grid';
 
@@ -27,6 +29,12 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Modal from 'src/stories/components/Modal';
+
+/** import pagenation */
+import Pagination from '@mui/material/Pagination';
+import PaginationItem from '@mui/material/PaginationItem';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 import router from 'next/router';
 
@@ -75,24 +83,44 @@ const cx = classNames.bind(styles);
 
 export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) {
   const [page, setPage] = useState(1);
+  const [lecturePage, setLecturePage] = useState(1);
+  const [questionPage, setQuestionPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
   const [myClubList, setMyClubList] = useState<any>([]);
   const [myDashboardList, setMyDashboardList] = useState<any>([]);
   const [myDashboardStudentList, setMyDashboardStudentList] = useState<any>([]);
+  const [myDashboardLectureList, setMyDashboardLectureList] = useState<any>([]);
+  const [myDashboardQA, setMyDashboardQA] = useState<any>([]);
   const [size, setSize] = useState(10);
   const [myClubParams, setMyClubParams] = useState<any>({
     clubSequence: id,
     data: { sortType: 'NAME', page: 1 },
   });
+  const [myClubLectureParams, setMyClubLectureParams] = useState<any>({
+    clubSequence: id,
+    data: { orderBy: 'STUDY_ORDER', lecturePage: 1, sortType: 'DESC' },
+  });
+
+  const [myClubLectureQA, setMyClubLectureQA] = useState<any>({
+    clubSequence: id,
+    sequence: 46,
+    data: { questionPage: 1 },
+  });
+
   const [myClubSequenceParams, setMyClubSequenceParams] = useState<any>({ clubSequence: id });
   const [params, setParams] = useState<paramProps>({ page });
   const [selectedValue, setSelectedValue] = useState(id);
-  const [activeTab, setActiveTab] = useState('myQuiz');
+  // const [activeTab, setActiveTab] = useState('myQuiz');
+  const [activeTab, setActiveTab] = useState('community');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleChangeQuiz = event => {
     setSortType(event.target.value);
+  };
+
+  const handleChangeLecture = event => {
+    setSortLectureType(event.target.value);
   };
 
   // 퀴즈클럽 리스트
@@ -101,7 +129,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     setMyClubList(data?.data?.contents || []);
   });
 
-  // 퀴즈클럽 대시보드
+  // 강의클럽 대시 보드 요약 조회
   const { isFetched: isDashboardFetched, refetch: refetchMyDashboard } = useMyLectureDashboardList(
     myClubSequenceParams,
     data => {
@@ -110,20 +138,36 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     },
   );
 
-  // 퀴즈클럽 대시보드
+  // 강의클럽 대시보드 학생 참여 현황
   const { isFetched: isDashboardStudentFetched, refetch: refetchMyDashboardStudent } = useMyLectureDashboardStudentList(
     myClubParams,
     data => {
       console.log('useMyLectureDashboardStudentList', data);
-      setTotalPage(data?.students?.totalPages);
-      setTotalElements(data?.students?.totalElements);
       setMyDashboardStudentList(data || []);
     },
   );
 
+  // 강의클럽 대시보드 강의별 참여 현황
+  const { isFetched: isDashboardLectureFetched, refetch: refetchMyDashboardLecture } = useMyDashboardLecture(
+    myClubLectureParams,
+    data => {
+      console.log('useMyDashboardLecture', data);
+      setTotalPage(data?.totalPages);
+      setTotalElements(data?.totalElements);
+      setMyDashboardLectureList(data || []);
+    },
+  );
+
+  // 강의클럽 대시보드 강의별 참여 현황
+  const { isFetched: isDashboardQAFetched, refetch: refetchMyDashboardQA } = useMyDashboardQA(myClubLectureQA, data => {
+    console.log('useMyDashboardQA', data);
+    setMyDashboardQA(data || []);
+  });
+
   /** my quiz replies */
   const [selectedClub, setSelectedClub] = useState(null);
   const [sortType, setSortType] = useState('NAME');
+  const [sortLectureType, setSortLectureType] = useState('STUDY_ORDER_ASC');
 
   useDidMountEffect(() => {
     setMyClubParams({
@@ -132,7 +176,37 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     });
 
     setMyClubSequenceParams({ clubSequence: selectedClub?.clubSequence || id });
-  }, [sortType, selectedClub]);
+
+    let dataParam = {};
+    if (sortLectureType === 'STUDY_ORDER_ASC') {
+      dataParam = { orderBy: 'STUDY_ORDER', page: 1, sortType: 'ASC' };
+    } else if (sortLectureType === 'STUDY_ORDER_DESC') {
+      dataParam = { orderBy: 'STUDY_ORDER', page: 1, sortType: 'DESC' };
+    } else {
+      dataParam = { orderBy: 'QUESTION_COUNT', page: 1, sortType: 'DESC' };
+    }
+
+    setMyClubLectureParams({
+      clubSequence: selectedClub?.clubSequence || id,
+      data: dataParam,
+    });
+  }, [sortType, selectedClub, sortLectureType]);
+
+  useDidMountEffect(() => {
+    let dataParam = {};
+    if (sortLectureType === 'STUDY_ORDER_ASC') {
+      dataParam = { orderBy: 'STUDY_ORDER', page: page, sortType: 'ASC' };
+    } else if (sortLectureType === 'STUDY_ORDER_DESC') {
+      dataParam = { orderBy: 'STUDY_ORDER', page: page, sortType: 'DESC' };
+    } else {
+      dataParam = { orderBy: 'QUESTION_COUNT', page: page, sortType: 'DESC' };
+    }
+
+    setMyClubLectureParams({
+      clubSequence: selectedClub?.clubSequence || id,
+      data: dataParam,
+    });
+  }, [page]);
 
   const handleQuizChange = event => {
     const value = event.target.value;
@@ -164,6 +238,11 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     setActiveTab(tab);
   };
   const classes = useStyles();
+
+  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+  };
+
   return (
     <div className={cx('seminar-detail-container')}>
       <div className={cx('container')}>
@@ -731,70 +810,72 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
             {activeTab === 'myQuiz' && (
               <div>
                 <div className="tw-flex tw-justify-between tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-3">
-                  <RadioGroup
-                    className="tw-items-center tw-py-5 tw-gap-3"
-                    value={sortType}
-                    onChange={handleChangeQuiz}
-                    row
-                  >
-                    <p className="tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d] tw-mb-1">
-                      정렬 :
-                    </p>
-                    <FormControlLabel
-                      value="NAME"
-                      control={
-                        <Radio
-                          sx={{
-                            color: '#ced4de',
-                            '&.Mui-checked': { color: '#e11837' },
-                          }}
-                          icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
-                          checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
-                        />
-                      }
-                      label={
-                        <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                          이름순
-                        </p>
-                      }
-                    />
-                    <FormControlLabel
-                      value="QUESTION_COUNT"
-                      control={
-                        <Radio
-                          sx={{
-                            color: '#ced4de',
-                            '&.Mui-checked': { color: '#e11837' },
-                          }}
-                          icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
-                          checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
-                        />
-                      }
-                      label={
-                        <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                          참여도순
-                        </p>
-                      }
-                    />
-                    <FormControlLabel
-                      value="PARTICIPATION_RATE"
-                      control={
-                        <Radio
-                          sx={{
-                            color: '#ced4de',
-                            '&.Mui-checked': { color: '#e11837' },
-                          }}
-                          icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
-                          checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
-                        />
-                      }
-                      label={
-                        <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                          질의많은순
-                        </p>
-                      }
-                    />
-                  </RadioGroup>
+                  <div>
+                    <RadioGroup
+                      className="tw-items-center tw-py-5 tw-gap-3"
+                      value={sortType}
+                      onChange={handleChangeQuiz}
+                      row
+                    >
+                      <p className="tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d] tw-mb-1">
+                        정렬 :
+                      </p>
+                      <FormControlLabel
+                        value="NAME"
+                        control={
+                          <Radio
+                            sx={{
+                              color: '#ced4de',
+                              '&.Mui-checked': { color: '#e11837' },
+                            }}
+                            icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                            checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                          />
+                        }
+                        label={
+                          <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                            이름순
+                          </p>
+                        }
+                      />
+                      <FormControlLabel
+                        value="QUESTION_COUNT"
+                        control={
+                          <Radio
+                            sx={{
+                              color: '#ced4de',
+                              '&.Mui-checked': { color: '#e11837' },
+                            }}
+                            icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                            checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                          />
+                        }
+                        label={
+                          <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                            참여도순
+                          </p>
+                        }
+                      />
+                      <FormControlLabel
+                        value="PARTICIPATION_RATE"
+                        control={
+                          <Radio
+                            sx={{
+                              color: '#ced4de',
+                              '&.Mui-checked': { color: '#e11837' },
+                            }}
+                            icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                            checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                          />
+                        }
+                        label={
+                          <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                            질의많은순
+                          </p>
+                        }
+                      />
+                    </RadioGroup>
+                  </div>
                   <div className="tw-flex tw-items-center tw-justify-end tw-text-center tw-py-5">
                     <div className="tw-flex tw-justify-end tw-items-center tw-gap-3">
                       <div className="tw-flex tw-justify-end tw-items-center tw-gap-3">
@@ -966,70 +1047,84 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
             {activeTab === 'community' && (
               <div>
                 <div className="tw-flex tw-justify-between tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-3">
-                  <RadioGroup
-                    className="tw-items-center tw-py-5 tw-gap-3"
-                    value={sortType}
-                    onChange={handleChangeQuiz}
-                    row
-                  >
-                    <p className="tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d] tw-mb-1">
-                      정렬 :
-                    </p>
-                    <FormControlLabel
-                      value="0001"
-                      control={
-                        <Radio
-                          sx={{
-                            color: '#ced4de',
-                            '&.Mui-checked': { color: '#e11837' },
-                          }}
-                          icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
-                          checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
-                        />
-                      }
-                      label={
-                        <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                          강의 오름차순
-                        </p>
-                      }
+                  <div>
+                    <RadioGroup
+                      className="tw-items-center tw-py-5 tw-gap-3"
+                      value={sortLectureType}
+                      onChange={handleChangeLecture}
+                      row
+                    >
+                      <p className="tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d] tw-mb-1">
+                        정렬 :
+                      </p>
+                      <FormControlLabel
+                        value="STUDY_ORDER_ASC"
+                        control={
+                          <Radio
+                            sx={{
+                              color: '#ced4de',
+                              '&.Mui-checked': { color: '#e11837' },
+                            }}
+                            icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                            checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                          />
+                        }
+                        label={
+                          <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                            강의 오름차순
+                          </p>
+                        }
+                      />
+                      <FormControlLabel
+                        value="STUDY_ORDER_DESC"
+                        control={
+                          <Radio
+                            sx={{
+                              color: '#ced4de',
+                              '&.Mui-checked': { color: '#e11837' },
+                            }}
+                            icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                            checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                          />
+                        }
+                        label={
+                          <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                            강의 내림차순
+                          </p>
+                        }
+                      />
+                      <FormControlLabel
+                        value="QUESTION_COUNT"
+                        control={
+                          <Radio
+                            sx={{
+                              color: '#ced4de',
+                              '&.Mui-checked': { color: '#e11837' },
+                            }}
+                            icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                            checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                          />
+                        }
+                        label={
+                          <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                            질의많은순
+                          </p>
+                        }
+                      />
+                    </RadioGroup>
+                  </div>
+                  <div>
+                    <Pagination
+                      count={totalPage}
+                      size="small"
+                      siblingCount={0}
+                      page={lecturePage}
+                      renderItem={item => (
+                        <PaginationItem slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }} {...item} />
+                      )}
+                      onChange={handlePageChange}
                     />
-                    <FormControlLabel
-                      value="0002"
-                      control={
-                        <Radio
-                          sx={{
-                            color: '#ced4de',
-                            '&.Mui-checked': { color: '#e11837' },
-                          }}
-                          icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
-                          checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
-                        />
-                      }
-                      label={
-                        <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                          강의 내림차순
-                        </p>
-                      }
-                    />
-                    <FormControlLabel
-                      value="0003"
-                      control={
-                        <Radio
-                          sx={{
-                            color: '#ced4de',
-                            '&.Mui-checked': { color: '#e11837' },
-                          }}
-                          icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
-                          checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
-                        />
-                      }
-                      label={
-                        <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                          질의많은순
-                        </p>
-                      }
-                    />
-                  </RadioGroup>
+                  </div>
                 </div>
                 <TableContainer>
                   <Table className={classes.table} aria-label="simple table" style={{ tableLayout: 'fixed' }}>
@@ -1066,40 +1161,51 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      <TableRow>
-                        <TableCell align="center" component="th" scope="row" className="border-right">
-                          <div className="tw-font-bold tw-text-base">
-                            1회 <br />
-                            <span className="tw-text-sm tw-font-medium tw-text-gray-400">07-01(월)</span>
-                          </div>
-                        </TableCell>
-                        <TableCell align="center" component="th" scope="row">
-                          <div className="tw-font-bold tw-text-base">19</div>
-                        </TableCell>
-                        <TableCell align="center" component="th" scope="row">
-                          <div className="tw-font-bold tw-text-base">19</div>
-                        </TableCell>
-                        <TableCell align="center" component="th" scope="row">
-                          <div className="tw-font-bold tw-text-base">19</div>
-                        </TableCell>
-                        <TableCell align="center" component="th" scope="row" className="border-right">
-                          <div className="tw-font-bold tw-text-base">
-                            19 <span className=" tw-text-gray-400">/ 19</span>
-                          </div>
-                        </TableCell>
-                        <TableCell align="left" component="th" scope="row" className="border-right">
-                          <div className="tw-font-bold tw-text-sm">Q. 모데로가 토크나이저거가 뭐야?</div>
-                          <div className="tw-font-bold tw-text-sm">AI답변 : 모데로가 토크나이저거가 뭐야?</div>
-                        </TableCell>
-                        <TableCell align="center" component="th" scope="row">
-                          <button
-                            onClick={() => setIsModalOpen(true)}
-                            className="tw-text-sm tw-font-bold border tw-py-2 tw-px-3 tw-text-gray-400 tw-rounded"
-                          >
-                            상세보기
-                          </button>
-                        </TableCell>
-                      </TableRow>
+                      {myDashboardLectureList?.contents?.map((info, index) => (
+                        <TableRow key={index}>
+                          <TableCell align="center" component="th" scope="row" className="border-right">
+                            <div className="tw-font-bold tw-text-base">
+                              {info?.studyOrder}회 <br />
+                              <span className="tw-text-sm tw-font-medium tw-text-gray-400">
+                                {info?.studyDate?.slice(5)} ({info?.dayOfWeek})
+                              </span>
+                            </div>
+                          </TableCell>
+                          <TableCell align="center" component="th" scope="row">
+                            <div className="tw-font-bold tw-text-base">{info?.totalQuestionCount}</div>
+                          </TableCell>
+                          <TableCell align="center" component="th" scope="row">
+                            <div className="tw-font-bold tw-text-base">{info?.lectureContentAiAnswerCount}</div>
+                          </TableCell>
+                          <TableCell align="center" component="th" scope="row">
+                            <div className="tw-font-bold tw-text-base">{info?.generalContentAiAnswerCount}</div>
+                          </TableCell>
+                          <TableCell align="center" component="th" scope="row" className="border-right">
+                            <div className="tw-font-bold tw-text-base">
+                              {info?.unansweredQuestionCount}{' '}
+                              <span className=" tw-text-gray-400">/ {info?.totalQuestionCount}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell align="left" component="th" scope="row" className="border-right">
+                            <div className="tw-font-bold tw-text-sm">
+                              {info?.questionAnswer?.question ? 'Q. ' + info.questionAnswer.question : ''}
+                            </div>
+                            <div className="tw-font-bold tw-text-sm">
+                              {info?.questionAnswer?.answer
+                                ? 'AI답변 : ' + info.questionAnswer.answerType + info.questionAnswer.answer
+                                : ''}
+                            </div>
+                          </TableCell>
+                          <TableCell align="center" component="th" scope="row">
+                            <button
+                              onClick={() => setIsModalOpen(true)}
+                              className="tw-text-sm tw-font-bold border tw-py-2 tw-px-3 tw-text-gray-400 tw-rounded"
+                            >
+                              상세보기
+                            </button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
                     </TableBody>
                   </Table>
                 </TableContainer>
@@ -1107,7 +1213,13 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
             )}
           </>
         )}
-        <Modal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)} title="질의응답" maxWidth="900px">
+        <Modal
+          isOpen={isModalOpen}
+          onAfterClose={() => setIsModalOpen(false)}
+          title="질의응답"
+          maxWidth="900px"
+          maxHeight="800px"
+        >
           <div className={cx('seminar-check-popup')}>
             <TableContainer>
               <Table className="" aria-label="simple table" style={{ tableLayout: 'fixed' }}>
@@ -1128,68 +1240,61 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  <TableRow>
-                    <TableCell align="center" component="th" scope="row" className="border-right">
-                      <div className="tw-flex tw-justify-center tw-items-center tw-gap-2">
-                        <img
-                          src={'/assets/avatars/3.jpg'}
-                          className="tw-w-10 tw-h-10 border tw-rounded-full"
-                          alt="Profile"
-                        />
-                        <div className="tw-ml-2">김흐흐</div>
-                      </div>
-                    </TableCell>
-                    <TableCell align="left" component="th" scope="row" className="border-right">
-                      <div className="tw-font-bold tw-text-sm">Q. 모데로가 토크나이저거가 뭐야?</div>
-                    </TableCell>
-                    <TableCell align="left" component="th" scope="row" className="border-right">
-                      <div className="tw-font-bold tw-text-sm">Q. 모데로가 토크나이저거가 뭐야?</div>
-                      <div className="tw-font-bold tw-text-sm">AI답변 : 모데로가 토크나이저거가 뭐야?</div>
-                    </TableCell>
-                    <TableCell align="center" component="th" scope="row">
-                      <button className="tw-text-sm tw-font-bold border tw-py-2 tw-px-3 tw-text-gray-400 tw-rounded">
-                        +
-                      </button>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell align="center" component="th" scope="row" className="border-right" rowSpan={2}>
-                      <div className="tw-flex tw-justify-center tw-items-center tw-gap-2">
-                        <img
-                          src={'/assets/avatars/3.jpg'}
-                          className="tw-w-10 tw-h-10 border tw-rounded-full"
-                          alt="Profile"
-                        />
-                        <div className="tw-ml-2">김찬영</div>
-                      </div>
-                    </TableCell>
-                    <TableCell align="left" component="th" scope="row" className="border-right">
-                      <div className="tw-font-bold tw-text-sm">Q. 모데로가 토크나이저거가 뭐야?</div>
-                    </TableCell>
-                    <TableCell align="left" component="th" scope="row" className="border-right">
-                      <div className="tw-font-bold tw-text-sm">Q. 모데로가 토크나이저거가 뭐야?</div>
-                      <div className="tw-font-bold tw-text-sm">AI답변 : 모데로가 토크나이저거가 뭐야?</div>
-                    </TableCell>
-                    <TableCell align="center" component="th" scope="row">
-                      <button className="tw-text-sm tw-font-bold border tw-py-2 tw-px-3 tw-text-gray-400 tw-rounded">
-                        +
-                      </button>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell align="left" component="th" scope="row" className="border-right">
-                      <div className="tw-font-bold tw-text-sm">Q. 모데로가 토크나이저거가 뭐야?</div>
-                    </TableCell>
-                    <TableCell align="left" component="th" scope="row" className="border-right">
-                      <div className="tw-font-bold tw-text-sm">Q. 모데로가 토크나이저거가 뭐야?</div>
-                      <div className="tw-font-bold tw-text-sm">AI답변 : 모데로가 토크나이저거가 뭐야?</div>
-                    </TableCell>
-                    <TableCell align="center" component="th" scope="row">
-                      <button className="tw-text-sm tw-font-bold border tw-py-2 tw-px-3 tw-text-gray-400 tw-rounded">
-                        +
-                      </button>
-                    </TableCell>
-                  </TableRow>
+                  {myDashboardQA?.members?.map((info, memberIndex) => (
+                    <React.Fragment key={memberIndex}>
+                      <TableRow>
+                        <TableCell
+                          align="left"
+                          component="th"
+                          scope="row"
+                          className="border-right"
+                          rowSpan={info.questionAnswers.length}
+                        >
+                          <div className="tw-flex tw-justify-start tw-items-center tw-gap-2">
+                            <img
+                              src={info?.icon?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
+                              className="tw-w-10 tw-h-10 border tw-rounded-full"
+                              alt="Profile"
+                            />
+                            <div className="tw-ml-2">{info?.icon?.nickname}</div>
+                          </div>
+                        </TableCell>
+                        {/* 첫 번째 질문과 답변에 대한 행 */}
+                        {info.questionAnswers.length > 0 && (
+                          <>
+                            <TableCell align="left" component="th" scope="row" className="border-right">
+                              <div className="tw-font-bold tw-text-sm">{info.questionAnswers[0]?.question}</div>
+                            </TableCell>
+                            <TableCell align="left" component="th" scope="row" className="border-right">
+                              <div className="tw-font-bold tw-text-sm">{info.questionAnswers[0]?.answer}</div>
+                            </TableCell>
+                            <TableCell align="center" component="th" scope="row">
+                              <button className="tw-text-sm tw-font-bold border tw-py-2 tw-px-3 tw-text-gray-400 tw-rounded">
+                                +
+                              </button>
+                            </TableCell>
+                          </>
+                        )}
+                      </TableRow>
+
+                      {/* 나머지 질문과 답변에 대한 행들 */}
+                      {info.questionAnswers.slice(1).map((questionInfo, questionIndex) => (
+                        <TableRow key={questionIndex}>
+                          <TableCell align="left" component="th" scope="row" className="border-right">
+                            <div className="tw-font-bold tw-text-sm">{questionInfo?.question}</div>
+                          </TableCell>
+                          <TableCell align="left" component="th" scope="row" className="border-right">
+                            <div className="tw-font-bold tw-text-sm">{questionInfo?.answer}</div>
+                          </TableCell>
+                          <TableCell align="center" component="th" scope="row">
+                            <button className="tw-text-sm tw-font-bold border tw-py-2 tw-px-3 tw-text-gray-400 tw-rounded">
+                              +
+                            </button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </React.Fragment>
+                  ))}
                 </TableBody>
               </Table>
             </TableContainer>
