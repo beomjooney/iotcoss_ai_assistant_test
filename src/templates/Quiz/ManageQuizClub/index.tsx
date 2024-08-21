@@ -39,21 +39,21 @@ import router from 'next/router';
 //quiz
 import { MentorsModal } from 'src/stories/components';
 import Paginations from 'src/stories/components/Pagination';
-import Box from '@mui/system/Box';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
 import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
 import QuizBreakerInfoCheck from 'src/stories/components/QuizBreakerInfoCheck';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import ToggleButton from '@mui/material/ToggleButton';
-import { TagsInput } from 'react-tag-input-component';
 import MyProfile from 'src/stories/components/MyProfile';
 import { useGetProfile } from 'src/services/account/account.queries';
 import { useStudyQuizOpponentBadgeList } from 'src/services/studyroom/studyroom.queries';
 import { ExperiencesResponse } from 'src/models/experiences';
 import { useOptions } from 'src/services/experiences/experiences.queries';
 import { UseQueryResult } from 'react-query';
+
+import FormControl from '@mui/material/FormControl';
+import ListItemText from '@mui/material/ListItemText';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import Checkbox from '@mui/material/Checkbox';
 
 export interface ManageQuizClubTemplateProps {
   /** 세미나 아이디 */
@@ -72,7 +72,6 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
   const [pageMember, setPageMember] = useState(1);
   const [totalPageMember, setTotalPageMember] = useState(1);
   const [totalElementsMember, setTotalElementsMember] = useState(0);
-  const [value, setValue] = React.useState(0);
   const [myClubList, setMyClubList] = useState<any>([]);
   const [myMemberList, setMyMemberList] = useState<any>([]);
   const [myMemberRequestList, setMyMemberRequestList] = useState<any>([]);
@@ -99,14 +98,17 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
   const [pageQuizz, setPageQuizz] = useState(1);
   const [totalQuizzPage, setTotalQuizzPage] = useState(1);
   const [totalQuizzElements, setTotalQuizzElements] = useState(0);
-  const [quizUrl, setQuizUrl] = React.useState('');
-  const [quizName, setQuizName] = React.useState('');
   const [quizSearch, setQuizSearch] = React.useState('');
   const [allQuizData, setAllQuizData] = useState([]);
-  const [jobGroupPopUp, setJobGroupPopUp] = useState([]);
   const [profile, setProfile] = useState<any>([]);
   const [isModalProfileOpen, setIsModalProfileOpen] = useState<boolean>(false);
   const [memberUUID, setMemberUUID] = useState<string>('');
+  const [universityCodeQuiz, setUniversityCodeQuiz] = useState<string>('');
+  const [selectedJobQuiz, setSelectedJobQuiz] = useState<string[]>([]);
+  const [selectedUniversityNameQuiz, setSelectedUniversityNameQuiz] = useState('');
+  const [jobsQuiz, setJobsQuiz] = useState([]);
+  const [personNameQuiz, setPersonNameQuiz] = useState([]);
+  const [selectedLevel, setSelectedLevel] = useState('');
 
   const cx = classNames.bind(styles);
 
@@ -131,12 +133,6 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
 
   const handleTabClick = tab => {
     setActiveTab(tab);
-  };
-
-  const handleChange = (event, newIndex) => {
-    //console.log('SubTab - index', newIndex, event);
-    setActive(newIndex);
-    setValue(newIndex);
   };
 
   const handleInputQuizSearchChange = event => {
@@ -344,6 +340,16 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
     });
   }, [pageQuizz]);
 
+  useEffect(() => {
+    setParams({
+      page,
+      keyword: keyWorld,
+      jobGroups: universityCodeQuiz,
+      jobs: selectedJobQuiz.toString(),
+      jobLevels: selectedLevel,
+    });
+  }, [page, keyWorld, universityCodeQuiz, selectedJobQuiz, selectedLevel]);
+
   const handleQuizChange = event => {
     const value = event.target.value;
     const selectedSession = myClubList?.find(session => session.clubSequence === Number(value));
@@ -355,9 +361,6 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
-  };
-  const handlePageQuizChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    setPageQuizz(value);
   };
   const handlePageChangeMember = (event: React.ChangeEvent<unknown>, value: number) => {
     setPageMember(value);
@@ -502,27 +505,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
     setKeyWorld(_keyworld);
   }
 
-  const handleInputQuizChange = event => {
-    setQuizName(event.target.value);
-  };
-
-  const [jobGroups, setJobGroups] = useState<any[]>([]);
-  const [contentTypes, setContentTypes] = useState<any[]>([]);
   const [jobs, setJobs] = useState([]);
-  const quizRef = useRef(null);
-  const quizUrlRef = useRef(null);
-
-  const handleInputQuizUrlChange = event => {
-    setQuizUrl(event.target.value);
-  };
-
-  const handleJobGroups = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
-    setJobGroupPopUp(newFormats);
-  };
-
-  const handleJobsPopUp = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
-    setJobs(newFormats);
-  };
 
   // 프로필 정보 수정 시 변경 적용
   useEffect(() => {
@@ -540,16 +523,31 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
     setBadgeParams({ page: badgePage, memberUUID: memberUUID });
   };
 
-  const [selectedJobQuiz, setSelectedJobQuiz] = useState<string>('');
-  const [universityCodeQuiz, setUniversityCodeQuiz] = useState<string>('');
-  const [selectedLevel, setSelectedLevel] = useState('');
-
-  const handleUniversityChangeQuiz = e => {
-    setUniversityCodeQuiz(e.target.value);
+  const handleUniversitySearchChange = e => {
+    const selectedCode = e.target.value;
+    const selected = optionsData?.data?.jobs?.find(u => u.code === selectedCode);
+    setUniversityCodeQuiz(selectedCode);
+    setSelectedUniversityNameQuiz(selected ? selected.name : '');
+    setJobsQuiz(selected ? selected.jobs : []);
+    setPersonNameQuiz([]); // Clear the selected job when university changes
   };
 
-  const handleJobChangeQuiz = e => {
-    setSelectedJobQuiz(e.target.value);
+  const handleChangesQuiz = (event: SelectChangeEvent<typeof personName>) => {
+    const {
+      target: { value },
+    } = event;
+    const jobsList = typeof value === 'string' ? value.split(',') : value;
+    setPersonNameQuiz(jobsList);
+
+    // Convert selected names to corresponding codes
+    const selectedCodes = jobsList
+      .map(name => {
+        const job = jobsQuiz.find(job => job.name === name);
+        return job ? job.code : null;
+      })
+      .filter(code => code !== null);
+
+    setSelectedJobQuiz(selectedCodes);
   };
 
   const handleLevelChangeQuiz = e => {
@@ -944,10 +942,10 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                               />
                             </div>
                           </Grid>
-                          <Grid item xs={12} sm={1}>
+                          <Grid item xs={12} sm={2}>
                             <div className="tw-text-left tw-text-black">{item?.member?.nickname}</div>
                           </Grid>
-                          <Grid item xs={12} sm={2}>
+                          <Grid item xs={12} sm={3}>
                             <div className="tw-text-left tw-text-black">{item?.memberId}</div>
                           </Grid>
                           <Grid item xs={12} sm={2}>
@@ -959,7 +957,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                           <Grid
                             item
                             xs={12}
-                            sm={4}
+                            sm={2}
                             style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end' }}
                           >
                             <div className="tw-gap-3">
@@ -1110,9 +1108,9 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                           key={index}
                           className="tw-h-[223.25px] tw-flex tw-flex-col tw-items-center tw-justify-center tw-mb-4"
                         >
-                          <div className=" tw-text-center tw-text-black tw-font-bold">Q{index + 1}.</div>
+                          <div className=" tw-text-center tw-text-black tw-font-bold">Q{item?.order}.</div>
                           <div className="tw-text-center tw-text-sm tw-text-black tw-font-bold">
-                            {item?.publishDate?.slice(5, 10)} ({item.dayOfWeek})
+                            {item?.publishDate?.slice(5, 10)} {item?.dayOfWeek ? `(${item.dayOfWeek})` : ''}
                           </div>
                         </div>
                       );
@@ -1149,12 +1147,12 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
 
       <MentorsModal title="퀴즈 등록하기" isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
         <div className="tw-mb-8">
-          <div className="tw-grid tw-grid-cols-3 tw-gap-8 tw-pb-4">
+          <div className="tw-grid tw-grid-cols-3 tw-gap-3 tw-pb-4">
             <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
               <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">대학</p>
               <select
                 className="form-select"
-                onChange={handleUniversityChangeQuiz}
+                onChange={handleUniversitySearchChange}
                 aria-label="Default select example"
                 value={universityCodeQuiz}
               >
@@ -1169,19 +1167,35 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
 
             <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
               <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">학과</p>
-              <select
-                className="form-select"
-                aria-label="Default select example"
-                onChange={handleJobChangeQuiz}
-                value={selectedJobQuiz}
-              >
-                <option value="">학과를 선택해주세요.</option>
-                {jobs.map((job, index) => (
-                  <option key={index} value={job.code}>
-                    {job.name}
-                  </option>
-                ))}
-              </select>
+              <FormControl sx={{ width: '100%' }} size="small">
+                <Select
+                  className="tw-w-full tw-text-black"
+                  size="small"
+                  labelId="demo-multiple-checkbox-label"
+                  id="demo-multiple-checkbox"
+                  multiple
+                  displayEmpty
+                  renderValue={selected => {
+                    if (selected.length === 0) {
+                      return <span style={{ color: 'gray' }}>대학을 선택하고, 학과를 선택해주세요.</span>;
+                    }
+                    return selected.join(', ');
+                  }}
+                  disabled={jobsQuiz.length === 0}
+                  value={personNameQuiz}
+                  onChange={handleChangesQuiz}
+                  MenuProps={{
+                    disableScrollLock: true,
+                  }}
+                >
+                  {jobsQuiz.map((job, index) => (
+                    <MenuItem key={index} value={job.name}>
+                      <Checkbox checked={personNameQuiz.indexOf(job.name) > -1} />
+                      <ListItemText primary={job.name} />
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </div>
 
             <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
@@ -1192,7 +1206,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                 onChange={handleLevelChangeQuiz}
                 value={selectedLevel}
               >
-                <option value="">레벨을 선택해주세요.</option>
+                <option value="">학년을 선택해주세요.</option>
                 {optionsData?.data?.jobLevels.map((job, index) => (
                   <option key={index} value={job.code}>
                     {job.name}
@@ -1234,14 +1248,12 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
           {quizListData.map((item, index) => (
             <div key={index}>
               <QuizBreakerInfoCheck
-                avatarSrc="https://via.placeholder.com/40"
                 userName={item.memberNickname}
                 questionText={item.question}
                 index={item.quizSequence}
                 selectedQuizIds={selectedQuizIds}
                 handleCheckboxChange={handleCheckboxChange}
-                hashtags={['']}
-                tags={['소프트웨어융합대학', '컴퓨터공학과', '2학년']}
+                tags={item}
                 answerText={item.modelAnswer}
               />
             </div>

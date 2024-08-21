@@ -43,7 +43,7 @@ const QuizBreakerInfo = ({
           <div className="tw-px-2 tw-relative tw-flex tw-items-center tw-overflow-visible tw-rounded-lg tw-bg-[#f6f7fb] tw-mb-3 tw-h-20">
             <div className="tw-w-[70px] tw-flex tw-flex-col tw-items-center">
               <img
-                src={avatarSrc}
+                src={avatarSrc || '/assets/images/account/default_profile_image.png'}
                 alt="User Avatar"
                 className="tw-w-8 tw-h-8 tw-border tw-rounded-full tw-object-cover"
               />

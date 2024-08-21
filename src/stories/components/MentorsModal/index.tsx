@@ -30,16 +30,22 @@ function MentorsModal({
 }: MentorsModalProps) {
   const [isShow, setIsShow] = useState<boolean>(false);
 
+  // 모달 오버레이에서 스크롤 방지
+  useEffect(() => {
+    document.body.style.cssText = `
+        position: fixed;
+        top: -${window.scrollY}px;
+        overflow-y: scroll;
+        width: 100%;`;
+    return () => {
+      const scrollY = document.body.style.top;
+      document.body.style.cssText = '';
+      window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
+    };
+  }, []);
+
   useEffect(() => {
     setIsShow(isOpen);
-    // if (isOpen) {
-    //   setScrollPosition(window.scrollY); // 모달이 열릴 때 현재 스크롤 위치 저장
-    //   document.body.style.overflow = 'hidden'; // 모달이 열릴 때 스크롤 막기
-    // } else {
-    //   setScrollPosition(window.scrollY);
-    //   // window.scrollTo(0, scrollPosition); // 모달이 닫힐 때 이전 스크롤 위치로 스크롤 이동
-    // }
-    // document.body.style.overflow = 'visible'; // 모달이 닫힐 때 스크롤 허용
   }, [isOpen]);
 
   return (

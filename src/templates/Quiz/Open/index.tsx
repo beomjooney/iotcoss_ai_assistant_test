@@ -1845,7 +1845,7 @@ export function QuizOpenTemplate() {
 
       <MentorsModal title="퀴즈 등록하기" isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
         <div className="tw-mb-8">
-          <div className="tw-grid tw-grid-cols-3 tw-gap-8 tw-pb-4">
+          <div className="tw-grid tw-grid-cols-3 tw-gap-3 tw-pb-4">
             <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
               <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">대학</p>
               <select
@@ -1864,20 +1864,7 @@ export function QuizOpenTemplate() {
             </div>
 
             <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
-              {/* <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">학과</p>
-              <select
-                className="form-select"
-                aria-label="Default select example"
-                onChange={handleJobChangeQuiz}
-                value={selectedJobQuiz}
-              >
-                <option value="">학과를 선택해주세요.</option>
-                {jobs.map((job, index) => (
-                  <option key={index} value={job.code}>
-                    {job.name}
-                  </option>
-                ))}
-              </select> */}
+              <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">학과</p>
               <FormControl sx={{ width: '100%' }} size="small">
                 <Select
                   className="tw-w-full tw-text-black"
@@ -1888,7 +1875,7 @@ export function QuizOpenTemplate() {
                   displayEmpty
                   renderValue={selected => {
                     if (selected.length === 0) {
-                      return <span style={{ color: 'gray' }}>추천 대학을 먼저 선택하고, 학과를 선택해주세요.</span>;
+                      return <span style={{ color: 'gray' }}>대학을 선택하고, 학과를 선택해주세요.</span>;
                     }
                     return selected.join(', ');
                   }}
@@ -1917,7 +1904,7 @@ export function QuizOpenTemplate() {
                 onChange={handleLevelChangeQuiz}
                 value={selectedLevel}
               >
-                <option value="">레벨을 선택해주세요.</option>
+                <option value="">학년을 선택해주세요.</option>
                 {optionsData?.data?.jobLevels.map((job, index) => (
                   <option key={index} value={job.code}>
                     {job.name}
