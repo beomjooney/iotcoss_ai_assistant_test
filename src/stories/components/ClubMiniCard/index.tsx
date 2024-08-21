@@ -101,7 +101,7 @@ ClubMiniCardProps) => {
       >
         <img
           className="!tw-w-[180px] tw-h-[145px] tw-rounded-l-lg tw-object-cover tw-min-w-[180px]"
-          src={item?.clubImageUrl || 'assets/images/banner/Rectangle_193.png'}
+          src={item?.clubImageUrl || '/assets/images/banner/Rectangle_193.png'}
           alt=""
         />
         <div className="tw-flex tw-w-full tw-flex-col tw-justify-between tw-px-4  tw-leading-normal">

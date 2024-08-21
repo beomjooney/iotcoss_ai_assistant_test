@@ -35,7 +35,7 @@ const CourseCard = ({ data, border = false }) => {
       }`}
     >
       <img
-        src={data.clubImageUrl || 'assets/images/banner/Rectangle_193.png'}
+        src={data.clubImageUrl || '/assets/images/banner/Rectangle_193.png'}
         className="tw-w-[132px] tw-h-[142px] tw-object-cover tw-float-left"
       />
 
