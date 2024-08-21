@@ -49,6 +49,7 @@ export interface LectureDashboardTemplateProps {
 const useStyles = makeStyles(theme => ({
   table: {
     minWidth: 650,
+    overflowX: 'auto',
   },
   sticky: {
     position: 'sticky',
@@ -74,14 +75,27 @@ const useStyles = makeStyles(theme => ({
   },
   stickyFirst: {
     left: 0,
+    zIndex: 2,
   },
   stickySecond: {
-    left: 140, // 이 값을 `Dessert` 열의 너비에 맞게 조정하세요.
+    left: 150, // Adjust according to the width of the first column
+    zIndex: 2,
   },
-  stickyThread: {
-    left: 240, // 이 값을 `Dessert` 열의 너비에 맞게 조정하세요.
+  stickyThird: {
+    left: 270, // Adjust according to the width of the first two columns
+    zIndex: 2,
+  },
+  // Add a new class for scrollable container
+  scrollContainer: {
+    overflowX: 'auto',
+    display: 'block',
+  },
+  // New class to add bottom border to TableRow
+  tableRow: {
+    borderBottom: '1px solid #E0E0E0', // Light gray underline
   },
 }));
+
 const cx = classNames.bind(styles);
 
 export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) {
@@ -117,8 +131,8 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   const [myClubSequenceParams, setMyClubSequenceParams] = useState<any>({ clubSequence: id });
   const [params, setParams] = useState<paramProps>({ page });
   const [selectedValue, setSelectedValue] = useState(id);
-  // const [activeTab, setActiveTab] = useState('myQuiz');
-  const [activeTab, setActiveTab] = useState('community');
+  const [activeTab, setActiveTab] = useState('myQuiz');
+  // const [activeTab, setActiveTab] = useState('community');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [key, setKey] = useState('');
   const [fileName, setFileName] = useState('');
@@ -987,16 +1001,16 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                   <Table className={classes.table} aria-label="simple table" style={{ tableLayout: 'fixed' }}>
                     <TableHead style={{ backgroundColor: '#F6F7FB' }}>
                       <TableRow>
-                        <TableCell align="center" width={70} className={`${classes.sticky} ${classes.stickyFirst}`}>
+                        <TableCell align="center" width={150} className={`${classes.sticky} ${classes.stickyFirst}`}>
                           <div className="tw-font-bold tw-text-base">학습자</div>
                         </TableCell>
-                        <TableCell align="center" width={70}>
+                        <TableCell align="center" width={120} className={`${classes.sticky} ${classes.stickySecond}`}>
                           <div className="tw-font-bold tw-text-base">학습 참여도</div>
                         </TableCell>
                         <TableCell
                           align="center"
-                          width={70}
-                          className={`${classes.stickyBoard} ${classes.stickySecond}`}
+                          width={100}
+                          className={`${classes.stickyBoard} ${classes.stickyThread}`}
                         >
                           <div className="tw-font-bold tw-text-base">답변/질의</div>
                         </TableCell>
@@ -1020,7 +1034,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                         <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                           <TableCell
                             align="center"
-                            width={140}
+                            width={150}
                             component="th"
                             scope="row"
                             className={`${classes.stickyWhite} ${classes.stickyFirst}`}
@@ -1036,7 +1050,13 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                               <div className="tw-ml-2">{info?.member?.nickname}</div>
                             </div>
                           </TableCell>
-                          <TableCell align="center" width={120} component="th" scope="row">
+                          <TableCell
+                            align="center"
+                            width={120}
+                            component="th"
+                            scope="row"
+                            className={`${classes.stickyWhite} ${classes.stickySecond}`}
+                          >
                             <div className="tw-font-bold tw-grid tw-gap-1 tw-justify-center tw-items-center">
                               <div>
                                 {info?.participatedStudyCount} / {info?.totalStudyCount}
@@ -1056,10 +1076,10 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                           <TableCell
                             padding="none"
                             align="center"
-                            width={110}
+                            width={100}
                             component="th"
                             scope="row"
-                            className={`${classes.stickyWhiteBoard} ${classes.stickySecond}`}
+                            className={`${classes.stickyWhiteBoard} ${classes.stickyThird}`}
                           >
                             <div className="">
                               <div className=" tw-gap-0 tw-justify-center tw-items-center tw-p-2">
