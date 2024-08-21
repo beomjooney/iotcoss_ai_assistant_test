@@ -332,14 +332,6 @@ const QuizClubListView = ({ border, id }) => {
                             </div>
                             <div className="tw-pr-4">
                               <button
-                                // onClick={() =>
-                                //   router.push(
-                                //     '/quiz-answers/' +
-                                //       `${item?.clubSequence}` +
-                                //       '?publishDate=' +
-                                //       `${item?.publishDate}`,
-                                //   )
-                                // }
                                 onClick={() => {
                                   router.push(
                                     {

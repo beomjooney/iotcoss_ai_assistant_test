@@ -147,7 +147,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
   }, [page]);
 
   const { isFetched: isParticipantListFetched, data } = useQuizRoungeInfo(id, data => {
-    console.log('first get data');
+    console.log('first get data', data);
 
     let index; // `index` 변수 선언
     if (publishDate) {
@@ -157,23 +157,23 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
       index = data?.clubQuizzes?.findIndex(item => item.isPublished === true);
       console.log('index', publishDate, index);
     }
-    setSelectedQuiz(data.clubQuizzes[index]);
-    const selectedSession = data.clubQuizzes[index] ? data.clubQuizzes[index].publishDate : null;
+    setSelectedQuiz(data?.clubQuizzes[index]);
+    const selectedSession = data?.clubQuizzes[index] ? data.clubQuizzes[index].publishDate : null;
     console.log('selectedSession 1', selectedSession);
     setSelectedValue(publishDate || selectedSession);
-    console.log(data.clubQuizzes[index]);
+    console.log(data?.clubQuizzes[index]);
     setContents(data);
 
     setParams({
       club: id,
-      quiz: data.clubQuizzes[index]?.quizSequence,
+      quiz: data?.clubQuizzes[index]?.quizSequence,
       page,
       keyword: keyWorld,
     });
 
     setQuizParamsAll({
       club: id,
-      quiz: data.clubQuizzes[index]?.quizSequence,
+      quiz: data?.clubQuizzes[index]?.quizSequence,
     });
   });
 

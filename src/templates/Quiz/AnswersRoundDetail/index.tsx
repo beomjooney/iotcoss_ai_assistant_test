@@ -257,7 +257,8 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                           <div className="tw-pb-3 tw-px-0 tw-pt-0 tw-rounded-t-lg">
                             <p className="tw-text-base tw-font-bold tw-text-center tw-pt-3">{session?.order}회</p>
                             <p className="tw-text-sm tw-font-medium tw-text-center tw-pt-1">
-                              {session?.publishDate.split('-').slice(1).join('-')} ({session?.dayOfWeek})
+                              {session?.publishDate?.split('-').slice(1).join('-')}{' '}
+                              {session?.dayOfWeek ? ` (${session?.dayOfWeek})` : ''}
                             </p>
                           </div>
                         </div>
@@ -267,6 +268,15 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                 </div>
               </div>
             </div>
+            {}
+
+            {selectedQuiz === undefined && (
+              <div
+                className={cx('tw-mt-10 border tw-rounded-md tw-flex tw-justify-center tw-items-center tw-h-[15vh]')}
+              >
+                <p className="tw-text-center tw-text-base tw-font-bold tw-text-[#31343d]">데이터가 없습니다.</p>
+              </div>
+            )}
             {selectedQuiz && (
               <div>
                 {selectedQuiz.isPublished ? (
