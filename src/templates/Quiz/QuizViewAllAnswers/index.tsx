@@ -41,20 +41,9 @@ export interface QuizViewAllAnswersTemplateProps {
 export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplateProps) {
   const { user } = useStore();
   const router = useRouter();
-  const { publishDate } = router.query;
-  console.log(publishDate);
-  const [value, setValue] = React.useState(0);
-  const [isBookmark, setIsBookmark] = useState(true);
+  const { publishDate, quizSequence } = router.query;
   const [quizList, setQuizList] = useState<RecommendContent[]>([]);
-  const [isModalCancelOpen, setIsModalCancelOpen] = useState<boolean>(false);
-  const [myParticipation, setMyParticipation] = useState(null);
-  const [restTime, setRestTime] = useState(0);
-  const [clubStatus, setClubStatus] = useState('0000');
-  const [clubMemberStatus, setClubMemberStatus] = useState('0001');
-  const [applicationButton, setApplicationButton] = useState<ReactNode>(null);
   const { memberId, logged } = useSessionStore.getState();
-  const [contentHtml, setContentHtml] = useState('');
-  let [isLiked, setIsLiked] = useState(false);
 
   const [quizListData, setQuizListData] = useState<any[]>([]);
   const [contents, setContents] = useState<any>([]);
@@ -65,7 +54,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
   const [beforeOnePick, setBeforeOnePick] = useState(1);
   const [keyWorld, setKeyWorld] = useState('');
   const [totalElements, setTotalElements] = useState(0);
-  const [selectedValue, setSelectedValue] = useState(publishDate || '');
+  const [selectedValue, setSelectedValue] = useState(quizSequence || '');
   const [page, setPage] = useState(1);
   const [params, setParams] = useState<any>({ id, page });
   const [quizParams, setQuizParams] = useState<any>({});
@@ -254,7 +243,6 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     data: quizAnswerData,
   } = useQuizAnswerMemberAIDetail(params, data => {
     //member data-list
-    console.log('useQuizAnswerDetail', data.totalPages);
     setTotalElements(data.totalElements);
     setTotalPage(data.totalPages);
   });
@@ -286,22 +274,16 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
 
   const handleQuizChange = event => {
     const value = event.target.value;
-    console.log('value', value);
-    const selectedSession = contents.clubQuizzes.find(
-      session => session.publishDate.split('-').slice(1).join('-') === value,
-    );
-
-    console.log('selectedSession', selectedSession);
+    const selectedSession = contents.clubQuizzes.find(session => session.quizSequence === parseInt(value));
 
     if (selectedSession) {
-      if (!selectedSession.isPublished) {
+      if (!selectedSession.quizSequence) {
         alert('퀴즈가 공개되지 않았습니다.');
-        const result = contents.clubQuizzes.find(item => item.isPublished === true);
-        const selectedSessionValue = result ? result.publishDate : null;
+        const result = contents.clubQuizzes.find(item => item.quizSequence === true);
+        const selectedSessionValue = result ? result.quizSequence : null;
         console.log('selectedSessionValue 2', selectedSessionValue);
         setSelectedValue(selectedSessionValue); // Reset to the default value
 
-        const index = data?.clubQuizzes?.findIndex(item => item.isPublished === true);
         setParams({
           club: id,
           quiz: data.clubQuizzes[0]?.quizSequence,
@@ -311,7 +293,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
         setSelectedQuiz(contents?.clubQuizzes[0]);
         return;
       } else {
-        setSelectedValue(selectedSession.publishDate);
+        setSelectedValue(selectedSession.quizSequence);
       }
     }
 
@@ -333,8 +315,6 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
 
   useEffect(() => {
     if (isSuccess) {
-      console.log('quizAnswerData');
-      // console.log(quizAnswerData.contents);
       setQuizListData(quizAnswerData.contents || []);
       setTotalPage(quizAnswerData.totalPages);
     }
@@ -646,7 +626,8 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
               <select
                 className="form-select block w-full tw-bg-gray-100 tw-text-red-500 tw-font-bold"
                 onChange={handleQuizChange}
-                value={selectedValue?.split('-').slice(1).join('-')}
+                // value={selectedValue?.split('-').slice(1).join('-')}
+                value={selectedValue}
                 aria-label="Default select example"
               >
                 {contents?.clubQuizzes?.map((session, idx) => {
@@ -660,7 +641,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
           ${isSelected ? 'tw-bg-red-500 tw-text-white' : ''}
           ${isPublished ? 'tw-bg-white tw-text-gray-200' : ''}
         `}
-                      value={session?.publishDate.split('-').slice(1).join('-')}
+                      value={session?.quizSequence}
                     >
                       {session?.order}회. {session?.publishDate.split('-').slice(1).join('-')} ({session?.dayOfWeek})
                     </option>
@@ -707,8 +688,8 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
               <Table style={{ width: '100%' }}>
                 <TableHead style={{ backgroundColor: '#F6F7FB' }}>
                   <TableRow>
-                    <TableCell align="center" width={50}></TableCell>
-                    <TableCell align="center" width={135}>
+                    <TableCell align="center" width={45}></TableCell>
+                    <TableCell align="center" width={155}>
                       이름
                     </TableCell>
                     <TableCell align="center" width={340}>

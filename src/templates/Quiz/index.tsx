@@ -218,14 +218,7 @@ export function QuizTemplate() {
                   contents.map((item, index) => {
                     return (
                       <React.Fragment key={index}>
-                        <ClubCard
-                          item={item}
-                          xs={6}
-                          // writer={memberSample}
-                          className={cx('reply-container__item')}
-                          // memberId={memberId}
-                          // onPostDeleteSubmit={onPostDeleteSubmit}
-                        />
+                        <ClubCard item={item} xs={6} className={cx('reply-container__item')} />
                       </React.Fragment>
                     );
                   })

@@ -35,8 +35,6 @@ const ClubMiniCard = ({
   item,
   favorite = false,
   xs,
-  className,
-  memberId,
   onPostDeleteSubmit,
 }: // eslint-disable-next-line @typescript-eslint/no-empty-function
 ClubMiniCardProps) => {

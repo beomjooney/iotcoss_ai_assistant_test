@@ -58,7 +58,7 @@ const useStyles = makeStyles(theme => ({
     left: 0,
   },
   stickySecond: {
-    left: 140, // 이 값을 `Dessert` 열의 너비에 맞게 조정하세요.
+    left: 160, // 이 값을 `Dessert` 열의 너비에 맞게 조정하세요.
   },
   stickyThread: {
     left: 240, // 이 값을 `Dessert` 열의 너비에 맞게 조정하세요.
@@ -435,7 +435,7 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
               <Table className={classes.table} aria-label="simple table" style={{ tableLayout: 'fixed' }}>
                 <TableHead style={{ backgroundColor: '#F6F7FB' }}>
                   <TableRow>
-                    <TableCell align="center" width={140} className={`${classes.sticky} ${classes.stickyFirst}`}>
+                    <TableCell align="center" width={160} className={`${classes.sticky} ${classes.stickyFirst}`}>
                       <div className="tw-font-bold tw-text-base"> 학생</div>
                     </TableCell>
                     <TableCell align="center" width={120} className={`${classes.stickyBoard} ${classes.stickySecond}`}>
@@ -452,7 +452,7 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
                             {session?.order}회
                           </p>
                           <p className="tw-w-full tw-h-3.5 tw-text-xs tw-font-medium tw-text-center tw-text-[#9ca5b2] tw-bottom-0">
-                            {session?.publishDate?.slice(5)} ({session?.dayOfWeek})
+                            {session?.publishDate?.slice(5)} {session?.dayOfWeek ? `(${session?.dayOfWeek})` : ''}
                           </p>
                         </div>
                       </TableCell>
@@ -536,7 +536,9 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
                                 </svg>
                               )}
                               <div className="tw-text-gray-400">
-                                {info?.status === '0001' && 'D' + info?.relativeDaysToPublishDate}
+                                {info?.status === '0001' &&
+                                  info?.relativeDaysToPublishDate !== null &&
+                                  'D' + info?.relativeDaysToPublishDate}
                               </div>
                             </div>
                           </TableCell>

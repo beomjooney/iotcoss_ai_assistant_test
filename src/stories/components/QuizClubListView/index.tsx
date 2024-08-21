@@ -208,7 +208,7 @@ const QuizClubListView = ({ border, id }) => {
                   sm={10}
                   className="tw-text-xl tw-text-black tw-font-bold"
                 >
-                  퀴즈목록 ({totalElements})
+                  퀴즈목록 ({totalElements || 0})
                 </Grid>
 
                 <Grid container justifyContent="flex-end" item xs={6} sm={2} style={{ textAlign: 'right' }}>
@@ -290,6 +290,13 @@ const QuizClubListView = ({ border, id }) => {
                   </RadioGroup>
                 </div>
               </div>
+
+              {quizList.length === 0 && (
+                <div className={cx('tw-flex tw-justify-center tw-items-center tw-h-[70vh]')}>
+                  <p className="tw-text-center tw-text-base tw-font-bold tw-text-[#31343d]">데이터가 없습니다.</p>
+                </div>
+              )}
+
               {quizList.map((item, index) => {
                 return (
                   <React.Fragment key={index}>
@@ -338,6 +345,7 @@ const QuizClubListView = ({ border, id }) => {
                                       pathname: `/quiz-answers/${item?.clubSequence}`,
                                       query: {
                                         publishDate: item?.publishDate,
+                                        quizSequence: item?.quizSequence,
                                       },
                                     },
                                     `/quiz-answers/${item?.clubSequence}`,
@@ -352,7 +360,7 @@ const QuizClubListView = ({ border, id }) => {
                                     ? 'tw-bg-white border border-danger tw-text-black'
                                     : 'tw-bg-gray-200 tw-text-white'
                                 }
-                                max-lg:tw-w-[60px]    tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded`}
+                                max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded`}
                               >
                                 답변확인 및 채점하기 {'>'}
                               </button>
