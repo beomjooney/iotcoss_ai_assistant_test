@@ -145,7 +145,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
     // Filter out items with quizSequence as null and count them
     const nullQuizSequenceCount = quizList.filter(item => item.quizSequence === null).length;
 
-    if (!selectedQuizIds.includes(quizSequence) && nullQuizSequenceCount <= 0) {
+    if (!selectedQuizIds?.includes(quizSequence) && nullQuizSequenceCount <= 0) {
       alert('퀴즈를 추가 할 수 없습니다.');
       return;
     }
@@ -260,8 +260,8 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
   const { isFetched: isParticipantListFetched } = useQuizMyClubInfo(myQuizParams, data => {
     console.log('first get data');
     setQuizList(data?.contents || []);
-    setSelectedQuizIds(data.contents.map(item => item?.quizSequence));
-    console.log(data.contents.map(item => item?.quizSequence));
+    setSelectedQuizIds(data?.contents.map(item => item?.quizSequence));
+    console.log(data?.contents.map(item => item?.quizSequence));
     setTotalQuizPage(data?.totalPages);
     setTotalQuizElements(data?.totalElements);
     console.log(data);
@@ -813,7 +813,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                       sm={10}
                       className="tw-text-xl tw-text-black tw-font-bold"
                     >
-                      클럽 학생 목록 ({totalElementsMember})
+                      클럽 학생 목록 ({totalElementsMember || 0})
                     </Grid>
 
                     <Grid item container justifyContent="flex-end" xs={6} sm={2} style={{ textAlign: 'right' }}>
@@ -1002,7 +1002,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                     sm={10}
                     className="tw-text-xl tw-text-black tw-font-bold"
                   >
-                    퀴즈 목록 ({totalQuizElements})
+                    퀴즈 목록 ({totalQuizElements || 0})
                   </Grid>
 
                   <Grid item container justifyContent="flex-end" xs={6} sm={2} style={{ textAlign: 'right' }}>
@@ -1129,6 +1129,14 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                     />
                   </Grid>
                 </Grid>
+
+                {quizList.length === 0 && (
+                  <div className={cx('tw-flex tw-justify-center tw-items-center tw-h-[50vh]')}>
+                    <p className="tw-text-center tw-text-base tw-font-bold tw-text-[#31343d]">
+                      퀴즈 데이터가 없습니다.
+                    </p>
+                  </div>
+                )}
                 <div className="tw-text-center tw-pt-14">
                   <button
                     onClick={() => handleQuizSave()}
@@ -1243,7 +1251,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
 
           <p className="tw-text-xl tw-font-bold tw-text-left tw-text-black tw-py-5">
             {/* 퀴즈목록 {totalQuizzElements}개 */}
-            퀴즈목록 전체 : {totalQuizzElements}개 - (퀴즈선택 : {selectedQuizIds.length} / {quizList.length})
+            퀴즈목록 전체 : {totalQuizzElements}개 - (퀴즈선택 : {selectedQuizIds?.length} / {quizList.length})
           </p>
           {quizListData.map((item, index) => (
             <div key={index}>

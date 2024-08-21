@@ -1589,7 +1589,7 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
                       sm={10}
                       className="tw-text-xl tw-text-black tw-font-bold"
                     >
-                      클럽 학생 목록 ({totalElementsMember})
+                      클럽 학생 목록 ({totalElementsMember || 0})
                     </Grid>
 
                     <Grid item container justifyContent="flex-end" xs={6} sm={2} style={{ textAlign: 'right' }}>
