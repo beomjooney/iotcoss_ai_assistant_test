@@ -234,7 +234,7 @@ const LectureDetaillSolution = ({
           <div className="tw-flex tw-items-end tw-gap-[16px]">
             <img
               className="tw-w-40 tw-h-40 border tw-rounded-full"
-              src={contents?.club?.leaderProfileImageUrl || '/assets/avatars/1.jpg'}
+              src={contents?.club?.leaderProfileImageUrl || '/assets/images/account/default_profile_image.png'}
             />
             <div className="tw-flex">
               <div className="tw-flex tw-text-sm tw-text-black border tw-py-1 tw-px-2  tw-mr-5 tw-rounded-lg">

@@ -972,7 +972,10 @@ export function StudyRoomTemplate() {
                                     <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                       <img
                                         className="tw-w-10 tw-h-10 border tw-rounded-full"
-                                        src={item?.quiz?.maker?.profileImageUrl || '/assets/avatars/1.jpg'}
+                                        src={
+                                          item?.quiz?.maker?.profileImageUrl ||
+                                          '/assets/images/account/default_profile_image.png'
+                                        }
                                       />
                                       <div className="tw-text-xs tw-text-left tw-text-black">
                                         {item?.quiz?.maker?.nickname}

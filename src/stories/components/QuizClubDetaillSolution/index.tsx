@@ -397,7 +397,10 @@ const QuizClubDetaillSolution = ({
                                   <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                     <img
                                       className="tw-w-10 tw-h-10 border tw-rounded-full"
-                                      src={item?.maker?.profileImageUrl || '/assets/avatars/1.jpg'}
+                                      src={
+                                        item?.maker?.profileImageUrl ||
+                                        '/assets/images/account/default_profile_image.png'
+                                      }
                                     />
                                     <div className="tw-text-xs tw-text-left tw-text-black">{item?.maker?.nickname}</div>
                                   </div>
@@ -441,7 +444,10 @@ const QuizClubDetaillSolution = ({
                                   <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                     <img
                                       className="border tw-rounded-full tw-w-10 tw-h-10 "
-                                      src={item?.answer?.member?.profileImageUrl || '/assets/avatars/1.jpg'}
+                                      src={
+                                        item?.answer?.member?.profileImageUrl ||
+                                        '/assets/images/account/default_profile_image.png'
+                                      }
                                     />
                                     <div className="tw-text-xs tw-text-left tw-text-black">
                                       {item?.answer?.member?.nickname}
@@ -718,7 +724,7 @@ const QuizClubDetaillSolution = ({
                               {item?.answer?.answerStatus === '0003' ? (
                                 <>
                                   <div className="border border-secondary tw-bg-white tw-flex tw-items-center tw-p-4  tw-py-3 tw-rounded-bl-xl tw-rounded-br-xl">
-                                    <div className="tw-w-1.5/12 tw-pl-14 tw-pr-3 tw-flex tw-flex-col tw-items-center tw-justify-center">
+                                    <div className="tw-w-1.5/12 tw-pl-10 tw-pr-3 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                       <svg
                                         width={24}
                                         height={25}
@@ -741,7 +747,7 @@ const QuizClubDetaillSolution = ({
                                         className="border tw-rounded-full tw-w-10 tw-h-10 "
                                         src={item?.answer?.member?.profileImageUrl}
                                       />
-                                      <div className="tw-text-xs tw-text-left tw-text-black">
+                                      <div className="tw-text-xs tw-text-left tw-text-black tw-w-[50px]">
                                         {item?.answer?.member?.nickname}
                                       </div>
                                     </div>

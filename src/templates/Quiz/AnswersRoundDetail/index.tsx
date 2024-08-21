@@ -215,7 +215,7 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                 <div className="tw-flex tw-items-center tw-mt-auto tw-justify-between tw-w-full">
                   <div className="tw-flex tw-items-center">
                     <img
-                      src={contents?.club?.leaderProfileImageUrl || '/assets/avatars/1.jpg'}
+                      src={contents?.club?.leaderProfileImageUrl || '/assets/images/account/default_profile_image.png'}
                       className="tw-mr-2 border tw-rounded-full tw-w-10 tw-h-10"
                     />
                     <p className="tw-text-sm tw-text-black">{contents?.club?.leaderNickname}</p>
@@ -286,10 +286,14 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                         <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                           <img
                             className="border tw-rounded-full tw-w-10 tw-h-10"
-                            src={selectedQuiz?.maker?.profileImageUrl || '/assets/avatars/1.jpg'}
+                            src={
+                              selectedQuiz?.maker?.profileImageUrl || '/assets/images/account/default_profile_image.png'
+                            }
                             alt="프로필 이미지"
                           />
-                          <div className="tw-text-xs tw-text-left tw-text-black">{selectedQuiz?.maker?.nickname}</div>
+                          <div className="tw-text-xs tw-text-left tw-text-black tw-w-[50px]">
+                            {selectedQuiz?.maker?.nickname}
+                          </div>
                         </div>
                         <div className="tw-flex-auto tw-w-9/12 tw-px-5">
                           <div className="tw-font-medium tw-text-black tw-text-base tw-line-clamp-2">
