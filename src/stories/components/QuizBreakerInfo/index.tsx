@@ -40,22 +40,22 @@ const QuizBreakerInfo = ({
         </div>
       ) : (
         <div>
-          <div className=" tw-relative tw-overflow-visible tw-rounded-lg tw-bg-[#f6f7fb] tw-mb-3 tw-grid tw-grid-cols-[60px_1fr_100px_28px_40px] tw-grid-rows-[auto_auto] tw-h-20 tw-z-10">
-            <img
-              src={avatarSrc}
-              alt="User Avatar"
-              className="tw-w-8 border tw-h-8 tw-col-start-1 tw-row-start-1 tw-row-end-2 tw-mt-[11px] tw-ml-[22px] tw-rounded-full tw-object-cover"
-            />
-            <p className="tw-col-start-1 tw-row-start-2 tw-row-end-3 tw-mt-[2px] tw-ml-[22px] tw-text-[10px] tw-text-left tw-text-black">
-              {userName}
-            </p>
-            <p
-              className={`tw-col-start-2 tw-col-end-3 tw-row-start-1 tw-row-end-3 tw-text-base tw-text-left  tw-ml-[33px] tw-flex tw-items-center ${
+          <div className="tw-px-2 tw-relative tw-flex tw-items-center tw-overflow-visible tw-rounded-lg tw-bg-[#f6f7fb] tw-mb-3 tw-h-20">
+            <div className="tw-w-[70px] tw-flex tw-flex-col tw-items-center">
+              <img
+                src={avatarSrc}
+                alt="User Avatar"
+                className="tw-w-8 tw-h-8 tw-border tw-rounded-full tw-object-cover"
+              />
+              <p className="tw-mt-[2px] tw-text-[10px] tw-text-center tw-text-black">{userName}</p>
+            </div>
+            <div
+              className={`tw-w-10/12 tw-text-base tw-text-left tw-flex tw-items-center ${
                 isPublished ? 'tw-text-black' : 'tw-text-gray-400'
               }`}
             >
               {questionText}
-            </p>
+            </div>
             <svg
               width={28}
               height={28}

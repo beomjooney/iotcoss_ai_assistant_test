@@ -369,7 +369,7 @@ const QuizClubDetaillSolution = ({
                           <>
                             <Grid item xs={12} sm={1} style={{ paddingTop: 10 }}>
                               <div className="tw-flex-auto tw-text-center tw-text-black tw-font-bold">
-                                Q{index + 1}.
+                                Q{item?.order}.
                               </div>
                               <div className="tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold">
                                 {item?.publishDate.split('-').slice(1).join('-')} ({item?.dayOfWeek})
@@ -672,7 +672,7 @@ const QuizClubDetaillSolution = ({
                       ) : (
                         <>
                           <Grid item xs={12} sm={1} style={{ paddingTop: 10 }}>
-                            <div className="tw-flex-auto tw-text-center tw-text-black tw-font-bold">Q{index + 1}.</div>
+                            <div className="tw-flex-auto tw-text-center tw-text-black tw-font-bold">Q{item.order}.</div>
                             <div className="tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold">
                               {item?.publishDate.split('-').slice(1).join('-')} ({item?.dayOfWeek})
                             </div>

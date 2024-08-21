@@ -298,6 +298,8 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
     setFileName(fileName);
   };
 
+  console.log('quiz data', data);
+
   return (
     <div>
       <div className="tw-pb-6">
@@ -427,7 +429,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
 
           <div className="tw-flex  tw-justify-between tw-px-8 tw-py-5">
             <div className="tw-flex tw-justify-start tw-items-start">
-              <p className="tw-w-[85px] tw-text-sm tw-text-left tw-text-[#31343d] tw-pr-3 tw-font-bold">지식컨텐츠</p>
+              <p className="tw-text-sm tw-text-left tw-text-[#31343d] tw-pr-3 tw-font-bold ">지식컨텐츠</p>
               {data?.content?.contentType === '0320' ? (
                 <p
                   onClick={() => {
@@ -440,7 +442,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
               ) : (
                 <p
                   onClick={() => window.open(data?.content?.url, '_blank')}
-                  className="tw-cursor-pointer tw-text-sm tw-font-medium tw-text-left tw-text-[#9ca5b2]"
+                  className="tw-w-[600px] tw-line-clamp-1 tw-cursor-pointer tw-text-sm tw-font-medium tw-text-left tw-text-[#9ca5b2]"
                 >
                   {data?.content?.url}
                 </p>

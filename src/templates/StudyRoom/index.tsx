@@ -76,7 +76,7 @@ const useStyles = makeStyles(theme => ({
     left: 0,
   },
   stickySecond: {
-    left: 120, // 이 값을 `Dessert` 열의 너비에 맞게 조정하세요.
+    left: 140, // 이 값을 `Dessert` 열의 너비에 맞게 조정하세요.
   },
   stickyThread: {
     left: 220, // 이 값을 `Dessert` 열의 너비에 맞게 조정하세요.
@@ -735,7 +735,7 @@ export function StudyRoomTemplate() {
                                           <TableRow>
                                             <TableCell
                                               align="center"
-                                              width={120}
+                                              width={140}
                                               className={`${classes.sticky} ${classes.stickyFirst}`}
                                             >
                                               학생
@@ -782,7 +782,7 @@ export function StudyRoomTemplate() {
                                                 <img
                                                   src={
                                                     course?.participantProgress?.member?.profileImageUrl ||
-                                                    '/assets/avatars/3.jpg'
+                                                    '/assets/images/account/default_profile_image.png'
                                                   }
                                                   className="tw-w-9 tw-h-9 tw-rounded-full border"
                                                   alt="아그리파"
@@ -1019,7 +1019,10 @@ export function StudyRoomTemplate() {
                                     <div className="tw-w-1/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                       <img
                                         className="border tw-rounded-full tw-w-10 tw-h-10 "
-                                        src={item?.member?.profileImageUrl || '/assets/avatars/3.jpg'}
+                                        src={
+                                          item?.member?.profileImageUrl ||
+                                          '/assets/images/account/default_profile_image.png'
+                                        }
                                       />
                                       <div className="tw-text-xs tw-text-left tw-text-black">
                                         {item?.member?.nickname}

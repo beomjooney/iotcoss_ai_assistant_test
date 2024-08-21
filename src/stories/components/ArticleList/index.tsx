@@ -30,6 +30,8 @@ const ArticleList: React.FC<any> = ({ data, refetchMyQuizContent }) => {
   const { mutate: onSaveLike, isSuccess } = useContentSaveLike();
   const { mutate: onDeleteLike } = useContentDeleteLike();
 
+  console.log('article list', data);
+
   const { isFetched: isParticipantListFetcheds, isSuccess: isParticipantListSuccess } = useQuizFileDownload(
     key,
     data => {

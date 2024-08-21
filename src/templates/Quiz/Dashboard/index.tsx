@@ -471,7 +471,7 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
                       >
                         <div className="tw-flex tw-items-center">
                           <img
-                            src={info?.member?.profileImageUrl || '/assets/avatars/3.jpg'}
+                            src={info?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
                             className="tw-w-10 tw-h-10 border tw-rounded-full"
                             alt="Profile"
                           />
