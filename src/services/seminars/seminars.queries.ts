@@ -29,6 +29,7 @@ import {
   myLectureDashboardStudentList,
   myDashboardLecture,
   myDashboardQA,
+  myAllLectureInfo,
 } from './seminars.api';
 
 export interface paramProps {

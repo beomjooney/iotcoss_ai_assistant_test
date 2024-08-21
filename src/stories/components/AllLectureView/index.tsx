@@ -12,7 +12,7 @@ import PaginationItem from '@mui/material/PaginationItem';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
-import { useMyClubList } from 'src/services/seminars/seminars.queries';
+import { useMyClubList, useMyLectureList, useMyDashboardQA } from 'src/services/seminars/seminars.queries';
 
 /**icon */
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -28,12 +28,7 @@ import { Button, Typography, Profile, Modal, ArticleCard } from 'src/stories/com
 const cx = classNames.bind(styles);
 
 //comment
-import {
-  useQuizAnswerDetail,
-  useQuizRankDetail,
-  useQuizSolutionDetail,
-  useQuizMyClubInfo,
-} from 'src/services/quiz/quiz.queries';
+import { useMyAllLectureInfo } from 'src/services/quiz/quiz.queries';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 
 const AllLectureView = ({ border, id }) => {
@@ -51,6 +46,16 @@ const AllLectureView = ({ border, id }) => {
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
+  const [myDashboardQA, setMyDashboardQA] = useState<any>([]);
+  const [clubStudySequence, setClubStudySequence] = useState('');
+  const [totalQuestionPage, setTotalQuestionPage] = useState(1);
+  const [questionPage, setQuestionPage] = useState(1);
+
+  const [myClubLectureQA, setMyClubLectureQA] = useState<any>({
+    clubSequence: selectedClub || id,
+    sequence: clubStudySequence,
+    data: { questionPage: 1 },
+  });
 
   const [params, setParams] = useState<any>({ id: '225', page });
   const [myClubParams, setMyClubParams] = useState<any>({
@@ -60,18 +65,24 @@ const AllLectureView = ({ border, id }) => {
     page,
   });
 
-  // 퀴즈클럽 리스트
-  const { isFetched: isContentFetched, refetch: refetchMyClub } = useMyClubList({}, data => {
+  // 강의클럽 대시보드 강의별 참여 현황
+  const { isFetched: isDashboardQAFetched, refetch: refetchMyDashboardQA } = useMyDashboardQA(myClubLectureQA, data => {
+    console.log('useMyDashboardQA', data);
+    setTotalQuestionPage(data?.totalPages);
+    setMyDashboardQA(data || []);
+  });
+
+  // 강의클럽 리스트
+  const { isFetched: isContentFetched, refetch: refetchMyClub } = useMyLectureList({}, data => {
     setMyClubList(data?.data?.contents || []);
   });
 
-  const { isFetched: isParticipantListFetched, data } = useQuizMyClubInfo(myClubParams, data => {
+  const { isFetched: isParticipantListFetched, data } = useMyAllLectureInfo(myClubParams, data => {
     console.log('first get data', data);
     setQuizList(data?.contents || []);
     setTotalPage(data?.totalPages);
     // setSelectedClub(data?.contents[0].clubSequence);
     setTotalElements(data?.totalElements);
-    console.log(data);
   });
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
@@ -95,14 +106,14 @@ const AllLectureView = ({ border, id }) => {
     setSortType('ASC');
   };
 
-  const handleChangeQuiz = event => {
-    if (event.target.value === '') {
-      setSortType('');
-      setIsPublished('true');
-    } else {
-      setIsPublished('');
-      setSortType(event.target.value);
-    }
+  useDidMountEffect(() => {
+    console.log('clubStudySequence', clubStudySequence);
+    refetchMyDashboardQA();
+  }, [myClubLectureQA]);
+
+  const handleQAPageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    console.log(value);
+    setQuestionPage(value);
   };
 
   return (
@@ -185,7 +196,7 @@ const AllLectureView = ({ border, id }) => {
               <div className="">
                 <button
                   type="button"
-                  onClick={() => router.push(`/manage-quiz-club/${selectedValue}`)}
+                  // onClick={() => router.push(`/manage-quiz-club/${selectedValue}`)}
                   className="tw-h-14  tw-text-black tw-bg-[#CED4DE] border tw-font-medium tw-rounded-md tw-text-sm tw-px-6 tw-py-2 "
                 >
                   <SettingsIcon className="tw-bg-[#CED4DE] tw-text-white" />
@@ -207,7 +218,7 @@ const AllLectureView = ({ border, id }) => {
                   sm={10}
                   className="tw-text-xl tw-text-black tw-font-bold"
                 >
-                  퀴즈목록 ({totalElements})
+                  전체 학습 보기
                 </Grid>
 
                 <Grid container justifyContent="flex-end" item xs={6} sm={2} style={{ textAlign: 'right' }}>
@@ -249,36 +260,50 @@ const AllLectureView = ({ border, id }) => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    <TableRow>
-                      <TableCell align="center" component="th" scope="row">
-                        <div className="tw-font-bold tw-text-base">
-                          1회 <br />
-                          <span className="tw-text-sm tw-font-medium tw-text-gray-400">07-01(월)</span>
-                        </div>
-                      </TableCell>
-                      <TableCell align="left" component="th" scope="row">
-                        <div className="tw-font-bold tw-text-base">1회차 임베디드 시스템 관련 제목</div>
-                      </TableCell>
-                      <TableCell align="center" component="th" scope="row">
-                        <div className="tw-font-bold tw-text-sm">오프라인</div>
-                      </TableCell>
-                      <TableCell align="center" component="th" scope="row">
-                        <div className="tw-font-bold tw-text-sm">정규</div>
-                      </TableCell>
-                      <TableCell align="center" component="th" scope="row">
-                        <div className="tw-font-bold tw-text-sm">17건</div>
-                      </TableCell>
-                      <TableCell align="center" component="th" scope="row">
-                        <button
-                          onClick={() => {
-                            setIsModalOpen(true);
-                          }}
-                          className="tw-text-sm tw-font-bold border tw-py-2 tw-px-3 tw-text-gray-400 tw-rounded"
-                        >
-                          상세보기
-                        </button>
-                      </TableCell>
-                    </TableRow>
+                    {quizList?.map((item, idx) => {
+                      return (
+                        <TableRow key={idx}>
+                          <TableCell align="center" component="th" scope="row">
+                            <div className="tw-font-bold tw-text-base">
+                              {item?.studyOrder}회 <br />
+                              <span className="tw-text-sm tw-font-medium tw-text-gray-400">07-01(월)</span>
+                            </div>
+                          </TableCell>
+                          <TableCell align="left" component="th" scope="row">
+                            <div className="tw-font-bold tw-text-base">{item?.clubStudyName}</div>
+                          </TableCell>
+                          <TableCell align="center" component="th" scope="row">
+                            <div className="tw-font-bold tw-text-sm">
+                              {' '}
+                              {item?.clubStudyType === '0100' ? '온라인' : '오프라인'}
+                            </div>
+                          </TableCell>
+                          <TableCell align="center" component="th" scope="row">
+                            <div className="tw-font-bold tw-text-sm">{item?.type === 'REGULAR' ? '정규' : '특별'}</div>
+                          </TableCell>
+                          <TableCell align="center" component="th" scope="row">
+                            <div className="tw-font-bold tw-text-sm">{item?.questionCount}건</div>
+                          </TableCell>
+                          <TableCell align="center" component="th" scope="row">
+                            <button
+                              onClick={() => {
+                                setIsModalOpen(true);
+                                setClubStudySequence(item?.clubStudySequence);
+                                console.log('setClubStudySequence', selectedClub, item?.clubStudySequence);
+                                setMyClubLectureQA({
+                                  clubSequence: selectedClub || id,
+                                  sequence: item?.clubStudySequence,
+                                  data: { questionPage: 1 },
+                                });
+                              }}
+                              className="tw-text-sm tw-font-bold border tw-py-2 tw-px-3 tw-text-gray-400 tw-rounded"
+                            >
+                              상세보기
+                            </button>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
                 </Table>
               </TableContainer>
@@ -286,16 +311,25 @@ const AllLectureView = ({ border, id }) => {
           </div>
         </div>
       </div>
-      <Modal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)} title="질의응답" maxWidth="900px">
+      <Modal
+        isOpen={isModalOpen}
+        onAfterClose={() => {
+          setQuestionPage(1);
+          setIsModalOpen(false);
+        }}
+        title="질의응답"
+        maxWidth="1100px"
+        maxHeight="800px"
+      >
         <div className={cx('seminar-check-popup')}>
           <TableContainer>
             <Table className="" aria-label="simple table" style={{ tableLayout: 'fixed' }}>
               <TableHead style={{ backgroundColor: '#F6F7FB' }}>
                 <TableRow>
-                  <TableCell align="left" width={150} className="border-right">
+                  <TableCell align="left" width={160} className="border-right">
                     <div className="tw-font-bold tw-text-base">학생</div>
                   </TableCell>
-                  <TableCell align="left" width={300} className="border-right">
+                  <TableCell align="left" width={250} className="border-right">
                     <div className="tw-font-bold tw-text-base">질문</div>
                   </TableCell>
                   <TableCell align="left" className="border-right">
@@ -307,70 +341,118 @@ const AllLectureView = ({ border, id }) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                <TableRow>
-                  <TableCell align="center" component="th" scope="row" className="border-right">
-                    <div className="tw-flex tw-justify-center tw-items-center tw-gap-2">
-                      <img
-                        src={'/assets/avatars/3.jpg'}
-                        className="tw-w-10 tw-h-10 border tw-rounded-full"
-                        alt="Profile"
-                      />
-                      <div className="tw-ml-2">김흐흐</div>
-                    </div>
-                  </TableCell>
-                  <TableCell align="left" component="th" scope="row" className="border-right">
-                    <div className="tw-font-bold tw-text-sm">Q. 모데로가 토크나이저거가 뭐야?</div>
-                  </TableCell>
-                  <TableCell align="left" component="th" scope="row" className="border-right">
-                    <div className="tw-font-bold tw-text-sm">Q. 모데로가 토크나이저거가 뭐야?</div>
-                    <div className="tw-font-bold tw-text-sm">AI답변 : 모데로가 토크나이저거가 뭐야?</div>
-                  </TableCell>
-                  <TableCell align="center" component="th" scope="row">
-                    <button className="tw-text-sm tw-font-bold border tw-py-2 tw-px-3 tw-text-gray-400 tw-rounded">
-                      +
-                    </button>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell align="center" component="th" scope="row" className="border-right" rowSpan={2}>
-                    <div className="tw-flex tw-justify-center tw-items-center tw-gap-2">
-                      <img
-                        src={'/assets/avatars/3.jpg'}
-                        className="tw-w-10 tw-h-10 border tw-rounded-full"
-                        alt="Profile"
-                      />
-                      <div className="tw-ml-2">김찬영</div>
-                    </div>
-                  </TableCell>
-                  <TableCell align="left" component="th" scope="row" className="border-right">
-                    <div className="tw-font-bold tw-text-sm">Q. 모데로가 토크나이저거가 뭐야?</div>
-                  </TableCell>
-                  <TableCell align="left" component="th" scope="row" className="border-right">
-                    <div className="tw-font-bold tw-text-sm">Q. 모데로가 토크나이저거가 뭐야?</div>
-                    <div className="tw-font-bold tw-text-sm">AI답변 : 모데로가 토크나이저거가 뭐야?</div>
-                  </TableCell>
-                  <TableCell align="center" component="th" scope="row">
-                    <button className="tw-text-sm tw-font-bold border tw-py-2 tw-px-3 tw-text-gray-400 tw-rounded">
-                      +
-                    </button>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell align="left" component="th" scope="row" className="border-right">
-                    <div className="tw-font-bold tw-text-sm">Q. 모데로가 토크나이저거가 뭐야?</div>
-                  </TableCell>
-                  <TableCell align="left" component="th" scope="row" className="border-right">
-                    <div className="tw-font-bold tw-text-sm">Q. 모데로가 토크나이저거가 뭐야?</div>
-                    <div className="tw-font-bold tw-text-sm">AI답변 : 모데로가 토크나이저거가 뭐야?</div>
-                  </TableCell>
-                  <TableCell align="center" component="th" scope="row">
-                    <button className="tw-text-sm tw-font-bold border tw-py-2 tw-px-3 tw-text-gray-400 tw-rounded">
-                      +
-                    </button>
-                  </TableCell>
-                </TableRow>
+                {myDashboardQA?.members?.map((info, memberIndex) => (
+                  <React.Fragment key={memberIndex}>
+                    <TableRow>
+                      <TableCell
+                        align="left"
+                        component="th"
+                        scope="row"
+                        className="border-right"
+                        rowSpan={info.questionAnswers.length}
+                      >
+                        <div className="tw-flex tw-justify-start tw-items-center tw-gap-2">
+                          <img
+                            src={info?.icon?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
+                            className="tw-w-10 tw-h-10 border tw-rounded-full"
+                            alt="Profile"
+                          />
+                          <div className="tw-ml-2">{info?.icon?.nickname}</div>
+                        </div>
+                      </TableCell>
+                      {/* 첫 번째 질문과 답변에 대한 행 */}
+                      {info.questionAnswers.length > 0 && (
+                        <>
+                          <TableCell align="left" component="th" scope="row" className="border-right">
+                            <div className="tw-font-bold tw-text-sm">{info.questionAnswers[0]?.question}</div>
+                          </TableCell>
+                          <TableCell align="left" component="th" scope="row" className="border-right">
+                            <div className="tw-font-bold tw-text-sm">{info.questionAnswers[0]?.answer}</div>
+                          </TableCell>
+                          <TableCell align="center" component="th" scope="row">
+                            <button className="tw-text-sm tw-font-bold border tw-py-2 tw-px-3 tw-text-gray-400 tw-rounded">
+                              +
+                            </button>
+                          </TableCell>
+                        </>
+                      )}
+                    </TableRow>
+
+                    {/* 나머지 질문과 답변에 대한 행들 */}
+                    {info.questionAnswers.slice(1).map((questionInfo, questionIndex) => (
+                      <TableRow key={questionIndex}>
+                        <TableCell align="left" component="th" scope="row" className="border-right">
+                          <div className="tw-font-bold tw-text-sm">{questionInfo?.question}</div>
+                        </TableCell>
+                        <TableCell align="left" component="th" scope="row" className="border-right">
+                          <div className="tw-font-bold tw-text-sm">
+                            {questionInfo?.answer
+                              ? 'AI답변 : ' +
+                                (questionInfo?.answerType === '0200'
+                                  ? '(강의자료) : '
+                                  : questionInfo?.answerType === '0300'
+                                  ? '(일반서치) : '
+                                  : '') +
+                                questionInfo?.answer
+                              : null}
+                          </div>
+                          {questionInfo?.files?.length > 0 && (
+                            <div className="tw-mt-2 tw-text-sm tw-flex tw-justify-start tw-items-center tw-flex-wrap tw-gap-2">
+                              <div>강의자료 : </div>
+                              {questionInfo.files.map((fileEntry, index) => (
+                                <div key={index} className="border tw-px-2 tw-py-0.5 tw-rounded">
+                                  <span
+                                    onClick={() => {
+                                      onFileDownload(fileEntry.key, fileEntry.name);
+                                    }}
+                                    className="tw-text-gray-400 tw-cursor-pointer"
+                                  >
+                                    {fileEntry?.file?.name || fileEntry.name}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+
+                          {questionInfo?.referenceUrls && (
+                            <div className="tw-mt-2 tw-text-sm tw-flex tw-justify-start tw-items-center tw-flex-wrap tw-gap-2">
+                              <div>출처 : </div>
+                              <div className="border tw-px-2 tw-py-0.5 tw-rounded">
+                                <span className="tw-text-gray-400 tw-cursor-pointer">
+                                  {questionInfo?.referenceUrls}
+                                </span>
+                              </div>
+                            </div>
+                          )}
+                        </TableCell>
+                        <TableCell align="center" component="th" scope="row">
+                          <button className="tw-text-sm tw-font-bold border tw-py-2 tw-px-3 tw-text-gray-400 tw-rounded">
+                            +
+                          </button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </React.Fragment>
+                ))}
               </TableBody>
             </Table>
+            {myDashboardQA?.members?.length === 0 && (
+              <div className={cx('tw-flex tw-justify-center tw-items-center tw-h-[20vh]')}>
+                <p className="tw-text-center tw-text-base tw-font-bold tw-text-[#31343d]">데이터가 없습니다.</p>
+              </div>
+            )}
+            <div className="tw-flex tw-justify-center tw-items-center tw-mt-5">
+              <Pagination
+                count={totalQuestionPage}
+                size="small"
+                siblingCount={0}
+                page={questionPage}
+                renderItem={item => (
+                  <PaginationItem slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }} {...item} />
+                )}
+                onChange={handleQAPageChange}
+              />
+            </div>
           </TableContainer>
         </div>
       </Modal>

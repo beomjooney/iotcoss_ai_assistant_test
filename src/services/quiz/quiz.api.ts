@@ -146,6 +146,17 @@ export const quizMyClubInfo = async params => {
   return data.data;
 };
 
+export const myAllLectureInfo = async params => {
+  console.log('params', params);
+  const { data } = await axiosGeneralAPI().get(`/api/v1/lecture-clubs/${params.clubSequence}/studies`, {
+    params: {
+      page: params.page,
+      size: params.size,
+    },
+  });
+  return data.data;
+};
+
 export const quizGetProgress = async params => {
   const { data } = await axiosGeneralAPI().get(
     `/api/v1/clubs/${params.club}/quizzes/${params.quiz}/progress`,
