@@ -97,18 +97,19 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   const [myDashboardLectureList, setMyDashboardLectureList] = useState<any>([]);
   const [myDashboardQA, setMyDashboardQA] = useState<any>([]);
   const [clubStudySequence, setClubStudySequence] = useState('');
+  const [selectedClub, setSelectedClub] = useState(null);
 
   const [myClubParams, setMyClubParams] = useState<any>({
-    clubSequence: id,
+    clubSequence: selectedClub?.clubSequence || id,
     data: { sortType: 'NAME', page: 1 },
   });
   const [myClubLectureParams, setMyClubLectureParams] = useState<any>({
-    clubSequence: id,
+    clubSequence: selectedClub?.clubSequence || id,
     data: { orderBy: 'STUDY_ORDER', lecturePage: 1, sortType: 'DESC' },
   });
 
   const [myClubLectureQA, setMyClubLectureQA] = useState<any>({
-    clubSequence: id,
+    clubSequence: selectedClub?.clubSequence || id,
     sequence: clubStudySequence,
     data: { questionPage: 1 },
   });
@@ -174,7 +175,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   });
 
   /** my quiz replies */
-  const [selectedClub, setSelectedClub] = useState(null);
+
   const [sortType, setSortType] = useState('NAME');
   const [sortLectureType, setSortLectureType] = useState('STUDY_ORDER_ASC');
 
@@ -445,7 +446,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                         console.log('setClubStudySequence', myDashboardList?.clubStudySequence);
                         setClubStudySequence(myDashboardList?.clubStudySequence);
                         setMyClubLectureQA({
-                          clubSequence: id,
+                          clubSequence: selectedClub?.clubSequence || id,
                           sequence: myDashboardList?.clubStudySequence,
                           data: { questionPage: 1 },
                         });
@@ -1270,7 +1271,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                 setClubStudySequence(info?.clubStudySequence);
                                 console.log('setClubStudySequence', info?.clubStudySequence);
                                 setMyClubLectureQA({
-                                  clubSequence: id,
+                                  clubSequence: selectedClub?.clubSequence || id,
                                   sequence: info?.clubStudySequence,
                                   data: { questionPage: 1 },
                                 });
@@ -1414,6 +1415,11 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                   ))}
                 </TableBody>
               </Table>
+              {myDashboardQA?.members?.length === 0 && (
+                <div className={cx('tw-flex tw-justify-center tw-items-center tw-h-[20vh]')}>
+                  <p className="tw-text-center tw-text-base tw-font-bold tw-text-[#31343d]">데이터가 없습니다.</p>
+                </div>
+              )}
               <div className="tw-flex tw-justify-center tw-items-center tw-mt-5">
                 <Pagination
                   count={totalQuestionPage}
