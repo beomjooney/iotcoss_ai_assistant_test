@@ -747,7 +747,7 @@ const QuizClubDetaillSolution = ({
                                         className="border tw-rounded-full tw-w-10 tw-h-10 "
                                         src={item?.answer?.member?.profileImageUrl}
                                       />
-                                      <div className="tw-text-xs tw-text-left tw-text-black tw-w-[50px]">
+                                      <div className="tw-text-xs tw-text-left tw-text-black tw-w-[60px]">
                                         {item?.answer?.member?.nickname}
                                       </div>
                                     </div>
@@ -806,9 +806,11 @@ const QuizClubDetaillSolution = ({
                                   <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                     <div
                                       className="border tw-rounded-full tw-w-10 tw-h-10"
-                                      src={item?.maker?.profileImageUrl}
+                                      src={item?.answer?.member?.profileImageUrl}
                                     />
-                                    <div className="tw-text-xs tw-text-left tw-text-black">{item?.maker?.nickname}</div>
+                                    <div className="tw-text-xs tw-text-left tw-text-black">
+                                      {item?.answer?.member?.nickname}
+                                    </div>
                                   </div>
                                   <div className="tw-flex-auto tw-w-1.5/12 tw-py-3">
                                     <div className="tw-font-medium tw-text-gray-500 tw-text-sm tw-line-clamp-2">
