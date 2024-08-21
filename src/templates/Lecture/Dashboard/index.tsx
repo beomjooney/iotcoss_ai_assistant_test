@@ -96,6 +96,8 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   const [myDashboardStudentList, setMyDashboardStudentList] = useState<any>([]);
   const [myDashboardLectureList, setMyDashboardLectureList] = useState<any>([]);
   const [myDashboardQA, setMyDashboardQA] = useState<any>([]);
+  const [clubStudySequence, setClubStudySequence] = useState('');
+
   const [myClubParams, setMyClubParams] = useState<any>({
     clubSequence: id,
     data: { sortType: 'NAME', page: 1 },
@@ -107,7 +109,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
 
   const [myClubLectureQA, setMyClubLectureQA] = useState<any>({
     clubSequence: id,
-    sequence: 46,
+    sequence: clubStudySequence,
     data: { questionPage: 1 },
   });
 
@@ -139,6 +141,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     myClubSequenceParams,
     data => {
       console.log('useMyLectureDashboardList', data);
+      console.log('useMyLectureDashboardList', data?.clubStudySequence);
       setMyDashboardList(data || []);
     },
   );
@@ -174,6 +177,11 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   const [selectedClub, setSelectedClub] = useState(null);
   const [sortType, setSortType] = useState('NAME');
   const [sortLectureType, setSortLectureType] = useState('STUDY_ORDER_ASC');
+
+  useDidMountEffect(() => {
+    console.log('clubStudySequence', clubStudySequence);
+    refetchMyDashboardQA();
+  }, [myClubLectureQA]);
 
   useDidMountEffect(() => {
     setMyClubParams({
@@ -218,7 +226,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     console.log('questionPage', questionPage);
     setMyClubLectureQA({
       clubSequence: selectedClub?.clubSequence || id,
-      sequence: 46,
+      sequence: clubStudySequence,
       data: { questionPage: questionPage },
     });
   }, [questionPage]);
@@ -432,7 +440,16 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                       xmlns="http://www.w3.org/2000/svg"
                       className="w-[34px] h-[34px] relative tw-cursor-pointer"
                       preserveAspectRatio="none"
-                      onClick={() => setIsModalOpen(true)}
+                      onClick={() => {
+                        setIsModalOpen(true);
+                        console.log('setClubStudySequence', myDashboardList?.clubStudySequence);
+                        setClubStudySequence(myDashboardList?.clubStudySequence);
+                        setMyClubLectureQA({
+                          clubSequence: id,
+                          sequence: myDashboardList?.clubStudySequence,
+                          data: { questionPage: 1 },
+                        });
+                      }}
                     >
                       <rect x="0.5" y="0.5" width={33} height={33} rx="3.5" stroke="#CED4DE" />
                       <path
@@ -1174,33 +1191,33 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                   <Table className={classes.table} aria-label="simple table" style={{ tableLayout: 'fixed' }}>
                     <TableHead style={{ backgroundColor: '#F6F7FB' }}>
                       <TableRow>
-                        <TableCell align="center" width={100} className="border-right">
+                        <TableCell align="center" width={98} className="border-right">
                           <div className="tw-font-bold tw-text-base">강의회차</div>
                         </TableCell>
-                        <TableCell align="center" width={100}>
+                        <TableCell align="center" width={98}>
                           <div className="tw-font-bold tw-text-base">총 질의수</div>
                         </TableCell>
-                        <TableCell align="center" width={110}>
+                        <TableCell align="center" width={105}>
                           <div className="tw-font-bold tw-text-base">
                             AI답변
                             <br />
                             (강의자료)
                           </div>
                         </TableCell>
-                        <TableCell align="center" width={110}>
+                        <TableCell align="center" width={105}>
                           <div className="tw-font-bold tw-text-base">
                             AI답변 수 <br />
                             (범용자료)
                           </div>
                         </TableCell>
-                        <TableCell align="center" width={100} className="border-right">
+                        <TableCell align="center" width={98} className="border-right">
                           <div className="tw-font-bold tw-text-base">미답변 수</div>
                         </TableCell>
                         <TableCell align="center" className="border-right">
                           <div className="tw-font-bold tw-text-base">주요 질의응답</div>
                         </TableCell>
                         <TableCell align="center" width={110}>
-                          <div className="tw-font-bold tw-text-base">상세보기</div>
+                          <div className="tw-font-bold tw-text-base ">상세보기</div>
                         </TableCell>
                       </TableRow>
                     </TableHead>
@@ -1248,8 +1265,17 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                           </TableCell>
                           <TableCell align="center" component="th" scope="row">
                             <button
-                              onClick={() => setIsModalOpen(true)}
-                              className="tw-text-sm tw-font-bold border tw-py-2 tw-px-3 tw-text-gray-400 tw-rounded"
+                              onClick={() => {
+                                setIsModalOpen(true);
+                                setClubStudySequence(info?.clubStudySequence);
+                                console.log('setClubStudySequence', info?.clubStudySequence);
+                                setMyClubLectureQA({
+                                  clubSequence: id,
+                                  sequence: info?.clubStudySequence,
+                                  data: { questionPage: 1 },
+                                });
+                              }}
+                              className="tw-text-sm tw-font-bold border tw-py-2 tw-px-3 tw-text-gray-400 tw-rounded tw-cursor-pointer"
                             >
                               상세보기
                             </button>
@@ -1265,7 +1291,10 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
         )}
         <Modal
           isOpen={isModalOpen}
-          onAfterClose={() => setIsModalOpen(false)}
+          onAfterClose={() => {
+            setQuestionPage(1);
+            setIsModalOpen(false);
+          }}
           title="질의응답"
           maxWidth="1100px"
           maxHeight="800px"
@@ -1275,10 +1304,10 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
               <Table className="" aria-label="simple table" style={{ tableLayout: 'fixed' }}>
                 <TableHead style={{ backgroundColor: '#F6F7FB' }}>
                   <TableRow>
-                    <TableCell align="left" width={150} className="border-right">
+                    <TableCell align="left" width={160} className="border-right">
                       <div className="tw-font-bold tw-text-base">학생</div>
                     </TableCell>
-                    <TableCell align="left" width={300} className="border-right">
+                    <TableCell align="left" width={250} className="border-right">
                       <div className="tw-font-bold tw-text-base">질문</div>
                     </TableCell>
                     <TableCell align="left" className="border-right">

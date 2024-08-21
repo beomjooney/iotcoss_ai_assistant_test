@@ -161,7 +161,7 @@ export const useMyDashboardQA = (
       onSuccess,
       onError,
       refetchOnWindowFocus: false,
-      enabled: true,
+      enabled: false,
     },
   );
 };

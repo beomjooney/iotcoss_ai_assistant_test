@@ -136,7 +136,7 @@ const CommunityCardReply = ({ reply, className, refetch }: CommunityCardReplyPro
               <div className="tw-grid tw-grid-cols-12 tw-items-center tw-justify-center">
                 <div className="tw-col-span-1">
                   <img
-                    src={reply?.member?.profileImageUrl || '/assets/avatars/1.jpg'}
+                    src={reply?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
                     alt="profile"
                     className="border tw-rounded-full tw-h-10 tw-w-10"
                   />
