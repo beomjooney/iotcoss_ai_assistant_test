@@ -93,7 +93,22 @@ export function LectureDetailTemplate({ id }: LectureDetailTemplateProps) {
     <div className={cx('seminar-detail-container')}>
       <div className={cx('container')}>
         {/* `퀴즈` 풀기 화면 */}
-        {isQuizScreen
+        {isParticipantListFetched && (
+          <LectureDetaillSolution
+            border={false}
+            totalElements={totalElements}
+            totalPage={totalPage}
+            page={page}
+            handlePageChange={handlePageChange}
+            contents={clubAbout.lectureClub || []}
+            study={clubAbout.clubStudies || []}
+            quizList={quizList}
+            refetchClubAbout={refetchClubAbout}
+            selectedImageBanner="/assets/images/banner/Rectangle_200.png"
+            selectedImage="/assets/images/banner/Rectangle_190.png"
+          />
+        )}
+        {/* {isQuizScreen
           ? isParticipantListFetched && (
               <LectureDetaillSolution
                 border={false}
@@ -113,7 +128,7 @@ export function LectureDetailTemplate({ id }: LectureDetailTemplateProps) {
           : // 클럽 상세 보기 화면
             isClubAboutFetched && (
               <div>
-                {/* <LectureDetailInfo
+                <LectureDetailInfo
                   border={true}
                   refetchClubAbout={refetchClubAbout}
                   clubData={clubAbout}
@@ -126,9 +141,9 @@ export function LectureDetailTemplate({ id }: LectureDetailTemplateProps) {
                   // selectedImage={clubAbout?.image}
                   selectedImageBanner="/assets/images/banner/Rectangle_200.png"
                   selectedImage="/assets/images/banner/Rectangle_190.png"
-                /> */}
+                />
               </div>
-            )}
+            )} */}
       </div>
     </div>
   );
