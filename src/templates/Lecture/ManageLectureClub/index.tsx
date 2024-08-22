@@ -101,8 +101,8 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
   const [keyWorld, setKeyWorld] = useState('');
   const [selectedValue, setSelectedValue] = useState(id);
 
-  // const [activeTab, setActiveTab] = useState('myQuiz');
-  const [activeTab, setActiveTab] = useState('community');
+  const [activeTab, setActiveTab] = useState('myQuiz');
+  // const [activeTab, setActiveTab] = useState('community');
 
   const [pageQuiz, setPageQuiz] = useState(1);
   const [totalQuizPage, setTotalQuizPage] = useState(1);
@@ -494,6 +494,7 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
   const handleFileChange = event => {
     const files = Array.from(event.target.files);
     const allowedExtensions = /(\.pdf)$/i;
+    const maxFileSize = 50 * 1024 * 1024; // 50MB in bytes
 
     for (let i = 0; i < files.length; i++) {
       if (!allowedExtensions.exec(files[i].name)) {
@@ -1405,7 +1406,7 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
               <div className="">
                 <button
                   type="button"
-                  onClick={() => router.push(`/manage-quiz-club/${id}`)}
+                  // onClick={() => router.push(`/manage-quiz-club/${id}`)}
                   className="tw-h-14  tw-text-black tw-bg-[#CED4DE] border tw-font-medium tw-rounded-md tw-text-sm tw-px-6 tw-py-2 "
                 >
                   <SettingsIcon className="tw-bg-[#CED4DE] tw-text-white" />
@@ -1492,7 +1493,7 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
                       sm={10}
                       className="tw-text-xl tw-text-black tw-font-bold"
                     >
-                      클럽 가입 신청 ({totalElements})
+                      강의클럽 가입 신청 ({totalElements})
                     </Grid>
 
                     <Grid item container justifyContent="flex-end" xs={6} sm={2} style={{ textAlign: 'right' }}>
@@ -1589,7 +1590,7 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
                       sm={10}
                       className="tw-text-xl tw-text-black tw-font-bold"
                     >
-                      클럽 학생 목록 ({totalElementsMember})
+                      강의클럽 학생 목록 ({totalElementsMember || 0})
                     </Grid>
 
                     <Grid item container justifyContent="flex-end" xs={6} sm={2} style={{ textAlign: 'right' }}>

@@ -10,7 +10,11 @@ export function ViewAllLecturePage() {
   const router = useRouter();
   const id = router.query['id'].toString();
 
-  return <ViewAllLectureTemplate id={id} />;
+  return (
+    <div className="tw-h-[1100px]">
+      <ViewAllLectureTemplate id={id} />
+    </div>
+  );
 }
 
 export default ViewAllLecturePage;

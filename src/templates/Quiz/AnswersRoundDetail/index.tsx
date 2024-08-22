@@ -215,7 +215,7 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                 <div className="tw-flex tw-items-center tw-mt-auto tw-justify-between tw-w-full">
                   <div className="tw-flex tw-items-center">
                     <img
-                      src={contents?.club?.leaderProfileImageUrl || '/assets/avatars/1.jpg'}
+                      src={contents?.club?.leaderProfileImageUrl || '/assets/images/account/default_profile_image.png'}
                       className="tw-mr-2 border tw-rounded-full tw-w-10 tw-h-10"
                     />
                     <p className="tw-text-sm tw-text-black">{contents?.club?.leaderNickname}</p>
@@ -257,7 +257,8 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                           <div className="tw-pb-3 tw-px-0 tw-pt-0 tw-rounded-t-lg">
                             <p className="tw-text-base tw-font-bold tw-text-center tw-pt-3">{session?.order}회</p>
                             <p className="tw-text-sm tw-font-medium tw-text-center tw-pt-1">
-                              {session?.publishDate.split('-').slice(1).join('-')} ({session?.dayOfWeek})
+                              {session?.publishDate?.split('-').slice(1).join('-')}{' '}
+                              {session?.dayOfWeek ? ` (${session?.dayOfWeek})` : ''}
                             </p>
                           </div>
                         </div>
@@ -267,6 +268,15 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                 </div>
               </div>
             </div>
+            {}
+
+            {selectedQuiz === undefined && (
+              <div
+                className={cx('tw-mt-10 border tw-rounded-md tw-flex tw-justify-center tw-items-center tw-h-[15vh]')}
+              >
+                <p className="tw-text-center tw-text-base tw-font-bold tw-text-[#31343d]">데이터가 없습니다.</p>
+              </div>
+            )}
             {selectedQuiz && (
               <div>
                 {selectedQuiz.isPublished ? (
@@ -276,10 +286,14 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                         <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                           <img
                             className="border tw-rounded-full tw-w-10 tw-h-10"
-                            src={selectedQuiz?.maker?.profileImageUrl || '/assets/avatars/1.jpg'}
+                            src={
+                              selectedQuiz?.maker?.profileImageUrl || '/assets/images/account/default_profile_image.png'
+                            }
                             alt="프로필 이미지"
                           />
-                          <div className="tw-text-xs tw-text-left tw-text-black">{selectedQuiz?.maker?.nickname}</div>
+                          <div className="tw-text-xs tw-text-left tw-text-black tw-w-[50px]">
+                            {selectedQuiz?.maker?.nickname}
+                          </div>
                         </div>
                         <div className="tw-flex-auto tw-w-9/12 tw-px-5">
                           <div className="tw-font-medium tw-text-black tw-text-base tw-line-clamp-2">

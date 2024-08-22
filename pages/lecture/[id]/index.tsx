@@ -11,11 +11,7 @@ export function LectureDetailPage() {
   const router = useRouter();
   const id = router.query['id'].toString();
 
-  return (
-    <div className="tw-h-[2500px]">
-      <LectureDetailTemplate id={id} />
-    </div>
-  );
+  return <LectureDetailTemplate id={id} />;
 }
 
 export default LectureDetailPage;

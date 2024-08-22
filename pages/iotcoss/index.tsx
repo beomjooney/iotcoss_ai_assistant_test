@@ -38,7 +38,7 @@ export function IndexPage({ session, setActiveIndex }: { session: Session; setAc
   // 색상 설정
   useEffect(() => {
     if (!COLOR_PRESETS || COLOR_PRESETS.length === 0) return;
-    const preset = COLOR_PRESETS.find(preset => preset.name === 'sejong') || COLOR_PRESETS[0];
+    const preset = COLOR_PRESETS.find(preset => preset.name === 'iotcoss') || COLOR_PRESETS[0];
     setColorPresetName(preset.name);
     setColorPresets(preset.colors);
   }, []);
@@ -50,6 +50,8 @@ export function IndexPage({ session, setActiveIndex }: { session: Session; setAc
   });
 
   useEffect(() => {
+    console.log('setActiveIndex');
+    localStorage.setItem('activeIndex', '0');
     setActiveIndex(0);
   }, []);
 

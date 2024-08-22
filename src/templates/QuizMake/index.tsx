@@ -198,7 +198,7 @@ export function QuizMakeTemplate() {
     console.log(jobsName);
     setPersonName(jobsName || []);
 
-    setSelectedJob(selected?.jobs.map(item => item.code) || []);
+    setSelectedJob(data.jobs.map(item => item.code) || []);
     setSelected2(data.skills);
     setFileName(data.name);
     setFileNameCopy(data.name);
@@ -309,6 +309,7 @@ export function QuizMakeTemplate() {
     setSelected2([]);
     setSelectedUniversity('');
     setSelectedJob([]);
+    setPersonName([]);
     setJobLevel([]);
     setQuizList([]);
     setQuizCount(1);
@@ -385,10 +386,10 @@ export function QuizMakeTemplate() {
   };
 
   const handleAIQuizClick = () => {
-    console.log('ai quiz click');
+    console.log('ai quiz click', quizCount, quizSortType);
     // 유효성 검사
-    if (!quizSortType) {
-      alert('퀴즈 유형을 선택하세요.');
+    if (!contentType) {
+      alert('지식컨텐츠 유형을 선택하세요.');
       return;
     }
 
@@ -455,6 +456,14 @@ export function QuizMakeTemplate() {
       return;
     }
 
+    // 중복 검사: 수정 중인 항목의 인덱스를 제외한 나머지 항목과 비교
+    const isDuplicate = quizList.some((quiz, index) => quiz.question === question && index !== editingIndex);
+
+    if (isDuplicate) {
+      alert('동일한 퀴즈 질문이 이미 존재합니다.');
+      return;
+    }
+
     if (editingIndex !== null) {
       const updatedQuizzes = quizList.map((quiz, index) =>
         index === editingIndex ? { question, modelAnswer: modelAnswerFinal, modelAnswerKeywords: selected3 } : quiz,
@@ -483,6 +492,11 @@ export function QuizMakeTemplate() {
   const handleQuizInsertClick = async () => {
     console.log(selectedUniversity);
     console.log(isContentModalOpen);
+
+    if (!contentType) {
+      alert('지식컨텐츠 유형을 선택하세요.');
+      return;
+    }
 
     if (!contentTitle) {
       alert('콘텐츠 제목을 입력해주세요.');
@@ -522,7 +536,7 @@ export function QuizMakeTemplate() {
       return false;
     }
     if (!selected2.length) {
-      alert('학습 기술을 입력해주세요.');
+      alert('스킬을 입력해주세요.');
       return false;
     }
     if (!selectedUniversity) {
@@ -607,7 +621,7 @@ export function QuizMakeTemplate() {
       for (let index = 0; index < params.quizzes.length; index++) {
         const quiz = params.quizzes[index];
         console.log(quiz);
-        if (quiz.modelAnswerFinal === undefined) {
+        if (quiz.modelAnswerFinal === undefined || quiz.modelAnswerFinal === '') {
           alert(`퀴즈 ${index + 1}에 모범 답변이 없습니다.`);
           return false; // Exit the function if modelAnswerFinal is undefined
         }
@@ -1117,7 +1131,7 @@ export function QuizMakeTemplate() {
         }}
       >
         <div className={`${isContentModalClick ? 'tw-flex' : ' '}`}>
-          <div className="">
+          <div className="tw-w-[670px]">
             <Accordion disableGutters sx={{ backgroundColor: '#e9ecf2' }} defaultExpanded>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <div className="tw-flex tw-justify-between tw-items-center tw-w-full">
@@ -1601,7 +1615,7 @@ export function QuizMakeTemplate() {
             </div>
           </div>
           {isContentModalClick && (
-            <div className="tw-flex-1 tw-p-5 tw-pr-0 tw-ml-5 tw-w-full">
+            <div className="tw-w-[390px] tw-p-5 tw-pr-0 tw-ml-5">
               <div className="tw-text-lg tw-font-bold tw-mb-5 tw-text-black">템플릿 불러오기</div>
               <FormControl fullWidth>
                 <RadioGroup

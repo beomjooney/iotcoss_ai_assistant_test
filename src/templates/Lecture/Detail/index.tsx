@@ -2,7 +2,7 @@ import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { useStore } from 'src/store';
-import { paramProps, useMyProgress, useClubAboutDetail } from 'src/services/seminars/seminars.queries';
+import { paramProps, useMyProgress, useLectureAboutDetailInfo } from 'src/services/seminars/seminars.queries';
 import { RecommendContent } from 'src/models/recommend';
 import { useParticipantSeminar } from 'src/services/seminars/seminars.mutations';
 import { useSessionStore } from 'src/store/session';
@@ -31,8 +31,8 @@ export function LectureDetailTemplate({ id }: LectureDetailTemplateProps) {
   const [params, setParams] = useState<paramProps>({ page });
 
   // 퀴즈 소개 정보 조회
-  const { isFetched: isClubAboutFetched, refetch: refetchClubAbout } = useClubAboutDetail(id, data => {
-    console.log(data);
+  const { isFetched: isClubAboutFetched, refetch: refetchClubAbout } = useLectureAboutDetailInfo(id, data => {
+    console.log('useLectureAboutDetail', data);
     setClubAbout(data);
     console.log('clubMemberStatus', data?.clubMemberStatus);
     console.log('clubStatus ', data?.clubStatus);
@@ -52,21 +52,6 @@ export function LectureDetailTemplate({ id }: LectureDetailTemplateProps) {
   });
 
   const { mutate: onParticipant } = useParticipantSeminar();
-
-  const handleParticipant = () => {
-    //console.log('club join');
-    if (!logged) {
-      alert('로그인이 필요합니다.');
-      return;
-    }
-
-    if (user.phoneNumber === null) {
-      setIsModalOpen(true);
-    } else {
-      onParticipant({ clubSequence: id });
-      setClubMemberStatus('0001');
-    }
-  };
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
@@ -101,14 +86,29 @@ export function LectureDetailTemplate({ id }: LectureDetailTemplateProps) {
   // console.log('clubStatus', clubAbout?.clubStatus);
   // console.log('clubMemberStatus', clubAbout?.clubMemberStatus);
 
-  const isQuizScreen = clubAbout?.clubAboutStatus === '0401';
+  const isQuizScreen = clubAbout?.lectureClub?.clubAboutStatus === '0401';
   console.log('isQuizScreen', isQuizScreen, clubAbout?.clubAboutStatus);
 
   return (
     <div className={cx('seminar-detail-container')}>
       <div className={cx('container')}>
-        {/* 퀴즈 풀기 화면 */}
-        {isQuizScreen
+        {/* `퀴즈` 풀기 화면 */}
+        {isParticipantListFetched && (
+          <LectureDetaillSolution
+            border={false}
+            totalElements={totalElements}
+            totalPage={totalPage}
+            page={page}
+            handlePageChange={handlePageChange}
+            contents={clubAbout.lectureClub || []}
+            study={clubAbout.clubStudies || []}
+            quizList={quizList}
+            refetchClubAbout={refetchClubAbout}
+            selectedImageBanner="/assets/images/banner/Rectangle_200.png"
+            selectedImage="/assets/images/banner/Rectangle_190.png"
+          />
+        )}
+        {/* {isQuizScreen
           ? isParticipantListFetched && (
               <LectureDetaillSolution
                 border={false}
@@ -116,7 +116,8 @@ export function LectureDetailTemplate({ id }: LectureDetailTemplateProps) {
                 totalPage={totalPage}
                 page={page}
                 handlePageChange={handlePageChange}
-                contents={contents}
+                contents={clubAbout.lectureClub || []}
+                study={clubAbout.clubStudies || []}
                 quizList={quizList}
                 // selectedImageBanner={clubAbout?.imageBanner}
                 // selectedImage={clubAbout?.image}
@@ -142,7 +143,7 @@ export function LectureDetailTemplate({ id }: LectureDetailTemplateProps) {
                   selectedImage="/assets/images/banner/Rectangle_190.png"
                 />
               </div>
-            )}
+            )} */}
       </div>
     </div>
   );

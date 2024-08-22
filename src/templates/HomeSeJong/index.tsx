@@ -30,7 +30,7 @@ export function HomeSejongTemplate({ logged = false, tenantName = '' }: HomeSejo
   return (
     <div className={cx('career-main')}>
       <div
-        className="tw-text-white tw-bg-[url('/assets/images/main/Union.webp')]  tw-bg-cover tw-bg-center tw-bg-no-repeat"
+        className="tw-mt-4 tw-text-white tw-bg-[url('/assets/images/main/Union.webp')]  tw-bg-cover tw-bg-center tw-bg-no-repeat"
         style={{ height: '650px' }}
       >
         <section
@@ -254,7 +254,7 @@ export function HomeSejongTemplate({ logged = false, tenantName = '' }: HomeSejo
           </div>
         </div>
       </section>
-      <div className={cx('container tw-pt-24')}>
+      <div className={cx('container tw-pt-14')}>
         <div className="tw-w-full tw-relative tw-overflow-hidden">
           <img src="/assets/images/main/bottom.png" className="tw-w-full tw-object-cover" />
         </div>

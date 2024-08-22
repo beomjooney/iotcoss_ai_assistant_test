@@ -60,139 +60,132 @@ export function QuizMyLectureClubsTemplate() {
 
   return (
     <>
-      <Desktop>
-        <div className={cx('seminar-container')}>
-          <div className={cx('container')}>
-            <div className="tw-py-[60px]">
-              <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-                <Grid item xs={12} sm={2} className="tw-font-bold tw-text-3xl tw-text-black">
-                  강의클럽
-                </Grid>
-                <Grid item xs={12} sm={8} className="tw-font-semi tw-text-base tw-text-black">
-                  내가 운영중인 강의클럽을 한 눈에 보여주고 있어요!
-                </Grid>
-                <Grid item xs={12} sm={2} justifyContent="flex-end" className="tw-flex">
-                  {isClient && roles.includes('ROLE_MANAGER') && (
-                    <button
-                      onClick={() => router.push('/lecture/open')}
-                      type="button"
-                      className="tw-text-blue-700 border border-primary tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
-                    >
-                      + 강의 개설하기
-                    </button>
-                  )}
-                </Grid>
+      <div className={cx('seminar-container')}>
+        <div className={cx('container')}>
+          <div className="tw-py-[60px]">
+            <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
+              <Grid item xs={12} sm={2} className="tw-font-bold tw-text-3xl tw-text-black">
+                강의클럽
               </Grid>
-            </div>
-            <Box sx={{ width: '100%', typography: 'body1', marginTop: '20px', marginBottom: '30px' }}>
-              <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-                <Grid item xs={12} className="tw-font-bold tw-text-3xl tw-text-black">
-                  {/* <SecondTabs tabs={testBoards} /> */}
+              <Grid item xs={12} sm={8} className="tw-font-semi tw-text-base tw-text-black">
+                내가 운영중인 강의클럽을 한 눈에 보여주고 있어요!
+              </Grid>
+              <Grid item xs={12} sm={2} justifyContent="flex-end" className="tw-flex">
+                {isClient && roles.includes('ROLE_MANAGER') && (
+                  <button
+                    onClick={() => router.push('/lecture/open')}
+                    type="button"
+                    className="tw-text-blue-700 border border-primary tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
+                  >
+                    + 강의 개설하기
+                  </button>
+                )}
+              </Grid>
+            </Grid>
+          </div>
+          <Box sx={{ width: '100%', typography: 'body1', marginTop: '20px', marginBottom: '30px' }}>
+            <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
+              <Grid item xs={12} className="tw-font-bold tw-text-3xl tw-text-black">
+                {/* <SecondTabs tabs={testBoards} /> */}
 
-                  <div className={cx('')}>
-                    <div className="tw-w-full tw-flex tw-justify-between">
-                      <div className="tw-flex">
-                        <ToggleLabel
-                          label="진행중인 강의"
-                          name="진행중인 강의"
-                          value=""
-                          variant="small"
-                          checked={active === 0}
-                          isActive
-                          type="tabButton"
-                          onChange={() => {
-                            setActive(0);
-                            setParams({
-                              page,
-                              clubViewFilter: '0002',
-                              clubType: '0200',
-                            });
-                            setPage(1);
-                          }}
-                          className={cx('fixed-width tw-w-[150px]')}
-                        />
-                        <ToggleLabel
-                          label="종료된 강의"
-                          name="종료된 강의"
-                          value=""
-                          variant="small"
-                          checked={active === 1}
-                          isActive
-                          type="tabButton"
-                          onChange={() => {
-                            setActive(1);
-                            setParams({
-                              page,
-                              clubViewFilter: '0003',
-                              clubType: '0200',
-                            });
-                            setPage(1);
-                          }}
-                          className={cx('fixed-width tw-w-[150px]')}
-                        />
-                      </div>
-                      <div className="tw-flex tw-items-center tw-justify-end tw-text-right">
-                        <TextField
-                          id="outlined-basic"
-                          label=""
-                          variant="outlined"
-                          InputProps={{
-                            style: { height: '43px' },
-                            startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
-                          }}
-                          onKeyPress={e => {
-                            if (e.key === 'Enter') {
-                              searchKeyworld((e.target as HTMLInputElement).value);
-                            }
-                          }}
-                        />
-                      </div>
+                <div className={cx('')}>
+                  <div className="tw-w-full tw-flex tw-justify-between">
+                    <div className="tw-flex">
+                      <ToggleLabel
+                        label="진행중인 강의"
+                        name="진행중인 강의"
+                        value=""
+                        variant="small"
+                        checked={active === 0}
+                        isActive
+                        type="tabButton"
+                        onChange={() => {
+                          setActive(0);
+                          setParams({
+                            page,
+                            clubViewFilter: '0002',
+                            clubType: '0200',
+                          });
+                          setPage(1);
+                        }}
+                        className={cx('fixed-width tw-w-[150px]')}
+                      />
+                      <ToggleLabel
+                        label="종료된 강의"
+                        name="종료된 강의"
+                        value=""
+                        variant="small"
+                        checked={active === 1}
+                        isActive
+                        type="tabButton"
+                        onChange={() => {
+                          setActive(1);
+                          setParams({
+                            page,
+                            clubViewFilter: '0003',
+                            clubType: '0200',
+                          });
+                          setPage(1);
+                        }}
+                        className={cx('fixed-width tw-w-[150px]')}
+                      />
+                    </div>
+                    <div className="tw-flex tw-items-center tw-justify-end tw-text-right">
+                      <TextField
+                        id="outlined-basic"
+                        label=""
+                        variant="outlined"
+                        InputProps={{
+                          style: { height: '43px' },
+                          startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
+                        }}
+                        onKeyPress={e => {
+                          if (e.key === 'Enter') {
+                            searchKeyworld((e.target as HTMLInputElement).value);
+                          }
+                        }}
+                      />
                     </div>
                   </div>
-                </Grid>
-                <Grid item xs={4} className="tw-font-semi tw-text-base tw-text-black"></Grid>
+                </div>
               </Grid>
-            </Box>
+              <Grid item xs={4} className="tw-font-semi tw-text-base tw-text-black"></Grid>
+            </Grid>
+          </Box>
 
-            <Divider className="tw-mb-3 tw-border tw-bg-['#efefef']" />
-            <article>
-              <div className={cx('content-area')}>
-                <section className={cx('content', 'flex-wrap-container')}>
-                  <Grid
-                    container
-                    direction="row"
-                    justifyContent="center"
-                    alignItems="center"
-                    rowSpacing={3}
-                    columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-                  >
-                    {isLoading ? (
-                      <div className="tw-flex tw-justify-center tw-items-center tw-py-40">
-                        <CircularProgress />
-                      </div>
-                    ) : (
-                      isContentFetched &&
-                      (contents.length > 0 ? (
-                        contents.map((item, index) => (
-                          <LectureClubMiniCard
-                            key={index}
-                            item={item}
-                            xs={12}
-                            className={cx('reply-container__item')}
-                          />
-                        ))
-                      ) : (
-                        <div className={cx('content--empty tw-py-40')}>데이터가 없습니다.</div>
+          <Divider className="tw-mb-3 tw-border tw-bg-['#efefef']" />
+          <article>
+            <div className={cx('content-area')}>
+              <section className={cx('content', 'flex-wrap-container')}>
+                <Grid
+                  container
+                  direction="row"
+                  justifyContent="center"
+                  alignItems="center"
+                  rowSpacing={3}
+                  columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+                >
+                  {isLoading ? (
+                    <div className="tw-flex tw-justify-center tw-items-center tw-py-40">
+                      <CircularProgress />
+                    </div>
+                  ) : (
+                    isContentFetched &&
+                    (contents.length > 0 ? (
+                      contents.map((item, index) => (
+                        <LectureClubMiniCard key={index} item={item} xs={12} className={cx('reply-container__item')} />
                       ))
-                    )}
-                  </Grid>
-                </section>
-                <Pagination page={page} setPage={setPage} total={totalPage} />
-              </div>
-            </article>
-          </div>
+                    ) : (
+                      <div className={cx('content--empty tw-py-40')}>데이터가 없습니다.</div>
+                    ))
+                  )}
+                </Grid>
+              </section>
+              <Pagination page={page} setPage={setPage} total={totalPage} />
+            </div>
+          </article>
         </div>
-      </Desktop>
+      </div>
     </>
   );
 }

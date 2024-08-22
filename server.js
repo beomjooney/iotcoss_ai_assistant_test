@@ -38,12 +38,12 @@ app.prepare().then(() => {
   });
 
   sejongServer.get('/', (req, res) => {
-    return app.render(req, res, '/sejong', req.query);
+    return app.render(req, res, '/iotcoss', req.query);
   });
 
   sejongServer.get('/account/login', (req, res) => {
     // return app.render(req, res, '/account/login', req.query);
-    return app.render(req, res, '/sejong/account/login', req.query);
+    return app.render(req, res, '/iotcoss/account/login', req.query);
   });
 
   sejongServer.all('*', (req, res) => {
@@ -105,7 +105,7 @@ app.prepare().then(() => {
 
   mainServer.use(vhost('dsu.localhost', dsuServer));
   mainServer.use(vhost('devus.localhost', devusServer));
-  mainServer.use(vhost('sejong.localhost', sejongServer));
+  mainServer.use(vhost('iotcoss.localhost', sejongServer));
   mainServer.use(vhost('b2b.localhost', b2bServer));
   mainServer.use(vhost('localhost', localServer));
 

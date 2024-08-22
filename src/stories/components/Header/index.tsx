@@ -102,16 +102,17 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
   const savedIndex = localStorage.getItem('activeIndex');
 
   // 컴포넌트가 마운트될 때 localStorage에서 activeIndex를 불러옴
-  useEffect(() => {
-    const savedIndex = localStorage.getItem('activeIndex');
-    if (savedIndex !== null) {
-      setActiveIndex(parseInt(savedIndex, 10));
-    }
-  }, []);
+  // useEffect(() => {
+  //   const savedIndex = localStorage.getItem('activeIndex');
+  //   if (savedIndex !== null) {
+  //     setActiveIndex(parseInt(savedIndex, 10)); // Ensure setActiveIndex is called with a valid number
+  //   }
+  // }, [setActiveIndex]); // Add setActiveIndex as a dependency
 
   // activeIndex가 변경될 때마다 localStorage에 저장
+
   useEffect(() => {
-    localStorage.setItem('activeIndex', activeIndex.toString());
+    localStorage.setItem('activeIndex', activeIndex);
   }, [activeIndex]);
 
   useEffect(() => {
@@ -171,6 +172,7 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
     localStorage.removeItem('auth-store');
     localStorage.removeItem('app-storage');
     location.href = '/';
+    localStorage.setItem('activeIndex', '0');
   };
 
   const handleGoHome = async () => {
@@ -286,8 +288,8 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
         <div className="container" style={{ alignItems: 'center' }}>
           {/* <div className={cx('header-link')}> */}
           <div>
-            {getFirstSubdomain() === 'sejong' ? (
-              <img src="/assets/images/header/sejong_logo.png" width={300} alt="logo" className={cx('image-logo')} />
+            {getFirstSubdomain() === 'iotcoss' ? (
+              <img src="/assets/images/header/sejong_logo.png" width={250} alt="logo" className={cx('image-logo')} />
             ) : (
               <img src="/assets/images/header/image_1.png" width={130} alt="logo" className={cx('image-logo')} />
             )}
@@ -424,7 +426,16 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
             >
               <ul className={cx('nav-custom', 'navbar-custom-mobile', 'navbar-nav', 'tw-text-lg', 'tw-text-left')}>
                 {menuItem.map((item, index) => {
-                  if (item.login && (!item.role || roles.includes(item.role))) {
+                  const currentSubdomain = getFirstSubdomain(); // Replace with logic to get the current subdomain
+                  const isSubdomainEmpty = currentSubdomain === ''; // Check if the current subdomain is empty
+
+                  // Split the subdomain string into an array and check if the currentSubdomain is included
+                  const subdomainList = item.subdomain ? item.subdomain.split(',') : [];
+                  const isSubdomainMatch =
+                    subdomainList.includes(currentSubdomain) || subdomainList.includes('common') || isSubdomainEmpty;
+
+                  const shouldDisplayItem = isSubdomainMatch && item.login && (!item.role || roles.includes(item.role));
+                  if (shouldDisplayItem) {
                     return (
                       <li key={`item-` + index} className={cn(item.option)}>
                         <Link href={item.link}>
@@ -559,9 +570,11 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
                           aria-haspopup="true"
                           aria-expanded={open ? 'true' : undefined}
                         >
-                          <Avatar sx={{ width: 32, height: 32 }} className="border" src={user?.member?.profileImageUrl}>
-                            M
-                          </Avatar>
+                          <Avatar
+                            sx={{ width: 32, height: 32 }}
+                            className="border"
+                            src={user?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
+                          ></Avatar>
                         </IconButton>
                       </Tooltip>
                       <Menu

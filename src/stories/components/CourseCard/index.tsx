@@ -35,7 +35,7 @@ const CourseCard = ({ data, border = false }) => {
       }`}
     >
       <img
-        src={data.clubImageUrl || 'assets/images/banner/Rectangle_193.png'}
+        src={data.clubImageUrl || '/assets/images/banner/Rectangle_193.png'}
         className="tw-w-[132px] tw-h-[142px] tw-object-cover tw-float-left"
       />
 
@@ -74,8 +74,10 @@ const CourseCard = ({ data, border = false }) => {
       </div>
 
       <div className="tw-py-0">
-        <p className="tw-ml-[148px] tw-mt-[18px] tw-text-sm tw-font-bold tw-text-left tw-text-black">{data.clubName}</p>
-        <p className="tw-w-[262px] tw-h-6 tw-ml-[148px] tw-mt-1 tw-text-sm tw-text-left tw-text-black">
+        <p className="tw-line-clamp-1 tw-ml-[148px] tw-mt-[18px] tw-text-sm tw-font-bold tw-text-left tw-text-black">
+          {data.clubName}
+        </p>
+        <p className="tw-line-clamp-1 tw-h-6 tw-ml-[148px] tw-mt-1 tw-text-sm tw-text-left tw-text-black">
           {data.description}
         </p>
       </div>

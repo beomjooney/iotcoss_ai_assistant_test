@@ -25,6 +25,11 @@ import {
   myMemberRequestList,
   lectureAboutDetail,
   lectureMyList,
+  myLectureDashboardList,
+  myLectureDashboardStudentList,
+  myDashboardLecture,
+  myDashboardQA,
+  lectureAboutDetailInfo,
 } from './seminars.api';
 
 export interface paramProps {
@@ -87,6 +92,79 @@ export const useMyDashboardList = (
     onError,
     refetchOnWindowFocus: false,
   });
+};
+
+// 내 대시보드 목록 조회
+export const useMyLectureDashboardList = (
+  params?: paramProps,
+  onSuccess?: (data: any) => void,
+  onError?: (error: Error) => void,
+) => {
+  return useQuery<any, Error>(
+    QUERY_KEY_FACTORY('DASHBOARD').list({ ...params }),
+
+    () => myLectureDashboardList(params),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+    },
+  );
+};
+
+// 내 대시보드 목록 조회
+export const useMyLectureDashboardStudentList = (
+  params?: paramProps,
+  onSuccess?: (data: any) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 100;
+  return useQuery<any, Error>(
+    QUERY_KEY_FACTORY('STUDENT_DASHBOARD').list({ size: DEFAULT_SIZE, ...params }),
+    () => myLectureDashboardStudentList({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+    },
+  );
+};
+
+// 내 대시보드 목록 조회
+export const useMyDashboardLecture = (
+  params?: paramProps,
+  onSuccess?: (data: any) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 10;
+  return useQuery<any, Error>(
+    QUERY_KEY_FACTORY('DASHBOARD_LECTURE').list({ size: DEFAULT_SIZE, ...params }),
+    () => myDashboardLecture({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+    },
+  );
+};
+
+// 내 대시보드 목록 조회
+export const useMyDashboardQA = (
+  params?: paramProps,
+  onSuccess?: (data: any) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 10;
+  return useQuery<any, Error>(
+    QUERY_KEY_FACTORY('DASHBOARD_QA').list({ size: DEFAULT_SIZE, ...params }),
+    () => myDashboardQA({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+      enabled: false,
+    },
+  );
 };
 
 // 내 요청 회원 목록 조회
@@ -242,7 +320,15 @@ export const useClubAboutDetail = (id, onSuccess?: (data: any) => void, onError?
 };
 
 export const useLectureAboutDetail = (id, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
-  return useQuery<any, Error>(QUERY_KEY_FACTORY('QUIZ_ABOUT').detail(id), () => lectureAboutDetail(id), {
+  return useQuery<any, Error>(QUERY_KEY_FACTORY('LECTURE_ABOUT').detail(id), () => lectureAboutDetail(id), {
+    onSuccess,
+    onError,
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useLectureAboutDetailInfo = (id, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
+  return useQuery<any, Error>(QUERY_KEY_FACTORY('LECTURE_ABOUT').detail(id), () => lectureAboutDetailInfo(id), {
     onSuccess,
     onError,
     refetchOnWindowFocus: false,

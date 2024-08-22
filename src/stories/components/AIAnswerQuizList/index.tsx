@@ -21,7 +21,6 @@ import {
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 
 const AIAnswerQuizList = ({ info, refetchReply }) => {
-  console.log(info);
   const [page, setPage] = useState(1);
   const [isLoadingAI, setIsLoadingAI] = useState(false);
   const [value, setValue] = useState('');

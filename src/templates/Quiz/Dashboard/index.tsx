@@ -58,7 +58,7 @@ const useStyles = makeStyles(theme => ({
     left: 0,
   },
   stickySecond: {
-    left: 140, // 이 값을 `Dessert` 열의 너비에 맞게 조정하세요.
+    left: 160, // 이 값을 `Dessert` 열의 너비에 맞게 조정하세요.
   },
   stickyThread: {
     left: 240, // 이 값을 `Dessert` 열의 너비에 맞게 조정하세요.
@@ -272,8 +272,8 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
                     클럽 주수 : {myDashboardList?.progress?.weekCount}주
                   </p>
                   <p className="tw-ml-10 tw-text-left tw-text-base tw-font-bold tw-text-[#31343d]">
-                    학습 회차 : <span className="tw-text-[#e11837]">{myDashboardList?.progress?.currentRound}회차</span>{' '}
-                    / {myDashboardList?.progress?.totalStudyCount}회
+                    학습 회차 : <span className="tw-text-[#e11837]">{myDashboardList?.progress?.studyOrder}회차</span> /{' '}
+                    {myDashboardList?.progress?.totalStudyCount}회
                   </p>
                   <p className="tw-ml-10 tw-text-left tw-text-base tw-font-bold tw-text-[#31343d]">
                     남은 학습 : {myDashboardList?.progress?.remainingStudyCount}회
@@ -435,7 +435,7 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
               <Table className={classes.table} aria-label="simple table" style={{ tableLayout: 'fixed' }}>
                 <TableHead style={{ backgroundColor: '#F6F7FB' }}>
                   <TableRow>
-                    <TableCell align="center" width={140} className={`${classes.sticky} ${classes.stickyFirst}`}>
+                    <TableCell align="center" width={160} className={`${classes.sticky} ${classes.stickyFirst}`}>
                       <div className="tw-font-bold tw-text-base"> 학생</div>
                     </TableCell>
                     <TableCell align="center" width={120} className={`${classes.stickyBoard} ${classes.stickySecond}`}>
@@ -452,7 +452,7 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
                             {session?.order}회
                           </p>
                           <p className="tw-w-full tw-h-3.5 tw-text-xs tw-font-medium tw-text-center tw-text-[#9ca5b2] tw-bottom-0">
-                            {session?.publishDate?.slice(5)} ({session?.dayOfWeek})
+                            {session?.publishDate?.slice(5)} {session?.dayOfWeek ? `(${session?.dayOfWeek})` : ''}
                           </p>
                         </div>
                       </TableCell>
@@ -471,7 +471,7 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
                       >
                         <div className="tw-flex tw-items-center">
                           <img
-                            src={info?.member?.profileImageUrl || '/assets/avatars/3.jpg'}
+                            src={info?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
                             className="tw-w-10 tw-h-10 border tw-rounded-full"
                             alt="Profile"
                           />
@@ -536,7 +536,9 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
                                 </svg>
                               )}
                               <div className="tw-text-gray-400">
-                                {info?.status === '0001' && 'D' + info?.relativeDaysToPublishDate}
+                                {info?.status === '0001' &&
+                                  info?.relativeDaysToPublishDate !== null &&
+                                  'D' + info?.relativeDaysToPublishDate}
                               </div>
                             </div>
                           </TableCell>

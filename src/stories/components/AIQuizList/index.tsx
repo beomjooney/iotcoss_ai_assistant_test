@@ -96,6 +96,11 @@ const AIQuizList = ({
   }, [aiQuizAnswerData]);
 
   const handleAIAnswerClick = async (quizIndex, quiz) => {
+    if (!contentType) {
+      alert('지식컨텐츠 유형을 선택하세요.');
+      return;
+    }
+
     if (contentType !== '0320' && !contentUrl) {
       alert('콘텐츠 URL을 입력해주세요.');
       return false;
@@ -228,7 +233,7 @@ const AIQuizList = ({
             </div>
           )}
 
-          <div className="tw-flex tw-items-center tw-p-5 tw-pb-0 tw-text-sm tw-font-bold tw-gap-2">
+          <div className="tw-flex tw-items-center tw-p-5 tw-pb-0 tw-text-sm tw-font-bold tw-gap-2 tw-flex-wrap">
             채점기준 주요 키워드/문구 :
             {Array.isArray(quizList?.modelAnswerKeywords) ? (
               quizList.modelAnswerKeywords.map((tag, tagIndex) => (

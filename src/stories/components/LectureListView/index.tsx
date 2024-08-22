@@ -12,7 +12,7 @@ import PaginationItem from '@mui/material/PaginationItem';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
-import { useMyClubList } from 'src/services/seminars/seminars.queries';
+// import { useMyClubList } from 'src/services/seminars/seminars.queries';
 
 /**icon */
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
@@ -24,22 +24,21 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded';
 import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded';
 import SearchIcon from '@mui/icons-material/Search';
-import router from 'next/router';
+import { useRouter } from 'next/router';
 
 import { CommunityCard } from 'src/stories/components';
 import { Button, Typography, Profile, Modal, ArticleCard } from 'src/stories/components';
 const cx = classNames.bind(styles);
 
 //comment
-import {
-  useQuizAnswerDetail,
-  useQuizRankDetail,
-  useQuizSolutionDetail,
-  useQuizMyClubInfo,
-} from 'src/services/quiz/quiz.queries';
+import { useLectureQAInfo } from 'src/services/quiz/quiz.queries';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 
 const LectureListView = ({ border, id }) => {
+  const router = useRouter();
+  const { clubStudySequence } = router.query;
+  console.log('clubStudySequence', id, clubStudySequence);
+
   const borderStyle = border ? 'border border-[#e9ecf2] tw-mt-14' : '';
   // const [activeTab, setActiveTab] = useState('myQuiz');
   const [activeTab, setActiveTab] = useState('community');
@@ -58,17 +57,19 @@ const LectureListView = ({ border, id }) => {
   const [params, setParams] = useState<any>({ id: '225', page });
   const [myClubParams, setMyClubParams] = useState<any>({
     clubSequence: id,
-    sortType: 'ASC',
-    isPublished: '',
+    clubStudySequence: clubStudySequence,
+    questionStatuses: '',
     page,
   });
 
-  // 퀴즈클럽 리스트
-  const { isFetched: isContentFetched, refetch: refetchMyClub } = useMyClubList({}, data => {
-    setMyClubList(data?.data?.contents || []);
-  });
+  console.log('myClubParams', myClubParams);
 
-  const { isFetched: isParticipantListFetched, data } = useQuizMyClubInfo(myClubParams, data => {
+  // 퀴즈클럽 리스트
+  // const { isFetched: isContentFetched, refetch: refetchMyClub } = useMyClubList({}, data => {
+  //   setMyClubList(data?.data?.contents || []);
+  // });
+
+  const { isFetched: isParticipantListFetched, data } = useLectureQAInfo(myClubParams, data => {
     console.log('first get data', data);
     setQuizList(data?.contents || []);
     setTotalPage(data?.totalPages);

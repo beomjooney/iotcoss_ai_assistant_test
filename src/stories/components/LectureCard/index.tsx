@@ -99,7 +99,14 @@ LectureCardProps) => {
             }}
           >
             {isClient && !logged && (
-              <div className="tw-absolute tw-bottom-0 tw-left-0 tw-right-0 tw-h-[300px] tw-bg-gradient-to-t tw-from-white tw-to-transparent tw-pointer-events-none"></div>
+              <div
+                className="tw-opacity-30 tw-absolute tw-bottom-0 tw-left-0 tw-right-0 tw-h-[300px] tw-pointer-events-none"
+                style={{
+                  background:
+                    'linear-gradient(to top, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0) 70%, rgba(255, 255, 255, 0.05) 0%)',
+                  backgroundBlendMode: 'overlay',
+                }}
+              ></div>
             )}
             <div
               style={{ backgroundImage: `url(${item.backgroundImage || '/assets/images/banner/Rectangle_200.png'})` }}
@@ -186,7 +193,7 @@ LectureCardProps) => {
               </div>
               <img
                 className="tw-absolute tw-left-[329.5px] tw-top-[17.5px] tw-w-[200px] tw-h-[200px] tw-rounded-full"
-                src={item.leaderProfileImageUrl || '/assets/avatars/3.jpg'}
+                src={item.leaderProfileImageUrl || '/assets/images/account/default_profile_image.png'}
               />
               <p className="tw-absolute tw-left-5 tw-top-[202px] tw-text-sm tw-font-bold tw-text-left tw-text-black">
                 {item.leaderNickname}

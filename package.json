@@ -63,6 +63,7 @@
     "react-hook-form": "^7.41.0",
     "react-hydration-provider": "^1.0.2",
     "react-infinite-scroll-component": "^6.1.0",
+    "react-minimal-pie-chart": "^8.4.0",
     "react-modal": "^3.15.1",
     "react-modal-video": "^1.2.8",
     "react-modern-drawer": "^1.1.2",
@@ -88,6 +89,7 @@
   },
   "scripts": {
     "dev": "env-cmd -f env/.env.local node server.js",
+    "prod": "env-cmd -f env/.env.prod node server.js",
     "dev-prod": "env-cmd -f env/.env.prod next dev -p 3001",
     "start-prod": "NODE_ENV=production env-cmd -f env/.env.prod  node server.js",
     "start": "next start -p 3001",
