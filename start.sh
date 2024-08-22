@@ -1,7 +1,7 @@
 #!/bin/bash
 
 git pull origin main
-yarn build
+yarn build-dev
 #pm2 delete pnpm build
 
 echo "Stopping all PM2 processes..."
