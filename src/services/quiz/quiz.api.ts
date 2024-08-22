@@ -146,6 +146,20 @@ export const quizMyClubInfo = async params => {
   return data.data;
 };
 
+export const lectureQAInfo = async params => {
+  console.log('params', params);
+  const { data } = await axiosGeneralAPI().get(`/v1/club/lecture/questions/`, {
+    params: {
+      clubSequence: params.clubSequence,
+      clubStudySequence: params.clubStudySequence,
+      page: params.page,
+      size: params.size,
+      questionStatuses: params.questionStatuses,
+    },
+  });
+  return data.data;
+};
+
 export const myAllLectureInfo = async params => {
   console.log('params', params);
   const { data } = await axiosGeneralAPI().get(`/api/v1/lecture-clubs/${params.clubSequence}/studies`, {

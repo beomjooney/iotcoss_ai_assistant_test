@@ -29,7 +29,7 @@ import {
   myLectureDashboardStudentList,
   myDashboardLecture,
   myDashboardQA,
-  myAllLectureInfo,
+  lectureAboutDetailInfo,
 } from './seminars.api';
 
 export interface paramProps {
@@ -320,7 +320,15 @@ export const useClubAboutDetail = (id, onSuccess?: (data: any) => void, onError?
 };
 
 export const useLectureAboutDetail = (id, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
-  return useQuery<any, Error>(QUERY_KEY_FACTORY('QUIZ_ABOUT').detail(id), () => lectureAboutDetail(id), {
+  return useQuery<any, Error>(QUERY_KEY_FACTORY('LECTURE_ABOUT').detail(id), () => lectureAboutDetail(id), {
+    onSuccess,
+    onError,
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useLectureAboutDetailInfo = (id, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
+  return useQuery<any, Error>(QUERY_KEY_FACTORY('LECTURE_ABOUT').detail(id), () => lectureAboutDetailInfo(id), {
     onSuccess,
     onError,
     refetchOnWindowFocus: false,

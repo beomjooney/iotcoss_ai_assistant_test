@@ -162,6 +162,12 @@ export const lectureAboutDetail = async id => {
   return data.data;
 };
 
+// lecture 상세 조회
+export const lectureAboutDetailInfo = async id => {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/lecture-club/${id}/about`);
+  return data.data;
+};
+
 // 세미나 생성
 export const saveSeminar = async (params: any) => await axiosGeneralAPI().post('/seminars', params);
 

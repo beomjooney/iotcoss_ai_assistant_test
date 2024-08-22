@@ -25,6 +25,7 @@ import {
   quizFriendsRequest,
   quizActivityHistory,
   myAllLectureInfo,
+  lectureQAInfo,
 } from './quiz.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 import { User } from 'src/models/user';
@@ -74,6 +75,19 @@ export const useQuizMyClubInfo = (params, onSuccess?: (data: any) => void, onErr
   return useQuery<any, Error>(
     QUERY_KEY_FACTORY('SEMINAR').detail({ size: DEFAULT_SIZE, ...params }),
     () => quizMyClubInfo({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+    },
+  );
+};
+
+export const useLectureQAInfo = (params, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
+  const DEFAULT_SIZE = 10;
+  return useQuery<any, Error>(
+    QUERY_KEY_FACTORY('SEMINAR').detail({ size: DEFAULT_SIZE, ...params }),
+    () => lectureQAInfo({ size: DEFAULT_SIZE, ...params }),
     {
       onSuccess,
       onError,
