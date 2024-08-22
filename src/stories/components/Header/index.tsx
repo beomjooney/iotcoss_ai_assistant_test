@@ -110,6 +110,7 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
   // }, [setActiveIndex]); // Add setActiveIndex as a dependency
 
   // activeIndex가 변경될 때마다 localStorage에 저장
+
   useEffect(() => {
     localStorage.setItem('activeIndex', activeIndex);
   }, [activeIndex]);

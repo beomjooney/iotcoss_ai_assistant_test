@@ -261,7 +261,7 @@ export function StudyRoomTemplate() {
 
       const todayDate = moment().format('YYYY-MM-DD'); // 오늘 날짜 가져오기
       // 해당 날짜의 clubs 리스트 찾기
-      const clubsForTargetDate = data.find(item => item.date === todayDate)?.clubs || [];
+      const clubsForTargetDate = data?.find(item => item.date === todayDate)?.clubs || [];
       setQuizStatusList(clubsForTargetDate);
     },
   );
