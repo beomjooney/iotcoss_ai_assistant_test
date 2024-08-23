@@ -48,7 +48,7 @@ const LectureListView = ({ border, id }) => {
   const [quizList, setQuizList] = useState<any>([]);
   const [selectedValue, setSelectedValue] = useState(id);
   const [selectedClub, setSelectedClub] = useState<any>(id);
-  const [sortType, setSortType] = useState('ASC');
+  const [sortType, setSortType] = useState('');
   const [isPublished, setIsPublished] = useState('');
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
@@ -85,19 +85,10 @@ const LectureListView = ({ border, id }) => {
   useDidMountEffect(() => {
     setMyClubParams({
       clubSequence: selectedClub,
-      sortType: sortType,
+      questionStatuses: sortType,
       page: page,
-      isPublished: isPublished,
     });
   }, [sortType, page, selectedClub]);
-
-  const handleQuizChange = event => {
-    const value = event.target.value;
-    setSelectedValue(value);
-    setSelectedClub(value);
-    setIsPublished('');
-    setSortType('ASC');
-  };
 
   const handleChangeQuiz = event => {
     if (event.target.value === '') {
@@ -197,13 +188,13 @@ const LectureListView = ({ border, id }) => {
                   item
                   justifyContent="flex-start"
                   xs={6}
-                  sm={10}
+                  sm={9}
                   className="tw-text-xl tw-text-black tw-font-bold"
                 >
                   질의응답내역 ({totalElements})
                 </Grid>
 
-                <Grid container justifyContent="flex-end" item xs={6} sm={2} style={{ textAlign: 'right' }}>
+                <Grid container justifyContent="flex-end" item xs={6} sm={3} style={{ textAlign: 'right' }}>
                   <Pagination
                     count={totalPage}
                     size="small"
@@ -225,7 +216,7 @@ const LectureListView = ({ border, id }) => {
 
                   <RadioGroup value={sortType} onChange={handleChangeQuiz} row>
                     <FormControlLabel
-                      value="ASC"
+                      value=""
                       control={
                         <Radio
                           sx={{
@@ -243,7 +234,7 @@ const LectureListView = ({ border, id }) => {
                       }
                     />
                     <FormControlLabel
-                      value="DESC"
+                      value="0200"
                       control={
                         <Radio
                           sx={{
@@ -262,7 +253,7 @@ const LectureListView = ({ border, id }) => {
                     />
 
                     <FormControlLabel
-                      value=""
+                      value="0300"
                       control={
                         <Radio
                           sx={{
@@ -309,13 +300,13 @@ const LectureListView = ({ border, id }) => {
                           type="button"
                           disabled={!item?.isPublished}
                           data-tooltip-target="tooltip-default"
-                          className="tw-bg-black tw-text-white max-lg:tw-w-[60px] tw-text-base tw-font-medium tw-px-3 tw-py-2 tw-rounded"
+                          className="tw-bg-black tw-text-white max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-2 tw-rounded"
                         >
                           추가 질문하기
                         </button>
                       </div>
                     </div>
-                    <div className="tw-flex border tw-border tw-px-4 tw-py-5 tw-rounded-lg tw-mt-3">
+                    <div className="tw-flex tw-items-center  border tw-border tw-px-4 tw-py-5 tw-rounded-lg tw-mt-3">
                       <div className="tw-w-1/12 tw-text-lg tw-font-medium  tw-flex tw-items-start tw-justify-center">
                         <svg
                           width={24}
@@ -335,14 +326,14 @@ const LectureListView = ({ border, id }) => {
                           />
                         </svg>
                       </div>
-                      <div className="tw-w-1/12 tw-text-base tw-text-black  tw-font-bold  ">AI답변 : </div>
-                      <div className="tw-text-base tw-text-black ">
-                        (강의자료) EAI는 엔터프라이즈 어플리케이션 인테그레이션의 약자입니다. 시스템이 서로 얽히고
-                        복잡해지면서 통제가 잘 안되는 상황이 발생하여 이런 문제를 해결하기 위해 등장한 솔루션이 바로 EAI
-                        입니다.{' '}
+                      <div className="tw-w-1/12 tw-text-sm tw-text-black  tw-font-bold  ">AI답변 : </div>
+                      <div className="tw-text-sm ">
+                        <span className="tw-text-gray-500">
+                          {item?.questionStatus === '0200' ? '(일반서치)' : '(강의자료)'}
+                        </span>
                       </div>
                     </div>
-                    <div className="tw-flex border tw-border tw-px-4 tw-py-5 tw-rounded-lg tw-mt-5">
+                    <div className="tw-flex tw-items-center border tw-border tw-px-4 tw-py-5 tw-rounded-lg tw-mt-5">
                       <div className="tw-w-1/12 tw-text-lg tw-font-medium  tw-flex tw-items-start tw-justify-center">
                         <svg
                           width={24}
@@ -362,13 +353,10 @@ const LectureListView = ({ border, id }) => {
                           />
                         </svg>
                       </div>
-                      <div className="tw-w-[120px] tw-text-base tw-text-black  tw-font-bold tw-text-blue-700 ">
+                      <div className="tw-w-[120px] tw-text-sm tw-text-black  tw-font-bold tw-text-blue-700 ">
                         교수답변 :{' '}
                       </div>
-                      <div className="tw-text-base tw-text-black ">
-                        EAI는 엔터프라이즈 어플리케이션 인테그레이션의 약자입니다. 시스템이 서로 얽히고 복잡해지면서
-                        통제가 잘 안되는 상황이 발생하여 이런 문제를 해결하기 위해 등장한 솔루션이 바로 EAI 입니다.
-                      </div>
+                      <div className="tw-text-sm tw-text-black ">{item?.instructor1stAnswer}</div>
                     </div>
                   </div>
                 );
