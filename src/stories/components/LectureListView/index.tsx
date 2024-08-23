@@ -329,7 +329,7 @@ const LectureListView = ({ border, id }) => {
                       <div className="tw-w-1/12 tw-text-sm tw-text-black  tw-font-bold  ">AI답변 : </div>
                       <div className="tw-text-sm ">
                         <span className="tw-text-gray-500">
-                          {item?.questionStatus === '0200' ? '(일반서치)' : '(강의자료)'}
+                          {item?.questionStatus === '0200' ? '(강의자료)' : '(일반서치)'}
                         </span>
                       </div>
                     </div>
