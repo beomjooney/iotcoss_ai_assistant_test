@@ -148,7 +148,7 @@ export const quizMyClubInfo = async params => {
 
 export const lectureQAInfo = async params => {
   console.log('params', params);
-  const { data } = await axiosGeneralAPI().get(`/v1/club/lecture/questions/`, {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/club/lecture/questions`, {
     params: {
       clubSequence: params.clubSequence,
       clubStudySequence: params.clubStudySequence,

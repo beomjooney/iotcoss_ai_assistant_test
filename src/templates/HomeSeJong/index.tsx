@@ -51,8 +51,7 @@ export function HomeSejongTemplate({ logged = false, tenantName = '' }: HomeSejo
             </p>
             <div
               onClick={() => {
-                console.log(modalIsProfessor);
-                setModalIsProfessor(true);
+                router.push('/lecture');
               }}
               className=" tw-cursor-pointer tw-w-36 md:tw-w-48 tw-h-12 md:tw-h-20"
             >
@@ -90,7 +89,8 @@ export function HomeSejongTemplate({ logged = false, tenantName = '' }: HomeSejo
             </div>
             <div
               onClick={() => {
-                router.push('/lecture');
+                console.log(modalIsProfessor);
+                setModalIsProfessor(true);
               }}
               className="tw-cursor-pointer tw-w-36 md:tw-w-48 tw-h-12 md:tw-h-20"
             >

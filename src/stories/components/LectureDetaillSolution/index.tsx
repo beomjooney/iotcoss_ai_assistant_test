@@ -38,7 +38,7 @@ const LectureDetaillSolution = ({
   console.log('study', study);
   const borderStyle = border ? 'border border-[#e9ecf2] tw-mt-14' : '';
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  let [isLiked, setIsLiked] = useState(contents?.club?.isFavorite);
+  let [isLiked, setIsLiked] = useState(contents?.isFavorite);
   const { mutate: onSaveLike, isSuccess } = useSaveLike();
   const { mutate: onDeleteLike } = useDeleteLike();
   const [participationCode, setParticipationCode] = useState<string>('');
@@ -142,29 +142,26 @@ const LectureDetaillSolution = ({
               <div className="tw-gap-3 tw-flex tw-item tw-text-base tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
                 <div className="tw-bg-[#d7ecff] tw-rounded-[3.5px] tw-px-2 tw-py-[1px]">
                   <p className="tw-text-[12.25px] tw-text-[#235a8d]">
-                    {/* {contents?.jobGroups && contents.jobGroups.length > 0 ? contents.jobGroups[0].name : 'N/A'} */}
-                    {contents?.jobGroups && contents.jobGroups.length > 0 ? contents.jobGroups[0] : 'N/A'}
+                    {contents?.jobGroups && contents.jobGroups.length > 0 ? contents.jobGroups[0].name : 'N/A'}
                   </p>
                 </div>
                 {contents?.jobs?.length > 0 &&
                   contents.jobs.map((job, index) => (
                     <div key={index} className="tw-bg-[#ffdede] tw-rounded-[3.5px] tw-px-2 tw-py-[1px]">
-                      <p className="tw-text-[12.25px] tw-text-[#b83333]">{job}</p>
-                      {/* <p className="tw-text-[12.25px] tw-text-[#b83333]">{job.name}</p> */}
+                      <p className="tw-text-[12.25px] tw-text-[#b83333]">{job.name}</p>
                     </div>
                   ))}
 
                 {contents?.jobLevels?.length > 0 &&
                   contents.jobLevels.map((jobLevel, index) => (
                     <div key={index} className="tw-bg-[#e4e4e4] tw-rounded-[3.5px] tw-px-2 tw-py-[1px]">
-                      {/* <p className="tw-text-[12.25px] tw-text-[#313b49]">{jobLevel.name || 'N/A'}</p> */}
-                      <p className="tw-text-[12.25px] tw-text-[#313b49]">{jobLevel || 'N/A'}</p>
+                      <p className="tw-text-[12.25px] tw-text-[#313b49]">{jobLevel.name || 'N/A'}</p>
                     </div>
                   ))}
                 <button
                   className=""
                   onClick={() => {
-                    onChangeLike(contents?.club?.clubSequence);
+                    onChangeLike(contents?.clubSequence);
                   }}
                 >
                   {isLiked ? <StarIcon color="primary" /> : <StarBorderIcon color="disabled" />}
@@ -259,6 +256,12 @@ const LectureDetaillSolution = ({
                 <div className="tw-flex">
                   <p className="tw-text-sm tw-font-bold tw-text-left tw-text-black">학습 스킬 : </p>
                   <p className="tw-text-sm tw-text-left tw-text-black tw-pl-2 ">{contents?.skills?.toString()}</p>
+                </div>
+                <div className="tw-flex">
+                  <p className="tw-text-sm tw-font-bold tw-text-left tw-text-black">참여 인원 : </p>
+                  <p className="tw-text-sm tw-text-left tw-text-black tw-pl-2 ">
+                    {contents?.recruitedMemberCount || 0} / {contents?.recruitMemberCount || 0}
+                  </p>
                 </div>
               </div>
             </div>

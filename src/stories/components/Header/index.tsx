@@ -194,7 +194,11 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
         style={{ textAlign: 'left', paddingLeft: '20px', backgroundColor: 'black' }}
       >
         <Typography type="H3" weight="bold">
-          DSU QuizUp
+          {getFirstSubdomain() === 'iotcoss' ? (
+            <Typography>사물인터넷 혁신융합대학사업단</Typography>
+          ) : (
+            <Typography>DSU QuizUp</Typography>
+          )}
         </Typography>
       </div>
       <Divider />

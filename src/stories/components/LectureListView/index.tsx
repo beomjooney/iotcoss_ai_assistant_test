@@ -291,9 +291,7 @@ const LectureListView = ({ border, id }) => {
                         <div className="tw-text-xs tw-text-left tw-text-black">{item?.maker?.nickname}</div>
                       </div>
                       <div className="tw-flex-auto tw-px-5 tw-w-3/12">
-                        <div className={`tw-font-medium ${item?.isPublished ? 'tw-text-black' : ' tw-text-gray-400'}`}>
-                          {item?.question}
-                        </div>
+                        <div className={`tw-font-medium tw-text-black`}>{item?.question}</div>
                       </div>
                       <div className="tw-pr-4">
                         <button
