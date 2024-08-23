@@ -40,7 +40,14 @@ const ChatbotModal = ({ isOpen, onRequestClose, token }) => {
           </button> */}
         </div>
         <div className="">
-          <iframe src={url} className="tw-w-full tw-h-[690px]" frameBorder="0" allowFullScreen title="Chatbot"></iframe>
+          <iframe
+            src={url}
+            loading="lazy"
+            className="tw-w-full tw-h-[690px]"
+            frameBorder="0"
+            allowFullScreen
+            title="Chatbot"
+          ></iframe>
         </div>
       </div>
     </Modal>
