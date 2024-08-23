@@ -17,6 +17,7 @@ node_modules
 package-lock.json
 
 # log
+start.sh
 tsconfig.tsbuildinfo
 npm-debug.log
 yarn-error.log
