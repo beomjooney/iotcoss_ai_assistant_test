@@ -31,7 +31,7 @@ import { Button, Typography, Profile, Modal, ArticleCard } from 'src/stories/com
 const cx = classNames.bind(styles);
 
 //comment
-import { useLectureQAInfo } from 'src/services/quiz/quiz.queries';
+import { useLectureQAInfo, useLectureStudyQAInfo } from 'src/services/quiz/quiz.queries';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 
 const LectureListView = ({ border, id }) => {
@@ -46,6 +46,7 @@ const LectureListView = ({ border, id }) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [myClubList, setMyClubList] = useState<any>([]);
   const [quizList, setQuizList] = useState<any>([]);
+  const [studyQAInfo, setStudyQAInfo] = useState<any>([]);
   const [selectedValue, setSelectedValue] = useState(id);
   const [selectedClub, setSelectedClub] = useState<any>(id);
   const [sortType, setSortType] = useState('');
@@ -55,11 +56,16 @@ const LectureListView = ({ border, id }) => {
   const [totalElements, setTotalElements] = useState(0);
 
   const [params, setParams] = useState<any>({ id: '225', page });
+
   const [myClubParams, setMyClubParams] = useState<any>({
     clubSequence: id,
     clubStudySequence: clubStudySequence,
     questionStatuses: '',
     page,
+  });
+  const [myStudyClubParams, setMyStudyClubParams] = useState<any>({
+    clubSequence: id,
+    clubStudySequence: clubStudySequence,
   });
 
   console.log('myClubParams', myClubParams);
@@ -69,13 +75,15 @@ const LectureListView = ({ border, id }) => {
   //   setMyClubList(data?.data?.contents || []);
   // });
 
-  const { isFetched: isParticipantListFetched, data } = useLectureQAInfo(myClubParams, data => {
+  const { isFetched: isStudyQAInfoFetched } = useLectureStudyQAInfo(myStudyClubParams, data => {
+    console.log('second get data', data);
+    setStudyQAInfo(data || []);
+  });
+  const { isFetched: isQAInfoFetched } = useLectureQAInfo(myClubParams, data => {
     console.log('first get data', data);
     setQuizList(data?.contents || []);
     setTotalPage(data?.totalPages);
-    // setSelectedClub(data?.contents[0].clubSequence);
     setTotalElements(data?.totalElements);
-    console.log(data);
   });
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
@@ -85,6 +93,7 @@ const LectureListView = ({ border, id }) => {
   useDidMountEffect(() => {
     setMyClubParams({
       clubSequence: selectedClub,
+      clubStudySequence: clubStudySequence,
       questionStatuses: sortType,
       page: page,
     });
@@ -147,8 +156,8 @@ const LectureListView = ({ border, id }) => {
         </div>
         <Divider className="tw-mb-5" />
         <div className="tw-flex tw-items-center tw-mt-6">
-          <div className="tw-w-full tw-text-base tw-font-bold tw-text-left tw-text-[#31343d] border tw-p-6 tw-rounded-lg">
-            강의명 임베디드 [전공선택] 3학년 화요일 A반
+          <div className="tw-w-full tw-text-base tw-font-bold tw-text-left tw-text-[#31343d] border tw-p-5 tw-rounded-lg">
+            <span className="tw-text-blue-500 tw-pr-5">강의명</span> {studyQAInfo?.clubStudyName}
           </div>
 
           {/* <select
@@ -171,13 +180,13 @@ const LectureListView = ({ border, id }) => {
               })}
           </select> */}
         </div>
-        <div className="tw-text-2xl tw-text-black  tw-font-bold tw-mt-6">회차 정보</div>
+        <div className="tw-text-xl tw-text-black  tw-font-bold tw-mt-6">회차 정보</div>
         <Divider className="tw-py-3 tw-mb-3" />
         <div className="tw-text-black tw-my-5">
-          <div className="tw-text-lg tw-font-medium tw-py-3">1회차 (06월 05일)</div>
           <div className="tw-text-lg tw-font-medium tw-py-3">
-            강의URL: https://www.sejongonlineclass/lecture10/chapter1
+            {studyQAInfo?.studyOrder}회차 : {studyQAInfo?.studyDate} ({studyQAInfo?.dayOfWeek})
           </div>
+          <div className="tw-text-lg tw-font-medium tw-py-3">강의URL : {studyQAInfo?.lectureClub?.clubUri}</div>
         </div>
         <div className="tw-flex tw-flex-col tw-space-y-4 tw-rounded-lg">
           <div className={cx('content-wrap')}>
@@ -278,8 +287,13 @@ const LectureListView = ({ border, id }) => {
                   <div className="" key={index}>
                     <div className="tw-bg-[#F6F7FB] tw-flex tw-items-center tw-px-4 tw-py-1 tw-rounded-xl tw-my-5">
                       <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
-                        <img className="tw-w-10 tw-h-10 border tw-rounded-full" src={item?.maker?.profileImageUrl} />
-                        <div className="tw-text-xs tw-text-left tw-text-black">{item?.maker?.nickname}</div>
+                        <img
+                          className="tw-w-10 tw-h-10 border tw-rounded-full"
+                          src={item?.questioner?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
+                        />
+                        <div className="tw-text-xs tw-text-left tw-text-black tw-mt-2">
+                          {item?.questioner?.nickname}
+                        </div>
                       </div>
                       <div className="tw-flex-auto tw-px-5 tw-w-3/12">
                         <div className={`tw-font-medium tw-text-black`}>{item?.question}</div>
@@ -320,7 +334,7 @@ const LectureListView = ({ border, id }) => {
                           <path
                             d="M6 4V11.3362C6 12.309 6.29176 13.242 6.81109 13.9299C7.33042 14.6178 8.03479 15.0043 8.76923 15.0043H18M18 15.0043L14.3077 10.1135M18 15.0043L14.3077 19.8951"
                             stroke="#9CA5B2"
-                            stroke-width="1.5"
+                            strokeWidth="1.5"
                             strokeLinecap="round"
                             strokeLinejoin="round"
                           />
@@ -348,8 +362,8 @@ const LectureListView = ({ border, id }) => {
                             d="M6 4V11.3362C6 12.309 6.29176 13.242 6.81109 13.9299C7.33042 14.6178 8.03479 15.0043 8.76923 15.0043H18M18 15.0043L14.3077 10.1135M18 15.0043L14.3077 19.8951"
                             stroke="#9CA5B2"
                             stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
                           />
                         </svg>
                       </div>

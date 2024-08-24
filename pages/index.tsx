@@ -38,6 +38,7 @@ export function IndexPage({ session, setActiveIndex }: { session: Session; setAc
   console.log('index page');
 
   useEffect(() => {
+    localStorage.setItem('activeIndex', '0');
     setActiveIndex(0);
   }, []);
 

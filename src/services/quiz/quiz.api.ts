@@ -160,6 +160,14 @@ export const lectureQAInfo = async params => {
   return data.data;
 };
 
+export const lectureStudyQAInfo = async params => {
+  console.log('params', params);
+  const { data } = await axiosGeneralAPI().get(
+    `/api/v1/lecture-clubs/${params.clubSequence}/studies/${params.clubStudySequence}`,
+  );
+  return data.data;
+};
+
 export const myAllLectureInfo = async params => {
   console.log('params', params);
   const { data } = await axiosGeneralAPI().get(`/api/v1/lecture-clubs/${params.clubSequence}/studies`, {
