@@ -282,6 +282,15 @@ const LectureListView = ({ border, id }) => {
                   </RadioGroup>
                 </div>
               </div>
+
+              {quizList.length === 0 && (
+                <div className={cx('tw-flex tw-justify-center tw-items-center tw-h-[50vh]')}>
+                  <p className="tw-text-center tw-text-base tw-font-bold tw-text-[#31343d]">
+                    질의응답내역 데이터가 없습니다.
+                  </p>
+                </div>
+              )}
+
               {quizList.map((item, index) => {
                 return (
                   <div className="" key={index}>
