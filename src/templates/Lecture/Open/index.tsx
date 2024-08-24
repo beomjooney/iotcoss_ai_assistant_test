@@ -36,7 +36,7 @@ import NavigatePrevIcon from '@mui/icons-material/NavigateBefore';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import LectureBreakerInfo from 'src/stories/components/LectureBreakerInfo';
-import LectureDetailInfo from 'src/stories/components/LectureDetailInfo';
+import LectureOpenDetailInfo from 'src/stories/components/LectureOpenDetailInfo';
 /** drag list */
 import ReactDragList from 'react-drag-list';
 import DraggableList from 'react-draggable-list';
@@ -840,6 +840,7 @@ export function LectureOpenTemplate() {
 
   const handleNextThree = () => {
     console.log('NextLast');
+    // setActiveStep(prevActiveStep => prevActiveStep + 1);
     handlerClubSaveTemp('save');
   };
 
@@ -859,6 +860,9 @@ export function LectureOpenTemplate() {
   const handleNextOne = () => {
     handlerClubSaveTemp('validation');
   };
+  useEffect(() => {
+    console.log('activeStep 업데이트되었습니다.', activeStep);
+  }, [activeStep]);
 
   const handleBack = () => {
     setActiveStep(prevActiveStep => prevActiveStep - 1);
@@ -1126,6 +1130,7 @@ export function LectureOpenTemplate() {
     } else if (type === 'save') {
       onLectureSave(formData);
     } else if (type === 'validation') {
+      console.log(prevActiveStep => prevActiveStep + 1);
       setActiveStep(prevActiveStep => prevActiveStep + 1);
       setParamss(clubFormParams);
       window.scrollTo(0, 0);
@@ -2119,7 +2124,7 @@ export function LectureOpenTemplate() {
         {activeStep === 2 && (
           <>
             <article>
-              <LectureDetailInfo
+              <LectureOpenDetailInfo
                 selectedImageBanner={previewBanner}
                 selectedImage={preview}
                 selectedProfile={previewProfile}
