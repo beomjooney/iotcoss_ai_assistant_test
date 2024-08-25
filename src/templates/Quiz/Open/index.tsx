@@ -970,7 +970,6 @@ export function QuizOpenTemplate() {
     setUniversityCodeQuiz(selectedCode);
     setSelectedUniversityNameQuiz(selected ? selected.name : '');
     setJobsQuiz(selected ? selected.jobs : []);
-
     setPersonNameQuiz([]); // Clear the selected job when university changes
     setSelectedJobQuiz([]); // Clear the selected job when university changes
   };
