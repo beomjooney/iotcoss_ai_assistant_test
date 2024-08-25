@@ -530,6 +530,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
     setSelectedUniversityNameQuiz(selected ? selected.name : '');
     setJobsQuiz(selected ? selected.jobs : []);
     setPersonNameQuiz([]); // Clear the selected job when university changes
+    setSelectedJobQuiz([]); // Clear the selected job when university changes
   };
 
   const handleChangesQuiz = (event: SelectChangeEvent<typeof personName>) => {
