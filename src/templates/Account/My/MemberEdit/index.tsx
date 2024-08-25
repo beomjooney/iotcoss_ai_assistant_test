@@ -334,7 +334,7 @@ export function MemberEditTemplate() {
 
   const validationSchemaOtp = Yup.object().shape({
     otp: Yup.string()
-      .required('otp is required')
+      .required('인증번호를 입력해주세요.')
       .matches(/^[0-9]+$/, 'Must be only number')
       .min(6, 'Must be exactly 6 number')
       .max(6, 'Must be exactly 6 number'),

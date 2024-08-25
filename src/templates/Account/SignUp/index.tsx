@@ -217,12 +217,12 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
   });
 
   const validationSchemaPhone = Yup.object().shape({
-    phoneNumber: Yup.string().matches(phoneRegExp, '핸도폰 번호 입력이 잘못됬습니다.'),
+    phoneNumber: Yup.string().matches(phoneRegExp, '핸드폰 번호 입력이 잘못되었습니다.'),
   });
 
   const validationSchemaOtp = Yup.object().shape({
     otp: Yup.string()
-      .required('otp is required')
+      .required('인증번호를 입력해주세요.')
       .matches(/^[0-9]+$/, 'Must be only number')
       .min(6, 'Must be exactly 6 number')
       .max(6, 'Must be exactly 6 number'),
