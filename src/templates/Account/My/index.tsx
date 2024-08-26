@@ -382,7 +382,7 @@ export function MyTemplate({ children }: MyTemplateProps) {
       >
         {isProfileFetched && (
           <div>
-            <MyProfile profile={profile} badgeContents={badgeContents} refetchProfile={refetchProfile} />
+            <MyProfile admin={true} profile={profile} badgeContents={badgeContents} refetchProfile={refetchProfile} />
           </div>
         )}
       </MentorsModal>

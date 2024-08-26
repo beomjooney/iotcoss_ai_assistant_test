@@ -11,7 +11,7 @@ import { useUploadImage } from 'src/services/image/image.mutations';
 
 const cx = classNames.bind(styles);
 
-const MyProfile = ({ profile, badgeContents, refetchProfile }: any) => {
+const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: any) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [jobs, setJobs] = useState([]);
   const [selectedJob, setSelectedJob] = useState('');
@@ -146,7 +146,7 @@ const MyProfile = ({ profile, badgeContents, refetchProfile }: any) => {
             />
           </div>
         </div>
-        <div className="tw-px-10 tw-mt-10">
+        <div className="tw-px-10 tw-mb-5 tw-mt-10">
           <p className=" tw-left-8 tw-top-[212px] tw-text-base tw-font-bold tw-text-left tw-text-black tw-py-2">
             Contact
           </p>
@@ -168,28 +168,30 @@ const MyProfile = ({ profile, badgeContents, refetchProfile }: any) => {
               </p>
             </div>
           </div>
-          <button
-            onClick={() => {
-              setIsModalOpen(true);
-              setUniversityCode(profile.jobGroup?.code || '');
-              const selected = optionsData?.data?.jobs?.find(u => u.code === profile.jobGroup?.code);
-              setJobs(selected ? selected.jobs : []);
-              console.log(selected);
-              const selected_code = selected?.jobs?.find(u => u.code === profile.job?.code);
-              console.log(selected_code);
-              setSelectedJob(selected_code?.code);
-              setIntroductionMessage(profile.introductionMessage || '');
-              setMemberId(profile?.memberId || '');
-              console.log(profile?.jobLevels[0]?.code);
-              setJobLevel(profile?.jobLevels[0]?.code || '');
-            }}
-            className="tw-my-8 border tw-py-3 tw-px-5 tw-rounded tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-center tw-text-[#6a7380]"
-          >
-            프로필 수정
-          </button>
+          {admin && (
+            <button
+              onClick={() => {
+                setIsModalOpen(true);
+                setUniversityCode(profile.jobGroup?.code || '');
+                const selected = optionsData?.data?.jobs?.find(u => u.code === profile.jobGroup?.code);
+                setJobs(selected ? selected.jobs : []);
+                console.log(selected);
+                const selected_code = selected?.jobs?.find(u => u.code === profile.job?.code);
+                console.log(selected_code);
+                setSelectedJob(selected_code?.code);
+                setIntroductionMessage(profile.introductionMessage || '');
+                setMemberId(profile?.memberId || '');
+                console.log(profile?.jobLevels[0]?.code);
+                setJobLevel(profile?.jobLevels[0]?.code || '');
+              }}
+              className="tw-mt-4 border tw-py-3 tw-px-5 tw-rounded tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-center tw-text-[#6a7380]"
+            >
+              프로필 수정
+            </button>
+          )}
         </div>
       </div>
-      <div className="tw-mt-7 tw-h-[320px] tw-relative tw-rounded-[10px] border tw-border-[#e0e4eb] tw-p-5 tw-overflow-y-scroll">
+      {/* <div className="tw-mt-7 tw-h-[320px] tw-relative tw-rounded-[10px] border tw-border-[#e0e4eb] tw-p-5 tw-overflow-y-scroll">
         <div className="tw-text-black tw-text-base tw-font-bold">보유배지</div>
         <div className="tw-grid tw-grid-cols-6 tw-gap-4">
           {badgeContents.map((item, index) => (
@@ -207,7 +209,7 @@ const MyProfile = ({ profile, badgeContents, refetchProfile }: any) => {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
 
       <ProfileModal
         isOpen={isModalOpen}

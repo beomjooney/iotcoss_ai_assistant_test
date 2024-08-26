@@ -43,8 +43,8 @@ export function MyActivityTemplate() {
             <>
               <Desktop>
                 <div>
-                  <div className="tw-grid tw-grid-cols-5 tw-gap-0 tw-p-5 tw-flex tw-items-center tw-justify-between tw-gap-5">
-                    <div className="tw-h-[350px] tw-rounded-md  border border-secondary tw-border-indigo-500 tw-col-span-3 tw-text-base tw-font-bold tw-text-gray-600 tw-text-center tw-p-5">
+                  <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-py-5 tw-flex tw-items-center tw-justify-between tw-gap-5">
+                    <div className="tw-h-[350px] tw-rounded-md  border border-secondary tw-border-indigo-500 tw-col-span-12 tw-text-base tw-font-bold tw-text-gray-600 tw-text-center tw-p-5">
                       <div className="tw-text-xl tw-pt-4 tw-text-red-500">Today</div>
                       <div className="tw-text-xl tw-pb-10 tw-text-black">
                         {summary?.todaySummary?.date} ({summary?.todaySummary?.dayOfWeek})
@@ -66,7 +66,7 @@ export function MyActivityTemplate() {
                         </button>
                       </div>
                     </div>
-                    <div className="tw-h-[350px] border border-secondary tw-col-span-2 tw-text-base tw-font-bold tw-text-gray-600 tw-text-center  tw-rounded-md  tw-p-5">
+                    {/* <div className="tw-h-[350px] border border-secondary tw-col-span-2 tw-text-base tw-font-bold tw-text-gray-600 tw-text-center  tw-rounded-md  tw-p-5">
                       <div className="tw-text-xl tw-py-4 tw-text-black">최근 획득한 배지</div>
                       <div className="tw-text-center">
                         <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
@@ -85,14 +85,14 @@ export function MyActivityTemplate() {
                         </div>
                       </div>
                       <div className="tw-py-5">
-                        {/* <button
+                         <button
                           onClick={() => router.push('/profile')}
                           className="tw-bg-[#c1a876] tw-rounded-md tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-14 tw-rounded"
                         >
                           배지 전체보기
-                        </button> */}
+                        </button>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                   <div className="tw-font-bold tw-text-xl tw-text-black tw-py-5">나의 활동로그</div>
                   {isContentFetched ? (
@@ -141,7 +141,7 @@ export function MyActivityTemplate() {
                       </button>
                     </div>
                   </div>
-                  <div className="tw-h-[300px] border tw-mt-5 tw-text-base tw-font-bold tw-text-gray-600 tw-text-center  tw-rounded-md  tw-p-5">
+                  {/* <div className="tw-h-[300px] border tw-mt-5 tw-text-base tw-font-bold tw-text-gray-600 tw-text-center  tw-rounded-md  tw-p-5">
                     <div className="tw-text-xl tw-py-4 tw-text-black">최근 획득한 배지</div>
                     <div className="tw-text-center">
                       <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
@@ -167,7 +167,7 @@ export function MyActivityTemplate() {
                         배지 전체보기
                       </button>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
                 <div className="tw-font-bold tw-text-xl tw-text-black tw-py-10">나의 활동로그</div>
                 <div className="border tw-rounded-md">

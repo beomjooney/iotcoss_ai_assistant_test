@@ -389,7 +389,17 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
                       className="tw-flex-grow-0 tw-flex-shrink-0"
                       preserveAspectRatio="xMidYMid meet"
                     >
-                      <circle cx="7" cy="7.5" r="6.5" fill="white" stroke="#E11837"></circle>
+                      <circle cx="7" cy="7.5" r="6.5" fill="#FF8F60" stroke="#FF8F60"></circle>
+                      <text
+                        x="6.5"
+                        y="5"
+                        textAnchor="middle"
+                        dominantBaseline="central"
+                        fill="white"
+                        className="tw-text-xs tw-font-medium tw-text-center"
+                      >
+                        -
+                      </text>
                     </svg>
                     <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-left tw-text-[#31343d]">
                       미제출
@@ -405,7 +415,17 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
                       className="tw-flex-grow-0 tw-flex-shrink-0"
                       preserveAspectRatio="xMidYMid meet"
                     >
-                      <circle cx="7" cy="7.5" r="7" fill="#FF4444"></circle>
+                      <circle cx="7" cy="7.5" r="7" fill="#E11837"></circle>
+                      <text
+                        x="7.5"
+                        y="7.5"
+                        textAnchor="middle"
+                        dominantBaseline="central"
+                        fill="white"
+                        className="tw-text-xs tw-font-medium tw-text-center"
+                      >
+                        ?
+                      </text>
                     </svg>
                     <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-left tw-text-[#31343d]">
                       미채점

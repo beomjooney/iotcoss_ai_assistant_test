@@ -62,9 +62,10 @@ export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: Lo
 
       // Check if running in the local environment
       const isLocalEnv = process.env.NEXT_PUBLIC_ENV === 'local';
+      const isLocalProd = process.env.NEXT_PUBLIC_ENV === 'prod';
       console.log('loginData?.tenant_uri', loginData?.tenant_uri, getFirstSubdomain(), isLocalEnv);
 
-      if (loginData?.tenant_uri === getFirstSubdomain() || isLocalEnv) {
+      if (loginData?.tenant_uri === getFirstSubdomain() || isLocalEnv || isLocalProd) {
         location.href = '/';
       } else {
         const authStore = localStorage.getItem('auth-store');

@@ -480,6 +480,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
       maker: scheduleMap[index].maker,
       contentUrl: scheduleMap[index].contentUrl,
       contentTitle: scheduleMap[index].contentTitle,
+      isPublished: scheduleMap[index].isPublished,
       modelAnswer: scheduleMap[index].modelAnswer,
       quizUri: scheduleMap[index].quizUri,
     }));

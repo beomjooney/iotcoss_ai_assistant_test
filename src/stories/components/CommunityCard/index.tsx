@@ -304,7 +304,7 @@ CommunityCardProps) => {
               <div className="tw-flex-none tw-w-2/12 tw-items-center">
                 <div className="tw-flex tw-items-center tw-space-x-2 tw-h-14">
                   <img
-                    src={board?.member?.profileImageUrl || '/assets/avatars/2.jpg'}
+                    src={board?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
                     alt="profile"
                     className="border tw-rounded-full tw-h-10 tw-w-10"
                   />

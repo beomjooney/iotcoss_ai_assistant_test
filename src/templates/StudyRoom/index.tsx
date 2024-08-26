@@ -375,7 +375,7 @@ export function StudyRoomTemplate() {
                         className={cx('fixed-width', 'max-lg:!tw-hidden')}
                       />
                     ))}
-                    <ToggleLabel
+                    {/* <ToggleLabel
                       label="배지보기"
                       name="배지보기"
                       value=""
@@ -387,7 +387,7 @@ export function StudyRoomTemplate() {
                         setActive(4);
                       }}
                       className={cx('fixed-width')}
-                    />
+                    /> */}
                   </div>
                 </div>
               </Grid>

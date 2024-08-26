@@ -147,9 +147,9 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
       console.log('index', publishDate, index);
     }
     setSelectedQuiz(data?.clubQuizzes[index]);
-    const selectedSession = data?.clubQuizzes[index] ? data.clubQuizzes[index].publishDate : null;
+    const selectedSession = data?.clubQuizzes[index] ? data.clubQuizzes[index].quizSequence : null;
+    setSelectedValue(selectedSession);
     console.log('selectedSession 1', selectedSession);
-    setSelectedValue(publishDate || selectedSession);
     console.log(data?.clubQuizzes[index]);
     setContents(data);
 
@@ -403,10 +403,8 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     fileInputRef.current.click();
   };
   const handleAddInput = () => {
-    setInputList([...inputList, { id: Date.now(), value: '', url: '' }]);
-  };
-  const handleDeleteInput = id => {
-    setInputList(inputList.filter(input => input.id !== id));
+    // Ensure inputList is always an array
+    setInputList(prevInputList => [...(prevInputList || []), { id: Date.now(), value: '', url: '' }]);
   };
   const handleFileChange = event => {
     const files = Array.from(event.target.files);
@@ -480,12 +478,12 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     // formData.append('isNew', grade);
 
     // Validate inputList
-    if (!Array.isArray(inputList)) {
-      alert('Invalid input list');
-      return false;
-    }
+    // if (!Array.isArray(inputList)) {
+    //   alert('Invalid input list');
+    //   return false;
+    // }
 
-    for (let i = 0; i < inputList.length; i++) {
+    for (let i = 0; i < inputList?.length; i++) {
       const input = inputList[i];
 
       if (input.url === '' && input.value === '') {
@@ -809,10 +807,11 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                       </svg>
                     </div>
                     <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col">
-                      <img className="border tw-rounded-full tw-w-10 tw-h-10 " src={item?.member?.profileImageUrl} />
-                      <div className="tw-text-xs tw-text-center tw-text-black tw-pt-2">
-                        {item?.member?.nickname || 'N/A'}
-                      </div>
+                      {item?.threadType === '0003' ? (
+                        <img className="tw-rounded-full tw-w-10 tw-h-10 " src="/assets/images/main/chatbot.png" />
+                      ) : (
+                        <img className="tw-rounded-full tw-w-10 tw-h-10 " src={item?.member?.profileImageUrl} />
+                      )}
                     </div>
                     <div className="tw-flex-auto tw-w-9/12 tw-px-3">
                       <div className="tw-py-2">
@@ -1037,7 +1036,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                     </div>
                   </div>
 
-                  {inputList.length > 0 && (
+                  {inputList?.length > 0 && (
                     <div className="tw-flex  tw-py-2">
                       <div className="tw-flex-none tw-w-30  tw-text-sm tw-mt-2">업로드 링크 : </div>
                       <div className="tw-flex-1 tw-text-left tw-pl-5">

@@ -61,7 +61,10 @@ export function GrowthStoryTemplate({ hasInfoData, userType }: GrowthStoryTempla
                 <div className="tw-p-10  tw-mb-5">
                   <div className="tw-p-10">가입 승인 대기 중인 클럽이 없습니다.</div>
                   <button
-                    onClick={() => (location.href = '/quiz')}
+                    onClick={() => {
+                      location.href = '/quiz';
+                      localStorage.setItem('activeIndex', '1');
+                    }}
                     className="tw-mr-2 tw-bg-[#2474ED] tw-rounded-md border tw-text-sm tw-text-white tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
                   >
                     클럽 가입하러가기
