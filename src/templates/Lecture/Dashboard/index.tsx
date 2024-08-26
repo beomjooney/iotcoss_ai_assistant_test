@@ -29,6 +29,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Modal from 'src/stories/components/Modal';
+import TextField from '@mui/material/TextField';
 
 /** import pagenation */
 import Pagination from '@mui/material/Pagination';
@@ -1125,6 +1126,11 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                     </TableBody>
                   </Table>
                 </TableContainer>
+                {myDashboardStudentList?.students?.contents?.length === 0 && (
+                  <div className={cx('tw-flex tw-justify-center tw-items-center tw-h-[50vh]')}>
+                    <p className="tw-text-center tw-text-base tw-font-bold tw-text-[#31343d]">데이터가 없습니다.</p>
+                  </div>
+                )}
               </div>
             )}
 
@@ -1308,6 +1314,11 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                     </TableBody>
                   </Table>
                 </TableContainer>
+                {myDashboardLectureList?.contents?.length === 0 && (
+                  <div className={cx('tw-flex tw-justify-center tw-items-center tw-h-[50vh]')}>
+                    <p className="tw-text-center tw-text-base tw-font-bold tw-text-[#31343d]">데이터가 없습니다.</p>
+                  </div>
+                )}
               </div>
             )}
           </>
@@ -1344,47 +1355,36 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                 <TableBody>
                   {myDashboardQA?.members?.map((info, memberIndex) => (
                     <React.Fragment key={memberIndex}>
-                      <TableRow>
-                        <TableCell
-                          align="left"
-                          component="th"
-                          scope="row"
-                          className="border-right"
-                          rowSpan={info.questionAnswers.length}
-                        >
-                          <div className="tw-flex tw-justify-start tw-items-center tw-gap-2">
-                            <img
-                              src={info?.icon?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
-                              className="tw-w-10 tw-h-10 border tw-rounded-full"
-                              alt="Profile"
-                            />
-                            <div className="tw-ml-2">{info?.icon?.nickname}</div>
-                          </div>
-                        </TableCell>
-                        {/* 첫 번째 질문과 답변에 대한 행 */}
-                        {info.questionAnswers.length > 0 && (
-                          <>
-                            <TableCell align="left" component="th" scope="row" className="border-right">
-                              <div className="tw-font-bold tw-text-sm">{info.questionAnswers[0]?.question}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row" className="border-right">
-                              <div className="tw-font-bold tw-text-sm">{info.questionAnswers[0]?.answer}</div>
-                            </TableCell>
-                            <TableCell align="center" component="th" scope="row">
-                              <button className="tw-text-sm tw-font-bold border tw-py-2 tw-px-3 tw-text-gray-400 tw-rounded">
-                                +
-                              </button>
-                            </TableCell>
-                          </>
-                        )}
-                      </TableRow>
-
-                      {/* 나머지 질문과 답변에 대한 행들 */}
-                      {info.questionAnswers.slice(1).map((questionInfo, questionIndex) => (
+                      {info.questionAnswers.map((questionInfo, questionIndex) => (
                         <TableRow key={questionIndex}>
+                          {/* Render the student info only for the first question */}
+                          {questionIndex === 0 && (
+                            <TableCell
+                              align="left"
+                              component="th"
+                              scope="row"
+                              className="border-right"
+                              rowSpan={info.questionAnswers.length}
+                            >
+                              <div className="tw-flex tw-justify-start tw-items-center tw-gap-2">
+                                <img
+                                  src={
+                                    info?.icon?.profileImageUrl || '/assets/images/account/default_profile_image.png'
+                                  }
+                                  className="tw-w-10 tw-h-10 border tw-rounded-full"
+                                  alt="Profile"
+                                />
+                                <div className="tw-ml-2">{info?.icon?.nickname}</div>
+                              </div>
+                            </TableCell>
+                          )}
+
+                          {/* Question Column */}
                           <TableCell align="left" component="th" scope="row" className="border-right">
                             <div className="tw-font-bold tw-text-sm">{questionInfo?.question}</div>
                           </TableCell>
+
+                          {/* Answer Details Column */}
                           <TableCell align="left" component="th" scope="row" className="border-right">
                             <div className="tw-font-bold tw-text-sm">
                               {questionInfo?.answer
@@ -1396,25 +1396,50 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                     : '') +
                                   questionInfo?.answer
                                 : null}
+                              {openInputIndex === questionInfo?.lectureQuestionSerialNumber && (
+                                <div className="tw-mt-2 tw-flex tw-justify-start tw-items-center tw-gap-2">
+                                  <TextField
+                                    type="text"
+                                    placeholder="답변을 추가하세요"
+                                    size="small"
+                                    className="tw-border tw-px-0 tw-py-0 tw-w-full tw-rounded"
+                                  />
+                                  <button className="tw-w-[80px] tw-text-sm tw-font-bold border tw-py-2.5 tw-px-3 tw-rounded">
+                                    저장
+                                  </button>
+                                  <button
+                                    onClick={e => {
+                                      e.preventDefault();
+                                      setOpenInputIndex(null);
+                                    }}
+                                    className="tw-w-[80px] tw-text-sm tw-font-bold border tw-py-2.5 tw-px-3 tw-rounded"
+                                  >
+                                    삭제
+                                  </button>
+                                </div>
+                              )}
                             </div>
+
+                            {/* Render files if present */}
                             {questionInfo?.files?.length > 0 && (
                               <div className="tw-mt-2 tw-text-sm tw-flex tw-justify-start tw-items-center tw-flex-wrap tw-gap-2">
                                 <div>강의자료 : </div>
-                                {questionInfo.files.map((fileEntry, index) => (
-                                  <div key={index} className="border tw-px-2 tw-py-0.5 tw-rounded">
+                                {questionInfo.files.map((fileEntry, fileIndex) => (
+                                  <div key={fileIndex} className="border tw-px-2 tw-py-0.5 tw-rounded">
                                     <span
                                       onClick={() => {
                                         onFileDownload(fileEntry.key, fileEntry.name);
                                       }}
                                       className="tw-text-gray-400 tw-cursor-pointer"
                                     >
-                                      {fileEntry?.file?.name || fileEntry.name}
+                                      {fileEntry?.name}
                                     </span>
                                   </div>
                                 ))}
                               </div>
                             )}
 
+                            {/* Reference URLs */}
                             {questionInfo?.referenceUrls && (
                               <div className="tw-mt-2 tw-text-sm tw-flex tw-justify-start tw-items-center tw-flex-wrap tw-gap-2">
                                 <div>출처 : </div>
@@ -1426,8 +1451,17 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                               </div>
                             )}
                           </TableCell>
+
+                          {/* Additional Answer Button Column */}
                           <TableCell align="center" component="th" scope="row">
-                            <button className="tw-text-sm tw-font-bold border tw-py-2 tw-px-3 tw-text-gray-400 tw-rounded">
+                            <button
+                              onClick={e => {
+                                e.preventDefault();
+                                setIsInputOpen(true);
+                                setOpenInputIndex(questionInfo?.lectureQuestionSerialNumber);
+                              }}
+                              className="tw-text-sm tw-font-bold border tw-py-2 tw-px-3 tw-text-gray-400 tw-rounded"
+                            >
                               +
                             </button>
                           </TableCell>

@@ -12,7 +12,14 @@ import PaginationItem from '@mui/material/PaginationItem';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
-// import { useMyClubList } from 'src/services/seminars/seminars.queries';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+
+import { useMyDashboardQA } from 'src/services/seminars/seminars.queries';
 
 /**icon */
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
@@ -31,7 +38,7 @@ import { Button, Typography, Profile, Modal, ArticleCard } from 'src/stories/com
 const cx = classNames.bind(styles);
 
 //comment
-import { useLectureQAInfo, useLectureStudyQAInfo } from 'src/services/quiz/quiz.queries';
+import { useLectureQAInfo, useLectureStudyQAInfo, useQuizFileDownload } from 'src/services/quiz/quiz.queries';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 
 const LectureListView = ({ border, id }) => {
@@ -108,6 +115,61 @@ const LectureListView = ({ border, id }) => {
       setSortType(event.target.value);
     }
   };
+
+  let [key, setKey] = useState('');
+  let [fileName, setFileName] = useState('');
+  const [totalQuestionPage, setTotalQuestionPage] = useState(1);
+  const [myDashboardQA, setMyDashboardQA] = useState<any>([]);
+  const [questionPage, setQuestionPage] = useState(1);
+  const [isInputOpen, setIsInputOpen] = useState(false);
+  const [openInputIndex, setOpenInputIndex] = useState(null);
+
+  const { isFetched: isParticipantListFetcheds } = useQuizFileDownload(key, data => {
+    // console.log('file download', data);
+    if (data) {
+      // blob 데이터를 파일로 저장하는 로직
+      const url = window.URL.createObjectURL(new Blob([data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', fileName); // 다운로드할 파일 이름과 확장자를 설정합니다.
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setKey('');
+      setFileName('');
+    }
+  });
+
+  const [myClubLectureQA, setMyClubLectureQA] = useState<any>({
+    clubSequence: selectedClub?.clubSequence || id,
+    sequence: clubStudySequence,
+    data: { questionPage: 1 },
+  });
+
+  // 강의클럽 대시보드 강의별 참여 현황
+  const { isFetched: isDashboardQAFetched, refetch: refetchMyDashboardQA } = useMyDashboardQA(myClubLectureQA, data => {
+    console.log('useMyDashboardQA', data);
+    setTotalQuestionPage(data?.totalPages);
+    setMyDashboardQA(data || []);
+  });
+
+  const onFileDownload = function (key: string, fileName: string) {
+    console.log(key);
+    setKey(key);
+    setFileName(fileName);
+  };
+
+  const handleQAPageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    console.log(value);
+    setQuestionPage(value);
+  };
+
+  useDidMountEffect(() => {
+    console.log('clubStudySequence', clubStudySequence);
+    refetchMyDashboardQA();
+  }, [myClubLectureQA]);
+
+  // Handler to delete a question-answer pair
 
   return (
     <div className={`tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white ${borderStyle}`}>
@@ -294,7 +356,7 @@ const LectureListView = ({ border, id }) => {
               {quizList.map((item, index) => {
                 return (
                   <div className="" key={index}>
-                    <div className="tw-bg-[#F6F7FB] tw-flex tw-items-center tw-px-4 tw-py-1 tw-rounded-xl tw-my-5">
+                    <div className="tw-bg-[#F6F7FB] tw-flex tw-items-center tw-px-4 tw-py-1 tw-rounded-xl tw-my-3">
                       <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                         <img
                           className="tw-w-10 tw-h-10 border tw-rounded-full"
@@ -309,78 +371,102 @@ const LectureListView = ({ border, id }) => {
                       </div>
                       <div className="tw-pr-4">
                         <button
-                          onClick={() => {
-                            router.push(
-                              {
-                                pathname: `/quiz-answers/${item?.clubSequence}`,
-                                query: {
-                                  publishDate: item?.publishDate,
-                                },
-                              },
-                              `/quiz-answers/${item?.clubSequence}`,
-                            );
-                          }}
                           type="button"
-                          disabled={!item?.isPublished}
                           data-tooltip-target="tooltip-default"
+                          onClick={() => {
+                            setIsModalOpen(true);
+                            setMyClubLectureQA({
+                              clubSequence: item?.clubSequence,
+                              sequence: item?.clubStudySequence,
+                              data: { questionPage: 1 },
+                            });
+                          }}
                           className="tw-bg-black tw-text-white max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-2 tw-rounded"
                         >
                           추가 질문하기
                         </button>
                       </div>
                     </div>
-                    <div className="tw-flex tw-items-center  border tw-border tw-px-4 tw-py-5 tw-rounded-lg tw-mt-3">
-                      <div className="tw-w-1/12 tw-text-lg tw-font-medium  tw-flex tw-items-start tw-justify-center">
-                        <svg
-                          width={24}
-                          height={24}
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="w-6 h-6 relative"
-                          preserveAspectRatio="xMidYMid meet"
-                        >
-                          <path
-                            d="M6 4V11.3362C6 12.309 6.29176 13.242 6.81109 13.9299C7.33042 14.6178 8.03479 15.0043 8.76923 15.0043H18M18 15.0043L14.3077 10.1135M18 15.0043L14.3077 19.8951"
-                            stroke="#9CA5B2"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
+                    <div className=" border  tw-px-4 tw-py-5 tw-rounded-lg tw-mt-0">
+                      <div className="tw-flex tw-items-center ">
+                        <div className="tw-w-1/12 tw-text-lg tw-font-medium  tw-flex tw-items-start tw-justify-center">
+                          <svg
+                            width={24}
+                            height={24}
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="w-6 h-6 relative"
+                            preserveAspectRatio="xMidYMid meet"
+                          >
+                            <path
+                              d="M6 4V11.3362C6 12.309 6.29176 13.242 6.81109 13.9299C7.33042 14.6178 8.03479 15.0043 8.76923 15.0043H18M18 15.0043L14.3077 10.1135M18 15.0043L14.3077 19.8951"
+                              stroke="#9CA5B2"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </div>
+                        <div className="tw-w-1/12 tw-text-sm tw-text-black  tw-font-bold  ">AI답변 : </div>
+                        <div className="tw-text-sm ">
+                          <span className="tw-text-gray-500">
+                            {item?.questionStatus === '0200' ? '(강의자료)' : '(일반서치)'} {item?.ai1stAnswer}
+                          </span>
+                        </div>
                       </div>
-                      <div className="tw-w-1/12 tw-text-sm tw-text-black  tw-font-bold  ">AI답변 : </div>
-                      <div className="tw-text-sm ">
-                        <span className="tw-text-gray-500">
-                          {item?.questionStatus === '0200' ? '(강의자료)' : '(일반서치)'}
-                        </span>
+                      <div className="tw-flex tw-items-center ">
+                        <div className="tw-w-2/12 tw-text-lg tw-font-medium  tw-flex tw-items-start tw-justify-center"></div>
+                        <div className="tw-text-sm tw-w-10/12">
+                          {item?.ai1stContents?.files?.length > 0 && (
+                            <div className="tw-flex ">
+                              <div className="tw-text-left tw-text-sm">
+                                <ul className="">
+                                  {item?.ai1stContents?.files?.map((file, index) => (
+                                    <div
+                                      key={index}
+                                      onClick={() => {
+                                        onFileDownload(file.key, file.name);
+                                      }}
+                                      className="tw-underline tw-text-blue-500 tw-cursor-pointer tw-p-1 tw-pl-0   tw-my-1"
+                                    >
+                                      ㄴ첨부된파일 : {file.name}
+                                    </div>
+                                  ))}
+                                </ul>
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
-                    <div className="tw-flex tw-items-center border tw-border tw-px-4 tw-py-5 tw-rounded-lg tw-mt-5">
-                      <div className="tw-w-1/12 tw-text-lg tw-font-medium  tw-flex tw-items-start tw-justify-center">
-                        <svg
-                          width={24}
-                          height={24}
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="w-6 h-6 relative"
-                          preserveAspectRatio="xMidYMid meet"
-                        >
-                          <path
-                            d="M6 4V11.3362C6 12.309 6.29176 13.242 6.81109 13.9299C7.33042 14.6178 8.03479 15.0043 8.76923 15.0043H18M18 15.0043L14.3077 10.1135M18 15.0043L14.3077 19.8951"
-                            stroke="#9CA5B2"
-                            stroke-width="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
+                    {item?.instructor1stAnswer && (
+                      <div className="tw-flex tw-items-center border tw-border tw-px-4 tw-py-5 tw-rounded-lg tw-mt-3">
+                        <div className="tw-w-1/12 tw-text-lg tw-font-medium  tw-flex tw-items-start tw-justify-center">
+                          <svg
+                            width={24}
+                            height={24}
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="w-6 h-6 relative"
+                            preserveAspectRatio="xMidYMid meet"
+                          >
+                            <path
+                              d="M6 4V11.3362C6 12.309 6.29176 13.242 6.81109 13.9299C7.33042 14.6178 8.03479 15.0043 8.76923 15.0043H18M18 15.0043L14.3077 10.1135M18 15.0043L14.3077 19.8951"
+                              stroke="#9CA5B2"
+                              stroke-width="1.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </div>
+                        <div className="tw-w-[75px] tw-text-sm tw-text-black  tw-font-bold tw-text-blue-700 ">
+                          교수답변 :{' '}
+                        </div>
+                        <div className="tw-text-sm tw-text-black ">{item?.instructor1stAnswer}</div>
                       </div>
-                      <div className="tw-w-[120px] tw-text-sm tw-text-black  tw-font-bold tw-text-blue-700 ">
-                        교수답변 :{' '}
-                      </div>
-                      <div className="tw-text-sm tw-text-black ">{item?.instructor1stAnswer}</div>
-                    </div>
+                    )}
                   </div>
                 );
               })}
@@ -388,32 +474,171 @@ const LectureListView = ({ border, id }) => {
           </div>
         </div>
       </div>
-      <Modal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)} title="퀴즈풀러가기" maxWidth="900px">
+      <Modal
+        isOpen={isModalOpen}
+        onAfterClose={() => {
+          setQuestionPage(1);
+          setIsModalOpen(false);
+        }}
+        title="질의응답"
+        maxWidth="1100px"
+        maxHeight="800px"
+      >
         <div className={cx('seminar-check-popup')}>
-          <div className={cx('mb-5')}>
-            <span className={cx('text-bold', 'tw-text-xl', 'tw-font-bold')}>가입 신청이 완료되었습니다!</span>
-          </div>
-          <div>가입 신청 후 클럽장 승인이 완료될때까지 기다려주세요!</div>
-          <div>승인 완료 후 MY페이지나 퀴즈클럽 페이지 상단에서 가입된 클럽을 확인하실 수 있습니다.</div>
-          <br></br>
-          <br></br>
-          <div className="tw-mt-5">
-            <Button className="tw-mr-5" color="red" label="확인" size="modal" onClick={() => setIsModalOpen(false)} />
-            {/* <Button
-              color="primary"
-              label="연락처 입력하러가기"
-              size="modal"
-              onClick={() =>
-                router.push(
-                  {
-                    pathname: '/profile',
-                    query: { isOpenModal: true, beforeQuizSequence: id },
-                  },
-                  '/profile',
-                )
-              }
-            /> */}
-          </div>
+          <TableContainer>
+            <Table className="" aria-label="simple table" style={{ tableLayout: 'fixed' }}>
+              <TableHead style={{ backgroundColor: '#F6F7FB' }}>
+                <TableRow>
+                  <TableCell align="left" width={160} className="border-right">
+                    <div className="tw-font-bold tw-text-base">학생</div>
+                  </TableCell>
+                  <TableCell align="left" width={250} className="border-right">
+                    <div className="tw-font-bold tw-text-base">질문</div>
+                  </TableCell>
+                  <TableCell align="left" className="border-right">
+                    <div className="tw-font-bold tw-text-base">답변내역</div>
+                  </TableCell>
+                  <TableCell align="left" width={100}>
+                    <div className="tw-font-bold tw-text-base">추가답변</div>
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {myDashboardQA?.members?.map((info, memberIndex) => (
+                  <React.Fragment key={memberIndex}>
+                    {info.questionAnswers.map((questionInfo, questionIndex) => (
+                      <TableRow key={questionIndex}>
+                        {/* Render the student info only for the first question */}
+                        {questionIndex === 0 && (
+                          <TableCell
+                            align="left"
+                            component="th"
+                            scope="row"
+                            className="border-right"
+                            rowSpan={info.questionAnswers.length}
+                          >
+                            <div className="tw-flex tw-justify-start tw-items-center tw-gap-2">
+                              <img
+                                src={info?.icon?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
+                                className="tw-w-10 tw-h-10 border tw-rounded-full"
+                                alt="Profile"
+                              />
+                              <div className="tw-ml-2">{info?.icon?.nickname}</div>
+                            </div>
+                          </TableCell>
+                        )}
+
+                        {/* Question Column */}
+                        <TableCell align="left" component="th" scope="row" className="border-right">
+                          <div className="tw-font-bold tw-text-sm">{questionInfo?.question}</div>
+                        </TableCell>
+
+                        {/* Answer Details Column */}
+                        <TableCell align="left" component="th" scope="row" className="border-right">
+                          <div className="tw-font-bold tw-text-sm">
+                            {questionInfo?.answer
+                              ? 'AI답변 : ' +
+                                (questionInfo?.answerType === '0200'
+                                  ? '(강의자료) : '
+                                  : questionInfo?.answerType === '0300'
+                                  ? '(일반서치) : '
+                                  : '') +
+                                questionInfo?.answer
+                              : null}
+                            {openInputIndex === questionInfo?.lectureQuestionSerialNumber && (
+                              <div className="tw-mt-2 tw-flex tw-justify-start tw-items-center tw-gap-2">
+                                <TextField
+                                  type="text"
+                                  placeholder="답변을 추가하세요"
+                                  size="small"
+                                  className="tw-border tw-px-0 tw-py-0 tw-w-full tw-rounded"
+                                />
+                                <button className="tw-w-[80px] tw-text-sm tw-font-bold border tw-py-2.5 tw-px-3 tw-rounded">
+                                  저장
+                                </button>
+                                <button
+                                  onClick={e => {
+                                    e.preventDefault();
+                                    setOpenInputIndex(null);
+                                  }}
+                                  className="tw-w-[80px] tw-text-sm tw-font-bold border tw-py-2.5 tw-px-3 tw-rounded"
+                                >
+                                  삭제
+                                </button>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Render files if present */}
+                          {questionInfo?.files?.length > 0 && (
+                            <div className="tw-mt-2 tw-text-sm tw-flex tw-justify-start tw-items-center tw-flex-wrap tw-gap-2">
+                              <div>강의자료 : </div>
+                              {questionInfo.files.map((fileEntry, fileIndex) => (
+                                <div key={fileIndex} className="border tw-px-2 tw-py-0.5 tw-rounded">
+                                  <span
+                                    onClick={() => {
+                                      onFileDownload(fileEntry.key, fileEntry.name);
+                                    }}
+                                    className="tw-text-gray-400 tw-cursor-pointer"
+                                  >
+                                    {fileEntry?.name}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+
+                          {/* Reference URLs */}
+                          {questionInfo?.referenceUrls && (
+                            <div className="tw-mt-2 tw-text-sm tw-flex tw-justify-start tw-items-center tw-flex-wrap tw-gap-2">
+                              <div>출처 : </div>
+                              <div className="border tw-px-2 tw-py-0.5 tw-rounded">
+                                <span className="tw-text-gray-400 tw-cursor-pointer">
+                                  {questionInfo?.referenceUrls}
+                                </span>
+                              </div>
+                            </div>
+                          )}
+                        </TableCell>
+
+                        {/* Additional Answer Button Column */}
+                        <TableCell align="center" component="th" scope="row">
+                          <button
+                            onClick={e => {
+                              e.preventDefault();
+                              setIsInputOpen(true);
+                              setOpenInputIndex(questionInfo?.lectureQuestionSerialNumber);
+                            }}
+                            className="tw-text-sm tw-font-bold border tw-py-2 tw-px-3 tw-text-gray-400 tw-rounded"
+                          >
+                            +
+                          </button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </React.Fragment>
+                ))}
+              </TableBody>
+            </Table>
+
+            {myDashboardQA?.members?.length === 0 && (
+              <div className={cx('tw-flex tw-justify-center tw-items-center tw-h-[20vh]')}>
+                <p className="tw-text-center tw-text-base tw-font-bold tw-text-[#31343d]">데이터가 없습니다.</p>
+              </div>
+            )}
+            <div className="tw-flex tw-justify-center tw-items-center tw-mt-5">
+              <Pagination
+                count={totalQuestionPage}
+                size="small"
+                siblingCount={0}
+                page={questionPage}
+                renderItem={item => (
+                  <PaginationItem slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }} {...item} />
+                )}
+                onChange={handleQAPageChange}
+              />
+            </div>
+          </TableContainer>
         </div>
       </Modal>
     </div>
