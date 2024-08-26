@@ -100,7 +100,7 @@ export function LectureDetailTemplate({ id }: LectureDetailTemplateProps) {
             totalPage={totalPage}
             page={page}
             handlePageChange={handlePageChange}
-            contents={clubAbout.lectureClub || []}
+            contents={clubAbout?.lectureClub || []}
             study={clubAbout.clubStudies || []}
             quizList={quizList}
             refetchClubAbout={refetchClubAbout}

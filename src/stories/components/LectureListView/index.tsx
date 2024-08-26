@@ -409,7 +409,7 @@ const LectureListView = ({ border, id }) => {
                           </svg>
                         </div>
                         <div className="tw-w-1/12 tw-text-sm tw-text-black  tw-font-bold  ">AI답변 : </div>
-                        <div className="tw-text-sm ">
+                        <div className="tw-text-sm tw-w-11/12">
                           <span className="tw-text-gray-500">
                             {item?.questionStatus === '0200' ? '(강의자료)' : '(일반서치)'} {item?.ai1stAnswer}
                           </span>
@@ -461,10 +461,14 @@ const LectureListView = ({ border, id }) => {
                             />
                           </svg>
                         </div>
-                        <div className="tw-w-[75px] tw-text-sm tw-text-black  tw-font-bold tw-text-blue-700 ">
+                        <div className="tw-w-1/12 tw-text-sm tw-text-black  tw-font-bold  ">교수답변 : </div>
+                        <div className="tw-text-sm tw-w-11/12">
+                          <span className="tw-text-gray-500">{item?.instructor1stAnswer}</span>
+                        </div>
+                        {/* <div className="tw-w-[75px] tw-text-sm tw-text-black  tw-font-bold tw-text-blue-700 ">
                           교수답변 :{' '}
                         </div>
-                        <div className="tw-text-sm tw-text-black ">{item?.instructor1stAnswer}</div>
+                        <div className="tw-text-sm tw-text-black ">{item?.instructor1stAnswer}</div> */}
                       </div>
                     )}
                   </div>
