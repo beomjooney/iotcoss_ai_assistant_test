@@ -86,7 +86,7 @@ function Modal({
         <div className={cx('closable', 'tw-bg-white', '')} onClick={() => setIsShow(false)}>
           {title && (
             <div className="">
-              <span className={cx('modal-header__title', 'tw-px-5 tw-mb-5 tw-font-bold tw-text-[18px] tw-text-black')}>
+              <span className={cx('modal-header__title', 'tw-px-10 tw-mb-5 tw-font-bold tw-text-[18px] tw-text-black')}>
                 {title}
               </span>
             </div>

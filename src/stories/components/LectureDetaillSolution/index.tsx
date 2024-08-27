@@ -199,8 +199,8 @@ const LectureDetaillSolution = ({
         <div className="tw-pointer-events-none tw-px-[50px] tw-absolute tw-top-[300px] tw-left-0 tw-right-0 tw-bottom-0 tw-rounded-[8.75px] tw-py-[40px]">
           <div className="tw-flex tw-items-end tw-gap-[16px]">
             <img
-              className="tw-w-40 tw-h-40 border tw-rounded-full"
-              src={contents?.club?.leaderProfileImageUrl || '/assets/images/account/default_profile_image.png'}
+              className="tw-w-40 tw-h-40 tw-rounded-full"
+              src={contents?.leader?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
             />
             <div className="tw-flex tw-items-center">
               <div className="tw-flex tw-text-sm tw-text-black border tw-py-1 tw-px-2  tw-mr-5 tw-rounded-lg">
