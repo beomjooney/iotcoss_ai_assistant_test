@@ -8,8 +8,6 @@ import { useSessionStore } from 'src/store/session';
 import Grid from '@mui/material/Grid';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import StarIcon from '@mui/icons-material/Star';
-import { Desktop, Mobile } from 'src/hooks/mediaQuery';
-import Footer from '../Footer';
 
 export interface ClubCardProps {
   /** 게시판 object */
@@ -118,14 +116,6 @@ ClubCardProps) => {
           src={item?.clubImageUrl || '/assets/images/banner/Rectangle_193.png'}
           alt=""
         />
-        <button
-          className="tw-absolute tw-pl-2 tw-pt-2"
-          onClick={() => {
-            onChangeLike(item.clubSequence);
-          }}
-        >
-          {isLiked ? <StarIcon color="error" /> : <StarBorderIcon color="disabled" />}
-        </button>
         <div className="tw-flex tw-w-full tw-flex-col tw-p-[12px]">
           <Grid container direction="row" justifyContent="space-between" alignItems="center" rowSpacing={0}>
             <Grid item xs={12}>
@@ -168,10 +158,10 @@ ClubCardProps) => {
 
           <div className="tw-text-[12px] tw-mb-[12px] tw-font-bold tw-text-[#9a9a9a]">
             {item.studyCycle.length > 0 ? `${item.studyCycle[0].toString()} | ` : ''}
-            {item.weekCount || 'N/A'}주 | 학습 {item.studyCount || '0'}회
+            {item.weekCount || '0'}주 | 학습 {item.studyCount || '0'}회
           </div>
 
-          <div className="tw-flex tw-items-center tw-space-x-4">
+          <div className="tw-flex tw-items-center tw-w-full tw-justify-center tw-gap-2">
             <img
               className="tw-w-8 tw-h-8 border tw-rounded-full"
               src={item?.leaderProfileImageUrl || '/assets/images/account/default_profile_image.png'}
@@ -180,6 +170,14 @@ ClubCardProps) => {
             <div className="tw-text-sm tw-font-semibold tw-text-black">
               <div>{item?.leaderNickname}</div>
             </div>
+            <button
+              className="tw-pl-2 tw-pt-2 tw-ml-auto"
+              onClick={() => {
+                onChangeLike(item.clubSequence);
+              }}
+            >
+              {isLiked ? <StarIcon color="error" /> : <StarBorderIcon color="disabled" />}
+            </button>
           </div>
         </div>
       </a>
