@@ -461,10 +461,14 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
                             />
                           </svg>
                         </div>
-                        <div className="tw-w-[75px] tw-text-sm tw-text-black  tw-font-bold tw-text-blue-700 ">
+                        <div className="tw-w-1/12 tw-text-sm tw-text-black  tw-font-bold  ">교수답변 : </div>
+                        <div className="tw-text-sm tw-w-11/12">
+                          <span className="tw-text-gray-500">{item?.instructor1stAnswer}</span>
+                        </div>
+                        {/* <div className="tw-w-[75px] tw-text-sm tw-text-black  tw-font-bold tw-text-blue-700 ">
                           교수답변 :{' '}
                         </div>
-                        <div className="tw-text-sm tw-text-black ">{item?.instructor1stAnswer}</div>
+                        <div className="tw-text-sm tw-text-black ">{item?.instructor1stAnswer}</div> */}
                       </div>
                     )}
                   </div>
