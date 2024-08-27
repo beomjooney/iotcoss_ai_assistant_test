@@ -1,6 +1,5 @@
 // QuizClubDetailInfo.jsx
-import React, { useState } from 'react';
-import Avatar from '@mui/material/Avatar';
+import React, { useState, useEffect } from 'react';
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import Divider from '@mui/material/Divider';
@@ -21,13 +20,7 @@ import TableRow from '@material-ui/core/TableRow';
 
 import { useMyDashboardQA } from 'src/services/seminars/seminars.queries';
 
-/**icon */
-import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
-import SettingsIcon from '@mui/icons-material/Settings';
-
 import { Radio, RadioGroup, FormControlLabel, TextField } from '@mui/material';
-import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded';
 import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded';
 import SearchIcon from '@mui/icons-material/Search';
@@ -41,10 +34,10 @@ const cx = classNames.bind(styles);
 import { useLectureQAInfo, useLectureStudyQAInfo, useQuizFileDownload } from 'src/services/quiz/quiz.queries';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 
-const LectureListView = ({ border, id }) => {
+const LectureListView = ({ border, id, clubStudySequence }) => {
   const router = useRouter();
-  const { clubStudySequence } = router.query;
-  console.log('clubStudySequence', id, clubStudySequence);
+  // const { clubStudySequence } = router.query;
+  // console.log('clubStudySequence', id, clubStudySequence);
 
   const borderStyle = border ? 'border border-[#e9ecf2] tw-mt-14' : '';
   // const [activeTab, setActiveTab] = useState('myQuiz');
@@ -54,7 +47,7 @@ const LectureListView = ({ border, id }) => {
   const [myClubList, setMyClubList] = useState<any>([]);
   const [quizList, setQuizList] = useState<any>([]);
   const [studyQAInfo, setStudyQAInfo] = useState<any>([]);
-  const [selectedValue, setSelectedValue] = useState(id);
+  const [studySequence, setStudySequence] = useState(clubStudySequence);
   const [selectedClub, setSelectedClub] = useState<any>(id);
   const [sortType, setSortType] = useState('');
   const [isPublished, setIsPublished] = useState('');
@@ -64,15 +57,22 @@ const LectureListView = ({ border, id }) => {
 
   const [params, setParams] = useState<any>({ id: '225', page });
 
+  useEffect(() => {
+    if (clubStudySequence) {
+      console.log('clubStudySequence', clubStudySequence);
+      setStudySequence(clubStudySequence); // Update state when clubStudySequence is available
+    }
+  }, [clubStudySequence]);
+
   const [myClubParams, setMyClubParams] = useState<any>({
     clubSequence: id,
-    clubStudySequence: clubStudySequence,
+    clubStudySequence: studySequence,
     questionStatuses: '',
     page,
   });
   const [myStudyClubParams, setMyStudyClubParams] = useState<any>({
     clubSequence: id,
-    clubStudySequence: clubStudySequence,
+    clubStudySequence: studySequence,
   });
 
   console.log('myClubParams', myClubParams);
@@ -100,7 +100,7 @@ const LectureListView = ({ border, id }) => {
   useDidMountEffect(() => {
     setMyClubParams({
       clubSequence: selectedClub,
-      clubStudySequence: clubStudySequence,
+      clubStudySequence: studySequence,
       questionStatuses: sortType,
       page: page,
     });
@@ -142,7 +142,7 @@ const LectureListView = ({ border, id }) => {
 
   const [myClubLectureQA, setMyClubLectureQA] = useState<any>({
     clubSequence: selectedClub?.clubSequence || id,
-    sequence: clubStudySequence,
+    sequence: studySequence,
     data: { questionPage: 1 },
   });
 
@@ -409,7 +409,7 @@ const LectureListView = ({ border, id }) => {
                           </svg>
                         </div>
                         <div className="tw-w-1/12 tw-text-sm tw-text-black  tw-font-bold  ">AI답변 : </div>
-                        <div className="tw-text-sm ">
+                        <div className="tw-text-sm tw-w-10/12">
                           <span className="tw-text-gray-500">
                             {item?.questionStatus === '0200' ? '(강의자료)' : '(일반서치)'} {item?.ai1stAnswer}
                           </span>

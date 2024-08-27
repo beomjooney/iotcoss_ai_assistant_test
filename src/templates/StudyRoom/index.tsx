@@ -45,6 +45,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import ArticleList from 'src/stories/components/ArticleList';
 import { UseQueryResult } from 'react-query';
+import { useSessionStore } from '../../../src/store/session';
 
 const useStyles = makeStyles(theme => ({
   table: {
@@ -149,6 +150,8 @@ export function StudyRoomTemplate() {
     sortType: sortType,
   });
 
+  const { roles } = useSessionStore();
+  console.log('roles', roles);
   /**badge */
   const [badgeClubViewFilter, setBadgeClubViewFilter] = useState('0001');
   const [badgeParams, setBadgeParams] = useState<any>({ page: badgePage, isAchieved: true });
@@ -348,46 +351,28 @@ export function StudyRoomTemplate() {
           <Box sx={{ width: '100%', typography: 'body1', marginTop: '20px', marginBottom: '20px' }}>
             <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
               <Grid item xs={12} className="tw-font-bold tw-text-3xl tw-text-black">
-                {/* <SecondTabs tabs={testBoards} /> */}
-
                 <div className={cx('filter-area')}>
                   <div className={cx('mentoring-button__group', 'gap-12', 'justify-content-center')}>
-                    {studyStatus.map((item, i) => (
-                      <ToggleLabel
-                        key={item.id}
-                        label={item.name}
-                        name={item.name}
-                        value={item.id}
-                        variant="small"
-                        checked={active === i}
-                        isActive
-                        type="tabButton"
-                        onChange={() => {
-                          setActive(i);
-                          setContentType(item.id);
-                          // setParams({
-                          //   ...params,
-                          //   clubViewFilter: item.id,
-                          //   page,
-                          // });
-                          setPage(1);
-                        }}
-                        className={cx('fixed-width', 'max-lg:!tw-hidden')}
-                      />
-                    ))}
-                    {/* <ToggleLabel
-                      label="배지보기"
-                      name="배지보기"
-                      value=""
-                      variant="small"
-                      checked={active === 4}
-                      isActive
-                      type="tabButton"
-                      onChange={() => {
-                        setActive(4);
-                      }}
-                      className={cx('fixed-width')}
-                    /> */}
+                    {studyStatus
+                      .filter(item => !(roles.includes('ROLE_USER') && item.id === '0004'))
+                      .map((item, i) => (
+                        <ToggleLabel
+                          key={item.id}
+                          label={item.name}
+                          name={item.name}
+                          value={item.id}
+                          variant="small"
+                          checked={active === i}
+                          isActive
+                          type="tabButton"
+                          onChange={() => {
+                            setActive(i);
+                            setContentType(item.id);
+                            setPage(1);
+                          }}
+                          className={cx('fixed-width', 'max-lg:!tw-hidden')}
+                        />
+                      ))}
                   </div>
                 </div>
               </Grid>

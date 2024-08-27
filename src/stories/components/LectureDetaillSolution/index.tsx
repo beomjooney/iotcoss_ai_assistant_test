@@ -354,7 +354,7 @@ const LectureDetaillSolution = ({
                                             clubStudySequence: item?.clubStudySequence,
                                           },
                                         },
-                                        `/lecture-list/${contents?.clubSequence}`,
+                                        `/lecture-list/${contents?.clubSequence}?clubStudySequence=${item?.clubStudySequence}`,
                                       );
                                     }}
                                     className="tw-bg-black tw-text-xs tw-px-2 tw-py-1 tw-text-white tw-rounded-md  tw-font-bold tw-text-right"

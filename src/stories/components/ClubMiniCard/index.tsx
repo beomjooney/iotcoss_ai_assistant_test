@@ -115,7 +115,8 @@ ClubMiniCardProps) => {
           >
             <Grid item xs={11}>
               <div className="tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500">
-                <div className="tw-flex tw-gap-[7px] tw-flex-wrap">
+                <div className="tw-flex tw-gap-[7px] tw-flex-wrap tw-max-h-[50px] tw-overflow-hidden tw-relative">
+                  {/* Ensuring the maximum height doesn't exceed 3 lines. Adjust '60px' based on line height */}
                   <div className="tw-bg-black tw-rounded-[3.5px] tw-px-2 tw-py-[1px]">
                     <p className="tw-text-[12.25px] tw-text-white">{getButtonText(item?.clubStatus)}</p>
                   </div>
@@ -136,6 +137,9 @@ ClubMiniCardProps) => {
                       </div>
                     ))}
                 </div>
+
+                {/* Overlay with gradient effect and ellipsis for overflow */}
+                <div className="tw-absolute tw-bottom-0 tw-left-0 tw-w-full tw-h-[20px] tw-bg-gradient-to-t tw-from-white"></div>
               </div>
             </Grid>
             <Grid item xs={1}>

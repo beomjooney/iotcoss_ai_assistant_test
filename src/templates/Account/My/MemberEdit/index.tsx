@@ -97,6 +97,7 @@ export function MemberEditTemplate() {
   // 유저 정보 조회
 
   usePersonalInfo({}, user => {
+    console.log(user);
     setUserInfo(user);
     console.log(user);
   });
@@ -286,7 +287,7 @@ export function MemberEditTemplate() {
   }
 
   useEffect(() => {
-    setUser(userInfo); // 전역 정보 업데이트
+    // setUser(userInfo); // 전역 정보 업데이트
     setNickname(userInfo?.personalInfo?.nickname);
     setPhoneNumber(formatPhoneNumber(userInfo?.personalInfo?.phoneNumber));
     setEmailReceiveYn(userInfo?.personalInfo?.isEmailReceive);
@@ -412,7 +413,7 @@ export function MemberEditTemplate() {
   const classes = useStyles();
 
   return (
-    <div className={cx('member-edit-container tw-p-4')}>
+    <div className={cx('member-edit-container tw-py-4')}>
       <div className={cx('sub-content', 'border', 'tw-rounded-lg', 'tw-mt-5', 'tw-text-center')}>
         <div className="tw-p-10 tw-pb-0 tw-text-black tw-text-base tw-font-semibold">
           <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-3">

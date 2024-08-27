@@ -100,6 +100,7 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
   const { setColorPresets } = useColorPresets();
   const [baseUrl, setBaseUrl] = useState('');
   const savedIndex = localStorage.getItem('activeIndex');
+  // console.log('header', user);
 
   // 컴포넌트가 마운트될 때 localStorage에서 activeIndex를 불러옴
   // useEffect(() => {

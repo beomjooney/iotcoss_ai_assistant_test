@@ -33,7 +33,7 @@ const ReplyCard = ({ item, refetch }) => {
   const handleModify = (item: any) => {
     console.log(item);
     setIsTextModify(true);
-    setText(item.text);
+    // setText(item.text);
   };
 
   const handleDelete = (item: any) => {
