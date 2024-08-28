@@ -113,6 +113,8 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   const [myDashboardQA, setMyDashboardQA] = useState<any>([]);
   const [clubStudySequence, setClubStudySequence] = useState('');
   const [selectedClub, setSelectedClub] = useState(null);
+  const [isInputOpen, setIsInputOpen] = useState(false);
+  const [openInputIndex, setOpenInputIndex] = useState(null);
 
   const [myClubParams, setMyClubParams] = useState<any>({
     clubSequence: selectedClub?.clubSequence || id,

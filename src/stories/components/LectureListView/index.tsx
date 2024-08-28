@@ -18,7 +18,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
-import { useMyDashboardQA } from 'src/services/seminars/seminars.queries';
+import { useMyDashboardQA, useLectureAboutDetailInfo } from 'src/services/seminars/seminars.queries';
 
 import { Radio, RadioGroup, FormControlLabel, TextField } from '@mui/material';
 import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded';
@@ -54,6 +54,7 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
+  // const [selectedValue, setSelectedValue] = useState(id);
 
   const [params, setParams] = useState<any>({ id: '225', page });
 
@@ -123,6 +124,7 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
   const [questionPage, setQuestionPage] = useState(1);
   const [isInputOpen, setIsInputOpen] = useState(false);
   const [openInputIndex, setOpenInputIndex] = useState(null);
+  const [clubAbout, setClubAbout] = useState<any>({});
 
   const { isFetched: isParticipantListFetcheds } = useQuizFileDownload(key, data => {
     // console.log('file download', data);
@@ -138,6 +140,15 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
       setKey('');
       setFileName('');
     }
+  });
+
+  // 퀴즈 소개 정보 조회
+  const { isFetched: isClubAboutFetched, refetch: refetchClubAbout } = useLectureAboutDetailInfo(id, data => {
+    console.log('useLectureAboutDetail', data);
+    setClubAbout(data);
+    setMyClubList(data?.clubStudies);
+    console.log('clubMemberStatus', data?.clubMemberStatus);
+    console.log('clubStatus ', data?.clubStatus);
   });
 
   const [myClubLectureQA, setMyClubLectureQA] = useState<any>({
@@ -179,6 +190,18 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
   }, [questionPage]);
 
   // Handler to delete a question-answer pair
+
+  const handleQuizChange = event => {
+    const value = event.target.value;
+    const selectedSession = myClubList?.find(session => {
+      return session.clubStudySequence === Number(value);
+    });
+
+    console.log('value', value);
+    location.href = `/lecture-list/${id}?clubStudySequence=${value}`;
+    setStudySequence(value);
+    console.log(selectedSession);
+  };
 
   return (
     <div className={`tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white ${borderStyle}`}>
@@ -227,9 +250,26 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
         </div>
         <Divider className="tw-mb-5" />
         <div className="tw-flex tw-items-center tw-mt-6">
-          <div className="tw-w-full tw-text-base tw-font-bold tw-text-left tw-text-[#31343d] border tw-p-5 tw-rounded-lg">
-            <span className="tw-text-blue-500 tw-pr-5">강의명</span> {studyQAInfo?.clubStudyName}
-          </div>
+          {/* <span className="tw-text-blue-500 tw-pr-5">강의명</span> {studyQAInfo?.clubStudyName} */}
+          <select
+            className="tw-h-14 form-select block w-full  tw-font-bold tw-px-4"
+            onChange={handleQuizChange}
+            value={studySequence}
+            aria-label="Default select example"
+          >
+            {isClubAboutFetched &&
+              myClubList?.map((session, idx) => {
+                return (
+                  <option
+                    key={idx}
+                    className="tw-w-20 tw-bg-[#f6f7fb] tw-items-center tw-flex-shrink-0 border-left border-top border-right tw-rounded-t-lg tw-cursor-pointer"
+                    value={session?.clubStudySequence}
+                  >
+                    강의 : {session?.clubStudyName}
+                  </option>
+                );
+              })}
+          </select>
 
           {/* <select
             className="tw-h-14 form-select block w-full tw-bg-gray-100 tw-text-red-500 tw-font-bold tw-px-8"
