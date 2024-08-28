@@ -106,7 +106,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
           </div>
           <div className="tw-flex tw-justify-start tw-items-center tw-absolute tw-left-0 tw-top-[31.5px] tw-gap-3.5">
             <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[21px] tw-font-bold tw-text-left tw-text-black">
-              클럽 상세보기1
+              클럽 상세보기
             </p>
           </div>
         </div>
