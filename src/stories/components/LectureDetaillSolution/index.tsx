@@ -10,7 +10,7 @@ import { TextField } from '@mui/material';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import StarIcon from '@mui/icons-material/Star';
 import { useClubJoin } from 'src/services/community/community.mutations';
-import { getButtonText, getClubStatusMessage } from 'src/utils/clubStatus';
+import { getButtonText, getClubStatusMessage, getClubAboutStatus } from 'src/utils/clubStatus';
 
 /**icon */
 import { useSaveLike, useDeleteLike } from 'src/services/community/community.mutations';
@@ -186,7 +186,7 @@ const LectureDetaillSolution = ({
                   ) : (
                     <>
                       <button className="tw-w-40 tw-text-[12.25px] tw-bg-blue-600 tw-font-bold tw-text-center tw-text-white tw-bg-primary tw-px-4 tw-py-4 tw-rounded">
-                        {getClubStatusMessage(contents?.clubStatus)}
+                        {getClubAboutStatus(contents?.clubAboutStatus)}
                       </button>
                     </>
                   )}

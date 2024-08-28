@@ -25,6 +25,33 @@ function getClubStatusMessage(status) {
   }
 }
 
+function getClubAboutStatus(status) {
+  switch (status) {
+    case '0200':
+      return '클럽개설중 - 가입불가';
+    case '0300':
+      return '모집중 - 가입가능';
+    case '0301':
+      return '가입승인대기중 - 승인대기';
+    case '0302':
+      return '가입거절 - 가입불가';
+    case '0310':
+      return '모집완료 - 가입불가 ';
+    case '0210':
+      return '연기 - 가입불가';
+    case '0400':
+      return '진행중 - 가입불가';
+    case '0401':
+      return '가입완료';
+    case '0500':
+      return '클럽종료 - 가입완료';
+    case '0600':
+      return '클럽강퇴 - 가입불가';
+    default:
+      return '모집 대기중';
+  }
+}
+
 const getButtonText = status => {
   switch (status) {
     case '0000':
@@ -54,4 +81,4 @@ const getButtonText = status => {
   }
 };
 
-export { getClubStatusMessage, getButtonText };
+export { getClubStatusMessage, getButtonText, getClubAboutStatus };

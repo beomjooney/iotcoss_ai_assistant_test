@@ -171,10 +171,7 @@ const QuizClubDetaillSolution = ({
             </div>
             <div className="tw-flex tw-items-center tw-mt-auto tw-justify-between tw-w-full">
               <div className="tw-flex tw-items-center">
-                <img
-                  src={contents?.club?.leaderProfileImageUrl}
-                  className="tw-mr-2 border tw-rounded-full tw-w-9 tw-h-9"
-                />
+                <img src={contents?.club?.leaderProfileImageUrl} className="tw-mr-2 tw-rounded-full tw-w-9 tw-h-9" />
                 <p className="tw-text-sm tw-text-black">{contents?.club?.leaderNickname}</p>
               </div>
               <div className="tw-flex tw-gap-4">
@@ -372,7 +369,8 @@ const QuizClubDetaillSolution = ({
                                 Q{item?.order}.
                               </div>
                               <div className="tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold">
-                                {item?.publishDate?.split('-').slice(1).join('-')} ({item?.dayOfWeek})
+                                {/* {item?.publishDate?.split('-').slice(1).join('-')} ({item?.dayOfWeek}) */}
+                                {item?.publishDate?.slice(5, 10)} {item?.dayOfWeek ? `(${item.dayOfWeek})` : ''}
                               </div>
                               <div
                                 className={`tw-flex-auto tw-mt-10 tw-text-center tw-text-sm ${
@@ -396,7 +394,7 @@ const QuizClubDetaillSolution = ({
                                 >
                                   <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                     <img
-                                      className="tw-w-10 tw-h-10 border tw-rounded-full"
+                                      className="tw-w-10 tw-h-10 tw-rounded-full"
                                       src={
                                         item?.maker?.profileImageUrl ||
                                         '/assets/images/account/default_profile_image.png'
@@ -514,7 +512,7 @@ const QuizClubDetaillSolution = ({
                                     >
                                       <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                         <img
-                                          className="tw-w-10 tw-h-10 border tw-rounded-full"
+                                          className="tw-w-10 tw-h-10 tw-rounded-full"
                                           src={item?.maker?.profileImageUrl}
                                         />
                                         <div className="tw-text-xs tw-text-left tw-text-black">
@@ -562,7 +560,7 @@ const QuizClubDetaillSolution = ({
                                           </div>
                                           <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                             <img
-                                              className="border tw-rounded-full tw-w-10 tw-h-10 "
+                                              className="tw-rounded-full tw-w-10 tw-h-10 "
                                               src={item?.answer?.member?.profileImageUrl}
                                             />
                                             <div className="tw-text-xs tw-text-left tw-text-black">
@@ -633,7 +631,6 @@ const QuizClubDetaillSolution = ({
                                             src={item?.maker?.profileImageUrl}
                                           />
                                           <div className="tw-text-xs tw-text-left tw-text-black">
-                                            {' '}
                                             {item?.maker?.nickname}
                                           </div>
                                         </div>
@@ -674,7 +671,8 @@ const QuizClubDetaillSolution = ({
                           <Grid item xs={12} sm={1} style={{ paddingTop: 10 }}>
                             <div className="tw-flex-auto tw-text-center tw-text-black tw-font-bold">Q{item.order}.</div>
                             <div className="tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold">
-                              {item?.publishDate?.split('-').slice(1).join('-')} ({item?.dayOfWeek})
+                              {item?.publishDate?.split('-').slice(1).join('-')}
+                              {item?.dayOfWeek ? `(${item.dayOfWeek})` : ''}
                             </div>
                             <div
                               className={`tw-flex-auto tw-mt-10 tw-text-center tw-text-sm ${
@@ -682,8 +680,10 @@ const QuizClubDetaillSolution = ({
                               } tw-font-bold`}
                             >
                               {item?.answer?.relativeDaysToPublishDate !== undefined
-                                ? item?.answer?.relativeDaysToPublishDate <= 0
+                                ? item?.answer?.relativeDaysToPublishDate < 0
                                   ? `D${item?.answer?.relativeDaysToPublishDate}`
+                                  : item?.answer?.relativeDaysToPublishDate === 0
+                                  ? `D-0`
                                   : `D+${item?.answer?.relativeDaysToPublishDate}`
                                 : ''}
                             </div>
@@ -696,9 +696,9 @@ const QuizClubDetaillSolution = ({
                                   item?.answer ? 'tw-rounded-tl-xl tw-rounded-tr-xl' : 'tw-rounded-xl'
                                 }`}
                               >
-                                <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
+                                <div className="tw-w-1.5/12 tw-py-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                   <img
-                                    className="tw-w-10 tw-h-10 border tw-rounded-full"
+                                    className="tw-w-10 tw-h-10 tw-rounded-full tw-mb-1"
                                     src={item?.maker?.profileImageUrl}
                                   />
                                   <div className="tw-text-xs tw-text-left tw-text-black">{item?.maker?.nickname}</div>
@@ -744,12 +744,10 @@ const QuizClubDetaillSolution = ({
                                     </div>
                                     <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                       <img
-                                        className="border tw-rounded-full tw-w-10 tw-h-10 "
+                                        className="tw-rounded-full tw-w-10 tw-h-10 tw-mb-1"
                                         src={item?.answer?.member?.profileImageUrl}
                                       />
-                                      <div className="tw-text-xs tw-text-left tw-text-black tw-w-[60px]">
-                                        {item?.answer?.member?.nickname}
-                                      </div>
+                                      <div className="tw-text-xs tw-text-black">{item?.answer?.member?.nickname}</div>
                                     </div>
                                     <div className="tw-flex-auto tw-w-9/12 tw-px-5">
                                       <div
@@ -804,8 +802,8 @@ const QuizClubDetaillSolution = ({
                                     </svg>
                                   </div>
                                   <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
-                                    <div
-                                      className="border tw-rounded-full tw-w-10 tw-h-10"
+                                    <img
+                                      className="tw-rounded-full tw-w-10 tw-h-10 tw-mb-1"
                                       src={item?.answer?.member?.profileImageUrl}
                                     />
                                     <div className="tw-text-xs tw-text-left tw-text-black">

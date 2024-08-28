@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
 import Modal from 'react-modal';
+import { useEffect } from 'react';
 import { useSessionStore } from '../../../store/session';
 
 Modal.setAppElement('#__next'); // Modal 접근성 설정
