@@ -38,46 +38,12 @@ ClubCardProps) => {
   let [repliesList, setRepliesList] = useState([]);
   const { mutate: onSaveReply, isSuccess: replyReplySucces } = useSaveReply();
   const { mutate: onDeleteReply, isSuccess: deleteReplySucces } = useDeleteReply();
-  // const { isFetched: isReplyFetched, refetch } = useRepliesList(postNo, data => {
-  //   setRepliesList(data.data);
-  // });
-
-  // useEffect(() => {
-  //   refetch();
-  // }, [postNo, replyReplySucces, deleteReplySucces]);
 
   useEffect(() => {
     setIsLiked(item?.isFavorite);
-    // setLikeCount(item?.likeReactionCount);
-    // setReplyCount(item?.replyCount);
   }, [item]);
 
   const textInput = useRef(null);
-
-  const onReplySubmit = (postNo: number, text: string) => {
-    if (logged) {
-      onSaveReply({
-        postNo: postNo,
-        data: {
-          body: text,
-        },
-      });
-      textInput.current.value = '';
-      setReplyCount(replyCount => replyCount + 1);
-    } else {
-      alert('로그인 후 댓글을 입력할 수 있습니다.');
-    }
-  };
-
-  const onReplyDeleteSubmit = (postReplyNo: number, parentPostNo: number) => {
-    if (window.confirm('정말로 삭제하시겠습니까?')) {
-      onDeleteReply({
-        postReplyNo: postReplyNo,
-        parentPostNo: parentPostNo,
-      });
-      setReplyCount(replyCount => replyCount - 1);
-    }
-  };
 
   const onChangeLike = function (postNo: number) {
     event.preventDefault();
@@ -93,11 +59,6 @@ ClubCardProps) => {
     }
   };
 
-  const onReply = function (postNo: number) {
-    setPostNo(postNo);
-    setIsOpened(!isOpen);
-  };
-
   return (
     <Grid item xs={xs}>
       <a
@@ -105,7 +66,6 @@ ClubCardProps) => {
         onClick={e => {
           if (!logged) {
             e.preventDefault();
-            // 로그인되지 않은 경우 추가 작업 수행 (예: 경고 메시지 표시)
             alert('로그인 후 이동할 수 있습니다.');
           }
         }}
@@ -119,43 +79,89 @@ ClubCardProps) => {
         <div className="tw-flex tw-w-full tw-flex-col tw-p-[12px]">
           <Grid container direction="row" justifyContent="space-between" alignItems="center" rowSpacing={0}>
             <Grid item xs={12}>
-              <div className="max-lg:tw-h-[100px] tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
-                <span className="tw-inline-flex tw-bg-blue-100 tw-text-blue-800 tw-text-xs tw-font-medium tw-mr-1 tw-px-2 tw-py-1 tw-rounded">
-                  {item?.jobGroups[0].name || 'N/A'}
-                </span>
-
-                {/* {item?.jobs?.length > 0 &&
-                      item.jobs.map((job, index) => ( */}
-                <span
-                  // key={index}
-                  className="tw-inline-flex tw-bg-gray-100 tw-text-gray-800 tw-text-xs tw-font-medium tw-mr-1 tw-px-2 tw-py-1 tw-rounded "
-                >
-                  {item?.jobs?.[0]?.name || 'N/A'}
-                </span>
-                {/* ))} */}
-
-                {/* {item?.jobLevels?.length > 0 &&
-                      item.jobLevels.map((jobLevel, index) => ( */}
-                <span
-                  // key={index}
-                  className="tw-inline-flex tw-bg-red-100 tw-text-red-800 tw-text-xs tw-font-medium tw-mr-1 tw-px-2 tw-py-1 tw-rounded "
-                >
-                  {item?.jobLevels?.[0]?.name || 'N/A'}
-                </span>
-                {/* ))} */}
+              <div className="tw-flex tw-items-center tw-gap-2 max-lg:tw-h-[100px] tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
+                {item?.isPublic ? (
+                  <svg
+                    width={16}
+                    height={16}
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="tw-inline-flex tw-flex-grow-0 tw-flex-shrink-0 tw-w-4 tw-h-4 tw-relative"
+                    preserveAspectRatio="xMidYMid meet"
+                  >
+                    <path
+                      d="M3.9974 5.33268H9.9974V3.99935C9.9974 3.44379 9.80295 2.97157 9.41406 2.58268C9.02517 2.19379 8.55295 1.99935 7.9974 1.99935C7.44184 1.99935 6.96962 2.19379 6.58073 2.58268C6.19184 2.97157 5.9974 3.44379 5.9974 3.99935H4.66406C4.66406 3.07713 4.98906 2.29102 5.63906 1.64102C6.28906 0.991016 7.07517 0.666016 7.9974 0.666016C8.91962 0.666016 9.70573 0.991016 10.3557 1.64102C11.0057 2.29102 11.3307 3.07713 11.3307 3.99935V5.33268H11.9974C12.3641 5.33268 12.678 5.46324 12.9391 5.72435C13.2002 5.98546 13.3307 6.29935 13.3307 6.66602V13.3327C13.3307 13.6993 13.2002 14.0132 12.9391 14.2743C12.678 14.5355 12.3641 14.666 11.9974 14.666H3.9974C3.63073 14.666 3.31684 14.5355 3.05573 14.2743C2.79462 14.0132 2.66406 13.6993 2.66406 13.3327V6.66602C2.66406 6.29935 2.79462 5.98546 3.05573 5.72435C3.31684 5.46324 3.63073 5.33268 3.9974 5.33268ZM3.9974 13.3327H11.9974V6.66602H3.9974V13.3327ZM7.9974 11.3327C8.36406 11.3327 8.67795 11.2021 8.93906 10.941C9.20017 10.6799 9.33073 10.366 9.33073 9.99935C9.33073 9.63268 9.20017 9.31879 8.93906 9.05768C8.67795 8.79657 8.36406 8.66602 7.9974 8.66602C7.63073 8.66602 7.31684 8.79657 7.05573 9.05768C6.79462 9.31879 6.66406 9.63268 6.66406 9.99935C6.66406 10.366 6.79462 10.6799 7.05573 10.941C7.31684 11.2021 7.63073 11.3327 7.9974 11.3327Z"
+                      fill="#31343D"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    width={16}
+                    height={16}
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-4 tw-h-4 tw-relative"
+                    preserveAspectRatio="xMidYMid meet"
+                  >
+                    <path
+                      d="M3.9974 14.666C3.63073 14.666 3.31684 14.5355 3.05573 14.2743C2.79462 14.0132 2.66406 13.6993 2.66406 13.3327V6.66602C2.66406 6.29935 2.79462 5.98546 3.05573 5.72435C3.31684 5.46324 3.63073 5.33268 3.9974 5.33268H4.66406V3.99935C4.66406 3.07713 4.98906 2.29102 5.63906 1.64102C6.28906 0.991016 7.07517 0.666016 7.9974 0.666016C8.91962 0.666016 9.70573 0.991016 10.3557 1.64102C11.0057 2.29102 11.3307 3.07713 11.3307 3.99935V5.33268H11.9974C12.3641 5.33268 12.678 5.46324 12.9391 5.72435C13.2002 5.98546 13.3307 6.29935 13.3307 6.66602V13.3327C13.3307 13.6993 13.2002 14.0132 12.9391 14.2743C12.678 14.5355 12.3641 14.666 11.9974 14.666H3.9974ZM3.9974 13.3327H11.9974V6.66602H3.9974V13.3327ZM7.9974 11.3327C8.36406 11.3327 8.67795 11.2021 8.93906 10.941C9.20017 10.6799 9.33073 10.366 9.33073 9.99935C9.33073 9.63268 9.20017 9.31879 8.93906 9.05768C8.67795 8.79657 8.36406 8.66602 7.9974 8.66602C7.63073 8.66602 7.31684 8.79657 7.05573 9.05768C6.79462 9.31879 6.66406 9.63268 6.66406 9.99935C6.66406 10.366 6.79462 10.6799 7.05573 10.941C7.31684 11.2021 7.63073 11.3327 7.9974 11.3327ZM5.9974 5.33268H9.9974V3.99935C9.9974 3.44379 9.80295 2.97157 9.41406 2.58268C9.02517 2.19379 8.55295 1.99935 7.9974 1.99935C7.44184 1.99935 6.96962 2.19379 6.58073 2.58268C6.19184 2.97157 5.9974 3.44379 5.9974 3.99935V5.33268Z"
+                      fill="#9CA5B2"
+                    />
+                  </svg>
+                )}
+                {item?.clubAboutStatus === '0300' ? (
+                  <div className="tw-inline-flex tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-w-[72px] tw-h-6 tw-relative tw-gap-1 tw-px-3 tw-py-0.5 tw-rounded-[20px] tw-bg-[#06c090]/5">
+                    <svg
+                      width={17}
+                      height={16}
+                      viewBox="0 0 17 16"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-4 tw-h-4 tw-relative"
+                      preserveAspectRatio="xMidYMid meet"
+                    >
+                      <path
+                        d="M7.65156 10.3996L11.6182 6.44961L10.7682 5.59961L7.65156 8.69961L6.2349 7.29961L5.3849 8.14961L7.65156 10.3996ZM8.50156 14.3996C7.62379 14.3996 6.79601 14.2329 6.01823 13.8996C5.24045 13.5663 4.5599 13.1079 3.97656 12.5246C3.39323 11.9413 2.9349 11.2607 2.60156 10.4829C2.26823 9.70516 2.10156 8.87739 2.10156 7.99961C2.10156 7.11072 2.26823 6.28017 2.60156 5.50794C2.9349 4.73572 3.39323 4.05794 3.97656 3.47461C4.5599 2.89128 5.24045 2.43294 6.01823 2.09961C6.79601 1.76628 7.62379 1.59961 8.50156 1.59961C9.39045 1.59961 10.221 1.76628 10.9932 2.09961C11.7655 2.43294 12.4432 2.89128 13.0266 3.47461C13.6099 4.05794 14.0682 4.73572 14.4016 5.50794C14.7349 6.28017 14.9016 7.11072 14.9016 7.99961C14.9016 8.87739 14.7349 9.70516 14.4016 10.4829C14.0682 11.2607 13.6099 11.9413 13.0266 12.5246C12.4432 13.1079 11.7655 13.5663 10.9932 13.8996C10.221 14.2329 9.39045 14.3996 8.50156 14.3996Z"
+                        fill="#478AF5"
+                      />
+                    </svg>
+                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#478af5]">모집중</p>
+                  </div>
+                ) : (
+                  <div className="tw-inline-flex tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-w-[72px] tw-h-6 tw-relative tw-gap-1 tw-px-3 tw-py-0.5 tw-rounded-[20px] tw-bg-[#06c090]/5">
+                    <svg
+                      width={16}
+                      height={16}
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-4 tw-h-4 tw-relative"
+                      preserveAspectRatio="none"
+                    >
+                      <path
+                        d="M5.65156 11.1996L8.00156 8.84961L10.3516 11.1996L11.2016 10.3496L8.85156 7.99961L11.2016 5.64961L10.3516 4.79961L8.00156 7.14961L5.65156 4.79961L4.80156 5.64961L7.15156 7.99961L4.80156 10.3496L5.65156 11.1996ZM8.00156 14.3996C7.12379 14.3996 6.29601 14.2329 5.51823 13.8996C4.74045 13.5663 4.0599 13.1079 3.47656 12.5246C2.89323 11.9413 2.4349 11.2607 2.10156 10.4829C1.76823 9.70516 1.60156 8.87739 1.60156 7.99961C1.60156 7.11072 1.76823 6.28017 2.10156 5.50794C2.4349 4.73572 2.89323 4.05794 3.47656 3.47461C4.0599 2.89128 4.74045 2.43294 5.51823 2.09961C6.29601 1.76628 7.12379 1.59961 8.00156 1.59961C8.89045 1.59961 9.72101 1.76628 10.4932 2.09961C11.2655 2.43294 11.9432 2.89128 12.5266 3.47461C13.1099 4.05794 13.5682 4.73572 13.9016 5.50794C14.2349 6.28017 14.4016 7.11072 14.4016 7.99961C14.4016 8.87739 14.2349 9.70516 13.9016 10.4829C13.5682 11.2607 13.1099 11.9413 12.5266 12.5246C11.9432 13.1079 11.2655 13.5663 10.4932 13.8996C9.72101 14.2329 8.89045 14.3996 8.00156 14.3996Z"
+                        fill="#9CA5B2"
+                      />
+                    </svg>
+                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#9ca5b2]">
+                      모집완료
+                    </p>
+                  </div>
+                )}
               </div>
             </Grid>
           </Grid>
-          <div className="tw-my-[12px] tw-text-[12px] tw-font-bold tw-text-[#9a9a9a]">
-            모집마감일 : {item?.recruitDeadlineAt?.split(' ')[0] || 'N/A'}
-          </div>
           <div className=" tw-h-[70px]">
-            <h6 className="tw-line-clamp-2 max-lg:tw-h-[112px] tw-text-2xl tw-font-bold tw-tracking-tight tw-text-gray-900">
+            <h6 className="tw-mt-3 tw-line-clamp-2 max-lg:tw-h-[112px] tw-text-2xl tw-font-bold tw-tracking-tight tw-text-gray-900">
               {item.clubName}
             </h6>
-            <div className="tw-line-clamp-2 tw-text-base tw-tracking-tight tw-text-gray-900">{item.description}</div>
+            <div className="tw-line-clamp-1 tw-text-base tw-tracking-tight tw-text-gray-900">{item.description}</div>
           </div>
-
+          <div className="tw-my-1 tw-text-[12px] tw-font-bold tw-text-[#9a9a9a] tw-mt-8">
+            {item?.startAt?.split(' ')[0] || 'N/A'} ~ {item?.endAt?.split(' ')[0] || 'N/A'}
+          </div>
           <div className="tw-text-[12px] tw-mb-[12px] tw-font-bold tw-text-[#9a9a9a]">
             {item.studyCycle.length > 0 ? `${item.studyCycle[0].toString()} | ` : ''}
             {item.weekCount || '0'}주 | 학습 {item.studyCount || '0'}회
