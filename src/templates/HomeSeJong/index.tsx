@@ -46,9 +46,9 @@ export function HomeSejongTemplate({ logged = false, tenantName = '' }: HomeSejo
             <p className="tw-absolute tw-top-[60px] md:tw-top-[116px] tw-text-xl md:tw-text-[32px] tw-text-left">
               <span className="tw-text-[40px] tw-font-bold tw-text-left">IoT, 더 나은 세상을 위한 연결 </span>
             </p>
-            <p className="tw-absolute  tw-top-[100px] md:tw-top-[180px] tw-text-lg md:tw-text-lg tw-font-medium tw-text-left">
-              IoT Convergence Open Sharing System & DevUs
-            </p>
+            <div className="tw-absolute  tw-top-[100px] md:tw-top-[180px] tw-text-lg md:tw-text-lg tw-font-medium tw-text-left">
+              IoT Convergence Open Sharing System & <span className="tw-font-bold">DevUs</span>
+            </div>
             <div
               onClick={() => {
                 router.push('/quiz');
@@ -139,22 +139,40 @@ export function HomeSejongTemplate({ logged = false, tenantName = '' }: HomeSejo
       >
         <div className="tw-w-full md:tw-w-[1120px] tw-h-[320px] md:tw-h-[450px] tw-relative tw-overflow-hidden tw-rounded-[20px]">
           <div className="tw-w-full md:tw-w-[1280px] tw-h-[391px] tw-absolute tw-left-0 md:tw-left-[-1px] tw-top-0 md:tw-top-[-30px] tw-bg-white/20" />
-          <p className="tw-absolute tw-left-[24px] tw-top-[40px] md:tw-left-[57px] md:tw-top-[85px] tw-text-base tw-font-medium tw-text-left tw-text-black">
+          <p className="tw-absolute tw-left-[24px] tw-top-[40px] md:tw-left-[57px] md:tw-top-[85px] tw-text-base tw-font-bold tw-text-left tw-text-black">
             IoT Convergence Open Sharing System
           </p>
-          <p className="tw-absolute tw-left-[24px] tw-top-[70px] md:tw-left-[57px] md:tw-top-[146px] tw-text-xl md:tw-text-[32px] tw-text-left tw-text-black">
+          <div className="tw-mt-[130px] tw-ml-[54px] ">
+            <p className="tw-text-[34px] tw-text-left tw-text-black">
+              <span className="tw-text-[34px] tw-text-left tw-text-black">MORE </span>
+              <span className="tw-text-[34px] tw-font-semibold tw-text-left tw-text-black">QUESTION</span>
+              <span className="tw-text-[34px] tw-text-left tw-text-black">, BETTER </span>
+              <span className="tw-text-[34px] tw-font-semibold tw-text-left tw-text-black">QUESTION</span>
+            </p>
+            <div className="tw-flex tw-mt-2">
+              <div className="tw-w-[166px] tw-ml-[110px] tw-h-[3px] tw-bg-[#1b4595]" />
+              <div className="tw-w-[166px] tw-ml-[154px] tw-h-[3px] tw-bg-[#1b4595]" />
+            </div>
+          </div>
+          ;
+          {/* <p className="tw-absolute tw-left-[24px] tw-top-[70px] md:tw-left-[57px] md:tw-top-[146px] tw-text-xl md:tw-text-[32px] tw-text-left tw-text-black">
             <span className="tw-text-xl md:tw-text-[32px] tw-text-left tw-text-black">CREATIVE </span>
             <span className="tw-text-xl md:tw-text-[32px] tw-font-bold tw-text-left tw-text-black">LEADERSHIP</span>
           </p>
-          <div className="tw-w-[48px] md:tw-w-[190px] tw-h-[2px] md:tw-h-[3px] tw-absolute tw-left-[60px] md:tw-left-[210px] tw-top-[90px] md:tw-top-[190px] tw-bg-[#1B4595]" />
+          <p className="tw-absolute tw-left-[224px] tw-top-[70px] md:tw-left-[257px] md:tw-top-[146px] tw-text-xl md:tw-text-[32px] tw-text-left tw-text-black">
+            <span className="tw-text-xl md:tw-text-[32px] tw-text-left tw-text-black">CREATIVE </span>
+            <span className="tw-text-xl md:tw-text-[32px] tw-font-bold tw-text-left tw-text-black">LEADERSHIP</span>
+          </p> */}
+          {/* <div className="tw-w-[48px] md:tw-w-[190px] tw-h-[2px] md:tw-h-[3px] tw-absolute tw-left-[60px] md:tw-left-[210px] tw-top-[90px] md:tw-top-[190px] tw-bg-[#1B4595]" /> */}
           <p className="tw-absolute tw-left-[24px] tw-top-[110px] md:tw-left-[57px] md:tw-top-[239px] tw-text-sm md:tw-text-base tw-font-medium tw-text-left tw-text-black">
-            각 분야의 전문가들이 메이커로서 핵심 질문과 아티클을 답으로 제시합니다.
+            누구나 처음은 어렵습니다. 생소한 키워드, 이해되지 않는 설명, 나만 모르는 것 같은 수업 내용들
             <br />
-            관리자는 클럽을 만들고 학습자들이 함께 풀 문제를 엄선합니다.
+            질문이 망설여진다면 이제는 AI조교에서 편하고 빠르게 질문하세요.
             <br />
-            학습자는 관리자만 따라가면 대한민국 최고의 전문가로 성장할 수 있습니다.
+            교수님이 직접 큐레이션한 자료와 강의 내용을 기반으로 AI가 실시간으로 답하고,
+            <br />
+            강의에서 학습자들이 질문한 내용을 교수님께 전달해 더 좋은 수업을 만듭니다.
           </p>
-
           <img
             src="/assets/images/main/006_1.png"
             className="tw-hidden lg:tw-block tw-w-[200px] md:tw-w-[360px] tw-h-[290px] md:tw-h-[360px] tw-absolute tw-left-[calc(50%-100px)] md:tw-left-[735px] tw-top-[100px] md:tw-top-[43px] tw-object-cover"
@@ -177,12 +195,12 @@ export function HomeSejongTemplate({ logged = false, tenantName = '' }: HomeSejo
           <div className="tw-w-full tw-flex tw-flex-col md:tw-flex-row tw-gap-4 md:tw-gap-10">
             <img
               src="/assets/images/main/memo1.png"
-              className="tw-w-full md:tw-w-1/2 tw-h-[195px] md:tw-h-auto tw-overflow-hidden tw-rounded-[20px] tw-m-1 md:tw-m-0"
+              className="tw-w-full md:tw-w-1/2 tw-h-[202px] md:tw-h-auto tw-overflow-hidden tw-rounded-[20px] tw-m-1 md:tw-m-0"
             />
 
             <img
               src="/assets/images/main/memo2.png"
-              className="tw-w-full md:tw-w-1/2 tw-h-[195px] md:tw-h-auto tw-object-cover tw-rounded-[20px] tw-m-1 md:tw-m-0"
+              className="tw-w-full md:tw-w-1/2 tw-h-[202px] md:tw-h-auto tw-object-cover tw-rounded-[20px] tw-m-1 md:tw-m-0"
             />
           </div>
         </div>
@@ -211,46 +229,32 @@ export function HomeSejongTemplate({ logged = false, tenantName = '' }: HomeSejo
 
           {/* 두 번째 섹션 */}
           <div
-            className={cx('tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center tw-gap-6 md:tw-gap-12')}
+            className={cx(
+              'tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center tw-gap-10 md:tw-gap-12',
+            )}
           >
-            <img
-              src="/assets/images/main/lec_1.png"
-              className="tw-w-full md:tw-w-1/2 tw-h-[195px]  tw-object-cover tw-rounded-[20px] "
-            />
-            <img
-              src="/assets/images/main/lec_2.png"
-              className="tw-w-full md:tw-w-1/2 tw-h-[195px] tw-object-cover tw-rounded-[20px] "
-            />
+            <img src="/assets/images/main/lec_1.png" className="tw-w-full md:tw-w-1/2 tw-h-[202px]  tw-object-cover " />
+            <img src="/assets/images/main/lec_2.png" className="tw-w-full md:tw-w-1/2 tw-h-[202px] tw-object-cover " />
           </div>
 
           {/* 세 번째 섹션 */}
           <div
             className={cx(
-              'tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center tw-gap-6 md:tw-gap-12 ',
+              'tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center tw-gap-6 md:tw-gap-12 tw-mt-2',
             )}
           >
-            <img
-              src="/assets/images/main/lec_3.png"
-              className="tw-w-full md:tw-w-1/2 tw-h-[195px] tw-object-cover tw-rounded-[20px]"
-            />
-            <img
-              src="/assets/images/main/lec_4.png"
-              className="tw-w-full md:tw-w-1/2 tw-h-[195px]  tw-object-cover tw-rounded-[20px]"
-            />
+            <img src="/assets/images/main/lec_3.png" className="tw-w-full md:tw-w-1/2 tw-h-[202px] tw-object-cover " />
+            <img src="/assets/images/main/lec_4.png" className="tw-w-full md:tw-w-1/2 tw-h-[202px]  tw-object-cover" />
           </div>
 
           {/* 네 번째 섹션 */}
           <div
-            className={cx('tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center tw-gap-6 md:tw-gap-12')}
+            className={cx(
+              'tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center tw-gap-6 md:tw-gap-12 tw-mt-2',
+            )}
           >
-            <img
-              src="/assets/images/main/lec_5.png"
-              className="tw-w-full md:tw-w-1/2 tw-h-[195px] tw-object-cover tw-rounded-[20px]"
-            />
-            <img
-              src="/assets/images/main/lec_6.png"
-              className="tw-w-full md:tw-w-1/2 tw-h-[195px] tw-object-cover tw-rounded-[20px] "
-            />
+            <img src="/assets/images/main/lec_5.png" className="tw-w-full md:tw-w-1/2 tw-h-[202px] tw-object-cover " />
+            <img src="/assets/images/main/lec_6.png" className="tw-w-full md:tw-w-1/2 tw-h-[202px] tw-object-cover" />
           </div>
         </div>
       </section>
