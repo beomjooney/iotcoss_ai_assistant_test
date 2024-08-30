@@ -20,7 +20,7 @@ export interface HomeProps {
 
 export function HomeTemplate({ logged = false, tenantName = '' }: HomeProps) {
   const router = useRouter();
-  const { token } = useSessionStore.getState();
+  const { token, roles } = useSessionStore.getState();
   const COLOR_PRESETS = usePresets();
   const { setColorPresetName } = useColorPresetName();
   const { setColorPresets } = useColorPresets();
@@ -97,7 +97,16 @@ export function HomeTemplate({ logged = false, tenantName = '' }: HomeProps) {
           <div
             onClick={() => {
               console.log(modalIsProfessor);
-              setModalIsProfessor(true);
+              const role = roles?.includes('ROLE_ADMIN') || roles?.includes('ROLE_MANAGER') ? 'professor' : 'student';
+              if (logged) {
+                if (role === 'professor') {
+                  setModalIsProfessor(true);
+                } else {
+                  alert('교수자만 접근할 수 있는 페이지입니다.');
+                }
+              } else {
+                alert('로그인 후 이용해주세요.');
+              }
             }}
             className=" tw-cursor-pointer tw-w-36 md:tw-w-48 tw-h-12 md:tw-h-20"
           >
