@@ -398,6 +398,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
         isPublished={item?.isPublished}
         isDeleteQuiz={false}
         handleCheckboxDelete={handleCheckboxDelete}
+        knowledgeContentTitle={item?.contentDescription}
       />
     </div>
   );
@@ -1266,6 +1267,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                 handleCheckboxChange={handleCheckboxChange}
                 tags={item}
                 answerText={item.modelAnswer}
+                knowledgeContentTitle={item?.contentDescription}
               />
             </div>
           ))}

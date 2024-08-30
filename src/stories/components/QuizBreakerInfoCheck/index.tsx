@@ -93,15 +93,20 @@ const QuizBreakerInfoCheck = ({
         <div className="tw-mb-5 tw-flex tw-justify-start tw-items-center tw-top-5 tw-gap-3">
           <div className="tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500">
             <div className="tw-flex tw-gap-[7px] tw-flex-wrap">
-              <div className="tw-bg-[#d7ecff] tw-rounded-[3.5px] tw-px-2 tw-py-[1px]">
-                <p className="tw-text-[12.25px] tw-text-[#235a8d]">{tags?.jobGroups[0].name || 'N/A'}</p>
-              </div>
+              {tags?.jobGroups?.[0]?.name && (
+                <div className="tw-bg-[#d7ecff] tw-rounded-[3.5px] tw-px-2 tw-py-[1px]">
+                  <p className="tw-text-[12.25px] tw-text-[#235a8d]">{tags.jobGroups[0].name}</p>
+                </div>
+              )}
               {tags?.jobs?.length > 0 &&
-                tags.jobs.map((job, index) => (
-                  <div key={index} className="tw-bg-[#ffdede] tw-rounded-[3.5px] tw-px-2 tw-py-[1px]">
-                    <p className="tw-text-[12.25px] tw-text-[#b83333]">{job.name}</p>
-                  </div>
-                ))}
+                tags.jobs.map(
+                  (job, index) =>
+                    job.name ? (
+                      <div key={index} className="tw-bg-[#ffdede] tw-rounded-[3.5px] tw-px-2 tw-py-[1px]">
+                        <p className="tw-text-[12.25px] tw-text-[#b83333]">{job.name}</p>
+                      </div>
+                    ) : null, // This will render nothing if job.name is null or undefined
+                )}
 
               {tags?.jobLevels?.length > 0 &&
                 tags.jobLevels.map((jobLevel, index) => (
@@ -117,7 +122,7 @@ const QuizBreakerInfoCheck = ({
         {/* <p className="tw-pr-5 tw-line-clamp-3    tw-text-sm tw-text-left tw-text-[#31343d]"></p> */}
         <div className="tw-flex">
           <div className="tw-w-[70px] tw-text-sm tw-font-medium tw-text-left tw-text-[#31343d]">모범답안 :</div>
-          <div className="tw-w-10/12 tw-line-clamp-4 tw-text-sm tw-font-medium tw-text-left tw-text-[#31343d]">
+          <div className="tw-w-10/12 tw-line-clamp-3 tw-text-sm tw-font-medium tw-text-left tw-text-[#31343d]">
             {answerText}
           </div>
         </div>
