@@ -167,8 +167,8 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
             <div className="tw-flex tw-items-center tw-text-base tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
               <div className="tw-inline-flex tw-items-center tw-gap-4">
                 <img
-                  className="tw-w-8 tw-h-8 tw-ring-1 tw-rounded-full"
-                  src={user?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
+                  className="tw-w-8 tw-h-8 tw-rounded-full"
+                  src={clubData?.leader?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
                   alt=""
                 />
                 <div className="tw-text-sm tw-font-semibold tw-text-black">
@@ -254,7 +254,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
             <div className="tw-flex tw-items-start tw-gap-[16px]">
               <img
                 className="tw-w-28 tw-h-28 border tw-rounded-full"
-                src={user?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
+                src={clubData?.leader?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
               />
               <div>
                 <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-[14px]  tw-gap-3">
