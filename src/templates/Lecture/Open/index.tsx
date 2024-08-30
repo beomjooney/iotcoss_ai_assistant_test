@@ -704,22 +704,22 @@ export function LectureOpenTemplate() {
     }));
   };
 
-  // Function to handle deleting data based on order
   const handleCheckboxDelete = orderToDelete => {
     console.log('delete', orderToDelete);
-    // Filter out the item with the given order
+
+    // Step 1: Filter out the item with the given order to delete
     const updatedData = scheduleData.filter(item => item.studyOrder !== orderToDelete);
 
-    // Step 1: Sort the array based on the current order value
-    const sortedData = updatedData.sort((a, b) => a.studyOrder - b.studyOrder);
-
-    // Step 2: Assign new order values sequentially
-    sortedData.forEach((item, index) => {
-      item.studyOrder = index;
+    // Step 2: Reassign studyOrder sequentially to maintain correct order after deletion
+    const adjustedData = updatedData.map((item, index) => {
+      return {
+        ...item,
+        studyOrder: index + 1, // Assign new studyOrder starting from 1
+      };
     });
 
-    // Update state with the filtered data
-    setScheduleData(sortedData);
+    // Update state with the adjusted data
+    setScheduleData(adjustedData);
   };
 
   // Function to handle removing a URL from the list
@@ -882,7 +882,20 @@ export function LectureOpenTemplate() {
   };
 
   const handlerQuizInit = async () => {
-    setScheduleData(defaultScheduleData);
+    const defaultScheduleDataInit = [];
+    for (let i = 0; i < 2; i++) {
+      defaultScheduleDataInit.push({
+        studyOrder: i + 1,
+        clubStudyName: '',
+        urls: [],
+        files: [],
+        clubStudyType: '0100',
+        clubStudyUrl: '',
+        studyDate: dayjs().add(i, 'day').format('YYYY-MM-DD'), // i 만큼 날짜를 증가시킴
+      });
+    }
+
+    setScheduleData(defaultScheduleDataInit);
   };
 
   //임시저장
@@ -1145,47 +1158,6 @@ export function LectureOpenTemplate() {
       },
     },
   }));
-
-  const handleInputDayChange = (index, part, value) => {
-    const updatedScheduleData = [...scheduleData];
-    const dateParts = updatedScheduleData[index].publishDate.split('-');
-
-    if (part === 'month') {
-      const day = new Date(startDay.format('YYYY-MM-DD'));
-      const newDate = new Date(day.getFullYear(), value - 1, dateParts[2]);
-      if (newDate < day) {
-        alert('월은 시작 날짜보다 이전일 수 없습니다.');
-        return;
-      }
-      dateParts[1] = value.padStart(2, '0');
-    } else if (part === 'day') {
-      if (value < 0 || value > 31) {
-        alert('일은 1에서 31 사이여야 합니다.');
-        return;
-      }
-      dateParts[2] = value.padStart(2);
-    }
-
-    updatedScheduleData[index].publishDate = dateParts.join('-');
-    setScheduleSaveData(updatedScheduleData);
-  };
-
-  const handleCheckboxDayChange = index => {
-    setSelectedSessions(prev => {
-      if (prev.includes(index)) {
-        return prev.filter(i => i !== index);
-      } else {
-        return [...prev, index];
-      }
-    });
-  };
-
-  const handleDelete = () => {
-    const updatedScheduleData = scheduleData.filter((_, i) => !selectedSessions.includes(i));
-    setNum(updatedScheduleData.length);
-    setScheduleData(updatedScheduleData);
-    setSelectedSessions([]);
-  };
 
   const newCheckItem = (id, index, prevState) => {
     const newState = [...prevState];
