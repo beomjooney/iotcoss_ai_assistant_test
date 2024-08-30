@@ -29,9 +29,9 @@ const CourseCard = ({ data, border = false }) => {
   return (
     <div
       onClick={() => {
-        data?.studyCount > 0
+        data?.clubType === '0100'
           ? (window.location.href = `/quiz/${data.clubSequence}`)
-          : (window.location.href = `/lectire/${data.clubSequence}`);
+          : (window.location.href = `/lecture/${data.clubSequence}`);
       }}
       className={`tw-h-[142px] tw-cursor-pointer tw-relative tw-overflow-hidden  tw-bg-white ${
         border ? 'border-left border-right border-top tw-rounded-t-lg' : 'border tw-rounded-lg'
