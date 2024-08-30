@@ -396,6 +396,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
         answerText={item?.modelAnswer}
         handleAddClick={handleAddClick}
         isPublished={item?.isPublished}
+        isDeleteQuiz={false}
         handleCheckboxDelete={handleCheckboxDelete}
       />
     </div>

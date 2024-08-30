@@ -18,7 +18,10 @@ export interface DefaultLayoutProps {
 
 const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutProps) => {
   const { logged } = useSessionStore.getState();
+  const [isContentRendered, setIsContentRendered] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const subDomain = getFirstSubdomain();
+
   const { menu } = useSessionStore.getState();
   // console.log('menu', menu);
 
@@ -112,6 +115,16 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
   });
   // console.log(filteredMenuItems);
 
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (isMounted) {
+      setIsContentRendered(true);
+    }
+  }, [isMounted]);
+
   const [activeIndex, setActiveIndex] = useState(0);
 
   // 클라이언트에서만 localStorage를 사용할 수 있도록 useEffect 내부에서 설정
@@ -151,7 +164,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
 
       {/* <section className="hero-section ptb-100">{children}</section> */}
       <section className="hero-section ptb-100"> {renderChildrenWithProps()}</section>
-      <Footer />
+      {isContentRendered && <Footer />}
     </div>
   );
 };

@@ -8,6 +8,7 @@ import { getButtonText } from 'src/utils/clubStatus';
 const CourseCard = ({ data, border = false }) => {
   const { mutate: onSaveLike, isSuccess } = useSaveLike();
   const { mutate: onDeleteLike } = useDeleteLike();
+  console.log('CourseCard', data);
 
   let [isLiked, setIsLiked] = useState(false);
   useEffect(() => {
@@ -28,7 +29,9 @@ const CourseCard = ({ data, border = false }) => {
   return (
     <div
       onClick={() => {
-        window.location.href = `/quiz/${data.clubSequence}`;
+        data?.studyCount > 0
+          ? (window.location.href = `/quiz/${data.clubSequence}`)
+          : (window.location.href = `/lectire/${data.clubSequence}`);
       }}
       className={`tw-h-[142px] tw-cursor-pointer tw-relative tw-overflow-hidden  tw-bg-white ${
         border ? 'border-left border-right border-top tw-rounded-t-lg' : 'border tw-rounded-lg'
@@ -86,7 +89,7 @@ const CourseCard = ({ data, border = false }) => {
           <span className="tw-font-bold">{data.leaderNickname}</span>
           <span className="tw-text-left tw-text-[#9ca5b2] tw-ml-4">
             {data.startAt} ~ {data.endAt} | {data.studyCycle.toString() || 'N/A'} | {data.weekCount || 'N/A'} 주 | 학습{' '}
-            {data.studyCount || 'N/A'}회
+            {data.studyCount && data.studyCount.length > 0 ? `${data.studyCount}회` : null}
           </span>
         </p>
       </div>

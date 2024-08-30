@@ -1,8 +1,6 @@
 import React from 'react';
-import Tooltip from 'src/stories/components/Tooltip';
 import classNames from 'classnames/bind';
 import styles from './index.module.scss';
-import { Grid } from '@mui/material';
 
 const cx = classNames.bind(styles);
 
@@ -18,6 +16,7 @@ const QuizBreakerInfo = ({
   knowledgeContentTitle = '[영상] CircuitBreaker를 이용한 외부 API 장애 관리',
   handleCheckboxDelete,
   handleAddClick,
+  isDeleteQuiz,
 }) => {
   return (
     <div className="tw-mb-1">
@@ -70,7 +69,7 @@ const QuizBreakerInfo = ({
               <path d="M6 14H22" stroke="#31343D" strokeWidth="1.5" />
               <path d="M6 18H22" stroke="#31343D" strokeWidth="1.5" />
             </svg>
-            {!isPublished && (
+            {isDeleteQuiz && (
               <svg
                 onClick={e => {
                   e.stopPropagation(); // Prevent drag event

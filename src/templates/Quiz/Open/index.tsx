@@ -559,6 +559,7 @@ export function QuizOpenTemplate() {
   const dragList = (item: any, index: any) => (
     <div key={item.order} className="simple-drag-row">
       <QuizBreakerInfo
+        isDeleteQuiz={false}
         avatarSrc={item.leaderProfileImageUrl || '/assets/images/account/default_profile_image.png'}
         userName={item.leaderNickname}
         questionText={item.question}
