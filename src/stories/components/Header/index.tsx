@@ -62,8 +62,7 @@ const cx = classNames.bind(styles);
 const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIndex }: NavbarProps) => {
   const { theme } = useTheme();
   const COLOR_PRESETS = usePresets();
-  const { logged, roles, tenantName } = useSessionStore.getState();
-  // console.log(tenantName);
+  const { logged, roles, menu } = useSessionStore.getState();
   const { colorPresetName, setColorPresetName } = useColorPresetName();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [anchorElAlarm, setAnchorElAlarm] = useState(null);
@@ -177,7 +176,8 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
   };
 
   const handleGoHome = async () => {
-    await router.push('/');
+    // await router.push('/');
+    location.href = '/';
   };
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -292,7 +292,7 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
       >
         <div className="container" style={{ alignItems: 'center' }}>
           {/* <div className={cx('header-link')}> */}
-          <div>
+          <div onClick={handleGoHome} className={cx('header-link')}>
             {getFirstSubdomain() === 'iotcoss' ? (
               <img src="/assets/images/header/sejong_logo.png" width={250} alt="logo" className={cx('image-logo')} />
             ) : (
@@ -431,15 +431,7 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
             >
               <ul className={cx('nav-custom', 'navbar-custom-mobile', 'navbar-nav', 'tw-text-lg', 'tw-text-left')}>
                 {menuItem.map((item, index) => {
-                  const currentSubdomain = getFirstSubdomain(); // Replace with logic to get the current subdomain
-                  const isSubdomainEmpty = currentSubdomain === ''; // Check if the current subdomain is empty
-
-                  // Split the subdomain string into an array and check if the currentSubdomain is included
-                  const subdomainList = item.subdomain ? item.subdomain.split(',') : [];
-                  const isSubdomainMatch =
-                    subdomainList.includes(currentSubdomain) || subdomainList.includes('common') || isSubdomainEmpty;
-
-                  const shouldDisplayItem = isSubdomainMatch && item.login && (!item.role || roles.includes(item.role));
+                  const shouldDisplayItem = item.login && (!item.role || roles.includes(item.role));
                   if (shouldDisplayItem) {
                     return (
                       <li key={`item-` + index} className={cn(item.option)}>

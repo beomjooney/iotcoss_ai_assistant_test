@@ -37,7 +37,6 @@ export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: Lo
   const COLOR_PRESETS = usePresets();
   const { setColorPresetName } = useColorPresetName();
   const { setColorPresets } = useColorPresets();
-  const [subdomain, setSubdomain] = useState('');
   const [username, setUserName] = useState('');
 
   console.log('login page', getFirstSubdomain());
@@ -58,6 +57,8 @@ export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: Lo
       //redirection 처리
       update({
         tenantName: loginData?.tenant_uri?.split('.')[0],
+        redirections: loginData?.redirections,
+        menu: loginData?.menu,
       });
 
       // Check if running in the local environment
@@ -65,8 +66,8 @@ export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: Lo
       const isLocalProd = process.env.NEXT_PUBLIC_ENV === 'prod';
       console.log('loginData?.tenant_uri', loginData?.tenant_uri, getFirstSubdomain(), isLocalEnv);
 
-      if (loginData?.tenant_uri === getFirstSubdomain() || isLocalEnv || isLocalProd) {
-        // if (loginData?.tenant_uri === getFirstSubdomain() || isLocalEnv) {
+      // if (loginData?.tenant_uri === getFirstSubdomain() || isLocalEnv || isLocalProd) {
+      if (loginData?.tenant_uri === getFirstSubdomain() || isLocalEnv) {
         location.href = '/';
       } else {
         const authStore = localStorage.getItem('auth-store');

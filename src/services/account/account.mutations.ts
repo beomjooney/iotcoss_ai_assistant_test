@@ -86,17 +86,21 @@ export const useLogin = (): UseMutationResult => {
       console.log('data', data);
 
       const { responseCode, message } = data;
-      if (typeof data.responseCode === 'undefined') {
+      if (responseCode === '0000') {
         setCookie('access_token', data?.access_token);
-        // alert('회원가입이 정상적으로 되었습니다.');
-        // router.push('/account/login');
-        location.href = '/';
-      } else if (responseCode === '0400') {
-        alert('테넌트 정보를 찾을 수 없습니다.');
-        router.push('/account/login');
       } else {
         alert(`error : [${responseCode}] ${message}`);
       }
+
+      // if (typeof data.responseCode === 'undefined') {
+      //   setCookie('access_token', data?.access_token);
+      //   // location.href = '/';
+      // } else if (responseCode === '0400') {
+      //   alert('테넌트 정보를 찾을 수 없습니다.');
+      //   router.push('/account/login');
+      // } else {
+      //   alert(`error : [${responseCode}] ${message}`);
+      // }
     },
   });
 };

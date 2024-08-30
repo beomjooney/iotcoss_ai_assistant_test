@@ -114,7 +114,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
   }: UseQueryResult<any> = useIdVerification(params, data => {
     console.log('data', data);
     if (data.responseCode === '1400') {
-      alert('현재 도메인에는 메일을 사용할 수 없습니다.\n ' + data.data.toString() + ' 메일주소로 가입해주세요.');
+      alert('해당 도메인은 사용할 수 없습니다.\n ' + data.data.toString() + ' 메일주소로 가입해주세요.');
     } else if (data.responseCode === '1401') {
       alert('중복된 이메일 입니다.');
     } else if (data.responseCode === '1402') {

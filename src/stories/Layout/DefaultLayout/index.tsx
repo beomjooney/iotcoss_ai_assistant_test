@@ -18,9 +18,14 @@ export interface DefaultLayoutProps {
 
 const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutProps) => {
   const { logged } = useSessionStore.getState();
-  const [isContentRendered, setIsContentRendered] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
   const subDomain = getFirstSubdomain();
+  const { menu } = useSessionStore.getState();
+  // console.log('menu', menu);
+
+  // const menu = {
+  //   use_lecture_club: true,
+  //   use_quiz_club: true,
+  // };
 
   const menuItem = [
     {
@@ -30,7 +35,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       link: subDomain ? `/${subDomain}` : '/',
       dropdown: [],
       login: true,
-      subdomain: 'common',
+      menu: 'all',
     },
     {
       no: 1,
@@ -39,7 +44,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       link: '/quiz',
       dropdown: [],
       login: true,
-      subdomain: 'dsu,iotcoss',
+      menu: 'use_quiz_club',
     },
     {
       no: 1,
@@ -48,7 +53,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       link: '/lecture',
       dropdown: [],
       login: true,
-      subdomain: 'iotcoss',
+      menu: 'use_lecture_club',
     },
     {
       no: 1,
@@ -57,7 +62,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       link: '/studyroom',
       dropdown: [],
       login: logged,
-      subdomain: 'common',
+      menu: 'all',
     },
     {
       no: 1,
@@ -67,7 +72,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       dropdown: [],
       login: logged,
       role: 'ROLE_MANAGER',
-      subdomain: 'dsu,iotcoss',
+      menu: 'use_quiz_club',
     },
     {
       no: 1,
@@ -77,7 +82,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       dropdown: [],
       login: logged,
       role: 'ROLE_MANAGER',
-      subdomain: 'dsu,iotcoss',
+      menu: 'use_quiz_club',
     },
     {
       no: 1,
@@ -86,20 +91,26 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       link: '/my-lecture-clubs',
       dropdown: [],
       login: logged,
-      subdomain: 'iotcoss',
       role: 'ROLE_MANAGER',
+      menu: 'use_lecture_club',
     },
   ];
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  // Check if menuRole is empty
+  const isMenuRoleEmpty = Object.keys(menu).length === 0;
 
-  useEffect(() => {
-    if (isMounted) {
-      setIsContentRendered(true);
+  // Filter menu items based on menuRole and the empty case
+  const filteredMenuItems = menuItem.filter(item => {
+    if (isMenuRoleEmpty) {
+      // If menuRole is empty, show all items related to 'use_lecture_club' and 'use_quiz_club'
+      // return item.menu === 'all' || item.menu === 'use_quiz_club' || item.menu === 'use_lecture_club';
+      return item.menu === 'all' || item.menu === 'use_quiz_club';
+    } else {
+      // Otherwise, filter based on menuRole
+      return item.menu === 'all' || (item.menu && menu[item.menu]);
     }
-  }, [isMounted]);
+  });
+  // console.log(filteredMenuItems);
 
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -129,18 +140,18 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
           darkBg={darkBg}
           classOption={classOption}
           title={title}
-          menuItem={menuItem}
+          menuItem={filteredMenuItems}
           activeIndex={activeIndex}
           setActiveIndex={setActiveIndex}
         />
       </Desktop>
       <Mobile>
-        <Header darkBg={darkBg} classOption={classOption} title={title} menuItem={menuItem} />
+        <Header darkBg={darkBg} classOption={classOption} title={title} menuItem={filteredMenuItems} />
       </Mobile>
 
       {/* <section className="hero-section ptb-100">{children}</section> */}
       <section className="hero-section ptb-100"> {renderChildrenWithProps()}</section>
-      {isContentRendered && <Footer />}
+      <Footer />
     </div>
   );
 };

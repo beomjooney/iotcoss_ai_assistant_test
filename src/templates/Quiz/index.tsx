@@ -2,11 +2,10 @@
 
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import { ToggleLabel, Pagination, ClubCard } from 'src/stories/components';
+import { Pagination, ClubCard } from 'src/stories/components';
 import React, { useState, useEffect } from 'react';
 import { RecommendContent } from 'src/models/recommend';
 import { useSeminarList, paramProps } from 'src/services/seminars/seminars.queries';
-import { useStore } from 'src/store';
 import { useRouter } from 'next/router';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/system/Box';
@@ -112,77 +111,78 @@ export function QuizTemplate() {
             </Grid>
           </Grid>
         </div>
-        <Box sx={{ width: '100%', typography: 'body1', marginBottom: '20px' }}>
-          <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-            <Grid item xs={12} sm={9} className="tw-font-bold tw-text-3xl tw-text-black tw-pr-2">
-              <Box className="filter-area">
-                <Tabs
-                  sx={{
-                    '& .MuiTabs-indicator': { display: 'none' },
-                    '&.Mui-selected': {
-                      fontWeight: 'bold', // 선택된 탭의 폰트 웨이트를 bold로
-                      color: 'black',
-                    },
-                  }}
-                  value={active}
-                  onChange={handleTabChange}
-                  variant="scrollable"
-                  scrollButtons="auto"
-                  aria-label="scrollable auto tabs example"
-                  className="" // 커스텀 스타일 적용
-                >
-                  <Tab
-                    label="전체보기"
-                    className="tw-text-base"
+        {logged && (
+          <Box sx={{ width: '100%', typography: 'body1', marginBottom: '20px' }}>
+            <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
+              <Grid item xs={12} sm={9} className="tw-font-bold tw-text-3xl tw-text-black tw-pr-2">
+                <Box className="filter-area">
+                  <Tabs
                     sx={{
+                      '& .MuiTabs-indicator': { display: 'none' },
                       '&.Mui-selected': {
                         fontWeight: 'bold', // 선택된 탭의 폰트 웨이트를 bold로
-                        fontSize: '16px',
                         color: 'black',
                       },
                     }}
-                  />
-                  {isOptionFetched &&
-                    optionsData?.data?.jobs?.map((item, i) => (
-                      <Tab
-                        sx={{
-                          '&.Mui-selected': {
-                            fontWeight: 'bold', // 선택된 탭의 폰트 웨이트를 bold로
-                            fontSize: '16px',
-                            color: 'black',
-                          },
+                    value={active}
+                    onChange={handleTabChange}
+                    variant="scrollable"
+                    scrollButtonsAllowWrap
+                    aria-label="scrollable auto tabs example"
+                    className="" // 커스텀 스타일 적용
+                  >
+                    <Tab
+                      label="전체보기"
+                      className="tw-text-base"
+                      sx={{
+                        '&.Mui-selected': {
+                          fontWeight: 'bold', // 선택된 탭의 폰트 웨이트를 bold로
                           fontSize: '16px',
-                        }}
-                        className="tw-text-base"
-                        key={i}
-                        label={item.name}
-                      />
-                    ))}
-                </Tabs>
-              </Box>
+                          color: 'black',
+                        },
+                      }}
+                    />
+                    {isOptionFetched &&
+                      optionsData?.data?.jobs?.map((item, i) => (
+                        <Tab
+                          sx={{
+                            '&.Mui-selected': {
+                              fontWeight: 'bold', // 선택된 탭의 폰트 웨이트를 bold로
+                              fontSize: '16px',
+                              color: 'black',
+                            },
+                            fontSize: '16px',
+                          }}
+                          className="tw-text-base"
+                          key={i}
+                          label={item.name}
+                        />
+                      ))}
+                  </Tabs>
+                </Box>
+              </Grid>
+              <Grid item xs={6} sm={3} className="tw-font-semi tw-text-base tw-text-black">
+                <TextField
+                  fullWidth
+                  id="outlined-basic"
+                  label=""
+                  placeholder="수업명, 교수님명으로 클럽검색하기"
+                  variant="outlined"
+                  onKeyPress={e => {
+                    if (e.key === 'Enter') {
+                      searchKeyworld((e.target as HTMLInputElement).value);
+                    }
+                  }}
+                  InputProps={{
+                    style: { height: '43px' },
+                    startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
+                  }}
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={6} sm={3} className="tw-font-semi tw-text-base tw-text-black">
-              <TextField
-                fullWidth
-                id="outlined-basic"
-                label=""
-                placeholder="수업명, 교수님명으로 클럽검색하기"
-                variant="outlined"
-                onKeyPress={e => {
-                  if (e.key === 'Enter') {
-                    searchKeyworld((e.target as HTMLInputElement).value);
-                  }
-                }}
-                InputProps={{
-                  style: { height: '43px' },
-                  startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
-                }}
-              />
-            </Grid>
-          </Grid>
-        </Box>
-
-        <hr className="tw-y-14 tw-my-5 tw-h-[0.5px] tw-border-t tw-bg-gray-300 " />
+          </Box>
+        )}
+        {logged && <hr className="tw-y-14 tw-my-5 tw-h-[0.5px] tw-border-t tw-bg-gray-300 " />}
         <article>
           <div
             className={cx('content-area', isClient && logged ? '' : 'tw-max-h-[14rem] tw-overflow-hidden tw-relative')}

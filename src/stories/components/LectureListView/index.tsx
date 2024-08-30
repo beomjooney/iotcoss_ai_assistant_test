@@ -419,7 +419,7 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
                         <div className={`tw-font-medium tw-text-black`}>{item?.question}</div>
                       </div>
                       <div className="tw-pr-4">
-                        <button
+                        {/* <button
                           type="button"
                           data-tooltip-target="tooltip-default"
                           onClick={() => {
@@ -433,7 +433,7 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
                           className="tw-bg-black tw-text-white max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-2 tw-rounded"
                         >
                           추가 질문하기
-                        </button>
+                        </button> */}
                       </div>
                     </div>
                     <div className=" border  tw-px-4 tw-py-5 tw-rounded-lg tw-mt-0">

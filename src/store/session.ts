@@ -57,6 +57,8 @@ const useSessionStore = create<any>(
       memberName: undefined,
       beforeOnePick: undefined,
       tenantName: getSubdomain()?.split('.')[0],
+      menu: {},
+      redirections: {},
       logged: false,
       roles: [],
       update(session) {
