@@ -102,15 +102,17 @@ export function QuizOpenTemplate() {
     setOptionsSkills(optionsData?.data?.skills || []);
   }, [optionsData]);
   const { isFetched: isQuizData, refetch } = useQuizList(params, data => {
+    console.log('quiz data', data.contents);
     setQuizListData(data.contents || []);
     setTotalElements(data.totalElements);
     setTotalPage(data.totalPages);
   });
 
-  const { data: myQuizListData, refetch: refetchMyJob }: UseQueryResult<any> = useMyQuiz(myParams);
+  // const { data: myQuizListData, refetch: refetchMyJob }: UseQueryResult<any> = useMyQuiz(myParams);
 
   //get schedule
   const { refetch: refetchGetSchedule }: UseQueryResult<any> = useGetSchedule(dayParams, data => {
+    console.log('schedule data', data);
     setScheduleData(data);
   });
 
@@ -570,6 +572,7 @@ export function QuizOpenTemplate() {
         publishDate={item.publishDate}
         dayOfWeek={item.dayOfWeek}
         isPublished={item.isPublished}
+        knowledgeContentTitle={item?.content?.description}
       />
     </div>
   );
@@ -1954,6 +1957,7 @@ export function QuizOpenTemplate() {
                 handleCheckboxChange={handleCheckboxChange}
                 tags={item}
                 answerText={item.modelAnswer}
+                knowledgeContentTitle={item?.content?.description}
               />
             </div>
           ))}

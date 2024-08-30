@@ -23,7 +23,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
   const subDomain = getFirstSubdomain();
 
   const { menu } = useSessionStore.getState();
-  // console.log('menu', menu);
+  console.log('menu', menu);
 
   // const menu = {
   //   use_lecture_club: true,
@@ -113,7 +113,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       return item.menu === 'all' || (item.menu && menu[item.menu]);
     }
   });
-  // console.log(filteredMenuItems);
+  console.log(filteredMenuItems);
 
   useEffect(() => {
     setIsMounted(true);

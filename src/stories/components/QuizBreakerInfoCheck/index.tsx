@@ -13,7 +13,7 @@ const QuizBreakerInfoCheck = ({
   tags,
   selectedQuizIds = [], // Default to empty array,
   answerText,
-  knowledgeContentTitle = '[영상] CircuitBreaker를 이용한 외부 API 장애 관리',
+  knowledgeContentTitle = '',
   handleCheckboxChange,
 }) => {
   return (
