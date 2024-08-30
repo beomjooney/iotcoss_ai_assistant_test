@@ -177,7 +177,7 @@ ClubCardProps) => {
               <div>{item?.leaderNickname}</div>
             </div>
             <button
-              className="tw-pl-2 tw-pt-2 tw-ml-auto"
+              className="tw-pl-2 tw-ml-auto"
               onClick={() => {
                 onChangeLike(item.clubSequence);
               }}
