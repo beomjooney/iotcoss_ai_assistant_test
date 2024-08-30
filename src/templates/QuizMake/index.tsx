@@ -906,7 +906,7 @@ export function QuizMakeTemplate() {
                       </p>
                     }
                   />
-                  <FormControlLabel
+                  {/* <FormControlLabel
                     value="0004"
                     control={
                       <Radio
@@ -923,7 +923,7 @@ export function QuizMakeTemplate() {
                         많이 복사된 순
                       </p>
                     }
-                  />
+                  /> */}
                   <FormControlLabel
                     value="0005"
                     control={
