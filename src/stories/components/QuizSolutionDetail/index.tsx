@@ -314,9 +314,9 @@ BannerProps) => {
           </div>
           <div className="container tw-p-40 tw-leading-normal tw-text-black tw-text-xl tw-pt-10 tw-pb-10 tw-bg-gray-100">
             <div className="tw-inline-flex tw-items-center">
-              <div className="tw-py-1  tw-text-bold tw-mr-2 tw-text-[#f44]">{data?.weekNumber}회</div>
-              <div className="tw-py-1 tw-text-bold tw-mr-2">{data?.publishDate?.split('-').slice(1).join('-')}</div>
-              <div className="tw-py-1 tw-font-bold tw-mr-2">({data?.studyDay})</div>
+              <div className="tw-py-1  tw-text-bold tw-mr-2 tw-text-[#f44]">{data?.order}회</div>
+              {/* <div className="tw-py-1 tw-text-bold tw-mr-2">{data?.publishDate?.split('-').slice(1).join('-')}</div> */}
+              {/* <div className="tw-py-1 tw-font-bold tw-mr-2">({data?.studyDay})</div> */}
               <div className="tw-py-1 tw-font-bold tw-mr-2">
                 {activeStep === 0 || activeStep === 1 ? '사전답변' : activeStep === 2 ? '사후답변' : ''}
               </div>
