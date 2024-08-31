@@ -154,9 +154,9 @@ const QuizClubDetaillSolution = ({
               </div>
             </div>
 
-            <div className="tw-text-[20.5px] tw-font-bold tw-text-black tw-mt-4">{contents?.club?.clubName}</div>
+            <div className="tw-text-[20.5px] tw-font-bold tw-text-black tw-mt-2">{contents?.club?.clubName}</div>
             <p className="tw-text-[12.25px] tw-mt-2 tw-text-black">{contents?.club?.description}</p>
-            <div className="tw-mt-4">
+            <div className="tw-mt-2">
               <p className="tw-text-sm tw-text-black">
                 학습 주기 : 매주 {contents?.club?.studyCycle.toString()}요일 (총 {contents?.club?.weekCount}회)
               </p>
@@ -169,9 +169,12 @@ const QuizClubDetaillSolution = ({
               </p>
               <p className="tw-text-sm tw-text-black">참여 인원 : {contents?.club?.recruitedMemberCount}명</p>
             </div>
-            <div className="tw-flex tw-items-center tw-mt-auto tw-justify-between tw-w-full">
+            <div className="tw-flex tw-items-center tw-mt-auto tw-justify-between tw-w-full tw-py-2">
               <div className="tw-flex tw-items-center">
-                <img src={contents?.club?.leaderProfileImageUrl} className="tw-mr-2 tw-rounded-full tw-w-9 tw-h-9" />
+                <img
+                  src={contents?.club?.leaderProfileImageUrl || '/assets/images/account/default_profile_image.png'}
+                  className="tw-mr-2 tw-rounded-full tw-ring-1 tw-ring-[#e9ecf2] tw-w-9 tw-h-9"
+                />
                 <p className="tw-text-sm tw-text-black">{contents?.club?.leaderNickname}</p>
               </div>
               <div className="tw-flex tw-gap-4">
