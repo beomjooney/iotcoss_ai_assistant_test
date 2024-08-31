@@ -50,7 +50,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       menu: 'use_quiz_club',
     },
     {
-      no: 1,
+      no: 2,
       option: 'nav-item',
       title: '강의클럽',
       link: '/lecture',
@@ -59,7 +59,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       menu: 'use_lecture_club',
     },
     {
-      no: 1,
+      no: 3,
       option: 'nav-item',
       title: 'My학습방',
       link: '/studyroom',
@@ -68,7 +68,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       menu: 'all',
     },
     {
-      no: 1,
+      no: 4,
       option: 'nav-item',
       title: 'My퀴즈',
       link: '/quiz-make',
@@ -78,7 +78,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       menu: 'use_quiz_club',
     },
     {
-      no: 1,
+      no: 5,
       option: 'nav-item',
       title: 'My퀴즈클럽',
       link: '/my-clubs',
@@ -88,7 +88,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       menu: 'use_quiz_club',
     },
     {
-      no: 1,
+      no: 6,
       option: 'nav-item',
       title: 'My강의클럽',
       link: '/my-lecture-clubs',
