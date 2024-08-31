@@ -447,6 +447,7 @@ const QuizClubDetaillSolution = ({
                                         '/assets/images/account/default_profile_image.png'
                                       }
                                     />
+
                                     <div className="tw-text-xs tw-text-left tw-text-black">
                                       {item?.answer?.member?.nickname}
                                     </div>
@@ -745,7 +746,10 @@ const QuizClubDetaillSolution = ({
                                     <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                       <img
                                         className="tw-rounded-full tw-w-10 tw-h-10 tw-mb-1"
-                                        src={item?.answer?.member?.profileImageUrl}
+                                        src={
+                                          item?.answer?.member?.profileImageUrl ||
+                                          '/assets/images/account/default_profile_image.png'
+                                        }
                                       />
                                       <div className="tw-text-xs tw-text-black">{item?.answer?.member?.nickname}</div>
                                     </div>
@@ -804,7 +808,10 @@ const QuizClubDetaillSolution = ({
                                   <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                     <img
                                       className="tw-rounded-full tw-w-10 tw-h-10 tw-mb-1"
-                                      src={item?.answer?.member?.profileImageUrl}
+                                      src={
+                                        item?.answer?.member?.profileImageUrl ||
+                                        '/assets/images/account/default_profile_image.png'
+                                      }
                                     />
                                     <div className="tw-text-xs tw-text-left tw-text-black">
                                       {item?.answer?.member?.nickname}
