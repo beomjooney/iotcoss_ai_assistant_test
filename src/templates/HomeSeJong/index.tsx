@@ -17,7 +17,7 @@ export interface HomeSejongProps {
 
 export function HomeSejongTemplate({ logged = false, tenantName = '' }: HomeSejongProps) {
   const router = useRouter();
-  const { token, roles } = useSessionStore.getState();
+  const { token, roles, menu } = useSessionStore.getState();
 
   const [isClient, setIsClient] = useState(false); // 클라이언트 사이드에서만 렌어링하도록 상태 추가
   useEffect(() => {
@@ -282,7 +282,7 @@ export function HomeSejongTemplate({ logged = false, tenantName = '' }: HomeSejo
           />
         )}
 
-        {isClient && !modalIsOpen && logged && (
+        {isClient && !modalIsOpen && logged && menu.use_lecture_club && (
           <div>
             <div
               className="tw-fixed tw-bottom-0 tw-right-0 tw-w-12 md:tw-w-16 tw-h-12 md:tw-h-16 tw-mr-4 md:tw-mr-10 tw-mb-4 md:tw-mb-8 tw-cursor-pointer tw-z-10"

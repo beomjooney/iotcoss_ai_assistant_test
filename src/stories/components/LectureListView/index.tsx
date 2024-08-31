@@ -34,6 +34,10 @@ const cx = classNames.bind(styles);
 import { useLectureQAInfo, useLectureStudyQAInfo, useQuizFileDownload } from 'src/services/quiz/quiz.queries';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 
+// 챗봇
+import { useSessionStore } from '../../../../src/store/session';
+import ChatbotModal from 'src/stories/components/ChatBot';
+
 const LectureListView = ({ border, id, clubStudySequence }) => {
   const router = useRouter();
   // const { clubStudySequence } = router.query;
@@ -55,6 +59,13 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
   const [totalPage, setTotalPage] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
   // const [selectedValue, setSelectedValue] = useState(id);
+
+  const { roles, menu, token, logged } = useSessionStore.getState();
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [isClient, setIsClient] = useState(false); // 클라이언트 사이드에서만 렌어링하도록 상태 추가
+  useEffect(() => {
+    setIsClient(true); // 클라이언트 사이드에서 상태를 true로 설정
+  }, []);
 
   const [params, setParams] = useState<any>({ id: '225', page });
 
@@ -526,6 +537,17 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
             </div>
           </div>
         </div>
+        {isClient && !modalIsOpen && logged && menu.use_lecture_club && (
+          <div>
+            <div
+              className="tw-fixed tw-bottom-0 tw-right-0 tw-w-12 md:tw-w-16 tw-h-12 md:tw-h-16 tw-mr-4 md:tw-mr-10 tw-mb-4 md:tw-mb-8 tw-cursor-pointer tw-z-10"
+              onClick={() => setModalIsOpen(true)}
+            >
+              <img src="/assets/images/main/chatbot.png" />
+            </div>
+          </div>
+        )}
+        {isClient && <ChatbotModal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)} token={token} />}
       </div>
       <Modal
         isOpen={isModalOpen}

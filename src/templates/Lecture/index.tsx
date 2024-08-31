@@ -20,12 +20,15 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import { UseQueryResult } from 'react-query';
+// 챗봇
+import ChatbotModal from 'src/stories/components/ChatBot';
 
 const cx = classNames.bind(styles);
 
 export function LectureTemplate() {
-  const { logged, roles } = useSessionStore.getState();
+  const { roles, menu, token, logged } = useSessionStore.getState();
   const router = useRouter();
+  const [modalIsOpen, setModalIsOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [params, setParams] = useState<paramProps>({ page, clubType: '0200' });
@@ -268,6 +271,17 @@ export function LectureTemplate() {
           )}
         </article>
       </div>
+      {isClient && !modalIsOpen && logged && menu.use_lecture_club && (
+        <div>
+          <div
+            className="tw-fixed tw-bottom-0 tw-right-0 tw-w-12 md:tw-w-16 tw-h-12 md:tw-h-16 tw-mr-4 md:tw-mr-10 tw-mb-4 md:tw-mb-8 tw-cursor-pointer tw-z-10"
+            onClick={() => setModalIsOpen(true)}
+          >
+            <img src="/assets/images/main/chatbot.png" />
+          </div>
+        </div>
+      )}
+      {isClient && <ChatbotModal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)} token={token} />}
     </div>
   );
 }

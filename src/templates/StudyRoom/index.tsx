@@ -45,7 +45,10 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import ArticleList from 'src/stories/components/ArticleList';
 import { UseQueryResult } from 'react-query';
+
+// 챗봇
 import { useSessionStore } from '../../../src/store/session';
+import ChatbotModal from 'src/stories/components/ChatBot';
 
 const useStyles = makeStyles(theme => ({
   table: {
@@ -122,6 +125,7 @@ const studyStatus = [
 
 export function StudyRoomTemplate() {
   const router = useRouter();
+  const [modalIsOpen, setModalIsOpen] = useState(false);
   const [badgePage, setBadgePage] = useState(1);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
@@ -150,7 +154,13 @@ export function StudyRoomTemplate() {
     sortType: sortType,
   });
 
-  const { roles } = useSessionStore();
+  const { roles, menu, token, logged } = useSessionStore.getState();
+
+  const [isClient, setIsClient] = useState(false); // 클라이언트 사이드에서만 렌어링하도록 상태 추가
+  useEffect(() => {
+    setIsClient(true); // 클라이언트 사이드에서 상태를 true로 설정
+  }, []);
+
   console.log('roles', roles);
   /**badge */
   const [badgeClubViewFilter, setBadgeClubViewFilter] = useState('0001');
@@ -197,7 +207,7 @@ export function StudyRoomTemplate() {
     const count = highlightedDays.find(item => item.date === props.day.format('YYYY-MM-DD'))?.count || 0;
 
     const dots = Array.from({ length: count }, (_, index) => (
-      <span key={index} className="tw-font-bold tw-text-2xl tw-text-red-500 tw-h-[10px]">
+      <span key={index} className="tw-font-bold tw-text-2xl tw-text-red-500 tw-h-[10px] tw-z-0">
         .
       </span>
     ));
@@ -206,6 +216,7 @@ export function StudyRoomTemplate() {
         classes={{
           badge: classes.font1,
         }}
+        className="tw-z-0"
         key={props.day.toString()}
         overlap="circular"
         badgeContent={isSelected ? dots : undefined}
@@ -1210,6 +1221,17 @@ export function StudyRoomTemplate() {
             </div>
           </article>
         </div>
+        {isClient && !modalIsOpen && logged && menu.use_lecture_club && (
+          <div>
+            <div
+              className="tw-fixed tw-bottom-0 tw-right-0 tw-w-12 md:tw-w-16 tw-h-12 md:tw-h-16 tw-mr-4 md:tw-mr-10 tw-mb-4 md:tw-mb-8 tw-cursor-pointer tw-z-10"
+              onClick={() => setModalIsOpen(true)}
+            >
+              <img src="/assets/images/main/chatbot.png" />
+            </div>
+          </div>
+        )}
+        {isClient && <ChatbotModal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)} token={token} />}
       </div>
     </>
   );

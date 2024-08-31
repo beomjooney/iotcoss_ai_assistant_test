@@ -17,6 +17,10 @@ import { useSaveLike, useDeleteLike } from 'src/services/community/community.mut
 import router from 'next/router';
 import { Button, Typography, Profile, Modal, ArticleCard } from 'src/stories/components';
 
+// 챗봇
+import ChatbotModal from 'src/stories/components/ChatBot';
+import { useSessionStore } from '../../../../src/store/session';
+
 const cx = classNames.bind(styles);
 
 //comment
@@ -42,6 +46,14 @@ const LectureDetaillSolution = ({
   const { mutate: onSaveLike, isSuccess } = useSaveLike();
   const { mutate: onDeleteLike } = useDeleteLike();
   const [participationCode, setParticipationCode] = useState<string>('');
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+
+  const { roles, menu, token, logged } = useSessionStore.getState();
+
+  const [isClient, setIsClient] = useState(false); // 클라이언트 사이드에서만 렌어링하도록 상태 추가
+  useEffect(() => {
+    setIsClient(true); // 클라이언트 사이드에서 상태를 true로 설정
+  }, []);
 
   const [expandedItems, setExpandedItems] = useState(() => Array(quizList?.length || 0).fill(false));
   const [expandedQuizzData, setExpandedQuizzData] = useState(
@@ -55,34 +67,6 @@ const LectureDetaillSolution = ({
       refetchClubAbout();
     }
   }, [clubJoinSucces]);
-
-  const toggleExpand = index => {
-    setExpandedItems(prev => {
-      const newExpandedItems = [...prev];
-      newExpandedItems[index] = !newExpandedItems[index];
-      return newExpandedItems;
-    });
-  };
-
-  const toggleExpandQuizzData = (itemIndex, quizzIndex) => {
-    setExpandedQuizzData(prev => {
-      const newExpandedQuizzData = [...prev];
-
-      // itemIndex가 유효한지 확인하고 초기화
-      if (!newExpandedQuizzData[itemIndex]) {
-        newExpandedQuizzData[itemIndex] = [];
-      }
-
-      // quizzIndex가 유효한지 확인하고 초기화
-      if (typeof newExpandedQuizzData[itemIndex][quizzIndex] === 'undefined') {
-        newExpandedQuizzData[itemIndex][quizzIndex] = 0;
-      }
-
-      newExpandedQuizzData[itemIndex][quizzIndex] = !newExpandedQuizzData[itemIndex][quizzIndex];
-      console.log(newExpandedQuizzData);
-      return newExpandedQuizzData;
-    });
-  };
 
   const onChangeLike = function (postNo: number) {
     event.preventDefault();
@@ -376,6 +360,17 @@ const LectureDetaillSolution = ({
             })}
           </div>
         </div>
+        {isClient && !modalIsOpen && logged && menu.use_lecture_club && (
+          <div>
+            <div
+              className="tw-fixed tw-bottom-0 tw-right-0 tw-w-12 md:tw-w-16 tw-h-12 md:tw-h-16 tw-mr-4 md:tw-mr-10 tw-mb-4 md:tw-mb-8 tw-cursor-pointer tw-z-10"
+              onClick={() => setModalIsOpen(true)}
+            >
+              <img src="/assets/images/main/chatbot.png" />
+            </div>
+          </div>
+        )}
+        {isClient && <ChatbotModal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)} token={token} />}
       </div>
       <Modal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)} title="" maxWidth="900px">
         <div className={cx('seminar-check-popup')}>
