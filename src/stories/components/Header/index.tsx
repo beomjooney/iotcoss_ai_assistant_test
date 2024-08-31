@@ -442,7 +442,7 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
                           <a
                             className="nav-link"
                             onClick={() => {
-                              setActiveIndex(index);
+                              // setActiveIndex(index);
                               if (item.dropdown.length === 0) setIsShowMenu(!isShowMenu);
                             }}
                           >

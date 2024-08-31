@@ -113,7 +113,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       return item.menu === 'all' || (item.menu && menu[item.menu]);
     }
   });
-  // console.log(filteredMenuItems);
+  console.log(filteredMenuItems);
 
   useEffect(() => {
     setIsMounted(true);
