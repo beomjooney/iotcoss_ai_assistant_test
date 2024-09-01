@@ -86,7 +86,7 @@ export function HomeTemplate({ logged = false, tenantName = '' }: HomeProps) {
             <span className="tw-text-xl md:tw-text-[32px] tw-font-bold tw-text-left tw-text-black">BRIGHT</span>
             <span className="tw-text-xl md:tw-text-[32px] tw-text-left tw-text-black"> FUTURE</span>
           </p>
-          <div className="tw-w-[48px] md:tw-w-[115px] tw-h-[2px] md:tw-h-[3px] tw-absolute tw-left-[60px] md:tw-left-[119px] tw-top-[90px] md:tw-top-[157px] tw-bg-[#e11837]" />
+          <div className="tw-w-[48px] md:tw-w-[115px] tw-h-[2px] md:tw-h-[3px] tw-absolute tw-left-[60px] md:tw-left-[115px] tw-top-[90px] md:tw-top-[157px] tw-bg-[#e11837]" />
           <p className="tw-absolute tw-left-[24px] tw-top-[110px] md:tw-left-[57px] md:tw-top-[209px] tw-text-sm md:tw-text-base tw-font-medium tw-text-left tw-text-black">
             각 분야의 전문가들이 메이커로서 핵심 질문과 아티클을 답으로 제시합니다.
             <br />
