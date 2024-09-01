@@ -259,8 +259,8 @@ export function HomeTemplate({ logged = false, tenantName = '' }: HomeProps) {
                 Dongseo
               </span>
             </p>
-            <div className="tw-w-[60px] md:tw-w-[79px] tw-h-[2px] md:tw-h-[3px] tw-absolute tw-left-[calc(50%-30px)] md:tw-left-[855.5px] tw-top-[120px] md:tw-top-[193.5px] tw-bg-[#e11837]" />
-            <div className="tw-w-[80px] md:tw-w-[103px] tw-h-[2px] md:tw-h-[3px] tw-absolute tw-left-[calc(50%-40px)] md:tw-left-[603.5px] tw-top-[120px] md:tw-top-[193.5px] tw-bg-[#e11837]" />
+            <div className="tw-w-[60px] md:tw-w-[79px] tw-h-[2px] md:tw-h-[3px] tw-absolute tw-left-[calc(50%-30px)] md:tw-left-[855.5px] tw-top-[120px] md:tw-top-[183.5px] tw-bg-[#e11837]" />
+            <div className="tw-w-[80px] md:tw-w-[103px] tw-h-[2px] md:tw-h-[3px] tw-absolute tw-left-[calc(50%-40px)] md:tw-left-[603.5px] tw-top-[120px] md:tw-top-[183.5px] tw-bg-[#e11837]" />
           </div>
           <img
             src="/assets/images/main/dsu_1.png"

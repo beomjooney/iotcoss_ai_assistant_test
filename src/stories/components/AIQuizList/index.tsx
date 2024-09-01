@@ -54,6 +54,8 @@ const AIQuizList = ({
   updateQuizList,
   isContentModalClick,
   fileList,
+  isGlobalLoading,
+  setIsGlobalLoading,
   jobLevel,
 }) => {
   const [isLoadingAI, setIsLoadingAI] = useState(false);
@@ -68,6 +70,7 @@ const AIQuizList = ({
   useEffect(() => {
     if (answerSuccess || answerError) {
       setIsLoadingAI(false);
+      setIsGlobalLoading(false);
     }
   }, [answerSuccess, answerError]);
 
@@ -142,12 +145,12 @@ const AIQuizList = ({
 
     console.log('ai quiz click', params);
     setIsLoadingAI(true);
-
+    setIsGlobalLoading(true);
     onAIQuizAnswer(formData); // Ensure this function returns a promise
   };
 
   const handleDeleteQuizLoading = question => {
-    if (isLoadingAI) {
+    if (isGlobalLoading) {
       alert('모범 답안 생성중에는 삭제할 수 없습니다.');
       return;
     } else {

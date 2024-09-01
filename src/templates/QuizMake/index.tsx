@@ -138,6 +138,7 @@ export function QuizMakeTemplate() {
 
   // 로딩 상태를 관리하기 위해 useState 훅 사용
   const [isLoading, setIsLoading] = useState(false);
+  const [isGlobalLoading, setIsGlobalLoading] = useState(false);
   const [isLoadingAI, setIsLoadingAI] = useState({});
   const [index, setIndex] = useState(0);
 
@@ -1588,6 +1589,8 @@ export function QuizMakeTemplate() {
                         contentType={contentType}
                         contentUrl={contentUrl}
                         selectedJob={selectedJob}
+                        isGlobalLoading={isGlobalLoading}
+                        setIsGlobalLoading={setIsGlobalLoading}
                         isContentModalClick={isContentModalClick}
                         contentSequence={contentSequence}
                         quiz={quiz}

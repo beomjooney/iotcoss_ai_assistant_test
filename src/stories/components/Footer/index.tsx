@@ -43,7 +43,14 @@ const Footer = () => {
               </div>
               <div className="tw-flex tw-flex-col tw-items-center">
                 <div className="tw-w-[314px] tw-h-6">
-                  <p className="tw-text-base tw-text-center tw-text-white">관련사이트 바로가기</p>
+                  <p
+                    className="tw-text-base tw-text-center tw-text-white tw-cursor-pointer"
+                    onClick={() => {
+                      window.open('https://www.dongseo.ac.kr');
+                    }}
+                  >
+                    관련사이트 바로가기
+                  </p>
                 </div>
               </div>
             </div>

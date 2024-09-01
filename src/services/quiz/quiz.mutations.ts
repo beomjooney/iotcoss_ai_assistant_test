@@ -97,11 +97,11 @@ export const useAIQuizAnswer = (): UseMutationResult => {
   const queryClient = useQueryClient();
   return useMutation<any, any, any>(requestBody => saveAIQuizAnswer(requestBody), {
     onError: (error, variables, context) => {
-      const { code, message } = error;
-      if (code === 'CO5000') {
+      const { responseCode, message } = error;
+      if (responseCode === 'CO5000') {
         alert('AI 모델 답안 생성 실패');
       } else {
-        alert(`mutation error : [${code}] ${message}`);
+        alert(`mutation error : [${responseCode}] ${message}`);
       }
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_GROWTHEDGE').all),
