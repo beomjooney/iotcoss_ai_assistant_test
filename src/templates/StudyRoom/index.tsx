@@ -359,7 +359,7 @@ export function StudyRoomTemplate() {
                 나의 학습방
               </Grid>
               <Grid item xs={10} className="max-lg:tw-p-2 tw-font-semi tw-text-base tw-text-black  max-lg:!tw-text-sm">
-                나의 클럽 진행사항을 한 눈에 보여주고 있어요!
+                나의 학습 진행사항을 한 눈에 보여주고 있어요!
               </Grid>
             </Grid>
           </div>
