@@ -810,7 +810,10 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                       {item?.threadType === '0003' ? (
                         <img className="tw-rounded-full tw-w-10 tw-h-10 " src="/assets/images/main/chatbot.png" />
                       ) : (
-                        <img className="tw-rounded-full tw-w-10 tw-h-10 " src={item?.member?.profileImageUrl} />
+                        <img
+                          className="tw-rounded-full tw-w-10 tw-h-10 "
+                          src={item?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
+                        />
                       )}
                     </div>
                     <div className="tw-flex-auto tw-w-9/12 tw-px-3">
@@ -826,7 +829,9 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                             {item?.threadType === '0003' && 'AI 모범답변'}
                             {item?.threadType === '0004' && '교수님 평가'}
                           </span>
-                          <span className="tw-px-4">{item?.createdAt?.replace('T', ' | ').split('.')[0] || 'N/A'}</span>
+                          <span className="tw-px-4">
+                            {item?.createdAt ? item.createdAt.replace('T', ' | ').split('.')[0] : ''}
+                          </span>
 
                           {item?.threadType === '0003' && (
                             <>
