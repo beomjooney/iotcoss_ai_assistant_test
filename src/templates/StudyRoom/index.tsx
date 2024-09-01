@@ -108,18 +108,22 @@ const studyStatus = [
   {
     id: '0001',
     name: '가입한 클럽',
+    menu: 'all',
   },
   {
     id: '0002',
     name: '나의 학습내역',
+    menu: 'use_quiz_club',
   },
   {
     id: '0003',
     name: '내가 푼 퀴즈',
+    menu: 'use_quiz_club',
   },
   {
     id: '0004',
     name: '저장한 지식콘텐츠',
+    menu: 'use_quiz_club',
   },
 ];
 
@@ -161,7 +165,7 @@ export function StudyRoomTemplate() {
     setIsClient(true); // 클라이언트 사이드에서 상태를 true로 설정
   }, []);
 
-  console.log('roles', roles);
+  console.log('roles', roles, menu);
   /**badge */
   const [badgeClubViewFilter, setBadgeClubViewFilter] = useState('0001');
   const [badgeParams, setBadgeParams] = useState<any>({ page: badgePage, isAchieved: true });
@@ -355,7 +359,7 @@ export function StudyRoomTemplate() {
                 나의 학습방
               </Grid>
               <Grid item xs={10} className="max-lg:tw-p-2 tw-font-semi tw-text-base tw-text-black  max-lg:!tw-text-sm">
-                나의 퀴즈클럽 진행사항을 한 눈에 보여주고 있어요!
+                나의 클럽 진행사항을 한 눈에 보여주고 있어요!
               </Grid>
             </Grid>
           </div>
@@ -365,7 +369,13 @@ export function StudyRoomTemplate() {
                 <div className={cx('filter-area')}>
                   <div className={cx('mentoring-button__group', 'gap-12', 'justify-content-center')}>
                     {studyStatus
-                      .filter(item => !(roles.includes('ROLE_USER') && item.id === '0004'))
+                      .filter(
+                        item =>
+                          // ROLE_USER가 포함되어 있고 item.id가 '0004'일 경우 제외
+                          !(roles.includes('ROLE_USER') && item.id === '0004') &&
+                          // menu 객체의 값이 true일 때만 해당 item.menu가 포함된 항목을 포함
+                          (item.menu === 'all' || menu[item.menu]),
+                      )
                       .map((item, i) => (
                         <ToggleLabel
                           key={item.id}
