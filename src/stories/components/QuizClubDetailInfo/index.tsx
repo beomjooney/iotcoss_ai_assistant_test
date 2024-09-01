@@ -155,8 +155,11 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
             </div>
             <div className="tw-py-5 tw-text-black tw-text-base tw-mb-[12px] tw-font-medium">
               <div>
-                학습 기간 : 매주 {clubData?.studyCycle?.toString() || 'N/A'}요일 (총 {clubData?.studyWeekCount}
-                주)
+                {/* 학습 기간 : 매주 {clubData?.studyCycle?.toString() || 'N/A'}요일 (총 {clubData?.studyWeekCount} 주) */}
+                학습 기간 :{' '}
+                {clubData?.studyCycle.length > 0
+                  ? `매주 ${clubData?.studyCycle.toString()}요일 (총 ${clubData?.studyWeekCount}회)`
+                  : `${clubData?.studyWeekCount}회`}
               </div>
               <div>
                 학습 참여 : {clubData?.studyWeekCount} 주 ({clubData?.startAt} ~ {clubData?.endAt})
