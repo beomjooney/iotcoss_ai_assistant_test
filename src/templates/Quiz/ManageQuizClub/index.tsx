@@ -178,6 +178,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                 contentTitle: newQuiz.contentTitle,
                 modelAnswer: newQuiz.modelAnswer,
                 quizUri: newQuiz.quizUri,
+                contentDescription: newQuiz.contentDescription,
               }
             : null;
 
@@ -485,6 +486,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
       isPublished: scheduleMap[index].isPublished,
       modelAnswer: scheduleMap[index].modelAnswer,
       quizUri: scheduleMap[index].quizUri,
+      contentDescription: scheduleMap[index].contentDescription,
     }));
 
     // 상태 업데이트
