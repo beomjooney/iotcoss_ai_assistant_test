@@ -306,6 +306,7 @@ BannerProps) => {
     //     comprehensionStatus: type,
     //   },
     // });
+    setPostIntroductionMessage(introductionMessage);
     setActiveStep(prevActiveStep => prevActiveStep + 1);
   };
   return (
