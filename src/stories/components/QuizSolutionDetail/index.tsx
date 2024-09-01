@@ -227,6 +227,12 @@ BannerProps) => {
       alert('답변을 입력해주세요.');
       return;
     }
+
+    if (introductionMessage.length < 25) {
+      alert('답변은 최소 25자 이상이어야 합니다.');
+      return;
+    }
+
     const inputData = inputList.map(input => input.value).filter(value => value !== '');
     console.log(inputData);
 
@@ -257,6 +263,11 @@ BannerProps) => {
       setInputList([]);
     }
     if (activeStep === 2) {
+      if (postIntroductionMessage.length < 25) {
+        alert('답변은 최소 25자 이상이어야 합니다.');
+        return;
+      }
+
       const formData = new FormData();
       formData.append('postAnswer', postIntroductionMessage);
       formData.append('urls', inputData.toString());

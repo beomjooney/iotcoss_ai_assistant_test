@@ -240,7 +240,7 @@ export function HomeTemplate({ logged = false, tenantName = '' }: HomeProps) {
               <br />
               경험이 녹아 있는 생생한 퀴즈를 풀면서 함께 성장해보세요.
             </div>
-            <p className="tw-w-[120px] md:tw-w-[146.77px] tw-absolute tw-left-[calc(50%-60px)] md:tw-left-[928.36px] tw-top-[80px] md:tw-top-[118px] tw-text-xs md:tw-text-base tw-font-bold tw-text-center md:tw-text-right tw-text-black">
+            <p className="tw-w-[120px] md:tw-w-[146.77px] tw-absolute tw-left-[calc(50%-60px)] md:tw-left-[928.36px] tw-top-[75px] md:tw-top-[108px] tw-text-xs md:tw-text-base tw-font-bold tw-text-center md:tw-text-right tw-text-black">
               Dongseo University
             </p>
             <p className="tw-w-[300px] md:tw-w-[497px] tw-absolute tw-left-[calc(50%-150px)] md:tw-left-[578px] tw-top-[200px] md:tw-top-[139px] tw-text-lg md:tw-text-[32px] tw-text-center md:tw-text-right tw-text-black">
@@ -259,8 +259,8 @@ export function HomeTemplate({ logged = false, tenantName = '' }: HomeProps) {
                 Dongseo
               </span>
             </p>
-            <div className="tw-w-[60px] md:tw-w-[79px] tw-h-[2px] md:tw-h-[3px] tw-absolute tw-left-[calc(50%-30px)] md:tw-left-[860.5px] tw-top-[120px] md:tw-top-[193.5px] tw-bg-[#e11837]" />
-            <div className="tw-w-[80px] md:tw-w-[103px] tw-h-[2px] md:tw-h-[3px] tw-absolute tw-left-[calc(50%-40px)] md:tw-left-[617.5px] tw-top-[120px] md:tw-top-[193.5px] tw-bg-[#e11837]" />
+            <div className="tw-w-[60px] md:tw-w-[79px] tw-h-[2px] md:tw-h-[3px] tw-absolute tw-left-[calc(50%-30px)] md:tw-left-[855.5px] tw-top-[120px] md:tw-top-[193.5px] tw-bg-[#e11837]" />
+            <div className="tw-w-[80px] md:tw-w-[103px] tw-h-[2px] md:tw-h-[3px] tw-absolute tw-left-[calc(50%-40px)] md:tw-left-[603.5px] tw-top-[120px] md:tw-top-[193.5px] tw-bg-[#e11837]" />
           </div>
           <img
             src="/assets/images/main/dsu_1.png"
