@@ -8,6 +8,7 @@ import { useSessionStore } from 'src/store/session';
 import Grid from '@mui/material/Grid';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import StarIcon from '@mui/icons-material/Star';
+import { getClubAboutJoyStatus } from 'src/utils/clubStatus';
 
 export interface ClubCardProps {
   /** 게시판 object */
@@ -31,13 +32,6 @@ ClubCardProps) => {
 
   // TODO 좋아요 여부 필드 수정 필요
   let [isLiked, setIsLiked] = useState(false);
-  let [isOpen, setIsOpened] = useState(false);
-  let [likeCount, setLikeCount] = useState(0);
-  let [replyCount, setReplyCount] = useState(0);
-  let [postNo, setPostNo] = useState(0);
-  let [repliesList, setRepliesList] = useState([]);
-  const { mutate: onSaveReply, isSuccess: replyReplySucces } = useSaveReply();
-  const { mutate: onDeleteReply, isSuccess: deleteReplySucces } = useDeleteReply();
 
   useEffect(() => {
     setIsLiked(item?.isFavorite);
@@ -111,45 +105,44 @@ ClubCardProps) => {
                     />
                   </svg>
                 )}
-                {item?.clubAboutStatus === '0300' ? (
-                  <div className="tw-inline-flex tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-w-[72px] tw-h-6 tw-relative tw-gap-1 tw-px-3 tw-py-0.5 tw-rounded-[20px] tw-bg-[#06c090]/5">
-                    <svg
-                      width={17}
-                      height={16}
-                      viewBox="0 0 17 16"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-4 tw-h-4 tw-relative"
-                      preserveAspectRatio="xMidYMid meet"
-                    >
-                      <path
-                        d="M7.65156 10.3996L11.6182 6.44961L10.7682 5.59961L7.65156 8.69961L6.2349 7.29961L5.3849 8.14961L7.65156 10.3996ZM8.50156 14.3996C7.62379 14.3996 6.79601 14.2329 6.01823 13.8996C5.24045 13.5663 4.5599 13.1079 3.97656 12.5246C3.39323 11.9413 2.9349 11.2607 2.60156 10.4829C2.26823 9.70516 2.10156 8.87739 2.10156 7.99961C2.10156 7.11072 2.26823 6.28017 2.60156 5.50794C2.9349 4.73572 3.39323 4.05794 3.97656 3.47461C4.5599 2.89128 5.24045 2.43294 6.01823 2.09961C6.79601 1.76628 7.62379 1.59961 8.50156 1.59961C9.39045 1.59961 10.221 1.76628 10.9932 2.09961C11.7655 2.43294 12.4432 2.89128 13.0266 3.47461C13.6099 4.05794 14.0682 4.73572 14.4016 5.50794C14.7349 6.28017 14.9016 7.11072 14.9016 7.99961C14.9016 8.87739 14.7349 9.70516 14.4016 10.4829C14.0682 11.2607 13.6099 11.9413 13.0266 12.5246C12.4432 13.1079 11.7655 13.5663 10.9932 13.8996C10.221 14.2329 9.39045 14.3996 8.50156 14.3996Z"
-                        fill="#478AF5"
-                      />
-                    </svg>
-                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#478af5]">모집중</p>
-                  </div>
-                ) : (
-                  <div className="tw-inline-flex tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-w-[72px] tw-h-6 tw-relative tw-gap-1 tw-px-3 tw-py-0.5 tw-rounded-[20px] tw-bg-[#06c090]/5">
-                    <svg
-                      width={16}
-                      height={16}
-                      viewBox="0 0 16 16"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-4 tw-h-4 tw-relative"
-                      preserveAspectRatio="none"
-                    >
-                      <path
-                        d="M5.65156 11.1996L8.00156 8.84961L10.3516 11.1996L11.2016 10.3496L8.85156 7.99961L11.2016 5.64961L10.3516 4.79961L8.00156 7.14961L5.65156 4.79961L4.80156 5.64961L7.15156 7.99961L4.80156 10.3496L5.65156 11.1996ZM8.00156 14.3996C7.12379 14.3996 6.29601 14.2329 5.51823 13.8996C4.74045 13.5663 4.0599 13.1079 3.47656 12.5246C2.89323 11.9413 2.4349 11.2607 2.10156 10.4829C1.76823 9.70516 1.60156 8.87739 1.60156 7.99961C1.60156 7.11072 1.76823 6.28017 2.10156 5.50794C2.4349 4.73572 2.89323 4.05794 3.47656 3.47461C4.0599 2.89128 4.74045 2.43294 5.51823 2.09961C6.29601 1.76628 7.12379 1.59961 8.00156 1.59961C8.89045 1.59961 9.72101 1.76628 10.4932 2.09961C11.2655 2.43294 11.9432 2.89128 12.5266 3.47461C13.1099 4.05794 13.5682 4.73572 13.9016 5.50794C14.2349 6.28017 14.4016 7.11072 14.4016 7.99961C14.4016 8.87739 14.2349 9.70516 13.9016 10.4829C13.5682 11.2607 13.1099 11.9413 12.5266 12.5246C11.9432 13.1079 11.2655 13.5663 10.4932 13.8996C9.72101 14.2329 8.89045 14.3996 8.00156 14.3996Z"
-                        fill="#9CA5B2"
-                      />
-                    </svg>
-                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#9ca5b2]">
-                      모집완료
-                    </p>
-                  </div>
-                )}
+                <div className="tw-inline-flex tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-w-[72px] tw-h-6 tw-relative tw-gap-1 tw-px-3 tw-py-0.5 tw-rounded-[20px] tw-bg-[#06c090]/5">
+                  <svg
+                    width={17}
+                    height={16}
+                    viewBox="0 0 17 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-4 tw-h-4 tw-relative"
+                    preserveAspectRatio="xMidYMid meet"
+                  >
+                    <path
+                      d="M7.65156 10.3996L11.6182 6.44961L10.7682 5.59961L7.65156 8.69961L6.2349 7.29961L5.3849 8.14961L7.65156 10.3996ZM8.50156 14.3996C7.62379 14.3996 6.79601 14.2329 6.01823 13.8996C5.24045 13.5663 4.5599 13.1079 3.97656 12.5246C3.39323 11.9413 2.9349 11.2607 2.60156 10.4829C2.26823 9.70516 2.10156 8.87739 2.10156 7.99961C2.10156 7.11072 2.26823 6.28017 2.60156 5.50794C2.9349 4.73572 3.39323 4.05794 3.97656 3.47461C4.5599 2.89128 5.24045 2.43294 6.01823 2.09961C6.79601 1.76628 7.62379 1.59961 8.50156 1.59961C9.39045 1.59961 10.221 1.76628 10.9932 2.09961C11.7655 2.43294 12.4432 2.89128 13.0266 3.47461C13.6099 4.05794 14.0682 4.73572 14.4016 5.50794C14.7349 6.28017 14.9016 7.11072 14.9016 7.99961C14.9016 8.87739 14.7349 9.70516 14.4016 10.4829C14.0682 11.2607 13.6099 11.9413 13.0266 12.5246C12.4432 13.1079 11.7655 13.5663 10.9932 13.8996C10.221 14.2329 9.39045 14.3996 8.50156 14.3996Z"
+                      fill="#478AF5"
+                    />
+                  </svg>
+                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#478af5]">
+                    {getClubAboutJoyStatus(item.clubStatus)}
+                  </p>
+                </div>
+                {/* <div className="tw-inline-flex tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-w-[72px] tw-h-6 tw-relative tw-gap-1 tw-px-3 tw-py-0.5 tw-rounded-[20px] tw-bg-[#06c090]/5">
+                  <svg
+                    width={16}
+                    height={16}
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-4 tw-h-4 tw-relative"
+                    preserveAspectRatio="none"
+                  >
+                    <path
+                      d="M5.65156 11.1996L8.00156 8.84961L10.3516 11.1996L11.2016 10.3496L8.85156 7.99961L11.2016 5.64961L10.3516 4.79961L8.00156 7.14961L5.65156 4.79961L4.80156 5.64961L7.15156 7.99961L4.80156 10.3496L5.65156 11.1996ZM8.00156 14.3996C7.12379 14.3996 6.29601 14.2329 5.51823 13.8996C4.74045 13.5663 4.0599 13.1079 3.47656 12.5246C2.89323 11.9413 2.4349 11.2607 2.10156 10.4829C1.76823 9.70516 1.60156 8.87739 1.60156 7.99961C1.60156 7.11072 1.76823 6.28017 2.10156 5.50794C2.4349 4.73572 2.89323 4.05794 3.47656 3.47461C4.0599 2.89128 4.74045 2.43294 5.51823 2.09961C6.29601 1.76628 7.12379 1.59961 8.00156 1.59961C8.89045 1.59961 9.72101 1.76628 10.4932 2.09961C11.2655 2.43294 11.9432 2.89128 12.5266 3.47461C13.1099 4.05794 13.5682 4.73572 13.9016 5.50794C14.2349 6.28017 14.4016 7.11072 14.4016 7.99961C14.4016 8.87739 14.2349 9.70516 13.9016 10.4829C13.5682 11.2607 13.1099 11.9413 12.5266 12.5246C11.9432 13.1079 11.2655 13.5663 10.4932 13.8996C9.72101 14.2329 8.89045 14.3996 8.00156 14.3996Z"
+                      fill="#9CA5B2"
+                    />
+                  </svg>
+                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#9ca5b2]">
+                    {getClubAboutJoyStatus(item.clubStatus)}
+                  </p>
+                </div> */}
               </div>
             </Grid>
           </Grid>

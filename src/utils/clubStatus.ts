@@ -52,6 +52,33 @@ function getClubAboutStatus(status) {
   }
 }
 
+function getClubAboutJoyStatus(status) {
+  switch (status) {
+    case '0200':
+      return '가입불가';
+    case '0300':
+      return '가입가능';
+    case '0301':
+      return '승인대기';
+    case '0302':
+      return '가입불가';
+    case '0310':
+      return '가입불가 ';
+    case '0210':
+      return '가입불가';
+    case '0400':
+      return '가입불가';
+    case '0401':
+      return '가입완료';
+    case '0500':
+      return '가입완료';
+    case '0600':
+      return '가입불가';
+    default:
+      return '모집 대기중';
+  }
+}
+
 const getButtonText = status => {
   switch (status) {
     case '0000':
@@ -81,4 +108,4 @@ const getButtonText = status => {
   }
 };
 
-export { getClubStatusMessage, getButtonText, getClubAboutStatus };
+export { getClubStatusMessage, getButtonText, getClubAboutStatus, getClubAboutJoyStatus };
