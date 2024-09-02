@@ -237,15 +237,15 @@ export function HomeSejongTemplate({ logged = false, tenantName = '' }: HomeSejo
             )}
           >
             <div className="tw-w-full md:tw-w-1/2  tw-mt-20 tw-mb-1 tw-overflow-hidden tw-rounded-[20px] tw-flex tw-flex-col tw-justify-center tw-items-center">
-              <div className="tw-text-[#1B4595] tw-text-base tw-font-bold tw-font-['Inter']">Why DevUs</div>
+              <div className="tw-text-[#1B4595] tw-text-base tw-font-bold tw-font-['Inter']">Why AI조교</div>
               <div className="tw-text-black tw-text-xl tw-font-bold tw-font-['Inter'] tw-mt-3">
-                기초지식부터 IT 마스터가 되기까지!
+                이제 궁금한 건 모두 물어보세요!
               </div>
             </div>
             <div className="tw-w-full md:tw-w-1/2 tw-mt-20 tw-mb-1 tw-overflow-hidden tw-rounded-[20px] tw-flex tw-flex-col tw-justify-center tw-items-center">
-              <div className="tw-text-[#0A7441] tw-text-base tw-font-bold tw-font-['Inter']">Why DevUs</div>
+              <div className="tw-text-[#0A7441] tw-text-base tw-font-bold tw-font-['Inter']">With AI조교</div>
               <div className="tw-text-black tw-text-xl tw-font-bold tw-font-['Inter'] tw-mt-3">
-                데브어스와 함께하는 퀴즈&강의클럽!
+                학습자와의 거리를 좁히는 AI조교!
               </div>
             </div>
           </div>
