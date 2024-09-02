@@ -106,7 +106,7 @@ ClubMiniCardProps) => {
         />
         <div className="tw-flex tw-w-full tw-flex-col tw-justify-between tw-px-4  tw-leading-normal">
           <Grid
-            className=" tw-mb-3"
+            className=" tw-mb-2"
             container
             direction="row"
             justifyContent="space-between"
@@ -154,8 +154,10 @@ ClubMiniCardProps) => {
               )}
             </Grid>
           </Grid>
-          <h6 className="tw-text-2xl tw-font-bold tw-tracking-tight tw-text-gray-900 ">{item?.clubName}</h6>
-          <h6 className="tw-mb-2 tw-text-xl tw-font-medium tw-tracking-tight tw-text-gray-900">{item?.description}</h6>
+          <div className="tw-text-base tw-font-bold tw-tracking-tight tw-text-gray-900 ">{item?.clubName}</div>
+          <div className="tw-my-1 tw-text-sm tw-font-medium tw-tracking-tight tw-text-gray-900">
+            {item?.description}
+          </div>
 
           <div className="tw-mb-2 tw-text-sm tw-font-medium tw-tracking-tight tw-text-gray-900">
             <span className="tw-font-bold">{item?.leaderNickname}</span>{' '}

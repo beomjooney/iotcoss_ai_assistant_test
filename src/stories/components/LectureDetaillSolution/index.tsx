@@ -148,7 +148,7 @@ const LectureDetaillSolution = ({
                     onChangeLike(contents?.clubSequence);
                   }}
                 >
-                  {isLiked ? <StarIcon color="primary" /> : <StarBorderIcon color="disabled" />}
+                  {isLiked ? <StarIcon color="error" /> : <StarBorderIcon color="disabled" />}
                 </button>
               </div>
               <div className="tw-text-black tw-text-2xl tw-font-bold tw-py-3">{contents?.clubName}</div>

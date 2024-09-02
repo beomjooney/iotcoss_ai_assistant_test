@@ -32,7 +32,7 @@ function getClubAboutStatus(status) {
     case '0300':
       return '모집중 - 가입가능';
     case '0301':
-      return '가입승인대기중 - 승인대기';
+      return '가입승인대기중';
     case '0302':
       return '가입거절 - 가입불가';
     case '0310':

@@ -28,7 +28,7 @@ interface MyTemplateProps {
 export function MyTemplate({ children }: MyTemplateProps) {
   const router = useRouter();
   const { user } = useStore();
-  const { memberId } = useSessionStore();
+  const { memberId, menu } = useSessionStore();
   const [nickname, setNickname] = useState<string>('');
   const [summary, setSummary] = useState<any>([]);
   const [showMenu, setShowMenu] = useState<ReactNode>(null);
@@ -202,12 +202,14 @@ export function MyTemplate({ children }: MyTemplateProps) {
                           {summary?.points?.toLocaleString()}P
                         </div>
                       </div>
-                      <div className="tw-p-1 tw-flex-1 border-right">
-                        <div className="tw-text-[12px]  tw-font-bold">푼 퀴즈</div>
-                        <div className="tw-text-lg tw-font-bold tw-text-red-500  tw-py-1">
-                          {summary?.solvedQuizCount || 0}개
+                      {menu.use_quiz_club && (
+                        <div className="tw-p-1 tw-flex-1 border-right">
+                          <div className="tw-text-[12px]  tw-font-bold">푼 퀴즈</div>
+                          <div className="tw-text-lg tw-font-bold tw-text-red-500  tw-py-1">
+                            {summary?.solvedQuizCount || 0}개
+                          </div>
                         </div>
-                      </div>
+                      )}
                       <div className="tw-p-1 tw-flex-1">
                         <div className="tw-text-[12px]  tw-font-bold">참여중 클럽</div>
                         <div className="tw-text-lg tw-font-bold tw-text-red-500  tw-py-1">

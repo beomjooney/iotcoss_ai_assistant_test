@@ -522,7 +522,11 @@ export function StudyRoomTemplate() {
                             </div>
                           </Grid>
                           <Grid item xs={4}>
-                            <div className="tw-bg-gray-50 tw-rounded-t-lg tw-w-[360px] tw-p-5 tw-text-black ">
+                            <div
+                              className={`tw-bg-gray-50 ${
+                                menu.use_quiz_club ? 'tw-rounded-t-lg' : 'tw-rounded-lg'
+                              } tw-w-[360px] tw-p-5 tw-text-black `}
+                            >
                               <div className="tw-font-bold tw-text-base tw-pb-5">나의 학습 캘린더</div>
                               <div className="tw-bg-white tw-pb-1 tw-rounded-lg">
                                 <div>
@@ -560,91 +564,95 @@ export function StudyRoomTemplate() {
                               </div>
                             </div>
 
-                            <div className="tw-bg-gray-50   tw-w-[360px] tw-px-5 tw-pb-5 tw-text-black ">
-                              <div className="tw-font-bold tw-text-base tw-pb-5">오늘 풀어야 할 퀴즈</div>
-                              <div className="tw-mb-5">
-                                {reminderContents?.todayQuizzes?.length > 0 ? (
-                                  reminderContents.todayQuizzes?.map((item, i) => (
-                                    <div
-                                      key={i}
-                                      className="tw-flex tw-items-center tw-rounded-md tw-bg-white tw-text-sm tw-p-4 tw-mb-5"
-                                    >
-                                      <div className="tw-flex-grow tw-pr-3">
-                                        <div className="tw-line-clamp-1 tw-font-bold tw-mb-1">
-                                          {item.clubName} [{item.order}회]
-                                        </div>
-                                        <div className="tw-line-clamp-1">Q. {item.question}</div>
-                                      </div>
-                                      <div>
-                                        <button
-                                          onClick={() => {
-                                            router.push(
-                                              {
-                                                pathname: `/quiz/solution/${item?.quizSequence}`,
-                                                query: {
-                                                  clubSequence: item?.clubSequence,
-                                                },
-                                              },
-                                              `/quiz/solution/${item?.quizSequence}`,
-                                            );
-                                          }}
-                                          className="tw-text-center tw-bg-red-500 tw-text-white tw-text-xs tw-font-medium tw-w-10 tw-py-1 tw-rounded"
+                            {menu.use_quiz_club && (
+                              <div>
+                                <div className="tw-bg-gray-50   tw-w-[360px] tw-px-5 tw-pb-5 tw-text-black ">
+                                  <div className="tw-font-bold tw-text-base tw-pb-5">오늘 풀어야 할 퀴즈</div>
+                                  <div className="tw-mb-5">
+                                    {reminderContents?.todayQuizzes?.length > 0 ? (
+                                      reminderContents.todayQuizzes?.map((item, i) => (
+                                        <div
+                                          key={i}
+                                          className="tw-flex tw-items-center tw-rounded-md tw-bg-white tw-text-sm tw-p-4 tw-mb-5"
                                         >
-                                          GO {'>'}
-                                        </button>
+                                          <div className="tw-flex-grow tw-pr-3">
+                                            <div className="tw-line-clamp-1 tw-font-bold tw-mb-1">
+                                              {item.clubName} [{item.order}회]
+                                            </div>
+                                            <div className="tw-line-clamp-1">Q. {item.question}</div>
+                                          </div>
+                                          <div>
+                                            <button
+                                              onClick={() => {
+                                                router.push(
+                                                  {
+                                                    pathname: `/quiz/solution/${item?.quizSequence}`,
+                                                    query: {
+                                                      clubSequence: item?.clubSequence,
+                                                    },
+                                                  },
+                                                  `/quiz/solution/${item?.quizSequence}`,
+                                                );
+                                              }}
+                                              className="tw-text-center tw-bg-red-500 tw-text-white tw-text-xs tw-font-medium tw-w-10 tw-py-1 tw-rounded"
+                                            >
+                                              GO {'>'}
+                                            </button>
+                                          </div>
+                                        </div>
+                                      ))
+                                    ) : (
+                                      <div className="tw-flex tw-items-center tw-rounded-md tw-bg-white tw-text-sm tw-p-4 tw-mb-5">
+                                        오늘은 풀어야 할 퀴즈가 없어요.
                                       </div>
-                                    </div>
-                                  ))
-                                ) : (
-                                  <div className="tw-flex tw-items-center tw-rounded-md tw-bg-white tw-text-sm tw-p-4 tw-mb-5">
-                                    오늘은 풀어야 할 퀴즈가 없어요.
+                                    )}
                                   </div>
-                                )}
-                              </div>
-                            </div>
+                                </div>
 
-                            <div className=" tw-w-[360px] tw-rounded-b-lg tw-bg-gray-50 tw-px-5 tw-pb-5 tw-text-black ">
-                              <div className="tw-font-bold tw-text-base tw-pb-5">밀린퀴즈</div>
-                              <div className="tw-mb-5">
-                                {reminderContents?.delayedQuizzes?.length > 0 ? (
-                                  reminderContents?.delayedQuizzes?.map((item, i) => (
-                                    <div
-                                      key={i}
-                                      className="tw-flex tw-items-center tw-rounded-md tw-bg-white tw-text-sm tw-p-4 tw-mb-5"
-                                    >
-                                      <div className="tw-flex-grow tw-pr-3">
-                                        <div className="tw-line-clamp-1 tw-font-bold tw-mb-1">
-                                          {item.clubName} [{item.order}회]
-                                        </div>
-                                        <div className="tw-line-clamp-1">Q. {item.question}</div>
-                                      </div>
-                                      <div>
-                                        <button
-                                          onClick={() => {
-                                            router.push(
-                                              {
-                                                pathname: `/quiz/solution/${item?.quizSequence}`,
-                                                query: {
-                                                  clubSequence: item?.clubSequence,
-                                                },
-                                              },
-                                              `/quiz/solution/${item?.quizSequence}`,
-                                            );
-                                          }}
-                                          className="tw-text-center tw-bg-red-500 tw-text-white tw-text-xs tw-font-medium tw-w-10 tw-py-1 tw-rounded"
+                                <div className=" tw-w-[360px] tw-rounded-b-lg tw-bg-gray-50 tw-px-5 tw-pb-5 tw-text-black ">
+                                  <div className="tw-font-bold tw-text-base tw-pb-5">밀린퀴즈</div>
+                                  <div className="tw-mb-5">
+                                    {reminderContents?.delayedQuizzes?.length > 0 ? (
+                                      reminderContents?.delayedQuizzes?.map((item, i) => (
+                                        <div
+                                          key={i}
+                                          className="tw-flex tw-items-center tw-rounded-md tw-bg-white tw-text-sm tw-p-4 tw-mb-5"
                                         >
-                                          GO {'>'}
-                                        </button>
+                                          <div className="tw-flex-grow tw-pr-3">
+                                            <div className="tw-line-clamp-1 tw-font-bold tw-mb-1">
+                                              {item.clubName} [{item.order}회]
+                                            </div>
+                                            <div className="tw-line-clamp-1">Q. {item.question}</div>
+                                          </div>
+                                          <div>
+                                            <button
+                                              onClick={() => {
+                                                router.push(
+                                                  {
+                                                    pathname: `/quiz/solution/${item?.quizSequence}`,
+                                                    query: {
+                                                      clubSequence: item?.clubSequence,
+                                                    },
+                                                  },
+                                                  `/quiz/solution/${item?.quizSequence}`,
+                                                );
+                                              }}
+                                              className="tw-text-center tw-bg-red-500 tw-text-white tw-text-xs tw-font-medium tw-w-10 tw-py-1 tw-rounded"
+                                            >
+                                              GO {'>'}
+                                            </button>
+                                          </div>
+                                        </div>
+                                      ))
+                                    ) : (
+                                      <div className="tw-flex tw-items-center tw-rounded-md tw-bg-white tw-text-sm tw-p-4 tw-mb-5">
+                                        오늘은 풀어야 할 퀴즈가 없어요.
                                       </div>
-                                    </div>
-                                  ))
-                                ) : (
-                                  <div className="tw-flex tw-items-center tw-rounded-md tw-bg-white tw-text-sm tw-p-4 tw-mb-5">
-                                    오늘은 풀어야 할 퀴즈가 없어요.
+                                    )}
                                   </div>
-                                )}
+                                </div>
                               </div>
-                            </div>
+                            )}
                           </Grid>
                         </Grid>
                       </>
