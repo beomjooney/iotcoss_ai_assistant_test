@@ -42,7 +42,7 @@ const LectureDetaillSolution = ({
   console.log('study', study);
   const borderStyle = border ? 'border border-[#e9ecf2] tw-mt-14' : '';
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  let [isLiked, setIsLiked] = useState(contents?.isFavorite);
+  let [isLiked, setIsLiked] = useState(false);
   const { mutate: onSaveLike, isSuccess } = useSaveLike();
   const { mutate: onDeleteLike } = useDeleteLike();
   const [participationCode, setParticipationCode] = useState<string>('');
@@ -53,6 +53,7 @@ const LectureDetaillSolution = ({
   const [isClient, setIsClient] = useState(false); // 클라이언트 사이드에서만 렌어링하도록 상태 추가
   useEffect(() => {
     setIsClient(true); // 클라이언트 사이드에서 상태를 true로 설정
+    setIsLiked(contents?.isFavorite);
   }, []);
 
   const [expandedItems, setExpandedItems] = useState(() => Array(quizList?.length || 0).fill(false));
