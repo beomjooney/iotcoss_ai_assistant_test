@@ -202,7 +202,7 @@ export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: Lo
       </form>
       <Divider className={cx('sign-color', 'tw-py-3')}>또는</Divider>
       <div style={{ marginBottom: '20px', marginTop: '20px' }}>
-        <button className="tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-bg-white tw-text-black">
+        <button className="tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-bg-white border tw-text-black">
           <Typography sx={{ fontWeight: '600', fontSize: 16 }}>학번으로 로그인</Typography>
         </button>
       </div>
