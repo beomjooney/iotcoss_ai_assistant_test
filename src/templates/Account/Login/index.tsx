@@ -192,7 +192,7 @@ export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: Lo
         </Grid>
         <div style={{ marginBottom: '20px', marginTop: '20px', textAlign: 'center' }}>
           <button
-            className="tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-bg-primary tw-text-white"
+            className="tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-bg-black tw-text-white"
             // className="tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-bg-[#e11837] tw-text-white"
             onClick={() => handleSubmit(onSubmit)}
           >
@@ -202,7 +202,7 @@ export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: Lo
       </form>
       <Divider className={cx('sign-color', 'tw-py-3')}>또는</Divider>
       <div style={{ marginBottom: '20px', marginTop: '20px' }}>
-        <button className="tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-bg-black tw-text-white">
+        <button className="tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-bg-white tw-text-black">
           <Typography sx={{ fontWeight: '600', fontSize: 16 }}>학번으로 로그인</Typography>
         </button>
       </div>

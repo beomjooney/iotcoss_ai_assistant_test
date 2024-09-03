@@ -252,7 +252,7 @@ export function LectureTemplate() {
                   <p className="tw-text-sm tw-text-color-slate-900 tw-py-3">이미 회원이신가요?</p>
                 </div>
                 <button
-                  className="tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-bg-[#e11837] tw-text-white"
+                  className="tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-bg-black tw-text-white"
                   onClick={() => router.push('/account/login')}
                 >
                   로그인
@@ -261,7 +261,7 @@ export function LectureTemplate() {
               <Divider className={cx('sign-color', 'tw-py-1')}>또는</Divider>
               <div>
                 <button
-                  className="tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-bg-black tw-text-white"
+                  className="tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-bg-white tw-text-black"
                   onClick={() => router.push('/account/signup')}
                 >
                   <Typography sx={{ fontWeight: '600', fontSize: 16 }}>이메일로 가입하기</Typography>
