@@ -215,34 +215,34 @@ export function HomeSejongTemplate({ logged = false, tenantName = '' }: HomeSejo
         )}
       >
         <div className={cx('main-container tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center')}>
-          <div className="tw-w-full tw-flex tw-flex-col md:tw-flex-row tw-gap-4 md:tw-gap-10">
+          <div className="tw-w-full tw-flex tw-flex-col md:tw-flex-row tw-gap-4 md:tw-gap-5">
             <img
               src="/assets/images/main/memo1.png"
-              className="tw-w-full md:tw-w-1/2 tw-h-[202px] md:tw-h-auto tw-overflow-hidden tw-rounded-[20px] tw-m-1 md:tw-m-0"
+              className="tw-w-[49.5%]  md:tw-h-auto tw-overflow-hidden tw-rounded-[20px] tw-m-1 md:tw-m-0"
             />
 
             <img
               src="/assets/images/main/memo2.png"
-              className="tw-w-full md:tw-w-1/2 tw-h-[202px] md:tw-h-auto tw-object-cover tw-rounded-[20px] tw-m-1 md:tw-m-0"
+              className="tw-w-[49.5%]  md:tw-h-auto tw-object-cover tw-rounded-[20px] tw-m-1 md:tw-m-0"
             />
           </div>
         </div>
       </section>
-      <section className={cx('main-container', 'hero-section-3 tw-h-[818px] tw-bg-[#f8f8f8]')}>
-        <div className="container mx-auto tw-px-4">
+      <section className={cx('main-container', 'hero-section-3 tw-h-[918px] tw-bg-[#f8f8f8]')}>
+        <div className="!tw-px-[180px] ">
           {/* 첫 번째 섹션 */}
           <div
             className={cx(
-              'tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center tw-gap-6 md:tw-gap-12 tw-mb-8',
+              'tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center tw-gap-6 md:tw-gap-12 tw-mb-8 tw-px-10',
             )}
           >
-            <div className="tw-w-full md:tw-w-1/2  tw-mt-20 tw-mb-1 tw-overflow-hidden tw-rounded-[20px] tw-flex tw-flex-col tw-justify-center tw-items-center">
+            <div className="tw-w-[49.5%]  tw-mt-20 tw-mb-1 tw-overflow-hidden tw-rounded-[20px] tw-flex tw-flex-col tw-justify-center tw-items-center">
               <div className="tw-text-[#1B4595] tw-text-base tw-font-bold tw-font-['Inter']">Why AI조교</div>
               <div className="tw-text-black tw-text-xl tw-font-bold tw-font-['Inter'] tw-mt-3">
                 이제 궁금한 건 모두 물어보세요!
               </div>
             </div>
-            <div className="tw-w-full md:tw-w-1/2 tw-mt-20 tw-mb-1 tw-overflow-hidden tw-rounded-[20px] tw-flex tw-flex-col tw-justify-center tw-items-center">
+            <div className="tw-w-[49.5%] tw-mt-20 tw-mb-1 tw-overflow-hidden tw-rounded-[20px] tw-flex tw-flex-col tw-justify-center tw-items-center">
               <div className="tw-text-[#0A7441] tw-text-base tw-font-bold tw-font-['Inter']">With AI조교</div>
               <div className="tw-text-black tw-text-xl tw-font-bold tw-font-['Inter'] tw-mt-3">
                 학습자와의 거리를 좁히는 AI조교!
@@ -251,38 +251,26 @@ export function HomeSejongTemplate({ logged = false, tenantName = '' }: HomeSejo
           </div>
 
           {/* 두 번째 섹션 */}
-          <div
-            className={cx(
-              'tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center tw-gap-10 md:tw-gap-12',
-            )}
-          >
-            <img src="/assets/images/main/lec_1.png" className="tw-w-full md:tw-w-1/2 tw-h-[202px]  tw-object-cover " />
-            <img src="/assets/images/main/lec_2.png" className="tw-w-full md:tw-w-1/2 tw-h-[202px] tw-object-cover " />
+          <div className={cx('tw-flex tw-justify-start tw-items-start tw-px-0')}>
+            <img src="/assets/images/main/lec_1.png" className="tw-w-[49.5%]   tw-object-cover " />
+            <img src="/assets/images/main/lec_2.png" className="tw-w-[49.5%]  tw-object-cover " />
           </div>
 
           {/* 세 번째 섹션 */}
-          <div
-            className={cx(
-              'tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center tw-gap-6 md:tw-gap-12 tw-mt-2',
-            )}
-          >
-            <img src="/assets/images/main/lec_3.png" className="tw-w-full md:tw-w-1/2 tw-h-[202px] tw-object-cover " />
-            <img src="/assets/images/main/lec_4.png" className="tw-w-full md:tw-w-1/2 tw-h-[202px]  tw-object-cover" />
+          <div className={cx('tw-flex tw-justify-start tw-items-start tw-px-0 tw-mt-[-40px]')}>
+            <img src="/assets/images/main/lec_3.png" className="tw-w-[49.5%]  tw-object-cover " />
+            <img src="/assets/images/main/lec_4.png" className="tw-w-[49.5%]   tw-object-cover" />
           </div>
 
           {/* 네 번째 섹션 */}
-          <div
-            className={cx(
-              'tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center tw-gap-6 md:tw-gap-12 tw-mt-2',
-            )}
-          >
-            <img src="/assets/images/main/lec_5.png" className="tw-w-full md:tw-w-1/2 tw-h-[202px] tw-object-cover " />
-            <img src="/assets/images/main/lec_6.png" className="tw-w-full md:tw-w-1/2 tw-h-[202px] tw-object-cover" />
+          <div className={cx('tw-flex tw-justify-start tw-items-start tw-px-0 tw-mt-[-40px]')}>
+            <img src="/assets/images/main/lec_5.png" className="  tw-w-[49.5%]  tw-object-cover " />
+            <img src="/assets/images/main/lec_6.png" className="tw-w-[49.5%]  tw-object-cover" />
           </div>
         </div>
       </section>
-      <div className={cx('container tw-pt-14')}>
-        <div className="tw-w-full tw-relative tw-overflow-hidden">
+      <div className={cx('container tw-py-14  ')}>
+        <div className="tw-w-full tw-relative tw-overflow-hidden tw-px-10">
           <img src="/assets/images/main/bottom.png" className="tw-w-full tw-object-cover" />
         </div>
 

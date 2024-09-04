@@ -1,5 +1,5 @@
 import './index.module.scss';
-import { SignUpTemplate } from 'src/templates';
+import { MemberRegistrationCompleteTemplate } from 'src/templates';
 import { useRouter } from 'next/router';
 import { setCookie } from 'cookies-next';
 import { useEffect } from 'react';
@@ -8,9 +8,9 @@ import jwt_decode from 'jwt-decode';
 import { UserInfo } from '../../../src/models/account';
 
 /* eslint-disable-next-line */
-interface SignUpPageProps {}
+interface MemberRegistrationCompleteTemplate {}
 
-export function SignUpPage(props: SignUpPageProps) {
+export function MemberRegistrationCompletePage(props: MemberRegistrationCompleteTemplate) {
   const router = useRouter();
   const token = router.query['token'];
 
@@ -41,17 +41,13 @@ export function SignUpPage(props: SignUpPageProps) {
     // TODO: 로그인 로직 구현
   };
 
-  return <SignUpTemplate onSubmitLogin={onSubmitLogin} />;
+  return <MemberRegistrationCompleteTemplate onSubmitLogin={onSubmitLogin} />;
 }
 
-export default SignUpPage;
+export default MemberRegistrationCompletePage;
 
-SignUpPage.LayoutProps = {
+MemberRegistrationCompletePage.LayoutProps = {
   darkBg: false,
   classOption: 'custom-header',
   title: '데브어스',
 };
-
-// export async function getServerSideProps(ctx: NextPageContext) {
-//   console.log(ctx);
-// }

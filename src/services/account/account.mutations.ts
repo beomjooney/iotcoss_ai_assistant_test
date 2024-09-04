@@ -119,7 +119,8 @@ export const useLoginSignUp = (): UseMutationResult => {
       const { responseCode, message } = data.data;
       if (responseCode === '0000') {
         alert('회원가입이 정상적으로 되었습니다.');
-        router.push('/account/login');
+        router.push('/account/member-registration-complete');
+        // router.push('/account/login');
       } else {
         alert(`error : [${responseCode}] ${message}`);
       }
