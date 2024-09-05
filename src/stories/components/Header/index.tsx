@@ -171,8 +171,8 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
     deleteCookie('access_token');
     localStorage.removeItem('auth-store');
     localStorage.removeItem('app-storage');
-    location.href = '/';
     localStorage.setItem('activeIndex', '0');
+    location.href = '/';
   };
 
   const handleGoHome = async () => {

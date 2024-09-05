@@ -4,6 +4,8 @@ import { Mobile, Desktop } from 'src/hooks/mediaQuery';
 import { useSessionStore } from 'src/store/session';
 import { getFirstSubdomain } from 'src/utils';
 import { useState, useEffect, isValidElement, cloneElement } from 'react';
+import { fetchGuestTenats, useGuestTenant } from 'src/services/seminars/seminars.queries';
+import { setCookie } from 'cookies-next';
 
 export interface DefaultLayoutProps {
   /** 테마 색상 */
@@ -17,10 +19,24 @@ export interface DefaultLayoutProps {
 }
 
 const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutProps) => {
-  const { logged } = useSessionStore.getState();
+  const { logged, update } = useSessionStore.getState();
   const [isContentRendered, setIsContentRendered] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const subDomain = getFirstSubdomain();
+
+  //미로그인 데이터 처리
+  useGuestTenant(subDomain, data => {
+    setCookie('access_token', data.guestToken);
+    console.log('access_token', data.guestToken);
+    update({
+      tenantName: data.tenantName,
+      redirections: data.homeUrl,
+      menu: {
+        use_lecture_club: data.lectureClubUseYn === 'YES' ? true : false,
+        use_quiz_club: data.quizClubUseYn === 'YES' ? true : false,
+      },
+    });
+  });
 
   const { menu } = useSessionStore.getState();
   // console.log('menu', menu);

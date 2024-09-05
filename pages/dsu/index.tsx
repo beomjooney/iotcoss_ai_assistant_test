@@ -33,18 +33,18 @@ export function IndexPage({ session, setActiveIndex }: { session: Session; setAc
   });
 
   //미로그인 데이터 처리
-  useGuestTenant('dsu', data => {
-    setCookie('access_token', data.guestToken);
-    console.log('access_token', data.guestToken);
-    update({
-      tenantName: data.tenantName,
-      redirections: data.homeUrl,
-      menu: {
-        use_lecture_club: data.lectureClubUseYn === 'YES' ? true : false,
-        use_quiz_club: data.quizClubUseYn === 'YES' ? true : false,
-      },
-    });
-  });
+  // useGuestTenant('dsu', data => {
+  //   setCookie('access_token', data.guestToken);
+  //   console.log('access_token', data.guestToken);
+  //   update({
+  //     tenantName: data.tenantName,
+  //     redirections: data.homeUrl,
+  //     menu: {
+  //       use_lecture_club: data.lectureClubUseYn === 'YES' ? true : false,
+  //       use_quiz_club: data.quizClubUseYn === 'YES' ? true : false,
+  //     },
+  //   });
+  // });
 
   useEffect(() => {
     localStorage.setItem('activeIndex', '0');
@@ -85,10 +85,10 @@ export const getServerSideProps: GetServerSideProps = async context => {
       console.log('session', session);
     } else {
       console.log('dsu fetchGuestTenats');
-      let queryClient = await fetchGuestTenats('dsu');
-      return {
-        props: { ...query, dehydratedState: JSON.parse(JSON.stringify(dehydrate(queryClient))) },
-      };
+      // let queryClient = await fetchGuestTenats('dsu');
+      // return {
+      //   props: { ...query, dehydratedState: JSON.parse(JSON.stringify(dehydrate(queryClient))) },
+      // };
     }
 
     return {
