@@ -108,4 +108,19 @@ const getButtonText = status => {
   }
 };
 
-export { getClubStatusMessage, getButtonText, getClubAboutStatus, getClubAboutJoyStatus };
+// utility.js
+function getButtonClass(tenantName) {
+  switch (tenantName) {
+    case 'dsu':
+      return 'tw-bg-[#e11837]';
+    case 'iotcoss':
+      return 'tw-bg-black';
+    case 'abc':
+      return 'tw-bg-green-500';
+    // 더 많은 조건을 추가할 수 있습니다.
+    default:
+      return 'tw-bg-black';
+  }
+}
+
+export { getClubStatusMessage, getButtonText, getClubAboutStatus, getClubAboutJoyStatus, getButtonClass };

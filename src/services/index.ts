@@ -39,6 +39,7 @@ function createAxios(requestConfig: RequestConfig): AxiosInstance {
     async config => {
       config.headers = config.headers || {};
       const accessToken = getCookie('access_token');
+      console.log('AXIS accessToken', accessToken);
       if (accessToken) {
         config.headers = {
           ...config.headers,

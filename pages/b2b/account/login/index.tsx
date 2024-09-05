@@ -57,7 +57,7 @@ export function LoginPage(props: LoginPageProps) {
     authLoginUpdate();
   };
 
-  return <LoginTemplate title="B2B Devus" onSubmitLogin={onSubmitLogin} tenantName="b2b" />;
+  return <LoginTemplate title="B2B Devus" onSubmitLogin={onSubmitLogin} />;
 }
 
 export default LoginPage;

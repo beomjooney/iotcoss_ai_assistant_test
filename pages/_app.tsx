@@ -57,7 +57,7 @@ function CustomApp({ Component, pageProps = {}, session }: AppPropsWithLayout) {
   }
 
   if (token) {
-    setCookie('access_token', token);
+    // setCookie('access_token', token);
   }
 
   if (session && session.memberType !== memberType) {

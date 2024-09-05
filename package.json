@@ -63,6 +63,7 @@
     "react-hook-form": "^7.41.0",
     "react-hydration-provider": "^1.0.2",
     "react-infinite-scroll-component": "^6.1.0",
+    "react-markdown": "^9.0.1",
     "react-minimal-pie-chart": "^8.4.0",
     "react-modal": "^3.15.1",
     "react-modal-video": "^1.2.8",

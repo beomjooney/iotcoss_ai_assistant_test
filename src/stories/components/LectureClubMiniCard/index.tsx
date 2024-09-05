@@ -116,7 +116,7 @@ LectureClubMiniCardProps) => {
           >
             <Grid item xs={11}>
               <div className="tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500">
-                <div className="tw-flex tw-gap-[7px]">
+                <div className="tw-flex tw-gap-[7px] tw-flex-wrap">
                   <div className="tw-bg-black tw-rounded-[3.5px] tw-px-[10.5px] tw-py-[3.5px]">
                     <p className="tw-text-[12.25px] tw-text-white">{getButtonText(item?.clubStatus)}</p>
                   </div>

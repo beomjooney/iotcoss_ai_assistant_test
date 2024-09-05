@@ -56,6 +56,7 @@ export const QUERY_KEYS = {
   DASHBOARD_QA: 'DASHBOARD_QA',
   USER: 'USER',
   LECTURE_QA_INFO: 'LECTURE_QA_INFO',
+  GUEST_TENANT: 'GUEST_TENANT',
 };
 
 export const QUERY_KEY_FACTORY = (queryKey: keyof typeof QUERY_KEYS) => {

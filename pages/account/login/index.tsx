@@ -55,7 +55,7 @@ export function LoginPage(props: LoginPageProps) {
     authLoginUpdate();
   };
 
-  return <LoginTemplate onSubmitLogin={onSubmitLogin} title="" tenantName="" />;
+  return <LoginTemplate onSubmitLogin={onSubmitLogin} title="" />;
 }
 
 export default LoginPage;

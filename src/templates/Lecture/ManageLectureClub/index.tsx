@@ -1722,10 +1722,10 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
                           <Grid item xs={12} sm={1}>
                             <div className="tw-text-left tw-text-black">{item?.member?.nickname}</div>
                           </Grid>
-                          <Grid item xs={12} sm={2}>
+                          <Grid item xs={12} sm={3}>
                             <div className="tw-text-left tw-text-black">{item?.memberId}</div>
                           </Grid>
-                          <Grid item xs={12} sm={2}>
+                          <Grid item xs={12} sm={1}>
                             <div className="tw-text-left tw-text-black">{item?.jobGroup?.name}</div>
                           </Grid>
                           <Grid item xs={12} sm={2}>

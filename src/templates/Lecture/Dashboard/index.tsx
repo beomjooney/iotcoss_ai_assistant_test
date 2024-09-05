@@ -17,7 +17,6 @@ import Grid from '@mui/material/Grid';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { Line, Circle } from 'rc-progress';
 import { Radio, RadioGroup, FormControlLabel } from '@mui/material';
 import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded';
 import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded';
@@ -27,7 +26,8 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+// import TableRow, { tableRowClasses } from '@material-ui/core/TableRow';
+import TableRow, { tableRowClasses } from '@mui/material/TableRow';
 import Modal from 'src/stories/components/Modal';
 import TextField from '@mui/material/TextField';
 
@@ -36,11 +36,19 @@ import Pagination from '@mui/material/Pagination';
 import PaginationItem from '@mui/material/PaginationItem';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { styled } from '@mui/material/styles';
 
 //**download */
 import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
+import Markdown from 'react-markdown';
 
 import router from 'next/router';
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  [`&.${tableRowClasses.root}`]: {
+    height: '150px',
+  },
+}));
 
 export interface LectureDashboardTemplateProps {
   /** 세미나 아이디 */
@@ -94,6 +102,7 @@ const useStyles = makeStyles(theme => ({
   // New class to add bottom border to TableRow
   tableRow: {
     borderBottom: '1px solid #E0E0E0', // Light gray underline
+    height: '500px',
   },
 }));
 
@@ -194,7 +203,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   /** my quiz replies */
 
   const [sortType, setSortType] = useState('NAME');
-  const [sortLectureType, setSortLectureType] = useState('STUDY_ORDER_ASC');
+  const [sortLectureType, setSortLectureType] = useState('STUDY_ORDER_DESC');
 
   useDidMountEffect(() => {
     console.log('clubStudySequence', clubStudySequence);
@@ -492,7 +501,10 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                             </div>
                             <div className=" tw-flex tw-justify-between tw-items-center tw-mt-3">
                               <p className=" tw-text-sm tw-font-bold tw-text-left tw-text-[#31343d]">승인대기</p>
-                              <p className="  tw-text-2xl tw-font-bold tw-text-left tw-text-black">
+                              <p
+                                className="  tw-text-2xl tw-font-bold tw-text-left tw-text-blue-600 tw-cursor-pointer"
+                                onClick={() => router.push(`/manage-lecture-club/${selectedClub?.clubSequence}`)}
+                              >
                                 {myDashboardList?.memberApprovalWaitCount}명
                               </p>
                             </div>
@@ -542,10 +554,10 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                 </div>
                                 <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-bold tw-text-left">
                                   <span className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-bold tw-text-left tw-text-[#2474ed]">
-                                    1
+                                    {myDashboardList?.studyOrder}
                                   </span>
                                   <span className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-bold tw-text-left tw-text-[#31343d]">
-                                    / 12회
+                                    / {myDashboardList?.clubStudyCount}회
                                   </span>
                                 </p>
                               </div>
@@ -609,19 +621,19 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                           {myDashboardList?.recentQuestions?.contents?.map((data, index) => (
                             <div
                               key={index}
-                              className="border-bottom tw-flex-grow-0 tw-flex-shrink-0  tw-h-[52px] tw-relative tw-overflow-hidden tw-bg-white tw-border-t-0 tw-border-r-0 tw-border-b tw-border-l-0 tw-border-[#e9ecf2] tw-min-w-[400px]"
+                              className="tw-flex tw-px-3 tw-justify-start tw-items-center border-bottom tw-flex-grow-0 tw-flex-shrink-0  tw-h-[52px] tw-relative tw-overflow-hidden tw-bg-white tw-border-t-0 tw-border-r-0 tw-border-b tw-border-l-0 tw-border-[#e9ecf2] tw-min-w-[400px]"
                             >
-                              <div className=" tw-text-sm tw-flex tw-justify-start tw-items-center tw-absolute tw-left-6 tw-top-3 tw-gap-3">
-                                <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
-                                  <img
-                                    className="tw-w-8 tw-h-8 border tw-rounded-full"
-                                    src={data?.member?.profileImageUrl}
-                                  />
-                                </div>
-                                <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
+                              <div className=" tw-text-sm tw-flex tw-justify-start tw-items-center tw-left-3 tw-gap-3">
+                                <img
+                                  className="tw-w-8 tw-h-8 tw-rounded-full"
+                                  src={
+                                    data?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'
+                                  }
+                                />
+                                {/* <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
                                   {data?.member?.nickname}
-                                </div>
-                                <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
+                                </div> */}
+                                <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
                                   {data?.question}
                                 </div>
                               </div>
@@ -664,18 +676,18 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                           {myDashboardList?.recentUnansweredQuestions?.contents?.map((data, index) => (
                             <div
                               key={index}
-                              className="border-bottom tw-flex-grow-0 tw-flex-shrink-0  tw-h-[52px] tw-relative tw-overflow-hidden tw-bg-white tw-border-t-0 tw-border-r-0 tw-border-b tw-border-l-0 tw-border-[#e9ecf2] tw-min-w-[400px]"
+                              className="tw-flex tw-px-3 tw-justify-start tw-items-center border-bottom tw-flex-grow-0 tw-flex-shrink-0  tw-h-[52px] tw-relative tw-overflow-hidden tw-bg-white tw-border-t-0 tw-border-r-0 tw-border-b tw-border-l-0 tw-border-[#e9ecf2] tw-min-w-[400px]"
                             >
-                              <div className=" tw-text-sm tw-flex tw-justify-start tw-items-center tw-absolute tw-left-6 tw-top-3 tw-gap-3">
-                                <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
-                                  <img
-                                    className="tw-w-8 tw-h-8 border tw-rounded-full"
-                                    src={data?.member?.profileImageUrl}
-                                  />
-                                </div>
-                                <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
+                              <div className=" tw-text-sm tw-flex tw-justify-start tw-items-center tw-left-6 tw-top-3 tw-gap-3">
+                                <img
+                                  className="tw-w-8 tw-h-8 tw-rounded-full"
+                                  src={
+                                    data?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'
+                                  }
+                                />
+                                {/* <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
                                   {data?.member?.nickname}
-                                </div>
+                                </div> */}
                                 <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
                                   {data?.question}
                                 </div>
@@ -754,10 +766,10 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                           </div>
                         </div>
                         <div className="tw-flex tw-flex-col tw-justify-center tw-items-center tw-relative tw-gap-0.5">
-                          <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[182px] tw-h-[21px] tw-relative">
+                          <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[184px] tw-h-[21px] tw-relative">
                             <div className="tw-flex tw-justify-start tw-items-center tw-absolute tw-left-0 tw-top-[1.5px] tw-gap-2">
-                              <p className="tw-font-bold tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#31343d]">
-                                강의자료에서 답변
+                              <p className="tw-font-bold tw-flex-grow-0 tw-flex-shrink-0 tw-w-[91px]  tw-text-xs tw-text-left tw-text-[#31343d]">
+                                강의자료 답변
                               </p>
                               <svg
                                 width={1}
@@ -771,7 +783,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                 <line x1="0.5" y1="0.5" x2="0.5" y2="12.5" stroke="#E9ECF2" />
                               </svg>
                             </div>
-                            <p className="tw-absolute tw-left-[115px] tw-top-0 tw-text-sm tw-font-bold tw-text-left">
+                            <p className="tw-absolute tw-left-[123px] tw-top-0 tw-text-sm tw-font-bold tw-text-left">
                               <span className="tw-text-sm  tw-text-left tw-text-[#2474ed]">
                                 {myDashboardList?.lectureContentBasedAnswerCount}
                               </span>
@@ -784,7 +796,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                           <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[184px] tw-h-[21px] tw-relative">
                             <div className="tw-flex tw-justify-start tw-items-center tw-absolute tw-left-0 tw-top-[1.5px] tw-gap-2">
                               <p className="tw-font-bold tw-flex-grow-0 tw-flex-shrink-0 tw-w-[91px] tw-text-xs tw-text-left tw-text-[#31343d]">
-                                일반 서치 답변
+                                일반서치 답변
                               </p>
                               <svg
                                 width={1}
@@ -811,7 +823,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                           <div className="tw-mb-7 tw-flex-grow-0 tw-flex-shrink-0 tw-w-[184px] tw-h-[21px] tw-relative">
                             <div className="tw-flex tw-justify-start tw-items-center tw-absolute tw-left-0 tw-top-[1.5px] tw-gap-2">
                               <p className="tw-font-bold tw-flex-grow-0 tw-flex-shrink-0 tw-w-[91px] tw-text-xs tw-text-left tw-text-[#31343d]">
-                                AI미응답
+                                AI 미응답
                               </p>
                               <svg
                                 width={1}
@@ -1045,10 +1057,10 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                           >
                             <div className="tw-flex tw-items-center">
                               <img
+                                className="tw-w-10 tw-h-10 tw-rounded-full"
                                 src={
                                   info?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'
                                 }
-                                className="tw-w-10 tw-h-10 border tw-rounded-full"
                                 alt="Profile"
                               />
                               <div className="tw-ml-2">{info?.member?.nickname}</div>
@@ -1151,24 +1163,6 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                         정렬 :
                       </p>
                       <FormControlLabel
-                        value="STUDY_ORDER_ASC"
-                        control={
-                          <Radio
-                            sx={{
-                              color: '#ced4de',
-                              '&.Mui-checked': { color: '#e11837' },
-                            }}
-                            icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
-                            checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
-                          />
-                        }
-                        label={
-                          <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                            강의 오름차순
-                          </p>
-                        }
-                      />
-                      <FormControlLabel
                         value="STUDY_ORDER_DESC"
                         control={
                           <Radio
@@ -1186,6 +1180,25 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                           </p>
                         }
                       />
+                      <FormControlLabel
+                        value="STUDY_ORDER_ASC"
+                        control={
+                          <Radio
+                            sx={{
+                              color: '#ced4de',
+                              '&.Mui-checked': { color: '#e11837' },
+                            }}
+                            icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                            checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                          />
+                        }
+                        label={
+                          <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                            강의 오름차순
+                          </p>
+                        }
+                      />
+
                       <FormControlLabel
                         value="QUESTION_COUNT"
                         control={
@@ -1255,7 +1268,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                     </TableHead>
                     <TableBody>
                       {myDashboardLectureList?.contents?.map((info, index) => (
-                        <TableRow key={index}>
+                        <StyledTableRow key={index}>
                           <TableCell align="center" component="th" scope="row" className="border-right">
                             <div className="tw-font-bold tw-text-base">
                               {info?.studyOrder}회 <br />
@@ -1280,19 +1293,23 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                             </div>
                           </TableCell>
                           <TableCell align="left" component="th" scope="row" className="border-right">
-                            <div className="tw-font-bold tw-text-sm">
-                              {info?.questionAnswer?.question ? 'Q. ' + info.questionAnswer.question : ''}
-                            </div>
-                            <div className="tw-font-bold tw-text-sm">
-                              {info?.questionAnswer?.answer
-                                ? 'AI답변 ' +
-                                  (info.questionAnswer.answerType === '0200'
-                                    ? '(강의자료) : '
-                                    : info.questionAnswer.answerType === '0300'
-                                    ? '(일반서치) : '
-                                    : '') +
-                                  info.questionAnswer.answer
-                                : ''}
+                            <div className="tw-h-[150px] tw-overflow-auto">
+                              <div className="tw-font-bold tw-text-sm">
+                                {info?.questionAnswer?.question ? 'Q. ' + info.questionAnswer.question : ''}
+                              </div>
+                              <div className="tw-font-bold tw-text-sm">
+                                <Markdown className="tw-prose tw-pr-2 tw-break-words">
+                                  {info?.questionAnswer?.answer
+                                    ? 'AI답변 ' +
+                                      (info.questionAnswer.answerType === '0200'
+                                        ? '(강의자료) : '
+                                        : info.questionAnswer.answerType === '0300'
+                                        ? '(일반서치) : '
+                                        : '') +
+                                      info.questionAnswer.answer
+                                    : ''}
+                                </Markdown>
+                              </div>
                             </div>
                           </TableCell>
                           <TableCell align="center" component="th" scope="row">
@@ -1312,7 +1329,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                               상세보기
                             </button>
                           </TableCell>
-                        </TableRow>
+                        </StyledTableRow>
                       ))}
                     </TableBody>
                   </Table>

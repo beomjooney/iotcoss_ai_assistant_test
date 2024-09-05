@@ -4,8 +4,10 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import StarIcon from '@mui/icons-material/Star';
 import { useSaveLike, useDeleteLike, useSaveReply, useDeleteReply } from 'src/services/community/community.mutations';
 import { getButtonText } from 'src/utils/clubStatus';
+import { useSessionStore } from 'src/store/session';
 
 const CourseCard = ({ data, border = false }) => {
+  const { roles } = useSessionStore.getState();
   const { mutate: onSaveLike, isSuccess } = useSaveLike();
   const { mutate: onDeleteLike } = useDeleteLike();
   console.log('CourseCard', data);
@@ -29,9 +31,17 @@ const CourseCard = ({ data, border = false }) => {
   return (
     <div
       onClick={() => {
-        data?.clubType === '0100'
-          ? (window.location.href = `/quiz/${data.clubSequence}`)
-          : (window.location.href = `/lecture/${data.clubSequence}`);
+        if (roles?.includes('ROLE_ADMIN') || roles?.includes('ROLE_MANAGER')) {
+          // Redirect admins to the dashboard based on the clubType
+          data?.clubType === '0100'
+            ? (window.location.href = `/quiz-dashboard/${data.clubSequence}`)
+            : (window.location.href = `/lecture-dashboard/${data.clubSequence}`);
+        } else {
+          // Non-admin users go to the regular pages
+          data?.clubType === '0100'
+            ? (window.location.href = `/quiz/${data.clubSequence}`)
+            : (window.location.href = `/lecture/${data.clubSequence}`);
+        }
       }}
       className={`tw-h-[142px] tw-cursor-pointer tw-relative tw-overflow-hidden  tw-bg-white ${
         border ? 'border-left border-right border-top tw-rounded-t-lg' : 'border tw-rounded-lg'
@@ -87,9 +97,14 @@ const CourseCard = ({ data, border = false }) => {
       <div className="tw-ml-[148px]">
         <p className="tw-text-sm tw-text-left tw-text-black">
           <span className="tw-font-bold">{data.leaderNickname}</span>
-          <span className="tw-text-left tw-text-[#9ca5b2] tw-ml-4">
+          {/* <span className="tw-text-left tw-text-[#9ca5b2] tw-ml-4">
             {data.startAt} ~ {data.endAt} | {data.studyCycle.toString() || 'N/A'} | {data.weekCount || 'N/A'} 주 | 학습{' '}
             {data.studyCount && data.studyCount.length > 0 ? `${data.studyCount}회` : null}
+          </span> */}
+          <span className="tw-text-left tw-text-[#9ca5b2] tw-ml-4">
+            {data.startAt} ~ {data.endAt}
+            {data.studyCycle ? ` | ${data.studyCycle.toString()}` : ''}
+            {data.weekCount ? ` ${data.weekCount} 주 ` : ''} | 학습 {data.studyCount || 0}회
           </span>
         </p>
       </div>

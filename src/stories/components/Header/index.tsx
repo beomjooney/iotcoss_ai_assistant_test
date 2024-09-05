@@ -302,33 +302,6 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
               <img src="/assets/images/header/image_1.png" width={130} alt="logo" className={cx('image-logo')} />
             )}
           </div>
-          {/* {COLOR_PRESETS.map(preset => (
-            <div key={preset?.name} className="tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-1 tw-mr-4">
-              <button
-                title={preset?.name}
-                onClick={() => {
-                  setColorPresets(preset?.colors);
-                  setColorPresetName(preset?.name.toLowerCase());
-                }}
-                className={cn(
-                  'tw-grid tw-h-auto tw-w-[30px] tw-place-content-center tw-gap-2 tw-rounded tw-border-2 tw-border-transparent tw-py-1.5 tw-shadow-sm tw-transition tw-duration-300 focus-visible:tw-outline-none',
-                  colorPresetName?.toLowerCase() === preset?.name?.toLowerCase()
-                    ? 'tw-ring-1 tw-ring-primary tw-ring-offset-2 dark:tw-ring-offset-gray-100'
-                    : 'hover:border-primary',
-                )}
-                style={{ backgroundColor: preset.colors.default }}
-              ></button>
-              <span
-                className={cn(
-                  'tw-line-clamp-1',
-                  colorPresetName?.toLowerCase() === preset?.name?.toLowerCase() ? 'font-semibold' : 'font-medium',
-                )}
-                style={{ color: preset.colors.default }}
-              >
-                {theme === 'dark' && preset.name === 'Black' ? 'White' : preset.name}
-              </span>
-            </div>
-          ))} */}
           <Mobile>
             <div>
               {!logged && (
@@ -438,7 +411,16 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
                   if (shouldDisplayItem) {
                     return (
                       <li key={`item-` + index} className={cn(item.option)}>
-                        <Link href={item.link}>
+                        <div
+                          className="tw-cursor-pointer"
+                          onClick={() => {
+                            if (item.no === 0) {
+                              location.href = item.link;
+                            } else {
+                              router.push(item.link);
+                            }
+                          }}
+                        >
                           <a
                             className="nav-link"
                             onClick={() => {
@@ -455,7 +437,7 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
                               </div>
                             </div>
                           </a>
-                        </Link>
+                        </div>
                         {item.dropdown.length > 0 && (
                           <div className="dropdown-menu submenu" aria-labelledby="navbarDropdownHome">
                             {item.dropdown.map((menu, index) => (

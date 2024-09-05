@@ -26,7 +26,7 @@ const ClubCard = ({
   xs,
 }: // eslint-disable-next-line @typescript-eslint/no-empty-function
 ClubCardProps) => {
-  const { logged } = useSessionStore.getState();
+  const { logged, roles } = useSessionStore.getState();
   const { mutate: onSaveLike, isSuccess } = useSaveLike();
   const { mutate: onDeleteLike } = useDeleteLike();
 
@@ -36,8 +36,6 @@ ClubCardProps) => {
   useEffect(() => {
     setIsLiked(item?.isFavorite);
   }, [item]);
-
-  const textInput = useRef(null);
 
   const onChangeLike = function (postNo: number) {
     event.preventDefault();
@@ -56,7 +54,14 @@ ClubCardProps) => {
   return (
     <Grid item xs={xs}>
       <a
-        href={logged ? '/quiz/' + `${item.clubSequence}` : '#'}
+        // href={logged ? '/quiz/' + `${item.clubSequence}` : '#'}
+        href={
+          logged
+            ? roles?.includes('ROLE_ADMIN') || roles?.includes('ROLE_MANAGER')
+              ? '/quiz-dashboard/' + `${item.clubSequence}`
+              : '/quiz/' + `${item.clubSequence}`
+            : '#'
+        }
         onClick={e => {
           if (!logged) {
             e.preventDefault();

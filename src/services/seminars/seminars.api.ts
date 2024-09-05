@@ -150,6 +150,12 @@ export const seminarDetail = async id => {
   return data.data;
 };
 
+// 초대 조회
+export const guestTenant = async domain => {
+  const { data } = await axiosGeneralAPI().get(`/guest/tenants/${domain}`);
+  return data.data;
+};
+
 // club 상세 조회
 export const clubAboutDetail = async id => {
   const { data } = await axiosGeneralAPI().get(`/api/v1/clubs/${id}/about`);

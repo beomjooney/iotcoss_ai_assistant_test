@@ -27,6 +27,8 @@ import { useLoginOtp, useLoginOtpVerification, useLoginSignUp } from 'src/servic
 import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
 import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
 import { getFirstSubdomain } from 'src/utils/date';
+import { useSessionStore } from '../../../../src/store/session';
+import { getButtonClass } from 'src/utils/clubStatus';
 
 interface SignUpTemplateProps {
   onSubmitLogin: () => void;
@@ -35,6 +37,7 @@ interface SignUpTemplateProps {
 const cx = classNames.bind(styles);
 
 export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
+  const { tenantName } = useSessionStore.getState();
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
@@ -807,9 +810,12 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
           </Grid>
         </Grid>
         <div style={{ marginBottom: '20px', marginTop: '20px' }}>
-          <Button size="large" color="red" onClick={() => handleSubmit(onSubmit, onError)}>
+          <button
+            className={`${getButtonClass(tenantName)}  tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-text-white`}
+            onClick={() => handleSubmit(onSubmit, onError)}
+          >
             회원가입
-          </Button>
+          </button>
         </div>
       </form>
       <Dialog

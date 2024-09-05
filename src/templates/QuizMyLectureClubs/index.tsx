@@ -111,8 +111,8 @@ export function QuizMyLectureClubsTemplate() {
                         className={cx('fixed-width tw-w-[150px]')}
                       />
                       <ToggleLabel
-                        label="종료된 강의"
-                        name="종료된 강의"
+                        label="진행예정 강의"
+                        name="진행예정 강의"
                         value=""
                         variant="small"
                         checked={active === 1}
@@ -120,6 +120,25 @@ export function QuizMyLectureClubsTemplate() {
                         type="tabButton"
                         onChange={() => {
                           setActive(1);
+                          setParams({
+                            page,
+                            clubViewFilter: '0001',
+                            clubType: '0200',
+                          });
+                          setPage(1);
+                        }}
+                        className={cx('fixed-width tw-w-[150px]')}
+                      />
+                      <ToggleLabel
+                        label="종료된 강의"
+                        name="종료된 강의"
+                        value=""
+                        variant="small"
+                        checked={active === 2}
+                        isActive
+                        type="tabButton"
+                        onChange={() => {
+                          setActive(2);
                           setParams({
                             page,
                             clubViewFilter: '0003',

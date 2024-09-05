@@ -14,6 +14,7 @@ import {
   clubQuizManage,
   mySeminarList,
   seminarDetail,
+  guestTenant,
   seminarImageList,
   seminarList,
   clubFavoriteList,
@@ -69,7 +70,7 @@ export const useMyClubList = (
   onSuccess?: (data: any) => void,
   onError?: (error: Error) => void,
 ) => {
-  const DEFAULT_SIZE = 10;
+  const DEFAULT_SIZE = 8;
   return useQuery<any, Error>(
     QUERY_KEY_FACTORY('SEMINAR').list({ size: DEFAULT_SIZE, ...params }),
     () => clubMyList({ size: DEFAULT_SIZE, ...params }),
@@ -154,7 +155,7 @@ export const useMyDashboardQA = (
   onSuccess?: (data: any) => void,
   onError?: (error: Error) => void,
 ) => {
-  const DEFAULT_SIZE = 10;
+  const DEFAULT_SIZE = 20;
   return useQuery<any, Error>(
     QUERY_KEY_FACTORY('DASHBOARD_QA').list({ size: DEFAULT_SIZE, ...params }),
     () => myDashboardQA({ size: DEFAULT_SIZE, ...params }),
@@ -370,8 +371,22 @@ export const useMySeminarList = (
   );
 };
 
+export const useGuestTenant = (domain: string, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
+  return useQuery<any, Error>(QUERY_KEY_FACTORY('GUEST_TENANT').detail(domain), () => guestTenant(domain), {
+    onSuccess,
+    onError,
+    refetchOnWindowFocus: false,
+  });
+};
+
 export const fetchSeminar = async (seminarId: string): Promise<QueryClient> => {
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery([QUERY_KEY_FACTORY('SEMINAR').detail(seminarId)], () => seminarDetail(seminarId));
+  return queryClient;
+};
+
+export const fetchGuestTenats = async (domain: string): Promise<QueryClient> => {
+  const queryClient = new QueryClient();
+  await queryClient.prefetchQuery([QUERY_KEY_FACTORY('GUEST_TENANT').detail(domain)], () => guestTenant(domain));
   return queryClient;
 };

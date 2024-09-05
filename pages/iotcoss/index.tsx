@@ -2,11 +2,13 @@ import './index.module.scss';
 import { HomeSejongTemplate } from '../../src/templates/HomeSeJong';
 import { useMemberInfo, useMyProfile } from '../../src/services/account/account.queries';
 import { useStore } from 'src/store';
-import { useColorPresets, useColorPresetName } from 'src/utils/use-theme-color';
-import { usePresets } from 'src/utils/color-presets';
 import { useEffect } from 'react';
 import { Session, useSessionStore } from '../../src/store/session';
+
 import { GetServerSideProps } from 'next';
+import { fetchGuestTenats, useGuestTenant } from '../../src/services/seminars/seminars.queries';
+import { dehydrate, useQuery } from 'react-query';
+import { setCookie } from 'cookies-next';
 
 export function IndexPage({ session, setActiveIndex }: { session: Session; setActiveIndex: (index: number) => void }) {
   // redirection 처리
@@ -18,9 +20,19 @@ export function IndexPage({ session, setActiveIndex }: { session: Session; setAc
     }
   }, [session, update]); // 의존성 배열에 session과 update 포함
 
-  const COLOR_PRESETS = usePresets();
-  const { setColorPresetName } = useColorPresetName();
-  const { setColorPresets } = useColorPresets();
+  //미로그인 데이터 처리
+  useGuestTenant('iotcoss', data => {
+    setCookie('access_token', data.guestToken);
+    console.log('access_token', data.guestToken);
+    update({
+      tenantName: data.tenantName,
+      redirections: data.homeUrl,
+      menu: {
+        use_lecture_club: data.lectureClubUseYn === 'YES' ? true : false,
+        use_quiz_club: data.quizClubUseYn === 'YES' ? true : false,
+      },
+    });
+  });
 
   const { memberId, logged } = useSessionStore(state => ({
     memberId: state.memberId,
@@ -35,13 +47,8 @@ export function IndexPage({ session, setActiveIndex }: { session: Session; setAc
     }
   }, [session, update]);
 
-  // 색상 설정
-  useEffect(() => {
-    if (!COLOR_PRESETS || COLOR_PRESETS.length === 0) return;
-    const preset = COLOR_PRESETS.find(preset => preset.name === 'iotcoss') || COLOR_PRESETS[0];
-    setColorPresetName(preset.name);
-    setColorPresets(preset.colors);
-  }, []);
+  const { data: user } = useQuery(['GUEST_TENANT'], () => console.log('user1', user));
+  console.log('user2', user);
 
   const { setUser } = useStore();
   const { data } = useMemberInfo(memberId, data => {
@@ -73,7 +80,8 @@ IndexPage.LayoutProps = {
 
 export const getServerSideProps: GetServerSideProps = async context => {
   try {
-    const { authStore } = context.query;
+    const { query } = context;
+    const { authStore } = query;
     let session: Session | null = null;
 
     if (authStore) {
@@ -87,7 +95,11 @@ export const getServerSideProps: GetServerSideProps = async context => {
       session = JSON.parse(decodedAuthStore);
       console.log('session', session);
     } else {
-      console.log('No authStore provided');
+      console.log('Iotcoss fetchGuestTenats');
+      let queryClient = await fetchGuestTenats('iotcoss');
+      return {
+        props: { ...query, dehydratedState: JSON.parse(JSON.stringify(dehydrate(queryClient))) },
+      };
     }
 
     return {

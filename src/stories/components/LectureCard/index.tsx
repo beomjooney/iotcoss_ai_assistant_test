@@ -30,32 +30,16 @@ const LectureCard = ({
   className,
 }: // eslint-disable-next-line @typescript-eslint/no-empty-function
 LectureCardProps) => {
-  console.log('item', item);
-  const { logged } = useSessionStore.getState();
+  const { logged, roles } = useSessionStore.getState();
+  console.log('LectureCardProps', item, roles);
   const { mutate: onSaveLike, isSuccess } = useSaveLike();
   const { mutate: onDeleteLike } = useDeleteLike();
 
   // TODO 좋아요 여부 필드 수정 필요
   let [isLiked, setIsLiked] = useState(false);
-  let [isOpen, setIsOpened] = useState(false);
-  let [likeCount, setLikeCount] = useState(0);
-  let [replyCount, setReplyCount] = useState(0);
-  let [postNo, setPostNo] = useState(0);
-  let [repliesList, setRepliesList] = useState([]);
-  const { mutate: onSaveReply, isSuccess: replyReplySucces } = useSaveReply();
-  const { mutate: onDeleteReply, isSuccess: deleteReplySucces } = useDeleteReply();
-  // const { isFetched: isReplyFetched, refetch } = useRepliesList(postNo, data => {
-  //   setRepliesList(data.data);
-  // });
-
-  // useEffect(() => {
-  //   refetch();
-  // }, [postNo, replyReplySucces, deleteReplySucces]);
 
   useEffect(() => {
     setIsLiked(item?.isFavorite);
-    // setLikeCount(item?.likeReactionCount);
-    // setReplyCount(item?.replyCount);
   }, [item]);
 
   const textInput = useRef(null);
@@ -74,11 +58,6 @@ LectureCardProps) => {
     }
   };
 
-  const onReply = function (postNo: number) {
-    setPostNo(postNo);
-    setIsOpened(!isOpen);
-  };
-
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -90,17 +69,25 @@ LectureCardProps) => {
       <Desktop>
         <Grid item xs={xs}>
           <a
-            href={logged ? '/lecture/' + `${item.clubSequence}` : '#'}
+            // href={logged ? '/lecture/' + `${item.clubSequence}` : '#'}
+            href={
+              logged
+                ? roles?.includes('ROLE_ADMIN') || roles?.includes('ROLE_MANAGER')
+                  ? '/lecture-dashboard/' + `${item.clubSequence}`
+                  : '/lecture/' + `${item.clubSequence}`
+                : '#'
+            }
             onClick={e => {
               if (!logged) {
                 e.preventDefault();
                 alert('로그인 후 이동할 수 있습니다.');
               }
             }}
+            className="tw-z-0"
           >
             {isClient && !logged && (
               <div
-                className="tw-opacity-30 tw-absolute tw-bottom-0 tw-left-0 tw-right-0 tw-h-[300px] tw-pointer-events-none"
+                className="tw-z-10 tw-opacity-100 tw-absolute tw-bottom-0 tw-left-0 tw-right-0 tw-h-[400px] tw-pointer-events-none"
                 style={{
                   background:
                     'linear-gradient(to top, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0) 70%, rgba(255, 255, 255, 0.05) 0%)',

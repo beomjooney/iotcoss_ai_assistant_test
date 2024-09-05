@@ -1,13 +1,15 @@
 import './index.module.scss';
 import { HomeTemplate } from '../../src/templates';
-import { HomeSejongTemplate } from '../../src/templates/HomeSeJong';
 import { useMemberInfo, useMyProfile } from '../../src/services/account/account.queries';
 import { useStore } from 'src/store';
-import { useColorPresets, useColorPresetName } from 'src/utils/use-theme-color';
-import { usePresets } from 'src/utils/color-presets';
 import { useEffect } from 'react';
-import { GetServerSideProps } from 'next';
 import { Session, useSessionStore } from '../../src/store/session';
+
+import { GetServerSideProps } from 'next';
+import { fetchGuestTenats, useGuestTenant } from '../../src/services/seminars/seminars.queries';
+import { dehydrate, useQuery } from 'react-query';
+import { setCookie } from 'cookies-next';
+
 export function IndexPage({ session, setActiveIndex }: { session: Session; setActiveIndex: (index: number) => void }) {
   // redirection 처리
   const { update } = useSessionStore.getState();
@@ -30,9 +32,19 @@ export function IndexPage({ session, setActiveIndex }: { session: Session; setAc
     setUser({ user: data });
   });
 
-  // const { data: myProfileData } = useMyProfile(data => {
-  //   console.log('useMyProfile : ', data);
-  // });
+  //미로그인 데이터 처리
+  useGuestTenant('dsu', data => {
+    setCookie('access_token', data.guestToken);
+    console.log('access_token', data.guestToken);
+    update({
+      tenantName: data.tenantName,
+      redirections: data.homeUrl,
+      menu: {
+        use_lecture_club: data.lectureClubUseYn === 'YES' ? true : false,
+        use_quiz_club: data.quizClubUseYn === 'YES' ? true : false,
+      },
+    });
+  });
 
   useEffect(() => {
     localStorage.setItem('activeIndex', '0');
@@ -57,6 +69,7 @@ IndexPage.LayoutProps = {
 
 export const getServerSideProps: GetServerSideProps = async context => {
   try {
+    const { query } = context;
     const { authStore } = context.query;
     let session: Session | null = null;
 
@@ -71,7 +84,11 @@ export const getServerSideProps: GetServerSideProps = async context => {
       session = JSON.parse(decodedAuthStore);
       console.log('session', session);
     } else {
-      console.log('No authStore provided');
+      console.log('dsu fetchGuestTenats');
+      let queryClient = await fetchGuestTenats('dsu');
+      return {
+        props: { ...query, dehydratedState: JSON.parse(JSON.stringify(dehydrate(queryClient))) },
+      };
     }
 
     return {

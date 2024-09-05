@@ -17,7 +17,7 @@ import { useColorPresetName } from 'src/utils/use-theme-color';
 import { deleteCookie } from 'cookies-next';
 import { useSessionStore } from '../../../../src/store/session';
 import { getFirstSubdomain } from 'src/utils';
-
+import { getButtonClass } from 'src/utils/clubStatus';
 interface LoginTemplateProps {
   onSubmitLogin: () => void;
 }
@@ -26,20 +26,19 @@ const cx = classNames.bind(styles);
 
 interface LoginTemplateProps {
   title: string;
-  tenantName: string;
   onSubmitLogin: () => void;
 }
 
-export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: LoginTemplateProps) {
+export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps) {
   const { mutate: onLogin, isSuccess, data: loginData } = useLogin();
-  const { update } = useSessionStore.getState();
+  const { update, tenantName } = useSessionStore.getState();
   const router = useRouter();
   const COLOR_PRESETS = usePresets();
   const { setColorPresetName } = useColorPresetName();
   const { setColorPresets } = useColorPresets();
   const [username, setUserName] = useState('');
 
-  console.log('login page', getFirstSubdomain());
+  console.log('login join page', getFirstSubdomain(), tenantName);
   useEffect(() => {
     if (!COLOR_PRESETS || COLOR_PRESETS.length === 0) return;
 
@@ -192,8 +191,7 @@ export function LoginTemplate({ tenantName = '', title = '', onSubmitLogin }: Lo
         </Grid>
         <div style={{ marginBottom: '20px', marginTop: '20px', textAlign: 'center' }}>
           <button
-            className="tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-bg-black tw-text-white"
-            // className="tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-bg-[#e11837] tw-text-white"
+            className={`${getButtonClass(tenantName)} tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-text-white`}
             onClick={() => handleSubmit(onSubmit)}
           >
             로그인
