@@ -57,6 +57,19 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
     //   introductionMessage: introductionMessage,
     // };
 
+    console.log(universityCode);
+    console.log(selectedJob);
+
+    if (universityCode === '' || universityCode === undefined) {
+      alert('대학을 선택해주세요.');
+      return;
+    }
+
+    if (selectedJob === '' || selectedJob === undefined) {
+      alert('학과를 선택해주세요.');
+      return;
+    }
+
     const formData = new FormData();
     console.log(file);
     formData.append('profileImage', file || '');
@@ -77,14 +90,18 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
     setUniversityCode(selectedCode);
     setSelectedUniversity(selectedCode);
     setJobs(selected ? selected.jobs : []);
+    console.log(selected.jobs[0].code);
+    setSelectedJob(selected.jobs[0].code);
+    // setJo(selected ? selected.jobs : []);
     // setSelectedJob(''); // Clear the selected job when university changes
   };
 
   const handleJobChange = e => {
     setSelectedJob(e.target.value);
     const selectedCode = e.target.value;
-    // const selected = jobs?.find(u => u.code === selectedCode);
-    // setSelectedJob(selected ? selected.name : '');
+    const selected = jobs?.find(u => u.code === selectedCode);
+    console.log(selected.code);
+    setSelectedJob(selected ? selected.code : '');
   };
 
   useEffect(() => {
@@ -175,13 +192,10 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
                 setUniversityCode(profile.jobGroup?.code || '');
                 const selected = optionsData?.data?.jobs?.find(u => u.code === profile.jobGroup?.code);
                 setJobs(selected ? selected.jobs : []);
-                console.log(selected);
                 const selected_code = selected?.jobs?.find(u => u.code === profile.job?.code);
-                console.log(selected_code);
                 setSelectedJob(selected_code?.code);
                 setIntroductionMessage(profile.introductionMessage || '');
                 setMemberId(profile?.memberId || '');
-                console.log(profile?.jobLevels[0]?.code);
                 setJobLevel(profile?.jobLevels[0]?.code || '');
               }}
               className="tw-mt-4 border tw-py-3 tw-px-5 tw-rounded tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-center tw-text-[#6a7380]"

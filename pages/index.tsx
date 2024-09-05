@@ -2,7 +2,7 @@ import './index.module.scss';
 import { HomeTemplate } from '../src/templates';
 import { HomeSejongTemplate } from '../src/templates/HomeSeJong';
 import { Session, useSessionStore } from '../src/store/session';
-import { useMemberInfo, useMyProfile } from '../src/services/account/account.queries';
+import { useMemberInfo } from '../src/services/account/account.queries';
 import { useStore } from 'src/store';
 import { useColorPresets, useColorPresetName } from 'src/utils/use-theme-color';
 import { usePresets } from 'src/utils/color-presets';

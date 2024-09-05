@@ -27,7 +27,7 @@ interface MyTemplateProps {
 
 export function MyTemplate({ children }: MyTemplateProps) {
   const router = useRouter();
-  const { user } = useStore();
+  const { user, setUser } = useStore();
   const { memberId, menu } = useSessionStore();
   const [nickname, setNickname] = useState<string>('');
   const [summary, setSummary] = useState<any>([]);
@@ -45,6 +45,7 @@ export function MyTemplate({ children }: MyTemplateProps) {
   const { isFetched: isProfileFetched, refetch: refetchProfile } = useGetProfile(memberUUID, data => {
     console.log(data?.data?.data);
     setProfile(data?.data?.data);
+    setUser({ user: data?.data?.data });
   });
 
   /** get badge */
