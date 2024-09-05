@@ -131,7 +131,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   });
   const [myClubLectureParams, setMyClubLectureParams] = useState<any>({
     clubSequence: selectedClub?.clubSequence || id,
-    data: { orderBy: 'STUDY_ORDER', lecturePage: 1, sortType: 'DESC' },
+    data: { orderBy: 'STUDY_ORDER', lecturePage: 1, sortType: 'ASC' },
   });
 
   const [myClubLectureQA, setMyClubLectureQA] = useState<any>({
@@ -203,7 +203,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   /** my quiz replies */
 
   const [sortType, setSortType] = useState('NAME');
-  const [sortLectureType, setSortLectureType] = useState('STUDY_ORDER_DESC');
+  const [sortLectureType, setSortLectureType] = useState('STUDY_ORDER_ASC');
 
   useDidMountEffect(() => {
     console.log('clubStudySequence', clubStudySequence);
@@ -1162,24 +1162,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                       <p className="tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d] tw-mb-1">
                         정렬 :
                       </p>
-                      <FormControlLabel
-                        value="STUDY_ORDER_DESC"
-                        control={
-                          <Radio
-                            sx={{
-                              color: '#ced4de',
-                              '&.Mui-checked': { color: '#e11837' },
-                            }}
-                            icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
-                            checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
-                          />
-                        }
-                        label={
-                          <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                            강의 내림차순
-                          </p>
-                        }
-                      />
+
                       <FormControlLabel
                         value="STUDY_ORDER_ASC"
                         control={
@@ -1195,6 +1178,24 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                         label={
                           <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
                             강의 오름차순
+                          </p>
+                        }
+                      />
+                      <FormControlLabel
+                        value="STUDY_ORDER_DESC"
+                        control={
+                          <Radio
+                            sx={{
+                              color: '#ced4de',
+                              '&.Mui-checked': { color: '#e11837' },
+                            }}
+                            icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                            checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                          />
+                        }
+                        label={
+                          <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                            강의 내림차순
                           </p>
                         }
                       />
