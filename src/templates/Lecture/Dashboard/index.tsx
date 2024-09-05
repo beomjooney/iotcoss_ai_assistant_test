@@ -1299,7 +1299,14 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                 {info?.questionAnswer?.question ? 'Q. ' + info.questionAnswer.question : ''}
                               </div>
                               <div className="tw-font-bold tw-text-sm">
-                                <Markdown className="tw-prose tw-pr-2 tw-break-words">
+                                <Markdown
+                                  components={{
+                                    h3: ({ node, ...props }) => (
+                                      <h3 style={{ fontSize: '10px !important' }} {...props} />
+                                    ),
+                                  }}
+                                  className="markdown-container tw-prose tw-pr-2 tw-break-words"
+                                >
                                   {info?.questionAnswer?.answer
                                     ? 'AI답변 ' +
                                       (info.questionAnswer.answerType === '0200'
