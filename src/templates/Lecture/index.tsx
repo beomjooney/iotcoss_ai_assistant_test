@@ -265,7 +265,7 @@ export function LectureTemplate() {
               <Divider className={cx('sign-color', 'tw-py-1')}>또는</Divider>
               <div>
                 <button
-                  className="tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-bg-white tw-text-black"
+                  className="tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-bg-white tw-text-black border"
                   onClick={() => router.push('/account/signup')}
                 >
                   <Typography sx={{ fontWeight: '600', fontSize: 16 }}>이메일로 가입하기</Typography>
