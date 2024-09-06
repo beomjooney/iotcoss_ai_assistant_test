@@ -435,11 +435,6 @@ export function QuizMakeTemplate() {
       quizCount: quizCount,
     };
 
-    // Conditionally add the contentSequence property
-    if (isContentModalClick === false) {
-      params.contentId = 'content_id_' + uuidv4();
-    }
-
     if (contentType === '0320') {
       formData.append('file', fileList[0]);
     } else {
