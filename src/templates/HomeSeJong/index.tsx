@@ -53,7 +53,7 @@ export function HomeSejongTemplate({ logged = false, tenantName = '' }: HomeSejo
               <div className="tw-absolute  tw-top-[100px] md:tw-top-[120px] tw-text-lg md:tw-text-lg tw-font-medium tw-text-left">
                 IoT Convergence Open Sharing System & <span className="tw-font-bold">DevUs</span>
               </div>
-              {menu.use_quiz_club && (
+              {isClient && menu.use_quiz_club && (
                 <div>
                   <div
                     onClick={() => {

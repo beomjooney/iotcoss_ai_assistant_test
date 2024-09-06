@@ -89,12 +89,16 @@ export const saveAIQuizAnswerEvaluation = async body => {
   return data.data;
 };
 export const saveClubQuizPost = async body => {
-  body.clubId = 'quiz_club_' + generateUUID();
+  body.clubForm.clubId = 'quiz_club_' + generateUUID();
   const { data } = await axiosGeneralAPI().post(`/api/v1/club`, body);
   return data;
 };
 
-export const saveClubTempPost = async body => await axiosGeneralAPI().post(`/api/v1/club/temporary`, body);
+export const saveClubTempPost = async body => {
+  body.clubForm.clubId = 'quiz_club_temporary_' + generateUUID();
+  await axiosGeneralAPI().post(`/api/v1/club/temporary`, body);
+};
+
 export const saveLectureTempPost = async body => {
   const { data } = await axiosGeneralAPI().put(`/api/v1/lecture-club/temporary`, body, {
     headers: { 'content-type': 'multipart/form-data' },

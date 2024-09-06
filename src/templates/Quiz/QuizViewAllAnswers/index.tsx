@@ -22,6 +22,11 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { useAIQuizAnswerSavePut, useAIQuizAnswerEvaluation } from 'src/services/quiz/quiz.mutations';
 import Pagination from '@mui/material/Pagination';
 
+import { v4 as uuidv4 } from 'uuid';
+export const generateUUID = () => {
+  return uuidv4();
+};
+
 import {
   useQuizAnswerMemberAIDetail,
   useQuizGetProgress,
@@ -44,7 +49,6 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
   const { publishDate, quizSequence } = router.query;
   const [quizList, setQuizList] = useState<RecommendContent[]>([]);
   const { memberId, logged } = useSessionStore.getState();
-
   const [quizListData, setQuizListData] = useState<any[]>([]);
   const [contents, setContents] = useState<any>([]);
   const [quizProgressData, setQuizProgressData] = useState<any>([]);
@@ -406,6 +410,11 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     // Ensure inputList is always an array
     setInputList(prevInputList => [...(prevInputList || []), { id: Date.now(), value: '', url: '' }]);
   };
+
+  const handleDeleteInput = id => {
+    setInputList(inputList.filter(input => input.id !== id));
+  };
+
   const handleFileChange = event => {
     const files = Array.from(event.target.files);
     const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.xls|\.xlsx|\.doc|\.docx|\.ppt|\.pptx|\.hwp)$/i;
@@ -507,6 +516,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
         return false;
       }
 
+      formData.append(`contents[${i}].contentId`, 'feedback_' + generateUUID());
       formData.append(`contents[${i}].url`, input.url);
       formData.append(`contents[${i}].description`, input.value);
       if (isHideAI) {

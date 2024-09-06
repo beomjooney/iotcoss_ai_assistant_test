@@ -57,6 +57,12 @@ import { images, imageBanner } from './group';
 import validator from 'validator';
 import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
 
+import { v4 as uuidv4 } from 'uuid';
+
+export const generateUUID = () => {
+  return uuidv4();
+};
+
 const cx = classNames.bind(styles);
 
 const defaultScheduleData = [];
@@ -995,6 +1001,7 @@ export function LectureOpenTemplate() {
 
     console.log(clubFormParams);
     const formData = new FormData();
+    formData.append('clubForm.clubId', 'lecture_club_' + generateUUID());
     formData.append('clubForm.clubName', clubFormParams.clubName);
     formData.append('clubForm.jobGroups', clubFormParams.jobGroups.toString());
     formData.append('clubForm.jobs', clubFormParams.jobs.toString());
@@ -1070,9 +1077,11 @@ export function LectureOpenTemplate() {
       // 임시저장 로직에 false 추가, isNew 속성이 없으면 true로 설정
       if (item.isNew === undefined) {
         formData.append(`clubStudies[${i}].isNew`, 'true');
+        formData.append(`clubStudies[${i}].clubStudyId`, 'club_study_id_' + generateUUID());
       } else {
         formData.append(`clubStudies[${i}].isNew`, item.isNew);
         formData.append(`clubStudies[${i}].clubStudySequence`, item.clubStudySequence);
+        formData.append(`clubStudies[${i}].clubStudyId`, 'club_study_id_' + generateUUID());
       }
 
       formData.append(`clubStudies[${i}].studyOrder`, (i + 1).toString());
