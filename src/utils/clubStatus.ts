@@ -110,6 +110,7 @@ const getButtonText = status => {
 
 // utility.js
 function getButtonClass(tenantName) {
+  console.log('tenantName', tenantName);
   switch (tenantName) {
     case 'dsu':
       return 'tw-bg-[#e11837]';
