@@ -32,6 +32,10 @@ import ListItemText from '@mui/material/ListItemText';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
 import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
+import { v4 as uuidv4 } from 'uuid';
+export const generateUUID = () => {
+  return uuidv4();
+};
 
 const studyStatus = [
   {
@@ -431,6 +435,11 @@ export function QuizMakeTemplate() {
       quizCount: quizCount,
     };
 
+    // Conditionally add the contentSequence property
+    if (isContentModalClick === false) {
+      params.contentId = 'content_id_' + uuidv4();
+    }
+
     if (contentType === '0320') {
       formData.append('file', fileList[0]);
     } else {
@@ -589,13 +598,14 @@ export function QuizMakeTemplate() {
       // modelAnswer를 modelAnswerAI로 변경하고 기존 modelAnswer 제거
       const updatedQuizList = quizList.map(({ modelAnswer, ...rest }) => ({
         ...rest,
+        quizId: 'quiz_id_' + uuidv4(),
         modelAnswerFinal: modelAnswer,
         modelAnswerAi: '',
       }));
 
       const params = {
         content: {
-          isNew: isContentModalClick ? false : true,
+          isNew: !isContentModalClick, // Simplified ternary expression
           contentSequence: contentSequence,
           contentType: contentType,
           description: contentTitle,
@@ -607,9 +617,28 @@ export function QuizMakeTemplate() {
           jobs: selectedJob,
           jobLevels: jobLevel,
           studyKeywords: selected2,
+          ...(!isContentModalClick && { contentId: 'content_id_' + uuidv4() }), // Conditionally add contentId when isNew is true
         },
         quizzes: updatedQuizList,
       };
+
+      // const params = {
+      //   content: {
+      //     isNew: isContentModalClick ? false : true,
+      //     contentSequence: contentSequence,
+      //     contentType: contentType,
+      //     description: contentTitle,
+      //     url: contentUrl,
+      //     studySubject: selectedSubject,
+      //     studyChapter: selectedChapter,
+      //     skills: selected1,
+      //     jobGroups: [selectedUniversity],
+      //     jobs: selectedJob,
+      //     jobLevels: jobLevel,
+      //     studyKeywords: selected2,
+      //   },
+      //   quizzes: updatedQuizList,
+      // };
 
       const formData = new FormData();
       formData.append('file', fileList[0]);
