@@ -12,8 +12,8 @@ import { setCookie } from 'cookies-next';
 
 export function IndexPage({ session, setActiveIndex }: { session: Session; setActiveIndex: (index: number) => void }) {
   // redirection 처리
-  const { update } = useSessionStore.getState();
-  console.log('session', session);
+  const { update, logged, memberId } = useSessionStore.getState();
+
   useEffect(() => {
     // session이 존재하는 경우에만 상태 업데이트를 수행
     if (session) {
@@ -21,11 +21,7 @@ export function IndexPage({ session, setActiveIndex }: { session: Session; setAc
     }
   }, [session, update]); // 의존성 배열에 session과 update 포함
 
-  const { memberId, logged } = useSessionStore(state => ({
-    memberId: state.memberId,
-    name: state.name,
-    logged: state.logged,
-  }));
+  // console.log('memberId', logged, memberId);
 
   //미로그인 데이터 처리
   if (!logged) {
@@ -42,8 +38,6 @@ export function IndexPage({ session, setActiveIndex }: { session: Session; setAc
       });
     });
   }
-
-  console.log('memberId', logged, memberId);
 
   // session이 존재하는 경우에만 상태 업데이트를 수행
   useEffect(() => {
