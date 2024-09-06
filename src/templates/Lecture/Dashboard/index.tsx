@@ -1299,14 +1299,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                 {info?.questionAnswer?.question ? 'Q. ' + info.questionAnswer.question : ''}
                               </div>
                               <div className="tw-font-bold tw-text-sm">
-                                <Markdown
-                                  components={{
-                                    h3: ({ node, ...props }) => (
-                                      <h3 style={{ fontSize: '10px !important' }} {...props} />
-                                    ),
-                                  }}
-                                  className="markdown-container tw-prose tw-pr-2 tw-break-words"
-                                >
+                                <Markdown className="markdown-container tw-prose tw-pr-2 tw-break-words">
                                   {info?.questionAnswer?.answer
                                     ? 'AI답변 ' +
                                       (info.questionAnswer.answerType === '0200'
@@ -1415,15 +1408,17 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                           {/* Answer Details Column */}
                           <TableCell align="left" component="th" scope="row" className="border-right">
                             <div className="tw-font-bold tw-text-sm">
-                              {questionInfo?.answer
-                                ? 'AI답변 : ' +
-                                  (questionInfo?.answerType === '0200'
-                                    ? '(강의자료) : '
-                                    : questionInfo?.answerType === '0300'
-                                    ? '(일반서치) : '
-                                    : '') +
-                                  questionInfo?.answer
-                                : null}
+                              <Markdown className="markdown-container tw-prose tw-pr-2 tw-break-words">
+                                {questionInfo?.answer
+                                  ? 'AI답변 : ' +
+                                    (questionInfo?.answerType === '0200'
+                                      ? '(강의자료) : '
+                                      : questionInfo?.answerType === '0300'
+                                      ? '(일반서치) : '
+                                      : '') +
+                                    questionInfo?.answer
+                                  : null}
+                              </Markdown>
                               {openInputIndex === questionInfo?.lectureQuestionSerialNumber && (
                                 <div className="tw-mt-2 tw-flex tw-justify-start tw-items-center tw-gap-2">
                                   <TextField
