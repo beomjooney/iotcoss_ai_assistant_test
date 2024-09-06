@@ -103,7 +103,7 @@ export function MyTemplate({ children }: MyTemplateProps) {
 
   useEffect(() => {
     // console.log('user', user);
-    setNickname(user.nickname);
+    setNickname(user?.nickname);
     setShowMenu(
       menus.map(menu => {
         return menu.role === 'all'

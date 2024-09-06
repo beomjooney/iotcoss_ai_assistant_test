@@ -127,7 +127,7 @@ export function ProfileTemplate() {
     //console.log(user.level, user.jobGroup);
     setRecommendLevels(user?.level?.toString());
     setRecommendJobGroups(user.jobGroup || []);
-    setNickName(user.nickname);
+    setNickName(user?.nickname);
     setPhone(user.phoneNumber || '');
     setIntroductionMessage(user.introductionMessage);
     setFormFields(
