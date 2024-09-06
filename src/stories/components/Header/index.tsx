@@ -115,7 +115,7 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
     localStorage.setItem('activeIndex', activeIndex);
   }, [activeIndex]);
 
-  console.log('header user', user);
+  // console.log('header user', user);
 
   useEffect(() => {
     // 이 코드는 클라이언트 측에서만 실행됩니다

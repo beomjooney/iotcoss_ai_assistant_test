@@ -51,7 +51,6 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
   }, []);
 
   const [clientTenantName, setClientTenantName] = useState(null);
-
   useEffect(() => {
     // 클라이언트에서만 tenantName을 설정
     setClientTenantName(tenantName);

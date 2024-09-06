@@ -134,32 +134,35 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
           <div className="tw-flex tw-justify-start tw-items-start tw-flex-grow-0 tw-flex-shrink-0 tw-gap-2 tw-flex-wrap">
             <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-3 tw-py-1 tw-rounded tw-bg-[#d7ecff]">
               <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#235a8d]">
-                {profile?.jobGroup?.name || 'N/A'}
+                {profile?.jobGroup?.name || '프로필 수정을 통해 대학,학과, 학년을 선택해주세요.'}
               </div>
             </div>
-            <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-3 tw-py-1 tw-rounded tw-bg-[#e4e4e4]">
-              <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#313b49]">
-                {profile?.job?.name || 'N/A'}
+            {profile?.jobGroup?.name && (
+              <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-3 tw-py-1 tw-rounded tw-bg-[#e4e4e4]">
+                <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#313b49]">
+                  {profile?.job?.name}
+                </div>
               </div>
-            </div>
-            <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-3 tw-py-1 tw-rounded tw-bg-[#ffdede]">
-              <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#b83333]">
-                {profile?.jobLevels[0]?.name || 'N/A'}
+            )}
+            {profile?.job?.name && (
+              <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-3 tw-py-1 tw-rounded tw-bg-[#ffdede]">
+                <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#b83333]">
+                  {profile?.jobLevels[0]?.name}
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">
-            {profile?.introductionMessage || 'N/A'}
+            {profile?.introductionMessage || '프로필 수정을 통해 한줄소개를 입력해주세요.'}
           </p>
         </div>
         <div className="tw-w-[120px] tw-h-[120px]" style={{ filter: 'drop-shadow(0px 2px 5px rgba(0,0,0,0.15))' }}>
           <div className="tw-left-[30.5px] tw-top-[30.5px]" />
           <div className="tw-w-[120px] tw-h-[127.85px] tw-mt-7 tw-ml-7 ">
             <img
-              src={profile?.member?.profileImageUrl || 'https://via.placeholder.com/79x115'} // 디폴트 이미지 URL
-              // src={'https://via.placeholder.com/79x115'} // 디폴트 이미지 URL
-              className="border tw-rounded-full tw-w-[120px] tw-h-[120px] tw-object-cover"
+              src={profile?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'} // 디폴트 이미지 URL
+              className=" tw-rounded-full tw-w-[120px] tw-h-[120px] tw-object-cover"
             />
           </div>
         </div>
@@ -173,7 +176,7 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
                 email:
               </p>
               <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">
-                {profile?.email || 'N/A'}
+                {profile?.email || '프로필 수정에서 대학을 선택해주세요.'}
               </p>
             </div>
             <div className="tw-flex tw-justify-start tw-items-start tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-1">
@@ -205,25 +208,6 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
           )}
         </div>
       </div>
-      {/* <div className="tw-mt-7 tw-h-[320px] tw-relative tw-rounded-[10px] border tw-border-[#e0e4eb] tw-p-5 tw-overflow-y-scroll">
-        <div className="tw-text-black tw-text-base tw-font-bold">보유배지</div>
-        <div className="tw-grid tw-grid-cols-6 tw-gap-4">
-          {badgeContents.map((item, index) => (
-            <div key={index} className="tw-text-center">
-              <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
-                <img
-                  className="tw-object-cover tw-h-[80px] "
-                  src={`${process.env.NEXT_PUBLIC_GENERAL_URL}/assets/images/badge/${item?.badgeId}.png`}
-                  alt=""
-                />
-              </div>
-              <div className="tw-text-sm tw-text-black tw-font-bold tw-line-clamp-1">{item?.name}</div>
-              <div className="tw-text-sm tw-text-black tw-line-clamp-1">{item?.description}</div>
-              <div className="tw-text-sm tw-text-black">{item?.achievementAt?.split(' ')[0]}</div>
-            </div>
-          ))}
-        </div>
-      </div> */}
 
       <ProfileModal
         isOpen={isModalOpen}
@@ -245,8 +229,10 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
           <div className="tw-font-bold tw-text-base tw-text-black">개인정보</div>
           <div className=" tw-mt-7 tw-ml-7 tw-relative tw-flex tw-flex-col tw-items-center">
             <img
-              src={fileImageUrl ?? profile?.member?.profileImageUrl}
-              className="border tw-rounded-full tw-w-[120px] tw-h-[120px] tw-object-cover"
+              src={
+                fileImageUrl ?? (profile?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png')
+              }
+              className="tw-ring-1 tw-rounded-full tw-w-[120px] tw-h-[120px] tw-object-cover"
             />
             <svg
               onClick={() => document.getElementById('input-file').click()}
@@ -266,27 +252,6 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
             </svg>
             <input hidden id="input-file" accept="image/*" type="file" onChange={e => onFileChange(e.target?.files)} />
           </div>
-          {/* <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
-            <img
-              className="tw-w-32 tw-h-32 tw-ring-1 tw-rounded-full"
-              src={fileImageUrl ?? profile?.member?.profileImageUrl}
-              alt=""
-            />
-          </div> */}
-          {/* <div className="tw-flex tw-justify-center tw-items-center tw-py-2">
-            <button color="primary" className="tw-bg-blue-500 tw-px-5 tw-py-2 tw-rounded-md">
-              <label htmlFor={`input-file`} className="tw-text-white tw-text-sm">
-                사진 변경
-              </label>
-              <input
-                hidden
-                id={`input-file`}
-                accept="image/*"
-                type="file"
-                onChange={e => onFileChange(e.target?.files)}
-              />
-            </button>
-          </div> */}
           <div className="tw-mt-2 tw-border-t tw-border-gray-100">
             <dl className="tw-divide-y tw-divide-gray-100">
               <div className="tw-px-4 tw-py-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
