@@ -84,6 +84,12 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
   //   }
   // }, [signUpData]);
 
+  const [clientTenantName, setClientTenantName] = useState(null);
+  useEffect(() => {
+    // 클라이언트에서만 tenantName을 설정
+    setClientTenantName(tenantName);
+  }, []);
+
   useEffect(() => {
     if (resultData) {
       console.log('resultData', resultData);
@@ -811,7 +817,9 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
         </Grid>
         <div style={{ marginBottom: '20px', marginTop: '20px' }}>
           <button
-            className={`${getButtonClass(tenantName)}  tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-text-white`}
+            className={`${getButtonClass(
+              clientTenantName,
+            )}  tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-text-white`}
             onClick={() => handleSubmit(onSubmit, onError)}
           >
             회원가입

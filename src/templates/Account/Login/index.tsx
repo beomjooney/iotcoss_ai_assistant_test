@@ -32,18 +32,11 @@ interface LoginTemplateProps {
 export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps) {
   const { mutate: onLogin, isSuccess, data: loginData } = useLogin();
   const { update, tenantName } = useSessionStore.getState();
-  // console.log('tenantName', tenantName);
   const router = useRouter();
   const COLOR_PRESETS = usePresets();
   const { setColorPresetName } = useColorPresetName();
   const { setColorPresets } = useColorPresets();
   const [username, setUserName] = useState('');
-  const [clientTenantName, setClientTenantName] = useState('');
-
-  useEffect(() => {
-    // 클라이언트에서만 tenantName을 설정
-    setClientTenantName(tenantName);
-  }, []);
 
   console.log('login join page', getFirstSubdomain(), tenantName);
   useEffect(() => {
@@ -55,6 +48,13 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
 
     console.log(preset.name);
     localStorage.setItem('activeIndex', '0');
+  }, []);
+
+  const [clientTenantName, setClientTenantName] = useState(null);
+
+  useEffect(() => {
+    // 클라이언트에서만 tenantName을 설정
+    setClientTenantName(tenantName);
   }, []);
 
   useEffect(() => {
@@ -198,9 +198,9 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
         </Grid>
         <div style={{ marginBottom: '20px', marginTop: '20px', textAlign: 'center' }}>
           <button
-            className={`${
-              clientTenantName === 'dsu' ? 'tw-bg-[#e11837]' : 'tw-bg-black'
-            } tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-text-white`}
+            className={`${getButtonClass(
+              clientTenantName,
+            )} tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-text-white`}
             onClick={() => handleSubmit(onSubmit)}
           >
             로그인
@@ -209,11 +209,7 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
       </form>
       <Divider className={cx('sign-color', 'tw-py-3')}>또는</Divider>
       <div style={{ marginBottom: '20px', marginTop: '20px' }}>
-        <button
-          className={`${
-            clientTenantName === 'dsu' ? 'tw-bg-[#e11837]' : 'tw-bg-black'
-          } tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-bg-white border tw-text-black`}
-        >
+        <button className="tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-bg-white border tw-text-black">
           <Typography sx={{ fontWeight: '600', fontSize: 16 }}>학번으로 로그인</Typography>
         </button>
       </div>
