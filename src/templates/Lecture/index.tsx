@@ -37,14 +37,16 @@ export function LectureTemplate() {
   const [active, setActive] = useState(0);
   const [contentType, setContentType] = useState(0);
   const [keyWorld, setKeyWorld] = useState('');
-
+  const [universities, setUniversities] = useState([]);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  const { isFetched: isOptionFetched, data: optionsData }: UseQueryResult<any> = useOptions();
+  const { isFetched: isOptionFetched, data: optionsData }: UseQueryResult<any> = useOptions(data => {
+    setUniversities([{ code: '0100', name: '전체보기' }, ...data.data.jobs]);
+  });
 
   const {
     isFetched: isContentFetched,
@@ -115,7 +117,7 @@ export function LectureTemplate() {
             </Grid>
           </Grid>
         </div>
-        {logged && (
+        {logged && isClient && (
           <Box sx={{ width: '100%', typography: 'body1', marginBottom: '20px' }}>
             <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
               <Grid item xs={12} sm={9} className="tw-font-bold tw-text-3xl tw-text-black tw-pr-2">
@@ -131,23 +133,9 @@ export function LectureTemplate() {
                     value={active}
                     onChange={handleTabChange}
                     variant="scrollable"
-                    scrollButtons="auto"
-                    aria-label="scrollable auto tabs example"
-                    className="" // 커스텀 스타일 적용
                   >
-                    <Tab
-                      label="전체보기"
-                      className="tw-text-base"
-                      sx={{
-                        '&.Mui-selected': {
-                          fontWeight: 'bold', // 선택된 탭의 폰트 웨이트를 bold로
-                          fontSize: '16px',
-                          color: 'black',
-                        },
-                      }}
-                    />
                     {isOptionFetched &&
-                      optionsData?.data?.jobs?.map((item, i) => (
+                      universities?.map((item, i) => (
                         <Tab
                           sx={{
                             '&.Mui-selected': {
@@ -186,7 +174,7 @@ export function LectureTemplate() {
             </Grid>
           </Box>
         )}
-        {logged && <hr className="tw-y-14 tw-mt-7 tw-mb-10 tw-h-[0.5px] tw-border-t tw-bg-gray-300 " />}
+        {logged && isClient && <hr className="tw-y-14 tw-mt-7 tw-mb-10 tw-h-[0.5px] tw-border-t tw-bg-gray-300 " />}
         <article>
           <div
             className={cx('content-area', isClient && logged ? '' : 'tw-max-h-[16rem] tw-overflow-hidden tw-relative')}

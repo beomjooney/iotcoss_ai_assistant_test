@@ -25,20 +25,20 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
   const subDomain = getFirstSubdomain();
 
   //미로그인 데이터 처리
-  if (!logged) {
-    useGuestTenant(subDomain, data => {
-      setCookie('access_token', data.guestToken);
-      console.log('access_token', data.guestToken);
-      update({
-        tenantName: data.tenantName,
-        redirections: data.homeUrl,
-        menu: {
-          use_lecture_club: data.lectureClubUseYn === 'YES' ? true : false,
-          use_quiz_club: data.quizClubUseYn === 'YES' ? true : false,
-        },
-      });
-    });
-  }
+  // if (!logged) {
+  //   useGuestTenant(subDomain, data => {
+  //     setCookie('access_token', data.guestToken);
+  //     console.log('access_token', data.guestToken);
+  //     update({
+  //       tenantName: data.tenantName,
+  //       redirections: data.homeUrl,
+  //       menu: {
+  //         use_lecture_club: data.lectureClubUseYn === 'YES' ? true : false,
+  //         use_quiz_club: data.quizClubUseYn === 'YES' ? true : false,
+  //       },
+  //     });
+  //   });
+  // }
 
   const { menu } = useSessionStore.getState();
   // console.log('menu', menu);

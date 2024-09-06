@@ -1,5 +1,3 @@
-'use client';
-
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import { Pagination, ClubCard } from 'src/stories/components';
@@ -15,7 +13,6 @@ import Tab from '@mui/material/Tab';
 import SearchIcon from '@mui/icons-material/Search';
 import { useSessionStore } from 'src/store/session';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
-import { ExperiencesResponse } from 'src/models/experiences';
 import { useOptions } from 'src/services/experiences/experiences.queries';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
@@ -25,7 +22,6 @@ import { UseQueryResult } from 'react-query';
 const cx = classNames.bind(styles);
 
 export function QuizTemplate() {
-  const { logged, roles } = useSessionStore.getState();
   const router = useRouter();
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
@@ -34,13 +30,19 @@ export function QuizTemplate() {
   const [active, setActive] = useState(0);
   const [contentType, setContentType] = useState(0);
   const [keyWorld, setKeyWorld] = useState('');
-
   const [isClient, setIsClient] = useState(false);
+  const [universities, setUniversities] = useState([]);
 
+  const { logged, roles } = useSessionStore.getState();
+
+  // 클라이언트에서만 Zustand 상태에 접근하도록 설정
   useEffect(() => {
-    setIsClient(true);
+    setIsClient(true); // 컴포넌트가 클라이언트에서 렌더링되고 있음을 표시
   }, []);
-  const { isFetched: isOptionFetched, data: optionsData }: UseQueryResult<any> = useOptions();
+
+  const { isFetched: isOptionFetched, data: optionsData }: UseQueryResult<any> = useOptions(data => {
+    setUniversities([{ code: '0100', name: '전체보기' }, ...data.data.jobs]);
+  });
 
   const {
     isFetched: isContentFetched,
@@ -111,55 +113,47 @@ export function QuizTemplate() {
             </Grid>
           </Grid>
         </div>
-        {logged && (
+        {logged && isClient && (
           <Box sx={{ width: '100%', typography: 'body1', marginBottom: '20px' }}>
             <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
               <Grid item xs={12} sm={9} className="tw-font-bold tw-text-3xl tw-text-black tw-pr-2">
-                <Box className="filter-area">
-                  <Tabs
-                    sx={{
-                      '& .MuiTabs-indicator': { display: 'none' },
-                      '&.Mui-selected': {
-                        fontWeight: 'bold', // 선택된 탭의 폰트 웨이트를 bold로
-                        color: 'black',
-                      },
-                    }}
-                    value={active}
-                    onChange={handleTabChange}
-                    variant="scrollable"
-                    scrollButtonsAllowWrap
-                    aria-label="scrollable auto tabs example"
-                    className="" // 커스텀 스타일 적용
-                  >
-                    <Tab
-                      label="전체보기"
-                      className="tw-text-base"
-                      sx={{
-                        '&.Mui-selected': {
-                          fontWeight: 'bold', // 선택된 탭의 폰트 웨이트를 bold로
-                          fontSize: '16px',
-                          color: 'black',
-                        },
-                      }}
-                    />
-                    {isOptionFetched &&
-                      optionsData?.data?.jobs?.map((item, i) => (
-                        <Tab
-                          sx={{
-                            '&.Mui-selected': {
-                              fontWeight: 'bold', // 선택된 탭의 폰트 웨이트를 bold로
-                              fontSize: '16px',
-                              color: 'black',
-                            },
+                <Tabs
+                  sx={{
+                    '& .MuiTabs-indicator': { display: 'none' },
+                    '& .Mui-selected': {
+                      fontWeight: 'bold', // 선택된 탭의 폰트 웨이트를 bold로
+                      color: 'black',
+                    },
+                    '& .MuiTabs-flexContainer': {
+                      flexWrap: 'nowrap', // 탭들이 한 줄에서 스크롤 가능하도록 설정
+                    },
+                    maxWidth: '100%', // 부모 요소의 크기를 100%로 설정하여 스크롤 가능하게 만듭니다.
+                  }}
+                  value={active}
+                  onChange={handleTabChange}
+                  variant="scrollable" // 스크롤 기능 활성화
+                  scrollButtons={true} // 필요 시 스크롤 버튼 표시
+                  aria-label="scrollable auto tabs example"
+                  className="" // 커스텀 스타일 적용
+                >
+                  {isOptionFetched &&
+                    universities?.map((item, i) => (
+                      <Tab
+                        sx={{
+                          '&.Mui-selected': {
+                            fontWeight: 'bold', // 선택된 탭의 폰트 웨이트를 bold로
                             fontSize: '16px',
-                          }}
-                          className="tw-text-base"
-                          key={i}
-                          label={item.name}
-                        />
-                      ))}
-                  </Tabs>
-                </Box>
+                            color: 'black',
+                          },
+                          fontSize: '16px',
+                        }}
+                        className="tw-text-base"
+                        key={i}
+                        label={item.name}
+                      />
+                    ))}
+                  {/* 전체보기 탭을 먼저 렌더링 */}
+                </Tabs>
               </Grid>
               <Grid item xs={6} sm={3} className="tw-font-semi tw-text-base tw-text-black">
                 <TextField
@@ -182,7 +176,7 @@ export function QuizTemplate() {
             </Grid>
           </Box>
         )}
-        {logged && <hr className="tw-y-14 tw-my-5 tw-h-[0.5px] tw-border-t tw-bg-gray-300 " />}
+        {logged && isClient && <hr className="tw-y-14 tw-my-5 tw-h-[0.5px] tw-border-t tw-bg-gray-300 " />}
         <article>
           <div
             className={cx('content-area', isClient && logged ? '' : 'tw-max-h-[14rem] tw-overflow-hidden tw-relative')}

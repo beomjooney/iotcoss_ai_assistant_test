@@ -1,6 +1,12 @@
 import { size } from 'lodash';
 import { axiosGeneralAPI } from '../index';
 
+import { v4 as uuidv4 } from 'uuid';
+
+export const generateUUID = () => {
+  return uuidv4();
+};
+
 interface CamenityProps {
   page: number;
   size: number;
@@ -83,6 +89,7 @@ export const saveAIQuizAnswerEvaluation = async body => {
   return data.data;
 };
 export const saveClubQuizPost = async body => {
+  body.clubId = 'quiz_club_' + generateUUID();
   const { data } = await axiosGeneralAPI().post(`/api/v1/club`, body);
   return data;
 };

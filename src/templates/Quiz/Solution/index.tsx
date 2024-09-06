@@ -86,7 +86,7 @@ export function QuizSolutionTemplate({ id }: QuizSolutionTemplateProps) {
   // DELETED("0005") -> 삭제 (안보임)
   // NONE("0006") -> 클럽과 관계없음 (가입전)
 
-  //   TEMPORARY("0001") -> 임시저장상태
+  // TEMPORARY("0001") -> 임시저장상태
   // REQUESTED("0002") -> 개설요청 대기중
   // PENDING("0003") -> 개설 후 모집기간 전 (아직 이 상태는 안쓰고요)
   // IN_PROGRESS("0004") -> 스터디진행중
