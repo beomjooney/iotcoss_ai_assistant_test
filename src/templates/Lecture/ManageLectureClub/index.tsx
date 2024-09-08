@@ -1698,69 +1698,70 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
                       </div>
                     </div>
                   )}
-
-                  {myMemberList.map((item, index) => {
-                    return (
-                      <div key={index} className="tw-h-[800px]">
-                        <Grid
-                          className="tw-py-2 border-bottom tw-text-base"
-                          key={index}
-                          container
-                          direction="row"
-                          justifyContent="left"
-                          alignItems="center"
-                          rowSpacing={3}
-                        >
-                          <Grid item xs={12} sm={1}>
-                            <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
-                              <img
-                                className="tw-w-10 tw-h-10 border tw-rounded-full"
-                                src={item?.member?.profileImageUrl}
-                              />
-                            </div>
-                          </Grid>
-                          <Grid item xs={12} sm={1}>
-                            <div className="tw-text-left tw-text-black">{item?.member?.nickname}</div>
-                          </Grid>
-                          <Grid item xs={12} sm={3}>
-                            <div className="tw-text-left tw-text-black">{item?.memberId}</div>
-                          </Grid>
-                          <Grid item xs={12} sm={1}>
-                            <div className="tw-text-left tw-text-black">{item?.jobGroup?.name}</div>
-                          </Grid>
-                          <Grid item xs={12} sm={2}>
-                            <div className="tw-text-left tw-text-black">{item?.job?.name}</div>
-                          </Grid>
+                  <div className="tw-h-[800px]">
+                    {myMemberList.map((item, index) => {
+                      return (
+                        <div key={index} className="">
                           <Grid
-                            item
-                            xs={12}
-                            sm={4}
-                            style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end' }}
+                            className="tw-py-2 border-bottom tw-text-base"
+                            key={index}
+                            container
+                            direction="row"
+                            justifyContent="left"
+                            alignItems="center"
+                            rowSpacing={3}
                           >
-                            <div className="tw-gap-3">
-                              <button
-                                // onClick={() => router.push('/quiz-answers/' + `${item?.clubQuizSequence}`)}
-                                onClick={() => handleClickProfile(item?.member?.memberUUID)}
-                                type="button"
-                                data-tooltip-target="tooltip-default"
-                                className="tw-py-2 tw-mr-3 tw-bg-black tw-text-white max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
-                              >
-                                프로필 보기
-                              </button>
-                              <button
-                                onClick={() => handleDeleteMember(item?.member?.memberUUID)}
-                                type="button"
-                                data-tooltip-target="tooltip-default"
-                                className="tw-py-2 tw-bg-white border tw-text-black max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
-                              >
-                                강퇴
-                              </button>
-                            </div>
+                            <Grid item xs={12} sm={1}>
+                              <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
+                                <img
+                                  className="tw-w-10 tw-h-10 border tw-rounded-full"
+                                  src={item?.member?.profileImageUrl}
+                                />
+                              </div>
+                            </Grid>
+                            <Grid item xs={12} sm={1}>
+                              <div className="tw-text-left tw-text-black">{item?.member?.nickname}</div>
+                            </Grid>
+                            <Grid item xs={12} sm={3}>
+                              <div className="tw-text-left tw-text-black">{item?.memberId}</div>
+                            </Grid>
+                            <Grid item xs={12} sm={1}>
+                              <div className="tw-text-left tw-text-black">{item?.jobGroup?.name}</div>
+                            </Grid>
+                            <Grid item xs={12} sm={2}>
+                              <div className="tw-text-left tw-text-black">{item?.job?.name}</div>
+                            </Grid>
+                            <Grid
+                              item
+                              xs={12}
+                              sm={4}
+                              style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end' }}
+                            >
+                              <div className="tw-gap-3">
+                                <button
+                                  // onClick={() => router.push('/quiz-answers/' + `${item?.clubQuizSequence}`)}
+                                  onClick={() => handleClickProfile(item?.member?.memberUUID)}
+                                  type="button"
+                                  data-tooltip-target="tooltip-default"
+                                  className="tw-py-2 tw-mr-3 tw-bg-black tw-text-white max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                >
+                                  프로필 보기
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteMember(item?.member?.memberUUID)}
+                                  type="button"
+                                  data-tooltip-target="tooltip-default"
+                                  className="tw-py-2 tw-bg-white border tw-text-black max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                >
+                                  강퇴
+                                </button>
+                              </div>
+                            </Grid>
                           </Grid>
-                        </Grid>
-                      </div>
-                    );
-                  })}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             </div>

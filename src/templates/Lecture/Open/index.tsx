@@ -257,6 +257,12 @@ export function LectureOpenTemplate() {
     const clubForm = data?.clubForm || {};
     const lectureList = data?.clubStudies || [];
     const lectureContents = data?.lectureContents || [];
+
+    // lectureContents가 빈 객체이면 빈 배열로 변경
+    // if (Object.keys(lectureContents).length === 0) {
+    //   lectureContents([]);
+    // }
+
     setParamss(clubForm);
 
     setClubName(clubForm.clubName || '');
@@ -340,10 +346,13 @@ export function LectureOpenTemplate() {
   const [isDisabled, setIsDisabled] = useState(false);
 
   const [contentJobType, setContentJobType] = useState<any[]>([]);
-  const [lectureContents, setLectureContents] = useState({
-    files: [],
-    urls: [],
-  });
+  // const [lectureContents, setLectureContents] = useState<any[]>([]);
+  const [lectureContents, setLectureContents] = useState([
+    {
+      files: [],
+      urls: [],
+    },
+  ]);
 
   const { isFetched: isContentTypeJobFetched } = useContentJobTypes(data => {
     setContentJobType(data.data.contents || []);
@@ -1047,7 +1056,6 @@ export function LectureOpenTemplate() {
           if (file.serialNumber) {
             formData.append(`clubStudies[${i}].files[${j}].serialNumber`, file.serialNumber);
             formData.append(`clubStudies[${i}].files[${j}].isNew`, 'false');
-            formData.append(`clubStudies[${i}].files[${j}].contentId`, file.contentId);
           } else {
             formData.append(`clubStudies[${i}].files[${j}].isNew`, 'true');
             formData.append(`clubStudies[${i}].files[${j}].file`, file);
@@ -1098,6 +1106,37 @@ export function LectureOpenTemplate() {
       const nextDay = dayjs(item.studyDate).add(1, 'day').format('YYYY-MM-DD');
       formData.append(`clubStudies[${i}].studyDate`, nextDay);
     }
+
+    console.log('formData', lectureContents);
+
+    lectureContents?.files?.forEach((file, j) => {
+      if (file.serialNumber) {
+        formData.append('lectureContents.files[' + j + '].isNew', 'false');
+        formData.append('lectureContents.files[' + j + '].serialNumber', file.serialNumber);
+      } else {
+        formData.append('lectureContents.files[' + j + '].isNew', 'true');
+        formData.append('lectureContents.files[' + j + '].file', file.file);
+        formData.append('lectureContents.files[' + j + '].contentId', 'content_id_' + generateUUID());
+      }
+    });
+
+    lectureContents?.urls?.forEach((url, k) => {
+      formData.append('lectureContents.urls[' + k + '].isNew', 'true');
+      formData.append('lectureContents.urls[' + k + '].url', url.url);
+      formData.append('lectureContents.urls[' + k + '].contentId', 'content_id_' + generateUUID());
+    });
+
+    // lectureContents.forEach((item, i) => {
+    //   if (item.isNew === undefined) {
+    //     formData.append(`lectureContents.isNew`, 'true');
+    //   } else {
+    //     formData.append(`lectureContents.isNew`, item.isNew);
+    //   }
+
+    //   formData.append(`lectureContents.urls[${i}].url`, item.url);
+    //   formData.append(`lectureContents.files[${i}].files`, item.files);
+    //   formData.append(`lectureContents.contentId[${i}]`, item.contentId);
+    // });
 
     // scheduleData.forEach((item, i) => {
     //   if (shouldStop) return;
@@ -1155,7 +1194,7 @@ export function LectureOpenTemplate() {
     if (type === 'temp') {
       onTempSave(formData);
     } else if (type === 'save') {
-      onLectureSave(formData);
+      // onLectureSave(formData);
     } else if (type === 'validation') {
       console.log(prevActiveStep => prevActiveStep + 1);
       setActiveStep(prevActiveStep => prevActiveStep + 1);
