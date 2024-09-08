@@ -189,6 +189,7 @@ export function LectureOpenTemplate() {
           isNew: 'true',
           file: file,
           name: file.name,
+          contentId: 'content_id_' + generateUUID(),
         })),
       ],
     }));
@@ -220,6 +221,7 @@ export function LectureOpenTemplate() {
           {
             isNew: 'true',
             url: input,
+            contentId: 'content_id_' + generateUUID(),
           },
         ],
       }));
@@ -1059,7 +1061,7 @@ export function LectureOpenTemplate() {
           const url = item.urls[k];
           formData.append(`clubStudies[${i}].urls[${k}].isNew`, 'true');
           formData.append(`clubStudies[${i}].urls[${k}].url`, url.url);
-          formData.append(`clubStudies[${i}].files[${j}].contentId`, 'content_id_' + generateUUID());
+          formData.append(`clubStudies[${i}].files[${k}].contentId`, 'content_id_' + generateUUID());
         }
       }
 
