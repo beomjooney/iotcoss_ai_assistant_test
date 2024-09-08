@@ -1061,7 +1061,7 @@ export function LectureOpenTemplate() {
           const url = item.urls[k];
           formData.append(`clubStudies[${i}].urls[${k}].isNew`, 'true');
           formData.append(`clubStudies[${i}].urls[${k}].url`, url.url);
-          formData.append(`clubStudies[${i}].files[${k}].contentId`, 'content_id_' + generateUUID());
+          formData.append(`clubStudies[${i}].urls[${k}].contentId`, 'content_id_' + generateUUID());
         }
       }
 
