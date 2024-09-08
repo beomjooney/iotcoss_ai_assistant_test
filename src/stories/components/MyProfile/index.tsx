@@ -134,27 +134,23 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
           <div className="tw-flex tw-justify-start tw-items-start tw-flex-grow-0 tw-flex-shrink-0 tw-gap-2 tw-flex-wrap">
             <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-3 tw-py-1 tw-rounded tw-bg-[#d7ecff]">
               <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#235a8d]">
-                {profile?.jobGroup?.name || '프로필 수정을 통해 대학,학과, 학년을 선택해주세요.'}
+                {profile?.jobGroup?.name || '직군'}
               </div>
             </div>
-            {profile?.jobGroup?.name && (
-              <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-3 tw-py-1 tw-rounded tw-bg-[#e4e4e4]">
-                <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#313b49]">
-                  {profile?.job?.name}
-                </div>
+            <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-3 tw-py-1 tw-rounded tw-bg-[#e4e4e4]">
+              <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#313b49]">
+                {profile?.job?.name || '직무'}
               </div>
-            )}
-            {profile?.job?.name && (
-              <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-3 tw-py-1 tw-rounded tw-bg-[#ffdede]">
-                <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#b83333]">
-                  {profile?.jobLevels[0]?.name}
-                </div>
+            </div>
+            <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-3 tw-py-1 tw-rounded tw-bg-[#ffdede]">
+              <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#b83333]">
+                {profile?.jobLevels[0]?.name || '레벨'}
               </div>
-            )}
+            </div>
           </div>
 
           <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">
-            {profile?.introductionMessage || '프로필 수정을 통해 한줄소개를 입력해주세요.'}
+            {profile?.introductionMessage || '등록된 자기 소개가 없습니다.'}
           </p>
         </div>
         <div className="tw-w-[120px] tw-h-[120px]" style={{ filter: 'drop-shadow(0px 2px 5px rgba(0,0,0,0.15))' }}>
