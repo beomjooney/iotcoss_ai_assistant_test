@@ -53,8 +53,11 @@ const LectureDetaillSolution = ({
   const [isClient, setIsClient] = useState(false); // 클라이언트 사이드에서만 렌어링하도록 상태 추가
   useEffect(() => {
     setIsClient(true); // 클라이언트 사이드에서 상태를 true로 설정
-    setIsLiked(contents?.isFavorite);
   }, []);
+
+  useEffect(() => {
+    setIsLiked(contents?.isFavorite);
+  }, [contents?.isFavorite]);
 
   const [expandedItems, setExpandedItems] = useState(() => Array(quizList?.length || 0).fill(false));
   const [expandedQuizzData, setExpandedQuizzData] = useState(
