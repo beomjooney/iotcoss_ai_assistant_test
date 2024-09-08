@@ -571,6 +571,7 @@ export function QuizMakeTemplate() {
         jobs: selectedJob,
         jobLevels: jobLevel,
         studyKeywords: selected1,
+        contentId: 'content_id_' + uuidv4(),
       };
 
       const formData = new FormData();

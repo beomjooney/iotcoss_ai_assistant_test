@@ -189,6 +189,7 @@ export function LectureOpenTemplate() {
           isNew: 'true',
           file: file,
           name: file.name,
+          contentId: 'content_id_' + generateUUID(),
         })),
       ],
     }));
