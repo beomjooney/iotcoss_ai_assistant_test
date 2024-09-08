@@ -41,7 +41,6 @@ export const useCrewAcceptPost = (): UseMutationResult => {
       } else {
         alert(`error : [${responseCode}] ${message}`);
       }
-      //  location.href = '/account/login';
     },
   });
 };
