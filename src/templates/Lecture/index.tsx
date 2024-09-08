@@ -111,7 +111,7 @@ export function LectureTemplate() {
                   type="button"
                   className="tw-text-blue-600 border border-primary tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
                 >
-                  + 강의 개설하기
+                  + 강의클럽 개설하기
                 </button>
               )}
             </Grid>
