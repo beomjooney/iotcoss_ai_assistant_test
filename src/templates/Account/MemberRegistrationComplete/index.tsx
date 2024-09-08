@@ -77,7 +77,7 @@ export function MemberRegistrationCompleteTemplate({ onSubmitLogin }: MemberRegi
   return (
     <div className={cx('login-container')}>
       <div
-        className="tw-w-full tw-h-[725px] "
+        className="tw-w-full tw-h-[825px] "
         style={{
           background:
             'linear-gradient(to right, rgba(216,253,255,0.25) 0%, rgba(222,207,255,0.25) 51.99%, rgba(255,236,186,0.25) 100%)',

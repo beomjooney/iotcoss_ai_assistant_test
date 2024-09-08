@@ -835,7 +835,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
         sx={{ maxHeight: '60vh', top: '22%', left: '0', overflowY: 'auto' }}
       >
         <DialogTitle id="scroll-dialog-title" sx={{ m: 0, p: 2, textAlign: 'center' }}>
-          <Typography sx={{ fontWeight: 'bold', fontSize: '15px' }}>이용약관</Typography>
+          <Typography sx={{ fontWeight: 'bold', fontSize: '15px' }}>{termList?.title}</Typography>
           {handleClose ? (
             <IconButton
               aria-label="close"
