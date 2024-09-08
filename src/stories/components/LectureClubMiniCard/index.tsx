@@ -152,7 +152,7 @@ LectureClubMiniCardProps) => {
             </Grid>
           </Grid>
           <h6 className="tw-text-2xl tw-font-bold tw-tracking-tight tw-text-gray-900 ">{item?.clubName}</h6>
-          <h6 className="tw-mb-2 tw-line-clamp-1 tw-text-xl tw-font-medium tw-tracking-tight tw-text-gray-900">
+          <h6 className="tw-mb-2 tw-line-clamp-2 tw-text-sm tw-font-medium tw-tracking-tight tw-text-gray-900">
             {item?.description}
           </h6>
 
