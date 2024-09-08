@@ -102,7 +102,7 @@ const CourseCard = ({ data, border = false }) => {
             {data.studyCount && data.studyCount.length > 0 ? `${data.studyCount}회` : null}
           </span> */}
           <span className="tw-text-left tw-text-[#9ca5b2] tw-ml-4">
-            {data.startAt} ~ {data.endAt}
+            {data.startAt.split(' ')[0]} ~ {data.endAt.split(' ')[0]}
             {data.studyCycle ? ` | ${data.studyCycle.toString()}` : ''}
             {data.weekCount ? ` ${data.weekCount} 주 ` : ''} | 학습 {data.studyCount || 0}회
           </span>

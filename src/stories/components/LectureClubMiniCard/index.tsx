@@ -157,7 +157,7 @@ LectureClubMiniCardProps) => {
           <div className="tw-mb-2 tw-text-sm tw-font-medium tw-tracking-tight tw-text-gray-900">
             <span className="tw-font-bold">{item?.leaderNickname}</span>{' '}
             <span className="tw-text-gray-400 tw-px-3">
-              {item?.startAt} ~ {item?.endAt}
+              {item?.startAt.split(' ')[0]} ~ {item?.endAt.split(' ')[0]}
             </span>
             <span className="tw-text-gray-400">
               {item?.studyCycle?.length > 0 ? `| ${item?.studyCycle.toString()} ` : ''} | &nbsp;퀴즈클럽 :{' '}
