@@ -617,6 +617,7 @@ export function MemberEditTemplate() {
                 aria-label="Default select example"
                 value={universityCode}
               >
+                <option value="">대학을 선택해주세요.</option>
                 {userInfo?.jobOptions?.map((university, index) => (
                   <option key={index} value={university.code}>
                     {university.name}
@@ -676,11 +677,11 @@ export function MemberEditTemplate() {
                     key={`job-2-${index}`}
                     value={item.code}
                     aria-label="fff"
-                    className=" tw-ring-1 tw-ring-slate-900/10"
+                    className="tw-ring-1 tw-ring-slate-900/10"
                     style={{
                       borderRadius: '5px',
                       borderLeft: '0px',
-                      marginRight: '4px',
+                      marginRight: '7px',
                       height: '35px',
                       border: '0px',
                     }}

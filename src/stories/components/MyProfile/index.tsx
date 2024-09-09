@@ -350,7 +350,7 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
                     aria-label="Default select example"
                     value={universityCode}
                   >
-                    <option>대학을 선택해주세요.</option>
+                    <option value="">대학을 선택해주세요.</option>
                     {optionsData?.data?.jobs?.map((university, index) => (
                       <option key={index} value={university.code}>
                         {university.name}
