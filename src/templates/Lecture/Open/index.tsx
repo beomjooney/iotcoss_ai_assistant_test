@@ -1101,7 +1101,8 @@ export function LectureOpenTemplate() {
       formData.append(`clubStudies[${i}].clubStudyUrl`, item.clubStudyUrl || '');
 
       // 현재 날짜 값에 하루를 더하기
-      const nextDay = dayjs(item.studyDate).add(1, 'day').format('YYYY-MM-DD');
+      // const nextDay = dayjs(item.studyDate).add(1, 'day').format('YYYY-MM-DD');
+      const nextDay = dayjs(item.studyDate).format('YYYY-MM-DD');
       formData.append(`clubStudies[${i}].studyDate`, nextDay);
     }
 

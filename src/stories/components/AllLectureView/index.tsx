@@ -211,6 +211,7 @@ const AllLectureView = ({ border, id }) => {
                 <button
                   type="button"
                   // onClick={() => router.push(`/manage-quiz-club/${selectedValue}`)}
+                  onClick={() => router.push('/lecture-dashboard/' + selectedValue)}
                   className="tw-h-14  tw-text-black tw-bg-[#CED4DE] border tw-font-medium tw-rounded-md tw-text-sm tw-px-6 tw-py-2 "
                 >
                   <SettingsIcon className="tw-bg-[#CED4DE] tw-text-white" />
