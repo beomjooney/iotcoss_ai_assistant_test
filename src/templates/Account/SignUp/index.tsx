@@ -408,6 +408,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
   }, [termsParams]);
 
   const onReply = function (typeCode: string, scrollType: DialogProps['scroll']) {
+    console.log('typeCode', typeCode);
     setTermsParams({ type: typeCode });
     setOpen(true);
     setScroll(scrollType);

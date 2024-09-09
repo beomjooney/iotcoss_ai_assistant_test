@@ -75,12 +75,27 @@ export const usePersonalInfo = (memberId: any, onSuccess?: (data: User) => void,
     retry: false,
   });
 
-export const useTermsList = (params: any) =>
-  useQuery([QUERY_KEY_FACTORY('TERMS').list(params)], () => termsInfo(params), {
+export const useTermsList = (params: any, onSuccess?: (data: User) => void, onError?: (error: Error) => void) =>
+  useQuery<User, Error>(QUERY_KEY_FACTORY('TERMS').details(), () => termsInfo(params), {
+    onSuccess,
+    onError,
     refetchOnWindowFocus: false,
-    enabled: false,
-    // staleTime: 10 * 60 * 1000, // 10분 유지
+    retry: false,
   });
+
+// export const useTermsList = (params: any) =>
+//   useQuery(
+//     [QUERY_KEY_FACTORY('TERMS').list(params)],
+//     () => {
+//       console.log(params);
+//       return termsInfo(params);
+//     },
+//     {
+//       refetchOnWindowFocus: false,
+//       enabled: false,
+//       // staleTime: 10 * 60 * 1000, // 10분 유지
+//     },
+//   );
 
 // export const useIdVerification = params =>
 //   useQuery([QUERY_KEY_FACTORY('ACCOUNT_MEMBER_LOGIN').list(params)], () => getIdVerification(params), {

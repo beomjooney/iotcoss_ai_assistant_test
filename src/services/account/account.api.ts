@@ -81,6 +81,7 @@ export async function termsInfo(params: any) {
     url = `/api/v1/terms/privacy1`;
   }
   const { data } = await axiosGeneralAPI().get(url);
+  console.log(data);
   return data.data;
 }
 

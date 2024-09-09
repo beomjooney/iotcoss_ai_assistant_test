@@ -844,7 +844,7 @@ export function MemberEditTemplate() {
                           href="#"
                           underline="always"
                           onClick={() => {
-                            onReply('0001', 'paper');
+                            onReply('0002', 'paper');
                           }}
                         >
                           <span className="tw-underline">개인정보 처리 방침</span>
@@ -1020,7 +1020,7 @@ export function MemberEditTemplate() {
         sx={{ maxHeight: '60vh', top: '22%', left: '0', overflowY: 'auto' }}
       >
         <DialogTitle id="scroll-dialog-title" sx={{ m: 0, p: 2, textAlign: 'center' }}>
-          <Typography sx={{ fontWeight: 'bold', fontSize: '15px' }}>이용약관</Typography>
+          <Typography sx={{ fontWeight: 'bold', fontSize: '15px' }}>{termList?.title}</Typography>
           {handleClose ? (
             <IconButton
               aria-label="close"
@@ -1038,7 +1038,7 @@ export function MemberEditTemplate() {
         </DialogTitle>
         <DialogContent dividers={scroll === 'paper'}>
           <DialogContentText id="scroll-dialog-description" ref={descriptionElementRef} tabIndex={-1}>
-            <div dangerouslySetInnerHTML={{ __html: termList?.data?.content }}></div>
+            <div dangerouslySetInnerHTML={{ __html: termList?.content }}></div>
           </DialogContentText>
         </DialogContent>
       </Dialog>
