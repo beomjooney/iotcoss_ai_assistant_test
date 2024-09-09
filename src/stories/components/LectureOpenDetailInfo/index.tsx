@@ -267,15 +267,15 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
 
       <div className="tw-px-[108.5px] tw-py-5 tw-mt-[90px]">
         <div className="tw-flex tw-justify-start tw-items-center border tw-p-3 tw-rounded-lg tw-gap-3">
-          <div className="tw-flex tw-text-sm tw-text-black">강의 언어 : </div>
+          <div className="tw-flex tw-text-sm tw-text-black tw-font-bold">강의언어 : </div>
           <div className="tw-flex tw-text-sm tw-text-black border tw-py-1 tw-px-2  tw-mr-5 tw-rounded-lg">
             {clubData?.lectureLanguage === 'kor' ? '한국어' : '영어'}
           </div>
-          <div className="tw-flex tw-text-sm tw-text-black">콘텐츠 언어 : </div>
+          <div className="tw-flex tw-text-sm tw-text-black tw-font-bold">콘텐츠 언어 : </div>
           <div className="tw-flex tw-text-sm tw-text-black border tw-py-1 tw-px-2  tw-mr-5 tw-rounded-lg">
             {clubData?.contentLanguage === 'kor' ? '한국어' : '영어'}
           </div>
-          <div className="tw-flex tw-text-sm tw-text-black">AI 대화언어 : </div>
+          <div className="tw-flex tw-text-sm tw-text-black tw-font-bold">AI대화언어 : </div>
           <div className="tw-flex tw-text-sm tw-text-black border tw-py-1 tw-px-2  tw-mr-5 tw-rounded-lg">
             {clubData?.aiConversationLanguage === 'kor' ? '한국어' : '영어'}
           </div>

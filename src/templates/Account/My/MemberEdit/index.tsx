@@ -741,7 +741,7 @@ export function MemberEditTemplate() {
       <div className={cx('sub-content', 'border tw-px-[100px]', 'tw-rounded-lg', 'tw-mt-5')}>
         <div className=" tw-p-14 max-lg:tw-p-5 ">
           <div className="tw-text-xl tw-pb-10 tw-text-black">
-            <span className="tw-text-xl tw-font-bold tw-text-left text-black">QuizUp </span>
+            <span className="tw-text-xl tw-font-bold tw-text-left text-black">DevUs </span>
             <span className="tw-font-bold tw-text-xl"></span> 이용 약관에 동의해주세요.
           </div>
 

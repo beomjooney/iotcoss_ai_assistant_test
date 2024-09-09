@@ -167,16 +167,14 @@ const LectureDetaillSolution = ({
                   {contents?.clubAboutStatus === '0300' ? (
                     <button
                       onClick={() => handlerClubJoin(contents?.clubSequence, contents?.isPublic)}
-                      className="tw-cursor-pointer tw-w-40 tw-text-[12.25px] tw-font-bold tw-text-center tw-text-white tw-bg-blue-600 tw-px-4 tw-py-4 tw-rounded"
+                      className="tw-cursor-pointer tw-w-40 tw-text-[14px] tw-font-bold tw-text-center tw-text-white tw-bg-[#31343D] tw-px-4 tw-py-4 tw-rounded"
                     >
                       참여하기
                     </button>
                   ) : (
-                    <>
-                      <button className="tw-w-40 tw-text-[12.25px] tw-bg-blue-600 tw-font-bold tw-text-center tw-text-white tw-bg-primary tw-px-4 tw-py-4 tw-rounded">
-                        {getClubAboutStatus(contents?.clubAboutStatus)}
-                      </button>
-                    </>
+                    <button className="tw-w-40 tw-text-[12.25px] tw-bg-[#31343D] tw-font-bold tw-text-center tw-text-white tw-bg-primary tw-px-4 tw-py-4 tw-rounded">
+                      {getClubAboutStatus(contents?.clubAboutStatus)}
+                    </button>
                   )}
                 </div>
               </div>
@@ -206,160 +204,250 @@ const LectureDetaillSolution = ({
 
         {/* Content Section */}
         {/* {activeTab === 'myQuiz' && ( */}
-        <div className="tw-mt-[130px] tw-flex tw-flex-col tw-space-y-4 tw-rounded-lg tw-py-4 tw-overflow-hidden">
-          <div className="tw-rounded-[8.75px] tw-mb-[30px] border">
-            <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-py-10  tw-p-0">
-              <div className="tw-col-start-1 tw-col-end-1 tw-flex tw-justify-center">
-                <img
-                  src="/assets/images/quiz/Calendar_perspective_matte.png"
-                  className="tw-max-w-[22.75px] tw-max-h-[23.19px] tw-object-cover"
-                />
-              </div>
-              <div className="tw-col-start-2 tw-col-end-12">
-                <div className="tw-flex tw-flex-col">
-                  <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-5">강의 일정</p>
+        {contents?.clubAboutStatus === '0401' ? (
+          <div className="tw-mt-[130px] tw-flex tw-flex-col tw-space-y-4 tw-rounded-lg tw-py-4 tw-overflow-hidden">
+            <div className="tw-rounded-[8.75px] tw-mb-[30px] border">
+              <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-py-10  tw-p-0">
+                <div className="tw-col-start-1 tw-col-end-1 tw-flex tw-justify-center">
+                  <img
+                    src="/assets/images/quiz/Calendar_perspective_matte.png"
+                    className="tw-max-w-[22.75px] tw-max-h-[23.19px] tw-object-cover"
+                  />
                 </div>
-                <div className="tw-flex">
-                  <p className="tw-text-sm tw-font-bold tw-text-left tw-text-black">강의기간 : </p>
-                  <p className="tw-text-sm tw-text-left tw-text-black tw-pl-2">
-                    {contents?.startAt?.split('T')[0]} ~ {contents?.endAt?.split('T')[0]}
-                  </p>
-                </div>
-                <div className="tw-flex">
-                  <p className="tw-text-sm tw-font-bold tw-text-left tw-text-black">강의현황 : </p>
-                  <p className="tw-text-sm tw-text-left tw-text-black tw-pl-2 ">
-                    {getButtonText(contents?.clubStatus)}
-                  </p>
-                </div>
-                <div className="tw-flex">
-                  <p className="tw-text-sm tw-font-bold tw-text-left tw-text-black">학습 주제 : </p>
-                  <p className="tw-text-sm tw-text-left tw-text-black tw-pl-2 ">{contents?.studySubject}</p>
-                </div>
-                <div className="tw-flex">
-                  <p className="tw-text-sm tw-font-bold tw-text-left tw-text-black">학습 키워드 : </p>
-                  <p className="tw-text-sm tw-text-left tw-text-black tw-pl-2 ">
-                    {contents?.studyKeywords?.toString()}
-                  </p>
-                </div>
-                <div className="tw-flex">
-                  <p className="tw-text-sm tw-font-bold tw-text-left tw-text-black">참여 인원 : </p>
-                  <p className="tw-text-sm tw-text-left tw-text-black tw-pl-2 ">
-                    {contents?.recruitedMemberCount || 0} / {contents?.recruitMemberCount || 0}
-                  </p>
+                <div className="tw-col-start-2 tw-col-end-12">
+                  <div className="tw-flex tw-flex-col">
+                    <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-5">강의 일정</p>
+                  </div>
+                  <div className="tw-flex">
+                    <p className="tw-text-sm tw-font-bold tw-text-left tw-text-black">강의기간 : </p>
+                    <p className="tw-text-sm tw-text-left tw-text-black tw-pl-2">
+                      {contents?.startAt?.split('T')[0]} ~ {contents?.endAt?.split('T')[0]}
+                    </p>
+                  </div>
+                  <div className="tw-flex">
+                    <p className="tw-text-sm tw-font-bold tw-text-left tw-text-black">강의현황 : </p>
+                    <p className="tw-text-sm tw-text-left tw-text-black tw-pl-2 ">
+                      {getButtonText(contents?.clubStatus)}
+                    </p>
+                  </div>
+                  <div className="tw-flex">
+                    <p className="tw-text-sm tw-font-bold tw-text-left tw-text-black">학습 주제 : </p>
+                    <p className="tw-text-sm tw-text-left tw-text-black tw-pl-2 ">{contents?.studySubject}</p>
+                  </div>
+                  <div className="tw-flex">
+                    <p className="tw-text-sm tw-font-bold tw-text-left tw-text-black">학습 키워드 : </p>
+                    <p className="tw-text-sm tw-text-left tw-text-black tw-pl-2 ">
+                      {contents?.studyKeywords?.toString()}
+                    </p>
+                  </div>
+                  <div className="tw-flex">
+                    <p className="tw-text-sm tw-font-bold tw-text-left tw-text-black">참여 인원 : </p>
+                    <p className="tw-text-sm tw-text-left tw-text-black tw-pl-2 ">
+                      {contents?.recruitedMemberCount || 0} / {contents?.recruitMemberCount || 0}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className={cx('content-wrap')}>
-            <Grid container direction="row" alignItems="center" rowSpacing={0}>
-              <Grid
-                item
-                container
-                justifyContent="flex-start"
-                xs={6}
-                sm={10}
-                className="tw-text-xl tw-text-black tw-font-bold"
-              >
-                강의 목록 ({study?.length || 0})
-              </Grid>
-              <Grid container justifyContent="flex-end" item xs={6} sm={2} style={{ textAlign: 'right' }}>
-                {/* <Pagination
-                  count={totalPage}
-                  size="small"
-                  siblingCount={0}
-                  page={page}
-                  renderItem={item => (
-                    <PaginationItem slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }} {...item} />
-                  )}
-                  onChange={handlePageChange}
-                /> */}
-              </Grid>
-            </Grid>
-            <Divider className="tw-py-3 tw-mb-3" />
-            {study?.map((item, index) => {
-              return (
-                <React.Fragment key={index}>
-                  <Grid
-                    className="tw-pt-10"
-                    key={index}
-                    container
-                    direction="row"
-                    justifyContent="left"
-                    alignItems="center"
-                    rowSpacing={3}
-                  >
-                    <>
-                      <Grid item xs={12} sm={1} style={{ paddingTop: 10 }}>
-                        <div
-                          className={`tw-flex-auto tw-text-center  tw-font-bold ${
-                            item?.isCompleted ? 'tw-text-black' : 'tw-text-gray-300 tw-font-normal'
-                          }`}
-                        >
-                          {item?.studyOrder}회차
-                        </div>
-                        <div
-                          className={`tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold ${
-                            item?.isCompleted ? 'tw-text-black' : 'tw-text-gray-300 tw-font-normal'
-                          }`}
-                        >
-                          {item?.studyDate.split('-').slice(1).join('-')} ({item?.dayOfWeek})
-                        </div>
-                      </Grid>
 
-                      <Grid item xs={12} sm={11}>
-                        <div className="tw-rounded-xl">
+            <div className={cx('content-wrap')}>
+              <Grid container direction="row" alignItems="center" rowSpacing={0}>
+                <Grid
+                  item
+                  container
+                  justifyContent="flex-start"
+                  xs={6}
+                  sm={10}
+                  className="tw-text-xl tw-text-black tw-font-bold"
+                >
+                  강의 목록 ({study?.length || 0})
+                </Grid>
+                <Grid container justifyContent="flex-end" item xs={6} sm={2} style={{ textAlign: 'right' }}></Grid>
+              </Grid>
+              <Divider className="tw-py-3 tw-mb-3" />
+              {study?.map((item, index) => {
+                return (
+                  <React.Fragment key={index}>
+                    <Grid
+                      className="tw-pt-10"
+                      key={index}
+                      container
+                      direction="row"
+                      justifyContent="left"
+                      alignItems="center"
+                      rowSpacing={3}
+                    >
+                      <>
+                        <Grid item xs={12} sm={1} style={{ paddingTop: 10 }}>
                           <div
-                            className={`tw-py-7 tw-flex tw-items-center tw-px-4 max-lg:tw-p-3 tw-py-1 tw-rounded-lg ${
-                              item?.isCompleted ? 'tw-bg-[#F6F7FB] ' : 'tw-bg-white border  tw-opacity-50'
+                            className={`tw-flex-auto tw-text-center  tw-font-bold ${
+                              item?.isCompleted ? 'tw-text-black' : 'tw-text-gray-300 tw-font-normal'
                             }`}
                           >
-                            <div className="tw-flex tw-item-center  tw-px-5 tw-w-9/12 tw-gap-4">
-                              <div className="tw-flex tw-font-medium tw-text-black">{item?.clubStudyName}</div>
-                              {item?.clubStudyType === '0100' ? (
-                                <div className="tw-text-xs tw-text-center tw-px-2 tw-py-1 tw-text-white tw-bg-blue-500 tw-rounded-md">
-                                  온라인
-                                </div>
-                              ) : (
-                                <div className="border border-primary tw-text-xs tw-text-center tw-px-2 tw-py-1 tw-text-blue-500 tw-bg-white tw-rounded-md">
-                                  오프라인
-                                </div>
-                              )}
-                            </div>
-                            <div className="tw-flex-auto">
-                              <div className="tw-flex tw-justify-end tw-items-center tw-relative tw-gap-2 tw-px-2 tw-py-1 tw-rounded">
-                                {item?.isCompleted ? (
-                                  <button
-                                    onClick={() => {
-                                      // router.push('/lecture-list/' + `${contents?.clubSequence}`);
-                                      router.push(
-                                        {
-                                          pathname: `/lecture-list/${contents?.clubSequence}`,
-                                          query: {
-                                            clubStudySequence: item?.clubStudySequence,
-                                          },
-                                        },
-                                        `/lecture-list/${contents?.clubSequence}?clubStudySequence=${item?.clubStudySequence}`,
-                                      );
-                                    }}
-                                    className="tw-bg-black tw-text-xs tw-px-2 tw-py-1 tw-text-white tw-rounded-md  tw-font-bold tw-text-right"
-                                  >
-                                    Q&A 보기
-                                  </button>
+                            {item?.studyOrder}회차
+                          </div>
+                          <div
+                            className={`tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold ${
+                              item?.isCompleted ? 'tw-text-black' : 'tw-text-gray-300 tw-font-normal'
+                            }`}
+                          >
+                            {item?.studyDate.split('-').slice(1).join('-')} ({item?.dayOfWeek})
+                          </div>
+                        </Grid>
+
+                        <Grid item xs={12} sm={11}>
+                          <div className="tw-rounded-xl">
+                            <div
+                              className={`tw-py-7 tw-flex tw-items-center tw-px-4 max-lg:tw-p-3 tw-py-1 tw-rounded-lg ${
+                                item?.isCompleted ? 'tw-bg-[#F6F7FB] ' : 'tw-bg-white border  tw-opacity-50'
+                              }`}
+                            >
+                              <div className="tw-flex tw-item-center  tw-px-5 tw-w-9/12 tw-gap-4">
+                                <div className="tw-flex tw-font-medium tw-text-black">{item?.clubStudyName}</div>
+                                {item?.clubStudyType === '0100' ? (
+                                  <div className="tw-text-xs tw-text-center tw-px-2 tw-py-1 tw-text-white tw-bg-blue-500 tw-rounded-md">
+                                    온라인
+                                  </div>
                                 ) : (
-                                  <></>
+                                  <div className="border border-primary tw-text-xs tw-text-center tw-px-2 tw-py-1 tw-text-blue-500 tw-bg-white tw-rounded-md">
+                                    오프라인
+                                  </div>
                                 )}
+                              </div>
+                              <div className="tw-flex-auto">
+                                <div className="tw-flex tw-justify-end tw-items-center tw-relative tw-gap-2 tw-px-2 tw-py-1 tw-rounded">
+                                  {item?.isCompleted ? (
+                                    <button
+                                      onClick={() => {
+                                        // router.push('/lecture-list/' + `${contents?.clubSequence}`);
+                                        router.push(
+                                          {
+                                            pathname: `/lecture-list/${contents?.clubSequence}`,
+                                            query: {
+                                              clubStudySequence: item?.clubStudySequence,
+                                            },
+                                          },
+                                          `/lecture-list/${contents?.clubSequence}?clubStudySequence=${item?.clubStudySequence}`,
+                                        );
+                                      }}
+                                      className="tw-bg-black tw-text-xs tw-px-2 tw-py-1 tw-text-white tw-rounded-md  tw-font-bold tw-text-right"
+                                    >
+                                      Q&A 보기
+                                    </button>
+                                  ) : (
+                                    <></>
+                                  )}
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      </Grid>
-                    </>
-                  </Grid>
-                </React.Fragment>
-              );
-            })}
+                        </Grid>
+                      </>
+                    </Grid>
+                  </React.Fragment>
+                );
+              })}
+            </div>
           </div>
-        </div>
+        ) : (
+          <>
+            <div className=" tw-py-8 tw-mt-[120px]">
+              <div className="tw-flex tw-justify-start tw-items-center border tw-px-10 tw-py-3 tw-rounded-lg tw-gap-3">
+                <div className="tw-flex tw-text-sm tw-text-black tw-font-bold">강의언어 : </div>
+                <div className="tw-flex tw-text-sm tw-text-black border tw-py-1 tw-px-2  tw-mr-5 tw-rounded-lg">
+                  {contents?.lectureLanguage === 'kor' ? '한국어' : '영어'}
+                </div>
+                <div className="tw-flex tw-text-sm tw-text-black  tw-font-bold">콘텐츠 언어 : </div>
+                <div className="tw-flex tw-text-sm tw-text-black border tw-py-1 tw-px-2  tw-mr-5 tw-rounded-lg">
+                  {contents?.contentLanguage === 'kor' ? '한국어' : '영어'}
+                </div>
+                <div className="tw-flex tw-text-sm tw-text-black  tw-font-bold">AI대화언어 : </div>
+                <div className="tw-flex tw-text-sm tw-text-black border tw-py-1 tw-px-2  tw-mr-5 tw-rounded-lg">
+                  {contents?.aiConversationLanguage === 'kor' ? '한국어' : '영어'}
+                </div>
+              </div>
+            </div>
+
+            <div className="tw-rounded-[8.75px] tw-mb-[30px] tw-bg-[#F9F9FD]">
+              <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-py-10  tw-p-0">
+                <div className="tw-col-start-1 tw-col-end-1 tw-flex tw-justify-center">
+                  <img
+                    src="/assets/images/quiz/Comment_perspective_matte.png"
+                    className="tw-max-w-[22.75px] tw-max-h-[23.19px] tw-object-cover"
+                  />
+                </div>
+                <div className="tw-col-start-2 tw-col-end-12">
+                  <div className="tw-flex tw-flex-col">
+                    <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-5">학습 주제</p>
+                    <p className="tw-text-sm tw-text-left tw-text-black">{contents?.clubName || 'N/A'}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="tw-rounded-[8.75px] tw-mb-[30px] tw-bg-[#F9F9FD]">
+              <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-py-10  tw-p-0">
+                <div className="tw-col-start-1 tw-col-end-1 tw-flex tw-justify-center">
+                  <img
+                    src="/assets/images/quiz/Message_perspective_matte.png"
+                    className="tw-max-w-[22.75px] tw-max-h-[23.19px] tw-object-cover"
+                  />
+                </div>
+                <div className="tw-col-start-2 tw-col-end-12">
+                  <div className="tw-flex tw-flex-col">
+                    <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-5">학습 키워드</p>
+                    <p className="tw-text-left">
+                      {contents?.studyKeywords?.map((keyword, index) => (
+                        <span
+                          key={index}
+                          className="tw-text-sm tw-mr-2 tw-bg-[#6A7380] tw-px-3 tw-py-1 tw-text-white tw-rounded"
+                        >
+                          {keyword}
+                        </span>
+                      ))}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="tw-rounded-[8.75px] tw-mb-[30px] tw-bg-[#F9F9FD]">
+              <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-py-10  tw-p-0">
+                <div className="tw-col-start-1 tw-col-end-1 tw-flex tw-justify-center">
+                  <img
+                    src="/assets/images/quiz/Success_perspective_matte.png"
+                    className="tw-max-w-[22.75px] tw-max-h-[23.19px] tw-object-cover"
+                  />
+                </div>
+                <div className="tw-col-start-2 tw-col-end-12">
+                  <div className="tw-flex tw-flex-col">
+                    <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-5">강의 소개</p>
+                    <p className="tw-text-sm tw-text-left tw-text-black">{contents?.description}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="tw-rounded-[8.75px] tw-mb-[30px] tw-bg-[#F9F9FD]">
+              <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-py-10  tw-p-0">
+                <div className="tw-col-start-1 tw-col-end-1 tw-flex tw-justify-center">
+                  <img
+                    src="/assets/images/quiz/Calendar_perspective_matte.png"
+                    className="tw-max-w-[22.75px] tw-max-h-[23.19px] tw-object-cover"
+                  />
+                </div>
+                <div className="tw-col-start-2 tw-col-end-12">
+                  <div className="tw-flex tw-flex-col">
+                    <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-5">강의 일정</p>
+                    <p className="tw-text-sm tw-text-left tw-text-black">
+                      시작일 : {contents?.startAt?.replace('T', ' ')}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
         {isClient && !modalIsOpen && logged && menu.use_lecture_club && (
           <div>
             <div

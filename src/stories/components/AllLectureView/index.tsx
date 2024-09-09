@@ -280,7 +280,9 @@ const AllLectureView = ({ border, id }) => {
                           <TableCell align="center" component="th" scope="row">
                             <div className="tw-font-bold tw-text-base">
                               {item?.studyOrder}회 <br />
-                              <span className="tw-text-sm tw-font-medium tw-text-gray-400">07-01(월)</span>
+                              <span className="tw-text-sm tw-font-medium tw-text-gray-400">
+                                {item?.studyDate?.substring(5)}({item?.dayOfWeek})
+                              </span>
                             </div>
                           </TableCell>
                           <TableCell align="left" component="th" scope="row">
