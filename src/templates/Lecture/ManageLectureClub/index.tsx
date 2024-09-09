@@ -1719,16 +1719,16 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
                             <Grid item xs={12} sm={3}>
                               <div className="tw-text-left tw-text-black">{item?.memberId}</div>
                             </Grid>
-                            <Grid item xs={12} sm={1}>
+                            <Grid item xs={12} sm={2}>
                               <div className="tw-text-left tw-text-black">{item?.jobGroup?.name}</div>
                             </Grid>
-                            <Grid item xs={12} sm={1}>
+                            <Grid item xs={12} sm={2}>
                               <div className="tw-text-left tw-text-black">{item?.job?.name}</div>
                             </Grid>
                             <Grid
                               item
                               xs={12}
-                              sm={5}
+                              sm={3}
                               style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end' }}
                             >
                               <div className="tw-gap-3">
