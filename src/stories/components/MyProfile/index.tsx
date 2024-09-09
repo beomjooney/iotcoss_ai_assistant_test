@@ -13,6 +13,7 @@ const cx = classNames.bind(styles);
 
 const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: any) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isProfessor, setIsProfessor] = useState<boolean>(false);
   const [jobs, setJobs] = useState([]);
   const [selectedJob, setSelectedJob] = useState('');
   const phoneRef = useRef(null);
@@ -185,22 +186,41 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
             </div>
           </div>
           {admin && (
-            <button
-              onClick={() => {
-                setIsModalOpen(true);
-                setUniversityCode(profile.jobGroup?.code || '');
-                const selected = optionsData?.data?.jobs?.find(u => u.code === profile.jobGroup?.code);
-                setJobs(selected ? selected.jobs : []);
-                const selected_code = selected?.jobs?.find(u => u.code === profile.job?.code);
-                setSelectedJob(selected_code?.code);
-                setIntroductionMessage(profile.introductionMessage || '');
-                setMemberId(profile?.memberId || '');
-                setJobLevel(profile?.jobLevels[0]?.code || '');
-              }}
-              className="tw-mt-4 border tw-py-3 tw-px-5 tw-rounded tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-center tw-text-[#6a7380]"
-            >
-              프로필 수정
-            </button>
+            <div>
+              <button
+                onClick={() => {
+                  setIsModalOpen(true);
+                  setUniversityCode(profile.jobGroup?.code || '');
+                  const selected = optionsData?.data?.jobs?.find(u => u.code === profile.jobGroup?.code);
+                  setJobs(selected ? selected.jobs : []);
+                  const selected_code = selected?.jobs?.find(u => u.code === profile.job?.code);
+                  setSelectedJob(selected_code?.code);
+                  setIntroductionMessage(profile.introductionMessage || '');
+                  setMemberId(profile?.memberId || '');
+                  setJobLevel(profile?.jobLevels[0]?.code || '');
+                }}
+                className="tw-mt-4 border tw-py-3 tw-px-5 tw-rounded tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-center tw-text-[#6a7380]"
+              >
+                프로필 수정
+              </button>
+              <button
+                onClick={() => {
+                  setIsProfessor(true);
+                  setIsModalOpen(true);
+                  setUniversityCode(profile.jobGroup?.code || '');
+                  const selected = optionsData?.data?.jobs?.find(u => u.code === profile.jobGroup?.code);
+                  setJobs(selected ? selected.jobs : []);
+                  const selected_code = selected?.jobs?.find(u => u.code === profile.job?.code);
+                  setSelectedJob(selected_code?.code);
+                  setIntroductionMessage(profile.introductionMessage || '');
+                  setMemberId(profile?.memberId || '');
+                  setJobLevel(profile?.jobLevels[0]?.code || '');
+                }}
+                className="tw-ml-3 tw-mt-4 border tw-py-3 tw-px-5 tw-rounded tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-center tw-text-[#6a7380]"
+              >
+                교수자 권한 요청
+              </button>
+            </div>
           )}
         </div>
       </div>
@@ -220,7 +240,6 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
         <div className="tw-font-semibold tw-text-base  tw-text-black tw-mt-0 tw-mb-10 tw-text-center">
           이후 마이페이지에서 수정이 가능합니다.
         </div>
-
         <div className="border tw-p-7 tw-rounded-xl">
           <div className="tw-font-bold tw-text-base tw-text-black">개인정보</div>
           <div className=" tw-mt-7 tw-ml-7 tw-relative tw-flex tw-flex-col tw-items-center">
@@ -264,27 +283,6 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
                 <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">전화번호</dt>
                 <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">{profile?.phoneNumber}</dd>
               </div>
-              {/* <div className="tw-px-4 tw-py-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
-                <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">학번</dt>
-                <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
-                  <TextField
-                    inputRef={phoneRef} // ref를 할당합니다.
-                    size="small"
-                    id="outlined-basic"
-                    label=""
-                    name="companyName"
-                    variant="outlined"
-                    onChange={e => setMemberId(e.target.value)}
-                    value={memberId}
-                    inputProps={{
-                      maxLength: 13,
-                      style: {
-                        height: '20px',
-                      },
-                    }}
-                  />
-                </dd>
-              </div> */}
               <div className="tw-px-4 tw-pt-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
                 <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">대학</dt>
                 <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">

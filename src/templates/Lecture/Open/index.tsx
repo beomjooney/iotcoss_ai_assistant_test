@@ -1132,7 +1132,7 @@ export function LectureOpenTemplate() {
     if (type === 'temp') {
       onTempSave(formData);
     } else if (type === 'save') {
-      // onLectureSave(formData);
+      onLectureSave(formData);
     } else if (type === 'validation') {
       console.log(prevActiveStep => prevActiveStep + 1);
       setActiveStep(prevActiveStep => prevActiveStep + 1);
