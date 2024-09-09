@@ -90,11 +90,11 @@ const CourseCard = ({ data, border = false }) => {
         <p className="tw-line-clamp-1 tw-ml-[148px] tw-mt-[13px] tw-text-sm tw-font-bold tw-text-left tw-text-black">
           {data.clubName}
         </p>
-        <p className="tw-line-clamp-2 tw-h-6 tw-h-[40px] tw-ml-[148px] tw-mt-1 tw-text-sm tw-text-left tw-text-black">
+        <p className="tw-line-clamp-2 tw-ml-[148px] tw-mt-1 tw-text-sm tw-text-left tw-text-black">
           {data.description}
         </p>
       </div>
-      <div className="tw-ml-[148px]">
+      <div className="tw-ml-[148px] tw-mt-1">
         <p className="tw-text-sm tw-text-left tw-text-black">
           <span className="tw-font-bold">{data.leaderNickname}</span>
           {/* <span className="tw-text-left tw-text-[#9ca5b2] tw-ml-4">

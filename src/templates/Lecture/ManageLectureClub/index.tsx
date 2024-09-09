@@ -49,13 +49,11 @@ import { useStudyQuizOpponentBadgeList } from 'src/services/studyroom/studyroom.
 import { ExperiencesResponse } from 'src/models/experiences';
 import { useOptions } from 'src/services/experiences/experiences.queries';
 import { UseQueryResult } from 'react-query';
-import { useLectureAboutDetail } from 'src/services/seminars/seminars.queries';
+import { useLectureAboutDetailInfo } from 'src/services/seminars/seminars.queries';
 
 //수정
 import { InputAdornment, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import NavigatePrevIcon from '@mui/icons-material/NavigateBefore';
 import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
 import MenuItem from '@mui/material/MenuItem';
@@ -71,6 +69,11 @@ import { makeStyles } from '@mui/styles';
 import { images, imageBanner } from './group';
 import LectureBreakerInfo from 'src/stories/components/LectureBreakerInfo';
 import { useLectureModify } from 'src/services/quiz/quiz.mutations';
+import { v4 as uuidv4 } from 'uuid';
+import validator from 'validator';
+export const generateUUID = () => {
+  return uuidv4();
+};
 
 export interface ManageLectureClubTemplateProps {
   /** 세미나 아이디 */
@@ -240,12 +243,12 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
   };
 
   // 퀴즈 소개 정보 조회
-  const { isFetched: isClubAboutFetched, refetch: refetchClubAbout } = useLectureAboutDetail(ids, data => {
+  const { isFetched: isClubAboutFetched, refetch: refetchClubAbout } = useLectureAboutDetailInfo(ids, data => {
     console.log(data);
-    setClubAbout(data);
+    setClubAbout(data.lectureClub);
     console.log('useLectureAboutDetail', data);
 
-    const clubForm = data?.clubForm || {};
+    const clubForm = data?.lectureClub || {};
     const lectureList = data?.clubStudies || [];
     const lectureContents = data?.lectureContents || [];
 
@@ -259,28 +262,21 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
     setEndDay(clubForm.endAt ? dayjs(clubForm.endAt) : dayjs());
     setIsPublic(clubForm.isPublic ? '0001' : '0002');
     console.log('load temp', clubForm.studyKeywords);
-    setStudyKeywords(['산', '아래']);
+    setStudyKeywords(clubForm.studyKeywords || []);
     setStudySubject(clubForm.studySubject || '');
-    setUniversityCode(clubForm.jobGroups || '');
-    setRecommendLevels(clubForm.jobLevels || '');
+    setUniversityCode(clubForm.jobGroups[0].code || '');
+    setRecommendLevels(clubForm.jobLevels.map(item => item.code) || '');
     console.log(clubForm?.jobLevels?.map(item => item.name));
-    const selectedLevel = optionsData?.data?.jobLevels?.find(u => u.code === clubForm?.jobLevels?.toString());
 
-    // clubForm.jobLevels의 이름 리스트 생성
-    const jobLevelNames = getJobLevelNames(clubForm.jobLevels, optionsData?.data?.jobLevels || []);
-    console.log('jobLevelNames', jobLevelNames);
-    setLevelNames(jobLevelNames);
+    setLevelNames(clubForm.jobLevels.map(item => item.name));
 
-    const selected = optionsData?.data?.jobs?.find(u => u.code === clubForm?.jobGroups?.toString());
-    setSelectedUniversityName(selected?.name || '');
+    const selected = optionsData?.data?.jobs?.find(u => u.code === clubForm.jobGroups[0]?.code);
+    setSelectedUniversityName(clubForm.jobGroups[0]?.name || '');
+    const jobsName = clubForm.jobs.map(item => item.name);
     setJobs(selected ? selected.jobs : []);
-    setSelectedJob(clubForm.jobs || []);
-
-    const names = selected?.jobs
-      .filter(department => clubForm.jobs.includes(department.code))
-      .map(department => department.name);
-
-    setPersonName(names || []);
+    const jobsCode = clubForm.jobs.map(item => item.code);
+    setSelectedJob(jobsCode || []);
+    setPersonName(jobsName || []);
     setIntroductionText(clubForm.description || '');
 
     setLectureLanguage(clubForm.lectureLanguage);
@@ -517,6 +513,7 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
           isNew: 'true',
           file: file,
           name: file.name,
+          contentId: 'content_id_' + generateUUID(),
         })),
       ],
     }));
@@ -584,6 +581,7 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
           {
             isNew: 'true',
             url: input,
+            contentId: 'content_id_' + generateUUID(),
           },
         ],
       }));
@@ -796,6 +794,7 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
 
     console.log(clubFormParams);
     const formData = new FormData();
+    formData.append('clubForm.clubId', 'lecture_club_' + generateUUID());
     formData.append('clubForm.clubName', clubFormParams.clubName);
     formData.append('clubForm.jobGroups', clubFormParams.jobGroups.toString());
     formData.append('clubForm.jobs', clubFormParams.jobs.toString());
@@ -842,6 +841,7 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
           } else {
             formData.append(`clubStudies[${i}].files[${j}].isNew`, 'true');
             formData.append(`clubStudies[${i}].files[${j}].file`, file);
+            formData.append(`clubStudies[${i}].files[${j}].contentId`, 'content_id_' + generateUUID());
           }
         }
       }
@@ -851,6 +851,7 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
           const url = item.urls[k];
           formData.append(`clubStudies[${i}].urls[${k}].isNew`, 'true');
           formData.append(`clubStudies[${i}].urls[${k}].url`, url.url);
+          formData.append(`clubStudies[${i}].urls[${k}].contentId`, 'content_id_' + generateUUID());
         }
       }
 
@@ -879,9 +880,11 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
       // 임시저장 로직에 false 추가, isNew 속성이 없으면 true로 설정
       if (item.isNew === undefined) {
         formData.append(`clubStudies[${i}].isNew`, 'true');
+        formData.append(`clubStudies[${i}].clubStudyId`, 'club_study_id_' + generateUUID());
       } else {
         formData.append(`clubStudies[${i}].isNew`, item.isNew);
         formData.append(`clubStudies[${i}].clubStudySequence`, item.clubStudySequence);
+        formData.append(`clubStudies[${i}].clubStudyId`, 'club_study_id_' + generateUUID());
       }
 
       formData.append(`clubStudies[${i}].studyOrder`, (i + 1).toString());
@@ -893,6 +896,23 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
       const nextDay = dayjs(item.studyDate).add(1, 'day').format('YYYY-MM-DD');
       formData.append(`clubStudies[${i}].studyDate`, nextDay);
     }
+
+    lectureContents?.files?.forEach((file, j) => {
+      if (file.serialNumber) {
+        formData.append('lectureContents.files[' + j + '].isNew', 'false');
+        formData.append('lectureContents.files[' + j + '].serialNumber', file.serialNumber);
+      } else {
+        formData.append('lectureContents.files[' + j + '].isNew', 'true');
+        formData.append('lectureContents.files[' + j + '].file', file.file);
+        formData.append('lectureContents.files[' + j + '].contentId', 'content_id_' + generateUUID());
+      }
+    });
+
+    lectureContents?.urls?.forEach((url, k) => {
+      formData.append('lectureContents.urls[' + k + '].isNew', 'true');
+      formData.append('lectureContents.urls[' + k + '].url', url.url);
+      formData.append('lectureContents.urls[' + k + '].contentId', 'content_id_' + generateUUID());
+    });
 
     // To log the formData contents
     for (const [key, value] of formData.entries()) {
@@ -941,6 +961,7 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
   };
 
   const handleUniversityChange = e => {
+    console.log('handleUniversityChange', e.target.value);
     const selectedCode = e.target.value;
     const selected = optionsData?.data?.jobs?.find(u => u.code === selectedCode);
     setUniversityCode(selectedCode);
@@ -1801,7 +1822,7 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
                           aria-label="Default select example"
                           value={universityCode}
                         >
-                          <option>대학을 선택해주세요.</option>
+                          <option value="">대학을 선택해주세요.</option>
                           {optionsData?.data?.jobs?.map((university, index) => (
                             <option key={index} value={university.code}>
                               {university.name}
@@ -1833,7 +1854,7 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
                                 }
                                 return selected.join(', ');
                               }}
-                              disabled={jobs.length === 0}
+                              // disabled={jobs.length === 0}
                               value={personName}
                               onChange={handleChanges}
                               MenuProps={{

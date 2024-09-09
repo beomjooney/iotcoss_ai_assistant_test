@@ -183,12 +183,12 @@ const ArticleList: React.FC<any> = ({ data, refetchMyQuizContent }) => {
                       window.open(data.url, '_blank');
                     }
                   }}
-                  className="tw-underline tw-cursor-pointer tw-text-sm tw-text-left tw-text-gray-500 tw-line-clamp-0"
+                  className="tw-underline tw-cursor-pointer tw-text-sm tw-text-left tw-text-gray-500 tw-line-clamp-2 tw-w-full"
                 >
                   {data.contentType === '0320' ? data.name : data.url}
                 </p>
               </div>
-              <div className="tw-flex tw-justify-start tw-items-center tw-gap-2">
+              <div className="tw-flex tw-justify-start tw-items-center tw-gap-2 ">
                 <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-1">
                   <button
                     className="tw-flex-grow-0 tw-flex-shrink-0 "

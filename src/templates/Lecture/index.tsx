@@ -94,7 +94,7 @@ export function LectureTemplate() {
         <div className="tw-py-[40px] max-lg:tw-py-[40px]">
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
             <Grid item xs={12} sm={2} className="tw-font-bold tw-text-3xl tw-text-black max-lg:!tw-text-2xl">
-              My강의클럽
+              강의클럽
             </Grid>
             <Grid
               item

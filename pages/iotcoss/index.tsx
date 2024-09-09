@@ -24,20 +24,20 @@ export function IndexPage({ session, setActiveIndex }: { session: Session; setAc
   // console.log('memberId', logged, memberId);
 
   //미로그인 데이터 처리
-  if (!logged) {
-    useGuestTenant('iotcoss', data => {
-      setCookie('access_token', data.guestToken);
-      console.log('access_token', data.guestToken);
-      update({
-        tenantName: data.tenantName,
-        redirections: data.homeUrl,
-        menu: {
-          use_lecture_club: data.lectureClubUseYn === 'YES' ? true : false,
-          use_quiz_club: data.quizClubUseYn === 'YES' ? true : false,
-        },
-      });
-    });
-  }
+  // if (!logged) {
+  //   useGuestTenant('iotcoss', data => {
+  //     setCookie('access_token', data.guestToken);
+  //     console.log('access_token', data);
+  //     update({
+  //       tenantName: data.tenantName,
+  //       redirections: data.homeUrl,
+  //       menu: {
+  //         use_lecture_club: data.lectureClubUseYn === 'YES' ? true : false,
+  //         use_quiz_club: data.quizClubUseYn === 'YES' ? true : false,
+  //       },
+  //     });
+  //   });
+  // }
 
   // session이 존재하는 경우에만 상태 업데이트를 수행
   useEffect(() => {

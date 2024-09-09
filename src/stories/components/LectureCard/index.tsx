@@ -30,8 +30,8 @@ const LectureCard = ({
   className,
 }: // eslint-disable-next-line @typescript-eslint/no-empty-function
 LectureCardProps) => {
-  const { logged, roles } = useSessionStore.getState();
-  console.log('LectureCardProps', item, roles);
+  const { logged, roles, memberId } = useSessionStore.getState();
+  console.log('LectureCardProps', item, roles, memberId, item.leaderUUID);
   const { mutate: onSaveLike, isSuccess } = useSaveLike();
   const { mutate: onDeleteLike } = useDeleteLike();
 
@@ -72,7 +72,7 @@ LectureCardProps) => {
             // href={logged ? '/lecture/' + `${item.clubSequence}` : '#'}
             href={
               logged
-                ? roles?.includes('ROLE_ADMIN') || roles?.includes('ROLE_MANAGER')
+                ? roles?.includes('ROLE_ADMIN') || (roles?.includes('ROLE_MANAGER') && memberId === item.leaderUUID)
                   ? '/lecture-dashboard/' + `${item.clubSequence}`
                   : '/lecture/' + `${item.clubSequence}`
                 : '#'

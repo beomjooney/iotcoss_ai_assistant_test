@@ -347,12 +347,10 @@ export function LectureOpenTemplate() {
 
   const [contentJobType, setContentJobType] = useState<any[]>([]);
   // const [lectureContents, setLectureContents] = useState<any[]>([]);
-  const [lectureContents, setLectureContents] = useState([
-    {
-      files: [],
-      urls: [],
-    },
-  ]);
+  const [lectureContents, setLectureContents] = useState({
+    files: [],
+    urls: [],
+  });
 
   const { isFetched: isContentTypeJobFetched } = useContentJobTypes(data => {
     setContentJobType(data.data.contents || []);
@@ -1125,66 +1123,6 @@ export function LectureOpenTemplate() {
       formData.append('lectureContents.urls[' + k + '].url', url.url);
       formData.append('lectureContents.urls[' + k + '].contentId', 'content_id_' + generateUUID());
     });
-
-    // lectureContents.forEach((item, i) => {
-    //   if (item.isNew === undefined) {
-    //     formData.append(`lectureContents.isNew`, 'true');
-    //   } else {
-    //     formData.append(`lectureContents.isNew`, item.isNew);
-    //   }
-
-    //   formData.append(`lectureContents.urls[${i}].url`, item.url);
-    //   formData.append(`lectureContents.files[${i}].files`, item.files);
-    //   formData.append(`lectureContents.contentId[${i}]`, item.contentId);
-    // });
-
-    // scheduleData.forEach((item, i) => {
-    //   if (shouldStop) return;
-    //   item?.files?.forEach((file, j) => {
-    //     if (file.serialNumber) {
-    //       formData.append('clubStudies[' + i + '].files[' + j + '].serialNumber', file.serialNumber);
-    //       formData.append('clubStudies[' + i + '].files[' + j + '].isNew', 'false');
-    //     } else {
-    //       formData.append('clubStudies[' + i + '].files[' + j + '].isNew', 'true');
-    //       formData.append('clubStudies[' + i + '].files[' + j + '].file', file);
-    //     }
-    //   });
-
-    //   item?.urls?.forEach((url, k) => {
-    //     formData.append('clubStudies[' + i + '].urls[' + k + '].isNew', 'true');
-    //     formData.append('clubStudies[' + i + '].urls[' + k + '].url', url.url);
-    //   });
-
-    //   if (activeStep === 1) {
-    //     if (item.studyDate === '') {
-    //       alert(i + 1 + '번째 강의 시작일을 입력해주세요.');
-    //       shouldStop = true;
-    //       return false;
-    //     }
-
-    //     if (item.clubStudyName === '') {
-    //       alert(i + 1 + '번째 강의 이름을 입력해주세요.');
-    //       shouldStop = true;
-    //       return false;
-    //     }
-    //   }
-
-    //   // 임시저장 로직에 false 추가, isNew 속성이 없으면 true로 설정
-    //   if (item.isNew === undefined) {
-    //     formData.append('clubStudies[' + i + '].isNew', 'true');
-    //   } else {
-    //     formData.append('clubStudies[' + i + '].isNew', item.isNew);
-    //     formData.append('clubStudies[' + i + '].clubStudySequence', item.clubStudySequence);
-    //   }
-
-    //   // formData.append('clubStudies[' + i + '].isNew', 'true');
-    //   formData.append('clubStudies[' + i + '].studyOrder', (i + 1).toString());
-    //   formData.append('clubStudies[' + i + '].clubStudyName', item.clubStudyName);
-    //   formData.append('clubStudies[' + i + '].clubStudyType', item.clubStudyType);
-    //   formData.append('clubStudies[' + i + '].clubStudyUrl', item.clubStudyUrl || '');
-    //   // formData.append('clubStudies[' + i + '].contentUrls', item.urlList.toString());
-    //   formData.append('clubStudies[' + i + '].studyDate', item.studyDate);
-    // });
 
     // To log the formData contents
     for (const [key, value] of formData.entries()) {

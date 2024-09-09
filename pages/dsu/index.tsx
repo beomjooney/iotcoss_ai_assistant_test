@@ -28,20 +28,20 @@ export function IndexPage({ session, setActiveIndex }: { session: Session; setAc
   });
 
   //미로그인 데이터 처리
-  if (!logged) {
-    useGuestTenant('dsu', data => {
-      setCookie('access_token', data.guestToken);
-      console.log('access_token', data.guestToken);
-      update({
-        tenantName: data.tenantName,
-        redirections: data.homeUrl,
-        menu: {
-          use_lecture_club: data.lectureClubUseYn === 'YES' ? true : false,
-          use_quiz_club: data.quizClubUseYn === 'YES' ? true : false,
-        },
-      });
-    });
-  }
+  // if (!logged) {
+  //   useGuestTenant('dsu', data => {
+  //     setCookie('access_token', data.guestToken);
+  //     console.log('access_token', data.guestToken);
+  //     update({
+  //       tenantName: data.tenantName,
+  //       redirections: data.homeUrl,
+  //       menu: {
+  //         use_lecture_club: data.lectureClubUseYn === 'YES' ? true : false,
+  //         use_quiz_club: data.quizClubUseYn === 'YES' ? true : false,
+  //       },
+  //     });
+  //   });
+  // }
 
   useEffect(() => {
     localStorage.setItem('activeIndex', '0');
