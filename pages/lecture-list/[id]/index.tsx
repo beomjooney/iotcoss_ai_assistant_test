@@ -10,7 +10,7 @@ export function LectureDetailPage() {
   const router = useRouter();
   const id = router.query['id'].toString();
   const clubStudySequence = router.query['clubStudySequence']?.toString();
-  console.log('clubStudySequence33', clubStudySequence);
+  // console.log('clubStudySequence33', clubStudySequence);
 
   return <LectureListViewAllTemplate id={id} clubStudySequence={clubStudySequence} />;
 }

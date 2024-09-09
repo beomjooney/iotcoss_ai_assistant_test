@@ -93,9 +93,9 @@ export function MemberRegistrationCompleteTemplate({ onSubmitLogin }: MemberRegi
           >
             <p className="tw-text-base tw-font-bold tw-text-center tw-text-white">로그인 화면으로 가기</p>
           </div>
-          <div className="tw-cursor-pointer tw-w-[300px] tw-h-12 tw-relative tw-overflow-hidden tw-rounded tw-bg-[#31343d] tw-flex tw-items-center tw-justify-center">
+          {/* <div className="tw-cursor-pointer tw-w-[300px] tw-h-12 tw-relative tw-overflow-hidden tw-rounded tw-bg-[#31343d] tw-flex tw-items-center tw-justify-center">
             <p className="tw-text-base tw-font-bold tw-text-center tw-text-white">교수자 권한 요청하기</p>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

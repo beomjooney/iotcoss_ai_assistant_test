@@ -52,10 +52,18 @@ export async function memberActiveSummaryInfo() {
 export const getProfile = async body => await axiosGeneralAPI().get(`/api/v1/profiles/${body}`);
 
 // 회원 정보 저장
-export const saveProfile = async body =>
-  await axiosGeneralAPI().put(`/api/v1/my/profile`, body, {
+export const saveProfile = async body => {
+  const { data } = await axiosGeneralAPI().put(`/api/v1/my/profile`, body.formData, {
     headers: { 'content-type': 'multipart/form-data' },
   });
+  return { data, isProfessor: body.isProfessor };
+};
+
+// 회원 정보 저장
+export const requestProfessor = async body => {
+  const { data } = await axiosGeneralAPI().post(`/api/v1/members/instructor/authority/requests`, body);
+  return data;
+};
 
 // 회원 정보 수정
 export const editInfo = async (memberId, body) => await axiosGeneralAPI().put(`/members/${memberId}`, body);

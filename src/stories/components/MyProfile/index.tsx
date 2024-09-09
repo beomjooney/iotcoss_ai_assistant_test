@@ -6,7 +6,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { UseQueryResult } from 'react-query';
 import { useOptions } from 'src/services/experiences/experiences.queries';
 import { Toggle } from 'src/stories/components';
-import { useSaveProfile } from 'src/services/account/account.mutations';
+import { useSaveProfile, useRequestProfessor } from 'src/services/account/account.mutations';
 import { useUploadImage } from 'src/services/image/image.mutations';
 
 const cx = classNames.bind(styles);
@@ -24,6 +24,7 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
   const [selectedUniversity, setSelectedUniversity] = useState('');
   const [jobLevel, setJobLevel] = useState('0001');
   const [introductionMessage, setIntroductionMessage] = useState('');
+  const [requestMessage, setRequestMessage] = useState('');
 
   /**file image  */
   const [file, setFile] = useState(null);
@@ -35,6 +36,7 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
 
   /**save profile */
   const { mutate: onSave, isSuccess: onSuccess } = useSaveProfile();
+  const { mutate: onRequestSave, isSuccess: onRequestSuccess } = useRequestProfessor();
 
   /**image */
   const { mutate: onSaveImage, data: imageUrl, isSuccess: imageSuccess } = useUploadImage();
@@ -44,6 +46,13 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
       refetchProfile();
     }
   }, [onSuccess]);
+
+  useEffect(() => {
+    if (onRequestSuccess) {
+      setIsModalOpen(false);
+      setIsProfessor(false);
+    }
+  }, [onRequestSuccess]);
 
   const handleProfileSave = () => {
     // fileImageUrl이 null인 경우 imageUrl을 사용하도록 조건문 추가
@@ -81,8 +90,41 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
     formData.append('introductionMessage', introductionMessage);
 
     console.log('formData', formData);
-    onSave(formData);
+    onSave({formData,isProfessor : false});
     setIsModalOpen(false);
+  };
+
+  const handleRequestSave = () => {
+
+    if (universityCode === '' || universityCode === undefined) {
+      alert('대학을 선택해주세요.');
+      return;
+    }
+
+    if (selectedJob === '' || selectedJob === undefined) {
+      alert('학과를 선택해주세요.');
+      return;
+    }
+
+   const params = {
+    jobGroupId: universityCode,
+    jobId: selectedJob,
+    requestDescription: requestMessage,
+    };
+    onRequestSave(params);
+    setIsModalOpen(false);
+
+    const formData = new FormData();
+    console.log(file);
+    formData.append('profileImage', file || '');
+    formData.append('jobGroup', universityCode);
+    formData.append('job', selectedJob);
+    formData.append('memberId', profile?.email);
+    formData.append('jobLevel', jobLevel);
+    formData.append('introductionMessage', introductionMessage);
+
+    console.log('formData', formData);
+    onSave({formData,isProfessor : true});
   };
 
   const handleUniversityChange = e => {
@@ -229,17 +271,33 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
         isOpen={isModalOpen}
         onAfterClose={() => {
           setIsModalOpen(false);
+          setIsProfessor(false);
         }}
       >
         <div className="tw-font-bold tw-text-xl tw-text-black tw-mt-0 tw-mb-5 tw-text-center">
           {profile?.member?.nickname}님 데브어스에 오신 것을 환영합니다!
         </div>
-        <div className="tw-font-semibold tw-text-base tw-text-black tw-mt-0  tw-text-center">
-          대학,학과, 학번 및 학년 등 개인상세정보를 입력해주세요.
-        </div>
-        <div className="tw-font-semibold tw-text-base  tw-text-black tw-mt-0 tw-mb-10 tw-text-center">
-          이후 마이페이지에서 수정이 가능합니다.
-        </div>
+        {isProfessor === true ? (
+
+          <>
+            <div className="tw-font-semibold tw-text-base tw-text-black tw-mt-0  tw-text-center">
+            교수자 권한 요청에 필요한 상세 정보들을 제출해주세요.
+            </div>
+            <div className="tw-font-semibold tw-text-base  tw-text-black tw-mt-0 tw-mb-10 tw-text-center">
+            이후 마이페이지 > 프로필에서도 권한 요청이 가능합니다.
+            </div>
+          </>
+        ) : (
+          <>
+          <div className="tw-font-semibold tw-text-base tw-text-black tw-mt-0  tw-text-center">
+            대학,학과, 학번 및 학년 등 개인상세정보를 입력해주세요.
+          </div>
+          <div className="tw-font-semibold tw-text-base  tw-text-black tw-mt-0 tw-mb-10 tw-text-center">
+            이후 마이페이지에서 수정이 가능합니다.
+          </div>
+        </>
+        )}
+
         <div className="border tw-p-7 tw-rounded-xl">
           <div className="tw-font-bold tw-text-base tw-text-black">개인정보</div>
           <div className=" tw-mt-7 tw-ml-7 tw-relative tw-flex tw-flex-col tw-items-center">
@@ -384,40 +442,79 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
             </dl>
           </div>
         </div>
-        <div className="border tw-p-7 tw-rounded-xl tw-mt-5 ">
-          <div className="tw-font-bold tw-text-base tw-text-black">자기소개(선택정보)</div>
-          <div className="tw-px-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-mt-8">
-            <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">한줄소개</dt>
-            <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
-              <textarea
-                value={introductionMessage}
-                className="tw-form-control tw-w-full tw-py-[8px] tw-p-5"
-                id="floatingTextarea"
-                placeholder="댓글을 입력해주세요."
-                ref={textInput}
-                rows={3} // 두 줄 높이로 설정
-                onChange={e => {
-                  setIntroductionMessage(e.target.value);
-                }}
-              ></textarea>
-            </dd>
-          </div>
-        </div>
+        {isProfessor === true ? (
+          <>
+            <div className="border tw-p-7 tw-rounded-xl tw-mt-5 ">
+              <div className="tw-font-bold tw-text-base tw-text-[#6A7380]">교수자 권한 요청</div>
+              <div className="tw-px-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-mt-8">
+                <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">요청설명</dt>
+                <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                  <textarea
+                    value={requestMessage}
+                    className="tw-form-control tw-w-full tw-py-[8px] tw-p-5"
+                    id="floatingTextarea"
+                    placeholder="댓글을 입력해주세요."
+                    ref={textInput}
+                    rows={3} // 두 줄 높이로 설정
+                    onChange={e => {
+                      setRequestMessage(e.target.value);
+                    }}
+                  ></textarea>
+                </dd>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="border tw-p-7 tw-rounded-xl tw-mt-5 ">
+              <div className="tw-font-bold tw-text-base tw-text-black">자기소개(선택정보)</div>
+              <div className="tw-px-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-mt-8">
+                <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">한줄소개</dt>
+                <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                  <textarea
+                    value={introductionMessage}
+                    className="tw-form-control tw-w-full tw-py-[8px] tw-p-5"
+                    id="floatingTextarea"
+                    placeholder="댓글을 입력해주세요."
+                    ref={textInput}
+                    rows={3} // 두 줄 높이로 설정
+                    onChange={e => {
+                      setIntroductionMessage(e.target.value);
+                    }}
+                  ></textarea>
+                </dd>
+              </div>
+            </div>
+          </>
+        )}
         <div className="tw-p-3 tw-rounded-xl tw-mt-5 tw-text-center">
           <button
             type="button"
-            onClick={() => setIsModalOpen(false)}
+            onClick={() => {
+              setIsModalOpen(false);
+              setIsProfessor(false);
+            }}
             className="tw-w-[150px] tw-mr-3 tw-text-sm tw-bg-black tw-text-white tw-py-3 tw-px-5 tw-rounded"
           >
             다음에 하기
           </button>
-          <button
-            type="button"
-            onClick={() => handleProfileSave()}
-            className="tw-w-[150px] tw-text-sm tw-bg-red-600 tw-text-white tw-py-3 tw-px-5 tw-rounded"
-          >
-            수정하기
-          </button>
+          {isProfessor === true ? (
+            <button
+              type="button"
+              onClick={() => handleRequestSave()}
+              className="tw-w-[150px] tw-text-sm tw-bg-blue-600 tw-text-white tw-py-3 tw-px-5 tw-rounded"
+            >
+              요청하기
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => handleProfileSave()}
+              className="tw-w-[150px] tw-text-sm tw-bg-red-600 tw-text-white tw-py-3 tw-px-5 tw-rounded"
+            >
+              수정하기
+            </button>
+          )}
         </div>
       </ProfileModal>
     </>

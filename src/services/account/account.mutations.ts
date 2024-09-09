@@ -13,23 +13,58 @@ import {
   changePhone,
   changePassword,
   userUpdate,
+  requestProfessor,
 } from './account.api';
 import { setCookie } from 'cookies-next';
 import router from 'next/router';
 
 export const useSaveProfile = (): UseMutationResult => {
   const queryClient = useQueryClient();
-  return useMutation<any, any, any>(requestBody => saveProfile(requestBody), {
+  return useMutation<any, any, any>(
+    requestBody => {
+      return saveProfile(requestBody);
+    },
+    {
+      onError: (error, variables, context) => {
+        const { code, message } = error;
+        alert(`mutation error : [${code}] ${message}`);
+      },
+      onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('QUIZ').all),
+      onSuccess: async data => {
+        console.log('data', data);
+        if (data.data.responseCode === '0000') {
+          if (data.isProfessor === false) {
+            alert('수정이 완료되었습니다.');
+          }
+        } else {
+          alert(`error : [${data.responseCode}] ${data.message}`);
+        }
+      },
+    },
+  );
+};
+
+// 교수자 권한 요청
+export const useRequestProfessor = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => requestProfessor(requestBody), {
     onError: (error, variables, context) => {
       const { code, message } = error;
       alert(`mutation error : [${code}] ${message}`);
     },
-    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('QUIZ').all),
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('PROFESSOR_REQUEST').all),
     onSuccess: async data => {
-      // alert('수정이 완료되었습니다.');
+      if (data.responseCode === '0000') {
+        alert('교수자 권한 요청이 완료되었습니다.');
+      } else if (data.responseCode === 'C04009') {
+        alert('교수자 권한 요청이 이미 존재합니다.');
+      } else {
+        alert(`error : [${data.responseCode}] ${data.message}`);
+      }
     },
   });
 };
+
 export const useEditUser = (): UseMutationResult => {
   const queryClient = useQueryClient();
   // TODO : any 타입 변경
