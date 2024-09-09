@@ -229,18 +229,18 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
 
     let dataParam = {};
     if (sortLectureType === 'STUDY_ORDER_ASC') {
-      dataParam = { orderBy: 'STUDY_ORDER', page: 1, sortType: 'ASC' };
+      dataParam = { orderBy: 'STUDY_ORDER', page: lecturePage, sortType: 'ASC' };
     } else if (sortLectureType === 'STUDY_ORDER_DESC') {
-      dataParam = { orderBy: 'STUDY_ORDER', page: 1, sortType: 'DESC' };
+      dataParam = { orderBy: 'STUDY_ORDER', page: lecturePage, sortType: 'DESC' };
     } else {
-      dataParam = { orderBy: 'QUESTION_COUNT', page: 1, sortType: 'DESC' };
+      dataParam = { orderBy: 'QUESTION_COUNT', page: lecturePage, sortType: 'DESC' };
     }
 
     setMyClubLectureParams({
       clubSequence: selectedClub?.clubSequence || id,
       data: dataParam,
     });
-  }, [sortType, selectedClub, sortLectureType]);
+  }, [sortType, selectedClub, sortLectureType, lecturePage]);
 
   useDidMountEffect(() => {
     let dataParam = {};

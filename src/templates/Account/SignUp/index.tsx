@@ -611,7 +611,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
         <Divider variant="middle" sx={{ borderColor: 'rgba(0, 0, 0, 0.5);', margin: '40px 0px' }} />
 
         <p className="tw-text-xl tw-text-center tw-text-black tw-pb-10">
-          <span className="tw-text-xl tw-text-left tw-text-black">이용 약관에 동의해주세요.</span>
+          <span className="tw-text-xl tw-text-left tw-text-black">DevUs 이용 약관에 동의해주세요.</span>
         </p>
         <Grid container direction="row" justifyContent="space-between" alignItems="center">
           <Grid item xs={10}>
