@@ -26,7 +26,6 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
 
   //미로그인 데이터 처리
   if (!logged) {
-    console.log('login api');
     useGuestTenant(subDomain, data => {
       setCookie('access_token', data.guestToken);
       console.log('access_data', data);

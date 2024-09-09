@@ -106,33 +106,26 @@ LectureClubMiniCardProps) => {
           alt=""
         />
         <div className="tw-flex tw-w-full tw-flex-col tw-justify-between tw-px-4  tw-leading-normal">
-          <Grid
-            className=" tw-mb-3"
-            container
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-            rowSpacing={0}
-          >
+          <Grid container direction="row" justifyContent="space-between" alignItems="center" rowSpacing={0}>
             <Grid item xs={11}>
               <div className="tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500">
                 <div className="tw-flex tw-gap-[7px] tw-flex-wrap">
-                  <div className="tw-bg-black tw-rounded-[3.5px] tw-px-[10.5px] tw-py-[3.5px]">
+                  <div className="tw-bg-black tw-rounded-[3.5px] tw-px-[10px] tw-py-[2px]">
                     <p className="tw-text-[12.25px] tw-text-white">{getButtonText(item?.clubStatus)}</p>
                   </div>
-                  <div className="tw-bg-[#d7ecff] tw-rounded-[3.5px] tw-px-[10.5px] tw-py-[3.5px]">
+                  <div className="tw-bg-[#d7ecff] tw-rounded-[3.5px] tw-px-[10px] tw-py-[2px]">
                     <p className="tw-text-[12.25px] tw-text-[#235a8d]">{item?.jobGroups[0].name || 'N/A'}</p>
                   </div>
                   {item?.jobs?.length > 0 &&
                     item.jobs.map((job, index) => (
-                      <div key={index} className="tw-bg-[#ffdede] tw-rounded-[3.5px] tw-px-[10.5px] tw-py-[3.5px]">
+                      <div key={index} className="tw-bg-[#ffdede] tw-rounded-[3.5px] tw-px-[10px] tw-py-[2px]">
                         <p className="tw-text-[12.25px] tw-text-[#b83333]">{job.name}</p>
                       </div>
                     ))}
 
                   {item?.jobLevels?.length > 0 &&
                     item.jobLevels.map((jobLevel, index) => (
-                      <div key={index} className="tw-bg-[#e4e4e4] tw-rounded-[3.5px] tw-px-[10.5px] tw-py-[3.5px]">
+                      <div key={index} className="tw-bg-[#e4e4e4] tw-rounded-[3.5px] tw-px-[10px] tw-py-[2px]">
                         <p className="tw-text-[12.25px] tw-text-[#313b49]">{jobLevel.name || 'N/A'}</p>
                       </div>
                     ))}
@@ -151,10 +144,10 @@ LectureClubMiniCardProps) => {
               )}
             </Grid>
           </Grid>
-          <h6 className="tw-text-2xl tw-font-bold tw-tracking-tight tw-text-gray-900 ">{item?.clubName}</h6>
-          <h6 className="tw-mb-2 tw-line-clamp-2 tw-text-sm tw-font-medium tw-tracking-tight tw-text-gray-900">
+          <div className="tw-mt-2 tw-text-base tw-font-bold tw-tracking-tight tw-text-gray-900 ">{item?.clubName}</div>
+          <div className="tw-mb-2 tw-mt-1 tw-line-clamp-2 tw-text-sm tw-font-medium tw-tracking-tight tw-text-gray-900">
             {item?.description}
-          </h6>
+          </div>
 
           <div className="tw-mb-2 tw-text-sm tw-font-medium tw-tracking-tight tw-text-gray-900">
             <span className="tw-font-bold">{item?.leaderNickname}</span>{' '}

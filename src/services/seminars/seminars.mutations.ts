@@ -8,6 +8,7 @@ import {
   participantCancelSeminar,
   participantSeminar,
   saveSeminar,
+  saveAnswer,
   updateSeminar,
 } from './seminars.api';
 
@@ -23,6 +24,19 @@ export const useSaveSeminar = (): UseMutationResult => {
     onSuccess: async data => {
       alert('세미나 개설이 완료되었습니다.');
     },
+  });
+};
+
+export const useSaveAnswer = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  // TODO : any 타입 변경
+  return useMutation<any, any, any>(requestBody => saveAnswer(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('SEMINAR').all),
+    onSuccess: async data => {},
   });
 };
 

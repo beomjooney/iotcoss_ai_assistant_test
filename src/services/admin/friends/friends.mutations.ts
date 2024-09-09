@@ -21,7 +21,13 @@ export const useCrewBanDelete = (): UseMutationResult => {
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CAMENITY').all),
     onSuccess: async data => {
-      //alert(',친구 수락이 되었습니다.');
+      console.log('data', data);
+      const { responseCode, message } = data;
+      if (responseCode === '0000') {
+        alert('강의클럽에서 강퇴 되었습니다.');
+      } else {
+        alert(`error : [${responseCode}] ${message}`);
+      }
     },
   });
 };
@@ -53,7 +59,13 @@ export const useCrewRejectPost = (): UseMutationResult => {
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CAMENITY').all),
     onSuccess: async data => {
-      //alert(',친구 수락이 되었습니다.');
+      console.log('data', data);
+      const { responseCode, message } = data;
+      if (responseCode === '0000') {
+        alert('클럽 거절이 되었습니다.');
+      } else {
+        alert(`error : [${responseCode}] ${message}`);
+      }
     },
   });
 };

@@ -11,6 +11,7 @@ import {
   useMyDashboardLecture,
   useMyDashboardQA,
 } from 'src/services/seminars/seminars.queries';
+import { useSaveAnswer } from 'src/services/seminars/seminars.mutations';
 import Grid from '@mui/material/Grid';
 
 /**import quiz modal  */
@@ -43,6 +44,7 @@ import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
 import Markdown from 'react-markdown';
 
 import router from 'next/router';
+import e from 'express';
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   [`&.${tableRowClasses.root}`]: {
@@ -124,6 +126,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   const [selectedClub, setSelectedClub] = useState(null);
   const [isInputOpen, setIsInputOpen] = useState(false);
   const [openInputIndex, setOpenInputIndex] = useState(null);
+  const [answer, setAnswer] = useState('');
 
   const [myClubParams, setMyClubParams] = useState<any>({
     clubSequence: selectedClub?.clubSequence || id,
@@ -139,6 +142,14 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     sequence: clubStudySequence,
     data: { questionPage: 1 },
   });
+
+  const { mutate: onSaveAnswer, isSuccess, isError } = useSaveAnswer();
+  useDidMountEffect(() => {
+    if (isSuccess) {
+      setAnswer('');
+      refetchMyDashboardQA();
+    }
+  }, [isSuccess]);
 
   const [myClubSequenceParams, setMyClubSequenceParams] = useState<any>({ clubSequence: id });
   const [params, setParams] = useState<paramProps>({ page });
@@ -290,10 +301,11 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   const classes = useStyles();
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    setPage(value);
+    console.log('handlePageChange', value);
+    setLecturePage(value);
   };
   const handleQAPageChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    console.log(value);
+    console.log('handleQAPageChange', value);
     setQuestionPage(value);
   };
 
@@ -1420,15 +1432,39 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                       questionInfo?.answer
                                     : null}
                                 </Markdown>
+                                {questionInfo?.instructorAnswer && (
+                                  <div className="tw-mt-2 tw-text-sm tw-font-medium tw-text-gray-400">
+                                    추가답변 : {questionInfo?.instructorAnswer}
+                                  </div>
+                                )}
                                 {openInputIndex === questionInfo?.lectureQuestionSerialNumber && (
                                   <div className="tw-mt-2 tw-flex tw-justify-start tw-items-center tw-gap-2">
                                     <TextField
                                       type="text"
+                                      value={answer}
                                       placeholder="답변을 추가하세요"
                                       size="small"
                                       className="tw-border tw-px-0 tw-py-0 tw-w-full tw-rounded"
+                                      onChange={e => {
+                                        setAnswer(e.target.value);
+                                      }}
                                     />
-                                    <button className="tw-w-[80px] tw-text-sm tw-font-bold border tw-py-2.5 tw-px-3 tw-rounded">
+                                    <button
+                                      onClick={() => {
+                                        console.log(questionInfo);
+                                        if (answer === '') {
+                                          alert('답변을 입력해주세요.');
+                                        } else {
+                                          onSaveAnswer({
+                                            clubSequence: questionInfo.clubSequence,
+                                            clubStudySequence: questionInfo.clubStudySequence,
+                                            lectureQuestionSerialNumber: questionInfo.lectureQuestionSerialNumber,
+                                            answer: answer,
+                                          });
+                                        }
+                                      }}
+                                      className="tw-w-[80px] tw-text-sm tw-font-bold border tw-py-2.5 tw-px-3 tw-rounded"
+                                    >
                                       저장
                                     </button>
                                     <button

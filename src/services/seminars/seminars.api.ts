@@ -174,6 +174,15 @@ export const lectureAboutDetailInfo = async id => {
   return data.data;
 };
 
+// 강의클럽 질문 답변
+export const saveAnswer = async (params: any) =>
+  await axiosGeneralAPI().put(
+    `/api/v1/lecture-clubs/${params.clubSequence}/studies/${params.clubStudySequence}/questions/${params.lectureQuestionSerialNumber}/instructor-answer`,
+    {
+      answer: params.answer,
+    },
+  );
+
 // 세미나 생성
 export const saveSeminar = async (params: any) => await axiosGeneralAPI().post('/seminars', params);
 

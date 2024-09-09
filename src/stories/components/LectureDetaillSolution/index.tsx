@@ -242,10 +242,6 @@ const LectureDetaillSolution = ({
                   </p>
                 </div>
                 <div className="tw-flex">
-                  <p className="tw-text-sm tw-font-bold tw-text-left tw-text-black">학습 스킬 : </p>
-                  <p className="tw-text-sm tw-text-left tw-text-black tw-pl-2 ">{contents?.skills?.toString()}</p>
-                </div>
-                <div className="tw-flex">
                   <p className="tw-text-sm tw-font-bold tw-text-left tw-text-black">참여 인원 : </p>
                   <p className="tw-text-sm tw-text-left tw-text-black tw-pl-2 ">
                     {contents?.recruitedMemberCount || 0} / {contents?.recruitMemberCount || 0}

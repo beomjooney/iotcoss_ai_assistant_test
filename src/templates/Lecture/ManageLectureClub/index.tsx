@@ -97,6 +97,7 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
   const [myMemberRequestList, setMyMemberRequestList] = useState<any>([]);
   const [ids, setIds] = useState<any>(id);
   const [myClubParams, setMyClubParams] = useState<any>({ clubSequence: id, page });
+  const [myRequestMemberParams, setMyRequestMemberParams] = useState<any>({ clubSequence: id, page });
   const [myClubMemberParams, setMyClubMemberParams] = useState<any>({ clubSequence: id, page });
   const [active, setActive] = useState(0);
   const [params, setParams] = useState<paramProps>({ page });
@@ -108,8 +109,6 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
   // const [activeTab, setActiveTab] = useState('community');
 
   const [pageQuiz, setPageQuiz] = useState(1);
-  const [totalQuizPage, setTotalQuizPage] = useState(1);
-  const [totalQuizElements, setTotalQuizElements] = useState(0);
   const [myQuizParams, setMyQuizParams] = useState<any>({ clubSequence: id, sortType: 'ASC', page });
   const [updateKey, setUpdateKey] = useState(0); // 상태 업데이트 강제 트리거를 위한 키
   //quiz new logic
@@ -305,18 +304,7 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
     setLectureContents(lectureContents);
   });
 
-  //퀴즈 리스트
-  const { isFetched: isQuizData, refetch } = useQuizList(params, data => {
-    console.log(data);
-    setQuizListData(data.contents || []);
-    setTotalQuizzPage(data.totalPages);
-    setTotalQuizzElements(data.totalElements);
-
-    console.log(data.totalPages);
-    console.log(data.totalElements);
-  });
-
-  // 퀴즈클럽 리스트
+  // 강의클럽 리스트
   const { isFetched: isContentFetched, refetch: refetchMyClub } = useMyLectureList(myClubParams, data => {
     setMyClubList(data?.data?.contents || []);
     const foundClub = data?.data?.contents?.find(club => club.clubSequence === parseInt(id));
@@ -327,7 +315,7 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
   const { isFetched: isDashboardRequestFetched, refetch: refetchMyDashboardRequest } = useMyMemberRequestList(
     myClubParams,
     data => {
-      console.log(data?.contents);
+      console.log('내 요청 회원 목록 조회', data);
       setMyMemberRequestList(data?.contents || []);
       setTotalElements(data?.totalElements);
     },
@@ -339,17 +327,6 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
     setTotalPageMember(data?.totalPages);
     setTotalElementsMember(data?.totalElements);
     setMyMemberList(data?.contents || []);
-  });
-
-  // 퀴즈클럽 정보 조회
-  const { isFetched: isParticipantListFetched } = useQuizMyClubInfo(myQuizParams, data => {
-    console.log('first get data');
-    setQuizList(data?.contents || []);
-    setSelectedQuizIds(data.contents.map(item => item?.quizSequence));
-    console.log(data.contents.map(item => item?.quizSequence));
-    setTotalQuizPage(data?.totalPages);
-    setTotalQuizElements(data?.totalElements);
-    console.log(data);
   });
 
   // 회원 프로필 정보
@@ -385,23 +362,20 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
 
   useDidMountEffect(() => {
     setMyClubParams({
-      clubSequence: selectedClub?.clubSequence,
+      clubSequence: selectedValue,
       sortType: sortType,
       page: page,
     });
-
-    setMyClubMemberParams({
-      clubSequence: selectedClub?.clubSequence,
+    setMyRequestMemberParams({
+      clubSequence: selectedValue,
       sortType: sortType,
       page: pageMember,
     });
-
-    setMyQuizParams({
-      clubSequence: selectedClub?.clubSequence,
-      page: pageQuiz,
-      sortType: sortQuizType,
+    setMyClubMemberParams({
+      clubSequence: selectedValue,
+      page: pageMember,
     });
-  }, [sortType, selectedClub]);
+  }, [sortType, selectedValue]);
 
   useDidMountEffect(() => {
     setMyClubMemberParams({
@@ -417,13 +391,6 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
       sortType: sortQuizType,
     });
   }, [pageQuiz, sortQuizType]);
-
-  useDidMountEffect(() => {
-    setParams({
-      page: pageQuizz,
-      keyword: keyWorld,
-    });
-  }, [pageQuizz]);
 
   const handleQuizChange = event => {
     const value = event.target.value;
@@ -1555,7 +1522,9 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
                             <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                               <img
                                 className="tw-w-10 tw-h-10 border tw-rounded-full"
-                                src={item?.member?.profileImageUrl}
+                                src={
+                                  item?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'
+                                }
                               />
                             </div>
                           </Grid>
@@ -1736,7 +1705,9 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
                               <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                 <img
                                   className="tw-w-10 tw-h-10 border tw-rounded-full"
-                                  src={item?.member?.profileImageUrl}
+                                  src={
+                                    item?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'
+                                  }
                                 />
                               </div>
                             </Grid>
@@ -1749,13 +1720,13 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
                             <Grid item xs={12} sm={1}>
                               <div className="tw-text-left tw-text-black">{item?.jobGroup?.name}</div>
                             </Grid>
-                            <Grid item xs={12} sm={2}>
+                            <Grid item xs={12} sm={1}>
                               <div className="tw-text-left tw-text-black">{item?.job?.name}</div>
                             </Grid>
                             <Grid
                               item
                               xs={12}
-                              sm={4}
+                              sm={5}
                               style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end' }}
                             >
                               <div className="tw-gap-3">
@@ -1764,7 +1735,7 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
                                   onClick={() => handleClickProfile(item?.member?.memberUUID)}
                                   type="button"
                                   data-tooltip-target="tooltip-default"
-                                  className="tw-py-2 tw-mr-3 tw-bg-black tw-text-white max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                  className="tw-py-2 tw-mr-3 tw-bg-black tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
                                 >
                                   프로필 보기
                                 </button>
@@ -2629,7 +2600,7 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
 
           <p className="tw-text-xl tw-font-bold tw-text-left tw-text-black tw-py-5">
             {/* 퀴즈목록 {totalQuizzElements}개 */}
-            퀴즈목록 전체 : {totalQuizzElements}개 - (퀴즈선택 : {selectedQuizIds.length} / {quizList.length})
+            퀴즈목록 전체 : {totalQuizzElements}개 - (퀴즈선택 : {selectedQuizIds?.length} / {quizList.length})
           </p>
           {quizListData.map((item, index) => (
             <div key={index}>
