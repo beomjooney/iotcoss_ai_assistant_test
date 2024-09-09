@@ -42,9 +42,7 @@ import { styled } from '@mui/material/styles';
 //**download */
 import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
 import Markdown from 'react-markdown';
-
 import router from 'next/router';
-import e from 'express';
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   [`&.${tableRowClasses.root}`]: {
@@ -126,7 +124,6 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   const [selectedClub, setSelectedClub] = useState(null);
   const [isInputOpen, setIsInputOpen] = useState(false);
   const [openInputIndex, setOpenInputIndex] = useState(null);
-  const [answer, setAnswer] = useState('');
 
   const [myClubParams, setMyClubParams] = useState<any>({
     clubSequence: selectedClub?.clubSequence || id,
@@ -143,6 +140,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     data: { questionPage: 1 },
   });
 
+  const [answer, setAnswer] = useState('');
   const { mutate: onSaveAnswer, isSuccess, isError } = useSaveAnswer();
   useDidMountEffect(() => {
     if (isSuccess) {
@@ -1441,10 +1439,10 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                   <div className="tw-mt-2 tw-flex tw-justify-start tw-items-center tw-gap-2">
                                     <TextField
                                       type="text"
-                                      value={answer}
                                       placeholder="답변을 추가하세요"
                                       size="small"
                                       className="tw-border tw-px-0 tw-py-0 tw-w-full tw-rounded"
+                                      value={answer}
                                       onChange={e => {
                                         setAnswer(e.target.value);
                                       }}

@@ -37,6 +37,7 @@ import useDidMountEffect from 'src/hooks/useDidMountEffect';
 // 챗봇
 import { useSessionStore } from '../../../../src/store/session';
 import ChatbotModal from 'src/stories/components/ChatBot';
+import Markdown from 'react-markdown';
 
 const LectureListView = ({ border, id, clubStudySequence }) => {
   const router = useRouter();
@@ -470,9 +471,12 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
                         </div>
                         <div className="tw-w-1/12 tw-text-sm tw-text-black  tw-font-bold  ">AI답변 : </div>
                         <div className="tw-text-sm tw-w-10/12">
-                          <span className="tw-text-gray-500">
-                            {item?.questionStatus === '0200' ? '(강의자료)' : '(일반서치)'} {item?.ai1stAnswer}
-                          </span>
+                          <div className="tw-text-gray-500">
+                            {item?.questionStatus === '0200' ? '(강의자료)' : '(일반서치)'}
+                            <Markdown className="markdown-container tw-prose tw-pr-2 tw-break-words">
+                              {item?.ai1stAnswer}
+                            </Markdown>
+                          </div>
                         </div>
                       </div>
                       <div className="tw-flex tw-items-center ">
@@ -610,70 +614,74 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
 
                         {/* Answer Details Column */}
                         <TableCell align="left" component="th" scope="row" className="border-right">
-                          <div className="tw-font-bold tw-text-sm">
-                            {questionInfo?.answer
-                              ? 'AI답변 : ' +
-                                (questionInfo?.answerType === '0200'
-                                  ? '(강의자료) : '
-                                  : questionInfo?.answerType === '0300'
-                                  ? '(일반서치) : '
-                                  : '') +
-                                questionInfo?.answer
-                              : null}
-                            {openInputIndex === questionInfo?.lectureQuestionSerialNumber && (
-                              <div className="tw-mt-2 tw-flex tw-justify-start tw-items-center tw-gap-2">
-                                <TextField
-                                  type="text"
-                                  placeholder="답변을 추가하세요"
-                                  size="small"
-                                  className="tw-border tw-px-0 tw-py-0 tw-w-full tw-rounded"
-                                />
-                                <button className="tw-w-[80px] tw-text-sm tw-font-bold border tw-py-2.5 tw-px-3 tw-rounded">
-                                  저장
-                                </button>
-                                <button
-                                  onClick={e => {
-                                    e.preventDefault();
-                                    setOpenInputIndex(null);
-                                  }}
-                                  className="tw-w-[80px] tw-text-sm tw-font-bold border tw-py-2.5 tw-px-3 tw-rounded"
-                                >
-                                  삭제
-                                </button>
+                          <div className="tw-h-[150px] tw-overflow-auto">
+                            <div className="tw-font-bold tw-text-sm">
+                              <Markdown className="markdown-container tw-prose tw-pr-2 tw-break-words">
+                                {questionInfo?.answer
+                                  ? 'AI답변 : ' +
+                                    (questionInfo?.answerType === '0200'
+                                      ? '(강의자료) : '
+                                      : questionInfo?.answerType === '0300'
+                                      ? '(일반서치) : '
+                                      : '') +
+                                    questionInfo?.answer
+                                  : null}
+                              </Markdown>
+                              {openInputIndex === questionInfo?.lectureQuestionSerialNumber && (
+                                <div className="tw-mt-2 tw-flex tw-justify-start tw-items-center tw-gap-2">
+                                  <TextField
+                                    type="text"
+                                    placeholder="답변을 추가하세요"
+                                    size="small"
+                                    className="tw-border tw-px-0 tw-py-0 tw-w-full tw-rounded"
+                                  />
+                                  <button className="tw-w-[80px] tw-text-sm tw-font-bold border tw-py-2.5 tw-px-3 tw-rounded">
+                                    저장
+                                  </button>
+                                  <button
+                                    onClick={e => {
+                                      e.preventDefault();
+                                      setOpenInputIndex(null);
+                                    }}
+                                    className="tw-w-[80px] tw-text-sm tw-font-bold border tw-py-2.5 tw-px-3 tw-rounded"
+                                  >
+                                    삭제
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Render files if present */}
+                            {questionInfo?.files?.length > 0 && (
+                              <div className="tw-mt-2 tw-text-sm tw-flex tw-justify-start tw-items-center tw-flex-wrap tw-gap-2">
+                                <div>강의자료 : </div>
+                                {questionInfo.files.map((fileEntry, fileIndex) => (
+                                  <div key={fileIndex} className="border tw-px-2 tw-py-0.5 tw-rounded">
+                                    <span
+                                      onClick={() => {
+                                        onFileDownload(fileEntry.key, fileEntry.name);
+                                      }}
+                                      className="tw-text-gray-400 tw-cursor-pointer"
+                                    >
+                                      {fileEntry?.name}
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+
+                            {/* Reference URLs */}
+                            {questionInfo?.referenceUrls && (
+                              <div className="tw-mt-2 tw-text-sm tw-flex tw-justify-start tw-items-center tw-flex-wrap tw-gap-2">
+                                <div>출처 : </div>
+                                <div className="border tw-px-2 tw-py-0.5 tw-rounded">
+                                  <span className="tw-text-gray-400 tw-cursor-pointer">
+                                    {questionInfo?.referenceUrls}
+                                  </span>
+                                </div>
                               </div>
                             )}
                           </div>
-
-                          {/* Render files if present */}
-                          {questionInfo?.files?.length > 0 && (
-                            <div className="tw-mt-2 tw-text-sm tw-flex tw-justify-start tw-items-center tw-flex-wrap tw-gap-2">
-                              <div>강의자료 : </div>
-                              {questionInfo.files.map((fileEntry, fileIndex) => (
-                                <div key={fileIndex} className="border tw-px-2 tw-py-0.5 tw-rounded">
-                                  <span
-                                    onClick={() => {
-                                      onFileDownload(fileEntry.key, fileEntry.name);
-                                    }}
-                                    className="tw-text-gray-400 tw-cursor-pointer"
-                                  >
-                                    {fileEntry?.name}
-                                  </span>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-
-                          {/* Reference URLs */}
-                          {questionInfo?.referenceUrls && (
-                            <div className="tw-mt-2 tw-text-sm tw-flex tw-justify-start tw-items-center tw-flex-wrap tw-gap-2">
-                              <div>출처 : </div>
-                              <div className="border tw-px-2 tw-py-0.5 tw-rounded">
-                                <span className="tw-text-gray-400 tw-cursor-pointer">
-                                  {questionInfo?.referenceUrls}
-                                </span>
-                              </div>
-                            </div>
-                          )}
                         </TableCell>
 
                         {/* Additional Answer Button Column */}

@@ -32,6 +32,7 @@ const cx = classNames.bind(styles);
 import { useMyAllLectureInfo } from 'src/services/quiz/quiz.queries';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import Markdown from 'react-markdown';
+import { useSaveAnswer } from 'src/services/seminars/seminars.mutations';
 
 const AllLectureView = ({ border, id }) => {
   const borderStyle = border ? 'border border-[#e9ecf2] tw-mt-14' : '';
@@ -54,6 +55,15 @@ const AllLectureView = ({ border, id }) => {
   const [questionPage, setQuestionPage] = useState(1);
   const [isInputOpen, setIsInputOpen] = useState(false);
   const [openInputIndex, setOpenInputIndex] = useState(null);
+
+  const [answer, setAnswer] = useState('');
+  const { mutate: onSaveAnswer, isSuccess, isError } = useSaveAnswer();
+  useDidMountEffect(() => {
+    if (isSuccess) {
+      setAnswer('');
+      refetchMyDashboardQA();
+    }
+  }, [isSuccess]);
 
   const [myClubLectureQA, setMyClubLectureQA] = useState<any>({
     clubSequence: selectedClub || id,
@@ -389,6 +399,11 @@ const AllLectureView = ({ border, id }) => {
                                     questionInfo?.answer
                                   : null}
                               </Markdown>
+                              {questionInfo?.instructorAnswer && (
+                                <div className="tw-mt-2 tw-text-sm tw-font-medium tw-text-gray-400">
+                                  추가답변 : {questionInfo?.instructorAnswer}
+                                </div>
+                              )}
                               {openInputIndex === questionInfo?.lectureQuestionSerialNumber && (
                                 <div className="tw-mt-2 tw-flex tw-justify-start tw-items-center tw-gap-2">
                                   <TextField
@@ -396,8 +411,27 @@ const AllLectureView = ({ border, id }) => {
                                     placeholder="답변을 추가하세요"
                                     size="small"
                                     className="tw-border tw-px-0 tw-py-0 tw-w-full tw-rounded"
+                                    value={answer}
+                                    onChange={e => {
+                                      setAnswer(e.target.value);
+                                    }}
                                   />
-                                  <button className="tw-w-[80px] tw-text-sm tw-font-bold border tw-py-2.5 tw-px-3 tw-rounded">
+                                  <button
+                                    onClick={() => {
+                                      console.log(questionInfo);
+                                      if (answer === '') {
+                                        alert('답변을 입력해주세요.');
+                                      } else {
+                                        onSaveAnswer({
+                                          clubSequence: questionInfo.clubSequence,
+                                          clubStudySequence: questionInfo.clubStudySequence,
+                                          lectureQuestionSerialNumber: questionInfo.lectureQuestionSerialNumber,
+                                          answer: answer,
+                                        });
+                                      }
+                                    }}
+                                    className="tw-w-[80px] tw-text-sm tw-font-bold border tw-py-2.5 tw-px-3 tw-rounded"
+                                  >
                                     저장
                                   </button>
                                   <button
