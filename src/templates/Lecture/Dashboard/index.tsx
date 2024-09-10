@@ -422,7 +422,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                   <div className="tw-flex tw-items-center tw-justify-between tw-gap-4">
                     <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-4">
                       <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xl tw-font-bold tw-text-left tw-text-[#31343d]">
-                        이번주 학습 회차
+                        이번주 학습 주차
                       </p>
                       <svg
                         width={1}
@@ -436,7 +436,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                         <line x1="0.5" y1="0.5" x2="0.5" y2="16.5" stroke="#9CA5B2" />
                       </svg>
                       <p className="tw-flex tw-text-xl tw-font-bold tw-text-left tw-text-[#2474ed]">
-                        {myDashboardList?.studyOrder} 회차. {myDashboardList?.studyDate}{' '}
+                        {myDashboardList?.studyOrder} 주차. {myDashboardList?.studyDate}{' '}
                         {myDashboardList?.dayOfWeek && `(${myDashboardList.dayOfWeek})`}
                       </p>
                     </div>
@@ -450,7 +450,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                   <div className="tw-flex tw-justify-between tw-items-center tw-gap-3 tw-px-5 tw-my-5 tw-h-[100px] tw-relative tw-rounded-lg tw-bg-white border border-[#e9ecf2]">
                     <div className=" tw-flex">
                       <p className=" tw-text-base tw-text-center tw-text-black tw-mr-5 tw-font-bold">
-                        {myDashboardList?.studyOrder}회차 {myDashboardList?.clubStudyName}
+                        {myDashboardList?.studyOrder}주차 {myDashboardList?.clubStudyName}
                       </p>
                       <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-gap-2">
                         <div className="tw-flex tw-justify-end tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2 tw-px-2 tw-py-1 tw-rounded tw-bg-white border border-[#2474ed]">
@@ -544,7 +544,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                               <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-4">
                                 <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
                                   <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm  tw-font-bold tw-text-left tw-text-[#31343d]">
-                                    강의 회차
+                                    강의 주차
                                   </p>
                                   <svg
                                     width={1}
@@ -1227,7 +1227,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                     <TableHead style={{ backgroundColor: '#F6F7FB' }}>
                       <TableRow>
                         <TableCell align="center" width={98} className="border-right">
-                          <div className="tw-font-bold tw-text-base">강의회차</div>
+                          <div className="tw-font-bold tw-text-base">강의주차</div>
                         </TableCell>
                         <TableCell align="center" width={98}>
                           <div className="tw-font-bold tw-text-base">총 질의수</div>

@@ -284,7 +284,7 @@ const LectureDetaillSolution = ({
                               item?.isCompleted ? 'tw-text-black' : 'tw-text-gray-300 tw-font-normal'
                             }`}
                           >
-                            {item?.studyOrder}회차
+                            {item?.studyOrder}주차
                           </div>
                           <div
                             className={`tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold ${
@@ -439,7 +439,10 @@ const LectureDetaillSolution = ({
                   <div className="tw-flex tw-flex-col">
                     <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-5">강의 일정</p>
                     <p className="tw-text-sm tw-text-left tw-text-black">
-                      시작일 : {contents?.startAt?.replace('T', ' ')}
+                      시작일 : {contents?.startAt?.replace('T', ' ').split(' ')[0]}
+                    </p>
+                    <p className="tw-text-sm tw-text-left tw-text-black">
+                      종료일 : {contents?.endAt?.replace('T', ' ').split(' ')[0]}
                     </p>
                   </div>
                 </div>
