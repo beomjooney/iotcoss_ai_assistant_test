@@ -78,21 +78,21 @@ const useStyles = makeStyles(theme => ({
   },
   stickyBoard: {
     position: 'sticky',
-    backgroundColor: '#F6F7FB',
+    backgroundColor: '#fff !important',
     borderRight: '2px solid black',
     zIndex: 1,
   },
   stickyFirst: {
     left: 0,
-    zIndex: 2,
+    // zIndex: 2,
   },
   stickySecond: {
     left: 150, // Adjust according to the width of the first column
-    zIndex: 2,
+    // zIndex: 2,
   },
   stickyThird: {
     left: 270, // Adjust according to the width of the first two columns
-    zIndex: 2,
+    // zIndex: 2,
   },
   // Add a new class for scrollable container
   scrollContainer: {
@@ -1027,17 +1027,13 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                   <Table className={classes.table} aria-label="simple table" style={{ tableLayout: 'fixed' }}>
                     <TableHead style={{ backgroundColor: '#F6F7FB' }}>
                       <TableRow>
-                        <TableCell align="center" width={150} className={`${classes.sticky} ${classes.stickyFirst}`}>
+                        <TableCell align="center" width={150}>
                           <div className="tw-font-bold tw-text-base">학습자</div>
                         </TableCell>
-                        <TableCell align="center" width={120} className={`${classes.sticky} ${classes.stickySecond}`}>
+                        <TableCell align="center" width={120}>
                           <div className="tw-font-bold tw-text-base">학습 참여도</div>
                         </TableCell>
-                        <TableCell
-                          align="center"
-                          width={100}
-                          className={`${classes.stickyBoard} ${classes.stickyThread}`}
-                        >
+                        <TableCell align="center" width={100}>
                           <div className="tw-font-bold tw-text-base">답변/질의</div>
                         </TableCell>
 
@@ -1058,13 +1054,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                     <TableBody>
                       {myDashboardStudentList?.students?.contents?.map((info, index) => (
                         <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                          <TableCell
-                            align="center"
-                            width={150}
-                            component="th"
-                            scope="row"
-                            className={`${classes.stickyWhite} ${classes.stickyFirst}`}
-                          >
+                          <TableCell align="center" component="th" scope="row">
                             <div className="tw-flex tw-items-center">
                               <img
                                 className="tw-w-10 tw-h-10 tw-rounded-full"
@@ -1076,13 +1066,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                               <div className="tw-ml-2">{info?.member?.nickname}</div>
                             </div>
                           </TableCell>
-                          <TableCell
-                            align="center"
-                            width={120}
-                            component="th"
-                            scope="row"
-                            className={`${classes.stickyWhite} ${classes.stickySecond}`}
-                          >
+                          <TableCell align="center" component="th" scope="row">
                             <div className="tw-font-bold tw-grid tw-gap-1 tw-justify-center tw-items-center">
                               <div>
                                 {info?.participatedStudyCount} / {info?.totalStudyCount}
@@ -1102,10 +1086,9 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                           <TableCell
                             padding="none"
                             align="center"
-                            width={100}
                             component="th"
                             scope="row"
-                            className={`${classes.stickyWhiteBoard} ${classes.stickyThird}`}
+                            // className={`${classes.stickyWhiteBoard} ${classes.stickyThird}`}
                           >
                             <div className="">
                               <div className=" tw-gap-0 tw-justify-center tw-items-center tw-p-2">
