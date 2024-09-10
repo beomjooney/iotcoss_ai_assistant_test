@@ -555,7 +555,7 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
                         >
                           <Avatar
                             sx={{ width: 32, height: 32 }}
-                            className="border"
+                            className="tw-ring-2 tw-ring-gray-300 tw-rounded-full"
                             src={user?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
                           ></Avatar>
                         </IconButton>
