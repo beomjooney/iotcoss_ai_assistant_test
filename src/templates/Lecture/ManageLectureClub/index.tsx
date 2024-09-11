@@ -1579,13 +1579,13 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
                       container
                       justifyContent="flex-start"
                       xs={6}
-                      sm={10}
+                      sm={6}
                       className="tw-text-xl tw-text-black tw-font-bold"
                     >
                       강의클럽 학생 목록 ({totalElementsMember || 0})
                     </Grid>
 
-                    <Grid item container justifyContent="flex-end" xs={6} sm={2} style={{ textAlign: 'right' }}>
+                    <Grid item container justifyContent="flex-end" xs={6} sm={6} style={{ textAlign: 'right' }}>
                       <Pagination
                         count={totalPageMember}
                         size="small"

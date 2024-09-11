@@ -55,56 +55,69 @@ export interface LectureDashboardTemplateProps {
   id?: any;
 }
 
-// const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(theme => ({
+  table: {
+    minWidth: 650,
+    overflowX: 'auto',
+  },
+  sticky: {
+    position: 'sticky',
+    backgroundColor: '#F6F7FB',
+    zIndex: 1,
+  },
+  stickyWhite: {
+    position: 'sticky',
+    backgroundColor: 'white',
+    zIndex: 1,
+  },
+  stickyWhiteBoard: {
+    position: 'sticky',
+    backgroundColor: 'white',
+    borderRight: '2px solid black',
+    zIndex: 1,
+  },
+  stickyBoard: {
+    position: 'sticky',
+    backgroundColor: '#fff !important',
+    borderRight: '2px solid black',
+    zIndex: 1,
+  },
+  stickyFirst: {
+    left: 0,
+    // zIndex: 2,
+  },
+  stickySecond: {
+    left: 150, // Adjust according to the width of the first column
+    // zIndex: 2,
+  },
+  stickyThird: {
+    left: 270, // Adjust according to the width of the first two columns
+    // zIndex: 2,
+  },
+  // Add a new class for scrollable container
+  scrollContainer: {
+    overflowX: 'auto',
+    display: 'block',
+  },
+  // New class to add bottom border to TableRow
+  tableRow: {
+    borderBottom: '1px solid #E0E0E0', // Light gray underline
+    height: '500px',
+  },
+}));
+
+// const useStyles = makeStyles({
 //   table: {
 //     minWidth: 650,
-//     overflowX: 'auto',
 //   },
 //   sticky: {
 //     position: 'sticky',
-//     backgroundColor: '#F6F7FB',
-//     zIndex: 1,
-//   },
-//   stickyWhite: {
-//     position: 'sticky',
-//     backgroundColor: 'white',
-//     zIndex: 1,
-//   },
-//   stickyWhiteBoard: {
-//     position: 'sticky',
-//     backgroundColor: 'white',
-//     borderRight: '2px solid black',
-//     zIndex: 1,
-//   },
-//   stickyBoard: {
-//     position: 'sticky',
-//     backgroundColor: '#fff !important',
-//     borderRight: '2px solid black',
-//     zIndex: 1,
-//   },
-//   stickyFirst: {
 //     left: 0,
-//     // zIndex: 2,
+//     background: 'white',
+//     boxShadow: '5px 2px 5px grey',
+//     borderRight: '2px solid black',
 //   },
-//   stickySecond: {
-//     left: 150, // Adjust according to the width of the first column
-//     // zIndex: 2,
-//   },
-//   stickyThird: {
-//     left: 270, // Adjust according to the width of the first two columns
-//     // zIndex: 2,
-//   },
-//   // Add a new class for scrollable container
-//   scrollContainer: {
-//     overflowX: 'auto',
-//     display: 'block',
-//   },
-//   // New class to add bottom border to TableRow
-//   tableRow: {
-//     borderBottom: '1px solid #E0E0E0', // Light gray underline
-//     height: '500px',
-//   },
-// }));
+// });
 
 const cx = classNames.bind(styles);
 
@@ -279,24 +292,10 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     console.log(selectedSession);
   };
 
-  const getCircleColor = galendar => {
-    switch (galendar) {
-      case '0001':
-        return { text: 'gray', fill: 'white', borderColor: 'white' };
-      case '0002':
-        return { text: 'white', fill: '#FF8F60', borderColor: '#FF8F60' };
-      case '0003':
-        return { text: 'white', fill: '#E11837', borderColor: '#E11837' };
-      case '0004':
-        return { text: 'white', fill: '#31343D', borderColor: '#31343D' };
-      default:
-        return { text: 'white', fill: 'gray', borderColor: 'gray' };
-    }
-  };
   const handleTabClick = tab => {
     setActiveTab(tab);
   };
-  // const classes = useStyles();
+  const classes = useStyles();
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     console.log('handlePageChange', value);
@@ -1023,13 +1022,13 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                   <Table aria-label="simple table" style={{ tableLayout: 'fixed' }}>
                     <TableHead style={{ backgroundColor: '#F6F7FB' }}>
                       <TableRow>
-                        <TableCell align="center" width={150}>
+                        <TableCell align="center" width={150} className={`${classes.sticky} ${classes.stickyFirst}`}>
                           <div className="tw-font-bold tw-text-base">학습자</div>
                         </TableCell>
-                        <TableCell align="center" width={120}>
+                        <TableCell align="center" width={120} className={`${classes.sticky} ${classes.stickySecond}`}>
                           <div className="tw-font-bold tw-text-base">학습 참여도</div>
                         </TableCell>
-                        <TableCell align="center" width={100}>
+                        <TableCell align="center" width={100} className={`${classes.sticky} ${classes.stickyThird}`}>
                           <div className="tw-font-bold tw-text-base">답변/질의</div>
                         </TableCell>
 
@@ -1049,8 +1048,13 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                     </TableHead>
                     <TableBody>
                       {myDashboardStudentList?.students?.contents?.map((info, index) => (
-                        <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                          <TableCell align="center" component="th" scope="row">
+                        <TableRow key={index}>
+                          <TableCell
+                            align="center"
+                            component="th"
+                            scope="row"
+                            className={`${classes.stickyWhite} ${classes.stickyFirst}`}
+                          >
                             <div className="tw-flex tw-items-center">
                               <img
                                 className="tw-w-10 tw-h-10 tw-rounded-full"
@@ -1062,7 +1066,12 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                               <div className="tw-ml-2">{info?.member?.nickname}</div>
                             </div>
                           </TableCell>
-                          <TableCell align="center" component="th" scope="row">
+                          <TableCell
+                            align="center"
+                            component="th"
+                            scope="row"
+                            className={`${classes.stickyWhite} ${classes.stickySecond}`}
+                          >
                             <div className="tw-font-bold tw-grid tw-gap-1 tw-justify-center tw-items-center">
                               <div>
                                 {info?.participatedStudyCount} / {info?.totalStudyCount}
@@ -1084,7 +1093,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                             align="center"
                             component="th"
                             scope="row"
-                            // className={`${classes.stickyWhiteBoard} ${classes.stickyThird}`}
+                            className={`${classes.stickyWhiteBoard} ${classes.stickyThird}`}
                           >
                             <div className="">
                               <div className=" tw-gap-0 tw-justify-center tw-items-center tw-p-2">
@@ -1093,7 +1102,6 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                             </div>
                           </TableCell>
                           {info?.lectureParticipation.map((info, index) => {
-                            const { fill, borderColor, text } = getCircleColor(info?.status);
                             return (
                               <TableCell
                                 padding="none"
@@ -1103,7 +1111,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                 component="th"
                                 scope="row"
                               >
-                                <div className="tw-h-12 tw-flex tw-justify-center tw-items-center">
+                                <div className="tw-h-12 tw-flex tw-justify-center tw-items-center ">
                                   <div className="tw-flex tw-justify-center tw-items-center">
                                     <div className="border tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-overflow-hidden tw-gap-2.5 tw-px-2  tw-py-px tw-rounded-tl-sm tw-rounded-bl-sm tw-bg-[#6a7380]">
                                       <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-center tw-text-white">
