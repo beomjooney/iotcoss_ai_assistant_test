@@ -284,13 +284,11 @@ export function HomeSejongTemplate({ logged = false, tenantName = '' }: HomeSejo
         )}
 
         {isClient && !modalIsOpen && logged && menu.use_lecture_club && (
-          <div>
-            <div
-              className="tw-fixed tw-bottom-0 tw-right-0  tw-mr-4 md:tw-mr-10 tw-mb-4 md:tw-mb-8 tw-cursor-pointer tw-z-10"
-              onClick={() => setModalIsOpen(true)}
-            >
-              <img className="tw-w-[90px] tw-h-[90px]" src="/assets/images/main/chatbot.png" />
-            </div>
+          <div
+            className="tw-fixed tw-bottom-0 tw-right-0  tw-mr-4 md:tw-mr-10 tw-mb-4 md:tw-mb-8 tw-cursor-pointer tw-z-10"
+            onClick={() => setModalIsOpen(true)}
+          >
+            <img className="tw-w-24 tw-h-24" src="/assets/images/main/chatbot.png" />
           </div>
         )}
         {isClient && <ChatbotModal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)} token={token} />}
