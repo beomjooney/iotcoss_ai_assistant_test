@@ -455,10 +455,10 @@ export function LectureOpenTemplate() {
     const file = event.target.files[0];
     if (file) {
       if (type === 'card') {
-        setSelectedImage('');
+        setSelectedImage('card');
         setSelectedImageCheck(file);
       } else if (type === 'banner') {
-        setSelectedImageBanner('');
+        setSelectedImageBanner('banner');
         setSelectedImageBannerCheck(file);
       } else if (type === 'profile') {
         setSelectedImageProfileCheck(file);

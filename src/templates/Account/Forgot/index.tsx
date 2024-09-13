@@ -50,12 +50,13 @@ export function ForgotTemplate({ title = '', onSubmitLogin }: ForgotTemplateProp
 
   const onSubmit = data => {
     setUserName(data.username);
-    // onEmainSend(
-    //   paramsWithDefault({
-    //     ...data,
-    //     tenant_uri: getFirstSubdomain(),
-    //   }),
-    // );
+    onEmainSend({
+      email: data.username,
+      // paramsWithDefault({
+      //   ...data,
+      //   tenant_uri: getFirstSubdomain(),
+      // }),
+    });
     setStep('2');
   };
 

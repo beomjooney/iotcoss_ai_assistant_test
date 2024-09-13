@@ -3,6 +3,7 @@ export * from './HomeSeJong/index';
 export * from './Business/index';
 export * from './Account/Login/index';
 export * from './Account/Forgot/index';
+export * from './Account/Password/index';
 export * from './Account/SignUp/index';
 export * from './Account/MemberRegistrationComplete/index';
 export * from './Account/Join/index';

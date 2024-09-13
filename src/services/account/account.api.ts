@@ -131,6 +131,10 @@ export async function changePassword(params: any) {
   const { data } = await axiosGeneralAPI().put('/api/v1/my/password', params);
   return data.data;
 }
+export async function resetPassword(params: any) {
+  const { data } = await axiosGeneralAPI().put('/api/v1/my/password', params);
+  return data.data;
+}
 
 export async function userUpdate(params: any) {
   const { data } = await axiosGeneralAPI().put('/api/v1/my/personal', params);
