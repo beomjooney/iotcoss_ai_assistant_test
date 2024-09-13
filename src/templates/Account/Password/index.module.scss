@@ -1,0 +1,55 @@
+@use 'src/stories/assets/styles/abstracts/font';
+@use 'src/stories/assets/styles/abstracts/palette';
+
+.login-container {
+  // width: 100%;
+  // display: flex;
+  // flex-wrap: wrap;
+  // flex-direction: column;
+  // justify-content: center;
+  // align-items: center;
+
+  max-width: 30rem;
+  margin: auto;
+  margin-top: 0rem;
+  padding: 4rem 0rem;
+  border-radius: 0.6rem;
+
+  .logo-area {
+    padding-bottom: 10px;
+    // padding: font.toRem(70px);
+    // margin-top: font.toRem(300px);
+    &__text {
+      text-align: center;
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+      font-weight: bold;
+      font-style: normal;
+      font-size: 2rem;
+      color: #2e2e2e;
+      line-height: 2rem;
+      white-space: pre-line;
+    }
+  }
+
+  .herder-title {
+    color: palette.$Primary-Blue900;
+    font-weight: 700 !important;
+  }
+
+  .sign-color {
+    color: #919191;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  .button-area {
+    // width: font.toRem(488px);
+    // margin-bottom: font.toRem(300px);
+    width: 100%;
+    margin-bottom: 30px;
+  }
+
+  .image-login {
+    margin-right: 5px;
+  }
+}
