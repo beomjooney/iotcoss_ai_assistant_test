@@ -268,6 +268,11 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
       return;
     }
 
+    if (data.name.length > 100) {
+      alert('이름은 100자를 초과할 수 없습니다.');
+      return;
+    }
+
     onLoginSignUp({
       // ...data,
       email: email,

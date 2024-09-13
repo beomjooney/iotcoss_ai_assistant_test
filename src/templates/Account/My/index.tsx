@@ -294,49 +294,6 @@ export function MyTemplate({ children }: MyTemplateProps) {
                         )}
                       </div>
                     </div>
-                    <div className="tw-text-gray-600 tw-text-[15px] tw-font-medium tw-p-5 tw-pt-0">
-                      <div className="tw-py-5 tw-flex tw-justify-between">
-                        <div className="tw-flex tw-items-center">
-                          <div className="tw-pr-2">
-                            <img src="/assets/images/icons/point.png" alt="포인트" />
-                          </div>
-                          <div className="tw-font-bold">보유포인트</div>
-                        </div>
-                        <div className="tw-font-bold tw-text-blue-500">{summary?.points?.toLocaleString()}P</div>
-                      </div>
-                      <div className="tw-flex tw-justify-between">
-                        <div> 가입일 </div>
-                        <div>{summary?.joinDate}</div>
-                      </div>
-                      <div className="tw-flex tw-justify-between">
-                        <div> 방문횟수 </div>
-                        <div>{summary?.visitCount || 0} 회</div>
-                      </div>
-                      <div className="tw-py-3 ">
-                        <div className="tw-flex tw-justify-between">
-                          <div> 내가 만든 퀴즈 </div>
-                          <div>{summary?.createdQuizCount || 0}개</div>
-                        </div>
-                        <div className="tw-flex tw-justify-between">
-                          <div> 내가 만든 클럽 </div>
-                          <div>{summary?.createdClubCount || 0}개</div>
-                        </div>
-                      </div>
-                      <div className="tw-py-3 ">
-                        <div className="tw-flex tw-justify-between">
-                          <div> 내가 푼 퀴즈 </div>
-                          <div>{summary?.solvedQuizCount || 0}개</div>
-                        </div>
-                        <div className="tw-flex tw-justify-between">
-                          <div> 내가 쓴 댓글 </div>
-                          <div>{summary?.replyCount || 0}개</div>
-                        </div>
-                        <div className="tw-flex tw-justify-between">
-                          <div> 내가 참여한 클럽 </div>
-                          <div>{summary?.joinedClubCount || 0}개</div>
-                        </div>
-                      </div>
-                    </div>
 
                     <div className="tw-flex tw-justify-between tw-mt-2 tw-gap-2">
                       <Button
