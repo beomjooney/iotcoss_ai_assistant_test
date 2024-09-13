@@ -461,6 +461,7 @@ export function LectureOpenTemplate() {
         setSelectedImageBanner('banner');
         setSelectedImageBannerCheck(file);
       } else if (type === 'profile') {
+        // setSelectedImageProfile();
         setSelectedImageProfileCheck(file);
       }
       const reader = new FileReader();
@@ -1005,7 +1006,7 @@ export function LectureOpenTemplate() {
       contentLanguage: contentLanguage || '',
       aiConversationLanguage: lectureAILanguage || '',
       description: introductionText || '',
-      useCurrentProfileImage: 'true',
+      useCurrentProfileImage: 'false',
     };
 
     console.log(clubFormParams);

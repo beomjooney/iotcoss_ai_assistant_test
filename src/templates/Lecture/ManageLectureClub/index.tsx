@@ -578,6 +578,7 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
         setSelectedImageBanner('banner');
         setSelectedImageBannerCheck(file);
       } else if (type === 'profile') {
+        setSelectedImageProfile('profile');
         setSelectedImageProfileCheck(file);
       }
       const reader = new FileReader();
@@ -758,7 +759,7 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
       contentLanguage: contentLanguage || '',
       aiConversationLanguage: lectureAILanguage || '',
       description: introductionText || '',
-      useCurrentProfileImage: 'true',
+      useCurrentProfileImage: 'false',
     };
 
     console.log(clubFormParams);
