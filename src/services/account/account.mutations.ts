@@ -15,6 +15,7 @@ import {
   userUpdate,
   requestProfessor,
   emailSend,
+  resetPassword,
 } from './account.api';
 import { setCookie } from 'cookies-next';
 import router from 'next/router';
@@ -262,6 +263,22 @@ export const useChangePassword = (): UseMutationResult => {
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('OTP').all),
     onSuccess: async data => {
       alert('비밀번호 변경이 완료되었습니다.');
+    },
+  });
+};
+
+export const useResetPassword = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  // TODO : any 타입 변경
+  return useMutation<any, any, any>(requestBody => resetPassword(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('OTP').all),
+    onSuccess: async data => {
+      alert('비밀번호 변경이 완료되었습니다.');
+      router.push('/account/login');
     },
   });
 };
