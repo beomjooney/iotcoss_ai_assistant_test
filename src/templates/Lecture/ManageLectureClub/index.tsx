@@ -284,6 +284,8 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
 
     setPreview(clubForm.clubImageUrl);
     setPreviewBanner(clubForm.backgroundImageUrl);
+    setSelectedImageCheck(clubForm.clubImageUrl);
+    setSelectedImageBannerCheck(clubForm.backgroundImageUrl);
     setPreviewProfile(clubForm.instructorProfileImageUrl);
 
     setSelectedImage('');
@@ -570,10 +572,10 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
     const file = event.target.files[0];
     if (file) {
       if (type === 'card') {
-        setSelectedImage('');
+        setSelectedImage('card');
         setSelectedImageCheck(file);
       } else if (type === 'banner') {
-        setSelectedImageBanner('');
+        setSelectedImageBanner('banner');
         setSelectedImageBannerCheck(file);
       } else if (type === 'profile') {
         setSelectedImageProfileCheck(file);
