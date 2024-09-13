@@ -94,6 +94,12 @@ export async function login(params: any[]) {
   return data;
 }
 
+//login
+export async function emailSend(params: any[]) {
+  const { data } = await axiosGeneralAPI().post('/api/v1/password/recovery/push', params);
+  return data;
+}
+
 // 회원 등록
 export const loginSignUp = async body => await axiosGeneralAPI().post('/api/v1/signup', body);
 

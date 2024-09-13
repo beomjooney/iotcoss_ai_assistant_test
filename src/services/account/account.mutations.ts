@@ -14,6 +14,7 @@ import {
   changePassword,
   userUpdate,
   requestProfessor,
+  emailSend,
 } from './account.api';
 import { setCookie } from 'cookies-next';
 import router from 'next/router';
@@ -136,6 +137,33 @@ export const useLogin = (): UseMutationResult => {
       // } else {
       //   alert(`error : [${responseCode}] ${message}`);
       // }
+    },
+  });
+};
+export const useEmainSend = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  // TODO : any 타입 변경
+  return useMutation<any, any, any>(requestBody => emailSend(requestBody), {
+    onError: (error, variables, context) => {
+      console.log(error);
+      const { code, message } = error;
+      // alert(`mutation error : [${code}] ${message}`);
+      if (code === 'C06000') {
+        alert('로그인 실패 횟수 초과');
+      } else if (code === 'C06002') {
+        alert('이메일 계정 또는 암호가 일치하지 않습니다. 다시 한번 확인해 주세요.');
+      }
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('LOGIN').all),
+    onSuccess: async data => {
+      console.log('data', data);
+
+      const { responseCode, message } = data;
+      if (responseCode === '0000') {
+        setCookie('access_token', data?.access_token);
+      } else {
+        alert(`error : [${responseCode}] ${message}`);
+      }
     },
   });
 };

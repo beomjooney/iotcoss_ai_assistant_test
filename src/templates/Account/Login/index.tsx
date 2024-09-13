@@ -188,7 +188,13 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
         <Grid container spacing={3} direction="row" justifyContent="space-between" alignItems="center">
           <Grid item xs={6}></Grid>
           <Grid item xs={6}>
-            <Box display="flex" justifyContent="flex-end" sx={{ fontWeight: 'bold' }}>
+            <Box
+              display="flex"
+              justifyContent="flex-end"
+              sx={{ fontWeight: 'bold' }}
+              // className="tw-cursor-pointer"
+              // onClick={() => router.push('/account/forgot')}
+            >
               <Typography sx={{ fontSize: 12, textDecoration: 'underline' }} className="tw-py-3">
                 비밀번호를 잊으셨나요?
               </Typography>

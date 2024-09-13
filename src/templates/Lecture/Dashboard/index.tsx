@@ -1084,19 +1084,33 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                             scope="row"
                             className={`${classes.stickyWhite} ${classes.stickySecond}`}
                           >
-                            <div className="tw-font-bold tw-grid tw-gap-1 tw-justify-center tw-items-center">
-                              <div>
-                                {info?.participatedStudyCount} / {info?.totalStudyCount}
-                                <span className="tw-text-sm tw-text-gray-500">{info?.studyCount}회</span>
-                              </div>
-                              <div className="tw-w-[70px] progress tw-rounded tw-h-2 tw-p-0">
-                                <span
-                                  style={{
-                                    width: `${(info?.participatedStudyCount / info?.totalStudyCount) * 100}%`,
-                                  }}
-                                >
-                                  <span className="progress-line"></span>
-                                </span>
+                            <div
+                            // onClick={() => {
+                            //   setIsModalOpen(true);
+                            //   setClubStudySequence(info?.clubStudySequence);
+                            //   console.log('setClubStudySequence', info?.clubStudySequence);
+                            //   setMyClubLectureQA({
+                            //     clubSequence: selectedClub?.clubSequence || id,
+                            //     sequence: info?.clubStudySequence,
+                            //     data: { questionPage: 1 },
+                            //   });
+                            // }}
+                            // className="tw-cursor-pointer"
+                            >
+                              <div className="tw-font-bold tw-grid tw-gap-1 tw-justify-center tw-items-center">
+                                <div>
+                                  {info?.participatedStudyCount} / {info?.totalStudyCount}
+                                  <span className="tw-text-sm tw-text-gray-500">{info?.studyCount}회</span>
+                                </div>
+                                <div className="tw-w-[70px] progress tw-rounded tw-h-2 tw-p-0">
+                                  <span
+                                    style={{
+                                      width: `${(info?.participatedStudyCount / info?.totalStudyCount) * 100}%`,
+                                    }}
+                                  >
+                                    <span className="progress-line"></span>
+                                  </span>
+                                </div>
                               </div>
                             </div>
                           </TableCell>
