@@ -13,6 +13,7 @@ import {
 } from 'src/services/seminars/seminars.queries';
 import { useSaveAnswer } from 'src/services/seminars/seminars.mutations';
 import Grid from '@mui/material/Grid';
+import Paginations from 'src/stories/components/Pagination';
 
 /**import quiz modal  */
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
@@ -123,9 +124,11 @@ const cx = classNames.bind(styles);
 
 export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) {
   const [page, setPage] = useState(1);
+  const [pageStudent, setPageStudent] = useState(1);
   const [lecturePage, setLecturePage] = useState(1);
   const [questionPage, setQuestionPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
+  const [totalStudentPage, setTotalStudentPage] = useState(1);
   const [totalQuestionPage, setTotalQuestionPage] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
   const [myClubList, setMyClubList] = useState<any>([]);
@@ -201,6 +204,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     data => {
       console.log('useMyLectureDashboardStudentList', data);
       setMyDashboardStudentList(data || []);
+      setTotalStudentPage(data?.students?.totalPages);
     },
   );
 
@@ -235,7 +239,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   useDidMountEffect(() => {
     setMyClubParams({
       clubSequence: selectedClub?.clubSequence || id,
-      data: { sortType: sortType },
+      data: { sortType: sortType, page: 1 },
     });
 
     setMyClubSequenceParams({ clubSequence: selectedClub?.clubSequence || id });
@@ -253,7 +257,15 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
       clubSequence: selectedClub?.clubSequence || id,
       data: dataParam,
     });
+    setPageStudent(1);
   }, [sortType, selectedClub, sortLectureType, lecturePage]);
+
+  useDidMountEffect(() => {
+    setMyClubParams({
+      clubSequence: selectedClub?.clubSequence || id,
+      data: { sortType: sortType, page: pageStudent },
+    });
+  }, [pageStudent]);
 
   useDidMountEffect(() => {
     let dataParam = {};
@@ -1138,6 +1150,10 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                     </TableBody>
                   </Table>
                 </TableContainer>
+
+                <div className="tw-mt-10">
+                  <Paginations page={pageStudent} setPage={setPageStudent} total={totalStudentPage} />
+                </div>
                 {myDashboardStudentList?.students?.contents?.length === 0 && (
                   <div className={cx('tw-flex tw-justify-center tw-items-center tw-h-[50vh]')}>
                     <p className="tw-text-center tw-text-base tw-font-bold tw-text-[#31343d]">데이터가 없습니다.</p>
@@ -1329,6 +1345,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                     </TableBody>
                   </Table>
                 </TableContainer>
+
                 {myDashboardLectureList?.contents?.length === 0 && (
                   <div className={cx('tw-flex tw-justify-center tw-items-center tw-h-[50vh]')}>
                     <p className="tw-text-center tw-text-base tw-font-bold tw-text-[#31343d]">데이터가 없습니다.</p>
@@ -1338,6 +1355,9 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
             )}
           </>
         )}
+        {/* <div className="tw-mt-10">
+          <Paginations page={pageStudent} setPage={setPageStudent} total={totalStudentPage} />
+        </div> */}
       </div>
       <Modal
         isOpen={isModalOpen}

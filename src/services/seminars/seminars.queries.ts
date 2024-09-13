@@ -119,7 +119,7 @@ export const useMyLectureDashboardStudentList = (
   onSuccess?: (data: any) => void,
   onError?: (error: Error) => void,
 ) => {
-  const DEFAULT_SIZE = 100;
+  const DEFAULT_SIZE = 10;
   return useQuery<any, Error>(
     QUERY_KEY_FACTORY('STUDENT_DASHBOARD').list({ size: DEFAULT_SIZE, ...params }),
     () => myLectureDashboardStudentList({ size: DEFAULT_SIZE, ...params }),
