@@ -255,7 +255,7 @@ const AllLectureView = ({ border, id }) => {
                   <TableHead style={{ backgroundColor: '#F6F7FB' }}>
                     <TableRow>
                       <TableCell align="center" width={100}>
-                        <div className="tw-font-bold tw-text-base">회차</div>
+                        <div className="tw-font-bold tw-text-base">주차</div>
                       </TableCell>
                       <TableCell align="center">
                         <div className="tw-font-bold tw-text-base">강의제목</div>

@@ -27,19 +27,40 @@ function Modal({
 }: ModalProps) {
   const [isShow, setIsShow] = useState<boolean>(false);
 
-  // 모달 오버레이에서 스크롤 방지
+  // // 모달 오버레이에서 스크롤 방지
+  // useEffect(() => {
+  //   document.body.style.cssText = `
+  //       position: fixed;
+  //       top: -${window.scrollY}px;
+  //       overflow-y: scroll;
+  //       width: 100%;`;
+  //   return () => {
+  //     const scrollY = document.body.style.top;
+  //     document.body.style.cssText = '';
+  //     window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
+  //   };
+  // }, []);
+
+  // 모달이 열릴 때 스크롤을 방지하면서 기존 스크롤 위치를 유지
   useEffect(() => {
-    document.body.style.cssText = `
-        position: fixed;
-        top: -${window.scrollY}px;
-        overflow-y: scroll;
-        width: 100%;`;
-    return () => {
+    if (isOpen) {
+      const scrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+    } else {
       const scrollY = document.body.style.top;
-      document.body.style.cssText = '';
+      document.body.style.position = '';
+      document.body.style.top = '';
       window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
+    }
+    return () => {
+      // 모달이 닫힐 때 원래 스크롤 위치로 복구
+      document.body.style.position = '';
+      document.body.style.top = '';
+      window.scrollTo(0, parseInt(document.body.style.top || '0', 10) * -1);
     };
-  }, []);
+  }, [isOpen]);
 
   useEffect(() => {
     setIsShow(isOpen);

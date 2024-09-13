@@ -22,7 +22,8 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
   const { logged, update } = useSessionStore.getState();
   const [isContentRendered, setIsContentRendered] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const subDomain = getFirstSubdomain();
+  // 서브 도메인이 없는 경우 dsu로 설정
+  const subDomain = getFirstSubdomain() || 'dsu';
 
   //미로그인 데이터 처리
   if (!logged) {

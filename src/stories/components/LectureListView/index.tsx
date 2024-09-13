@@ -303,11 +303,11 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
               })}
           </select> */}
         </div>
-        <div className="tw-text-xl tw-text-black  tw-font-bold tw-mt-6">회차 정보</div>
+        <div className="tw-text-xl tw-text-black  tw-font-bold tw-mt-6">주차 정보</div>
         <Divider className="tw-py-3 tw-mb-3" />
         <div className="tw-text-black tw-my-5">
           <div className="tw-text-lg tw-font-medium tw-py-3">
-            {studyQAInfo?.studyOrder}회차 : {studyQAInfo?.studyDate} ({studyQAInfo?.dayOfWeek})
+            {studyQAInfo?.studyOrder}주차 : {studyQAInfo?.studyDate} ({studyQAInfo?.dayOfWeek})
           </div>
           <div className="tw-text-lg tw-font-medium tw-py-3">강의URL : {studyQAInfo?.lectureClub?.clubUri}</div>
         </div>
@@ -542,13 +542,11 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
           </div>
         </div>
         {isClient && !modalIsOpen && logged && menu.use_lecture_club && (
-          <div>
-            <div
-              className="tw-fixed tw-bottom-0 tw-right-0 tw-w-12 md:tw-w-16 tw-h-12 md:tw-h-16 tw-mr-4 md:tw-mr-10 tw-mb-4 md:tw-mb-8 tw-cursor-pointer tw-z-10"
-              onClick={() => setModalIsOpen(true)}
-            >
-              <img src="/assets/images/main/chatbot.png" />
-            </div>
+          <div
+            className="tw-fixed tw-bottom-0 tw-right-0  tw-mr-4 md:tw-mr-10 tw-mb-4 md:tw-mb-8 tw-cursor-pointer tw-z-10"
+            onClick={() => setModalIsOpen(true)}
+          >
+            <img className="tw-w-24 tw-h-24" src="/assets/images/main/chatbot.png" />
           </div>
         )}
         {isClient && <ChatbotModal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)} token={token} />}

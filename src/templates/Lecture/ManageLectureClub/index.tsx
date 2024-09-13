@@ -1579,13 +1579,13 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
                       container
                       justifyContent="flex-start"
                       xs={6}
-                      sm={10}
+                      sm={6}
                       className="tw-text-xl tw-text-black tw-font-bold"
                     >
                       강의클럽 학생 목록 ({totalElementsMember || 0})
                     </Grid>
 
-                    <Grid item container justifyContent="flex-end" xs={6} sm={2} style={{ textAlign: 'right' }}>
+                    <Grid item container justifyContent="flex-end" xs={6} sm={6} style={{ textAlign: 'right' }}>
                       <Pagination
                         count={totalPageMember}
                         size="small"
@@ -2241,7 +2241,7 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
                         {/* <div className=" tw-text-center tw-text-black tw-font-bold tw-mt-5">강의</div> */}
                         {item.studyOrder && (
                           <div className="tw-text-center tw-text-lg tw-text-black tw-font-bold tw-mt-4">
-                            {index + 1} 회차
+                            {index + 1} 주차
                             <div className="tw-flex tw-justify-center tw-mt-2">
                               <svg
                                 width={20}
@@ -2291,7 +2291,7 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
               <div className="tw-w-full tw-flex tw-justify-between tw-items-center">
                 <div className="tw-w-1/12 tw-flex tw-justify-center tw-items-center">
                   <div className="tw-w-[59px] tw-h-[46px] tw-relative tw-flex tw-flex-col tw-items-center">
-                    <p className="tw-text-base tw-font-bold tw-text-center tw-text-[#ced4de]">회차</p>
+                    <p className="tw-text-base tw-font-bold tw-text-center tw-text-[#ced4de]">주차</p>
                     <svg
                       width={20}
                       height={20}
@@ -2338,7 +2338,7 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
                       </svg>
                       <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-medium tw-text-left tw-text-[#9ca5b2]">
                         <button type="button" onClick={handleAddClick} className="tw-text-black tw-text-base ">
-                          강의회차 추가하기
+                          강의주차 추가하기
                         </button>
                       </p>
                     </div>

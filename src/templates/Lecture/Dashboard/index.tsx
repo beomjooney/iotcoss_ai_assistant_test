@@ -78,21 +78,21 @@ const useStyles = makeStyles(theme => ({
   },
   stickyBoard: {
     position: 'sticky',
-    backgroundColor: '#F6F7FB',
+    backgroundColor: '#fff !important',
     borderRight: '2px solid black',
     zIndex: 1,
   },
   stickyFirst: {
     left: 0,
-    zIndex: 2,
+    // zIndex: 2,
   },
   stickySecond: {
     left: 150, // Adjust according to the width of the first column
-    zIndex: 2,
+    // zIndex: 2,
   },
   stickyThird: {
     left: 270, // Adjust according to the width of the first two columns
-    zIndex: 2,
+    // zIndex: 2,
   },
   // Add a new class for scrollable container
   scrollContainer: {
@@ -105,6 +105,19 @@ const useStyles = makeStyles(theme => ({
     height: '500px',
   },
 }));
+
+// const useStyles = makeStyles({
+//   table: {
+//     minWidth: 650,
+//   },
+//   sticky: {
+//     position: 'sticky',
+//     left: 0,
+//     background: 'white',
+//     boxShadow: '5px 2px 5px grey',
+//     borderRight: '2px solid black',
+//   },
+// });
 
 const cx = classNames.bind(styles);
 
@@ -279,20 +292,6 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     console.log(selectedSession);
   };
 
-  const getCircleColor = galendar => {
-    switch (galendar) {
-      case '0001':
-        return { text: 'gray', fill: 'white', borderColor: 'white' };
-      case '0002':
-        return { text: 'white', fill: '#FF8F60', borderColor: '#FF8F60' };
-      case '0003':
-        return { text: 'white', fill: '#E11837', borderColor: '#E11837' };
-      case '0004':
-        return { text: 'white', fill: '#31343D', borderColor: '#31343D' };
-      default:
-        return { text: 'white', fill: 'gray', borderColor: 'gray' };
-    }
-  };
   const handleTabClick = tab => {
     setActiveTab(tab);
   };
@@ -333,53 +332,49 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   };
 
   return (
-    <div className={cx('seminar-detail-container')}>
+    <div className={cx('seminar-container')}>
       <div className={cx('container')}>
-        <>
-          <Desktop>
-            {/* <Divider className="tw-y-5 tw-bg-['#efefef']" /> */}
-            <div className="tw-pt-8">
-              <div className="tw-flex tw-justify-start tw-items-start tw-left-0 tw-top-3.5 tw-gap-[3.5px]">
-                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[10.5px] tw-text-left tw-text-[#313b49]">
-                  My강의클럽
-                </p>
-                <svg
-                  width={17}
-                  height={16}
-                  viewBox="0 0 17 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[15.75px] tw-h-[15.75px] tw-relative"
-                  preserveAspectRatio="none"
-                >
-                  <path
-                    d="M6.96925 11.25L10.3438 7.8755L6.96925 4.50101L6.40651 5.06336L9.21905 7.8755L6.40651 10.6877L6.96925 11.25Z"
-                    fill="#313B49"
-                  />
-                </svg>
-                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[10.5px] tw-text-left tw-text-[#313b49]">
-                  강의 대시보드
-                </p>
-              </div>
-              <div className="tw-flex tw-justify-start tw-items-center tw-left-0 tw-top-[31.5px] tw-gap-3.5">
-                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[21px] tw-font-bold tw-text-left tw-text-black">
-                  강의 대시보드
-                </p>
-              </div>
-              <Divider className="tw-py-2 tw-bg-['#efefef']" />
+        {/* <Divider className="tw-y-5 tw-bg-['#efefef']" /> */}
+        <div className="tw-pt-8">
+          <div className="tw-flex tw-justify-start tw-items-start tw-left-0 tw-top-3.5 tw-gap-[3.5px]">
+            <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[10.5px] tw-text-left tw-text-[#313b49]">
+              My강의클럽
+            </p>
+            <svg
+              width={17}
+              height={16}
+              viewBox="0 0 17 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[15.75px] tw-h-[15.75px] tw-relative"
+              preserveAspectRatio="none"
+            >
+              <path
+                d="M6.96925 11.25L10.3438 7.8755L6.96925 4.50101L6.40651 5.06336L9.21905 7.8755L6.40651 10.6877L6.96925 11.25Z"
+                fill="#313B49"
+              />
+            </svg>
+            <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[10.5px] tw-text-left tw-text-[#313b49]">
+              강의 대시보드
+            </p>
+          </div>
+          <div className="tw-flex tw-justify-start tw-items-center tw-left-0 tw-top-[31.5px] tw-gap-3.5">
+            <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[21px] tw-font-bold tw-text-left tw-text-black">
+              강의 대시보드
+            </p>
+          </div>
+          <Divider className="tw-py-2 tw-bg-['#efefef']" />
+        </div>
+        <Mobile>
+          <div className="tw-pt-[60px]">
+            <div className="tw-text-[24px] tw-font-bold tw-text-black tw-text-center">
+              퀴즈클럽 {'-'} 내가 만든 클럽
             </div>
-          </Desktop>
-          <Mobile>
-            <div className="tw-pt-[60px]">
-              <div className="tw-text-[24px] tw-font-bold tw-text-black tw-text-center">
-                퀴즈클럽 {'-'} 내가 만든 클럽
-              </div>
-              <div className="tw-text-[12px] tw-text-black tw-text-center tw-mb-10">
-                내가 만든 클럽 페이지에 관한 간단한 설명란
-              </div>
+            <div className="tw-text-[12px] tw-text-black tw-text-center tw-mb-10">
+              내가 만든 클럽 페이지에 관한 간단한 설명란
             </div>
-          </Mobile>
-        </>
+          </div>
+        </Mobile>
         <div className="tw-flex tw-items-center tw-mt-6">
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
             <Grid item xs={11} className="tw-font-bold tw-text-xl">
@@ -426,7 +421,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                   <div className="tw-flex tw-items-center tw-justify-between tw-gap-4">
                     <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-4">
                       <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xl tw-font-bold tw-text-left tw-text-[#31343d]">
-                        이번주 학습 회차
+                        이번주 학습 주차
                       </p>
                       <svg
                         width={1}
@@ -440,7 +435,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                         <line x1="0.5" y1="0.5" x2="0.5" y2="16.5" stroke="#9CA5B2" />
                       </svg>
                       <p className="tw-flex tw-text-xl tw-font-bold tw-text-left tw-text-[#2474ed]">
-                        {myDashboardList?.studyOrder} 회차. {myDashboardList?.studyDate}{' '}
+                        {myDashboardList?.studyOrder} 주차. {myDashboardList?.studyDate}{' '}
                         {myDashboardList?.dayOfWeek && `(${myDashboardList.dayOfWeek})`}
                       </p>
                     </div>
@@ -454,7 +449,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                   <div className="tw-flex tw-justify-between tw-items-center tw-gap-3 tw-px-5 tw-my-5 tw-h-[100px] tw-relative tw-rounded-lg tw-bg-white border border-[#e9ecf2]">
                     <div className=" tw-flex">
                       <p className=" tw-text-base tw-text-center tw-text-black tw-mr-5 tw-font-bold">
-                        {myDashboardList?.studyOrder}회차 {myDashboardList?.clubStudyName}
+                        {myDashboardList?.studyOrder}주차 {myDashboardList?.clubStudyName}
                       </p>
                       <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-gap-2">
                         <div className="tw-flex tw-justify-end tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2 tw-px-2 tw-py-1 tw-rounded tw-bg-white border border-[#2474ed]">
@@ -548,7 +543,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                               <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-4">
                                 <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
                                   <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm  tw-font-bold tw-text-left tw-text-[#31343d]">
-                                    강의 회차
+                                    강의 주차
                                   </p>
                                   <svg
                                     width={1}
@@ -609,7 +604,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                               {myDashboardList?.recentQuestions?.totalElements || 0}
                             </div>
                             ]
-                            <div className="tw-flex">
+                            {/* <div className="tw-flex">
                               <svg
                                 width={28}
                                 height={28}
@@ -624,10 +619,10 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                   fill="#9CA5B2"
                                 />
                               </svg>
-                            </div>
+                            </div> */}
                           </div>
                         </div>
-                        <div className="tw-overflow-auto tw-h-[267px] tw-w-[300px]">
+                        <div className="tw-overflow-auto tw-h-[267px]">
                           {myDashboardList?.recentQuestions?.contents?.map((data, index) => (
                             <div
                               key={index}
@@ -664,7 +659,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                               {myDashboardList?.recentUnansweredQuestions?.totalElements || 0}
                             </div>
                             ]
-                            <div className="tw-flex">
+                            {/* <div className="tw-flex">
                               <svg
                                 width={28}
                                 height={28}
@@ -679,10 +674,10 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                   fill="#9CA5B2"
                                 />
                               </svg>
-                            </div>
+                            </div> */}
                           </div>
                         </div>
-                        <div className="tw-overflow-auto tw-h-[267px] tw-w-[300px]">
+                        <div className="tw-overflow-auto tw-h-[267px]">
                           {myDashboardList?.recentUnansweredQuestions?.contents?.map((data, index) => (
                             <div
                               key={index}
@@ -711,7 +706,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                       <div className="tw-relative tw-overflow-hidden tw-rounded-[8.07px] tw-bg-white border tw-border-[#e9ecf2]">
                         <div className="tw-flex tw-px-4 tw-justify-between tw-items-center tw-bg-[#f6f7fb] tw-h-[60.5px] tw-overflow-hidden border-bottom">
                           <p className=" tw-text-base tw-font-bold tw-text-left tw-text-gray-500">AI피드백 현황</p>
-                          <div className="tw-flex">
+                          {/* <div className="tw-flex">
                             <svg
                               width={28}
                               height={28}
@@ -726,7 +721,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                 fill="#9CA5B2"
                               />
                             </svg>
-                          </div>
+                          </div> */}
                         </div>
                         <div className=" tw-h-[175px]  tw-flex tw-justify-center tw-items-center">
                           <div className="tw-w-[130px] tw-h-[130px]">
@@ -1024,7 +1019,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                   </div>
                 </div>
                 <TableContainer>
-                  <Table className={classes.table} aria-label="simple table" style={{ tableLayout: 'fixed' }}>
+                  <Table aria-label="simple table" style={{ tableLayout: 'fixed' }}>
                     <TableHead style={{ backgroundColor: '#F6F7FB' }}>
                       <TableRow>
                         <TableCell align="center" width={150} className={`${classes.sticky} ${classes.stickyFirst}`}>
@@ -1033,11 +1028,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                         <TableCell align="center" width={120} className={`${classes.sticky} ${classes.stickySecond}`}>
                           <div className="tw-font-bold tw-text-base">학습 참여도</div>
                         </TableCell>
-                        <TableCell
-                          align="center"
-                          width={100}
-                          className={`${classes.stickyBoard} ${classes.stickyThread}`}
-                        >
+                        <TableCell align="center" width={100} className={`${classes.sticky} ${classes.stickyThird}`}>
                           <div className="tw-font-bold tw-text-base">답변/질의</div>
                         </TableCell>
 
@@ -1057,10 +1048,9 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                     </TableHead>
                     <TableBody>
                       {myDashboardStudentList?.students?.contents?.map((info, index) => (
-                        <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                        <TableRow key={index}>
                           <TableCell
                             align="center"
-                            width={150}
                             component="th"
                             scope="row"
                             className={`${classes.stickyWhite} ${classes.stickyFirst}`}
@@ -1078,7 +1068,6 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                           </TableCell>
                           <TableCell
                             align="center"
-                            width={120}
                             component="th"
                             scope="row"
                             className={`${classes.stickyWhite} ${classes.stickySecond}`}
@@ -1102,7 +1091,6 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                           <TableCell
                             padding="none"
                             align="center"
-                            width={100}
                             component="th"
                             scope="row"
                             className={`${classes.stickyWhiteBoard} ${classes.stickyThird}`}
@@ -1114,7 +1102,6 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                             </div>
                           </TableCell>
                           {info?.lectureParticipation.map((info, index) => {
-                            const { fill, borderColor, text } = getCircleColor(info?.status);
                             return (
                               <TableCell
                                 padding="none"
@@ -1124,7 +1111,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                 component="th"
                                 scope="row"
                               >
-                                <div className="tw-h-12 tw-flex tw-justify-center tw-items-center">
+                                <div className="tw-h-12 tw-flex tw-justify-center tw-items-center ">
                                   <div className="tw-flex tw-justify-center tw-items-center">
                                     <div className="border tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-overflow-hidden tw-gap-2.5 tw-px-2  tw-py-px tw-rounded-tl-sm tw-rounded-bl-sm tw-bg-[#6a7380]">
                                       <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-center tw-text-white">
@@ -1244,11 +1231,11 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                   </div>
                 </div>
                 <TableContainer>
-                  <Table className={classes.table} aria-label="simple table" style={{ tableLayout: 'fixed' }}>
+                  <Table aria-label="simple table" style={{ tableLayout: 'fixed' }}>
                     <TableHead style={{ backgroundColor: '#F6F7FB' }}>
                       <TableRow>
                         <TableCell align="center" width={98} className="border-right">
-                          <div className="tw-font-bold tw-text-base">강의회차</div>
+                          <div className="tw-font-bold tw-text-base">강의주차</div>
                         </TableCell>
                         <TableCell align="center" width={98}>
                           <div className="tw-font-bold tw-text-base">총 질의수</div>
@@ -1298,10 +1285,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                             <div className="tw-font-bold tw-text-base">{info?.generalContentAiAnswerCount}</div>
                           </TableCell>
                           <TableCell align="center" component="th" scope="row" className="border-right">
-                            <div className="tw-font-bold tw-text-base">
-                              {info?.unansweredQuestionCount}{' '}
-                              <span className=" tw-text-gray-400">/ {info?.totalQuestionCount}</span>
-                            </div>
+                            <div className="tw-font-bold tw-text-base">{info?.unansweredQuestionCount} </div>
                           </TableCell>
                           <TableCell align="left" component="th" scope="row" className="border-right">
                             <div className="tw-h-[150px] tw-overflow-auto">
@@ -1354,203 +1338,201 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
             )}
           </>
         )}
-        <Modal
-          isOpen={isModalOpen}
-          onAfterClose={() => {
-            setQuestionPage(1);
-            setIsModalOpen(false);
-          }}
-          title="질의응답"
-          maxWidth="1100px"
-          maxHeight="800px"
-        >
-          <div className={cx('seminar-check-popup')}>
-            <TableContainer>
-              <Table className="" aria-label="simple table" style={{ tableLayout: 'fixed' }}>
-                <TableHead style={{ backgroundColor: '#F6F7FB' }}>
-                  <TableRow>
-                    <TableCell align="left" width={160} className="border-right">
-                      <div className="tw-font-bold tw-text-base">학생</div>
-                    </TableCell>
-                    <TableCell align="left" width={250} className="border-right">
-                      <div className="tw-font-bold tw-text-base">질문</div>
-                    </TableCell>
-                    <TableCell align="left" className="border-right">
-                      <div className="tw-font-bold tw-text-base">답변내역</div>
-                    </TableCell>
-                    <TableCell align="left" width={100}>
-                      <div className="tw-font-bold tw-text-base">추가답변</div>
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {myDashboardQA?.members?.map((info, memberIndex) => (
-                    <React.Fragment key={memberIndex}>
-                      {info.questionAnswers.map((questionInfo, questionIndex) => (
-                        <TableRow key={questionIndex}>
-                          {/* Render the student info only for the first question */}
-                          {questionIndex === 0 && (
-                            <TableCell
-                              align="left"
-                              component="th"
-                              scope="row"
-                              className="border-right"
-                              rowSpan={info.questionAnswers.length}
-                            >
-                              <div className="tw-flex tw-justify-start tw-items-center tw-gap-2">
-                                <img
-                                  src={
-                                    info?.icon?.profileImageUrl || '/assets/images/account/default_profile_image.png'
-                                  }
-                                  className="tw-w-10 tw-h-10 border tw-rounded-full"
-                                  alt="Profile"
-                                />
-                                <div className="tw-ml-2">{info?.icon?.nickname}</div>
-                              </div>
-                            </TableCell>
-                          )}
-
-                          {/* Question Column */}
-                          <TableCell align="left" component="th" scope="row" className="border-right">
-                            <div className="tw-font-bold tw-text-sm">{questionInfo?.question}</div>
+      </div>
+      <Modal
+        isOpen={isModalOpen}
+        onAfterClose={() => {
+          setQuestionPage(1);
+          setIsModalOpen(false);
+        }}
+        title="질의응답"
+        maxWidth="1100px"
+        maxHeight="800px"
+      >
+        <div className={cx('seminar-check-popup')}>
+          <TableContainer>
+            <Table className="" aria-label="simple table" style={{ tableLayout: 'fixed' }}>
+              <TableHead style={{ backgroundColor: '#F6F7FB' }}>
+                <TableRow>
+                  <TableCell align="left" width={160} className="border-right">
+                    <div className="tw-font-bold tw-text-base">학생</div>
+                  </TableCell>
+                  <TableCell align="left" width={250} className="border-right">
+                    <div className="tw-font-bold tw-text-base">질문</div>
+                  </TableCell>
+                  <TableCell align="left" className="border-right">
+                    <div className="tw-font-bold tw-text-base">답변내역</div>
+                  </TableCell>
+                  <TableCell align="left" width={100}>
+                    <div className="tw-font-bold tw-text-base">추가답변</div>
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {myDashboardQA?.members?.map((info, memberIndex) => (
+                  <React.Fragment key={memberIndex}>
+                    {info.questionAnswers.map((questionInfo, questionIndex) => (
+                      <TableRow key={questionIndex}>
+                        {/* Render the student info only for the first question */}
+                        {questionIndex === 0 && (
+                          <TableCell
+                            align="left"
+                            component="th"
+                            scope="row"
+                            className="border-right"
+                            rowSpan={info.questionAnswers.length}
+                          >
+                            <div className="tw-flex tw-justify-start tw-items-center tw-gap-2">
+                              <img
+                                src={info?.icon?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
+                                className="tw-w-10 tw-h-10 border tw-rounded-full"
+                                alt="Profile"
+                              />
+                              <div className="tw-ml-2">{info?.icon?.nickname}</div>
+                            </div>
                           </TableCell>
+                        )}
 
-                          {/* Answer Details Column */}
-                          <TableCell align="left" component="th" scope="row" className="border-right">
-                            <div className="tw-h-[150px] tw-overflow-auto">
-                              <div className="tw-font-bold tw-text-sm">
-                                <Markdown className="markdown-container tw-prose tw-pr-2 tw-break-words">
-                                  {questionInfo?.answer
-                                    ? 'AI답변 : ' +
-                                      (questionInfo?.answerType === '0200'
-                                        ? '(강의자료) : '
-                                        : questionInfo?.answerType === '0300'
-                                        ? '(일반서치) : '
-                                        : '') +
-                                      questionInfo?.answer
-                                    : null}
-                                </Markdown>
-                                {questionInfo?.instructorAnswer && (
-                                  <div className="tw-mt-2 tw-text-sm tw-font-medium tw-text-gray-400">
-                                    추가답변 : {questionInfo?.instructorAnswer}
-                                  </div>
-                                )}
-                                {openInputIndex === questionInfo?.lectureQuestionSerialNumber && (
-                                  <div className="tw-mt-2 tw-flex tw-justify-start tw-items-center tw-gap-2">
-                                    <TextField
-                                      type="text"
-                                      placeholder="답변을 추가하세요"
-                                      size="small"
-                                      className="tw-border tw-px-0 tw-py-0 tw-w-full tw-rounded"
-                                      value={answer}
-                                      onChange={e => {
-                                        setAnswer(e.target.value);
-                                      }}
-                                    />
-                                    <button
-                                      onClick={() => {
-                                        console.log(questionInfo);
-                                        if (answer === '') {
-                                          alert('답변을 입력해주세요.');
-                                        } else {
-                                          onSaveAnswer({
-                                            clubSequence: questionInfo.clubSequence,
-                                            clubStudySequence: questionInfo.clubStudySequence,
-                                            lectureQuestionSerialNumber: questionInfo.lectureQuestionSerialNumber,
-                                            answer: answer,
-                                          });
-                                        }
-                                      }}
-                                      className="tw-w-[80px] tw-text-sm tw-font-bold border tw-py-2.5 tw-px-3 tw-rounded"
-                                    >
-                                      저장
-                                    </button>
-                                    <button
-                                      onClick={e => {
-                                        e.preventDefault();
-                                        setOpenInputIndex(null);
-                                      }}
-                                      className="tw-w-[80px] tw-text-sm tw-font-bold border tw-py-2.5 tw-px-3 tw-rounded"
-                                    >
-                                      삭제
-                                    </button>
-                                  </div>
-                                )}
-                              </div>
+                        {/* Question Column */}
+                        <TableCell align="left" component="th" scope="row" className="border-right">
+                          <div className="tw-font-bold tw-text-sm">{questionInfo?.question}</div>
+                        </TableCell>
 
-                              {/* Render files if present */}
-                              {questionInfo?.files?.length > 0 && (
-                                <div className="tw-mt-2 tw-text-sm tw-flex tw-justify-start tw-items-center tw-flex-wrap tw-gap-2">
-                                  <div>강의자료 : </div>
-                                  {questionInfo.files.map((fileEntry, fileIndex) => (
-                                    <div key={fileIndex} className="border tw-px-2 tw-py-0.5 tw-rounded">
-                                      <span
-                                        onClick={() => {
-                                          onFileDownload(fileEntry.key, fileEntry.name);
-                                        }}
-                                        className="tw-text-gray-400 tw-cursor-pointer"
-                                      >
-                                        {fileEntry?.name}
-                                      </span>
-                                    </div>
-                                  ))}
+                        {/* Answer Details Column */}
+                        <TableCell align="left" component="th" scope="row" className="border-right">
+                          <div className="tw-h-[150px] tw-overflow-auto">
+                            <div className="tw-font-bold tw-text-sm">
+                              <Markdown className="markdown-container tw-prose tw-pr-2 tw-break-words">
+                                {questionInfo?.answer
+                                  ? 'AI답변 : ' +
+                                    (questionInfo?.answerType === '0200'
+                                      ? '(강의자료) : '
+                                      : questionInfo?.answerType === '0300'
+                                      ? '(일반서치) : '
+                                      : '') +
+                                    questionInfo?.answer
+                                  : null}
+                              </Markdown>
+                              {questionInfo?.instructorAnswer && (
+                                <div className="tw-mt-2 tw-text-sm tw-font-medium tw-text-gray-400">
+                                  추가답변 : {questionInfo?.instructorAnswer}
                                 </div>
                               )}
-
-                              {/* Reference URLs */}
-                              {questionInfo?.referenceUrls && (
-                                <div className="tw-mt-2 tw-text-sm tw-flex tw-justify-start tw-items-center tw-flex-wrap tw-gap-2">
-                                  <div>출처 : </div>
-                                  <div className="border tw-px-2 tw-py-0.5 tw-rounded">
-                                    <span className="tw-text-gray-400 tw-cursor-pointer">
-                                      {questionInfo?.referenceUrls}
-                                    </span>
-                                  </div>
+                              {openInputIndex === questionInfo?.lectureQuestionSerialNumber && (
+                                <div className="tw-mt-2 tw-flex tw-justify-start tw-items-center tw-gap-2">
+                                  <TextField
+                                    type="text"
+                                    placeholder="답변을 추가하세요"
+                                    size="small"
+                                    className="tw-border tw-px-0 tw-py-0 tw-w-full tw-rounded"
+                                    value={answer}
+                                    onChange={e => {
+                                      setAnswer(e.target.value);
+                                    }}
+                                  />
+                                  <button
+                                    onClick={() => {
+                                      console.log(questionInfo);
+                                      if (answer === '') {
+                                        alert('답변을 입력해주세요.');
+                                      } else {
+                                        onSaveAnswer({
+                                          clubSequence: questionInfo.clubSequence,
+                                          clubStudySequence: questionInfo.clubStudySequence,
+                                          lectureQuestionSerialNumber: questionInfo.lectureQuestionSerialNumber,
+                                          answer: answer,
+                                        });
+                                      }
+                                    }}
+                                    className="tw-w-[80px] tw-text-sm tw-font-bold border tw-py-2.5 tw-px-3 tw-rounded"
+                                  >
+                                    저장
+                                  </button>
+                                  <button
+                                    onClick={e => {
+                                      e.preventDefault();
+                                      setOpenInputIndex(null);
+                                    }}
+                                    className="tw-w-[80px] tw-text-sm tw-font-bold border tw-py-2.5 tw-px-3 tw-rounded"
+                                  >
+                                    삭제
+                                  </button>
                                 </div>
                               )}
                             </div>
-                          </TableCell>
 
-                          {/* Additional Answer Button Column */}
-                          <TableCell align="center" component="th" scope="row">
-                            <button
-                              onClick={e => {
-                                e.preventDefault();
-                                setIsInputOpen(true);
-                                setOpenInputIndex(questionInfo?.lectureQuestionSerialNumber);
-                              }}
-                              className="tw-text-sm tw-font-bold border tw-py-2 tw-px-3 tw-text-gray-400 tw-rounded"
-                            >
-                              +
-                            </button>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </React.Fragment>
-                  ))}
-                </TableBody>
-              </Table>
-              {myDashboardQA?.members?.length === 0 && (
-                <div className={cx('tw-flex tw-justify-center tw-items-center tw-h-[20vh]')}>
-                  <p className="tw-text-center tw-text-base tw-font-bold tw-text-[#31343d]">데이터가 없습니다.</p>
-                </div>
-              )}
-              <div className="tw-flex tw-justify-center tw-items-center tw-mt-10">
-                <Pagination
-                  count={totalQuestionPage}
-                  size="small"
-                  siblingCount={0}
-                  page={questionPage}
-                  renderItem={item => (
-                    <PaginationItem slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }} {...item} />
-                  )}
-                  onChange={handleQAPageChange}
-                />
+                            {/* Render files if present */}
+                            {questionInfo?.files?.length > 0 && (
+                              <div className="tw-mt-2 tw-text-sm tw-flex tw-justify-start tw-items-center tw-flex-wrap tw-gap-2">
+                                <div>강의자료 : </div>
+                                {questionInfo.files.map((fileEntry, fileIndex) => (
+                                  <div key={fileIndex} className="border tw-px-2 tw-py-0.5 tw-rounded">
+                                    <span
+                                      onClick={() => {
+                                        onFileDownload(fileEntry.key, fileEntry.name);
+                                      }}
+                                      className="tw-text-gray-400 tw-cursor-pointer"
+                                    >
+                                      {fileEntry?.name}
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+
+                            {/* Reference URLs */}
+                            {questionInfo?.referenceUrls && (
+                              <div className="tw-mt-2 tw-text-sm tw-flex tw-justify-start tw-items-center tw-flex-wrap tw-gap-2">
+                                <div>출처 : </div>
+                                <div className="border tw-px-2 tw-py-0.5 tw-rounded">
+                                  <span className="tw-text-gray-400 tw-cursor-pointer">
+                                    {questionInfo?.referenceUrls}
+                                  </span>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </TableCell>
+
+                        {/* Additional Answer Button Column */}
+                        <TableCell align="center" component="th" scope="row">
+                          <button
+                            onClick={e => {
+                              e.preventDefault();
+                              setIsInputOpen(true);
+                              setOpenInputIndex(questionInfo?.lectureQuestionSerialNumber);
+                            }}
+                            className="tw-text-sm tw-font-bold border tw-py-2 tw-px-3 tw-text-gray-400 tw-rounded"
+                          >
+                            +
+                          </button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </React.Fragment>
+                ))}
+              </TableBody>
+            </Table>
+            {myDashboardQA?.members?.length === 0 && (
+              <div className={cx('tw-flex tw-justify-center tw-items-center tw-h-[20vh]')}>
+                <p className="tw-text-center tw-text-base tw-font-bold tw-text-[#31343d]">데이터가 없습니다.</p>
               </div>
-            </TableContainer>
-          </div>
-        </Modal>
-      </div>
+            )}
+            <div className="tw-flex tw-justify-center tw-items-center tw-mt-10">
+              <Pagination
+                count={totalQuestionPage}
+                size="small"
+                siblingCount={0}
+                page={questionPage}
+                renderItem={item => (
+                  <PaginationItem slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }} {...item} />
+                )}
+                onChange={handleQAPageChange}
+              />
+            </div>
+          </TableContainer>
+        </div>
+      </Modal>
     </div>
   );
 }

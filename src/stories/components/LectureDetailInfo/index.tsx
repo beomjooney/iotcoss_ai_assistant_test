@@ -292,6 +292,7 @@ const LectureOpenDetailInfo: React.FC<LectureOpenDetailInfoProps> = ({
               <div className="tw-flex tw-flex-col">
                 <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-5">강의 일정</p>
                 <p className="tw-text-sm tw-text-left tw-text-black">시작일 : {clubData?.startAt?.replace('T', ' ')}</p>
+                <p className="tw-text-sm tw-text-left tw-text-black">종료일 : {clubData?.endAt?.replace('T', ' ')}</p>
               </div>
             </div>
           </div>

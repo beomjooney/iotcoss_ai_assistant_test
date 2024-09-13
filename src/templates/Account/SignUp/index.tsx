@@ -205,11 +205,11 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
     password: Yup.string()
       .required('Password is required')
       .min(4, 'Password must be at least 4 characters')
-      .max(8, 'Password must not exceed 8 characters'),
+      .max(20, 'Password must not exceed 20 characters'),
     passwordConfirm: Yup.string()
       .required('Password is required')
       .min(4, 'Password must be at least 4 characters')
-      .max(8, 'Password must not exceed 8 characters')
+      .max(20, 'Password must not exceed 20 characters')
       .oneOf([Yup.ref('password')], 'Passwords do not match'),
     website: Yup.string().matches(
       /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
