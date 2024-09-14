@@ -68,7 +68,7 @@ export function PasswordTemplate({ title = '', onSubmitLogin }: PasswordTemplate
       // Password change logic
       console.log('Password changed successfully');
       onResetPassword({
-        token: key,
+        key: key,
         newPassword: newPassword,
         newPasswordConfirm: confirmPassword,
       });
