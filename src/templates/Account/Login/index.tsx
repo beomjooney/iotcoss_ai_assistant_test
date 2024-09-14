@@ -193,7 +193,7 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
               justifyContent="flex-end"
               sx={{ fontWeight: 'bold' }}
               className="tw-cursor-pointer"
-              // onClick={() => router.push('/account/forgot')}
+              onClick={() => router.push('/account/forgot')}
             >
               <Typography sx={{ fontSize: 12, textDecoration: 'underline' }} className="tw-py-3">
                 비밀번호를 잊으셨나요?
