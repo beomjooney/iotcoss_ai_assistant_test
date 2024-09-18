@@ -4,6 +4,8 @@ import { Menu, MenuItem } from '@mui/material';
 import { Radio, RadioGroup, FormControlLabel, TextField } from '@mui/material';
 import { Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import { MentorsModal, Toggle, Tag } from 'src/stories/components';
+import { TextareaAutosize } from '@mui/base';
+import CircularProgress from '@mui/material/CircularProgress';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   useDeletePostQuiz,
@@ -22,6 +24,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
 import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
+import { useAIQuizAnswer } from 'src/services/quiz/quiz.mutations';
 
 const studyStatus = [
   {
@@ -61,7 +64,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
   const [modelAnswerFinal, setModelAnswerFinal] = useState('');
   const [modelAnswerAi, setModelAnswerAi] = useState('');
   const [personName, setPersonName] = useState([]);
-  const [fileList, setFileList] = useState([]);
+  const [isLoadingAI, setIsLoadingAI] = useState(false);
   let [key, setKey] = useState('');
   let [fileName, setFileName] = useState('');
 
@@ -80,6 +83,31 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
   const { mutate: onHidePostQuiz, isSuccess: hidePostQuizSuccess } = useHidePostQuiz();
   const { mutate: onPublishPostQuiz, isSuccess: publishPostQuizSuccess } = usePublishPostQuiz();
   const { mutate: onQuizModify, isSuccess: quizModifySuccess } = useQuizModify();
+  const {
+    mutate: onAIQuizAnswer,
+    isSuccess: answerSuccess,
+    isError: answerError,
+    data: aiQuizAnswerData,
+  } = useAIQuizAnswer();
+
+  useEffect(() => {
+    if (answerSuccess || answerError) {
+      setIsLoadingAI(false);
+    }
+  }, [answerSuccess, answerError]);
+
+  useEffect(() => {
+    if (aiQuizAnswerData) {
+      // const updatedQuizList = {
+      //   ...quizList,
+      //   modelAnswer: aiQuizAnswerData[0].answer,
+      // };
+      // setQuizList(updatedQuizList);
+      setModelAnswerFinal(aiQuizAnswerData[0].answer);
+      console.log('aiQuizAnswerData', aiQuizAnswerData);
+      // updateQuizList(updatedQuizList);
+    }
+  }, [aiQuizAnswerData]);
 
   const { isFetched: isParticipantListFetcheds, isSuccess: isParticipantListSuccess } = useQuizFileDownload(
     key,
@@ -296,6 +324,56 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
     console.log(key);
     setKey(key);
     setFileName(fileName);
+  };
+
+  const handleAIAnswerClick = async (quizIndex, quiz) => {
+    if (!contentType) {
+      alert('지식컨텐츠 유형을 선택하세요.');
+      return;
+    }
+
+    if (contentType !== '0320' && !contentUrl) {
+      alert('콘텐츠 URL을 입력해주세요.');
+      return false;
+    }
+
+    if (!selectedJob || selectedJob.length === 0) {
+      alert('하나 이상의 학과를 선택하세요.');
+      return;
+    }
+
+    // Find the specific quiz in quizList and create formattedQuizList
+    const params = {
+      isNew: false,
+      contentSequence: data.content.contentSequence,
+      contentType: contentType,
+      jobs: selectedJob,
+      jobLevels: jobLevel,
+      quizzes: [
+        {
+          no: 1,
+          question: question,
+        },
+      ],
+    };
+
+    const formData = new FormData();
+
+    if (contentType === '0320') {
+      formData.append('file', fileList[0]);
+    } else {
+      params['contentUrl'] = contentUrl;
+    }
+
+    // 객체를 JSON 문자열로 변환합니다.
+    const jsonString = JSON.stringify(params);
+    // FormData에 JSON 문자열을 추가하면서 명시적으로 'Content-Type'을 설정합니다.
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    formData.append('request', blob);
+
+    console.log('ai quiz click', params);
+    setIsLoadingAI(true);
+    onAIQuizAnswer(formData); // Ensure this function returns a promise
   };
 
   console.log('quiz data', data);
@@ -752,21 +830,36 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                     '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
                   }}
                 />
-                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">모범답안</div>
-                <TextField
-                  required
-                  id="username"
-                  name="username"
-                  value={modelAnswerFinal}
-                  onChange={e => setModelAnswerFinal(e.target.value)}
-                  variant="outlined"
-                  type="search"
-                  size="small"
-                  fullWidth
-                  sx={{
-                    '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
-                  }}
-                />
+                <div className="tw-flex tw-justify-between tw-items-center">
+                  <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">모범답안</div>
+                  <button
+                    onClick={() => {
+                      // Add your button click handler logic here
+                      handleAIAnswerClick(0, modelAnswerFinal);
+                    }}
+                    className="tw-w-[134px] tw-mt-2 tw-px-3 tw-py-1 tw-text-black tw-bg-white border border-dark tw-rounded tw-text-sm"
+                  >
+                    {isLoadingAI ? <CircularProgress color="info" size={18} /> : ' + AI모범답안 생성'}
+                  </button>
+                </div>
+                <div className="tw-flex tw-items-center tw-gap-2">
+                  <TextareaAutosize
+                    style={{
+                      width: '100%',
+                      height: 120,
+                      borderRadius: '5px',
+                      padding: 12,
+                      resize: 'none',
+                    }}
+                    minRows={4}
+                    required
+                    id="username"
+                    name="username"
+                    value={modelAnswerFinal}
+                    onChange={e => setModelAnswerFinal(e.target.value)}
+                  />
+                </div>
+
                 <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">채점기준 주요 키워드/문구</div>
                 {/* <TagsInput
                   value={selected3}
