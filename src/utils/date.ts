@@ -27,6 +27,10 @@ export function getFirstSubdomain() {
       return '';
     }
 
+    if (subdomain === '168') {
+      return 'dsu';
+    }
+
     //test
     // return '';
     return subdomain;
