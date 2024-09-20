@@ -6,8 +6,10 @@ export * from './Account/Forgot/index';
 export * from './Account/Password/index';
 export * from './Account/SignUp/index';
 export * from './Account/MemberRegistrationComplete/index';
+export * from './Account/SignupAuthentication/index';
 export * from './Account/Join/index';
 export * from './Account/My/index';
+
 export * from './Account/My/MentorPick/index';
 export * from './Account/My/Activity/index';
 export * from './Account/My/Point/index';

@@ -15,7 +15,9 @@ import {
   userUpdate,
   requestProfessor,
   emailSend,
+  emailJoinSend,
   resetPassword,
+  join,
 } from './account.api';
 import { setCookie } from 'cookies-next';
 import router from 'next/router';
@@ -169,6 +171,35 @@ export const useEmainSend = (): UseMutationResult => {
   });
 };
 
+export const useEmainJoinSend = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  // TODO : any 타입 변경
+  return useMutation<any, any, any>(requestBody => emailJoinSend(requestBody), {
+    onError: (error, variables, context) => {
+      console.log(error);
+
+      const { code, message } = error;
+      // alert(`mutation error : [${code}] ${message}`);
+      if (code === 'C06000') {
+        alert('로그인 실패 횟수 초과');
+      } else if (code === 'C06002') {
+        alert('이메일 계정 또는 암호가 일치하지 않습니다. 다시 한번 확인해 주세요.');
+      }
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('LOGIN').all),
+    onSuccess: async data => {
+      console.log('data', data);
+
+      const { responseCode, message } = data;
+      if (responseCode === '0000') {
+        setCookie('access_token', data?.access_token);
+      } else {
+        alert(`error : [${responseCode}] ${message}`);
+      }
+    },
+  });
+};
+
 export const useLoginSignUp = (): UseMutationResult => {
   const queryClient = useQueryClient();
   // TODO : any 타입 변경
@@ -282,6 +313,30 @@ export const useResetPassword = (): UseMutationResult => {
     },
   });
 };
+export const useJoin = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  // TODO : any 타입 변경
+  return useMutation<any, any, any>(requestBody => join(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('OTP').all),
+    onSuccess: async data => {
+      console.log('data', data);
+      const { responseCode, message } = data;
+      console.log('responseCode', responseCode);
+      if (responseCode === '0000') {
+      } else if (responseCode === '4016') {
+        // alert('세션이 만료되었습니다.\n다시 회원가입해주세요.');
+        // router.push('/account/signup');
+      } else {
+        alert(`error : [${responseCode}] ${message}`);
+      }
+    },
+  });
+};
+
 export const useUserUpdate = (): UseMutationResult => {
   const queryClient = useQueryClient();
   // TODO : any 타입 변경
