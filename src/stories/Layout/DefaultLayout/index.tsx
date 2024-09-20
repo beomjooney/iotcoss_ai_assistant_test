@@ -33,8 +33,10 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       update({
         tenantName: data.tenantName,
         redirections: data.homeUrl,
+        registrationAuthenticationType: data.registrationAuthenticationType,
         menu: {
           use_lecture_club: data.lectureClubUseYn === 'YES' ? true : false,
+
           use_quiz_club: data.quizClubUseYn === 'YES' ? true : false,
         },
       });

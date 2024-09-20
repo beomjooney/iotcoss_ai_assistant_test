@@ -99,6 +99,11 @@ export async function emailSend(params: any[]) {
   const { data } = await axiosGeneralAPI().post('/api/v1/password/recovery/push', params);
   return data;
 }
+//login
+export async function emailJoinSend(params: any[]) {
+  const { data } = await axiosGeneralAPI().post('/api/v1/signup/authentication-push', params);
+  return data;
+}
 
 // 회원 등록
 export const loginSignUp = async body => await axiosGeneralAPI().post('/api/v1/signup', body);
@@ -134,6 +139,10 @@ export async function changePassword(params: any) {
 export async function resetPassword(params: any) {
   const { data } = await axiosGeneralAPI().put('/api/v1/password/reset', params);
   return data.data;
+}
+export async function join(params: any) {
+  const { data } = await axiosGeneralAPI().post('/api/v1/signup/authentication', params);
+  return data;
 }
 
 export async function userUpdate(params: any) {
