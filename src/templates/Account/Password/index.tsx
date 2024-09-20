@@ -73,7 +73,7 @@ export function PasswordTemplate({ title = '', onSubmitLogin }: PasswordTemplate
         newPasswordConfirm: confirmPassword,
       });
     } else {
-      alert('New password and confirmation do not match');
+      alert('새 비밀번호와 확인이 일치하지 않습니다.');
     }
   };
 

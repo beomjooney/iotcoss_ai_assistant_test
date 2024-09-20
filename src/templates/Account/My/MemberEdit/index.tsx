@@ -397,7 +397,7 @@ export function MemberEditTemplate() {
         newPasswordConfirm: confirmPassword,
       });
     } else {
-      alert('New password and confirmation do not match');
+      alert('새 비밀번호와 이전 비밀번호가 일치하지 않습니다.');
     }
   };
 
