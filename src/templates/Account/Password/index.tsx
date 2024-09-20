@@ -73,7 +73,7 @@ export function PasswordTemplate({ title = '', onSubmitLogin }: PasswordTemplate
         newPasswordConfirm: confirmPassword,
       });
     } else {
-      alert('새 비밀번호와 확인이 일치하지 않습니다.');
+      alert('새 비밀번호와 새 비밀번호 확인이 일치하지 않습니다.');
     }
   };
 
@@ -92,7 +92,7 @@ export function PasswordTemplate({ title = '', onSubmitLogin }: PasswordTemplate
               새 비밀번호
             </label>
             <TextField
-              type="search"
+              type="password"
               fullWidth
               sx={{
                 backgroundColor: '#F6F7FB',
