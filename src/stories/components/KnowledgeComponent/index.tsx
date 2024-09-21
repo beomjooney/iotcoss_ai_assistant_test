@@ -64,6 +64,9 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
   const [modelAnswerFinal, setModelAnswerFinal] = useState('');
   const [modelAnswerAi, setModelAnswerAi] = useState('');
   const [personName, setPersonName] = useState([]);
+  const [isContentTitle, setIsContentTitle] = useState(false);
+  const [isContent, setIsContent] = useState(false);
+
   const [isLoadingAI, setIsLoadingAI] = useState(false);
   let [key, setKey] = useState('');
   let [fileName, setFileName] = useState('');
@@ -255,43 +258,6 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
   };
 
   const handleQuizInsertClick = async () => {
-    // if (!contentTitle) {
-    //   alert('콘텐츠 제목을 입력해주세요.');
-    //   return false;
-    // }
-    // if (!contentUrl) {
-    //   alert('콘텐츠 URL을 입력해주세요.');
-    //   return false;
-    // }
-    // if (!selectedSubject) {
-    //   alert('선택된 과목을 입력해주세요.');
-    //   return false;
-    // }
-    // if (!selectedChapter) {
-    //   alert('선택된 챕터를 입력해주세요.');
-    //   return false;
-    // }
-    // if (!selected1.length) {
-    //   alert('선택된 기술을 입력해주세요.');
-    //   return false;
-    // }
-    // if (!selected2.length) {
-    //   alert('선택된 키워드를 입력해주세요.');
-    //   return false;
-    // }
-    // if (!selectedUniversity) {
-    //   alert('선택된 대학교를 입력해주세요.');
-    //   return false;
-    // }
-    // if (!selectedJob) {
-    //   alert('선택된 직업을 입력해주세요.');
-    //   return false;
-    // }
-    // if (!jobLevel) {
-    //   alert('직업 레벨을 입력해주세요.');
-    //   return false;
-    // }
-
     const params = {
       content: {
         isNew: false,
@@ -374,6 +340,81 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
     console.log('ai quiz click', params);
     setIsLoadingAI(true);
     onAIQuizAnswer(formData); // Ensure this function returns a promise
+  };
+
+  const handleEditQuizContent = () => {
+    console.log('edit quiz');
+
+    setIsContent(true);
+  };
+
+  const handleEditSaveQuizContent = () => {
+    console.log('edit save quiz');
+    const params = {
+      content: {
+        isNew: false,
+        contentSequence: data.content.contentSequence,
+        contentType: contentType,
+        description: contentTitle,
+        url: contentUrl,
+        studySubject: selectedSubject,
+        studyChapter: selectedChapter,
+        skills: selected2,
+        studyKeywords: selected1,
+      },
+      question: question,
+      modelAnswerFinal: modelAnswerFinal,
+      modelAnswerKeywords: selected3,
+      jobGroups: [universityCode],
+      jobs: selectedJob,
+      jobLevels: jobLevel,
+    };
+
+    const body = {
+      quizzes: params,
+      quizSequence: data.quizSequence,
+    };
+
+    onQuizModify(body);
+
+    setIsContent(false);
+  };
+
+  const handleEditQuiz = () => {
+    console.log('edit quiz');
+
+    setIsContentTitle(true);
+  };
+
+  const handleEditSaveQuiz = () => {
+    console.log('edit save quiz');
+    const params = {
+      content: {
+        isNew: false,
+        contentSequence: data.content.contentSequence,
+        contentType: contentType,
+        description: contentTitle,
+        url: contentUrl,
+        studySubject: selectedSubject,
+        studyChapter: selectedChapter,
+        skills: selected2,
+        studyKeywords: selected1,
+      },
+      question: question,
+      modelAnswerFinal: modelAnswerFinal,
+      modelAnswerKeywords: selected3,
+      jobGroups: [universityCode],
+      jobs: selectedJob,
+      jobLevels: jobLevel,
+    };
+
+    const body = {
+      quizzes: params,
+      quizSequence: data.quizSequence,
+    };
+
+    onQuizModify(body);
+    setIsContentTitle(false);
   };
 
   console.log('quiz data', data);
@@ -815,7 +856,178 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                 <div className="tw-text-lg tw-font-bold">퀴즈 정보 입력</div>
               </AccordionSummary>
               <AccordionDetails sx={{ backgroundColor: 'white', padding: 3 }}>
-                <div className="tw-text-sm tw-font-bold tw-pb-2">퀴즈</div>
+                <div className="tw-flex tw-justify-between tw-items-center">
+                  <div className="tw-text-base tw-font-bold tw-pt-5 tw-pb-2">퀴즈</div>
+                  <button
+                    onClick={() => {
+                      // Add your button click handler logic here
+                      handleAIAnswerClick(0, modelAnswerFinal);
+                    }}
+                    className="tw-w-[134px] tw-mt-2 tw-px-3 tw-py-1 tw-text-black tw-bg-white border border-dark tw-rounded tw-text-sm"
+                  >
+                    {isLoadingAI ? <CircularProgress color="info" size={18} /> : ' + AI모범답안 생성'}
+                  </button>
+                </div>
+                <div className="border tw-rounded-lg tw-my-2">
+                  <div className="border-bottom tw-bg-gray-100 tw-px-5 tw-py-3">
+                    <div className="tw-flex tw-justify-between tw-items-center">
+                      <div className="tw-flex-none tw-w-14 tw-items-center">
+                        <div className="tw-flex tw-flex-col tw-items-center">
+                          <img
+                            className="tw-w-10 border tw-rounded-full"
+                            src="/assets/images/main/ellipse_201.png"
+                            alt={`Quiz`}
+                          />
+                          <p className="tw-pt-1 tw-text-sm tw-text-center tw-text-black">퀴즈</p>
+                        </div>
+                      </div>
+                      {isContentTitle ? (
+                        <TextField
+                          required
+                          id="username"
+                          name="username"
+                          variant="outlined"
+                          type="search"
+                          value={question}
+                          size="small"
+                          onChange={e => setQuestion(e.target.value)}
+                          fullWidth
+                          sx={{
+                            width: '430px',
+                            backgroundColor: 'white',
+                            '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
+                          }}
+                        />
+                      ) : (
+                        <div className={`tw-flex-auto tw-px-5 tw-text-base }`}>{question}</div>
+                      )}
+                      <div className="tw-flex-auto tw-w-32 tw-flex tw-justify-end">
+                        {isContentTitle ? (
+                          <button
+                            onClick={() => handleEditSaveQuiz()}
+                            className="tw-px-5 tw-py-2.5 tw-text-sm tw-w-28 tw-bg-blue-500 tw-rounded-md tw-text-white"
+                          >
+                            저장
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => handleEditQuiz()}
+                            className="tw-px-5 tw-py-2.5 tw-text-sm tw-w-28 border tw-bg-white tw-rounded-md "
+                          >
+                            수정하기
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="tw-flex tw-justify-start tw-items-center tw-px-5 tw-pt-5">
+                    <div className="tw-flex-none tw-w-14 tw-items-center">
+                      <div className="tw-flex tw-flex-col tw-items-center">
+                        <svg
+                          width={24}
+                          height={25}
+                          viewBox="0 0 24 25"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="w-6 h-6 relative"
+                          preserveAspectRatio="none"
+                        >
+                          <path
+                            d="M6 6.3252V12.3252C6 13.1208 6.31607 13.8839 6.87868 14.4465C7.44129 15.0091 8.20435 15.3252 9 15.3252H19M19 15.3252L15 11.3252M19 15.3252L15 19.3252"
+                            stroke="#CED4DE"
+                            strokeWidth={2}
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="tw-flex-none tw-w-14 tw-items-center">
+                      <div className="tw-flex tw-flex-col tw-items-center">
+                        <img className="tw-w-9 border tw-rounded-full" src="/assets/images/main/ellipse_202.png" />
+                        <p className="tw-pt-1 tw-text-sm tw-text-center tw-text-black">모범답안</p>
+                      </div>
+                    </div>
+                    <div className="tw-p-5 tw-pr-0 tw-pt-0 tw-flex-col tw-items-center tw-w-full">
+                      <div className="tw-flex  tw-items-center">
+                        {isContent ? (
+                          <div className="tw-pr-5 tw-pb-5 tw-pt-5 tw-w-full">
+                            <TextareaAutosize
+                              style={{
+                                width: '100%',
+                                height: 120,
+                                borderRadius: '5px',
+                                padding: 12,
+                                resize: 'none',
+                              }}
+                              minRows={4}
+                              required
+                              id="username"
+                              name="username"
+                              value={modelAnswerFinal}
+                              onChange={e => setModelAnswerFinal(e.target.value)}
+                            />
+                          </div>
+                        ) : (
+                          <p className="tw-pr-5 tw-pt-5 tw-text-base tw-font-medium tw-text-left">{modelAnswerFinal}</p>
+                        )}
+
+                        <div className="tw-w-32 tw-flex tw-justify-end">
+                          {isContent ? (
+                            <button
+                              onClick={() => handleEditSaveQuizContent()}
+                              className="tw-px-5 tw-py-2.5 tw-text-sm tw-w-28 tw-bg-blue-500 tw-rounded-md tw-text-white"
+                            >
+                              저장
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => handleEditQuizContent()}
+                              className="tw-px-5 tw-py-2.5 tw-text-sm tw-w-28 border tw-bg-white tw-rounded-md "
+                            >
+                              수정하기
+                            </button>
+                          )}
+                        </div>
+                      </div>
+
+                      {isContent ? (
+                        <Tag
+                          value={selected3}
+                          onChange={setSelected3}
+                          placeHolder="주요 키워드/문구 입력 후 엔터를 쳐주세요."
+                        />
+                      ) : (
+                        <div className="tw-flex tw-items-center tw-pr-5 tw-pt-5 tw-pb-0 tw-text-sm tw-font-bold tw-gap-2 tw-flex-wrap">
+                          채점기준 주요 키워드/문구 :
+                          {selected3.map((tag, tagIndex) => (
+                            <div
+                              key={tagIndex}
+                              className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-gray-400"
+                            >
+                              <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-left tw-text-white">
+                                {tag}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* <div className="tw-flex tw-justify-between tw-items-center">
+                  <div className="tw-text-base tw-font-bold tw-pt-5 tw-pb-2">퀴즈</div>
+                  <button
+                    onClick={() => {
+                      // Add your button click handler logic here
+                      handleAIAnswerClick(0, modelAnswerFinal);
+                    }}
+                    className="tw-w-[134px] tw-mt-2 tw-px-3 tw-py-1 tw-text-black tw-bg-white border border-dark tw-rounded tw-text-sm"
+                  >
+                    {isLoadingAI ? <CircularProgress color="info" size={18} /> : ' + AI모범답안 생성'}
+                  </button>
+                </div>
                 <TextField
                   required
                   id="username"
@@ -832,15 +1044,6 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                 />
                 <div className="tw-flex tw-justify-between tw-items-center">
                   <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">모범답안</div>
-                  <button
-                    onClick={() => {
-                      // Add your button click handler logic here
-                      handleAIAnswerClick(0, modelAnswerFinal);
-                    }}
-                    className="tw-w-[134px] tw-mt-2 tw-px-3 tw-py-1 tw-text-black tw-bg-white border border-dark tw-rounded tw-text-sm"
-                  >
-                    {isLoadingAI ? <CircularProgress color="info" size={18} /> : ' + AI모범답안 생성'}
-                  </button>
                 </div>
                 <div className="tw-flex tw-items-center tw-gap-2">
                   <TextareaAutosize
@@ -861,17 +1064,11 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                 </div>
 
                 <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">채점기준 주요 키워드/문구</div>
-                {/* <TagsInput
-                  value={selected3}
-                  onChange={setSelected3}
-                  name="fruits"
-                  placeHolder="주요 키워드/문구 입력 후 엔터를 쳐주세요."
-                /> */}
                 <Tag
                   value={selected3}
                   onChange={setSelected3}
                   placeHolder="주요 키워드/문구 입력 후 엔터를 쳐주세요."
-                />
+                /> */}
                 {/* <div className="tw-text-right tw-mt-5">
                   <button
                     onClick={handleQuizClick}
@@ -884,14 +1081,14 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
             </Accordion>
 
             <div className="tw-py-5 tw-text-center">
-              <div className="tw-text-center">
+              {/* <div className="tw-text-center">
                 <button
                   onClick={handleQuizInsertClick}
                   className="tw-text-white tw-text-sm tw-px-10 tw-py-3 tw-text-base tw-bg-red-500 tw-rounded-md"
                 >
                   퀴즈 수정하기
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
