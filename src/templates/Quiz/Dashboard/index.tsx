@@ -253,7 +253,7 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
                 </div>
                 <div className="tw-py-8">
                   <p className="tw-text-center tw-text-[68.91717529296875px] tw-font-bold tw-text-left tw-text-[#31343d]">
-                    {myDashboardList?.recruitedMemberCount}
+                    {myDashboardList?.recruitedMemberCount || 0}
                     <span className="tw-text-center tw-text-base tw-font-medium tw-text-left tw-text-[#31343d]">
                       명
                     </span>
@@ -269,14 +269,16 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
                 </div>
                 <div className="tw-flex tw-flex-col tw-h-[70%] tw-justify-center tw-gap-1">
                   <p className="tw-ml-10 tw-text-left tw-text-base tw-font-bold tw-text-[#31343d]">
-                    클럽 주수 : {myDashboardList?.progress?.weekCount}주
+                    클럽 주수 : {myDashboardList?.progress?.weekCount || 0}주
                   </p>
                   <p className="tw-ml-10 tw-text-left tw-text-base tw-font-bold tw-text-[#31343d]">
-                    학습 주차 : <span className="tw-text-[#e11837]">{myDashboardList?.progress?.studyOrder}회차</span> /{' '}
-                    {myDashboardList?.progress?.totalStudyCount}회
+                    학습 주차 :{' '}
+                    <span className="tw-text-[#e11837]">{myDashboardList?.progress?.studyOrder || 0}회차</span> /{' '}
+                    {myDashboardList?.progress?.totalStudyCount || 0}회
                   </p>
+
                   <p className="tw-ml-10 tw-text-left tw-text-base tw-font-bold tw-text-[#31343d]">
-                    남은 학습 : {myDashboardList?.progress?.remainingStudyCount}회
+                    남은 학습 : {myDashboardList?.progress?.remainingStudyCount || 0}회
                   </p>
                 </div>
               </div>
@@ -311,7 +313,7 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
                   />
                   <div className="tw-flex tw-justify-center tw-items-center tw-absolute tw-h-full tw-w-full">
                     <p className="tw-text-xl tw-font-bold tw-text-[#e11837]">
-                      {myDashboardList?.participationPercentage}%
+                      {myDashboardList?.participationPercentage || 0}%
                     </p>
                   </div>
                 </div>
@@ -451,6 +453,7 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
               </div>
             </div>
             {/* <DataGrid columns={columns} rows={rows} />; */}
+
             <TableContainer>
               <Table className={classes.table} aria-label="simple table" style={{ tableLayout: 'fixed' }}>
                 <TableHead style={{ backgroundColor: '#F6F7FB' }}>
@@ -480,92 +483,100 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {myDashboardList?.participantProgresses?.map((info, index) => (
-                    <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                      <TableCell
-                        align="center"
-                        width={140}
-                        component="th"
-                        scope="row"
-                        className={`${classes.stickyWhite} ${classes.stickyFirst}`}
-                      >
-                        <div className="tw-flex tw-items-center">
-                          <img
-                            src={info?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
-                            className="tw-w-10 tw-h-10 border tw-rounded-full"
-                            alt="Profile"
-                          />
-                          <div className="tw-ml-2">{info?.member?.nickname}</div>
-                        </div>
-                      </TableCell>
-                      <TableCell
-                        align="center"
-                        width={120}
-                        component="th"
-                        scope="row"
-                        className={`${classes.stickyWhiteBoard} ${classes.stickySecond}`}
-                      >
-                        <div className="tw-grid tw-grid-cols-5 tw-gap-1 tw-justify-center tw-items-center">
-                          <div className="tw-col-span-3 progress tw-rounded tw-h-2 tw-p-0">
-                            <span
-                              style={{
-                                width: `${(info?.studyCount / myDashboardList?.progress?.totalStudyCount) * 100}%`,
-                              }}
-                            >
-                              <span className="progress-line"></span>
-                            </span>
+                  {myDashboardList?.participantProgresses?.length > 0 ? (
+                    myDashboardList?.participantProgresses?.map((info, index) => (
+                      <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                        <TableCell
+                          align="center"
+                          width={140}
+                          component="th"
+                          scope="row"
+                          className={`${classes.stickyWhite} ${classes.stickyFirst}`}
+                        >
+                          <div className="tw-flex tw-items-center">
+                            <img
+                              src={info?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
+                              className="tw-w-10 tw-h-10 border tw-rounded-full"
+                              alt="Profile"
+                            />
+                            <div className="tw-ml-2">{info?.member?.nickname}</div>
                           </div>
-                          <div className="tw-col-span-2">{info?.studyCount}회</div>
-                        </div>
-                      </TableCell>
-                      <TableCell padding="none" align="center" width={110} component="th" scope="row">
-                        <div className="">
-                          <div className=" tw-gap-0 tw-justify-center tw-items-center tw-p-2">
-                            <span className="tw-font-bold">{info?.gradingFinalPoints}</span> / {info?.totalPoints}
-                          </div>
-                        </div>
-                      </TableCell>
-                      {info?.results.map((info, index) => {
-                        const { fill, borderColor, text } = getCircleColor(info?.status);
-                        return (
-                          <TableCell padding="none" key={index} align="center" width={100} component="th" scope="row">
-                            <div className="tw-h-12 tw-flex tw-justify-center tw-items-center">
-                              {info?.status !== '0001' && (
-                                <svg
-                                  width="20"
-                                  height="20"
-                                  viewBox="0 0 20 20"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  className="tw-left-[-1px] tw-top-[-1px]"
-                                  preserveAspectRatio="xMidYMid meet"
-                                >
-                                  <circle cx="10" cy="10" r="9.5" fill={fill} stroke={borderColor || fill}></circle>
-                                  <text
-                                    x="10"
-                                    y="10"
-                                    textAnchor="middle"
-                                    dominantBaseline="central"
-                                    fill={text}
-                                    className="tw-text-xs tw-font-medium tw-text-center"
-                                  >
-                                    {info?.status === '0004' && info?.gradingFinal}
-                                    {info?.status === '0003' && '?'}
-                                    {info?.status === '0002' && '-'}
-                                  </text>
-                                </svg>
-                              )}
-                              <div className="tw-text-gray-400">
-                                {info?.status === '0001' &&
-                                  info?.relativeDaysToPublishDate !== null &&
-                                  'D' + info?.relativeDaysToPublishDate}
-                              </div>
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          width={120}
+                          component="th"
+                          scope="row"
+                          className={`${classes.stickyWhiteBoard} ${classes.stickySecond}`}
+                        >
+                          <div className="tw-grid tw-grid-cols-5 tw-gap-1 tw-justify-center tw-items-center">
+                            <div className="tw-col-span-3 progress tw-rounded tw-h-2 tw-p-0">
+                              <span
+                                style={{
+                                  width: `${(info?.studyCount / myDashboardList?.progress?.totalStudyCount) * 100}%`,
+                                }}
+                              >
+                                <span className="progress-line"></span>
+                              </span>
                             </div>
-                          </TableCell>
-                        );
-                      })}
+                            <div className="tw-col-span-2">{info?.studyCount}회</div>
+                          </div>
+                        </TableCell>
+                        <TableCell padding="none" align="center" width={110} component="th" scope="row">
+                          <div className="">
+                            <div className=" tw-gap-0 tw-justify-center tw-items-center tw-p-2">
+                              <span className="tw-font-bold">{info?.gradingFinalPoints}</span> / {info?.totalPoints}
+                            </div>
+                          </div>
+                        </TableCell>
+                        {info?.results.map((info, index) => {
+                          const { fill, borderColor, text } = getCircleColor(info?.status);
+                          return (
+                            <TableCell padding="none" key={index} align="center" width={100} component="th" scope="row">
+                              <div className="tw-h-12 tw-flex tw-justify-center tw-items-center">
+                                {info?.status !== '0001' && (
+                                  <svg
+                                    width="20"
+                                    height="20"
+                                    viewBox="0 0 20 20"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="tw-left-[-1px] tw-top-[-1px]"
+                                    preserveAspectRatio="xMidYMid meet"
+                                  >
+                                    <circle cx="10" cy="10" r="9.5" fill={fill} stroke={borderColor || fill}></circle>
+                                    <text
+                                      x="10"
+                                      y="10"
+                                      textAnchor="middle"
+                                      dominantBaseline="central"
+                                      fill={text}
+                                      className="tw-text-xs tw-font-medium tw-text-center"
+                                    >
+                                      {info?.status === '0004' && info?.gradingFinal}
+                                      {info?.status === '0003' && '?'}
+                                      {info?.status === '0002' && '-'}
+                                    </text>
+                                  </svg>
+                                )}
+                                <div className="tw-text-gray-400">
+                                  {info?.status === '0001' &&
+                                    info?.relativeDaysToPublishDate !== null &&
+                                    'D' + info?.relativeDaysToPublishDate}
+                                </div>
+                              </div>
+                            </TableCell>
+                          );
+                        })}
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={3} align="center">
+                        참가자 데이터 없음
+                      </TableCell>
                     </TableRow>
-                  ))}
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>

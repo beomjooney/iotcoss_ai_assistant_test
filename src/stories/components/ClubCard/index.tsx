@@ -126,7 +126,7 @@ ClubCardProps) => {
                     />
                   </svg>
                   <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#478af5]">
-                    {getClubAboutJoyStatus(item.clubStatus)}
+                    {getClubAboutJoyStatus(item.clubAboutStatus)}
                   </p>
                 </div>
                 {/* <div className="tw-inline-flex tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-w-[72px] tw-h-6 tw-relative tw-gap-1 tw-px-3 tw-py-0.5 tw-rounded-[20px] tw-bg-[#06c090]/5">

@@ -11,7 +11,7 @@ import { makeStyles } from '@material-ui/core';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import StarIcon from '@mui/icons-material/Star';
 import { useSaveFavorite, useDeleteFavorite } from 'src/services/community/community.mutations';
-import { getButtonText } from 'src/utils/clubStatus';
+import { getButtonText, getClubStatusMessage, getClubAboutStatus } from 'src/utils/clubStatus';
 
 export interface ClubMiniCardProps {
   /** 게시판 object */
@@ -118,7 +118,7 @@ ClubMiniCardProps) => {
                 <div className="tw-flex tw-gap-[7px] tw-flex-wrap tw-max-h-[50px] tw-overflow-hidden tw-relative">
                   {/* Ensuring the maximum height doesn't exceed 3 lines. Adjust '60px' based on line height */}
                   <div className="tw-bg-black tw-rounded-[3.5px] tw-px-2 tw-py-[1px]">
-                    <p className="tw-text-[12.25px] tw-text-white">{getButtonText(item?.clubStatus)}</p>
+                    <p className="tw-text-[12.25px] tw-text-white">{getClubAboutStatus(item?.clubAboutStatus)}</p>
                   </div>
                   <div className="tw-bg-[#d7ecff] tw-rounded-[3.5px] tw-px-2 tw-py-[1px]">
                     <p className="tw-text-[12.25px] tw-text-[#235a8d]">{item?.jobGroups[0].name || 'N/A'}</p>

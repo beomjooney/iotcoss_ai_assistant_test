@@ -6,7 +6,7 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import { useClubJoin } from 'src/services/community/community.mutations';
 import { useSessionStore } from 'src/store/session';
 import { useSaveLike, useDeleteLike } from 'src/services/community/community.mutations';
-import { getClubAboutJoyStatus } from 'src/utils/clubStatus';
+import { getClubAboutJoyStatus, getClubStatusMessage, getClubAboutStatus } from 'src/utils/clubStatus';
 import { Button, Modal } from 'src/stories/components';
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
@@ -182,7 +182,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
               <div className="tw-inline-flex tw-ml-auto">
                 <div className="tw-flex tw-items-center tw-space-x-4">
                   <div className="tw-flex tw-ml-auto tw-items-center tw-space-x-4">
-                    {clubData?.clubStatus === '0300' ? (
+                    {clubData?.clubAboutStatus === '0300' ? (
                       <button
                         onClick={() => handlerClubJoin(clubData?.clubSequence, clubData?.isPublic)}
                         className="tw-text-[12.25px] tw-font-bold tw-text-center tw-text-white tw-bg-[#e11837] tw-px-4 tw-py-2 tw-rounded"
@@ -194,8 +194,8 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
                         disabled
                         className="tw-text-[12.25px] tw-font-bold tw-text-center tw-text-white tw-bg-black tw-px-4 tw-py-2 tw-rounded"
                       >
-                        {/* {getClubStatusMessage(clubData?.clubAboutStatus)} */}
-                        {getClubAboutJoyStatus(clubData?.clubStatus)}
+                        {getClubAboutStatus(clubData?.clubAboutStatus)}
+                        {/* {getClubAboutJoyStatus(clubData?.clubStatus)} */}
                       </button>
                     )}
                   </div>
