@@ -343,6 +343,19 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     setFileName(fileName);
   };
 
+  function formatDate(sentAt) {
+    if (!sentAt) return '';
+
+    const date = new Date(sentAt);
+
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `${month}-${day} ${hours}:${minutes}`;
+  }
+
   return (
     <div className={cx('seminar-container')}>
       <div className={cx('container')}>
@@ -638,20 +651,24 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                           {myDashboardList?.recentQuestions?.contents?.map((data, index) => (
                             <div
                               key={index}
-                              className="tw-flex tw-px-3 tw-justify-start tw-items-center border-bottom tw-flex-grow-0 tw-flex-shrink-0  tw-h-[52px] tw-relative tw-overflow-hidden tw-bg-white tw-border-t-0 tw-border-r-0 tw-border-b tw-border-l-0 tw-border-[#e9ecf2] tw-min-w-[400px]"
+                              className="tw-flex tw-px-3 tw-justify-start tw-items-center border-bottom tw-flex-grow-0 tw-flex-shrink-0  tw-h-[54px] tw-relative tw-overflow-hidden tw-bg-white tw-border-t-0 tw-border-r-0 tw-border-b tw-border-l-0 tw-border-[#e9ecf2] tw-min-w-[400px]"
                             >
                               <div className=" tw-text-sm tw-flex tw-justify-start tw-items-center tw-left-3 tw-gap-3">
-                                <img
-                                  className="tw-w-8 tw-h-8 tw-rounded-full"
-                                  src={
-                                    data?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'
-                                  }
-                                />
-                                {/* <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
-                                  {data?.member?.nickname}
-                                </div> */}
+                                <div className="tw-flex tw-flex-col tw-items-center tw-w-10">
+                                  <img
+                                    className="tw-w-8 tw-h-8 tw-rounded-full"
+                                    src={
+                                      data?.member?.profileImageUrl ||
+                                      '/assets/images/account/default_profile_image.png'
+                                    }
+                                    alt="Profile"
+                                  />
+                                  <div className="tw-w-10 tw-text-xs tw-text-center">{data?.member?.nickname}</div>
+                                </div>
+
                                 <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
-                                  {data?.question}
+                                  <div className="tw-text-xs tw-text-gray-400">{formatDate(data?.sentAt)}</div>
+                                  <div>{data?.question}</div>
                                 </div>
                               </div>
                             </div>
@@ -671,42 +688,28 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                               {myDashboardList?.recentUnansweredQuestions?.totalElements || 0}
                             </div>
                             ]
-                            {/* <div className="tw-flex">
-                              <svg
-                                width={28}
-                                height={28}
-                                viewBox="0 0 28 28"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="tw-w-7 tw-h-7"
-                                preserveAspectRatio="xMidYMid meet"
-                              >
-                                <path
-                                  d="M19.2095 13.5977L10.7955 5.18372L8.81445 7.16192L15.2545 13.5977L8.81445 20.0321L10.7941 22.0117L19.2095 13.5977Z"
-                                  fill="#9CA5B2"
-                                />
-                              </svg>
-                            </div> */}
                           </div>
                         </div>
                         <div className="tw-overflow-auto tw-h-[267px]">
                           {myDashboardList?.recentUnansweredQuestions?.contents?.map((data, index) => (
                             <div
                               key={index}
-                              className="tw-flex tw-px-3 tw-justify-start tw-items-center border-bottom tw-flex-grow-0 tw-flex-shrink-0  tw-h-[52px] tw-relative tw-overflow-hidden tw-bg-white tw-border-t-0 tw-border-r-0 tw-border-b tw-border-l-0 tw-border-[#e9ecf2] tw-min-w-[400px]"
+                              className="tw-flex tw-px-3 tw-justify-start tw-items-center border-bottom tw-flex-grow-0 tw-flex-shrink-0  tw-h-[54px] tw-relative tw-overflow-hidden tw-bg-white tw-border-t-0 tw-border-r-0 tw-border-b tw-border-l-0 tw-border-[#e9ecf2] tw-min-w-[400px]"
                             >
                               <div className=" tw-text-sm tw-flex tw-justify-start tw-items-center tw-left-6 tw-top-3 tw-gap-3">
-                                <img
-                                  className="tw-w-8 tw-h-8 tw-rounded-full"
-                                  src={
-                                    data?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'
-                                  }
-                                />
-                                {/* <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
-                                  {data?.member?.nickname}
-                                </div> */}
-                                <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
-                                  {data?.question}
+                                <div className="tw-flex tw-flex-col tw-items-center tw-w-10">
+                                  <img
+                                    className="tw-w-8 tw-h-8 tw-rounded-full"
+                                    src={
+                                      data?.member?.profileImageUrl ||
+                                      '/assets/images/account/default_profile_image.png'
+                                    }
+                                  />
+                                  <div className="tw-w-10 tw-text-xs tw-text-center">{data?.member?.nickname}</div>
+                                </div>
+                                <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
+                                  <div className="tw-text-xs tw-text-gray-400">{formatDate(data?.sentAt)}</div>
+                                  <div>{data?.question}</div>
                                 </div>
                               </div>
                             </div>
