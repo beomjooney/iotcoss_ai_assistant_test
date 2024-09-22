@@ -171,7 +171,7 @@ const AIQuizList = ({
           <div className={`tw-flex-auto tw-px-5 tw-text-sm ${isContentModalClick ? 'tw-w-[250px]' : ''}`}>
             {quizList?.question}
           </div>
-          <div className="tw-flex-auto tw-w-32 tw-flex tw-justify-end">
+          <div className="tw-flex-auto tw-w-[200px] tw-flex tw-justify-end">
             {sortQuizType === 'DESC' && (
               <button
                 onClick={() => handleEditQuiz(index)}
