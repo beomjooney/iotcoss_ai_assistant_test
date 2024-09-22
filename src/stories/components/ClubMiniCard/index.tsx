@@ -137,9 +137,6 @@ ClubMiniCardProps) => {
                       </div>
                     ))}
                 </div>
-
-                {/* Overlay with gradient effect and ellipsis for overflow */}
-                <div className="tw-absolute tw-bottom-0 tw-left-0 tw-w-full tw-h-[20px] tw-bg-gradient-to-t tw-from-white"></div>
               </div>
             </Grid>
             <Grid item xs={1}>
