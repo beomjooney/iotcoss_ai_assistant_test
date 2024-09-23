@@ -148,7 +148,13 @@ export const images = [
   '/assets/images/banner/Rectangle_196.png',
   '/assets/images/banner/Rectangle_197.png',
   '/assets/images/banner/Rectangle_198.png',
-  '/assets/images/banner/Rectangle_199.png',
+];
+
+export const imageBanner = [
+  '/assets/images/banner/Rectangle_200.png',
+  '/assets/images/banner/Rectangle_201.png',
+  '/assets/images/banner/Rectangle_202.png',
+  '/assets/images/banner/Rectangle_203.png',
 ];
 
 export const privateGroup = [

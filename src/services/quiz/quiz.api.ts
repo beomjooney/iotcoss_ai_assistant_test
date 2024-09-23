@@ -95,8 +95,11 @@ export const saveClubQuizPost = async body => {
 };
 
 export const saveClubTempPost = async body => {
-  body.clubForm.clubId = 'quiz_club_temporary_' + generateUUID();
-  await axiosGeneralAPI().post(`/api/v1/club/temporary`, body);
+  // body.clubForm.clubId = 'quiz_club_temporary_' + generateUUID();
+  await axiosGeneralAPI().put(`/api/v2/quiz-club/temporary`, body, {
+    headers: { 'content-type': 'multipart/form-data' },
+  });
+  // await axiosGeneralAPI().post(`/api/v1/club/temporary`, body);
 };
 
 export const saveLectureTempPost = async body => {

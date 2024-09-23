@@ -49,7 +49,11 @@ import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 
 //group
-import { dayGroup, privateGroup, levelGroup, openGroup, images, scheduleDataDummy } from './group';
+import { dayGroup, privateGroup, levelGroup, openGroup, images, scheduleDataDummy, imageBanner } from './group';
+import { v4 as uuidv4 } from 'uuid';
+export const generateUUID = () => {
+  return uuidv4();
+};
 
 const cx = classNames.bind(styles);
 
@@ -95,6 +99,17 @@ export function QuizOpenTemplate() {
   const [personName, setPersonName] = useState([]);
   const [personNameQuiz, setPersonNameQuiz] = useState([]);
   const [inputValue, setInputValue] = useState<string>('');
+
+  const [selectedImage, setSelectedImage] = useState('');
+  const [selectedImageCheck, setSelectedImageCheck] = useState(null);
+  const [selectedImageBanner, setSelectedImageBanner] = useState('');
+  const [selectedImageBannerCheck, setSelectedImageBannerCheck] = useState(null);
+  const [selectedImageProfile, setSelectedImageProfile] = useState('/assets/images/account/default_profile_image.png');
+  const [selectedImageProfileCheck, setSelectedImageProfileCheck] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [previewBanner, setPreviewBanner] = useState(null);
+  const [previewProfile, setPreviewProfile] = useState(null);
+  const [isDisabled, setIsDisabled] = useState(false);
 
   const { data: optionsData }: UseQueryResult<ExperiencesResponse> = useOptions();
 
@@ -181,7 +196,7 @@ export function QuizOpenTemplate() {
   const [selectedQuizIds, setSelectedQuizIds] = useState([]);
 
   const { mutate: onSaveImage, data: imageUrl, isSuccess: imageSuccess } = useUploadImage();
-  const [selectedImage, setSelectedImage] = useState('/assets/images/banner/Rectangle_190.png');
+  // const [selectedImage, setSelectedImage] = useState('/assets/images/banner/Rectangle_190.png');
   const [contentJobType, setContentJobType] = useState<any[]>([]);
   const { isFetched: isContentTypeJobFetched } = useContentJobTypes(data => {
     setContentJobType(data.data.contents || []);
@@ -295,18 +310,92 @@ export function QuizOpenTemplate() {
     setKeyWorld(_keyworld);
   }
 
-  const handleImageClick = async image => {
-    //console.log('image select', `${process.env['NEXT_PUBLIC_GENERAL_URL']}` + image);
-    setSelectedImage(image);
-    // if (!image || image.length === 0) return;
-    // let imageUrl = `${process.env['NEXT_PUBLIC_GENERAL_URL']}` + image;
-    // const response = await fetch(imageUrl);
-    // const data = await response.blob();
-    // const ext = imageUrl.split('.').pop(); // url 구조에 맞게 수정할 것
-    // const filename = imageUrl.split('/').pop(); // url 구조에 맞게 수정할 것
-    // const metadata = { type: `image/${ext}` };
-    // onSaveImage(new File([data], filename!, metadata));
+  // 파일 이름 추출 함수
+  const extractFileName = path => {
+    const parts = path.split('/');
+    return parts[parts.length - 1];
   };
+
+  const handleImageChange = (event, type) => {
+    console.log(type);
+    const file = event.target.files[0];
+    if (file) {
+      if (type === 'card') {
+        setSelectedImage('card');
+        setSelectedImageCheck(file);
+      } else if (type === 'banner') {
+        setSelectedImageBanner('banner');
+        setSelectedImageBannerCheck(file);
+      } else if (type === 'profile') {
+        // setSelectedImageProfile();
+        setSelectedImageProfileCheck(file);
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (type === 'card') {
+          setPreview(reader.result);
+        } else if (type === 'banner') {
+          console.log('banner');
+          setPreviewBanner(reader.result);
+        } else if (type === 'profile') {
+          setPreviewProfile(reader.result);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+    event.target.value = null;
+  };
+
+  const handleProfileDelete = e => {
+    setPreviewProfile(null);
+    setSelectedImageProfileCheck(null);
+  };
+
+  const handleImageClick = async (image, type, path) => {
+    // console.log('image select', `${process.env['NEXT_PUBLIC_GENERAL_URL']}` + image);
+    console.log('path', path);
+    console.log('image', image);
+    let url;
+    if (path) {
+      url = path;
+    } else {
+      console.log('false');
+      // url = `${process.env['NEXT_PUBLIC_GENERAL_URL']}` + image;
+      url = image;
+    }
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const file = new File([blob], extractFileName(image), { type: blob.type });
+    console.log('file', file);
+
+    if (type === 'card') {
+      setPreview(image);
+      setSelectedImage(image);
+      setSelectedImageCheck(file);
+    } else if (type === 'banner') {
+      setPreviewBanner(image);
+      setSelectedImageBanner(image);
+      setSelectedImageBannerCheck(file);
+    } else if (type === 'profile') {
+      console.log('profile');
+      setPreviewProfile(image);
+      setSelectedImageProfile(image);
+      setSelectedImageProfileCheck(file);
+    }
+  };
+
+  // const handleImageClick = async image => {
+  //console.log('image select', `${process.env['NEXT_PUBLIC_GENERAL_URL']}` + image);
+  // setSelectedImage(image);
+  // if (!image || image.length === 0) return;
+  // let imageUrl = `${process.env['NEXT_PUBLIC_GENERAL_URL']}` + image;
+  // const response = await fetch(imageUrl);
+  // const data = await response.blob();
+  // const ext = imageUrl.split('.').pop(); // url 구조에 맞게 수정할 것
+  // const filename = imageUrl.split('/').pop(); // url 구조에 맞게 수정할 것
+  // const metadata = { type: `image/${ext}` };
+  // onSaveImage(new File([data], filename!, metadata));
+  // };
 
   const [introductionText, setIntroductionText] = useState<string>('');
   const [recommendationText, setRecommendationText] = useState<string>('');
@@ -764,7 +853,45 @@ export function QuizOpenTemplate() {
   };
 
   const handlerClubSaveTemp = () => {
-    // const selectedJobCode = jobs.find(j => j.code === selectedJob)?.code || '';
+    if (!clubName) {
+      alert('클럽 이름을 입력해주세요');
+      return false;
+    }
+
+    if (!universityCode) {
+      alert('학교를 선택해주세요');
+      return false;
+    }
+
+    if (!selectedJob || selectedJob.length === 0) {
+      alert('최소 하나의 학과를 선택해주세요');
+      return false;
+    }
+
+    if (!recommendLevels || recommendLevels.length === 0) {
+      alert('최소 하나의 학년을 선택해주세요');
+      return false;
+    }
+
+    if (studyCycleNum.length === 0) {
+      alert('퀴즈 주기를 선택해주세요');
+      return false;
+    }
+
+    if (num == 0) {
+      alert('클럽퀴즈 회차를 입력 해주세요.');
+      return false;
+    }
+
+    if (!preview) {
+      alert('클럽 카드 이미지를 선택해주세요.');
+      return false;
+    }
+    if (!previewBanner) {
+      alert('클럽 배경 이미지를 선택해주세요.');
+      return false;
+    }
+
     const clubFormParams = {
       clubName: clubName || '',
       clubImageUrl: imageUrl || '',
@@ -792,13 +919,42 @@ export function QuizOpenTemplate() {
       clubRecruitType: '0100',
     };
 
-    const params = {
-      clubForm: clubFormParams,
-      clubQuizzes: scheduleData,
-    };
+    const formData = new FormData();
+    formData.append('clubId', 'quiz_club_' + generateUUID());
+    formData.append('form.clubName', clubFormParams.clubName);
+    formData.append('form.clubImageFile', selectedImageCheck);
+    formData.append('form.jobGroups', clubFormParams.jobGroups.toString());
+    formData.append('form.jobs', clubFormParams.jobs.toString());
+    formData.append('form.jobLevels', clubFormParams.jobLevels.toString());
+    formData.append('form.isPublic', clubFormParams.isPublic);
+    formData.append('form.participationCode', clubFormParams.participationCode);
+    formData.append('form.studyCycle', clubFormParams.studyCycle);
+    formData.append('form.startAt', clubFormParams.startAt);
+    formData.append('form.studyCount', clubFormParams.studyCount);
+    formData.append('form.studySubject', clubFormParams.studySubject);
+    formData.append('form.studyChapter', clubFormParams.studyChapter);
+    formData.append('form.skills', clubFormParams.skills.toString());
+    formData.append('form.introductionText', clubFormParams.introductionText);
+    formData.append('form.recommendationText', clubFormParams.recommendationText);
+    formData.append('form.learningText', clubFormParams.learningText);
+    formData.append('form.memberIntroductionText', clubFormParams.memberIntroductionText);
+    formData.append('form.careerText', clubFormParams.careerText);
+    formData.append('form.quizOpenType', clubFormParams.quizOpenType);
+    formData.append('form.studyKeywords', clubFormParams.studyKeywords.toString());
+
+    for (let i = 0; i < scheduleData.length; i++) {
+      const item = scheduleData[i];
+      formData.append(`clubQuizzes[${i}].quizSequence`, item.quizSequence || '');
+      formData.append(`clubQuizzes[${i}].publishDate`, item.publishDate || '');
+    }
+
+    // const params = {
+    //   clubForm: clubFormParams,
+    //   clubQuizzes: scheduleData,
+    // };
     console.log(params);
 
-    onTempSave(params);
+    onTempSave(formData);
   };
 
   const handlerClubMake = () => {
@@ -1038,6 +1194,35 @@ export function QuizOpenTemplate() {
         {activeStep === 0 && (
           <article>
             <Desktop>
+              <div className="tw-flex tw-justify-between tw-items-center tw-w-full tw-my-10">
+                {steps.map((step, index) => (
+                  <div key={index} className="tw-w-1/3">
+                    <div className="tw-px-2">
+                      <div
+                        className={`tw-flex tw-justify-center tw-items-center tw-w-full tw-relative tw-overflow-hidden tw-gap-2 tw-px-6 tw-py-1  ${
+                          index < activeStep
+                            ? 'tw-bg-gray-300 tw-text-white'
+                            : index === activeStep
+                            ? 'tw-bg-blue-600  tw-text-white'
+                            : 'tw-bg-gray-300 tw-text-white'
+                        }`}
+                      ></div>
+                      <div
+                        className={`tw-flex tw-text-sm tw-justify-center tw-items-center tw-w-full tw-relative tw-overflow-hidden tw-gap-2 tw-px-6 tw-py-[11.5px] tw-rounded ${
+                          index < activeStep
+                            ? ' tw-text-gray-400'
+                            : index === activeStep
+                            ? ' tw-text-black tw-font-bold'
+                            : ' tw-text-gray-400'
+                        }`}
+                      >
+                        {step}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
               <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">클럽 기본정보 입력</div>
               <div className={cx('content-area')}>
                 <div className="tw-font-semibold tw-text-sm tw-text-black tw-mb-2">클럽명</div>
@@ -1049,8 +1234,7 @@ export function QuizOpenTemplate() {
                   value={clubName}
                   name="clubName"
                 />
-                <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-my-2">클럽 이미지 선택</div>
-
+                {/* <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-my-2">클럽 이미지 선택</div>
                 <div className="tw-grid tw-grid-flow-col tw-gap-0 tw-content-end">
                   {images.map((image, index) => (
                     <img
@@ -1064,7 +1248,7 @@ export function QuizOpenTemplate() {
                       onClick={() => handleImageClick(image)}
                     />
                   ))}
-                </div>
+                </div> */}
 
                 <div>
                   <div className="tw-grid tw-grid-cols-2 tw-gap-4 tw-content-start">
@@ -1638,6 +1822,162 @@ export function QuizOpenTemplate() {
                   />
                 </div>
               </div>
+
+              <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">클럽 꾸미기</div>
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-my-5">클럽 카드 이미지 선택</div>
+              <div className="tw-grid tw-grid-flow-col tw-gap-0 tw-content-end">
+                {preview ? (
+                  <img src={preview} alt="Image Preview" className="tw-w-[100px] tw-h-[100px] tw-rounded-lg border" />
+                ) : (
+                  <div className="tw-w-[100px] tw-h-[100px] tw-rounded-lg border"></div>
+                )}
+                {images.map((image, index) => (
+                  <img
+                    key={index}
+                    src={image}
+                    alt={`Image ${index + 1}`}
+                    className={`image-item ${
+                      selectedImage === image ? 'selected' : ''
+                    } tw-object-cover tw-w-[100px] tw-rounded-lg tw-h-[100px] md:tw-h-[100px] md:tw-w-[100px] md:tw-rounded-lg`}
+                    style={{ opacity: selectedImage !== image ? 0.2 : 1 }}
+                    onClick={() => handleImageClick(image, 'card', false)}
+                  />
+                ))}
+                <div className="tw-flex tw-items-center tw-justify-center tw-w-[100px] tw-h-[100px]">
+                  <label
+                    htmlFor="dropzone-file"
+                    className="tw-flex tw-flex-col tw-items-center tw-justify-center  tw-w-[100px] tw-h-[100px] tw-border-2 tw-border-gray-300 tw-border-dashed tw-rounded-lg tw-cursor-pointer tw-bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                  >
+                    <div className="tw-flex tw-flex-col tw-items-center tw-justify-center tw-pt-5 tw-pb-6">
+                      <svg
+                        className="tw-w-8 tw-h-8 tw-mb-4 tw-text-gray-500 dark:text-gray-400"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 20 16"
+                      >
+                        <path
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                        />
+                      </svg>
+                      <p className="tw-mb-2 tw-text-sm tw-text-gray-500 dark:text-gray-400">
+                        <span className="tw-font-semibold">image upload</span>
+                      </p>
+                    </div>
+                    <input
+                      id="dropzone-file"
+                      type="file"
+                      className="tw-hidden"
+                      onChange={e => handleImageChange(e, 'card')}
+                    />
+                  </label>
+                </div>
+              </div>
+
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-5">클럽 배경 이미지 선택</div>
+              <div className="tw-grid tw-grid-flow-col tw-gap-0 tw-content-end">
+                {previewBanner ? (
+                  <img
+                    src={previewBanner}
+                    alt="Image Preview"
+                    className="tw-w-[100px] tw-h-[100px] tw-rounded-lg border"
+                  />
+                ) : (
+                  <div className="tw-w-[100px] tw-h-[100px] tw-rounded-lg border"></div>
+                )}
+                {imageBanner.map((image, index) => (
+                  <img
+                    key={index}
+                    src={image}
+                    alt={`Image ${index + 1}`}
+                    className={`image-item ${
+                      selectedImageBanner === image ? 'selected' : ''
+                    } tw-object-cover tw-w-[260px] tw-rounded-lg tw-h-[100px] md:tw-h-[100px] md:tw-w-[200px] md:tw-rounded-lg`}
+                    style={{ opacity: selectedImageBanner !== image ? 0.2 : 1 }}
+                    onClick={() => handleImageClick(image, 'banner', false)}
+                  />
+                ))}
+                <div className="tw-flex tw-items-center tw-justify-center tw-w-[100px] tw-h-[100px]">
+                  <label
+                    htmlFor="dropzone-file2"
+                    className="tw-flex tw-flex-col tw-items-center tw-justify-center  tw-w-[100px] tw-h-[100px] tw-border-2 tw-border-gray-300 tw-border-dashed tw-rounded-lg tw-cursor-pointer tw-bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                  >
+                    <div className="tw-flex tw-flex-col tw-items-center tw-justify-center tw-pt-5 tw-pb-6">
+                      <svg
+                        className="tw-w-8 tw-h-8 tw-mb-4 tw-text-gray-500 dark:text-gray-400"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 20 16"
+                      >
+                        <path
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                        />
+                      </svg>
+                      <p className="tw-mb-2 tw-text-sm tw-text-gray-500 dark:text-gray-400">
+                        <span className="tw-font-semibold">image upload</span>
+                      </p>
+                    </div>
+                    <input
+                      id="dropzone-file2"
+                      type="file"
+                      className="tw-hidden"
+                      onChange={e => handleImageChange(e, 'banner')}
+                    />
+                  </label>
+                </div>
+              </div>
+
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-5">
+                강의내 교수 프로필 이미지
+              </div>
+
+              {previewProfile ? (
+                <img
+                  src={previewProfile}
+                  alt="Image Preview"
+                  className="border tw-w-[100px] tw-h-[100px] tw-rounded-full"
+                />
+              ) : (
+                <img
+                  src="/assets/images/account/default_profile_image.png"
+                  alt="Image"
+                  className="tw-w-[100px] tw-h-[100px] tw-rounded-full border"
+                />
+              )}
+
+              <div className="tw-text-sm tw-font-bold tw-text-black tw-mt-5 tw-my-5">
+                직접 업로드를 하지 않으면 현재 프로필 이미지 사용합니다.
+              </div>
+              <button
+                onClick={() => document.getElementById('dropzone-file3').click()}
+                type="button"
+                className="tw-text-black tw-mr-5 border border-dark tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
+              >
+                + 직접 업로드
+              </button>
+              <input
+                id="dropzone-file3"
+                type="file"
+                className="tw-hidden"
+                onChange={e => handleImageChange(e, 'profile')}
+              />
+              <button
+                onClick={e => handleProfileDelete(e)}
+                type="button"
+                className="tw-text-black border tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
+              >
+                삭제
+              </button>
+
               <div className="tw-container tw-py-10 tw-px-10 tw-mx-0 tw-min-w-full tw-flex tw-flex-col tw-items-center">
                 <div className="tw-grid tw-grid-rows-3 tw-grid-flow-col tw-gap-4">
                   <div className="tw-row-span-2">
