@@ -111,6 +111,10 @@ export function QuizOpenTemplate() {
   const [previewProfile, setPreviewProfile] = useState(null);
   const [isDisabled, setIsDisabled] = useState(false);
 
+  useEffect(() => {
+    handleImageClick(selectedImageProfile, 'profile', false);
+  }, []);
+
   const { data: optionsData }: UseQueryResult<ExperiencesResponse> = useOptions();
 
   useEffect(() => {
@@ -134,7 +138,7 @@ export function QuizOpenTemplate() {
   //temp 조회
   const { refetch: refetchGetTemp }: UseQueryResult<any> = useGetTemp(data => {
     console.log('load temp', data);
-    const clubForm = data?.clubForm || {};
+    const clubForm = data?.form || {};
     const quizList = data?.clubQuizzes || [];
 
     setClubName(clubForm.clubName || '');
@@ -147,7 +151,7 @@ export function QuizOpenTemplate() {
     setOptionsSkills(prevState => Array.from(new Set([...prevState, ...(clubForm?.skills || [])])));
     const extractedCodes = clubForm.jobLevels.map(item => item.code);
     setRecommendLevels(extractedCodes || []);
-    setNum(clubForm.studyCount || 0);
+    setNum(clubForm.weekCount || 0);
     setQuizType(clubForm.quizOpenType || '');
     setStartDay(clubForm.startAt ? dayjs(clubForm.startAt) : dayjs());
     setStudyKeywords(clubForm.studyKeywords || []);
@@ -172,6 +176,14 @@ export function QuizOpenTemplate() {
     // Filter out items with quizSequence not null and extract quizSequence values
     const quizSequenceNumbers = quizList.filter(item => item.quizSequence !== null).map(item => item.quizSequence);
     setSelectedQuizIds(quizSequenceNumbers);
+
+    setPreview(clubForm.clubImageUrl);
+    setPreviewBanner(clubForm.backgroundImageUrl);
+    setPreviewProfile(clubForm.instructorProfileImageUrl);
+
+    setSelectedImage('');
+    setSelectedImageBanner('');
+    setSelectedImageProfile('');
   });
 
   //temp 등록
@@ -671,7 +683,50 @@ export function QuizOpenTemplate() {
     console.log(quizListParam);
     const params = { ...paramss, clubQuizzes: scheduleData };
     console.log(params);
-    onClubQuizSave(params);
+
+    const formData = new FormData();
+    formData.append('clubId', 'quiz_club_' + generateUUID());
+    formData.append('form.clubName', params.clubForm.clubName);
+    formData.append('form.jobGroups', params.clubForm.jobGroups.toString());
+    formData.append('form.jobs', params.clubForm.jobs.toString());
+    formData.append('form.jobLevels', params.clubForm.jobLevels.toString());
+    formData.append('form.isPublic', params.clubForm.isPublic.toString());
+    if (params.clubForm.participationCode !== '') {
+      formData.append('form.participationCode', params.clubForm.participationCode);
+    }
+    formData.append('form.quizOpenType', params.clubForm.quizOpenType);
+    formData.append('form.studyCycle', params.clubForm.studyCycle.toString());
+    formData.append('form.startDate', params.clubForm.startAt);
+    formData.append('form.studyWeekCount', params.clubForm.studyCount.toString());
+    formData.append('form.studySubject', params.clubForm.studySubject);
+    formData.append('form.studyKeywords', params.clubForm.studyKeywords.toString());
+    // formData.append('form.studyChapter', clubFormParams.studyChapter);
+    formData.append('form.skills', params.clubForm.skills.toString());
+    formData.append('form.introductionText', params.clubForm.introductionText);
+    formData.append('form.recommendationText', params.clubForm.recommendationText);
+    formData.append('form.learningText', params.clubForm.learningText);
+    formData.append('form.memberIntroductionText', params.clubForm.memberIntroductionText);
+    formData.append('form.careerText', params.clubForm.careerText);
+    formData.append('form.useCurrentProfileImage', params.clubForm.useCurrentProfileImage);
+
+    if (selectedImage) {
+      console.log('selectedImage', selectedImage);
+      formData.append('form.clubImageFile', selectedImageCheck);
+    }
+    if (selectedImageBanner) {
+      formData.append('form.backgroundImageFile', selectedImageBannerCheck);
+    }
+    if (selectedImageProfile) {
+      formData.append('form.instructorProfileImageFile', selectedImageProfileCheck);
+    }
+
+    for (let i = 0; i < scheduleData.length; i++) {
+      const item = scheduleData[i];
+      formData.append(`clubQuizzes[${i}].quizSequence`, item.quizSequence || '');
+      formData.append(`clubQuizzes[${i}].publishDate`, item.publishDate || '');
+    }
+
+    onClubQuizSave(formData);
   };
 
   const BootstrapTooltip = styled(({ className, ...props }: TooltipProps) => (
@@ -706,7 +761,7 @@ export function QuizOpenTemplate() {
       isPublic: true,
       participationCode: participationCode,
       studyCycle: studyCycleNum,
-      startAt: startDay.format('YYYY-MM-DD') + ' 00:00:00',
+      startAt: startDay.format('YYYY-MM-DD'),
       studyCount: num,
       studyWeekCount: num,
       studySubject: studySubject,
@@ -723,6 +778,8 @@ export function QuizOpenTemplate() {
       answerPublishType: '0001',
       clubTemplatePublishType: '0001',
       clubRecruitType: '0100',
+      useCurrentProfileImage: 'false',
+      instructorProfileImageUrl: previewProfile,
     };
 
     //scheduleData null insert
@@ -901,7 +958,7 @@ export function QuizOpenTemplate() {
       isPublic: true,
       participationCode: '',
       studyCycle: studyCycleNum || '',
-      startAt: (startDay ? startDay.format('YYYY-MM-DD') : '') + ' 00:00:00',
+      startAt: startDay ? startDay.format('YYYY-MM-DD') : '',
       studyCount: num,
       studySubject: studySubject || '',
       studyChapter: studyChapter || '',
@@ -917,30 +974,44 @@ export function QuizOpenTemplate() {
       answerPublishType: '0001',
       clubTemplatePublishType: '0001',
       clubRecruitType: '0100',
+      useCurrentProfileImage: 'false',
     };
 
     const formData = new FormData();
     formData.append('clubId', 'quiz_club_' + generateUUID());
     formData.append('form.clubName', clubFormParams.clubName);
-    formData.append('form.clubImageFile', selectedImageCheck);
     formData.append('form.jobGroups', clubFormParams.jobGroups.toString());
     formData.append('form.jobs', clubFormParams.jobs.toString());
     formData.append('form.jobLevels', clubFormParams.jobLevels.toString());
-    formData.append('form.isPublic', clubFormParams.isPublic);
-    formData.append('form.participationCode', clubFormParams.participationCode);
-    formData.append('form.studyCycle', clubFormParams.studyCycle);
-    formData.append('form.startAt', clubFormParams.startAt);
-    formData.append('form.studyCount', clubFormParams.studyCount);
+    formData.append('form.isPublic', clubFormParams.isPublic.toString());
+    if (clubFormParams.participationCode !== '') {
+      formData.append('form.participationCode', clubFormParams.participationCode);
+    }
+    formData.append('form.quizOpenType', clubFormParams.quizOpenType);
+    formData.append('form.studyCycle', clubFormParams.studyCycle.toString());
+    formData.append('form.startDate', clubFormParams.startAt);
+    formData.append('form.studyWeekCount', clubFormParams.studyCount.toString());
     formData.append('form.studySubject', clubFormParams.studySubject);
-    formData.append('form.studyChapter', clubFormParams.studyChapter);
+    formData.append('form.studyKeywords', clubFormParams.studyKeywords.toString());
+    // formData.append('form.studyChapter', clubFormParams.studyChapter);
     formData.append('form.skills', clubFormParams.skills.toString());
     formData.append('form.introductionText', clubFormParams.introductionText);
     formData.append('form.recommendationText', clubFormParams.recommendationText);
     formData.append('form.learningText', clubFormParams.learningText);
     formData.append('form.memberIntroductionText', clubFormParams.memberIntroductionText);
     formData.append('form.careerText', clubFormParams.careerText);
-    formData.append('form.quizOpenType', clubFormParams.quizOpenType);
-    formData.append('form.studyKeywords', clubFormParams.studyKeywords.toString());
+    formData.append('form.useCurrentProfileImage', clubFormParams.useCurrentProfileImage);
+
+    if (selectedImage) {
+      console.log('selectedImage', selectedImage);
+      formData.append('form.clubImageFile', selectedImageCheck);
+    }
+    if (selectedImageBanner) {
+      formData.append('form.backgroundImageFile', selectedImageBannerCheck);
+    }
+    if (selectedImageProfile) {
+      formData.append('form.instructorProfileImageFile', selectedImageProfileCheck);
+    }
 
     for (let i = 0; i < scheduleData.length; i++) {
       const item = scheduleData[i];
@@ -1649,7 +1720,7 @@ export function QuizOpenTemplate() {
                     name="studySubject"
                   />
                   <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">학습 쳅터</div>
-                  <TextField
+                  {/* <TextField
                     size="small"
                     fullWidth
                     onChange={handleInputStudyChapterChange}
@@ -1657,7 +1728,7 @@ export function QuizOpenTemplate() {
                     value={studyChapter}
                     name="studyChapter"
                   />
-                  <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">학습 키워드</div>
+                  <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">학습 키워드</div> */}
                   {/* <TagsInput
                     value={studyKeywords}
                     onChange={setStudyKeywords}
@@ -2158,6 +2229,7 @@ export function QuizOpenTemplate() {
             <article>
               <QuizClubDetailInfo
                 border={true}
+                previewProfile={previewProfile}
                 clubData={paramss?.clubForm}
                 user={user}
                 selectedUniversityName={selectedUniversityName}

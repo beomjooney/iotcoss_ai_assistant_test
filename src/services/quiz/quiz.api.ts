@@ -89,8 +89,10 @@ export const saveAIQuizAnswerEvaluation = async body => {
   return data.data;
 };
 export const saveClubQuizPost = async body => {
-  body.clubForm.clubId = 'quiz_club_' + generateUUID();
-  const { data } = await axiosGeneralAPI().post(`/api/v1/club`, body);
+  // body.clubForm.clubId = 'quiz_club_' + generateUUID();
+  const { data } = await axiosGeneralAPI().post(`/api/v2/quiz-club`, body, {
+    headers: { 'content-type': 'multipart/form-data' },
+  });
   return data;
 };
 

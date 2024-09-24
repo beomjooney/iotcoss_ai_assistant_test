@@ -35,7 +35,7 @@ export const getGetSchedule = async params => {
 
 // 임시저장 조회
 export async function getGetTemp() {
-  const { data } = await axiosGeneralAPI().get('/api/v1/club/temporary');
+  const { data } = await axiosGeneralAPI().get('/api/v2/quiz-club/temporary');
   return data.data;
 }
 

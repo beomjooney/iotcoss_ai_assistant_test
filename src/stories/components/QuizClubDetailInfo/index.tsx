@@ -22,6 +22,7 @@ interface QuizClubDetailInfoProps {
   selectedQuizzes: any[]; // or the specific type expected
   selectedJobName: any[];
   refetchClubAbout: () => void;
+  previewProfile: any;
 }
 
 const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
@@ -33,6 +34,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
   jobLevelName,
   selectedJobName,
   refetchClubAbout,
+  previewProfile,
 }) => {
   console.log('club detail user ', user);
   console.log('club detail clubData', clubData);
@@ -259,7 +261,8 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
             <div className="tw-flex tw-items-start tw-gap-[16px]">
               <img
                 className="tw-w-28 tw-h-28 border tw-rounded-full"
-                src={clubData?.leader?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
+                src={clubData?.instructorProfileImageUrl || '/assets/images/account/default_profile_image.png'}
+                // src={clubData?.leader?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
               />
               <div>
                 <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-[14px]  tw-gap-3">
