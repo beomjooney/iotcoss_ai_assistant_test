@@ -31,6 +31,7 @@ import {
   myDashboardLecture,
   myDashboardQA,
   lectureAboutDetailInfo,
+  myDashboardStudentQA,
 } from './seminars.api';
 
 export interface paramProps {
@@ -159,6 +160,25 @@ export const useMyDashboardQA = (
   return useQuery<any, Error>(
     QUERY_KEY_FACTORY('DASHBOARD_QA').list({ size: DEFAULT_SIZE, ...params }),
     () => myDashboardQA({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+      enabled: false,
+    },
+  );
+};
+
+// 내 대시보드 목록 조회
+export const useMyDashboardStudentQA = (
+  params?: paramProps,
+  onSuccess?: (data: any) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 20;
+  return useQuery<any, Error>(
+    QUERY_KEY_FACTORY('DASHBOARD_STUDENT_QA').list({ size: DEFAULT_SIZE, ...params }),
+    () => myDashboardStudentQA({ size: DEFAULT_SIZE, ...params }),
     {
       onSuccess,
       onError,

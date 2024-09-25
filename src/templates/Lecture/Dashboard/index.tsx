@@ -10,6 +10,7 @@ import {
   useMyLectureDashboardStudentList,
   useMyDashboardLecture,
   useMyDashboardQA,
+  useMyDashboardStudentQA,
 } from 'src/services/seminars/seminars.queries';
 import { useSaveAnswer } from 'src/services/seminars/seminars.mutations';
 import Grid from '@mui/material/Grid';
@@ -127,15 +128,18 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   const [pageStudent, setPageStudent] = useState(1);
   const [lecturePage, setLecturePage] = useState(1);
   const [questionPage, setQuestionPage] = useState(1);
+  const [studentQuestionPage, setStudentQuestionPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [totalStudentPage, setTotalStudentPage] = useState(1);
   const [totalQuestionPage, setTotalQuestionPage] = useState(1);
+  const [totalStudentQuestionPage, setTotalStudentQuestionPage] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
   const [myClubList, setMyClubList] = useState<any>([]);
   const [myDashboardList, setMyDashboardList] = useState<any>([]);
   const [myDashboardStudentList, setMyDashboardStudentList] = useState<any>([]);
   const [myDashboardLectureList, setMyDashboardLectureList] = useState<any>([]);
   const [myDashboardQA, setMyDashboardQA] = useState<any>([]);
+  const [myDashboardStudentQA, setMyDashboardStudentQA] = useState<any>([]);
   const [clubStudySequence, setClubStudySequence] = useState('');
   const [selectedClub, setSelectedClub] = useState(null);
   const [isInputOpen, setIsInputOpen] = useState(false);
@@ -156,6 +160,12 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     data: { questionPage: 1 },
   });
 
+  const [myClubLectureStudentQA, setMyClubLectureStudentQA] = useState<any>({
+    clubSequence: selectedClub?.clubSequence || id,
+    memberUUID: '',
+    data: { studentQuestionPage: 1 },
+  });
+
   const [answer, setAnswer] = useState('');
   const { mutate: onSaveAnswer, isSuccess, isError } = useSaveAnswer();
   useDidMountEffect(() => {
@@ -171,6 +181,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   const [activeTab, setActiveTab] = useState('myQuiz');
   // const [activeTab, setActiveTab] = useState('community');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isStudentModalOpen, setIsStudentModalOpen] = useState(false);
   const [key, setKey] = useState('');
   const [fileName, setFileName] = useState('');
 
@@ -226,6 +237,16 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     setMyDashboardQA(data || []);
   });
 
+  // 강의클럽 대시보드 학생별 참여 현황
+  const { isFetched: isDashboardStudentQAFetched, refetch: refetchMyDashboardStudentQA } = useMyDashboardStudentQA(
+    myClubLectureStudentQA,
+    data => {
+      console.log('useMyDashboardStudentQA', data);
+      setTotalStudentPage(data?.totalPages);
+      setMyDashboardStudentQA(data || []);
+    },
+  );
+
   /** my quiz replies */
 
   const [sortType, setSortType] = useState('NAME');
@@ -235,6 +256,11 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     console.log('clubStudySequence', clubStudySequence);
     refetchMyDashboardQA();
   }, [myClubLectureQA]);
+
+  useDidMountEffect(() => {
+    console.log('clubStudySequence', clubStudySequence);
+    refetchMyDashboardStudentQA();
+  }, [myClubLectureStudentQA]);
 
   useDidMountEffect(() => {
     setMyClubParams({
@@ -1088,17 +1114,19 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                             className={`${classes.stickyWhite} ${classes.stickySecond}`}
                           >
                             <div
-                            // onClick={() => {
-                            //   setIsModalOpen(true);
-                            //   setClubStudySequence(info?.clubStudySequence);
-                            //   console.log('setClubStudySequence', info?.clubStudySequence);
-                            //   setMyClubLectureQA({
-                            //     clubSequence: selectedClub?.clubSequence || id,
-                            //     sequence: info?.clubStudySequence,
-                            //     data: { questionPage: 1 },
-                            //   });
-                            // }}
-                            // className="tw-cursor-pointer"
+                              onClick={() => {
+                                //학생별 상세 질의 이력 조회
+                                setIsStudentModalOpen(true);
+                                setClubStudySequence(info?.clubStudySequence);
+                                console.log('setClubStudySequence', info?.clubStudySequence);
+                                console.log('setClubStudySequence', info);
+                                setMyClubLectureStudentQA({
+                                  clubSequence: selectedClub?.clubSequence || id,
+                                  memberUUID: info?.member?.memberUUID,
+                                  data: { studentQuestionPage: 1 },
+                                });
+                              }}
+                              className="tw-cursor-pointer"
                             >
                               <div className="tw-font-bold tw-grid tw-gap-1 tw-justify-center tw-items-center">
                                 <div>
@@ -1124,7 +1152,21 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                             scope="row"
                             className={`${classes.stickyWhiteBoard} ${classes.stickyThird}`}
                           >
-                            <div className="">
+                            <div
+                              onClick={() => {
+                                //학생별 상세 질의 이력 조회
+                                setIsStudentModalOpen(true);
+                                setClubStudySequence(info?.clubStudySequence);
+                                console.log('setClubStudySequence', info?.clubStudySequence);
+                                console.log('setClubStudySequence', info);
+                                setMyClubLectureStudentQA({
+                                  clubSequence: selectedClub?.clubSequence || id,
+                                  memberUUID: info?.member?.memberUUID,
+                                  data: { studentQuestionPage: 1 },
+                                });
+                              }}
+                              className="tw-cursor-pointer"
+                            >
                               <div className=" tw-gap-0 tw-justify-center tw-items-center tw-p-2">
                                 <span className="tw-font-bold">{info?.answeredCount}</span> / {info?.totalQuestionCount}
                               </div>
@@ -1555,7 +1597,124 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                 <p className="tw-text-center tw-text-base tw-font-bold tw-text-[#31343d]">데이터가 없습니다.</p>
               </div>
             )}
-            <div className="tw-flex tw-justify-center tw-items-center tw-mt-10">
+            <div className="tw-flex tw-justify-center tw-items-center tw-mt-5">
+              <Pagination
+                count={totalQuestionPage}
+                size="small"
+                siblingCount={0}
+                page={questionPage}
+                renderItem={item => (
+                  <PaginationItem slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }} {...item} />
+                )}
+                onChange={handleQAPageChange}
+              />
+            </div>
+          </TableContainer>
+        </div>
+      </Modal>
+      <Modal
+        isOpen={isStudentModalOpen}
+        onAfterClose={() => {
+          setStudentQuestionPage(1);
+          setIsStudentModalOpen(false);
+        }}
+        title="학생별 상세보기"
+        maxWidth="1100px"
+        maxHeight="800px"
+      >
+        <div className={cx('seminar-check-popup')}>
+          <TableContainer>
+            <Table className="" aria-label="simple table" style={{ tableLayout: 'fixed' }}>
+              <TableHead style={{ backgroundColor: '#F6F7FB' }}>
+                <TableRow>
+                  <TableCell align="left" width={200} className="border-right">
+                    <div className="tw-font-bold tw-text-base">회차</div>
+                  </TableCell>
+                  <TableCell align="left" width={250} className="border-right">
+                    <div className="tw-font-bold tw-text-base">질문</div>
+                  </TableCell>
+                  <TableCell align="left" className="border-right">
+                    <div className="tw-font-bold tw-text-base">답변내역</div>
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {myDashboardStudentQA?.contents?.map((info, memberIndex) => (
+                  <React.Fragment key={memberIndex}>
+                    <TableRow key={memberIndex}>
+                      {/* Render the student info only for the first question */}
+                      <TableCell align="left" component="th" scope="row" className="border-right">
+                        <div className="">
+                          {/* <img
+                            src={info?.icon?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
+                            className="tw-w-10 tw-h-10 border tw-rounded-full"
+                            alt="Profile"
+                          /> */}
+                          <div className="tw-font-bold tw-text-sm">{info?.studyOrder}회차</div>
+                          <div className="">
+                            {info?.startDate}~ {info?.endDate}
+                          </div>
+                        </div>
+                      </TableCell>
+
+                      {/* Question Column */}
+                      <TableCell align="left" component="th" scope="row" className="border-right">
+                        <div className="tw-font-bold tw-text-sm">{info?.question}</div>
+                      </TableCell>
+
+                      {/* Answer Details Column */}
+                      <TableCell align="left" component="th" scope="row" className="border-right">
+                        <div className="tw-h-[150px] tw-overflow-auto">
+                          <div className="tw-font-bold tw-text-sm">
+                            <Markdown className="markdown-container tw-prose tw-pr-2 tw-break-words">
+                              {info?.answer
+                                ? 'AI답변 : ' +
+                                  (info?.answerType === '0200'
+                                    ? '(강의자료) : '
+                                    : info?.answerType === '0300'
+                                    ? '(일반서치) : '
+                                    : '') +
+                                  info?.answer
+                                : null}
+                            </Markdown>
+                            {info?.instructorAnswer && (
+                              <div className="tw-mt-2 tw-text-sm tw-font-medium tw-text-gray-400">
+                                추가답변 : {info?.instructorAnswer}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Render files if present */}
+                          {info?.clubContents?.length > 0 && (
+                            <div className="tw-mt-2 tw-text-sm tw-flex tw-justify-start tw-items-center tw-flex-wrap tw-gap-2">
+                              <div>강의자료 : </div>
+                              {info?.clubContents?.map((fileEntry, fileIndex) => (
+                                <div key={fileIndex} className="border tw-px-2 tw-py-0.5 tw-rounded">
+                                  <span
+                                    onClick={() => {
+                                      onFileDownload(fileEntry.key, fileEntry.name);
+                                    }}
+                                    className="tw-text-gray-400 tw-cursor-pointer"
+                                  >
+                                    {fileEntry?.name}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  </React.Fragment>
+                ))}
+              </TableBody>
+            </Table>
+            {myDashboardQA?.members?.length === 0 && (
+              <div className={cx('tw-flex tw-justify-center tw-items-center tw-h-[20vh]')}>
+                <p className="tw-text-center tw-text-base tw-font-bold tw-text-[#31343d]">데이터가 없습니다.</p>
+              </div>
+            )}
+            <div className="tw-flex tw-justify-center tw-items-center tw-mt-5">
               <Pagination
                 count={totalQuestionPage}
                 size="small"

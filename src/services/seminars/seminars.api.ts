@@ -107,6 +107,21 @@ export const myDashboardQA = async (params: any) => {
 };
 
 // 클럽 퀴즈 목록 조회
+export const myDashboardStudentQA = async (params: any) => {
+  console.log(params);
+  const { data } = await axiosGeneralAPI().get(
+    `/api/v1/lecture-clubs/${params.clubSequence}/members/${params.memberUUID}/questions`,
+    {
+      params: {
+        page: params.data.studentQuestionPage,
+        size: params.size,
+      },
+    },
+  );
+  return data.data;
+};
+
+// 클럽 퀴즈 목록 조회
 export const myLectureDashboardList = async (params: any) => {
   console.log(params);
   const { data } = await axiosGeneralAPI().get(`/api/v1/lecture-clubs/${params.clubSequence}/dashboard`, {});
