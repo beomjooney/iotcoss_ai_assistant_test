@@ -17,7 +17,9 @@ const QuizBreakerInfo = ({
   handleCheckboxDelete,
   handleAddClick,
   isDeleteQuiz,
+  hasBeenPublished,
 }) => {
+  console.log('hasBeenPublished', hasBeenPublished);
   return (
     <div className="tw-mb-1">
       {/* <Grid container direction="row" justifyContent="left" alignItems="center" rowSpacing={4}>

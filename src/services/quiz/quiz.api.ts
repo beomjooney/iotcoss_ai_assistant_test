@@ -171,8 +171,9 @@ export const quizMyClubInfo = async params => {
 };
 
 export const quizMyInfo = async params => {
-  console.log('params', params);
+  console.log('params Quiz', params);
   const { data } = await axiosGeneralAPI().get(`/api/v2/quiz-clubs/${params.clubSequence}`);
+  console.log('params Quiz', data);
   return data.data;
 };
 
