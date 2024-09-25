@@ -20,6 +20,7 @@ import {
   saveLectureTempPost,
   saveLecturePost,
   saveLectureModify,
+  saveClubQuizTempPost,
 } from './quiz.api';
 import router from 'next/router';
 
@@ -212,10 +213,25 @@ export const useClubTempSave = (): UseMutationResult => {
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('TEMP').all),
     onSuccess: async data => {
-      alert('임시저장 되었습니다.');
+      alert('저장 되었습니다.');
     },
   });
 };
+
+export const useClubQuizTempSave = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => saveClubQuizTempPost(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('TEMP').all),
+    onSuccess: async data => {
+      alert('저장 되었습니다.');
+    },
+  });
+};
+
 export const useLectureTempSave = (): UseMutationResult => {
   const queryClient = useQueryClient();
   return useMutation<any, any, any>(requestBody => saveLectureTempPost(requestBody), {

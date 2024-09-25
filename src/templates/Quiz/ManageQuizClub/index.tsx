@@ -31,13 +31,14 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 //comment
-import { useQuizMyClubInfo } from 'src/services/quiz/quiz.queries';
+import { useQuizMyClubInfo, useQuizMyInfo } from 'src/services/quiz/quiz.queries';
+import { useClubAboutDetailInfo } from 'src/services/seminars/seminars.queries';
 import QuizBreakerInfo from 'src/stories/components/QuizBreakerInfo';
 import { useSaveQuiz } from 'src/services/admin/members/members.mutations';
 import router from 'next/router';
 
 //quiz
-import { MentorsModal } from 'src/stories/components';
+import { MentorsModal, Tag } from 'src/stories/components';
 import Paginations from 'src/stories/components/Pagination';
 import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
@@ -54,6 +55,28 @@ import ListItemText from '@mui/material/ListItemText';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Checkbox from '@mui/material/Checkbox';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import ToggleButton from '@mui/material/ToggleButton';
+import { makeStyles } from '@mui/styles';
+import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
+import { styled } from '@mui/material/styles';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import dayjs, { Dayjs } from 'dayjs';
+
+//group
+import { dayGroup, privateGroup, levelGroup, openGroup, images, scheduleDataDummy, imageBanner } from './group';
+import { Toggle } from 'src/stories/components';
+import AddIcon from '@mui/icons-material/Add';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import { useUploadImage } from 'src/services/image/image.mutations';
+import { v4 as uuidv4 } from 'uuid';
+import { useClubQuizTempSave } from 'src/services/quiz/quiz.mutations';
+
+export const generateUUID = () => {
+  return uuidv4();
+};
 
 export interface ManageQuizClubTemplateProps {
   /** 세미나 아이디 */
@@ -61,11 +84,15 @@ export interface ManageQuizClubTemplateProps {
 }
 
 export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
+  const { mutate: onTempSave, isSuccess: tempSucces } = useClubQuizTempSave();
   const { mutate: onCrewBan, isSuccess: isBanSuccess } = useCrewBanDelete();
   const { mutate: onCrewAccept, isSuccess: isAcceptSuccess } = useCrewAcceptPost();
   const { mutate: onCrewReject, isSuccess: isRejectSuccess } = useCrewRejectPost();
+  const { mutate: onSaveImage, data: imageUrl, isSuccess: imageSuccess } = useUploadImage();
 
-  console.log('clubsequence : ', id);
+  const [quizType, setQuizType] = useState('0100');
+  const [participationCode, setParticipationCode] = useState('');
+  const [isPublic, setIsPublic] = useState('0001');
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
@@ -82,7 +109,8 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
   const [quizList, setQuizList] = useState<any>([]);
   const [keyWorld, setKeyWorld] = useState('');
   const [selectedValue, setSelectedValue] = useState(id);
-  const [activeTab, setActiveTab] = useState('myQuiz');
+  const [activeTab, setActiveTab] = useState('club');
+  // const [activeTab, setActiveTab] = useState('myQuiz');
 
   const [pageQuiz, setPageQuiz] = useState(1);
   const [totalQuizPage, setTotalQuizPage] = useState(1);
@@ -109,6 +137,43 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
   const [jobsQuiz, setJobsQuiz] = useState([]);
   const [personNameQuiz, setPersonNameQuiz] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState('');
+  //club
+  const [ids, setIds] = useState<any>(id);
+  const [studySubject, setStudySubject] = useState('');
+  const [clubName, setClubName] = useState<string>('');
+  const [universityCode, setUniversityCode] = useState<string>('');
+  const [selectedSessions, setSelectedSessions] = useState([]);
+  const [selectedUniversity, setSelectedUniversity] = useState('');
+  const [selectedUniversityName, setSelectedUniversityName] = useState('');
+  const [selectedJobName, setSelectedJobName] = useState('');
+  const [selectedImage, setSelectedImage] = useState('');
+  const [selectedImageCheck, setSelectedImageCheck] = useState(null);
+  const [selectedImageBanner, setSelectedImageBanner] = useState('');
+  const [selectedImageBannerCheck, setSelectedImageBannerCheck] = useState(null);
+  const [selectedImageProfile, setSelectedImageProfile] = useState('/assets/images/account/default_profile_image.png');
+  const [selectedImageProfileCheck, setSelectedImageProfileCheck] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [previewBanner, setPreviewBanner] = useState(null);
+  const [previewProfile, setPreviewProfile] = useState(null);
+  const [personName, setPersonName] = useState([]);
+  const [selectedJob, setSelectedJob] = useState([]);
+  const [studyCycleNum, setStudyCycleNum] = useState([]);
+  const [num, setNum] = useState(0);
+  const [startDay, setStartDay] = React.useState<Dayjs | null>(dayjs());
+  const [studyKeywords, setStudyKeywords] = useState([]);
+  const [optionsSkills, setOptionsSkills] = useState<string[]>([]);
+  const [inputValue, setInputValue] = useState<string>('');
+  const [dayParams, setDayParams] = useState<any>({});
+  const [buttonFlag, setButtonFlag] = useState(false);
+  const [introductionText, setIntroductionText] = useState<string>('');
+  const [recommendationText, setRecommendationText] = useState<string>('');
+  const [learningText, setLearningText] = useState<string>('');
+  const [memberIntroductionText, setMemberIntroductionText] = useState<string>('');
+  const [careerText, setCareerText] = useState<string>('');
+  const [recommendLevels, setRecommendLevels] = useState([]);
+  const [skills, setSkills] = useState([]);
+  const [jobLevelName, setJobLevelName] = useState([]);
+  const [levelNames, setLevelNames] = useState([]);
 
   const cx = classNames.bind(styles);
 
@@ -131,12 +196,173 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
     });
   }, [quizListData]);
 
+  const handleQuizType = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
+    if (newFormats) {
+      setScheduleData([]);
+      setNum(0);
+      setSelectedQuizIds([]);
+      setStudyCycleNum([]);
+      setQuizType(newFormats);
+    }
+  };
+
+  const handleStudyCycle = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
+    setStudyCycleNum(newFormats);
+  };
+  const handleChanges = (event: SelectChangeEvent<typeof personName>) => {
+    const {
+      target: { value },
+    } = event;
+    const jobsList = typeof value === 'string' ? value.split(',') : value;
+    setPersonName(jobsList);
+
+    // Convert selected names to corresponding codes
+    const selectedCodes = jobsList
+      .map(name => {
+        const job = jobs.find(job => job.name === name);
+        return job ? job.code : null;
+      })
+      .filter(code => code !== null);
+    setSelectedJob(selectedCodes);
+  };
+
+  const handleNumChange = event => {
+    setNum(event.target.value);
+  };
+
+  const handleIsPublic = (event: React.MouseEvent<HTMLElement>, newFormats: string) => {
+    setIsPublic(newFormats);
+    console.log(newFormats);
+    if (newFormats === '0002') {
+      setIsPublic('0002');
+    }
+  };
+
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter' && inputValue.trim() !== '') {
+      setOptionsSkills(prevState => [...prevState, inputValue.trim()]);
+      setInputValue(''); // Clear the input
+    }
+  };
+
+  const handleInputStudySubjectChange = event => {
+    setStudySubject(event.target.value);
+  };
+
+  const onMessageChange1 = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, no?: number) => {
+    const { name, value } = event.currentTarget;
+    setIntroductionText(value);
+  };
+  const onMessageChange2 = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, no?: number) => {
+    const { name, value } = event.currentTarget;
+    setRecommendationText(value);
+  };
+  const onMessageChange3 = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, no?: number) => {
+    const { name, value } = event.currentTarget;
+    setLearningText(value);
+  };
+  const onMessageChange4 = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, no?: number) => {
+    const { name, value } = event.currentTarget;
+    setMemberIntroductionText(value);
+  };
+  const onMessageChange5 = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, no?: number) => {
+    const { name, value } = event.currentTarget;
+    setCareerText(value);
+  };
+  const handlerClubMake = () => {
+    if (studyCycleNum.length === 0) {
+      alert('요일을 입력해주세요.');
+      return;
+    }
+
+    console.log(studyCycleNum);
+    console.log(num);
+    console.log(startDay.format('YYYY-MM-DD'));
+
+    setDayParams({
+      // ...params,
+      studyCycle: studyCycleNum.join(','),
+      studyWeekCount: num,
+      startDate: startDay.format('YYYY-MM-DD'),
+    });
+    setButtonFlag(true);
+    setSelectedQuizIds([]);
+  };
+
+  const handleAddInput = () => {
+    if (inputValue.trim() !== '') {
+      setOptionsSkills(prevState => [...prevState, inputValue.trim()]);
+      setInputValue(''); // Clear the input
+    }
+  };
+
   const handleTabClick = tab => {
     setActiveTab(tab);
   };
 
   const handleInputQuizSearchChange = event => {
     setQuizSearch(event.target.value);
+  };
+
+  //클럽 정보
+  const { refetch: refetchGetTemp }: UseQueryResult<any> = useClubAboutDetailInfo(ids, data => {
+    console.log('quiz club temp', data);
+    const clubForm = data?.form || {};
+    const quizList = data?.clubQuizzes || [];
+
+    setClubName(clubForm.clubName || '');
+    setIntroductionText(clubForm.introductionText || '');
+    setRecommendationText(clubForm.recommendationText || '');
+    setLearningText(clubForm.learningText || '');
+    setMemberIntroductionText(clubForm.memberIntroductionText || '');
+    setCareerText(clubForm.careerText || '');
+    setSkills(clubForm.skills || []);
+    setOptionsSkills(prevState => Array.from(new Set([...prevState, ...(clubForm?.skills || [])])));
+    const extractedCodes = clubForm.jobLevels.map(item => item.code);
+    setRecommendLevels(extractedCodes || []);
+    setNum(clubForm.weekCount || 0);
+    setQuizType(clubForm.quizOpenType || '');
+    setStartDay(clubForm.startAt ? dayjs(clubForm.startAt) : dayjs());
+    setStudyKeywords(clubForm.studyKeywords || []);
+    setStudySubject(clubForm.studySubject || '');
+    setStudyCycleNum(clubForm.studyCycle || 0);
+    setUniversityCode(clubForm.jobGroups[0]?.code || '');
+    setSelectedUniversityName(clubForm.jobGroups[0]?.name || '');
+    setSelectedJobName(clubForm.jobs[0]?.name || '');
+    setJobLevelName(clubForm.jobLevels[0]?.name || '');
+    setLevelNames(clubForm.jobLevels.map(item => item.name));
+    const selected = optionsData?.data?.jobs?.find(u => u.code === clubForm.jobGroups[0]?.code);
+    setJobs(selected ? selected.jobs : []);
+    const jobsCode = clubForm.jobs.map(item => item.code);
+    setSelectedJob(jobsCode || []);
+    const jobsName = clubForm.jobs.map(item => item.name);
+    console.log(jobsName);
+    setPersonName(jobsName || []);
+    setButtonFlag(true);
+    setScheduleData(quizList);
+
+    // Filter out items with quizSequence not null and extract quizSequence values
+    const quizSequenceNumbers = quizList.filter(item => item.quizSequence !== null).map(item => item.quizSequence);
+    setSelectedQuizIds(quizSequenceNumbers);
+
+    setPreview(clubForm.clubImageUrl || '/assets/images/banner/Rectangle_190.png');
+    setPreviewBanner(clubForm.backgroundImageUrl || '/assets/images/banner/Rectangle_200.png');
+    setPreviewProfile(clubForm.instructorProfileImageUrl);
+
+    setSelectedImage('');
+    setSelectedImageBanner('');
+    setSelectedImageProfile('');
+  });
+
+  const handleUniversityChange = e => {
+    const selectedCode = e.target.value;
+    const selected = optionsData?.data?.jobs?.find(u => u.code === selectedCode);
+    setUniversityCode(selectedCode);
+    setSelectedUniversity(selectedCode);
+    setSelectedUniversityName(selected ? selected.name : '');
+    setJobs(selected ? selected.jobs : []);
+    setSelectedJob([]); // Clear the selected job when university changes
+    setPersonName([]); // Clear the selected job when university changes
   };
 
   //new logic
@@ -220,6 +446,10 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
     setSortQuizType(event.target.value);
   };
 
+  const handleInputChange = event => {
+    setClubName(event.target.value);
+  };
+
   //퀴즈 리스트
   const { isFetched: isQuizData, refetch } = useQuizList(params, data => {
     console.log(data);
@@ -260,11 +490,17 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
   // 퀴즈클럽 정보 조회
   const { isFetched: isParticipantListFetched } = useQuizMyClubInfo(myQuizParams, data => {
     console.log('first get data');
-    setQuizList(data?.contents || []);
+    // setQuizList(data?.contents || []);
     setSelectedQuizIds(data?.contents.map(item => item?.quizSequence));
     console.log(data?.contents.map(item => item?.quizSequence));
     setTotalQuizPage(data?.totalPages);
     setTotalQuizElements(data?.totalElements);
+    console.log(data);
+  });
+
+  const { isFetched: isMyInfoFetched } = useQuizMyInfo(myQuizParams, data => {
+    console.log('first get data');
+    setQuizList(data?.clubQuizzes || []);
     console.log(data);
   });
 
@@ -357,6 +593,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
 
     setSelectedValue(value);
     setSelectedClub(selectedSession);
+    setIds(selectedSession.clubSequence);
     console.log(selectedSession);
   };
 
@@ -493,6 +730,65 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
     setQuizList(mergeData);
   };
 
+  function renderDatesAndSessionsModify() {
+    return (
+      <div className="tw-grid tw-grid-cols-12 tw-gap-4 tw-p-3">
+        {scheduleData.map((session, index) => (
+          <div key={index} className="tw-flex-grow tw-flex-shrink relative">
+            <div className="tw-text-center">
+              <Checkbox checked={selectedSessions.includes(index)} onChange={() => handleCheckboxDayChange(index)} />
+              <p className="tw-text-base tw-font-medium tw-text-center tw-text-[#31343d]">{index + 1}회</p>
+              <div className="tw-flex tw-justify-center tw-items-center  tw-left-0 tw-top-0 tw-overflow-hidden tw-gap-1 tw-px-0 tw-py-[3px] tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
+                <input
+                  style={{ padding: 0, height: 25, width: 25, textAlign: 'center' }}
+                  type="text"
+                  maxLength={2}
+                  className="form-control tw-text-sm"
+                  value={session.publishDate.split('-')[1]}
+                  onChange={e => handleInputDayChange(index, 'month', e.target.value)}
+                ></input>
+                <input
+                  style={{ padding: 0, height: 25, width: 25, textAlign: 'center' }}
+                  type="text"
+                  className="form-control tw-text-sm"
+                  value={session.publishDate.split('-')[2]}
+                  onChange={e => handleInputDayChange(index, 'day', e.target.value)}
+                ></input>
+                <p className="tw-text-xs tw-font-medium tw-text-center tw-text-[#9ca5b2]">{session.dayOfWeek}</p>
+              </div>
+            </div>
+            <div className="tw-w-6 tw-h-6 tw-left-[21px] tw-top-0 tw-overflow-hidden">
+              <div className="tw-w-4 tw-h-4 tw-left-[2.77px] tw-top-[2.77px] tw-rounded tw-bg-white tw-border-[1.45px] tw-border-[#ced4de]"></div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  const handleDelete = () => {
+    const updatedScheduleData = scheduleData.filter((_, i) => !selectedSessions.includes(i));
+    setNum(updatedScheduleData.length);
+    setScheduleData(updatedScheduleData);
+    setSelectedSessions([]);
+  };
+
+  function renderDatesAndSessionsView() {
+    return (
+      <div className="tw-grid tw-grid-cols-12 tw-gap-4 tw-p-4">
+        {scheduleData.map((session, index) => (
+          <div key={index} className="tw-flex-shrink-0">
+            <p className="tw-text-base tw-font-medium tw-text-center tw-text-[#31343d]">{index + 1}회</p>
+            <p className="tw-text-xs tw-font-medium tw-text-center tw-text-[#9ca5b2]">
+              {session.publishDate}
+              {/* {session.replace(/\((.*?)요일\)/, '($1)')} */}
+            </p>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   const handleQuizSave = () => {
     const hasNullQuizSequence = quizList.some(quiz => quiz.quizSequence === null);
 
@@ -528,6 +824,180 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
     setBadgeParams({ page: badgePage, memberUUID: memberUUID });
   };
 
+  const BootstrapTooltip = styled(({ className, ...props }: TooltipProps) => (
+    <Tooltip {...props} arrow classes={{ popper: className }} />
+  ))(({ theme }) => ({
+    [`& .${tooltipClasses.arrow}`]: {
+      color: '#D8ECFF',
+    },
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: '#D8ECFF',
+      color: '#478AF5',
+      fontSize: '11px',
+    },
+  }));
+
+  // 파일 이름 추출 함수
+  const extractFileName = path => {
+    const parts = path.split('/');
+    return parts[parts.length - 1];
+  };
+
+  const handlerClubSaveTemp = () => {
+    if (!clubName) {
+      alert('클럽 이름을 입력해주세요');
+      return false;
+    }
+
+    if (!universityCode) {
+      alert('학교를 선택해주세요');
+      return false;
+    }
+
+    if (!selectedJob || selectedJob.length === 0) {
+      alert('최소 하나의 학과를 선택해주세요');
+      return false;
+    }
+
+    if (!recommendLevels || recommendLevels.length === 0) {
+      alert('최소 하나의 학년을 선택해주세요');
+      return false;
+    }
+
+    if (studyCycleNum.length === 0) {
+      alert('퀴즈 주기를 선택해주세요');
+      return false;
+    }
+
+    if (num == 0) {
+      alert('클럽퀴즈 회차를 입력 해주세요.');
+      return false;
+    }
+
+    if (!preview) {
+      alert('클럽 카드 이미지를 선택해주세요.');
+      return false;
+    }
+    if (!previewBanner) {
+      alert('클럽 배경 이미지를 선택해주세요.');
+      return false;
+    }
+
+    const clubFormParams = {
+      clubName: clubName || '',
+      clubImageUrl: imageUrl || '',
+      jobGroups: [universityCode] || [],
+      jobs: selectedJob || [],
+      jobLevels: recommendLevels || [],
+      isPublic: true,
+      participationCode: '',
+      studyCycle: studyCycleNum || '',
+      startAt: startDay ? startDay.format('YYYY-MM-DD') : '',
+      studyCount: num,
+      studySubject: studySubject || '',
+      skills: skills || '',
+      introductionText: introductionText || '',
+      recommendationText: recommendationText || '',
+      learningText: learningText || '',
+      memberIntroductionText: memberIntroductionText || '',
+      careerText: careerText || '',
+      studyKeywords: studyKeywords || '',
+      quizOpenType: quizType,
+      description: '',
+      answerPublishType: '0001',
+      clubTemplatePublishType: '0001',
+      clubRecruitType: '0100',
+      useCurrentProfileImage: 'false',
+    };
+
+    const formData = new FormData();
+    formData.append('clubId', 'quiz_club_' + generateUUID());
+    formData.append('form.clubName', clubFormParams.clubName);
+    formData.append('form.jobGroups', clubFormParams.jobGroups.toString());
+    formData.append('form.jobs', clubFormParams.jobs.toString());
+    formData.append('form.jobLevels', clubFormParams.jobLevels.toString());
+    formData.append('form.isPublic', clubFormParams.isPublic.toString());
+    if (clubFormParams.participationCode !== '') {
+      formData.append('form.participationCode', clubFormParams.participationCode);
+    }
+    formData.append('form.quizOpenType', clubFormParams.quizOpenType);
+    formData.append('form.studyCycle', clubFormParams.studyCycle.toString());
+    formData.append('form.startDate', clubFormParams.startAt);
+    formData.append('form.studyWeekCount', clubFormParams.studyCount.toString());
+    formData.append('form.studySubject', clubFormParams.studySubject);
+    formData.append('form.studyKeywords', clubFormParams.studyKeywords.toString());
+    // formData.append('form.studyChapter', clubFormParams.studyChapter);
+    formData.append('form.skills', clubFormParams.skills.toString());
+    formData.append('form.introductionText', clubFormParams.introductionText);
+    formData.append('form.recommendationText', clubFormParams.recommendationText);
+    formData.append('form.learningText', clubFormParams.learningText);
+    formData.append('form.memberIntroductionText', clubFormParams.memberIntroductionText);
+    formData.append('form.careerText', clubFormParams.careerText);
+    formData.append('form.useCurrentProfileImage', clubFormParams.useCurrentProfileImage);
+
+    if (selectedImage) {
+      console.log('selectedImage', selectedImage);
+      formData.append('form.clubImageFile', selectedImageCheck);
+    }
+    if (selectedImageBanner) {
+      formData.append('form.backgroundImageFile', selectedImageBannerCheck);
+    }
+    if (selectedImageProfile) {
+      formData.append('form.instructorProfileImageFile', selectedImageProfileCheck);
+    }
+
+    for (let i = 0; i < scheduleData.length; i++) {
+      const item = scheduleData[i];
+      formData.append(`clubQuizzes[${i}].quizSequence`, item.quizSequence || '');
+      formData.append(`clubQuizzes[${i}].publishDate`, item.publishDate || '');
+    }
+
+    // const params = {
+    //   clubForm: clubFormParams,
+    //   clubQuizzes: scheduleData,
+    // };
+    console.log(params);
+
+    const clubParam = {
+      clubSequence: selectedClub?.clubSequence,
+      formData: formData,
+    };
+    onTempSave(clubParam);
+  };
+
+  const handleImageClick = async (image, type, path) => {
+    // console.log('image select', `${process.env['NEXT_PUBLIC_GENERAL_URL']}` + image);
+    console.log('path', path);
+    console.log('image', image);
+    let url;
+    if (path) {
+      url = path;
+    } else {
+      console.log('false');
+      // url = `${process.env['NEXT_PUBLIC_GENERAL_URL']}` + image;
+      url = image;
+    }
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const file = new File([blob], extractFileName(image), { type: blob.type });
+    console.log('file', file);
+
+    if (type === 'card') {
+      setPreview(image);
+      setSelectedImage(image);
+      setSelectedImageCheck(file);
+    } else if (type === 'banner') {
+      setPreviewBanner(image);
+      setSelectedImageBanner(image);
+      setSelectedImageBannerCheck(file);
+    } else if (type === 'profile') {
+      console.log('profile');
+      setPreviewProfile(image);
+      setSelectedImageProfile(image);
+      setSelectedImageProfileCheck(file);
+    }
+  };
+
   const handleUniversitySearchChange = e => {
     const selectedCode = e.target.value;
     const selected = optionsData?.data?.jobs?.find(u => u.code === selectedCode);
@@ -559,6 +1029,17 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
   const handleLevelChangeQuiz = e => {
     setSelectedLevel(e.target.value);
   };
+
+  const useStyles = makeStyles(theme => ({
+    selected: {
+      '&&': {
+        backgroundColor: '#000',
+        color: 'white',
+      },
+    },
+  }));
+
+  const classes = useStyles();
 
   return (
     <div className={cx('seminar-detail-container')}>
@@ -685,8 +1166,27 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
               학생목록
             </p>
           </div>
-          {/* Divider Line */}
-          {/* Tab 2: Community */}
+          {/* Tab 2: 클럽관리 */}
+          <div
+            className={`tw-w-[164px] tw-h-12 tw-relative tw-ml-2.5 tw-cursor-pointer ${
+              activeTab === 'club' ? 'border-b-0' : ''
+            }`}
+            onClick={() => handleTabClick('club')}
+          >
+            <div
+              className={`tw-w-[164px] tw-h-12 tw-absolute tw-left-[-1px] tw-top-[-1px] tw-rounded-tl-lg tw-rounded-tr-lg ${
+                activeTab === 'club' ? 'tw-bg-white' : 'tw-bg-[#f6f7fb]'
+              } border-right border-top border-left`}
+            />
+            <p
+              className={`tw-absolute tw-left-[35px] tw-top-3 tw-text-base tw-text-center ${
+                activeTab === 'club' ? 'tw-font-bold tw-text-black' : 'tw-text-[#9ca5b2]'
+              }`}
+            >
+              클럽정보관리
+            </p>
+          </div>
+          {/* Tab 3: 퀴즈관리 */}
           <div
             className={`tw-w-[164px] tw-h-12 tw-relative tw-ml-2.5 tw-cursor-pointer ${
               activeTab === 'community' ? 'border-b-0' : ''
@@ -995,6 +1495,707 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
             </div>
           </div>
         )}
+
+        {activeTab === 'club' && (
+          <div className={cx('container')}>
+            <div className="tw-flex tw-justify-between tw-items-center tw-relative tw-gap-3">
+              <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">퀴즈클럽 기본정보</div>
+              <button
+                className="tw-w-[150px] border tw-text-gray-500 tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-text-sm tw-rounded"
+                onClick={() => handlerClubSaveTemp()}
+              >
+                수정하기
+              </button>
+            </div>
+
+            <div className={cx('content-area')}>
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-mb-2">클럽명</div>
+              <TextField
+                size="small"
+                fullWidth
+                onChange={handleInputChange}
+                id="margin-none"
+                value={clubName}
+                name="clubName"
+              />
+              <div>
+                <div className="tw-grid tw-grid-cols-2 tw-gap-4 tw-content-start">
+                  <div>
+                    <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천 대학</div>
+                    <select
+                      className="form-select"
+                      onChange={handleUniversityChange}
+                      aria-label="Default select example"
+                      value={universityCode}
+                    >
+                      <option value="">대학을 선택해주세요.</option>
+                      {optionsData?.data?.jobs?.map((university, index) => (
+                        <option key={index} value={university.code}>
+                          {university.name}
+                        </option>
+                      ))}
+                    </select>
+
+                    <div className="tw-mb-[12px] tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
+                      추천 학년
+                    </div>
+
+                    {optionsData?.data?.jobLevels?.map((item, i) => (
+                      <Toggle
+                        key={item.code}
+                        label={item.name}
+                        name={item.name}
+                        value={item.code}
+                        variant="small"
+                        checked={recommendLevels.indexOf(item.code) >= 0}
+                        isActive
+                        type="tabButton"
+                        onChange={() => {
+                          const index = recommendLevels.indexOf(item.code);
+                          setRecommendLevels(prevState => newCheckItem(item.code, index, prevState));
+                          if (index >= 0) {
+                            // Remove the name if the code is already in the array
+                            setLevelNames(prevNames => prevNames.filter(name => name !== item.name));
+                          } else {
+                            // Add the name if the code is not in the array
+                            setLevelNames(prevNames => [...prevNames, item.name]);
+                          }
+                        }}
+                        className={cx('tw-mr-2 !tw-w-[85px] !tw-h-[37px]')}
+                      />
+                    ))}
+                  </div>
+
+                  <div>
+                    <div>
+                      <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천 학과</div>
+                      <FormControl sx={{ width: '100%' }} size="small">
+                        <Select
+                          className="tw-w-full tw-text-black"
+                          size="small"
+                          labelId="demo-multiple-checkbox-label"
+                          id="demo-multiple-checkbox"
+                          multiple
+                          displayEmpty
+                          renderValue={selected => {
+                            if (selected.length === 0) {
+                              return (
+                                <span style={{ color: 'gray' }}>추천 대학을 먼저 선택하고, 학과를 선택해주세요.</span>
+                              );
+                            }
+                            return selected.join(', ');
+                          }}
+                          disabled={jobs.length === 0}
+                          value={personName}
+                          onChange={handleChanges}
+                          MenuProps={{
+                            disableScrollLock: true,
+                          }}
+                        >
+                          {jobs.map((job, index) => (
+                            <MenuItem key={index} value={job.name}>
+                              <Checkbox checked={personName.indexOf(job.name) > -1} />
+                              <ListItemText primary={job.name} />
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+
+                      <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">공개/비공개 설정</div>
+                      <div className="tw-flex tw-items-center tw-gap-2 tw-mt-1">
+                        <ToggleButtonGroup value={isPublic} onChange={handleIsPublic} exclusive aria-label="">
+                          <ToggleButton
+                            classes={{ selected: classes.selected }}
+                            value="0001"
+                            className="tw-ring-1 tw-ring-slate-900/10"
+                            style={{
+                              width: 70,
+                              borderRadius: '5px',
+                              borderLeft: '0px',
+                              margin: '5px',
+                              height: '35px',
+                              border: '0px',
+                            }}
+                            sx={{
+                              '&.Mui-selected': {
+                                backgroundColor: '#000',
+                                color: '#fff',
+                              },
+                            }}
+                          >
+                            공개
+                          </ToggleButton>
+                          <ToggleButton
+                            classes={{ selected: classes.selected }}
+                            value="0002"
+                            className="tw-ring-1 tw-ring-slate-900/10"
+                            style={{
+                              width: 70,
+                              borderRadius: '5px',
+                              borderLeft: '0px',
+                              margin: '5px',
+                              height: '35px',
+                              border: '0px',
+                            }}
+                            sx={{
+                              '&.Mui-selected': {
+                                backgroundColor: '#000',
+                                color: '#fff',
+                              },
+                            }}
+                          >
+                            비공개
+                          </ToggleButton>
+                        </ToggleButtonGroup>
+                        <TextField
+                          fullWidth
+                          className="tw-pl-1"
+                          size="small"
+                          value={participationCode}
+                          onChange={e => setParticipationCode(e.target.value)}
+                          disabled={isPublic === '0001'}
+                          placeholder="입장코드를 설정해주세요."
+                          id="margin-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="tw-pb-5">
+                  <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">퀴즈 생성(오픈) 주기</div>
+
+                  <ToggleButtonGroup value={quizType} exclusive onChange={handleQuizType} aria-label="text alignment">
+                    {openGroup?.map((item, index) => (
+                      <ToggleButton
+                        classes={{ selected: classes.selected }}
+                        key={`open-${index}`}
+                        value={item.name}
+                        aria-label="fff"
+                        className="tw-ring-1 tw-ring-slate-900/10"
+                        style={{
+                          borderRadius: '5px',
+                          borderLeft: '0px',
+                          margin: '5px',
+                          height: '35px',
+                          border: '0px',
+                        }}
+                        sx={{
+                          '&.Mui-selected': {
+                            backgroundColor: '#000',
+                            color: '#fff',
+                          },
+                        }}
+                      >
+                        <BootstrapTooltip
+                          title={
+                            item.name === '0100'
+                              ? ''
+                              : item.name === '0200'
+                              ? '클럽 관리자가 퀴즈 오픈을 수동으로 설정할 수 있어요!'
+                              : item.name === '0300'
+                              ? '학습자가 이전 퀴즈를 모두 학습/답변하였을 경우에 다음 퀴즈가 자동으로 오픈이 돼요!'
+                              : ''
+                          }
+                          placement="top"
+                        >
+                          {item?.description}
+                        </BootstrapTooltip>
+                      </ToggleButton>
+                    ))}
+                  </ToggleButtonGroup>
+                </div>
+                {/* Conditionally render a div based on recommendType and recommendLevels */}
+                {quizType == '0100' && (
+                  <div className="tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-[#f6f7fb] tw-pb-5">
+                    <div className="tw-flex tw-p-5 ...">
+                      <div className="tw-flex-grow tw-w-1/2 tw-h-14 ...">
+                        <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">
+                          퀴즈 주기 (복수선택가능)
+                        </p>
+                        <ToggleButtonGroup
+                          value={studyCycleNum}
+                          onChange={handleStudyCycle}
+                          aria-label=""
+                          color="standard"
+                        >
+                          {dayGroup?.map((item, index) => (
+                            <ToggleButton
+                              classes={{ selected: classes.selected }}
+                              key={`job1-${index}`}
+                              value={item.id}
+                              name={item.name}
+                              className="tw-ring-1 tw-ring-slate-900/10"
+                              style={{
+                                borderRadius: '5px',
+                                borderLeft: '0px',
+                                margin: '5px',
+                                height: '35px',
+                                border: '0px',
+                              }}
+                              sx={{
+                                '&.Mui-selected': {
+                                  backgroundColor: '#000',
+                                  color: '#fff',
+                                },
+                              }}
+                            >
+                              {item.name}
+                            </ToggleButton>
+                          ))}
+                        </ToggleButtonGroup>
+                      </div>
+                      <div className="tw-flex-none tw-w-1/4 tw-h-14 ...">
+                        <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">클럽 시작일</p>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DatePicker
+                            format="YYYY-MM-DD"
+                            slotProps={{ textField: { size: 'small', style: { backgroundColor: 'white' } } }}
+                            value={startDay}
+                            onChange={e => onChangeHandleFromToStartDate(e)}
+                          />
+                        </LocalizationProvider>
+                      </div>
+                      <div className="tw-flex-none tw-w-1/4 tw-h-14 ... ">
+                        <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">
+                          클럽퀴즈 회차 입력
+                        </p>
+                        <TextField
+                          size="small"
+                          fullWidth
+                          onChange={handleNumChange}
+                          id="margin-none"
+                          value={num}
+                          name="num"
+                          style={{ backgroundColor: 'white' }}
+                        />
+                      </div>
+                      <div className="tw-flex-none tw-h-14 ... tw-ml-5 ">
+                        <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">&nbsp;</p>
+                        <button
+                          onClick={handlerClubMake}
+                          className="tw-flex tw-justify-center tw-items-center tw-w-20 tw-relative tw-overflow-hidden tw-gap-2 tw-px-7 tw-py-[10px] tw-rounded tw-bg-[#31343d]"
+                        >
+                          <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-center tw-text-white">
+                            확인
+                          </p>
+                        </button>
+                      </div>
+                    </div>
+                    {scheduleData?.length > 0 && (
+                      <div className="tw-p-5">
+                        <div className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">
+                          퀴즈 클럽회차
+                        </div>
+                        <div className="tw-rounded-lg tw-bg-white">{renderDatesAndSessionsView()}</div>
+                        <div
+                          onClick={handleDelete}
+                          className="tw-cursor-pointer tw-text-sm tw-text-right tw-text-black tw-py-5 tw-font-semibold"
+                        >
+                          선택회차 삭제하기
+                        </div>
+                        <div className="tw-rounded-lg tw-bg-white">{renderDatesAndSessionsModify()}</div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {quizType == '0200' && (
+                  <div className="tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-[#f6f7fb] tw-pb-5">
+                    <div className="tw-flex tw-p-5 ...">
+                      <div className="tw-flex-none tw-w-1/4 tw-h-14 ...">
+                        <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">클럽 시작일</p>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DatePicker
+                            format="YYYY-MM-DD"
+                            slotProps={{ textField: { size: 'small', style: { backgroundColor: 'white' } } }}
+                            value={startDay}
+                            onChange={e => onChangeHandleFromToStartDate(e)}
+                          />
+                        </LocalizationProvider>
+                      </div>
+                      <div className="tw-flex-none tw-w-1/4 tw-h-14 ... ">
+                        <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">
+                          클럽퀴즈 회차 입력
+                        </p>
+                        <TextField
+                          size="small"
+                          fullWidth
+                          onChange={handleNumChange}
+                          id="margin-none"
+                          value={num}
+                          name="num"
+                          style={{ backgroundColor: 'white' }}
+                        />
+                      </div>
+                      <div className="tw-flex-none tw-h-14 ... tw-ml-5 ">
+                        <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">&nbsp;</p>
+                        <button
+                          onClick={handlerClubMakeProfessorManual}
+                          className="tw-flex tw-justify-center tw-items-center tw-w-20 tw-relative tw-overflow-hidden tw-gap-2 tw-px-7 tw-py-[10px] tw-rounded tw-bg-[#31343d]"
+                        >
+                          <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-center tw-text-white">
+                            확인
+                          </p>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {quizType == '0300' && (
+                  <div className="tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-[#f6f7fb] tw-pb-5">
+                    <p className="tw-text-sm tw-text-left tw-text-black tw-font-semibold tw-pt-5 tw-px-5">
+                      날짜/요일을 지정할 필요 없이 학생이 퀴즈를 풀면 자동으로 다음 회차가 열립니다.
+                    </p>
+                    <div className="tw-flex tw-p-5 ...">
+                      <div className="tw-flex-none tw-w-1/4 tw-h-14 ...">
+                        <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">클럽 시작일</p>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DatePicker
+                            format="YYYY-MM-DD"
+                            slotProps={{ textField: { size: 'small', style: { backgroundColor: 'white' } } }}
+                            value={startDay}
+                            onChange={e => onChangeHandleFromToStartDate(e)}
+                          />
+                        </LocalizationProvider>
+                      </div>
+                      <div className="tw-flex-none tw-w-1/4 tw-h-14 ... ">
+                        <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">
+                          클럽퀴즈 회차 입력
+                        </p>
+                        <TextField
+                          size="small"
+                          fullWidth
+                          onChange={handleNumChange}
+                          id="margin-none"
+                          value={num}
+                          name="num"
+                          style={{ backgroundColor: 'white' }}
+                        />
+                      </div>
+                      <div className="tw-flex-none tw-h-14 ... tw-ml-5 ">
+                        <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">&nbsp;</p>
+                        <button
+                          onClick={handlerClubMakeManual}
+                          className="tw-flex tw-justify-center tw-items-center tw-w-20 tw-relative tw-overflow-hidden tw-gap-2 tw-px-7 tw-py-[10px] tw-rounded tw-bg-[#31343d]"
+                        >
+                          <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-center tw-text-white">
+                            확인
+                          </p>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-my-2">학습 주제</div>
+                <TextField
+                  size="small"
+                  fullWidth
+                  onChange={handleInputStudySubjectChange}
+                  id="margin-none"
+                  value={studySubject}
+                  name="studySubject"
+                />
+                <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">학습 쳅터</div>
+                <Tag
+                  value={studyKeywords}
+                  onChange={setStudyKeywords}
+                  placeHolder="학습 키워드 입력 후 엔터를 쳐주세요."
+                />
+                <div className="tw-flex tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">
+                  관련기술
+                  <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-px-3 tw-py-0.5 tw-rounded">
+                    <p
+                      onClick={() => {
+                        window.open('https://camen.co.kr/skill', '_blank');
+                      }}
+                      className="tw-cursor-pointer tw-underline tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#478af5]"
+                    >
+                      커리어 스킬/경험
+                    </p>
+                    <svg
+                      width={16}
+                      height={16}
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-4 tw-h-4 tw-relative"
+                      preserveAspectRatio="xMidYMid meet"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M9.59022 10.2974C8.69166 11.0153 7.5523 11.362 6.40615 11.2661C5.25999 11.1702 4.19405 10.6391 3.42725 9.78186C2.66045 8.92461 2.251 7.80629 2.28299 6.65658C2.31498 5.50687 2.78599 4.41304 3.59927 3.59976C4.41255 2.78648 5.50638 2.31547 6.65609 2.28348C7.8058 2.25149 8.92412 2.66094 9.78137 3.42774C10.6386 4.19454 11.1697 5.26048 11.2656 6.40663C11.3615 7.55279 11.0148 8.69215 10.2969 9.59071L13.7342 13.0274C13.7833 13.0731 13.8227 13.1283 13.8501 13.1897C13.8774 13.251 13.8921 13.3172 13.8933 13.3844C13.8945 13.4515 13.8821 13.5182 13.857 13.5804C13.8318 13.6427 13.7944 13.6993 13.7469 13.7467C13.6994 13.7942 13.6429 13.8316 13.5806 13.8568C13.5184 13.8819 13.4517 13.8943 13.3845 13.8931C13.3174 13.8919 13.2512 13.8772 13.1899 13.8499C13.1285 13.8226 13.0733 13.7832 13.0276 13.734L9.59022 10.2974ZM4.30622 9.25604C3.81692 8.76669 3.48366 8.14326 3.34856 7.46456C3.21347 6.78585 3.2826 6.08233 3.54723 5.44291C3.81185 4.80348 4.26009 4.25686 4.8353 3.87211C5.4105 3.48736 6.08685 3.28176 6.77887 3.2813C7.47089 3.28083 8.14751 3.48552 8.72323 3.86949C9.29895 4.25347 9.74793 4.79949 10.0134 5.43856C10.2789 6.07762 10.349 6.78105 10.2148 7.45994C10.0806 8.13882 9.7482 8.76269 9.25955 9.25271L9.25622 9.25604L9.25289 9.25871C8.59628 9.91379 7.70651 10.2815 6.779 10.281C5.8515 10.2805 4.96212 9.91183 4.30622 9.25604Z"
+                        fill="#478AF5"
+                      />
+                    </svg>
+                  </div>
+                </div>
+
+                <div className="tw-px-1">
+                  {optionsSkills?.map((item, i) => (
+                    <Toggle
+                      key={i}
+                      label={item}
+                      name={item}
+                      value={item}
+                      variant="small"
+                      checked={skills.indexOf(item) >= 0}
+                      isActive
+                      type="tabButton"
+                      onChange={() => {
+                        const index = skills.indexOf(item);
+                        console.log(index);
+                        setSkills(prevState => newCheckItem(item, index, prevState));
+                      }}
+                      className={cx('tw-mr-2  !tw-h-[37px] tw-mb-2')}
+                    />
+                  ))}
+                  <TextField
+                    size="small"
+                    onChange={e => setInputValue(e.target.value)}
+                    placeholder="관련스킬/경험을 입력해주세요. ex) JAVA, PM"
+                    onKeyPress={handleKeyPress}
+                    value={inputValue}
+                    style={{ width: '350px' }} //assign the width as your requirement
+                    name="studySubject"
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton onClick={handleAddInput}>
+                            <AddIcon />
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </div>
+                <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">클럽 기본정보 입력</div>
+                <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">
+                  간략한 클럽 소개 내용을 입력해주세요.
+                </div>
+                <TextField
+                  fullWidth
+                  id="margin-none"
+                  multiline
+                  rows={4}
+                  onChange={onMessageChange1}
+                  value={introductionText}
+                  placeholder="비전공자 개발자라면, 컴퓨터 공학 지식에 대한 갈증이 있을텐데요.
+                    혼자서는 끝까지 하기 어려운 개발 공부를 함께 퀴즈 클럽에서 해봅시다.
+                    멀리 가려면 함께 가라는 말이 있는데, 우리 전원 퀴즈클럽 달성도 100% 만들어 보아요!"
+                />
+                <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">
+                  어떤 사람이 우리 클럽에 가입하면 좋을지 추천해주세요.
+                </div>
+                <TextField
+                  fullWidth
+                  id="margin-none"
+                  multiline
+                  rows={4}
+                  onChange={onMessageChange2}
+                  value={recommendationText}
+                  placeholder="컴공에 대한 기초적인 지식이 있으신 분
+                    학원 공부가 맞지 않으신 분
+                    다른 사람들과 자유롭게 의견 나누면서 공부하고 싶으신 분"
+                />
+                <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">
+                  우리 클럽을 통해 얻을 수 있는 것은 무엇인가요?
+                </div>
+                <TextField
+                  fullWidth
+                  id="margin-none"
+                  multiline
+                  rows={4}
+                  onChange={onMessageChange3}
+                  value={learningText}
+                  placeholder="개발 트랜드를 따라갈 수 있어요.
+                    정확히 몰랐던 기초를 다질 수 있어요.
+                    동종업계 인맥을 넓힐 수 있어요."
+                />
+                <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">
+                  교수자님의 인사 말씀을 남겨주세요.
+                </div>
+                <TextField
+                  fullWidth
+                  id="margin-none"
+                  multiline
+                  rows={4}
+                  onChange={onMessageChange4}
+                  value={memberIntroductionText}
+                  placeholder="안녕하세요. 만나서 반가워요."
+                />
+                <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">
+                  교수자님의 이력 및 경력을 남겨주세요.
+                </div>
+                <TextField
+                  fullWidth
+                  id="margin-none"
+                  multiline
+                  rows={4}
+                  onChange={onMessageChange5}
+                  value={careerText}
+                  placeholder="(현) ○○○ 개발 리더
+                    (전) △△ 개발 팀장
+                    (전) □□□□ 개발 사원"
+                />
+              </div>
+            </div>
+
+            <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">클럽 꾸미기</div>
+            <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-my-5">클럽 카드 이미지 선택</div>
+            <div className="tw-grid tw-grid-flow-col tw-gap-0 tw-content-end">
+              {preview ? (
+                <img src={preview} alt="Image Preview" className="tw-w-[100px] tw-h-[100px] tw-rounded-lg border" />
+              ) : (
+                <div className="tw-w-[100px] tw-h-[100px] tw-rounded-lg border"></div>
+              )}
+              {images.map((image, index) => (
+                <img
+                  key={index}
+                  src={image}
+                  alt={`Image ${index + 1}`}
+                  className={`image-item ${
+                    selectedImage === image ? 'selected' : ''
+                  } tw-object-cover tw-w-[100px] tw-rounded-lg tw-h-[100px] md:tw-h-[100px] md:tw-w-[100px] md:tw-rounded-lg`}
+                  style={{ opacity: selectedImage !== image ? 0.2 : 1 }}
+                  onClick={() => handleImageClick(image, 'card', false)}
+                />
+              ))}
+              <div className="tw-flex tw-items-center tw-justify-center tw-w-[100px] tw-h-[100px]">
+                <label
+                  htmlFor="dropzone-file"
+                  className="tw-flex tw-flex-col tw-items-center tw-justify-center  tw-w-[100px] tw-h-[100px] tw-border-2 tw-border-gray-300 tw-border-dashed tw-rounded-lg tw-cursor-pointer tw-bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                >
+                  <div className="tw-flex tw-flex-col tw-items-center tw-justify-center tw-pt-5 tw-pb-6">
+                    <svg
+                      className="tw-w-8 tw-h-8 tw-mb-4 tw-text-gray-500 dark:text-gray-400"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 20 16"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                      />
+                    </svg>
+                    <p className="tw-mb-2 tw-text-sm tw-text-gray-500 dark:text-gray-400">
+                      <span className="tw-font-semibold">image upload</span>
+                    </p>
+                  </div>
+                  <input
+                    id="dropzone-file"
+                    type="file"
+                    className="tw-hidden"
+                    onChange={e => handleImageChange(e, 'card')}
+                  />
+                </label>
+              </div>
+            </div>
+
+            <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-5">클럽 배경 이미지 선택</div>
+            <div className="tw-grid tw-grid-flow-col tw-gap-0 tw-content-end">
+              {previewBanner ? (
+                <img
+                  src={previewBanner}
+                  alt="Image Preview"
+                  className="tw-w-[100px] tw-h-[100px] tw-rounded-lg border"
+                />
+              ) : (
+                <div className="tw-w-[100px] tw-h-[100px] tw-rounded-lg border"></div>
+              )}
+              {imageBanner.map((image, index) => (
+                <img
+                  key={index}
+                  src={image}
+                  alt={`Image ${index + 1}`}
+                  className={`image-item ${
+                    selectedImageBanner === image ? 'selected' : ''
+                  } tw-object-cover tw-w-[260px] tw-rounded-lg tw-h-[100px] md:tw-h-[100px] md:tw-w-[200px] md:tw-rounded-lg`}
+                  style={{ opacity: selectedImageBanner !== image ? 0.2 : 1 }}
+                  onClick={() => handleImageClick(image, 'banner', false)}
+                />
+              ))}
+              <div className="tw-flex tw-items-center tw-justify-center tw-w-[100px] tw-h-[100px]">
+                <label
+                  htmlFor="dropzone-file2"
+                  className="tw-flex tw-flex-col tw-items-center tw-justify-center  tw-w-[100px] tw-h-[100px] tw-border-2 tw-border-gray-300 tw-border-dashed tw-rounded-lg tw-cursor-pointer tw-bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                >
+                  <div className="tw-flex tw-flex-col tw-items-center tw-justify-center tw-pt-5 tw-pb-6">
+                    <svg
+                      className="tw-w-8 tw-h-8 tw-mb-4 tw-text-gray-500 dark:text-gray-400"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 20 16"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                      />
+                    </svg>
+                    <p className="tw-mb-2 tw-text-sm tw-text-gray-500 dark:text-gray-400">
+                      <span className="tw-font-semibold">image upload</span>
+                    </p>
+                  </div>
+                  <input
+                    id="dropzone-file2"
+                    type="file"
+                    className="tw-hidden"
+                    onChange={e => handleImageChange(e, 'banner')}
+                  />
+                </label>
+              </div>
+            </div>
+
+            <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-5">강의내 교수 프로필 이미지</div>
+
+            {previewProfile ? (
+              <img
+                src={previewProfile}
+                alt="Image Preview"
+                className="border tw-w-[100px] tw-h-[100px] tw-rounded-full"
+              />
+            ) : (
+              <img
+                src="/assets/images/account/default_profile_image.png"
+                alt="Image"
+                className="tw-w-[100px] tw-h-[100px] tw-rounded-full border"
+              />
+            )}
+
+            <div className="tw-text-sm tw-font-bold tw-text-black tw-mt-5 tw-my-5">
+              직접 업로드를 하지 않으면 현재 프로필 이미지 사용합니다.
+            </div>
+            <button
+              onClick={() => document.getElementById('dropzone-file3').click()}
+              type="button"
+              className="tw-text-black tw-mr-5 border border-dark tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
+            >
+              + 직접 업로드
+            </button>
+            <input
+              id="dropzone-file3"
+              type="file"
+              className="tw-hidden"
+              onChange={e => handleImageChange(e, 'profile')}
+            />
+            <button
+              onClick={e => handleProfileDelete(e)}
+              type="button"
+              className="tw-text-black border tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
+            >
+              삭제
+            </button>
+          </div>
+        )}
         {activeTab === 'community' && (
           <div className="tw-flex tw-flex-col tw-space-y-4 tw-rounded-lg">
             <div className={cx('content-wrap')}>
@@ -1145,7 +2346,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                 )}
                 <div className="tw-text-center tw-pt-14">
                   <button
-                    onClick={() => handleQuizSave()}
+                    onClick={() => handlerClubSaveTemp()}
                     type="button"
                     data-tooltip-target="tooltip-default"
                     className="tw-py-3 tw-px-10 tw-w-[180px] tw-bg-red-600 tw-text-white max-lg:tw-w-[60px] tw-text-sm tw-font-bold tw-rounded"

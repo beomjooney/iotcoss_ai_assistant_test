@@ -32,6 +32,7 @@ import {
   myDashboardQA,
   lectureAboutDetailInfo,
   myDashboardStudentQA,
+  clubAboutDetailInfo,
 } from './seminars.api';
 
 export interface paramProps {
@@ -66,6 +67,16 @@ export const useMyLectureList = (
     },
   );
 };
+
+export const useClubAboutDetailInfo = (id, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
+  console.log('id', id);
+  return useQuery<any, Error>(QUERY_KEY_FACTORY('LECTURE_ABOUT').detail(id), () => clubAboutDetailInfo(id), {
+    onSuccess,
+    onError,
+    refetchOnWindowFocus: false,
+  });
+};
+
 export const useMyClubList = (
   params?: paramProps,
   onSuccess?: (data: any) => void,

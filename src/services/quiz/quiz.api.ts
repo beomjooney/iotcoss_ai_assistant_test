@@ -104,6 +104,14 @@ export const saveClubTempPost = async body => {
   // await axiosGeneralAPI().post(`/api/v1/club/temporary`, body);
 };
 
+export const saveClubQuizTempPost = async body => {
+  // body.clubForm.clubId = 'quiz_club_temporary_' + generateUUID();
+  await axiosGeneralAPI().put(`/api/v2/quiz-clubs/${body.clubSequence}`, body.formData, {
+    headers: { 'content-type': 'multipart/form-data' },
+  });
+  // await axiosGeneralAPI().post(`/api/v1/club/temporary`, body);
+};
+
 export const saveLectureTempPost = async body => {
   const { data } = await axiosGeneralAPI().put(`/api/v1/lecture-club/temporary`, body, {
     headers: { 'content-type': 'multipart/form-data' },
@@ -159,6 +167,12 @@ export const quizMyClubInfo = async params => {
       isPublished: params.isPublished,
     },
   });
+  return data.data;
+};
+
+export const quizMyInfo = async params => {
+  console.log('params', params);
+  const { data } = await axiosGeneralAPI().get(`/api/v2/quiz-clubs/${params.clubSequence}`);
   return data.data;
 };
 

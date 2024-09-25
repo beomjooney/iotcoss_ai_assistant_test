@@ -155,7 +155,7 @@ export function QuizOpenTemplate() {
     setQuizType(clubForm.quizOpenType || '');
     setStartDay(clubForm.startAt ? dayjs(clubForm.startAt) : dayjs());
     setStudyKeywords(clubForm.studyKeywords || []);
-    setStudyChapter(clubForm.studyChapter || '');
+    // setStudyChapter(clubForm.studyChapter || '');
     setStudySubject(clubForm.studySubject || '');
     setStudyCycleNum(clubForm.studyCycle || 0);
     setUniversityCode(clubForm.jobGroups[0]?.code || '');
@@ -850,9 +850,6 @@ export function QuizOpenTemplate() {
   const handleInputStudySubjectChange = event => {
     setStudySubject(event.target.value);
   };
-  const handleInputStudyChapterChange = event => {
-    setStudyChapter(event.target.value);
-  };
   const handleInputChange = event => {
     setClubName(event.target.value);
   };
@@ -1305,22 +1302,6 @@ export function QuizOpenTemplate() {
                   value={clubName}
                   name="clubName"
                 />
-                {/* <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-my-2">클럽 이미지 선택</div>
-                <div className="tw-grid tw-grid-flow-col tw-gap-0 tw-content-end">
-                  {images.map((image, index) => (
-                    <img
-                      key={index}
-                      src={image}
-                      alt={`Image ${index + 1}`}
-                      className={`image-item ${
-                        selectedImage === image ? 'selected' : ''
-                      } tw-object-cover tw-w-[100px] tw-rounded-lg tw-h-[100px] md:tw-h-[100px] md:tw-w-[100px] md:tw-rounded-lg`}
-                      style={{ opacity: selectedImage !== image ? 0.2 : 1 }}
-                      onClick={() => handleImageClick(image)}
-                    />
-                  ))}
-                </div> */}
-
                 <div>
                   <div className="tw-grid tw-grid-cols-2 tw-gap-4 tw-content-start">
                     <div>
@@ -1403,22 +1384,6 @@ export function QuizOpenTemplate() {
                             ))}
                           </Select>
                         </FormControl>
-                        {/* <select
-                          className="form-select"
-                          aria-label="Default select example"
-                          disabled={jobs.length === 0}
-                          onChange={handleJobChange}
-                          value={selectedJob}
-                        >
-                          <option disabled value="">
-                            학과를 선택해주세요.
-                          </option>
-                          {jobs.map((job, index) => (
-                            <option key={index} value={job.code}>
-                              {job.name}
-                            </option>
-                          ))}
-                        </select> */}
 
                         <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
                           공개/비공개 설정
@@ -1720,21 +1685,6 @@ export function QuizOpenTemplate() {
                     name="studySubject"
                   />
                   <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">학습 쳅터</div>
-                  {/* <TextField
-                    size="small"
-                    fullWidth
-                    onChange={handleInputStudyChapterChange}
-                    id="margin-none"
-                    value={studyChapter}
-                    name="studyChapter"
-                  />
-                  <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">학습 키워드</div> */}
-                  {/* <TagsInput
-                    value={studyKeywords}
-                    onChange={setStudyKeywords}
-                    name="fruits"
-                    placeHolder="학습 키워드를 입력해주세요. 입력 후 엔터를 쳐주세요"
-                  /> */}
                   <Tag
                     value={studyKeywords}
                     onChange={setStudyKeywords}
@@ -1771,13 +1721,6 @@ export function QuizOpenTemplate() {
                   </div>
 
                   <div className="tw-px-1">
-                    {/* <TagsInput
-                      value={skills}
-                      onChange={setSkills}
-                      name="fruits"
-                      placeHolder="관련기술 입력 후 엔터를 쳐주세요"
-                    /> */}
-
                     {optionsSkills?.map((item, i) => (
                       <Toggle
                         key={i}
@@ -1792,13 +1735,6 @@ export function QuizOpenTemplate() {
                           const index = skills.indexOf(item);
                           console.log(index);
                           setSkills(prevState => newCheckItem(item, index, prevState));
-                          // if (index >= 0) {
-                          //   // Remove the name if the code is already in the array
-                          //   setLevelNames(prevNames => prevNames.filter(name => name !== item.name));
-                          // } else {
-                          //   // Add the name if the code is not in the array
-                          //   setLevelNames(prevNames => [...prevNames, item.name]);
-                          // }
                         }}
                         className={cx('tw-mr-2  !tw-h-[37px] tw-mb-2')}
                       />

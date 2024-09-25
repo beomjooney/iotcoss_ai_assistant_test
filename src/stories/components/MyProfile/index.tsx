@@ -8,10 +8,12 @@ import { useOptions } from 'src/services/experiences/experiences.queries';
 import { Toggle } from 'src/stories/components';
 import { useSaveProfile, useRequestProfessor } from 'src/services/account/account.mutations';
 import { useUploadImage } from 'src/services/image/image.mutations';
+import { useSessionStore } from 'src/store/session';
 
 const cx = classNames.bind(styles);
 
 const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: any) => {
+  const { roles } = useSessionStore.getState();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isProfessor, setIsProfessor] = useState<boolean>(false);
   const [jobs, setJobs] = useState([]);
@@ -90,12 +92,11 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
     formData.append('introductionMessage', introductionMessage);
 
     console.log('formData', formData);
-    onSave({formData,isProfessor : false});
+    onSave({ formData, isProfessor: false });
     setIsModalOpen(false);
   };
 
   const handleRequestSave = () => {
-
     if (universityCode === '' || universityCode === undefined) {
       alert('대학을 선택해주세요.');
       return;
@@ -106,10 +107,10 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
       return;
     }
 
-   const params = {
-    jobGroupId: universityCode,
-    jobId: selectedJob,
-    requestDescription: requestMessage,
+    const params = {
+      jobGroupId: universityCode,
+      jobId: selectedJob,
+      requestDescription: requestMessage,
     };
     onRequestSave(params);
     setIsModalOpen(false);
@@ -124,7 +125,7 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
     formData.append('introductionMessage', introductionMessage);
 
     console.log('formData', formData);
-    onSave({formData,isProfessor : true});
+    onSave({ formData, isProfessor: true });
   };
 
   const handleUniversityChange = e => {
@@ -245,23 +246,25 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
               >
                 프로필 수정
               </button>
-              <button
-                onClick={() => {
-                  setIsProfessor(true);
-                  setIsModalOpen(true);
-                  setUniversityCode(profile.jobGroup?.code || '');
-                  const selected = optionsData?.data?.jobs?.find(u => u.code === profile.jobGroup?.code);
-                  setJobs(selected ? selected.jobs : []);
-                  const selected_code = selected?.jobs?.find(u => u.code === profile.job?.code);
-                  setSelectedJob(selected_code?.code);
-                  setIntroductionMessage(profile.introductionMessage || '');
-                  setMemberId(profile?.memberId || '');
-                  setJobLevel(profile?.jobLevels[0]?.code || '');
-                }}
-                className="tw-ml-3 tw-mt-4 border tw-py-3 tw-px-5 tw-rounded tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-center tw-text-[#6a7380]"
-              >
-                교수자 권한 요청
-              </button>
+              {!(roles?.includes('ROLE_ADMIN') || roles?.includes('ROLE_MANAGER')) && (
+                <button
+                  onClick={() => {
+                    setIsProfessor(true);
+                    setIsModalOpen(true);
+                    setUniversityCode(profile.jobGroup?.code || '');
+                    const selected = optionsData?.data?.jobs?.find(u => u.code === profile.jobGroup?.code);
+                    setJobs(selected ? selected.jobs : []);
+                    const selected_code = selected?.jobs?.find(u => u.code === profile.job?.code);
+                    setSelectedJob(selected_code?.code);
+                    setIntroductionMessage(profile.introductionMessage || '');
+                    setMemberId(profile?.memberId || '');
+                    setJobLevel(profile?.jobLevels[0]?.code || '');
+                  }}
+                  className="tw-ml-3 tw-mt-4 border tw-py-3 tw-px-5 tw-rounded tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-center tw-text-[#6a7380]"
+                >
+                  교수자 권한 요청
+                </button>
+              )}
             </div>
           )}
         </div>
@@ -278,24 +281,23 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
           {profile?.member?.nickname}님 데브어스에 오신 것을 환영합니다!
         </div>
         {isProfessor === true ? (
-
           <>
             <div className="tw-font-semibold tw-text-base tw-text-black tw-mt-0  tw-text-center">
-            교수자 권한 요청에 필요한 상세 정보들을 제출해주세요.
+              교수자 권한 요청에 필요한 상세 정보들을 제출해주세요.
             </div>
             <div className="tw-font-semibold tw-text-base  tw-text-black tw-mt-0 tw-mb-10 tw-text-center">
-            이후 마이페이지 > 프로필에서도 권한 요청이 가능합니다.
+              이후 마이페이지 - 프로필에서도 권한 요청이 가능합니다.
             </div>
           </>
         ) : (
           <>
-          <div className="tw-font-semibold tw-text-base tw-text-black tw-mt-0  tw-text-center">
-            대학,학과, 학번 및 학년 등 개인상세정보를 입력해주세요.
-          </div>
-          <div className="tw-font-semibold tw-text-base  tw-text-black tw-mt-0 tw-mb-10 tw-text-center">
-            이후 마이페이지에서 수정이 가능합니다.
-          </div>
-        </>
+            <div className="tw-font-semibold tw-text-base tw-text-black tw-mt-0  tw-text-center">
+              대학,학과, 학번 및 학년 등 개인상세정보를 입력해주세요.
+            </div>
+            <div className="tw-font-semibold tw-text-base  tw-text-black tw-mt-0 tw-mb-10 tw-text-center">
+              이후 마이페이지에서 수정이 가능합니다.
+            </div>
+          </>
         )}
 
         <div className="border tw-p-7 tw-rounded-xl">
