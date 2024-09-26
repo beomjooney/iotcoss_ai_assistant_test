@@ -124,7 +124,7 @@ export function LectureOpenTemplate() {
   const [selectedJobQuiz, setSelectedJobQuiz] = useState<string>('');
 
   const steps = ['Step.1 강의 정보입력', 'Step.2 강의 커리큘럼 입력', 'Step.3 개설될 강의 미리보기'];
-  const [activeStep, setActiveStep] = React.useState(0);
+  const [activeStep, setActiveStep] = React.useState(1);
   const [skipped, setSkipped] = React.useState(new Set<number>());
   const [quizUrl, setQuizUrl] = React.useState('');
   const [quizName, setQuizName] = React.useState('');
@@ -561,6 +561,7 @@ export function LectureOpenTemplate() {
       urls: [],
       files: [],
       studyDate: '',
+      endDate: '',
       // studyDate: dayjs().format('YYYY-MM-DD'),
     };
 

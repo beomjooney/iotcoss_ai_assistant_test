@@ -218,7 +218,7 @@ const LectureBreakerInfo = ({
             <div className="tw-w-11/12 tw-py-5">
               <div className="tw-w-full tw-flex tw-justify-start tw-items-center">
                 <div className="tw-flex tw-text-black tw-text-base tw-w-[140px] tw-line-clamp-1">강의유형 설정 : </div>
-                <div className="tw-flex tw-items-center tw-gap-2 tw-w-full tw-px-5">
+                <div className="tw-flex tw-items-center tw-gap-1 tw-w-full tw-px-4">
                   <ToggleButtonGroup value={item.clubStudyType} onChange={handleIsPublic} exclusive aria-label="">
                     <ToggleButton
                       classes={{ selected: classes.selected }}
@@ -273,17 +273,30 @@ const LectureBreakerInfo = ({
                     placeholder="온라인 강의 URL을 입력해주세요."
                     id="margin-none"
                   />
-                  <div className="tw-flex tw-text-black tw-text-base tw-pl-4 tw-w-[140px]">시작일 : </div>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                      format="YYYY-MM-DD"
-                      slotProps={{
-                        textField: { size: 'small', style: { backgroundColor: 'white', width: '350px' } },
-                      }}
-                      value={dayjs(item?.studyDate)}
-                      onChange={e => onChangeHandleFromToStartDate(e)}
-                    />
-                  </LocalizationProvider>
+                  <div className="tw-flex tw-items-center">
+                    <div className="tw-text-black tw-text-base tw-pl-2  tw-w-[60px]">시작일:</div>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DatePicker
+                        format="YYYY-MM-DD"
+                        slotProps={{
+                          textField: { size: 'small', style: { backgroundColor: 'white', width: '140px' } },
+                        }}
+                        value={dayjs(item?.studyDate)}
+                        onChange={e => onChangeHandleFromToStartDate(e)}
+                      />
+                    </LocalizationProvider>
+                    <div className=" tw-text-black tw-text-base tw-pl-2 tw-w-[60px]">종료일:</div>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DatePicker
+                        format="YYYY-MM-DD"
+                        slotProps={{
+                          textField: { size: 'small', style: { backgroundColor: 'white', width: '140px' } },
+                        }}
+                        value={dayjs(item?.studyDate)}
+                        onChange={e => onChangeHandleFromToStartDate(e)}
+                      />
+                    </LocalizationProvider>
+                  </div>
                 </div>
               </div>
               <div className="tw-mt-3 tw-w-full tw-flex tw-justify-start tw-items-center">
