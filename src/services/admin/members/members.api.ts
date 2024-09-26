@@ -22,7 +22,7 @@ export const saveMember = async (memberId: string, body) =>
 
 // 회원 정보 수정
 export const saveQuiz = async (club: string, body) =>
-  await axiosGeneralAPI().put(`/api/v1/my/clubs/${club}/quizzes`, { clubQuizzes: body });
+  await axiosGeneralAPI().put(`/api/v2/quiz-clubs/${club}/quizzes`, { clubQuizzes: body });
 
 // 회원 정보 삭제
 export const deleteMember = async memberId => await axiosGeneralAPI().delete(`/api/internal/v1/members/${memberId}`);

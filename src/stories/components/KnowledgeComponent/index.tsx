@@ -858,15 +858,24 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
               <AccordionDetails sx={{ backgroundColor: 'white', padding: 3 }}>
                 <div className="tw-flex tw-justify-between tw-items-center">
                   <div className="tw-text-base tw-font-bold tw-pt-5 tw-pb-2">퀴즈</div>
-                  <button
-                    onClick={() => {
-                      // Add your button click handler logic here
-                      handleAIAnswerClick(0, modelAnswerFinal);
-                    }}
-                    className="tw-w-[134px] tw-mt-2 tw-px-3 tw-py-1 tw-text-black tw-bg-white border border-dark tw-rounded tw-text-sm"
-                  >
-                    {isLoadingAI ? <CircularProgress color="info" size={18} /> : ' + AI모범답안 생성'}
-                  </button>
+                  <div>
+                    <button
+                      onClick={() => {
+                        handleAIAnswerClick(0, modelAnswerFinal);
+                      }}
+                      className="tw-mt-2 tw-px-3 tw-mr-2 tw-py-1 tw-text-black tw-bg-white border border-dark tw-rounded tw-text-sm"
+                    >
+                      {isLoadingAI ? <CircularProgress color="info" size={18} /> : 'AI모범답안 생성'}
+                    </button>
+                    <button
+                      onClick={() => {
+                        setUpdateFlag(false);
+                      }}
+                      className="tw-mt-2 tw-px-3 tw-py-1 tw-text-black tw-bg-white border border-dark tw-rounded tw-text-sm"
+                    >
+                      {'수정 완료'}
+                    </button>
+                  </div>
                 </div>
                 <div className="border tw-rounded-lg tw-my-2">
                   <div className="border-bottom tw-bg-gray-100 tw-px-5 tw-py-3">

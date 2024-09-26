@@ -86,7 +86,7 @@ export const useQuizMyClubInfo = (params, onSuccess?: (data: any) => void, onErr
 };
 
 export const useQuizMyInfo = (params, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
-  const DEFAULT_SIZE = 50;
+  const DEFAULT_SIZE = 100;
   return useQuery<any, Error>(
     QUERY_KEY_FACTORY('QUIZ_MY_INFO').detail({ size: DEFAULT_SIZE, ...params }),
     () => quizMyInfo({ size: DEFAULT_SIZE, ...params }),

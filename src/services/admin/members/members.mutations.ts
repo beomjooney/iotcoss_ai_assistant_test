@@ -13,7 +13,7 @@ export const useSaveMember = (): UseMutationResult => {
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_MEMBERS').all),
     onSuccess: async data => {
-      alert('수정이 완료되었습니다.');
+      // alert('수정이 완료되었습니다.');
     },
   });
 };
@@ -27,7 +27,14 @@ export const useSaveQuiz = (): UseMutationResult => {
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_MEMBERS').all),
     onSuccess: async data => {
-      alert('퀴즈 수정이 완료되었습니다.');
+      console.log('data?.data?.responseCode', data?.data?.responseCode);
+      if (data?.data?.responseCode === '0000') {
+        alert('퀴즈 수정이 완료되었습니다.');
+      } else if (data?.data?.responseCode === '0401') {
+        alert('오픈되어있는 퀴즈는 순서를 변경할 수 없습니다.');
+      } else {
+        alert('퀴즈 수정 실패했습니다. : ' + data?.data?.responseCode);
+      }
     },
   });
 };

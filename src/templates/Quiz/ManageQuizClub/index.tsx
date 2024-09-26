@@ -121,7 +121,22 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
   //quiz new logic
   const [selectedQuizIds, setSelectedQuizIds] = useState([]);
   const [quizListData, setQuizListData] = useState<any[]>([]);
-  const { mutate: onQuizSave } = useSaveQuiz();
+  const [quizListBackupData, setQuizListBackupData] = useState<any[]>([]);
+  const { mutate: onQuizSave, data: quizSaveData } = useSaveQuiz();
+  useEffect(() => {
+    if (quizSaveData) {
+      console.log(quizSaveData?.data?.responseCode);
+      if (quizSaveData?.data?.responseCode === '0000') {
+        // setQuizListData(quizSaveData);
+        console.log('퀴즈 수정 성공');
+      } else if (quizSaveData?.data?.responseCode === '0401') {
+        refetchMyInfo();
+        console.log('오픈되어있는 퀴즈는 순서를 변경할 수 없습니다.');
+      } else {
+        console.log('퀴즈 수정에 실패했습니다. : ' + quizSaveData?.data?.responseCode);
+      }
+    }
+  }, [quizSaveData]);
 
   //quiz
   const [pageQuizz, setPageQuizz] = useState(1);
@@ -182,6 +197,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
 
   useEffect(() => {
     // Merge new data from quizListData into allQuizData
+    console.log('quizListData', quizListData);
     setAllQuizData(prevAllQuizData => {
       const mergedQuizData = [...prevAllQuizData];
       const existingSequences = new Set(mergedQuizData.map(quiz => quiz.quizSequence));
@@ -452,15 +468,16 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
   };
 
   //퀴즈 리스트
-  const { isFetched: isQuizData, refetch } = useQuizList(params, data => {
-    console.log(data);
-    setQuizListData(data.contents || []);
-    setTotalQuizzPage(data.totalPages);
-    setTotalQuizzElements(data.totalElements);
+  // const { isFetched: isQuizData, refetch } = useQuizList(params, data => {
+  //   console.log('useQuizList', data);
+  //   setQuizListData(data.contents || []);
+  //   setQuizListBackupData(data.contents || []);
+  //   setTotalQuizzPage(data.totalPages);
+  //   setTotalQuizzElements(data.totalElements);
 
-    console.log(data.totalPages);
-    console.log(data.totalElements);
-  });
+  //   console.log(data.totalPages);
+  //   console.log(data.totalElements);
+  // });
 
   // 퀴즈클럽 리스트
   const { isFetched: isContentFetched, refetch: refetchMyClub } = useMyClubList({}, data => {
@@ -489,17 +506,16 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
   });
 
   // 퀴즈클럽 정보 조회
-  const { isFetched: isParticipantListFetched } = useQuizMyClubInfo(myQuizParams, data => {
-    console.log('first get data');
-    // setQuizList(data?.contents || []);
-    setSelectedQuizIds(data?.contents.map(item => item?.quizSequence));
-    console.log(data?.contents.map(item => item?.quizSequence));
-    setTotalQuizPage(data?.totalPages);
-    setTotalQuizElements(data?.totalElements);
-    console.log(data);
-  });
+  // const { isFetched: isParticipantListFetched } = useQuizMyClubInfo(myQuizParams, data => {
+  //   console.log('first get data');
+  //   // setQuizList(data?.contents || []);
+  //   setSelectedQuizIds(data?.contents.map(item => item?.quizSequence));
+  //   setTotalQuizPage(data?.totalPages);
+  //   setTotalQuizElements(data?.totalElements);
+  //   console.log(data);
+  // });
 
-  const { isFetched: isMyInfoFetched } = useQuizMyInfo(myQuizParams, data => {
+  const { isFetched: isMyInfoFetched, refetch: refetchMyInfo } = useQuizMyInfo(myQuizParams, data => {
     console.log('first get data>>>>', data.clubQuizzes);
     setQuizList(data?.clubQuizzes || []);
     console.log(data);
@@ -697,6 +713,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
   }
 
   const handleUpdate = (evt: any, updated: any) => {
+    console.log('updated', updated);
     // 인덱스로 일정 항목을 보유할 맵
     const scheduleMap = updated.reduce((acc, item, index) => {
       acc[index] = item;
@@ -806,7 +823,14 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
       return;
     }
     console.log(quizList);
-    onQuizSave({ club: selectedClub?.clubSequence, data: quizList });
+
+    // publishDate와 quizSequence만 남기기
+    const filteredData = quizList.map(({ publishDate, quizSequence }) => ({
+      publishDate,
+      quizSequence,
+    }));
+
+    onQuizSave({ club: selectedClub?.clubSequence, data: filteredData });
   };
 
   function searchKeyworld(value) {
@@ -2342,7 +2366,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                       rowClassName="simple-drag-row"
                       onUpdate={handleUpdate}
                       key={updateKey} // 상태 업데이트를 강제 트리거
-                      disabled={true}
+                      // disabled={true}
                     />
                   </Grid>
                 </Grid>
@@ -2356,7 +2380,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
                 )}
                 <div className="tw-text-center tw-pt-14">
                   <button
-                    onClick={() => handlerClubSaveTemp()}
+                    onClick={() => handleQuizSave()}
                     type="button"
                     data-tooltip-target="tooltip-default"
                     className="tw-py-3 tw-px-10 tw-w-[180px] tw-bg-red-600 tw-text-white max-lg:tw-w-[60px] tw-text-sm tw-font-bold tw-rounded"
