@@ -26,7 +26,8 @@ const ClubCard = ({
   xs,
 }: // eslint-disable-next-line @typescript-eslint/no-empty-function
 ClubCardProps) => {
-  const { logged, roles } = useSessionStore.getState();
+  const { logged, roles, memberId } = useSessionStore.getState();
+  console.log('clubCard', item, roles, memberId, item.leaderUUID);
   const { mutate: onSaveLike, isSuccess } = useSaveLike();
   const { mutate: onDeleteLike } = useDeleteLike();
 
@@ -57,7 +58,7 @@ ClubCardProps) => {
         // href={logged ? '/quiz/' + `${item.clubSequence}` : '#'}
         href={
           logged
-            ? roles?.includes('ROLE_ADMIN') || roles?.includes('ROLE_MANAGER')
+            ? roles?.includes('ROLE_ADMIN') || (roles?.includes('ROLE_MANAGER') && memberId === item.leaderUUID)
               ? '/quiz-dashboard/' + `${item.clubSequence}`
               : '/quiz/' + `${item.clubSequence}`
             : '#'
