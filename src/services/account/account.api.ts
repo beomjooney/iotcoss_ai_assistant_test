@@ -108,6 +108,9 @@ export async function emailJoinSend(params: any[]) {
 // 회원 등록
 export const loginSignUp = async body => await axiosGeneralAPI().post('/api/v1/signup', body);
 
+// 회원 등록
+export const loginSignUpDSU = async body => await axiosGeneralAPI().post('/api/v1/external-signup', body);
+
 // 회원 OTP
 // export const getIdVerification = async body => {
 //   console.log(body);

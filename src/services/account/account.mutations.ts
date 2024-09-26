@@ -18,6 +18,7 @@ import {
   emailJoinSend,
   resetPassword,
   join,
+  loginSignUpDSU,
 } from './account.api';
 import { setCookie } from 'cookies-next';
 import router from 'next/router';
@@ -127,6 +128,7 @@ export const useLogin = (): UseMutationResult => {
       const { responseCode, message } = data;
       if (responseCode === '0000') {
         setCookie('access_token', data?.access_token);
+      } else if (responseCode === 'C06003') {
       } else {
         alert(`error : [${responseCode}] ${message}`);
       }
@@ -216,6 +218,31 @@ export const useLoginSignUp = (): UseMutationResult => {
         alert('회원가입이 정상적으로 되었습니다.');
         router.push('/account/member-registration-complete');
         // router.push('/account/login');
+      } else {
+        alert(`error : [${responseCode}] ${message}`);
+      }
+      // alert('회원가입이 정상적으로 되었습니다.');
+      // alert('회원가입이 정상적으로 되었습니다.');
+      // location.href = '/account/login';
+      // alert('좋아요.~');
+    },
+  });
+};
+
+export const useLoginSignUpDSU = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  // TODO : any 타입 변경
+  return useMutation<any, any, any>(requestBody => loginSignUpDSU(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('LOGIN').all),
+    onSuccess: async data => {
+      console.log('data', data);
+      const { responseCode, message } = data.data;
+      if (responseCode === '0000') {
+        // alert('회원가입이 정상적으로 되었습니다.');
       } else {
         alert(`error : [${responseCode}] ${message}`);
       }

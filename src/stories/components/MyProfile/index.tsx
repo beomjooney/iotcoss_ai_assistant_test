@@ -224,7 +224,7 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
                 phone:
               </p>
               <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">
-                {profile?.phoneNumber || 'N/A'}
+                {profile?.phoneNumber || ''}
               </p>
             </div>
           </div>

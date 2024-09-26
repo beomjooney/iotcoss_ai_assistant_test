@@ -54,7 +54,7 @@ export function LoginPage(props: LoginPageProps) {
     authLoginUpdate();
   };
 
-  return <LoginTemplate title="DSU Devus" onSubmitLogin={onSubmitLogin} />;
+  return <LoginTemplate title="" onSubmitLogin={onSubmitLogin} />;
 }
 
 export default LoginPage;
