@@ -73,7 +73,7 @@ export function LoginOneTemplate({ title = '', onSubmitLogin }: LoginTempOnelate
 
       // if (loginData?.tenant_uri === getFirstSubdomain() || isLocalEnv || isLocalProd) {
       if (loginData?.tenant_uri === getFirstSubdomain() || isLocalEnv) {
-        // location.href = '/';
+        location.href = '/';
       } else {
         const authStore = localStorage.getItem('auth-store');
         if (authStore) {
