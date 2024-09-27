@@ -10,6 +10,7 @@ import { styled } from '@mui/material/styles';
 import TextField, { TextFieldProps } from '@mui/material/TextField';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
+
 import { UseQueryResult } from 'react-query';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { ExperiencesResponse } from 'src/models/experiences';
@@ -66,7 +67,11 @@ export const generateUUID = () => {
 const cx = classNames.bind(styles);
 
 const defaultScheduleData = [];
+let startDate1 = dayjs(); // 오늘 날짜로 시작
+
 for (let i = 0; i < 2; i++) {
+  const endDate1 = startDate1.add(1, 'day'); // startDate의 다음 날을 endDate로 설정
+
   defaultScheduleData.push({
     studyOrder: i + 1,
     clubStudyName: '',
@@ -74,10 +79,13 @@ for (let i = 0; i < 2; i++) {
     files: [],
     clubStudyType: '0100',
     clubStudyUrl: '',
-    studyDate: dayjs().add(i, 'day').format('YYYY-MM-DD'), // i 만큼 날짜를 증가시킴
+    startDate: startDate1.format('YYYY-MM-DD'), // 시작 날짜
+    endDate: endDate1.format('YYYY-MM-DD'), // 종료 날짜
   });
-}
 
+  // 첫 번째 일정과 두 번째 일정 사이에 하루를 건너뜁니다
+  startDate1 = endDate1.add(1, 'day'); // endDate 다음 날부터 시작
+}
 export function LectureOpenTemplate() {
   const router = useRouter();
   const [startDay, setStartDay] = React.useState<Dayjs | null>(dayjs());
@@ -124,7 +132,7 @@ export function LectureOpenTemplate() {
   const [selectedJobQuiz, setSelectedJobQuiz] = useState<string>('');
 
   const steps = ['Step.1 강의 정보입력', 'Step.2 강의 커리큘럼 입력', 'Step.3 개설될 강의 미리보기'];
-  const [activeStep, setActiveStep] = React.useState(1);
+  const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set<number>());
   const [quizUrl, setQuizUrl] = React.useState('');
   const [quizName, setQuizName] = React.useState('');
@@ -560,7 +568,7 @@ export function LectureOpenTemplate() {
       clubStudyUrl: '',
       urls: [],
       files: [],
-      studyDate: '',
+      startDate: '',
       endDate: '',
       // studyDate: dayjs().format('YYYY-MM-DD'),
     };
@@ -698,7 +706,23 @@ export function LectureOpenTemplate() {
           // Return the item with the URL at urlIndex removed from urlList
           return {
             ...item,
-            studyDate: startDay,
+            startDate: startDay,
+          };
+        }
+        return item;
+      }),
+    );
+  };
+
+  const handleEndDayChange = (order, endDay) => {
+    console.log('handleRemoveFile', order, endDay);
+    setScheduleData(prevData =>
+      prevData.map(item => {
+        if (item.studyOrder === order) {
+          // Return the item with the URL at urlIndex removed from urlList
+          return {
+            ...item,
+            endDate: endDay,
           };
         }
         return item;
@@ -829,6 +853,7 @@ export function LectureOpenTemplate() {
           onMouseDown={onMouseDown}
           onTouchStart={onTouchStart}
           handleStartDayChange={handleStartDayChange}
+          handleEndDayChange={handleEndDayChange}
           handleUrlChange={handleUrlChange}
           handleTypeChange={handleTypeChange}
           lectureNameChange={lectureNameChange}
@@ -897,10 +922,13 @@ export function LectureOpenTemplate() {
   const handlerClubTemp = async () => {
     await refetchGetTemp();
   };
-
   const handlerQuizInit = async () => {
     const defaultScheduleDataInit = [];
+    let startDate = dayjs(); // 오늘 날짜로 시작
+
     for (let i = 0; i < 2; i++) {
+      const endDate = startDate.add(1, 'day'); // startDate의 다음 날을 endDate로 설정
+
       defaultScheduleDataInit.push({
         studyOrder: i + 1,
         clubStudyName: '',
@@ -908,8 +936,12 @@ export function LectureOpenTemplate() {
         files: [],
         clubStudyType: '0100',
         clubStudyUrl: '',
-        studyDate: dayjs().add(i, 'day').format('YYYY-MM-DD'), // i 만큼 날짜를 증가시킴
+        startDate: startDate.format('YYYY-MM-DD'), // 시작 날짜
+        endDate: endDate.format('YYYY-MM-DD'), // 종료 날짜
       });
+
+      // 다음 루프에서는 현재 endDate의 다음 날을 startDate로 설정
+      startDate = endDate.add(1, 'day');
     }
 
     setScheduleData(defaultScheduleDataInit);
@@ -917,6 +949,7 @@ export function LectureOpenTemplate() {
 
   //임시저장
   const handlerClubSaveTemp = type => {
+    console.log('handlerClubSaveTemp', type);
     // const selectedJobCode = jobs.find(j => j.code === selectedJob)?.code || '';
 
     // 필수 항목 체크
@@ -1074,8 +1107,13 @@ export function LectureOpenTemplate() {
       }
 
       if (activeStep === 1) {
-        if (item.studyDate === '') {
+        if (item.startDate === '') {
           alert(`${i + 1}번째 강의 시작일을 입력해주세요.`);
+          shouldStop = true;
+          return; // 함수 전체를 종료
+        }
+        if (item.endDate === '') {
+          alert(`${i + 1}번째 강의 종료일을 입력해주세요.`);
           shouldStop = true;
           return; // 함수 전체를 종료
         }
@@ -1084,6 +1122,17 @@ export function LectureOpenTemplate() {
           alert(`${i + 1}번째 강의 이름을 입력해주세요.`);
           shouldStop = true;
           return; // 함수 전체를 종료
+        }
+
+        // 현재 날짜 값에 하루를 더하기
+        const nextDay = dayjs(item.startDate).format('YYYY-MM-DD');
+        const nextDay2 = dayjs(item.endDate).format('YYYY-MM-DD');
+
+        // 시작일이 종료일보다 크거나 같을 경우 오류 처리
+        if (!dayjs(nextDay2).isAfter(dayjs(nextDay))) {
+          alert(`${i + 1}번째 강의 : 종료일 (${nextDay2})은(는) 시작일 (${nextDay})보다 뒤에 있어야 합니다.`);
+
+          return; // 혹은 필요에 따라 validation 실패시 코드 실행 중단
         }
       }
 
@@ -1102,10 +1151,11 @@ export function LectureOpenTemplate() {
       formData.append(`clubStudies[${i}].clubStudyType`, item.clubStudyType);
       formData.append(`clubStudies[${i}].clubStudyUrl`, item.clubStudyUrl || '');
 
-      // 현재 날짜 값에 하루를 더하기
-      // const nextDay = dayjs(item.studyDate).add(1, 'day').format('YYYY-MM-DD');
-      const nextDay = dayjs(item.studyDate).format('YYYY-MM-DD');
-      formData.append(`clubStudies[${i}].studyDate`, nextDay);
+      const nextDay = dayjs(item.startDate).format('YYYY-MM-DD');
+      const nextDay2 = dayjs(item.endDate).format('YYYY-MM-DD');
+
+      formData.append(`clubStudies[${i}].startDate`, nextDay);
+      formData.append(`clubStudies[${i}].endDate`, nextDay2);
     }
 
     console.log('formData', lectureContents);
@@ -1164,6 +1214,7 @@ export function LectureOpenTemplate() {
     <div key={item.order} className="simple-drag-row">
       <LectureBreakerInfo
         handleStartDayChange={handleStartDayChange}
+        handleEndDayChange={handleEndDayChange}
         handleUrlChange={handleUrlChange}
         handleTypeChange={handleTypeChange}
         lectureNameChange={lectureNameChange}

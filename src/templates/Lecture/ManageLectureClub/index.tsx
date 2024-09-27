@@ -825,8 +825,13 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
         }
       }
 
-      if (item.studyDate === '') {
+      if (item.startDate === '') {
         alert(`${i + 1}번째 강의 시작일을 입력해주세요.`);
+        shouldStop = true;
+        return; // 함수 전체를 종료
+      }
+      if (item.endDate === '') {
+        alert(`${i + 1}번째 강의 종료일을 입력해주세요.`);
         shouldStop = true;
         return; // 함수 전체를 종료
       }
@@ -838,13 +843,24 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
       }
 
       // studyDate가 순차적인지 확인하는 로직 추가
-      if (i > 0) {
-        const prevItem = scheduleData[i - 1];
-        if (dayjs(item.studyDate).isBefore(dayjs(prevItem.studyDate))) {
-          alert(`${i + 1}번째 강의 시작일이 이전 강의 시작일보다 이전입니다. 날짜를 확인해주세요.`);
-          shouldStop = true;
-          return; // 함수 전체를 종료
-        }
+      // if (i > 0) {
+      //   const prevItem = scheduleData[i - 1];
+      //   if (dayjs(item.studyDate).isBefore(dayjs(prevItem.studyDate))) {
+      //     alert(`${i + 1}번째 강의 시작일이 이전 강의 시작일보다 이전입니다. 날짜를 확인해주세요.`);
+      //     shouldStop = true;
+      //     return; // 함수 전체를 종료
+      //   }
+      // }
+
+      // 현재 날짜 값에 하루를 더하기
+      const nextDay3 = dayjs(item.startDate).format('YYYY-MM-DD');
+      const nextDay4 = dayjs(item.endDate).format('YYYY-MM-DD');
+
+      // 시작일이 종료일보다 크거나 같을 경우 오류 처리
+      if (!dayjs(nextDay4).isAfter(dayjs(nextDay3))) {
+        alert(`${i + 1}번째 강의 : 종료일 (${nextDay4})은(는) 시작일 (${nextDay3})보다 뒤에 있어야 합니다.`);
+
+        return; // 혹은 필요에 따라 validation 실패시 코드 실행 중단
       }
 
       // 임시저장 로직에 false 추가, isNew 속성이 없으면 true로 설정
@@ -863,9 +879,11 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
       formData.append(`clubStudies[${i}].clubStudyUrl`, item.clubStudyUrl || '');
 
       // 현재 날짜 값에 하루를 더하기
-      // const nextDay = dayjs(item.studyDate).add(1, 'day').format('YYYY-MM-DD');
-      const nextDay = dayjs(item.studyDate).format('YYYY-MM-DD');
-      formData.append(`clubStudies[${i}].studyDate`, nextDay);
+      const nextDay = dayjs(item.startDate).format('YYYY-MM-DD');
+      const nextDay2 = dayjs(item.endDate).format('YYYY-MM-DD');
+
+      formData.append(`clubStudies[${i}].startDate`, nextDay);
+      formData.append(`clubStudies[${i}].endDate`, nextDay2);
     }
 
     lectureContents?.files?.forEach((file, j) => {
@@ -1000,7 +1018,23 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
           // Return the item with the URL at urlIndex removed from urlList
           return {
             ...item,
-            studyDate: startDay,
+            startDate: startDay,
+          };
+        }
+        return item;
+      }),
+    );
+  };
+
+  const handleEndDayChange = (order, endDay) => {
+    console.log('handleRemoveFile', order, endDay);
+    setScheduleData(prevData =>
+      prevData.map(item => {
+        if (item.studyOrder === order) {
+          // Return the item with the URL at urlIndex removed from urlList
+          return {
+            ...item,
+            endDate: endDay,
           };
         }
         return item;
@@ -1101,6 +1135,7 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
     <div key={item.order} className="simple-drag-row">
       <LectureBreakerInfo
         handleStartDayChange={handleStartDayChange}
+        handleEndDayChange={handleEndDayChange}
         handleUrlChange={handleUrlChange}
         handleTypeChange={handleTypeChange}
         lectureNameChange={lectureNameChange}
@@ -1135,8 +1170,8 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
       clubStudyUrl: '',
       urls: [],
       files: [],
-      studyDate: '',
-      // studyDate: dayjs().format('YYYY-MM-DD'),
+      startDate: '',
+      endDate: '',
     };
 
     // Update scheduleData with the new data

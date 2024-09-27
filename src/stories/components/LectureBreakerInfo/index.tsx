@@ -45,6 +45,7 @@ const LectureBreakerInfo = ({
   handleTypeChange,
   handleUrlChange,
   handleStartDayChange,
+  handleEndDayChange,
   onFileDownload,
   onMouseDown,
   onTouchStart,
@@ -63,6 +64,16 @@ const LectureBreakerInfo = ({
       const formattedDateString = formattedDate.format('YYYY-MM-DD');
       // Set both today and todayEnd
       handleStartDayChange(order, formattedDateString);
+    }
+  };
+  const onChangeHandleFromToEndDate = date => {
+    if (date) {
+      // Convert date to a Dayjs object
+      const formattedDate = dayjs(date);
+      // Format the date as 'YYYY-MM-DD'
+      const formattedDateString = formattedDate.format('YYYY-MM-DD');
+      // Set both today and todayEnd
+      handleEndDayChange(order, formattedDateString);
     }
   };
 
@@ -281,7 +292,7 @@ const LectureBreakerInfo = ({
                         slotProps={{
                           textField: { size: 'small', style: { backgroundColor: 'white', width: '140px' } },
                         }}
-                        value={dayjs(item?.studyDate)}
+                        value={dayjs(item?.startDate)}
                         onChange={e => onChangeHandleFromToStartDate(e)}
                       />
                     </LocalizationProvider>
@@ -292,13 +303,15 @@ const LectureBreakerInfo = ({
                         slotProps={{
                           textField: { size: 'small', style: { backgroundColor: 'white', width: '140px' } },
                         }}
-                        value={dayjs(item?.studyDate)}
-                        onChange={e => onChangeHandleFromToStartDate(e)}
+                        value={dayjs(item?.endDate)}
+                        onChange={e => onChangeHandleFromToEndDate(e)}
                       />
                     </LocalizationProvider>
                   </div>
                 </div>
               </div>
+              {item?.startDate}
+              {item?.endDate}
               <div className="tw-mt-3 tw-w-full tw-flex tw-justify-start tw-items-center">
                 <div className="tw-flex tw-text-black tw-text-base tw-w-[140px]">강의자료 업로드 : </div>
                 <div className="tw-flex tw-items-center tw-gap-2 tw-w-full tw-px-5">

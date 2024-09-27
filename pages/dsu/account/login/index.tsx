@@ -1,5 +1,5 @@
 import './index.module.scss';
-import { LoginTemplate } from 'src/templates';
+import { LoginOneTemplate } from 'src/templates';
 import { useRouter } from 'next/router';
 import { getCookie, setCookie } from 'cookies-next';
 import { useEffect } from 'react';
@@ -8,9 +8,9 @@ import jwt_decode from 'jwt-decode';
 import { UserInfo } from '../../../../src/models/account';
 
 /* eslint-disable-next-line */
-interface LoginPageProps {}
+interface LoginOnePageProps {}
 
-export function LoginPage(props: LoginPageProps) {
+export function LoginOnePage(props: LoginOnePageProps) {
   const router = useRouter();
   const token = router.query['token'];
 
@@ -54,12 +54,12 @@ export function LoginPage(props: LoginPageProps) {
     authLoginUpdate();
   };
 
-  return <LoginTemplate title="" onSubmitLogin={onSubmitLogin} />;
+  return <LoginOneTemplate title="" onSubmitLogin={onSubmitLogin} />;
 }
 
-export default LoginPage;
+export default LoginOnePage;
 
-LoginPage.LayoutProps = {
+LoginOnePage.LayoutProps = {
   darkBg: false,
   classOption: 'custom-header',
   title: '데브어스',

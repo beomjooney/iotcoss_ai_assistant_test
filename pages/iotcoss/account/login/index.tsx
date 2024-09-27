@@ -1,5 +1,5 @@
 import './index.module.scss';
-import { LoginTemplate } from 'src/templates';
+import { LoginOneTemplate } from 'src/templates';
 import { useRouter } from 'next/router';
 import { getCookie, setCookie } from 'cookies-next';
 import { useEffect } from 'react';
@@ -67,7 +67,7 @@ export function LoginPage(props: LoginPageProps) {
     authLoginUpdate();
   };
 
-  return <LoginTemplate title="" onSubmitLogin={onSubmitLogin} />;
+  return <LoginOneTemplate title="" onSubmitLogin={onSubmitLogin} />;
 }
 
 export default LoginPage;

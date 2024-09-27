@@ -28,16 +28,16 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
   //미로그인 데이터 처리
   if (!logged) {
     useGuestTenant(subDomain, data => {
-      setCookie('access_token', data.guestToken);
+      setCookie('access_token', data?.guestToken);
       console.log('access_data', data);
       update({
-        tenantName: data.tenantName,
-        redirections: data.homeUrl,
-        registrationAuthenticationType: data.registrationAuthenticationType,
+        tenantName: data?.tenantName,
+        redirections: data?.homeUrl,
+        registrationAuthenticationType: data?.registrationAuthenticationType,
         menu: {
-          use_lecture_club: data.lectureClubUseYn === 'YES' ? true : false,
+          use_lecture_club: data?.lectureClubUseYn === 'YES' ? true : false,
 
-          use_quiz_club: data.quizClubUseYn === 'YES' ? true : false,
+          use_quiz_club: data?.quizClubUseYn === 'YES' ? true : false,
         },
       });
     });

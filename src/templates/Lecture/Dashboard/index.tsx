@@ -1312,6 +1312,9 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                         <TableCell align="center" width={98} className="border-right">
                           <div className="tw-font-bold tw-text-base">강의주차</div>
                         </TableCell>
+                        <TableCell align="center" width={98} className="border-right">
+                          <div className="tw-font-bold tw-text-base">강의기간</div>
+                        </TableCell>
                         <TableCell align="center" width={98}>
                           <div className="tw-font-bold tw-text-base">총 질의수</div>
                         </TableCell>
@@ -1345,8 +1348,13 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                           <TableCell align="center" component="th" scope="row" className="border-right">
                             <div className="tw-font-bold tw-text-base">
                               {info?.studyOrder}회 <br />
+                            </div>
+                          </TableCell>
+                          <TableCell align="center" component="th" scope="row" className="border-right">
+                            <div className="tw-font-bold tw-text-base">
                               <span className="tw-text-sm tw-font-medium tw-text-gray-400">
-                                {info?.studyDate?.slice(5)} ({info?.dayOfWeek})
+                                {info?.startDate?.substring(5)}({info?.startDayOfWeek})<br></br>~
+                                {info?.endDate?.substring(5)}({info?.endDayOfWeek})
                               </span>
                             </div>
                           </TableCell>
@@ -1628,10 +1636,10 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
               <TableHead style={{ backgroundColor: '#F6F7FB' }}>
                 <TableRow>
                   <TableCell align="left" width={200} className="border-right">
-                    <div className="tw-font-bold tw-text-base">회차</div>
+                    <div className="tw-font-bold tw-text-base">강의회차</div>
                   </TableCell>
                   <TableCell align="left" width={250} className="border-right">
-                    <div className="tw-font-bold tw-text-base">질문</div>
+                    <div className="tw-font-bold tw-text-base">강의질문</div>
                   </TableCell>
                   <TableCell align="left" className="border-right">
                     <div className="tw-font-bold tw-text-base">답변내역</div>
@@ -1652,7 +1660,8 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                           /> */}
                           <div className="tw-font-bold tw-text-sm">{info?.studyOrder}회차</div>
                           <div className="">
-                            {info?.startDate}~ {info?.endDate}
+                            {info?.startDate?.substring(5)}({info?.startDayOfWeek}) ~ {info?.endDate?.substring(5)}(
+                            {info?.endDayOfWeek})
                           </div>
                         </div>
                       </TableCell>

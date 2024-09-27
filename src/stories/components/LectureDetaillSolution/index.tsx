@@ -286,16 +286,25 @@ const LectureDetaillSolution = ({
                           >
                             {item?.studyOrder}주차
                           </div>
+                        </Grid>
+                        <Grid item xs={12} sm={1} style={{ paddingTop: 10 }}>
                           <div
-                            className={`tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold ${
+                            className={`tw-flex-auto tw-text-center tw-text-sm tw-text-gray-400 tw-font-normal ${
                               item?.isCompleted ? 'tw-text-black' : 'tw-text-gray-300 tw-font-normal'
                             }`}
                           >
-                            {item?.studyDate.split('-').slice(1).join('-')} ({item?.dayOfWeek})
+                            {item?.startDate.split('-').slice(1).join('-')}({item?.startDayOfWeek}) ~
+                          </div>
+                          <div
+                            className={`tw-flex-auto tw-text-center tw-text-sm tw-text-gray-400 tw-font-normal ${
+                              item?.isCompleted ? 'tw-text-black' : 'tw-text-gray-300 tw-font-normal'
+                            }`}
+                          >
+                            {item?.endDate.split('-').slice(1).join('-')}({item?.endDayOfWeek})
                           </div>
                         </Grid>
 
-                        <Grid item xs={12} sm={11}>
+                        <Grid item xs={12} sm={10}>
                           <div className="tw-rounded-xl">
                             <div
                               className={`tw-py-7 tw-flex tw-items-center tw-px-4 max-lg:tw-p-3 tw-py-1 tw-rounded-lg ${

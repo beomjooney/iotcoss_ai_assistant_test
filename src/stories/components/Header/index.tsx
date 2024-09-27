@@ -197,7 +197,7 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
         style={{ textAlign: 'left', paddingLeft: '20px', backgroundColor: 'black' }}
       >
         <Typography type="H3" weight="bold">
-          {getFirstSubdomain() === 'iotcoss' ? (
+          {getFirstSubdomain() === 'iotcoss' || getFirstSubdomain() === 'ai' ? (
             <Typography>사물인터넷 혁신융합대학사업단</Typography>
           ) : (
             <Typography>DSU QuizUp</Typography>
@@ -295,7 +295,7 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
         <div className="container" style={{ alignItems: 'center' }}>
           {/* <div className={cx('header-link')}> */}
           <div onClick={handleGoHome} className={cx('header-link')}>
-            {getFirstSubdomain() === 'iotcoss' ? (
+            {getFirstSubdomain() === 'iotcoss' || getFirstSubdomain() === 'ai' ? (
               <div className="tw-flex tw-items-center tw-gap-2">
                 <img src="/assets/images/header/sejong_logo.png" width={250} alt="logo" className={cx('image-logo')} />
                 {/* <div className="tw-text-black tw-text-3xl tw-font-bold">AI조교</div> */}

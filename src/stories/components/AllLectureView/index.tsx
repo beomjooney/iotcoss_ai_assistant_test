@@ -255,15 +255,18 @@ const AllLectureView = ({ border, id }) => {
                   <TableHead style={{ backgroundColor: '#F6F7FB' }}>
                     <TableRow>
                       <TableCell align="center" width={100}>
-                        <div className="tw-font-bold tw-text-base">주차</div>
+                        <div className="tw-font-bold tw-text-base">강의주차</div>
+                      </TableCell>
+                      <TableCell align="center" width={120}>
+                        <div className="tw-font-bold tw-text-base">기간</div>
                       </TableCell>
                       <TableCell align="center">
                         <div className="tw-font-bold tw-text-base">강의제목</div>
                       </TableCell>
-                      <TableCell align="center" width={110}>
+                      <TableCell align="center" width={100}>
                         <div className="tw-font-bold tw-text-base">강의형태</div>
                       </TableCell>
-                      <TableCell align="center" width={110}>
+                      <TableCell align="center" width={100}>
                         <div className="tw-font-bold tw-text-base">타입</div>
                       </TableCell>
                       <TableCell align="center" width={100}>
@@ -281,8 +284,13 @@ const AllLectureView = ({ border, id }) => {
                           <TableCell align="center" component="th" scope="row">
                             <div className="tw-font-bold tw-text-base">
                               {item?.studyOrder}회 <br />
+                            </div>
+                          </TableCell>
+                          <TableCell align="center" component="th" scope="row">
+                            <div className="tw-font-bold tw-text-base">
                               <span className="tw-text-sm tw-font-medium tw-text-gray-400">
-                                {item?.studyDate?.substring(5)}({item?.dayOfWeek})
+                                {item?.startDate?.substring(5)}({item?.startDayOfWeek})<br></br>~{' '}
+                                {item?.endDate?.substring(5)}({item?.endDayOfWeek})
                               </span>
                             </div>
                           </TableCell>
