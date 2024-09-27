@@ -310,8 +310,6 @@ const LectureBreakerInfo = ({
                   </div>
                 </div>
               </div>
-              {item?.startDate}
-              {item?.endDate}
               <div className="tw-mt-3 tw-w-full tw-flex tw-justify-start tw-items-center">
                 <div className="tw-flex tw-text-black tw-text-base tw-w-[140px]">강의자료 업로드 : </div>
                 <div className="tw-flex tw-items-center tw-gap-2 tw-w-full tw-px-5">
