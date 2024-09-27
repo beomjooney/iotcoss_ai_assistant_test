@@ -228,8 +228,8 @@ BannerProps) => {
       return;
     }
 
-    if (introductionMessage.length < 25) {
-      alert('답변은 최소 25자 이상이어야 합니다.');
+    if (introductionMessage.length < 3) {
+      alert('답변은 최소 3자 이상이어야 합니다.');
       return;
     }
 
@@ -263,8 +263,8 @@ BannerProps) => {
       setInputList([]);
     }
     if (activeStep === 2) {
-      if (postIntroductionMessage.length < 25) {
-        alert('답변은 최소 25자 이상이어야 합니다.');
+      if (postIntroductionMessage.length < 3) {
+        alert('답변은 최소 3자 이상이어야 합니다.');
         return;
       }
 
@@ -405,7 +405,7 @@ BannerProps) => {
                     aria-label="minimum height"
                     minRows={15}
                     disabled={activeStep === 2}
-                    placeholder="답변을 25자 이상 입력해주세요."
+                    placeholder="답변을 3자 이상 입력해주세요."
                     style={{
                       width: '100%',
                       backgroundColor: '#f8f9fa',
@@ -426,7 +426,7 @@ BannerProps) => {
                     <TextareaAutosize
                       aria-label="minimum height"
                       minRows={15}
-                      placeholder="답변을 25자 이상 입력해주세요."
+                      placeholder="답변을 3자 이상 입력해주세요."
                       style={{
                         width: '100%',
                         backgroundColor: '#f8f9fa',
@@ -679,7 +679,7 @@ BannerProps) => {
                   <TextareaAutosize
                     aria-label="minimum height"
                     minRows={15}
-                    placeholder="답변을 25자 이상 입력해주세요."
+                    placeholder="답변을 3자 이상 입력해주세요."
                     style={{
                       width: '100%',
                       backgroundColor: '#F6F7FB',

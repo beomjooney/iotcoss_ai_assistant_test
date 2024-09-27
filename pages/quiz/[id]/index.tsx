@@ -12,7 +12,7 @@ export function QuizDetailPage() {
   const id = router.query['id'].toString();
 
   return (
-    <div className="tw-h-[3100px]">
+    <div className="">
       <QuizDetailTemplate id={id} />
     </div>
   );

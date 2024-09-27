@@ -220,7 +220,7 @@ QuizMyReplyProps) => {
         <TextareaAutosize
           aria-label="minimum height"
           minRows={3}
-          placeholder="답변을 25자 이상 입력해주세요."
+          placeholder="답변을 3자 이상 입력해주세요."
           style={{
             width: '100%',
             backgroundColor: '#F9F9F9',
