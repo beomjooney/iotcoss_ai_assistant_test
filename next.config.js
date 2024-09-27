@@ -1,4 +1,8 @@
 const nextConfig = {
+  compiler: {
+    removeConsole: true,
+  },
+출처: https://mine-it-record.tistory.com/707 [나만의 기록들:티스토리]
   // images: {
   //   loader: 'imgix',
   //   path: 'https://camen.co.kr:9000/career-mentors',
