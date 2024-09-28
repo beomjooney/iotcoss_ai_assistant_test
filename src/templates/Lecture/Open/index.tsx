@@ -1647,7 +1647,7 @@ export function LectureOpenTemplate() {
                           >
                             <ToggleButton
                               classes={{ selected: classes.selected }}
-                              value="true"
+                              value="false"
                               className="tw-ring-1 tw-ring-slate-900/10"
                               style={{
                                 width: 70,
@@ -1668,7 +1668,7 @@ export function LectureOpenTemplate() {
                             </ToggleButton>
                             <ToggleButton
                               classes={{ selected: classes.selected }}
-                              value="false"
+                              value="true"
                               className="tw-ring-1 tw-ring-slate-900/10"
                               style={{
                                 width: 70,
