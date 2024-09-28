@@ -231,7 +231,7 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
     console.log('clubForm.isQuestionsPublic', clubForm.isQuestionsPublic);
     console.log('clubForm.enableAiQuestion', clubForm.enableAiQuestion);
     setIsQuestionsPublic(clubForm.isQuestionsPublic ? 'true' : 'false');
-    setEnableAiQuestion(clubForm.enableAiQuestion ? 'false' : 'true');
+    setEnableAiQuestion(clubForm.enableAiQuestion ? 'true' : 'false');
 
     console.log('load temp', clubForm.studyKeywords);
     setStudyKeywords(clubForm.studyKeywords || []);

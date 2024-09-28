@@ -280,7 +280,7 @@ export function LectureOpenTemplate() {
     setEndDay(clubForm.endAt ? dayjs(clubForm.endAt) : dayjs());
     setIsPublic(clubForm.isPublic ? '0001' : '0002');
     setIsQuestionsPublic(clubForm.isQuestionsPublic ? 'true' : 'false');
-    setEnableAiQuestion(clubForm.enableAiQuestion ? 'false' : 'true');
+    setEnableAiQuestion(clubForm.enableAiQuestion ? 'true' : 'false');
     setStudyKeywords(clubForm.studyKeywords || []);
     setStudySubject(clubForm.studySubject || '');
     setUniversityCode(clubForm.jobGroups || '');
