@@ -124,7 +124,7 @@ export function LectureOpenTemplate() {
   const [skillIdsPopUp, setSkillIdsPopUp] = useState<any[]>([]);
   const [experienceIdsPopUp, setExperienceIdsPopUp] = useState<any[]>([]);
   const [isPublic, setIsPublic] = useState('0001');
-  const [isQuestionsPublic, setIsQuestionsPublic] = useState('true');
+  const [isQuestionsPublic, setIsQuestionsPublic] = useState('false');
   const [enableAiQuestion, setEnableAiQuestion] = useState('false');
   const [studyKeywords, setStudyKeywords] = useState([]);
   const [studyChapter, setStudyChapter] = useState('');
@@ -279,8 +279,8 @@ export function LectureOpenTemplate() {
     setStartDay(clubForm.startAt ? dayjs(clubForm.startAt) : dayjs());
     setEndDay(clubForm.endAt ? dayjs(clubForm.endAt) : dayjs());
     setIsPublic(clubForm.isPublic ? '0001' : '0002');
-    setIsQuestionsPublic(clubForm.isQuestionsPublic);
-    setEnableAiQuestion(clubForm.enableAiQuestion);
+    setIsQuestionsPublic(clubForm.isQuestionsPublic ? 'true' : 'false');
+    setEnableAiQuestion(clubForm.enableAiQuestion ? 'false' : 'true');
     setStudyKeywords(clubForm.studyKeywords || []);
     setStudySubject(clubForm.studySubject || '');
     setUniversityCode(clubForm.jobGroups || '');
