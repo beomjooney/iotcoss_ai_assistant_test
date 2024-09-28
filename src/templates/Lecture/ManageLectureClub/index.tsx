@@ -229,9 +229,9 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
 
     //ai조교 config
     console.log('clubForm.isQuestionsPublic', clubForm.isQuestionsPublic);
-    console.log('clubForm.enableAiQuestion', clubForm.isEnableAiQuestion);
+    console.log('clubForm.enableAiQuestion', clubForm.enableAiQuestion);
     setIsQuestionsPublic(clubForm.isQuestionsPublic ? 'true' : 'false');
-    setEnableAiQuestion(clubForm.isEnableAiQuestion ? 'true' : 'false');
+    setEnableAiQuestion(clubForm.enableAiQuestion ? 'true' : 'false');
 
     console.log('load temp', clubForm.studyKeywords);
     setStudyKeywords(clubForm.studyKeywords || []);
