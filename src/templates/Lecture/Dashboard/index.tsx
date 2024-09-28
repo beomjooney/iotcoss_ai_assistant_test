@@ -486,7 +486,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                         <line x1="0.5" y1="0.5" x2="0.5" y2="16.5" stroke="#9CA5B2" />
                       </svg>
                       <p className="tw-flex tw-text-xl tw-font-bold tw-text-left tw-text-[#2474ed]">
-                        {myDashboardList?.studyOrder} 주차. {myDashboardList?.studyDate}{' '}
+                        {myDashboardList?.studyOrder}주차 {myDashboardList?.studyDate}{' '}
                         {myDashboardList?.dayOfWeek && `(${myDashboardList.dayOfWeek})`}
                       </p>
                     </div>

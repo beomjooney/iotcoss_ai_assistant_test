@@ -4,12 +4,19 @@ import React, { useEffect, useRef, useState } from 'react';
 import Divider from '@mui/material/Divider';
 import {
   paramProps,
-  useMyClubList,
   useMyLectureList,
   useMyMemberList,
   useMyMemberRequestList,
+  useProfessorRequestList,
 } from 'src/services/seminars/seminars.queries';
-import { useCrewBanDelete, useCrewAcceptPost, useCrewRejectPost } from 'src/services/admin/friends/friends.mutations';
+import {
+  useCrewBanDelete,
+  useCrewAcceptPost,
+  useCrewRejectPost,
+  useInstructorsAccept,
+  useInstructorsDelete,
+  useInstructorBan,
+} from 'src/services/admin/friends/friends.mutations';
 
 import Grid from '@mui/material/Grid';
 
@@ -71,6 +78,9 @@ import LectureBreakerInfo from 'src/stories/components/LectureBreakerInfo';
 import { useLectureModify } from 'src/services/quiz/quiz.mutations';
 import { v4 as uuidv4 } from 'uuid';
 import validator from 'validator';
+
+const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
+
 export const generateUUID = () => {
   return uuidv4();
 };
@@ -84,19 +94,26 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
   const { mutate: onCrewBan, isSuccess: isBanSuccess } = useCrewBanDelete();
   const { mutate: onCrewAccept, isSuccess: isAcceptSuccess } = useCrewAcceptPost();
   const { mutate: onCrewReject, isSuccess: isRejectSuccess } = useCrewRejectPost();
+  const { mutate: onInstructorsAccept, isSuccess: isInstructorsAcceptSuccess } = useInstructorsAccept();
+  const { mutate: onInstructorsDelete, isSuccess: isInstructorsDeleteSuccess } = useInstructorsDelete();
+  const { mutate: onInstructorsBan, isSuccess: isInstructorsBanSuccess } = useInstructorBan();
 
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
+  const [totalElementsProfessor, setTotalElementsProfessor] = useState(0);
   const [pageMember, setPageMember] = useState(1);
+  const [pageProfessor, setPageProfessor] = useState(1);
   const [totalPageMember, setTotalPageMember] = useState(1);
   const [totalElementsMember, setTotalElementsMember] = useState(0);
   const [value, setValue] = React.useState(0);
   const [myClubList, setMyClubList] = useState<any>([]);
   const [myMemberList, setMyMemberList] = useState<any>([]);
   const [myMemberRequestList, setMyMemberRequestList] = useState<any>([]);
+  const [requestProfessorList, setRequestProfessorList] = useState<any>([]);
   const [ids, setIds] = useState<any>(id);
   const [myClubParams, setMyClubParams] = useState<any>({ clubSequence: id, page });
+  const [professorRequestParams, setProfessorRequestParams] = useState<any>({ clubSequence: id, page });
   const [myRequestMemberParams, setMyRequestMemberParams] = useState<any>({ clubSequence: id, page });
   const [myClubMemberParams, setMyClubMemberParams] = useState<any>({ clubSequence: id, page });
   const [active, setActive] = useState(0);
@@ -105,6 +122,7 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
   const [keyWorld, setKeyWorld] = useState('');
   const [selectedValue, setSelectedValue] = useState(id);
 
+  // const [activeTab, setActiveTab] = useState('member');
   const [activeTab, setActiveTab] = useState('myQuiz');
   // const [activeTab, setActiveTab] = useState('community');
 
@@ -154,81 +172,15 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
     setActiveTab(tab);
   };
 
-  const handleChange = (event, newIndex) => {
-    //console.log('SubTab - index', newIndex, event);
-    setActive(newIndex);
-    setValue(newIndex);
-  };
-
-  const handleInputQuizSearchChange = event => {
-    setQuizSearch(event.target.value);
-  };
-
   //new logic
   const [scheduleData, setScheduleData] = useState<any[]>([]);
   const [clubAbout, setClubAbout] = useState<any>({});
-  const handleCheckboxChange = quizSequence => {
-    // Filter out items with quizSequence as null and count them
-    const nullQuizSequenceCount = quizList.filter(item => item.quizSequence === null).length;
 
-    if (!selectedQuizIds.includes(quizSequence) && nullQuizSequenceCount <= 0) {
-      alert('퀴즈를 추가 할 수 없습니다.');
-      return;
+  useEffect(() => {
+    if (isInstructorsAcceptSuccess || isInstructorsDeleteSuccess || isBanSuccess) {
+      refetchProfessorRequest();
     }
-
-    setSelectedQuizIds(prevSelectedQuizIds => {
-      const updatedSelectedQuizIds = prevSelectedQuizIds.includes(quizSequence)
-        ? prevSelectedQuizIds.filter(id => id !== quizSequence)
-        : [...prevSelectedQuizIds, quizSequence];
-
-      setQuizList(prevSelectedQuizzes => {
-        const alreadySelected = prevSelectedQuizzes.some(quiz => quiz.quizSequence === quizSequence);
-        console.log(alreadySelected);
-        if (alreadySelected) {
-          // When unchecked, set quizSequence to null
-          return prevSelectedQuizzes.map(quiz =>
-            quiz.quizSequence === quizSequence ? { ...quiz, quizSequence: null } : quiz,
-          );
-        } else {
-          console.log(quizList);
-          const newQuiz = allQuizData.find(quiz => quiz.quizSequence === quizSequence);
-          const reconstructedQuiz = newQuiz
-            ? {
-                quizSequence: newQuiz.quizSequence,
-                question: newQuiz.question,
-                leaderUri: newQuiz.memberUri,
-                leaderUUID: newQuiz.memberUUID,
-                leaderProfileImageUrl: newQuiz.memberProfileImageUrl,
-                leaderNickname: newQuiz.memberNickname,
-                contentUrl: newQuiz.contentUrl,
-                contentTitle: newQuiz.contentTitle,
-                modelAnswer: newQuiz.modelAnswer,
-                quizUri: newQuiz.quizUri,
-              }
-            : null;
-
-          console.log(newQuiz);
-          console.log(reconstructedQuiz);
-
-          // Find the first item with null values in scheduleData
-          const firstNullItemIndex = quizList.findIndex(item => item.quizSequence === null);
-
-          if (firstNullItemIndex !== -1 && newQuiz) {
-            // Update the first null item with the new quiz data
-            const updatedScheduleData = [...quizList];
-            updatedScheduleData[firstNullItemIndex] = {
-              ...updatedScheduleData[firstNullItemIndex],
-              ...reconstructedQuiz,
-            };
-            console.log(updatedScheduleData);
-            setScheduleData(updatedScheduleData);
-            return updatedScheduleData;
-          }
-        }
-      });
-      return updatedSelectedQuizIds;
-    });
-  };
+  }, [isInstructorsAcceptSuccess, isInstructorsDeleteSuccess, isBanSuccess]);
 
   useEffect(() => {
     // 상태 업데이트 후 추가 작업 수행
@@ -239,6 +191,20 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
 
   const handleChangeQuiz = event => {
     setSortType(event.target.value);
+    setPageMember(1);
+  };
+
+  const handleChangeProfessorRequest = event => {
+    setProfessorRequestSortType(event.target.value);
+  };
+
+  const handleChangeProfessorRequestButton = event => {
+    console.log('123  ', selectedUUIDs);
+    let params = {
+      club: selectedClub?.clubSequence,
+      memberUUIDs: selectedUUIDs,
+    };
+    onInstructorsAccept(params);
   };
 
   // 퀴즈 소개 정보 조회
@@ -260,6 +226,13 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
     setStartDay(clubForm.startAt ? dayjs(clubForm.startAt) : dayjs());
     setEndDay(clubForm.endAt ? dayjs(clubForm.endAt) : dayjs());
     setIsPublic(clubForm.isPublic ? '0001' : '0002');
+
+    //ai조교 config
+    console.log('clubForm.isQuestionsPublic', clubForm.isQuestionsPublic);
+    console.log('clubForm.enableAiQuestion', clubForm.isEnableAiQuestion);
+    setIsQuestionsPublic(clubForm.isQuestionsPublic ? 'true' : 'false');
+    setEnableAiQuestion(clubForm.isEnableAiQuestion ? 'true' : 'false');
+
     console.log('load temp', clubForm.studyKeywords);
     setStudyKeywords(clubForm.studyKeywords || []);
     setStudySubject(clubForm.studySubject || '');
@@ -323,6 +296,18 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
     },
   );
 
+  // 교수자 요청 회원 목록 조회
+  const { isFetched: isProfessorRequestFetched, refetch: refetchProfessorRequest } = useProfessorRequestList(
+    professorRequestParams,
+    data => {
+      console.log('교수자 요청 회원 목록 조회', data);
+      // const repeatedList = [...data?.contents, ...Array(100).fill(null)];
+      // setRequestProfessorList(repeatedList);
+      setRequestProfessorList(data?.contents || []);
+      setTotalElementsProfessor(data?.totalElements);
+    },
+  );
+
   // 내 회원 목록 조회
   const { isFetched: isMemberFetched, refetch: refetchMyMember } = useMyMemberList(myClubMemberParams, data => {
     console.log(data);
@@ -360,6 +345,7 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
   /** my quiz replies */
   const [selectedClub, setSelectedClub] = useState(null);
   const [sortType, setSortType] = useState('0001');
+  const [professorRequestSortType, setProfessorRequestSortType] = useState('0001');
   const [sortQuizType, setSortQuizType] = useState('ASC');
 
   useDidMountEffect(() => {
@@ -377,14 +363,20 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
       clubSequence: selectedValue,
       page: pageMember,
     });
-  }, [sortType, selectedValue]);
+    setProfessorRequestParams({
+      clubSequence: selectedValue,
+      page: pageMember,
+    });
+  }, [selectedValue]);
 
   useDidMountEffect(() => {
     setMyClubMemberParams({
       clubSequence: selectedClub?.clubSequence,
       page: pageMember,
+      sortType: sortType,
+      keyword: keyWorld,
     });
-  }, [pageMember]);
+  }, [pageMember, sortType, keyWorld]);
 
   useDidMountEffect(() => {
     setMyQuizParams({
@@ -393,6 +385,14 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
       sortType: sortQuizType,
     });
   }, [pageQuiz, sortQuizType]);
+
+  useDidMountEffect(() => {
+    setProfessorRequestParams({
+      clubSequence: selectedClub?.clubSequence,
+      page: pageProfessor,
+      sortType: professorRequestSortType,
+    });
+  }, [pageProfessor, professorRequestSortType]);
 
   const handleQuizChange = event => {
     const value = event.target.value;
@@ -419,6 +419,8 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
   const [lectureAILanguage, setLectureAILanguage] = useState('kor');
   const [participationCode, setParticipationCode] = useState('');
   const [isPublic, setIsPublic] = useState('0001');
+  const [isQuestionsPublic, setIsQuestionsPublic] = useState('true');
+  const [enableAiQuestion, setEnableAiQuestion] = useState('false');
   const [recommendLevels, setRecommendLevels] = useState([]);
   const [startDay, setStartDay] = React.useState<Dayjs | null>(dayjs());
   const [endDay, setEndDay] = React.useState<Dayjs | null>(dayjs().add(1, 'day'));
@@ -760,6 +762,8 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
       aiConversationLanguage: lectureAILanguage || '',
       description: introductionText || '',
       useCurrentProfileImage: 'false',
+      isQuestionsPublic: isQuestionsPublic,
+      enableAiQuestion: enableAiQuestion,
     };
 
     console.log(clubFormParams);
@@ -780,6 +784,9 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
     formData.append('clubForm.aiConversationLanguage', clubFormParams.aiConversationLanguage);
     formData.append('clubForm.description', clubFormParams.description);
     formData.append('clubForm.useCurrentProfileImage', clubFormParams.useCurrentProfileImage);
+
+    formData.append('clubForm.isQuestionsPublic', clubFormParams.isQuestionsPublic);
+    formData.append('clubForm.enableAiQuestion', clubFormParams.enableAiQuestion);
 
     if (selectedImage) {
       console.log('selectedImage', selectedImage);
@@ -922,6 +929,17 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
         setIsPublic('0001');
         setParticipationCode('');
       }
+    }
+  };
+
+  const handleIsQuestionsPublic = (event: React.MouseEvent<HTMLElement>, newFormats: string) => {
+    if (newFormats !== null) {
+      setIsQuestionsPublic(newFormats);
+    }
+  };
+  const handleEnableAiQuestion = (event: React.MouseEvent<HTMLElement>, newFormats: string) => {
+    if (newFormats !== null) {
+      setEnableAiQuestion(newFormats);
     }
   };
 
@@ -1179,7 +1197,7 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
   };
 
   function handleDeleteMember(memberUUID: any): void {
-    const isConfirmed = window.confirm('클럽 회원을 강퇴하시겠습니까?');
+    const isConfirmed = window.confirm('클럽 회원을 강퇴 하시겠습니까?');
     if (isConfirmed) {
       console.log(memberUUID);
       let params = {
@@ -1191,6 +1209,15 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
     } else {
       // no를 선택한 경우 아무것도 하지 않음
     }
+  }
+
+  function handleInstructorDelete(memberUUID: any): void {
+    let params = {
+      club: selectedClub?.clubSequence,
+      memberUUID: memberUUID,
+    };
+    onInstructorsDelete(params);
+    // 회원 강퇴 로직 추가
   }
 
   function handleJoinMember(memberUUID: any): void {
@@ -1257,44 +1284,15 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
     setQuizList(mergeData);
   };
 
-  const handleQuizSave = () => {
-    const hasNullQuizSequence = quizList.some(quiz => quiz.quizSequence === null);
-
-    if (hasNullQuizSequence) {
-      alert('퀴즈를 등록해주세요.');
-      return;
-    }
-    console.log(quizList);
-    onQuizSave({ club: selectedClub?.clubSequence, data: quizList });
-  };
-
   function searchKeyworld(value) {
     let _keyworld = value.replace('#', '');
     if (_keyworld == '') _keyworld = null;
     setKeyWorld(_keyworld);
   }
 
-  const handleInputQuizChange = event => {
-    setQuizName(event.target.value);
-  };
-
   const [jobGroups, setJobGroups] = useState<any[]>([]);
   const [contentTypes, setContentTypes] = useState<any[]>([]);
   const [jobs, setJobs] = useState([]);
-  const quizRef = useRef(null);
-  const quizUrlRef = useRef(null);
-
-  const handleInputQuizUrlChange = event => {
-    setQuizUrl(event.target.value);
-  };
-
-  const handleJobGroups = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
-    setJobGroupPopUp(newFormats);
-  };
-
-  const handleJobsPopUp = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
-    setJobs(newFormats);
-  };
 
   // 프로필 정보 수정 시 변경 적용
   useEffect(() => {
@@ -1312,20 +1310,17 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
     setBadgeParams({ page: badgePage, memberUUID: memberUUID });
   };
 
-  const [selectedJobQuiz, setSelectedJobQuiz] = useState<string>('');
-  const [universityCodeQuiz, setUniversityCodeQuiz] = useState<string>('');
-  const [selectedLevel, setSelectedLevel] = useState('');
+  const [selectedUUIDs, setSelectedUUIDs] = useState<string[]>([]);
 
-  const handleUniversityChangeQuiz = e => {
-    setUniversityCodeQuiz(e.target.value);
-  };
-
-  const handleJobChangeQuiz = e => {
-    setSelectedJobQuiz(e.target.value);
-  };
-
-  const handleLevelChangeQuiz = e => {
-    setSelectedLevel(e.target.value);
+  // 체크박스 클릭 핸들러
+  const handleCheckboxRequestChange = (uuid, isChecked) => {
+    if (isChecked) {
+      // 체크되었을 경우 UUID 추가
+      setSelectedUUIDs([...selectedUUIDs, uuid]);
+    } else {
+      // 체크 해제되었을 경우 UUID 제거
+      setSelectedUUIDs(selectedUUIDs.filter(id => id !== uuid));
+    }
   };
 
   const useStyles = makeStyles(theme => ({
@@ -1465,6 +1460,25 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
               학생목록
             </p>
           </div>
+          <div
+            className={`tw-w-[164px] tw-h-12 tw-relative  tw-ml-2.5 tw-cursor-pointer ${
+              activeTab === 'member' ? 'border-b-0' : ''
+            }`}
+            onClick={() => handleTabClick('member')}
+          >
+            <div
+              className={`tw-w-[164px] border-left tw-h-12 tw-absolute tw-left-[-1px] tw-top-[-1px] tw-rounded-tl-lg tw-rounded-tr-lg ${
+                activeTab === 'member' ? 'tw-bg-white' : 'tw-bg-[#f6f7fb]'
+              } border-top border-right`}
+            />
+            <p
+              className={`tw-absolute tw-left-[43px] tw-top-3 tw-text-base tw-text-center ${
+                activeTab === 'member' ? 'tw-font-bold tw-text-black' : 'tw-text-[#9ca5b2]'
+              }`}
+            >
+              교수자관리
+            </p>
+          </div>
           {/* Divider Line */}
           {/* Tab 2: Community */}
           <div
@@ -1503,6 +1517,25 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
               }`}
             >
               커리큘럼관리
+            </p>
+          </div>
+          <div
+            className={`tw-w-[164px] tw-h-12 tw-relative tw-ml-2.5 tw-cursor-pointer ${
+              activeTab === 'ai' ? 'border-b-0' : ''
+            }`}
+            onClick={() => handleTabClick('ai')}
+          >
+            <div
+              className={`tw-w-[164px] tw-h-12 tw-absolute tw-left-[-1px] tw-top-[-1px] tw-rounded-tl-lg tw-rounded-tr-lg ${
+                activeTab === 'ai' ? 'tw-bg-white' : 'tw-bg-[#f6f7fb]'
+              } border-right border-top border-left`}
+            />
+            <p
+              className={`tw-absolute tw-left-[45px] tw-top-3 tw-text-base tw-text-center ${
+                activeTab === 'ai' ? 'tw-font-bold tw-text-black' : 'tw-text-[#9ca5b2]'
+              }`}
+            >
+              AI조교관리
             </p>
           </div>
         </div>
@@ -1569,7 +1602,7 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
                             </div>
                           </Grid>
                           <Grid item xs={12} sm={1}>
-                            <div className="tw-text-left tw-text-black">{item?.member?.nickname}</div>
+                            <div className="tw-text-left tw-text-black tw-line-clamp-1">{item?.member?.nickname}</div>
                           </Grid>
                           <Grid item xs={12} sm={3}>
                             <div className="tw-text-left tw-text-black">{item?.memberId}</div>
@@ -1638,7 +1671,7 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
                   </Grid>
 
                   <Divider className="tw-py-3 tw-mb-3" />
-                  <div className="tw-flex tw-justify-start tw-items-center tw-w-[1120px] tw-h-12 tw-gap-6 tw-my-4">
+                  <div className="tw-flex tw-justify-start tw-items-center tw-w-[1120px] tw-h-12 tw-gap-6 tw-my-5">
                     <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-3">
                       <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
                         정렬 :
@@ -1771,7 +1804,6 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
                             >
                               <div className="tw-gap-3">
                                 <button
-                                  // onClick={() => router.push('/quiz-answers/' + `${item?.clubQuizSequence}`)}
                                   onClick={() => handleClickProfile(item?.member?.memberUUID)}
                                   type="button"
                                   data-tooltip-target="tooltip-default"
@@ -1794,6 +1826,200 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
                       );
                     })}
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        {activeTab === 'member' && (
+          <div>
+            <div className="tw-flex tw-flex-col tw-space-y-4 tw-rounded-lg">
+              <div className={cx('content-wrap', 'tw-h-[100vh]')}>
+                <div className={cx('container', 'tw-mt-10')}>
+                  <Grid container direction="row" alignItems="center" rowSpacing={0}>
+                    <Grid
+                      item
+                      container
+                      justifyContent="flex-start"
+                      xs={6}
+                      sm={10}
+                      className="tw-text-xl tw-text-black tw-font-bold"
+                    >
+                      클럽 교수자 목록 ({totalElementsProfessor || 0})
+                    </Grid>
+
+                    <Grid item container justifyContent="flex-end" xs={6} sm={2} style={{ textAlign: 'right' }}>
+                      <Pagination
+                        count={totalPage}
+                        size="small"
+                        siblingCount={0}
+                        page={page}
+                        renderItem={item => (
+                          <PaginationItem slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }} {...item} />
+                        )}
+                        onChange={handlePageChange}
+                      />
+                    </Grid>
+                  </Grid>
+                  <Divider className="tw-py-3 tw-mb-3" />
+
+                  <div className="tw-flex tw-justify-between tw-items-center tw-h-12 tw-gap-6 tw-mb-8 tw-mt-5">
+                    <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-3">
+                      <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                        정렬 :
+                      </p>
+
+                      <RadioGroup value={professorRequestSortType} onChange={handleChangeProfessorRequest} row>
+                        <FormControlLabel
+                          value="0001"
+                          control={
+                            <Radio
+                              sx={{
+                                color: '#ced4de',
+                                '&.Mui-checked': { color: '#e11837' },
+                              }}
+                              icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                              checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                            />
+                          }
+                          label={
+                            <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                              가나다순
+                            </p>
+                          }
+                        />
+                        <FormControlLabel
+                          value="0002"
+                          control={
+                            <Radio
+                              sx={{
+                                color: '#ced4de',
+                                '&.Mui-checked': { color: '#e11837' },
+                              }}
+                              icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                              checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                            />
+                          }
+                          label={
+                            <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                              가입최신순
+                            </p>
+                          }
+                        />
+                        <FormControlLabel
+                          value="0003"
+                          control={
+                            <Radio
+                              sx={{
+                                color: '#ced4de',
+                                '&.Mui-checked': { color: '#e11837' },
+                              }}
+                              icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                              checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                            />
+                          }
+                          label={
+                            <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                              가입오래된순
+                            </p>
+                          }
+                        />
+                      </RadioGroup>
+                    </div>
+                    <div>
+                      <button
+                        onClick={() => {
+                          setSelectedUUIDs([]);
+                          setIsModalOpen(true);
+                          setKeyWorld('');
+                        }}
+                        type="button"
+                        data-tooltip-target="tooltip-default"
+                        className="tw-py-3 tw-px-8 tw-bg-white border tw-text-gray-500 max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                      >
+                        교수자 추가
+                      </button>
+                    </div>
+                  </div>
+
+                  {requestProfessorList.length === 0 && (
+                    <div className=" tw-mt-10 tw-text-center tw-text-black  tw-py-20 border tw-text-base tw-rounded tw-bg-white">
+                      클럽 가입 신청이 없습니다.
+                    </div>
+                  )}
+
+                  {requestProfessorList?.map((item, index) => {
+                    return (
+                      <React.Fragment key={index}>
+                        <Grid
+                          item
+                          className="tw-py-2 border-bottom tw-text-base"
+                          key={index}
+                          container
+                          direction="row"
+                          justifyContent="left"
+                          alignItems="center"
+                          rowSpacing={3}
+                        >
+                          <Grid item xs={12} sm={1}>
+                            <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
+                              <img
+                                className="tw-w-10 tw-h-10 border tw-rounded-full"
+                                src={
+                                  item?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'
+                                }
+                              />
+                            </div>
+                          </Grid>
+                          <Grid item xs={12} sm={1}>
+                            <div className="tw-text-left tw-text-black">{item?.member?.nickname}</div>
+                          </Grid>
+                          <Grid item xs={12} sm={3}>
+                            <div className="tw-text-left tw-text-black">{item?.memberId}</div>
+                          </Grid>
+                          <Grid item xs={12} sm={2}>
+                            <div className="tw-text-left tw-text-black">{item?.jobGroup?.name}</div>
+                          </Grid>
+                          <Grid item xs={12} sm={2}>
+                            <div className="tw-text-left tw-text-black">{item?.job?.name}</div>
+                          </Grid>
+                          <Grid
+                            item
+                            xs={12}
+                            sm={3}
+                            style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end' }}
+                          >
+                            <div className="tw-gap-3">
+                              <button
+                                onClick={() => handleClickProfile(item?.member?.memberUUID)}
+                                type="button"
+                                data-tooltip-target="tooltip-default"
+                                className="tw-py-2 tw-mr-3 tw-bg-black tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                              >
+                                프로필 보기
+                              </button>
+                              <button
+                                onClick={() => handleInstructorDelete(item?.member?.memberUUID)}
+                                type="button"
+                                data-tooltip-target="tooltip-default"
+                                className="tw-py-2 tw-px-5 tw-mr-3 tw-bg-white border tw-text-gray-500 max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                              >
+                                권한삭제
+                              </button>
+                              <button
+                                onClick={() => handleDeleteMember(item?.member?.memberUUID)}
+                                type="button"
+                                data-tooltip-target="tooltip-default"
+                                className="tw-py-2 tw-px-5 tw-bg-white border max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                              >
+                                강퇴
+                              </button>
+                            </div>
+                          </Grid>
+                        </Grid>
+                      </React.Fragment>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -2029,54 +2255,6 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
                       </div>
                     </div>
 
-                    <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">언어 설정</div>
-                    <div className="tw-grid tw-grid-cols-3 tw-gap-8 tw-py-5">
-                      <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
-                        <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">
-                          강의언어
-                        </p>
-                        <div className="tw-flex-grow tw-flex-shrink tw-relative tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
-                          <select
-                            className="tw-px-5 tw-w-full tw-text-black"
-                            onChange={e => setLectureLanguage(e.target.value)}
-                            value={lectureLanguage}
-                          >
-                            <option value="kor">한국어</option>
-                            <option value="eng">영어</option>
-                          </select>
-                        </div>
-                      </div>
-                      <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
-                        <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">
-                          콘텐츠언어
-                        </p>
-                        <div className="tw-flex-grow tw-flex-shrink tw-relative tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
-                          <select
-                            className="tw-px-5 tw-w-full tw-text-black"
-                            onChange={e => setContentLanguage(e.target.value)}
-                            value={contentLanguage}
-                          >
-                            <option value="kor">한국어</option>
-                            <option value="eng">영어</option>
-                          </select>
-                        </div>
-                      </div>
-                      <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
-                        <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">
-                          AI대화언어
-                        </p>
-                        <div className="tw-flex-grow tw-flex-shrink tw-relative tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
-                          <select
-                            className="tw-px-5 tw-w-full tw-text-black"
-                            onChange={e => setLectureAILanguage(e.target.value)}
-                            value={lectureAILanguage}
-                          >
-                            <option value="kor">한국어</option>
-                            <option value="eng">영어</option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
                     <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">강의 상세정보 입력</div>
                     <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">
                       간략한 강의 소개 내용을 입력해주세요.
@@ -2254,6 +2432,179 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
           </div>
         )}
 
+        {activeTab === 'ai' && (
+          <div className="tw-h-[50vh]">
+            <div className="tw-flex tw-justify-between tw-items-center tw-relative tw-gap-3">
+              <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">AI조교 설정</div>
+              <button
+                className="tw-w-[150px] border tw-text-gray-500 tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-text-sm tw-rounded"
+                onClick={() => handleSave()}
+              >
+                수정하기
+              </button>
+            </div>
+
+            <div className="tw-grid tw-grid-cols-3 tw-gap-4 tw-content-start">
+              <div>
+                <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2">타 학습자 질의/답변 보기</div>
+                <div>
+                  <div className="tw-flex tw-items-center tw-gap-2 tw-mt-1">
+                    <ToggleButtonGroup
+                      value={isQuestionsPublic}
+                      onChange={handleIsQuestionsPublic}
+                      exclusive
+                      aria-label=""
+                    >
+                      <ToggleButton
+                        classes={{ selected: classes.selected }}
+                        value="true"
+                        className="tw-ring-1 tw-ring-slate-900/10"
+                        style={{
+                          width: 70,
+                          borderRadius: '5px',
+                          borderLeft: '0px',
+                          margin: '5px',
+                          height: '35px',
+                          border: '0px',
+                        }}
+                        sx={{
+                          '&.Mui-selected': {
+                            backgroundColor: '#000',
+                            color: '#fff',
+                          },
+                        }}
+                      >
+                        공개
+                      </ToggleButton>
+                      <ToggleButton
+                        classes={{ selected: classes.selected }}
+                        value="false"
+                        className="tw-ring-1 tw-ring-slate-900/10"
+                        style={{
+                          width: 70,
+                          borderRadius: '5px',
+                          borderLeft: '0px',
+                          margin: '5px',
+                          height: '35px',
+                          border: '0px',
+                        }}
+                        sx={{
+                          '&.Mui-selected': {
+                            backgroundColor: '#000',
+                            color: '#fff',
+                          },
+                        }}
+                      >
+                        비공개
+                      </ToggleButton>
+                    </ToggleButtonGroup>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2">
+                  AI 질문제한 (시험 등 AI조교 기능 제한이 필요할 때)
+                </div>
+                <div>
+                  <div className="tw-flex tw-items-center tw-gap-2 tw-mt-1">
+                    <ToggleButtonGroup
+                      value={enableAiQuestion}
+                      onChange={handleEnableAiQuestion}
+                      exclusive
+                      aria-label=""
+                    >
+                      <ToggleButton
+                        classes={{ selected: classes.selected }}
+                        value="true"
+                        className="tw-ring-1 tw-ring-slate-900/10"
+                        style={{
+                          width: 70,
+                          borderRadius: '5px',
+                          borderLeft: '0px',
+                          margin: '5px',
+                          height: '35px',
+                          border: '0px',
+                        }}
+                        sx={{
+                          '&.Mui-selected': {
+                            backgroundColor: '#000',
+                            color: '#fff',
+                          },
+                        }}
+                      >
+                        ON
+                      </ToggleButton>
+                      <ToggleButton
+                        classes={{ selected: classes.selected }}
+                        value="false"
+                        className="tw-ring-1 tw-ring-slate-900/10"
+                        style={{
+                          width: 70,
+                          borderRadius: '5px',
+                          borderLeft: '0px',
+                          margin: '5px',
+                          height: '35px',
+                          border: '0px',
+                        }}
+                        sx={{
+                          '&.Mui-selected': {
+                            backgroundColor: '#000',
+                            color: '#fff',
+                          },
+                        }}
+                      >
+                        OFF
+                      </ToggleButton>
+                    </ToggleButtonGroup>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">언어 설정</div>
+            <div className="tw-grid tw-grid-cols-3 tw-gap-8 tw-py-5">
+              <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
+                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">강의언어</p>
+                <div className="tw-flex-grow tw-flex-shrink tw-relative tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
+                  <select
+                    className="tw-px-5 tw-w-full tw-text-black"
+                    onChange={e => setLectureLanguage(e.target.value)}
+                    value={lectureLanguage}
+                  >
+                    <option value="kor">한국어</option>
+                    <option value="eng">영어</option>
+                  </select>
+                </div>
+              </div>
+              <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
+                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">콘텐츠언어</p>
+                <div className="tw-flex-grow tw-flex-shrink tw-relative tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
+                  <select
+                    className="tw-px-5 tw-w-full tw-text-black"
+                    onChange={e => setContentLanguage(e.target.value)}
+                    value={contentLanguage}
+                  >
+                    <option value="kor">한국어</option>
+                    <option value="eng">영어</option>
+                  </select>
+                </div>
+              </div>
+              <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
+                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">AI대화언어</p>
+                <div className="tw-flex-grow tw-flex-shrink tw-relative tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
+                  <select
+                    className="tw-px-5 tw-w-full tw-text-black"
+                    onChange={e => setLectureAILanguage(e.target.value)}
+                    value={lectureAILanguage}
+                  >
+                    <option value="kor">한국어</option>
+                    <option value="eng">영어</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
         {activeTab === 'lecture' && (
           <div>
             <article>
@@ -2558,115 +2909,204 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
         )}
       </div>
 
-      <MentorsModal title="퀴즈 등록하기" isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
+      <MentorsModal
+        title="교수자 추가하기"
+        isOpen={isModalOpen}
+        onAfterClose={() => {
+          setIsModalOpen(false);
+          setPageMember(1);
+          setSortType('0001');
+          setSelectedUUIDs([]);
+          setKeyWorld('');
+        }}
+      >
         <div className="tw-mb-8">
-          <div className="tw-grid tw-grid-cols-3 tw-gap-8 tw-pb-4">
-            <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
-              <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">대학</p>
-              <select
-                className="form-select"
-                onChange={handleUniversityChangeQuiz}
-                aria-label="Default select example"
-                value={universityCodeQuiz}
-              >
-                <option value="">대학을 선택해주세요.</option>
-                {optionsData?.data?.jobs?.map((university, index) => (
-                  <option key={index} value={university.code}>
-                    {university.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+          <Grid container direction="row" alignItems="center" rowSpacing={0}>
+            <Grid
+              item
+              container
+              justifyContent="flex-start"
+              xs={6}
+              sm={6}
+              className="tw-text-xl tw-text-black tw-font-bold"
+            >
+              클럽 학습자 목록 ({totalElementsMember || 0})
+            </Grid>
 
-            <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
-              <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">학과</p>
-              <select
-                className="form-select"
-                aria-label="Default select example"
-                onChange={handleJobChangeQuiz}
-                value={selectedJobQuiz}
-              >
-                <option value="">학과를 선택해주세요.</option>
-                {jobs.map((job, index) => (
-                  <option key={index} value={job.code}>
-                    {job.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
-              <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">학년</p>
-              <select
-                className="form-select"
-                aria-label="Default select example"
-                onChange={handleLevelChangeQuiz}
-                value={selectedLevel}
-              >
-                <option value="">레벨을 선택해주세요.</option>
-                {optionsData?.data?.jobLevels.map((job, index) => (
-                  <option key={index} value={job.code}>
-                    {job.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
-            <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">검색</p>
-            <div className="tw-flex-grow tw-flex-shrink tw-relative tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
+            <Grid item container justifyContent="flex-end" xs={6} sm={6} style={{ textAlign: 'right' }}>
               <TextField
-                size="small"
                 fullWidth
-                placeholder="퀴즈 키워드를 입력해주세요."
-                onChange={handleInputQuizSearchChange}
-                id="margin-none"
-                value={quizSearch}
-                name="quizSearch"
-                InputProps={{
-                  startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
-                }}
+                id="outlined-basic"
+                label=""
+                placeholder="이름검색"
+                variant="outlined"
                 onKeyPress={e => {
                   if (e.key === 'Enter') {
+                    setPageMember(1);
                     searchKeyworld((e.target as HTMLInputElement).value);
                   }
                 }}
+                InputProps={{
+                  style: { height: '43px' },
+                  startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
+                }}
+              />
+            </Grid>
+          </Grid>
+          <div className="tw-flex tw-justify-between tw-items-center tw-h-12 tw-my-5">
+            <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-3">
+              <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                정렬 :
+              </p>
+
+              <RadioGroup value={sortType} onChange={handleChangeQuiz} row>
+                <FormControlLabel
+                  value="0001"
+                  control={
+                    <Radio
+                      sx={{
+                        color: '#ced4de',
+                        '&.Mui-checked': { color: '#e11837' },
+                      }}
+                      icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                      checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                    />
+                  }
+                  label={
+                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                      가나다순
+                    </p>
+                  }
+                />
+                <FormControlLabel
+                  value="0003"
+                  control={
+                    <Radio
+                      sx={{
+                        color: '#ced4de',
+                        '&.Mui-checked': { color: '#e11837' },
+                      }}
+                      icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                      checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                    />
+                  }
+                  label={
+                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                      가입최신순
+                    </p>
+                  }
+                />
+                <FormControlLabel
+                  value="0004"
+                  control={
+                    <Radio
+                      sx={{
+                        color: '#ced4de',
+                        '&.Mui-checked': { color: '#e11837' },
+                      }}
+                      icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                      checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                    />
+                  }
+                  label={
+                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                      가입오래된순
+                    </p>
+                  }
+                />
+              </RadioGroup>
+            </div>
+            <div>
+              <Pagination
+                count={totalPageMember}
+                size="small"
+                siblingCount={0}
+                page={pageMember}
+                renderItem={item => (
+                  <PaginationItem slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }} {...item} />
+                )}
+                onChange={handlePageChangeMember}
               />
             </div>
           </div>
-
-          <Divider sx={{ borderColor: 'rgba(0, 0, 0, 0.5);', paddingY: '10px' }} />
-
-          <p className="tw-text-xl tw-font-bold tw-text-left tw-text-black tw-py-5">
-            {/* 퀴즈목록 {totalQuizzElements}개 */}
-            퀴즈목록 전체 : {totalQuizzElements}개 - (퀴즈선택 : {selectedQuizIds?.length} / {quizList.length})
-          </p>
-          {quizListData.map((item, index) => (
-            <div key={index}>
-              <QuizBreakerInfoCheck
-                avatarSrc="https://via.placeholder.com/40"
-                userName={item.memberNickname}
-                questionText={item.question}
-                index={item.quizSequence}
-                selectedQuizIds={selectedQuizIds}
-                handleCheckboxChange={handleCheckboxChange}
-                hashtags={['']}
-                tags={['소프트웨어융합대학', '컴퓨터공학과', '2학년']}
-                answerText={item.modelAnswer}
-              />
+          {myMemberList.length === 0 && (
+            <div className="tw-h-[500px]">
+              <div className=" tw-mt-10 tw-text-center tw-text-black  tw-py-20 border tw-text-base tw-rounded tw-bg-white">
+                클럽 학생이 없습니다.
+              </div>
             </div>
-          ))}
+          )}
 
-          <div className="tw-pt-5">
-            <Paginations page={pageQuizz} setPage={setPageQuizz} total={totalQuizzPage} showCount={5} />
+          <div className="tw-h-[500px] tw-overflow-y-auto">
+            {myMemberList.map((item, index) => {
+              return (
+                <div key={index} className="">
+                  <Grid
+                    className="tw-py-2 border-bottom tw-text-base"
+                    key={index}
+                    container
+                    direction="row"
+                    justifyContent="left"
+                    alignItems="center"
+                    rowSpacing={3}
+                  >
+                    <Grid item xs={12} sm={1}>
+                      <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
+                        <img
+                          className="tw-w-10 tw-h-10 border tw-rounded-full"
+                          src={item?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
+                        />
+                      </div>
+                    </Grid>
+                    <Grid item xs={12} sm={1}>
+                      <div className="tw-text-left tw-text-black tw-line-clamp-1">{item?.member?.nickname}</div>
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                      <div className="tw-text-left tw-text-black tw-line-clamp-1">{item?.memberId}</div>
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                      <div className="tw-text-left tw-text-black tw-line-clamp-1">{item?.jobGroup?.name}</div>
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                      <div className="tw-text-left tw-text-black tw-line-clamp-1">{item?.job?.name}</div>
+                    </Grid>
+                    <Grid
+                      item
+                      xs={12}
+                      sm={3}
+                      style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end' }}
+                    >
+                      <div className=" tw-flex tw-justify-center tw-items-center">
+                        <button
+                          onClick={() => handleClickProfile(item?.member?.memberUUID)}
+                          type="button"
+                          data-tooltip-target="tooltip-default"
+                          className="tw-py-2 tw-mr-3 tw-bg-black tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                        >
+                          프로필 보기
+                        </button>
+                        <Checkbox
+                          checked={selectedUUIDs.includes(item?.member?.memberUUID)}
+                          onChange={e => handleCheckboxRequestChange(item?.member?.memberUUID, e.target.checked)}
+                          {...label}
+                        />
+                      </div>
+                    </Grid>
+                  </Grid>
+                </div>
+              );
+            })}
           </div>
-          <div className="tw-py-10  tw-flex tw-items-center tw-justify-center ">
+          <div className="tw-text-right">
             <button
-              className="tw-px-10 tw-text-sm tw-bg-[#E11837] tw-text-white tw-font-bold tw-py-3 tw-rounded tw-gap-1"
-              onClick={() => setIsModalOpen(false)}
+              onClick={() => {
+                handleChangeProfessorRequestButton(selectedUUIDs);
+              }}
+              type="button"
+              data-tooltip-target="tooltip-default"
+              className="tw-w-[125px] tw-mt-10 tw-py-3 tw-bg-blue-500  tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
             >
-              등록하기
+              확인
             </button>
           </div>
         </div>

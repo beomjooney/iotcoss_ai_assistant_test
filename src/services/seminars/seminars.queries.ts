@@ -33,6 +33,7 @@ import {
   lectureAboutDetailInfo,
   myDashboardStudentQA,
   clubAboutDetailInfo,
+  professorRequestList,
 } from './seminars.api';
 
 export interface paramProps {
@@ -216,6 +217,25 @@ export const useMyMemberRequestList = (
     },
   );
 };
+
+// 내 요청 회원 목록 조회
+export const useProfessorRequestList = (
+  params?: paramProps,
+  onSuccess?: (data: any) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 10;
+  return useQuery<any, Error>(
+    QUERY_KEY_FACTORY('PROFESSOR_REQUEST').list({ size: DEFAULT_SIZE, ...params }),
+    () => professorRequestList({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+    },
+  );
+};
+
 // 내 회원 목록 조회
 export const useMyMemberList = (
   params?: paramProps,

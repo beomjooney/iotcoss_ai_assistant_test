@@ -152,7 +152,7 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
                     {selectedJobName.map((jobLevel, index) => (
                       <span
                         key={index}
-                        className="tw-inline-flex tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
+                        className=" tw-inline-flex tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
                       >
                         {jobLevel}
                       </span>

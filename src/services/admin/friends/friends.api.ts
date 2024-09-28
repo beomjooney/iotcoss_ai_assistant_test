@@ -34,6 +34,23 @@ export const crewRejectPost = async params => {
   return data;
 };
 
+export const instructorAccept = async params => {
+  const { data } = await axiosGeneralAPI().put(`/api/v1/clubs/${params.club}/instructors`, {
+    memberUUIDs: params.memberUUIDs,
+  });
+  return data;
+};
+
+export const instructorDelete = async params => {
+  const { data } = await axiosGeneralAPI().delete(`/api/v1/clubs/${params.club}/instructors/${params.memberUUID}`);
+  return data;
+};
+
+export const instructorBan = async params => {
+  const { data } = await axiosGeneralAPI().put(`/api/v1/clubs/${params.club}/members/${params.memberUUID}/ban`);
+  return data;
+};
+
 export const crewBan = async params => {
   const { data } = await axiosGeneralAPI().delete(`/api/v1/clubs/${params.club}/members/${params.memberUUID}/ban`);
   return data;

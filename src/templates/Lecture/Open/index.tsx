@@ -124,6 +124,8 @@ export function LectureOpenTemplate() {
   const [skillIdsPopUp, setSkillIdsPopUp] = useState<any[]>([]);
   const [experienceIdsPopUp, setExperienceIdsPopUp] = useState<any[]>([]);
   const [isPublic, setIsPublic] = useState('0001');
+  const [isQuestionsPublic, setIsQuestionsPublic] = useState('true');
+  const [enableAiQuestion, setEnableAiQuestion] = useState('false');
   const [studyKeywords, setStudyKeywords] = useState([]);
   const [studyChapter, setStudyChapter] = useState('');
   const [studySubject, setStudySubject] = useState('');
@@ -277,6 +279,8 @@ export function LectureOpenTemplate() {
     setStartDay(clubForm.startAt ? dayjs(clubForm.startAt) : dayjs());
     setEndDay(clubForm.endAt ? dayjs(clubForm.endAt) : dayjs());
     setIsPublic(clubForm.isPublic ? '0001' : '0002');
+    setIsQuestionsPublic(clubForm.isQuestionsPublic);
+    setEnableAiQuestion(clubForm.enableAiQuestion);
     setStudyKeywords(clubForm.studyKeywords || []);
     setStudySubject(clubForm.studySubject || '');
     setUniversityCode(clubForm.jobGroups || '');
@@ -551,6 +555,16 @@ export function LectureOpenTemplate() {
         setIsPublic('0001');
         setParticipationCode('');
       }
+    }
+  };
+  const handleIsQuestionsPublic = (event: React.MouseEvent<HTMLElement>, newFormats: string) => {
+    if (newFormats !== null) {
+      setIsQuestionsPublic(newFormats);
+    }
+  };
+  const handleEnableAiQuestion = (event: React.MouseEvent<HTMLElement>, newFormats: string) => {
+    if (newFormats !== null) {
+      setEnableAiQuestion(newFormats);
     }
   };
 
@@ -1041,6 +1055,8 @@ export function LectureOpenTemplate() {
       aiConversationLanguage: lectureAILanguage || '',
       description: introductionText || '',
       useCurrentProfileImage: 'false',
+      isQuestionsPublic: isQuestionsPublic,
+      enableAiQuestion: enableAiQuestion,
     };
 
     console.log(clubFormParams);
@@ -1048,6 +1064,8 @@ export function LectureOpenTemplate() {
     formData.append('clubForm.clubId', 'lecture_club_' + generateUUID());
     formData.append('clubForm.clubName', clubFormParams.clubName);
     formData.append('clubForm.jobGroups', clubFormParams.jobGroups.toString());
+    formData.append('clubForm.isQuestionsPublic', clubFormParams.isQuestionsPublic);
+    formData.append('clubForm.enableAiQuestion', clubFormParams.enableAiQuestion);
     formData.append('clubForm.jobs', clubFormParams.jobs.toString());
     formData.append('clubForm.jobLevels', clubFormParams.jobLevels.toString());
     formData.append('clubForm.startAt', clubFormParams.startAt);
@@ -1552,6 +1570,124 @@ export function LectureOpenTemplate() {
                             placeholder="입장코드를 설정해주세요."
                             id="margin-none"
                           />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">AI조교 설정</div>
+                  <div className="tw-grid tw-grid-cols-3 tw-gap-4 tw-content-start">
+                    <div>
+                      <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2">타 학습자 질의/답변 보기</div>
+                      <div>
+                        <div className="tw-flex tw-items-center tw-gap-2 tw-mt-1">
+                          <ToggleButtonGroup
+                            value={isQuestionsPublic}
+                            onChange={handleIsQuestionsPublic}
+                            exclusive
+                            aria-label=""
+                          >
+                            <ToggleButton
+                              classes={{ selected: classes.selected }}
+                              value="true"
+                              className="tw-ring-1 tw-ring-slate-900/10"
+                              style={{
+                                width: 70,
+                                borderRadius: '5px',
+                                borderLeft: '0px',
+                                margin: '5px',
+                                height: '35px',
+                                border: '0px',
+                              }}
+                              sx={{
+                                '&.Mui-selected': {
+                                  backgroundColor: '#000',
+                                  color: '#fff',
+                                },
+                              }}
+                            >
+                              공개
+                            </ToggleButton>
+                            <ToggleButton
+                              classes={{ selected: classes.selected }}
+                              value="false"
+                              className="tw-ring-1 tw-ring-slate-900/10"
+                              style={{
+                                width: 70,
+                                borderRadius: '5px',
+                                borderLeft: '0px',
+                                margin: '5px',
+                                height: '35px',
+                                border: '0px',
+                              }}
+                              sx={{
+                                '&.Mui-selected': {
+                                  backgroundColor: '#000',
+                                  color: '#fff',
+                                },
+                              }}
+                            >
+                              비공개
+                            </ToggleButton>
+                          </ToggleButtonGroup>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2">
+                        AI 질문제한 (시험 등 AI조교 기능 제한이 필요할 때)
+                      </div>
+                      <div>
+                        <div className="tw-flex tw-items-center tw-gap-2 tw-mt-1">
+                          <ToggleButtonGroup
+                            value={enableAiQuestion}
+                            onChange={handleEnableAiQuestion}
+                            exclusive
+                            aria-label=""
+                          >
+                            <ToggleButton
+                              classes={{ selected: classes.selected }}
+                              value="true"
+                              className="tw-ring-1 tw-ring-slate-900/10"
+                              style={{
+                                width: 70,
+                                borderRadius: '5px',
+                                borderLeft: '0px',
+                                margin: '5px',
+                                height: '35px',
+                                border: '0px',
+                              }}
+                              sx={{
+                                '&.Mui-selected': {
+                                  backgroundColor: '#000',
+                                  color: '#fff',
+                                },
+                              }}
+                            >
+                              ON
+                            </ToggleButton>
+                            <ToggleButton
+                              classes={{ selected: classes.selected }}
+                              value="false"
+                              className="tw-ring-1 tw-ring-slate-900/10"
+                              style={{
+                                width: 70,
+                                borderRadius: '5px',
+                                borderLeft: '0px',
+                                margin: '5px',
+                                height: '35px',
+                                border: '0px',
+                              }}
+                              sx={{
+                                '&.Mui-selected': {
+                                  backgroundColor: '#000',
+                                  color: '#fff',
+                                },
+                              }}
+                            >
+                              OFF
+                            </ToggleButton>
+                          </ToggleButtonGroup>
                         </div>
                       </div>
                     </div>

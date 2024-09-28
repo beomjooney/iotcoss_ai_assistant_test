@@ -10,6 +10,9 @@ import {
   crewAcceptPost,
   crewRejectPost,
   crewBan,
+  instructorAccept,
+  instructorDelete,
+  instructorBan,
 } from './friends.api';
 
 export const useCrewBanDelete = (): UseMutationResult => {
@@ -50,6 +53,67 @@ export const useCrewAcceptPost = (): UseMutationResult => {
     },
   });
 };
+
+export const useInstructorsAccept = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => instructorAccept(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('INSTRUCTORS_ACCEPT').all),
+    onSuccess: async data => {
+      console.log('data', data);
+      const { responseCode, message } = data;
+      if (responseCode === '0000') {
+        alert('교수자 권한이 부여되었습니다.');
+      } else {
+        alert(`error : [${responseCode}] ${message}`);
+      }
+    },
+  });
+};
+
+export const useInstructorsDelete = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => instructorDelete(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('INSTRUCTORS_DELETE').all),
+    onSuccess: async data => {
+      console.log('data', data);
+      const { responseCode, message } = data;
+      if (responseCode === '0000') {
+        alert('교수자 권한 삭제가 완료되었습니다.');
+      } else {
+        alert(`error : [${responseCode}] ${message}`);
+      }
+    },
+  });
+};
+
+export const useInstructorBan = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => instructorBan(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('INSTRUCTORS_DELETE').all),
+    onSuccess: async data => {
+      console.log('data', data);
+      const { responseCode, message } = data;
+      if (responseCode === '0000') {
+        alert('해당클럽에서 강퇴가 되었습니다.');
+      } else {
+        alert(`error : [${responseCode}] ${message}`);
+      }
+    },
+  });
+};
+
 export const useCrewRejectPost = (): UseMutationResult => {
   const queryClient = useQueryClient();
   return useMutation<any, any, any>(requestBody => crewRejectPost(requestBody), {

@@ -146,6 +146,20 @@ export const myMemberRequestList = async (params: any) => {
 };
 
 // 내 회원 목록 조회
+export const professorRequestList = async (params: any) => {
+  console.log(params);
+  const { data } = await axiosGeneralAPI().get(`/api/v1/clubs/${params.clubSequence}/instructors`, {
+    params: {
+      page: params.page,
+      size: params.size,
+      clubMemberSortType: params.sortType,
+      keyword: params.keyword,
+    },
+  });
+  return data.data;
+};
+
+// 내 회원 목록 조회
 export const myMemberList = async (params: any) => {
   console.log(params);
   const { data } = await axiosGeneralAPI().get(`/api/v1/my/clubs/${params.clubSequence}/members`, {
@@ -153,6 +167,7 @@ export const myMemberList = async (params: any) => {
       page: params.page,
       size: params.size,
       clubMemberSortType: params.sortType,
+      keyword: params.keyword,
     },
   });
   return data.data;
