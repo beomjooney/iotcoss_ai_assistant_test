@@ -125,7 +125,7 @@ export function LectureOpenTemplate() {
   const [experienceIdsPopUp, setExperienceIdsPopUp] = useState<any[]>([]);
   const [isPublic, setIsPublic] = useState('0001');
   const [isQuestionsPublic, setIsQuestionsPublic] = useState('false');
-  const [enableAiQuestion, setEnableAiQuestion] = useState('false');
+  const [enableAiQuestion, setEnableAiQuestion] = useState('true');
   const [studyKeywords, setStudyKeywords] = useState([]);
   const [studyChapter, setStudyChapter] = useState('');
   const [studySubject, setStudySubject] = useState('');
