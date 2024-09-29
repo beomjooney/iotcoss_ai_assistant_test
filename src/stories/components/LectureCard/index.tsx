@@ -70,9 +70,16 @@ LectureCardProps) => {
         <Grid item xs={xs}>
           <a
             // href={logged ? '/lecture/' + `${item.clubSequence}` : '#'}
+            // href={
+            //   logged
+            //     ? roles?.includes('ROLE_ADMIN') || (roles?.includes('ROLE_MANAGER') && memberId === item.leaderUUID)
+            //       ? '/lecture-dashboard/' + `${item.clubSequence}`
+            //       : '/lecture/' + `${item.clubSequence}`
+            //     : '#'
+            // }
             href={
               logged
-                ? roles?.includes('ROLE_ADMIN') || (roles?.includes('ROLE_MANAGER') && memberId === item.leaderUUID)
+                ? item.isClubAdmin
                   ? '/lecture-dashboard/' + `${item.clubSequence}`
                   : '/lecture/' + `${item.clubSequence}`
                 : '#'
