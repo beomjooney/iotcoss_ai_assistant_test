@@ -1554,7 +1554,7 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
                       sm={10}
                       className="tw-text-xl tw-text-black tw-font-bold"
                     >
-                      강의클럽 가입 신청 ({totalElements || 0} )
+                      강의클럽 가입 신청 ({totalElements || 0})
                     </Grid>
 
                     <Grid item container justifyContent="flex-end" xs={6} sm={2} style={{ textAlign: 'right' }}>
