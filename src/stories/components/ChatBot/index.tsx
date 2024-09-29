@@ -6,7 +6,12 @@ Modal.setAppElement('#__next'); // Modal 접근성 설정
 
 const ChatbotModal = ({ isOpen, onRequestClose, token }) => {
   const { roles } = useSessionStore.getState();
-  const role = roles?.includes('ROLE_ADMIN') || roles?.includes('ROLE_MANAGER') ? 'professor' : 'student';
+  // const role = roles?.includes('ROLE_ADMIN') || roles?.includes('ROLE_MANAGER') ? 'professor' : 'student';
+  const role = roles?.includes('ROLE_USER')
+    ? 'student'
+    : roles?.includes('ROLE_INSTRUCTOR') || roles?.includes('ROLE_MANAGER')
+    ? 'professor'
+    : 'student'; // 기본값을 'student'로 설정
   const url = `${process.env['NEXT_PUBLIC_AI_CHATBOT_URL']}/aichatbot?role=${role}&accessToken=${token}`;
 
   // console.log('url', url);
