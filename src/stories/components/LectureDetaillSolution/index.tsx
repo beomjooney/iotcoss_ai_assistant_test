@@ -311,7 +311,7 @@ const LectureDetaillSolution = ({
                                 item?.isCompleted ? 'tw-bg-[#F6F7FB] ' : 'tw-bg-white border  tw-opacity-50'
                               }`}
                             >
-                              <div className="tw-flex tw-item-center  tw-px-5 tw-w-9/12 tw-gap-4">
+                              <div className="tw-flex tw-item-center  tw-px-5 tw-w-full tw-gap-4">
                                 <div className="tw-flex tw-font-medium tw-text-black">{item?.clubStudyName}</div>
                                 {item?.clubStudyType === '0100' ? (
                                   <div className="tw-text-xs tw-text-center tw-px-2 tw-py-1 tw-text-white tw-bg-blue-500 tw-rounded-md">
