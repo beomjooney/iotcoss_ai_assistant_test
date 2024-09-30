@@ -41,6 +41,7 @@ import ToggleButton from '@mui/material/ToggleButton';
 import { makeStyles } from '@mui/styles';
 import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
 import InputAdornment from '@mui/material/InputAdornment';
+import { is } from 'ramda';
 const cx = classNames.bind(styles);
 
 export function MemberEditTemplate() {
@@ -110,8 +111,28 @@ export function MemberEditTemplate() {
   const { mutate: onLoginOtp, isSuccess } = useLoginOtp();
   const { mutate: onLoginOtpVerification, isSuccess: isVerification, data: resultData } = useLoginOtpVerification();
   const { mutate: onChangePhone, isSuccess: isSuccessChangePhone } = useChangePhone();
-  const { mutate: onChangePassword, isSuccess: isSuccessChangePassword } = useChangePassword();
+  const {
+    mutate: onChangePassword,
+    isSuccess: isSuccessChangePassword,
+    data: dataChangePassword,
+  } = useChangePassword();
   const { mutate: onUserUpdate, isSuccess: isSuccessUserUpdate } = useUserUpdate();
+
+  useEffect(() => {
+    if (isSuccessChangePassword) {
+      const { responseCode, message } = dataChangePassword as { responseCode: string; message: string };
+      if (responseCode === '0000') {
+        alert('비밀번호 변경이 완료되었습니다.');
+        setPasswordFlag(false);
+        reset({ password: '', passwordConfirm: '' });
+        setPreviousPassword('');
+      } else if (responseCode === '0401') {
+        alert(`error : 현재 비밀번호가 올바르지 않습니다`);
+      } else {
+        alert(`error : [${responseCode}] ${message}`);
+      }
+    }
+  }, [isSuccessChangePassword]);
 
   useEffect(() => {
     if (resultData) {
@@ -412,6 +433,68 @@ export function MemberEditTemplate() {
 
   const classes = useStyles();
 
+  const validationSchema = Yup.object().shape({
+    password: Yup.string()
+      .required('Password is required')
+      .test(
+        'password-complexity',
+        '비밀번호는 최소 2가지 종류의 문자를 포함하여 10자 이상이거나, 최소 3가지 종류의 문자를 포함하여 8자 이상이어야 합니다.',
+        function (value) {
+          if (!value) return false; // 비밀번호가 없을 경우 유효하지 않음
+          const hasLower = /[a-z]/.test(value);
+          const hasUpper = /[A-Z]/.test(value);
+          const hasNumber = /\d/.test(value);
+          const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(value);
+
+          const characterTypes = [hasLower, hasUpper, hasNumber, hasSpecial].filter(Boolean).length;
+
+          // 2종류 이상이면서 10자리 이상
+          if (characterTypes >= 2 && value.length >= 10) {
+            return true;
+          }
+
+          // 3종류 이상이면서 8자리 이상
+          if (characterTypes >= 3 && value.length >= 8) {
+            return true;
+          }
+
+          return false;
+        },
+      )
+      .max(20, '비밀번호는 20자를 초과할 수 없습니다.'),
+    passwordConfirm: Yup.string()
+      .required('비밀번호는 필수 항목입니다.')
+      .oneOf([Yup.ref('password')], '비밀번호가 일치하지 않습니다.'),
+    website: Yup.string().matches(
+      /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
+      'Enter correct url!',
+    ),
+  });
+
+  const {
+    register,
+    control,
+    handleSubmit: handleSubmitPassworld,
+    formState: { errors },
+    reset,
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+    mode: 'onChange',
+  });
+
+  const onError = (e: any) => {
+    console.log('error', e);
+  };
+
+  const onSubmit = data => {
+    console.log(data, previousPassword);
+    onChangePassword({
+      currentPassword: previousPassword,
+      newPassword: data.password,
+      newPasswordConfirm: data.passwordConfirm,
+    });
+  };
+
   return (
     <div className={cx('member-edit-container tw-py-4')}>
       <div className={cx('sub-content', 'border', 'tw-rounded-lg', 'tw-mt-5', 'tw-text-center')}>
@@ -453,63 +536,104 @@ export function MemberEditTemplate() {
           </Grid>
           {passwordFlag && (
             <>
-              <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-3">
-                <Grid item xs={2}></Grid>
-                <Grid item xs={2} className="tw-text-left">
-                  이전비밀번호
+              <form onSubmit={handleSubmitPassworld(onSubmit, onError)}>
+                <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-3">
+                  <Grid item xs={2}></Grid>
+                  <Grid item xs={2} className="tw-text-left">
+                    이전비밀번호
+                  </Grid>
+                  <Grid item xs={8}>
+                    <div className="tw-text-left tw-flex tw-text-base tw-gap-3">
+                      <TextField
+                        onChange={e => handlePasswordChange1(e.target.value)}
+                        size="small"
+                        id="outlined-disabled"
+                        value={previousPassword}
+                        type="password"
+                      />
+                    </div>
+                  </Grid>
                 </Grid>
-                <Grid item xs={8}>
-                  <div className="tw-text-left tw-flex tw-text-base tw-gap-3">
-                    <TextField
-                      onChange={e => handlePasswordChange1(e.target.value)}
-                      size="small"
-                      id="outlined-disabled"
-                      value={previousPassword}
-                      type="password"
-                    />
-                  </div>
+
+                <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-3">
+                  <Grid item xs={2}></Grid>
+                  <Grid item xs={2} className="tw-text-left">
+                    새비밀번호
+                  </Grid>
+                  <Grid item xs={8}>
+                    <div className="tw-text-left tw-flex tw-text-base tw-gap-3">
+                      {/* <TextField
+                        onChange={e => handlePasswordChange2(e.target.value)}
+                        size="small"
+                        id="outlined-disabled"
+                        value={newPassword}
+                        type="password"
+                      /> */}
+                      <TextField
+                        size="small"
+                        sx={{
+                          width: '220px',
+                          marginTop: '15px',
+                          marginBottom: '10px',
+                          '& label': { fontSize: 14, color: '#919191', fontWeight: 'bold' },
+                        }}
+                        inputProps={{
+                          style: { borderBottomColor: '#e3e3e3 !important' },
+                        }}
+                        fullWidth
+                        type="password"
+                        id="password"
+                        name="password"
+                        {...register('password')}
+                        error={errors.password ? true : false}
+                        helperText={errors.password?.message}
+                      />
+                    </div>
+                  </Grid>
                 </Grid>
-              </Grid>
-              <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-3">
-                <Grid item xs={2}></Grid>
-                <Grid item xs={2} className="tw-text-left">
-                  새비밀번호
+                <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-3">
+                  <Grid item xs={2}></Grid>
+                  <Grid item xs={2} className="tw-text-left">
+                    비밀번호 확인
+                  </Grid>
+                  <Grid item xs={8}>
+                    <div className="tw-text-left tw-flex tw-text-base tw-gap-3">
+                      {/* <TextField
+                        onChange={e => handlePasswordChange3(e.target.value)}
+                        size="small"
+                        id="outlined-disabled"
+                        value={confirmPassword}
+                        type="password"
+                      /> */}
+                      <TextField
+                        size="small"
+                        sx={{ width: '220px', '& label': { fontSize: 14, color: '#919191', fontWeight: 'bold' } }}
+                        // inputProps={{
+                        //   style: { border: '0px !important' },
+                        // }}
+                        fullWidth
+                        type="password"
+                        autoComplete="current-password"
+                        id="passwordConfirm"
+                        name="passwordConfirm"
+                        {...register('passwordConfirm')}
+                        error={errors.passwordConfirm ? true : false}
+                        helperText={errors.passwordConfirm?.message}
+                      />
+                      <button
+                        // onClick={handlePasswordChangeSubmit}
+                        onClick={() => {
+                          console.log('click');
+                          handleSubmitPassworld(onSubmit);
+                        }}
+                        className="border tw-text-gray-500 tw-rounded tw-px-4 tw-py-1 tw-h-[38px] tw-text-sm tw-font-medium"
+                      >
+                        변경하기
+                      </button>
+                    </div>
+                  </Grid>
                 </Grid>
-                <Grid item xs={8}>
-                  <div className="tw-text-left tw-flex tw-text-base tw-gap-3">
-                    <TextField
-                      onChange={e => handlePasswordChange2(e.target.value)}
-                      size="small"
-                      id="outlined-disabled"
-                      value={newPassword}
-                      type="password"
-                    />
-                  </div>
-                </Grid>
-              </Grid>
-              <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-3">
-                <Grid item xs={2}></Grid>
-                <Grid item xs={2} className="tw-text-left">
-                  비밀번호 확인
-                </Grid>
-                <Grid item xs={8}>
-                  <div className="tw-text-left tw-flex tw-text-base tw-gap-3">
-                    <TextField
-                      onChange={e => handlePasswordChange3(e.target.value)}
-                      size="small"
-                      id="outlined-disabled"
-                      value={confirmPassword}
-                      type="password"
-                    />
-                    <button
-                      onClick={handlePasswordChangeSubmit}
-                      className="border tw-text-gray-500 tw-rounded tw-px-4 tw-py-1 tw-text-sm tw-font-medium"
-                    >
-                      변경하기
-                    </button>
-                  </div>
-                </Grid>
-              </Grid>
+              </form>
             </>
           )}
           <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-3">

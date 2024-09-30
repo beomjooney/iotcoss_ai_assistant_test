@@ -137,7 +137,7 @@ export async function changePhone(params: any) {
 
 export async function changePassword(params: any) {
   const { data } = await axiosGeneralAPI().put('/api/v1/my/password', params);
-  return data.data;
+  return data;
 }
 export async function resetPassword(params: any) {
   const { data } = await axiosGeneralAPI().put('/api/v1/password/reset', params);

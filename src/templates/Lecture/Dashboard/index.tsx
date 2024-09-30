@@ -1,6 +1,6 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Divider from '@mui/material/Divider';
 import { PieChart } from 'react-minimal-pie-chart';
 import {
@@ -184,6 +184,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   const [isStudentModalOpen, setIsStudentModalOpen] = useState(false);
   const [key, setKey] = useState('');
   const [fileName, setFileName] = useState('');
+  const [memberUUID, setMemberUUID] = useState('');
 
   const handleChangeQuiz = event => {
     setSortType(event.target.value);
@@ -242,7 +243,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     myClubLectureStudentQA,
     data => {
       console.log('useMyDashboardStudentQA', data);
-      setTotalStudentPage(data?.totalPages);
+      setTotalStudentQuestionPage(data?.totalPages);
       setMyDashboardStudentQA(data || []);
     },
   );
@@ -318,6 +319,31 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     });
   }, [questionPage]);
 
+  // 페이지가 변경될 때만 동작하도록 수정, memberUUID가 없으면 실행하지 않음
+  useDidMountEffect(() => {
+    if (memberUUID) {
+      setMyClubLectureStudentQA({
+        clubSequence: selectedClub?.clubSequence || id,
+        sequence: clubStudySequence,
+        memberUUID: memberUUID,
+        data: { studentQuestionPage: studentQuestionPage },
+      });
+    } else {
+      console.error('memberUUID is missing');
+    }
+  }, [studentQuestionPage, memberUUID]); // memberUUID가 없을 때 에러 방지
+
+  useEffect(() => {
+    if (memberUUID) {
+      console.log('memberUUID', memberUUID);
+      setMyClubLectureStudentQA({
+        clubSequence: selectedClub?.clubSequence || id,
+        memberUUID: memberUUID,
+        data: { studentQuestionPage: 1 },
+      });
+    }
+  }, [memberUUID]);
+
   const handleQuizChange = event => {
     const value = event.target.value;
     const selectedSession = myClubList?.find(session => {
@@ -342,6 +368,10 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   const handleQAPageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     console.log('handleQAPageChange', value);
     setQuestionPage(value);
+  };
+  const handleStudentQAPageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    console.log('handleStudentQAPageChange', value);
+    setStudentQuestionPage(value);
   };
 
   const { isFetched: isParticipantListFetcheds, isSuccess: isParticipantListSuccess } = useQuizFileDownload(
@@ -1118,13 +1148,8 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                 //학생별 상세 질의 이력 조회
                                 setIsStudentModalOpen(true);
                                 setClubStudySequence(info?.clubStudySequence);
-                                console.log('setClubStudySequence', info?.clubStudySequence);
-                                console.log('setClubStudySequence', info);
-                                setMyClubLectureStudentQA({
-                                  clubSequence: selectedClub?.clubSequence || id,
-                                  memberUUID: info?.member?.memberUUID,
-                                  data: { studentQuestionPage: 1 },
-                                });
+                                setMemberUUID(info?.member?.memberUUID);
+                                setStudentQuestionPage(1); // 페이지를 1로 초기화
                               }}
                               className="tw-cursor-pointer"
                             >
@@ -1155,15 +1180,17 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                             <div
                               onClick={() => {
                                 //학생별 상세 질의 이력 조회
+                                // setIsStudentModalOpen(true);
+                                // setClubStudySequence(info?.clubStudySequence);
+                                // setMyClubLectureStudentQA({
+                                //   clubSequence: selectedClub?.clubSequence || id,
+                                //   memberUUID: info?.member?.memberUUID,
+                                //   data: { studentQuestionPage: 1 },
+                                // });
                                 setIsStudentModalOpen(true);
                                 setClubStudySequence(info?.clubStudySequence);
-                                console.log('setClubStudySequence', info?.clubStudySequence);
-                                console.log('setClubStudySequence', info);
-                                setMyClubLectureStudentQA({
-                                  clubSequence: selectedClub?.clubSequence || id,
-                                  memberUUID: info?.member?.memberUUID,
-                                  data: { studentQuestionPage: 1 },
-                                });
+                                setMemberUUID(info?.member?.memberUUID);
+                                setStudentQuestionPage(1); // 페이지를 1로 초기화
                               }}
                               className="tw-cursor-pointer"
                             >
@@ -1623,14 +1650,13 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
       <Modal
         isOpen={isStudentModalOpen}
         onAfterClose={() => {
-          setStudentQuestionPage(1);
           setIsStudentModalOpen(false);
         }}
         title="학생별 상세보기"
         maxWidth="1100px"
         maxHeight="800px"
       >
-        <div className={cx('seminar-check-popup')}>
+        <div className={cx('seminar-check-popup', 'tw-h-[620px] tw-overflow-auto')}>
           <TableContainer>
             <Table className="" aria-label="simple table" style={{ tableLayout: 'fixed' }}>
               <TableHead style={{ backgroundColor: '#F6F7FB' }}>
@@ -1641,7 +1667,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                   <TableCell align="left" width={250} className="border-right">
                     <div className="tw-font-bold tw-text-base">강의질문</div>
                   </TableCell>
-                  <TableCell align="left" className="border-right">
+                  <TableCell align="left" className="">
                     <div className="tw-font-bold tw-text-base">답변내역</div>
                   </TableCell>
                 </TableRow>
@@ -1672,7 +1698,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                       </TableCell>
 
                       {/* Answer Details Column */}
-                      <TableCell align="left" component="th" scope="row" className="border-right">
+                      <TableCell align="left" component="th" scope="row" className="">
                         <div className="tw-h-[150px] tw-overflow-auto">
                           <div className="tw-font-bold tw-text-sm">
                             <Markdown className="markdown-container tw-prose tw-pr-2 tw-break-words">
@@ -1718,24 +1744,24 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                 ))}
               </TableBody>
             </Table>
-            {myDashboardQA?.members?.length === 0 && (
+            {myDashboardStudentQA?.members?.length === 0 && (
               <div className={cx('tw-flex tw-justify-center tw-items-center tw-h-[20vh]')}>
                 <p className="tw-text-center tw-text-base tw-font-bold tw-text-[#31343d]">데이터가 없습니다.</p>
               </div>
             )}
-            <div className="tw-flex tw-justify-center tw-items-center tw-mt-5">
-              <Pagination
-                count={totalQuestionPage}
-                size="small"
-                siblingCount={0}
-                page={questionPage}
-                renderItem={item => (
-                  <PaginationItem slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }} {...item} />
-                )}
-                onChange={handleQAPageChange}
-              />
-            </div>
           </TableContainer>
+        </div>
+        <div className="tw-flex tw-justify-center tw-items-center tw-mt-5">
+          <Pagination
+            count={totalStudentQuestionPage}
+            size="small"
+            siblingCount={0}
+            page={studentQuestionPage}
+            renderItem={item => (
+              <PaginationItem slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }} {...item} />
+            )}
+            onChange={handleStudentQAPageChange}
+          />
         </div>
       </Modal>
     </div>

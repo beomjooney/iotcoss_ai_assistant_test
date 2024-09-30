@@ -320,7 +320,7 @@ export const useChangePassword = (): UseMutationResult => {
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('OTP').all),
     onSuccess: async data => {
-      alert('비밀번호 변경이 완료되었습니다.');
+      // alert('비밀번호 변경이 완료되었습니다.');
     },
   });
 };

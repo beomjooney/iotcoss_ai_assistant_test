@@ -187,7 +187,7 @@ export const useMyDashboardStudentQA = (
   onSuccess?: (data: any) => void,
   onError?: (error: Error) => void,
 ) => {
-  const DEFAULT_SIZE = 20;
+  const DEFAULT_SIZE = 3;
   return useQuery<any, Error>(
     QUERY_KEY_FACTORY('DASHBOARD_STUDENT_QA').list({ size: DEFAULT_SIZE, ...params }),
     () => myDashboardStudentQA({ size: DEFAULT_SIZE, ...params }),

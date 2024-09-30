@@ -199,18 +199,58 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
     // /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
     /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
 
+  // const validationSchema = Yup.object().shape({
+  //   name: Yup.string().min(2, 'Must be more than one character').required('Username is required'),
+  //   // memberId: Yup.string().required('Email is required').email('Email is invalid'),
+  //   password: Yup.string()
+  //     .required('Password is required')
+  //     .min(4, 'Password must be at least 4 characters')
+  //     .max(20, 'Password must not exceed 20 characters'),
+  //   passwordConfirm: Yup.string()
+  //     .required('Password is required')
+  //     .min(4, 'Password must be at least 4 characters')
+  //     .max(20, 'Password must not exceed 20 characters')
+  //     .oneOf([Yup.ref('password')], 'Passwords do not match'),
+  //   website: Yup.string().matches(
+  //     /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
+  //     'Enter correct url!',
+  //   ),
+  // });
+
   const validationSchema = Yup.object().shape({
     name: Yup.string().min(2, 'Must be more than one character').required('Username is required'),
     // memberId: Yup.string().required('Email is required').email('Email is invalid'),
     password: Yup.string()
-      .required('Password is required')
-      .min(4, 'Password must be at least 4 characters')
-      .max(20, 'Password must not exceed 20 characters'),
+      .required('비밀번호는 필수 항목입니다.')
+      .test(
+        'password-complexity',
+        '비밀번호는 최소 2가지 종류의 문자를 포함하여 10자 이상이거나, 최소 3가지 종류의 문자를 포함하여 8자 이상이어야 합니다.',
+        function (value) {
+          if (!value) return false; // 비밀번호가 없을 경우 유효하지 않음
+          const hasLower = /[a-z]/.test(value);
+          const hasUpper = /[A-Z]/.test(value);
+          const hasNumber = /\d/.test(value);
+          const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(value);
+
+          const characterTypes = [hasLower, hasUpper, hasNumber, hasSpecial].filter(Boolean).length;
+
+          // 2종류 이상이면서 10자리 이상
+          if (characterTypes >= 2 && value.length >= 10) {
+            return true;
+          }
+
+          // 3종류 이상이면서 8자리 이상
+          if (characterTypes >= 3 && value.length >= 8) {
+            return true;
+          }
+
+          return false;
+        },
+      )
+      .max(20, '비밀번호는 20자를 초과할 수 없습니다.'),
     passwordConfirm: Yup.string()
-      .required('Password is required')
-      .min(4, 'Password must be at least 4 characters')
-      .max(20, 'Password must not exceed 20 characters')
-      .oneOf([Yup.ref('password')], 'Passwords do not match'),
+      .required('비밀번호는 필수 항목입니다.')
+      .oneOf([Yup.ref('password')], '비밀번호가 일치하지 않습니다.'),
     website: Yup.string().matches(
       /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
       'Enter correct url!',
@@ -244,6 +284,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(validationSchema),
+    mode: 'onChange',
   });
 
   const onSubmit = data => {

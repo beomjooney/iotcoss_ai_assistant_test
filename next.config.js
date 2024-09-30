@@ -1,6 +1,6 @@
 const nextConfig = {
   compiler: {
-    removeConsole: true,
+    removeConsole: false,
   },
   // images: {
   //   loader: 'imgix',
