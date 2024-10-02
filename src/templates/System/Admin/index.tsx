@@ -17,15 +17,19 @@ import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import { useStudyQuizOpponentBadgeList } from 'src/services/studyroom/studyroom.queries';
 import { useSessionStore } from 'src/store/session';
 
+import { Accordion, AccordionSummary, AccordionDetails, IconButton, Menu, MenuItem, Typography } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+
 const cx = classNames.bind(styles);
 
 // type roleType = 'ROLE_ADMIN' | 'ROLE_USER' | 'ROLE_GUEST';
 
-interface MyTemplateProps {
+interface AdminTemplateProps {
   children: ReactNode;
 }
 
-export function MyTemplate({ children }: MyTemplateProps) {
+export function AdminTemplate({ children }: AdminTemplateProps) {
   const router = useRouter();
   const { user, setUser } = useStore();
   const { memberId, menu } = useSessionStore();
@@ -69,7 +73,7 @@ export function MyTemplate({ children }: MyTemplateProps) {
   const currentPath = router.pathname;
   // TODO 위에 타이틀 보여지게 하기 - menus에 다 넣고 옵션 값에 따라 role 맞춰 보여주기
   const menus = [
-    { no: 0, title: '나의 활동', link: '/activity', role: 'all' },
+    { no: 0, title: '신규 클럽 승인', link: '/club', role: 'all' },
     { no: 1, title: '가입승인 대기 클럽목록', link: '/club-waiting', role: 'all' },
     { no: 3, title: '클럽 즐겨찾기 목록', link: '/favorites', role: 'all' },
     { no: 4, title: '내 친구관리', link: '/friends', role: 'all' },
@@ -175,6 +179,23 @@ export function MyTemplate({ children }: MyTemplateProps) {
     setBadgeParams({ page: badgePage, memberUUID: memberUUID });
   };
 
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const handleMenuClick = event => {
+    event.stopPropagation(); // Accordion 토글 방지
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = event => {
+    event.stopPropagation();
+    setAnchorEl(null);
+  };
+
+  const [selected, setSelected] = useState('회원정보 관리');
+
+  const handleClick = item => {
+    setSelected(item);
+  };
+
   return (
     <div>
       <Desktop>
@@ -200,106 +221,107 @@ export function MyTemplate({ children }: MyTemplateProps) {
                 </div>
               </div>
 
-              <ul className={cx('lnb-content', 'tw-px-5', 'tw-pt-0')}>{showMenu}</ul>
+              <ul className={cx('lnb-content', 'tw-px-5', 'tw-pt-0 tw-pb-5')}>
+                <Accordion
+                  defaultExpanded
+                  elevation={0}
+                  sx={{
+                    marginTop: '10px',
+                    '&:before': {
+                      display: 'none',
+                    },
+                  }}
+                >
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    sx={{ backgroundColor: 'white', borderRadius: '20px', margin: '0px' }}
+                  >
+                    <Typography sx={{ flexGrow: 1, fontWeight: 'bold' }}>회원관리</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails sx={{ backgroundColor: '#fbfbfd' }}>
+                    <div className="tw-flex-col tw-items-start tw-justify-between tw-gap-5 tw-pl-4 tw-pr-1">
+                      <div
+                        className={cx(
+                          'tw-py-3 tw-mt-2 tw-text-black tw-flex tw-items-center tw-justify-between',
+                          { 'tw-font-bold tw-text-blue-500': selected === '회원정보 관리' }, // Add condition for bold and color change
+                        )}
+                        onClick={() => handleClick('회원정보 관리')}
+                        style={{ cursor: 'pointer' }} // Add pointer cursor for visual feedback
+                      >
+                        회원정보 관리
+                        <span className={cx('ti-angle-right')} />
+                      </div>
+                      <div
+                        className={cx(
+                          'tw-py-3 tw-mt-2 tw-text-black tw-flex tw-items-center tw-justify-between',
+                          { 'tw-font-bold tw-text-blue-500': selected === '교수자 권한 관리' }, // Condition for this item
+                        )}
+                        onClick={() => handleClick('교수자 권한 관리')}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        교수자 권한 관리
+                        <span className={cx('ti-angle-right')} />
+                      </div>
+                    </div>
+                  </AccordionDetails>
+                </Accordion>
+
+                <Accordion
+                  defaultExpanded
+                  elevation={0}
+                  sx={{
+                    marginTop: '10px',
+                    '&:before': {
+                      display: 'none',
+                    },
+                  }}
+                >
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    sx={{ backgroundColor: 'white', borderRadius: '20px', margin: '0px' }}
+                  >
+                    <Typography sx={{ flexGrow: 1, fontWeight: 'bold' }}>지식콘텐츠/퀴즈 관리</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails sx={{ backgroundColor: '#fbfbfd' }}>
+                    <div className="tw-flex-col tw-items-start tw-justify-between tw-gap-5 tw-pl-4 tw-pr-1">
+                      <div
+                        className={cx(
+                          'tw-py-3 tw-mt-2 tw-text-black tw-flex tw-items-center tw-justify-between',
+                          { 'tw-font-bold tw-text-blue-500': selected === '지식콘텐츠 관리' }, // Condition for this item
+                        )}
+                        onClick={() => handleClick('지식콘텐츠 관리')}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        지식콘텐츠 관리
+                        <span className={cx('ti-angle-right')} />
+                      </div>
+                      <div
+                        className={cx(
+                          'tw-py-3 tw-mt-2 tw-text-black tw-flex tw-items-center tw-justify-between',
+                          { 'tw-font-bold tw-text-blue-500': selected === '퀴즈 관리' }, // Condition for this item
+                        )}
+                        onClick={() => handleClick('퀴즈 관리')}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        퀴즈 관리
+                        <span className={cx('ti-angle-right')} />
+                      </div>
+                    </div>
+                  </AccordionDetails>
+                </Accordion>
+              </ul>
+              {/* <ul className={cx('lnb-content', 'tw-px-5', 'tw-pt-0')}>{showMenu}</ul> */}
             </div>
             <div className={cx('page-area')}>
               <div className={cx('page-area__container')}>
-                <div className="tw-font-bold tw-text-xl tw-text-black tw-p-0">{currentMenu?.title}</div>
+                {/* <div className="tw-font-bold tw-text-xl tw-text-black tw-p-0">{currentMenu?.title}</div> */}
+                {/* <div className="tw-font-bold tw-text-xl tw-text-black tw-p-0">회원정보 관리</div> */}
                 {children}
               </div>
             </div>
           </div>
         </div>
       </Desktop>
-      <Mobile>
-        <div>
-          <div className="tw-py-5 tw-mt-10">
-            <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-              <Grid item xs={7} className="tw-font-bold tw-text-3xl tw-text-black">
-                마이페이지
-              </Grid>
-              <Grid item xs={2} className="tw-font-semi tw-text-base tw-text-black"></Grid>
-              <Grid item xs={2} justifyContent="flex-end" className="tw-flex"></Grid>
-            </Grid>
-          </div>
-          <div>
-            <div className={cx('lnb-area', 'tw-bg-gray-100', 'tw-rounded-lg')}>
-              <ul className={cx('lnb-content', 'tw-px-5', 'tw-pt-5', 'tw-bg-gray-100')}>{showMenuMobile}</ul>
-              <div className="">
-                <div className="tw-p-5">
-                  <div className="tw-text-lg tw-pb-4 tw-font-semibold tw-text-black">안녕하세요! {nickname}님</div>
-                  <div className="tw-p-5 tw-mb-5 tw-bg-white tw-rounded-lg">
-                    <div className="tw-py-5 tw-px-0 tw-text-center ">
-                      <div className="tw-flex tw-justify-center tw-py-0">
-                        <Image
-                          src={summary?.profileImageUrl || 'D'}
-                          alt="profile_image"
-                          className={cx('rounded-circle', 'image-info__image')}
-                          width="110px"
-                          height="110px"
-                          objectFit="cover"
-                          unoptimized={true}
-                        />
-                      </div>
-                      <div className="tw-py-3 tw-font-semibold tw-text-black tw-text-lg">{summary?.nickname}</div>
-                      <div className="">
-                        {summary?.jobGroupName && (
-                          <span className=" tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-[5px] tw-rounded">
-                            {summary.jobGroupName}
-                          </span>
-                        )}
-                        {summary?.level && (
-                          <span className=" tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-[5px] tw-rounded">
-                            {summary.level}레벨
-                          </span>
-                        )}
-                        {summary?.jobName && (
-                          <span className=" tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-[5px] tw-rounded">
-                            {summary.jobName}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="tw-flex tw-justify-between tw-mt-2 tw-gap-2">
-                      <Button
-                        className="tw-w-full"
-                        variant="outlined"
-                        sx={{
-                          borderColor: 'gray',
-                          color: 'gray',
-                          fontSize: '15px',
-                        }}
-                        onClick={() => handleClickProfile()}
-                      >
-                        프로필 바로가기
-                      </Button>
-                      <Button
-                        className="tw-w-full "
-                        variant="outlined"
-                        onClick={handleLogout}
-                        sx={{
-                          borderColor: 'gray',
-                          color: 'gray',
-                          fontSize: '15px',
-                        }}
-                      >
-                        로그아웃
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className={cx('page-area')}>
-              <div className={cx('page-area__container')}>
-                <h6 className="tw-py-3 tw-px-2 tw-font-bold">{currentMenu?.title}</h6>
-                {children}
-              </div>
-            </div>
-          </div>
-        </div>
-      </Mobile>
       <MentorsModal
         title={'프로필 보기'}
         isOpen={isModalOpen}

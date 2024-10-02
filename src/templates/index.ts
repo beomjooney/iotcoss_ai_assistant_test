@@ -11,6 +11,10 @@ export * from './Account/SignupAuthentication/index';
 export * from './Account/Join/index';
 export * from './Account/My/index';
 
+//system admin
+export * from './System/Admin/index';
+export * from './System/Admin/Club/index';
+
 export * from './Account/My/MentorPick/index';
 export * from './Account/My/Activity/index';
 export * from './Account/My/Point/index';

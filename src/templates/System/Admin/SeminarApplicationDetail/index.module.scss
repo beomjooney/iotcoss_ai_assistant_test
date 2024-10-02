@@ -1,0 +1,13 @@
+@use 'src/stories/assets/styles/abstracts/font';
+@use 'src/stories/assets/styles/abstracts/palette';
+@use 'src/stories/assets/styles/abstracts/mixin';
+
+.seminar-application-detal-container {
+  margin-top: 52px;
+  @include mixin.initMyPageFotterButton;
+
+  .seminar-area {
+    @include mixin.initFlexWrap(32px);
+    row-gap: 60px;
+  }
+}
