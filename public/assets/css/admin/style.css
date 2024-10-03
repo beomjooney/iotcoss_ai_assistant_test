@@ -478,7 +478,7 @@ hr.h50 {
 .content {
   /* 전역변수 문제 */
   /* padding: 10px 40px 60px 120px; */
-  padding: 0px 20px;
+  padding: 0px 0px 0px 20px;
 }
 
 /* footer */
