@@ -286,10 +286,10 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
           ${isSelected ? 'tw-bg-red-500 tw-text-white' : ''}
           ${isPublished ? 'tw-bg-white tw-text-gray-200' : ''}
         `}
-                          value={session?.publishDate.split('-').slice(1).join('-')}
+                          value={session?.publishDate?.split('-').slice(1).join('-')}
                         >
-                          {session?.order}회. {session?.publishDate.split('-').slice(1).join('-')} ({session?.dayOfWeek}
-                          )
+                          {session?.order}회. {session?.publishDate?.split('-').slice(1).join('-')} (
+                          {session?.dayOfWeek})
                         </option>
                       );
                     })}

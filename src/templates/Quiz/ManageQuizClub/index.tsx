@@ -110,8 +110,8 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
   const [keyWorld, setKeyWorld] = useState('');
   const [selectedValue, setSelectedValue] = useState(id);
   // const [activeTab, setActiveTab] = useState('club');
-  const [activeTab, setActiveTab] = useState('community');
-  // const [activeTab, setActiveTab] = useState('myQuiz');
+  // const [activeTab, setActiveTab] = useState('community');
+  const [activeTab, setActiveTab] = useState('myQuiz');
 
   const [pageQuiz, setPageQuiz] = useState(1);
   const [totalQuizPage, setTotalQuizPage] = useState(1);
