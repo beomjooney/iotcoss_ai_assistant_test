@@ -128,7 +128,7 @@ export const useLogin = (): UseMutationResult => {
       const { responseCode, message } = data;
       if (responseCode === '0000') {
         setCookie('access_token', data?.access_token);
-      } else if (responseCode === 'C06003') {
+      } else if (responseCode === '1403') {
       } else {
         alert(`error : [${responseCode}] ${message}`);
       }

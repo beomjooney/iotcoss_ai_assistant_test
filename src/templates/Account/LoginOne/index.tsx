@@ -24,11 +24,6 @@ interface LoginTempOnelateProps {
 
 const cx = classNames.bind(styles);
 
-interface LoginTemplateProps {
-  title: string;
-  onSubmitLogin: () => void;
-}
-
 export function LoginOneTemplate({ title = '', onSubmitLogin }: LoginTempOnelateProps) {
   const { mutate: onLogin, isSuccess, data: loginData } = useLogin();
   const { update, tenantName } = useSessionStore.getState();

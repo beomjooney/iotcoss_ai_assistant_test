@@ -108,7 +108,7 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
 
   useEffect(() => {
     console.log('loginData', loginData);
-    if (loginData?.responseCode === 'C06003') {
+    if (loginData?.responseCode === '1403') {
       console.log('loginData?.responseCode', loginData?.responseCode);
       onReply('0002', 'paper');
       return;
