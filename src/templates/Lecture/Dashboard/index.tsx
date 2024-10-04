@@ -1583,7 +1583,8 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                   <div key={fileIndex} className="border tw-px-2 tw-py-0.5 tw-rounded">
                                     <span
                                       onClick={() => {
-                                        onFileDownload(fileEntry.key, fileEntry.name);
+                                        window.open(file.url, '_blank');
+                                        // onFileDownload(fileEntry.key, fileEntry.name);
                                       }}
                                       className="tw-text-gray-400 tw-cursor-pointer"
                                     >
@@ -1694,7 +1695,9 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
 
                       {/* Question Column */}
                       <TableCell align="left" component="th" scope="row" className="border-right">
-                        <div className="tw-font-bold tw-text-sm">{info?.question}</div>
+                        <div className="tw-h-[150px] tw-overflow-auto">
+                          <div className="tw-font-bold tw-text-sm">{info?.question}</div>
+                        </div>
                       </TableCell>
 
                       {/* Answer Details Column */}
@@ -1727,7 +1730,8 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                 <div key={fileIndex} className="border tw-px-2 tw-py-0.5 tw-rounded">
                                   <span
                                     onClick={() => {
-                                      onFileDownload(fileEntry.key, fileEntry.name);
+                                      window.open(fileEntry.url, '_blank');
+                                      // onFileDownload(fileEntry.key, fileEntry.name);
                                     }}
                                     className="tw-text-gray-400 tw-cursor-pointer"
                                   >

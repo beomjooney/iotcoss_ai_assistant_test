@@ -112,6 +112,14 @@ const AllLectureView = ({ border, id }) => {
     });
   }, [sortType, page, selectedClub]);
 
+  useDidMountEffect(() => {
+    setMyClubLectureQA({
+      clubSequence: selectedClub,
+      sequence: clubStudySequence,
+      data: { questionPage: questionPage },
+    });
+  }, [questionPage]);
+
   const handleQuizChange = event => {
     const value = event.target.value;
     setSelectedValue(value);
@@ -392,7 +400,9 @@ const AllLectureView = ({ border, id }) => {
 
                         {/* Question Column */}
                         <TableCell align="left" component="th" scope="row" className="border-right">
-                          <div className="tw-font-bold tw-text-sm">{questionInfo?.question}</div>
+                          <div className="tw-h-[150px] tw-overflow-auto">
+                            <div className="tw-font-bold tw-text-sm">{questionInfo?.question}</div>
+                          </div>
                         </TableCell>
 
                         {/* Answer Details Column */}
@@ -415,6 +425,25 @@ const AllLectureView = ({ border, id }) => {
                                   추가답변 : {questionInfo?.instructorAnswer}
                                 </div>
                               )}
+                              {questionInfo?.clubContents?.length > 0 && (
+                                <div className="tw-mt-2 tw-text-sm tw-flex tw-justify-start tw-items-center tw-flex-wrap tw-gap-2">
+                                  <div>강의자료 : </div>
+                                  {questionInfo.clubContents.map((fileEntry, fileIndex) => (
+                                    <div key={fileIndex} className="border tw-px-2 tw-py-0.5 tw-rounded">
+                                      <span
+                                        onClick={() => {
+                                          window.open(file.url, '_blank');
+                                          // onFileDownload(fileEntry.key, fileEntry.name);
+                                        }}
+                                        className="tw-text-gray-400 tw-cursor-pointer"
+                                      >
+                                        {fileEntry?.name}
+                                      </span>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+
                               {openInputIndex === questionInfo?.lectureQuestionSerialNumber && (
                                 <div className="tw-mt-2 tw-flex tw-justify-start tw-items-center tw-gap-2">
                                   <TextField
