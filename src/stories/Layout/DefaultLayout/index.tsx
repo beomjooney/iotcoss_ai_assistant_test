@@ -119,16 +119,16 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       role: 'ROLE_MANAGER',
       menu: 'use_lecture_club',
     },
-    {
-      no: 7,
-      option: 'nav-item',
-      title: '관리 페이지',
-      link: '/system/admin/club',
-      dropdown: [],
-      login: logged,
-      role: 'ROLE_MANAGER',
-      menu: 'all',
-    },
+    // {
+    //   no: 7,
+    //   option: 'nav-item',
+    //   title: '관리 페이지',
+    //   link: '/system/admin/club',
+    //   dropdown: [],
+    //   login: logged,
+    //   role: 'ROLE_MANAGER',
+    //   menu: 'all',
+    // },
   ];
 
   // Check if menuRole is empty
