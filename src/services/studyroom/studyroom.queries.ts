@@ -24,6 +24,8 @@ import {
   studyQuizOpponentBadgeList,
   studyReminder,
   studyProgress,
+  studyQuizMemberList,
+  studyQuizRoleMemberList,
 } from './studyroom.api';
 
 export interface paramProps {
@@ -123,6 +125,7 @@ export const useStudyQuizList = (
     },
   );
 };
+
 export const useStudyQuizBadgeList = (
   params?: paramProps,
   onSuccess?: (data: RecommendContentsResponse) => void,
@@ -139,6 +142,42 @@ export const useStudyQuizBadgeList = (
     },
   );
 };
+
+export const useStudyQuizMemberList = (
+  params?: paramProps,
+  onSuccess?: (data: RecommendContentsResponse) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 15;
+  return useQuery<RecommendContentsResponse, Error>(
+    QUERY_KEY_FACTORY('MENTORS').list({ size: DEFAULT_SIZE, ...params }),
+    () => studyQuizMemberList({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+      enabled: true,
+    },
+  );
+};
+export const useStudyQuizRoleMemberList = (
+  params?: paramProps,
+  onSuccess?: (data: RecommendContentsResponse) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 15;
+  return useQuery<RecommendContentsResponse, Error>(
+    QUERY_KEY_FACTORY('NODE_INFO').list({ size: DEFAULT_SIZE, ...params }),
+    () => studyQuizRoleMemberList({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+      enabled: true,
+    },
+  );
+};
+
 export const useStudyQuizOpponentBadgeList = (
   params?: paramProps,
   onSuccess?: (data: RecommendContentsResponse) => void,
@@ -156,6 +195,7 @@ export const useStudyQuizOpponentBadgeList = (
     },
   );
 };
+
 export const useStudyQuizCalendarList = (
   params?: paramProps,
   onSuccess?: (data: RecommendContentsResponse) => void,

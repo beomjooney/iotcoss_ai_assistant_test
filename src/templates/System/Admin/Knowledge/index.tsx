@@ -25,7 +25,7 @@ import SearchIcon from '@mui/icons-material/Search';
 
 const cx = classNames.bind(styles);
 
-export function AdminClubTemplate() {
+export function AdminKnowledgeTemplate() {
   const { memberId } = useSessionStore.getState();
 
   const [page, setPage] = useState(1);
@@ -84,7 +84,7 @@ export function AdminClubTemplate() {
               <Desktop>
                 <div>
                   <div className="tw-flex tw-items-center tw-justify-between">
-                    <div className="tw-font-bold tw-text-xl tw-text-black tw-p-0">회원정보 관리</div>
+                    <div className="tw-font-bold tw-text-xl tw-text-black tw-p-0">지식컨텐츠 관리</div>
                     <TextField
                       size="small"
                       value={search} // 상태값을 TextField에 반영

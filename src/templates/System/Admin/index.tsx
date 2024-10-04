@@ -3,23 +3,15 @@ import classNames from 'classnames/bind';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { ReactNode, useEffect, useState } from 'react';
-import { Modal } from 'src/stories/components';
 import { useStore } from 'src/store';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 import Grid from '@mui/material/Grid';
 import { useGetProfile, useMemberSummaryInfo } from 'src/services/account/account.queries';
-import Button from '@mui/material/Button';
-import { deleteCookie } from 'cookies-next';
-import Image from 'next/image';
-import MentorsModal from 'src/stories/components/MentorsModal';
-import MyProfile from 'src/stories/components/MyProfile';
-import useDidMountEffect from 'src/hooks/useDidMountEffect';
-import { useStudyQuizOpponentBadgeList } from 'src/services/studyroom/studyroom.queries';
+import { useStudyQuizMemberList } from 'src/services/studyroom/studyroom.queries';
 import { useSessionStore } from 'src/store/session';
 
 import { Accordion, AccordionSummary, AccordionDetails, IconButton, Menu, MenuItem, Typography } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 const cx = classNames.bind(styles);
 
@@ -41,7 +33,9 @@ export function AdminTemplate({ children }: AdminTemplateProps) {
   const [profile, setProfile] = useState<any>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [memberUUID, setMemberUUID] = useState<string>(memberId);
-  const [isModalProfileOpen, setIsModalProfileOpen] = useState<boolean>(false);
+  const [totalCount, setTotalCount] = useState<number>(0);
+  const [page, setPage] = useState<number>(1);
+
   // 회원 정보 저장
   const { isFetched: isUserFetched } = useMemberSummaryInfo(data => setSummary(data));
 
@@ -54,14 +48,13 @@ export function AdminTemplate({ children }: AdminTemplateProps) {
 
   /** get badge */
   const [badgePage, setBadgePage] = useState(1);
-  const [badgeParams, setBadgeParams] = useState<any>({ page: badgePage, memberUUID: memberUUID });
-  const [badgeContents, setBadgeContents] = useState<any[]>([]);
-  const { isFetched: isQuizbadgeFetched, refetch: QuizRefetchBadge } = useStudyQuizOpponentBadgeList(
-    badgeParams,
-    data => {
-      setBadgeContents(data?.data?.contents);
-    },
-  );
+  const [keyword, setKeyword] = useState('');
+  const [badgeParams, setBadgeParams] = useState<any>({ page: badgePage, keyword: keyword });
+  // const [memberList, setMemberList] = useState<any[]>([]);
+  // const { isFetched: isMemberListFetched, refetch: QuizRefetchBadge } = useStudyQuizMemberList(badgeParams, data => {
+  //   console.log(data?.data?.content);
+  //   setMemberList(data?.data?.content);
+  // });
 
   const showMentorChangeBtn = () => {
     let isUserRole = user?.roles?.find(_ => _ === 'ROLE_USER');
@@ -73,33 +66,27 @@ export function AdminTemplate({ children }: AdminTemplateProps) {
   const currentPath = router.pathname;
   // TODO 위에 타이틀 보여지게 하기 - menus에 다 넣고 옵션 값에 따라 role 맞춰 보여주기
   const menus = [
-    { no: 0, title: '신규 클럽 승인', link: '/club', role: 'all' },
-    { no: 1, title: '가입승인 대기 클럽목록', link: '/club-waiting', role: 'all' },
-    { no: 3, title: '클럽 즐겨찾기 목록', link: '/favorites', role: 'all' },
-    { no: 4, title: '내 친구관리', link: '/friends', role: 'all' },
-    // { no: 5, title: '포인트 적립 내역', link: '/point', role: 'all' },
-    { no: 2, title: '커뮤니티 작성글', link: '/admin-club', role: 'all' },
-    { no: 6, title: '개인정보관리', link: '/member-edit', role: 'all' },
-    // { no: 1, title: 'MY 레벨&성향', link: '/level-tendency', role: 'all' },
-    // { no: 1, title: 'MY 학습 픽', link: '/learning' , role: 'all' },
-    // { no: 3, title: '세미나 신청 내역', link: '/seminar-applications', role: 'all' },
-    // { no: 4, title: '참여중인 그룹 스터디', link: '/study' , role: 'all' },
-    // { no: 6, title: 'MY 멘토 프로필', link: '/growth-story', role: 'mentor' },
-    // { no: 7, title: 'MY 멘토 픽', link: '/mentor', role: 'mentor' },
-    // { no: 8, title: '새로운 세미나 개설하기', link: '/register-seminar', role: 'admin' },
+    {
+      no: 0,
+      title: '회원관리',
+      sub: [
+        { no: 0, title: '회원정보 관리', link: '/system/admin/club', role: 'all' },
+        { no: 1, title: '교수자 권한 관리', link: '/system/admin/role', role: 'all' },
+      ],
+    },
+    {
+      no: 1,
+      title: '지식콘텐츠/퀴즈 관리',
+      sub: [
+        { no: 0, title: '지식콘텐츠 관리', link: '/system/admin/knowledge', role: 'all' },
+        { no: 1, title: '퀴즈 관리', link: '/system/admin/quiz', role: 'all' },
+      ],
+    },
   ];
-  const currentMenu = menus.find(menu => currentPath.includes(menu.link));
-  const handleMoveToMentorRegist = () => {
-    router.push('/growth-story?type=MENTOR');
-  };
 
-  /**logout */
-  const handleLogout = async () => {
-    deleteCookie('access_token');
-    localStorage.removeItem('auth-store');
-    localStorage.removeItem('app-storage');
-    location.href = '/';
-  };
+  const currentSubMenu = menus
+    .flatMap(menu => menu.sub) // 모든 메뉴의 하위 메뉴만 추출
+    .find(subMenu => currentPath.includes(subMenu.link)); // 하위 메뉴에서 경로 일치 확인
 
   useEffect(() => {
     showMentorChangeBtn();
@@ -163,13 +150,13 @@ export function AdminTemplate({ children }: AdminTemplateProps) {
   };
 
   // 프로필 정보 수정 시 변경 적용
-  useEffect(() => {
-    if (memberUUID) {
-      console.log('memberUUID', memberUUID);
-      refetchProfile();
-      QuizRefetchBadge();
-    }
-  }, [memberUUID]);
+  // useEffect(() => {
+  //   if (memberUUID) {
+  //     console.log('memberUUID', memberUUID);
+  //     refetchProfile();
+  //     // QuizRefetchBadge();
+  //   }
+  // }, [memberUUID]);
 
   const handleClickProfile = memberUUID => {
     refetchProfile();
@@ -190,11 +177,32 @@ export function AdminTemplate({ children }: AdminTemplateProps) {
     setAnchorEl(null);
   };
 
-  const [selected, setSelected] = useState('회원정보 관리');
+  const [selected, setSelected] = useState('/system/admin/club');
 
-  const handleClick = item => {
-    setSelected(item);
+  // useEffect(() => {
+  //   // 쿼리 파라미터에서 selected 값을 가져옴
+  //   if (router.query.selected) {
+  //     setSelected(router.query.selected);
+  //   }
+  // }, [router.query.selected]);
+
+  const handleClick = (menu, path) => {
+    setSelected(menu);
+    router.push(
+      {
+        pathname: path,
+        query: { selected: menu }, // 쿼리 파라미터로 selected 값 전달
+      },
+      `${path}`,
+    );
   };
+  // const currentMenu = menus.find(menu => currentPath);
+  // const isClub = currentPath.includes('/club');
+  // const isClubWaiting = currentPath.includes('/club-waiting');
+  // const isFavorites = currentPath.includes('/favorites');
+  // const isFriends = currentPath.includes('/friends');
+  // const isAdminClub = currentPath.includes('/admin-club');
+  // const isMemberEdit = currentPath.includes('/member-edit');
 
   return (
     <div>
@@ -222,93 +230,44 @@ export function AdminTemplate({ children }: AdminTemplateProps) {
               </div>
 
               <ul className={cx('lnb-content', 'tw-px-5', 'tw-pt-0 tw-pb-5')}>
-                <Accordion
-                  defaultExpanded
-                  elevation={0}
-                  sx={{
-                    marginTop: '10px',
-                    '&:before': {
-                      display: 'none',
-                    },
-                  }}
-                >
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    sx={{ backgroundColor: 'white', borderRadius: '20px', margin: '0px' }}
+                {menus.map(menu => (
+                  <Accordion
+                    key={menu.no}
+                    defaultExpanded
+                    elevation={0}
+                    sx={{
+                      marginTop: '10px',
+                      '&:before': {
+                        display: 'none',
+                      },
+                    }}
                   >
-                    <Typography sx={{ flexGrow: 1, fontWeight: 'bold' }}>회원관리</Typography>
-                  </AccordionSummary>
-                  <AccordionDetails sx={{ backgroundColor: '#fbfbfd' }}>
-                    <div className="tw-flex-col tw-items-start tw-justify-between tw-gap-5 tw-pl-4 tw-pr-1">
-                      <div
-                        className={cx(
-                          'tw-py-3 tw-mt-2 tw-text-black tw-flex tw-items-center tw-justify-between',
-                          { 'tw-font-bold tw-text-blue-500': selected === '회원정보 관리' }, // Add condition for bold and color change
-                        )}
-                        onClick={() => handleClick('회원정보 관리')}
-                        style={{ cursor: 'pointer' }} // Add pointer cursor for visual feedback
-                      >
-                        회원정보 관리
-                        <span className={cx('ti-angle-right')} />
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      sx={{ backgroundColor: 'white', borderRadius: '20px', margin: '0px' }}
+                    >
+                      <Typography sx={{ flexGrow: 1, fontWeight: 'bold' }}>{menu.title}</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails sx={{ backgroundColor: '#fbfbfd' }}>
+                      <div className="tw-flex-col tw-items-start tw-justify-between tw-gap-5 tw-pl-4 tw-pr-1">
+                        {menu.sub.map(subMenu => (
+                          <div
+                            key={subMenu.no}
+                            className={cx(
+                              'tw-py-3 tw-mt-2 tw-text-black tw-flex tw-items-center tw-justify-between',
+                              { 'tw-font-bold tw-text-blue-500': currentSubMenu.title === subMenu.title }, // Add condition for bold and color change
+                            )}
+                            onClick={() => handleClick(subMenu.title, subMenu.link)}
+                            style={{ cursor: 'pointer' }} // Add pointer cursor for visual feedback
+                          >
+                            {subMenu.title}
+                            <span className={cx('ti-angle-right')} />
+                          </div>
+                        ))}
                       </div>
-                      <div
-                        className={cx(
-                          'tw-py-3 tw-mt-2 tw-text-black tw-flex tw-items-center tw-justify-between',
-                          { 'tw-font-bold tw-text-blue-500': selected === '교수자 권한 관리' }, // Condition for this item
-                        )}
-                        onClick={() => handleClick('교수자 권한 관리')}
-                        style={{ cursor: 'pointer' }}
-                      >
-                        교수자 권한 관리
-                        <span className={cx('ti-angle-right')} />
-                      </div>
-                    </div>
-                  </AccordionDetails>
-                </Accordion>
-
-                <Accordion
-                  defaultExpanded
-                  elevation={0}
-                  sx={{
-                    marginTop: '10px',
-                    '&:before': {
-                      display: 'none',
-                    },
-                  }}
-                >
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    sx={{ backgroundColor: 'white', borderRadius: '20px', margin: '0px' }}
-                  >
-                    <Typography sx={{ flexGrow: 1, fontWeight: 'bold' }}>지식콘텐츠/퀴즈 관리</Typography>
-                  </AccordionSummary>
-                  <AccordionDetails sx={{ backgroundColor: '#fbfbfd' }}>
-                    <div className="tw-flex-col tw-items-start tw-justify-between tw-gap-5 tw-pl-4 tw-pr-1">
-                      <div
-                        className={cx(
-                          'tw-py-3 tw-mt-2 tw-text-black tw-flex tw-items-center tw-justify-between',
-                          { 'tw-font-bold tw-text-blue-500': selected === '지식콘텐츠 관리' }, // Condition for this item
-                        )}
-                        onClick={() => handleClick('지식콘텐츠 관리')}
-                        style={{ cursor: 'pointer' }}
-                      >
-                        지식콘텐츠 관리
-                        <span className={cx('ti-angle-right')} />
-                      </div>
-                      <div
-                        className={cx(
-                          'tw-py-3 tw-mt-2 tw-text-black tw-flex tw-items-center tw-justify-between',
-                          { 'tw-font-bold tw-text-blue-500': selected === '퀴즈 관리' }, // Condition for this item
-                        )}
-                        onClick={() => handleClick('퀴즈 관리')}
-                        style={{ cursor: 'pointer' }}
-                      >
-                        퀴즈 관리
-                        <span className={cx('ti-angle-right')} />
-                      </div>
-                    </div>
-                  </AccordionDetails>
-                </Accordion>
+                    </AccordionDetails>
+                  </Accordion>
+                ))}
               </ul>
               {/* <ul className={cx('lnb-content', 'tw-px-5', 'tw-pt-0')}>{showMenu}</ul> */}
             </div>
@@ -322,18 +281,6 @@ export function AdminTemplate({ children }: AdminTemplateProps) {
           </div>
         </div>
       </Desktop>
-      <MentorsModal
-        title={'프로필 보기'}
-        isOpen={isModalOpen}
-        isProfile={true}
-        onAfterClose={() => setIsModalOpen(false)}
-      >
-        {isProfileFetched && (
-          <div>
-            <MyProfile admin={true} profile={profile} badgeContents={badgeContents} refetchProfile={refetchProfile} />
-          </div>
-        )}
-      </MentorsModal>
     </div>
   );
 }

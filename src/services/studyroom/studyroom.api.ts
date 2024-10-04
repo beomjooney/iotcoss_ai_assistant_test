@@ -39,6 +39,16 @@ export const studyQuizOpponentBadgeList = async params => {
   return { data: data.data };
 };
 
+export const studyQuizMemberList = async params => {
+  const { data } = await axiosGeneralAPI().get('/api/manager/v1/members', { params });
+  return { data: data.data };
+};
+
+export const studyQuizRoleMemberList = async params => {
+  const { data } = await axiosGeneralAPI().get('/api/v1/members/instructor/authority/requests', { params });
+  return { data: data.data };
+};
+
 export const studyQuizCalendarList = async params => {
   const { data, headers } = await axiosGeneralAPI().get('/api/v1/study/calendar', { params });
   return data.data;
