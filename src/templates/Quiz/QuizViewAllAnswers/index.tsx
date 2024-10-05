@@ -646,8 +646,8 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                     <option
                       key={idx}
                       className={`tw-w-20 tw-bg-[#f6f7fb] tw-items-center tw-flex-shrink-0 border-left border-top border-right tw-rounded-t-lg tw-cursor-pointer
-          ${isSelected ? 'tw-bg-red-500 tw-text-white' : ''}
-          ${isPublished ? 'tw-bg-white tw-text-gray-200' : ''}
+          ${isSelected ? '' : ''}
+          ${isPublished ? '' : ''}
         `}
                       value={session?.quizSequence}
                     >
