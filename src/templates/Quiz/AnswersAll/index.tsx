@@ -461,6 +461,9 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
                         <div className="tw-flex  tw-py-3">
                           <div className="tw-text-left tw-text-sm">
                             <ul className="tw-flex tw-space-x-2">
+                              <div className="tw-flex tw-text-sm tw-items-center" style={{ minWidth: '6.1rem' }}>
+                                업로드된 파일 :
+                              </div>
                               {item?.files?.map((file, index) => (
                                 <div
                                   key={index}
@@ -476,18 +479,20 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
                           </div>
                         </div>
                       )}
-                      <br />
                       {item?.urls?.length > 0 && (
                         <div className="tw-flex  tw-py-3">
                           <div className="tw-text-left tw-text-sm">
                             <ul className="tw-flex tw-space-x-2">
+                              <div className="tw-flex tw-text-sm tw-items-center" style={{ minWidth: '6.1rem' }}>
+                                첨부된 URL :
+                              </div>
                               {item?.urls?.map((file, index) => (
                                 <div
                                   key={index}
                                   onClick={() => window.open(item?.contentUrl, '_blank')}
-                                  className="tw-cursor-pointer tw-px-3 tw-rounded-full border tw-p-1 tw-rounded"
+                                  className="tw-cursor-pointer tw-px-3 tw-p-1 tw-rounded"
                                 >
-                                  {file.name}
+                                  {file}
                                 </div>
                               ))}
                             </ul>
