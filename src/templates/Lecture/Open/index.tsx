@@ -356,6 +356,7 @@ export function LectureOpenTemplate() {
   const [previewBanner, setPreviewBanner] = useState(null);
   const [previewProfile, setPreviewProfile] = useState(null);
   const [isDisabled, setIsDisabled] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false); // 함수가 실행 중인지 확인하는 상태
 
   const [contentJobType, setContentJobType] = useState<any[]>([]);
   // const [lectureContents, setLectureContents] = useState<any[]>([]);
@@ -895,8 +896,9 @@ export function LectureOpenTemplate() {
   });
 
   const handleNextThree = () => {
-    console.log('NextLast');
-    // setActiveStep(prevActiveStep => prevActiveStep + 1);
+    // 버튼을 비활성화시켜 클릭 잠금
+    if (isProcessing) return; // 이미 함수가 실행 중이면 종료
+    setIsProcessing(true); // 함수가 실행 중임을 표시
     handlerClubSaveTemp('save');
   };
 
@@ -2299,6 +2301,7 @@ export function LectureOpenTemplate() {
                     이전
                   </button>
                   <button
+                    disabled={isProcessing}
                     className="tw-w-[240px] tw-text-sm tw-bg-blue-600 tw-text-white tw-font-bold tw-py-3 tw-px-4 tw-rounded tw-flex tw-items-center tw-justify-center tw-gap-1"
                     onClick={handleNextThree}
                   >

@@ -28,10 +28,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import { useLoginSignUpDSU } from 'src/services/account/account.mutations';
 
-interface LoginTemplateProps {
-  onSubmitLogin: () => void;
-}
-
 const cx = classNames.bind(styles);
 
 interface LoginTemplateProps {
@@ -42,9 +38,6 @@ interface LoginTemplateProps {
 export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps) {
   const { update, tenantName } = useSessionStore.getState();
   const router = useRouter();
-  const COLOR_PRESETS = usePresets();
-  const { setColorPresetName } = useColorPresetName();
-  const { setColorPresets } = useColorPresets();
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [selectedLoginType, setSelectedLoginType] = useState('0001');
@@ -82,20 +75,10 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
   );
 
   console.log('login join page', getFirstSubdomain(), tenantName);
-  useEffect(() => {
-    if (!COLOR_PRESETS || COLOR_PRESETS.length === 0) return;
-
-    const preset = COLOR_PRESETS.find(preset => preset.name === getFirstSubdomain()) || COLOR_PRESETS[0];
-    setColorPresetName(preset.name);
-    setColorPresets(preset.colors);
-
-    console.log(preset.name);
-    localStorage.setItem('activeIndex', '0');
-  }, []);
 
   const [clientTenantName, setClientTenantName] = useState(null);
   useEffect(() => {
-    // 클라이언트에서만 tenantName을 설정
+    localStorage.setItem('activeIndex', '0');
     setClientTenantName(tenantName);
   }, []);
 
@@ -115,8 +98,9 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
     }
 
     if (isSuccess) {
+      console.log('isSuccess', isSuccess);
       onSubmitLogin();
-      //redirection 처리
+
       update({
         tenantName: loginData?.tenant_uri?.split('.')[0],
         redirections: loginData?.redirections,
@@ -150,14 +134,6 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
     }
   }, [loginData]);
 
-  const handleLogin = async () => {
-    location.href = `${process.env['NEXT_PUBLIC_GENERAL_API_URL']}/oauth2/authorize/kakao?redirect_uri=${process.env['NEXT_PUBLIC_REDIRECT_URL']}`;
-  };
-
-  const handleData = async () => {
-    onSubmitLogin && onSubmitLogin();
-  };
-
   const validationSchema = Yup.object().shape({
     // username: Yup.string().required('Email is required').email('Email is invalid'),
     password: Yup.string()
@@ -176,6 +152,7 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
   });
 
   const onSubmit = data => {
+    console.log('onSubmit', data);
     setUserName(data.username);
     setPassword(data.password);
     onLogin(

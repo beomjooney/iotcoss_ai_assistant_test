@@ -57,9 +57,10 @@ function createAxios(requestConfig: RequestConfig): AxiosInstance {
       // console.log('API call successful: ', response.config.data);
 
       if (response.data.responseCode === 'C06002' || response.data.responseCode === 'C06000') {
-        deleteCookie('access_token');
-        localStorage.removeItem('auth-store');
-        localStorage.removeItem('app-storage');
+        // 로그인 실패 횟수
+        // deleteCookie('access_token');
+        // localStorage.removeItem('auth-store');
+        // localStorage.removeItem('app-storage');
         console.log(response.data.responseCode);
         throw new AuthError(response.data.responseCode);
       }

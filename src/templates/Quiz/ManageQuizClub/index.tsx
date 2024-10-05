@@ -644,8 +644,8 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
       <QuizBreakerInfo
         publishDate={item?.publishDate}
         dayOfWeek={item?.dayOfWeek}
-        avatarSrc={item?.maker?.profileImageUrl}
-        userName={item?.maker?.nickname}
+        avatarSrc={item?.member?.profileImageUrl}
+        userName={item?.member?.nickname}
         questionText={item?.question}
         index={item?.quizSequence !== undefined ? item?.quizSequence : null}
         answerText={item?.modelAnswer}
@@ -736,7 +736,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
       ...item,
       quizSequence: scheduleMap[index].quizSequence,
       question: scheduleMap[index].question,
-      maker: scheduleMap[index].maker,
+      member: scheduleMap[index].member,
       contentUrl: scheduleMap[index].contentUrl,
       contentTitle: scheduleMap[index].contentTitle,
       isPublished: scheduleMap[index].isPublished,
@@ -1071,6 +1071,18 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
       },
     },
   }));
+
+  const handlerClubMakeManual = () => {
+    const weeks = [];
+    for (let i = 0; i < num; i++) {
+      weeks.push({
+        order: i + 1,
+        quizSequence: null,
+      });
+    }
+    setScheduleData(weeks);
+    setButtonFlag(true);
+  };
 
   const classes = useStyles();
 

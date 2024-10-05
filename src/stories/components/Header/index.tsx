@@ -38,8 +38,6 @@ import Divider from '@mui/material/Divider';
 import { useQuizAlarmHistory } from 'src/services/quiz/quiz.queries';
 import { useCheckAlarm } from 'src/services/community/community.mutations';
 import { setCookie } from 'cookies-next';
-import { useTheme } from 'next-themes';
-import { usePresets } from 'src/utils/color-presets';
 import { useColorPresets, useColorPresetName } from 'src/utils/use-theme-color';
 import cn from 'src/utils/class-names';
 import { getFirstSubdomain } from 'src/utils';
@@ -60,10 +58,7 @@ export interface NavbarProps {
 const cx = classNames.bind(styles);
 
 const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIndex }: NavbarProps) => {
-  const { theme } = useTheme();
-  const COLOR_PRESETS = usePresets();
   const { logged, roles, menu } = useSessionStore.getState();
-  const { colorPresetName, setColorPresetName } = useColorPresetName();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [anchorElAlarm, setAnchorElAlarm] = useState(null);
   const [contents, setContents] = useState<any>([]);

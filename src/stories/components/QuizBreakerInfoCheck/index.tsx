@@ -19,16 +19,15 @@ const QuizBreakerInfoCheck = ({
   return (
     <div>
       <div className="tw-flex tw-items-center tw-relative tw-overflow-visible tw-rounded-lg tw-bg-[#f6f7fb] tw-mb-3 tw-h-20">
-        <div className="tw-w-[70px] tw-text-sm tw-font-medium tw-text-left tw-text-[#31343d]">
+        <div className="tw-w-[70px] tw-flex tw-flex-col tw-items-center tw-justify-center tw-text-sm tw-font-medium tw-text-center tw-text-[#31343d]">
           <img
             src={tags?.memberProfileImageUrl || '/assets/images/account/default_profile_image.png'}
             alt="User Avatar"
-            className="tw-w-8 tw-h-8 tw-col-start-1 tw-row-start-1 tw-row-end-2 tw-mt-[11px] tw-ml-[28px] tw-rounded-full tw-object-cover"
+            className="tw-w-8 tw-h-8 tw-mt-[11px] tw-rounded-full tw-object-cover"
           />
-          <p className="tw-col-start-1 tw-row-start-2 tw-row-end-3 tw-mt-[2px] tw-ml-[22px] tw-text-[10px] tw-text-left tw-text-black">
-            {userName}
-          </p>
+          <p className="tw-mt-[2px] tw-text-[10px] tw-text-center tw-text-black">{userName}</p>
         </div>
+
         <div className="tw-p-5 tw-w-11/12 tw-line-clamp-2 tw-text-base tw-font-medium tw-text-left tw-text-[#31343d]">
           {questionText}
         </div>

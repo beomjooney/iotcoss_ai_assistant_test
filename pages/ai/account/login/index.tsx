@@ -29,6 +29,7 @@ export function LoginPage(props: LoginPageProps) {
   }, [token]);
 
   const authUpdate = async () => {
+    console.log('authUpdate', authUpdate, token);
     const { update } = useSessionStore.getState();
     const userData: UserInfo = jwt_decode(String(token));
 

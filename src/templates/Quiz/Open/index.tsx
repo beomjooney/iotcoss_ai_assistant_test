@@ -110,6 +110,7 @@ export function QuizOpenTemplate() {
   const [previewBanner, setPreviewBanner] = useState(null);
   const [previewProfile, setPreviewProfile] = useState(null);
   const [isDisabled, setIsDisabled] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false); // 함수가 실행 중인지 확인하는 상태
 
   useEffect(() => {
     handleImageClick(selectedImageProfile, 'profile', false);
@@ -679,6 +680,8 @@ export function QuizOpenTemplate() {
   );
 
   const handleNextThree = () => {
+    if (isProcessing) return; // 이미 함수가 실행 중이면 종료
+    setIsProcessing(true); // 함수가 실행 중임을 표시
     console.log('NextLast');
     console.log(quizListParam);
     const params = { ...paramss, clubQuizzes: scheduleData };
@@ -2183,6 +2186,7 @@ export function QuizOpenTemplate() {
                     이전
                   </button>
                   <button
+                    disabled={isProcessing}
                     className="tw-w-[240px] tw-text-sm tw-bg-[#E11837] tw-text-white tw-font-bold tw-py-3 tw-px-4 tw-rounded tw-flex tw-items-center tw-justify-center tw-gap-1"
                     onClick={handleNextThree}
                   >

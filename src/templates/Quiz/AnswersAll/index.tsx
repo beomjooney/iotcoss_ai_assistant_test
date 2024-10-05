@@ -167,32 +167,37 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
 
   const handleQuizChange = event => {
     const value = event.target.value;
-    const selectedSession = contents.clubQuizzes.find(
-      session => session.publishDate.split('-').slice(1).join('-') === value,
-    );
-    //const result = contents.clubQuizzes.find(item => item.myAnswerStatus === '0003');
-    //const selectedSession = result ? result.publishDate : null;
+    console.log(value);
 
-    if (selectedSession) {
-      if (!selectedSession.isPublished) {
-        alert('퀴즈가 공개되지 않았습니다.');
-        const result = contents.clubQuizzes.find(item => item.isPublished === true);
-        const selectedSessionValue = result ? result.publishDate : null;
-        console.log('selectedSessionValue 2', selectedSessionValue);
-        setSelectedValue(selectedSessionValue); // Reset to the default value
+    const selectedSession = contents.clubQuizzes.find(session => session.quizSequence === parseInt(value));
 
-        const index = data?.clubQuizzes?.findIndex(item => item.isPublished === true);
-        setParams({
-          club: id,
-          quiz: data.clubQuizzes[index]?.quizSequence,
-          data: { page, keyword: keyWorld },
-        });
-        setSelectedQuiz(contents?.clubQuizzes[index]);
-        return;
-      } else {
-        setSelectedValue(selectedSession.publishDate);
-      }
-    }
+    // const selectedSession = contents.clubQuizzes.find(
+    //   session => session.publishDate?.split('-').slice(1).join('-') === value,
+    // );
+
+    console.log('selectedSession', selectedSession);
+    console.log('contents.clubQuizzes', contents.clubQuizzes);
+
+    // if (selectedSession) {
+    //   if (!selectedSession.isPublished) {
+    //     alert('퀴즈가 공개되지 않았습니다.');
+    //     const result = contents.clubQuizzes.find(item => item.isPublished === true);
+    //     const selectedSessionValue = result ? result.publishDate : null;
+    //     console.log('selectedSessionValue 2', selectedSessionValue);
+    //     setSelectedValue(selectedSessionValue); // Reset to the default value
+
+    //     const index = data?.clubQuizzes?.findIndex(item => item.isPublished === true);
+    //     setParams({
+    //       club: id,
+    //       quiz: data.clubQuizzes[index]?.quizSequence,
+    //       data: { page, keyword: keyWorld },
+    //     });
+    //     setSelectedQuiz(contents?.clubQuizzes[index]);
+    //     return;
+    //   } else {
+    //     setSelectedValue(selectedSession.publishDate);
+    //   }
+    // }
 
     setParams({
       club: id,
@@ -272,7 +277,8 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
                   <select
                     className="form-select block w-full tw-bg-gray-100 tw-text-red-500 tw-font-bold"
                     onChange={handleQuizChange}
-                    value={selectedValue?.split('-').slice(1).join('-')}
+                    // value={selectedValue?.split('-').slice(1).join('-')}
+                    value={selectedValue?.quizSequence}
                     aria-label="Default select example"
                   >
                     {contents?.clubQuizzes?.map((session, idx) => {
@@ -283,13 +289,14 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
                         <option
                           key={idx}
                           className={`tw-w-20 tw-bg-[#f6f7fb] tw-items-center tw-flex-shrink-0 border-left border-top border-right tw-rounded-t-lg tw-cursor-pointer
-          ${isSelected ? 'tw-bg-red-500 tw-text-white' : ''}
-          ${isPublished ? 'tw-bg-white tw-text-gray-200' : ''}
+          ${isSelected ? '' : ''}
+          ${isPublished ? '' : ''}
         `}
-                          value={session?.publishDate?.split('-').slice(1).join('-')}
+                          value={session?.quizSequence}
+                          // value={session?.publishDate?.split('-').slice(1).join('-')}
                         >
-                          {session?.order}회. {session?.publishDate?.split('-').slice(1).join('-')} (
-                          {session?.dayOfWeek})
+                          {session?.order}회 {session?.publishDate?.split('-').slice(1).join('-')}
+                          {session?.dayOfWeek ? ` (${session?.dayOfWeek})` : ''}
                         </option>
                       );
                     })}

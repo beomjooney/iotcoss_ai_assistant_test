@@ -179,14 +179,12 @@ export function MyTemplate({ children }: MyTemplateProps) {
     <div>
       <Desktop>
         <div>
-          <div className="container tw-pt-14 tw-pb-10">
+          <div className="container tw-py-5">
             <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
               <Grid item xs={2} className="tw-font-bold tw-text-3xl tw-text-black">
-                관리 페이지
+                마이페이지
               </Grid>
-              <Grid item xs={7} className="tw-font-semi tw-text-base tw-text-black">
-                관리 메인페이지 설명
-              </Grid>
+              <Grid item xs={7} className="tw-font-semi tw-text-base tw-text-black"></Grid>
               <Grid item xs={3} justifyContent="flex-end" className="tw-flex"></Grid>
             </Grid>
           </div>
@@ -196,6 +194,42 @@ export function MyTemplate({ children }: MyTemplateProps) {
                 <div className="tw-p-5">
                   <div className="tw-text-lg tw-pb-4 tw-font-semibold tw-text-black">
                     안녕하세요! {summary?.member?.nickname}님
+                  </div>
+                  <div className="tw-p-5 tw-mb-5 tw-bg-white tw-rounded-lg">
+                    <div className="tw-flex tw-justify-between tw-mt-2 tw-gap-2 tw-text-center tw-pb-5">
+                      <div className="tw-p-1 tw-flex-1 border-right">
+                        <div className="tw-text-[12px] tw-font-bold">보유포인트</div>
+                        <div className="tw-text-lg tw-font-bold tw-text-red-500 tw-py-1">
+                          {summary?.points?.toLocaleString()}P
+                        </div>
+                      </div>
+                      {menu.use_quiz_club && (
+                        <div className="tw-p-1 tw-flex-1 border-right">
+                          <div className="tw-text-[12px]  tw-font-bold">푼 퀴즈</div>
+                          <div className="tw-text-lg tw-font-bold tw-text-red-500  tw-py-1">
+                            {summary?.solvedQuizCount || 0}개
+                          </div>
+                        </div>
+                      )}
+                      <div className="tw-p-1 tw-flex-1">
+                        <div className="tw-text-[12px]  tw-font-bold">참여중 클럽</div>
+                        <div className="tw-text-lg tw-font-bold tw-text-red-500  tw-py-1">
+                          {summary?.joinedClubCount?.toLocaleString()}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="tw-flex tw-justify-between tw-mt-2 tw-gap-5">
+                      <button
+                        className="tw-py-2.5 tw-w-full tw-bg-black tw-text-white tw-rounded"
+                        onClick={() => handleClickProfile(summary?.member?.memberUUID)}
+                      >
+                        프로필 보기
+                      </button>
+                      <button className="tw-w-full border tw-text-gray-400 tw-rounded" onClick={handleLogout}>
+                        로그아웃
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
