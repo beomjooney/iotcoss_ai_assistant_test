@@ -49,7 +49,7 @@ export function HomeTemplate({ logged = false, tenantName = '' }: HomeProps) {
         )}
       >
         <div
-          className="tw-w-full md:tw-w-[1120px] tw-h-[320px] md:tw-h-[520px] tw-relative tw-overflow-hidden tw-rounded-[20px]"
+          className="tw-w-full md:tw-w-[1120px] tw-h-[320px] md:tw-h-[520px] tw-relative tw-overflow-hidden md:tw-rounded-[20px]"
           style={{
             background:
               'linear-gradient(to right, rgba(254,226,255,0.59) 0%, rgba(207,238,255,0.59) 64.58%, rgba(186,251,255,0.59) 100%)',
@@ -159,12 +159,14 @@ export function HomeTemplate({ logged = false, tenantName = '' }: HomeProps) {
       </section>
 
       <div
-        className={cx('main-container tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center tw-pt-12')}
+        className={cx(
+          'main-container tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center tw-pt-12 tw-mx-5',
+        )}
       >
         <div className="tw-w-full md:tw-w-[1120px] tw-flex tw-flex-col md:tw-flex-row tw-gap-4 md:tw-gap-10">
           <div
             className="tw-w-full md:tw-w-[544px] tw-h-[292px] md:tw-h-[392px] tw-overflow-hidden tw-rounded-[20px] tw-m-1 md:tw-m-0"
-            style={{ filter: 'drop-shadow(-12px 13px 40px rgba(0,0,0,0.03))' }}
+            style={{ filter: 'drop-shadow(-5px 5px 5px rgba(0,0,0,0.03))' }}
           >
             <div className="tw-w-full md:tw-w-[544px] tw-h-[296px] md:tw-h-[400px] tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-white">
               <img
@@ -191,8 +193,8 @@ export function HomeTemplate({ logged = false, tenantName = '' }: HomeProps) {
           </div>
 
           <div
-            className="tw-w-full md:tw-w-[544px] tw-h-[292px] md:tw-h-[392px] tw-overflow-hidden tw-rounded-[20px]"
-            style={{ filter: 'drop-shadow(-12px 13px 40px rgba(0,0,0,0.03))' }}
+            className="tw-w-full md:tw-w-[544px] tw-h-[292px] md:tw-h-[392px] tw-overflow-hidden tw-rounded-[20px] "
+            style={{ filter: 'drop-shadow(-5px 5px 5px rgba(0,0,0,0.03))' }}
           >
             <div className="tw-w-full md:tw-w-[544px] tw-h-[296px] md:tw-h-[400px] tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-white">
               <img
@@ -221,10 +223,12 @@ export function HomeTemplate({ logged = false, tenantName = '' }: HomeProps) {
       </div>
 
       <div
-        className={cx('main-container tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center tw-pt-12')}
+        className={cx(
+          'main-container tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center tw-pt-12 tw-mx-5',
+        )}
       >
         <div
-          className="tw-w-full md:tw-w-[1120px] tw-h-[400px] md:tw-h-[400px] tw-relative tw-overflow-hidden"
+          className="tw-w-full md:tw-w-[1120px] tw-h-[400px] md:tw-h-[400px] tw-relative tw-overflow-hidden "
           style={{
             backgroundImage: 'url(/assets/images/main/background.png)',
             backgroundPosition: 'center',
