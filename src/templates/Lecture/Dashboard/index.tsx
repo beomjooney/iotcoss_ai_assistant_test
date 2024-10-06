@@ -277,7 +277,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     } else if (sortLectureType === 'STUDY_ORDER_DESC') {
       dataParam = { orderBy: 'STUDY_ORDER', page: lecturePage, sortType: 'DESC' };
     } else {
-      dataParam = { orderBy: 'QUESTION_COUNT', page: lecturePage, sortType: 'ASC' };
+      dataParam = { orderBy: 'QUESTION_COUNT', page: lecturePage, sortType: 'DESC' };
     }
 
     setMyClubLectureParams({
