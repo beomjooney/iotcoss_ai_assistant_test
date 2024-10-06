@@ -77,6 +77,7 @@ export const myLectureDashboardStudentList = async (params: any) => {
       orderBy: params.data.sortType,
       page: params.data.page,
       size: params.size,
+      sortType: params.data.orderBy,
     },
   });
   return data.data;

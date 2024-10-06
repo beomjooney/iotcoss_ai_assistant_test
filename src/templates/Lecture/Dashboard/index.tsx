@@ -266,7 +266,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   useDidMountEffect(() => {
     setMyClubParams({
       clubSequence: selectedClub?.clubSequence || id,
-      data: { sortType: sortType, page: 1 },
+      data: { sortType: sortType, page: 1, orderBy: sortType === 'NAME' ? 'ASC' : 'DESC' },
     });
 
     setMyClubSequenceParams({ clubSequence: selectedClub?.clubSequence || id });
@@ -277,7 +277,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     } else if (sortLectureType === 'STUDY_ORDER_DESC') {
       dataParam = { orderBy: 'STUDY_ORDER', page: lecturePage, sortType: 'DESC' };
     } else {
-      dataParam = { orderBy: 'QUESTION_COUNT', page: lecturePage, sortType: 'DESC' };
+      dataParam = { orderBy: 'QUESTION_COUNT', page: lecturePage, sortType: 'ASC' };
     }
 
     setMyClubLectureParams({
@@ -1007,7 +1007,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                         }
                       />
                       <FormControlLabel
-                        value="QUESTION_COUNT"
+                        value="PARTICIPATION_RATE"
                         control={
                           <Radio
                             sx={{
@@ -1025,7 +1025,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                         }
                       />
                       <FormControlLabel
-                        value="PARTICIPATION_RATE"
+                        value="QUESTION_COUNT"
                         control={
                           <Radio
                             sx={{
