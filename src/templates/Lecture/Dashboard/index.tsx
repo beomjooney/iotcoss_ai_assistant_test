@@ -273,9 +273,9 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
 
     let dataParam = {};
     if (sortLectureType === 'STUDY_ORDER_ASC') {
-      dataParam = { orderBy: 'STUDY_ORDER', page: lecturePage, sortType: 'ASC' };
-    } else if (sortLectureType === 'STUDY_ORDER_DESC') {
       dataParam = { orderBy: 'STUDY_ORDER', page: lecturePage, sortType: 'DESC' };
+    } else if (sortLectureType === 'STUDY_ORDER_DESC') {
+      dataParam = { orderBy: 'STUDY_ORDER', page: lecturePage, sortType: 'ASC' };
     } else {
       dataParam = { orderBy: 'QUESTION_COUNT', page: lecturePage, sortType: 'DESC' };
     }
