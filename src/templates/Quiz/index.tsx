@@ -238,7 +238,7 @@ export function QuizTemplate() {
                 </div>
                 <button
                   className="tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-bg-[#e11837] tw-text-white"
-                  onClick={() => router.push('/account/login')}
+                  onClick={() => (location.href = '/account/login')}
                 >
                   로그인
                 </button>
