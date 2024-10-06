@@ -104,7 +104,7 @@ const useStyles = makeStyles(theme => ({
   // New class to add bottom border to TableRow
   tableRow: {
     borderBottom: '1px solid #E0E0E0', // Light gray underline
-    height: '500px',
+    // height: '500px',
   },
 }));
 
