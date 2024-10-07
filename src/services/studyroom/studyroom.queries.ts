@@ -26,6 +26,11 @@ import {
   studyProgress,
   studyQuizMemberList,
   studyQuizRoleMemberList,
+  quizContentsList,
+  quizList,
+  clubApprovalList,
+  clubAdminList,
+  clubTermsList,
 } from './studyroom.api';
 
 export interface paramProps {
@@ -160,6 +165,97 @@ export const useStudyQuizMemberList = (
     },
   );
 };
+
+export const useQuizContentsList = (
+  params?: paramProps,
+  onSuccess?: (data: RecommendContentsResponse) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 15;
+  return useQuery<RecommendContentsResponse, Error>(
+    QUERY_KEY_FACTORY('QUIZ_CONTENTS').list({ size: DEFAULT_SIZE, ...params }),
+    () => quizContentsList({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+      enabled: true,
+    },
+  );
+};
+
+export const useClubApprovalList = (
+  params?: paramProps,
+  onSuccess?: (data: RecommendContentsResponse) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 15;
+  return useQuery<RecommendContentsResponse, Error>(
+    QUERY_KEY_FACTORY('QUIZ_CONTENTS').list({ size: DEFAULT_SIZE, ...params }),
+    () => clubApprovalList({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+      enabled: true,
+    },
+  );
+};
+
+export const useClubTermsList = (
+  params?: paramProps,
+  onSuccess?: (data: RecommendContentsResponse) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 15;
+  return useQuery<RecommendContentsResponse, Error>(
+    QUERY_KEY_FACTORY('QUIZ_CONTENTS').list({ size: DEFAULT_SIZE, ...params }),
+    () => clubTermsList({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+      enabled: true,
+    },
+  );
+};
+
+export const useClubAdminList = (
+  params?: paramProps,
+  onSuccess?: (data: RecommendContentsResponse) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 15;
+  return useQuery<RecommendContentsResponse, Error>(
+    QUERY_KEY_FACTORY('QUIZ_CONTENTS').list({ size: DEFAULT_SIZE, ...params }),
+    () => clubAdminList({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+      enabled: true,
+    },
+  );
+};
+
+export const useQuizList = (
+  params?: paramProps,
+  onSuccess?: (data: RecommendContentsResponse) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 15;
+  return useQuery<RecommendContentsResponse, Error>(
+    QUERY_KEY_FACTORY('QUIZ').list({ size: DEFAULT_SIZE, ...params }),
+    () => quizList({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+      enabled: true,
+    },
+  );
+};
+
 export const useStudyQuizRoleMemberList = (
   params?: paramProps,
   onSuccess?: (data: RecommendContentsResponse) => void,

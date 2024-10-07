@@ -44,6 +44,31 @@ export const studyQuizMemberList = async params => {
   return { data: data.data };
 };
 
+export const quizContentsList = async params => {
+  const { data } = await axiosGeneralAPI().get('/api/manager/v1/contents', { params });
+  return { data: data.data };
+};
+
+export const clubApprovalList = async params => {
+  const { data } = await axiosGeneralAPI().get('/api/manager/v1/club/requests', { params });
+  return { data: data.data };
+};
+
+export const clubTermsList = async params => {
+  const { data } = await axiosGeneralAPI().get('/api/manager/v1/member/terms-agreements', { params });
+  return { data: data.data };
+};
+
+export const clubAdminList = async params => {
+  const { data } = await axiosGeneralAPI().get('/api/manager/v1/clubs', { params });
+  return { data: data.data };
+};
+
+export const quizList = async params => {
+  const { data } = await axiosGeneralAPI().get('/api/manager/v1/quizzes', { params });
+  return { data: data.data };
+};
+
 export const studyQuizRoleMemberList = async params => {
   const { data } = await axiosGeneralAPI().get('/api/v1/members/instructor/authority/requests', { params });
   return { data: data.data };

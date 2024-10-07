@@ -3,7 +3,7 @@ import styles from './index.module.scss';
 import React, { useState } from 'react';
 import { useSessionStore } from 'src/store/session';
 import { useMemberActiveSummaryInfo } from 'src/services/account/account.queries';
-import { useQuizContentsList } from 'src/services/studyroom/studyroom.queries';
+import { useClubTermsList } from 'src/services/studyroom/studyroom.queries';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import router from 'next/router';
 import { Mobile, Desktop } from 'src/hooks/mediaQuery';
@@ -25,7 +25,7 @@ import SearchIcon from '@mui/icons-material/Search';
 
 const cx = classNames.bind(styles);
 
-export function AdminKnowledgeTemplate() {
+export function AdminTermsTemplate() {
   const { memberId } = useSessionStore.getState();
 
   const [page, setPage] = useState(1);
@@ -41,7 +41,7 @@ export function AdminKnowledgeTemplate() {
 
   const { isFetched: isUserFetched } = useMemberActiveSummaryInfo(data => setSummary(data));
 
-  const { isFetched: isMemberListFetched, refetch: QuizRefetchBadge } = useQuizContentsList(memberParams, data => {
+  const { isFetched: isMemberListFetched, refetch: QuizRefetchBadge } = useClubTermsList(memberParams, data => {
     console.log(data);
     setContents(data?.data?.contents);
     setTotalPage(data?.data?.totalPages);
@@ -57,7 +57,7 @@ export function AdminKnowledgeTemplate() {
 
   // T를 공백으로 바꾸고 소수점 부분을 제거하는 함수
   const formatDate = date => {
-    return date.split('.')[0].replace('T', ' '); // T를 공백으로 바꾸고 소수점 이하 제거
+    return date?.split('.')[0].replace('T', ' '); // T를 공백으로 바꾸고 소수점 이하 제거
   };
 
   useDidMountEffect(() => {
@@ -85,7 +85,7 @@ export function AdminKnowledgeTemplate() {
               <Desktop>
                 <div>
                   <div className="tw-flex tw-items-center tw-justify-between">
-                    <div className="tw-font-bold tw-text-xl tw-text-black tw-p-0">지식컨텐츠 관리</div>
+                    <div className="tw-font-bold tw-text-xl tw-text-black tw-p-0">정책(약관)동의 조회</div>
                     <TextField
                       size="small"
                       value={search} // 상태값을 TextField에 반영
@@ -107,77 +107,61 @@ export function AdminKnowledgeTemplate() {
                     <Table className="" aria-label="simple table" style={{ tableLayout: 'fixed' }}>
                       <TableHead style={{ backgroundColor: '#F6F7FB' }}>
                         <TableRow>
-                          <TableCell align="left" width={160}>
-                            <div className="tw-text-base tw-font-bold">등록일자</div>
-                          </TableCell>
-                          <TableCell align="left" width={100}>
-                            <div className=" tw-text-base tw-font-bold">등록자</div>
-                          </TableCell>
                           <TableCell align="left" width={250}>
-                            <div className=" tw-text-base tw-font-bold">지식콘텐츠 타이틀</div>
+                            <div className="tw-text-base tw-font-bold">회원아이디</div>
                           </TableCell>
-                          <TableCell align="left" width={80}>
-                            <div className=" tw-text-base tw-font-bold">유형</div>
+                          <TableCell align="left" width={150}>
+                            <div className=" tw-text-base tw-font-bold">회원명</div>
                           </TableCell>
-                          <TableCell align="left" width={100}>
-                            <div className=" tw-text-base tw-font-bold">즐겨찾기</div>
-                          </TableCell>
-                          <TableCell align="left" width={200}>
-                            <div className=" tw-text-base tw-font-bold">URL</div>
-                          </TableCell>
-                          <TableCell align="left" width={180}>
-                            <div className=" tw-text-base tw-font-bold">추천대학</div>
-                          </TableCell>
-                          <TableCell align="left" width={180}>
-                            <div className=" tw-text-base tw-font-bold">추천학과</div>
-                          </TableCell>
-                          <TableCell align="left" width={180}>
-                            <div className=" tw-text-base tw-font-bold">추천레벨</div>
+                          <TableCell align="left" width={160}>
+                            <div className=" tw-text-base tw-font-bold">개인정보처리 동의</div>
                           </TableCell>
                           <TableCell align="left" width={130}>
-                            <div className=" tw-text-base tw-font-bold">태그</div>
+                            <div className=" tw-text-base tw-font-bold">이용약관 동의</div>
+                          </TableCell>
+                          <TableCell align="left" width={150}>
+                            <div className=" tw-text-base tw-font-bold">마케팅수신 동의</div>
+                          </TableCell>
+                          <TableCell align="left" width={200}>
+                            <div className=" tw-text-base tw-font-bold">동의일시</div>
                           </TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {contents.map((content, index) => (
-                          <TableRow key={index}>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-base">
-                                <span className="tw-text-sm tw-font-medium">{formatDate(content.createdAt)}</span>
-                              </div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm tw-line-clamp-1">{content.creatorName}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm   tw-line-clamp-1">{content.contentName}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm ">{content.contentType.name}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm">{content.likeCount}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm tw-line-clamp-1">{content.internalSharingLink}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm">{content.jobGroups?.map(item => item.name).join(', ')}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm tw-line-clamp-1">
-                                {content.jobs?.map(item => item.name).join(', ')}
-                              </div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm">{content?.jobLevels?.map(item => item.name).join(', ')}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm tw-line-clamp-1">{content.studyKeywords.join(', ')}</div>
+                        {contents.length > 0 ? (
+                          contents.map((content, index) => (
+                            <TableRow key={index}>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className="tw-text-base">
+                                  <span className="tw-text-sm tw-font-medium">{content.memberId}</span>
+                                </div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className="tw-text-sm tw-line-clamp-1">{content.memberName}</div>
+                              </TableCell>
+                              <TableCell align="center" component="th" scope="row">
+                                <div className="tw-text-sm">{content.privacyTermsAgreed ? 'Y' : 'N'}</div>
+                              </TableCell>
+                              <TableCell align="center" component="th" scope="row">
+                                <div className="tw-text-sm">{content.serviceTermsAgreed ? 'Y' : 'N'}</div>
+                              </TableCell>
+                              <TableCell align="center" component="th" scope="row">
+                                <div className="tw-text-sm tw-line-clamp-1">
+                                  {content.promotionTermsAgreed ? 'Y' : 'N'}
+                                </div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className="tw-text-sm">{formatDate(content.agreedAt)}</div>
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        ) : (
+                          <TableRow>
+                            <TableCell align="center" colSpan={10}>
+                              <div className="tw-text-sm">데이터가 없습니다</div>
                             </TableCell>
                           </TableRow>
-                        ))}
+                        )}
                       </TableBody>
                     </Table>
                   </TableContainer>

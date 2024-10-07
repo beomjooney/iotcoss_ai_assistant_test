@@ -22,7 +22,12 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import SearchIcon from '@mui/icons-material/Search';
 
-import { useFriendAcceptPost, useFriendRejectPost } from 'src/services/admin/friends/friends.mutations';
+import {
+  useFriendAcceptPost,
+  useFriendRejectPost,
+  useAdminRejectPost,
+  useAdminAcceptPost,
+} from 'src/services/admin/friends/friends.mutations';
 
 const cx = classNames.bind(styles);
 
@@ -41,8 +46,8 @@ export function AdminRoleTemplate() {
 
   const { isFetched: isUserFetched } = useMemberActiveSummaryInfo(data => setSummary(data));
 
-  const { mutate: onFriendsAccept, isSuccess: isAcceptSuccess } = useFriendAcceptPost();
-  const { mutate: onFriendsReject, isSuccess: isRejectSuccess } = useFriendRejectPost();
+  const { mutate: onAdminAccept, isSuccess: isAcceptSuccess } = useAdminAcceptPost();
+  const { mutate: onAdminReject, isSuccess: isRejectSuccess } = useAdminRejectPost();
 
   const { isFetched: isMemberListFetched, refetch: QuizRefetchBadge } = useStudyQuizRoleMemberList(
     memberParams,
@@ -62,23 +67,24 @@ export function AdminRoleTemplate() {
     });
   }, [page, searchKeyword]);
 
-  const handleFriendAccept = async (sequence: string) => {
-    if (confirm('친구수락을 하시겠습니까?')) {
+  const handleAdminAccept = async (tenantUUID: string, memberUUID: string) => {
+    if (confirm('관리자 권한을 승인 하시겠습니까?')) {
       let params = {
-        memberFriendRequestSequence: sequence,
-        isAccept: true,
+        tenantUUID,
+        memberUUID,
       };
-      onFriendsAccept(params);
+      onAdminAccept(params);
     }
   };
 
-  const handleFriendReject = async (sequence: string) => {
-    if (confirm('거절을 하시겠습니까?')) {
+  const handleAdminReject = async (tenantUUID: string, memberUUID: string) => {
+    if (confirm('관리자 신청을 거절 하시겠습니까?')) {
       let params = {
-        memberFriendRequestSequence: sequence,
-        isAccept: false,
+        tenantUUID,
+        memberUUID,
+        rejectReason: 'test reject',
       };
-      onFriendsReject(params);
+      onAdminReject(params);
     }
   };
 
@@ -175,7 +181,7 @@ export function AdminRoleTemplate() {
                             <TableCell align="left" component="th" scope="row">
                               <div className="tw-gap-3">
                                 <button
-                                  onClick={() => handleFriendAccept(item?.friend?.memberUUID)}
+                                  onClick={() => handleAdminAccept(content?.tenantUUID, content?.memberUUID)}
                                   type="button"
                                   data-tooltip-target="tooltip-default"
                                   className="tw-py-2 tw-px-5 tw-mr-3 tw-bg-white tw-text-gray-400  border max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
@@ -183,7 +189,7 @@ export function AdminRoleTemplate() {
                                   승인
                                 </button>
                                 <button
-                                  onClick={() => handleFriendReject(item?.friend?.memberUUID)}
+                                  onClick={() => handleAdminReject(content?.tenantUUID, content?.memberUUID)}
                                   type="button"
                                   data-tooltip-target="tooltip-default"
                                   className="tw-py-2 tw-px-5 tw-bg-blue-600 tw-text-white max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"

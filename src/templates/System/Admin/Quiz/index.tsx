@@ -3,7 +3,7 @@ import styles from './index.module.scss';
 import React, { useState } from 'react';
 import { useSessionStore } from 'src/store/session';
 import { useMemberActiveSummaryInfo } from 'src/services/account/account.queries';
-import { useQuizContentsList } from 'src/services/studyroom/studyroom.queries';
+import { useQuizList } from 'src/services/studyroom/studyroom.queries';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import router from 'next/router';
 import { Mobile, Desktop } from 'src/hooks/mediaQuery';
@@ -25,7 +25,7 @@ import SearchIcon from '@mui/icons-material/Search';
 
 const cx = classNames.bind(styles);
 
-export function AdminKnowledgeTemplate() {
+export function AdminQuizTemplate() {
   const { memberId } = useSessionStore.getState();
 
   const [page, setPage] = useState(1);
@@ -41,7 +41,7 @@ export function AdminKnowledgeTemplate() {
 
   const { isFetched: isUserFetched } = useMemberActiveSummaryInfo(data => setSummary(data));
 
-  const { isFetched: isMemberListFetched, refetch: QuizRefetchBadge } = useQuizContentsList(memberParams, data => {
+  const { isFetched: isMemberListFetched, refetch: QuizRefetchBadge } = useQuizList(memberParams, data => {
     console.log(data);
     setContents(data?.data?.contents);
     setTotalPage(data?.data?.totalPages);
@@ -57,7 +57,7 @@ export function AdminKnowledgeTemplate() {
 
   // T를 공백으로 바꾸고 소수점 부분을 제거하는 함수
   const formatDate = date => {
-    return date.split('.')[0].replace('T', ' '); // T를 공백으로 바꾸고 소수점 이하 제거
+    return date?.split('.')[0].replace('T', ' '); // T를 공백으로 바꾸고 소수점 이하 제거
   };
 
   useDidMountEffect(() => {
@@ -85,7 +85,7 @@ export function AdminKnowledgeTemplate() {
               <Desktop>
                 <div>
                   <div className="tw-flex tw-items-center tw-justify-between">
-                    <div className="tw-font-bold tw-text-xl tw-text-black tw-p-0">지식컨텐츠 관리</div>
+                    <div className="tw-font-bold tw-text-xl tw-text-black tw-p-0">퀴즈 관리</div>
                     <TextField
                       size="small"
                       value={search} // 상태값을 TextField에 반영
@@ -114,16 +114,16 @@ export function AdminKnowledgeTemplate() {
                             <div className=" tw-text-base tw-font-bold">등록자</div>
                           </TableCell>
                           <TableCell align="left" width={250}>
-                            <div className=" tw-text-base tw-font-bold">지식콘텐츠 타이틀</div>
-                          </TableCell>
-                          <TableCell align="left" width={80}>
-                            <div className=" tw-text-base tw-font-bold">유형</div>
+                            <div className=" tw-text-base tw-font-bold">퀴즈 타이틀</div>
                           </TableCell>
                           <TableCell align="left" width={100}>
-                            <div className=" tw-text-base tw-font-bold">즐겨찾기</div>
+                            <div className=" tw-text-base tw-font-bold">풀린횟수</div>
                           </TableCell>
-                          <TableCell align="left" width={200}>
-                            <div className=" tw-text-base tw-font-bold">URL</div>
+                          <TableCell align="left" width={100}>
+                            <div className=" tw-text-base tw-font-bold">복사횟수</div>
+                          </TableCell>
+                          <TableCell align="left" width={250}>
+                            <div className=" tw-text-base tw-font-bold">지식컨텐츠</div>
                           </TableCell>
                           <TableCell align="left" width={180}>
                             <div className=" tw-text-base tw-font-bold">추천대학</div>
@@ -144,23 +144,23 @@ export function AdminKnowledgeTemplate() {
                           <TableRow key={index}>
                             <TableCell align="left" component="th" scope="row">
                               <div className=" tw-text-base">
-                                <span className="tw-text-sm tw-font-medium">{formatDate(content.createdAt)}</span>
+                                <span className="tw-text-sm tw-font-medium">{formatDate(content?.createdAt)}</span>
                               </div>
                             </TableCell>
                             <TableCell align="left" component="th" scope="row">
                               <div className=" tw-text-sm tw-line-clamp-1">{content.creatorName}</div>
                             </TableCell>
                             <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm   tw-line-clamp-1">{content.contentName}</div>
+                              <div className=" tw-text-sm   tw-line-clamp-1">{content.question}</div>
                             </TableCell>
                             <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm ">{content.contentType.name}</div>
+                              <div className=" tw-text-sm ">{content.activeCount}</div>
                             </TableCell>
                             <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm">{content.likeCount}</div>
+                              <div className=" tw-text-sm">{content.answerCount}</div>
                             </TableCell>
                             <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm tw-line-clamp-1">{content.internalSharingLink}</div>
+                              <div className=" tw-text-sm tw-line-clamp-1">{content.contentName}</div>
                             </TableCell>
                             <TableCell align="left" component="th" scope="row">
                               <div className=" tw-text-sm">{content.jobGroups?.map(item => item.name).join(', ')}</div>
@@ -171,10 +171,12 @@ export function AdminKnowledgeTemplate() {
                               </div>
                             </TableCell>
                             <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm">{content?.jobLevels?.map(item => item.name).join(', ')}</div>
+                              <div className=" tw-text-sm  tw-line-clamp-1">
+                                {content?.jobLevels?.map(item => item.name).join(', ')}
+                              </div>
                             </TableCell>
                             <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm tw-line-clamp-1">{content.studyKeywords.join(', ')}</div>
+                              <div className=" tw-text-sm tw-line-clamp-1">{content.skills.join(', ')}</div>
                             </TableCell>
                           </TableRow>
                         ))}

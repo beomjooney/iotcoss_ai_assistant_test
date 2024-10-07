@@ -61,6 +61,19 @@ export const savePost = async body =>
     isAccept: true,
   });
 
+export const saveAdminPost = async body =>
+  await axiosGeneralAPI().put(
+    `/api/v1/members/${body.tenantUUID}/tenants/${body.memberUUID}/instructor/authority/approve`,
+  );
+
+export const rejectAdminPost = async body =>
+  await axiosGeneralAPI().put(
+    `/api/v1/members/${body.tenantUUID}/tenants/${body.memberUUID}/instructor/authority/reject`,
+    {
+      rejectReason: body.rejectReason,
+    },
+  );
+
 export const rejectPost = async body =>
   await axiosGeneralAPI().put(`/api/v1/friend-requests/${body.memberFriendRequestSequence}/decision`, {
     isAccept: false,

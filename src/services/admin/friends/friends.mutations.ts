@@ -13,6 +13,8 @@ import {
   instructorAccept,
   instructorDelete,
   instructorBan,
+  saveAdminPost,
+  rejectAdminPost,
 } from './friends.api';
 
 export const useCrewBanDelete = (): UseMutationResult => {
@@ -133,6 +135,7 @@ export const useCrewRejectPost = (): UseMutationResult => {
     },
   });
 };
+
 export const useFriendAcceptPost = (): UseMutationResult => {
   const queryClient = useQueryClient();
   return useMutation<any, any, any>(requestBody => savePost(requestBody), {
@@ -146,6 +149,35 @@ export const useFriendAcceptPost = (): UseMutationResult => {
     },
   });
 };
+
+export const useAdminAcceptPost = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => saveAdminPost(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('QUIZ_ABOUT').all),
+    onSuccess: async data => {
+      alert('관리자 신청이 승인되었습니다.');
+    },
+  });
+};
+
+export const useAdminRejectPost = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => rejectAdminPost(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('QUIZ_ABOUT').all),
+    onSuccess: async data => {
+      alert('관리자 신청이 거절되었습니다.');
+    },
+  });
+};
+
 export const useFriendRejectPost = (): UseMutationResult => {
   const queryClient = useQueryClient();
   return useMutation<any, any, any>(requestBody => rejectPost(requestBody), {

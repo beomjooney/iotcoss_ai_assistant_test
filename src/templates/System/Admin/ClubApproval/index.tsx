@@ -3,7 +3,7 @@ import styles from './index.module.scss';
 import React, { useState } from 'react';
 import { useSessionStore } from 'src/store/session';
 import { useMemberActiveSummaryInfo } from 'src/services/account/account.queries';
-import { useQuizContentsList } from 'src/services/studyroom/studyroom.queries';
+import { useClubApprovalList } from 'src/services/studyroom/studyroom.queries';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import router from 'next/router';
 import { Mobile, Desktop } from 'src/hooks/mediaQuery';
@@ -25,7 +25,7 @@ import SearchIcon from '@mui/icons-material/Search';
 
 const cx = classNames.bind(styles);
 
-export function AdminKnowledgeTemplate() {
+export function AdminClubApprovalTemplate() {
   const { memberId } = useSessionStore.getState();
 
   const [page, setPage] = useState(1);
@@ -41,7 +41,7 @@ export function AdminKnowledgeTemplate() {
 
   const { isFetched: isUserFetched } = useMemberActiveSummaryInfo(data => setSummary(data));
 
-  const { isFetched: isMemberListFetched, refetch: QuizRefetchBadge } = useQuizContentsList(memberParams, data => {
+  const { isFetched: isMemberListFetched, refetch: QuizRefetchBadge } = useClubApprovalList(memberParams, data => {
     console.log(data);
     setContents(data?.data?.contents);
     setTotalPage(data?.data?.totalPages);
@@ -85,7 +85,7 @@ export function AdminKnowledgeTemplate() {
               <Desktop>
                 <div>
                   <div className="tw-flex tw-items-center tw-justify-between">
-                    <div className="tw-font-bold tw-text-xl tw-text-black tw-p-0">지식컨텐츠 관리</div>
+                    <div className="tw-font-bold tw-text-xl tw-text-black tw-p-0">클럽개설신청</div>
                     <TextField
                       size="small"
                       value={search} // 상태값을 TextField에 반영
@@ -140,44 +140,54 @@ export function AdminKnowledgeTemplate() {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {contents.map((content, index) => (
-                          <TableRow key={index}>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-base">
-                                <span className="tw-text-sm tw-font-medium">{formatDate(content.createdAt)}</span>
-                              </div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm tw-line-clamp-1">{content.creatorName}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm   tw-line-clamp-1">{content.contentName}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm ">{content.contentType.name}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm">{content.likeCount}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm tw-line-clamp-1">{content.internalSharingLink}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm">{content.jobGroups?.map(item => item.name).join(', ')}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm tw-line-clamp-1">
-                                {content.jobs?.map(item => item.name).join(', ')}
-                              </div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm">{content?.jobLevels?.map(item => item.name).join(', ')}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm tw-line-clamp-1">{content.studyKeywords.join(', ')}</div>
+                        {contents.length > 0 ? (
+                          contents.map((content, index) => (
+                            <TableRow key={index}>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className="tw-text-base">
+                                  <span className="tw-text-sm tw-font-medium">{formatDate(content.createdAt)}</span>
+                                </div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className="tw-text-sm tw-line-clamp-1">{content.creatorName}</div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className="tw-text-sm tw-line-clamp-1">{content.contentName}</div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className="tw-text-sm">{content.contentType.name}</div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className="tw-text-sm">{content.likeCount}</div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className="tw-text-sm tw-line-clamp-1">{content.internalSharingLink}</div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className="tw-text-sm">{content.jobGroups?.map(item => item.name).join(', ')}</div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className="tw-text-sm tw-line-clamp-1">
+                                  {content.jobs?.map(item => item.name).join(', ')}
+                                </div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className="tw-text-sm">
+                                  {content?.jobLevels?.map(item => item.name).join(', ')}
+                                </div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className="tw-text-sm tw-line-clamp-1">{content.studyKeywords.join(', ')}</div>
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        ) : (
+                          <TableRow>
+                            <TableCell align="center" colSpan={10}>
+                              <div className="tw-text-sm">데이터가 없습니다</div>
                             </TableCell>
                           </TableRow>
-                        ))}
+                        )}
                       </TableBody>
                     </Table>
                   </TableContainer>

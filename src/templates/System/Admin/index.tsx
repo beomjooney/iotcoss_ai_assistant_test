@@ -68,14 +68,23 @@ export function AdminTemplate({ children }: AdminTemplateProps) {
   const menus = [
     {
       no: 0,
-      title: '회원관리',
+      title: '클럽관리',
       sub: [
-        { no: 0, title: '회원정보 관리', link: '/system/admin/club', role: 'all' },
-        { no: 1, title: '교수자 권한 관리', link: '/system/admin/role', role: 'all' },
+        { no: 0, title: '신규 클럽 승인', link: '/system/admin/club-approval', role: 'all' },
+        { no: 1, title: '승인된 클럽 관리', link: '/system/admin/club-management', role: 'all' },
       ],
     },
     {
       no: 1,
+      title: '회원관리',
+      sub: [
+        { no: 0, title: '회원정보 관리', link: '/system/admin/club', role: 'all' },
+        { no: 1, title: '교수자 권한 관리', link: '/system/admin/role', role: 'all' },
+        { no: 2, title: '정책(약관)동의 조회', link: '/system/admin/terms', role: 'all' },
+      ],
+    },
+    {
+      no: 2,
       title: '지식콘텐츠/퀴즈 관리',
       sub: [
         { no: 0, title: '지식콘텐츠 관리', link: '/system/admin/knowledge', role: 'all' },
