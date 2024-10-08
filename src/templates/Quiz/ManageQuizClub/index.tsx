@@ -114,11 +114,17 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   // const [activeTab, setActiveTab] = useState('club');
   // const [activeTab, setActiveTab] = useState('community');
   const [activeTab, setActiveTab] = useState('myQuiz');
-
+  console.log('subtitle', subtitle);
   const [pageQuiz, setPageQuiz] = useState(1);
   const [totalQuizPage, setTotalQuizPage] = useState(1);
   const [totalQuizElements, setTotalQuizElements] = useState(0);
   const [myQuizParams, setMyQuizParams] = useState<any>({ clubSequence: id, sortType: 'ASC', page });
+  const [myQuizParamsSubTitle, setMyQuizParamsSubTitle] = useState<any>({
+    page,
+    subtitle: subtitle,
+    clubType: '0100',
+    size: 100,
+  });
   const [updateKey, setUpdateKey] = useState(0); // 상태 업데이트 강제 트리거를 위한 키
   //quiz new logic
   const [selectedQuizIds, setSelectedQuizIds] = useState([]);
@@ -451,8 +457,6 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   };
 
   useEffect(() => {
-    // 상태 업데이트 후 추가 작업 수행
-    console.log('scheduleData가 업데이트되었습니다.', quizList, prevKey => prevKey + 1);
     // setUpdateKey를 호출하여 강제 리렌더링
     setUpdateKey(prevKey => prevKey + 1);
   }, [quizList]);
@@ -470,19 +474,20 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   };
 
   //퀴즈 리스트
-  // const { isFetched: isQuizData, refetch } = useQuizList(params, data => {
-  //   console.log('useQuizList', data);
-  //   setQuizListData(data.contents || []);
-  //   setQuizListBackupData(data.contents || []);
-  //   setTotalQuizzPage(data.totalPages);
-  //   setTotalQuizzElements(data.totalElements);
+  const { isFetched: isQuizData, refetch } = useQuizList(params, data => {
+    console.log('useQuizList', data);
+    setQuizListData(data.contents || []);
+    setQuizListBackupData(data.contents || []);
+    setTotalQuizzPage(data.totalPages);
+    setTotalQuizzElements(data.totalElements);
 
-  //   console.log(data.totalPages);
-  //   console.log(data.totalElements);
-  // });
+    console.log(data.totalPages);
+    console.log(data.totalElements);
+  });
 
   // 퀴즈클럽 리스트
-  const { isFetched: isContentFetched, refetch: refetchMyClub } = useMyClubList({}, data => {
+
+  const { isFetched: isContentFetched, refetch: refetchMyClub } = useMyClubList(myQuizParamsSubTitle, data => {
     setMyClubList(data?.data?.contents || []);
     const foundClub = data?.data?.contents?.find(club => club.clubSequence === parseInt(id));
     setSelectedClub(foundClub);
@@ -626,6 +631,11 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     setPageQuiz(value);
   };
 
+  const handleProfileDelete = e => {
+    setPreviewProfile(null);
+    setSelectedImageProfileCheck(null);
+  };
+
   const handleCheckboxDelete = quizSequence => {
     setSelectedQuizIds(prevSelectedQuizIds => {
       const updatedSelectedQuizIds = prevSelectedQuizIds.filter(id => id !== quizSequence);
@@ -750,6 +760,16 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
 
     // 상태 업데이트
     setQuizList(mergeData);
+  };
+
+  const handleCheckboxDayChange = index => {
+    setSelectedSessions(prev => {
+      if (prev.includes(index)) {
+        return prev.filter(i => i !== index);
+      } else {
+        return [...prev, index];
+      }
+    });
   };
 
   function renderDatesAndSessionsModify() {
@@ -1033,6 +1053,28 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     }
   };
 
+  const handlerClubMakeProfessorManual = () => {
+    const weeks = [];
+    for (let i = 0; i < num; i++) {
+      weeks.push({
+        order: i + 1,
+        weekNumber: i + 1,
+        quizSequence: null,
+        publishDate: null,
+        dayOfWeek: null,
+      });
+    }
+    setScheduleData(weeks);
+    setButtonFlag(true);
+  };
+
+  const newCheckItem = (id, index, prevState) => {
+    const newState = [...prevState];
+    if (index > -1) newState.splice(index, 1);
+    else newState.push(id);
+    return newState;
+  };
+
   const handleUniversitySearchChange = e => {
     const selectedCode = e.target.value;
     const selected = optionsData?.data?.jobs?.find(u => u.code === selectedCode);
@@ -1084,6 +1126,47 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     }
     setScheduleData(weeks);
     setButtonFlag(true);
+  };
+
+  const handleImageChange = (event, type) => {
+    console.log(type);
+    const file = event.target.files[0];
+    if (file) {
+      if (type === 'card') {
+        setSelectedImage('card');
+        setSelectedImageCheck(file);
+      } else if (type === 'banner') {
+        setSelectedImageBanner('banner');
+        setSelectedImageBannerCheck(file);
+      } else if (type === 'profile') {
+        // setSelectedImageProfile();
+        setSelectedImageProfileCheck(file);
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (type === 'card') {
+          setPreview(reader.result);
+        } else if (type === 'banner') {
+          console.log('banner');
+          setPreviewBanner(reader.result);
+        } else if (type === 'profile') {
+          setPreviewProfile(reader.result);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+    event.target.value = null;
+  };
+
+  const onChangeHandleFromToStartDate = date => {
+    if (date) {
+      // Convert date to a Dayjs object
+      const formattedDate = dayjs(date);
+      // Format the date as 'YYYY-MM-DD'
+      const formattedDateString = formattedDate.format('YYYY-MM-DD');
+      // Set both today and todayEnd
+      setStartDay(formattedDate);
+    }
   };
 
   const classes = useStyles();
@@ -2260,7 +2343,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                     sm={10}
                     className="tw-text-xl tw-text-black tw-font-bold"
                   >
-                    퀴즈 목록 ({totalQuizElements || 0})
+                    퀴즈 목록 ({selectedQuizIds?.length || 0})
                   </Grid>
 
                   <Grid item container justifyContent="flex-end" xs={6} sm={2} style={{ textAlign: 'right' }}>

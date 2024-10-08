@@ -75,6 +75,7 @@ export function AdminClubsTemplate() {
       page,
       keyword: searchKeyword,
     });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [page, searchKeyword]);
 
   const handleKeyDown = e => {
@@ -86,11 +87,15 @@ export function AdminClubsTemplate() {
   };
 
   const toggleDrawer = (newOpen: boolean, type: string, sequence: number) => () => {
-    console.log('click node drawer');
-    setPage(1);
+    console.log('click node drawer', type, sequence);
     setClubType(type);
     setClubSequence(sequence);
     setOpen(newOpen);
+  };
+  const toggleDrawerClose = (newOpen: boolean) => () => {
+    console.log('click node drawer');
+    setOpen(newOpen);
+    QuizRefetchBadge();
   };
 
   return (
@@ -229,20 +234,22 @@ export function AdminClubsTemplate() {
           )}
           <div className="tw-mt-10">{/* <Pagination page={page} setPage={setPage} total={totalPage} /> */}</div>
         </div>
-        <Drawer anchor={'right'} open={open} onClose={toggleDrawer(false, '0100', null)}>
-          <div className="tw-px-10">
+        <Drawer anchor={'right'} open={open} onClose={toggleDrawerClose(false)}>
+          <div className="tw-px-10 tw-pb-10">
             <div className="tw-flex tw-justify-end">
-              <IconButton onClick={toggleDrawer(false, '0100', null)}>
+              <IconButton onClick={toggleDrawerClose(false)}>
                 <CancelIcon />
               </IconButton>
             </div>
             {clubType === '0100' ? (
               <>
-                <ManageQuizClubTemplate id={clubSequence} title="승인된 클럽 관리" subtitle={false} />;
+                {clubSequence && <ManageQuizClubTemplate id={clubSequence} title="승인된 클럽 관리" subtitle={false} />}
               </>
             ) : (
               <div className="">
-                <ManageLectureClubTemplate id={clubSequence} title="승인된 클럽 관리" subtitle={false} />;
+                {clubSequence && (
+                  <ManageLectureClubTemplate id={clubSequence} title="승인된 클럽 관리" subtitle={false} />
+                )}
               </div>
             )}
           </div>

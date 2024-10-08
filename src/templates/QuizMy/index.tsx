@@ -46,6 +46,7 @@ export function QuizMyTemplate() {
       page,
       keyword: keyWorld,
     });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [page, keyWorld]);
 
   return (

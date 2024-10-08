@@ -36,6 +36,8 @@ import Checkbox from '@mui/material/Checkbox';
 import validator from 'validator';
 import { UseQueryResult } from 'react-query';
 import { useMyQuiz, useMyQuizContents, useMyQuizThresh } from 'src/services/jobs/jobs.queries';
+import IconButton from '@mui/material/IconButton';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 const cx = classNames.bind(styles);
 
@@ -654,6 +656,7 @@ export function AdminQuizTemplate() {
       keyword: keyWorld,
       sortType: sortType,
     });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [quizPage, keyWorld, sortType]);
 
   const newCheckItem = (id, index, prevState) => {
@@ -796,6 +799,11 @@ export function AdminQuizTemplate() {
             </>
           )}
           <Drawer anchor={'right'} open={open} onClose={toggleDrawer(false)}>
+            <div className="tw-flex tw-justify-end">
+              <IconButton onClick={toggleDrawer(false)}>
+                <CancelIcon />
+              </IconButton>
+            </div>
             <div className={`tw-p-5 ${isContentModalClick ? 'tw-flex' : ' '}`}>
               <div className="tw-w-[670px]">
                 <Accordion disableGutters sx={{ backgroundColor: '#e9ecf2' }} defaultExpanded>

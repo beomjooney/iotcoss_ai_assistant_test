@@ -117,6 +117,13 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
   const [requestProfessorList, setRequestProfessorList] = useState<any>([]);
   const [ids, setIds] = useState<any>(id);
   const [myClubParams, setMyClubParams] = useState<any>({ clubSequence: id, page });
+  const [myClubSubTitleParams, setMyClubSubTitleParams] = useState<any>({
+    clubSequence: id,
+    page,
+    clubType: '0200',
+    size: 100,
+  });
+
   const [professorRequestParams, setProfessorRequestParams] = useState<any>({ clubSequence: id, page });
   const [myRequestMemberParams, setMyRequestMemberParams] = useState<any>({ clubSequence: id, page });
   const [myClubMemberParams, setMyClubMemberParams] = useState<any>({ clubSequence: id, page });
@@ -185,6 +192,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
   }, [quizList]);
 
   const handleChangeQuiz = event => {
+    console.log('event.target.value', event.target.value);
     setSortType(event.target.value);
     setPageMember(1);
   };
@@ -275,7 +283,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
   });
 
   // 강의클럽 리스트
-  const { isFetched: isContentFetched, refetch: refetchMyClub } = useMyLectureList(myClubParams, data => {
+  const { isFetched: isContentFetched, refetch: refetchMyClub } = useMyLectureList(myClubSubTitleParams, data => {
     setMyClubList(data?.data?.contents || []);
     const foundClub = data?.data?.contents?.find(club => club.clubSequence === parseInt(id));
     setSelectedClub(foundClub);

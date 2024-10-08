@@ -186,6 +186,13 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   const [fileName, setFileName] = useState('');
   const [memberUUID, setMemberUUID] = useState('');
 
+  const [myClubSubTitleParams, setMyClubSubTitleParams] = useState<any>({
+    clubSequence: id,
+    page,
+    clubType: '0200',
+    size: 100,
+  });
+
   const handleChangeQuiz = event => {
     setSortType(event.target.value);
   };
@@ -195,7 +202,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   };
 
   // 퀴즈클럽 리스트
-  const { isFetched: isContentFetched, refetch: refetchMyClub } = useMyLectureList({}, data => {
+  const { isFetched: isContentFetched, refetch: refetchMyClub } = useMyLectureList(myClubSubTitleParams, data => {
     console.log(data?.data?.contents);
     setMyClubList(data?.data?.contents || []);
   });

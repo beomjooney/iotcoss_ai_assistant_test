@@ -62,7 +62,7 @@ function MentorsModal({
               right: 0,
               bottom: 0,
               backgroundColor: 'rgba(15, 15, 15, 0.79)',
-              zIndex: 1030,
+              zIndex: 3030,
             },
             content: {
               position: 'absolute',
@@ -106,7 +106,7 @@ function MentorsModal({
               right: 0,
               bottom: 0,
               backgroundColor: 'rgba(15, 15, 15, 0.79)',
-              zIndex: 1030,
+              zIndex: 3030,
             },
             content: {
               position: 'absolute',

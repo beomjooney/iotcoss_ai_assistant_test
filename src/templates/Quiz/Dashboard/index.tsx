@@ -73,13 +73,18 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
   const [myClubParams, setMyClubParams] = useState<any>({ clubSequence: id, data: { sortType: '0001' } });
   const [params, setParams] = useState<paramProps>({ page });
   const [selectedValue, setSelectedValue] = useState(id);
+  const [myQuizParamsSubTitle, setMyQuizParamsSubTitle] = useState<any>({
+    page,
+    clubType: '0100',
+    size: 100,
+  });
 
   const handleChangeQuiz = event => {
     setSortType(event.target.value);
   };
 
   // 퀴즈클럽 리스트
-  const { isFetched: isContentFetched, refetch: refetchMyClub } = useMyClubList({}, data => {
+  const { isFetched: isContentFetched, refetch: refetchMyClub } = useMyClubList(myQuizParamsSubTitle, data => {
     console.log(data?.data?.contents);
     setMyClubList(data?.data?.contents || []);
   });
@@ -572,8 +577,8 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
                     ))
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={3} align="center">
-                        참가자 데이터 없음
+                      <TableCell colSpan={6} align="center">
+                        데이터가 없습니다.
                       </TableCell>
                     </TableRow>
                   )}

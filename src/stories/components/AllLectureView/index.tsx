@@ -55,6 +55,12 @@ const AllLectureView = ({ border, id }) => {
   const [questionPage, setQuestionPage] = useState(1);
   const [isInputOpen, setIsInputOpen] = useState(false);
   const [openInputIndex, setOpenInputIndex] = useState(null);
+  const [myClubSubTitleParams, setMyClubSubTitleParams] = useState<any>({
+    clubSequence: id,
+    page,
+    clubType: '0200',
+    size: 100,
+  });
 
   const [answer, setAnswer] = useState('');
   const { mutate: onSaveAnswer, isSuccess, isError } = useSaveAnswer();
@@ -87,7 +93,7 @@ const AllLectureView = ({ border, id }) => {
   });
 
   // 강의클럽 리스트
-  const { isFetched: isContentFetched, refetch: refetchMyClub } = useMyLectureList({}, data => {
+  const { isFetched: isContentFetched, refetch: refetchMyClub } = useMyLectureList(myClubSubTitleParams, data => {
     setMyClubList(data?.data?.contents || []);
   });
 

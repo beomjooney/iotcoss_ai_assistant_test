@@ -1,12 +1,5 @@
 import { axiosGeneralAPI } from '../index';
 
-// 세미나 목록 조회
-export const lectureMyList = async params => {
-  const { data, headers } = await axiosGeneralAPI().get('/api/v1/my/clubs', { params: { clubType: '0200' } });
-  // const { data, headers } = await axiosGeneralAPI().get('/seminars', { params });
-  const totalPage = Number(headers['page-count']);
-  return { data: data.data || [], nextPage: params.page + 1, totalPage };
-};
 // lecture 상세 조회
 export const clubAboutDetailInfo = async id => {
   const { data } = await axiosGeneralAPI().get(`/api/v2/quiz-clubs/${id}`);
@@ -14,7 +7,21 @@ export const clubAboutDetailInfo = async id => {
 };
 // 세미나 목록 조회
 export const clubMyList = async params => {
-  const { data, headers } = await axiosGeneralAPI().get('/api/v1/my/clubs', { params });
+  const endpoint = params.subtitle === undefined || params.subtitle ? '/api/v1/my/clubs' : '/api/manager/v1/clubs';
+  const { data, headers } = await axiosGeneralAPI().get(endpoint, {
+    params: { page: params.page, size: params.size, clubType: params.clubType, clubViewFilter: params.clubViewFilter },
+  });
+  // const { data, headers } = await axiosGeneralAPI().get('/seminars', { params });
+  const totalPage = Number(headers['page-count']);
+  return { data: data.data || [], nextPage: params.page + 1, totalPage };
+};
+
+// 세미나 목록 조회
+export const lectureMyList = async params => {
+  const endpoint = params.subtitle === undefined || params.subtitle ? '/api/v1/my/clubs' : '/api/manager/v1/clubs';
+  const { data, headers } = await axiosGeneralAPI().get(endpoint, {
+    params: { page: params.page, size: params.size, clubType: params.clubType },
+  });
   // const { data, headers } = await axiosGeneralAPI().get('/seminars', { params });
   const totalPage = Number(headers['page-count']);
   return { data: data.data || [], nextPage: params.page + 1, totalPage };

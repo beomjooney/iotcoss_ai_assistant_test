@@ -121,6 +121,7 @@ export function QuizOpenTemplate() {
   useEffect(() => {
     setOptionsSkills(optionsData?.data?.skills || []);
   }, [optionsData]);
+
   const { isFetched: isQuizData, refetch } = useQuizList(params, data => {
     console.log('quiz data', data.contents);
     setQuizListData(data.contents || []);
@@ -150,7 +151,7 @@ export function QuizOpenTemplate() {
     setCareerText(clubForm.careerText || '');
     setSkills(clubForm.skills || []);
     setOptionsSkills(prevState => Array.from(new Set([...prevState, ...(clubForm?.skills || [])])));
-    const extractedCodes = clubForm.jobLevels.map(item => item.code);
+    const extractedCodes = clubForm.jobLevels?.map(item => item.code);
     setRecommendLevels(extractedCodes || []);
     setNum(clubForm.weekCount || 0);
     setQuizType(clubForm.quizOpenType || '');
@@ -159,16 +160,16 @@ export function QuizOpenTemplate() {
     // setStudyChapter(clubForm.studyChapter || '');
     setStudySubject(clubForm.studySubject || '');
     setStudyCycleNum(clubForm.studyCycle || 0);
-    setUniversityCode(clubForm.jobGroups[0]?.code || '');
-    setSelectedUniversityName(clubForm.jobGroups[0]?.name || '');
-    setSelectedJobName(clubForm.jobs[0]?.name || '');
-    setJobLevelName(clubForm.jobLevels[0]?.name || '');
-    setLevelNames(clubForm.jobLevels.map(item => item.name));
-    const selected = optionsData?.data?.jobs?.find(u => u.code === clubForm.jobGroups[0]?.code);
+    setUniversityCode(clubForm?.jobGroups?.[0]?.code || '');
+    setSelectedUniversityName(clubForm?.jobGroups?.[0]?.name || '');
+    setSelectedJobName(clubForm.jobs?.[0]?.name || '');
+    setJobLevelName(clubForm.jobLevels?.[0]?.name || '');
+    setLevelNames(clubForm.jobLevels?.map(item => item.name));
+    const selected = optionsData?.data?.jobs?.find(u => u.code === clubForm.jobGroups?.[0]?.code);
     setJobs(selected ? selected.jobs : []);
-    const jobsCode = clubForm.jobs.map(item => item.code);
+    const jobsCode = clubForm.jobs?.map(item => item.code);
     setSelectedJob(jobsCode || []);
-    const jobsName = clubForm.jobs.map(item => item.name);
+    const jobsName = clubForm.jobs?.map(item => item.name);
     console.log(jobsName);
     setPersonName(jobsName || []);
     setButtonFlag(true);
@@ -1339,14 +1340,22 @@ export function QuizOpenTemplate() {
                           type="tabButton"
                           onChange={() => {
                             const index = recommendLevels.indexOf(item.code);
+
+                            // `setRecommendLevels` 호출
                             setRecommendLevels(prevState => newCheckItem(item.code, index, prevState));
-                            if (index >= 0) {
-                              // Remove the name if the code is already in the array
-                              setLevelNames(prevNames => prevNames.filter(name => name !== item.name));
-                            } else {
-                              // Add the name if the code is not in the array
-                              setLevelNames(prevNames => [...prevNames, item.name]);
-                            }
+
+                            setLevelNames(prevNames => {
+                              // prevNames가 배열이 아닌 경우 빈 배열로 초기화
+                              const safePrevNames = Array.isArray(prevNames) ? prevNames : [];
+
+                              if (index >= 0) {
+                                // 이미 배열에 있는 경우 해당 이름 제거
+                                return safePrevNames.filter(name => name !== item.name);
+                              } else {
+                                // 배열에 없는 경우 해당 이름 추가
+                                return [...safePrevNames, item.name];
+                              }
+                            });
                           }}
                           className={cx('tw-mr-2 !tw-w-[85px] !tw-h-[37px]')}
                         />

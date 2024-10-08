@@ -35,6 +35,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Checkbox from '@mui/material/Checkbox';
 import validator from 'validator';
 import { UseQueryResult } from 'react-query';
+import IconButton from '@mui/material/IconButton';
+import CancelIcon from '@mui/icons-material/Cancel';
 import { useMyQuiz, useMyQuizContents, useMyQuizThresh } from 'src/services/jobs/jobs.queries';
 
 const cx = classNames.bind(styles);
@@ -806,6 +808,11 @@ export function AdminKnowledgeTemplate() {
             </>
           )}
           <Drawer anchor={'right'} open={open} onClose={toggleDrawer(false)}>
+            <div className="tw-flex tw-justify-end">
+              <IconButton onClick={toggleDrawer(false)}>
+                <CancelIcon />
+              </IconButton>
+            </div>
             <div className={`tw-p-5 ${isContentModalClick ? 'tw-flex' : ' '}`}>
               <div className="tw-w-[670px]">
                 <Accordion disableGutters sx={{ backgroundColor: '#e9ecf2' }} defaultExpanded>

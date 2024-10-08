@@ -63,8 +63,15 @@ const QuizClubListView = ({ border, id }) => {
     page,
   });
 
+  const [myClubSubTitleParams, setMyClubSubTitleParams] = useState<any>({
+    clubSequence: id,
+    page,
+    clubType: '0100',
+    size: 100,
+  });
+
   // 퀴즈클럽 리스트
-  const { isFetched: isContentFetched, refetch: refetchMyClub } = useMyClubList({}, data => {
+  const { isFetched: isContentFetched, refetch: refetchMyClub } = useMyClubList(myClubSubTitleParams, data => {
     setMyClubList(data?.data?.contents || []);
   });
 

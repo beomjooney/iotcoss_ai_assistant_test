@@ -57,10 +57,10 @@ export const useMyLectureList = (
   onSuccess?: (data: any) => void,
   onError?: (error: Error) => void,
 ) => {
-  const DEFAULT_SIZE = 10;
+  const DEFAULT_SIZE = 100;
   return useQuery<any, Error>(
-    QUERY_KEY_FACTORY('SEMINAR').list({ size: DEFAULT_SIZE, ...params }),
-    () => lectureMyList({ size: DEFAULT_SIZE, ...params }),
+    QUERY_KEY_FACTORY('SEMINAR').list({ size: params.size, ...params }),
+    () => lectureMyList({ size: params.size, ...params }),
     {
       onSuccess,
       onError,
@@ -70,7 +70,6 @@ export const useMyLectureList = (
 };
 
 export const useClubAboutDetailInfo = (id, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
-  console.log('id', id);
   return useQuery<any, Error>(QUERY_KEY_FACTORY('LECTURE_ABOUT').detail(id), () => clubAboutDetailInfo(id), {
     onSuccess,
     onError,
@@ -83,10 +82,10 @@ export const useMyClubList = (
   onSuccess?: (data: any) => void,
   onError?: (error: Error) => void,
 ) => {
-  const DEFAULT_SIZE = 8;
+  // const DEFAULT_SIZE = 100;
   return useQuery<any, Error>(
-    QUERY_KEY_FACTORY('SEMINAR').list({ size: DEFAULT_SIZE, ...params }),
-    () => clubMyList({ size: DEFAULT_SIZE, ...params }),
+    QUERY_KEY_FACTORY('SEMINAR').list({ size: params.size, ...params }),
+    () => clubMyList({ size: params.size, ...params }),
     {
       onSuccess,
       onError,
