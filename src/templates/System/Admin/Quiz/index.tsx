@@ -15,6 +15,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
 
 /**accordion */
 import { useQuizSave, useAIQuizSave, useAIQuizAnswer, useQuizContentSave } from 'src/services/quiz/quiz.mutations';
@@ -106,7 +107,6 @@ export function AdminQuizTemplate() {
   const [isLoadingAI, setIsLoadingAI] = useState({});
   const [index, setIndex] = useState(0);
   const [contentSequence, setContentSequence] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [quizSortType, setQuizSortType] = useState('0001');
   const [threshSortType, setThreshSortType] = useState('0001');
   const [sortType, setSortType] = useState('DESC');
@@ -146,6 +146,15 @@ export function AdminQuizTemplate() {
       }
     },
   );
+
+  useEffect(() => {
+    if (postSuccess) {
+      console.log('postSuccess');
+      toggleDrawer(false);
+      setOpen(false);
+      QuizRefetchBadge();
+    }
+  }, [postSuccess]);
 
   useEffect(() => {
     if (updateError) {
@@ -338,11 +347,6 @@ export function AdminQuizTemplate() {
     const jsonString = JSON.stringify(params);
     const blob = new Blob([jsonString], { type: 'application/json' });
     formData.append('request', blob);
-    // formData.append('contentType', contentType);
-    // formData.append('jobLevels', jobLevel.join(','));
-    // formData.append('jobs', selectedJob.join(','));
-    // formData.append('quizCount', quizCount);
-
     // 로딩 상태를 true로 설정
     setIsLoading(true);
     onAIQuizSave(formData);
@@ -495,7 +499,6 @@ export function AdminQuizTemplate() {
       onQuizSave(formData);
       setActiveTab('퀴즈목록');
     }
-    setIsModalOpen(false);
   };
 
   const updateQuizList = newQuiz => {

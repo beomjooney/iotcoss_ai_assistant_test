@@ -88,9 +88,13 @@ export const generateUUID = () => {
 export interface ManageLectureClubTemplateProps {
   /** 세미나 아이디 */
   id?: any;
+  /** 타이틀 */
+  title?: string;
+  /** 서브타이틀 */
+  subtitle?: boolean;
 }
 
-export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps) {
+export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLectureClubTemplateProps) {
   const { mutate: onCrewBan, isSuccess: isBanSuccess } = useCrewBanDelete();
   const { mutate: onCrewAccept, isSuccess: isAcceptSuccess } = useCrewAcceptPost();
   const { mutate: onCrewReject, isSuccess: isRejectSuccess } = useCrewRejectPost();
@@ -130,19 +134,10 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
   const [myQuizParams, setMyQuizParams] = useState<any>({ clubSequence: id, sortType: 'ASC', page });
   const [updateKey, setUpdateKey] = useState(0); // 상태 업데이트 강제 트리거를 위한 키
   //quiz new logic
-  const [selectedQuizIds, setSelectedQuizIds] = useState([]);
   const [quizListData, setQuizListData] = useState<any[]>([]);
-  const { mutate: onQuizSave } = useSaveQuiz();
 
   //quiz
-  const [pageQuizz, setPageQuizz] = useState(1);
-  const [totalQuizzPage, setTotalQuizzPage] = useState(1);
-  const [totalQuizzElements, setTotalQuizzElements] = useState(0);
-  const [quizUrl, setQuizUrl] = React.useState('');
-  const [quizName, setQuizName] = React.useState('');
-  const [quizSearch, setQuizSearch] = React.useState('');
   const [allQuizData, setAllQuizData] = useState([]);
-  const [jobGroupPopUp, setJobGroupPopUp] = useState([]);
   const [profile, setProfile] = useState<any>([]);
   const [isModalProfileOpen, setIsModalProfileOpen] = useState<boolean>(false);
   const [memberUUID, setMemberUUID] = useState<string>('');
@@ -490,11 +485,6 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
     }));
   };
 
-  const handleNextTwo = () => {
-    console.log('next');
-    handlerClubSaveTemp('validation');
-  };
-
   const [lectureContents, setLectureContents] = useState({
     files: [],
     urls: [],
@@ -503,10 +493,6 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
   const fileInputRef = useRef(null);
   const handleButtonClick = () => {
     fileInputRef.current.click();
-  };
-
-  const handleBack = () => {
-    setActiveStep(prevActiveStep => prevActiveStep - 1);
   };
 
   const onFileDownload = function (key: string, fileName: string) {
@@ -1341,48 +1327,50 @@ export function ManageLectureClubTemplate({ id }: ManageLectureClubTemplateProps
           <Desktop>
             {/* <Divider className="tw-y-5 tw-bg-['#efefef']" /> */}
             <div className="tw-pt-8">
-              <div className="tw-flex tw-justify-start tw-items-start tw-left-0 tw-top-3.5 tw-gap-[3.5px]">
-                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[10.5px] tw-text-left tw-text-[#313b49]">
-                  나의클럽
-                </p>
-                <svg
-                  width={17}
-                  height={16}
-                  viewBox="0 0 17 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[15.75px] tw-h-[15.75px] tw-relative"
-                  preserveAspectRatio="none"
-                >
-                  <path
-                    d="M6.96925 11.25L10.3438 7.8755L6.96925 4.50101L6.40651 5.06336L9.21905 7.8755L6.40651 10.6877L6.96925 11.25Z"
-                    fill="#313B49"
-                  />
-                </svg>
-                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[10.5px] tw-text-left tw-text-[#313b49]">
-                  강의클럽 대시보드
-                </p>
-                <svg
-                  width={17}
-                  height={16}
-                  viewBox="0 0 17 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[15.75px] tw-h-[15.75px] tw-relative"
-                  preserveAspectRatio="none"
-                >
-                  <path
-                    d="M6.96925 11.25L10.3438 7.8755L6.96925 4.50101L6.40651 5.06336L9.21905 7.8755L6.40651 10.6877L6.96925 11.25Z"
-                    fill="#313B49"
-                  />
-                </svg>
-                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[10.5px] tw-text-left tw-text-[#313b49]">
-                  강의클럽 관리하기
-                </p>
-              </div>
+              {subtitle && (
+                <div className="tw-flex tw-justify-start tw-items-start tw-left-0 tw-top-3.5 tw-gap-[3.5px]">
+                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[10.5px] tw-text-left tw-text-[#313b49]">
+                    나의클럽
+                  </p>
+                  <svg
+                    width={17}
+                    height={16}
+                    viewBox="0 0 17 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[15.75px] tw-h-[15.75px] tw-relative"
+                    preserveAspectRatio="none"
+                  >
+                    <path
+                      d="M6.96925 11.25L10.3438 7.8755L6.96925 4.50101L6.40651 5.06336L9.21905 7.8755L6.40651 10.6877L6.96925 11.25Z"
+                      fill="#313B49"
+                    />
+                  </svg>
+                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[10.5px] tw-text-left tw-text-[#313b49]">
+                    강의클럽 대시보드
+                  </p>
+                  <svg
+                    width={17}
+                    height={16}
+                    viewBox="0 0 17 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[15.75px] tw-h-[15.75px] tw-relative"
+                    preserveAspectRatio="none"
+                  >
+                    <path
+                      d="M6.96925 11.25L10.3438 7.8755L6.96925 4.50101L6.40651 5.06336L9.21905 7.8755L6.40651 10.6877L6.96925 11.25Z"
+                      fill="#313B49"
+                    />
+                  </svg>
+                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[10.5px] tw-text-left tw-text-[#313b49]">
+                    강의클럽 관리하기
+                  </p>
+                </div>
+              )}
               <div className="tw-flex tw-justify-start tw-items-center tw-left-0 tw-top-[31.5px] tw-gap-3.5">
                 <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[21px] tw-font-bold tw-text-left tw-text-black">
-                  강의클럽 관리하기
+                  {title}
                 </p>
               </div>
               <Divider className="tw-py-2 tw-bg-['#efefef']" />

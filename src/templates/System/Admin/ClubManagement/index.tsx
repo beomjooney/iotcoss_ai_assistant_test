@@ -10,6 +10,12 @@ import { Mobile, Desktop } from 'src/hooks/mediaQuery';
 import { useQuizActivityHistory } from 'src/services/quiz/quiz.queries';
 import { Pagination } from 'src/stories/components';
 import { useEffect } from 'react';
+import Drawer from '@mui/material/Drawer';
+import { ManageLectureClubTemplate, ManageQuizClubTemplate } from 'src/templates';
+import DialogTitle from '@mui/material/DialogTitle';
+import IconButton from '@mui/material/IconButton';
+import CancelIcon from '@mui/icons-material/Cancel';
+
 import { TextField } from '@mui/material';
 
 /**table */
@@ -38,6 +44,9 @@ export function AdminClubsTemplate() {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [memberList, setMemberList] = useState<any[]>([]);
   const [memberParams, setMemberParams] = useState<any>({ page: page, keyword: search });
+  const [open, setOpen] = useState(false);
+  const [clubType, setClubType] = useState('0100');
+  const [clubSequence, setClubSequence] = useState(null);
 
   const { isFetched: isUserFetched } = useMemberActiveSummaryInfo(data => setSummary(data));
 
@@ -74,6 +83,14 @@ export function AdminClubsTemplate() {
       setSearchKeyword(search); // 검색 함수 실행
       setPage(1);
     }
+  };
+
+  const toggleDrawer = (newOpen: boolean, type: string, sequence: number) => () => {
+    console.log('click node drawer');
+    setPage(1);
+    setClubType(type);
+    setClubSequence(sequence);
+    setOpen(newOpen);
   };
 
   return (
@@ -121,7 +138,7 @@ export function AdminClubsTemplate() {
                           <TableCell align="left" width={130}>
                             <div className=" tw-text-base tw-font-bold">운영기간</div>
                           </TableCell>
-                          <TableCell align="left" width={130}>
+                          <TableCell align="center" width={130}>
                             <div className=" tw-text-base tw-font-bold">관리</div>
                           </TableCell>
                         </TableRow>
@@ -132,7 +149,7 @@ export function AdminClubsTemplate() {
                             <TableCell align="center" component="th" scope="row">
                               <div className=" tw-text-base">
                                 <span className="tw-text-sm tw-font-medium">
-                                  {content.clubType === '0001' ? (
+                                  {content.clubType === '0100' ? (
                                     <div>
                                       <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -178,7 +195,9 @@ export function AdminClubsTemplate() {
                               <div className=" tw-text-sm ">{content?.instructorName}</div>
                             </TableCell>
                             <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm">퀴즈 {content?.count || 0}개</div>
+                              <div className=" tw-text-sm">
+                                {content.clubType === '0100' ? '퀴즈' : '강의'} {content?.count || 0}개
+                              </div>
                             </TableCell>
                             <TableCell align="left" component="th" scope="row">
                               <div className=" tw-text-sm tw-text-gray-400">{formatDate(content.startAt)}</div>
@@ -187,7 +206,7 @@ export function AdminClubsTemplate() {
 
                             <TableCell align="left" component="th" scope="row">
                               <button
-                                onClick={() => handleAdminAccept(content?.tenantUUID, content?.memberUUID)}
+                                onClick={toggleDrawer(true, content.clubType, content.clubSequence)}
                                 type="button"
                                 data-tooltip-target="tooltip-default"
                                 className="tw-py-1 tw-bg-black tw-text-white  max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-rounded-md"
@@ -210,6 +229,25 @@ export function AdminClubsTemplate() {
           )}
           <div className="tw-mt-10">{/* <Pagination page={page} setPage={setPage} total={totalPage} /> */}</div>
         </div>
+        <Drawer anchor={'right'} open={open} onClose={toggleDrawer(false, '0100', null)}>
+          <div className="tw-px-10">
+            <div className="tw-flex tw-justify-end">
+              <IconButton onClick={toggleDrawer(false, '0100', null)}>
+                <CancelIcon />
+              </IconButton>
+            </div>
+            {clubType}
+            {clubType === '0100' ? (
+              <>
+                <ManageQuizClubTemplate id={clubSequence} />;
+              </>
+            ) : (
+              <div className="">
+                <ManageLectureClubTemplate id={clubSequence} title="승인된 클럽 관리" subtitle={false} />;
+              </div>
+            )}
+          </div>
+        </Drawer>
       </section>
     </div>
   );

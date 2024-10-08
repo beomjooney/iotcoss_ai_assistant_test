@@ -10,7 +10,7 @@ export function LectureManagePage() {
   const router = useRouter();
   const id = router.query['id'].toString();
 
-  return <ManageLectureClubTemplate id={id} />;
+  return <ManageLectureClubTemplate id={id} title="강의클럽 관리하기" subtitle={true} />;
 }
 
 export default LectureManagePage;
