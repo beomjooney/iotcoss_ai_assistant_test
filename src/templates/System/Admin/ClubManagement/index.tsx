@@ -236,10 +236,9 @@ export function AdminClubsTemplate() {
                 <CancelIcon />
               </IconButton>
             </div>
-            {clubType}
             {clubType === '0100' ? (
               <>
-                <ManageQuizClubTemplate id={clubSequence} />;
+                <ManageQuizClubTemplate id={clubSequence} title="승인된 클럽 관리" subtitle={false} />;
               </>
             ) : (
               <div className="">

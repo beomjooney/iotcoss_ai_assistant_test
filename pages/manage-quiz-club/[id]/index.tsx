@@ -10,7 +10,7 @@ export function QuizManagePage() {
   const router = useRouter();
   const id = router.query['id'].toString();
 
-  return <ManageQuizClubTemplate id={id} />;
+  return <ManageQuizClubTemplate id={id} title="퀴즈클럽 관리하기" subtitle={true} />;
 }
 
 export default QuizManagePage;

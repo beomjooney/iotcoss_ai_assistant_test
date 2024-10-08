@@ -1326,7 +1326,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
         <>
           <Desktop>
             {/* <Divider className="tw-y-5 tw-bg-['#efefef']" /> */}
-            <div className="tw-pt-8">
+            <div className={subtitle ? 'tw-pt-8' : ''}>
               {subtitle && (
                 <div className="tw-flex tw-justify-start tw-items-start tw-left-0 tw-top-3.5 tw-gap-[3.5px]">
                   <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[10.5px] tw-text-left tw-text-[#313b49]">
@@ -1389,7 +1389,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
         </>
         <div className="tw-flex tw-items-center tw-mt-6">
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-            <Grid item xs={11.1} className="tw-font-bold tw-text-xl">
+            <Grid item xs={subtitle ? 11.1 : 12} className="tw-font-bold tw-text-xl">
               <select
                 className="tw-h-14 form-select block w-full tw-bg-gray-100 tw-font-bold tw-px-8"
                 onChange={handleQuizChange}
@@ -1411,19 +1411,21 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
               </select>
             </Grid>
 
-            <Grid item xs={0.9} justifyContent="flex-end" className="tw-flex">
-              {/* {contents?.isBeforeOpening ? ( */}
-              <div className="">
-                <button
-                  type="button"
-                  // onClick={() => router.push(`/manage-quiz-club/${id}`)}
-                  onClick={() => router.push('/lecture-dashboard/' + selectedValue)}
-                  className="tw-h-14  tw-text-black tw-bg-[#CED4DE] border tw-font-medium tw-rounded-md tw-text-sm tw-px-6 tw-py-2 "
-                >
-                  <SettingsIcon className="tw-bg-[#CED4DE] tw-text-white" />
-                </button>
-              </div>
-            </Grid>
+            {subtitle && (
+              <Grid item xs={0.9} justifyContent="flex-end" className="tw-flex">
+                {/* {contents?.isBeforeOpening ? ( */}
+                <div className="">
+                  <button
+                    type="button"
+                    // onClick={() => router.push(`/manage-quiz-club/${id}`)}
+                    onClick={() => router.push('/lecture-dashboard/' + selectedValue)}
+                    className="tw-h-14  tw-text-black tw-bg-[#CED4DE] border tw-font-medium tw-rounded-md tw-text-sm tw-px-6 tw-py-2 "
+                  >
+                    <SettingsIcon className="tw-bg-[#CED4DE] tw-text-white" />
+                  </button>
+                </div>
+              </Grid>
+            )}
           </Grid>
         </div>
 

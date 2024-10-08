@@ -81,9 +81,11 @@ export const generateUUID = () => {
 export interface ManageQuizClubTemplateProps {
   /** 세미나 아이디 */
   id?: any;
+  title?: string;
+  subtitle?: boolean;
 }
 
-export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
+export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTemplateProps) {
   const { mutate: onTempSave, isSuccess: tempSucces } = useClubQuizTempSave();
   const { mutate: onCrewBan, isSuccess: isBanSuccess } = useCrewBanDelete();
   const { mutate: onCrewAccept, isSuccess: isAcceptSuccess } = useCrewAcceptPost();
@@ -1092,49 +1094,51 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
         <>
           <Desktop>
             {/* <Divider className="tw-y-5 tw-bg-['#efefef']" /> */}
-            <div className="tw-pt-8">
-              <div className="tw-flex tw-justify-start tw-items-start tw-left-0 tw-top-3.5 tw-gap-[3.5px]">
-                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[10.5px] tw-text-left tw-text-[#313b49]">
-                  나의클럽
-                </p>
-                <svg
-                  width={17}
-                  height={16}
-                  viewBox="0 0 17 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[15.75px] tw-h-[15.75px] tw-relative"
-                  preserveAspectRatio="none"
-                >
-                  <path
-                    d="M6.96925 11.25L10.3438 7.8755L6.96925 4.50101L6.40651 5.06336L9.21905 7.8755L6.40651 10.6877L6.96925 11.25Z"
-                    fill="#313B49"
-                  />
-                </svg>
-                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[10.5px] tw-text-left tw-text-[#313b49]">
-                  퀴즈클럽 대시보드
-                </p>
-                <svg
-                  width={17}
-                  height={16}
-                  viewBox="0 0 17 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[15.75px] tw-h-[15.75px] tw-relative"
-                  preserveAspectRatio="none"
-                >
-                  <path
-                    d="M6.96925 11.25L10.3438 7.8755L6.96925 4.50101L6.40651 5.06336L9.21905 7.8755L6.40651 10.6877L6.96925 11.25Z"
-                    fill="#313B49"
-                  />
-                </svg>
-                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[10.5px] tw-text-left tw-text-[#313b49]">
-                  퀴즈클럽 관리하기
-                </p>
-              </div>
+            <div className={subtitle ? 'tw-pt-8' : ''}>
+              {subtitle && (
+                <div className="tw-flex tw-justify-start tw-items-start tw-left-0 tw-top-3.5 tw-gap-[3.5px]">
+                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[10.5px] tw-text-left tw-text-[#313b49]">
+                    나의클럽
+                  </p>
+                  <svg
+                    width={17}
+                    height={16}
+                    viewBox="0 0 17 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[15.75px] tw-h-[15.75px] tw-relative"
+                    preserveAspectRatio="none"
+                  >
+                    <path
+                      d="M6.96925 11.25L10.3438 7.8755L6.96925 4.50101L6.40651 5.06336L9.21905 7.8755L6.40651 10.6877L6.96925 11.25Z"
+                      fill="#313B49"
+                    />
+                  </svg>
+                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[10.5px] tw-text-left tw-text-[#313b49]">
+                    퀴즈클럽 대시보드
+                  </p>
+                  <svg
+                    width={17}
+                    height={16}
+                    viewBox="0 0 17 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[15.75px] tw-h-[15.75px] tw-relative"
+                    preserveAspectRatio="none"
+                  >
+                    <path
+                      d="M6.96925 11.25L10.3438 7.8755L6.96925 4.50101L6.40651 5.06336L9.21905 7.8755L6.40651 10.6877L6.96925 11.25Z"
+                      fill="#313B49"
+                    />
+                  </svg>
+                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[10.5px] tw-text-left tw-text-[#313b49]">
+                    퀴즈클럽 관리하기
+                  </p>
+                </div>
+              )}
               <div className="tw-flex tw-justify-start tw-items-center tw-left-0 tw-top-[31.5px] tw-gap-3.5">
                 <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[21px] tw-font-bold tw-text-left tw-text-black">
-                  퀴즈클럽 관리하기
+                  {title}
                 </p>
               </div>
               <Divider className="tw-py-2 tw-bg-['#efefef']" />
@@ -1153,7 +1157,7 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
         </>
         <div className="tw-flex tw-items-center tw-mt-6">
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-            <Grid item xs={11.1} className="tw-font-bold tw-text-xl">
+            <Grid item xs={subtitle ? 11.1 : 12} className="tw-font-bold tw-text-xl">
               <select
                 className="tw-h-14 form-select block w-full tw-bg-gray-100 tw-text-red-500 tw-font-bold tw-px-8"
                 onChange={handleQuizChange}
@@ -1175,18 +1179,20 @@ export function ManageQuizClubTemplate({ id }: ManageQuizClubTemplateProps) {
               </select>
             </Grid>
 
-            <Grid item xs={0.9} justifyContent="flex-end" className="tw-flex">
-              {/* {contents?.isBeforeOpening ? ( */}
-              <div className="">
-                <button
-                  type="button"
-                  onClick={() => router.push(`/manage-quiz-club/${id}`)}
-                  className="tw-h-14  tw-text-black tw-bg-[#CED4DE] border tw-font-medium tw-rounded-md tw-text-sm tw-px-6 tw-py-2 "
-                >
-                  <SettingsIcon className="tw-bg-[#CED4DE] tw-text-white" />
-                </button>
-              </div>
-            </Grid>
+            {subtitle && (
+              <Grid item xs={0.9} justifyContent="flex-end" className="tw-flex">
+                {/* {contents?.isBeforeOpening ? ( */}
+                <div className="">
+                  <button
+                    type="button"
+                    onClick={() => router.push(`/manage-quiz-club/${id}`)}
+                    className="tw-h-14  tw-text-black tw-bg-[#CED4DE] border tw-font-medium tw-rounded-md tw-text-sm tw-px-6 tw-py-2 "
+                  >
+                    <SettingsIcon className="tw-bg-[#CED4DE] tw-text-white" />
+                  </button>
+                </div>
+              </Grid>
+            )}
           </Grid>
         </div>
 
