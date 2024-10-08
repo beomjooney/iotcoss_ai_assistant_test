@@ -140,7 +140,7 @@ export function LoginOneTemplate({ title = '', onSubmitLogin }: LoginTempOnelate
           required
           id="username"
           name="username"
-          placeholder="학번 또는 이메일을 입렧해주세요."
+          placeholder="학번 또는 이메일을 입력해주세요."
           variant="outlined"
           type="search"
           fullWidth

@@ -618,24 +618,6 @@ export function QuizMakeTemplate() {
         quizzes: updatedQuizList,
       };
 
-      // const params = {
-      //   content: {
-      //     isNew: isContentModalClick ? false : true,
-      //     contentSequence: contentSequence,
-      //     contentType: contentType,
-      //     description: contentTitle,
-      //     url: contentUrl,
-      //     studySubject: selectedSubject,
-      //     studyChapter: selectedChapter,
-      //     skills: selected1,
-      //     jobGroups: [selectedUniversity],
-      //     jobs: selectedJob,
-      //     jobLevels: jobLevel,
-      //     studyKeywords: selected2,
-      //   },
-      //   quizzes: updatedQuizList,
-      // };
-
       const formData = new FormData();
       formData.append('file', fileList[0]);
       const jsonString = JSON.stringify(params);
