@@ -62,17 +62,20 @@ export const savePost = async body =>
   });
 
 export const saveAdminPost = async body =>
-  await axiosGeneralAPI().put(
-    `/api/v1/members/${body.tenantUUID}/tenants/${body.memberUUID}/instructor/authority/approve`,
-  );
+  await axiosGeneralAPI().put(`/api/v1/members/${body.memberUUID}/instructor/authority/approve`);
 
 export const rejectAdminPost = async body =>
-  await axiosGeneralAPI().put(
-    `/api/v1/members/${body.tenantUUID}/tenants/${body.memberUUID}/instructor/authority/reject`,
-    {
-      rejectReason: body.rejectReason,
-    },
-  );
+  await axiosGeneralAPI().put(`/api/v1/members/${body.memberUUID}/instructor/authority/reject`, {
+    rejectReason: body.rejectReason,
+  });
+
+export const saveAdminClubPost = async body =>
+  await axiosGeneralAPI().put(`/api/manager/v1/clubs/${body.clubSequence}/approval`);
+
+export const rejectAdminClubPost = async body =>
+  await axiosGeneralAPI().put(`/api/manager/v1/clubs/${body.clubSequence}/rejection`, {
+    rejectReason: body.rejectReason,
+  });
 
 export const rejectPost = async body =>
   await axiosGeneralAPI().put(`/api/v1/friend-requests/${body.memberFriendRequestSequence}/decision`, {

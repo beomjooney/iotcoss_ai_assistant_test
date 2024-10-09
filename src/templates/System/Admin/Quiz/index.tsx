@@ -149,14 +149,26 @@ export function AdminQuizTemplate() {
     },
   );
 
-  useEffect(() => {
-    if (postSuccess) {
-      console.log('postSuccess');
-      toggleDrawer(false);
-      setOpen(false);
-      QuizRefetchBadge();
-    }
-  }, [postSuccess]);
+  useDidMountEffect(() => {
+    setContentTitle('');
+    // setContentUrl('');
+    setSelectedSubject('');
+    setSelectedChapter('');
+    setSelected1([]);
+    setSelected2([]);
+    setSelectedUniversity('');
+    setSelectedJob([]);
+    setPersonName([]);
+    setJobLevel([]);
+    setQuizList([]);
+    setQuizCount(1);
+    setFileName('');
+    setFileNameCopy([]);
+
+    toggleDrawer(false);
+    setOpen(false);
+    QuizRefetchBadge();
+  }, [postSuccess, postContentSuccess]);
 
   useEffect(() => {
     if (updateError) {
@@ -825,7 +837,6 @@ export function AdminQuizTemplate() {
                               setQuizList([]);
                               setSortQuizType('ASC');
                               setFileName('');
-                              setFileNameCopy('');
                               setJobLevel([]);
                               setSelected1([]);
                               setSelected2([]);

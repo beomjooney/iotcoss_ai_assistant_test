@@ -121,6 +121,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
     clubSequence: id,
     page,
     clubType: '0200',
+    subtitle: subtitle,
     size: 100,
   });
 

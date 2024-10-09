@@ -59,6 +59,12 @@ export function AdminRoleTemplate() {
     },
   );
 
+  useEffect(() => {
+    if (isAcceptSuccess || isRejectSuccess) {
+      QuizRefetchBadge();
+    }
+  }, [isAcceptSuccess, isRejectSuccess]);
+
   useDidMountEffect(() => {
     setMemberParams({
       // ...params,
@@ -108,6 +114,10 @@ export function AdminRoleTemplate() {
     }
   };
 
+  const formatDate = date => {
+    return date.split('.')[0].replace('T', ' '); // T를 공백으로 바꾸고 소수점 이하 제거
+  };
+
   return (
     <div className={cx('member-edit-container')}>
       <section className={cx('content')}>
@@ -150,7 +160,7 @@ export function AdminRoleTemplate() {
                           <TableCell align="left" width={100}>
                             <div className="tw-font-bold tw-text-base">상태</div>
                           </TableCell>
-                          <TableCell align="left" width={200}>
+                          <TableCell align="center" width={200}>
                             <div className="tw-font-bold tw-text-base">승인/거절</div>
                           </TableCell>
                         </TableRow>
@@ -178,24 +188,78 @@ export function AdminRoleTemplate() {
                                 {renderStatusImage(content?.requestStatus)}
                               </div>
                             </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className="tw-gap-3">
-                                <button
-                                  onClick={() => handleAdminAccept(content?.tenantUUID, content?.memberUUID)}
-                                  type="button"
-                                  data-tooltip-target="tooltip-default"
-                                  className="tw-py-2 tw-px-5 tw-mr-3 tw-bg-white tw-text-gray-400  border max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
-                                >
-                                  승인
-                                </button>
-                                <button
-                                  onClick={() => handleAdminReject(content?.tenantUUID, content?.memberUUID)}
-                                  type="button"
-                                  data-tooltip-target="tooltip-default"
-                                  className="tw-py-2 tw-px-5 tw-bg-blue-600 tw-text-white max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
-                                >
-                                  거절
-                                </button>
+                            <TableCell align="center" component="th" scope="row">
+                              <div className="tw-text-sm">
+                                {(() => {
+                                  switch (content.requestStatus) {
+                                    case '0001':
+                                      return (
+                                        <div className="tw-gap-3">
+                                          <button
+                                            onClick={() => handleAdminAccept(content?.tenantUUID, content?.memberUUID)}
+                                            type="button"
+                                            data-tooltip-target="tooltip-default"
+                                            className="tw-py-2 tw-px-5 tw-mr-3 tw-bg-white tw-text-gray-400  border max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                          >
+                                            승인
+                                          </button>
+                                          <button
+                                            onClick={() => handleAdminReject(content?.tenantUUID, content?.memberUUID)}
+                                            type="button"
+                                            data-tooltip-target="tooltip-default"
+                                            className="tw-py-2 tw-px-5 tw-bg-blue-600 tw-text-white max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                          >
+                                            거절
+                                          </button>
+                                        </div>
+                                      );
+                                    case '0002':
+                                      return (
+                                        <div>
+                                          <div className="tw-text-sm tw-font-medium tw-text-gray-400">
+                                            {content.requestedAt.split(' ')[0]}
+                                          </div>
+                                          <div className="tw-text-sm tw-font-medium tw-text-gray-400">
+                                            {formatDate(content.requestedAt).split(' ')[1]}
+                                          </div>
+                                        </div>
+                                      );
+                                    case '0003':
+                                      return (
+                                        <div>
+                                          <div className="tw-text-sm tw-font-medium tw-text-gray-400">
+                                            {content.requestedAt.split(' ')[0]}
+                                          </div>
+                                          <div className="tw-text-sm tw-font-medium tw-text-gray-400">
+                                            {formatDate(content.requestedAt).split(' ')[1]}
+                                          </div>
+                                        </div>
+                                      );
+                                    case '0004':
+                                      return (
+                                        <div className="tw-gap-3">
+                                          <button
+                                            onClick={() => handleAdminAccept(content?.tenantUUID, content?.memberUUID)}
+                                            type="button"
+                                            data-tooltip-target="tooltip-default"
+                                            className="tw-py-2 tw-px-5 tw-mr-3 tw-bg-white tw-text-gray-400  border max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                          >
+                                            승인
+                                          </button>
+                                          <button
+                                            onClick={() => handleAdminReject(content?.tenantUUID, content?.memberUUID)}
+                                            type="button"
+                                            data-tooltip-target="tooltip-default"
+                                            className="tw-py-2 tw-px-5 tw-bg-blue-600 tw-text-white max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                          >
+                                            거절
+                                          </button>
+                                        </div>
+                                      );
+                                    default:
+                                      return <div>Unknown Status</div>;
+                                  }
+                                })()}
                               </div>
                             </TableCell>
                           </TableRow>

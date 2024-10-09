@@ -665,7 +665,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
         isPublished={item?.isPublished}
         isDeleteQuiz={!item?.hasBeenPublished}
         handleCheckboxDelete={handleCheckboxDelete}
-        knowledgeContentTitle={item?.contentDescription}
+        knowledgeContentTitle={item?.contentDescription || item?.contentTitle}
         hasBeenPublished={item.hasBeenPublished}
       />
     </div>

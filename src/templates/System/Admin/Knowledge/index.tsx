@@ -149,14 +149,26 @@ export function AdminKnowledgeTemplate() {
     },
   );
 
-  useEffect(() => {
-    if (postContentSuccess) {
-      console.log('postContentSuccess');
-      toggleDrawer(false);
-      setOpen(false);
-      QuizRefetchBadge();
-    }
-  }, [postContentSuccess]);
+  useDidMountEffect(() => {
+    setContentTitle('');
+    // setContentUrl('');
+    setSelectedSubject('');
+    setSelectedChapter('');
+    setSelected1([]);
+    setSelected2([]);
+    setSelectedUniversity('');
+    setSelectedJob([]);
+    setPersonName([]);
+    setJobLevel([]);
+    setQuizList([]);
+    setQuizCount(1);
+    setFileName('');
+    setFileNameCopy([]);
+
+    toggleDrawer(false);
+    setOpen(false);
+    QuizRefetchBadge();
+  }, [postSuccess, postContentSuccess]);
 
   useEffect(() => {
     if (updateError) {

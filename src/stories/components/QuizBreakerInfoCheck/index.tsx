@@ -127,7 +127,7 @@ const QuizBreakerInfoCheck = ({
         </div>
 
         <div className="tw-pt-2 tw-flex tw-justify-start tw-items-start  tw-left-[52px] tw-top-[100px] tw-gap-3">
-          <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#31343d]">지식컨텐츠</p>
+          <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#31343d]">지식콘텐츠</p>
           <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-left tw-text-[#9ca5b2]">
             {knowledgeContentTitle}
           </p>
