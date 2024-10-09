@@ -66,6 +66,7 @@ export function AdminTermsTemplate() {
       page,
       keyword: searchKeyword,
     });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [page, searchKeyword]);
 
   const handleKeyDown = e => {

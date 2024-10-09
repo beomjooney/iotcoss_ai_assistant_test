@@ -218,7 +218,8 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
       {menuItem?.map((item, index) => {
         return (
           item?.login &&
-          (!item.role || roles.includes(item.role)) && (
+          // (!item.role || roles.includes(item.role)) && (
+          (!item.role || item.role.split(',').some(role => roles.includes(role.trim()))) && (
             <div key={index}>
               <Link href={item.link} className="nav-link">
                 <ListItem

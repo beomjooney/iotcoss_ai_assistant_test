@@ -212,8 +212,13 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
   };
 
   // 퀴즈 소개 정보 조회
+  console.log('data.lectureClub ids', ids);
   const { isFetched: isClubAboutFetched, refetch: refetchClubAbout } = useLectureAboutDetailInfo(ids, data => {
-    console.log(data);
+    console.log('data.lectureClub', data);
+    if (!data?.lectureClub) {
+      alert('club이 없습니다.');
+      return;
+    }
     setClubAbout(data.lectureClub);
     console.log('useLectureAboutDetail', data);
 
