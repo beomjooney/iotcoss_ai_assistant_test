@@ -496,7 +496,8 @@ const QuizClubDetaillSolution = ({
                                 <Grid item xs={12} sm={1} style={{ paddingTop: 10 }}>
                                   <div className="tw-flex-auto tw-text-center tw-text-black tw-font-bold"></div>
                                   <div className="tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold">
-                                    {item?.publishDate?.split('-').slice(1).join('-')} ({item?.dayOfWeek})
+                                    {item?.publishDate?.split('-').slice(1).join('-')}
+                                    {item?.dayOfWeek ? `(${item.dayOfWeek})` : ''}
                                   </div>
                                   <div
                                     className={`tw-flex-auto tw-mt-10 tw-text-center tw-text-sm ${

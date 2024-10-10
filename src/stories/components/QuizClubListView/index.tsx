@@ -320,7 +320,8 @@ const QuizClubListView = ({ border, id }) => {
                         <div className={`tw-font-medium ${item?.isPublished ? 'tw-text-black' : ' tw-text-gray-400'}`}>
                           <div className="tw-flex-auto tw-text-center  tw-font-bold">Q{item?.order}.</div>
                           <div className="tw-flex-auto tw-text-center tw-text-sm   tw-font-bold">
-                            {item?.publishDate?.slice(5, 10)} ({item?.dayOfWeek})
+                            {item?.publishDate?.slice(5, 10)}
+                            {item?.dayOfWeek ? `(${item.dayOfWeek})` : ''}
                           </div>
                         </div>
                       </Grid>
