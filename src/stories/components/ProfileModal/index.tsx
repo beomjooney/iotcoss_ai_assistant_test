@@ -35,7 +35,7 @@ function ProfileModal({ isOpen, children, closable = true, onAfterClose }: Profi
               right: 0,
               bottom: 0,
               backgroundColor: 'rgba(15, 15, 15, 0.79)',
-              zIndex: 1030,
+              zIndex: 4030,
             },
             content: {
               position: 'absolute',
@@ -74,7 +74,7 @@ function ProfileModal({ isOpen, children, closable = true, onAfterClose }: Profi
               right: 0,
               bottom: 0,
               backgroundColor: 'rgba(15, 15, 15, 0.79)',
-              zIndex: 1030,
+              zIndex: 4030,
             },
             content: {
               position: 'absolute',

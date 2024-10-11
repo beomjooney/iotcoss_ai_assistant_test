@@ -160,25 +160,6 @@ export function AdminDashboardTemplate() {
     }
   };
 
-  const handleAdminAccept = async (clubSequence: string) => {
-    if (confirm('클럽 승인을 하시겠습니까?')) {
-      let params = {
-        clubSequence,
-      };
-      onAdminAccept(params);
-    }
-  };
-
-  const handleAdminReject = async (clubSequence: string) => {
-    if (confirm('클럽 거절을 하시겠습니까?')) {
-      let params = {
-        clubSequence,
-        rejectReason: 'test reject',
-      };
-      onAdminReject(params);
-    }
-  };
-
   return (
     <div className={cx('member-edit-container')}>
       <section className={cx('content')}>
@@ -188,8 +169,8 @@ export function AdminDashboardTemplate() {
               <Desktop>
                 <div>
                   <div className="tw-flex tw-items-center tw-justify-between tw-mb-5">
-                    <div className="tw-font-bold tw-text-xl tw-text-black tw-p-0">통계/분석 ({totalElement})</div>
-                    <TextField
+                    <div className="tw-font-bold tw-text-xl tw-text-black tw-p-0">통계/분석 </div>
+                    {/* <TextField
                       size="small"
                       value={search} // 상태값을 TextField에 반영
                       placeholder="검색"
@@ -199,7 +180,7 @@ export function AdminDashboardTemplate() {
                         style: { height: '43px' },
                         startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
                       }}
-                    />
+                    /> */}
                   </div>
                   {isMemberListFetched && (
                     <div className="">
