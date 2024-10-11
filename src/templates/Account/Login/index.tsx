@@ -314,9 +314,7 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
         </Grid>
         <div style={{ marginBottom: '20px', marginTop: '20px', textAlign: 'center' }}>
           <button
-            className={`${getButtonClass(
-              clientTenantName,
-            )} tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-text-white`}
+            className="tw-bg-[#e11837] tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-text-white"
             onClick={() => handleSubmit(onSubmit)}
           >
             로그인
@@ -324,7 +322,7 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
         </div>
       </form>
       <Box display="center" justifyContent="center" sx={{ fontWeight: 'bold' }}>
-        <Typography sx={{ fontSize: 14 }} className="tw-py-3  tw-cursor-pointer">
+        <Typography sx={{ fontSize: 14 }} className="tw-py-3">
           동서대학교 QuizUp 계정이 없으신가요?
         </Typography>
       </Box>
