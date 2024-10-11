@@ -54,6 +54,7 @@ export function QuizMyLectureClubsTemplate() {
       page,
       keyword: keyWorld,
     });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [page, keyWorld]);
 
   const router = useRouter();

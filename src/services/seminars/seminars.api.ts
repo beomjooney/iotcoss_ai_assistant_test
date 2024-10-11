@@ -106,7 +106,6 @@ export const myDashboardLecture = async (params: any) => {
 
 // 클럽 퀴즈 목록 조회
 export const myDashboardQA = async (params: any) => {
-  console.log(params);
   const { data } = await axiosGeneralAPI().get(
     `/api/v1/lecture-clubs/${params.clubSequence}/dashboard/${params.sequence}/questions`,
     {
@@ -117,6 +116,33 @@ export const myDashboardQA = async (params: any) => {
     },
   );
   return data.data;
+};
+
+// 클럽 퀴즈 목록 조회
+export const myExcel = async (params: any) => {
+  const { data } = await axiosGeneralAPI().get(
+    `/api/v1/clubs/${params.clubSequence}/studies/${params.sequence}/questions/download`,
+    {
+      responseType: 'blob',
+      headers: {
+        Accept: '*/*',
+        'Content-Type': 'multipart/form-data',
+      },
+    },
+  );
+  return data;
+};
+
+// 클럽 퀴즈 목록 조회
+export const myAllClubExcel = async (params: any) => {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/clubs/${params.clubSequence}/questions/download`, {
+    responseType: 'blob',
+    headers: {
+      Accept: '*/*',
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return data;
 };
 
 // 클럽 퀴즈 목록 조회

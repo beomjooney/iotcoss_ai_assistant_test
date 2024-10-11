@@ -91,6 +91,11 @@ export function AdminTemplate({ children }: AdminTemplateProps) {
         { no: 1, title: '퀴즈 관리', link: '/system/admin/quiz', role: 'all' },
       ],
     },
+    {
+      no: 3,
+      title: '통계/분석',
+      sub: [{ no: 0, title: '통계 대시보드', link: '/system/admin/dashboard', role: 'all' }],
+    },
   ];
 
   const currentSubMenu = menus

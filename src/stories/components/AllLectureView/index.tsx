@@ -1,6 +1,5 @@
 // QuizClubDetailInfo.jsx
 import React, { useState } from 'react';
-import Avatar from '@mui/material/Avatar';
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import Divider from '@mui/material/Divider';
@@ -12,7 +11,13 @@ import PaginationItem from '@mui/material/PaginationItem';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
-import { useMyClubList, useMyLectureList, useMyDashboardQA } from 'src/services/seminars/seminars.queries';
+import {
+  useMyClubList,
+  useMyLectureList,
+  useMyDashboardQA,
+  useMyExcel,
+  useMyAllClubExcel,
+} from 'src/services/seminars/seminars.queries';
 
 /**icon */
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -77,6 +82,16 @@ const AllLectureView = ({ border, id }) => {
     data: { questionPage: 1 },
   });
 
+  const [myClubExcel, setMyClubExcel] = useState<any>({
+    clubSequence: selectedClub || id,
+    sequence: clubStudySequence,
+  });
+
+  const [myAllClubExcel, setMyAllClubExcel] = useState<any>({
+    clubSequence: selectedClub || id,
+    sequence: clubStudySequence,
+  });
+
   const [params, setParams] = useState<any>({ id: '225', page });
   const [myClubParams, setMyClubParams] = useState<any>({
     clubSequence: id,
@@ -90,6 +105,36 @@ const AllLectureView = ({ border, id }) => {
     console.log('useMyDashboardQA', data);
     setTotalQuestionPage(data?.totalPages);
     setMyDashboardQA(data || []);
+  });
+
+  // 강의클럽 대시보드 강의별 참여 현황
+  const { isFetched: isExcelFetched, refetch: refetchMyExcel } = useMyExcel(myClubExcel, data => {
+    console.log('useMyExcel', data);
+    if (data) {
+      // blob 데이터를 파일로 저장하는 로직
+      const url = window.URL.createObjectURL(new Blob([data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', '질문/답변.xlsx'); // 다운로드할 파일 이름과 확장자를 설정합니다.
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  });
+
+  // 강의클럽 대시보드 강의별 참여 현황
+  const { isFetched: isAllExcelFetched, refetch: refetchMyAllExcel } = useMyAllClubExcel(myAllClubExcel, data => {
+    console.log('useMyExcel', data);
+    if (data) {
+      // blob 데이터를 파일로 저장하는 로직
+      const url = window.URL.createObjectURL(new Blob([data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', '전체 질문/답변.xlsx'); // 다운로드할 파일 이름과 확장자를 설정합니다.
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   });
 
   // 강의클럽 리스트
@@ -138,6 +183,16 @@ const AllLectureView = ({ border, id }) => {
     console.log('clubStudySequence', clubStudySequence);
     refetchMyDashboardQA();
   }, [myClubLectureQA]);
+
+  useDidMountEffect(() => {
+    console.log('clubStudySequence', clubStudySequence);
+    refetchMyExcel();
+  }, [myClubExcel]);
+
+  useDidMountEffect(() => {
+    console.log('clubStudySequence', clubStudySequence);
+    refetchMyAllExcel();
+  }, [myAllClubExcel]);
 
   const handleQAPageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     console.log(value);
@@ -244,23 +299,36 @@ const AllLectureView = ({ border, id }) => {
                   item
                   justifyContent="flex-start"
                   xs={6}
-                  sm={10}
+                  sm={6}
                   className="tw-text-xl tw-text-black tw-font-bold"
                 >
                   전체 학습 보기
                 </Grid>
 
-                <Grid container justifyContent="flex-end" item xs={6} sm={2} style={{ textAlign: 'right' }}>
-                  <Pagination
-                    count={totalPage}
-                    size="small"
-                    siblingCount={0}
-                    page={page}
-                    renderItem={item => (
-                      <PaginationItem slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }} {...item} />
-                    )}
-                    onChange={handlePageChange}
-                  />
+                <Grid container justifyContent="flex-end" item xs={6} sm={6} style={{ textAlign: 'right' }}>
+                  <div className="tw-flex tw-justify-end tw-items-center tw-gap-5">
+                    <button
+                      onClick={() => {
+                        setMyAllClubExcel({
+                          clubSequence: selectedClub || id,
+                        });
+                      }}
+                      className="tw-text-sm tw-font-bold border tw-py-3 tw-px-4 tw-text-black tw-rounded"
+                    >
+                      수업전체 질문/답변 출력
+                    </button>
+
+                    <Pagination
+                      count={totalPage}
+                      size="small"
+                      siblingCount={0}
+                      page={page}
+                      renderItem={item => (
+                        <PaginationItem slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }} {...item} />
+                      )}
+                      onChange={handlePageChange}
+                    />
+                  </div>
                 </Grid>
               </Grid>
               <div className="tw-py-3 tw-mb-3" />
@@ -271,7 +339,7 @@ const AllLectureView = ({ border, id }) => {
                       <TableCell align="center" width={100}>
                         <div className="tw-font-bold tw-text-base">강의주차</div>
                       </TableCell>
-                      <TableCell align="center" width={120}>
+                      <TableCell align="center" width={110}>
                         <div className="tw-font-bold tw-text-base">기간</div>
                       </TableCell>
                       <TableCell align="center">
@@ -280,7 +348,7 @@ const AllLectureView = ({ border, id }) => {
                       <TableCell align="center" width={100}>
                         <div className="tw-font-bold tw-text-base">강의형태</div>
                       </TableCell>
-                      <TableCell align="center" width={100}>
+                      <TableCell align="center" width={90}>
                         <div className="tw-font-bold tw-text-base">타입</div>
                       </TableCell>
                       <TableCell align="center" width={100}>
@@ -288,6 +356,9 @@ const AllLectureView = ({ border, id }) => {
                       </TableCell>
                       <TableCell align="center" width={110}>
                         <div className="tw-font-bold tw-text-base">상세보기</div>
+                      </TableCell>
+                      <TableCell align="center" width={150}>
+                        <div className="tw-font-bold tw-text-base">Excel</div>
                       </TableCell>
                     </TableRow>
                   </TableHead>
@@ -338,6 +409,21 @@ const AllLectureView = ({ border, id }) => {
                               className="tw-text-sm tw-font-bold border tw-py-2 tw-px-3 tw-text-gray-400 tw-rounded"
                             >
                               상세보기
+                            </button>
+                          </TableCell>
+                          <TableCell align="center" component="th" scope="row">
+                            <button
+                              onClick={() => {
+                                setClubStudySequence(item?.clubStudySequence);
+                                console.log('setClubStudySequence', selectedClub, item?.clubStudySequence);
+                                setMyClubExcel({
+                                  clubSequence: selectedClub || id,
+                                  sequence: item?.clubStudySequence,
+                                });
+                              }}
+                              className="tw-text-sm tw-font-bold border tw-py-2 tw-px-3 tw-text-gray-400 tw-rounded"
+                            >
+                              질문/답변 출력
                             </button>
                           </TableCell>
                         </TableRow>
@@ -501,7 +587,8 @@ const AllLectureView = ({ border, id }) => {
                                   <div key={fileIndex} className="border tw-px-2 tw-py-0.5 tw-rounded">
                                     <span
                                       onClick={() => {
-                                        onFileDownload(fileEntry.key, fileEntry.name);
+                                        window.open(fileEntry.url, '_blank');
+                                        // onFileDownload(fileEntry.key, fileEntry.name);
                                       }}
                                       className="tw-text-gray-400 tw-cursor-pointer"
                                     >

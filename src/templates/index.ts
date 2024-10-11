@@ -19,6 +19,7 @@ export * from './System/Admin/Knowledge/index';
 export * from './System/Admin/Quiz/index';
 export * from './System/Admin/ClubApproval/index';
 export * from './System/Admin/ClubManagement/index';
+export * from './System/Admin/Dashboard/index';
 export * from './System/Admin/Terms/index';
 
 export * from './Account/My/MentorPick/index';

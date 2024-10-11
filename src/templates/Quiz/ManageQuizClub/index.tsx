@@ -343,7 +343,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     setCareerText(clubForm.careerText || '');
     setSkills(clubForm.skills || []);
     setOptionsSkills(prevState => Array.from(new Set([...prevState, ...(clubForm?.skills || [])])));
-    const extractedCodes = clubForm.jobLevels.map(item => item.code);
+    const extractedCodes = clubForm.jobLevels?.map(item => item.code);
     setRecommendLevels(extractedCodes || []);
     setNum(clubForm.weekCount || 0);
     setQuizType(clubForm.quizOpenType || '');

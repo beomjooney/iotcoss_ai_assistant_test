@@ -34,6 +34,8 @@ import {
   myDashboardStudentQA,
   clubAboutDetailInfo,
   professorRequestList,
+  myExcel,
+  myAllClubExcel,
 } from './seminars.api';
 
 export interface paramProps {
@@ -171,6 +173,40 @@ export const useMyDashboardQA = (
   return useQuery<any, Error>(
     QUERY_KEY_FACTORY('DASHBOARD_QA').list({ size: DEFAULT_SIZE, ...params }),
     () => myDashboardQA({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+      enabled: false,
+    },
+  );
+};
+
+// 내 대시보드 목록 조회
+export const useMyExcel = (params?: paramProps, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
+  const DEFAULT_SIZE = 3;
+  return useQuery<any, Error>(
+    QUERY_KEY_FACTORY('EXCEL').list({ size: DEFAULT_SIZE, ...params }),
+    () => myExcel({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+      enabled: false,
+    },
+  );
+};
+
+// 내 대시보드 목록 조회
+export const useMyAllClubExcel = (
+  params?: paramProps,
+  onSuccess?: (data: any) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 3;
+  return useQuery<any, Error>(
+    QUERY_KEY_FACTORY('EXCEL').list({ size: DEFAULT_SIZE, ...params }),
+    () => myAllClubExcel({ size: DEFAULT_SIZE, ...params }),
     {
       onSuccess,
       onError,
