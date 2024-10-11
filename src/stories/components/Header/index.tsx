@@ -217,9 +217,7 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
       <Divider variant="inset" component="li" />
       {menuItem?.map((item, index) => {
         return (
-          item?.login &&
-          // (!item.role || roles.includes(item.role)) && (
-          (!item.role || item.role.split(',').some(role => roles.includes(role.trim()))) && (
+          item?.login && (
             <div key={index}>
               <Link href={item.link} className="nav-link">
                 <ListItem
@@ -405,7 +403,7 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
             >
               <ul className={cx('nav-custom', 'navbar-custom-mobile', 'navbar-nav', 'tw-text-lg', 'tw-text-left')}>
                 {menuItem.map((item, index) => {
-                  const shouldDisplayItem = item.login && (!item.role || roles.includes(item.role));
+                  const shouldDisplayItem = item.login;
                   if (shouldDisplayItem) {
                     return (
                       <li key={`item-` + index} className={cn(item.option)}>
