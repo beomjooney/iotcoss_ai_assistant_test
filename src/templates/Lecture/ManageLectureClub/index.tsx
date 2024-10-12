@@ -117,6 +117,12 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
   const [requestProfessorList, setRequestProfessorList] = useState<any>([]);
   const [ids, setIds] = useState<any>(id);
   const [myClubParams, setMyClubParams] = useState<any>({ clubSequence: id, page });
+  /** my quiz replies */
+  const [selectedClub, setSelectedClub] = useState(null);
+  const [sortType, setSortType] = useState('0001');
+  const [professorRequestSortType, setProfessorRequestSortType] = useState('0001');
+  const [sortQuizType, setSortQuizType] = useState('ASC');
+
   const [myClubSubTitleParams, setMyClubSubTitleParams] = useState<any>({
     clubSequence: id,
     page,
@@ -125,9 +131,16 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
     size: 100,
   });
 
-  const [professorRequestParams, setProfessorRequestParams] = useState<any>({ clubSequence: id, page });
+  const [professorRequestParams, setProfessorRequestParams] = useState<any>({
+    clubSequence: id,
+    page,
+  });
   const [myRequestMemberParams, setMyRequestMemberParams] = useState<any>({ clubSequence: id, page });
-  const [myClubMemberParams, setMyClubMemberParams] = useState<any>({ clubSequence: id, page });
+  const [myClubMemberParams, setMyClubMemberParams] = useState<any>({
+    clubSequence: id,
+    page,
+    sortType: professorRequestSortType,
+  });
   const [active, setActive] = useState(0);
   const [params, setParams] = useState<paramProps>({ page });
   const [quizList, setQuizList] = useState<any>([]);
@@ -182,6 +195,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
   useEffect(() => {
     if (isInstructorsAcceptSuccess || isInstructorsDeleteSuccess || isBanSuccess) {
       refetchProfessorRequest();
+      refetchMyMember();
     }
   }, [isInstructorsAcceptSuccess, isInstructorsDeleteSuccess, isBanSuccess]);
 
@@ -204,6 +218,10 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
 
   const handleChangeProfessorRequestButton = event => {
     console.log('123  ', selectedUUIDs);
+    if (selectedUUIDs.length === 0) {
+      alert('교수자를 선택해주세요.');
+      return;
+    }
     let params = {
       club: selectedClub?.clubSequence,
       memberUUIDs: selectedUUIDs,
@@ -350,12 +368,6 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
     refetchMyMember();
     refetchMyDashboardRequest();
   }, [isAcceptSuccess, isRejectSuccess]);
-
-  /** my quiz replies */
-  const [selectedClub, setSelectedClub] = useState(null);
-  const [sortType, setSortType] = useState('0001');
-  const [professorRequestSortType, setProfessorRequestSortType] = useState('0001');
-  const [sortQuizType, setSortQuizType] = useState('ASC');
 
   useDidMountEffect(() => {
     setMyClubParams({
@@ -3033,74 +3045,75 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
               />
             </div>
           </div>
-          {myMemberList.length === 0 && (
-            <div className="tw-h-[500px]">
+          {myMemberList.length === 0 ? (
+            <div className="">
               <div className=" tw-mt-10 tw-text-center tw-text-black  tw-py-20 border tw-text-base tw-rounded tw-bg-white">
                 클럽 학생이 없습니다.
               </div>
             </div>
+          ) : (
+            <div className="tw-h-[500px] tw-overflow-y-auto">
+              {myMemberList.map((item, index) => {
+                return (
+                  <div key={index} className="">
+                    <Grid
+                      className="tw-py-2 border-bottom tw-text-base"
+                      key={index}
+                      container
+                      direction="row"
+                      justifyContent="left"
+                      alignItems="center"
+                      rowSpacing={3}
+                    >
+                      <Grid item xs={12} sm={1}>
+                        <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
+                          <img
+                            className="tw-w-10 tw-h-10 border tw-rounded-full"
+                            src={item?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
+                          />
+                        </div>
+                      </Grid>
+                      <Grid item xs={12} sm={1}>
+                        <div className="tw-text-left tw-text-black tw-line-clamp-1">{item?.member?.nickname}</div>
+                      </Grid>
+                      <Grid item xs={12} sm={3}>
+                        <div className="tw-text-left tw-text-black tw-line-clamp-1">{item?.memberId}</div>
+                      </Grid>
+                      <Grid item xs={12} sm={2}>
+                        <div className="tw-text-left tw-text-black tw-line-clamp-1">{item?.jobGroup?.name}</div>
+                      </Grid>
+                      <Grid item xs={12} sm={2}>
+                        <div className="tw-text-left tw-text-black tw-line-clamp-1">{item?.job?.name}</div>
+                      </Grid>
+                      <Grid
+                        item
+                        xs={12}
+                        sm={3}
+                        style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end' }}
+                      >
+                        <div className=" tw-flex tw-justify-center tw-items-center">
+                          <button
+                            onClick={() => handleClickProfile(item?.member?.memberUUID)}
+                            type="button"
+                            data-tooltip-target="tooltip-default"
+                            className="tw-py-2 tw-mr-3 tw-bg-black tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                          >
+                            프로필 보기
+                          </button>
+                          <Checkbox
+                            checked={selectedUUIDs.includes(item?.member?.memberUUID)}
+                            onChange={e => handleCheckboxRequestChange(item?.member?.memberUUID, e.target.checked)}
+                            {...label}
+                          />
+                        </div>
+                      </Grid>
+                    </Grid>
+                  </div>
+                );
+              })}
+            </div>
           )}
 
-          <div className="tw-h-[500px] tw-overflow-y-auto">
-            {myMemberList.map((item, index) => {
-              return (
-                <div key={index} className="">
-                  <Grid
-                    className="tw-py-2 border-bottom tw-text-base"
-                    key={index}
-                    container
-                    direction="row"
-                    justifyContent="left"
-                    alignItems="center"
-                    rowSpacing={3}
-                  >
-                    <Grid item xs={12} sm={1}>
-                      <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
-                        <img
-                          className="tw-w-10 tw-h-10 border tw-rounded-full"
-                          src={item?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
-                        />
-                      </div>
-                    </Grid>
-                    <Grid item xs={12} sm={1}>
-                      <div className="tw-text-left tw-text-black tw-line-clamp-1">{item?.member?.nickname}</div>
-                    </Grid>
-                    <Grid item xs={12} sm={3}>
-                      <div className="tw-text-left tw-text-black tw-line-clamp-1">{item?.memberId}</div>
-                    </Grid>
-                    <Grid item xs={12} sm={2}>
-                      <div className="tw-text-left tw-text-black tw-line-clamp-1">{item?.jobGroup?.name}</div>
-                    </Grid>
-                    <Grid item xs={12} sm={2}>
-                      <div className="tw-text-left tw-text-black tw-line-clamp-1">{item?.job?.name}</div>
-                    </Grid>
-                    <Grid
-                      item
-                      xs={12}
-                      sm={3}
-                      style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end' }}
-                    >
-                      <div className=" tw-flex tw-justify-center tw-items-center">
-                        <button
-                          onClick={() => handleClickProfile(item?.member?.memberUUID)}
-                          type="button"
-                          data-tooltip-target="tooltip-default"
-                          className="tw-py-2 tw-mr-3 tw-bg-black tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
-                        >
-                          프로필 보기
-                        </button>
-                        <Checkbox
-                          checked={selectedUUIDs.includes(item?.member?.memberUUID)}
-                          onChange={e => handleCheckboxRequestChange(item?.member?.memberUUID, e.target.checked)}
-                          {...label}
-                        />
-                      </div>
-                    </Grid>
-                  </Grid>
-                </div>
-              );
-            })}
-          </div>
           <div className="tw-text-right">
             <button
               onClick={() => {
