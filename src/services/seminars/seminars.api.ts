@@ -202,6 +202,7 @@ export const myMemberList = async (params: any) => {
       size: params.size,
       clubMemberSortType: params.sortType,
       keyword: params.keyword,
+      isInstructorRole: true,
     },
   });
   return data.data;

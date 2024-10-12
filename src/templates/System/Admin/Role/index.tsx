@@ -127,7 +127,7 @@ export function AdminRoleTemplate() {
               <Desktop>
                 <div>
                   <div className="tw-flex tw-items-center tw-justify-between">
-                    <div className="tw-font-bold tw-text-xl tw-text-black tw-p-0">교수자 권환 관리</div>
+                    <div className="tw-font-bold tw-text-xl tw-text-black tw-p-0">교수자 권한 관리</div>
                     <TextField
                       size="small"
                       value={search} // 상태값을 TextField에 반영
