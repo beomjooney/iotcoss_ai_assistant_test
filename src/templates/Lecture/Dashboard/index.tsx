@@ -866,12 +866,11 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                 <line x1="0.5" y1="0.5" x2="0.5" y2="12.5" stroke="#E9ECF2" />
                               </svg>
                             </div>
-                            <p className="tw-absolute tw-left-[123px] tw-top-0 tw-text-sm tw-font-bold tw-text-left">
+                            <p className="tw-absolute tw-left-[113px] tw-top-0 tw-text-sm tw-font-bold tw-text-left">
                               <span className="tw-text-sm  tw-text-left tw-text-[#2474ed]">
                                 {myDashboardList?.lectureContentBasedAnswerCount}
                               </span>
                               <span className="tw-text-sm  tw-text-left tw-text-[#31343d]">
-                                {' '}
                                 / {myDashboardList?.totalQuestionCount}개
                               </span>
                             </p>
@@ -893,7 +892,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                 <line x1="0.5" y1="0.5" x2="0.5" y2="12.5" stroke="#E9ECF2" />
                               </svg>
                             </div>
-                            <p className="tw-absolute tw-left-[123px] tw-top-0 tw-text-sm tw-font-bold tw-text-right">
+                            <p className="tw-absolute tw-left-[113px] tw-top-0 tw-text-sm tw-font-bold tw-text-right">
                               <span className="tw-text-sm  tw-text-right tw-text-yellow-400">
                                 {myDashboardList?.generalAnswerCount}
                               </span>
@@ -920,7 +919,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                 <line x1="0.5" y1="0.5" x2="0.5" y2="12.5" stroke="#E9ECF2" />
                               </svg>
                             </div>
-                            <p className="tw-absolute tw-left-[123px] tw-top-0 tw-text-sm tw-font-bold tw-text-right">
+                            <p className="tw-absolute tw-left-[113px] tw-top-0 tw-text-sm tw-font-bold tw-text-right">
                               <span className="tw-text-sm  tw-text-right tw-text-red-500">
                                 {myDashboardList?.noAnswerCount}
                               </span>
