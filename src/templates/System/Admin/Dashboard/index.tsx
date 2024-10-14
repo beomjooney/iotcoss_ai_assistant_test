@@ -571,6 +571,11 @@ export function AdminDashboardTemplate() {
                                 </p>
                               </div>
                               <div className="tw-w-1/2  tw-h-[113px]">
+                                {summary?.answerStats?.length === 0 && (
+                                  <div className="tw-flex tw-justify-center tw-items-center tw-text-gray-500 tw-text-sm tw-mt-14">
+                                    데이터가 없습니다.
+                                  </div>
+                                )}
                                 {summary?.answerStats?.map((item, index) => (
                                   <div key={index} className="tw-flex tw-items-center tw-justify-between">
                                     <div>{item?.memberName}</div>
@@ -592,6 +597,11 @@ export function AdminDashboardTemplate() {
                                 </p>
                               </div>
                               <div className="tw-w-1/2 tw-h-[113px]">
+                                {summary?.reactionStats?.length === 0 && (
+                                  <div className="tw-flex tw-justify-center tw-items-center tw-text-gray-500 tw-text-sm tw-mt-14">
+                                    데이터가 없습니다.
+                                  </div>
+                                )}
                                 {summary?.reactionStats?.map((item, index) => (
                                   <div key={index} className="tw-flex tw-items-center tw-justify-between">
                                     <div>{item?.memberName}</div>
@@ -613,7 +623,7 @@ export function AdminDashboardTemplate() {
                             viewBox="0 0 20 20"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
-                            className="tw-w-5 tw-h-5 tw-relative"
+                            className="tw-w-5 tw-h-5 tw-relative tw-cursor-pointer"
                             preserveAspectRatio="xMidYMid meet"
                             onClick={() => {
                               refetchQuiz();
