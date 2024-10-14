@@ -238,7 +238,8 @@ export function AdminTemplate({ children }: AdminTemplateProps) {
               <div className="">
                 <div className="tw-p-5">
                   <div className="tw-text-lg tw-pb-4 tw-font-semibold tw-text-black">
-                    안녕하세요! {summary?.member?.nickname}님
+                    {/* 안녕하세요! {summary?.member?.nickname}님 */}
+                    안녕하세요! 대학관리자님
                   </div>
                 </div>
               </div>

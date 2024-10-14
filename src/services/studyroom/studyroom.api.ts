@@ -54,6 +54,36 @@ export const clubApprovalList = async params => {
   return { data: data.data };
 };
 
+/*회원 통계 조회 */
+export const clubStatsSummary = async params => {
+  const { data } = await axiosGeneralAPI().get('/api/manager/v1/member/stats-summary', { params });
+  return { data: data.data };
+};
+
+/*활성화 퀴즈 통계 조회 */
+export const clubQuizStatsSummary = async params => {
+  const { data } = await axiosGeneralAPI().get('/api/manager/v1/club-quizzes/stats', { params });
+  return { data: data.data };
+};
+
+/*인기 퀴즈 통계 조회 */
+export const clubActiveQuizStatsSummary = async params => {
+  const { data } = await axiosGeneralAPI().get('/api/manager/v1/quizzes/stats', { params });
+  return { data: data.data };
+};
+
+/* 클럽 관리 */
+export const clubSummary = async params => {
+  const { data } = await axiosGeneralAPI().get('/api/manager/v1/club/stats', { params });
+  return { data: data.data };
+};
+
+/* 클럽 chart 관리 */
+export const clubChartSummary = async params => {
+  const { data } = await axiosGeneralAPI().get('/api/manager/v1/member/stats', { params });
+  return { data: data.data };
+};
+
 export const clubTermsList = async params => {
   const { data } = await axiosGeneralAPI().get('/api/manager/v1/member/terms-agreements', { params });
   return { data: data.data };

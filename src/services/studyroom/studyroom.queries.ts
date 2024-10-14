@@ -31,6 +31,11 @@ import {
   clubApprovalList,
   clubAdminList,
   clubTermsList,
+  clubStatsSummary,
+  clubQuizStatsSummary,
+  clubActiveQuizStatsSummary,
+  clubSummary,
+  clubChartSummary,
 } from './studyroom.api';
 
 export interface paramProps {
@@ -193,6 +198,96 @@ export const useClubApprovalList = (
   return useQuery<RecommendContentsResponse, Error>(
     QUERY_KEY_FACTORY('QUIZ_CONTENTS').list({ size: DEFAULT_SIZE, ...params }),
     () => clubApprovalList({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+      enabled: true,
+    },
+  );
+};
+
+export const useClubStatsSummary = (
+  params?: paramProps,
+  onSuccess?: (data: RecommendContentsResponse) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 15;
+  return useQuery<RecommendContentsResponse, Error>(
+    QUERY_KEY_FACTORY('CLUB_STATS_SUMMARY').list({ size: DEFAULT_SIZE, ...params }),
+    () => clubStatsSummary({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+      enabled: true,
+    },
+  );
+};
+
+export const useClubQuizStatsSummary = (
+  params?: paramProps,
+  onSuccess?: (data: RecommendContentsResponse) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 15;
+  return useQuery<RecommendContentsResponse, Error>(
+    QUERY_KEY_FACTORY('CLUB_QUIZ_STATS_SUMMARY').list({ size: DEFAULT_SIZE, ...params }),
+    () => clubQuizStatsSummary({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+      enabled: true,
+    },
+  );
+};
+
+export const useClubActiveQuizStatsSummary = (
+  params?: paramProps,
+  onSuccess?: (data: RecommendContentsResponse) => void,
+  onError?: (error: Error) => void,
+) => {
+  // const DEFAULT_SIZE = 5;
+  return useQuery<RecommendContentsResponse, Error>(
+    QUERY_KEY_FACTORY('CLUB_ACTIVE_QUIZ_STATS_SUMMARY').list({ ...params }),
+    () => clubActiveQuizStatsSummary({ ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+      enabled: true,
+    },
+  );
+};
+
+export const useClubSummary = (
+  params?: paramProps,
+  onSuccess?: (data: RecommendContentsResponse) => void,
+  onError?: (error: Error) => void,
+) => {
+  // const DEFAULT_SIZE = 5;
+  return useQuery<RecommendContentsResponse, Error>(
+    QUERY_KEY_FACTORY('CLUB_SUMMARY').list({ ...params }),
+    () => clubSummary({ ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+      enabled: true,
+    },
+  );
+};
+
+export const useClubChartSummary = (
+  params?: paramProps,
+  onSuccess?: (data: RecommendContentsResponse) => void,
+  onError?: (error: Error) => void,
+) => {
+  // const DEFAULT_SIZE = 5;
+  return useQuery<RecommendContentsResponse, Error>(
+    QUERY_KEY_FACTORY('CLUB_CHART_SUMMARY').list({ ...params }),
+    () => clubChartSummary({ ...params }),
     {
       onSuccess,
       onError,

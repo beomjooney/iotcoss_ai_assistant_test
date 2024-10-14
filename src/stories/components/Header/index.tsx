@@ -295,7 +295,8 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
                 {/* <div className="tw-text-black tw-text-3xl tw-font-bold">AI조교</div> */}
               </div>
             ) : (
-              <img src="/assets/images/header/image_1.png" width={130} alt="logo" className={cx('image-logo')} />
+              <></>
+              // <img src="/assets/images/header/image_1.png" width={130} alt="logo" className={cx('image-logo')} />
             )}
           </div>
           <Mobile>
