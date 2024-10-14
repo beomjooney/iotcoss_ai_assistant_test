@@ -7,8 +7,16 @@ import {
   useMyClubList,
   useMyMemberList,
   useMyMemberRequestList,
+  useProfessorRequestList,
 } from 'src/services/seminars/seminars.queries';
-import { useCrewBanDelete, useCrewAcceptPost, useCrewRejectPost } from 'src/services/admin/friends/friends.mutations';
+import {
+  useCrewBanDelete,
+  useCrewAcceptPost,
+  useCrewRejectPost,
+  useInstructorsAccept,
+  useInstructorsDelete,
+  useInstructorBan,
+} from 'src/services/admin/friends/friends.mutations';
 
 import Grid from '@mui/material/Grid';
 
@@ -84,6 +92,7 @@ export interface ManageQuizClubTemplateProps {
   title?: string;
   subtitle?: boolean;
 }
+const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
 export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTemplateProps) {
   const { mutate: onTempSave, isSuccess: tempSucces } = useClubQuizTempSave();
@@ -91,7 +100,11 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   const { mutate: onCrewAccept, isSuccess: isAcceptSuccess } = useCrewAcceptPost();
   const { mutate: onCrewReject, isSuccess: isRejectSuccess } = useCrewRejectPost();
   const { mutate: onSaveImage, data: imageUrl, isSuccess: imageSuccess } = useUploadImage();
+  const { mutate: onInstructorsAccept, isSuccess: isInstructorsAcceptSuccess } = useInstructorsAccept();
+  const { mutate: onInstructorsDelete, isSuccess: isInstructorsDeleteSuccess } = useInstructorsDelete();
+  const { mutate: onInstructorsBan, isSuccess: isInstructorsBanSuccess } = useInstructorBan();
 
+  const [professorRequestSortType, setProfessorRequestSortType] = useState('0001');
   const [quizType, setQuizType] = useState('0100');
   const [participationCode, setParticipationCode] = useState('');
   const [isPublic, setIsPublic] = useState('0001');
@@ -99,17 +112,26 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   const [totalPage, setTotalPage] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
   const [pageMember, setPageMember] = useState(1);
+  const [pageMemberModal, setPageMemberModal] = useState(1);
   const [totalPageMember, setTotalPageMember] = useState(1);
+  const [totalPageMemberModal, setTotalPageMemberModal] = useState(1);
   const [totalElementsMember, setTotalElementsMember] = useState(0);
+  const [totalElementsMemberModal, setTotalElementsMemberModal] = useState(0);
   const [myClubList, setMyClubList] = useState<any>([]);
   const [myMemberList, setMyMemberList] = useState<any>([]);
   const [myMemberRequestList, setMyMemberRequestList] = useState<any>([]);
   const [myClubParams, setMyClubParams] = useState<any>({ clubSequence: id, page });
+  const [professorRequestParams, setProfessorRequestParams] = useState<any>({
+    clubSequence: id,
+    page,
+  });
+
   const [myClubMemberParams, setMyClubMemberParams] = useState<any>({ clubSequence: id, page });
   const [active, setActive] = useState(0);
   const [params, setParams] = useState<paramProps>({ page });
   const [quizList, setQuizList] = useState<any>([]);
   const [keyWorld, setKeyWorld] = useState('');
+  const [keyWorldProfessor, setKeyWorldProfessor] = useState('');
   const [selectedValue, setSelectedValue] = useState(id);
   // const [activeTab, setActiveTab] = useState('club');
   // const [activeTab, setActiveTab] = useState('community');
@@ -198,10 +220,32 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   const [skills, setSkills] = useState([]);
   const [jobLevelName, setJobLevelName] = useState([]);
   const [levelNames, setLevelNames] = useState([]);
+  const [requestProfessorList, setRequestProfessorList] = useState<any>([]);
+  const [totalElementsProfessor, setTotalElementsProfessor] = useState(0);
+  const [selectedUUIDs, setSelectedUUIDs] = useState<string[]>([]);
+  const [pageProfessor, setPageProfessor] = useState(1);
 
   const cx = classNames.bind(styles);
 
   const { data: optionsData }: UseQueryResult<ExperiencesResponse> = useOptions();
+
+  const handleCheckboxRequestChange = (uuid, isChecked) => {
+    if (isChecked) {
+      // 체크되었을 경우 UUID 추가
+      setSelectedUUIDs([...selectedUUIDs, uuid]);
+    } else {
+      // 체크 해제되었을 경우 UUID 제거
+      setSelectedUUIDs(selectedUUIDs.filter(id => id !== uuid));
+    }
+  };
+
+  useEffect(() => {
+    if (isInstructorsAcceptSuccess || isInstructorsDeleteSuccess || isBanSuccess) {
+      refetchProfessorRequest();
+      refetchMyMember();
+      setSelectedUUIDs([]);
+    }
+  }, [isInstructorsAcceptSuccess, isInstructorsDeleteSuccess, isBanSuccess]);
 
   useEffect(() => {
     // Merge new data from quizListData into allQuizData
@@ -379,6 +423,14 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     setSelectedImageProfile('');
   });
 
+  useDidMountEffect(() => {
+    setProfessorRequestParams({
+      clubSequence: selectedClub?.clubSequence,
+      page: pageProfessor,
+      sortType: professorRequestSortType,
+    });
+  }, [pageProfessor, professorRequestSortType]);
+
   const handleUniversityChange = e => {
     const selectedCode = e.target.value;
     const selected = optionsData?.data?.jobs?.find(u => u.code === selectedCode);
@@ -465,6 +517,10 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     setSortType(event.target.value);
   };
 
+  const handleChangeQuizModal = event => {
+    setSortTypeModal(event.target.value);
+  };
+
   const handleChangeQuizType = event => {
     setSortQuizType(event.target.value);
   };
@@ -503,12 +559,22 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     },
   );
 
+  // 교수자 요청 회원 목록 조회
+  const { isFetched: isProfessorRequestFetched, refetch: refetchProfessorRequest } = useProfessorRequestList(
+    professorRequestParams,
+    data => {
+      console.log('교수자 요청 회원 목록 조회', data);
+      setRequestProfessorList(data?.contents || []);
+      setTotalElementsProfessor(data?.totalElements);
+    },
+  );
+
   console.log(myClubMemberParams);
   // 내 회원 목록 조회
   const { isFetched: isMemberFetched, refetch: refetchMyMember } = useMyMemberList(myClubMemberParams, data => {
     console.log('isMemberFetched', data);
-    setTotalPageMember(data?.totalPages);
-    setTotalElementsMember(data?.totalElements);
+    setTotalPageMemberModal(data?.totalPages);
+    setTotalElementsMemberModal(data?.totalElements);
     setMyMemberList(data?.contents || []);
   });
 
@@ -557,6 +623,8 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   /** my quiz replies */
   const [selectedClub, setSelectedClub] = useState(null);
   const [sortType, setSortType] = useState('0001');
+  const [sortTypeModal, setSortTypeModal] = useState('0001');
+  const [isProfessorModalOpen, setIsProfessorModalOpen] = useState(false);
   const [sortQuizType, setSortQuizType] = useState('ASC');
 
   useDidMountEffect(() => {
@@ -578,6 +646,15 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
       sortType: sortQuizType,
     });
   }, [sortType, selectedClub]);
+
+  useDidMountEffect(() => {
+    setMyClubMemberParams({
+      clubSequence: selectedClub?.clubSequence,
+      page: pageMemberModal,
+      sortType: sortTypeModal,
+      keyword: keyWorldProfessor,
+    });
+  }, [pageMemberModal, sortTypeModal, keyWorldProfessor]);
 
   useDidMountEffect(() => {
     setMyClubMemberParams({
@@ -626,6 +703,9 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   };
   const handlePageChangeMember = (event: React.ChangeEvent<unknown>, value: number) => {
     setPageMember(value);
+  };
+  const handlePageChangeMemberModal = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPageMemberModal(value);
   };
   const handlePageChangeQuiz = (event: React.ChangeEvent<unknown>, value: number) => {
     setPageQuiz(value);
@@ -723,6 +803,23 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
       // no를 선택한 경우 아무것도 하지 않음
     }
   }
+
+  const handleChangeProfessorRequest = event => {
+    setProfessorRequestSortType(event.target.value);
+  };
+
+  const handleChangeProfessorRequestButton = event => {
+    console.log('123  ', selectedUUIDs);
+    if (selectedUUIDs.length === 0) {
+      alert('교수자를 선택해주세요.');
+      return;
+    }
+    let params = {
+      club: selectedClub?.clubSequence,
+      memberUUIDs: selectedUUIDs,
+    };
+    onInstructorsAccept(params);
+  };
 
   const handleUpdate = (evt: any, updated: any) => {
     console.log('updated', updated);
@@ -859,6 +956,12 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     let _keyworld = value.replace('#', '');
     if (_keyworld == '') _keyworld = null;
     setKeyWorld(_keyworld);
+  }
+
+  function searchKeyworldProfessor(value) {
+    let _keyworld = value.replace('#', '');
+    if (_keyworld == '') _keyworld = null;
+    setKeyWorldProfessor(_keyworld);
   }
 
   const [jobs, setJobs] = useState([]);
@@ -1074,6 +1177,15 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     else newState.push(id);
     return newState;
   };
+
+  function handleInstructorDelete(memberUUID: any): void {
+    let params = {
+      club: selectedClub?.clubSequence,
+      memberUUID: memberUUID,
+    };
+    onInstructorsDelete(params);
+    // 회원 강퇴 로직 추가
+  }
 
   const handleUniversitySearchChange = e => {
     const selectedCode = e.target.value;
@@ -1298,6 +1410,25 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
               }`}
             >
               학생목록
+            </p>
+          </div>
+          <div
+            className={`tw-w-[164px] tw-h-12 tw-relative  tw-ml-2.5 tw-cursor-pointer ${
+              activeTab === 'member' ? 'border-b-0' : ''
+            }`}
+            onClick={() => handleTabClick('member')}
+          >
+            <div
+              className={`tw-w-[164px] border-left tw-h-12 tw-absolute tw-left-[-1px] tw-top-[-1px] tw-rounded-tl-lg tw-rounded-tr-lg ${
+                activeTab === 'member' ? 'tw-bg-white' : 'tw-bg-[#f6f7fb]'
+              } border-top border-right`}
+            />
+            <p
+              className={`tw-absolute tw-left-[43px] tw-top-3 tw-text-base tw-text-center ${
+                activeTab === 'member' ? 'tw-font-bold tw-text-black' : 'tw-text-[#9ca5b2]'
+              }`}
+            >
+              교수자관리
             </p>
           </div>
           {/* Tab 2: 클럽관리 */}
@@ -1624,6 +1755,202 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                       );
                     })}
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 교수자 관리 */}
+        {activeTab === 'member' && (
+          <div>
+            <div className="tw-flex tw-flex-col tw-space-y-4 tw-rounded-lg">
+              <div className={cx('content-wrap', 'tw-h-[100vh]')}>
+                <div className={cx('container', 'tw-mt-10')}>
+                  <Grid container direction="row" alignItems="center" rowSpacing={0}>
+                    <Grid
+                      item
+                      container
+                      justifyContent="flex-start"
+                      xs={6}
+                      sm={10}
+                      className="tw-text-xl tw-text-black tw-font-bold"
+                    >
+                      클럽 교수자 목록 ({totalElementsProfessor || 0})
+                    </Grid>
+
+                    <Grid item container justifyContent="flex-end" xs={6} sm={2} style={{ textAlign: 'right' }}>
+                      <Pagination
+                        count={totalPage}
+                        size="small"
+                        siblingCount={0}
+                        page={page}
+                        renderItem={item => (
+                          <PaginationItem slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }} {...item} />
+                        )}
+                        onChange={handlePageChange}
+                      />
+                    </Grid>
+                  </Grid>
+                  <Divider className="tw-py-3 tw-mb-3" />
+
+                  <div className="tw-flex tw-justify-between tw-items-center tw-h-12 tw-gap-6 tw-mb-8 tw-mt-5">
+                    <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-3">
+                      <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                        정렬 :
+                      </p>
+
+                      <RadioGroup value={professorRequestSortType} onChange={handleChangeProfessorRequest} row>
+                        <FormControlLabel
+                          value="0001"
+                          control={
+                            <Radio
+                              sx={{
+                                color: '#ced4de',
+                                '&.Mui-checked': { color: '#e11837' },
+                              }}
+                              icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                              checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                            />
+                          }
+                          label={
+                            <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                              가나다순
+                            </p>
+                          }
+                        />
+                        <FormControlLabel
+                          value="0002"
+                          control={
+                            <Radio
+                              sx={{
+                                color: '#ced4de',
+                                '&.Mui-checked': { color: '#e11837' },
+                              }}
+                              icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                              checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                            />
+                          }
+                          label={
+                            <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                              가입최신순
+                            </p>
+                          }
+                        />
+                        <FormControlLabel
+                          value="0003"
+                          control={
+                            <Radio
+                              sx={{
+                                color: '#ced4de',
+                                '&.Mui-checked': { color: '#e11837' },
+                              }}
+                              icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                              checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                            />
+                          }
+                          label={
+                            <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                              가입오래된순
+                            </p>
+                          }
+                        />
+                      </RadioGroup>
+                    </div>
+                    <div>
+                      <button
+                        onClick={() => {
+                          setSelectedUUIDs([]);
+                          setIsProfessorModalOpen(true);
+                          setKeyWorld('');
+                        }}
+                        type="button"
+                        data-tooltip-target="tooltip-default"
+                        className="tw-py-3 tw-px-8 tw-bg-white border tw-text-gray-500 max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                      >
+                        교수자 추가
+                      </button>
+                    </div>
+                  </div>
+
+                  {requestProfessorList.length === 0 && (
+                    <div className=" tw-mt-10 tw-text-center tw-text-black  tw-py-20 border tw-text-base tw-rounded tw-bg-white">
+                      클럽 가입 신청이 없습니다.
+                    </div>
+                  )}
+
+                  {requestProfessorList?.map((item, index) => {
+                    return (
+                      <React.Fragment key={index}>
+                        <Grid
+                          item
+                          className="tw-py-2 border-bottom tw-text-base"
+                          key={index}
+                          container
+                          direction="row"
+                          justifyContent="left"
+                          alignItems="center"
+                          rowSpacing={3}
+                        >
+                          <Grid item xs={12} sm={1}>
+                            <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
+                              <img
+                                className="tw-w-10 tw-h-10 border tw-rounded-full"
+                                src={
+                                  item?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'
+                                }
+                              />
+                            </div>
+                          </Grid>
+                          <Grid item xs={12} sm={1}>
+                            <div className="tw-text-left tw-text-black">{item?.member?.nickname}</div>
+                          </Grid>
+                          <Grid item xs={12} sm={3}>
+                            <div className="tw-text-left tw-text-black">{item?.memberId}</div>
+                          </Grid>
+                          <Grid item xs={12} sm={2}>
+                            <div className="tw-text-left tw-text-black">{item?.jobGroup?.name}</div>
+                          </Grid>
+                          <Grid item xs={12} sm={2}>
+                            <div className="tw-text-left tw-text-black">{item?.job?.name}</div>
+                          </Grid>
+                          <Grid
+                            item
+                            xs={12}
+                            sm={3}
+                            style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end' }}
+                          >
+                            <div className="tw-gap-3">
+                              <button
+                                onClick={() => handleClickProfile(item?.member?.memberUUID)}
+                                type="button"
+                                data-tooltip-target="tooltip-default"
+                                className="tw-py-2 tw-mr-3 tw-bg-black tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                              >
+                                프로필 보기
+                              </button>
+                              <button
+                                onClick={() => handleInstructorDelete(item?.member?.memberUUID)}
+                                type="button"
+                                data-tooltip-target="tooltip-default"
+                                className="tw-py-2 tw-px-5 tw-mr-3 tw-bg-white border tw-text-gray-500 max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                              >
+                                권한삭제
+                              </button>
+                              <button
+                                onClick={() => handleDeleteMember(item?.member?.memberUUID)}
+                                type="button"
+                                data-tooltip-target="tooltip-default"
+                                className="tw-py-2 tw-px-5 tw-bg-white border max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                              >
+                                강퇴
+                              </button>
+                            </div>
+                          </Grid>
+                        </Grid>
+                      </React.Fragment>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -2494,6 +2821,210 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
           </div>
         )}
       </div>
+
+      <MentorsModal
+        title="교수자 추가하기"
+        isOpen={isProfessorModalOpen}
+        onAfterClose={() => {
+          setIsProfessorModalOpen(false);
+          setPageProfessor(1);
+          setSortType('0001');
+          setSelectedUUIDs([]);
+          setKeyWorldProfessor('');
+        }}
+      >
+        <div className="tw-mb-8">
+          <Grid container direction="row" alignItems="center" rowSpacing={0}>
+            <Grid
+              item
+              container
+              justifyContent="flex-start"
+              xs={6}
+              sm={6}
+              className="tw-text-xl tw-text-black tw-font-bold"
+            >
+              클럽 학습자 목록 ({totalElementsMemberModal || 0})
+            </Grid>
+
+            <Grid item container justifyContent="flex-end" xs={6} sm={6} style={{ textAlign: 'right' }}>
+              <TextField
+                fullWidth
+                id="outlined-basic"
+                label=""
+                placeholder="이름검색"
+                variant="outlined"
+                onKeyPress={e => {
+                  if (e.key === 'Enter') {
+                    setPageProfessor(1);
+                    searchKeyworldProfessor((e.target as HTMLInputElement).value);
+                  }
+                }}
+                InputProps={{
+                  style: { height: '43px' },
+                  startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
+                }}
+              />
+            </Grid>
+          </Grid>
+          <div className="tw-flex tw-justify-between tw-items-center tw-h-12 tw-my-5">
+            <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-3">
+              <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                정렬 :
+              </p>
+
+              <RadioGroup value={sortTypeModal} onChange={handleChangeQuizModal} row>
+                <FormControlLabel
+                  value="0001"
+                  control={
+                    <Radio
+                      sx={{
+                        color: '#ced4de',
+                        '&.Mui-checked': { color: '#e11837' },
+                      }}
+                      icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                      checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                    />
+                  }
+                  label={
+                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                      가나다순
+                    </p>
+                  }
+                />
+                <FormControlLabel
+                  value="0003"
+                  control={
+                    <Radio
+                      sx={{
+                        color: '#ced4de',
+                        '&.Mui-checked': { color: '#e11837' },
+                      }}
+                      icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                      checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                    />
+                  }
+                  label={
+                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                      가입최신순
+                    </p>
+                  }
+                />
+                <FormControlLabel
+                  value="0004"
+                  control={
+                    <Radio
+                      sx={{
+                        color: '#ced4de',
+                        '&.Mui-checked': { color: '#e11837' },
+                      }}
+                      icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
+                      checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                    />
+                  }
+                  label={
+                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                      가입오래된순
+                    </p>
+                  }
+                />
+              </RadioGroup>
+            </div>
+            <div>
+              <Pagination
+                count={totalPageMemberModal}
+                size="small"
+                siblingCount={0}
+                page={pageMemberModal}
+                renderItem={item => (
+                  <PaginationItem slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }} {...item} />
+                )}
+                onChange={handlePageChangeMemberModal}
+              />
+            </div>
+          </div>
+          {myMemberList.length === 0 ? (
+            <div className="">
+              <div className=" tw-mt-10 tw-text-center tw-text-black  tw-py-20 border tw-text-base tw-rounded tw-bg-white">
+                클럽 학생이 없습니다.
+              </div>
+            </div>
+          ) : (
+            <div className="tw-h-[500px] tw-overflow-y-auto">
+              {myMemberList.map((item, index) => {
+                return (
+                  <div key={index} className="">
+                    <Grid
+                      className="tw-py-2 border-bottom tw-text-base"
+                      key={index}
+                      container
+                      direction="row"
+                      justifyContent="left"
+                      alignItems="center"
+                      rowSpacing={3}
+                    >
+                      <Grid item xs={12} sm={1}>
+                        <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
+                          <img
+                            className="tw-w-10 tw-h-10 border tw-rounded-full"
+                            src={item?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
+                          />
+                        </div>
+                      </Grid>
+                      <Grid item xs={12} sm={1}>
+                        <div className="tw-text-left tw-text-black tw-line-clamp-1">{item?.member?.nickname}</div>
+                      </Grid>
+                      <Grid item xs={12} sm={3}>
+                        <div className="tw-text-left tw-text-black tw-line-clamp-1">{item?.memberId}</div>
+                      </Grid>
+                      <Grid item xs={12} sm={2}>
+                        <div className="tw-text-left tw-text-black tw-line-clamp-1">{item?.jobGroup?.name}</div>
+                      </Grid>
+                      <Grid item xs={12} sm={2}>
+                        <div className="tw-text-left tw-text-black tw-line-clamp-1">{item?.job?.name}</div>
+                      </Grid>
+                      <Grid
+                        item
+                        xs={12}
+                        sm={3}
+                        style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end' }}
+                      >
+                        <div className=" tw-flex tw-justify-center tw-items-center">
+                          <button
+                            onClick={() => handleClickProfile(item?.member?.memberUUID)}
+                            type="button"
+                            data-tooltip-target="tooltip-default"
+                            className="tw-py-2 tw-mr-3 tw-bg-black tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                          >
+                            프로필 보기
+                          </button>
+                          <Checkbox
+                            checked={selectedUUIDs.includes(item?.member?.memberUUID)}
+                            onChange={e => handleCheckboxRequestChange(item?.member?.memberUUID, e.target.checked)}
+                            {...label}
+                          />
+                        </div>
+                      </Grid>
+                    </Grid>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          <div className="tw-text-right">
+            <button
+              onClick={() => {
+                handleChangeProfessorRequestButton(selectedUUIDs);
+              }}
+              type="button"
+              data-tooltip-target="tooltip-default"
+              className="tw-w-[125px] tw-mt-10 tw-py-3 tw-bg-blue-500  tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+            >
+              확인
+            </button>
+          </div>
+        </div>
+      </MentorsModal>
 
       <MentorsModal title="퀴즈 등록하기" isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
         <div className="tw-mb-8">

@@ -42,10 +42,6 @@ export function AdminDashboardTemplate() {
   const [activeQuizSummary, setActiveQuizSummary] = useState({});
   const [clubSummary, setClubSummary] = useState({});
   const [category, setCategory] = useState([]);
-  const [incrementalInstructorCount, setIncrementalInstructorCount] = useState([]);
-  const [totalInstructorCount, setTotalInstructorCount] = useState([]);
-  const [incrementalStudentCount, setIncrementalStudentCount] = useState([]);
-  const [totalStudentCount, setTotalStudentCount] = useState([]);
 
   const [startDay, setStartDay] = React.useState<Dayjs | null>(dayjs());
   const [endDay, setEndDay] = React.useState<Dayjs | null>(dayjs().add(30, 'day'));
@@ -149,41 +145,48 @@ export function AdminDashboardTemplate() {
     data => {
       console.log('setClubChartSummary', data);
       // 데이터 분리
+      const newCategory = [];
+      const newIncrementalInstructorCount = [];
+      const newTotalInstructorCount = [];
+      const newIncrementalStudentCount = [];
+      const newTotalStudentCount = [];
+
       data?.data?.contents?.forEach(item => {
         console.log('item', item);
-        category.push(item.statsDate);
-        incrementalInstructorCount.push(item.incrementalInstructorCount);
-        totalInstructorCount.push(item.totalInstructorCount);
-        incrementalStudentCount.push(item.incrementalStudentCount);
-        totalStudentCount.push(item.totalStudentCount);
+        newCategory.push(item.statsDate);
+        newIncrementalInstructorCount.push(item.incrementalInstructorCount);
+        newTotalInstructorCount.push(item.totalInstructorCount);
+        newIncrementalStudentCount.push(item.incrementalStudentCount);
+        newTotalStudentCount.push(item.totalStudentCount);
       });
 
-      console.log('category', category);
-      console.log('incrementalInstructorCount', incrementalInstructorCount);
-      console.log('totalInstructorCount', totalInstructorCount);
-      console.log('incrementalStudentCount', incrementalStudentCount);
-      console.log('totalStudentCount', totalStudentCount);
+      setChartOptions(prevOptions => ({
+        ...prevOptions,
+        xaxis: {
+          categories: newCategory,
+        },
+      }));
 
       setChartSeries([
         {
           name: '교수자 신규',
-          data: incrementalInstructorCount,
+          data: newIncrementalInstructorCount,
           type: 'line',
         },
         {
           name: '학습자 신규',
-          data: incrementalStudentCount,
+          data: newIncrementalStudentCount,
           type: 'line',
         },
         {
           name: '교수자 누적',
-          data: totalInstructorCount,
+          data: newTotalInstructorCount,
           type: 'bar',
           yAxisIndex: 1, // 오른쪽 Y축에 연결
         },
         {
           name: '학습자 누적',
-          data: totalStudentCount,
+          data: newTotalStudentCount,
           type: 'bar',
           yAxisIndex: 1, // 오른쪽 Y축에 연결
         },
@@ -278,35 +281,54 @@ export function AdminDashboardTemplate() {
   };
 
   const handleSearch = () => {
+    const nextDay3 = dayjs(startDay).format('YYYY-MM-DD');
+    const nextDay4 = dayjs(endDay).format('YYYY-MM-DD');
+
+    if (!dayjs(nextDay4).isAfter(dayjs(nextDay3))) {
+      alert(`종료일 (${nextDay4})은(는) 시작일 (${nextDay3})보다 뒤에 있어야 합니다.`);
+      return; // 혹은 필요에 따라 validation 실패시 코드 실행 중단
+    }
+
+    const diffInDays = dayjs(nextDay4).diff(dayjs(nextDay3), 'day');
+    if (diffInDays >= 60) {
+      alert('기간 조회는 60일까지 가능합니다.');
+      return; // 기간이 31일을 초과하면 코드 실행 중단
+    }
+
     console.log('startDay', startDay.format('YYYY-MM-DD'));
     setClubChartParams({
       ...clubChartParams,
       statsDateSearchStart: startDay.format('YYYY-MM-DD'),
       statsDateSearchEnd: endDay.format('YYYY-MM-DD'),
+      size: 5,
     });
 
     setSummaryParams({
       ...summaryParams,
       statsDateSearchStart: startDay.format('YYYY-MM-DD'),
       statsDateSearchEnd: endDay.format('YYYY-MM-DD'),
+      size: 5,
     });
 
     setQuizParams({
       ...quizParams,
       statsDateSearchStart: startDay.format('YYYY-MM-DD'),
       statsDateSearchEnd: endDay.format('YYYY-MM-DD'),
+      size: 5,
     });
 
     setActiveQuizParams({
       ...activeQuizParams,
       statsDateSearchStart: startDay.format('YYYY-MM-DD'),
       statsDateSearchEnd: endDay.format('YYYY-MM-DD'),
+      size: 5,
     });
 
     setClubParams({
       ...clubParams,
       statsDateSearchStart: startDay.format('YYYY-MM-DD'),
       statsDateSearchEnd: endDay.format('YYYY-MM-DD'),
+      size: 5,
     });
   };
 
@@ -548,6 +570,10 @@ export function AdminDashboardTemplate() {
                             xmlns="http://www.w3.org/2000/svg"
                             className="tw-w-5 tw-h-5 tw-relative"
                             preserveAspectRatio="xMidYMid meet"
+                            onClick={() => {
+                              refetchQuiz();
+                              refetchActiveQuiz();
+                            }}
                           >
                             <rect x="0.5" y="0.5" width={19} height={19} rx="3.5" fill="white" />
                             <rect x="0.5" y="0.5" width={19} height={19} rx="3.5" stroke="#E0E4EB" />
@@ -571,6 +597,12 @@ export function AdminDashboardTemplate() {
                             전체보기 &gt;
                           </div>
                         </div>
+
+                        {quizSummary?.contents?.length === 0 && (
+                          <div className="tw-flex  tw-pb-10 tw-justify-center tw-items-center tw-text-gray-500 tw-text-sm tw-mt-10">
+                            데이터가 없습니다.
+                          </div>
+                        )}
                         {quizSummary?.contents?.map((quiz, index) => (
                           <div
                             key={index}
@@ -660,6 +692,12 @@ export function AdminDashboardTemplate() {
                             전체보기 &gt;
                           </div>
                         </div>
+
+                        {activeQuizSummary?.contents?.length === 0 && (
+                          <div className="tw-flex tw-pb-10 tw-justify-center tw-items-center tw-text-gray-500 tw-text-sm tw-mt-10">
+                            데이터가 없습니다.
+                          </div>
+                        )}
                         {activeQuizSummary?.contents?.map((quiz, index) => (
                           <div
                             key={index}
@@ -748,8 +786,11 @@ export function AdminDashboardTemplate() {
                             viewBox="0 0 20 20"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
-                            className="tw-w-5 tw-h-5 tw-relative"
+                            className="tw-w-5 tw-h-5 tw-relative tw-cursor-pointer"
                             preserveAspectRatio="xMidYMid meet"
+                            onClick={() => {
+                              refetchClubSummary();
+                            }}
                           >
                             <rect x="0.5" y="0.5" width={19} height={19} rx="3.5" fill="white" />
                             <rect x="0.5" y="0.5" width={19} height={19} rx="3.5" stroke="#E0E4EB" />
@@ -774,6 +815,11 @@ export function AdminDashboardTemplate() {
                           </div>
                         </div>
 
+                        {clubSummary?.contents?.length === 0 && (
+                          <div className="tw-flex tw-pb-10 tw-justify-center tw-items-center tw-text-gray-500 tw-text-sm tw-mt-10">
+                            데이터가 없습니다.
+                          </div>
+                        )}
                         {clubSummary?.contents?.map((quiz, index) => (
                           <div
                             key={index}

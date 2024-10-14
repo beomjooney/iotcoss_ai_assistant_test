@@ -201,7 +201,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
 
       {/* <section className="hero-section ptb-100">{children}</section> */}
       <section className="hero-section ptb-100"> {renderChildrenWithProps()}</section>
-      {/* {isContentRendered && <Footer />} */}
+      {isContentRendered && <Footer />}
     </div>
   );
 };

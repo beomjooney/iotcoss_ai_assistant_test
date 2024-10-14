@@ -196,6 +196,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
     if (isInstructorsAcceptSuccess || isInstructorsDeleteSuccess || isBanSuccess) {
       refetchProfessorRequest();
       refetchMyMember();
+      setSelectedUUIDs([]);
     }
   }, [isInstructorsAcceptSuccess, isInstructorsDeleteSuccess, isBanSuccess]);
 
