@@ -645,6 +645,12 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
       page: pageQuiz,
       sortType: sortQuizType,
     });
+
+    setProfessorRequestParams({
+      clubSequence: selectedClub?.clubSequence,
+      page: pageProfessor,
+      sortType: professorRequestSortType,
+    });
   }, [sortType, selectedClub]);
 
   useDidMountEffect(() => {
