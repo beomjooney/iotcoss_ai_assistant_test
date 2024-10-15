@@ -124,7 +124,7 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
 
       // if (loginData?.tenant_uri === getFirstSubdomain() || isLocalEnv || isLocalProd) {
       if (loginData?.tenant_uri === getFirstSubdomain() || isLocalEnv) {
-        // location.href = '/';
+        location.href = '/';
       } else {
         const authStore = localStorage.getItem('auth-store');
         if (authStore) {
@@ -136,7 +136,7 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
           deleteCookie('access_token');
           localStorage.removeItem('auth-store');
           localStorage.removeItem('app-storage');
-          // location.href = loginData?.redirections?.home_url + `?authStore=${encodedJson}`;
+          location.href = loginData?.redirections?.home_url + `?authStore=${encodedJson}`;
           //test
           // location.href = 'http://dsu.localhost:3001/' + `?authStore=${encodedJson}`;
         }

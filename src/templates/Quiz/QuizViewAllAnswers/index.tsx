@@ -47,15 +47,13 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
   const { user } = useStore();
   const router = useRouter();
   const { publishDate, quizSequence } = router.query;
-  const [quizList, setQuizList] = useState<RecommendContent[]>([]);
-  const { memberId, logged } = useSessionStore.getState();
+  console.log('publishDate, quizSequence', publishDate, quizSequence, id);
   const [quizListData, setQuizListData] = useState<any[]>([]);
   const [contents, setContents] = useState<any>([]);
   const [quizProgressData, setQuizProgressData] = useState<any>([]);
   const [clubQuizThreads, setClubQuizThreads] = useState<any>([]);
   const [clubQuizGetThreads, setClubQuizGetThreads] = useState<any>('');
   const [clubQuizGetThreadsAll, setClubQuizGetThreadsAll] = useState<any>('');
-  const [beforeOnePick, setBeforeOnePick] = useState(1);
   const [keyWorld, setKeyWorld] = useState('');
   const [totalElements, setTotalElements] = useState(0);
   const [selectedValue, setSelectedValue] = useState(quizSequence || '');
@@ -64,7 +62,6 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
   const [quizParams, setQuizParams] = useState<any>({});
   const [quizParamsAll, setQuizParamsAll] = useState<any>({});
   const [quizSaveParams, setQuizSaveParams] = useState<any>({});
-  const [listParams, setListParams] = useState<any>({ id, page });
   const [totalPage, setTotalPage] = useState(1);
   const [selectedQuiz, setSelectedQuiz] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -119,15 +116,6 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     }
   }, [answerSuccessSavePut]);
 
-  const handlerTodayQuizSolution = () => {
-    if (user.phoneNumber === null || user.phoneNumber === '') {
-      setIsModalOpen(true);
-    } else {
-      const firstItemWithNullAnswer = quizList.find(item => item.answer.answerStatus === '0000');
-      router.push('/quiz/solution/' + `${firstItemWithNullAnswer?.clubQuizSequence}`);
-    }
-  };
-
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
@@ -143,18 +131,17 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     console.log('first get data', data);
 
     let index; // `index` 변수 선언
-    if (publishDate) {
-      index = data?.clubQuizzes?.findIndex(item => item.publishDate === publishDate);
-      console.log('index', publishDate, index);
+
+    if (selectedValue) {
+      index = data?.clubQuizzes?.findIndex(item => {
+        return item.quizSequence === parseInt(selectedValue);
+      });
     } else {
-      index = data?.clubQuizzes?.findIndex(item => item.isPublished === true);
-      console.log('index', publishDate, index);
+      index = 0;
     }
     setSelectedQuiz(data?.clubQuizzes[index]);
     const selectedSession = data?.clubQuizzes[index] ? data.clubQuizzes[index].quizSequence : null;
     setSelectedValue(selectedSession);
-    console.log('selectedSession 1', selectedSession);
-    console.log(data?.clubQuizzes[index]);
     setContents(data);
 
     setParams({
@@ -228,12 +215,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     });
     setClubQuizGetThreadsAll(data);
   });
-
-  // useDidMountEffect(() => {
-
-  //   console.log('updatedQuizData', updatedQuizData);
-  // }, [clubQuizGetThreadsAll]);
-
+  console.log('params', params);
   const { isFetched: isQuizAnswer, refetch: refetchQuizPrgress } = useQuizGetProgress(params, data => {
     console.log('second get data');
     console.log('data', data);
@@ -324,7 +306,11 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     }
   }, [isSuccess, quizAnswerData]);
 
-  const handleClick = (memberUUID: string, quizSequence: number) => {
+  const handleClick = (memberUUID: string, quizSequence: number, answerStatus: string) => {
+    if (answerStatus !== '0003') {
+      alert('AI채점 / 교수채점을 한뒤에\n상세보기를 눌러주세요.');
+      return;
+    }
     console.log(memberUUID, quizSequence);
     setIsModalOpen(true);
     setClubQuizGetThreads('');
@@ -754,7 +740,9 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                         <TableCell padding="none" align="center" component="th" scope="row">
                           <button
                             className="tw-w-24 max-lg:tw-mr-1 border tw-rounded-md tw-text-sm tw-text-black tw-py-2.5 tw-px-4"
-                            onClick={() => handleClick(info?.member?.memberUUID, info?.quizSequence)}
+                            onClick={() =>
+                              handleClick(info?.member?.memberUUID, info?.quizSequence, info?.answerStatus)
+                            }
                           >
                             상세보기
                           </button>

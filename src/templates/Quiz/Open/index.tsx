@@ -931,9 +931,11 @@ export function QuizOpenTemplate() {
       return false;
     }
 
-    if (studyCycleNum.length === 0) {
-      alert('퀴즈 주기를 선택해주세요');
-      return false;
+    if (quizType === '0100') {
+      if (studyCycleNum.length === 0) {
+        alert('퀴즈 주기를 선택해주세요');
+        return false;
+      }
     }
 
     if (num == 0) {

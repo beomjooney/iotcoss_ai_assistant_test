@@ -7,7 +7,7 @@ import { getButtonText } from 'src/utils/clubStatus';
 import { useSessionStore } from 'src/store/session';
 
 const CourseCard = ({ data, border = false }) => {
-  const { roles } = useSessionStore.getState();
+  const { roles, memberId } = useSessionStore.getState();
   const { mutate: onSaveLike, isSuccess } = useSaveLike();
   const { mutate: onDeleteLike } = useDeleteLike();
   console.log('CourseCard', data);
@@ -31,7 +31,7 @@ const CourseCard = ({ data, border = false }) => {
   return (
     <div
       onClick={() => {
-        if (roles?.includes('ROLE_ADMIN') || roles?.includes('ROLE_MANAGER')) {
+        if (roles?.includes('ROLE_ADMIN') || (roles?.includes('ROLE_MANAGER') && memberId === data.leaderUUID)) {
           // Redirect admins to the dashboard based on the clubType
           data?.clubType === '0100'
             ? (window.location.href = `/quiz-dashboard/${data.clubSequence}`)
