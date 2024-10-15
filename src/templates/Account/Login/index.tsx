@@ -136,9 +136,9 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
           deleteCookie('access_token');
           localStorage.removeItem('auth-store');
           localStorage.removeItem('app-storage');
-          // location.href = loginData?.redirections?.home_url + `?authStore=${encodedJson}`;
+          location.href = loginData?.redirections?.home_url + `?authStore=${encodedJson}`;
           //test
-          location.href = 'http://dsu.localhost:3001/' + `?authStore=${encodedJson}`;
+          // location.href = 'http://dsu.localhost:3001/' + `?authStore=${encodedJson}`;
         }
       }
     }
