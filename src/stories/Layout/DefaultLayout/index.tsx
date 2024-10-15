@@ -152,15 +152,15 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
   });
   // console.log(filteredMenuItems);
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  // useEffect(() => {
+  //   setIsMounted(true);
+  // }, []);
 
-  useEffect(() => {
-    if (isMounted) {
-      setIsContentRendered(true);
-    }
-  }, [isMounted]);
+  // useEffect(() => {
+  //   if (isMounted) {
+  //     setIsContentRendered(true);
+  //   }
+  // }, [isMounted]);
 
   const [activeIndex, setActiveIndex] = useState(0);
 

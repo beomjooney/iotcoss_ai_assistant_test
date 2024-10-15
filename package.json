@@ -1,5 +1,5 @@
 {
-  "name": "appco-react",
+  "name": "quizup",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -93,6 +93,7 @@
   },
   "scripts": {
     "dev": "env-cmd -f env/.env.local node server.js",
+    "dong": "env-cmd -f env/.env.dong node server.js",
     "prod": "env-cmd -f env/.env.prod node server.js",
     "dev-prod": "env-cmd -f env/.env.prod next dev -p 3001",
     "start-dev": "NODE_ENV=production env-cmd -f env/.env.dev node server.js",

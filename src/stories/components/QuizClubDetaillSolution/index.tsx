@@ -351,7 +351,7 @@ const QuizClubDetaillSolution = ({
               </Grid>
               <Divider className="tw-py-3 tw-mb-3" />
 
-              {quizList.length === 0 && (
+              {quizList?.length === 0 && (
                 <div className="tw-p-10 tw-rounded-lg border tw-mt-10 tw-text-center tw-text-gray-500 tw-text-base tw-font-medium">
                   아직 오픈된 퀴즈가 없습니다.
                 </div>

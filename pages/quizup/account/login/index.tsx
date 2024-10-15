@@ -21,6 +21,7 @@ export function LoginOnePage(props: LoginOnePageProps) {
   const authUpdate = async () => {
     const { update } = useSessionStore.getState();
     const userData: UserInfo = jwt_decode(String(token));
+    console.log('userData', userData);
 
     update({
       logged: userData.sub !== 'Guest',

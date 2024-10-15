@@ -46,7 +46,7 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
   const [scroll, setScroll] = React.useState<DialogProps['scroll']>('paper');
 
   const { mutate: onLogin, isSuccess, data: loginData } = useLogin();
-  const { mutate: onLoginSignUp, isSuccess: isSignUpSuccess, data: signUpData } = useLoginSignUpDSU();
+  const { mutate: onLoginSignUp, isSuccess: isSignUpSuccess, isError, data: signUpData } = useLoginSignUpDSU();
 
   useEffect(() => {
     console.log('signUpData', signUpData);
@@ -90,10 +90,20 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
   };
 
   useEffect(() => {
+    if (isSuccess) {
+      console.log('isSuccess', isSuccess);
+      refetch();
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
     console.log('loginData', loginData);
     if (loginData?.responseCode === '1403') {
       console.log('loginData?.responseCode', loginData?.responseCode);
       onReply('0002', 'paper');
+      return;
+    } else if (loginData?.responseCode === '0400') {
+      console.log('loginData?.responseCode', loginData?.responseCode);
       return;
     }
 
@@ -126,9 +136,9 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
           deleteCookie('access_token');
           localStorage.removeItem('auth-store');
           localStorage.removeItem('app-storage');
-          location.href = loginData?.redirections?.home_url + `?authStore=${encodedJson}`;
+          // location.href = loginData?.redirections?.home_url + `?authStore=${encodedJson}`;
           //test
-          //location.href = 'http://dsu.localhost:3001/' + `?authStore=${encodedJson}`;
+          location.href = 'http://dsu.localhost:3001/' + `?authStore=${encodedJson}`;
         }
       }
     }

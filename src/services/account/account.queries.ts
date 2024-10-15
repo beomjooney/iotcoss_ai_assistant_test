@@ -80,6 +80,7 @@ export const useTermsList = (params: any, onSuccess?: (data: User) => void, onEr
     onSuccess,
     onError,
     refetchOnWindowFocus: false,
+    enabled: false,
     retry: false,
   });
 
