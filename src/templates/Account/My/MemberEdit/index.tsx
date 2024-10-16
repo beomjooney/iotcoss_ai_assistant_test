@@ -333,10 +333,17 @@ export function MemberEditTemplate() {
   useEffect(() => {
     // setUser(userInfo); // 전역 정보 업데이트
     setNickname(userInfo?.personalInfo?.nickname);
+    console.log(userInfo?.personalInfo?.isEmailReceive);
     setPhoneNumber(formatPhoneNumber(userInfo?.personalInfo?.phoneNumber));
-    setEmailReceiveYn(userInfo?.personalInfo?.isEmailReceive);
-    setKakaoReceiveYn(userInfo?.personalInfo?.isKakaoReceive);
-    setSmsReceiveYn(userInfo?.personalInfo?.isSmsReceive);
+    // setEmail1(userInfo?.personalInfo?.isEmailReceive);
+    // setKakao(userInfo?.personalInfo?.isKakaoReceive);
+    // setSms(userInfo?.personalInfo?.isSmsReceive);
+    setCheckMarketingList([
+      userInfo?.personalInfo?.isEmailReceive ? 'email' : '',
+      userInfo?.personalInfo?.isSmsReceive ? 'sms' : '',
+      userInfo?.personalInfo?.isKakaoReceive ? 'kakao' : '',
+    ]);
+    setIdList(['service1', 'privacy1', userInfo?.personalInfo?.termsAgreed[2].isAgreed ? 'promotion1' : '']);
     setSelectedUniversityName(userInfo?.personalInfo?.jobGroup?.name);
     const selected = userInfo?.jobOptions?.find(u => u.code === userInfo?.personalInfo?.jobGroup?.code);
     setJobs(selected ? selected.jobs : []);
