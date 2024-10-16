@@ -421,27 +421,29 @@ BannerProps) => {
                     onChange={onMessageChange}
                     value={introductionMessage}
                   />
-                  <div className="tw-text-left tw-font-bold tw-text-base tw-py-4">최종답변</div>
                   {activeStep === 2 && (
-                    <TextareaAutosize
-                      aria-label="minimum height"
-                      minRows={15}
-                      placeholder="답변을 25자 이상 입력해주세요."
-                      style={{
-                        width: '100%',
-                        backgroundColor: '#f8f9fa',
-                        border: '0px solid #B0B7C1',
-                        borderRadius: '15px',
-                        fontSize: '15px',
-                        padding: 12,
-                        resize: 'none',
-                        maxHeight: '350px', // 최대 높이 설정 (스크롤을 표시하려면 설정)
-                        overflow: 'auto',
-                      }}
-                      name="introductionMessage"
-                      onChange={onPostMessageChange}
-                      value={postIntroductionMessage}
-                    />
+                    <>
+                      <div className="tw-text-left tw-font-bold tw-text-base tw-py-4">최종답변</div>
+                      <TextareaAutosize
+                        aria-label="minimum height"
+                        minRows={15}
+                        placeholder="답변을 25자 이상 입력해주세요."
+                        style={{
+                          width: '100%',
+                          backgroundColor: '#f8f9fa',
+                          border: '0px solid #B0B7C1',
+                          borderRadius: '15px',
+                          fontSize: '15px',
+                          padding: 12,
+                          resize: 'none',
+                          maxHeight: '350px', // 최대 높이 설정 (스크롤을 표시하려면 설정)
+                          overflow: 'auto',
+                        }}
+                        name="introductionMessage"
+                        onChange={onPostMessageChange}
+                        value={postIntroductionMessage}
+                      />
+                    </>
                   )}
                   <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3  tw-py-2">
                     <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[79px] tw-h-[21px] tw-relative">

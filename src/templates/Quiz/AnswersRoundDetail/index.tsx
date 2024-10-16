@@ -302,50 +302,43 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                         </div>
                         <div className="tw-flex-auto">
                           <div className="tw-flex tw-justify-end tw-items-center tw-relative tw-gap-2 tw-px-2 tw-py-1 tw-rounded">
-                            <button
-                              onClick={() => window.open(selectedQuiz.contentUrl, '_blank')}
-                              className="tw-bg-black tw-p-1.5 tw-text-white tw-rounded tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-font-bold tw-text-right tw-text-[#9ca5b2]"
-                            >
-                              지식콘텐츠 보기
-                            </button>
-                            <button
-                              onClick={() => {
-                                router.push(
-                                  {
-                                    pathname: `/quiz/all-answers/${selectedQuiz?.clubSequence}`,
-                                    query: {
-                                      publishDate: selectedQuiz?.publishDate,
-                                    },
-                                  },
-                                  `/quiz/all-answers/${selectedQuiz?.clubSequence}`,
-                                );
-                              }}
-                              // onClick={() => {
-                              //   router.push(
-                              //     {
-                              //       pathname: `/quiz/all-answers/{contents?.club?.clubSequence}`,
-                              //       query: {
-                              //         clubSequence: selectedQuiz?.quizSequence,
-                              //       },
-                              //     },
-                              //     `/quiz/all-answers/${contents?.club?.clubSequence}`,
-                              //   );
-                              // }}
-                              className="border border-danger tw-bg-white tw-text-black tw-p-1.5 tw-rounded tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-font-bold tw-flex tw-items-center"
-                            >
-                              전체 답변보기
-                              <svg
-                                width={7}
-                                height={10}
-                                viewBox="0 0 7 10"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="flex-grow-0 flex-shrink-0 tw-ml-1"
-                                preserveAspectRatio="none"
-                              >
-                                <path d="M1 1L5 5L1 9" stroke="black" strokeWidth="1.5" />
-                              </svg>
-                            </button>
+                            {selectedQuiz.myAnswerStatus === '0003' && (
+                              <>
+                                <button
+                                  onClick={() => window.open(selectedQuiz.contentUrl, '_blank')}
+                                  className="tw-bg-black tw-p-1.5 tw-text-white tw-rounded tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-font-bold tw-text-right tw-text-[#9ca5b2]"
+                                >
+                                  지식컨텐츠 보기
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    router.push(
+                                      {
+                                        pathname: `/quiz/all-answers/${selectedQuiz?.clubSequence}`,
+                                        query: {
+                                          publishDate: selectedQuiz?.publishDate,
+                                        },
+                                      },
+                                      `/quiz/all-answers/${selectedQuiz?.clubSequence}`,
+                                    );
+                                  }}
+                                  className="border border-danger tw-bg-white tw-text-black tw-p-1.5 tw-rounded tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-font-bold tw-flex tw-items-center"
+                                >
+                                  전체 답변보기
+                                  <svg
+                                    width={7}
+                                    height={10}
+                                    viewBox="0 0 7 10"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="flex-grow-0 flex-shrink-0 tw-ml-1"
+                                    preserveAspectRatio="none"
+                                  >
+                                    <path d="M1 1L5 5L1 9" stroke="black" strokeWidth="1.5" />
+                                  </svg>
+                                </button>
+                              </>
+                            )}
                           </div>
                         </div>
                       </div>
