@@ -56,6 +56,11 @@ export const deleteQuiz = async params => {
   return data;
 };
 
+export const deleteQuizContent = async params => {
+  const { data } = await axiosGeneralAPI().delete(`/api/manager/v1/quizzes/${params.quizSequence}`);
+  return data;
+};
+
 export const crewBan = async params => {
   const { data } = await axiosGeneralAPI().delete(`/api/v1/clubs/${params.club}/members/${params.memberUUID}/ban`);
   return data;

@@ -38,6 +38,7 @@ import { UseQueryResult } from 'react-query';
 import { useMyQuiz, useMyQuizContents, useMyQuizThresh } from 'src/services/jobs/jobs.queries';
 import IconButton from '@mui/material/IconButton';
 import CancelIcon from '@mui/icons-material/Cancel';
+import { useQuizContentDelete } from 'src/services/admin/friends/friends.mutations';
 
 const cx = classNames.bind(styles);
 
@@ -123,7 +124,7 @@ export function AdminQuizTemplate() {
   const { mutate: onQuizContentSave, isSuccess: postContentSuccess } = useQuizContentSave();
   const { mutate: onAIQuizSave, isSuccess: updateSuccess, isError: updateError, data: aiQuizData } = useAIQuizSave();
   const { mutate: onAIQuizAnswer, isSuccess: answerSuccess, data: aiQuizAnswerData } = useAIQuizAnswer();
-
+  const { mutate: onQuizContentDelete, isSuccess: isAcceptSuccess } = useQuizContentDelete();
   const { isFetched: isMemberListFetched, refetch: QuizRefetchBadge } = useQuizList(memberParams, data => {
     console.log(data);
     setContents(data?.data?.contents);
@@ -306,6 +307,13 @@ export function AdminQuizTemplate() {
       }
     }
   };
+
+  useEffect(() => {
+    if (isAcceptSuccess) {
+      // alert('지식컨텐츠 삭제가 되었습니다.');
+      QuizRefetchBadge();
+    }
+  }, [isAcceptSuccess]);
 
   const handleAIQuizClick = () => {
     console.log('ai quiz click', quizCount, quizSortType);
@@ -647,12 +655,13 @@ export function AdminQuizTemplate() {
     setContentSortType(event.target.value);
   };
 
-  const handleRegister = () => {
-    console.log('등록');
-  };
-
-  const handleDelete = () => {
-    console.log('삭제');
+  const handleDelete = quizSequence => {
+    if (confirm('퀴즈를 삭제하시겠습니까?')) {
+      let params = {
+        quizSequence: quizSequence,
+      };
+      onQuizContentDelete(params);
+    }
   };
 
   const handleQuestionChange = event => {
@@ -709,14 +718,6 @@ export function AdminQuizTemplate() {
                     >
                       등록
                     </button>
-                    <button
-                      onClick={() => handleDelete()}
-                      type="button"
-                      data-tooltip-target="tooltip-default"
-                      className="tw-py-2 tw-px-5 tw-bg-black tw-text-white max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-rounded-md"
-                    >
-                      삭제
-                    </button>
                   </div>
                   <TableContainer
                     style={{
@@ -737,6 +738,9 @@ export function AdminQuizTemplate() {
                           </TableCell>
                           <TableCell align="left" width={100}>
                             <div className=" tw-text-base tw-font-bold">풀린횟수</div>
+                          </TableCell>
+                          <TableCell align="left" width={100}>
+                            <div className=" tw-text-base tw-font-bold">삭제하기</div>
                           </TableCell>
                           <TableCell align="left" width={100}>
                             <div className=" tw-text-base tw-font-bold">복사횟수</div>
@@ -777,6 +781,16 @@ export function AdminQuizTemplate() {
                             </TableCell>
                             <TableCell align="left" component="th" scope="row">
                               <div className=" tw-text-sm">{content.answerCount}</div>
+                            </TableCell>
+                            <TableCell align="left" component="th" scope="row">
+                              <button
+                                onClick={() => handleDelete(content.quizSequence)}
+                                type="button"
+                                data-tooltip-target="tooltip-default"
+                                className="tw-py-2 tw-px-5 tw-bg-black tw-text-white max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-rounded-md"
+                              >
+                                삭제
+                              </button>
                             </TableCell>
                             <TableCell align="left" component="th" scope="row">
                               <div className=" tw-text-sm tw-line-clamp-1">{content.contentName}</div>
