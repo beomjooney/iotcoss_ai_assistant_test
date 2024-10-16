@@ -122,7 +122,7 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
     formData.append('profileImage', file || '');
     formData.append('jobGroup', universityCode);
     formData.append('job', selectedJob);
-    formData.append('memberId', profile?.email || profile?.memberId);
+    formData.append('memberId', profile?.email || profile?.member?.memberId);
     formData.append('jobLevel', jobLevel);
     formData.append('introductionMessage', introductionMessage);
 
