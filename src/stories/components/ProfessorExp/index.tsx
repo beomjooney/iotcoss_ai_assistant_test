@@ -122,7 +122,7 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
     console.log('ai quiz click');
     // 유효성 검사
     if (!contentType) {
-      alert('지식컨텐츠 유형을 선택하세요.');
+      alert('지식콘텐츠 유형을 선택하세요.');
       return;
     }
 
@@ -132,7 +132,7 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
     }
 
     if (!contentTitle) {
-      alert('지식컨텐츠 제목을 입력해주세요.');
+      alert('지식콘텐츠 제목을 입력해주세요.');
       return;
     }
 
@@ -464,11 +464,11 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
               >
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                   <div className="tw-flex tw-justify-between tw-items-center tw-w-full">
-                    <div className="tw-text-lg tw-font-bold">지식컨텐츠 정보 입력</div>
+                    <div className="tw-text-lg tw-font-bold">지식콘텐츠 정보 입력</div>
                   </div>
                 </AccordionSummary>
                 <AccordionDetails sx={{ backgroundColor: 'white', padding: 3 }}>
-                  <div className="tw-text-sm tw-font-bold tw-py-2">지식컨텐츠 유형</div>
+                  <div className="tw-text-sm tw-font-bold tw-py-2">지식콘텐츠 유형</div>
                   <div className={cx('mentoring-button__group', 'tw-px-0', 'tw-justify-center', 'tw-items-center')}>
                     {studyStatus.map((item, i) => (
                       <Toggle
@@ -547,7 +547,7 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
                     </div>
                   ) : (
                     <div>
-                      <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식컨텐츠 URL</div>
+                      <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식콘텐츠 URL</div>
                       <TextField
                         required
                         value={contentUrl}
@@ -564,7 +564,7 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
                       />
                     </div>
                   )}
-                  <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식컨텐츠 제목</div>
+                  <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식콘텐츠 제목</div>
                   <TextField
                     required
                     id="username"

@@ -131,7 +131,7 @@ export const useQuizDelete = (): UseMutationResult => {
       console.log('data', data);
       const { responseCode, message } = data;
       if (responseCode === '0000') {
-        alert('지식컨텐츠 삭제가 되었습니다.');
+        alert('지식콘텐츠 삭제가 되었습니다.');
       } else {
         alert(`error : [${responseCode}] ${message}`);
       }
@@ -150,7 +150,7 @@ export const useQuizContentDelete = (): UseMutationResult => {
       console.log('data', data);
       const { responseCode, message } = data;
       if (responseCode === '0000') {
-        alert('지식컨텐츠 삭제가 되었습니다.');
+        alert('지식콘텐츠 삭제가 되었습니다.');
       } else {
         alert(`error : [${responseCode}] ${message}`);
       }

@@ -486,7 +486,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
       }
 
       if (!input.url || typeof input.url !== 'string') {
-        alert(`${i + 1}번째 지식컨텐츠 URL이 유효하지 않습니다.`);
+        alert(`${i + 1}번째 지식콘텐츠 URL이 유효하지 않습니다.`);
         return false;
       }
 
@@ -1002,7 +1002,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                         />
                       </svg>
                       <button onClick={handleAddInput} className="tw-text-sm tw-text-left tw-text-[#31343d]">
-                        지식컨텐츠 불러오기
+                        지식콘텐츠 불러오기
                       </button>
                     </div> */}
                     <div className="tw-flex tw-items-center tw-gap-1">
@@ -1058,7 +1058,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                                 type="text"
                                 className="border tw-w-full tw-rounded tw-text-sm tw-p-2"
                                 value={input.value}
-                                placeholder="지식컨텐츠 제목을 입력하세요."
+                                placeholder="지식콘텐츠 제목을 입력하세요."
                                 onChange={event => handleInputContentChange(input.id, event)}
                               />
                               <button

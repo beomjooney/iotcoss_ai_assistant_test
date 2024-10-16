@@ -15,6 +15,7 @@ export interface MentorsModalProps {
   isQuiz?: boolean;
   closable?: boolean;
   children?: React.ReactNode;
+  zIndex?: number;
   onAfterClose?: () => void;
 }
 
@@ -26,6 +27,7 @@ function MentorsModal({
   isProfile = false,
   isQuiz = false,
   isContentModalClick = false,
+  zIndex = 3030,
   onAfterClose,
 }: MentorsModalProps) {
   const [isShow, setIsShow] = useState<boolean>(false);
@@ -62,7 +64,7 @@ function MentorsModal({
               right: 0,
               bottom: 0,
               backgroundColor: 'rgba(15, 15, 15, 0.79)',
-              zIndex: 3030,
+              zIndex: zIndex,
             },
             content: {
               position: 'absolute',
@@ -106,7 +108,7 @@ function MentorsModal({
               right: 0,
               bottom: 0,
               backgroundColor: 'rgba(15, 15, 15, 0.79)',
-              zIndex: 3030,
+              zIndex: zIndex,
             },
             content: {
               position: 'absolute',

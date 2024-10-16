@@ -294,7 +294,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
 
   const handleAIAnswerClick = async (quizIndex, quiz) => {
     if (!contentType) {
-      alert('지식컨텐츠 유형을 선택하세요.');
+      alert('지식콘텐츠 유형을 선택하세요.');
       return;
     }
 
@@ -548,7 +548,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
 
           <div className="tw-flex  tw-justify-between tw-px-8 tw-py-5">
             <div className="tw-flex tw-justify-start tw-items-start">
-              <p className="tw-text-sm tw-text-left tw-text-[#31343d] tw-pr-3 tw-font-bold ">지식컨텐츠</p>
+              <p className="tw-text-sm tw-text-left tw-text-[#31343d] tw-pr-3 tw-font-bold ">지식콘텐츠</p>
               {data?.content?.contentType === '0320' ? (
                 <p
                   onClick={() => {
@@ -647,11 +647,11 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <div className="tw-flex tw-justify-between tw-items-center tw-w-full">
-                  <div className="tw-text-lg tw-font-bold">지식컨텐츠 정보 입력</div>
+                  <div className="tw-text-lg tw-font-bold">지식콘텐츠 정보 입력</div>
                 </div>
               </AccordionSummary>
               <AccordionDetails sx={{ backgroundColor: 'white', padding: 3 }}>
-                <div className="tw-text-sm tw-font-bold tw-py-2">지식컨텐츠 유형</div>
+                <div className="tw-text-sm tw-font-bold tw-py-2">지식콘텐츠 유형</div>
                 <div className={cx('mentoring-button__group', 'tw-px-0', 'tw-justify-center', 'tw-items-center')}>
                   {studyStatus.map((item, i) => (
                     <Toggle
@@ -688,7 +688,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                   </div>
                 ) : (
                   <div>
-                    <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식컨텐츠 URL</div>
+                    <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식콘텐츠 URL</div>
                     <TextField
                       required
                       disabled
@@ -707,7 +707,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                   </div>
                 )}
 
-                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식컨텐츠 제목</div>
+                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식콘텐츠 제목</div>
                 <TextField
                   required
                   id="username"
@@ -727,7 +727,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
             </Accordion>
             <Accordion disableGutters defaultExpanded sx={{ backgroundColor: '#e9ecf2' }}>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <div className="tw-text-lg tw-font-bold">지식컨텐츠 태깅</div>
+                <div className="tw-text-lg tw-font-bold">지식콘텐츠 태깅</div>
               </AccordionSummary>
               <AccordionDetails sx={{ backgroundColor: 'white', padding: 3 }}>
                 <div className="tw-text-sm tw-font-bold tw-py-2">추천 대학</div>

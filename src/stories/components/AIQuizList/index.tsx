@@ -100,7 +100,7 @@ const AIQuizList = ({
 
   const handleAIAnswerClick = async (quizIndex, quiz) => {
     if (!contentType) {
-      alert('지식컨텐츠 유형을 선택하세요.');
+      alert('지식콘텐츠 유형을 선택하세요.');
       return;
     }
 

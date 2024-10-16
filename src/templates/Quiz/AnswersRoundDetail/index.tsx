@@ -306,7 +306,7 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                               onClick={() => window.open(selectedQuiz.contentUrl, '_blank')}
                               className="tw-bg-black tw-p-1.5 tw-text-white tw-rounded tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-font-bold tw-text-right tw-text-[#9ca5b2]"
                             >
-                              지식컨텐츠 보기
+                              지식콘텐츠 보기
                             </button>
                             <button
                               onClick={() => {

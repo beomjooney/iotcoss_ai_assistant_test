@@ -258,7 +258,7 @@ export function StudyRoomTemplate() {
     setQuizTotalPage(data.data.totalPages);
   });
 
-  //지식컨텐츠
+  //지식콘텐츠
   const { data: myQuizContentData, refetch: refetchMyQuizContent }: UseQueryResult<any> = useMyQuizContents(
     contentParams,
     data => {
@@ -999,7 +999,7 @@ export function StudyRoomTemplate() {
                                         }}
                                         className="tw-bg-black tw-p-1.5 tw-text-white tw-rounded tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-font-bold tw-text-right tw-text-[#9ca5b2]"
                                       >
-                                        지식컨텐츠 보기
+                                        지식콘텐츠 보기
                                       </button>
                                     </div>
                                   </div>

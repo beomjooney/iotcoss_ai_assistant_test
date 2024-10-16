@@ -125,7 +125,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       link: '/system/admin/club-approval',
       dropdown: [],
       login: logged,
-      role: ['ROLE_MANAGER', 'ROLE_INSTRUCTOR'], // Multiple roles
+      role: ['ROLE_MANAGER'], // Multiple roles
       menu: 'all',
     },
   ];

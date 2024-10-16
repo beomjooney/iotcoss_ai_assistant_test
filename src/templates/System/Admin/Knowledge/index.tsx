@@ -126,7 +126,7 @@ export function AdminKnowledgeTemplate() {
 
   useEffect(() => {
     if (isAcceptSuccess) {
-      // alert('지식컨텐츠 삭제가 되었습니다.');
+      // alert('지식콘텐츠 삭제가 되었습니다.');
       QuizRefetchBadge();
     }
   }, [isAcceptSuccess]);
@@ -318,7 +318,7 @@ export function AdminKnowledgeTemplate() {
     console.log('ai quiz click', quizCount, quizSortType);
     // 유효성 검사
     if (!contentType) {
-      alert('지식컨텐츠 유형을 선택하세요.');
+      alert('지식콘텐츠 유형을 선택하세요.');
       return;
     }
 
@@ -382,7 +382,7 @@ export function AdminKnowledgeTemplate() {
     console.log(isContentModalOpen);
 
     if (!contentType) {
-      alert('지식컨텐츠 유형을 선택하세요.');
+      alert('지식콘텐츠 유형을 선택하세요.');
       return;
     }
 
@@ -442,7 +442,7 @@ export function AdminKnowledgeTemplate() {
     }
     if (isContentModalOpen) {
       // 콘텐츠 등록
-      console.log('지식컨텐츠');
+      console.log('지식콘텐츠');
       const params = {
         contentType: contentType,
         description: contentTitle,
@@ -464,7 +464,7 @@ export function AdminKnowledgeTemplate() {
       formData.append('request', blob);
 
       onQuizContentSave(formData);
-      setActiveTab('지식컨텐츠');
+      setActiveTab('지식콘텐츠');
     } else {
       // 콘텐츠 등록
       console.log('퀴즈 등록');
@@ -851,12 +851,12 @@ export function AdminKnowledgeTemplate() {
                 <Accordion disableGutters sx={{ backgroundColor: '#e9ecf2' }} defaultExpanded>
                   <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                     <div className="tw-flex tw-justify-between tw-items-center tw-w-full">
-                      <div className="tw-text-lg tw-font-bold">지식컨텐츠 정보 입력</div>
+                      <div className="tw-text-lg tw-font-bold">지식콘텐츠 정보 입력</div>
                       {!isContentModalOpen && (
                         <button
                           onClick={e => {
                             if (isContentModalClick) {
-                              console.log('지식컨텐츠 닫기');
+                              console.log('지식콘텐츠 닫기');
                               e.stopPropagation(); // This stops the event from propagating to the AccordionSummary
                               setIsContentModalClick(false);
                               setActive('');
@@ -884,13 +884,13 @@ export function AdminKnowledgeTemplate() {
                           }}
                           className="tw-text-sm tw-bg-black tw-p-2 tw-rounded tw-mr-5 tw-text-white"
                         >
-                          {isContentModalClick ? '지식컨텐츠 닫기' : '지식컨텐츠 불러오기'}
+                          {isContentModalClick ? '지식콘텐츠 닫기' : '지식콘텐츠 불러오기'}
                         </button>
                       )}
                     </div>
                   </AccordionSummary>
                   <AccordionDetails sx={{ backgroundColor: 'white', padding: 3 }}>
-                    <div className="tw-text-sm tw-font-bold tw-py-2">지식컨텐츠 유형</div>
+                    <div className="tw-text-sm tw-font-bold tw-py-2">지식콘텐츠 유형</div>
                     <div className={cx('mentoring-button__group', 'tw-px-0', 'tw-justify-center', 'tw-items-center')}>
                       {studyStatus.map((item, i) => (
                         <Toggle
@@ -981,7 +981,7 @@ export function AdminKnowledgeTemplate() {
                       </div>
                     ) : (
                       <div>
-                        <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식컨텐츠 URL</div>
+                        <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식콘텐츠 URL</div>
                         <TextField
                           required
                           disabled={isContentModalClick}
@@ -999,7 +999,7 @@ export function AdminKnowledgeTemplate() {
                         />
                       </div>
                     )}
-                    <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식컨텐츠 제목</div>
+                    <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식콘텐츠 제목</div>
                     <TextField
                       required
                       id="username"
@@ -1019,7 +1019,7 @@ export function AdminKnowledgeTemplate() {
                 </Accordion>
                 <Accordion disableGutters defaultExpanded sx={{ backgroundColor: '#e9ecf2' }}>
                   <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <div className="tw-text-lg tw-font-bold">지식컨텐츠 태깅</div>
+                    <div className="tw-text-lg tw-font-bold">지식콘텐츠 태깅</div>
                   </AccordionSummary>
                   <AccordionDetails sx={{ backgroundColor: 'white', padding: 3 }}>
                     <div className="tw-text-sm tw-font-bold tw-py-2">추천 대학</div>

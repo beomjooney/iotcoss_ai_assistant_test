@@ -562,7 +562,7 @@ const QuizClubListView = ({
               <div className="tw-mb-5">
                 <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-5">
                   <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[120px] tw-h-[21px] tw-relative tw-flex tw-items-center">
-                    <p className="tw-text-sm tw-text-left tw-text-[#31343d] tw-mb-0 tw-ml-6">지식컨텐츠 추가</p>
+                    <p className="tw-text-sm tw-text-left tw-text-[#31343d] tw-mb-0 tw-ml-6">지식콘텐츠 추가</p>
                     <svg
                       width="16"
                       height="16"

@@ -41,7 +41,7 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
   const router = useRouter();
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
-  const [selectedLoginType, setSelectedLoginType] = useState('0001');
+  const [selectedLoginType, setSelectedLoginType] = useState('0002');
   const [termsParams, setTermsParams] = useState<any>({ type: '0001' });
   const [termsParams2, setTermsParams2] = useState<any>({ type: '0002' });
   const [open, setOpen] = React.useState(false);
@@ -207,9 +207,9 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
         value={selectedLoginType}
         aria-label="Default select example"
       >
-        <option value="0001">외부사용자</option>
         <option value="0002">학생</option>
         <option value="0003">교수</option>
+        <option value="0001">외부사용자</option>
       </select>
       <form onSubmit={handleSubmit(onSubmit, onError)}>
         {selectedLoginType === '0001' ? (

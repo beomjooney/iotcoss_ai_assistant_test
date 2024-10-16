@@ -394,7 +394,7 @@ export function QuizMakeTemplate() {
     console.log('ai quiz click', quizCount, quizSortType);
     // 유효성 검사
     if (!contentType) {
-      alert('지식컨텐츠 유형을 선택하세요.');
+      alert('지식콘텐츠 유형을 선택하세요.');
       return;
     }
 
@@ -499,7 +499,7 @@ export function QuizMakeTemplate() {
     console.log(isContentModalOpen);
 
     if (!contentType) {
-      alert('지식컨텐츠 유형을 선택하세요.');
+      alert('지식콘텐츠 유형을 선택하세요.');
       return;
     }
 
@@ -559,7 +559,7 @@ export function QuizMakeTemplate() {
     }
     if (isContentModalOpen) {
       // 콘텐츠 등록
-      console.log('지식컨텐츠');
+      console.log('지식콘텐츠');
       const params = {
         contentType: contentType,
         description: contentTitle,
@@ -581,7 +581,7 @@ export function QuizMakeTemplate() {
       formData.append('request', blob);
 
       onQuizContentSave(formData);
-      setActiveTab('지식컨텐츠');
+      setActiveTab('지식콘텐츠');
     } else {
       // 콘텐츠 등록
       console.log('퀴즈 등록');
@@ -788,7 +788,7 @@ export function QuizMakeTemplate() {
                   style={{ border: '1px solid #B8B8B8', color: 'black', width: '150px' }}
                   className="tw-text-black tw-bg-white tw-font-bold tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
                 >
-                  +지식컨텐츠 등록
+                  +지식콘텐츠 등록
                 </button>
               </BootstrapTooltip>
             </Grid>
@@ -811,11 +811,11 @@ export function QuizMakeTemplate() {
                 <div className="tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-h-11 tw-relative tw-gap-2.5">
                   <p
                     className={`tw-flex-grow-0 tw-flex-shrink-0 tw-text-lg tw-text-left tw-cursor-pointer ${
-                      activeTab === '지식컨텐츠' ? 'tw-font-bold tw-text-black' : 'tw-text-[#6a7380]'
+                      activeTab === '지식콘텐츠' ? 'tw-font-bold tw-text-black' : 'tw-text-[#6a7380]'
                     } tw-hover:tw-font-bold tw-hover:tw-text-black`}
-                    onClick={() => handleTabClick('지식컨텐츠')}
+                    onClick={() => handleTabClick('지식콘텐츠')}
                   >
-                    지식컨텐츠
+                    지식콘텐츠
                   </p>
                 </div>
                 <div className="tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-h-11 tw-relative tw-gap-2.5">
@@ -1046,7 +1046,7 @@ export function QuizMakeTemplate() {
         )}
 
         {/* 휴지통에 해당하는 div */}
-        {activeTab === '지식컨텐츠' && (
+        {activeTab === '지식콘텐츠' && (
           <div>
             <div className="tw-flex tw-justify-start tw-items-center tw-w-[1120px] tw-h-12 tw-gap-6 tw-mb-8">
               <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-3">
@@ -1094,7 +1094,7 @@ export function QuizMakeTemplate() {
                 </RadioGroup>
               </div>
             </div>
-            {/* 지식컨텐츠 */}
+            {/* 지식콘텐츠 */}
             <div>
               {myQuizContentData?.contents.length > 0 ? (
                 myQuizContentData?.contents.map((data, index) => (
@@ -1118,8 +1118,9 @@ export function QuizMakeTemplate() {
 
       <MentorsModal
         isQuiz={true}
+        zIndex={200}
         // title={'퀴즈 만들기'}
-        title={isContentModalOpen ? '지식컨텐츠 만들기' : '퀴즈 만들기'}
+        title={isContentModalOpen ? '지식콘텐츠 만들기' : '퀴즈 만들기'}
         isOpen={isModalOpen}
         isContentModalClick={isContentModalClick}
         onAfterClose={() => {
@@ -1143,12 +1144,12 @@ export function QuizMakeTemplate() {
             <Accordion disableGutters sx={{ backgroundColor: '#e9ecf2' }} defaultExpanded>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <div className="tw-flex tw-justify-between tw-items-center tw-w-full">
-                  <div className="tw-text-lg tw-font-bold">지식컨텐츠 정보 입력</div>
+                  <div className="tw-text-lg tw-font-bold">지식콘텐츠 정보 입력</div>
                   {!isContentModalOpen && (
                     <button
                       onClick={e => {
                         if (isContentModalClick) {
-                          console.log('지식컨텐츠 닫기');
+                          console.log('지식콘텐츠 닫기');
                           e.stopPropagation(); // This stops the event from propagating to the AccordionSummary
                           setIsContentModalClick(false);
                           setActive('');
@@ -1176,13 +1177,13 @@ export function QuizMakeTemplate() {
                       }}
                       className="tw-text-sm tw-bg-black tw-p-2 tw-rounded tw-mr-5 tw-text-white"
                     >
-                      {isContentModalClick ? '지식컨텐츠 닫기' : '지식컨텐츠 불러오기'}
+                      {isContentModalClick ? '지식콘텐츠 닫기' : '지식콘텐츠 불러오기'}
                     </button>
                   )}
                 </div>
               </AccordionSummary>
               <AccordionDetails sx={{ backgroundColor: 'white', padding: 3 }}>
-                <div className="tw-text-sm tw-font-bold tw-py-2">지식컨텐츠 유형</div>
+                <div className="tw-text-sm tw-font-bold tw-py-2">지식콘텐츠 유형</div>
                 <div className={cx('mentoring-button__group', 'tw-px-0', 'tw-justify-center', 'tw-items-center')}>
                   {studyStatus.map((item, i) => (
                     <Toggle
@@ -1270,7 +1271,7 @@ export function QuizMakeTemplate() {
                   </div>
                 ) : (
                   <div>
-                    <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식컨텐츠 URL</div>
+                    <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식콘텐츠 URL</div>
                     <TextField
                       required
                       disabled={isContentModalClick}
@@ -1288,7 +1289,7 @@ export function QuizMakeTemplate() {
                     />
                   </div>
                 )}
-                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식컨텐츠 제목</div>
+                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식콘텐츠 제목</div>
                 <TextField
                   required
                   id="username"
@@ -1308,7 +1309,7 @@ export function QuizMakeTemplate() {
             </Accordion>
             <Accordion disableGutters defaultExpanded sx={{ backgroundColor: '#e9ecf2' }}>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <div className="tw-text-lg tw-font-bold">지식컨텐츠 태깅</div>
+                <div className="tw-text-lg tw-font-bold">지식콘텐츠 태깅</div>
               </AccordionSummary>
               <AccordionDetails sx={{ backgroundColor: 'white', padding: 3 }}>
                 <div className="tw-text-sm tw-font-bold tw-py-2">추천 대학</div>
