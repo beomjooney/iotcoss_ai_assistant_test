@@ -20,7 +20,7 @@ import { deleteCookie } from 'cookies-next';
 import { useSessionStore } from '../../../../src/store/session';
 import { getFirstSubdomain } from 'src/utils';
 import { getButtonClass } from 'src/utils/clubStatus';
-import { useTermsList } from 'src/services/account/account.queries';
+import { useTermsList, useTermsList2 } from 'src/services/account/account.queries';
 import { UseQueryResult } from 'react-query';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -42,7 +42,8 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [selectedLoginType, setSelectedLoginType] = useState('0001');
-  const [termsParams, setTermsParams] = useState<any>({ type: '0002' });
+  const [termsParams, setTermsParams] = useState<any>({ type: '0001' });
+  const [termsParams2, setTermsParams2] = useState<any>({ type: '0002' });
   const [open, setOpen] = React.useState(false);
   const [scroll, setScroll] = React.useState<DialogProps['scroll']>('paper');
   const [showPassword, setShowPassword] = useState(false);
@@ -71,12 +72,10 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
   const {
     data: termList,
     isLoading: termListLoading,
-    refetch,
-  }: UseQueryResult<any> = useTermsList(
-    paramsWithDefault({
-      ...termsParams,
-    }),
-  );
+    refetch: refetch1,
+  }: UseQueryResult<any> = useTermsList({ type: '0001' });
+
+  const { data: termList2, isLoading: termListLoading2, refetch: refetch2 }: UseQueryResult<any> = useTermsList2();
 
   console.log('login join page', getFirstSubdomain(), tenantName);
 
@@ -96,7 +95,8 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
   useEffect(() => {
     if (isSuccess) {
       console.log('isSuccess', isSuccess);
-      refetch();
+      refetch1();
+      refetch2();
     }
   }, [isSuccess]);
 
@@ -365,8 +365,37 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
         scroll={scroll}
         aria-labelledby="scroll-dialog-title"
         aria-describedby="scroll-dialog-description"
-        sx={{ maxHeight: '60vh', top: '22%', left: '0', overflowY: 'auto' }}
+        sx={{ maxHeight: '80vh', top: '10%', left: '0', overflowY: 'auto' }}
       >
+        <DialogTitle id="scroll-dialog-title" sx={{ m: 0, p: 2, textAlign: 'center' }}>
+          <Typography sx={{ fontWeight: 'bold', fontSize: '15px' }}>서비스 이용약관 동의</Typography>
+          {handleClose ? (
+            <IconButton
+              aria-label="close"
+              onClick={handleClose}
+              sx={{
+                position: 'absolute',
+                right: 8,
+                top: 8,
+                color: theme => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+          ) : null}
+        </DialogTitle>
+        <DialogContent
+          dividers={scroll === 'paper'}
+          sx={{
+            height: '500px', // 고정 높이 설정
+            overflowY: 'auto', // 내용이 높이를 초과할 경우 스크롤 활성화
+          }}
+        >
+          <DialogContentText id="scroll-dialog-description" ref={descriptionElementRef} tabIndex={-1}>
+            <div dangerouslySetInnerHTML={{ __html: termList?.content }}></div>
+          </DialogContentText>
+        </DialogContent>
+
         <DialogTitle id="scroll-dialog-title" sx={{ m: 0, p: 2, textAlign: 'center' }}>
           <Typography sx={{ fontWeight: 'bold', fontSize: '15px' }}>개인정보 수집동의</Typography>
           {handleClose ? (
@@ -384,13 +413,26 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
             </IconButton>
           ) : null}
         </DialogTitle>
-        <DialogContent dividers={scroll === 'paper'}>
+        <DialogContent
+          dividers={scroll === 'paper'}
+          sx={{
+            height: '500px', // 고정 높이 설정
+            overflowY: 'auto', // 내용이 높이를 초과할 경우 스크롤 활성화
+          }}
+        >
           <DialogContentText id="scroll-dialog-description" ref={descriptionElementRef} tabIndex={-1}>
-            <div dangerouslySetInnerHTML={{ __html: termList?.content }}></div>
+            <div dangerouslySetInnerHTML={{ __html: termList2?.content }}></div>
           </DialogContentText>
         </DialogContent>
 
-        <DialogActions className="tw-flex tw-justify-center tw-gap-4 tw-py-3">
+        <DialogActions
+          style={{
+            display: 'flex',
+            justifyContent: 'center', // 가운데 정렬
+            gap: '16px', // 버튼 간 간격
+            padding: '12px 0', // 상하 패딩
+          }}
+        >
           <button
             className="tw-bg-gray-300 tw-w-[130px] tw-px-5  tw-rounded-md  tw-h-[38px] tw-text-white"
             onClick={handleClose}

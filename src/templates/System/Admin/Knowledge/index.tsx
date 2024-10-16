@@ -65,10 +65,8 @@ export function AdminKnowledgeTemplate() {
   const [params, setParams] = useState<any>({ page });
   const [contents, setContents] = useState<any>([]);
 
-  const [summary, setSummary] = useState({});
   const [search, setSearch] = useState('');
   const [searchKeyword, setSearchKeyword] = useState('');
-  const [memberList, setMemberList] = useState<any[]>([]);
   const [memberParams, setMemberParams] = useState<any>({ page: page, keyword: search });
   const [open, setOpen] = React.useState(false);
 

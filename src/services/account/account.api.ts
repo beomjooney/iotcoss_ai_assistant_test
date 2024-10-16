@@ -84,6 +84,12 @@ export async function termsInfo(params: any) {
   console.log(data);
   return data.data;
 }
+export async function termsInfo2() {
+  // const { data } = await axiosGeneralAPI().get(`/api/v1/terms?typeCode=${params.type}`);
+  const { data } = await axiosGeneralAPI().get(`/api/v1/terms/privacy1`);
+  console.log(data);
+  return data.data;
+}
 
 //login
 export async function login(params: any[]) {

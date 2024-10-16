@@ -10,6 +10,7 @@ import {
   getProfile,
   personalInfo,
   myProfile,
+  termsInfo2,
 } from './account.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 import { User } from 'src/models/user';
@@ -77,6 +78,15 @@ export const usePersonalInfo = (memberId: any, onSuccess?: (data: User) => void,
 
 export const useTermsList = (params: any, onSuccess?: (data: User) => void, onError?: (error: Error) => void) =>
   useQuery<User, Error>(QUERY_KEY_FACTORY('TERMS').details(), () => termsInfo(params), {
+    onSuccess,
+    onError,
+    refetchOnWindowFocus: false,
+    enabled: false,
+    retry: false,
+  });
+
+export const useTermsList2 = (onSuccess?: (data: User) => void, onError?: (error: Error) => void) =>
+  useQuery<User, Error>(QUERY_KEY_FACTORY('TERMS_INFO').details(), () => termsInfo2(), {
     onSuccess,
     onError,
     refetchOnWindowFocus: false,
