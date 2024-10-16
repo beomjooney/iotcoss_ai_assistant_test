@@ -740,10 +740,10 @@ export function AdminQuizTemplate() {
                             <div className=" tw-text-base tw-font-bold">풀린횟수</div>
                           </TableCell>
                           <TableCell align="left" width={100}>
-                            <div className=" tw-text-base tw-font-bold">삭제하기</div>
+                            <div className=" tw-text-base tw-font-bold">복사횟수</div>
                           </TableCell>
                           <TableCell align="left" width={100}>
-                            <div className=" tw-text-base tw-font-bold">복사횟수</div>
+                            <div className=" tw-text-base tw-font-bold">삭제하기</div>
                           </TableCell>
                           <TableCell align="left" width={250}>
                             <div className=" tw-text-base tw-font-bold">지식컨텐츠</div>
