@@ -72,7 +72,7 @@ export function QuizMyLectureClubsTemplate() {
                 내가 운영중인 강의클럽을 한 눈에 보여주고 있어요!
               </Grid>
               <Grid item xs={12} sm={2} justifyContent="flex-end" className="tw-flex">
-                {isClient && roles.includes('ROLE_MANAGER') && (
+                {isClient && roles.includes('ROLE_INSTITUTION') && (
                   <button
                     onClick={() => router.push('/lecture/open')}
                     type="button"
