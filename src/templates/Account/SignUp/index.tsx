@@ -81,13 +81,19 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
   const { mutate: onLoginSignUp, isSuccess: isSignUpSuccess, data: signUpData } = useLoginSignUp();
   const { mutate: onLoginOtp, isSuccess } = useLoginOtp();
   const { mutate: onLoginOtpVerification, isSuccess: isVerification, data: resultData } = useLoginOtpVerification();
-  const { mutate: onEmainSend, data: loginData } = useEmainJoinSend();
+  const { mutate: onEmainSend, isSuccess: isEmainSendSuccess, data: loginData } = useEmainJoinSend();
 
   const [clientTenantName, setClientTenantName] = useState(null);
   useEffect(() => {
     // 클라이언트에서만 tenantName을 설정
     setClientTenantName(tenantName);
   }, []);
+
+  useEffect(() => {
+    if (isEmainSendSuccess) {
+      alert('이메일 인증 메일이 발송되었습니다.');
+    }
+  }, [isEmainSendSuccess]);
 
   useEffect(() => {
     if (resultData) {
