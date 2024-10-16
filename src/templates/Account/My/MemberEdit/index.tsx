@@ -274,8 +274,15 @@ export function MemberEditTemplate() {
     }
 
     if (type === 'promotion1') {
-      console.log('CheckList', CheckList);
-      setCheckList([...CheckList, type]);
+      if (e.target.checked) {
+        // CheckList에 type이 이미 포함되어 있지 않을 때만 추가
+        if (!CheckList.includes(type)) {
+          setCheckList([...CheckList, type]);
+        }
+      } else {
+        // 체크 해제할 시 CheckList에서 해당 id값이 아닌 값만 배열에 넣기
+        setCheckList(CheckList.filter(checkedId => checkedId !== type));
+      }
     }
   };
 
@@ -1092,7 +1099,7 @@ export function MemberEditTemplate() {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        onChange={e => onChangeMarketingEach(e, marketingList[0], 'promotion1')}
+                        onChange={e => onChangeMarketingEach(e, marketingList[0], 'apromotion1')}
                         checked={CheckMarketingList.includes(marketingList[0])}
                         value={marketingList[0]}
                         icon={<CheckBoxOutlineBlankOutlinedIcon />}
@@ -1117,7 +1124,7 @@ export function MemberEditTemplate() {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        onChange={e => onChangeMarketingEach(e, marketingList[1])}
+                        onChange={e => onChangeMarketingEach(e, marketingList[1], 'promotion1')}
                         checked={CheckMarketingList.includes(marketingList[1])}
                         value={marketingList[1]}
                         icon={<CheckBoxOutlineBlankOutlinedIcon />}
@@ -1142,7 +1149,7 @@ export function MemberEditTemplate() {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        onChange={e => onChangeMarketingEach(e, marketingList[2])}
+                        onChange={e => onChangeMarketingEach(e, marketingList[2], 'promotion1')}
                         checked={CheckMarketingList.includes(marketingList[2])}
                         value={marketingList[2]}
                         icon={<CheckBoxOutlineBlankOutlinedIcon />}
