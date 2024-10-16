@@ -38,6 +38,7 @@ import { UseQueryResult } from 'react-query';
 import IconButton from '@mui/material/IconButton';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { useMyQuiz, useMyQuizContents, useMyQuizThresh } from 'src/services/jobs/jobs.queries';
+import { useQuizDelete } from 'src/services/admin/friends/friends.mutations';
 
 const cx = classNames.bind(styles);
 
@@ -123,6 +124,14 @@ export function AdminKnowledgeTemplate() {
   const { mutate: onQuizContentSave, isSuccess: postContentSuccess } = useQuizContentSave();
   const { mutate: onAIQuizSave, isSuccess: updateSuccess, isError: updateError, data: aiQuizData } = useAIQuizSave();
   const { mutate: onAIQuizAnswer, isSuccess: answerSuccess, data: aiQuizAnswerData } = useAIQuizAnswer();
+  const { mutate: onQuizDelete, isSuccess: isAcceptSuccess } = useQuizDelete();
+
+  useEffect(() => {
+    if (isAcceptSuccess) {
+      // alert('지식컨텐츠 삭제가 되었습니다.');
+      QuizRefetchBadge();
+    }
+  }, [isAcceptSuccess]);
 
   const { isFetched: isMemberListFetched, refetch: QuizRefetchBadge } = useQuizContentsList(memberParams, data => {
     console.log(data);
@@ -663,8 +672,13 @@ export function AdminKnowledgeTemplate() {
     console.log('등록');
   };
 
-  const handleDelete = () => {
-    console.log('삭제');
+  const handleDelete = quizSequence => {
+    if (confirm('지식컨텐츠를 삭제하시겠습니까?')) {
+      let params = {
+        quizSequence: quizSequence,
+      };
+      onQuizDelete(params);
+    }
   };
 
   const handleQuestionChange = event => {
@@ -720,14 +734,6 @@ export function AdminKnowledgeTemplate() {
                     >
                       등록
                     </button>
-                    <button
-                      onClick={() => handleDelete()}
-                      type="button"
-                      data-tooltip-target="tooltip-default"
-                      className="tw-py-2 tw-px-5 tw-bg-black tw-text-white max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-rounded-md"
-                    >
-                      삭제
-                    </button>
                   </div>
                   <TableContainer
                     style={{
@@ -746,11 +752,14 @@ export function AdminKnowledgeTemplate() {
                           <TableCell align="left" width={250}>
                             <div className=" tw-text-base tw-font-bold">지식콘텐츠 타이틀</div>
                           </TableCell>
-                          <TableCell align="left" width={80}>
+                          <TableCell align="left" width={100}>
                             <div className=" tw-text-base tw-font-bold">유형</div>
                           </TableCell>
-                          <TableCell align="left" width={100}>
+                          <TableCell align="left" width={95}>
                             <div className=" tw-text-base tw-font-bold">즐겨찾기</div>
+                          </TableCell>
+                          <TableCell align="left" width={100}>
+                            <div className=" tw-text-base tw-font-bold">삭제하기</div>
                           </TableCell>
                           <TableCell align="left" width={200}>
                             <div className=" tw-text-base tw-font-bold">URL</div>
@@ -790,10 +799,22 @@ export function AdminKnowledgeTemplate() {
                               <div className=" tw-text-sm">{content.likeCount}</div>
                             </TableCell>
                             <TableCell align="left" component="th" scope="row">
+                              <button
+                                onClick={() => handleDelete(content.contentSequence)}
+                                type="button"
+                                data-tooltip-target="tooltip-default"
+                                className="tw-py-2 tw-px-5 tw-bg-black tw-text-white max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-rounded-md"
+                              >
+                                삭제
+                              </button>
+                            </TableCell>
+                            <TableCell align="left" component="th" scope="row">
                               <div className=" tw-text-sm tw-line-clamp-1">{content.internalSharingLink}</div>
                             </TableCell>
                             <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm">{content.jobGroups?.map(item => item.name).join(', ')}</div>
+                              <div className=" tw-text-sm  tw-line-clamp-1 ">
+                                {content.jobGroups?.map(item => item.name).join(', ')}
+                              </div>
                             </TableCell>
                             <TableCell align="left" component="th" scope="row">
                               <div className=" tw-text-sm tw-line-clamp-1">
@@ -801,7 +822,9 @@ export function AdminKnowledgeTemplate() {
                               </div>
                             </TableCell>
                             <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm">{content?.jobLevels?.map(item => item.name).join(', ')}</div>
+                              <div className=" tw-text-sm  tw-line-clamp-1">
+                                {content?.jobLevels?.map(item => item.name).join(', ')}
+                              </div>
                             </TableCell>
                             <TableCell align="left" component="th" scope="row">
                               <div className=" tw-text-sm tw-line-clamp-1">{content.studyKeywords.join(', ')}</div>

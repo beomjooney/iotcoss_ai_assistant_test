@@ -51,6 +51,11 @@ export const instructorBan = async params => {
   return data;
 };
 
+export const deleteQuiz = async params => {
+  const { data } = await axiosGeneralAPI().delete(`/api/manager/v1/contents/${params.quizSequence}`);
+  return data;
+};
+
 export const crewBan = async params => {
   const { data } = await axiosGeneralAPI().delete(`/api/v1/clubs/${params.club}/members/${params.memberUUID}/ban`);
   return data;

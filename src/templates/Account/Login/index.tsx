@@ -23,10 +23,11 @@ import { getButtonClass } from 'src/utils/clubStatus';
 import { useTermsList } from 'src/services/account/account.queries';
 import { UseQueryResult } from 'react-query';
 import DialogTitle from '@mui/material/DialogTitle';
-import IconButton from '@mui/material/IconButton';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import { useLoginSignUpDSU } from 'src/services/account/account.mutations';
+import { IconButton, InputAdornment } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 const cx = classNames.bind(styles);
 
@@ -41,9 +42,12 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [selectedLoginType, setSelectedLoginType] = useState('0001');
-  const [termsParams, setTermsParams] = useState<any>({ type: '0001' });
+  const [termsParams, setTermsParams] = useState<any>({ type: '0002' });
   const [open, setOpen] = React.useState(false);
   const [scroll, setScroll] = React.useState<DialogProps['scroll']>('paper');
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleClickShowPassword = () => setShowPassword(show => !show);
 
   const { mutate: onLogin, isSuccess, data: loginData } = useLogin();
   const { mutate: onLoginSignUp, isSuccess: isSignUpSuccess, data: signUpData } = useLoginSignUpDSU();
@@ -238,10 +242,20 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
               id="password"
               name="password"
               placeholder="비밀번호를 입력해주세요."
-              type="password"
+              // type="password"
               fullWidth
               margin="dense"
               variant="outlined"
+              type={showPassword ? 'text' : 'password'}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleClickShowPassword} edge="end" aria-label="toggle password visibility">
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
               sx={{
                 backgroundColor: '#F6F7FB',
                 borderRadius: '10px',

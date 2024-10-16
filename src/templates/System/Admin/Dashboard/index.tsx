@@ -585,7 +585,7 @@ export function AdminDashboardTemplate() {
                                 </p>
                               </div>
                               <p className="tw-px-5   tw-text-[50px] tw-font-light  tw-text-[#1573ff]">
-                                {summary?.totalReactionCount}
+                                {summary?.totalVisitCount}
                               </p>
                             </div>
                           </div>

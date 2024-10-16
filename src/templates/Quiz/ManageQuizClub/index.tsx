@@ -2131,6 +2131,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                     {openGroup?.map((item, index) => (
                       <ToggleButton
                         classes={{ selected: classes.selected }}
+                        disabled
                         key={`open-${index}`}
                         value={item.name}
                         aria-label="fff"
@@ -2212,6 +2213,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                           <DatePicker
                             format="YYYY-MM-DD"
+                            disabled
                             slotProps={{ textField: { size: 'small', style: { backgroundColor: 'white' } } }}
                             value={startDay}
                             onChange={e => onChangeHandleFromToStartDate(e)}
@@ -2227,6 +2229,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                           fullWidth
                           onChange={handleNumChange}
                           id="margin-none"
+                          disabled
                           value={num}
                           name="num"
                           style={{ backgroundColor: 'white' }}
@@ -2234,14 +2237,15 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                       </div>
                       <div className="tw-flex-none tw-h-14 ... tw-ml-5 ">
                         <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">&nbsp;</p>
-                        <button
+                        {/* <button
                           onClick={handlerClubMake}
+                          disabled
                           className="tw-flex tw-justify-center tw-items-center tw-w-20 tw-relative tw-overflow-hidden tw-gap-2 tw-px-7 tw-py-[10px] tw-rounded tw-bg-[#31343d]"
                         >
                           <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-center tw-text-white">
                             확인
                           </p>
-                        </button>
+                        </button> */}
                       </div>
                     </div>
                     {scheduleData?.length > 0 && (
@@ -2269,6 +2273,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                         <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">클럽 시작일</p>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                           <DatePicker
+                            disabled
                             format="YYYY-MM-DD"
                             slotProps={{ textField: { size: 'small', style: { backgroundColor: 'white' } } }}
                             value={startDay}
@@ -2283,6 +2288,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                         <TextField
                           size="small"
                           fullWidth
+                          disabled
                           onChange={handleNumChange}
                           id="margin-none"
                           value={num}
@@ -2292,14 +2298,15 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                       </div>
                       <div className="tw-flex-none tw-h-14 ... tw-ml-5 ">
                         <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">&nbsp;</p>
-                        <button
+                        {/* <button
+                          disabled
                           onClick={handlerClubMakeProfessorManual}
                           className="tw-flex tw-justify-center tw-items-center tw-w-20 tw-relative tw-overflow-hidden tw-gap-2 tw-px-7 tw-py-[10px] tw-rounded tw-bg-[#31343d]"
                         >
                           <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-center tw-text-white">
                             확인
                           </p>
-                        </button>
+                        </button> */}
                       </div>
                     </div>
                   </div>
@@ -2314,6 +2321,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                         <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">클럽 시작일</p>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                           <DatePicker
+                            disabled
                             format="YYYY-MM-DD"
                             slotProps={{ textField: { size: 'small', style: { backgroundColor: 'white' } } }}
                             value={startDay}
@@ -2328,6 +2336,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                         <TextField
                           size="small"
                           fullWidth
+                          disabled
                           onChange={handleNumChange}
                           id="margin-none"
                           value={num}
@@ -2337,14 +2346,15 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                       </div>
                       <div className="tw-flex-none tw-h-14 ... tw-ml-5 ">
                         <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">&nbsp;</p>
-                        <button
+                        {/* <button
                           onClick={handlerClubMakeManual}
+                          disabled
                           className="tw-flex tw-justify-center tw-items-center tw-w-20 tw-relative tw-overflow-hidden tw-gap-2 tw-px-7 tw-py-[10px] tw-rounded tw-bg-[#31343d]"
                         >
                           <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-center tw-text-white">
                             확인
                           </p>
-                        </button>
+                        </button> */}
                       </div>
                     </div>
                   </div>

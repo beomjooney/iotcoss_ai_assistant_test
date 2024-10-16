@@ -17,6 +17,7 @@ import {
   rejectAdminPost,
   saveAdminClubPost,
   rejectAdminClubPost,
+  deleteQuiz,
 } from './friends.api';
 
 export const useCrewBanDelete = (): UseMutationResult => {
@@ -111,6 +112,25 @@ export const useInstructorBan = (): UseMutationResult => {
       const { responseCode, message } = data;
       if (responseCode === '0000') {
         alert('해당클럽에서 강퇴가 되었습니다.');
+      } else {
+        alert(`error : [${responseCode}] ${message}`);
+      }
+    },
+  });
+};
+export const useQuizDelete = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => deleteQuiz(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('INSTRUCTORS_DELETE').all),
+    onSuccess: async data => {
+      console.log('data', data);
+      const { responseCode, message } = data;
+      if (responseCode === '0000') {
+        alert('지식컨텐츠 삭제가 되었습니다.');
       } else {
         alert(`error : [${responseCode}] ${message}`);
       }
