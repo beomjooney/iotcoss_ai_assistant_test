@@ -240,15 +240,21 @@ export function MemberEditTemplate() {
   };
 
   // 체크박스 전체 선택
-  const onChangeMarketingAll = (e, id) => {
+  const onChangeMarketingAll = (e, id, type) => {
+    console.log(type, id);
     setEmail1(e.target.checked);
     setSms(e.target.checked);
     setKakao(e.target.checked);
     if (e.target.checked) {
-      setCheckList([...CheckList, id]);
+      console.log('type', [...CheckList, type]);
+      setCheckList([...CheckList, type]);
       // 체크 해제할 시 CheckList에서 해당 id값이 `아닌` 값만 배열에 넣기
     } else {
-      setCheckList(CheckList.filter(checkedId => checkedId !== id));
+      console.log(
+        'type',
+        CheckList.filter(checkedId => checkedId !== type),
+      );
+      setCheckList(CheckList.filter(checkedId => checkedId !== type));
     }
     setCheckMarketingList(e.target.checked ? marketingList : []);
   };
@@ -537,10 +543,12 @@ export function MemberEditTemplate() {
           <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-3">
             <Grid item xs={2}></Grid>
             <Grid item xs={2} className="tw-text-left">
-              이메일
+              {userInfo?.personalInfo?.email ? '이메일' : '학번'}
             </Grid>
             <Grid item xs={8}>
-              <div className="tw-text-left tw-font-medium">{userInfo?.personalInfo?.email || ''}</div>
+              <div className="tw-text-left tw-font-medium">
+                {userInfo?.personalInfo?.email || userInfo?.personalInfo?.memberId}
+              </div>
             </Grid>
           </Grid>
           <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-3">
@@ -1051,7 +1059,7 @@ export function MemberEditTemplate() {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        onChange={e => onChangeMarketingAll(e, IdList[2])}
+                        onChange={e => onChangeMarketingAll(e, IdList[2], 'promotion1')}
                         checked={CheckMarketingList.length >= 1}
                         value={IdList[2]}
                         icon={<CheckBoxOutlinedIcon />}
