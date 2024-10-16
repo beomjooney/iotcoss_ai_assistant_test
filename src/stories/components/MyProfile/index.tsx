@@ -22,6 +22,8 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
   const [activeQuiz, setActiveQuiz] = useState('0001');
   const [memberId, setMemberId] = useState('');
 
+  console.log(profile);
+
   const [universityCode, setUniversityCode] = useState('');
   const [selectedUniversity, setSelectedUniversity] = useState('');
   const [jobLevel, setJobLevel] = useState('0001');
@@ -120,7 +122,7 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
     formData.append('profileImage', file || '');
     formData.append('jobGroup', universityCode);
     formData.append('job', selectedJob);
-    formData.append('memberId', profile?.email);
+    formData.append('memberId', profile?.email || profile?.memberId);
     formData.append('jobLevel', jobLevel);
     formData.append('introductionMessage', introductionMessage);
 
@@ -134,8 +136,8 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
     setUniversityCode(selectedCode);
     setSelectedUniversity(selectedCode);
     setJobs(selected ? selected.jobs : []);
-    console.log(selected.jobs[0].code);
-    setSelectedJob(selected.jobs[0].code);
+    console.log(selected?.jobs[0]?.code);
+    setSelectedJob(selected?.jobs[0]?.code);
     // setJo(selected ? selected.jobs : []);
     // setSelectedJob(''); // Clear the selected job when university changes
   };

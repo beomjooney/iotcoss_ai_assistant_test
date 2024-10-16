@@ -392,7 +392,7 @@ export function AdminDashboardTemplate() {
                         <div className="tw-font-bold tw-text-lg tw-text-black tw-mb-5">방문현황 요약</div>
                         <div>
                           <div className="tw-flex tw-gap-8">
-                            <div className="border tw-w-1/3 tw-h-[120px] tw-relative tw-rounded-lg tw-bg-[#fdfdff] tw-border tw-border-[#e9ecf2]">
+                            <div className="border tw-w-1/2 tw-h-[120px] tw-relative tw-rounded-lg tw-bg-[#fdfdff] tw-border tw-border-[#e9ecf2]">
                               <div className="tw-flex tw-p-5 tw-pb-0 tw-items-center tw-gap-1 ">
                                 <p className=" tw-text-sm tw-font-medium tw-text-left tw-text-[#6a7380] tw-mr-2">
                                   교수자 신규
@@ -458,7 +458,7 @@ export function AdminDashboardTemplate() {
                                 {summary?.totalInstructorCount}
                               </p>
                             </div>
-                            <div className="border tw-w-1/3 tw-h-[120px] tw-relative tw-rounded-lg tw-bg-[#fdfdff] tw-border tw-border-[#e9ecf2]">
+                            <div className="border tw-w-1/2 tw-h-[120px] tw-relative tw-rounded-lg tw-bg-[#fdfdff] tw-border tw-border-[#e9ecf2]">
                               <div className="tw-flex tw-p-5 tw-pb-0 tw-items-center tw-gap-1 ">
                                 <p className=" tw-text-sm tw-font-medium tw-text-left tw-text-[#6a7380] tw-mr-2">
                                   학습자 신규
@@ -523,71 +523,31 @@ export function AdminDashboardTemplate() {
                                 {summary?.totalStudentCount}
                               </p>
                             </div>
-                            <div className="border tw-w-1/3 tw-h-[120px] tw-relative tw-rounded-lg tw-bg-[#fdfdff] tw-border tw-border-[#e9ecf2]">
+                            {/* <div className="border tw-w-60 tw-h-[120px] tw-relative tw-rounded-lg tw-bg-[#fdfdff] tw-border tw-border-[#e9ecf2]">
                               <div className="tw-flex tw-p-5 tw-pb-0 tw-items-center tw-gap-1 ">
                                 <p className=" tw-text-sm tw-font-medium tw-text-left tw-text-[#6a7380] tw-mr-2">
-                                  방문자 수
+                                  방문자수
                                 </p>
-                                {summary?.incrementalVisitCount > 0 ? (
-                                  <svg
-                                    width={7}
-                                    height={9}
-                                    viewBox="0 0 7 9"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className=""
-                                    preserveAspectRatio="none"
-                                  >
-                                    <path
-                                      fillRule="evenodd"
-                                      clipRule="evenodd"
-                                      d="M6.06216 5.25L3.03108 0L0 5.25H1.53108V9H4.53108V5.25H6.06216Z"
-                                      fill="#FF0027"
-                                    />
-                                  </svg>
-                                ) : summary?.incrementalVisitCount === 0 ? (
-                                  <svg
-                                    width={7}
-                                    height={9}
-                                    viewBox="0 0 7 9"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className=""
-                                    preserveAspectRatio="none"
-                                  >
-                                    <path
-                                      fillRule="evenodd"
-                                      clipRule="evenodd"
-                                      d="M0 3.75H7V5.25H0V3.75Z"
-                                      fill="#000"
-                                    />
-                                  </svg>
-                                ) : (
-                                  <svg
-                                    width={7}
-                                    height={9}
-                                    viewBox="0 0 7 9"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className=""
-                                    preserveAspectRatio="none"
-                                  >
-                                    <path
-                                      fillRule="evenodd"
-                                      clipRule="evenodd"
-                                      d="M0.000322801 3.75L3.03141 9L6.0625 3.75L4.53141 3.75L4.53141 -1.33852e-07L1.53141 -3.9612e-07L1.53141 3.75L0.000322801 3.75Z"
-                                      fill="#1573FF"
-                                    />
-                                  </svg>
-                                )}
-                                <p className=" tw-text-sm tw-text-left tw-text-[#9ca5b2]">
-                                  {summary?.incrementalVisitCount}
-                                </p>
+                                <svg
+                                  width={7}
+                                  height={9}
+                                  viewBox="0 0 7 9"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  className=""
+                                  preserveAspectRatio="none"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    clipRule="evenodd"
+                                    d="M6.06216 5.25L3.03108 0L0 5.25H1.53108V9H4.53108V5.25H6.06216Z"
+                                    fill="#FF0027"
+                                  />
+                                </svg>
+                                <p className=" tw-text-sm tw-text-left tw-text-[#9ca5b2]">+3명</p>
                               </div>
-                              <p className="tw-px-5   tw-text-[50px] tw-font-light  tw-text-[#1573ff]">
-                                {summary?.totalVisitCount}
-                              </p>
-                            </div>
+                              <p className="tw-px-5   tw-text-[50px] tw-font-light  tw-text-[#1573ff]">0</p>
+                            </div> */}
                           </div>
                         </div>
                         <div className="tw-font-bold tw-text-lg tw-text-black tw-my-10">일별 사용자 분포</div>

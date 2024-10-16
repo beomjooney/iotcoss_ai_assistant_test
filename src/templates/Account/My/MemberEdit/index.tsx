@@ -253,7 +253,7 @@ export function MemberEditTemplate() {
     setCheckMarketingList(e.target.checked ? marketingList : []);
   };
 
-  const onChangeMarketingEach = (e, id) => {
+  const onChangeMarketingEach = (e, id, type) => {
     if (id === 'email') {
       setEmail1(e.target.checked);
     } else if (id === 'sms') {
@@ -265,6 +265,11 @@ export function MemberEditTemplate() {
       setCheckMarketingList([...CheckMarketingList, id]);
     } else {
       setCheckMarketingList(CheckMarketingList.filter(checkedId => checkedId !== id));
+    }
+
+    if (type === 'promotion1') {
+      console.log('CheckList', CheckList);
+      setCheckList([...CheckList, type]);
     }
   };
 
@@ -343,7 +348,7 @@ export function MemberEditTemplate() {
       userInfo?.personalInfo?.isSmsReceive ? 'sms' : '',
       userInfo?.personalInfo?.isKakaoReceive ? 'kakao' : '',
     ]);
-    setIdList(['service1', 'privacy1', userInfo?.personalInfo?.termsAgreed[2].isAgreed ? 'promotion1' : '']);
+    setIdList(['service1', 'privacy1', userInfo?.personalInfo?.termsAgreed[2]?.isAgreed ? 'promotion1' : '']);
     setSelectedUniversityName(userInfo?.personalInfo?.jobGroup?.name);
     const selected = userInfo?.jobOptions?.find(u => u.code === userInfo?.personalInfo?.jobGroup?.code);
     setJobs(selected ? selected.jobs : []);
@@ -849,7 +854,7 @@ export function MemberEditTemplate() {
               <div className="tw-gap-4 tw-px-0 tw-py-3">
                 <dt className="tw-text-sm tw-leading-6 tw-text-gray-900"></dt>
                 <dd className="tw-mt-0 tw-font-medium tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
-                  {recommendLevels?.toString() === '0001' && (
+                  {/* {recommendLevels?.toString() === '0001' && (
                     <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
                       1학년 : 직무스킬 학습 중. 상용서비스 개발 경험 없음.
                     </div>
@@ -878,7 +883,7 @@ export function MemberEditTemplate() {
                     <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
                       5레벨 : 본인 오픈소스/방법론 등이 범용적 사용, 수백명이상 다수 직군 리딩.
                     </div>
-                  )}
+                  )} */}
                 </dd>
               </div>
             </Grid>
@@ -1079,7 +1084,7 @@ export function MemberEditTemplate() {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        onChange={e => onChangeMarketingEach(e, marketingList[0])}
+                        onChange={e => onChangeMarketingEach(e, marketingList[0], 'promotion1')}
                         checked={CheckMarketingList.includes(marketingList[0])}
                         value={marketingList[0]}
                         icon={<CheckBoxOutlineBlankOutlinedIcon />}
