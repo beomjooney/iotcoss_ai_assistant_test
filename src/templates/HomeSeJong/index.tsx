@@ -99,7 +99,7 @@ export function HomeSejongTemplate({ logged = false, tenantName = '' }: HomeSejo
                     onClick={() => {
                       console.log(modalIsProfessor);
                       const role =
-                        roles?.includes('ROLE_ADMIN') || roles?.includes('ROLE_MANAGER') ? 'professor' : 'student';
+                        roles?.includes('ROLE_ADMIN') || roles?.includes('ROLE_INSTRUCTOR') ? 'professor' : 'student';
                       if (logged) {
                         if (role === 'professor') {
                           setModalIsProfessor(true);

@@ -246,7 +246,7 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
               >
                 프로필 수정
               </button>
-              {!(roles?.includes('ROLE_ADMIN') || roles?.includes('ROLE_MANAGER')) && (
+              {!(roles?.includes('ROLE_ADMIN') || roles?.includes('ROLE_INSTRUCTOR')) && (
                 <button
                   onClick={() => {
                     setIsProfessor(true);
