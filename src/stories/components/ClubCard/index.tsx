@@ -58,7 +58,7 @@ ClubCardProps) => {
         // href={logged ? '/quiz/' + `${item.clubSequence}` : '#'}
         href={
           logged
-            ? roles?.includes('ROLE_ADMIN') || (roles?.includes('ROLE_MANAGER') && memberId === item.leaderUUID)
+            ? item.isClubAdmin
               ? '/quiz-dashboard/' + `${item.clubSequence}`
               : '/quiz/' + `${item.clubSequence}`
             : '#'

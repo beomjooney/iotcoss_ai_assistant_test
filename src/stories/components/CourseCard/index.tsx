@@ -31,7 +31,7 @@ const CourseCard = ({ data, border = false }) => {
   return (
     <div
       onClick={() => {
-        if (roles?.includes('ROLE_ADMIN') || (roles?.includes('ROLE_MANAGER') && memberId === data.leaderUUID)) {
+        if (data.isClubAdmin) {
           // Redirect admins to the dashboard based on the clubType
           data?.clubType === '0100'
             ? (window.location.href = `/quiz-dashboard/${data.clubSequence}`)

@@ -522,7 +522,13 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   };
 
   const handleChangeQuizType = event => {
-    setSortQuizType(event.target.value);
+    if (event.target.value === 'ASC') {
+      setSortQuizType('ASC');
+      setQuizList(prevQuizList => [...prevQuizList].sort((a, b) => a.order - b.order));
+    } else {
+      setSortQuizType('DESC');
+      setQuizList(prevQuizList => [...prevQuizList].sort((a, b) => b.order - a.order));
+    }
   };
 
   const handleInputChange = event => {
@@ -669,7 +675,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
       page: pageQuiz,
       sortType: sortQuizType,
     });
-  }, [pageQuiz, sortQuizType]);
+  }, [pageQuiz]);
 
   useDidMountEffect(() => {
     setParams({
@@ -2742,7 +2748,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
 
                     <RadioGroup value={sortQuizType} onChange={handleChangeQuizType} row>
                       <FormControlLabel
-                        value="DESC"
+                        value="ASC"
                         control={
                           <Radio
                             sx={{
@@ -2760,7 +2766,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                         }
                       />
                       <FormControlLabel
-                        value="ASC"
+                        value="DESC"
                         control={
                           <Radio
                             sx={{

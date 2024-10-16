@@ -320,6 +320,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
     setPassword(data.password);
 
     // Conditionally add the token parameter if registrationAuthenticationType is '0100'
+    console.log('registrationAuthenticationType', registrationAuthenticationType);
     if (registrationAuthenticationType === '0100') {
       onLoginSignUp({
         // ...data,
@@ -336,6 +337,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
         tenantUri: subdomain,
       });
     } else {
+      console.log('registrationAuthenticationType', registrationAuthenticationType);
       onEmainSend({
         email: email,
         name: data.name,
@@ -357,7 +359,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
       email: email,
       name: data.name,
       password: password,
-      nickname: name,
+      name: name,
       phoneNumber: phone,
       agreedTermsIds: ['service1', 'privacy1'],
       emailReceiveYn: email1,
@@ -924,8 +926,8 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
           <div className="tw-flex tw-flex-col tw-items-center tw-mt-40">
             <svg className="tw-h-14 tw-w-14" viewBox="0 0 58 58" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
+                fillRule="evenodd"
+                clipRule="evenodd"
                 d="M28.9992 57.8002C44.905 57.8002 57.7992 44.906 57.7992 29.0002C57.7992 13.0944 44.905 0.200195 28.9992 0.200195C13.0934 0.200195 0.199219 13.0944 0.199219 29.0002C0.199219 44.906 13.0934 57.8002 28.9992 57.8002ZM42.3448 24.3458C43.7507 22.9399 43.7507 20.6605 42.3448 19.2546C40.9389 17.8487 38.6595 17.8487 37.2536 19.2546L25.3992 31.109L20.7448 26.4546C19.3389 25.0487 17.0595 25.0487 15.6536 26.4546C14.2477 27.8605 14.2477 30.1399 15.6536 31.5458L22.8536 38.7458C24.2595 40.1517 26.5389 40.1517 27.9448 38.7458L42.3448 24.3458Z"
                 fill="#34D399"
               ></path>

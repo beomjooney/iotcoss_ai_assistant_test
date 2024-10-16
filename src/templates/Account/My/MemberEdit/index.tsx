@@ -75,7 +75,7 @@ export function MemberEditTemplate() {
   const [sec, setSec] = useState(0);
   const [CheckList, setCheckList] = useState([]);
   const [CheckMarketingList, setCheckMarketingList] = useState([]);
-  const [IdList, setIdList] = useState(['service1', 'privacy1', 'promotion2']);
+  const [IdList, setIdList] = useState(['service1', 'privacy1', 'promotion1']);
   const [marketingList, setMarketingList] = useState(['email', 'sms', 'kakao']);
   const [allTerm, setAllTerm] = useState<boolean>(false);
   const [serviceTerm, setServiceTerm] = useState<boolean>(false);
@@ -95,6 +95,7 @@ export function MemberEditTemplate() {
   const [recommendLevels, setRecommendLevels] = useState('');
   const [jobLevelName, setJobLevelName] = useState([]);
   const [passwordFlag, setPasswordFlag] = useState(false);
+  const [email1, setEmail1] = useState<boolean>(false);
   // 유저 정보 조회
 
   usePersonalInfo({}, user => {
@@ -232,11 +233,41 @@ export function MemberEditTemplate() {
   };
   const checkMandatoryTerms = list => {
     if (!list.includes('service1') || !list.includes('privacy1')) {
-      alert('필수값 체크를 해주세요');
+      alert('필수 약관을 체크해주세요');
       return false;
     }
     return true;
   };
+
+  // 체크박스 전체 선택
+  const onChangeMarketingAll = (e, id) => {
+    setEmail1(e.target.checked);
+    setSms(e.target.checked);
+    setKakao(e.target.checked);
+    if (e.target.checked) {
+      setCheckList([...CheckList, id]);
+      // 체크 해제할 시 CheckList에서 해당 id값이 `아닌` 값만 배열에 넣기
+    } else {
+      setCheckList(CheckList.filter(checkedId => checkedId !== id));
+    }
+    setCheckMarketingList(e.target.checked ? marketingList : []);
+  };
+
+  const onChangeMarketingEach = (e, id) => {
+    if (id === 'email') {
+      setEmail1(e.target.checked);
+    } else if (id === 'sms') {
+      setSms(e.target.checked);
+    } else if (id === 'kakao') {
+      setKakao(e.target.checked);
+    }
+    if (e.target.checked) {
+      setCheckMarketingList([...CheckMarketingList, id]);
+    } else {
+      setCheckMarketingList(CheckMarketingList.filter(checkedId => checkedId !== id));
+    }
+  };
+
   const onChangeAll = e => {
     setCheckList(e.target.checked ? IdList : []);
     setCheckMarketingList(e.target.checked ? marketingList : []);
@@ -250,14 +281,6 @@ export function MemberEditTemplate() {
 
   const handlePasswordChange1 = value => {
     setPreviousPassword(value);
-  };
-
-  const handlePasswordChange2 = value => {
-    setNewPassword(value);
-  };
-
-  const handlePasswordChange3 = value => {
-    setConfirmPassword(value);
   };
 
   const handleSubmit = () => {
@@ -277,9 +300,9 @@ export function MemberEditTemplate() {
       jobGroup: universityCode,
       jobLevel: recommendLevels,
       job: selectedJob,
-      isEmailReceive: emailReceiveYn,
-      isSmsReceive: smsReceiveYn,
-      isKakaoReceive: kakaoReceiveYn,
+      isEmailReceive: email1,
+      isSmsReceive: sms,
+      isKakaoReceive: kakao,
       agreedTermsIds: CheckList,
     };
 
@@ -598,13 +621,6 @@ export function MemberEditTemplate() {
                   </Grid>
                   <Grid item xs={8}>
                     <div className="tw-text-left tw-flex tw-text-base tw-gap-3">
-                      {/* <TextField
-                        onChange={e => handlePasswordChange3(e.target.value)}
-                        size="small"
-                        id="outlined-disabled"
-                        value={confirmPassword}
-                        type="password"
-                      /> */}
                       <TextField
                         size="small"
                         sx={{ width: '220px', '& label': { fontSize: 14, color: '#919191', fontWeight: 'bold' } }}
@@ -982,7 +998,7 @@ export function MemberEditTemplate() {
             </Grid>
           </Grid>
 
-          <Grid container direction="row" justifyContent="space-between" alignItems="center">
+          {/* <Grid container direction="row" justifyContent="space-between" alignItems="center">
             <Grid item xs={10}>
               <Box display="flex" justifyContent="flex-start">
                 <FormGroup sx={{ fontWeight: 'bold' }}>
@@ -1012,14 +1028,14 @@ export function MemberEditTemplate() {
                 </FormGroup>
               </Box>
             </Grid>
-          </Grid>
+          </Grid> */}
 
           <Divider variant="middle" sx={{ borderColor: 'rgba(0, 0, 0, 0.4);', margin: '5px 0px 5px 0px' }} />
 
           <Grid container direction="row" justifyContent="space-between" alignItems="center">
             <Grid item xs={10}>
               <Box display="flex" justifyContent="flex-start">
-                {/* <FormGroup sx={{ fontWeight: 'bold' }}>
+                <FormGroup sx={{ fontWeight: 'bold' }}>
                   <FormControlLabel
                     control={
                       <Checkbox
@@ -1029,6 +1045,9 @@ export function MemberEditTemplate() {
                         icon={<CheckBoxOutlinedIcon />}
                         checkedIcon={<CheckBoxOutlinedIcon />}
                         sx={{
+                          '&.Mui-checked': {
+                            color: '#CA001f', // 체크된 상태의 색상
+                          },
                           color: '#c7c7c7',
                           '& .MuiSvgIcon-root': { fontSize: 24 },
                         }}
@@ -1040,7 +1059,7 @@ export function MemberEditTemplate() {
                       </Typography>
                     }
                   />
-                </FormGroup> */}
+                </FormGroup>
               </Box>
             </Grid>
             <Grid item xs={2}></Grid>
@@ -1053,9 +1072,10 @@ export function MemberEditTemplate() {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        onChange={handleEmailYn}
-                        checked={emailReceiveYn} // Use emailReceiveYn as the checked state
-                        icon={<CheckBoxOutlinedIcon />}
+                        onChange={e => onChangeMarketingEach(e, marketingList[0])}
+                        checked={CheckMarketingList.includes(marketingList[0])}
+                        value={marketingList[0]}
+                        icon={<CheckBoxOutlineBlankOutlinedIcon />}
                         checkedIcon={<CheckBoxOutlinedIcon />}
                         sx={{
                           '&.Mui-checked': {
@@ -1077,9 +1097,10 @@ export function MemberEditTemplate() {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        onChange={handleSmsYn}
-                        checked={smsReceiveYn} // Use emailReceiveYn as the checked state
-                        icon={<CheckBoxOutlinedIcon />}
+                        onChange={e => onChangeMarketingEach(e, marketingList[1])}
+                        checked={CheckMarketingList.includes(marketingList[1])}
+                        value={marketingList[1]}
+                        icon={<CheckBoxOutlineBlankOutlinedIcon />}
                         checkedIcon={<CheckBoxOutlinedIcon />}
                         sx={{
                           '&.Mui-checked': {
@@ -1101,9 +1122,10 @@ export function MemberEditTemplate() {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        onChange={handleKakaoYn}
-                        checked={kakaoReceiveYn} // Use emailReceiveYn as the checked state
-                        icon={<CheckBoxOutlinedIcon />}
+                        onChange={e => onChangeMarketingEach(e, marketingList[2])}
+                        checked={CheckMarketingList.includes(marketingList[2])}
+                        value={marketingList[2]}
+                        icon={<CheckBoxOutlineBlankOutlinedIcon />}
                         checkedIcon={<CheckBoxOutlinedIcon />}
                         sx={{
                           '&.Mui-checked': {
