@@ -30,7 +30,6 @@ import Divider from '@mui/material/Divider';
 import Dialog, { DialogProps } from '@mui/material/Dialog';
 import { UseQueryResult } from 'react-query';
 import DialogTitle from '@mui/material/DialogTitle';
-import IconButton from '@mui/material/IconButton';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import CloseIcon from '@mui/icons-material/Close';
@@ -40,7 +39,9 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 import { makeStyles } from '@mui/styles';
 import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
-import InputAdornment from '@mui/material/InputAdornment';
+
+import { IconButton, InputAdornment } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { is } from 'ramda';
 const cx = classNames.bind(styles);
 
@@ -73,14 +74,6 @@ export function MemberEditTemplate() {
   // ** Timer
   const [min, setMin] = useState(0);
   const [sec, setSec] = useState(0);
-  const [CheckList, setCheckList] = useState([]);
-  const [CheckMarketingList, setCheckMarketingList] = useState([]);
-  const [IdList, setIdList] = useState(['service1', 'privacy1', 'promotion1']);
-  const [marketingList, setMarketingList] = useState(['email', 'sms', 'kakao']);
-  const [allTerm, setAllTerm] = useState<boolean>(false);
-  const [serviceTerm, setServiceTerm] = useState<boolean>(false);
-  const [privateTerm, setPrivateTerm] = useState<boolean>(false);
-  const [marketing, setMarketing] = useState<boolean>(false);
   const [email, setEmail] = useState<boolean>(false);
   const [kakao, setKakao] = useState<boolean>(false);
   const [snsFlag, setSnsFlag] = useState(false);
@@ -96,8 +89,14 @@ export function MemberEditTemplate() {
   const [jobLevelName, setJobLevelName] = useState([]);
   const [passwordFlag, setPasswordFlag] = useState(false);
   const [email1, setEmail1] = useState<boolean>(false);
-  // 유저 정보 조회
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword1, setShowPassword1] = useState(false);
+
+  const handleClickShowPassword = () => setShowPassword(show => !show);
+  const handleClickShowPassword1 = () => setShowPassword1(show => !show);
+
+  // 유저 정보 조회
   usePersonalInfo({}, user => {
     console.log(user);
     setUserInfo(user);
@@ -161,16 +160,6 @@ export function MemberEditTemplate() {
     setPhoneNumber(formatPhoneNumber(value));
   }
 
-  const handleEmailYn = e => {
-    setEmailReceiveYn(!emailReceiveYn); // Toggle the value of emailReceiveYn
-  };
-  const handleKakaoYn = e => {
-    setKakaoReceiveYn(!kakaoReceiveYn); // Toggle the value of emailReceiveYn
-  };
-  const handleSmsYn = e => {
-    setSmsReceiveYn(!smsReceiveYn); // Toggle the value of emailReceiveYn
-  };
-
   const handleRecommendLevels = (event, newValue) => {
     console.log(newValue);
     if (newValue !== null) {
@@ -211,98 +200,71 @@ export function MemberEditTemplate() {
   };
 
   const descriptionElementRef = React.useRef<HTMLElement>(null);
-
-  const onChangeEach = (e, id) => {
-    console.log(id, e.target.checked);
-    if (id === 'serviceTerms') {
-      setServiceTerm(e.target.checked);
-    } else if (id === 'privateTerms') {
-      setPrivateTerm(e.target.checked);
-    } else if (id === 'marketing') {
-      setMarketing(e.target.checked);
-    }
-
-    // 체크할 시 CheckList에 id값 넣기
-    if (e.target.checked) {
-      setCheckList(prevCheckList => [...prevCheckList, id]);
-      // 체크 해제할 시 CheckList에서 해당 id값이 `아닌` 값만 배열에 넣기
-    } else {
-      setCheckList(prevCheckList => prevCheckList.filter(checkedId => checkedId !== id));
-    }
-    console.log(CheckList);
-  };
-  const checkMandatoryTerms = list => {
-    if (!list.includes('service1') || !list.includes('privacy1')) {
-      alert('필수 약관을 체크해주세요');
-      return false;
-    }
-    return true;
-  };
-
-  // 체크박스 전체 선택
-  const onChangeMarketingAll = (e, id, type) => {
-    console.log(type, id);
-    setEmail1(e.target.checked);
-    setSms(e.target.checked);
-    setKakao(e.target.checked);
-    if (e.target.checked) {
-      console.log('type', [...CheckList, type]);
-      setCheckList([...CheckList, type]);
-      // 체크 해제할 시 CheckList에서 해당 id값이 `아닌` 값만 배열에 넣기
-    } else {
-      console.log(
-        'type',
-        CheckList.filter(checkedId => checkedId !== type),
-      );
-      setCheckList(CheckList.filter(checkedId => checkedId !== type));
-    }
-    setCheckMarketingList(e.target.checked ? marketingList : []);
-  };
-
-  const onChangeMarketingEach = (e, id, type) => {
-    if (id === 'email') {
-      setEmail1(e.target.checked);
-    } else if (id === 'sms') {
-      setSms(e.target.checked);
-    } else if (id === 'kakao') {
-      setKakao(e.target.checked);
-    }
-    if (e.target.checked) {
-      setCheckMarketingList([...CheckMarketingList, id]);
-    } else {
-      setCheckMarketingList(CheckMarketingList.filter(checkedId => checkedId !== id));
-    }
-
-    if (type === 'promotion1') {
-      if (e.target.checked) {
-        // CheckList에 type이 이미 포함되어 있지 않을 때만 추가
-        if (!CheckList.includes(type)) {
-          setCheckList([...CheckList, type]);
-        }
-      } else {
-        // 체크 해제할 시 CheckList에서 해당 id값이 아닌 값만 배열에 넣기
-        setCheckList(CheckList.filter(checkedId => checkedId !== type));
-      }
-    }
-  };
-
-  const onChangeAll = e => {
-    setCheckList(e.target.checked ? IdList : []);
-    setCheckMarketingList(e.target.checked ? marketingList : []);
-    setServiceTerm(e.target.checked);
-    setPrivateTerm(e.target.checked);
-    setMarketing(e.target.checked);
-    setKakaoReceiveYn(e.target.checked);
-    setEmailReceiveYn(e.target.checked);
-    setSmsReceiveYn(e.target.checked);
-  };
-
   const handlePasswordChange1 = value => {
     setPreviousPassword(value);
   };
 
   const handleSubmit = () => {
     updateMemberInfo();
+  };
+
+  const [agreements, setAgreements] = useState({
+    all: false,
+    service: false,
+    privacy: false,
+    promotions: false,
+    email: false,
+    sms: false,
+    kakao: false,
+  });
+
+  const handleChange = key => {
+    setAgreements(prev => {
+      const newAgreements = { ...prev, [key]: !prev[key] };
+
+      // "전체 약관 동의"가 클릭되면 모든 항목을 업데이트
+      if (key === 'all') {
+        const isAllChecked = !prev.all;
+        return {
+          all: isAllChecked,
+          service: isAllChecked,
+          privacy: isAllChecked,
+          promotions: isAllChecked,
+          email: isAllChecked,
+          sms: isAllChecked,
+          kakao: isAllChecked,
+        };
+      }
+
+      // "프로모션 알림 수신"이 변경될 때 이메일, 문자, 카카오 상태를 업데이트
+      if (key === 'promotions') {
+        if (newAgreements.promotions) {
+          newAgreements.email = true;
+          newAgreements.sms = true;
+          newAgreements.kakao = true;
+        } else {
+          newAgreements.email = false;
+          newAgreements.sms = false;
+          newAgreements.kakao = false;
+        }
+      }
+
+      // 이메일, 문자, 카카오 중 하나라도 체크되면 "프로모션 알림 수신" 체크
+      if (['email', 'sms', 'kakao'].includes(key)) {
+        newAgreements.promotions = newAgreements.email || newAgreements.sms || newAgreements.kakao;
+      }
+
+      // "전체 약관 동의" 업데이트
+      newAgreements.all =
+        newAgreements.service &&
+        newAgreements.privacy &&
+        newAgreements.promotions &&
+        newAgreements.email &&
+        newAgreements.sms &&
+        newAgreements.kakao;
+
+      return newAgreements;
+    });
   };
 
   const handleDeleteSubmit = () => {
@@ -312,22 +274,27 @@ export function MemberEditTemplate() {
   };
 
   const updateMemberInfo = () => {
+    console.log(email1, sms, kakao);
     const profileImageUrl = imageUrl ? imageUrl.toString().slice(1) : user?.profileImageUrl;
     const params = {
       // ...userInfo,
       jobGroup: universityCode,
       jobLevel: recommendLevels,
       job: selectedJob,
-      isEmailReceive: email1,
-      isSmsReceive: sms,
-      isKakaoReceive: kakao,
-      agreedTermsIds: CheckList,
+      isEmailReceive: agreements.email,
+      isSmsReceive: agreements.sms,
+      isKakaoReceive: agreements.kakao,
+      agreedTermsIds: ['service1', 'privacy1', ...(agreements.promotions ? ['promotion1'] : [])],
     };
 
     console.log(params);
-    if (checkMandatoryTerms(CheckList)) {
+    // if (checkMandatoryTerms(CheckList)) {
+    if (agreements.privacy && agreements.service) {
       onUserUpdate(params);
+    } else {
+      alert('필수 약관을 체크해주세요');
     }
+    // }
   };
 
   // 이미지 업로드 완료 시 최종 정보 수정
@@ -349,19 +316,8 @@ export function MemberEditTemplate() {
   }
 
   useEffect(() => {
-    // setUser(userInfo); // 전역 정보 업데이트
     setNickname(userInfo?.personalInfo?.nickname);
-    console.log(userInfo?.personalInfo?.isEmailReceive);
     setPhoneNumber(formatPhoneNumber(userInfo?.personalInfo?.phoneNumber));
-    // setEmail1(userInfo?.personalInfo?.isEmailReceive);
-    // setKakao(userInfo?.personalInfo?.isKakaoReceive);
-    // setSms(userInfo?.personalInfo?.isSmsReceive);
-    setCheckMarketingList([
-      userInfo?.personalInfo?.isEmailReceive ? 'email' : '',
-      userInfo?.personalInfo?.isSmsReceive ? 'sms' : '',
-      userInfo?.personalInfo?.isKakaoReceive ? 'kakao' : '',
-    ]);
-    setIdList(['service1', 'privacy1', userInfo?.personalInfo?.termsAgreed[2]?.isAgreed ? 'promotion1' : '']);
     setSelectedUniversityName(userInfo?.personalInfo?.jobGroup?.name);
     const selected = userInfo?.jobOptions?.find(u => u.code === userInfo?.personalInfo?.jobGroup?.code);
     setJobs(selected ? selected.jobs : []);
@@ -369,11 +325,31 @@ export function MemberEditTemplate() {
     setSelectedJob(userInfo?.personalInfo?.job?.code);
 
     console.log(selected);
-    console.log(selected);
 
-    setCheckList(userInfo?.personalInfo?.termsAgreed?.filter(term => term.isAgreed).map(term => term.termsId));
+    const serviceAgreement =
+      userInfo?.personalInfo?.termsAgreed.find(term => term.termsType === '0001')?.isAgreed || false;
+    const privacyAgreement =
+      userInfo?.personalInfo?.termsAgreed.find(term => term.termsType === '0002')?.isAgreed || false;
+    const promotionsAgreement =
+      userInfo?.personalInfo?.termsAgreed.find(term => term.termsType === '0003')?.isAgreed || false;
+
+    setAgreements({
+      all:
+        serviceAgreement &&
+        privacyAgreement &&
+        promotionsAgreement &&
+        userInfo?.personalInfo?.isEmailReceive &&
+        userInfo?.personalInfo?.isSmsReceive &&
+        userInfo?.personalInfo?.isKakaoReceive,
+      service: serviceAgreement,
+      privacy: privacyAgreement,
+      promotions: promotionsAgreement,
+      email: userInfo?.personalInfo?.isEmailReceive,
+      sms: userInfo?.personalInfo?.isSmsReceive,
+      kakao: userInfo?.personalInfo?.isKakaoReceive,
+    });
+
     setRecommendLevels(userInfo?.personalInfo?.jobLevel?.code || '');
-    // setRecommendLevels('0001' || []);
   }, [userInfo]);
 
   useEffect(() => {
@@ -587,7 +563,7 @@ export function MemberEditTemplate() {
           {passwordFlag && (
             <>
               <form onSubmit={handleSubmitPassworld(onSubmit, onError)}>
-                <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-3">
+                <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-pt-3">
                   <Grid item xs={2}></Grid>
                   <Grid item xs={2} className="tw-text-left">
                     이전비밀번호
@@ -599,26 +575,38 @@ export function MemberEditTemplate() {
                         size="small"
                         id="outlined-disabled"
                         value={previousPassword}
-                        type="password"
+                        type={showPassword ? 'text' : 'password'}
+                        sx={{
+                          width: '220px',
+                          marginTop: '15px',
+                          marginBottom: '10px',
+                          '& label': { fontSize: 14, color: '#919191', fontWeight: 'bold' },
+                        }}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                onClick={handleClickShowPassword}
+                                edge="end"
+                                aria-label="toggle password visibility"
+                              >
+                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
                       />
                     </div>
                   </Grid>
                 </Grid>
 
-                <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-3">
+                <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-pb-3">
                   <Grid item xs={2}></Grid>
                   <Grid item xs={2} className="tw-text-left">
                     새비밀번호
                   </Grid>
                   <Grid item xs={8}>
                     <div className="tw-text-left tw-flex tw-text-base tw-gap-3">
-                      {/* <TextField
-                        onChange={e => handlePasswordChange2(e.target.value)}
-                        size="small"
-                        id="outlined-disabled"
-                        value={newPassword}
-                        type="password"
-                      /> */}
                       <TextField
                         size="small"
                         sx={{
@@ -631,7 +619,20 @@ export function MemberEditTemplate() {
                           style: { borderBottomColor: '#e3e3e3 !important' },
                         }}
                         fullWidth
-                        type="password"
+                        type={showPassword1 ? 'text' : 'password'}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                onClick={handleClickShowPassword1}
+                                edge="end"
+                                aria-label="toggle password visibility"
+                              >
+                                {showPassword1 ? <VisibilityOff /> : <Visibility />}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
                         id="password"
                         name="password"
                         {...register('password')}
@@ -921,8 +922,10 @@ export function MemberEditTemplate() {
                     control={
                       <Checkbox
                         value="ALL"
-                        onChange={onChangeAll}
-                        checked={CheckList?.length === IdList?.length}
+                        // onChange={onChangeAll}
+                        onChange={() => handleChange('all')}
+                        checked={agreements.all}
+                        // checked={CheckList?.length === 3}
                         icon={<CheckBoxOutlineBlankOutlinedIcon />}
                         checkedIcon={<CheckBoxOutlinedIcon />}
                         sx={{
@@ -950,9 +953,11 @@ export function MemberEditTemplate() {
             <FormControlLabel
               control={
                 <Checkbox
-                  onChange={e => onChangeEach(e, IdList[0])}
-                  checked={CheckList?.includes(IdList[0])}
-                  value={IdList[0]}
+                  // onChange={e => onChangeEach(e, IdList[0])}
+                  // checked={CheckList?.includes(IdList[0])}
+                  // value={IdList[0]}
+                  checked={agreements.service}
+                  onChange={() => handleChange('service')}
                   icon={<CheckBoxOutlinedIcon />}
                   checkedIcon={<CheckBoxOutlinedIcon />}
                   ref={checkboxref}
@@ -990,9 +995,11 @@ export function MemberEditTemplate() {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        onChange={e => onChangeEach(e, IdList[1])}
-                        checked={CheckList?.includes(IdList[1])}
-                        value={IdList[1]}
+                        // onChange={e => onChangeEach(e, IdList[1])}
+                        // checked={CheckList?.includes(IdList[1])}
+                        // value={IdList[1]}
+                        checked={agreements.privacy}
+                        onChange={() => handleChange('privacy')}
                         icon={<CheckBoxOutlinedIcon />}
                         checkedIcon={<CheckBoxOutlinedIcon />}
                         sx={{
@@ -1066,9 +1073,21 @@ export function MemberEditTemplate() {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        onChange={e => onChangeMarketingAll(e, IdList[2], 'promotion1')}
-                        checked={CheckMarketingList.length >= 1}
-                        value={IdList[2]}
+                        // onChange={e => {
+                        //   onChangeEachPromotion(e, 'promotion1');
+                        //   onChangeMarketingAll(e, IdList[2]);
+                        // }}
+                        // checked={
+                        //   CheckMarketingList.length === 0
+                        //     ? false
+                        //     : true ||
+                        //       CheckList?.includes(IdList[0]) ||
+                        //       CheckList?.includes(IdList[1]) ||
+                        //       CheckList?.includes(IdList[2])
+                        // }
+                        checked={agreements.promotions}
+                        onChange={() => handleChange('promotions')}
+                        // value={IdList[2]}
                         icon={<CheckBoxOutlinedIcon />}
                         checkedIcon={<CheckBoxOutlinedIcon />}
                         sx={{
@@ -1099,9 +1118,11 @@ export function MemberEditTemplate() {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        onChange={e => onChangeMarketingEach(e, marketingList[0], 'apromotion1')}
-                        checked={CheckMarketingList.includes(marketingList[0])}
-                        value={marketingList[0]}
+                        // onChange={e => onChangeMarketingEach(e, marketingList[0], 'promotion1')}
+                        // checked={CheckMarketingList.includes(marketingList[0])}
+                        // value={marketingList[0]}
+                        checked={agreements.email}
+                        onChange={() => handleChange('email')}
                         icon={<CheckBoxOutlineBlankOutlinedIcon />}
                         checkedIcon={<CheckBoxOutlinedIcon />}
                         sx={{
@@ -1124,9 +1145,11 @@ export function MemberEditTemplate() {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        onChange={e => onChangeMarketingEach(e, marketingList[1], 'promotion1')}
-                        checked={CheckMarketingList.includes(marketingList[1])}
-                        value={marketingList[1]}
+                        checked={agreements.sms}
+                        onChange={() => handleChange('sms')}
+                        // onChange={e => onChangeMarketingEach(e, marketingList[1], 'promotion1')}
+                        // checked={CheckMarketingList.includes(marketingList[1])}
+                        // value={marketingList[1]}
                         icon={<CheckBoxOutlineBlankOutlinedIcon />}
                         checkedIcon={<CheckBoxOutlinedIcon />}
                         sx={{
@@ -1149,9 +1172,11 @@ export function MemberEditTemplate() {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        onChange={e => onChangeMarketingEach(e, marketingList[2], 'promotion1')}
-                        checked={CheckMarketingList.includes(marketingList[2])}
-                        value={marketingList[2]}
+                        checked={agreements.kakao}
+                        onChange={() => handleChange('kakao')}
+                        // onChange={e => onChangeMarketingEach(e, marketingList[2], 'promotion1')}
+                        // checked={CheckMarketingList.includes(marketingList[2])}
+                        // value={marketingList[2]}
                         icon={<CheckBoxOutlineBlankOutlinedIcon />}
                         checkedIcon={<CheckBoxOutlinedIcon />}
                         sx={{

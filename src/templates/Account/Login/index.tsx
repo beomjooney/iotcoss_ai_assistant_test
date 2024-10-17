@@ -47,8 +47,10 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
   const [open, setOpen] = React.useState(false);
   const [scroll, setScroll] = React.useState<DialogProps['scroll']>('paper');
   const [showPassword, setShowPassword] = useState(false);
+  const [showPassword1, setShowPassword1] = useState(false);
 
   const handleClickShowPassword = () => setShowPassword(show => !show);
+  const handleClickShowPassword1 = () => setShowPassword1(show => !show);
 
   const { mutate: onLogin, isSuccess, data: loginData } = useLogin();
   const { mutate: onLoginSignUp, isSuccess: isSignUpSuccess, data: signUpData } = useLoginSignUpDSU();
@@ -302,10 +304,19 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
               id="password"
               name="password"
               placeholder="비밀번호를 입력해주세요."
-              type="password"
               fullWidth
               margin="dense"
               variant="outlined"
+              type={showPassword1 ? 'text' : 'password'}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleClickShowPassword1} edge="end" aria-label="toggle password visibility">
+                      {showPassword1 ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
               sx={{
                 backgroundColor: '#F6F7FB',
                 borderRadius: '10px',

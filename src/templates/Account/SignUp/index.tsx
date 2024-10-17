@@ -3,7 +3,6 @@ import classNames from 'classnames/bind';
 import { Button } from '../../../stories/components';
 import { useRouter } from 'next/router';
 import TextField from '@mui/material/TextField';
-import InputAdornment from '@mui/material/InputAdornment';
 import Grid from '@mui/material/Grid';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -14,7 +13,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import Dialog, { DialogProps } from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
-import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import DialogContentText from '@mui/material/DialogContentText';
 import Divider from '@mui/material/Divider';
@@ -34,6 +32,8 @@ import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
 import { getFirstSubdomain } from 'src/utils/date';
 import { useSessionStore } from '../../../../src/store/session';
 import { getButtonClass } from 'src/utils/clubStatus';
+import { IconButton, InputAdornment } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 interface SignUpTemplateProps {
   onSubmitLogin: () => void;
@@ -69,6 +69,12 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
   const [subdomain, setSubdomain] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword1, setShowPassword1] = useState(false);
+
+  const handleClickShowPassword = () => setShowPassword(show => !show);
+  const handleClickShowPassword1 = () => setShowPassword1(show => !show);
 
   // ** Timer
   const [min, setMin] = useState(0);
@@ -676,7 +682,16 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
                   style: { borderBottomColor: '#e3e3e3 !important' },
                 }}
                 fullWidth
-                type="password"
+                type={showPassword ? 'text' : 'password'}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleClickShowPassword} edge="end" aria-label="toggle password visibility">
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
                 id="password"
                 name="password"
                 {...register('password')}
@@ -690,11 +705,17 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
               </label>
               <TextField
                 sx={{ '& label': { fontSize: 14, color: '#919191', fontWeight: 'bold' } }}
-                // inputProps={{
-                //   style: { border: '0px !important' },
-                // }}
                 fullWidth
-                type="password"
+                type={showPassword1 ? 'text' : 'password'}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleClickShowPassword1} edge="end" aria-label="toggle password visibility">
+                        {showPassword1 ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
                 autoComplete="current-password"
                 id="passwordConfirm"
                 name="passwordConfirm"

@@ -96,7 +96,7 @@ const AdminLayout = ({ darkBg, classOption, title, children, isFooter = true, re
               <div className={cx('content', `resolution--${resolution}`)}>{children}</div>
             </main>
           </div>
-          {/*{isFooter && <Footer />}*/}
+          {isFooter && <Footer />}
         </div>
       )}
     </>

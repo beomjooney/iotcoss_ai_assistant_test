@@ -25,10 +25,10 @@ export class ForbiddenError extends ApiError {
 }
 
 export class AuthError extends ApiError {
-  constructor(public code: string = '') {
+  constructor(public responseCode: string = '') {
     super();
     this.name = 'AuthError';
-    this.message = '로그인이 필요한 페이지입니다.';
+    this.message = '이메일 계정 또는 암호가 일치하지 않습니다.\n 다시 한번 확인해 주세요.';
     this.redirectUrl = '/account/login';
   }
 }

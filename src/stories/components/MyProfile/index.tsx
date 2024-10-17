@@ -215,10 +215,10 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
           <div className="tw-flex tw-flex-col tw-justify-start tw-items-start  tw-left-8 tw-top-[245px] tw-gap-1">
             <div className="tw-flex tw-justify-start tw-items-start tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-1">
               <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-left tw-text-[#31343d]">
-                email:
+                {profile?.email ? 'email : ' : '학번 : '}
               </p>
               <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">
-                {profile?.email || '프로필 수정에서 대학을 선택해주세요.'}
+                {profile?.email || profile?.member?.memberId}
               </p>
             </div>
             <div className="tw-flex tw-justify-start tw-items-start tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-1">
@@ -332,22 +332,26 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
           <div className="tw-mt-2 tw-border-t tw-border-gray-100">
             <dl className="tw-divide-y tw-divide-gray-100">
               <div className="tw-px-4 tw-py-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
-                <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">이메일</dt>
-                <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
-                  {profile?.email}
+                <dt className="tw-text-base tw-font-bold tw-leading-6 tw-text-gray-900">
+                  {profile?.email ? '이메일' : '학번'}
+                </dt>
+                <dd className=" tw-text-base tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                  {profile?.email || profile?.member?.memberId}
                 </dd>
               </div>
               <div className="tw-px-4 tw-py-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
-                <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">이름</dt>
-                <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">{profile?.member?.nickname}</dd>
+                <dt className="tw-text-base tw-font-bold tw-leading-6 tw-text-gray-900">이름</dt>
+                <dd className="tw-text-base tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                  {profile?.member?.nickname}
+                </dd>
               </div>
               <div className="tw-px-4 tw-py-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
-                <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">전화번호</dt>
-                <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">{profile?.phoneNumber}</dd>
+                <dt className="tw-text-base tw-font-bold tw-leading-6 tw-text-gray-900">전화번호</dt>
+                <dd className="tw-text-base tw-leading-6 tw-text-gray-700 tw-col-span-5">{profile?.phoneNumber}</dd>
               </div>
               <div className="tw-px-4 tw-pt-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
-                <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">대학</dt>
-                <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                <dt className="tw-text-base tw-font-bold tw-leading-6 tw-text-gray-900">대학</dt>
+                <dd className="tw-text-base tw-leading-6 tw-text-gray-700 tw-col-span-5">
                   <select
                     className="form-select"
                     onChange={handleUniversityChange}
@@ -364,8 +368,8 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
                 </dd>
               </div>
               <div className="tw-mt-2 tw-px-4 tw-py-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
-                <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">학과</dt>
-                <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                <dt className="tw-text-base tw-font-bold tw-leading-6 tw-text-gray-900">학과</dt>
+                <dd className="tw-text-base tw-leading-6 tw-text-gray-700 tw-col-span-5">
                   <select
                     className="form-select"
                     aria-label="Default select example"
@@ -385,8 +389,8 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
                 </dd>
               </div>
               <div className="tw-mt-2 tw-px-4 tw-pt-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
-                <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">학년</dt>
-                <dd className="tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                <dt className="tw-text-base tw-font-bold tw-leading-6 tw-text-gray-900">학년</dt>
+                <dd className="tw-text-base tw-leading-6 tw-text-gray-700 tw-col-span-5">
                   {optionsData?.data?.jobLevels?.map((item, i) => (
                     <Toggle
                       key={i}
@@ -473,8 +477,8 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
             <div className="border tw-p-7 tw-rounded-xl tw-mt-5 ">
               <div className="tw-font-bold tw-text-base tw-text-black">자기소개(선택정보)</div>
               <div className="tw-px-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-mt-8">
-                <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900">한줄소개</dt>
-                <dd className="tw-mt-1 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
+                <dt className="tw-text-base tw-font-bold tw-leading-6 tw-text-gray-900">한줄소개</dt>
+                <dd className="tw-mt-1 tw-text-base tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
                   <textarea
                     value={introductionMessage}
                     className="tw-form-control tw-w-full tw-py-[8px] tw-p-5"
