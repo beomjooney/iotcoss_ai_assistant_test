@@ -195,7 +195,7 @@ export const useEmainJoinSend = (): UseMutationResult => {
 
       const { responseCode, message } = data;
       if (responseCode === '0000') {
-        setCookie('access_token', data?.access_token);
+        // setCookie('access_token', data?.access_token);
       } else {
         alert(`error : [${responseCode}] ${message}`);
       }
