@@ -92,9 +92,11 @@ export function MemberEditTemplate() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showPassword1, setShowPassword1] = useState(false);
+  const [showPassword2, setShowPassword2] = useState(false);
 
   const handleClickShowPassword = () => setShowPassword(show => !show);
   const handleClickShowPassword1 = () => setShowPassword1(show => !show);
+  const handleClickShowPassword2 = () => setShowPassword2(show => !show);
 
   // 유저 정보 조회
   usePersonalInfo({}, user => {
@@ -656,7 +658,20 @@ export function MemberEditTemplate() {
                         //   style: { border: '0px !important' },
                         // }}
                         fullWidth
-                        type="password"
+                        type={showPassword2 ? 'text' : 'password'}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                onClick={handleClickShowPassword2}
+                                edge="end"
+                                aria-label="toggle password visibility"
+                              >
+                                {showPassword2 ? <VisibilityOff /> : <Visibility />}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
                         autoComplete="current-password"
                         id="passwordConfirm"
                         name="passwordConfirm"

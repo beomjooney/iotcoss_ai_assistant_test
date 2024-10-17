@@ -343,7 +343,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
           <div className="tw-col-start-2 tw-col-end-13">
             <div className="tw-flex tw-flex-col">
               <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-5">퀴즈 전체 일정</p>
-              <p className="tw-text-sm tw-text-left tw-text-black">
+              <p className="tw-text-base tw-text-left tw-text-black">
                 {clubData?.startAt} / 주 {clubData?.studyWeekCount?.toString()}회({clubData?.studyCycle?.toString()}) 총{' '}
                 {selectedQuizzes?.length}개 퀴즈
               </p>
