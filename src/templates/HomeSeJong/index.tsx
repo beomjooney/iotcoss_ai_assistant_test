@@ -288,7 +288,7 @@ export function HomeSejongTemplate({ logged = false, tenantName = '' }: HomeSejo
             className="tw-fixed tw-bottom-0 tw-right-0  tw-mr-4 md:tw-mr-10 tw-mb-4 md:tw-mb-8 tw-cursor-pointer tw-z-10"
             onClick={() => setModalIsOpen(true)}
           >
-            <img className="tw-w-24 tw-h-24" src="/assets/images/main/chatbot.png" />
+            <img className="" src="/assets/images/main/chatbot.png" />
           </div>
         )}
         {isClient && <ChatbotModal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)} token={token} />}

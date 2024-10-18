@@ -807,7 +807,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                     </div>
                     <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col">
                       {item?.threadType === '0003' ? (
-                        <img className="tw-rounded-full tw-w-10 tw-h-10 " src="/assets/images/main/chatbot.png" />
+                        <img src="/assets/images/main/chatbot.png" />
                       ) : (
                         <img
                           className="tw-rounded-full tw-w-10 tw-h-10 "

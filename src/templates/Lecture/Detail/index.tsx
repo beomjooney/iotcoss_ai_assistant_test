@@ -101,7 +101,7 @@ export function LectureDetailTemplate({ id }: LectureDetailTemplateProps) {
             page={page}
             handlePageChange={handlePageChange}
             contents={clubAbout?.lectureClub || []}
-            study={clubAbout.clubStudies || []}
+            study={clubAbout?.clubStudies || []}
             quizList={quizList}
             refetchClubAbout={refetchClubAbout}
             selectedImageBanner="/assets/images/banner/Rectangle_200.png"

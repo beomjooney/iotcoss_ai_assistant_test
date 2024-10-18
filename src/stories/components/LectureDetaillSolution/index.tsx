@@ -463,7 +463,7 @@ const LectureDetaillSolution = ({
         {isClient && !modalIsOpen && logged && menu.use_lecture_club && (
           <div>
             <div
-              className="tw-fixed tw-bottom-0 tw-right-0 tw-w-12 md:tw-w-16 tw-h-12 md:tw-h-16 tw-mr-4 md:tw-mr-10 tw-mb-4 md:tw-mb-8 tw-cursor-pointer tw-z-10"
+              className="tw-fixed tw-bottom-0 tw-right-0  tw-mr-4 md:tw-mr-10 tw-mb-4 md:tw-mb-8 tw-cursor-pointer tw-z-10"
               onClick={() => setModalIsOpen(true)}
             >
               <img src="/assets/images/main/chatbot.png" />
