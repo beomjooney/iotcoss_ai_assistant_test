@@ -1,7 +1,7 @@
 import styles from './index.module.scss';
 import React, { useState, useEffect } from 'react';
 import { Menu, MenuItem } from '@mui/material';
-import { Radio, RadioGroup, FormControlLabel, TextField } from '@mui/material';
+import { TextField } from '@mui/material';
 import { Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import { MentorsModal, Toggle, Tag } from 'src/stories/components';
 import { TextareaAutosize } from '@mui/base';
@@ -17,7 +17,6 @@ import {
 import classNames from 'classnames/bind';
 import { useOptions } from 'src/services/experiences/experiences.queries';
 import { UseQueryResult } from 'react-query';
-import { TagsInput } from 'react-tag-input-component';
 
 import FormControl from '@mui/material/FormControl';
 import ListItemText from '@mui/material/ListItemText';
@@ -257,35 +256,6 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
     handleClose();
   };
 
-  const handleQuizInsertClick = async () => {
-    const params = {
-      content: {
-        isNew: false,
-        contentSequence: data.content.contentSequence,
-        contentType: contentType,
-        description: contentTitle,
-        url: contentUrl,
-        studySubject: selectedSubject,
-        studyChapter: selectedChapter,
-        skills: selected2,
-        studyKeywords: selected1,
-      },
-      question: question,
-      modelAnswerFinal: modelAnswerFinal,
-      modelAnswerKeywords: selected3,
-      jobGroups: [universityCode],
-      jobs: selectedJob,
-      jobLevels: jobLevel,
-    };
-    const body = {
-      quizzes: params,
-      quizSequence: data.quizSequence,
-    };
-
-    onQuizModify(body);
-    setUpdateFlag(false);
-  };
-
   const onFileDownload = function (key: string, fileName: string) {
     console.log(key);
     setKey(key);
@@ -417,8 +387,6 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
     setIsContentTitle(false);
   };
 
-  console.log('quiz data', data);
-
   return (
     <div>
       <div className="tw-pb-6">
@@ -512,16 +480,21 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
             {/* Render tags */}
             <div className="tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500">
               <div className="tw-flex tw-flex-wrap tw-gap-3">
-                <div className="tw-bg-[#d7ecff] tw-rounded-[3.5px] tw-px-[10.5px] ">
-                  <p className="tw-text-[12.25px] tw-text-[#235a8d]">{data?.jobGroups[0]?.name || 'N/A'}</p>
-                </div>
+                {data?.jobGroups[0]?.name && (
+                  <div className="tw-bg-[#d7ecff] tw-rounded-[3.5px] tw-px-[10.5px]">
+                    <p className="tw-text-[12.25px] tw-text-[#235a8d]">{data?.jobGroups[0]?.name}</p>
+                  </div>
+                )}
 
                 {data?.jobs?.length > 0 &&
-                  data.jobs.map((job, index) => (
-                    <div key={index} className="tw-bg-[#ffdede] tw-rounded-[3.5px] tw-px-[10.5px]">
-                      <p className="tw-text-[12.25px] tw-text-[#b83333]">{job.name}</p>
-                    </div>
-                  ))}
+                  data.jobs.map(
+                    (job, index) =>
+                      job?.name && (
+                        <div key={index} className="tw-bg-[#ffdede] tw-rounded-[3.5px] tw-px-[10.5px]">
+                          <p className="tw-text-[12.25px] tw-text-[#b83333]">{job.name}</p>
+                        </div>
+                      ),
+                  )}
 
                 {data?.jobLevels?.length > 0 &&
                   data.jobLevels.map((jobLevel, index) => (
@@ -603,25 +576,6 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                   </p>
                 </div>
               </div>
-              {/* <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-1">
-                <svg
-                  width={20}
-                  height={21}
-                  viewBox="0 0 20 21"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-5 tw-h-5 tw-relative"
-                  preserveAspectRatio="xMidYMid meet"
-                >
-                  <path
-                    d="M16.875 3H6.875C6.70924 3 6.55027 3.06585 6.43306 3.18306C6.31585 3.30027 6.25 3.45924 6.25 3.625V6.75H3.125C2.95924 6.75 2.80027 6.81585 2.68306 6.93306C2.56585 7.05027 2.5 7.20924 2.5 7.375V17.375C2.5 17.5408 2.56585 17.6997 2.68306 17.8169C2.80027 17.9342 2.95924 18 3.125 18H13.125C13.2908 18 13.4497 17.9342 13.5669 17.8169C13.6842 17.6997 13.75 17.5408 13.75 17.375V14.25H16.875C17.0408 14.25 17.1997 14.1842 17.3169 14.0669C17.4342 13.9497 17.5 13.7908 17.5 13.625V3.625C17.5 3.45924 17.4342 3.30027 17.3169 3.18306C17.1997 3.06585 17.0408 3 16.875 3ZM12.5 16.75H3.75V8H12.5V16.75ZM16.25 13H13.75V7.375C13.75 7.20924 13.6842 7.05027 13.5669 6.93306C13.4497 6.81585 13.2908 6.75 13.125 6.75H7.5V4.25H16.25V13Z"
-                    fill="#9CA5B2"
-                  />
-                </svg>
-                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#9ca5b2]">
-                  {data.activeCount}
-                </p>
-              </div> */}
             </div>
           </div>
         </div>
@@ -1024,81 +978,10 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                     </div>
                   </div>
                 </div>
-
-                {/* <div className="tw-flex tw-justify-between tw-items-center">
-                  <div className="tw-text-base tw-font-bold tw-pt-5 tw-pb-2">퀴즈</div>
-                  <button
-                    onClick={() => {
-                      // Add your button click handler logic here
-                      handleAIAnswerClick(0, modelAnswerFinal);
-                    }}
-                    className="tw-w-[134px] tw-mt-2 tw-px-3 tw-py-1 tw-text-black tw-bg-white border border-dark tw-rounded tw-text-sm"
-                  >
-                    {isLoadingAI ? <CircularProgress color="info" size={18} /> : ' + AI모범답안 생성'}
-                  </button>
-                </div>
-                <TextField
-                  required
-                  id="username"
-                  name="username"
-                  variant="outlined"
-                  type="search"
-                  value={question}
-                  size="small"
-                  onChange={e => setQuestion(e.target.value)}
-                  fullWidth
-                  sx={{
-                    '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
-                  }}
-                />
-                <div className="tw-flex tw-justify-between tw-items-center">
-                  <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">모범답안</div>
-                </div>
-                <div className="tw-flex tw-items-center tw-gap-2">
-                  <TextareaAutosize
-                    style={{
-                      width: '100%',
-                      height: 120,
-                      borderRadius: '5px',
-                      padding: 12,
-                      resize: 'none',
-                    }}
-                    minRows={4}
-                    required
-                    id="username"
-                    name="username"
-                    value={modelAnswerFinal}
-                    onChange={e => setModelAnswerFinal(e.target.value)}
-                  />
-                </div>
-
-                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">채점기준 주요 키워드/문구</div>
-                <Tag
-                  value={selected3}
-                  onChange={setSelected3}
-                  placeHolder="주요 키워드/문구 입력 후 엔터를 쳐주세요."
-                /> */}
-                {/* <div className="tw-text-right tw-mt-5">
-                  <button
-                    onClick={handleQuizClick}
-                    className="tw-px-5 tw-py-3 tw-text-sm tw-bg-black tw-rounded tw-text-white"
-                  >
-                    {isModify ? '수정하기' : '퀴즈 생성하기'}
-                  </button>
-                </div> */}
               </AccordionDetails>
             </Accordion>
 
-            <div className="tw-py-5 tw-text-center">
-              {/* <div className="tw-text-center">
-                <button
-                  onClick={handleQuizInsertClick}
-                  className="tw-text-white tw-text-sm tw-px-10 tw-py-3 tw-text-base tw-bg-red-500 tw-rounded-md"
-                >
-                  퀴즈 수정하기
-                </button>
-              </div> */}
-            </div>
+            <div className="tw-py-5 tw-text-center"></div>
           </div>
         </div>
       </MentorsModal>

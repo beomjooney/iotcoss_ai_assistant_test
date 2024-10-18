@@ -101,7 +101,7 @@ export function QuizTemplate() {
               관심 주제별로 퀴즈를 풀고 네트워킹 할 수 있는 클럽을 만나보세요!
             </Grid>
             <Grid item xs={12} sm={2} justifyContent="flex-end" className="tw-flex">
-              {isClient && roles.includes('ROLE_INSTRUCTOR') && (
+              {isClient && (roles.includes('ROLE_INSTRUCTOR') || roles.includes('ROLE_MANAGER')) && (
                 <button
                   onClick={() => (location.href = '/quiz/open')}
                   type="button"

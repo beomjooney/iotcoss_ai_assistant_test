@@ -4,7 +4,7 @@ import { Mobile, Desktop } from 'src/hooks/mediaQuery';
 import { useSessionStore } from 'src/store/session';
 import { getFirstSubdomain } from 'src/utils';
 import { useState, useEffect, isValidElement, cloneElement } from 'react';
-import { fetchGuestTenats, useGuestTenant } from 'src/services/seminars/seminars.queries';
+import { useGuestTenant } from 'src/services/seminars/seminars.queries';
 import { setCookie } from 'cookies-next';
 
 export interface DefaultLayoutProps {
@@ -45,11 +45,6 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
 
   const { menu, roles } = useSessionStore.getState();
   // console.log('menu', menu);
-
-  // const menu = {
-  //   use_lecture_club: true,
-  //   use_quiz_club: true,
-  // };
 
   const menuItem = [
     {
@@ -95,7 +90,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       link: '/quiz-make',
       dropdown: [],
       login: logged,
-      role: ['ROLE_MANAGER'],
+      role: ['ROLE_MANAGER', 'ROLE_INSTRUCTOR'],
       menu: 'use_quiz_club',
     },
     {

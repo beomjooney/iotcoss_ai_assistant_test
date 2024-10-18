@@ -363,6 +363,7 @@ export function QuizMakeTemplate() {
       keyword: keyWorld,
       quizSortType: threshSortType,
     });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [pageThresh, keyWorld, threshSortType]);
 
   useEffect(() => {
@@ -371,6 +372,7 @@ export function QuizMakeTemplate() {
       keyword: keyWorld,
       sortType: sortType,
     });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [quizPage, keyWorld, sortType]);
 
   useEffect(() => {
