@@ -29,15 +29,16 @@ const Footer = () => {
               </div>
               <div className="tw-flex tw-flex-col tw-col-span-2">
                 <div className="tw-h-[21px]">
-                  <p className="tw-text-base tw-text-white">(47011) 부산광역시 사상구 주례로 47</p>
+                  <p className="tw-text-base tw-text-white">
+                    (47011) 부산광역시 사상구 주례로 47 동서대학교 특성화지원센터상구 주례로 47
+                  </p>
                 </div>
                 <div className="tw-h-[42px] tw-flex tw-gap-10">
-                  <p className="tw-text-base tw-text-white">TEL : 051-313-2001~4</p>
-                  <p className="tw-text-base tw-text-white">FAX : 051-313-1046</p>
+                  <p className="tw-text-base tw-text-white">TEL : 051-320-4292</p>
                 </div>
                 <div className="tw-flex tw-mt-4">
                   <p className="tw-text-base tw-text-center tw-text-[#9ca5b2]">
-                    Copyrightⓒ 2017 동서대학교. All rights reserved.
+                    Copyrightⓒ 2024 동서대학교. All rights reserved.
                   </p>
                 </div>
               </div>
