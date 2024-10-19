@@ -828,9 +828,9 @@ export function QuizOpenTemplate() {
         alert('클럽퀴즈 회차 입력의 확인버튼을 눌러주세요. ');
         return;
       }
-    } else if (quizType == '0210' || quizType == '0300') {
+    } else if (quizType == '0200' || quizType == '0300') {
       if (buttonFlag == false) {
-        alert('수동 오픈에서 확인 버튼 눌러주세요.');
+        alert('클럽퀴즈 회차 입력 후 확인 버튼 눌러주세요.');
         return;
       }
       // handlerClubMakeManual();
