@@ -121,7 +121,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       dropdown: [],
       login: logged,
       role: ['ROLE_MANAGER'], // Multiple roles
-      menu: 'all',
+      menu: 'use_quiz_club',
     },
   ];
 
