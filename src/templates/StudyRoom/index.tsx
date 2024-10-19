@@ -309,6 +309,8 @@ export function StudyRoomTemplate() {
       page: progressPage,
       clubViewFilter: progressClubViewFilter,
     });
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [progressPage, progressClubViewFilter]);
 
   useEffect(() => {
@@ -329,6 +331,7 @@ export function StudyRoomTemplate() {
       page: contentPage,
       sortType: sortType,
     });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [contentPage, sortType]);
 
   useEffect(() => {
