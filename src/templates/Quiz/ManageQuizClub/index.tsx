@@ -224,6 +224,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   const [totalElementsProfessor, setTotalElementsProfessor] = useState(0);
   const [selectedUUIDs, setSelectedUUIDs] = useState<string[]>([]);
   const [pageProfessor, setPageProfessor] = useState(1);
+  const [scheduleSaveData, setScheduleSaveData] = useState<any[]>([]);
 
   const cx = classNames.bind(styles);
 
@@ -634,6 +635,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   const [sortQuizType, setSortQuizType] = useState('ASC');
 
   useDidMountEffect(() => {
+    console.log('=================================================');
     setMyClubParams({
       clubSequence: selectedClub?.clubSequence,
       sortType: sortType,
@@ -650,6 +652,12 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
       clubSequence: selectedClub?.clubSequence,
       page: pageQuiz,
       sortType: sortQuizType,
+    });
+
+    setProfessorRequestParams({
+      clubSequence: selectedClub?.clubSequence,
+      page: pageProfessor,
+      sortType: professorRequestSortType,
     });
   }, [sortType, selectedClub]);
 
@@ -873,6 +881,30 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
         return [...prev, index];
       }
     });
+  };
+
+  const handleInputDayChange = (index, part, value) => {
+    const updatedScheduleData = [...scheduleData];
+    const dateParts = updatedScheduleData[index].publishDate.split('-');
+
+    if (part === 'month') {
+      const day = new Date(startDay.format('YYYY-MM-DD'));
+      const newDate = new Date(day.getFullYear(), value - 1, dateParts[2]);
+      if (newDate < day) {
+        alert('월은 시작 날짜보다 이전일 수 없습니다.');
+        return;
+      }
+      dateParts[1] = value.padStart(2, '0');
+    } else if (part === 'day') {
+      if (value < 0 || value > 31) {
+        alert('일은 1에서 31 사이여야 합니다.');
+        return;
+      }
+      dateParts[2] = value.padStart(2);
+    }
+
+    updatedScheduleData[index].publishDate = dateParts.join('-');
+    setScheduleSaveData(updatedScheduleData);
   };
 
   function renderDatesAndSessionsModify() {

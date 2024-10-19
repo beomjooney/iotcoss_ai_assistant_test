@@ -18,11 +18,11 @@ const cx = classNames.bind(styles);
 
 export function QuizMyTemplate() {
   const [contents, setContents] = useState<RecommendContent[]>([]);
-  const [active, setActive] = useState(0);
+  const [active, setActive] = useState(1);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [keyWorld, setKeyWorld] = useState('');
-  const [params, setParams] = useState<any>({ page, clubViewFilter: '0001', clubType: '0100' });
+  const [params, setParams] = useState<any>({ page, clubViewFilter: '0002', clubType: '0100' });
 
   const {
     isFetched: isContentFetched,
@@ -56,7 +56,7 @@ export function QuizMyTemplate() {
           <div className="tw-py-[60px]">
             <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
               <Grid item xs={2} className="tw-font-bold tw-text-3xl tw-text-black">
-                나의클럽
+                My퀴즈클럽
               </Grid>
               <Grid item xs={10} className="tw-font-semi tw-text-base tw-text-black">
                 내가 운영중인 퀴즈클럽을 한 눈에 보여주고 있어요!
@@ -69,25 +69,6 @@ export function QuizMyTemplate() {
                 <div className={cx('')}>
                   <div className="tw-w-full tw-flex tw-justify-between">
                     <div className="tw-flex">
-                      <ToggleLabel
-                        label="진행전 클럽"
-                        name="진행전 클럽"
-                        value=""
-                        variant="small"
-                        checked={active === 0}
-                        isActive
-                        type="tabButton"
-                        onChange={() => {
-                          setActive(0);
-                          setParams({
-                            page,
-                            clubViewFilter: '0001',
-                            clubType: '0100',
-                          });
-                          setPage(1);
-                        }}
-                        className={cx('fixed-width tw-w-[150px]')}
-                      />
                       <ToggleLabel
                         label="진행중인 클럽"
                         name="진행중인 클럽"
@@ -107,6 +88,26 @@ export function QuizMyTemplate() {
                         }}
                         className={cx('fixed-width tw-w-[150px]')}
                       />
+                      <ToggleLabel
+                        label="진행 전 클럽"
+                        name="진행 전 클럽"
+                        value=""
+                        variant="small"
+                        checked={active === 0}
+                        isActive
+                        type="tabButton"
+                        onChange={() => {
+                          setActive(0);
+                          setParams({
+                            page,
+                            clubViewFilter: '0001',
+                            clubType: '0100',
+                          });
+                          setPage(1);
+                        }}
+                        className={cx('fixed-width tw-w-[150px]')}
+                      />
+
                       <ToggleLabel
                         label="종료된 클럽"
                         name="종료된 클럽"

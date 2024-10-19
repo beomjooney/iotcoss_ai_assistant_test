@@ -767,7 +767,7 @@ export function QuizMakeTemplate() {
         <div className="tw-py-[60px] tw-pt-[50px]">
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
             <Grid item xs={12} sm={2} className="tw-font-bold sm:tw-text-3xl tw-text-2xl tw-text-black">
-              나의 퀴즈
+              My퀴즈
             </Grid>
             <Grid item xs={12} sm={6} className="tw-font-semi tw-text-base tw-text-black">
               <div>나와 학습자들의 성장을 돕기위해 내가 만든 퀴즈 리스트예요!</div>

@@ -49,25 +49,29 @@ const CourseCard = ({ data, border = false }) => {
     >
       <img
         src={data.clubImageUrl || '/assets/images/banner/Rectangle_193.png'}
-        className="tw-w-[132px] tw-h-[142px] tw-object-cover tw-float-left"
+        className="tw-w-[142px] tw-h-[142px] tw-object-cover tw-float-left"
       />
 
-      <div className="tw-flex tw-justify-start tw-items-start tw-gap-1 tw-ml-[148px] tw-mt-4">
+      <div className="tw-flex tw-justify-start tw-items-start tw-gap-1 tw-ml-[160px] tw-mt-4">
         <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-black">
           <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-white">
             {getButtonText(data.clubStatus)}
           </p>
         </div>
-        <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#d7ecff]">
-          <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#235a8d]">
-            {data.jobGroups[0].name || 'N/A'}
-          </p>
-        </div>
-        <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#e4e4e4]">
-          <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#313b49]">
-            {data.jobs[0].name || 'N/A'}
-          </p>
-        </div>
+        {data.jobGroups[0].name && (
+          <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#d7ecff]">
+            <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#235a8d]">
+              {data.jobGroups[0].name || 'N/A'}
+            </p>
+          </div>
+        )}
+        {data.jobs[0].name && (
+          <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#e4e4e4]">
+            <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#313b49]">
+              {data.jobs[0].name || 'N/A'}
+            </p>
+          </div>
+        )}
         <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-1 tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#ffdede]">
           <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#b83333]">
             {data.jobLevels[0].name || 'N/A'}
@@ -87,14 +91,14 @@ const CourseCard = ({ data, border = false }) => {
       </div>
 
       <div className="tw-py-0 tw-pr-5">
-        <p className="tw-line-clamp-1 tw-ml-[148px] tw-mt-[13px] tw-text-sm tw-font-bold tw-text-left tw-text-black">
+        <p className="tw-line-clamp-1 tw-ml-[160px] tw-mt-[13px] tw-text-sm tw-font-bold tw-text-left tw-text-black">
           {data.clubName}
         </p>
-        <p className="tw-line-clamp-2 tw-ml-[148px] tw-mt-1 tw-text-sm tw-text-left tw-text-black">
+        <p className="tw-line-clamp-2 tw-ml-[160px] tw-mt-1 tw-text-sm tw-text-left tw-text-black">
           {data.description}
         </p>
       </div>
-      <div className="tw-ml-[148px] tw-mt-1">
+      <div className="tw-ml-[160px] tw-mt-1">
         <p className="tw-text-sm tw-text-left tw-text-black">
           <span className="tw-font-bold">{data.leaderNickname}</span>
           {/* <span className="tw-text-left tw-text-[#9ca5b2] tw-ml-4">
