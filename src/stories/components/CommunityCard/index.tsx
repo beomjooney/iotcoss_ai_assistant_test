@@ -180,6 +180,10 @@ CommunityCardProps) => {
     }
   };
 
+  const discountReply = () => {
+    setReplyCount(replyCount => replyCount - 1);
+  };
+
   const onChangeLike = function (memberUUID: string, isLiked: boolean, quiz) {
     if (logged) {
       const newIsOnePicked = !isLiked;
@@ -491,7 +495,12 @@ CommunityCardProps) => {
                           {repliesList?.map((reply, i) => {
                             return (
                               // TODO API Response 보고 댓글 작성자로 수정 필요
-                              <CommunityCardReply key={i} reply={reply} refetch={refetch} />
+                              <CommunityCardReply
+                                key={i}
+                                reply={reply}
+                                refetch={refetch}
+                                discountReply={discountReply}
+                              />
                             );
                           })}
                         </div>
