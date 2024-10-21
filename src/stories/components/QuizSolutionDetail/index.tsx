@@ -150,6 +150,12 @@ BannerProps) => {
   const { mutate: onComprehensionSave, isSuccess: isComprehensionSave } = useComprehensionSave();
 
   useEffect(() => {
+    if (isAnswerUpdate) {
+      location.href = `/quiz/${data?.clubSequence}`;
+    }
+  }, [isAnswerUpdate]);
+
+  useEffect(() => {
     if (isAnswerSave) {
       setContentUrl(answerRes?.data?.contentUrl);
       setPreAnswer(answerRes?.data?.preAnswer);
@@ -280,16 +286,6 @@ BannerProps) => {
         club: data?.clubSequence,
         quiz: data?.quizSequence,
       });
-
-      // router.push(`/quiz/${data?.clubSequence}`);
-      location.href = `/quiz/${data?.clubSequence}`;
-      // router.push(
-      //   {
-      //     pathname: `/quiz/growth/${data?.clubSequence}`,
-      //     query: { qid: data?.clubQuizSequence },
-      //   },
-      //   `/quiz/growth/${data?.clubSequence}`,
-      // );
     }
   };
 
@@ -300,12 +296,6 @@ BannerProps) => {
   };
 
   const handleComprehension = () => {
-    // onComprehensionSave({
-    //   data: {
-    //     clubQuizSequence: data?.clubQuizSequence,
-    //     comprehensionStatus: type,
-    //   },
-    // });
     setPostIntroductionMessage(introductionMessage);
     setActiveStep(prevActiveStep => prevActiveStep + 1);
   };
