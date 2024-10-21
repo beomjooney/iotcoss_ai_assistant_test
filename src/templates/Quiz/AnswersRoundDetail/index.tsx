@@ -281,7 +281,7 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
               <div>
                 {selectedQuiz.isPublished ? (
                   <>
-                    <div className="tw-my-4 tw-p-4 tw-border tw-rounded-lg tw-bg-gray-100">
+                    <div className="tw-my-4 tw-py-4 tw-border tw-rounded-lg tw-bg-gray-100">
                       <div className="tw-flex tw-items-center tw-px-4 max-lg:tw-p-3 tw-py-0">
                         <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                           <img
@@ -291,7 +291,7 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                             }
                             alt="프로필 이미지"
                           />
-                          <div className="tw-text-xs tw-text-left tw-text-black tw-w-[50px]">
+                          <div className="tw-text-xs tw-text-center tw-text-black tw-w-[50px] tw-mt-1">
                             {selectedQuiz?.maker?.nickname}
                           </div>
                         </div>
@@ -308,7 +308,7 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                                   onClick={() => window.open(selectedQuiz.contentUrl, '_blank')}
                                   className="tw-bg-black tw-p-1.5 tw-text-white tw-rounded tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-font-bold tw-text-right tw-text-[#9ca5b2]"
                                 >
-                                  지식컨텐츠 보기
+                                  지식컨텐츠 보기 {selectedQuiz?.quizSequence}
                                 </button>
                                 <button
                                   onClick={() => {
@@ -316,7 +316,7 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                                       {
                                         pathname: `/quiz/all-answers/${selectedQuiz?.clubSequence}`,
                                         query: {
-                                          publishDate: selectedQuiz?.publishDate,
+                                          publishDate: selectedQuiz?.quizSequence,
                                         },
                                       },
                                       `/quiz/all-answers/${selectedQuiz?.clubSequence}`,

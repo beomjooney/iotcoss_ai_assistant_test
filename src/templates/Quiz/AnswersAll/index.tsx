@@ -68,15 +68,15 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
   const { isFetched: isParticipantListFetched, data } = useQuizRoungeInfo(id, data => {
     console.log('first get data');
     let index; // `index` 변수 선언
-    if (publishDate) {
-      index = data?.clubQuizzes?.findIndex(item => item.publishDate === publishDate);
-      console.log('index', publishDate, index);
-    } else {
-      index = data?.clubQuizzes?.findIndex(item => item.isPublished === true);
-      console.log('index', publishDate, index);
-    }
+    // if (publishDate) {
+    index = data?.clubQuizzes?.findIndex(item => item.quizSequence === Number(publishDate));
+    console.log('index', publishDate, index);
+    // } else {
+    // index = data?.clubQuizzes?.findIndex(item => item.isPublished === true);
+    // console.log('index', publishDate, index);
+    // }
     setSelectedQuiz(data.clubQuizzes[index]);
-    const selectedSession = data.clubQuizzes[index] ? data.clubQuizzes[index].publishDate : null;
+    const selectedSession = data.clubQuizzes[index] ? data.clubQuizzes[index].quizSequence : null;
     console.log('selectedSession 1', selectedSession);
     setSelectedValue(publishDate || selectedSession);
     console.log(data.clubQuizzes[index]);
@@ -171,33 +171,10 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
 
     const selectedSession = contents.clubQuizzes.find(session => session.quizSequence === parseInt(value));
 
-    // const selectedSession = contents.clubQuizzes.find(
-    //   session => session.publishDate?.split('-').slice(1).join('-') === value,
-    // );
-
     console.log('selectedSession', selectedSession);
     console.log('contents.clubQuizzes', contents.clubQuizzes);
 
-    // if (selectedSession) {
-    //   if (!selectedSession.isPublished) {
-    //     alert('퀴즈가 공개되지 않았습니다.');
-    //     const result = contents.clubQuizzes.find(item => item.isPublished === true);
-    //     const selectedSessionValue = result ? result.publishDate : null;
-    //     console.log('selectedSessionValue 2', selectedSessionValue);
-    //     setSelectedValue(selectedSessionValue); // Reset to the default value
-
-    //     const index = data?.clubQuizzes?.findIndex(item => item.isPublished === true);
-    //     setParams({
-    //       club: id,
-    //       quiz: data.clubQuizzes[index]?.quizSequence,
-    //       data: { page, keyword: keyWorld },
-    //     });
-    //     setSelectedQuiz(contents?.clubQuizzes[index]);
-    //     return;
-    //   } else {
-    //     setSelectedValue(selectedSession.publishDate);
-    //   }
-    // }
+    setSelectedValue(selectedSession?.quizSequence);
 
     setParams({
       club: id,
@@ -278,7 +255,7 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
                     className="form-select block w-full tw-bg-gray-100 tw-text-red-500 tw-font-bold"
                     onChange={handleQuizChange}
                     // value={selectedValue?.split('-').slice(1).join('-')}
-                    value={selectedValue?.quizSequence}
+                    value={selectedValue}
                     aria-label="Default select example"
                   >
                     {contents?.clubQuizzes?.map((session, idx) => {
@@ -330,13 +307,13 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
                   <Table style={{ width: '100%' }}>
                     <TableHead style={{ backgroundColor: '#F6F7FB' }}>
                       <TableRow>
-                        <TableCell align="center" width={100}>
+                        <TableCell align="center" width={90}>
                           등록순
                         </TableCell>
                         <TableCell align="center" width={150}>
                           이름
                         </TableCell>
-                        <TableCell align="center" width={400}>
+                        <TableCell align="center" width={410}>
                           답변
                         </TableCell>
                         <TableCell align="center">날짜</TableCell>
@@ -360,7 +337,7 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
                               </div>
                             </TableCell>
                             <TableCell padding="none" align="left" component="th" scope="row">
-                              <div className="tw-text-black">{info?.text}</div>
+                              <div className="tw-text-black tw-p-3">{info?.text}</div>
                             </TableCell>
                             <TableCell padding="none" align="center" component="th" scope="row">
                               <div className="tw-text-black">{info?.createdAt}</div>
