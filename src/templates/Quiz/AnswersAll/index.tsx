@@ -300,7 +300,7 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
             {isParticipantListFetched && (
               <>
                 <div className="tw-text-black tw-font-bold tw-py-10 tw-p-4 border tw-rounded-lg tw-text-center tw-mb-4">
-                  <p>Q. {selectedQuiz?.question}</p>
+                  <p>Q. {selectedQuiz?.question || '퀴즈가 아직 오픈되지 않은 것 같습니다. '}</p>
                 </div>
 
                 <TableContainer className="tw-py-5" aria-label="simple table" style={{ tableLayout: 'fixed' }}>
@@ -429,7 +429,9 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
                               }
                             })()}
                           </span>{' '}
-                          <span className="tw-px-4">{item?.createdAt}</span>
+                          <span className="tw-px-4">
+                            {item?.createdAt ? item.createdAt.replace('T', ' ').split('.')[0] : ''}
+                          </span>
                         </p>
                       </div>
                       <div className="tw-font-medium tw-text-[#9ca5b2] tw-text-sm">{item?.text}</div>

@@ -723,7 +723,9 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                           </div>
                         </TableCell>
                         <TableCell padding="none" align="center" component="th" scope="row">
-                          <div className="tw-text-black tw-line-clamp-1">{info?.createdAt}</div>
+                          <div className="tw-text-black tw-line-clamp-1">
+                            {info?.createdAt ? info.createdAt.replace('T', ' | ').split('.')[0] : ''}
+                          </div>
                         </TableCell>
                         <TableCell padding="none" align="center" component="th" scope="row">
                           {info?.aiEvaluationStatus && (
@@ -805,9 +807,9 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                         />
                       </svg>
                     </div>
-                    <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col">
+                    <div className="tw-w-1.5/12  tw-py-2 tw-flex tw-flex-col">
                       {item?.threadType === '0003' ? (
-                        <img src="/assets/images/main/chatbot.png" />
+                        <img className="tw-rounded-full tw-w-14 tw-h-14" src="/assets/images/main/chatbot.png" />
                       ) : (
                         <img
                           className="tw-rounded-full tw-w-10 tw-h-10 "
