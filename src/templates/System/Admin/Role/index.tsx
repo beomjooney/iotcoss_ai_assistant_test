@@ -97,13 +97,13 @@ export function AdminRoleTemplate() {
   const renderStatusImage = status => {
     switch (status) {
       case '0001':
-        return <img src="/assets/images/account/BadgeReq.jpg" alt="요청" />;
+        return <img className="tw-w-[220px]" src="/assets/images/account/BadgeReq.jpg" alt="요청" />;
       case '0002':
-        return <img src="/assets/images/account/BadgeApp.jpg" alt="승인" />;
+        return <img className="tw-w-[220px]" src="/assets/images/account/BadgeApp.jpg" alt="승인" />;
       case '0003':
-        return <img src="/assets/images/account/BadgeReject.jpg" alt="거절" />;
+        return <img className="tw-w-[220px]" src="/assets/images/account/BadgeReject.jpg" alt="거절" />;
       case '0004':
-        return <img src="/assets/images/account/BadgeReReq.jpg" alt="재요청" />;
+        return <img className="tw-w-[220px]" src="/assets/images/account/BadgeReReq.jpg" alt="재요청" />;
     }
   };
 
@@ -145,7 +145,7 @@ export function AdminRoleTemplate() {
                     <Table className="" aria-label="simple table" style={{ tableLayout: 'fixed' }}>
                       <TableHead style={{ backgroundColor: '#F6F7FB' }}>
                         <TableRow>
-                          <TableCell align="left" width={120}>
+                          <TableCell align="center" width={110}>
                             <div className="tw-font-bold tw-text-base">신청일시</div>
                           </TableCell>
                           <TableCell align="left" width={120}>
@@ -157,18 +157,21 @@ export function AdminRoleTemplate() {
                           <TableCell align="left">
                             <div className="tw-font-bold tw-text-base">학과/직무</div>
                           </TableCell>
-                          <TableCell align="left" width={100}>
+                          <TableCell align="center" width={70}>
                             <div className="tw-font-bold tw-text-base">상태</div>
                           </TableCell>
-                          <TableCell align="center" width={200}>
+                          <TableCell align="center" width={140}>
                             <div className="tw-font-bold tw-text-base">승인/거절</div>
+                          </TableCell>
+                          <TableCell align="center" width={120}>
+                            <div className="tw-font-bold tw-text-base">처리일시</div>
                           </TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
                         {contents.map((content, index) => (
                           <TableRow key={index}>
-                            <TableCell align="left" component="th" scope="row">
+                            <TableCell align="center" component="th" scope="row">
                               <div className="tw-text-sm tw-text-gray-400">{content?.requestedAt.split(' ')[0]}</div>
                               <div className="tw-text-sm tw-text-gray-400">{content?.requestedAt.split(' ')[1]}</div>
                             </TableCell>
@@ -177,18 +180,18 @@ export function AdminRoleTemplate() {
                                 <span className="tw-text-sm tw-font-medium ">{content?.memberName}</span>
                               </div>
                             </TableCell>
-                            <TableCell align="left" component="th" scope="row">
+                            <TableCell align="left" component="th" scope="row" style={{ padding: '10px' }}>
                               <div className="tw-font-medium tw-text-sm">{content?.jobGroupId?.name}</div>
                             </TableCell>
-                            <TableCell align="left" component="th" scope="row">
+                            <TableCell align="left" component="th" scope="row" style={{ padding: '10px' }}>
                               <div className="tw-font-medium tw-text-sm">{content?.jobId?.name}</div>
                             </TableCell>
-                            <TableCell align="left" component="th" scope="row">
+                            <TableCell align="left" component="th" scope="row" style={{ padding: '0px' }}>
                               <div className="tw-font-medium tw-text-sm">
                                 {renderStatusImage(content?.requestStatus)}
                               </div>
                             </TableCell>
-                            <TableCell align="center" component="th" scope="row">
+                            <TableCell align="center" component="th" scope="row" style={{ padding: '0px' }}>
                               <div className="tw-text-sm">
                                 {(() => {
                                   switch (content.requestStatus) {
@@ -199,7 +202,7 @@ export function AdminRoleTemplate() {
                                             onClick={() => handleAdminAccept(content?.tenantUUID, content?.memberUUID)}
                                             type="button"
                                             data-tooltip-target="tooltip-default"
-                                            className="tw-py-2 tw-px-5 tw-mr-3 tw-bg-white tw-text-gray-400  border max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                            className="tw-py-2 tw-px-3 tw-mr-2 tw-bg-white tw-text-gray-400  border max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
                                           >
                                             승인
                                           </button>
@@ -207,7 +210,7 @@ export function AdminRoleTemplate() {
                                             onClick={() => handleAdminReject(content?.tenantUUID, content?.memberUUID)}
                                             type="button"
                                             data-tooltip-target="tooltip-default"
-                                            className="tw-py-2 tw-px-5 tw-bg-blue-600 tw-text-white max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                            className="tw-py-2 tw-px-3 tw-bg-blue-600 tw-text-white max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
                                           >
                                             거절
                                           </button>
@@ -215,26 +218,19 @@ export function AdminRoleTemplate() {
                                       );
                                     case '0002':
                                       return (
-                                        <div>
-                                          <div className="tw-text-sm tw-font-medium tw-text-gray-400">
-                                            {content.requestedAt.split(' ')[0]}
-                                          </div>
-                                          <div className="tw-text-sm tw-font-medium tw-text-gray-400">
-                                            {formatDate(content.requestedAt).split(' ')[1]}
-                                          </div>
+                                        <div className="tw-gap-3">
+                                          <button
+                                            onClick={() => handleAdminReject(content?.tenantUUID, content?.memberUUID)}
+                                            type="button"
+                                            data-tooltip-target="tooltip-default"
+                                            className="tw-py-2 tw-px-3 tw-bg-blue-600 tw-text-white max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                          >
+                                            거절
+                                          </button>
                                         </div>
                                       );
                                     case '0003':
-                                      return (
-                                        <div>
-                                          <div className="tw-text-sm tw-font-medium tw-text-gray-400">
-                                            {content.requestedAt.split(' ')[0]}
-                                          </div>
-                                          <div className="tw-text-sm tw-font-medium tw-text-gray-400">
-                                            {formatDate(content.requestedAt).split(' ')[1]}
-                                          </div>
-                                        </div>
-                                      );
+                                      return <div></div>;
                                     case '0004':
                                       return (
                                         <div className="tw-gap-3">
@@ -260,6 +256,16 @@ export function AdminRoleTemplate() {
                                       return <div>Unknown Status</div>;
                                   }
                                 })()}
+                              </div>
+                            </TableCell>
+                            <TableCell align="center" component="th" scope="row">
+                              <div className="tw-font-medium tw-text-sm">
+                                <div className="tw-text-sm tw-font-medium tw-text-gray-400">
+                                  {content.updatedAt.split(' ')[0]}
+                                </div>
+                                <div className="tw-text-sm tw-font-medium tw-text-gray-400">
+                                  {formatDate(content.updatedAt).split(' ')[1]}
+                                </div>
                               </div>
                             </TableCell>
                           </TableRow>
