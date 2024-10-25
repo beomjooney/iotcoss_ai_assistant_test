@@ -123,11 +123,11 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
       case '0001':
         return { text: 'gray', fill: 'white', borderColor: 'white' };
       case '0002':
-        return { text: 'white', fill: '#FF8F60', borderColor: '#FF8F60' };
-      case '0003':
         return { text: 'white', fill: '#E11837', borderColor: '#E11837' };
+      case '0003':
+        return { text: 'white', fill: '#000000', borderColor: '#000000' };
       case '0004':
-        return { text: 'white', fill: '#31343D', borderColor: '#31343D' };
+        return { text: 'white', fill: '#0000FF', borderColor: '#0000FF' };
       default:
         return { text: 'white', fill: 'gray', borderColor: 'gray' };
     }
@@ -396,7 +396,7 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
                       className="tw-flex-grow-0 tw-flex-shrink-0"
                       preserveAspectRatio="xMidYMid meet"
                     >
-                      <circle cx="7" cy="7.5" r="6.5" fill="#FF8F60" stroke="#FF8F60"></circle>
+                      <circle cx="7" cy="7.5" r="6.5" fill="#E11837" stroke="#E11837"></circle>
                       <text
                         x="6.5"
                         y="5"
@@ -422,7 +422,7 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
                       className="tw-flex-grow-0 tw-flex-shrink-0"
                       preserveAspectRatio="xMidYMid meet"
                     >
-                      <circle cx="7" cy="7.5" r="7" fill="#E11837"></circle>
+                      <circle cx="7" cy="7.5" r="7" fill="#000000"></circle>
                       <text
                         x="7.5"
                         y="7.5"
@@ -448,7 +448,7 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
                       className="tw-flex-grow-0 tw-flex-shrink-0"
                       preserveAspectRatio="xMidYMid meet"
                     >
-                      <circle cx="7" cy="7.5" r="7" fill="#31343D"></circle>
+                      <circle cx="7" cy="7.5" r="7" fill="#0000FF"></circle>
                     </svg>
                     <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-left tw-text-[#31343d]">
                       채점완료
