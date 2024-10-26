@@ -156,13 +156,22 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
               <div className="tw-line-clamp-1 tw-text-base  tw-text-[#000000]">{clubData?.description}</div>
             </div>
             <div className="tw-py-5 tw-text-black tw-text-base tw-mb-[12px] tw-font-medium">
-              <div>
-                {/* 학습 기간 : 매주 {clubData?.studyCycle?.toString() || 'N/A'}요일 (총 {clubData?.studyWeekCount} 주) */}
-                학습 기간 : {clubData?.endAt.split(' ')[0]} ~ {clubData?.startAt.split(' ')[0]}
-                {clubData?.studyCycle?.length > 0
-                  ? ` 매주 ${clubData?.studyCycle.toString()}요일 (총 ${clubData?.studyWeekCount}회)`
-                  : ``}
-              </div>
+              {clubData?.endAt ? (
+                <div>
+                  학습 기간 : {clubData?.startAt?.split(' ')[0]} ~ {clubData?.endAt?.split(' ')[0]}
+                  {clubData?.studyCycle?.length > 0
+                    ? ` 매주 ${clubData.studyCycle.toString()}요일 (총 ${clubData?.studyWeekCount}회)`
+                    : ''}
+                </div>
+              ) : (
+                <div>
+                  학습 기간 : {clubData?.startAt?.split(' ')[0]}
+                  {clubData?.studyCycle?.length > 0
+                    ? ` 매주 ${clubData.studyCycle.toString()}요일 (총 ${clubData?.studyWeekCount}회)`
+                    : ''}
+                </div>
+              )}
+
               <div>학습 참여 : 주 {clubData?.studyWeekCount}회</div>
               <div>참여 인원 : {clubData?.recruitedMemberCount || '00'}명</div>
             </div>
@@ -341,12 +350,20 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
           <div className="tw-col-start-2 tw-col-end-13">
             <div className="tw-flex tw-flex-col">
               <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-5">퀴즈 전체 일정</p>
-              <p className="tw-text-base tw-text-left tw-text-black">
-                {clubData?.startAt.split(' ')[0]} ~ {clubData?.endAt.split(' ')[0]} / 주{' '}
-                {clubData?.studyWeekCount?.toString()}회{' '}
-                {clubData?.studyCycle?.length > 0 ? `(${clubData?.studyCycle?.toString()})` : ''} 총{' '}
-                {selectedQuizzes?.length}개 퀴즈
-              </p>
+              {clubData?.endAt ? (
+                <p className="tw-text-base tw-text-left tw-text-black">
+                  {clubData?.startAt.split(' ')[0]} ~ {clubData?.endAt.split(' ')[0]} / 주{' '}
+                  {clubData?.studyWeekCount?.toString()}회{' '}
+                  {clubData?.studyCycle?.length > 0 ? `(${clubData?.studyCycle?.toString()})` : ''} 총{' '}
+                  {selectedQuizzes?.length}개 퀴즈
+                </p>
+              ) : (
+                <p className="tw-text-base tw-text-left tw-text-black">
+                  시작일 : {clubData?.startAt.split(' ')[0]} {clubData?.studyWeekCount?.toString()}회{' '}
+                  {clubData?.studyCycle?.length > 0 ? `(${clubData?.studyCycle?.toString()})` : ''} 총{' '}
+                  {selectedQuizzes?.length}개 퀴즈
+                </p>
+              )}
             </div>
           </div>
         </div>
