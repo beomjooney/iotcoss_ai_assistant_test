@@ -243,7 +243,11 @@ export const useAdminRejectPost = (): UseMutationResult => {
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('QUIZ_ABOUT').all),
     onSuccess: async data => {
-      alert('관리자 신청이 거절되었습니다.');
+      if (data?.data?.responseCode === '0000') {
+        alert('관리자 권한이 거절되었습니다.');
+      } else {
+        alert(`error : [${data?.data?.responseCode}] ${data?.data?.message}`);
+      }
     },
   });
 };

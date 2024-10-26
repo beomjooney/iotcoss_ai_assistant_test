@@ -218,6 +218,7 @@ export function AdminRoleTemplate() {
                                       );
                                     case '0002':
                                       return (
+                                        // 승인된 admin 권한 관리 제거
                                         <div className="tw-gap-3">
                                           <button
                                             onClick={() => handleAdminReject(content?.tenantUUID, content?.memberUUID)}
