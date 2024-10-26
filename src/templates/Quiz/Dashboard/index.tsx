@@ -304,7 +304,7 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
                 <div className="tw-h-[60.5px] tw-overflow-hidden border-bottom">
                   <div className="tw-flex tw-justify-start tw-items-center tw-absolute tw-left-[20.16px] tw-top-[18.15px] tw-gap-[12.09999942779541px]">
                     <div className="tw-w-[4.03px] tw-h-[16.13px] tw-bg-[#e11837]"></div>
-                    <p className=" tw-text-base tw-font-medium tw-text-left tw-text-[#31343d]">이번주 참여율</p>
+                    <p className=" tw-text-base tw-font-medium tw-text-left tw-text-[#31343d]">퀴즈 참여율</p>
                   </div>
                 </div>
                 <div className=" tw-h-[70%] tw-flex tw-justify-center tw-items-center">

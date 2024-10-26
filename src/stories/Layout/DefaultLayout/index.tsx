@@ -29,7 +29,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
   if (!logged) {
     useGuestTenant(subDomain, data => {
       setCookie('access_token', data?.guestToken);
-      console.log('access_data', data);
+      // console.log('access_data', data);
       update({
         tenantName: data?.tenantName,
         redirections: data?.homeUrl,
@@ -121,7 +121,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       dropdown: [],
       login: logged,
       role: ['ROLE_MANAGER'], // Multiple roles
-      menu: 'use_quiz_club',
+      menu: 'all',
     },
   ];
 
