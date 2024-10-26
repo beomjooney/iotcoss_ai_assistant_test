@@ -486,6 +486,7 @@ export function QuizOpenTemplate() {
                 contentUrl: newQuiz.contentUrl,
                 contentTitle: newQuiz.contentTitle,
                 modelAnswer: newQuiz.modelAnswer,
+                description: newQuiz.content.description,
                 quizUri: newQuiz.quizUri,
               }
             : null;
@@ -675,7 +676,7 @@ export function QuizOpenTemplate() {
         publishDate={item.publishDate}
         dayOfWeek={item.dayOfWeek}
         isPublished={item.isPublished}
-        knowledgeContentTitle={item?.content?.description}
+        knowledgeContentTitle={item?.description}
       />
     </div>
   );
@@ -755,10 +756,11 @@ export function QuizOpenTemplate() {
     console.log(jobs);
     // const selectedJobCode = jobs.find(j => j.code === selectedJob)?.code || 'None';
     console.log('selectedJob', selectedJob);
+    console.log('preview', preview);
 
     const clubFormParams = {
       clubName: clubName,
-      clubImageUrl: imageUrl,
+      clubImageUrl: preview,
       jobGroups: [_selectedUniversityCode],
       jobs: selectedJob,
       jobLevels: recommendLevels,
@@ -1725,8 +1727,8 @@ export function QuizOpenTemplate() {
                         preserveAspectRatio="xMidYMid meet"
                       >
                         <path
-                          fill-rule="evenodd"
-                          clip-rule="evenodd"
+                          fillRule="evenodd"
+                          clipRule="evenodd"
                           d="M9.59022 10.2974C8.69166 11.0153 7.5523 11.362 6.40615 11.2661C5.25999 11.1702 4.19405 10.6391 3.42725 9.78186C2.66045 8.92461 2.251 7.80629 2.28299 6.65658C2.31498 5.50687 2.78599 4.41304 3.59927 3.59976C4.41255 2.78648 5.50638 2.31547 6.65609 2.28348C7.8058 2.25149 8.92412 2.66094 9.78137 3.42774C10.6386 4.19454 11.1697 5.26048 11.2656 6.40663C11.3615 7.55279 11.0148 8.69215 10.2969 9.59071L13.7342 13.0274C13.7833 13.0731 13.8227 13.1283 13.8501 13.1897C13.8774 13.251 13.8921 13.3172 13.8933 13.3844C13.8945 13.4515 13.8821 13.5182 13.857 13.5804C13.8318 13.6427 13.7944 13.6993 13.7469 13.7467C13.6994 13.7942 13.6429 13.8316 13.5806 13.8568C13.5184 13.8819 13.4517 13.8943 13.3845 13.8931C13.3174 13.8919 13.2512 13.8772 13.1899 13.8499C13.1285 13.8226 13.0733 13.7832 13.0276 13.734L9.59022 10.2974ZM4.30622 9.25604C3.81692 8.76669 3.48366 8.14326 3.34856 7.46456C3.21347 6.78585 3.2826 6.08233 3.54723 5.44291C3.81185 4.80348 4.26009 4.25686 4.8353 3.87211C5.4105 3.48736 6.08685 3.28176 6.77887 3.2813C7.47089 3.28083 8.14751 3.48552 8.72323 3.86949C9.29895 4.25347 9.74793 4.79949 10.0134 5.43856C10.2789 6.07762 10.349 6.78105 10.2148 7.45994C10.0806 8.13882 9.7482 8.76269 9.25955 9.25271L9.25622 9.25604L9.25289 9.25871C8.59628 9.91379 7.70651 10.2815 6.779 10.281C5.8515 10.2805 4.96212 9.91183 4.30622 9.25604Z"
                           fill="#478AF5"
                         />
@@ -2211,7 +2213,7 @@ export function QuizOpenTemplate() {
         )}
       </div>
 
-      <MentorsModal title="퀴즈 등록하기" isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
+      <MentorsModal zIndex={200} title="퀴즈 등록하기" isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)}>
         <div className="tw-mb-8">
           <div className="tw-grid tw-grid-cols-3 tw-gap-3 tw-pb-4">
             <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
