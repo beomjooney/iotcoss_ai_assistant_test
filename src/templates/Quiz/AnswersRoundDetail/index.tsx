@@ -201,7 +201,10 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
                 <p className="tw-text-sm tw-mt-2 tw-text-black">{contents?.club?.description}</p>
                 <div className="tw-mt-4">
                   <p className="tw-text-sm tw-text-black">
-                    학습 주기 : 매주 {contents?.club?.studyCycle.toString()}요일 (총 {contents?.club?.weekCount}회)
+                    학습 주기 :{' '}
+                    {contents?.club?.studyCycle.length > 0
+                      ? `매주 ${contents.club.studyCycle.toString()}요일 (총 ${contents?.club?.weekCount}회)`
+                      : `${contents?.club?.weekCount}회`}
                   </p>
                   <p className="tw-text-sm tw-text-black">
                     학습 기간 : {contents?.club?.weekCount}주 ({contents?.club?.startAt.split(' ')[0]} ~{' '}
