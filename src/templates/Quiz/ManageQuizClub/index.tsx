@@ -581,7 +581,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   const { isFetched: isMemberFetched, refetch: refetchMyMember } = useMyMemberList(myClubMemberParams, data => {
     console.log('isMemberFetched', data);
     setTotalPageMemberModal(data?.totalPages);
-    setTotalElementsMemberModal(data?.totalElements);
+    setTotalElementsMember(data?.totalElements);
     setMyMemberList(data?.contents || []);
   });
 
@@ -1527,7 +1527,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                       sm={10}
                       className="tw-text-xl tw-text-black tw-font-bold"
                     >
-                      클럽 가입 신청 ({totalElements})
+                      클럽 가입 신청 ({totalElements || 0})
                     </Grid>
 
                     <Grid item container justifyContent="flex-end" xs={6} sm={2} style={{ textAlign: 'right' }}>

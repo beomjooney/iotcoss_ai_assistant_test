@@ -666,8 +666,12 @@ export function QuizOpenTemplate() {
     <div key={item.order} className="simple-drag-row">
       <QuizBreakerInfo
         isDeleteQuiz={false}
-        avatarSrc={item.leaderProfileImageUrl || '/assets/images/account/default_profile_image.png'}
-        userName={item.leaderNickname}
+        avatarSrc={
+          item.leaderProfileImageUrl ||
+          item.member.profileImageUrl ||
+          '/assets/images/account/default_profile_image.png'
+        }
+        userName={item.leaderNickname || item.member.nickname}
         questionText={item.question}
         index={item.quizSequence !== undefined ? item.quizSequence : null}
         answerText={item.modelAnswer}
