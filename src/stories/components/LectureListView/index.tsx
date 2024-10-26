@@ -307,7 +307,7 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
         <Divider className="tw-py-3 tw-mb-3" />
         <div className="tw-text-black tw-my-5">
           <div className="tw-text-lg tw-font-medium tw-py-3">
-            {studyQAInfo?.studyOrder}주차 : {studyQAInfo?.studyDate} ({studyQAInfo?.dayOfWeek})
+            {studyQAInfo?.studyOrder}주차 : {studyQAInfo?.startDate} ({studyQAInfo?.startDayOfWeek})
           </div>
           <div className="tw-text-lg tw-font-medium tw-py-3">강의URL : {studyQAInfo?.lectureClub?.clubUri}</div>
         </div>
