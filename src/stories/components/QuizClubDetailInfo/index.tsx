@@ -359,7 +359,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
                 </p>
               ) : (
                 <p className="tw-text-base tw-text-left tw-text-black">
-                  시작일 : {clubData?.startAt.split(' ')[0]} {clubData?.studyWeekCount?.toString()}회{' '}
+                  시작일 : {clubData?.startAt?.split(' ')[0]} {clubData?.studyWeekCount?.toString()}회{' '}
                   {clubData?.studyCycle?.length > 0 ? `(${clubData?.studyCycle?.toString()})` : ''} 총{' '}
                   {selectedQuizzes?.length}개 퀴즈
                 </p>
