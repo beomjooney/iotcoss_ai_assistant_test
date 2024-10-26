@@ -9,17 +9,13 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import Typography from '@mui/material/Typography';
 import { useLogin } from 'src/services/account/account.mutations';
-import { usePresets } from 'src/utils/color-presets';
 import React, { useEffect, useState } from 'react';
 import Dialog, { DialogProps } from '@mui/material/Dialog';
 import CloseIcon from '@mui/icons-material/Close';
 import DialogContentText from '@mui/material/DialogContentText';
-import { useColorPresets } from 'src/utils/use-theme-color';
-import { useColorPresetName } from 'src/utils/use-theme-color';
 import { deleteCookie } from 'cookies-next';
 import { useSessionStore } from '../../../../src/store/session';
 import { getFirstSubdomain } from 'src/utils';
-import { getButtonClass } from 'src/utils/clubStatus';
 import { useTermsList, useTermsList2 } from 'src/services/account/account.queries';
 import { UseQueryResult } from 'react-query';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -43,7 +39,6 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
   const [password, setPassword] = useState('');
   const [selectedLoginType, setSelectedLoginType] = useState('0002');
   const [termsParams, setTermsParams] = useState<any>({ type: '0001' });
-  const [termsParams2, setTermsParams2] = useState<any>({ type: '0002' });
   const [open, setOpen] = React.useState(false);
   const [scroll, setScroll] = React.useState<DialogProps['scroll']>('paper');
   const [showPassword, setShowPassword] = useState(false);
@@ -273,7 +268,6 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
           </>
         ) : (
           <>
-            {' '}
             <Typography sx={{ fontSize: 14, marginTop: 3, color: 'black', fontWeight: '600' }}>
               {selectedLoginType === '0002' ? '학번' : '교번'}
             </Typography>
