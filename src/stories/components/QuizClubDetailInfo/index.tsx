@@ -290,7 +290,11 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
               ) : (
                 <img
                   className="tw-w-28 tw-h-28 tw-rounded-full border"
-                  src={clubData?.instructorProfileImageUrl || '/assets/images/account/default_profile_image.png'}
+                  src={
+                    clubData?.instructorProfileImageUrl ||
+                    clubData?.leader?.profileImageUrl ||
+                    '/assets/images/account/default_profile_image.png'
+                  }
                   alt=""
                 />
               )}
