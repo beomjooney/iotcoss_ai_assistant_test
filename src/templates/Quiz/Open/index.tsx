@@ -470,6 +470,8 @@ export function QuizOpenTemplate() {
       return;
     }
 
+    console.log('nullQuizSequenceCount', nullQuizSequenceCount, selectedQuizIds.length);
+
     setSelectedQuizIds(prevSelectedQuizIds => {
       const updatedSelectedQuizIds = prevSelectedQuizIds.includes(quizSequence)
         ? prevSelectedQuizIds.filter(id => id !== quizSequence)
@@ -504,8 +506,12 @@ export function QuizOpenTemplate() {
           console.log(newQuiz);
           console.log(reconstructedQuiz);
 
-          // Find the first item with null values in scheduleData
-          const firstNullItemIndex = scheduleData.findIndex(item => item.quizSequence === null);
+          let firstNullItemIndex;
+          if (order) {
+            firstNullItemIndex = scheduleData.findIndex(item => item.order === order);
+          } else {
+            firstNullItemIndex = scheduleData.findIndex(item => item.quizSequence === null);
+          }
 
           if (firstNullItemIndex !== -1 && newQuiz) {
             // Update the first null item with the new quiz data
