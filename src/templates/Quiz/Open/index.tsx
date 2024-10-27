@@ -688,7 +688,7 @@ export function QuizOpenTemplate() {
         publishDate={item.publishDate}
         dayOfWeek={item.dayOfWeek}
         isPublished={item.isPublished}
-        knowledgeContentTitle={item?.description}
+        knowledgeContentTitle={item?.description || item?.contentTitle}
       />
     </div>
   );
