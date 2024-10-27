@@ -193,8 +193,11 @@ export function QuizOpenTemplate() {
     setScheduleData(quizListData);
     setAgreements(clubForm.useCurrentProfileImage);
 
-    // Filter out items with quizSequence not null and extract quizSequence values
-    const quizSequenceNumbers = quizList.filter(item => item.quizSequence !== null).map(item => item.quizSequence);
+    // Filter out items with quizSequence not null and greater than or equal to zero, then extract quizSequence values
+    const quizSequenceNumbers = quizList
+      .filter(item => item.quizSequence !== null && item.quizSequence >= 0)
+      .map(item => item.quizSequence);
+
     setSelectedQuizIds(quizSequenceNumbers);
 
     setPreview(clubForm.clubImageUrl);
@@ -219,10 +222,11 @@ export function QuizOpenTemplate() {
   const [universityCodeQuiz, setUniversityCodeQuiz] = useState<string>('');
   const [selectedJobQuiz, setSelectedJobQuiz] = useState<string[]>([]);
   const [agreements, setAgreements] = useState(true);
+  const [order, setOrder] = useState(null);
 
   const [keyWorld, setKeyWorld] = useState('');
   const [myKeyWorld, setMyKeyWorld] = useState('');
-  const { mutate: onQuizSave, isSuccess: postSucces } = useQuizSave();
+  // const { mutate: onQuizSave, isSuccess: postSucces } = useQuizSave();
   const { mutate: onClubQuizSave, isError, isSuccess: clubSuccess, data: clubDatas } = useClubQuizSave();
 
   //quiz new logic
@@ -446,19 +450,18 @@ export function QuizOpenTemplate() {
     }
   };
 
-  useDidMountEffect(() => {
-    refetchMyJob();
-  }, [postSucces]);
-
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  const handleAddClick = () => {
+  const handleAddClick = order => {
+    console.log('order', order);
+    setOrder(order);
     if (scheduleData.length >= 1) setIsModalOpen(true);
     else alert('퀴즈 생성 주기를 입력해주세요.');
   };
 
   //new logic
   const handleCheckboxChange = quizSequence => {
+    console.log('order', order);
     // Filter out items with quizSequence as null and count them
     const nullQuizSequenceCount = scheduleData.filter(item => item.quizSequence === null).length;
 
@@ -631,14 +634,31 @@ export function QuizOpenTemplate() {
       .sort((a, b) => a.order - b.order);
 
     // 정렬된 데이터와 원본 항목의 추가 속성을 병합
+    // const mergeData = sortedReducedData.map((item, index) => ({
+    //   ...item,
+    //   quizSequence: scheduleMap[index].quizSequence,
+    //   question: scheduleMap[index].question,
+    //   leaderUri: scheduleMap[index].leaderUri,
+    //   leaderUUID: scheduleMap[index].leaderUUID,
+    //   leaderProfileImageUrl: scheduleMap[index].leaderProfileImageUrl,
+    //   leaderNickname: scheduleMap[index].leaderNickname,
+    //   contentUrl: scheduleMap[index].contentUrl,
+    //   contentTitle: scheduleMap[index].contentTitle,
+    //   modelAnswer: scheduleMap[index].modelAnswer,
+    //   quizUri: scheduleMap[index].quizUri,
+    // }));
+
+    // 정렬된 데이터와 원본 항목의 추가 속성을 병합
     const mergeData = sortedReducedData.map((item, index) => ({
       ...item,
       quizSequence: scheduleMap[index].quizSequence,
       question: scheduleMap[index].question,
-      leaderUri: scheduleMap[index].leaderUri,
-      leaderUUID: scheduleMap[index].leaderUUID,
-      leaderProfileImageUrl: scheduleMap[index].leaderProfileImageUrl,
-      leaderNickname: scheduleMap[index].leaderNickname,
+      member: {
+        leaderUri: scheduleMap[index].leaderUri,
+        leaderUUID: scheduleMap[index].memberUUID,
+        profileImageUrl: scheduleMap[index].member?.profileImageUrl,
+        nickname: scheduleMap[index].member?.nickname,
+      },
       contentUrl: scheduleMap[index].contentUrl,
       contentTitle: scheduleMap[index].contentTitle,
       modelAnswer: scheduleMap[index].modelAnswer,
@@ -673,7 +693,7 @@ export function QuizOpenTemplate() {
   const dragList = (item: any, index: any) => (
     <div key={item.order} className="simple-drag-row">
       <QuizBreakerInfo
-        isDeleteQuiz={false}
+        isDeleteQuiz={true}
         avatarSrc={
           item.leaderProfileImageUrl ||
           item?.member?.profileImageUrl ||
@@ -682,6 +702,7 @@ export function QuizOpenTemplate() {
         userName={item.leaderNickname || item?.member?.nickname}
         questionText={item.question}
         index={item.quizSequence !== undefined ? item.quizSequence : null}
+        order={item.order}
         answerText={item.modelAnswer}
         handleCheckboxDelete={handleCheckboxDelete}
         handleAddClick={handleAddClick}
@@ -2147,7 +2168,7 @@ export function QuizOpenTemplate() {
                       </defs>
                     </svg>
                     <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-medium tw-text-left tw-text-[#9ca5b2]">
-                      <button type="button" onClick={handleAddClick} className="tw-text-black tw-text-sm ">
+                      <button type="button" onClick={e => handleAddClick(null)} className="tw-text-black tw-text-sm ">
                         성장퀴즈 추가하기
                       </button>
                     </p>

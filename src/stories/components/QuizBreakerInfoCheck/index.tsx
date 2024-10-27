@@ -16,6 +16,7 @@ const QuizBreakerInfoCheck = ({
   knowledgeContentTitle = '',
   handleCheckboxChange,
 }) => {
+  // console.log('selectedQuizIds', selectedQuizIds);
   return (
     <div>
       <div className="tw-flex tw-items-center tw-relative tw-overflow-visible tw-rounded-lg tw-bg-[#f6f7fb] tw-mb-3 tw-h-20">

@@ -18,22 +18,15 @@ const QuizBreakerInfo = ({
   handleAddClick,
   isDeleteQuiz,
   hasBeenPublished,
+  order,
 }) => {
   return (
     <div className="tw-mb-1">
-      {/* <Grid container direction="row" justifyContent="left" alignItems="center" rowSpacing={4}>
-        <Grid item xs={1}>
-          <div className=" tw-text-center tw-text-black tw-font-bold">Q{index + 1}.</div>
-          <div className="tw-text-center tw-text-sm tw-text-black tw-font-bold">
-            {publishDate.slice(5, 10)} ({dayOfWeek})
-          </div>
-        </Grid> */}
-      {/* <Grid item xs={11}> */}
       {index === null ? (
         <div>
           <div className=" tw-relative tw-overflow-visible tw-rounded-lg tw-bg-[#f6f7fb] tw-mb-3 tw-grid tw-grid-cols-[60px_1fr_100px_28px_40px] tw-grid-rows-[auto_auto] tw-h-20 tw-z-10"></div>
           <div className=" tw-flex tw-items-center tw-justify-center tw-my-3 tw-h-[137px] tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white border border-[#e9ecf2]">
-            <button onClick={handleAddClick} className="tw-text-sm tw-text-[#9ca5b2]">
+            <button onClick={e => handleAddClick(order)} className="tw-text-sm tw-text-[#9ca5b2]">
               + 퀴즈 등록해주세요.
             </button>
           </div>
