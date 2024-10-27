@@ -34,6 +34,7 @@ import Divider from '@mui/material/Divider';
 import QuizBreakerInfo from 'src/stories/components/QuizBreakerInfo';
 import QuizBreakerInfoCheck from 'src/stories/components/QuizBreakerInfoCheck';
 import QuizClubDetailInfo from 'src/stories/components/QuizClubDetailInfo';
+import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
 /** drag list */
 import ReactDragList from 'react-drag-list';
 import { useStore } from 'src/store';
@@ -174,6 +175,7 @@ export function QuizOpenTemplate() {
     setPersonName(jobsName || []);
     setButtonFlag(true);
     setScheduleData(quizList);
+    setAgreements(clubForm.useCurrentProfileImage);
 
     // Filter out items with quizSequence not null and extract quizSequence values
     const quizSequenceNumbers = quizList.filter(item => item.quizSequence !== null).map(item => item.quizSequence);
@@ -185,7 +187,7 @@ export function QuizOpenTemplate() {
 
     setSelectedImage('');
     setSelectedImageBanner('');
-    setSelectedImageProfile('');
+    // setSelectedImageProfile('');
   });
 
   //temp 등록
@@ -200,6 +202,7 @@ export function QuizOpenTemplate() {
   const [optionsSkills, setOptionsSkills] = useState<string[]>([]);
   const [universityCodeQuiz, setUniversityCodeQuiz] = useState<string>('');
   const [selectedJobQuiz, setSelectedJobQuiz] = useState<string[]>([]);
+  const [agreements, setAgreements] = useState(true);
 
   const [keyWorld, setKeyWorld] = useState('');
   const [myKeyWorld, setMyKeyWorld] = useState('');
@@ -332,6 +335,7 @@ export function QuizOpenTemplate() {
 
   const handleImageChange = (event, type) => {
     console.log(type);
+    setAgreements(false);
     const file = event.target.files[0];
     if (file) {
       if (type === 'card') {
@@ -397,19 +401,6 @@ export function QuizOpenTemplate() {
       setSelectedImageProfileCheck(file);
     }
   };
-
-  // const handleImageClick = async image => {
-  //console.log('image select', `${process.env['NEXT_PUBLIC_GENERAL_URL']}` + image);
-  // setSelectedImage(image);
-  // if (!image || image.length === 0) return;
-  // let imageUrl = `${process.env['NEXT_PUBLIC_GENERAL_URL']}` + image;
-  // const response = await fetch(imageUrl);
-  // const data = await response.blob();
-  // const ext = imageUrl.split('.').pop(); // url 구조에 맞게 수정할 것
-  // const filename = imageUrl.split('/').pop(); // url 구조에 맞게 수정할 것
-  // const metadata = { type: `image/${ext}` };
-  // onSaveImage(new File([data], filename!, metadata));
-  // };
 
   const [introductionText, setIntroductionText] = useState<string>('');
   const [recommendationText, setRecommendationText] = useState<string>('');
@@ -541,6 +532,7 @@ export function QuizOpenTemplate() {
   const { isFetched: isJobGroupsFetched } = useJobGroupss(data => setJobGroups(data.data.contents || []));
   const { user, setUser } = useStore();
 
+  console.log('user', user);
   const PAGE_NAME = 'contents';
 
   useEffect(() => {
@@ -668,10 +660,10 @@ export function QuizOpenTemplate() {
         isDeleteQuiz={false}
         avatarSrc={
           item.leaderProfileImageUrl ||
-          item.member.profileImageUrl ||
+          item?.member?.profileImageUrl ||
           '/assets/images/account/default_profile_image.png'
         }
-        userName={item.leaderNickname || item.member.nickname}
+        userName={item.leaderNickname || item?.member?.nickname}
         questionText={item.question}
         index={item.quizSequence !== undefined ? item.quizSequence : null}
         answerText={item.modelAnswer}
@@ -788,7 +780,7 @@ export function QuizOpenTemplate() {
       answerPublishType: '0001',
       clubTemplatePublishType: '0001',
       clubRecruitType: '0100',
-      useCurrentProfileImage: 'false',
+      useCurrentProfileImage: agreements,
       instructorProfileImageUrl: previewProfile,
     };
 
@@ -983,7 +975,7 @@ export function QuizOpenTemplate() {
       answerPublishType: '0001',
       clubTemplatePublishType: '0001',
       clubRecruitType: '0100',
-      useCurrentProfileImage: 'false',
+      useCurrentProfileImage: agreements,
     };
 
     const formData = new FormData();
@@ -1155,6 +1147,12 @@ export function QuizOpenTemplate() {
     if (index > -1) newState.splice(index, 1);
     else newState.push(id);
     return newState;
+  };
+
+  // Define the function to handle checkbox change
+  const handleCheckboxChangeAgreements = event => {
+    console.log('event', event.target.checked);
+    setAgreements(event.target.checked);
   };
 
   function renderDatesAndSessionsModify() {
@@ -1967,7 +1965,7 @@ export function QuizOpenTemplate() {
                 강의내 교수 프로필 이미지
               </div>
 
-              {previewProfile ? (
+              {/* {previewProfile ? (
                 <img
                   src={previewProfile}
                   alt="Image Preview"
@@ -1979,10 +1977,23 @@ export function QuizOpenTemplate() {
                   alt="Image"
                   className="tw-w-[100px] tw-h-[100px] tw-rounded-full border"
                 />
+              )} */}
+              {agreements === true ? (
+                <img
+                  className="border tw-w-28 tw-h-28 tw-rounded-full"
+                  src={user?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
+                  alt=""
+                />
+              ) : (
+                <img
+                  className="border tw-w-28 tw-h-28 tw-rounded-full"
+                  src={previewProfile || '/assets/images/account/default_profile_image.png'}
+                  alt=""
+                />
               )}
-
-              <div className="tw-text-sm tw-font-bold tw-text-black tw-mt-5 tw-my-5">
-                직접 업로드를 하지 않으면 현재 프로필 이미지 사용합니다.
+              <div className="tw-flex tw-items-center tw-justify-start tw-gap-1">
+                <Checkbox checked={agreements} onChange={e => handleCheckboxChangeAgreements(e)} />
+                <div className="tw-text-sm tw-font-bold tw-text-black tw-mt-5 tw-my-5">현재 프로필 이미지 사용</div>
               </div>
               <button
                 onClick={() => document.getElementById('dropzone-file3').click()}
@@ -1997,13 +2008,13 @@ export function QuizOpenTemplate() {
                 className="tw-hidden"
                 onChange={e => handleImageChange(e, 'profile')}
               />
-              <button
+              {/* <button
                 onClick={e => handleProfileDelete(e)}
                 type="button"
                 className="tw-text-black border tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
               >
                 삭제
-              </button>
+              </button> */}
 
               <div className="tw-container tw-py-10 tw-px-10 tw-mx-0 tw-min-w-full tw-flex tw-flex-col tw-items-center">
                 <div className="tw-grid tw-grid-rows-3 tw-grid-flow-col tw-gap-4">

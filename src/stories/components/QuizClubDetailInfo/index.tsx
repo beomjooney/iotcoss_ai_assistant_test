@@ -178,14 +178,30 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
 
             <div className="tw-flex tw-items-center tw-text-base tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
               <div className="tw-inline-flex tw-items-center tw-gap-4">
-                <img
+                {clubData?.useCurrentProfileImage === true ? (
+                  <img
+                    className="tw-w-8 tw-h-8 tw-rounded-full border"
+                    src={user?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
+                    alt=""
+                  />
+                ) : (
+                  <img
+                    className="tw-w-8 tw-h-8 tw-rounded-full border"
+                    src={clubData?.instructorProfileImageUrl || '/assets/images/account/default_profile_image.png'}
+                    alt=""
+                  />
+                )}
+                <div className="tw-text-sm tw-font-semibold tw-text-black">
+                  <div>{user?.nickname || user?.member?.nickname} 교수님</div>
+                </div>
+                {/* <img
                   className="tw-w-8 tw-h-8 tw-rounded-full"
                   src={clubData?.leader?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
                   alt=""
                 />
                 <div className="tw-text-sm tw-font-semibold tw-text-black">
                   <div>{user?.nickname || user?.member?.nickname} 교수님</div>
-                </div>
+                </div> */}
               </div>
 
               <div className="tw-inline-flex tw-ml-auto">
@@ -266,11 +282,19 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
         <div className="tw-bg-[#f6f7fb] tw-w-full tw-overflow-hidden tw-px-[108.13px] tw-pt-[40px]">
           <div className=" tw-rounded-[8.75px] tw-py-[40px]">
             <div className="tw-flex tw-items-start tw-gap-[16px]">
-              <img
-                className="tw-w-28 tw-h-28 border tw-rounded-full"
-                src={clubData?.instructorProfileImageUrl || '/assets/images/account/default_profile_image.png'}
-                // src={clubData?.leader?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
-              />
+              {clubData?.useCurrentProfileImage === true ? (
+                <img
+                  className="tw-w-28 tw-h-28 border tw-rounded-full border"
+                  src={user?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
+                />
+              ) : (
+                <img
+                  className="tw-w-28 tw-h-28 tw-rounded-full border"
+                  src={clubData?.instructorProfileImageUrl || '/assets/images/account/default_profile_image.png'}
+                  alt=""
+                />
+              )}
+
               <div>
                 <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-[14px]  tw-gap-3">
                   <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[21.875px] tw-font-bold tw-text-left tw-text-black">
@@ -279,16 +303,20 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
 
                   <div className="tw-flex tw-justify-start tw-items-start tw-flex-grow-0 tw-flex-shrink-0">
                     <div className="tw-flex tw-justify-start tw-items-start tw-flex-grow-0 tw-flex-shrink-0 tw-gap-3">
-                      <div
-                        className={`tw-bg-[#d7ecff] tw-flex tw-text-sm tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-[8.75px] tw-px-[10.5px] tw-py-[3.5px] tw-rounded-[3.5px] `}
-                      >
-                        <p className="">{user?.jobGroup?.name || 'N/A'}</p>
-                      </div>
-                      <div
-                        className={`tw-bg-[#e4e4e4] tw-flex tw-text-sm tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-[8.75px] tw-px-[10.5px] tw-py-[3.5px] tw-rounded-[3.5px] `}
-                      >
-                        <p className="">{user?.job?.name || 'N/A'}</p>
-                      </div>
+                      {user?.jobGroup?.name && (
+                        <div
+                          className={`tw-bg-[#d7ecff] tw-flex tw-text-sm tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-[8.75px] tw-px-[10.5px] tw-py-[3.5px] tw-rounded-[3.5px] `}
+                        >
+                          <p className="">{user?.jobGroup?.name || 'N/A'}</p>
+                        </div>
+                      )}
+                      {user?.job?.name && (
+                        <div
+                          className={`tw-bg-[#e4e4e4] tw-flex tw-text-sm tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-[8.75px] tw-px-[10.5px] tw-py-[3.5px] tw-rounded-[3.5px] `}
+                        >
+                          <p className="">{user?.job?.name || 'N/A'}</p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
