@@ -144,6 +144,21 @@ export function QuizOpenTemplate() {
     const clubForm = data?.form || {};
     const quizList = data?.clubQuizzes || [];
 
+    const quizListData = quizList.map(item => {
+      if (item.quizSequence < 0) {
+        return {
+          order: item.order,
+          weekNumber: item.order, // Assuming weekNumber should match the order as per your example
+          quizSequence: null,
+          publishDate: item.publishDate, // Preserve original publishDate if it exists
+          dayOfWeek: null,
+        };
+      }
+      return item;
+    });
+
+    console.log('quizListData', quizListData);
+
     setClubName(clubForm.clubName || '');
     setIntroductionText(clubForm.introductionText || '');
     setRecommendationText(clubForm.recommendationText || '');
@@ -174,7 +189,8 @@ export function QuizOpenTemplate() {
     console.log(jobsName);
     setPersonName(jobsName || []);
     setButtonFlag(true);
-    setScheduleData(quizList);
+    // setScheduleData(quizList);
+    setScheduleData(quizListData);
     setAgreements(clubForm.useCurrentProfileImage);
 
     // Filter out items with quizSequence not null and extract quizSequence values
@@ -335,7 +351,6 @@ export function QuizOpenTemplate() {
 
   const handleImageChange = (event, type) => {
     console.log(type);
-    setAgreements(false);
     const file = event.target.files[0];
     if (file) {
       if (type === 'card') {
@@ -346,6 +361,7 @@ export function QuizOpenTemplate() {
         setSelectedImageBannerCheck(file);
       } else if (type === 'profile') {
         // setSelectedImageProfile();
+        setAgreements(false);
         setSelectedImageProfileCheck(file);
       }
       const reader = new FileReader();
@@ -532,7 +548,6 @@ export function QuizOpenTemplate() {
   const { isFetched: isJobGroupsFetched } = useJobGroupss(data => setJobGroups(data.data.contents || []));
   const { user, setUser } = useStore();
 
-  console.log('user', user);
   const PAGE_NAME = 'contents';
 
   useEffect(() => {
@@ -574,6 +589,7 @@ export function QuizOpenTemplate() {
   };
 
   const handleNextTwo = () => {
+    window.scrollTo(0, 0);
     console.log('next');
     console.log(scheduleData);
 
@@ -806,7 +822,6 @@ export function QuizOpenTemplate() {
     //   return;
     // }
 
-    console.log(setQuizType);
     if (num == 0) {
       alert('클럽퀴즈 회차를 입력 해주세요.');
       return;
@@ -1039,6 +1054,15 @@ export function QuizOpenTemplate() {
     console.log(num);
     console.log(startDay.format('YYYY-MM-DD'));
 
+    // const weeks = [];
+    // for (let i = 0; i < num; i++) {
+    //   weeks.push({
+    //     order: i + 1,
+    //     quizSequence: null,
+    //   });
+    // }
+    // setScheduleData(weeks);
+
     setDayParams({
       // ...params,
       studyCycle: studyCycleNum.join(','),
@@ -1048,6 +1072,7 @@ export function QuizOpenTemplate() {
     setButtonFlag(true);
     setSelectedQuizIds([]);
   };
+
   const handlerClubMakeManual = () => {
     const weeks = [];
     for (let i = 0; i < num; i++) {
@@ -1103,7 +1128,7 @@ export function QuizOpenTemplate() {
 
   const handleInputDayChange = (index, part, value) => {
     const updatedScheduleData = [...scheduleData];
-    const dateParts = updatedScheduleData[index].publishDate.split('-');
+    const dateParts = updatedScheduleData[index].publishDate?.split('-');
 
     if (part === 'month') {
       const day = new Date(startDay.format('YYYY-MM-DD'));
@@ -1169,14 +1194,14 @@ export function QuizOpenTemplate() {
                   type="text"
                   maxLength={2}
                   className="form-control tw-text-sm"
-                  value={session.publishDate.split('-')[1]}
+                  value={session.publishDate?.split('-')[1]}
                   onChange={e => handleInputDayChange(index, 'month', e.target.value)}
                 ></input>
                 <input
                   style={{ padding: 0, height: 25, width: 25, textAlign: 'center' }}
                   type="text"
                   className="form-control tw-text-sm"
-                  value={session.publishDate.split('-')[2]}
+                  value={session.publishDate?.split('-')[2]}
                   onChange={e => handleInputDayChange(index, 'day', e.target.value)}
                 ></input>
                 <p className="tw-text-xs tw-font-medium tw-text-center tw-text-[#9ca5b2]">{session.dayOfWeek}</p>

@@ -41,8 +41,6 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
   selectedImage,
   selectedProfile,
 }) => {
-  // console.log(user);
-  console.log(clubData);
   const { logged } = useSessionStore.getState();
   const borderStyle = border ? 'border border-[#e9ecf2] tw-mt-14' : '';
   const studyWeekCount = parseInt(clubData?.studyWeekCount, 10);
@@ -245,12 +243,25 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
 
       <div className="tw-px-[108.5px] tw-absolute tw-top-[330px] tw-left-0 tw-right-0 tw-bottom-0 tw-rounded-[8.75px] tw-py-[40px]">
         <div className="tw-flex tw-items-end tw-gap-[16px]">
-          <img
+          {/* <img
             className="tw-w-40 tw-h-40 border tw-rounded-full"
             src={
               clubData?.leader?.profileImageUrl || selectedProfile || '/assets/images/account/default_profile_image.png'
             }
-          />
+          /> */}
+          {clubData?.useCurrentProfileImage === true ? (
+            <img
+              className="tw-w-40 tw-h-40 tw-rounded-full border"
+              src={user?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
+              alt=""
+            />
+          ) : (
+            <img
+              className="tw-w-40 tw-h-40 tw-rounded-full border"
+              src={clubData?.instructorProfileImageUrl || '/assets/images/account/default_profile_image.png'}
+              alt=""
+            />
+          )}
           <div className="tw-flex">
             <div className="tw-flex tw-justify-center tw-items-center tw-text-sm text-black border tw-py-1 tw-px-2  tw-mr-5 tw-rounded-lg">
               교수자

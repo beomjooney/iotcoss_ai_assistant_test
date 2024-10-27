@@ -3,6 +3,7 @@ import classNames from 'classnames/bind';
 import React, { useEffect, useState, useRef, forwardRef } from 'react';
 import { paramProps } from 'src/services/seminars/seminars.queries';
 import { useContentJobTypes, useJobGroupss } from 'src/services/code/code.queries';
+import CircularProgress from '@mui/material/CircularProgress';
 import { useRouter } from 'next/router';
 import Grid from '@mui/material/Grid';
 import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
@@ -40,7 +41,6 @@ import LectureBreakerInfo from 'src/stories/components/LectureBreakerInfo';
 import LectureOpenDetailInfo from 'src/stories/components/LectureOpenDetailInfo';
 /** drag list */
 import ReactDragList from 'react-drag-list';
-import DraggableList from 'react-draggable-list';
 import { useStore } from 'src/store';
 
 import { InputAdornment, IconButton } from '@mui/material';
@@ -148,6 +148,7 @@ export function LectureOpenTemplate() {
   const [clubName, setClubName] = useState<string>('');
   const [num, setNum] = useState(0);
   const [active, setActive] = useState(0);
+  const [agreements, setAgreements] = useState(true);
 
   const [keyWorld, setKeyWorld] = useState('');
   const [myKeyWorld, setMyKeyWorld] = useState('');
@@ -173,6 +174,11 @@ export function LectureOpenTemplate() {
     }
   };
 
+  // Define the function to handle checkbox change
+  const handleCheckboxChangeAgreements = event => {
+    console.log('event', event.target.checked);
+    setAgreements(event.target.checked);
+  };
   const handleFileChange = event => {
     const files = Array.from(event.target.files);
     const allowedExtensions = /(\.pdf)$/i;
@@ -304,6 +310,7 @@ export function LectureOpenTemplate() {
 
     setPersonName(names || []);
     setIntroductionText(clubForm.description || '');
+    setAgreements(clubForm.useCurrentProfileImage);
 
     setLectureLanguage(clubForm.lectureLanguage);
     setContentLanguage(clubForm.contentLanguage);
@@ -315,7 +322,7 @@ export function LectureOpenTemplate() {
 
     setSelectedImage('');
     setSelectedImageBanner('');
-    setSelectedImageProfile('');
+    // setSelectedImageProfile('');
 
     // Add fileList and urlList to each item in the data array
     const updatedData = lectureList.map(item => ({
@@ -364,6 +371,19 @@ export function LectureOpenTemplate() {
     files: [],
     urls: [],
   });
+
+  useEffect(() => {
+    if (isError) {
+      setIsProcessing(false); // 함수가 실행 중임을 표시
+    }
+  }, [isError]);
+
+  useEffect(() => {
+    if (clubSuccess) {
+      setIsProcessing(false); // 함수가 실행 중임을 표시
+      router.push('/lecture');
+    }
+  }, [clubSuccess]);
 
   const { isFetched: isContentTypeJobFetched } = useContentJobTypes(data => {
     setContentJobType(data.data.contents || []);
@@ -465,6 +485,7 @@ export function LectureOpenTemplate() {
 
   const handleImageChange = (event, type) => {
     console.log(type);
+
     const file = event.target.files[0];
     if (file) {
       if (type === 'card') {
@@ -475,6 +496,7 @@ export function LectureOpenTemplate() {
         setSelectedImageBannerCheck(file);
       } else if (type === 'profile') {
         // setSelectedImageProfile();
+        setAgreements(false);
         setSelectedImageProfileCheck(file);
       }
       const reader = new FileReader();
@@ -604,7 +626,7 @@ export function LectureOpenTemplate() {
 
   const { isFetched: isJobGroupsFetched } = useJobGroupss(data => setJobGroups(data.data.contents || []));
   const { user, setUser } = useStore();
-
+  console.log('user', user);
   useEffect(() => {
     if (active == 0) {
       refetch();
@@ -1056,9 +1078,10 @@ export function LectureOpenTemplate() {
       contentLanguage: contentLanguage || '',
       aiConversationLanguage: lectureAILanguage || '',
       description: introductionText || '',
-      useCurrentProfileImage: 'false',
+      useCurrentProfileImage: agreements,
       isQuestionsPublic: isQuestionsPublic,
       enableAiQuestion: enableAiQuestion,
+      instructorProfileImageUrl: previewProfile,
     };
 
     console.log(clubFormParams);
@@ -1876,7 +1899,7 @@ export function LectureOpenTemplate() {
                 강의내 교수 프로필 이미지
               </div>
 
-              {previewProfile ? (
+              {/* {previewProfile ? (
                 <img
                   src={previewProfile}
                   alt="Image Preview"
@@ -1888,10 +1911,28 @@ export function LectureOpenTemplate() {
                   alt="Image"
                   className="tw-w-[100px] tw-h-[100px] tw-rounded-full border"
                 />
+              )} */}
+
+              {agreements === true ? (
+                <img
+                  className="border tw-w-28 tw-h-28 tw-rounded-full"
+                  src={user?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
+                  alt=""
+                />
+              ) : (
+                <img
+                  className="border tw-w-28 tw-h-28 tw-rounded-full"
+                  src={previewProfile || '/assets/images/account/default_profile_image.png'}
+                  alt=""
+                />
               )}
 
-              <div className="tw-text-sm tw-font-bold tw-text-black tw-mt-5 tw-my-5">
+              {/* <div className="tw-text-sm tw-font-bold tw-text-black tw-mt-5 tw-my-5">
                 직접 업로드를 하지 않으면 현재 프로필 이미지 사용합니다.
+              </div> */}
+              <div className="tw-flex tw-items-center tw-justify-start tw-gap-1">
+                <Checkbox checked={agreements} onChange={e => handleCheckboxChangeAgreements(e)} />
+                <div className="tw-text-sm tw-font-bold tw-text-black tw-mt-5 tw-my-5">현재 프로필 이미지 사용</div>
               </div>
               <button
                 onClick={() => document.getElementById('dropzone-file3').click()}
@@ -1906,13 +1947,13 @@ export function LectureOpenTemplate() {
                 className="tw-hidden"
                 onChange={e => handleImageChange(e, 'profile')}
               />
-              <button
+              {/* <button
                 onClick={e => handleProfileDelete(e)}
                 type="button"
                 className="tw-text-black border tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
               >
                 삭제
-              </button>
+              </button> */}
 
               <div className="tw-container tw-py-10 tw-px-10 tw-mx-0 tw-min-w-full tw-flex tw-flex-col tw-items-center">
                 <div className="tw-grid tw-grid-rows-3 tw-grid-flow-col tw-gap-4">
@@ -2305,8 +2346,12 @@ export function LectureOpenTemplate() {
                     className="tw-w-[240px] tw-text-sm tw-bg-blue-600 tw-text-white tw-font-bold tw-py-3 tw-px-4 tw-rounded tw-flex tw-items-center tw-justify-center tw-gap-1"
                     onClick={handleNextThree}
                   >
-                    {activeStep === steps.length - 1 ? '클럽 개설하기' : '다음'}
-                    <NavigateNextIcon fontSize="small" />
+                    {activeStep === steps.length - 1 ? (
+                      <>{isProcessing ? <CircularProgress color="info" size={18} /> : '클럽 개설하기'}</>
+                    ) : (
+                      '다음'
+                    )}
+                    {/* <NavigateNextIcon fontSize="small" /> */}
                   </button>
                 </div>
               </div>

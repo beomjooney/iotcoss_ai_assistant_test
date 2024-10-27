@@ -106,7 +106,7 @@ export function LectureTemplate() {
               강의를 들으며 AI조교를 통해 질의응답을 하며 수업에 참여해보세요!
             </Grid>
             <Grid item xs={12} sm={2} justifyContent="flex-end" className="tw-flex">
-              {isClient && roles.includes('ROLE_MANAGER') && (
+              {isClient && (roles.includes('ROLE_MANAGER') || roles.includes('ROLE_INSTRUCTOR')) && (
                 <button
                   onClick={() => router.push('/lecture/open')}
                   type="button"

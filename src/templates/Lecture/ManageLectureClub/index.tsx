@@ -17,7 +17,7 @@ import {
   useInstructorsDelete,
   useInstructorBan,
 } from 'src/services/admin/friends/friends.mutations';
-
+import CircularProgress from '@mui/material/CircularProgress';
 import Grid from '@mui/material/Grid';
 
 /** drag list */
@@ -470,8 +470,21 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
   const [urlCode, setUrlCode] = useState('');
   let [key, setKey] = useState('');
   let [fileName, setFileName] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const { mutate: onLectureModify, isError, isSuccess: clubSuccess, data: clubDatas } = useLectureModify();
+
+  useEffect(() => {
+    if (clubSuccess) {
+      setIsProcessing(false);
+    }
+  }, [clubSuccess]);
+
+  useEffect(() => {
+    if (isError) {
+      setIsProcessing(false);
+    }
+  }, [isError]);
 
   const getJobLevelNames = (jobLevelCodes, jobLevels) => {
     return jobLevelCodes?.map(code => {
@@ -680,6 +693,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
   };
 
   const handleSave = () => {
+    setIsProcessing(true);
     handlerClubSaveTemp('save');
   };
 
@@ -689,31 +703,37 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
     // 필수 항목 체크
     if (!clubName) {
       alert('클럽 이름을 입력해주세요');
+      setIsProcessing(false);
       return false;
     }
 
     if (!universityCode) {
       alert('학교를 선택해주세요');
+      setIsProcessing(false);
       return false;
     }
 
     if (!selectedJob || selectedJob.length === 0) {
       alert('최소 하나의 학과를 선택해주세요');
+      setIsProcessing(false);
       return false;
     }
 
     if (startDay && endDay) {
       if (startDay.isSame(endDay, 'day')) {
         alert('시작 날짜와 종료 날짜가 같습니다.');
+        setIsProcessing(false);
         return false;
       } else if (startDay.isAfter(endDay)) {
         alert('시작 날짜가 종료 날짜 이후일 수 없습니다.');
+        setIsProcessing(false);
         return false;
       }
     }
 
     if (!recommendLevels || recommendLevels.length === 0) {
       alert('최소 하나의 학년을 선택해주세요');
+      setIsProcessing(false);
       return false;
     }
 
@@ -724,38 +744,45 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
 
       if (startDate >= endDate) {
         alert('종료 날짜는 시작 날짜보다 늦어야 합니다');
+        setIsProcessing(false);
         return false;
       }
     }
 
     if (!studySubject) {
       alert('학습 주제를 입력해주세요');
+      setIsProcessing(false);
       return false;
     }
 
     if (studyKeywords.length === 0) {
       alert('학습 키워드를 입력해주세요');
+      setIsProcessing(false);
       return false;
     }
 
     if (isPublic === '0002') {
       if (!participationCode) {
         alert('참여 코드를 입력해주세요');
+        setIsProcessing(false);
         return false;
       }
     }
 
     if (!introductionText) {
       alert('설명을 입력해주세요');
+      setIsProcessing(false);
       return false;
     }
 
     if (!preview) {
       alert('강의 카드 이미지를 선택해주세요.');
+      setIsProcessing(false);
       return false;
     }
     if (!previewBanner) {
       alert('강의 배경 이미지를 선택해주세요.');
+      setIsProcessing(false);
       return false;
     }
 
@@ -848,17 +875,20 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
       if (item.startDate === '') {
         alert(`${i + 1}번째 강의 시작일을 입력해주세요.`);
         shouldStop = true;
+        setIsProcessing(false);
         return; // 함수 전체를 종료
       }
       if (item.endDate === '') {
         alert(`${i + 1}번째 강의 종료일을 입력해주세요.`);
         shouldStop = true;
+        setIsProcessing(false);
         return; // 함수 전체를 종료
       }
 
       if (item.clubStudyName === '') {
         alert(`${i + 1}번째 강의 이름을 입력해주세요.`);
         shouldStop = true;
+        setIsProcessing(false);
         return; // 함수 전체를 종료
       }
 
@@ -879,7 +909,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
       // 시작일이 종료일보다 크거나 같을 경우 오류 처리
       if (!dayjs(nextDay4).isAfter(dayjs(nextDay3))) {
         alert(`${i + 1}번째 강의 : 종료일 (${nextDay4})은(는) 시작일 (${nextDay3})보다 뒤에 있어야 합니다.`);
-
+        setIsProcessing(false);
         return; // 혹은 필요에 따라 validation 실패시 코드 실행 중단
       }
 
@@ -2048,11 +2078,13 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
               <div className={cx('container')}>
                 <div className="tw-flex tw-justify-between tw-items-center tw-relative tw-gap-3">
                   <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">강의 기본정보</div>
+                  <div>{isProcessing && <>강의수정시 약 2분이 소요될 예정입니다. 잠시만 기다려 주세요 😊</>}</div>
                   <button
+                    disabled={isProcessing}
                     className="tw-w-[150px] border tw-text-gray-500 tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-text-sm tw-rounded"
                     onClick={() => handleSave()}
                   >
-                    수정하기
+                    {isProcessing ? <CircularProgress color="info" size={18} /> : '수정하기'}
                   </button>
                 </div>
                 <div className={cx('content-area')}>
@@ -2628,11 +2660,13 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
               <div className="tw-relative">
                 <div className="tw-flex tw-justify-between tw-items-center tw-relative tw-gap-3">
                   <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">강의 커리큘럼</div>
+                  <div>{isProcessing && <>강의수정시 약 2분이 소요될 예정입니다. 잠시만 기다려 주세요 😊</>}</div>
                   <button
+                    disabled={isProcessing}
                     className="tw-w-[150px] border tw-text-gray-500 tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-text-sm tw-rounded"
                     onClick={() => handleSave()}
                   >
-                    수정하기
+                    {isProcessing ? <CircularProgress color="info" size={18} /> : '수정하기'}
                   </button>
                 </div>
               </div>
