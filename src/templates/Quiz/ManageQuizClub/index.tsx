@@ -758,6 +758,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
         handleAddClick={handleAddClick}
         isPublished={item?.isPublished}
         isDeleteQuiz={!item?.hasBeenPublished}
+        // isDeleteQuiz={false}
         handleCheckboxDelete={handleCheckboxDelete}
         knowledgeContentTitle={item?.contentDescription || item?.contentTitle}
         hasBeenPublished={item.hasBeenPublished}

@@ -151,7 +151,7 @@ export function QuizOpenTemplate() {
           weekNumber: item.order, // Assuming weekNumber should match the order as per your example
           quizSequence: null,
           publishDate: item.publishDate, // Preserve original publishDate if it exists
-          dayOfWeek: null,
+          dayOfWeek: item.dayOfWeek,
         };
       }
       return item;
@@ -223,6 +223,7 @@ export function QuizOpenTemplate() {
   const [selectedJobQuiz, setSelectedJobQuiz] = useState<string[]>([]);
   const [agreements, setAgreements] = useState(true);
   const [order, setOrder] = useState(null);
+  const [eachMaxQuizLength, setEachMaxQuizLength] = useState(null);
 
   const [keyWorld, setKeyWorld] = useState('');
   const [myKeyWorld, setMyKeyWorld] = useState('');
@@ -454,7 +455,9 @@ export function QuizOpenTemplate() {
 
   const handleAddClick = order => {
     console.log('order', order);
+    console.log('selectedQuizIds', selectedQuizIds.length + 1);
     setOrder(order);
+    setEachMaxQuizLength(selectedQuizIds.length + 1);
     if (scheduleData.length >= 1) setIsModalOpen(true);
     else alert('퀴즈 생성 주기를 입력해주세요.');
   };
@@ -462,15 +465,35 @@ export function QuizOpenTemplate() {
   //new logic
   const handleCheckboxChange = quizSequence => {
     console.log('order', order);
-    // Filter out items with quizSequence as null and count them
+    console.log('eachMaxQuizLength', eachMaxQuizLength);
+    console.log('selectedQuizIds', selectedQuizIds.length);
+
     const nullQuizSequenceCount = scheduleData.filter(item => item.quizSequence === null).length;
+
+    if (order) {
+      const existingOrderQuiz = scheduleData.find(item => item.order === order && item.quizSequence !== null);
+
+      // 이미 다른 퀴즈가 매핑된 경우 경고창 표시 및 기존 선택 해제
+      if (
+        existingOrderQuiz &&
+        existingOrderQuiz.quizSequence !== quizSequence &&
+        !selectedQuizIds.includes(quizSequence)
+      ) {
+        alert('퀴즈가 이미 선택되었습니다. 이전 퀴즈를 취소해주세요.');
+        setSelectedQuizIds(prevSelectedQuizIds => prevSelectedQuizIds.filter(id => id !== quizSequence));
+        setScheduleData(prevSelectedQuizzes =>
+          prevSelectedQuizzes.map(quiz =>
+            quiz.quizSequence === quizSequence ? { ...quiz, quizSequence: null } : quiz,
+          ),
+        );
+        return;
+      }
+    }
 
     if (!selectedQuizIds.includes(quizSequence) && nullQuizSequenceCount <= 0) {
       alert('퀴즈를 추가 할 수 없습니다.');
       return;
     }
-
-    console.log('nullQuizSequenceCount', nullQuizSequenceCount, selectedQuizIds.length);
 
     setSelectedQuizIds(prevSelectedQuizIds => {
       const updatedSelectedQuizIds = prevSelectedQuizIds.includes(quizSequence)
@@ -478,10 +501,16 @@ export function QuizOpenTemplate() {
         : [...prevSelectedQuizIds, quizSequence];
 
       setScheduleData(prevSelectedQuizzes => {
+        if (!Array.isArray(prevSelectedQuizzes)) {
+          return [];
+        }
+
+        console.log('nullQuizSequenceCount', nullQuizSequenceCount, selectedQuizIds.length);
+
         const alreadySelected = prevSelectedQuizzes.some(quiz => quiz.quizSequence === quizSequence);
 
         if (alreadySelected) {
-          // When unchecked, set quizSequence to null
+          // unchecked 시 quizSequence null 처리
           return prevSelectedQuizzes.map(quiz =>
             quiz.quizSequence === quizSequence ? { ...quiz, quizSequence: null } : quiz,
           );
@@ -514,7 +543,6 @@ export function QuizOpenTemplate() {
           }
 
           if (firstNullItemIndex !== -1 && newQuiz) {
-            // Update the first null item with the new quiz data
             const updatedScheduleData = [...scheduleData];
             updatedScheduleData[firstNullItemIndex] = {
               ...updatedScheduleData[firstNullItemIndex],
@@ -524,6 +552,11 @@ export function QuizOpenTemplate() {
             setScheduleData(updatedScheduleData);
             return updatedScheduleData;
           }
+        }
+
+        if (order && selectedQuizIds.length >= eachMaxQuizLength) {
+          alert('퀴즈를 추가 할 수 없습니다.');
+          return;
         }
       });
       return updatedSelectedQuizIds;
@@ -571,19 +604,13 @@ export function QuizOpenTemplate() {
       setSkillIdsPopUp([]);
       setExperienceIdsPopUp([]);
     } else if (active == 2) {
-      refetchMyJob();
+      // refetchMyJob();
     }
   }, [active]);
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const [value, setValue] = React.useState(0);
-
-  const handleChange = (event, newIndex) => {
-    //console.log('SubTab - index', newIndex, event);
-    setActive(newIndex);
-    setValue(newIndex);
-  };
 
   const steps = ['Step 1.클럽 세부사항 설정', 'Step 2.퀴즈 선택', 'Step 3. 개설될 클럽 미리보기'];
 
@@ -2185,16 +2212,18 @@ export function QuizOpenTemplate() {
 
                 <Grid container direction="row" justifyContent="left" alignItems="flex-start" rowSpacing={4}>
                   <Grid item xs={1}>
-                    {scheduleData.map((item, index) => {
+                    {scheduleData?.map((item, index) => {
                       return (
                         <div
                           key={index}
                           className="tw-h-[234.5px] tw-flex tw-flex-col tw-items-center tw-justify-center"
                         >
-                          <div className=" tw-text-center tw-text-black tw-font-bold">Q{index + 1}.</div>
+                          <div className=" tw-text-center tw-text-black tw-font-bold tw-text-sm">
+                            Q{index + 1}. {item.weekNumber}주차{' '}
+                          </div>
                           {item.weekNumber && (
                             <div className="tw-text-center tw-text-sm tw-text-black tw-font-bold">
-                              {item.weekNumber} 주차 {item.dayOfWeek ? `(${item.dayOfWeek})` : ''}
+                              {item.dayOfWeek ? `${item.publishDate?.slice(5, 10)}(${item.dayOfWeek})` : ''}
                             </div>
                           )}
                         </div>
@@ -2377,7 +2406,7 @@ export function QuizOpenTemplate() {
           <Divider sx={{ borderColor: 'rgba(0, 0, 0, 0.5);', paddingY: '10px' }} />
 
           <p className="tw-text-xl tw-font-bold tw-text-left tw-text-black tw-py-5">
-            퀴즈목록 전체 : {totalElements}개 - (퀴즈선택 : {selectedQuizIds.length} / {scheduleData.length})
+            퀴즈목록 전체 : {totalElements}개 - (퀴즈선택 : {selectedQuizIds.length} / {scheduleData?.length})
           </p>
           {quizListData.map((item, index) => (
             <div key={index}>

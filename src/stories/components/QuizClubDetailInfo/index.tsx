@@ -134,7 +134,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
                   <span className="tw-inline-flex tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
                     {jobLevelName.toString() || 'N/A'}
                   </span>
-                  {clubData.clubSequence && (
+                  {clubData?.clubSequence && (
                     <button
                       className="tw-inline-flex tw-ml-auto"
                       onClick={() => {

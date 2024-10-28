@@ -35,8 +35,6 @@ export function IndexPage({ session, setActiveIndex }: { session: Session; setAc
     setUser({ user: data });
   });
 
-  console.log('index page');
-
   useEffect(() => {
     localStorage.setItem('activeIndex', '0');
     setActiveIndex(0);
@@ -86,7 +84,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
       session = JSON.parse(decodedAuthStore);
       console.log('session', session);
     } else {
-      console.log('No authStore provided');
+      // console.log('No authStore provided');
     }
 
     return {
