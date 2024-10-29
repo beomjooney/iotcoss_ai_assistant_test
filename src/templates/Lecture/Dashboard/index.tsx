@@ -1664,6 +1664,11 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
         maxHeight="800px"
       >
         <div className={cx('seminar-check-popup', 'tw-h-[620px] tw-overflow-auto')}>
+          <div className="tw-flex tw-justify-end tw-items-center tw-gap-3">
+            <button className="tw-text-sm tw-font-bold tw-text-white tw-bg-black tw-rounded tw-py-3 tw-px-4 tw-mb-3">
+              질문내역삭제
+            </button>
+          </div>
           <TableContainer>
             <Table className="" aria-label="simple table" style={{ tableLayout: 'fixed' }}>
               <TableHead style={{ backgroundColor: '#F6F7FB' }}>

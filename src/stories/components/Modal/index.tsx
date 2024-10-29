@@ -104,15 +104,14 @@ function Modal({
       }}
     >
       {closable && (
-        <div className={cx('closable', 'tw-bg-white', '')} onClick={() => setIsShow(false)}>
+        <div className={cx('closable', 'tw-bg-white', '')}>
           {title && (
-            <div className="">
-              <span className={cx('modal-header__title', 'tw-px-10 tw-mb-5 tw-font-bold tw-text-[18px] tw-text-black')}>
-                {title}
-              </span>
+            <div className="tw-flex tw-justify-between tw-items-center tw-gap-3 tw-px-6 tw-pt-3">
+              {/* <span className={cx('modal-header__title', 'tw-px-10 tw-mb-5 tw-font-bold tw-text-[18px] tw-text-black')}> */}
+              <span className={cx('', 'tw-font-bold tw-text-[18px] tw-text-black')}>{title}</span>
+              <span className="ti-close tw-cursor-pointer" onClick={() => setIsShow(false)} />
             </div>
           )}
-          <span className="ti-close" />
         </div>
       )}
       <div className={cx('content-wrap')}>
