@@ -91,7 +91,6 @@ export const getServerSideProps: GetServerSideProps = async context => {
       session = JSON.parse(decodedAuthStore);
       console.log('session', session);
     } else {
-      console.log('Iotcoss fetchGuestTenats');
       // let queryClient = await fetchGuestTenats('iotcoss');
       // return {
       //   props: { ...query, dehydratedState: JSON.parse(JSON.stringify(dehydrate(queryClient))) },
