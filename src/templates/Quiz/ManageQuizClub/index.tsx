@@ -15,7 +15,7 @@ import {
   useCrewRejectPost,
   useInstructorsAccept,
   useInstructorsDelete,
-  useInstructorBan,
+  useQuizOpen,
 } from 'src/services/admin/friends/friends.mutations';
 
 import Grid from '@mui/material/Grid';
@@ -102,7 +102,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   const { mutate: onSaveImage, data: imageUrl, isSuccess: imageSuccess } = useUploadImage();
   const { mutate: onInstructorsAccept, isSuccess: isInstructorsAcceptSuccess } = useInstructorsAccept();
   const { mutate: onInstructorsDelete, isSuccess: isInstructorsDeleteSuccess } = useInstructorsDelete();
-  const { mutate: onInstructorsBan, isSuccess: isInstructorsBanSuccess } = useInstructorBan();
+  const { mutate: onQuizOpen, isSuccess: isQuizOpenSuccess } = useQuizOpen();
 
   const [professorRequestSortType, setProfessorRequestSortType] = useState('0001');
   const [quizType, setQuizType] = useState('0100');
@@ -127,19 +127,16 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   });
 
   const [myClubMemberParams, setMyClubMemberParams] = useState<any>({ clubSequence: id, page });
-  const [active, setActive] = useState(0);
   const [params, setParams] = useState<paramProps>({ page });
   const [quizList, setQuizList] = useState<any>([]);
   const [keyWorld, setKeyWorld] = useState('');
   const [keyWorldProfessor, setKeyWorldProfessor] = useState('');
   const [selectedValue, setSelectedValue] = useState(id);
-  // const [activeTab, setActiveTab] = useState('club');
-  // const [activeTab, setActiveTab] = useState('community');
   const [activeTab, setActiveTab] = useState('myQuiz');
+  // const [activeTab, setActiveTab] = useState('community`');
   console.log('subtitle', subtitle);
   const [pageQuiz, setPageQuiz] = useState(1);
   const [totalQuizPage, setTotalQuizPage] = useState(1);
-  const [totalQuizElements, setTotalQuizElements] = useState(0);
   const [myQuizParams, setMyQuizParams] = useState<any>({ clubSequence: id, sortType: 'ASC', page });
   const [myQuizParamsSubTitle, setMyQuizParamsSubTitle] = useState<any>({
     page,
@@ -148,11 +145,11 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     size: 100,
   });
   const [updateKey, setUpdateKey] = useState(0); // 상태 업데이트 강제 트리거를 위한 키
-  //quiz new logic
   const [selectedQuizIds, setSelectedQuizIds] = useState([]);
   const [quizListData, setQuizListData] = useState<any[]>([]);
   const [quizListBackupData, setQuizListBackupData] = useState<any[]>([]);
   const { mutate: onQuizSave, data: quizSaveData } = useSaveQuiz();
+
   useEffect(() => {
     if (quizSaveData) {
       console.log(quizSaveData?.data?.responseCode);
@@ -339,25 +336,6 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     const { name, value } = event.currentTarget;
     setCareerText(value);
   };
-  const handlerClubMake = () => {
-    if (studyCycleNum.length === 0) {
-      alert('요일을 입력해주세요.');
-      return;
-    }
-
-    console.log(studyCycleNum);
-    console.log(num);
-    console.log(startDay.format('YYYY-MM-DD'));
-
-    setDayParams({
-      // ...params,
-      studyCycle: studyCycleNum.join(','),
-      studyWeekCount: num,
-      startDate: startDay.format('YYYY-MM-DD'),
-    });
-    setButtonFlag(true);
-    setSelectedQuizIds([]);
-  };
 
   const handleAddInput = () => {
     if (inputValue.trim() !== '') {
@@ -443,13 +421,109 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     setPersonName([]); // Clear the selected job when university changes
   };
 
-  //new logic
+  const handleOpenQuiz = quizSequence => {
+    let params = {
+      club: selectedClub?.clubSequence,
+      quizSequence,
+    };
+    onQuizOpen(params);
+  };
+
   const [scheduleData, setScheduleData] = useState<any[]>([]);
+  //new logic
+  // const handleCheckboxChange = quizSequence => {
+  //   // Filter out items with quizSequence as null and count them
+  //   const nullQuizSequenceCount = quizList.filter(item => item.quizSequence === null).length;
+
+  //   if (!selectedQuizIds?.includes(quizSequence) && nullQuizSequenceCount <= 0) {
+  //     alert('퀴즈를 추가 할 수 없습니다.');
+  //     return;
+  //   }
+
+  //   setSelectedQuizIds(prevSelectedQuizIds => {
+  //     const updatedSelectedQuizIds = prevSelectedQuizIds.includes(quizSequence)
+  //       ? prevSelectedQuizIds.filter(id => id !== quizSequence)
+  //       : [...prevSelectedQuizIds, quizSequence];
+
+  //     setQuizList(prevSelectedQuizzes => {
+  //       const alreadySelected = prevSelectedQuizzes.some(quiz => quiz.quizSequence === quizSequence);
+  //       console.log(alreadySelected);
+  //       if (alreadySelected) {
+  //         // When unchecked, set quizSequence to null
+  //         return prevSelectedQuizzes.map(quiz =>
+  //           quiz.quizSequence === quizSequence ? { ...quiz, quizSequence: null } : quiz,
+  //         );
+  //       } else {
+  //         console.log(quizList);
+  //         const newQuiz = allQuizData.find(quiz => quiz.quizSequence === quizSequence);
+  //         const reconstructedQuiz = newQuiz
+  //           ? {
+  //               quizSequence: newQuiz.quizSequence,
+  //               question: newQuiz.question,
+  //               leaderUri: newQuiz.memberUri,
+  //               leaderUUID: newQuiz.memberUUID,
+  //               leaderProfileImageUrl: newQuiz.memberProfileImageUrl,
+  //               leaderNickname: newQuiz.memberNickname,
+  //               contentUrl: newQuiz.contentUrl,
+  //               contentTitle: newQuiz.contentTitle,
+  //               modelAnswer: newQuiz.modelAnswer,
+  //               quizUri: newQuiz.quizUri,
+  //               contentDescription: newQuiz.contentDescription,
+  //             }
+  //           : null;
+
+  //         console.log(newQuiz);
+  //         console.log(reconstructedQuiz);
+
+  //         // Find the first item with null values in scheduleData
+  //         const firstNullItemIndex = quizList.findIndex(item => item.quizSequence === null);
+
+  //         if (firstNullItemIndex !== -1 && newQuiz) {
+  //           // Update the first null item with the new quiz data
+  //           const updatedScheduleData = [...quizList];
+  //           updatedScheduleData[firstNullItemIndex] = {
+  //             ...updatedScheduleData[firstNullItemIndex],
+  //             ...reconstructedQuiz,
+  //           };
+  //           console.log(updatedScheduleData);
+  //           setScheduleData(updatedScheduleData);
+  //           return updatedScheduleData;
+  //         }
+  //       }
+  //     });
+  //     return updatedSelectedQuizIds;
+  //   });
+  // };
+  const [order, setOrder] = useState(null);
+  const [eachMaxQuizLength, setEachMaxQuizLength] = useState(null);
   const handleCheckboxChange = quizSequence => {
-    // Filter out items with quizSequence as null and count them
+    console.log('order', order);
+    console.log('eachMaxQuizLength', eachMaxQuizLength);
+    console.log('selectedQuizIds', selectedQuizIds.length);
+
     const nullQuizSequenceCount = quizList.filter(item => item.quizSequence === null).length;
 
-    if (!selectedQuizIds?.includes(quizSequence) && nullQuizSequenceCount <= 0) {
+    if (order) {
+      const existingOrderQuiz = quizList.find(item => item.order === order && item.quizSequence !== null);
+
+      // 이미 다른 퀴즈가 매핑된 경우 경고창 표시 및 기존 선택 해제
+      if (
+        existingOrderQuiz &&
+        existingOrderQuiz.quizSequence !== quizSequence &&
+        !selectedQuizIds.includes(quizSequence)
+      ) {
+        alert('퀴즈가 이미 선택되었습니다. 이전 퀴즈를 취소해주세요.');
+        setSelectedQuizIds(prevSelectedQuizIds => prevSelectedQuizIds.filter(id => id !== quizSequence));
+        setQuizList(prevSelectedQuizzes =>
+          prevSelectedQuizzes.map(quiz =>
+            quiz.quizSequence === quizSequence ? { ...quiz, quizSequence: null } : quiz,
+          ),
+        );
+        return;
+      }
+    }
+
+    if (!selectedQuizIds.includes(quizSequence) && nullQuizSequenceCount <= 0) {
       alert('퀴즈를 추가 할 수 없습니다.');
       return;
     }
@@ -460,51 +534,81 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
         : [...prevSelectedQuizIds, quizSequence];
 
       setQuizList(prevSelectedQuizzes => {
+        if (!Array.isArray(prevSelectedQuizzes)) {
+          return [];
+        }
+
+        console.log('nullQuizSequenceCount', nullQuizSequenceCount, selectedQuizIds.length);
+
         const alreadySelected = prevSelectedQuizzes.some(quiz => quiz.quizSequence === quizSequence);
-        console.log(alreadySelected);
+
         if (alreadySelected) {
-          // When unchecked, set quizSequence to null
+          // unchecked 시 quizSequence null 처리
           return prevSelectedQuizzes.map(quiz =>
             quiz.quizSequence === quizSequence ? { ...quiz, quizSequence: null } : quiz,
           );
         } else {
-          console.log(quizList);
           const newQuiz = allQuizData.find(quiz => quiz.quizSequence === quizSequence);
           const reconstructedQuiz = newQuiz
             ? {
                 quizSequence: newQuiz.quizSequence,
                 question: newQuiz.question,
-                leaderUri: newQuiz.memberUri,
-                leaderUUID: newQuiz.memberUUID,
-                leaderProfileImageUrl: newQuiz.memberProfileImageUrl,
-                leaderNickname: newQuiz.memberNickname,
+                member: {
+                  // leaderUri: newQuiz.memberUri,
+                  // leaderUUID: newQuiz.memberUUID,
+                  // leaderProfileImageUrl: newQuiz.memberProfileImageUrl,
+                  // leaderNickname: newQuiz.memberNickname,
+                  leaderUri: newQuiz.memberUri,
+                  leaderUUID: newQuiz.memberUUID,
+                  profileImageUrl: newQuiz.memberProfileImageUrl,
+                  nickname: newQuiz.memberNickname,
+                },
                 contentUrl: newQuiz.contentUrl,
                 contentTitle: newQuiz.contentTitle,
                 modelAnswer: newQuiz.modelAnswer,
+                description: newQuiz.content.description,
                 quizUri: newQuiz.quizUri,
-                contentDescription: newQuiz.contentDescription,
               }
             : null;
 
           console.log(newQuiz);
           console.log(reconstructedQuiz);
 
-          // Find the first item with null values in scheduleData
-          const firstNullItemIndex = quizList.findIndex(item => item.quizSequence === null);
+          let firstNullItemIndex;
+          if (order) {
+            firstNullItemIndex = quizList.findIndex(item => item.order === order);
+          } else {
+            firstNullItemIndex = quizList.findIndex(item => item.quizSequence === null);
+          }
 
           if (firstNullItemIndex !== -1 && newQuiz) {
-            // Update the first null item with the new quiz data
             const updatedScheduleData = [...quizList];
             updatedScheduleData[firstNullItemIndex] = {
               ...updatedScheduleData[firstNullItemIndex],
               ...reconstructedQuiz,
             };
             console.log(updatedScheduleData);
-            setScheduleData(updatedScheduleData);
+            setQuizList(updatedScheduleData);
             return updatedScheduleData;
           }
         }
+
+        if (order && selectedQuizIds.length >= eachMaxQuizLength) {
+          alert('퀴즈를 추가 할 수 없습니다.');
+          return;
+        }
       });
+      return updatedSelectedQuizIds;
+    });
+  };
+
+  const handleCheckboxDelete = quizSequence => {
+    setSelectedQuizIds(prevSelectedQuizIds => {
+      const updatedSelectedQuizIds = prevSelectedQuizIds.filter(id => id !== quizSequence);
+      console.log('After Deletion, Selected Quiz IDs:', updatedSelectedQuizIds);
+      setQuizList(prevSelectedQuizzes =>
+        prevSelectedQuizzes.map(quiz => (quiz.quizSequence === quizSequence ? { ...quiz, quizSequence: null } : quiz)),
+      );
       return updatedSelectedQuizIds;
     });
   };
@@ -547,6 +651,12 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     console.log(data.totalPages);
     console.log(data.totalElements);
   });
+
+  useEffect(() => {
+    if (isQuizOpenSuccess) {
+      refetchMyInfo();
+    }
+  }, [isQuizOpenSuccess]);
 
   // 퀴즈클럽 리스트
 
@@ -730,17 +840,6 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     setSelectedImageProfileCheck(null);
   };
 
-  const handleCheckboxDelete = quizSequence => {
-    setSelectedQuizIds(prevSelectedQuizIds => {
-      const updatedSelectedQuizIds = prevSelectedQuizIds.filter(id => id !== quizSequence);
-      console.log('After Deletion, Selected Quiz IDs:', updatedSelectedQuizIds);
-      setQuizList(prevSelectedQuizzes =>
-        prevSelectedQuizzes.map(quiz => (quiz.quizSequence === quizSequence ? { ...quiz, quizSequence: null } : quiz)),
-      );
-      return updatedSelectedQuizIds;
-    });
-  };
-
   const dragList = (item: any, index: any) => (
     <div
       key={item.key}
@@ -762,15 +861,19 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
         handleCheckboxDelete={handleCheckboxDelete}
         knowledgeContentTitle={item?.contentDescription || item?.contentTitle}
         hasBeenPublished={item.hasBeenPublished}
+        order={item.order}
       />
     </div>
   );
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const handleAddClick = () => {
+  const handleAddClick = order => {
+    console.log('order', order);
     // console.log('quizList.length', quizList.length);
     // if (quizList.length > 1) setIsModalOpen(true);
     // else alert('퀴즈 생성 주기를 입력해주세요.');
+    setOrder(order);
+    setEachMaxQuizLength(selectedQuizIds.length + 1);
     setIsModalOpen(true);
   };
 
@@ -949,13 +1052,6 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
       </div>
     );
   }
-
-  const handleDelete = () => {
-    const updatedScheduleData = scheduleData.filter((_, i) => !selectedSessions.includes(i));
-    setNum(updatedScheduleData.length);
-    setScheduleData(updatedScheduleData);
-    setSelectedSessions([]);
-  };
 
   function renderDatesAndSessionsView() {
     return (
@@ -1197,21 +1293,6 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     }
   };
 
-  const handlerClubMakeProfessorManual = () => {
-    const weeks = [];
-    for (let i = 0; i < num; i++) {
-      weeks.push({
-        order: i + 1,
-        weekNumber: i + 1,
-        quizSequence: null,
-        publishDate: null,
-        dayOfWeek: null,
-      });
-    }
-    setScheduleData(weeks);
-    setButtonFlag(true);
-  };
-
   const newCheckItem = (id, index, prevState) => {
     const newState = [...prevState];
     if (index > -1) newState.splice(index, 1);
@@ -1268,18 +1349,6 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
       },
     },
   }));
-
-  const handlerClubMakeManual = () => {
-    const weeks = [];
-    for (let i = 0; i < num; i++) {
-      weeks.push({
-        order: i + 1,
-        quizSequence: null,
-      });
-    }
-    setScheduleData(weeks);
-    setButtonFlag(true);
-  };
 
   const handleImageChange = (event, type) => {
     console.log(type);
@@ -1446,7 +1515,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
               } border-top border-right`}
             />
             <p
-              className={`tw-absolute tw-left-[52px] tw-top-3 tw-text-base tw-text-center ${
+              className={`tw-absolute tw-left-[50px] tw-top-3 tw-text-base tw-text-center ${
                 activeTab === 'myQuiz' ? 'tw-font-bold tw-text-black' : 'tw-text-[#9ca5b2]'
               }`}
             >
@@ -1505,7 +1574,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
               } border-right border-top border-left`}
             />
             <p
-              className={`tw-absolute tw-left-[52px] tw-top-3 tw-text-base tw-text-center ${
+              className={`tw-absolute tw-left-[50px] tw-top-3 tw-text-base tw-text-center ${
                 activeTab === 'community' ? 'tw-font-bold tw-text-black' : 'tw-text-[#9ca5b2]'
               }`}
             >
@@ -2276,15 +2345,6 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                       </div>
                       <div className="tw-flex-none tw-h-14 ... tw-ml-5 ">
                         <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">&nbsp;</p>
-                        {/* <button
-                          onClick={handlerClubMake}
-                          disabled
-                          className="tw-flex tw-justify-center tw-items-center tw-w-20 tw-relative tw-overflow-hidden tw-gap-2 tw-px-7 tw-py-[10px] tw-rounded tw-bg-[#31343d]"
-                        >
-                          <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-center tw-text-white">
-                            확인
-                          </p>
-                        </button> */}
                       </div>
                     </div>
                     {scheduleData?.length > 0 && (
@@ -2293,12 +2353,6 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                           퀴즈 클럽회차
                         </div>
                         <div className="tw-rounded-lg tw-bg-white">{renderDatesAndSessionsView()}</div>
-                        {/* <div
-                          onClick={handleDelete}
-                          className="tw-cursor-pointer tw-text-sm tw-text-right tw-text-black tw-py-5 tw-font-semibold"
-                        >
-                          선택회차 삭제하기
-                        </div> */}
                         <div className="tw-rounded-lg tw-bg-white">{renderDatesAndSessionsModify()}</div>
                       </div>
                     )}
@@ -2337,15 +2391,6 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                       </div>
                       <div className="tw-flex-none tw-h-14 ... tw-ml-5 ">
                         <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">&nbsp;</p>
-                        {/* <button
-                          disabled
-                          onClick={handlerClubMakeProfessorManual}
-                          className="tw-flex tw-justify-center tw-items-center tw-w-20 tw-relative tw-overflow-hidden tw-gap-2 tw-px-7 tw-py-[10px] tw-rounded tw-bg-[#31343d]"
-                        >
-                          <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-center tw-text-white">
-                            확인
-                          </p>
-                        </button> */}
                       </div>
                     </div>
                   </div>
@@ -2385,15 +2430,6 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                       </div>
                       <div className="tw-flex-none tw-h-14 ... tw-ml-5 ">
                         <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">&nbsp;</p>
-                        {/* <button
-                          onClick={handlerClubMakeManual}
-                          disabled
-                          className="tw-flex tw-justify-center tw-items-center tw-w-20 tw-relative tw-overflow-hidden tw-gap-2 tw-px-7 tw-py-[10px] tw-rounded tw-bg-[#31343d]"
-                        >
-                          <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-center tw-text-white">
-                            확인
-                          </p>
-                        </button> */}
                       </div>
                     </div>
                   </div>
@@ -2766,7 +2802,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                       </defs>
                     </svg>
                     <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-medium tw-text-left tw-text-[#9ca5b2]">
-                      <button type="button" onClick={handleAddClick} className="tw-text-black tw-text-sm ">
+                      <button type="button" onClick={e => handleAddClick(null)} className="tw-text-black tw-text-sm ">
                         성장퀴즈 추가하기
                       </button>
                     </p>
@@ -2825,11 +2861,27 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                       return (
                         <div
                           key={index}
-                          className="tw-h-[223.25px] tw-flex tw-flex-col tw-items-center tw-justify-center tw-mb-4"
+                          className="tw-h-[223.25px] tw-flex tw-flex-col tw-items-center tw-justify-start tw-mb-4"
                         >
-                          <div className=" tw-text-center tw-text-black tw-font-bold">Q{item?.order}.</div>
-                          <div className="tw-text-center tw-text-sm tw-text-black tw-font-bold">
-                            {item?.publishDate?.slice(5, 10)} {item?.dayOfWeek ? `(${item.dayOfWeek})` : ''}
+                          <div className="tw-pt-3">
+                            <div className="tw-text-center tw-text-lg tw-text-black tw-font-bold">{item?.order}회</div>
+                            {item?.hasBeenPublished ? (
+                              <div className="tw-text-center tw-text-xs tw-text-black tw-font-bold">
+                                {item?.publishDate?.slice(5, 10)} 오픈됨
+                                {/* {item?.dayOfWeek ? `(${item.dayOfWeek})` : ''} */}
+                              </div>
+                            ) : quizType === '0200' ? (
+                              <div
+                                onClick={() => handleOpenQuiz(item?.quizSequence)}
+                                className="tw-cursor-pointer tw-mt-2 tw-text-center tw-rounded-md tw-text-xs tw-text-blue-500 border border-primary tw-px-1 tw-py-1"
+                              >
+                                오픈하기
+                              </div>
+                            ) : (
+                              <div className="tw-text-center tw-text-xs tw-text-black tw-font-bold">
+                                {item?.publishDate?.slice(5, 10)} {item?.dayOfWeek ? `(${item.dayOfWeek})` : ''}
+                              </div>
+                            )}
                           </div>
                         </div>
                       );

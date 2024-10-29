@@ -148,51 +148,59 @@ export function AdminClubTemplate() {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {contents.map((content, index) => (
-                          <TableRow key={index}>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-base">
-                                <span className="tw-text-sm tw-font-medium">{content.memberId}</span>
-                              </div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm tw-line-clamp-1">{content.name}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm">{content.email}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm">{content.phoneNumber}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm">{content.ageRange}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm">{content.memberType}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm">{content.jobGroup}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm">{content.jobLevel}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm">{content.isEmailReceive ? 'T' : 'F'}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm">{content.isKakaoReceive ? 'T' : 'F'}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm">{content.isSmsReceive ? 'T' : 'F'}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm">{content.points}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className="tw-text-sm">{formatDate(content.createdAt)}</div>
+                        {contents.length > 0 ? (
+                          contents.map((content, index) => (
+                            <TableRow key={index}>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className=" tw-text-base">
+                                  <span className="tw-text-sm tw-font-medium">{content.memberId}</span>
+                                </div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className=" tw-text-sm tw-line-clamp-1">{content.name}</div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className=" tw-text-sm">{content.email}</div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className=" tw-text-sm">{content.phoneNumber}</div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className=" tw-text-sm">{content.ageRange}</div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className=" tw-text-sm">{content.memberType}</div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className=" tw-text-sm">{content.jobGroup}</div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className=" tw-text-sm">{content.jobLevel}</div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className=" tw-text-sm">{content.isEmailReceive ? 'T' : 'F'}</div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className=" tw-text-sm">{content.isKakaoReceive ? 'T' : 'F'}</div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className=" tw-text-sm">{content.isSmsReceive ? 'T' : 'F'}</div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className=" tw-text-sm">{content.points}</div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className="tw-text-sm">{formatDate(content.createdAt)}</div>
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        ) : (
+                          <TableRow>
+                            <TableCell align="center" colSpan={4}>
+                              <div className="tw-text-sm tw-text-gray-500">데이터가 없습니다</div>
                             </TableCell>
                           </TableRow>
-                        ))}
+                        )}
                       </TableBody>
                     </Table>
                   </TableContainer>

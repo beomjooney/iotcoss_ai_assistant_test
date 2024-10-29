@@ -230,7 +230,6 @@ export function QuizOpenTemplate() {
   // const { mutate: onQuizSave, isSuccess: postSucces } = useQuizSave();
   const { mutate: onClubQuizSave, isError, isSuccess: clubSuccess, data: clubDatas } = useClubQuizSave();
 
-  //quiz new logic
   const [selectedQuizIds, setSelectedQuizIds] = useState([]);
 
   const { mutate: onSaveImage, data: imageUrl, isSuccess: imageSuccess } = useUploadImage();
@@ -454,8 +453,6 @@ export function QuizOpenTemplate() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const handleAddClick = order => {
-    console.log('order', order);
-    console.log('selectedQuizIds', selectedQuizIds.length + 1);
     setOrder(order);
     setEachMaxQuizLength(selectedQuizIds.length + 1);
     if (scheduleData.length >= 1) setIsModalOpen(true);
@@ -595,8 +592,6 @@ export function QuizOpenTemplate() {
   const [active, setActive] = useState(0);
   const { isFetched: isJobGroupsFetched } = useJobGroupss(data => setJobGroups(data.data.contents || []));
   const { user, setUser } = useStore();
-
-  const PAGE_NAME = 'contents';
 
   useEffect(() => {
     if (active == 0) {

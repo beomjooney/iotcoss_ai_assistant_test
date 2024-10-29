@@ -158,7 +158,7 @@ export function AdminTermsTemplate() {
                           ))
                         ) : (
                           <TableRow>
-                            <TableCell align="center" colSpan={10}>
+                            <TableCell align="center" colSpan={5}>
                               <div className="tw-text-sm">데이터가 없습니다</div>
                             </TableCell>
                           </TableRow>

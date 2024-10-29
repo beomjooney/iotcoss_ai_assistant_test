@@ -777,58 +777,66 @@ export function AdminKnowledgeTemplate() {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {contents.map((content, index) => (
-                          <TableRow key={index}>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-base">
-                                <span className="tw-text-sm tw-font-medium">{formatDate(content.createdAt)}</span>
-                              </div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm tw-line-clamp-1">{content.creatorName}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm   tw-line-clamp-1">{content.contentName}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm ">{content.contentType.name}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm">{content.likeCount}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <button
-                                onClick={() => handleDelete(content.contentSequence)}
-                                type="button"
-                                data-tooltip-target="tooltip-default"
-                                className="tw-py-2 tw-px-5 tw-bg-black tw-text-white max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-rounded-md"
-                              >
-                                삭제
-                              </button>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm tw-line-clamp-1">{content.internalSharingLink}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm  tw-line-clamp-1 ">
-                                {content.jobGroups?.map(item => item.name).join(', ')}
-                              </div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm tw-line-clamp-1">
-                                {content.jobs?.map(item => item.name).join(', ')}
-                              </div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm  tw-line-clamp-1">
-                                {content?.jobLevels?.map(item => item.name).join(', ')}
-                              </div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm tw-line-clamp-1">{content.studyKeywords.join(', ')}</div>
+                        {contents.length > 0 ? (
+                          contents.map((content, index) => (
+                            <TableRow key={index}>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className="tw-text-base">
+                                  <span className="tw-text-sm tw-font-medium">{formatDate(content.createdAt)}</span>
+                                </div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className="tw-text-sm tw-line-clamp-1">{content.creatorName}</div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className="tw-text-sm tw-line-clamp-1">{content.contentName}</div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className="tw-text-sm">{content.contentType.name}</div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className="tw-text-sm">{content.likeCount}</div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <button
+                                  onClick={() => handleDelete(content.contentSequence)}
+                                  type="button"
+                                  data-tooltip-target="tooltip-default"
+                                  className="tw-py-2 tw-px-5 tw-bg-black tw-text-white max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-rounded-md"
+                                >
+                                  삭제
+                                </button>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className="tw-text-sm tw-line-clamp-1">{content.internalSharingLink}</div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className="tw-text-sm tw-line-clamp-1">
+                                  {content.jobGroups?.map(item => item.name).join(', ')}
+                                </div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className="tw-text-sm tw-line-clamp-1">
+                                  {content.jobs?.map(item => item.name).join(', ')}
+                                </div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className="tw-text-sm tw-line-clamp-1">
+                                  {content?.jobLevels?.map(item => item.name).join(', ')}
+                                </div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className="tw-text-sm tw-line-clamp-1">{content.studyKeywords.join(', ')}</div>
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        ) : (
+                          <TableRow>
+                            <TableCell align="center" colSpan={6}>
+                              <div className="tw-text-sm tw-text-gray-500">데이터가 없습니다</div>
                             </TableCell>
                           </TableRow>
-                        ))}
+                        )}
                       </TableBody>
                     </Table>
                   </TableContainer>
@@ -1338,7 +1346,7 @@ export function AdminKnowledgeTemplate() {
                         <FormControlLabel
                           sx={{ marginLeft: 0, marginRight: 0 }}
                           key={index}
-                          className="border tw-p-2 tw-mb-2 tw-rounded-lg"
+                          className="border tw-p-1 tw-mb-2 tw-rounded-lg"
                           style={{ width: '100%' }}
                           value={data.contentSequence}
                           control={<Radio />}

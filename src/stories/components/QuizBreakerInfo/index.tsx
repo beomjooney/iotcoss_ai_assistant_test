@@ -49,40 +49,43 @@ const QuizBreakerInfo = ({
             >
               {questionText}
             </div>
-            <svg
-              width={28}
-              height={28}
-              viewBox="0 0 28 28"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="tw-mr-5 tw-w-7 tw-h-7 tw-col-start-5 tw-row-start-1 tw-row-end-3 tw-place-self-center"
-              preserveAspectRatio="none"
-            >
-              <rect x="0.5" y="0.5" width={27} height={27} rx="3.5" stroke="#31343D" />
-              <path d="M6 10H22" stroke="#31343D" strokeWidth="1.5" />
-              <path d="M6 14H22" stroke="#31343D" strokeWidth="1.5" />
-              <path d="M6 18H22" stroke="#31343D" strokeWidth="1.5" />
-            </svg>
-            {isDeleteQuiz && (
+            <div className="tw-w-1/12 tw-flex  tw-items-center  tw-justify-center tw-gap-3">
               <svg
-                onClick={e => {
-                  e.stopPropagation(); // Prevent drag event
-                  handleCheckboxDelete(index);
-                  console.log(index);
-                }}
                 width={28}
                 height={28}
                 viewBox="0 0 28 28"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                className="tw-cursor-pointer tw-mr-5 tw-w-7 tw-h-7 tw-col-start-4 tw-row-start-1 tw-row-end-3 tw-place-self-center"
+                className="tw-w-7 tw-h-7 tw-col-start-5 tw-row-start-1 tw-row-end-3 tw-place-self-center tw-text-center"
                 preserveAspectRatio="none"
               >
-                <rect width={28} height={28} rx={4} fill="#31343D" />
-                <path d="M20 8L8 20" stroke="white" strokeWidth="1.5" />
-                <path d="M8 8L20 20" stroke="white" strokeWidth="1.5" />
+                <rect x="0.5" y="0.5" width={27} height={27} rx="3.5" stroke="#31343D" />
+                <path d="M6 10H22" stroke="#31343D" strokeWidth="1.5" />
+                <path d="M6 14H22" stroke="#31343D" strokeWidth="1.5" />
+                <path d="M6 18H22" stroke="#31343D" strokeWidth="1.5" />
               </svg>
-            )}
+
+              {isDeleteQuiz && (
+                <svg
+                  onClick={e => {
+                    e.stopPropagation(); // Prevent drag event
+                    handleCheckboxDelete(index);
+                    console.log(index);
+                  }}
+                  width={28}
+                  height={28}
+                  viewBox="0 0 28 28"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="tw-cursor-pointer tw-w-7 tw-h-7 tw-col-start-4 tw-row-start-1 tw-row-end-3 tw-place-self-center"
+                  preserveAspectRatio="none"
+                >
+                  <rect width={28} height={28} rx={4} fill="#31343D" />
+                  <path d="M20 8L8 20" stroke="white" strokeWidth="1.5" />
+                  <path d="M8 8L20 20" stroke="white" strokeWidth="1.5" />
+                </svg>
+              )}
+            </div>
           </div>
           <div className="tw-my-3 tw-h-[137px] tw-mb-4 tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white border border-[#e9ecf2]">
             <svg

@@ -25,6 +25,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
 import { styled } from '@mui/material/styles';
 import validator from 'validator';
+import Divider from '@mui/material/Divider';
 
 import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
@@ -105,6 +106,7 @@ export function QuizMakeTemplate() {
   const [selected, setSelected] = useState([]);
   const open = Boolean(anchorEl);
   const [keyWorld, setKeyWorld] = useState('');
+  const [keyWorldKnowledge, setKeyWorldKnowledge] = useState('');
   const [contentSequence, setContentSequence] = useState('');
 
   const [expanded, setExpanded] = useState(0); // 현재 확장된 Accordion의 인덱스
@@ -369,20 +371,20 @@ export function QuizMakeTemplate() {
   useEffect(() => {
     setQuizParams({
       page: quizPage,
-      keyword: keyWorld,
+      keyword: keyWorldKnowledge,
       sortType: sortType,
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [quizPage, keyWorld, sortType]);
+  }, [quizPage, keyWorldKnowledge, sortType]);
 
   useEffect(() => {
     setExpanded(0);
   }, [isModalOpen]);
 
-  function searchKeyworld(value) {
+  function searchKeyworldKnowledge(value) {
     let _keyworld = value.replace('#', '');
     if (_keyworld == '') _keyworld = null;
-    setKeyWorld(_keyworld);
+    setKeyWorldKnowledge(_keyworld);
   }
 
   const newCheckItem = (id, index, prevState) => {
@@ -735,6 +737,17 @@ export function QuizMakeTemplate() {
       fontSize: '11px',
     },
   }));
+
+  const [quizSearch, setQuizSearch] = React.useState('');
+  const handleInputQuizSearchChange = event => {
+    setQuizSearch(event.target.value);
+  };
+
+  function searchKeyworld(value) {
+    let _keyworld = value.replace('#', '');
+    if (_keyworld == '') _keyworld = null;
+    setKeyWorld(_keyworld);
+  }
 
   const fileInputRef = useRef(null);
   const handleButtonClick = () => {
@@ -1162,7 +1175,7 @@ export function QuizMakeTemplate() {
                           setQuizList([]);
                           setSortQuizType('ASC');
                           setFileName('');
-                          setFileNameCopy('');
+                          setFileNameCopy([]);
                           setJobLevel([]);
                           setSelected1([]);
                           setSelected2([]);
@@ -1172,6 +1185,8 @@ export function QuizMakeTemplate() {
                           setUniversityCode('');
                           setJobs([]);
                           setContentSortType('');
+                          setKeyWorldKnowledge('');
+                          setQuizSearch('');
                         } else {
                           e.stopPropagation(); // This stops the event from propagating to the AccordionSummary
                           setIsContentModalClick(true);
@@ -1630,6 +1645,26 @@ export function QuizMakeTemplate() {
           {isContentModalClick && (
             <div className="tw-w-[390px] tw-p-5 tw-pr-0 tw-ml-5">
               <div className="tw-text-lg tw-font-bold tw-mb-5 tw-text-black">템플릿 불러오기</div>
+              <div className="tw-mb-3">
+                <TextField
+                  size="small"
+                  fullWidth
+                  placeholder="지식콘텐츠 키워드를 입력해주세요."
+                  onChange={handleInputQuizSearchChange}
+                  id="margin-none"
+                  value={quizSearch}
+                  name="quizSearch"
+                  InputProps={{
+                    startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
+                  }}
+                  onKeyPress={e => {
+                    if (e.key === 'Enter') {
+                      searchKeyworldKnowledge((e.target as HTMLInputElement).value);
+                    }
+                  }}
+                />
+              </div>
+              <Divider sx={{ mt: 2, mb: 2, bgcolor: 'secondary.gray' }} component="div" />
               <FormControl fullWidth>
                 <RadioGroup
                   aria-labelledby=""
@@ -1637,12 +1672,22 @@ export function QuizMakeTemplate() {
                   name="radio-buttons-group"
                   value={contentSortType}
                   onChange={handleChangeContent}
+                  sx={{
+                    '& .MuiSvgIcon-root': {
+                      fontSize: 18,
+                    },
+                  }}
                 >
+                  {myQuizContentData?.contents?.length === 0 && (
+                    <div className="tw-text-center tw-text-sm tw-text-gray-500 tw-py-5">
+                      등록된 지식콘텐츠가 없습니다.
+                    </div>
+                  )}
                   {myQuizContentData?.contents?.map((data, index) => (
                     <FormControlLabel
                       sx={{ marginLeft: 0, marginRight: 0 }}
                       key={index}
-                      className="border tw-p-2 tw-mb-2 tw-rounded-lg"
+                      className="border tw-p-1 tw-mb-2 tw-rounded-lg"
                       style={{ width: '100%' }}
                       value={data.contentSequence}
                       control={<Radio />}

@@ -5,6 +5,8 @@ import { useSessionStore } from 'src/store/session';
 import { useMemberActiveSummaryInfo } from 'src/services/account/account.queries';
 import { useQuizList } from 'src/services/studyroom/studyroom.queries';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
+import Divider from '@mui/material/Divider';
+
 import { Mobile, Desktop } from 'src/hooks/mediaQuery';
 import Drawer from '@mui/material/Drawer';
 
@@ -523,6 +525,19 @@ export function AdminQuizTemplate() {
     }
   };
 
+  const [keyWorldKnowledge, setKeyWorldKnowledge] = useState('');
+  const [quizSearch, setQuizSearch] = React.useState('');
+
+  const handleInputQuizSearchChange = event => {
+    setQuizSearch(event.target.value);
+  };
+
+  function searchKeyworldKnowledge(value) {
+    let _keyworld = value.replace('#', '');
+    if (_keyworld == '') _keyworld = null;
+    setKeyWorldKnowledge(_keyworld);
+  }
+
   const updateQuizList = newQuiz => {
     const index = quizList.findIndex(quiz => quiz.question === newQuiz.question);
 
@@ -674,11 +689,11 @@ export function AdminQuizTemplate() {
   useEffect(() => {
     setQuizParams({
       page: quizPage,
-      keyword: keyWorld,
+      keyword: keyWorldKnowledge,
       sortType: sortType,
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [quizPage, keyWorld, sortType]);
+  }, [quizPage, keyWorldKnowledge, sortType]);
 
   const newCheckItem = (id, index, prevState) => {
     const newState = [...prevState];
@@ -763,56 +778,66 @@ export function AdminQuizTemplate() {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {contents.map((content, index) => (
-                          <TableRow key={index}>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-base">
-                                <span className="tw-text-sm tw-font-medium">{formatDate(content?.createdAt)}</span>
-                              </div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm tw-line-clamp-1">{content.creatorName}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm   tw-line-clamp-1">{content.question}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm ">{content.activeCount}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm">{content.answerCount}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <button
-                                onClick={() => handleDelete(content.quizSequence)}
-                                type="button"
-                                data-tooltip-target="tooltip-default"
-                                className="tw-py-2 tw-px-5 tw-bg-black tw-text-white max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-rounded-md"
-                              >
-                                삭제
-                              </button>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm tw-line-clamp-1">{content.contentName}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm">{content.jobGroups?.map(item => item.name).join(', ')}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm tw-line-clamp-1">
-                                {content.jobs?.map(item => item.name).join(', ')}
-                              </div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm  tw-line-clamp-1">
-                                {content?.jobLevels?.map(item => item.name).join(', ')}
-                              </div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className=" tw-text-sm tw-line-clamp-1">{content.skills.join(', ')}</div>
+                        {contents.length > 0 ? (
+                          contents.map((content, index) => (
+                            <TableRow key={index}>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className=" tw-text-base">
+                                  <span className="tw-text-sm tw-font-medium">{formatDate(content?.createdAt)}</span>
+                                </div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className=" tw-text-sm tw-line-clamp-1">{content.creatorName}</div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className=" tw-text-sm   tw-line-clamp-1">{content.question}</div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className=" tw-text-sm ">{content.activeCount}</div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className=" tw-text-sm">{content.answerCount}</div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <button
+                                  onClick={() => handleDelete(content.quizSequence)}
+                                  type="button"
+                                  data-tooltip-target="tooltip-default"
+                                  className="tw-py-2 tw-px-5 tw-bg-black tw-text-white max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-rounded-md"
+                                >
+                                  삭제
+                                </button>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className=" tw-text-sm tw-line-clamp-1">{content.contentName}</div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className=" tw-text-sm">
+                                  {content.jobGroups?.map(item => item.name).join(', ')}
+                                </div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className=" tw-text-sm tw-line-clamp-1">
+                                  {content.jobs?.map(item => item.name).join(', ')}
+                                </div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className=" tw-text-sm  tw-line-clamp-1">
+                                  {content?.jobLevels?.map(item => item.name).join(', ')}
+                                </div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className=" tw-text-sm tw-line-clamp-1">{content.skills.join(', ')}</div>
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        ) : (
+                          <TableRow>
+                            <TableCell align="center" colSpan={6}>
+                              <div className="tw-text-sm tw-text-gray-500">데이터가 없습니다</div>
                             </TableCell>
                           </TableRow>
-                        ))}
+                        )}
                       </TableBody>
                     </Table>
                   </TableContainer>
@@ -1309,6 +1334,26 @@ export function AdminQuizTemplate() {
               {isContentModalClick && (
                 <div className="tw-w-[390px] tw-p-5 tw-pr-0 tw-ml-5">
                   <div className="tw-text-lg tw-font-bold tw-mb-5 tw-text-black">템플릿 불러오기</div>
+                  <div className="tw-mb-3">
+                    <TextField
+                      size="small"
+                      fullWidth
+                      placeholder="지식콘텐츠 키워드를 입력해주세요."
+                      onChange={handleInputQuizSearchChange}
+                      id="margin-none"
+                      value={quizSearch}
+                      name="quizSearch"
+                      InputProps={{
+                        startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
+                      }}
+                      onKeyPress={e => {
+                        if (e.key === 'Enter') {
+                          searchKeyworldKnowledge((e.target as HTMLInputElement).value);
+                        }
+                      }}
+                    />
+                  </div>
+                  <Divider sx={{ mt: 2, mb: 2, bgcolor: 'secondary.gray' }} component="div" />
                   <FormControl fullWidth>
                     <RadioGroup
                       aria-labelledby=""
@@ -1316,7 +1361,18 @@ export function AdminQuizTemplate() {
                       name="radio-buttons-group"
                       value={contentSortType}
                       onChange={handleChangeContent}
+                      sx={{
+                        '& .MuiSvgIcon-root': {
+                          fontSize: 18,
+                        },
+                      }}
                     >
+                      {myQuizContentData?.contents?.length === 0 && (
+                        <div className="tw-text-center tw-text-sm tw-text-gray-500 tw-py-5">
+                          등록된 지식콘텐츠가 없습니다.
+                        </div>
+                      )}
+
                       {myQuizContentData?.contents?.map((data, index) => (
                         <FormControlLabel
                           sx={{ marginLeft: 0, marginRight: 0 }}

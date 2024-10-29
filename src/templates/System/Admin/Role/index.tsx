@@ -169,108 +169,126 @@ export function AdminRoleTemplate() {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {contents.map((content, index) => (
-                          <TableRow key={index}>
-                            <TableCell align="center" component="th" scope="row">
-                              <div className="tw-text-sm tw-text-gray-400">{content?.requestedAt.split(' ')[0]}</div>
-                              <div className="tw-text-sm tw-text-gray-400">{content?.requestedAt.split(' ')[1]}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row">
-                              <div className="tw-font-bold tw-text-sm">
-                                <span className="tw-text-sm tw-font-medium ">{content?.memberName}</span>
-                              </div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row" style={{ padding: '10px' }}>
-                              <div className="tw-font-medium tw-text-sm">{content?.jobGroupId?.name}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row" style={{ padding: '10px' }}>
-                              <div className="tw-font-medium tw-text-sm">{content?.jobId?.name}</div>
-                            </TableCell>
-                            <TableCell align="left" component="th" scope="row" style={{ padding: '0px' }}>
-                              <div className="tw-font-medium tw-text-sm">
-                                {renderStatusImage(content?.requestStatus)}
-                              </div>
-                            </TableCell>
-                            <TableCell align="center" component="th" scope="row" style={{ padding: '0px' }}>
-                              <div className="tw-text-sm">
-                                {(() => {
-                                  switch (content.requestStatus) {
-                                    case '0001':
-                                      return (
-                                        <div className="tw-gap-3">
-                                          <button
-                                            onClick={() => handleAdminAccept(content?.tenantUUID, content?.memberUUID)}
-                                            type="button"
-                                            data-tooltip-target="tooltip-default"
-                                            className="tw-py-2 tw-px-3 tw-mr-2 tw-bg-white tw-text-gray-400  border max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
-                                          >
-                                            승인
-                                          </button>
-                                          <button
-                                            onClick={() => handleAdminReject(content?.tenantUUID, content?.memberUUID)}
-                                            type="button"
-                                            data-tooltip-target="tooltip-default"
-                                            className="tw-py-2 tw-px-3 tw-bg-blue-600 tw-text-white max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
-                                          >
-                                            거절
-                                          </button>
-                                        </div>
-                                      );
-                                    case '0002':
-                                      return (
-                                        // 승인된 admin 권한 관리 제거
-                                        <div className="tw-gap-3">
-                                          <button
-                                            onClick={() => handleAdminReject(content?.tenantUUID, content?.memberUUID)}
-                                            type="button"
-                                            data-tooltip-target="tooltip-default"
-                                            className="tw-py-2 tw-px-3 tw-bg-blue-600 tw-text-white max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
-                                          >
-                                            거절
-                                          </button>
-                                        </div>
-                                      );
-                                    case '0003':
-                                      return <div></div>;
-                                    case '0004':
-                                      return (
-                                        <div className="tw-gap-3">
-                                          <button
-                                            onClick={() => handleAdminAccept(content?.tenantUUID, content?.memberUUID)}
-                                            type="button"
-                                            data-tooltip-target="tooltip-default"
-                                            className="tw-py-2 tw-px-5 tw-mr-3 tw-bg-white tw-text-gray-400  border max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
-                                          >
-                                            승인
-                                          </button>
-                                          <button
-                                            onClick={() => handleAdminReject(content?.tenantUUID, content?.memberUUID)}
-                                            type="button"
-                                            data-tooltip-target="tooltip-default"
-                                            className="tw-py-2 tw-px-5 tw-bg-blue-600 tw-text-white max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
-                                          >
-                                            거절
-                                          </button>
-                                        </div>
-                                      );
-                                    default:
-                                      return <div>Unknown Status</div>;
-                                  }
-                                })()}
-                              </div>
-                            </TableCell>
-                            <TableCell align="center" component="th" scope="row">
-                              <div className="tw-font-medium tw-text-sm">
-                                <div className="tw-text-sm tw-font-medium tw-text-gray-400">
-                                  {content.updatedAt.split(' ')[0]}
+                        {contents.length > 0 ? (
+                          contents.map((content, index) => (
+                            <TableRow key={index}>
+                              <TableCell align="center" component="th" scope="row">
+                                <div className="tw-text-sm tw-text-gray-400">{content?.requestedAt.split(' ')[0]}</div>
+                                <div className="tw-text-sm tw-text-gray-400">{content?.requestedAt.split(' ')[1]}</div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row">
+                                <div className="tw-font-bold tw-text-sm">
+                                  <span className="tw-text-sm tw-font-medium ">{content?.memberName}</span>
                                 </div>
-                                <div className="tw-text-sm tw-font-medium tw-text-gray-400">
-                                  {formatDate(content.updatedAt).split(' ')[1]}
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row" style={{ padding: '10px' }}>
+                                <div className="tw-font-medium tw-text-sm">{content?.jobGroupId?.name}</div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row" style={{ padding: '10px' }}>
+                                <div className="tw-font-medium tw-text-sm">{content?.jobId?.name}</div>
+                              </TableCell>
+                              <TableCell align="left" component="th" scope="row" style={{ padding: '0px' }}>
+                                <div className="tw-font-medium tw-text-sm">
+                                  {renderStatusImage(content?.requestStatus)}
                                 </div>
-                              </div>
+                              </TableCell>
+                              <TableCell align="center" component="th" scope="row" style={{ padding: '0px' }}>
+                                <div className="tw-text-sm">
+                                  {(() => {
+                                    switch (content.requestStatus) {
+                                      case '0001':
+                                        return (
+                                          <div className="tw-gap-3">
+                                            <button
+                                              onClick={() =>
+                                                handleAdminAccept(content?.tenantUUID, content?.memberUUID)
+                                              }
+                                              type="button"
+                                              data-tooltip-target="tooltip-default"
+                                              className="tw-py-2 tw-px-3 tw-mr-2 tw-bg-white tw-text-gray-400  border max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                            >
+                                              승인
+                                            </button>
+                                            <button
+                                              onClick={() =>
+                                                handleAdminReject(content?.tenantUUID, content?.memberUUID)
+                                              }
+                                              type="button"
+                                              data-tooltip-target="tooltip-default"
+                                              className="tw-py-2 tw-px-3 tw-bg-blue-600 tw-text-white max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                            >
+                                              거절
+                                            </button>
+                                          </div>
+                                        );
+                                      case '0002':
+                                        return (
+                                          // 승인된 admin 권한 관리 제거
+                                          <div className="tw-gap-3">
+                                            <button
+                                              onClick={() =>
+                                                handleAdminReject(content?.tenantUUID, content?.memberUUID)
+                                              }
+                                              type="button"
+                                              data-tooltip-target="tooltip-default"
+                                              className="tw-py-2 tw-px-3 tw-bg-blue-600 tw-text-white max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                            >
+                                              거절
+                                            </button>
+                                          </div>
+                                        );
+                                      case '0003':
+                                        return <div></div>;
+                                      case '0004':
+                                        return (
+                                          <div className="tw-gap-3">
+                                            <button
+                                              onClick={() =>
+                                                handleAdminAccept(content?.tenantUUID, content?.memberUUID)
+                                              }
+                                              type="button"
+                                              data-tooltip-target="tooltip-default"
+                                              className="tw-py-2 tw-px-5 tw-mr-3 tw-bg-white tw-text-gray-400  border max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                            >
+                                              승인
+                                            </button>
+                                            <button
+                                              onClick={() =>
+                                                handleAdminReject(content?.tenantUUID, content?.memberUUID)
+                                              }
+                                              type="button"
+                                              data-tooltip-target="tooltip-default"
+                                              className="tw-py-2 tw-px-5 tw-bg-blue-600 tw-text-white max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                            >
+                                              거절
+                                            </button>
+                                          </div>
+                                        );
+                                      default:
+                                        return <div>Unknown Status</div>;
+                                    }
+                                  })()}
+                                </div>
+                              </TableCell>
+                              <TableCell align="center" component="th" scope="row">
+                                <div className="tw-font-medium tw-text-sm">
+                                  <div className="tw-text-sm tw-font-medium tw-text-gray-400">
+                                    {content.updatedAt.split(' ')[0]}
+                                  </div>
+                                  <div className="tw-text-sm tw-font-medium tw-text-gray-400">
+                                    {formatDate(content.updatedAt).split(' ')[1]}
+                                  </div>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        ) : (
+                          <TableRow>
+                            <TableCell align="center" colSpan={7}>
+                              <div className="tw-text-sm tw-text-gray-500">데이터가 없습니다</div>
                             </TableCell>
                           </TableRow>
-                        ))}
+                        )}
                       </TableBody>
                     </Table>
                   </TableContainer>

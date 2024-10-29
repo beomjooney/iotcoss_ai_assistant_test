@@ -51,6 +51,11 @@ export const instructorBan = async params => {
   return data;
 };
 
+export const quizOpen = async params => {
+  const { data } = await axiosGeneralAPI().put(`/api/v1/clubs/${params.club}/quizzes/${params.quizSequence}/publish`);
+  return data;
+};
+
 export const deleteQuiz = async params => {
   const { data } = await axiosGeneralAPI().delete(`/api/manager/v1/contents/${params.quizSequence}`);
   return data;
