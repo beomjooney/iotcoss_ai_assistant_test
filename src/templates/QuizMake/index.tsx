@@ -1644,7 +1644,7 @@ export function QuizMakeTemplate() {
           </div>
           {isContentModalClick && (
             <div className="tw-w-[390px] tw-p-5 tw-pr-0 tw-ml-5">
-              <div className="tw-text-lg tw-font-bold tw-mb-5 tw-text-black">템플릿 불러오기</div>
+              <div className="tw-text-lg tw-font-bold tw-mb-5 tw-text-black">지식콘텐츠 불러오기</div>
               <div className="tw-mb-3">
                 <TextField
                   size="small"
