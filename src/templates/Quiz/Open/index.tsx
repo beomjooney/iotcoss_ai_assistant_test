@@ -133,10 +133,19 @@ export function QuizOpenTemplate() {
   // const { data: myQuizListData, refetch: refetchMyJob }: UseQueryResult<any> = useMyQuiz(myParams);
 
   //get schedule
-  const { refetch: refetchGetSchedule }: UseQueryResult<any> = useGetSchedule(dayParams, data => {
-    console.log('schedule data', data);
-    setScheduleData(data);
-  });
+  const { refetch: refetchGetSchedule, isSuccess: isScheduleSuccess }: UseQueryResult<any> = useGetSchedule(
+    dayParams,
+    data => {
+      console.log('schedule data', data);
+      setScheduleData(data);
+    },
+  );
+
+  useEffect(() => {
+    if (isScheduleSuccess) {
+      alert('퀴즈 생성(오픈) 주기 설정이 완료되었습니다.');
+    }
+  }, [isScheduleSuccess]);
 
   //temp 조회
   const { refetch: refetchGetTemp }: UseQueryResult<any> = useGetTemp(data => {
@@ -1138,6 +1147,7 @@ export function QuizOpenTemplate() {
     }
     setScheduleData(weeks);
     setButtonFlag(true);
+    alert('학습자 자동 오픈 주기 설정이 완료되었습니다.');
   };
 
   const handlerClubMakeProfessorManual = () => {
@@ -1153,6 +1163,7 @@ export function QuizOpenTemplate() {
     }
     setScheduleData(weeks);
     setButtonFlag(true);
+    alert('퀴즈 생성(수동) 주기 설정이 완료되었습니다.');
   };
 
   const useStyles = makeStyles(theme => ({
