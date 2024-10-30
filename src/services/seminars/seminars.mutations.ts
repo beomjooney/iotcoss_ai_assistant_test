@@ -9,6 +9,7 @@ import {
   participantSeminar,
   saveSeminar,
   saveAnswer,
+  deleteQuestion,
   updateSeminar,
 } from './seminars.api';
 
@@ -37,6 +38,20 @@ export const useSaveAnswer = (): UseMutationResult => {
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('SEMINAR').all),
     onSuccess: async data => {},
+  });
+};
+
+export const useDeleteQuestion = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => deleteQuestion(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('QUIZ_ABOUT').all),
+    onSuccess: async data => {
+      alert('질문내역이 삭제되었습니다.');
+    },
   });
 };
 

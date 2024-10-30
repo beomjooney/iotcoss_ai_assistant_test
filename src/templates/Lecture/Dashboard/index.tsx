@@ -12,7 +12,7 @@ import {
   useMyDashboardQA,
   useMyDashboardStudentQA,
 } from 'src/services/seminars/seminars.queries';
-import { useSaveAnswer } from 'src/services/seminars/seminars.mutations';
+import { useSaveAnswer, useDeleteQuestion } from 'src/services/seminars/seminars.mutations';
 import Grid from '@mui/material/Grid';
 import Paginations from 'src/stories/components/Pagination';
 
@@ -29,7 +29,6 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
-// import TableRow, { tableRowClasses } from '@material-ui/core/TableRow';
 import TableRow, { tableRowClasses } from '@mui/material/TableRow';
 import Modal from 'src/stories/components/Modal';
 import TextField from '@mui/material/TextField';
@@ -108,19 +107,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-// const useStyles = makeStyles({
-//   table: {
-//     minWidth: 650,
-//   },
-//   sticky: {
-//     position: 'sticky',
-//     left: 0,
-//     background: 'white',
-//     boxShadow: '5px 2px 5px grey',
-//     borderRight: '2px solid black',
-//   },
-// });
-
 const cx = classNames.bind(styles);
 
 export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) {
@@ -168,12 +154,21 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
 
   const [answer, setAnswer] = useState('');
   const { mutate: onSaveAnswer, isSuccess, isError } = useSaveAnswer();
+  const { mutate: onDeleteQuestion, isSuccess: isDeleteSuccess } = useDeleteQuestion();
+
   useDidMountEffect(() => {
     if (isSuccess) {
       setAnswer('');
       refetchMyDashboardQA();
     }
   }, [isSuccess]);
+
+  useDidMountEffect(() => {
+    if (isDeleteSuccess) {
+      refetchMyDashboardStudentQA();
+      refetchMyDashboardStudent();
+    }
+  }, [isDeleteSuccess]);
 
   const [myClubSequenceParams, setMyClubSequenceParams] = useState<any>({ clubSequence: id });
   const [params, setParams] = useState<paramProps>({ page });
@@ -361,6 +356,17 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     setSelectedValue(value);
     setSelectedClub(selectedSession);
     console.log(selectedSession);
+  };
+
+  const handleDeleteQuestion = () => {
+    let params = {
+      questionMemberUUID: memberUUID,
+      clubSequence: selectedClub?.clubSequence || id,
+    };
+    // console.log('handleDeleteQuestion', params);
+    if (confirm('전체질문을 삭제하시겠습니까?')) {
+      onDeleteQuestion(params);
+    }
   };
 
   const handleTabClick = tab => {
@@ -1639,7 +1645,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                 <p className="tw-text-center tw-text-base tw-font-bold tw-text-[#31343d]">데이터가 없습니다.</p>
               </div>
             )}
-            <div className="tw-flex tw-justify-center tw-items-center tw-mt-5">
+            <div className="tw-flex tw-justify-center tw-items-center tw-my-5">
               <Pagination
                 count={totalQuestionPage}
                 size="small"
@@ -1661,11 +1667,16 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
         }}
         title="학생별 상세보기"
         maxWidth="1100px"
-        maxHeight="800px"
+        maxHeight="820px"
       >
-        <div className={cx('seminar-check-popup', 'tw-h-[620px] tw-overflow-auto')}>
+        <div className={cx('seminar-check-popup', 'tw-h-[650px] tw-overflow-auto')}>
           <div className="tw-flex tw-justify-end tw-items-center tw-gap-3">
-            <button className="tw-text-sm tw-font-bold tw-text-white tw-bg-black tw-rounded tw-py-3 tw-px-4 tw-mb-3">
+            <button
+              onClick={() => {
+                handleDeleteQuestion();
+              }}
+              className="tw-text-sm tw-font-bold tw-text-white tw-bg-black tw-rounded tw-py-2 tw-px-4 tw-mb-3"
+            >
               질문내역삭제
             </button>
           </div>
@@ -1766,7 +1777,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
             )}
           </TableContainer>
         </div>
-        <div className="tw-flex tw-justify-center tw-items-center tw-mt-5">
+        <div className="tw-flex tw-justify-center tw-items-center tw-my-5">
           <Pagination
             count={totalStudentQuestionPage}
             size="small"

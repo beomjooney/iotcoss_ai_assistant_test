@@ -253,6 +253,12 @@ export const saveAnswer = async (params: any) =>
     },
   );
 
+// 강의클럽 질문 삭제
+export const deleteQuestion = async (params: any) =>
+  await axiosGeneralAPI().delete(`/api/v1/delete-club-question/member-club`, {
+    params,
+  });
+
 // 세미나 생성
 export const saveSeminar = async (params: any) => await axiosGeneralAPI().post('/seminars', params);
 

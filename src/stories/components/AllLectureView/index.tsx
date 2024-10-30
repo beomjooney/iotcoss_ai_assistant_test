@@ -637,7 +637,7 @@ const AllLectureView = ({ border, id }) => {
                 <p className="tw-text-center tw-text-base tw-font-bold tw-text-[#31343d]">데이터가 없습니다.</p>
               </div>
             )}
-            <div className="tw-flex tw-justify-center tw-items-center tw-mt-10">
+            <div className="tw-flex tw-justify-center tw-items-center tw-my-5">
               <Pagination
                 count={totalQuestionPage}
                 size="small"
