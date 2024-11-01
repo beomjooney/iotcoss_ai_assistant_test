@@ -35,6 +35,15 @@ export function ForgotTemplate({ title = '', onSubmitLogin }: ForgotTemplateProp
     setClientTenantName(tenantName);
   }, []);
 
+  useEffect(() => {
+    if (loginData) {
+      console.log('loginData', loginData);
+      if (loginData.responseCode === '0000') {
+        setStep('2');
+      }
+    }
+  }, [loginData]);
+
   const validationSchema = Yup.object().shape({
     username: Yup.string().required('Email is required').email('Email is invalid'),
   });
@@ -58,7 +67,7 @@ export function ForgotTemplate({ title = '', onSubmitLogin }: ForgotTemplateProp
       //   tenant_uri: getFirstSubdomain(),
       // }),
     });
-    setStep('2');
+    // setStep('2');
   };
 
   const onError = (e: any) => {
@@ -67,7 +76,7 @@ export function ForgotTemplate({ title = '', onSubmitLogin }: ForgotTemplateProp
 
   return (
     <div className={cx('login-container', 'tw-h-[73vh]')}>
-      <div className={cx('logo-area')}>
+      <div className={cx('logo-area, tw-px-14')}>
         {/* <img src="/assets/images/cm_CI_co_1000x225.png" alt="footer logo" width={162} className="img-fluid mb-3" /> */}
         {step === '1' && (
           <>
