@@ -122,6 +122,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
   const [sortType, setSortType] = useState('0001');
   const [professorRequestSortType, setProfessorRequestSortType] = useState('0001');
   const [sortQuizType, setSortQuizType] = useState('ASC');
+  const [forbiddenKeywords, setForbiddenKeywords] = useState([]);
 
   const [myClubSubTitleParams, setMyClubSubTitleParams] = useState<any>({
     clubSequence: id,
@@ -254,6 +255,8 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
     setStartDay(clubForm.startAt ? dayjs(clubForm.startAt) : dayjs());
     setEndDay(clubForm.endAt ? dayjs(clubForm.endAt) : dayjs());
     setIsPublic(clubForm.isPublic ? '0001' : '0002');
+
+    setForbiddenKeywords(clubForm.forbiddenWords || []);
 
     //ai조교 config
     console.log('clubForm.isQuestionsPublic', clubForm.isQuestionsPublic);
@@ -454,6 +457,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
   const [personName, setPersonName] = useState([]);
   const [studySubject, setStudySubject] = useState('');
   const [studyKeywords, setStudyKeywords] = useState([]);
+
   const [introductionText, setIntroductionText] = useState('');
   const [selectedImage, setSelectedImage] = useState('');
   const [selectedImageCheck, setSelectedImageCheck] = useState(null);
@@ -804,6 +808,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
       useCurrentProfileImage: 'false',
       isQuestionsPublic: isQuestionsPublic,
       enableAiQuestion: enableAiQuestion,
+      forbiddenWords: forbiddenKeywords || [],
     };
 
     console.log(clubFormParams);
@@ -826,6 +831,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
     formData.append('clubForm.useCurrentProfileImage', clubFormParams.useCurrentProfileImage);
 
     formData.append('clubForm.isQuestionsPublic', clubFormParams.isQuestionsPublic);
+    formData.append('clubForm.forbiddenWords', clubFormParams.forbiddenWords.toString());
     formData.append('clubForm.enableAiQuestion', clubFormParams.enableAiQuestion);
 
     if (selectedImage) {
@@ -2482,14 +2488,15 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
         )}
 
         {activeTab === 'ai' && (
-          <div className="tw-h-[50vh]">
+          <div className="tw-h-[60vh]">
             <div className="tw-flex tw-justify-between tw-items-center tw-relative tw-gap-3">
               <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">AI조교 설정</div>
+              <div>{isProcessing && <>강의수정시 약 2분이 소요될 예정입니다. 잠시만 기다려 주세요 😊</>}</div>
               <button
                 className="tw-w-[150px] border tw-text-gray-500 tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-text-sm tw-rounded"
                 onClick={() => handleSave()}
               >
-                수정하기
+                {isProcessing ? <CircularProgress color="info" size={18} /> : '수정하기'}
               </button>
             </div>
 
@@ -2651,6 +2658,15 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                   </select>
                 </div>
               </div>
+            </div>
+
+            <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-7 tw-my-2">질문 제한 키워드</div>
+            <div className=" tw-w-full  tw-mt-1">
+              <Tag
+                value={forbiddenKeywords}
+                onChange={setForbiddenKeywords}
+                placeHolder="질문 제한 키워드 입력 해주세요."
+              />
             </div>
           </div>
         )}

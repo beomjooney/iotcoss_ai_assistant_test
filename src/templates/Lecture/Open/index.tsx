@@ -127,6 +127,7 @@ export function LectureOpenTemplate() {
   const [isQuestionsPublic, setIsQuestionsPublic] = useState('false');
   const [enableAiQuestion, setEnableAiQuestion] = useState('true');
   const [studyKeywords, setStudyKeywords] = useState([]);
+  const [forbiddenKeywords, setForbiddenKeywords] = useState([]);
   const [studyChapter, setStudyChapter] = useState('');
   const [studySubject, setStudySubject] = useState('');
   const [skills, setSkills] = useState([]);
@@ -281,6 +282,7 @@ export function LectureOpenTemplate() {
 
     setParamss(clubForm);
 
+    setForbiddenKeywords(clubForm.forbiddenWords || []);
     setClubName(clubForm.clubName || '');
     setStartDay(clubForm.startAt ? dayjs(clubForm.startAt) : dayjs());
     setEndDay(clubForm.endAt ? dayjs(clubForm.endAt) : dayjs());
@@ -1082,6 +1084,7 @@ export function LectureOpenTemplate() {
       isQuestionsPublic: isQuestionsPublic,
       enableAiQuestion: enableAiQuestion,
       instructorProfileImageUrl: previewProfile,
+      forbiddenWords: forbiddenKeywords,
     };
 
     console.log(clubFormParams);
@@ -1103,6 +1106,7 @@ export function LectureOpenTemplate() {
     formData.append('clubForm.contentLanguage', clubFormParams.contentLanguage);
     formData.append('clubForm.aiConversationLanguage', clubFormParams.aiConversationLanguage);
     formData.append('clubForm.description', clubFormParams.description);
+    formData.append('clubForm.forbiddenWords', clubFormParams.forbiddenWords);
     formData.append('clubForm.useCurrentProfileImage', clubFormParams.useCurrentProfileImage);
 
     if (selectedImage) {
@@ -1718,8 +1722,8 @@ export function LectureOpenTemplate() {
                     </div>
                   </div>
 
-                  <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">언어 설정</div>
-                  <div className="tw-grid tw-grid-cols-3 tw-gap-8 tw-py-5">
+                  <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-7 tw-my-2">언어 설정</div>
+                  <div className="tw-grid tw-grid-cols-3 tw-gap-8 tw-py-3">
                     <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
                       <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">강의언어</p>
                       <div className="tw-flex-grow tw-flex-shrink tw-relative tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
@@ -1764,6 +1768,15 @@ export function LectureOpenTemplate() {
                       </div>
                     </div>
                   </div>
+                  <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-7 tw-my-2">질문 제한 키워드</div>
+                  <div className=" tw-w-full  tw-mt-1">
+                    <Tag
+                      value={forbiddenKeywords}
+                      onChange={setForbiddenKeywords}
+                      placeHolder="질문 제한 키워드 입력 해주세요."
+                    />
+                  </div>
+
                   <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">강의 상세정보 입력</div>
                   <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">
                     간략한 강의 소개 내용을 입력해주세요.
