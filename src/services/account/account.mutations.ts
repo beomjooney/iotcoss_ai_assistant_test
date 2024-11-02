@@ -166,7 +166,7 @@ export const useEmainSend = (): UseMutationResult => {
 
       const { responseCode, message } = data;
       if (responseCode === '0000') {
-        setCookie('access_token', data?.access_token);
+        // setCookie('access_token', data?.access_token);
       } else if (responseCode === '0400') {
         alert('회원을 찾을 수 없습니다.');
       } else {

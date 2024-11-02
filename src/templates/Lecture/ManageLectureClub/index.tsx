@@ -39,7 +39,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 //comment
-import { useQuizMyClubInfo } from 'src/services/quiz/quiz.queries';
+import { useQuizMyClubInfo, useQuizFileDownload } from 'src/services/quiz/quiz.queries';
 import QuizBreakerInfo from 'src/stories/components/QuizBreakerInfo';
 import { useSaveQuiz } from 'src/services/admin/members/members.mutations';
 import router from 'next/router';
@@ -489,6 +489,25 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
       setIsProcessing(false);
     }
   }, [isError]);
+
+  const { isFetched: isParticipantListFetcheds, isSuccess: isParticipantListSuccess } = useQuizFileDownload(
+    key,
+    data => {
+      console.log('file download', data, fileName);
+      if (data) {
+        // blob 데이터를 파일로 저장하는 로직
+        const url = window.URL.createObjectURL(new Blob([data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', fileName); // 다운로드할 파일 이름과 확장자를 설정합니다.
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setKey('');
+        setFileName('');
+      }
+    },
+  );
 
   const getJobLevelNames = (jobLevelCodes, jobLevels) => {
     return jobLevelCodes?.map(code => {
@@ -1210,6 +1229,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
         scheduleUrlAdd={scheduleUrlAdd}
         scheduleFileAdd={scheduleFileAdd}
         handleRemoveFile={handleRemoveFile}
+        onFileDownload={onFileDownload}
         // avatarSrc={item.leaderProfileImageUrl}
         item={item}
         urlList={item.urls}

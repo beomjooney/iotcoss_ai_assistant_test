@@ -12,6 +12,7 @@ import { useSessionStore } from '../../../store/session';
 import { getFirstSubdomain } from 'src/utils';
 import { getButtonClass } from 'src/utils/clubStatus';
 import Divider from '@mui/material/Divider';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const cx = classNames.bind(styles);
 
@@ -26,6 +27,7 @@ export function ForgotTemplate({ title = '', onSubmitLogin }: ForgotTemplateProp
   const router = useRouter();
   const [username, setUserName] = useState('');
   const [step, setStep] = useState('1');
+  const [isProcessing, setIsProcessing] = useState(false);
 
   console.log('login join page', getFirstSubdomain(), tenantName);
 
@@ -40,7 +42,9 @@ export function ForgotTemplate({ title = '', onSubmitLogin }: ForgotTemplateProp
       console.log('loginData', loginData);
       if (loginData.responseCode === '0000') {
         setStep('2');
+      } else {
       }
+      setIsProcessing(false);
     }
   }, [loginData]);
 
@@ -58,6 +62,7 @@ export function ForgotTemplate({ title = '', onSubmitLogin }: ForgotTemplateProp
   });
 
   const onSubmit = data => {
+    setIsProcessing(true);
     setUserName(data.username);
     onEmainSend({
       email: data.username,
@@ -76,7 +81,7 @@ export function ForgotTemplate({ title = '', onSubmitLogin }: ForgotTemplateProp
 
   return (
     <div className={cx('login-container', 'tw-h-[73vh]')}>
-      <div className={cx('logo-area, tw-px-14')}>
+      <div className={cx('logo-area, tw-px-10')}>
         {/* <img src="/assets/images/cm_CI_co_1000x225.png" alt="footer logo" width={162} className="img-fluid mb-3" /> */}
         {step === '1' && (
           <>
@@ -113,12 +118,13 @@ export function ForgotTemplate({ title = '', onSubmitLogin }: ForgotTemplateProp
               />
               <div style={{ marginBottom: '20px', marginTop: '20px', textAlign: 'center' }}>
                 <button
+                  disabled={isProcessing}
                   className={`${getButtonClass(
                     clientTenantName,
                   )} tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-text-white`}
                   onClick={() => handleSubmit(onSubmit)}
                 >
-                  비밀번호 찾기
+                  {isProcessing ? <CircularProgress color="inherit" size={18} /> : '비밀번호 찾기'}
                 </button>
               </div>
             </form>
