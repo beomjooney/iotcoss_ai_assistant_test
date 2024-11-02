@@ -44,6 +44,7 @@ import { styled } from '@mui/material/styles';
 import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
 import Markdown from 'react-markdown';
 import router from 'next/router';
+import { useSessionStore } from '../../../store/session';
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   [`&.${tableRowClasses.root}`]: {
@@ -110,6 +111,7 @@ const useStyles = makeStyles(theme => ({
 const cx = classNames.bind(styles);
 
 export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) {
+  const { roles } = useSessionStore.getState();
   const [page, setPage] = useState(1);
   const [pageStudent, setPageStudent] = useState(1);
   const [lecturePage, setLecturePage] = useState(1);
@@ -1670,16 +1672,18 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
         maxHeight="820px"
       >
         <div className={cx('seminar-check-popup', 'tw-h-[650px] tw-overflow-auto')}>
-          <div className="tw-flex tw-justify-end tw-items-center tw-gap-3">
-            <button
-              onClick={() => {
-                handleDeleteQuestion();
-              }}
-              className="tw-text-sm tw-font-bold tw-text-white tw-bg-black tw-rounded tw-py-2 tw-px-4 tw-mb-3"
-            >
-              질문내역삭제
-            </button>
-          </div>
+          {roles.includes('ROLE_MANAGER') && (
+            <div className="tw-flex tw-justify-end tw-items-center tw-gap-3">
+              <button
+                onClick={() => {
+                  handleDeleteQuestion();
+                }}
+                className="tw-text-sm tw-font-bold tw-text-white tw-bg-black tw-rounded tw-py-2 tw-px-4 tw-mb-3"
+              >
+                질문내역삭제
+              </button>
+            </div>
+          )}
           <TableContainer>
             <Table className="" aria-label="simple table" style={{ tableLayout: 'fixed' }}>
               <TableHead style={{ backgroundColor: '#F6F7FB' }}>
