@@ -1,11 +1,16 @@
 const nextConfig = {
   // compiler: {
-  //   removeConsole: false,
+  //   removeConsole: true,
   // },
-  // images: {
-  //   loader: 'imgix',
-  //   path: 'https://camen.co.kr:9000/career-mentors',
-  // },
+
+  compiler: {
+    removeConsole:
+      process.env.NODE_ENV === 'production'
+        ? {
+            exclude: ['error', 'warn', 'info'],
+          }
+        : false,
+  },
   typescript: {
     // !! WARN !!
     // Dangerously allow production builds to successfully complete even if
@@ -31,11 +36,5 @@ const nextConfig = {
     NEXT_PUBLIC_GA_ID: process.env.NEXT_PUBLIC_GA_ID,
   },
 };
-
-if (process.env.NEXT_PUBLIC_NODE_ENV === 'prod') {
-  nextConfig.compiler = {
-    removeConsole: true,
-  };
-}
 
 module.exports = nextConfig;
