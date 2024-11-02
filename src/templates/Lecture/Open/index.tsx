@@ -960,6 +960,7 @@ export function LectureOpenTemplate() {
   };
 
   const handlerClubTemp = async () => {
+    console.log('handlerClubTemp');
     await refetchGetTemp();
   };
   const handlerQuizInit = async () => {

@@ -1,7 +1,7 @@
 const nextConfig = {
-  compiler: {
-    removeConsole: false,
-  },
+  // compiler: {
+  //   removeConsole: false,
+  // },
   // images: {
   //   loader: 'imgix',
   //   path: 'https://camen.co.kr:9000/career-mentors',
@@ -31,5 +31,11 @@ const nextConfig = {
     NEXT_PUBLIC_GA_ID: process.env.NEXT_PUBLIC_GA_ID,
   },
 };
+
+if (process.env.NEXT_PUBLIC_NODE_ENV === 'prod') {
+  nextConfig.compiler = {
+    removeConsole: true,
+  };
+}
 
 module.exports = nextConfig;

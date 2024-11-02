@@ -78,6 +78,7 @@ import LectureBreakerInfo from 'src/stories/components/LectureBreakerInfo';
 import { useLectureModify } from 'src/services/quiz/quiz.mutations';
 import { v4 as uuidv4 } from 'uuid';
 import validator from 'validator';
+import isBetween from 'dayjs/plugin/isBetween';
 
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
@@ -868,6 +869,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
     console.log('scheduleData', scheduleData);
 
     let shouldStop = false;
+    const previousSchedules = [];
 
     for (let i = 0; i < scheduleData.length; i++) {
       const item = scheduleData[i];
@@ -916,27 +918,40 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
         setIsProcessing(false);
         return; // 함수 전체를 종료
       }
-
-      // studyDate가 순차적인지 확인하는 로직 추가
-      // if (i > 0) {
-      //   const prevItem = scheduleData[i - 1];
-      //   if (dayjs(item.studyDate).isBefore(dayjs(prevItem.studyDate))) {
-      //     alert(`${i + 1}번째 강의 시작일이 이전 강의 시작일보다 이전입니다. 날짜를 확인해주세요.`);
-      //     shouldStop = true;
-      //     return; // 함수 전체를 종료
-      //   }
-      // }
-
       // 현재 날짜 값에 하루를 더하기
-      const nextDay3 = dayjs(item.startDate).format('YYYY-MM-DD');
-      const nextDay4 = dayjs(item.endDate).format('YYYY-MM-DD');
+      // const nextDay3 = dayjs(item.startDate).format('YYYY-MM-DD');
+      // const nextDay4 = dayjs(item.endDate).format('YYYY-MM-DD');
+
+      const nextDay3 = dayjs(item.startDate);
+      const nextDay4 = dayjs(item.endDate);
 
       // 시작일이 종료일보다 크거나 같을 경우 오류 처리
       if (!dayjs(nextDay4).isAfter(dayjs(nextDay3))) {
-        alert(`${i + 1}번째 강의 : 종료일 (${nextDay4})은(는) 시작일 (${nextDay3})보다 뒤에 있어야 합니다.`);
+        alert(`${i + 1}번째 강의 : 종료일은 시작일보다 뒤에 있어야 합니다.`);
         setIsProcessing(false);
         return; // 혹은 필요에 따라 validation 실패시 코드 실행 중단
       }
+
+      // 중복된 날짜 검사
+      for (let prev of previousSchedules) {
+        if (
+          nextDay3.isBetween(prev.startDate, prev.endDate, null, '[]') ||
+          nextDay4.isBetween(prev.startDate, prev.endDate, null, '[]') ||
+          prev.startDate.isBetween(nextDay3, nextDay4, null, '[]') ||
+          prev.endDate.isBetween(nextDay3, nextDay4, null, '[]')
+        ) {
+          alert(
+            `${i + 1}번째 강의의 시작일(${nextDay3.format('YYYY-MM-DD')})과 종료일(${nextDay4.format(
+              'YYYY-MM-DD',
+            )})이 이전 강의날짜와 겹칩니다.`,
+          );
+          setIsProcessing(false);
+          return;
+        }
+      }
+
+      // 이전 강의 리스트에 현재 강의 추가
+      previousSchedules.push({ startDate: nextDay3, endDate: nextDay4 });
 
       // 임시저장 로직에 false 추가, isNew 속성이 없으면 true로 설정
       if (item.isNew === undefined) {
@@ -2997,6 +3012,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
       </div>
 
       <MentorsModal
+        zIndex={200}
         title="교수자 추가하기"
         isOpen={isModalOpen}
         onAfterClose={() => {
