@@ -114,6 +114,7 @@ CommunityCardProps) => {
 
   useDidMountEffect(() => {
     if (replyReplySucces) refetch();
+    refetchReply();
   }, [replyReplySucces]);
 
   useDidMountEffect(() => {
@@ -499,6 +500,7 @@ CommunityCardProps) => {
                                 key={i}
                                 reply={reply}
                                 refetch={refetch}
+                                refetchReply={refetchReply}
                                 discountReply={discountReply}
                               />
                             );

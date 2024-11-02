@@ -21,6 +21,7 @@ export interface CommunityCardReplyProps {
   /** className */
   className?: string;
   refetch: (...args: any[]) => any;
+  refetchReply: (...args: any[]) => any;
   discountReply: () => void;
 }
 
@@ -49,7 +50,7 @@ function timeForToday(value) {
   return `${Math.floor(betweenTimeDay / 365)}년전`;
 }
 
-const CommunityCardReply = ({ reply, className, refetch, discountReply }: CommunityCardReplyProps) => {
+const CommunityCardReply = ({ reply, className, refetch, refetchReply, discountReply }: CommunityCardReplyProps) => {
   const textInput = useRef(null);
 
   const { memberId } = useSessionStore();
@@ -109,6 +110,7 @@ const CommunityCardReply = ({ reply, className, refetch, discountReply }: Commun
     if (deleteReplySucces) {
       refetch();
       discountReply();
+      refetchReply();
     }
     if (modifyReplySucces) refetch();
   }, [replyReplySucces, deleteReplySucces, modifyReplySucces]);
