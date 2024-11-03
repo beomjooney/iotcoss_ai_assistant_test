@@ -37,6 +37,9 @@ const ChatbotModal = ({ isOpen, onRequestClose, token }) => {
       overlayClassName="tw-fixed tw-inset-0"
       contentLabel="Chatbot Modal"
       shouldCloseOnOverlayClick={false} // 모달 외부 클릭시 닫히지 않도록 설정
+      style={{
+        overlay: { zIndex: 2147483647 },
+      }}
     >
       <div className=" tw-h-[700px] tw-bg-white tw-rounded-lg tw-overflow-hidden tw-shadow-xl tw-transform tw-transition-all sm:tw-w-full sm:tw-max-w-lg md:tw-max-w-2xl lg:tw-max-w-3xl xl:tw-max-w-4xl">
         <div className="tw-border-b">
