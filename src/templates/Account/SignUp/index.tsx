@@ -981,9 +981,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
             <div className="tw-mt-7 tw-flex tw-justify-center tw-gap-4">
               <button
                 className="tw-px-5 border tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-text-black"
-                onClick={() => {
-                  router.push('/account/login');
-                }}
+                onClick={() => (location.href = '/account/login')}
               >
                 로그인
               </button>
