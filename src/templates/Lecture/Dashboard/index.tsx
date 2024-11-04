@@ -945,7 +945,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
               </div>
             </>
 
-            <div className=" tw-h-12 border-left tw-relative tw-flex tw-items-center tw-mt-14 border-bottom">
+            <div className="tw-h-12 border-left tw-relative tw-flex tw-items-center tw-mt-14 border-bottom">
               {/* Tab 1: My Quiz */}
               <div
                 className={`tw-w-[164px] tw-h-12 tw-relative tw-cursor-pointer ${
@@ -987,6 +987,32 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                   강의별 보기
                 </p>
               </div>
+              {/* Tab 3: Playground */}
+              {roles.includes('ROLE_INSTRUCTOR') && (
+                <div
+                  className={`tw-w-[164px] tw-h-12 tw-relative tw-ml-auto tw-cursor-pointer`}
+                  style={{ marginRight: '-20px' }}
+                  onClick={() => router.push(`/lecture-playground/${id}`)}
+                >
+                  <div className="tw-text-white tw-text-sm tw-rounded-lg tw-bg-black tw-w-[144px] tw-h-10 tw-absolute tw-left-[-1px] tw-top-[-1px] tw-flex tw-justify-center tw-items-center">
+                    <svg
+                      width={19}
+                      height={19}
+                      viewBox="0 0 19 19"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[18px] tw-h-[18px] tw-relative tw-mr-1"
+                      preserveAspectRatio="none"
+                    >
+                      <path
+                        d="M5.75 16.249H4.25V14.749H2V13.249H4.25V11.749H5.75V16.249ZM17 14.749H7.25V13.249H17V14.749ZM13.25 11.749H11.75V10.249H2V8.74902H11.75V7.25802H13.25V11.749ZM17 10.249H14.75V8.74902H17V10.249ZM8.75 7.24902H7.25V5.74902H2V4.24902H7.25V2.74902H8.75V7.24902ZM17 5.74902H10.25V4.24902H17V5.74902Z"
+                        fill="white"
+                      />
+                    </svg>
+                    플레이그라운드
+                  </div>
+                </div>
+              )}
             </div>
 
             {activeTab === 'myQuiz' && (

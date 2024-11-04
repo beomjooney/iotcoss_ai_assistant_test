@@ -60,6 +60,7 @@ export * from './Quiz/Crew/index';
 export * from './Quiz/Manage/index';
 /** 강의 대시보드 */
 export * from './Lecture/Dashboard/index';
+export * from './Lecture/PlayGround/index';
 export * from './Lecture/ViewAllLecture/index';
 export * from './Lecture/LectureListViewAll/index';
 export * from './Lecture/Open/index';
