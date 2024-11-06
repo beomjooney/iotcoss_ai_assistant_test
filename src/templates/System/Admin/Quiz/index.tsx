@@ -192,7 +192,7 @@ export function AdminQuizTemplate() {
       if (aiQuizData?.generatedQuizzes && aiQuizData?.generatedQuizzes.length > 0) {
         const formattedQuizList = aiQuizData.generatedQuizzes.map((quiz: any) => ({
           question: quiz.question,
-          modelAnswerKeywords: [quiz.keyword],
+          modelAnswerKeywords: quiz.keywords,
         }));
         setQuizList(formattedQuizList);
         console.log(formattedQuizList);
