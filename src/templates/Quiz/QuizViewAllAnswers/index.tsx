@@ -106,8 +106,16 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
   const {
     mutate: onAIQuizAnswerEvaluation,
     isSuccess: answerSuccessEvaluation,
+    isError: answerErrorEvaluation,
     data: aiQuizAnswerDataEvaluation,
   } = useAIQuizAnswerEvaluation();
+
+  useEffect(() => {
+    if (answerErrorEvaluation) {
+      setIsLoadingAIAll(false);
+      isCompleteAIRef.current = true;
+    }
+  }, [answerErrorEvaluation]);
 
   useEffect(() => {
     if (answerSuccessSavePut) {
@@ -175,11 +183,19 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     isFetched: isQuizGetanswerGet,
     refetch: refetchQuizAnswerGet,
     isSuccess: isSuccessQuizGetAnswerGet,
+    isError: isErrorQuizGetAnswerGet,
   } = useQuizGetAIAnswerGet(quizParams, data => {
     console.log('three get data');
     console.log('data', data);
     setClubQuizGetThreads(data);
   });
+
+  useEffect(() => {
+    if (isErrorQuizGetAnswerGet) {
+      alert('AI피드백 초안생성에 실패하였습니다.');
+      setIsLoadingAI(false);
+    }
+  }, [isErrorQuizGetAnswerGet]);
 
   const {
     isFetched: isQuizGetanswerAll,

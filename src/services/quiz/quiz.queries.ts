@@ -287,6 +287,7 @@ export const useQuizGetAIAnswerGet = (params, onSuccess?: (data: any) => void, o
     onError,
     refetchOnWindowFocus: false,
     enabled: false,
+    retry: false,
   });
 };
 
