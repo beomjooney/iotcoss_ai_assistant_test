@@ -465,6 +465,11 @@ export function QuizMakeTemplate() {
       return;
     }
 
+    if (selected3.length === 0) {
+      alert('채점기준 주요 키워드/문구를 입력해주세요.');
+      return;
+    }
+
     // 중복 검사: 수정 중인 항목의 인덱스를 제외한 나머지 항목과 비교
     const isDuplicate = quizList.some((quiz, index) => quiz.question === question && index !== editingIndex);
 
@@ -1152,6 +1157,8 @@ export function QuizMakeTemplate() {
           setFileNameCopy([]);
           setQuizCount(1);
           setPage(1);
+          setKeyWorldKnowledge('');
+          setQuizSearch('');
         }}
       >
         <div className={`${isContentModalClick ? 'tw-flex' : ' '}`}>

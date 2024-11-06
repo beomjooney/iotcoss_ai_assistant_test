@@ -1490,7 +1490,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                 <div className="">
                   <button
                     type="button"
-                    onClick={() => router.push(`/manage-quiz-club/${id}`)}
+                    onClick={() => router.back()}
                     className="tw-h-14  tw-text-black tw-bg-[#CED4DE] border tw-font-medium tw-rounded-md tw-text-sm tw-px-6 tw-py-2 "
                   >
                     <SettingsIcon className="tw-bg-[#CED4DE] tw-text-white" />

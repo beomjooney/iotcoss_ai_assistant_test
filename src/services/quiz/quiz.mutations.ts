@@ -61,7 +61,12 @@ export const useQuizSave = (): UseMutationResult => {
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CAMENITY').all),
     onSuccess: async data => {
-      // alert('수정이 완료되었습니다.');
+      const { responseCode, message } = data.data;
+      if (responseCode === '0000') {
+        alert('퀴즈가 등록되었습니다.');
+      } else {
+        alert(`error : [${responseCode}] ${message}`);
+      }
     },
   });
 };

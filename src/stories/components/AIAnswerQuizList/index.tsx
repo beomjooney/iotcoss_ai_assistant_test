@@ -24,7 +24,7 @@ const AIAnswerQuizList = ({ info, refetchReply }) => {
   const [page, setPage] = useState(1);
   const [isLoadingAI, setIsLoadingAI] = useState(false);
   const [value, setValue] = useState('');
-  const [valueAI, setValueAI] = useState('');
+  const [valueAI, setValueAI] = useState(null);
   const [quizList, setQuizList] = useState({});
   const { mutate: onAIQuizAnswer, isError, isSuccess: answerSuccess, data: aiQuizAnswerData } = useAIQuizAnswerList();
   const {
@@ -55,7 +55,7 @@ const AIAnswerQuizList = ({ info, refetchReply }) => {
 
   useEffect(() => {
     if (info) {
-      setValueAI(info.gradingAi);
+      setValueAI(info.gradingAi || '');
       setValue(info.gradingFinal);
     }
   }, [info]);
@@ -139,7 +139,10 @@ const AIAnswerQuizList = ({ info, refetchReply }) => {
         저장
       </button>
       <button
-        className="tw-w-[110px] tw-bg-black max-lg:tw-mr-1  tw-rounded-md tw-text-sm tw-text-white tw-py-2.5  tw-ml-2"
+        className={`tw-w-[110px] tw-bg-black tw-rounded-md tw-text-sm tw-text-white tw-py-2.5 tw-ml-2
+              ${valueAI !== null && valueAI !== '' ? 'tw-bg-gray-400' : 'tw-bg-black'}
+              disabled:tw-bg-gray-400 max-lg:tw-mr-1`}
+        disabled={valueAI !== null && valueAI !== ''} // 초기값이거나 빈 값일 때 활성화
         onClick={() => {
           handleAIAnswerClick();
         }}

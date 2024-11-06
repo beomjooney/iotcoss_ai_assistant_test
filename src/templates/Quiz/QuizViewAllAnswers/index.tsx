@@ -697,7 +697,9 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                     <TableCell align="center" width={320}>
                       AI채점 / 교수채점
                     </TableCell>
-                    <TableCell align="center">상세보기</TableCell>
+                    <TableCell align="center" width={100}>
+                      상세보기
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>

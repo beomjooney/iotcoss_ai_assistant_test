@@ -23,13 +23,14 @@ export async function getCamenities(args: CamenityProps) {
   return { data: data || [], nextPage: params.page + 1, totalPage };
 }
 export const savePost = async body => await axiosGeneralAPI().post(`/api/v1/quizzes`, body);
-export const saveContent = async body =>
-  await axiosGeneralAPI().post(`/api/v1/content`, body, {
+export const saveContent = async body => {
+  const { data } = await axiosGeneralAPI().post(`/api/v1/content`, body, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
   });
-
+  return data.data;
+};
 export const saveAIQuizPost = async body => {
   const { data } = await axiosGeneralAPI().post(`/api/v1/ai-quizzes`, body, {
     headers: {

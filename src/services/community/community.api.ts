@@ -148,7 +148,8 @@ export const publishPostQuiz = async (params: any) => {
   await axiosGeneralAPI().put(`/api/v1/my/quizzes/${params.quizSequence}/open`);
 };
 export const quizModify = async (params: any) => {
-  await axiosGeneralAPI().put(`/api/v1/my/quizzes/${params.quizSequence}`, params.quizzes);
+  const { data } = await axiosGeneralAPI().put(`/api/v1/my/quizzes/${params.quizSequence}`, params.quizzes);
+  return { data: data || [] };
 };
 
 // 글쓰기 생성

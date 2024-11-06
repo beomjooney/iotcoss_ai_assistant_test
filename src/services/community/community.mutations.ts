@@ -405,7 +405,13 @@ export const useQuizModify = (): UseMutationResult => {
       alert(`mutation error : [${code}] ${message}`);
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('QUIZ').all),
-    onSuccess: async data => {},
+    onSuccess: async data => {
+      const { responseCode, message } = data.data;
+      if (responseCode === '0000') {
+      } else {
+        alert(`error : [${responseCode}] ${message}`);
+      }
+    },
   });
 };
 
