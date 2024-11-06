@@ -400,14 +400,14 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
           </div>
         </div>
 
-        <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-pt-5 tw-pb-10">
+        {/* <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-pt-5 tw-pb-10">
           <div className="tw-col-start-1 tw-col-end-1 tw-flex tw-justify-center">
             <img
               src="/assets/images/quiz/Message_perspective_matte.png"
               className="tw-max-w-[22.75px] tw-max-h-[23.19px] tw-object-cover"
             />
           </div>
-          {/* <div className="tw-col-start-2 tw-col-end-13">
+          <div className="tw-col-start-2 tw-col-end-13">
             <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-5">우리 클럽 대표퀴즈</p>
             {selectedQuizzes?.slice(0, 3).map((quiz, index) => (
               <div key={index} className="tw-mt-3.5 tw-flex tw-items-start tw-gap-5">
@@ -417,8 +417,8 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
                 <div className="flex-initial tw-w-full tw-text-base tw-text-black">{quiz.question || quiz.content}</div>
               </div>
             ))}
-          </div> */}
-        </div>
+          </div>
+        </div> */}
       </div>
       <Modal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)} title="" maxWidth="900px">
         <div className={cx('seminar-check-popup')}>
