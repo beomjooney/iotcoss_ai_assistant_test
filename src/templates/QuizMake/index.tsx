@@ -357,6 +357,8 @@ export function QuizMakeTemplate() {
       keyword: keyWorld,
       quizSortType: quizSortType,
     });
+    // 작은 지연 추가
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [page, keyWorld, quizSortType]);
 
   useEffect(() => {

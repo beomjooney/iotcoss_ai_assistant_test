@@ -518,8 +518,18 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
               {data.modelAnswer}
             </p>
           </div>
+          <div className="tw-flex tw-px-8 tw-pt-2">
+            <p className="tw-w-[110px] text-sm tw-font-bold tw-left-[52px] tw-top-[58px] tw-text-sm tw-pr-3 tw-text-left tw-text-[#31343d]">
+              모범답안 키워드
+            </p>
+            {data?.modelAnswerKeywords?.map((hashtag, hashtagIndex) => (
+              <div key={hashtagIndex} className=" tw-rounded-[3.5px] tw-px-[5px]">
+                <p className="tw-text-[12.25px] tw-text-[#313b49] tw-font-bold">#{hashtag}</p>
+              </div>
+            ))}
+          </div>
 
-          <div className="tw-flex  tw-justify-between tw-px-8 tw-py-5">
+          <div className="tw-flex  tw-justify-between tw-px-8 tw-pt-2">
             <div className="tw-flex tw-justify-start tw-items-start">
               <p className="tw-text-sm tw-text-left tw-text-[#31343d] tw-pr-3 tw-font-bold ">지식콘텐츠</p>
               {data?.content?.contentType === '0320' ? (
