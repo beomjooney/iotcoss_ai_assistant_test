@@ -336,15 +336,15 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
   const renderStatusMessage = status => {
     switch (status) {
       case '0101':
-        return '체점중';
+        return '채점중';
       case '0002':
-        return '체점완료';
+        return '채점완료';
       case '1101':
-        return '체점실패';
+        return '채점실패';
       case '9999':
-        return '체점실패';
+        return '채점실패';
       case '0001':
-        return '체점실패';
+        return '채점실패';
       default:
         return '';
     }
@@ -675,7 +675,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                   setIsLoadingAIAll(true);
                 }}
               >
-                {isLoadingAIAll ? <CircularProgress color="info" size={18} /> : '일괄 AI피드백/채점'}
+                {isLoadingAIAll ? <CircularProgress color="info" size={18} /> : '일괄 AI 채점/피드백'}
               </button>
             </div>
 
@@ -829,7 +829,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                           >
                             {item?.threadType === '0001' && '사전답변'}
                             {item?.threadType === '0002' && '사후답변'}
-                            {item?.threadType === '0003' && 'AI 모범답변'}
+                            {item?.threadType === '0003' && 'AI피드백'}
                             {item?.threadType === '0004' && '교수님 평가'}
                           </span>
                           <span className="tw-px-4">
@@ -937,7 +937,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                         }}
                         className="tw-w-[140px] tw-ml-3 tw-rounded tw-bg-black tw-text-white tw-text-sm tw-text-black tw-py-2 tw-px-4"
                       >
-                        {isLoadingAI ? <CircularProgress color="info" size={18} /> : 'AI피드백 불러오기'}
+                        {isLoadingAI ? <CircularProgress color="info" size={18} /> : 'AI피드백 초안생성'}
                       </button>
                     </div>
                     <div className="tw-ml-auto">점수 : </div>

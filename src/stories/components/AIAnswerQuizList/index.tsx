@@ -147,7 +147,7 @@ const AIAnswerQuizList = ({ info, refetchReply }) => {
           handleAIAnswerClick();
         }}
       >
-        {isLoadingAI ? <CircularProgress color="info" size={18} /> : '  AI피드백/채점'}
+        {isLoadingAI ? <CircularProgress color="info" size={18} /> : 'AI 채점/피드백'}
       </button>
     </div>
   );

@@ -1545,7 +1545,7 @@ export function QuizMakeTemplate() {
                         }}
                       />
                       <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">모범답안</div>
-                      <TextField
+                      {/* <TextField
                         required
                         id="username"
                         name="username"
@@ -1558,7 +1558,14 @@ export function QuizMakeTemplate() {
                         sx={{
                           '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
                         }}
-                      />
+                      /> */}
+                      <textarea
+                        value={modelAnswerFinal}
+                        className="tw-form-control tw-w-full tw-py-[8px] tw-p-3"
+                        id="floatingTextarea"
+                        rows={2} // 두 줄 높이로 설정
+                        onChange={handleModelAnswerChange}
+                      ></textarea>
                       <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">채점기준 주요 키워드/문구</div>
                       {/* <TagsInput
                         value={selected3}
@@ -1576,7 +1583,7 @@ export function QuizMakeTemplate() {
                           onClick={handleQuizClick}
                           className="tw-px-5 tw-py-3 tw-text-sm tw-bg-black tw-rounded tw-text-white"
                         >
-                          {isModify ? '수정하기' : '퀴즈 생성하기'}
+                          {isModify ? '수정하기' : '퀴즈입력'}
                         </button>
                       </div>
                     </>

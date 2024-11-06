@@ -189,7 +189,7 @@ const AIQuizList = ({
           </div>
         </div>
       </div>
-      <div className="tw-flex tw-justify-start tw-items-center tw-px-5 tw-pt-5">
+      <div className="tw-flex tw-justify-start tw-items-center tw-px-2 tw-pt-5">
         <div className="tw-flex-none tw-w-14 tw-items-center">
           <div className="tw-flex tw-flex-col tw-items-center">
             <svg
@@ -219,7 +219,7 @@ const AIQuizList = ({
         </div>
         <div className="tw-p-5 tw-flex-col tw-items-center tw-w-full">
           {quizList?.modelAnswer && quizList.modelAnswer.trim() !== '' ? (
-            <p className={`tw-p-5 tw-text-sm tw-font-medium tw-text-left ${isContentModalClick ? 'tw-w-full' : ''}`}>
+            <p className={`tw-py-5 tw-text-sm tw-font-medium tw-text-left ${isContentModalClick ? 'tw-w-full' : ''}`}>
               {quizList.modelAnswer}
             </p>
           ) : (
