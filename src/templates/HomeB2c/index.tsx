@@ -49,7 +49,7 @@ export function HomeB2cTemplate({ logged = false, tenantName = '' }: HomeB2cProp
               <p className="  tw-top-[124px] tw-text-4xl tw-font-bold tw-text-left tw-text-black">
                 <span className="tw-text-4xl tw-font-bold tw-text-left tw-text-black">전문가와 함께하는 학습,</span>
                 <br />
-                <span className="tw-text-4xl tw-font-bold tw-text-left tw-text-black">데브어스 AI조교</span>
+                <span className="tw-text-4xl tw-font-bold tw-text-left tw-text-black">데브어스 퀴즈업</span>
               </p>
 
               <p className=" tw-text-lg tw-text-left tw-text-black tw-py-10">
