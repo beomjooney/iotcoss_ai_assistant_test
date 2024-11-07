@@ -1,17 +1,13 @@
 import './index.module.scss';
-import { HomeSejongTemplate } from '../../src/templates/HomeSeJong';
+import { HomeB2bTemplate } from '../../src/templates/HomeB2b';
 import { useMemberInfo, useMyProfile } from '../../src/services/account/account.queries';
 import { useStore } from 'src/store';
 import { useEffect } from 'react';
 import { Session, useSessionStore } from '../../src/store/session';
 
 import { GetServerSideProps } from 'next';
-import { fetchGuestTenats, useGuestTenant } from '../../src/services/seminars/seminars.queries';
-import { dehydrate, useQuery } from 'react-query';
-import { setCookie } from 'cookies-next';
 
 export function IndexPage({ session, setActiveIndex }: { session: Session; setActiveIndex: (index: number) => void }) {
-  // redirection 처리
   const { update, logged, memberId } = useSessionStore.getState();
 
   useEffect(() => {
@@ -61,7 +57,7 @@ export function IndexPage({ session, setActiveIndex }: { session: Session; setAc
   // TODO 로그인 수정 변경
   return (
     <div className="tw-h-[2550px]">
-      <HomeSejongTemplate logged={logged} tenantName="sejong" />
+      <HomeB2bTemplate logged={logged} tenantName="ai" />
     </div>
   );
 }

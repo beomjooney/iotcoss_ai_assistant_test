@@ -289,10 +289,13 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
         <div className="container" style={{ alignItems: 'center' }}>
           {/* <div className={cx('header-link')}> */}
           <div onClick={handleGoHome} className={cx('header-link')}>
-            {getFirstSubdomain() === 'iotcoss' || getFirstSubdomain() === 'ai' ? (
+            {getFirstSubdomain() === 'iotcoss' ? (
               <div className="tw-flex tw-items-center tw-gap-2">
                 <img src="/assets/images/header/sejong_logo.png" width={250} alt="logo" className={cx('image-logo')} />
-                {/* <div className="tw-text-black tw-text-3xl tw-font-bold">AI조교</div> */}
+              </div>
+            ) : getFirstSubdomain() === 'ai' ? (
+              <div className="tw-flex tw-items-center tw-gap-2">
+                <img src="/assets/images/devus_2.png" width={92} alt="logo" className={cx('image-logo')} />
               </div>
             ) : (
               <img src="/assets/images/header/image_1.png" width={130} alt="logo" className={cx('image-logo')} />

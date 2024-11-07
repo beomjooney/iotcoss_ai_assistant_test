@@ -30,6 +30,67 @@ export function HomeB2bTemplate({ logged = false, tenantName = '' }: HomeB2bProp
   return (
     <div className={cx('career-main')}>
       <div
+        className="tw-w-full tw-h-[480px] tw-relative tw-overflow-hidden"
+        style={{
+          background:
+            'linear-gradient(to right, rgba(254,226,255,0.59) 0%, rgba(207,238,255,0.59) 64.58%, rgba(186,251,255,0.59) 100%)',
+        }}
+      >
+        <section
+          className={cx(
+            'top-banner tw-h-full',
+            'hero-section',
+            'hero-section-3',
+            'tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center',
+          )}
+        >
+          <div className="tw-flex tw-items-center tw-justify-between tw-relative">
+            <div>
+              <p className="  tw-top-[124px] tw-text-4xl tw-font-bold tw-text-left tw-text-black">
+                <span className="tw-text-4xl tw-font-bold tw-text-left tw-text-black">전문가와 함께하는 학습,</span>
+                <br />
+                <span className="tw-text-4xl tw-font-bold tw-text-left tw-text-black">데브어스 AI조교</span>
+              </p>
+
+              <p className=" tw-text-lg tw-text-left tw-text-black tw-py-10">
+                <span className="tw-text-lg tw-text-left tw-text-black">
+                  AI 기능으로 구축된 체계적이고 효율적인 학습관리 시스템!
+                </span>
+                <br />
+                <span className="tw-text-lg tw-text-left tw-text-black">
+                  이 시대 최고의 리더와 함께 학습할 수 있습니다!
+                </span>
+              </p>
+              <button
+                onClick={() => {
+                  console.log(modalIsProfessor);
+                  const role =
+                    roles?.includes('ROLE_ADMIN') || roles?.includes('ROLE_INSTRUCTOR') ? 'professor' : 'student';
+                  if (logged) {
+                    if (role === 'professor') {
+                      setModalIsProfessor(true);
+                    } else {
+                      alert('교수자만 접근할 수 있는 페이지입니다.');
+                    }
+                  } else {
+                    alert('로그인 후 이용해주세요.');
+                  }
+                }}
+                className="tw-flex tw-items-center tw-justify-center tw-w-60 tw-h-12 tw-overflow-hidden tw-rounded tw-bg-[#2474ed]"
+              >
+                <p className=" tw-text-base tw-font-bold tw-text-center tw-text-white">데브어스 AI조교 체험하기</p>
+              </button>
+            </div>
+          </div>
+          <div className="tw-flex tw-items-center tw-justify-center tw-mt-[45px]">
+            <img
+              src="/assets/images/main/ba02_2.png"
+              className="tw-w-[578px] tw-h-[437px]  tw-left-[924px] tw-top-[82px] tw-object-cover"
+            />
+          </div>
+        </section>
+      </div>
+      {/* <div
         className="tw-mt-4 tw-text-white tw-bg-[url('/assets/images/main/Union.webp')]  tw-bg-cover tw-bg-center tw-bg-no-repeat"
         style={{ height: '650px' }}
       >
@@ -151,7 +212,7 @@ export function HomeB2bTemplate({ logged = false, tenantName = '' }: HomeB2bProp
             </div>
           </div>
         </section>
-      </div>
+      </div> */}
       <section
         className={cx(
           'top-banner',
@@ -163,7 +224,7 @@ export function HomeB2bTemplate({ logged = false, tenantName = '' }: HomeB2bProp
         <div className="tw-w-full md:tw-w-[1120px] tw-h-[320px] md:tw-h-[450px] tw-relative tw-overflow-hidden tw-rounded-[20px]">
           <div className="tw-w-full md:tw-w-[1280px] tw-h-[391px] tw-absolute tw-left-0 md:tw-left-[-1px] tw-top-0 md:tw-top-[-30px] tw-bg-white/20" />
           <p className="tw-absolute tw-left-[24px] tw-top-[40px] md:tw-left-[57px] md:tw-top-[85px] tw-text-base tw-font-bold tw-text-left tw-text-black">
-            IoT Convergence Open Sharing System
+            DevUs AI Assistant
           </p>
           <div className="tw-mt-[130px] tw-ml-[54px] ">
             <p className="tw-text-[34px] tw-text-left tw-text-black">
