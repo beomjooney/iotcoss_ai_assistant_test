@@ -988,7 +988,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                 </p>
               </div>
               {/* Tab 3: Playground */}
-              {roles.includes('ROLE_INSTRUCTOR') && (
+              {/* {roles.includes('ROLE_INSTRUCTOR') && (
                 <div
                   className={`tw-w-[164px] tw-h-12 tw-relative tw-ml-auto tw-cursor-pointer`}
                   style={{ marginRight: '-20px' }}
@@ -1012,7 +1012,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                     플레이그라운드
                   </div>
                 </div>
-              )}
+              )} */}
             </div>
 
             {activeTab === 'myQuiz' && (
