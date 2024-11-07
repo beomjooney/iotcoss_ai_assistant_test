@@ -1,5 +1,5 @@
 import './index.module.scss';
-import { HomeTemplate } from '../../src/templates';
+import { HomeB2cTemplate } from '../../src/templates/HomeB2c';
 import { useMemberInfo, useMyProfile } from '../../src/services/account/account.queries';
 import { useStore } from 'src/store';
 import { useEffect } from 'react';
@@ -50,8 +50,8 @@ export function IndexPage({ session, setActiveIndex }: { session: Session; setAc
 
   // TODO 로그인 수정 변경
   return (
-    <div className="tw-h-[1400px]">
-      <HomeTemplate logged={logged} tenantName="dsu" />
+    <div className="tw-h-[2450px]">
+      <HomeB2cTemplate logged={logged} tenantName="quizup" />
     </div>
   );
 }

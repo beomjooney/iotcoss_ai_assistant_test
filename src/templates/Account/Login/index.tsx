@@ -74,7 +74,7 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
 
   const { data: termList2, isLoading: termListLoading2, refetch: refetch2 }: UseQueryResult<any> = useTermsList2();
 
-  console.log('login join page', getFirstSubdomain(), tenantName);
+  // console.log('login join page', getFirstSubdomain(), tenantName);
 
   const [clientTenantName, setClientTenantName] = useState(null);
   useEffect(() => {

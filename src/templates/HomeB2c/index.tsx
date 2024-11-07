@@ -10,12 +10,12 @@ import ProfessorExpModal from 'src/stories/components/ProfessorExp';
 import React from 'react';
 
 const cx = classNames.bind(styles);
-export interface HomeB2bProps {
+export interface HomeB2cProps {
   logged: boolean;
   tenantName: string;
 }
 
-export function HomeB2bTemplate({ logged = false, tenantName = '' }: HomeB2bProps) {
+export function HomeB2cTemplate({ logged = false, tenantName = '' }: HomeB2cProps) {
   const router = useRouter();
   const { token, roles, menu } = useSessionStore.getState();
 
@@ -78,7 +78,7 @@ export function HomeB2bTemplate({ logged = false, tenantName = '' }: HomeB2bProp
                 }}
                 className="tw-flex tw-items-center tw-justify-center tw-w-60 tw-h-12 tw-overflow-hidden tw-rounded tw-bg-[#2474ed]"
               >
-                <p className=" tw-text-base tw-font-bold tw-text-center tw-text-white">데브어스 AI조교 체험하기</p>
+                <p className=" tw-text-base tw-font-bold tw-text-center tw-text-white">데브어스 퀴즈업 체험하기</p>
               </button>
             </div>
           </div>
@@ -224,40 +224,27 @@ export function HomeB2bTemplate({ logged = false, tenantName = '' }: HomeB2bProp
         <div className="tw-w-full md:tw-w-[1120px] tw-h-[320px] md:tw-h-[450px] tw-relative tw-overflow-hidden tw-rounded-[20px]">
           <div className="tw-w-full md:tw-w-[1280px] tw-h-[391px] tw-absolute tw-left-0 md:tw-left-[-1px] tw-top-0 md:tw-top-[-30px] tw-bg-white/20" />
           <p className="tw-absolute tw-left-[24px] tw-top-[40px] md:tw-left-[57px] md:tw-top-[85px] tw-text-base tw-font-bold tw-text-left tw-text-black">
-            DevUs AI Assistant
+            DevUs QuizUp{' '}
           </p>
           <div className="tw-mt-[130px] tw-ml-[54px] ">
             <p className="tw-text-[34px] tw-text-left tw-text-black">
-              <span className="tw-text-[34px] tw-text-left tw-text-black">MORE </span>
-              <span className="tw-text-[34px] tw-font-semibold tw-text-left tw-text-black">QUESTION</span>
-              <span className="tw-text-[34px] tw-text-left tw-text-black">, BETTER </span>
-              <span className="tw-text-[34px] tw-font-semibold tw-text-left tw-text-black">QUESTION</span>
+              <span className="tw-text-[34px] tw-text-left tw-text-black">CREATIVE </span>
+              <span className="tw-text-[34px] tw-font-semibold tw-text-left tw-text-black">LEADERSHIP</span>
             </p>
             <div className="tw-flex tw-mt-2">
-              <div className="tw-w-[166px] tw-ml-[110px] tw-h-[3px] tw-bg-[#1b4595]" />
-              <div className="tw-w-[166px] tw-ml-[154px] tw-h-[3px] tw-bg-[#1b4595]" />
+              <div className="tw-w-[200px] tw-ml-[160px] tw-h-[3px] tw-bg-[#1b4595]" />
             </div>
           </div>
-          {/* <p className="tw-absolute tw-left-[24px] tw-top-[70px] md:tw-left-[57px] md:tw-top-[146px] tw-text-xl md:tw-text-[32px] tw-text-left tw-text-black">
-            <span className="tw-text-xl md:tw-text-[32px] tw-text-left tw-text-black">CREATIVE </span>
-            <span className="tw-text-xl md:tw-text-[32px] tw-font-bold tw-text-left tw-text-black">LEADERSHIP</span>
-          </p>
-          <p className="tw-absolute tw-left-[224px] tw-top-[70px] md:tw-left-[257px] md:tw-top-[146px] tw-text-xl md:tw-text-[32px] tw-text-left tw-text-black">
-            <span className="tw-text-xl md:tw-text-[32px] tw-text-left tw-text-black">CREATIVE </span>
-            <span className="tw-text-xl md:tw-text-[32px] tw-font-bold tw-text-left tw-text-black">LEADERSHIP</span>
-          </p> */}
           {/* <div className="tw-w-[48px] md:tw-w-[190px] tw-h-[2px] md:tw-h-[3px] tw-absolute tw-left-[60px] md:tw-left-[210px] tw-top-[90px] md:tw-top-[190px] tw-bg-[#1B4595]" /> */}
           <p className="tw-absolute tw-left-[24px] tw-top-[110px] md:tw-left-[57px] md:tw-top-[239px] tw-text-sm md:tw-text-base tw-font-medium tw-text-left tw-text-black">
-            누구나 처음은 어렵습니다. 생소한 키워드, 이해되지 않는 설명, 나만 모르는 것 같은 수업 내용들
+            각 분야의 전문가들이 메이커로서 핵심 질문과 아티클을 답으로 제시합니다.
             <br />
-            질문이 망설여진다면 이제는 AI조교에서 편하고 빠르게 질문하세요.
+            교수자는 클럽을 만들고 학습자들이 함께 풀 문제를 엄선합니다.
             <br />
-            교수님이 직접 큐레이션한 자료와 강의 내용을 기반으로 AI가 실시간으로 답하고,
-            <br />
-            강의에서 학습자들이 질문한 내용을 교수님께 전달해 더 좋은 수업을 만듭니다.
+            학습자는 교수자만 따라가면 대한민국 최고의 전문가로 성장할 수 있습니다.
           </p>
           <img
-            src="/assets/images/main/006_1.png"
+            src="/assets/images/main/006_2.png"
             className="tw-hidden lg:tw-block tw-w-[200px] md:tw-w-[360px] tw-h-[290px] md:tw-h-[360px] tw-absolute tw-left-[calc(50%-100px)] md:tw-left-[735px] tw-top-[100px] md:tw-top-[43px] tw-object-cover"
           />
           <img
@@ -277,12 +264,12 @@ export function HomeB2bTemplate({ logged = false, tenantName = '' }: HomeB2bProp
         <div className={cx('main-container tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center')}>
           <div className="tw-w-full tw-flex tw-flex-col md:tw-flex-row tw-gap-4 md:tw-gap-5">
             <img
-              src="/assets/images/main/memo1.png"
+              src="/assets/images/main/main-0.png"
               className="tw-w-[553px]  md:tw-h-auto tw-overflow-hidden tw-rounded-[20px] tw-m-1 md:tw-m-0"
             />
 
             <img
-              src="/assets/images/main/memo2.png"
+              src="/assets/images/main/main-1.png"
               className="tw-w-[553px]  md:tw-h-auto tw-object-cover tw-rounded-[20px] tw-m-1 md:tw-m-0"
             />
           </div>
@@ -297,41 +284,33 @@ export function HomeB2bTemplate({ logged = false, tenantName = '' }: HomeB2bProp
             )}
           >
             <div className="tw-w-[553px]  tw-mt-20 tw-mb-1 tw-overflow-hidden tw-rounded-[20px] tw-flex tw-flex-col tw-justify-center tw-items-center">
-              <div className="tw-text-[#1B4595] tw-text-base tw-font-bold tw-font-['Inter']">Why AI조교</div>
+              <div className="tw-text-[#1B4595] tw-text-base tw-font-bold tw-font-['Inter']">Why 퀴즈업</div>
               <div className="tw-text-black tw-text-xl tw-font-bold tw-font-['Inter'] tw-mt-3">
-                이제 궁금한 건 모두 물어보세요!
+                퀴즈로 뇌를 깨우는 효과적인 학습법
+              </div>
+              <div className="tw-flex tw-flex-col tw-gap-10 tw-mt-10">
+                <img src="/assets/images/main/quiz-7.png" className=" tw-object-cover " />
+                <img src="/assets/images/main/quiz-9.png" className=" tw-object-cover " />
+                <img src="/assets/images/main/quiz-11.png" className=" tw-object-cover " />
               </div>
             </div>
             <div className="tw-w-[553px] tw-mt-20 tw-mb-1 tw-overflow-hidden tw-rounded-[20px] tw-flex tw-flex-col tw-justify-center tw-items-center">
-              <div className="tw-text-[#0A7441] tw-text-base tw-font-bold tw-font-['Inter']">With AI조교</div>
+              <div className="tw-text-[#0A7441] tw-text-base tw-font-bold tw-font-['Inter']">With 퀴즈업</div>
               <div className="tw-text-black tw-text-xl tw-font-bold tw-font-['Inter'] tw-mt-3">
-                학습자와의 거리를 좁히는 AI조교!
+                직무 전문가와 함께 하는 AI 멘토
+              </div>
+              <div className="tw-flex tw-flex-col tw-gap-10 tw-mt-10">
+                <img src="/assets/images/main/quiz-8.png" className="  tw-object-cover " />
+                <img src="/assets/images/main/quiz-10.png" className="  tw-object-cover " />
+                <img src="/assets/images/main/quiz-12.png" className="  tw-object-cover " />
               </div>
             </div>
-          </div>
-
-          {/* 두 번째 섹션 */}
-          <div className={cx('tw-flex tw-justify-center tw-items-start tw-px-0')}>
-            <img src="/assets/images/main/lec_1.png" className="tw-w-[573px]   tw-object-cover " />
-            <img src="/assets/images/main/lec_2.png" className="tw-w-[573px]  tw-object-cover " />
-          </div>
-
-          {/* 세 번째 섹션 */}
-          <div className={cx('tw-flex tw-justify-center tw-items-start tw-px-0 tw-mt-[-40px]')}>
-            <img src="/assets/images/main/lec_3.png" className="tw-w-[573px]  tw-object-cover " />
-            <img src="/assets/images/main/lec_4.png" className="tw-w-[573px]   tw-object-cover" />
-          </div>
-
-          {/* 네 번째 섹션 */}
-          <div className={cx('tw-flex tw-justify-center tw-items-start tw-px-0 tw-mt-[-40px]')}>
-            <img src="/assets/images/main/lec_5.png" className="  tw-w-[573px]  tw-object-cover " />
-            <img src="/assets/images/main/lec_6.png" className="tw-w-[573px]  tw-object-cover" />
           </div>
         </div>
       </section>
       <div className={cx('container tw-py-14  ')}>
         <div className="tw-w-full tw-relative tw-overflow-hidden tw-px-10">
-          <img src="/assets/images/main/ai-bottom.png" className="tw-w-full tw-object-cover" />
+          <img src="/assets/images/main/quiz-bottom.png" className="tw-w-full tw-object-cover" />
         </div>
 
         {isClient && modalIsProfessor && (
@@ -358,4 +337,4 @@ export function HomeB2bTemplate({ logged = false, tenantName = '' }: HomeB2bProp
   );
 }
 
-export default HomeB2bTemplate;
+export default HomeB2cTemplate;

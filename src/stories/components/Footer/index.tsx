@@ -20,7 +20,7 @@ const Footer = () => {
             </div>
           </div>
         </div>
-      ) : subdomain === 'ai' ? (
+      ) : subdomain === 'ai' || subdomain === 'quizup' ? (
         <div>
           <div className="main-container border-top border-bottom ">
             <div className="tw-relative tw-overflow-hidden tw-fixed tw-bottom-0 tw-flex tw-justify-center tw-items-center">

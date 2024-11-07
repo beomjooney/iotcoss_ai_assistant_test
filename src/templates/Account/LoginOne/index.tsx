@@ -33,7 +33,7 @@ export function LoginOneTemplate({ title = '', onSubmitLogin }: LoginTempOnelate
   const { setColorPresets } = useColorPresets();
   const [username, setUserName] = useState('');
 
-  console.log('login join page', getFirstSubdomain(), tenantName);
+  // console.log('login join page', getFirstSubdomain(), tenantName);
   useEffect(() => {
     if (!COLOR_PRESETS || COLOR_PRESETS.length === 0) return;
 

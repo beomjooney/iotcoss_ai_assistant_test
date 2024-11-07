@@ -29,7 +29,7 @@ export function ForgotTemplate({ title = '', onSubmitLogin }: ForgotTemplateProp
   const [step, setStep] = useState('1');
   const [isProcessing, setIsProcessing] = useState(false);
 
-  console.log('login join page', getFirstSubdomain(), tenantName);
+  // console.log('login join page', getFirstSubdomain(), tenantName);
 
   const [clientTenantName, setClientTenantName] = useState(null);
   useEffect(() => {
