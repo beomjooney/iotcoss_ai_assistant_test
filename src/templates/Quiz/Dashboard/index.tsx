@@ -277,7 +277,7 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
                     클럽 주수 : {myDashboardList?.progress?.weekCount || 0}주
                   </p>
                   <p className="tw-ml-10 tw-text-left tw-text-base tw-font-bold tw-text-[#31343d]">
-                    학습 주차 :{' '}
+                    학습 회차 :{' '}
                     <span className="tw-text-[#e11837]">{myDashboardList?.progress?.currentRound || 0}회차</span> /{' '}
                     {myDashboardList?.progress?.totalStudyCount || 0}회
                   </p>

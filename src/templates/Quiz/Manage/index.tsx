@@ -940,7 +940,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
                         <Grid item xs={10}>
                           <div className="tw-flex-auto tw-text-center tw-text-black tw-font-bold">Q{index + 1}.</div>
                           <div className="tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold">
-                            {item?.weekNumber} 주차 ({item?.studyDay})
+                            {item?.weekNumber} 회차 ({item?.studyDay})
                           </div>
                         </Grid>
                         <Grid item xs={1}></Grid>
@@ -968,7 +968,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
                                 Q{item?.weekNumber}.
                               </div>
                               <div className="tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold">
-                                {item?.weekNumber} 주차 ({item?.studyDay})
+                                {item?.weekNumber} 회차 ({item?.studyDay})
                               </div>
                             </div>
                           ) : (
@@ -1060,7 +1060,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
                         <Grid item xs={10}>
                           <div className="tw-flex-auto tw-text-center tw-text-black tw-font-bold">Q{index + 1}.</div>
                           <div className="tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold">
-                            {item?.weekNumber} 주차 ({item?.studyDay})
+                            {item?.weekNumber} 회차 ({item?.studyDay})
                           </div>
                         </Grid>
                         <Grid item xs={1}></Grid>
@@ -1088,7 +1088,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
                                 Q{item?.weekNumber}.
                               </div>
                               <div className="tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold">
-                                {item?.weekNumber} 주차 ({item?.studyDay})
+                                {item?.weekNumber} 회차 ({item?.studyDay})
                               </div>
                             </div>
                           ) : (

@@ -205,7 +205,7 @@ export function QuizAnswersDetailTemplate({ id }: QuizAnswersDetailTemplateProps
             <div className="tw-col-span-1">
               <div className="tw-flex-auto tw-text-center tw-text-black tw-font-bold">Q{contents?.order}.</div>
               <div className="tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold">
-                {contents?.weekNumber} 주차 ({contents?.studyDay})
+                {contents?.weekNumber} 회차 ({contents?.studyDay})
               </div>
             </div>
             <div className="tw-col-span-1 tw-flex tw-items-center ">
