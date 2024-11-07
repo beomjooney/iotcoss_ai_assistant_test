@@ -3,12 +3,6 @@ import classNames from 'classnames/bind';
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useStore } from 'src/store';
-import { RecommendContent } from 'src/models/recommend';
-import { useSessionStore } from 'src/store/session';
-import { useClubDetailQuizList } from 'src/services/quiz/quiz.queries';
-import { useQuizDeleteLike, useQuizLike, useSaveLike } from 'src/services/community/community.mutations';
-import QuizClubAnswersView from 'src/stories/components/QuizClubAnswersView';
-import router from 'next/router';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import AIAnswerQuizList from 'src/stories/components/AIAnswerQuizList';
 import Table from '@material-ui/core/Table';
@@ -21,6 +15,7 @@ import MentorsModal from 'src/stories/components/MentorsModal';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useAIQuizAnswerSavePut, useAIQuizAnswerEvaluation } from 'src/services/quiz/quiz.mutations';
 import Pagination from '@mui/material/Pagination';
+import { useAIQuizAnswerList } from 'src/services/quiz/quiz.mutations';
 
 import { v4 as uuidv4 } from 'uuid';
 export const generateUUID = () => {
@@ -70,9 +65,17 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
   const [isCompleteAI, setIsCompleteAI] = useState(false);
   const [isHideAI, setIsHideAI] = useState(true);
   const [isAIData, setIsAIData] = useState({});
-
+  const [memberUUID, setMemberUUID] = useState('');
   let [key, setKey] = useState('');
   let [fileName, setFileName] = useState('');
+
+  const { mutate: onAIQuizAnswer, isError, isSuccess: answerSuccess, data: aiQuizAnswerData } = useAIQuizAnswerList();
+
+  useEffect(() => {
+    if (isError) {
+      setIsLoadingAI(false);
+    }
+  }, [isError]);
 
   const { isFetched: isParticipantListFetcheds, datas } = useQuizFileDownload(key, data => {
     // console.log('file download', data);
@@ -164,6 +167,18 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
       quiz: data?.clubQuizzes[index]?.quizSequence,
     });
   });
+
+  useEffect(() => {
+    if (aiQuizAnswerData) {
+      setIsLoadingAI(false);
+      console.log('aiQuizAnswerData', aiQuizAnswerData);
+      if (aiQuizAnswerData?.responseCode === '0000') {
+        setClubQuizGetThreads(aiQuizAnswerData?.data?.feedback);
+      } else {
+        alert(`error : [${aiQuizAnswerData?.responseCode}] ${aiQuizAnswerData?.message}`);
+      }
+    }
+  }, [aiQuizAnswerData]);
 
   const { isFetched: isQuizGetanswer, refetch: refetchQuizAnswer } = useQuizGetAIAnswer(quizParams, data => {
     console.log('second get data');
@@ -334,7 +349,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     setInputList([]);
     setFileList([]);
     setIsHideAI(true);
-
+    setMemberUUID(memberUUID);
     setQuizParams({
       club: id,
       quiz: selectedQuiz?.quizSequence,
@@ -558,6 +573,18 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     console.log(key);
     setKey(key);
     setFileName(fileName);
+  };
+
+  // Find the specific quiz in quizList and create formattedQuizList
+  const handleAIAnswerClick = async () => {
+    setClubQuizGetThreads('');
+    setIsLoadingAI(true);
+
+    onAIQuizAnswer({
+      clubSequence: id,
+      quizSequence: selectedQuiz?.quizSequence,
+      memberUUID: memberUUID,
+    }); // Ensure this function returns a promise
   };
 
   return (
@@ -947,9 +974,9 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                       {user?.member?.nickname}
                       <button
                         onClick={() => {
-                          setClubQuizGetThreads('');
-                          refetchQuizAnswerGet();
-                          setIsLoadingAI(true);
+                          // refetchQuizAnswerGet();
+                          // setIsLoadingAI(true);
+                          handleAIAnswerClick();
                         }}
                         className="tw-w-[140px] tw-ml-3 tw-rounded tw-bg-black tw-text-white tw-text-sm tw-text-black tw-py-2 tw-px-4"
                       >

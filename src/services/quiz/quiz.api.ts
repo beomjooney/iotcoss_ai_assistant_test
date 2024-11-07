@@ -62,7 +62,8 @@ export const saveAIQuizAnswerList = async body => {
   const { data } = await axiosGeneralAPI().put(
     `/api/v1/clubs/${body.clubSequence}/quizzes/${body.quizSequence}/answers/${body.memberUUID}/ai-evaluation`,
   );
-  return data.data;
+  console.log('data', data);
+  return data;
 };
 
 export const saveAIQuizAnswerListPut = async body => {
