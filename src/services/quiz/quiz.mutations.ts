@@ -21,6 +21,8 @@ import {
   saveLecturePost,
   saveLectureModify,
   saveClubQuizTempPost,
+  saveLectureModifyAI,
+  saveLectureModifyCur,
 } from './quiz.api';
 import router from 'next/router';
 
@@ -284,6 +286,46 @@ export const useLectureSave = (): UseMutationResult => {
 export const useLectureModify = (): UseMutationResult => {
   const queryClient = useQueryClient();
   return useMutation<any, any, any>(requestBody => saveLectureModify(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('TEMP').all),
+    onSuccess: async data => {
+      console.log('data', data);
+      const { responseCode, message } = data;
+      if (responseCode === '0000') {
+        alert('강의클럽이 수정되었습니다.');
+      } else {
+        alert(`error : [${responseCode}] ${message}`);
+      }
+    },
+  });
+};
+
+export const useLectureModifyCur = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => saveLectureModifyCur(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('TEMP').all),
+    onSuccess: async data => {
+      console.log('data', data);
+      const { responseCode, message } = data;
+      if (responseCode === '0000') {
+        alert('강의클럽이 수정되었습니다.');
+      } else {
+        alert(`error : [${responseCode}] ${message}`);
+      }
+    },
+  });
+};
+
+export const useLectureModifyAI = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => saveLectureModifyAI(requestBody), {
     onError: (error, variables, context) => {
       const { code, message } = error;
       alert(`mutation error : [${code}] ${message}`);

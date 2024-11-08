@@ -129,9 +129,20 @@ export const saveLecturePost = async body => {
 };
 
 export const saveLectureModify = async body => {
-  const { data } = await axiosGeneralAPI().put(`/api/v1/lecture-club/${body.id}`, body.formData, {
+  const { data } = await axiosGeneralAPI().put(`/api/v1/lecture-clubs/${body.id}`, body.formData, {
     headers: { 'content-type': 'multipart/form-data' },
   });
+  return data;
+};
+export const saveLectureModifyCur = async body => {
+  const { data } = await axiosGeneralAPI().put(`/api/v1/lecture-clubs/${body.id}/curriculum`, body.formData, {
+    headers: { 'content-type': 'multipart/form-data' },
+  });
+  return data;
+};
+
+export const saveLectureModifyAI = async body => {
+  const { data } = await axiosGeneralAPI().put(`/api/v1/lecture-clubs/${body.id}/ai-assistant`, body.clubFormParams);
   return data;
 };
 

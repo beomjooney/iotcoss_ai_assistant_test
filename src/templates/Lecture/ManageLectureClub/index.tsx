@@ -24,7 +24,6 @@ import Grid from '@mui/material/Grid';
 import ReactDragList from 'react-drag-list';
 
 /**import quiz modal  */
-import { useQuizList } from 'src/services/jobs/jobs.queries';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -75,10 +74,10 @@ import ToggleButton from '@mui/material/ToggleButton';
 import { makeStyles } from '@mui/styles';
 import { images, imageBanner } from './group';
 import LectureBreakerInfo from 'src/stories/components/LectureBreakerInfo';
-import { useLectureModify } from 'src/services/quiz/quiz.mutations';
+import { useLectureModify, useLectureModifyAI, useLectureModifyCur } from 'src/services/quiz/quiz.mutations';
 import { v4 as uuidv4 } from 'uuid';
 import validator from 'validator';
-import isBetween from 'dayjs/plugin/isBetween';
+import { useStore } from 'src/store';
 
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
@@ -286,6 +285,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
     setLectureLanguage(clubForm.lectureLanguage);
     setContentLanguage(clubForm.contentLanguage);
     setLectureAILanguage(clubForm.aiConversationLanguage);
+    setAgreements(clubForm.useCurrentProfileImage);
 
     setPreview(clubForm.clubImageUrl);
     setPreviewBanner(clubForm.backgroundImageUrl);
@@ -437,6 +437,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
     setPageMember(value);
   };
 
+  const { user, setUser } = useStore();
   //수정
   const [paramss, setParamss] = useState<any>({});
   const [levelNames, setLevelNames] = useState([]);
@@ -476,20 +477,34 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
   let [key, setKey] = useState('');
   let [fileName, setFileName] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [agreements, setAgreements] = useState(true);
 
   const { mutate: onLectureModify, isError, isSuccess: clubSuccess, data: clubDatas } = useLectureModify();
+  const {
+    mutate: onLectureModifyCur,
+    isError: isErrorCur,
+    isSuccess: clubSuccessCur,
+    data: clubDatasCur,
+  } = useLectureModifyCur();
+
+  const {
+    mutate: onLectureModifyAI,
+    isError: isErrorAI,
+    isSuccess: clubSuccessAI,
+    data: clubDatasAI,
+  } = useLectureModifyAI();
 
   useEffect(() => {
-    if (clubSuccess) {
+    if (clubSuccess || clubSuccessAI || clubSuccessCur) {
       setIsProcessing(false);
     }
-  }, [clubSuccess]);
+  }, [clubSuccess, clubSuccessAI, clubSuccessCur]);
 
   useEffect(() => {
-    if (isError) {
+    if (isError || isErrorAI || isErrorCur) {
       setIsProcessing(false);
     }
-  }, [isError]);
+  }, [isError, isErrorAI, isErrorCur]);
 
   const { isFetched: isParticipantListFetcheds, isSuccess: isParticipantListSuccess } = useQuizFileDownload(
     key,
@@ -509,13 +524,6 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
       }
     },
   );
-
-  const getJobLevelNames = (jobLevelCodes, jobLevels) => {
-    return jobLevelCodes?.map(code => {
-      const jobLevel = jobLevels.find(level => level.code === code.toString().padStart(4, '0'));
-      return jobLevel ? jobLevel.name : '';
-    });
-  };
 
   const handleFileChange = event => {
     const files = Array.from(event.target.files);
@@ -557,6 +565,11 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
   const fileInputRef = useRef(null);
   const handleButtonClick = () => {
     fileInputRef.current.click();
+  };
+
+  const handleCheckboxChangeAgreements = event => {
+    console.log('event', event.target.checked);
+    setAgreements(event.target.checked);
   };
 
   const onFileDownload = function (key: string, fileName: string) {
@@ -631,6 +644,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
         setSelectedImageBannerCheck(file);
       } else if (type === 'profile') {
         setSelectedImageProfile('profile');
+        setAgreements(false);
         setSelectedImageProfileCheck(file);
       }
       const reader = new FileReader();
@@ -705,6 +719,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
       setStartDay(formattedDate);
     }
   };
+
   const onChangeHandleFromToEndDate = date => {
     if (date) {
       // Convert date to a Dayjs object
@@ -721,9 +736,158 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
     handlerClubSaveTemp('save');
   };
 
-  const handlerClubSaveTemp = type => {
-    // const selectedJobCode = jobs.find(j => j.code === selectedJob)?.code || '';
+  const handleClubSave = () => {
+    setIsProcessing(true);
+    handlerClubSave();
+  };
 
+  const handleAISave = () => {
+    setIsProcessing(true);
+    const clubFormParams = {
+      lectureLanguage: lectureLanguage || '',
+      contentLanguage: contentLanguage || '',
+      aiConversationLanguage: lectureAILanguage || '',
+      isQuestionsPublic: isQuestionsPublic,
+      enableAiQuestion: enableAiQuestion,
+      forbiddenWords: forbiddenKeywords || [],
+    };
+    onLectureModifyAI({ clubFormParams, id: selectedClub?.clubSequence });
+  };
+
+  const handlerClubSaveTemp = type => {
+    const formData = new FormData();
+    formData.append('clubId', 'lecture_club_' + generateUUID());
+
+    let shouldStop = false;
+    const previousSchedules = [];
+
+    for (let i = 0; i < scheduleData.length; i++) {
+      const item = scheduleData[i];
+      if (shouldStop) return;
+      if (item?.files) {
+        for (let j = 0; j < item.files.length; j++) {
+          const file = item.files[j];
+          if (file.serialNumber) {
+            formData.append(`clubStudies[${i}].files[${j}].serialNumber`, file.serialNumber);
+            formData.append(`clubStudies[${i}].files[${j}].isNew`, 'false');
+          } else {
+            formData.append(`clubStudies[${i}].files[${j}].isNew`, 'true');
+            formData.append(`clubStudies[${i}].files[${j}].file`, file);
+            formData.append(`clubStudies[${i}].files[${j}].contentId`, 'content_id_' + generateUUID());
+          }
+        }
+      }
+
+      if (item?.urls) {
+        for (let k = 0; k < item.urls.length; k++) {
+          const url = item.urls[k];
+          formData.append(`clubStudies[${i}].urls[${k}].isNew`, 'true');
+          formData.append(`clubStudies[${i}].urls[${k}].url`, url.url);
+          formData.append(`clubStudies[${i}].urls[${k}].contentId`, 'content_id_' + generateUUID());
+        }
+      }
+
+      if (item.startDate === '') {
+        alert(`${i + 1}번째 강의 시작일을 입력해주세요.`);
+        shouldStop = true;
+        setIsProcessing(false);
+        return; // 함수 전체를 종료
+      }
+      if (item.endDate === '') {
+        alert(`${i + 1}번째 강의 종료일을 입력해주세요.`);
+        shouldStop = true;
+        setIsProcessing(false);
+        return; // 함수 전체를 종료
+      }
+
+      if (item.clubStudyName === '') {
+        alert(`${i + 1}번째 강의 이름을 입력해주세요.`);
+        shouldStop = true;
+        setIsProcessing(false);
+        return; // 함수 전체를 종료
+      }
+
+      const nextDay3 = dayjs(item.startDate);
+      const nextDay4 = dayjs(item.endDate);
+
+      // 시작일이 종료일보다 크거나 같을 경우 오류 처리
+      if (!dayjs(nextDay4).isAfter(dayjs(nextDay3))) {
+        alert(`${i + 1}번째 강의 : 종료일은 시작일보다 뒤에 있어야 합니다.`);
+        setIsProcessing(false);
+        return; // 혹은 필요에 따라 validation 실패시 코드 실행 중단
+      }
+
+      // 중복된 날짜 검사
+      for (let prev of previousSchedules) {
+        if (
+          nextDay3.isBetween(prev.startDate, prev.endDate, null, '[]') ||
+          nextDay4.isBetween(prev.startDate, prev.endDate, null, '[]') ||
+          prev.startDate.isBetween(nextDay3, nextDay4, null, '[]') ||
+          prev.endDate.isBetween(nextDay3, nextDay4, null, '[]')
+        ) {
+          alert(
+            `${i + 1}번째 강의의 시작일(${nextDay3.format('YYYY-MM-DD')})과 종료일(${nextDay4.format(
+              'YYYY-MM-DD',
+            )})이 이전 강의날짜와 겹칩니다.`,
+          );
+          setIsProcessing(false);
+          return;
+        }
+      }
+
+      // 이전 강의 리스트에 현재 강의 추가
+      previousSchedules.push({ startDate: nextDay3, endDate: nextDay4 });
+
+      // 임시저장 로직에 false 추가, isNew 속성이 없으면 true로 설정
+      if (item.isNew === undefined) {
+        formData.append(`clubStudies[${i}].isNew`, 'true');
+        formData.append(`clubStudies[${i}].clubStudyId`, 'club_study_id_' + generateUUID());
+      } else {
+        formData.append(`clubStudies[${i}].isNew`, item.isNew);
+        formData.append(`clubStudies[${i}].clubStudySequence`, item.clubStudySequence);
+        formData.append(`clubStudies[${i}].clubStudyId`, 'club_study_id_' + generateUUID());
+      }
+
+      formData.append(`clubStudies[${i}].studyOrder`, (i + 1).toString());
+      formData.append(`clubStudies[${i}].clubStudyName`, item.clubStudyName);
+      formData.append(`clubStudies[${i}].clubStudyType`, item.clubStudyType);
+      formData.append(`clubStudies[${i}].clubStudyUrl`, item.clubStudyUrl || '');
+
+      // 현재 날짜 값에 하루를 더하기
+      const nextDay = dayjs(item.startDate).format('YYYY-MM-DD');
+      const nextDay2 = dayjs(item.endDate).format('YYYY-MM-DD');
+
+      formData.append(`clubStudies[${i}].startDate`, nextDay);
+      formData.append(`clubStudies[${i}].endDate`, nextDay2);
+    }
+
+    lectureContents?.files?.forEach((file, j) => {
+      if (file.serialNumber) {
+        formData.append('lectureContents.files[' + j + '].isNew', 'false');
+        formData.append('lectureContents.files[' + j + '].serialNumber', file.serialNumber);
+      } else {
+        formData.append('lectureContents.files[' + j + '].isNew', 'true');
+        formData.append('lectureContents.files[' + j + '].file', file.file);
+        formData.append('lectureContents.files[' + j + '].contentId', 'content_id_' + generateUUID());
+      }
+    });
+
+    lectureContents?.urls?.forEach((url, k) => {
+      formData.append('lectureContents.urls[' + k + '].isNew', 'true');
+      formData.append('lectureContents.urls[' + k + '].url', url.url);
+      formData.append('lectureContents.urls[' + k + '].contentId', 'content_id_' + generateUUID());
+    });
+
+    // To log the formData contents
+    for (const [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+
+    if (type === 'save') {
+      onLectureModifyCur({ formData, id: selectedClub?.clubSequence });
+    }
+  };
+  const handlerClubSave = () => {
     // 필수 항목 체크
     if (!clubName) {
       alert('클럽 이름을 입력해주세요');
@@ -821,186 +985,46 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
       studyKeywords: studyKeywords || '',
       isPublic: isPublic === '0001' ? 'true' : 'false',
       participationCode: participationCode || '',
-      lectureLanguage: lectureLanguage || '',
-      contentLanguage: contentLanguage || '',
-      aiConversationLanguage: lectureAILanguage || '',
       description: introductionText || '',
-      useCurrentProfileImage: 'false',
-      isQuestionsPublic: isQuestionsPublic,
-      enableAiQuestion: enableAiQuestion,
-      forbiddenWords: forbiddenKeywords || [],
+      useCurrentProfileImage: agreements,
     };
 
     console.log(clubFormParams);
     const formData = new FormData();
-    formData.append('clubForm.clubId', 'lecture_club_' + generateUUID());
-    formData.append('clubForm.clubName', clubFormParams.clubName);
-    formData.append('clubForm.jobGroups', clubFormParams.jobGroups.toString());
-    formData.append('clubForm.jobs', clubFormParams.jobs.toString());
-    formData.append('clubForm.jobLevels', clubFormParams.jobLevels.toString());
-    formData.append('clubForm.startAt', clubFormParams.startAt);
-    formData.append('clubForm.endAt', clubFormParams.endAt);
-    formData.append('clubForm.studySubject', clubFormParams.studySubject);
-    formData.append('clubForm.studyKeywords', clubFormParams.studyKeywords.toString());
-    formData.append('clubForm.isPublic', clubFormParams.isPublic);
-    formData.append('clubForm.participationCode', clubFormParams.participationCode);
-    formData.append('clubForm.lectureLanguage', clubFormParams.lectureLanguage);
-    formData.append('clubForm.contentLanguage', clubFormParams.contentLanguage);
-    formData.append('clubForm.aiConversationLanguage', clubFormParams.aiConversationLanguage);
-    formData.append('clubForm.description', clubFormParams.description);
-    formData.append('clubForm.useCurrentProfileImage', clubFormParams.useCurrentProfileImage);
-
-    formData.append('clubForm.isQuestionsPublic', clubFormParams.isQuestionsPublic);
-    formData.append('clubForm.forbiddenWords', clubFormParams.forbiddenWords.toString());
-    formData.append('clubForm.enableAiQuestion', clubFormParams.enableAiQuestion);
+    formData.append('clubId', 'lecture_club_' + generateUUID());
+    formData.append('clubName', clubFormParams.clubName);
+    formData.append('jobGroups', clubFormParams.jobGroups.toString());
+    formData.append('jobs', clubFormParams.jobs.toString());
+    formData.append('jobLevels', clubFormParams.jobLevels.toString());
+    formData.append('startAt', clubFormParams.startAt);
+    formData.append('endAt', clubFormParams.endAt);
+    formData.append('studySubject', clubFormParams.studySubject);
+    formData.append('studyKeywords', clubFormParams.studyKeywords.toString());
+    formData.append('isPublic', clubFormParams.isPublic);
+    formData.append('participationCode', clubFormParams.participationCode);
+    formData.append('description', clubFormParams.description);
+    formData.append('useCurrentProfileImage', clubFormParams.useCurrentProfileImage);
 
     if (selectedImage) {
       console.log('selectedImage', selectedImage);
-      formData.append('clubForm.clubImageFile', selectedImageCheck);
+      formData.append('clubImageFile', selectedImageCheck);
     }
     if (selectedImageBanner) {
-      formData.append('clubForm.backgroundImageFile', selectedImageBannerCheck);
+      formData.append('backgroundImageFile', selectedImageBannerCheck);
     }
     if (selectedImageProfile) {
-      formData.append('clubForm.instructorProfileImageFile', selectedImageProfileCheck);
+      formData.append('instructorProfileImageFile', selectedImageProfileCheck);
     }
 
     console.log(clubFormParams);
     console.log('scheduleData', scheduleData);
-
-    let shouldStop = false;
-    const previousSchedules = [];
-
-    for (let i = 0; i < scheduleData.length; i++) {
-      const item = scheduleData[i];
-
-      if (shouldStop) return;
-
-      if (item?.files) {
-        for (let j = 0; j < item.files.length; j++) {
-          const file = item.files[j];
-          if (file.serialNumber) {
-            formData.append(`clubStudies[${i}].files[${j}].serialNumber`, file.serialNumber);
-            formData.append(`clubStudies[${i}].files[${j}].isNew`, 'false');
-          } else {
-            formData.append(`clubStudies[${i}].files[${j}].isNew`, 'true');
-            formData.append(`clubStudies[${i}].files[${j}].file`, file);
-            formData.append(`clubStudies[${i}].files[${j}].contentId`, 'content_id_' + generateUUID());
-          }
-        }
-      }
-
-      if (item?.urls) {
-        for (let k = 0; k < item.urls.length; k++) {
-          const url = item.urls[k];
-          formData.append(`clubStudies[${i}].urls[${k}].isNew`, 'true');
-          formData.append(`clubStudies[${i}].urls[${k}].url`, url.url);
-          formData.append(`clubStudies[${i}].urls[${k}].contentId`, 'content_id_' + generateUUID());
-        }
-      }
-
-      if (item.startDate === '') {
-        alert(`${i + 1}번째 강의 시작일을 입력해주세요.`);
-        shouldStop = true;
-        setIsProcessing(false);
-        return; // 함수 전체를 종료
-      }
-      if (item.endDate === '') {
-        alert(`${i + 1}번째 강의 종료일을 입력해주세요.`);
-        shouldStop = true;
-        setIsProcessing(false);
-        return; // 함수 전체를 종료
-      }
-
-      if (item.clubStudyName === '') {
-        alert(`${i + 1}번째 강의 이름을 입력해주세요.`);
-        shouldStop = true;
-        setIsProcessing(false);
-        return; // 함수 전체를 종료
-      }
-      // 현재 날짜 값에 하루를 더하기
-      // const nextDay3 = dayjs(item.startDate).format('YYYY-MM-DD');
-      // const nextDay4 = dayjs(item.endDate).format('YYYY-MM-DD');
-
-      const nextDay3 = dayjs(item.startDate);
-      const nextDay4 = dayjs(item.endDate);
-
-      // 시작일이 종료일보다 크거나 같을 경우 오류 처리
-      if (!dayjs(nextDay4).isAfter(dayjs(nextDay3))) {
-        alert(`${i + 1}번째 강의 : 종료일은 시작일보다 뒤에 있어야 합니다.`);
-        setIsProcessing(false);
-        return; // 혹은 필요에 따라 validation 실패시 코드 실행 중단
-      }
-
-      // 중복된 날짜 검사
-      for (let prev of previousSchedules) {
-        if (
-          nextDay3.isBetween(prev.startDate, prev.endDate, null, '[]') ||
-          nextDay4.isBetween(prev.startDate, prev.endDate, null, '[]') ||
-          prev.startDate.isBetween(nextDay3, nextDay4, null, '[]') ||
-          prev.endDate.isBetween(nextDay3, nextDay4, null, '[]')
-        ) {
-          alert(
-            `${i + 1}번째 강의의 시작일(${nextDay3.format('YYYY-MM-DD')})과 종료일(${nextDay4.format(
-              'YYYY-MM-DD',
-            )})이 이전 강의날짜와 겹칩니다.`,
-          );
-          setIsProcessing(false);
-          return;
-        }
-      }
-
-      // 이전 강의 리스트에 현재 강의 추가
-      previousSchedules.push({ startDate: nextDay3, endDate: nextDay4 });
-
-      // 임시저장 로직에 false 추가, isNew 속성이 없으면 true로 설정
-      if (item.isNew === undefined) {
-        formData.append(`clubStudies[${i}].isNew`, 'true');
-        formData.append(`clubStudies[${i}].clubStudyId`, 'club_study_id_' + generateUUID());
-      } else {
-        formData.append(`clubStudies[${i}].isNew`, item.isNew);
-        formData.append(`clubStudies[${i}].clubStudySequence`, item.clubStudySequence);
-        formData.append(`clubStudies[${i}].clubStudyId`, 'club_study_id_' + generateUUID());
-      }
-
-      formData.append(`clubStudies[${i}].studyOrder`, (i + 1).toString());
-      formData.append(`clubStudies[${i}].clubStudyName`, item.clubStudyName);
-      formData.append(`clubStudies[${i}].clubStudyType`, item.clubStudyType);
-      formData.append(`clubStudies[${i}].clubStudyUrl`, item.clubStudyUrl || '');
-
-      // 현재 날짜 값에 하루를 더하기
-      const nextDay = dayjs(item.startDate).format('YYYY-MM-DD');
-      const nextDay2 = dayjs(item.endDate).format('YYYY-MM-DD');
-
-      formData.append(`clubStudies[${i}].startDate`, nextDay);
-      formData.append(`clubStudies[${i}].endDate`, nextDay2);
-    }
-
-    lectureContents?.files?.forEach((file, j) => {
-      if (file.serialNumber) {
-        formData.append('lectureContents.files[' + j + '].isNew', 'false');
-        formData.append('lectureContents.files[' + j + '].serialNumber', file.serialNumber);
-      } else {
-        formData.append('lectureContents.files[' + j + '].isNew', 'true');
-        formData.append('lectureContents.files[' + j + '].file', file.file);
-        formData.append('lectureContents.files[' + j + '].contentId', 'content_id_' + generateUUID());
-      }
-    });
-
-    lectureContents?.urls?.forEach((url, k) => {
-      formData.append('lectureContents.urls[' + k + '].isNew', 'true');
-      formData.append('lectureContents.urls[' + k + '].url', url.url);
-      formData.append('lectureContents.urls[' + k + '].contentId', 'content_id_' + generateUUID());
-    });
 
     // To log the formData contents
     for (const [key, value] of formData.entries()) {
       console.log(key, value);
     }
 
-    if (type === 'save') {
-      onLectureModify({ formData, id: selectedClub?.clubSequence });
-    }
+    onLectureModify({ formData, id: selectedClub?.clubSequence });
   };
 
   const handleIsPublic = (event: React.MouseEvent<HTMLElement>, newFormats: string) => {
@@ -2119,11 +2143,10 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
               <div className={cx('container')}>
                 <div className="tw-flex tw-justify-between tw-items-center tw-relative tw-gap-3">
                   <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">강의 기본정보</div>
-                  <div>{isProcessing && <>강의수정시 약 2분이 소요될 예정입니다. 잠시만 기다려 주세요 😊</>}</div>
                   <button
                     disabled={isProcessing}
                     className="tw-w-[150px] border tw-text-gray-500 tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-text-sm tw-rounded"
-                    onClick={() => handleSave()}
+                    onClick={() => handleClubSave()}
                   >
                     {isProcessing ? <CircularProgress color="info" size={18} /> : '수정하기'}
                   </button>
@@ -2480,22 +2503,23 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                   강의내 교수 프로필 이미지
                 </div>
 
-                {previewProfile ? (
+                {agreements === true ? (
                   <img
-                    src={previewProfile}
-                    alt="Image Preview"
-                    className="border tw-w-[100px] tw-h-[100px] tw-rounded-full"
+                    className="border tw-w-28 tw-h-28 tw-rounded-full"
+                    src={user?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
+                    alt=""
                   />
                 ) : (
                   <img
-                    src="/assets/images/account/default_profile_image.png"
-                    alt="Image"
-                    className="tw-w-[100px] tw-h-[100px] tw-rounded-full border"
+                    className="border tw-w-28 tw-h-28 tw-rounded-full"
+                    src={previewProfile || '/assets/images/account/default_profile_image.png'}
+                    alt=""
                   />
                 )}
 
-                <div className="tw-text-sm tw-font-bold tw-text-black tw-mt-5 tw-my-5">
-                  직접 업로드를 하지 않으면 현재 프로필 이미지 사용합니다.
+                <div className="tw-flex tw-items-center tw-justify-start tw-gap-1">
+                  <Checkbox checked={agreements} onChange={e => handleCheckboxChangeAgreements(e)} />
+                  <div className="tw-text-sm tw-font-bold tw-text-black tw-mt-5 tw-my-5">현재 프로필 이미지 사용</div>
                 </div>
                 <button
                   onClick={() => document.getElementById('dropzone-file3').click()}
@@ -2510,13 +2534,13 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                   className="tw-hidden"
                   onChange={e => handleImageChange(e, 'profile')}
                 />
-                <button
+                {/* <button
                   onClick={e => handleProfileDelete(e)}
                   type="button"
                   className="tw-text-black border tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
                 >
                   삭제
-                </button>
+                </button> */}
               </div>
             </div>
           </div>
@@ -2526,10 +2550,10 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
           <div className="tw-h-[60vh]">
             <div className="tw-flex tw-justify-between tw-items-center tw-relative tw-gap-3">
               <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">AI조교 설정</div>
-              <div>{isProcessing && <>강의수정시 약 2분이 소요될 예정입니다. 잠시만 기다려 주세요 😊</>}</div>
+              <div>{isProcessing}</div>
               <button
                 className="tw-w-[150px] border tw-text-gray-500 tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-text-sm tw-rounded"
-                onClick={() => handleSave()}
+                onClick={() => handleAISave()}
               >
                 {isProcessing ? <CircularProgress color="info" size={18} /> : '수정하기'}
               </button>
