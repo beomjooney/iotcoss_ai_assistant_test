@@ -974,9 +974,9 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                       {user?.member?.nickname}
                       <button
                         onClick={() => {
-                          // refetchQuizAnswerGet();
-                          // setIsLoadingAI(true);
-                          handleAIAnswerClick();
+                          refetchQuizAnswerGet();
+                          setIsLoadingAI(true);
+                          // handleAIAnswerClick();
                         }}
                         className="tw-w-[140px] tw-ml-3 tw-rounded tw-bg-black tw-text-white tw-text-sm tw-text-black tw-py-2 tw-px-4"
                       >
