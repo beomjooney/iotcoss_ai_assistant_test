@@ -1797,7 +1797,7 @@ export function QuizOpenTemplate() {
                   <Tag
                     value={studyKeywords}
                     onChange={setStudyKeywords}
-                    placeHolder="학습 키워드 입력 후 엔터를 쳐주세요."
+                    placeHolder="학습 챕터를 입력 후 엔터를 쳐주세요."
                   />
                   <div className="tw-flex tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">
                     관련기술
@@ -2231,7 +2231,7 @@ export function QuizOpenTemplate() {
                           className="tw-h-[234.5px] tw-flex tw-flex-col tw-items-center tw-justify-center"
                         >
                           <div className=" tw-text-center tw-text-black tw-font-bold tw-text-sm">
-                            Q{index + 1}. {item.weekNumber}회차{' '}
+                            Q{index + 1}. {item.studyOrder}회차{' '}
                           </div>
                           {item.weekNumber && (
                             <div className="tw-text-center tw-text-sm tw-text-black tw-font-bold">

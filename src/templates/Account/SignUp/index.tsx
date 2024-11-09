@@ -97,7 +97,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
 
   useEffect(() => {
     if (isEmainSendSuccess) {
-      // alert('이메일 인증 메일이 발송되었습니다.');
+      alert('이메일 인증 메일이 발송되었습니다.');
     }
   }, [isEmainSendSuccess]);
 
