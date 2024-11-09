@@ -18,7 +18,7 @@ import { SearchParamsProps } from 'pages/admin/terms';
 
 const cx = classNames.bind(styles);
 
-interface TermsTemplateProps {
+interface AccountLinkTestTemplateProps {
   termList?: any;
   skillsList?: any;
   experience?: any;
@@ -37,7 +37,7 @@ interface TermsTemplateProps {
   setParams: React.Dispatch<React.SetStateAction<SearchParamsProps>>;
 }
 
-export function TermsTemplate({
+export function AccountLinkTestTemplate({
   termList,
   skillsList,
   experience,
@@ -54,7 +54,7 @@ export function TermsTemplate({
   onAdd,
   onSearch,
   setParams,
-}: TermsTemplateProps) {
+}: AccountLinkTestTemplateProps) {
   const COLGROUP = ['10%', '10%', '10%', '10%', '10%', '10%', '12%', '12%'];
   const HEADS = ['유형', '공고일시', '시행일시', '이전정책 아이디', '등록자', '수정자', '등록일시', '수정일시'];
 
@@ -745,4 +745,4 @@ export function TermsTemplate({
   );
 }
 
-export default TermsTemplate;
+export default AccountLinkTestTemplate;

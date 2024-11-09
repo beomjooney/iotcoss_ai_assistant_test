@@ -81,6 +81,7 @@ export function AdminTemplate({ children }: AdminTemplateProps) {
         { no: 0, title: '회원정보 관리', link: '/system/admin/club', role: 'all' },
         { no: 1, title: '교수자 권한 관리', link: '/system/admin/role', role: 'all' },
         { no: 2, title: '정책(약관)동의 조회', link: '/system/admin/terms', role: 'all' },
+        { no: 3, title: '계정연동테스트', link: '/system/admin/account-link-test', role: 'all' },
       ],
     },
     {

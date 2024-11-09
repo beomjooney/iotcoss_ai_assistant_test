@@ -21,6 +21,7 @@ export * from './System/Admin/ClubApproval/index';
 export * from './System/Admin/ClubManagement/index';
 export * from './System/Admin/Dashboard/index';
 export * from './System/Admin/Terms/index';
+export * from './System/Admin/AccountLinkTest/index';
 
 export * from './Account/My/MentorPick/index';
 export * from './Account/My/Activity/index';
