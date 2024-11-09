@@ -188,7 +188,7 @@ export function AdminAccountLinkTestTemplate() {
     }
   };
 
-  const [selectedLoginType, setSelectedLoginType] = useState('0001');
+  const [selectedLoginType, setSelectedLoginType] = useState('0002');
 
   const handleLoginTypeChange = event => {
     console.log('event.target.value', event.target.value);
