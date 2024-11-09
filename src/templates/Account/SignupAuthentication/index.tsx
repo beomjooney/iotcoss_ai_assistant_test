@@ -91,7 +91,7 @@ export function SignupAuthenticationTemplate({ onSubmitLogin }: SignupAuthentica
             <div className="tw-mt-10 tw-flex tw-justify-center">
               <button
                 className="tw-px-5 border tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-text-black"
-                onClick={() => router.push('/account/login')}
+                onClick={() => (window.location.href = '/account/login')}
               >
                 로그인바로하기
               </button>
