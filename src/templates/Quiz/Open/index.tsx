@@ -2231,7 +2231,7 @@ export function QuizOpenTemplate() {
                           className="tw-h-[234.5px] tw-flex tw-flex-col tw-items-center tw-justify-center"
                         >
                           <div className=" tw-text-center tw-text-black tw-font-bold tw-text-sm">
-                            Q{index + 1}. {item.studyOrder}회차{' '}
+                            Q{index + 1}. {item.order}회차{' '}
                           </div>
                           {item.weekNumber && (
                             <div className="tw-text-center tw-text-sm tw-text-black tw-font-bold">
