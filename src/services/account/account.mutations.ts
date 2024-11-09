@@ -19,6 +19,8 @@ import {
   resetPassword,
   join,
   loginSignUpDSU,
+  loginIdTest,
+  loginIdPasswordTest,
 } from './account.api';
 import { setCookie } from 'cookies-next';
 import router from 'next/router';
@@ -143,6 +145,66 @@ export const useLogin = (): UseMutationResult => {
       // } else {
       //   alert(`error : [${responseCode}] ${message}`);
       // }
+    },
+  });
+};
+
+export const useLoginIdTest = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  // TODO : any 타입 변경
+  return useMutation<any, any, any>(requestBody => loginIdTest(requestBody), {
+    onError: (error, variables, context) => {
+      console.log(error);
+      const { responseCode, message } = error;
+      if (responseCode === 'C06000') {
+        // alert('로그인 시도 횟수를 초과했습니다.');
+      } else if (responseCode === 'C06002') {
+        // alert('이메일 계정 또는 암호가 일치하지 않습니다. 다시 한번 확인해 주세요.');
+      } else {
+        // alert(`error : [${responseCode}] ${message}`);
+      }
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('LOGIN').all),
+    onSuccess: async data => {
+      console.log('data', data);
+
+      alert('아이디 검증이 완료되었습니다.');
+      const { responseCode, message } = data;
+      if (responseCode === '0000') {
+        // setCookie('access_token', data?.access_token);
+      } else if (responseCode === '1403') {
+      } else {
+        // alert(`error : [${responseCode}] ${message}`);
+      }
+    },
+  });
+};
+export const useLoginIdPasswordTest = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  // TODO : any 타입 변경
+  return useMutation<any, any, any>(requestBody => loginIdPasswordTest(requestBody), {
+    onError: (error, variables, context) => {
+      console.log(error);
+      const { responseCode, message } = error;
+      if (responseCode === 'C06000') {
+        // alert('로그인 시도 횟수를 초과했습니다.');
+      } else if (responseCode === 'C06002') {
+        // alert('이메일 계정 또는 암호가 일치하지 않습니다. 다시 한번 확인해 주세요.');
+      } else {
+        // alert(`error : [${responseCode}] ${message}`);
+      }
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('LOGIN').all),
+    onSuccess: async data => {
+      console.log('data', data);
+      alert('아이디 비밀번호 검증이 완료되었습니다.');
+
+      const { responseCode, message } = data;
+      if (responseCode === '0000') {
+      } else if (responseCode === '1403') {
+      } else {
+        // alert(`error : [${responseCode}] ${message}`);
+      }
     },
   });
 };

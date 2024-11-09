@@ -89,6 +89,11 @@ export const clubTermsList = async params => {
   return { data: data.data };
 };
 
+export const loginList = async params => {
+  const { data } = await axiosGeneralAPI().get('/api/manager/v1/member-validation/histories', { params });
+  return { data: data.data };
+};
+
 export const clubAdminList = async params => {
   const { data } = await axiosGeneralAPI().get('/api/manager/v1/clubs', { params });
   return { data: data.data };

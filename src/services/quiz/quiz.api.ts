@@ -245,7 +245,10 @@ export const quizGetAIAnswer = async params => {
 };
 
 export const quizGetAIAnswerGet = async params => {
-  const { data } = await axiosGeneralAPI().get(`/api/v1/quizzes/${params.quiz}/ai-answer`);
+  const { data } = await axiosGeneralAPI().get(
+    `/api/v1/clubs/${params.club}/quizzes/${params.quiz}/answers/${params.memberUUID}/ai-evaluation`,
+  );
+  // const { data } = await axiosGeneralAPI().get(`/api/v1/quizzes/${params.quiz}/ai-answer`);
   return data.data;
 };
 

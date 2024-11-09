@@ -36,6 +36,7 @@ import {
   clubActiveQuizStatsSummary,
   clubSummary,
   clubChartSummary,
+  loginList,
 } from './studyroom.api';
 
 export interface paramProps {
@@ -306,6 +307,23 @@ export const useClubTermsList = (
   return useQuery<RecommendContentsResponse, Error>(
     QUERY_KEY_FACTORY('QUIZ_CONTENTS').list({ size: DEFAULT_SIZE, ...params }),
     () => clubTermsList({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+      enabled: true,
+    },
+  );
+};
+export const useLoginList = (
+  params?: paramProps,
+  onSuccess?: (data: RecommendContentsResponse) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 15;
+  return useQuery<RecommendContentsResponse, Error>(
+    QUERY_KEY_FACTORY('ACCOUNT_MEMBER_LOGIN').list({ size: DEFAULT_SIZE, ...params }),
+    () => loginList({ size: DEFAULT_SIZE, ...params }),
     {
       onSuccess,
       onError,

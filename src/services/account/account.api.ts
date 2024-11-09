@@ -81,13 +81,11 @@ export async function termsInfo(params: any) {
     url = `/api/v1/terms/privacy1`;
   }
   const { data } = await axiosGeneralAPI().get(url);
-  console.log(data);
   return data.data;
 }
 export async function termsInfo2() {
   // const { data } = await axiosGeneralAPI().get(`/api/v1/terms?typeCode=${params.type}`);
   const { data } = await axiosGeneralAPI().get(`/api/v1/terms/privacy1`);
-  console.log(data);
   return data.data;
 }
 
@@ -96,7 +94,15 @@ export async function login(params: any[]) {
   const { data } = await axiosGeneralAPI().post('/oauth2/token', new URLSearchParams(params), {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
   });
-  console.log(data);
+  return data;
+}
+
+export async function loginIdTest(params: any[]) {
+  const { data } = await axiosGeneralAPI().post('/api/manager/v1/member-validation/id', params);
+  return data;
+}
+export async function loginIdPasswordTest(params: any[]) {
+  const { data } = await axiosGeneralAPI().post('/api/manager/v1/member-validation/id-pw', params);
   return data;
 }
 
