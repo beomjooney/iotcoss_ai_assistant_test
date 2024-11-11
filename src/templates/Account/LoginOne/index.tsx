@@ -33,18 +33,6 @@ export function LoginOneTemplate({ title = '', onSubmitLogin }: LoginTempOnelate
   const { setColorPresets } = useColorPresets();
   const [username, setUserName] = useState('');
 
-  // console.log('login join page', getFirstSubdomain(), tenantName);
-  useEffect(() => {
-    if (!COLOR_PRESETS || COLOR_PRESETS.length === 0) return;
-
-    const preset = COLOR_PRESETS.find(preset => preset.name === getFirstSubdomain()) || COLOR_PRESETS[0];
-    setColorPresetName(preset.name);
-    setColorPresets(preset.colors);
-
-    console.log(preset.name);
-    localStorage.setItem('activeIndex', '0');
-  }, []);
-
   const [clientTenantName, setClientTenantName] = useState(null);
   useEffect(() => {
     // 클라이언트에서만 tenantName을 설정
@@ -56,47 +44,13 @@ export function LoginOneTemplate({ title = '', onSubmitLogin }: LoginTempOnelate
       onSubmitLogin();
       //redirection 처리
       update({
-        // tenantName: loginData?.tenantId,
-        // tenantName: loginData?.tenant_uri?.split('.')[0],
         redirections: loginData?.redirections,
         menu: loginData?.menu,
       });
 
-      // Check if running in the local environment
-      const isLocalEnv = process.env.NEXT_PUBLIC_ENV === 'local';
-      const isLocalProd = process.env.NEXT_PUBLIC_ENV === 'prod';
-      console.log('loginData?.tenant_uri', loginData?.tenant_uri, getFirstSubdomain(), isLocalEnv);
-
-      // if (loginData?.tenant_uri === getFirstSubdomain() || isLocalEnv || isLocalProd) {
-      // if (loginData?.tenant === getFirstSubdomain() || isLocalEnv) {
-      // if (loginData?.tenant_uri === getFirstSubdomain() || isLocalEnv) {
       location.href = '/';
-      // } else {
-      //   const authStore = localStorage.getItem('auth-store');
-      //   if (authStore) {
-      //     const json = JSON.parse(authStore);
-      //     const jsonString = JSON.stringify(json.state);
-      //     // 1. Base64 인코딩 (Node.js 환경에서는 Buffer를 사용)
-      //     const encodedJson = Buffer.from(jsonString).toString('base64');
-      //     // location.href = loginData?.redirections?.home_url + `?authStore=${encodedJson}`;
-      //     deleteCookie('access_token');
-      //     localStorage.removeItem('auth-store');
-      //     localStorage.removeItem('app-storage');
-      //     location.href = loginData?.redirections?.home_url + `?authStore=${encodedJson}`;
-      //     //test
-      //     //location.href = 'http://dsu.localhost:3001/' + `?authStore=${encodedJson}`;
-      //   }
-      // }
     }
   }, [loginData]);
-
-  const handleLogin = async () => {
-    location.href = `${process.env['NEXT_PUBLIC_GENERAL_API_URL']}/oauth2/authorize/kakao?redirect_uri=${process.env['NEXT_PUBLIC_REDIRECT_URL']}`;
-  };
-
-  const handleData = async () => {
-    onSubmitLogin && onSubmitLogin();
-  };
 
   const validationSchema = Yup.object().shape({
     // username: Yup.string().required('Email is required').email('Email is invalid'),

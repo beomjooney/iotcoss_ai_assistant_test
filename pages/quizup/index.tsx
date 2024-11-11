@@ -1,5 +1,6 @@
 import './index.module.scss';
 import { HomeB2cTemplate } from '../../src/templates/HomeB2c';
+import { HomeTemplate } from '../../src/templates/Home';
 import { useMemberInfo, useMyProfile } from '../../src/services/account/account.queries';
 import { useStore } from 'src/store';
 import { useEffect } from 'react';
@@ -9,7 +10,7 @@ import { GetServerSideProps } from 'next';
 
 export function IndexPage({ session, setActiveIndex }: { session: Session; setActiveIndex: (index: number) => void }) {
   // redirection 처리
-  const { update, logged, memberId } = useSessionStore.getState();
+  const { update, logged, memberId, tenantName } = useSessionStore.getState();
   useEffect(() => {
     // session이 존재하는 경우에만 상태 업데이트를 수행
     if (session) {
@@ -31,9 +32,17 @@ export function IndexPage({ session, setActiveIndex }: { session: Session; setAc
 
   // TODO 로그인 수정 변경
   return (
-    <div className="tw-h-[2450px]">
-      <HomeB2cTemplate logged={logged} tenantName="quizup" />
-    </div>
+    <>
+      {tenantName === 'dsunv' ? (
+        <div className="tw-h-[1400px]">
+          <HomeTemplate logged={logged} tenantName="dsu" />
+        </div>
+      ) : (
+        <div className="tw-h-[2450px]">
+          <HomeB2cTemplate logged={logged} tenantName="quizup" />
+        </div>
+      )}
+    </>
   );
 }
 

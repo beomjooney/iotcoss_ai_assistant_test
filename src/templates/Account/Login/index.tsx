@@ -74,8 +74,6 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
 
   const { data: termList2, isLoading: termListLoading2, refetch: refetch2 }: UseQueryResult<any> = useTermsList2();
 
-  // console.log('login join page', getFirstSubdomain(), tenantName);
-
   const [clientTenantName, setClientTenantName] = useState(null);
   useEffect(() => {
     localStorage.setItem('activeIndex', '0');
@@ -119,31 +117,7 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
         menu: loginData?.menu,
       });
 
-      // Check if running in the local environment
-      const isLocalEnv = process.env.NEXT_PUBLIC_ENV === 'local';
-      const isLocalProd = process.env.NEXT_PUBLIC_ENV === 'prod';
-      console.log('loginData?.tenant_uri', loginData?.tenant_uri, getFirstSubdomain(), isLocalEnv);
-
-      // if (loginData?.tenant_uri === getFirstSubdomain() || isLocalEnv || isLocalProd) {
-      // if (loginData?.tenantId === getFirstSubdomain() || isLocalEnv) {
-      // if (loginData?.tenant_uri === getFirstSubdomain() || isLocalEnv) {
       location.href = '/';
-      // } else {
-      //   const authStore = localStorage.getItem('auth-store');
-      //   if (authStore) {
-      //     const json = JSON.parse(authStore);
-      //     const jsonString = JSON.stringify(json.state);
-      //     // 1. Base64 인코딩 (Node.js 환경에서는 Buffer를 사용)
-      //     const encodedJson = Buffer.from(jsonString).toString('base64');
-      //     // location.href = loginData?.redirections?.home_url + `?authStore=${encodedJson}`;
-      //     deleteCookie('access_token');
-      //     localStorage.removeItem('auth-store');
-      //     localStorage.removeItem('app-storage');
-      //     location.href = loginData?.redirections?.home_url + `?authStore=${encodedJson}`;
-      //     //test
-      //     // location.href = 'http://dsu.localhost:3001/' + `?authStore=${encodedJson}`;
-      //   }
-      // }
     }
   }, [loginData]);
 
@@ -173,7 +147,6 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
         ...data,
         login_member_type: selectedLoginType,
         tenant_uri: tenantName,
-        // tenant_uri: getFirstSubdomain(),
       }),
     );
   };
@@ -457,7 +430,7 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
                 isEmailReceive: true,
                 isSmsReceive: true,
                 isKakaoReceive: true,
-                tenantUri: getFirstSubdomain(),
+                tenantUri: tenantName,
                 loginMemberType: selectedLoginType,
               });
             }}

@@ -42,8 +42,6 @@ export function PasswordTemplate({ title = '', onSubmitLogin }: PasswordTemplate
 
   const { mutate: onResetPassword, isSuccess: isSuccessResetPassword } = useResetPassword();
 
-  // console.log('login join page', getFirstSubdomain(), tenantName);
-
   const [clientTenantName, setClientTenantName] = useState(null);
   useEffect(() => {
     // 클라이언트에서만 tenantName을 설정

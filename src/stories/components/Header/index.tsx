@@ -81,10 +81,8 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
     setAnchorElAlarm(event.currentTarget);
   };
 
-  // console.log(getFirstSubdomain());
-
   const router = useRouter();
-  const { update } = useSessionStore.getState();
+  const { update, tenantName } = useSessionStore.getState();
   const { user, setUser } = useStore();
   const [scroll, setScroll] = useState(0);
   const [headerTop, setHeaderTop] = useState(0);
@@ -94,17 +92,6 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
   const { setColorPresets } = useColorPresets();
   const [baseUrl, setBaseUrl] = useState('');
   const savedIndex = localStorage.getItem('activeIndex');
-  // console.log('header', user);
-
-  // 컴포넌트가 마운트될 때 localStorage에서 activeIndex를 불러옴
-  // useEffect(() => {
-  //   const savedIndex = localStorage.getItem('activeIndex');
-  //   if (savedIndex !== null) {
-  //     setActiveIndex(parseInt(savedIndex, 10)); // Ensure setActiveIndex is called with a valid number
-  //   }
-  // }, [setActiveIndex]); // Add setActiveIndex as a dependency
-
-  // activeIndex가 변경될 때마다 localStorage에 저장
 
   useEffect(() => {
     localStorage.setItem('activeIndex', activeIndex);
@@ -116,7 +103,6 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
     // 이 코드는 클라이언트 측에서만 실행됩니다
     if (typeof window !== 'undefined') {
       setBaseUrl(window.location.origin);
-      // console.log(window.location.origin);
     }
   }, [router]);
 
@@ -192,7 +178,7 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
         style={{ textAlign: 'left', paddingLeft: '20px', backgroundColor: 'black' }}
       >
         <Typography type="H3" weight="bold">
-          {getFirstSubdomain() === 'iotcoss' || getFirstSubdomain() === 'ai' ? (
+          {tenantName === 'iotcoss' || tenantName === 'ai' ? (
             <Typography>사물인터넷 혁신융합대학사업단</Typography>
           ) : (
             <Typography>DSU QuizUp</Typography>
@@ -289,11 +275,11 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
         <div className="container" style={{ alignItems: 'center' }}>
           {/* <div className={cx('header-link')}> */}
           <div onClick={handleGoHome} className={cx('header-link')}>
-            {getFirstSubdomain() === 'iotcoss' ? (
+            {tenantName === 'iotcoss' ? (
               <div className="tw-flex tw-items-center tw-gap-2">
                 <img src="/assets/images/header/sejong_logo.png" width={250} alt="logo" className={cx('image-logo')} />
               </div>
-            ) : getFirstSubdomain() === 'ai' || getFirstSubdomain() === 'quizup' ? (
+            ) : tenantName === 'ai' || tenantName === 'quizup' ? (
               <div className="tw-flex tw-items-center tw-gap-2">
                 <img src="/assets/images/devus_2.png" width={92} alt="logo" className={cx('image-logo')} />
               </div>

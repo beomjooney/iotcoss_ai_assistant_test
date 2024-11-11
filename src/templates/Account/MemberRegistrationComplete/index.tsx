@@ -26,7 +26,6 @@ import * as Yup from 'yup';
 import { useLoginOtp, useLoginOtpVerification, useLoginSignUp } from 'src/services/account/account.mutations';
 import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
 import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
-import { getFirstSubdomain } from 'src/utils/date';
 
 interface MemberRegistrationCompleteTemplateProps {
   onSubmitLogin: () => void;
@@ -38,14 +37,8 @@ export function MemberRegistrationCompleteTemplate({ onSubmitLogin }: MemberRegi
   const router = useRouter();
 
   // ** Timer
-  const [subdomain, setSubdomain] = useState('');
 
   const { mutate: onLoginSignUp, isSuccess: isSignUpSuccess, data: signUpData } = useLoginSignUp();
-
-  useEffect(() => {
-    const subdomain = getFirstSubdomain();
-    setSubdomain(subdomain);
-  }, []);
 
   useEffect(() => {
     if (isSignUpSuccess) {
@@ -66,7 +59,7 @@ export function MemberRegistrationCompleteTemplate({ onSubmitLogin }: MemberRegi
       smsReceiveYn: sms,
       kakaoReceiveYn: kakao,
       token: resultData.token,
-      tenantUri: subdomain,
+      tenantUri: tenantName,
     });
   };
 

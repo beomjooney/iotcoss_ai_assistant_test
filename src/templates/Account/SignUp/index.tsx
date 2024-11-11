@@ -117,11 +117,6 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
   }, [resultData]);
 
   useEffect(() => {
-    const subdomain = getFirstSubdomain();
-    setSubdomain(subdomain);
-  }, []);
-
-  useEffect(() => {
     if (isSignUpSuccess) {
       // router.push('/account/login');
     }
@@ -346,7 +341,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
         smsReceiveYn: sms,
         token: resultData.token,
         kakaoReceiveYn: kakao,
-        tenantUri: subdomain,
+        tenantUri: tenantName,
       });
     } else {
       console.log('registrationAuthenticationType', registrationAuthenticationType);
@@ -360,7 +355,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
         emailReceiveYn: email1,
         smsReceiveYn: sms,
         kakaoReceiveYn: kakao,
-        tenantUri: subdomain,
+        tenantUri: tenantName,
       });
       setStep('2');
     }
@@ -377,7 +372,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
       emailReceiveYn: email1,
       smsReceiveYn: sms,
       kakaoReceiveYn: kakao,
-      tenantUri: subdomain,
+      tenantUri: tenantName,
     });
   };
 

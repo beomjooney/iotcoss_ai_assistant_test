@@ -29,8 +29,6 @@ export function ForgotTemplate({ title = '', onSubmitLogin }: ForgotTemplateProp
   const [step, setStep] = useState('1');
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // console.log('login join page', getFirstSubdomain(), tenantName);
-
   const [clientTenantName, setClientTenantName] = useState(null);
   useEffect(() => {
     // 클라이언트에서만 tenantName을 설정
@@ -67,12 +65,7 @@ export function ForgotTemplate({ title = '', onSubmitLogin }: ForgotTemplateProp
     onEmainSend({
       email: data.username,
       tenantUri: tenantName,
-      // paramsWithDefault({
-      //   ...data,
-      //   tenant_uri: getFirstSubdomain(),
-      // }),
     });
-    // setStep('2');
   };
 
   const onError = (e: any) => {
