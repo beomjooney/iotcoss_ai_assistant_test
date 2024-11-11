@@ -139,16 +139,6 @@ export function PasswordTemplate({ title = '', onSubmitLogin }: PasswordTemplate
       newPassword: data.password,
       newPasswordConfirm: data.passwordConfirm,
     });
-
-    // setUserName(data.username);
-    // setPassword(data.password);
-    // onLogin(
-    //   paramsWithDefault({
-    //     ...data,
-    //     login_member_type: selectedLoginType,
-    //     tenant_uri: getFirstSubdomain(),
-    //   }),
-    // );
   };
 
   return (

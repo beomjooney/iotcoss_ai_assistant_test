@@ -33,7 +33,7 @@ interface LoginTemplateProps {
 }
 
 export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps) {
-  const { update, tenantName } = useSessionStore.getState();
+  const { update, tenantName, tenantUri } = useSessionStore.getState();
   const router = useRouter();
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
@@ -59,7 +59,7 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
           password: password,
           grant_type: 'password',
           login_member_type: selectedLoginType,
-          tenant_uri: tenantName,
+          tenant_uri: tenantUri,
         }),
       );
     }
@@ -146,7 +146,7 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
       paramsWithDefault({
         ...data,
         login_member_type: selectedLoginType,
-        tenant_uri: tenantName,
+        tenant_uri: tenantUri,
       }),
     );
   };

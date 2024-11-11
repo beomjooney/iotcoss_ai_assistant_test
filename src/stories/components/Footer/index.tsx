@@ -33,7 +33,7 @@ const Footer = () => {
             </div>
             <div className="tw-grid tw-grid-cols-1 tw-gap-4 tw-items-center tw-justify-between lg:tw-grid-cols-2 container tw-pb-10">
               <div className="tw-flex tw-flex-col tw-col-span-1 tw-hidden lg:tw-flex tw-flex-col tw-items-start tw-text-sm">
-                라이프멘토스(주) ㅣ 대표 : 추병조 ㅣ 서비스 문의 : support@lifementors.co.kr <br />
+                라이프멘토스(주) ㅣ 대표 : 추병조 ㅣ 서비스 문의 : devus@lifementors.co.kr <br />
                 서울시 마포구 마포대로8길 35, 흥전빌딩 401호 ㅣ 사업자등록번호 : 530-86-02750
               </div>
               <div className="tw-flex tw-flex-col tw-col-span-1  tw-text-right tw-font-bold">

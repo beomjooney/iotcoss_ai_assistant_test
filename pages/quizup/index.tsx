@@ -1,24 +1,22 @@
 import './index.module.scss';
 import { HomeB2cTemplate } from '../../src/templates/HomeB2c';
 import { HomeTemplate } from '../../src/templates/Home';
-import { useMemberInfo, useMyProfile } from '../../src/services/account/account.queries';
+import { useMemberInfo } from '../../src/services/account/account.queries';
 import { useStore } from 'src/store';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Session, useSessionStore } from '../../src/store/session';
 
 import { GetServerSideProps } from 'next';
 
 export function IndexPage({ session, setActiveIndex }: { session: Session; setActiveIndex: (index: number) => void }) {
-  // redirection 처리
   const { update, logged, memberId, tenantName } = useSessionStore.getState();
+
   useEffect(() => {
-    // session이 존재하는 경우에만 상태 업데이트를 수행
     if (session) {
       update(session);
     }
-  }, [session, update]); // 의존성 배열에 session과 update 포함
+  }, [session, update]);
 
-  // console.log('memberId', logged, memberId);
   const { setUser } = useStore();
   const { data } = useMemberInfo(memberId, data => {
     console.log('useMemberInfo', data);
@@ -30,7 +28,15 @@ export function IndexPage({ session, setActiveIndex }: { session: Session; setAc
     setActiveIndex(0);
   }, []);
 
-  // TODO 로그인 수정 변경
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  // Only render after component is mounted to avoid hydration mismatch
+  if (!isMounted) return null;
+
   return (
     <>
       {tenantName === 'dsunv' ? (
@@ -61,20 +67,9 @@ export const getServerSideProps: GetServerSideProps = async context => {
     let session: Session | null = null;
 
     if (authStore) {
-      console.log('authStore', authStore);
       const authData = authStore;
-
-      console.log('authData', authData);
-      // 2. Base64 디코딩 (Node.js 환경에서는 Buffer를 사용)
       const decodedAuthStore = Buffer.from(authData, 'base64').toString('utf-8');
-      console.log('parsedAuthStore', decodedAuthStore);
       session = JSON.parse(decodedAuthStore);
-      console.log('session', session);
-    } else {
-      // let queryClient = await fetchGuestTenats('dsu');
-      // return {
-      //   props: { ...query, dehydratedState: JSON.parse(JSON.stringify(dehydrate(queryClient))) },
-      // };
     }
 
     return {

@@ -10,6 +10,7 @@ export interface Session {
   beforeOnePick?: string;
   job?: string;
   tenantName?: string;
+  tenantUri?: string;
   memberName?: string;
   userAgent?: string;
   logged: boolean;
@@ -23,6 +24,7 @@ export interface SessionStore {
   memberId?: string;
   memberName?: string;
   tenantName?: string;
+  tenantUri?: string;
   beforeOnePick?: string;
   job?: string;
   logged?: boolean;
@@ -56,7 +58,8 @@ const useSessionStore = create<any>(
       memberId: undefined,
       memberName: undefined,
       beforeOnePick: undefined,
-      tenantName: getSubdomain()?.split('.')[0],
+      tenantName: undefined,
+      tenantUri: undefined,
       menu: {},
       redirections: {},
       logged: false,

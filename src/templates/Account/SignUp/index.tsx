@@ -32,7 +32,7 @@ import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
 import { getFirstSubdomain } from 'src/utils/date';
 import { useSessionStore } from '../../../../src/store/session';
 import { getButtonClass } from 'src/utils/clubStatus';
-import { IconButton, InputAdornment } from '@mui/material';
+import { IconButton, InputAdornment, tabClasses } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 interface SignUpTemplateProps {
@@ -42,7 +42,7 @@ interface SignUpTemplateProps {
 const cx = classNames.bind(styles);
 
 export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
-  const { tenantName, registrationAuthenticationType } = useSessionStore.getState();
+  const { tenantName, tenantUri, registrationAuthenticationType } = useSessionStore.getState();
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
 
@@ -341,7 +341,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
         smsReceiveYn: sms,
         token: resultData.token,
         kakaoReceiveYn: kakao,
-        tenantUri: tenantName,
+        tenantUri: tenantUri,
       });
     } else {
       console.log('registrationAuthenticationType', registrationAuthenticationType);
@@ -355,7 +355,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
         emailReceiveYn: email1,
         smsReceiveYn: sms,
         kakaoReceiveYn: kakao,
-        tenantUri: tenantName,
+        tenantUri: tenantUri,
       });
       setStep('2');
     }
@@ -372,7 +372,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
       emailReceiveYn: email1,
       smsReceiveYn: sms,
       kakaoReceiveYn: kakao,
-      tenantUri: tenantName,
+      tenantUri: tenantUri,
     });
   };
 
@@ -411,7 +411,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
     event.preventDefault();
     console.log('id3133', data);
     setEmail(data.memberId);
-    setParams({ email: data.memberId, tenantUri: subdomain });
+    setParams({ email: data.memberId, tenantUri: tenantName });
     setShouldRefetch(true);
   };
 

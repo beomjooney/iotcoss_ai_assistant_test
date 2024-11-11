@@ -26,7 +26,7 @@ const cx = classNames.bind(styles);
 
 export function LoginOneTemplate({ title = '', onSubmitLogin }: LoginTempOnelateProps) {
   const { mutate: onLogin, isSuccess, data: loginData } = useLogin();
-  const { update, tenantName } = useSessionStore.getState();
+  const { update, tenantName, tenantUri } = useSessionStore.getState();
   const router = useRouter();
   const COLOR_PRESETS = usePresets();
   const { setColorPresetName } = useColorPresetName();
@@ -74,8 +74,7 @@ export function LoginOneTemplate({ title = '', onSubmitLogin }: LoginTempOnelate
     onLogin(
       paramsWithDefault({
         ...data,
-        tenant_uri: tenantName,
-        // tenant_uri: getFirstSubdomain(),
+        tenant_uri: tenantUri,
       }),
     );
   };

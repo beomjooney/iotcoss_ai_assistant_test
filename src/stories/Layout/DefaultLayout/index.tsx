@@ -32,6 +32,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       // console.log('access_data', data);
       update({
         tenantName: data?.tenantId,
+        tenantUri: data?.tenantUri,
         // tenantName: data?.tenantName,
         redirections: data?.homeUrl,
         registrationAuthenticationType: data?.registrationAuthenticationType,
