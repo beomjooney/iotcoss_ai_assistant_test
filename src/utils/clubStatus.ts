@@ -138,6 +138,8 @@ const getButtonText = status => {
 function getButtonClass(tenantName) {
   // console.log('tenantName', tenantName);
   switch (tenantName) {
+    case 'dsunv':
+      return 'tw-bg-[#e11837]';
     case 'dsu':
       return 'tw-bg-[#e11837]';
     case 'iotcoss':

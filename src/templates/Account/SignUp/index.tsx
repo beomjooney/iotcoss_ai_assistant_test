@@ -411,7 +411,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
     event.preventDefault();
     console.log('id3133', data);
     setEmail(data.memberId);
-    setParams({ email: data.memberId, tenantUri: tenantName });
+    setParams({ email: data.memberId, tenantUri: tenantUri });
     setShouldRefetch(true);
   };
 

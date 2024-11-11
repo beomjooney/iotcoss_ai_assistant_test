@@ -23,7 +23,7 @@ interface ForgotTemplateProps {
 
 export function ForgotTemplate({ title = '', onSubmitLogin }: ForgotTemplateProps) {
   const { mutate: onEmainSend, isSuccess, data: loginData } = useEmainSend();
-  const { update, tenantName } = useSessionStore.getState();
+  const { update, tenantName, tenantUri } = useSessionStore.getState();
   const router = useRouter();
   const [username, setUserName] = useState('');
   const [step, setStep] = useState('1');
@@ -64,7 +64,7 @@ export function ForgotTemplate({ title = '', onSubmitLogin }: ForgotTemplateProp
     setUserName(data.username);
     onEmainSend({
       email: data.username,
-      tenantUri: tenantName,
+      tenantUri: tenantUri,
     });
   };
 

@@ -178,8 +178,10 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
         style={{ textAlign: 'left', paddingLeft: '20px', backgroundColor: 'black' }}
       >
         <Typography type="H3" weight="bold">
-          {tenantName === 'iotcoss' || tenantName === 'ai' ? (
+          {tenantName === 'sjunv' ? (
             <Typography>사물인터넷 혁신융합대학사업단</Typography>
+          ) : tenantName === 'ai' ? (
+            <Typography>AI조교</Typography>
           ) : (
             <Typography>DSU QuizUp</Typography>
           )}
@@ -275,7 +277,7 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
         <div className="container" style={{ alignItems: 'center' }}>
           {/* <div className={cx('header-link')}> */}
           <div onClick={handleGoHome} className={cx('header-link')}>
-            {tenantName === 'iotcoss' ? (
+            {tenantName === 'sjunv' ? (
               <div className="tw-flex tw-items-center tw-gap-2">
                 <img src="/assets/images/header/sejong_logo.png" width={250} alt="logo" className={cx('image-logo')} />
               </div>

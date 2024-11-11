@@ -430,7 +430,7 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
                 isEmailReceive: true,
                 isSmsReceive: true,
                 isKakaoReceive: true,
-                tenantUri: tenantName,
+                tenantUri: tenantUri,
                 loginMemberType: selectedLoginType,
               });
             }}
