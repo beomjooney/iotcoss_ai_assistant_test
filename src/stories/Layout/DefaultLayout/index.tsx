@@ -31,7 +31,8 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       setCookie('access_token', data?.guestToken);
       // console.log('access_data', data);
       update({
-        tenantName: data?.tenantName,
+        tenantName: data?.tenantId,
+        // tenantName: data?.tenantName,
         redirections: data?.homeUrl,
         registrationAuthenticationType: data?.registrationAuthenticationType,
         menu: {

@@ -6,9 +6,6 @@ import { useEffect } from 'react';
 import { Session, useSessionStore } from '../../src/store/session';
 
 import { GetServerSideProps } from 'next';
-import { fetchGuestTenats, useGuestTenant } from '../../src/services/seminars/seminars.queries';
-import { dehydrate, useQuery } from 'react-query';
-import { setCookie } from 'cookies-next';
 
 export function IndexPage({ session, setActiveIndex }: { session: Session; setActiveIndex: (index: number) => void }) {
   // redirection 처리
@@ -20,24 +17,6 @@ export function IndexPage({ session, setActiveIndex }: { session: Session; setAc
       update(session);
     }
   }, [session, update]); // 의존성 배열에 session과 update 포함
-
-  // console.log('memberId', logged, memberId);
-
-  //미로그인 데이터 처리
-  // if (!logged) {
-  //   useGuestTenant('iotcoss', data => {
-  //     setCookie('access_token', data.guestToken);
-  //     console.log('access_token', data);
-  //     update({
-  //       tenantName: data.tenantName,
-  //       redirections: data.homeUrl,
-  //       menu: {
-  //         use_lecture_club: data.lectureClubUseYn === 'YES' ? true : false,
-  //         use_quiz_club: data.quizClubUseYn === 'YES' ? true : false,
-  //       },
-  //     });
-  //   });
-  // }
 
   // session이 존재하는 경우에만 상태 업데이트를 수행
   useEffect(() => {

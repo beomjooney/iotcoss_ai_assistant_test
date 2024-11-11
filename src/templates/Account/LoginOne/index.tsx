@@ -56,7 +56,8 @@ export function LoginOneTemplate({ title = '', onSubmitLogin }: LoginTempOnelate
       onSubmitLogin();
       //redirection 처리
       update({
-        tenantName: loginData?.tenant_uri?.split('.')[0],
+        // tenantName: loginData?.tenantId,
+        // tenantName: loginData?.tenant_uri?.split('.')[0],
         redirections: loginData?.redirections,
         menu: loginData?.menu,
       });
@@ -67,24 +68,25 @@ export function LoginOneTemplate({ title = '', onSubmitLogin }: LoginTempOnelate
       console.log('loginData?.tenant_uri', loginData?.tenant_uri, getFirstSubdomain(), isLocalEnv);
 
       // if (loginData?.tenant_uri === getFirstSubdomain() || isLocalEnv || isLocalProd) {
-      if (loginData?.tenant_uri === getFirstSubdomain() || isLocalEnv) {
-        location.href = '/';
-      } else {
-        const authStore = localStorage.getItem('auth-store');
-        if (authStore) {
-          const json = JSON.parse(authStore);
-          const jsonString = JSON.stringify(json.state);
-          // 1. Base64 인코딩 (Node.js 환경에서는 Buffer를 사용)
-          const encodedJson = Buffer.from(jsonString).toString('base64');
-          // location.href = loginData?.redirections?.home_url + `?authStore=${encodedJson}`;
-          deleteCookie('access_token');
-          localStorage.removeItem('auth-store');
-          localStorage.removeItem('app-storage');
-          location.href = loginData?.redirections?.home_url + `?authStore=${encodedJson}`;
-          //test
-          //location.href = 'http://dsu.localhost:3001/' + `?authStore=${encodedJson}`;
-        }
-      }
+      // if (loginData?.tenant === getFirstSubdomain() || isLocalEnv) {
+      // if (loginData?.tenant_uri === getFirstSubdomain() || isLocalEnv) {
+      location.href = '/';
+      // } else {
+      //   const authStore = localStorage.getItem('auth-store');
+      //   if (authStore) {
+      //     const json = JSON.parse(authStore);
+      //     const jsonString = JSON.stringify(json.state);
+      //     // 1. Base64 인코딩 (Node.js 환경에서는 Buffer를 사용)
+      //     const encodedJson = Buffer.from(jsonString).toString('base64');
+      //     // location.href = loginData?.redirections?.home_url + `?authStore=${encodedJson}`;
+      //     deleteCookie('access_token');
+      //     localStorage.removeItem('auth-store');
+      //     localStorage.removeItem('app-storage');
+      //     location.href = loginData?.redirections?.home_url + `?authStore=${encodedJson}`;
+      //     //test
+      //     //location.href = 'http://dsu.localhost:3001/' + `?authStore=${encodedJson}`;
+      //   }
+      // }
     }
   }, [loginData]);
 
@@ -118,7 +120,8 @@ export function LoginOneTemplate({ title = '', onSubmitLogin }: LoginTempOnelate
     onLogin(
       paramsWithDefault({
         ...data,
-        tenant_uri: getFirstSubdomain(),
+        tenant_uri: tenantName,
+        // tenant_uri: getFirstSubdomain(),
       }),
     );
   };
