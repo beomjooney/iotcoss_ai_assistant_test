@@ -91,6 +91,20 @@ export const myLectureDashboardStudentList = async (params: any) => {
 };
 
 // 클럽 퀴즈 목록 조회
+export const myLectureDashboardChatList = async (params: any) => {
+  console.log(params);
+  const { data } = await axiosGeneralAPI().get(`/api/v1/llm/ai-playground/reference-questions`, {
+    // params: {
+    //   orderBy: params.data.sortType,
+    //   page: params.data.page,
+    //   size: params.size,
+    //   sortType: params.data.orderBy,
+    // },
+  });
+  return data.data;
+};
+
+// 클럽 퀴즈 목록 조회
 export const myDashboardLecture = async (params: any) => {
   console.log(params);
   const { data } = await axiosGeneralAPI().get(`/api/v1/lecture-clubs/${params.clubSequence}/dashboard/studies`, {
@@ -252,6 +266,11 @@ export const saveAnswer = async (params: any) =>
       answer: params.answer,
     },
   );
+
+export const chatQuery = async (params: any) => {
+  const { data } = await axiosGeneralAPI().post(`/api/v1/llm/ai-playground/query`, params);
+  return data.data;
+};
 
 // 강의클럽 질문 삭제
 export const deleteQuestion = async (params: any) =>

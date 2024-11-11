@@ -7,42 +7,23 @@ import {
   paramProps,
   useMyLectureList,
   useMyLectureDashboardList,
-  useMyLectureDashboardStudentList,
+  useMyLectureDashboardChatList,
   useMyDashboardLecture,
   useMyDashboardQA,
   useMyDashboardStudentQA,
 } from 'src/services/seminars/seminars.queries';
-import { useSaveAnswer, useDeleteQuestion } from 'src/services/seminars/seminars.mutations';
+import { useSaveAnswer, useDeleteQuestion, useChatQuery } from 'src/services/seminars/seminars.mutations';
 import Grid from '@mui/material/Grid';
+import { useMyAllLectureInfo } from 'src/services/quiz/quiz.queries';
 import Paginations from 'src/stories/components/Pagination';
+import CircularProgress, { circularProgressClasses } from '@mui/material/CircularProgress';
 
 /**import quiz modal  */
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { Radio, RadioGroup, FormControlLabel } from '@mui/material';
-import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded';
-import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded';
-import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow, { tableRowClasses } from '@mui/material/TableRow';
-import Modal from 'src/stories/components/Modal';
-import TextField from '@mui/material/TextField';
 
-/** import pagenation */
-import Pagination from '@mui/material/Pagination';
-import PaginationItem from '@mui/material/PaginationItem';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { styled } from '@mui/material/styles';
-
-//**download */
 import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
-import Markdown from 'react-markdown';
 import router from 'next/router';
 import { useSessionStore } from '../../../store/session';
 
@@ -67,7 +48,7 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
   const [totalElements, setTotalElements] = useState(0);
   const [myClubList, setMyClubList] = useState<any>([]);
   const [myDashboardList, setMyDashboardList] = useState<any>([]);
-  const [myDashboardStudentList, setMyDashboardStudentList] = useState<any>([]);
+  const [myDashboardChatList, setMyDashboardChatList] = useState<any>([]);
   const [myDashboardLectureList, setMyDashboardLectureList] = useState<any>([]);
   const [myDashboardQA, setMyDashboardQA] = useState<any>([]);
   const [myDashboardStudentQA, setMyDashboardStudentQA] = useState<any>([]);
@@ -80,30 +61,53 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
     clubSequence: selectedClub?.clubSequence || id,
     data: { sortType: 'NAME', page: 1 },
   });
-  const [myClubLectureParams, setMyClubLectureParams] = useState<any>({
-    clubSequence: selectedClub?.clubSequence || id,
-    data: { orderBy: 'STUDY_ORDER', lecturePage: 1, sortType: 'ASC' },
-  });
+  // const [myClubLectureParams, setMyClubLectureParams] = useState<any>({
+  //   clubSequence: selectedClub?.clubSequence || id,
+  //   data: { orderBy: 'STUDY_ORDER', lecturePage: 1, sortType: 'ASC' },
+  // });
 
-  const [myClubLectureQA, setMyClubLectureQA] = useState<any>({
-    clubSequence: selectedClub?.clubSequence || id,
-    sequence: clubStudySequence,
-    data: { questionPage: 1 },
-  });
+  // const [myClubLectureQA, setMyClubLectureQA] = useState<any>({
+  //   clubSequence: selectedClub?.clubSequence || id,
+  //   sequence: clubStudySequence,
+  //   data: { questionPage: 1 },
+  // });
 
-  const [myClubLectureStudentQA, setMyClubLectureStudentQA] = useState<any>({
-    clubSequence: selectedClub?.clubSequence || id,
-    memberUUID: '',
-    data: { studentQuestionPage: 1 },
-  });
+  // const [myClubLectureStudentQA, setMyClubLectureStudentQA] = useState<any>({
+  //   clubSequence: selectedClub?.clubSequence || id,
+  //   memberUUID: '',
+  //   data: { studentQuestionPage: 1 },
+  // });
 
   const [answer, setAnswer] = useState('');
   const { mutate: onSaveAnswer, isSuccess, isError } = useSaveAnswer();
   const { mutate: onDeleteQuestion, isSuccess: isDeleteSuccess } = useDeleteQuestion();
+  const { mutate: onChatQuery, isSuccess: isChatSuccess, data: chatData, isError: isChatError } = useChatQuery();
+
+  useEffect(() => {
+    if (isChatError) {
+      setMessages(prevMessages => [
+        ...prevMessages,
+        { id: messages.length + 1, sender: 'bot', text: '오류가 발생했습니다.' },
+      ]);
+      setIsLoading(false);
+    }
+  }, [isChatError]);
+
+  useEffect(() => {
+    if (chatData) {
+      setMessages(prevMessages => [...prevMessages, { id: messages.length + 1, sender: 'bot', text: chatData.answer }]);
+      setMessages(prevMessages => [
+        ...prevMessages,
+        { id: messages.length + 2, sender: 'bot', text: '감사합니다! 더 도와드릴 내용이 있으신가요?' },
+      ]);
+      setIsLoading(false);
+    }
+  }, [chatData]);
 
   const [myClubSequenceParams, setMyClubSequenceParams] = useState<any>({ clubSequence: id });
   const [params, setParams] = useState<paramProps>({ page });
   const [selectedValue, setSelectedValue] = useState(id);
+  const [selectedClubSequence, setSelectedClubSequence] = useState(null);
   const [activeTab, setActiveTab] = useState('myQuiz');
   // const [activeTab, setActiveTab] = useState('community');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -111,6 +115,17 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
   const [key, setKey] = useState('');
   const [fileName, setFileName] = useState('');
   const [memberUUID, setMemberUUID] = useState('');
+  const [isClient, setIsClient] = useState(false);
+  const [quizList, setQuizList] = useState<any>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState('');
+  const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const [myClubSubTitleParams, setMyClubSubTitleParams] = useState<any>({
     clubSequence: id,
@@ -143,15 +158,30 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
     },
   );
 
+  const { isFetched: isParticipantListFetched, data } = useMyAllLectureInfo(myClubParams, data => {
+    console.log('first get data', data);
+    setQuizList(data?.contents || []);
+    setTotalPage(data?.totalPages);
+    // setSelectedClub(data?.contents[0].clubSequence);
+    setTotalElements(data?.totalElements);
+  });
+
   // 강의클럽 대시보드 학생 참여 현황
-  const { isFetched: isDashboardStudentFetched, refetch: refetchMyDashboardStudent } = useMyLectureDashboardStudentList(
-    myClubParams,
-    data => {
-      console.log('useMyLectureDashboardStudentList', data);
-      setMyDashboardStudentList(data || []);
-      setTotalStudentPage(data?.students?.totalPages);
-    },
-  );
+  const {
+    isFetched: isDashboardChatFetched,
+    isLoading: isDashboardChatLoading,
+    refetch: refetchMyDashboardChat,
+  } = useMyLectureDashboardChatList(myClubParams, data => {
+    const formattedQuestions = data?.referenceQuestions?.map((question, index) => ({
+      id: index + 1,
+      sender: 'init',
+      text: question,
+    }));
+
+    console.log('chatlist', data, formattedQuestions);
+    setMyDashboardChatList(formattedQuestions);
+    setTotalStudentPage(data?.students?.totalPages);
+  });
 
   /** my quiz replies */
 
@@ -161,94 +191,70 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
   useDidMountEffect(() => {
     setMyClubParams({
       clubSequence: selectedClub?.clubSequence || id,
-      data: { sortType: sortType, page: 1, orderBy: sortType === 'NAME' ? 'ASC' : 'DESC' },
-    });
-
-    setMyClubSequenceParams({ clubSequence: selectedClub?.clubSequence || id });
-
-    let dataParam = {};
-    if (sortLectureType === 'STUDY_ORDER_ASC') {
-      dataParam = { orderBy: 'STUDY_ORDER', page: lecturePage, sortType: 'DESC' };
-    } else if (sortLectureType === 'STUDY_ORDER_DESC') {
-      dataParam = { orderBy: 'STUDY_ORDER', page: lecturePage, sortType: 'ASC' };
-    } else {
-      dataParam = { orderBy: 'QUESTION_COUNT', page: lecturePage, sortType: 'DESC' };
-    }
-
-    setMyClubLectureParams({
-      clubSequence: selectedClub?.clubSequence || id,
-      data: dataParam,
-    });
-    setPageStudent(1);
-  }, [sortType, selectedClub, sortLectureType, lecturePage]);
-
-  useDidMountEffect(() => {
-    setMyClubParams({
-      clubSequence: selectedClub?.clubSequence || id,
       data: { sortType: sortType, page: pageStudent },
     });
   }, [pageStudent]);
 
-  useDidMountEffect(() => {
-    let dataParam = {};
-    if (sortLectureType === 'STUDY_ORDER_ASC') {
-      dataParam = { orderBy: 'STUDY_ORDER', page: page, sortType: 'ASC' };
-    } else if (sortLectureType === 'STUDY_ORDER_DESC') {
-      dataParam = { orderBy: 'STUDY_ORDER', page: page, sortType: 'DESC' };
-    } else {
-      dataParam = { orderBy: 'QUESTION_COUNT', page: page, sortType: 'DESC' };
-    }
-
-    setMyClubLectureParams({
-      clubSequence: selectedClub?.clubSequence || id,
-      data: dataParam,
-    });
-  }, [page]);
-
-  useDidMountEffect(() => {
-    console.log('questionPage', questionPage);
-    setMyClubLectureQA({
-      clubSequence: selectedClub?.clubSequence || id,
-      sequence: clubStudySequence,
-      data: { questionPage: questionPage },
-    });
-  }, [questionPage]);
-
-  // 페이지가 변경될 때만 동작하도록 수정, memberUUID가 없으면 실행하지 않음
-  useDidMountEffect(() => {
-    if (memberUUID) {
-      setMyClubLectureStudentQA({
-        clubSequence: selectedClub?.clubSequence || id,
-        sequence: clubStudySequence,
-        memberUUID: memberUUID,
-        data: { studentQuestionPage: studentQuestionPage },
-      });
-    } else {
-      console.error('memberUUID is missing');
-    }
-  }, [studentQuestionPage, memberUUID]); // memberUUID가 없을 때 에러 방지
-
-  useEffect(() => {
-    if (memberUUID) {
-      console.log('memberUUID', memberUUID);
-      setMyClubLectureStudentQA({
-        clubSequence: selectedClub?.clubSequence || id,
-        memberUUID: memberUUID,
-        data: { studentQuestionPage: 1 },
-      });
-    }
-  }, [memberUUID]);
-
   const handleQuizChange = event => {
     const value = event.target.value;
-    const selectedSession = myClubList?.find(session => {
-      return session.clubSequence === Number(value);
-    });
-
     console.log('value', value);
     setSelectedValue(value);
-    setSelectedClub(selectedSession);
-    console.log(selectedSession);
+    setSelectedClubSequence(value);
+    setMessages([]);
+  };
+
+  // Ref to the inner scrollable container
+  const innerScrollRef = useRef(null);
+
+  // Function to scroll to the bottom of the inner container
+  const scrollToBottom = () => {
+    if (innerScrollRef.current) {
+      innerScrollRef.current.scrollTop = innerScrollRef.current.scrollHeight;
+    }
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]); // Run when combinedMessages changes
+
+  const handleKeyDown = e => {
+    if (e.key === 'Enter') {
+      if (input === '') return;
+      scrollToBottom(); // Scroll the inner container to the bottom
+      setInput(''); // Clear input field after sending the message
+      setIsLoading(true);
+      setMessages(prevMessages => [...prevMessages, { id: messages.length + 1, sender: 'user', text: input }]);
+      onChatQuery({
+        clubSequence: selectedClub?.clubSequence || id,
+        clubStudySequence: selectedClub?.clubStudySequence || id,
+        query: input,
+      }); // 검색 함수 실행
+      e.preventDefault(); // 엔터 시 기본 동작 방지
+    }
+  };
+
+  const handleInitMessageClick = (text: string) => {
+    if (text === '') return;
+    scrollToBottom(); // Scroll the inner container to the bottom
+    setIsLoading(true);
+    setMessages(prevMessages => [...prevMessages, { id: messages.length + 1, sender: 'user', text: text }]);
+    onChatQuery({
+      clubSequence: selectedClub?.clubSequence || id,
+      clubStudySequence: selectedClub?.clubStudySequence || id,
+      query: text,
+    }); // 검색 함수 실행
+  };
+
+  const handleSendMessage = () => {
+    if (input === '') return;
+    scrollToBottom(); // Scroll the inner container to the bottom
+    setMessages(prevMessages => [...prevMessages, { id: messages.length + 1, sender: 'user', text: input }]);
+    setIsLoading(true);
+    onChatQuery({
+      clubSequence: selectedClub?.clubSequence || id,
+      clubStudySequence: selectedClub?.clubStudySequence || id,
+      query: input,
+    }); // 검색 함수 실행
   };
 
   const { isFetched: isParticipantListFetcheds, isSuccess: isParticipantListSuccess } = useQuizFileDownload(
@@ -270,56 +276,9 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
     },
   );
 
-  const initialMessages = [
-    { id: 1, sender: 'init', text: '강의 질문내용 요약해줘' },
-    { id: 2, sender: 'init', text: '키워드/용어 관련 질문 요약해줘' },
-    { id: 3, sender: 'init', text: '강의 공통질문 요약해줘' },
-    { id: 4, sender: 'init', text: '강의 연관성이 높은 질문과 질문자 추출해줘' },
-    {
-      id: 5,
-      sender: 'bot',
-      text: '안녕하세요! ',
-    },
-    { id: 6, sender: 'user', text: '여기 예제를 준비했습니다. 아래 입력창을 통해 대화를 이어가세요!' },
-  ];
-
-  const [messages, setMessages] = useState(initialMessages);
-  const [input, setInput] = useState('');
-  const messagesEndRef = useRef(null);
-
   // 새 메시지가 추가될 때마다 스크롤 하단으로 이동
 
-  const scrollToBottom = () => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   // 새 메시지가 추가될 때마다 스크롤 하단으로 이동
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-  const handleSendMessage = () => {
-    if (input.trim()) {
-      const newMessage = {
-        id: messages.length + 1,
-        sender: 'user',
-        text: input,
-      };
-      setMessages([...messages, newMessage]);
-      setInput('');
-
-      // 챗봇 응답 추가 (간단한 예제)
-      setTimeout(() => {
-        const botResponse = {
-          id: messages.length + 2,
-          sender: 'bot',
-          text: '감사합니다! 더 도와드릴 내용이 있으신가요?',
-        };
-        setMessages(prevMessages => [...prevMessages, botResponse]);
-      }, 1000);
-    }
-  };
 
   const getMessageStyle = (sender: 'user' | 'bot' | 'init') => {
     if (sender === 'user') {
@@ -344,34 +303,36 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
   return (
     <div className={cx('seminar-container')}>
       <div className={cx('container')}>
-        {/* <Divider className="tw-y-5 tw-bg-['#efefef']" /> */}
         <div className="tw-pt-8">
           <div className="tw-flex tw-justify-start tw-items-start tw-left-0 tw-top-3.5 tw-gap-[3.5px]">
-            <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[10.5px] tw-text-left tw-text-[#313b49]">
+            <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[10.5px] tw-text-left tw-text-[#313b49]">
               My강의클럽
-            </p>
-            <svg
-              width={17}
-              height={16}
-              viewBox="0 0 17 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[15.75px] tw-h-[15.75px] tw-relative"
-              preserveAspectRatio="none"
-            >
-              <path
-                d="M6.96925 11.25L10.3438 7.8755L6.96925 4.50101L6.40651 5.06336L9.21905 7.8755L6.40651 10.6877L6.96925 11.25Z"
-                fill="#313B49"
-              />
-            </svg>
-            <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[10.5px] tw-text-left tw-text-[#313b49]">
+            </div>
+
+            {isClient && (
+              <svg
+                width={17}
+                height={16}
+                viewBox="0 0 17 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[15.75px] tw-h-[15.75px] tw-relative"
+                preserveAspectRatio="none"
+              >
+                <path
+                  d="M6.96925 11.25L10.3438 7.8755L6.96925 4.50101L6.40651 5.06336L9.21905 7.8755L6.40651 10.6877L6.96925 11.25Z"
+                  fill="#313B49"
+                />
+              </svg>
+            )}
+            <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[10.5px] tw-text-left tw-text-[#313b49]">
               플레이그라운드
-            </p>
+            </div>
           </div>
           <div className="tw-flex tw-justify-start tw-items-center tw-left-0 tw-top-[31.5px] tw-gap-3.5">
-            <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[21px] tw-font-bold tw-text-left tw-text-black">
+            <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[21px] tw-font-bold tw-text-left tw-text-black">
               플레이그라운드
-            </p>
+            </div>
           </div>
           <Divider className="tw-py-2 tw-bg-['#efefef']" />
         </div>
@@ -395,14 +356,14 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
                 aria-label="Default select example"
               >
                 {isContentFetched &&
-                  myClubList?.map((session, idx) => {
+                  quizList?.map((session, idx) => {
                     return (
                       <option
                         key={idx}
                         className="tw-w-20 tw-bg-[#f6f7fb] tw-items-center tw-flex-shrink-0 border-left border-top border-right tw-rounded-t-lg tw-cursor-pointer"
-                        value={session?.clubSequence}
+                        value={session?.clubStudySequence}
                       >
-                        회차 {session?.order}주차 : {session?.clubName}
+                        회차 {session?.studyOrder}주차 : {session?.clubStudyName}
                       </option>
                     );
                   })}
@@ -410,7 +371,6 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
             </Grid>
 
             <Grid item xs={1} justifyContent="flex-end" className="tw-flex">
-              {/* {contents?.isBeforeOpening ? ( */}
               <div className="">
                 <button
                   type="button"
@@ -423,255 +383,290 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
             </Grid>
           </Grid>
         </div>
-        {true && (
-          <div className="tw-grid tw-grid-cols-10 tw-mt-5">
-            <div className="tw-col-span-4  border-right">
-              {/* Left Column Content */}
-              <div className="tw-flex tw-justify-start tw-items-center tw-h-14 tw-px-8 tw-py-5 tw-rounded-tl-lg tw-bg-[#f6f7fb] tw-border-t-0 tw-border-r tw-border-b tw-border-l-0 tw-border-[#e0e4eb]">
-                <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
-                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-lg tw-font-semibold tw-text-left tw-text-[#1f2633]">
-                    질의응답 활용 강의자료
-                  </p>
-                  <div className="tw-flex tw-flex-col tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2.5 tw-py-px tw-rounded-sm tw-bg-[#e7eaf1]">
-                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-left tw-text-[#1f2633]">
-                      3
-                    </p>
-                  </div>
+        <div className="tw-grid tw-grid-cols-10 tw-mt-5">
+          <div className="tw-col-span-4  border-right">
+            <div className="tw-flex tw-justify-start tw-items-center tw-h-14 tw-px-8 tw-py-5 tw-rounded-tl-lg tw-bg-[#f6f7fb] tw-border-t-0 tw-border-r tw-border-b tw-border-l-0 tw-border-[#e0e4eb]">
+              <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
+                <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-lg tw-font-semibold tw-text-left tw-text-[#1f2633]">
+                  질의응답 활용 강의자료
                 </div>
-              </div>
-              <div className="tw-flex tw-flex-col tw-justify-start tw-items-start tw-bg-[#fcfcff]">
-                <div className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-overflow-hidden tw-gap-3 tw-px-8 tw-py-4">
-                  <div className="tw-flex tw-justify-start tw-items-start tw-flex-grow tw-gap-1">
-                    <div className="tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-w-6 tw-h-6 tw-relative tw-gap-2.5">
-                      <svg
-                        width={20}
-                        height={20}
-                        viewBox="0 0 20 20"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-5 tw-h-5 tw-relative"
-                        preserveAspectRatio="xMidYMid meet"
-                      >
-                        <path
-                          d="M5.25642 17.9163C4.83547 17.9163 4.47917 17.7705 4.1875 17.4788C3.89583 17.1871 3.75 16.8308 3.75 16.4099V3.58943C3.75 3.16848 3.89583 2.81217 4.1875 2.52051C4.47917 2.22884 4.83547 2.08301 5.25642 2.08301H11.875L16.25 6.45797V16.4099C16.25 16.8308 16.1041 17.1871 15.8125 17.4788C15.5208 17.7705 15.1645 17.9163 14.7435 17.9163H5.25642ZM11.25 7.08297V3.33299H5.25642C5.19231 3.33299 5.13353 3.3597 5.0801 3.41311C5.02669 3.46654 4.99998 3.52531 4.99998 3.58943V16.4099C4.99998 16.474 5.02669 16.5328 5.0801 16.5862C5.13353 16.6396 5.19231 16.6663 5.25642 16.6663H14.7435C14.8077 16.6663 14.8664 16.6396 14.9199 16.5862C14.9733 16.5328 15 16.474 15 16.4099V7.08297H11.25Z"
-                          fill="#313B49"
-                        />
-                      </svg>
-                    </div>
-                    <div className="tw-flex tw-flex-col tw-justify-start tw-items-start tw-flex-grow tw-gap-2">
-                      <div className="tw-flex tw-flex-col tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0">
-                        <div className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-3">
-                          <p className="tw-flex-grow w-[338px] tw-text-base tw-font-medium tw-text-left tw-text-[#1f2633]">
-                            프로그래밍과 하드웨어의 관계
-                          </p>
-                        </div>
-                        <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
-                          <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[13px] tw-text-left tw-text-[#9ca5b2]">
-                            PDF
-                          </p>
-                          <svg
-                            width={1}
-                            height={6}
-                            viewBox="0 0 1 6"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="flex-grow-0 flex-shrink-0"
-                            preserveAspectRatio="xMidYMid meet"
-                          >
-                            <line x1="0.5" y1="0.5" x2="0.5" y2="5.5" stroke="#9CA5B2" />
-                          </svg>
-                          <p className="tw-container tw-flex-grow-0 tw-flex-shrink-0 tw-text-[13px] tw-text-left tw-text-[#9ca5b2]">
-                            5mb
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-overflow-hidden tw-gap-3 tw-px-8 tw-py-4">
-                  <div className="tw-flex tw-justify-start tw-items-start tw-flex-grow tw-gap-1">
-                    <div className="tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-w-6 tw-h-6 tw-relative tw-gap-2.5">
-                      <svg
-                        width={20}
-                        height={20}
-                        viewBox="0 0 20 20"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-5 tw-h-5 tw-relative"
-                        preserveAspectRatio="xMidYMid meet"
-                      >
-                        <path
-                          d="M5.25642 17.9163C4.83547 17.9163 4.47917 17.7705 4.1875 17.4788C3.89583 17.1871 3.75 16.8308 3.75 16.4099V3.58943C3.75 3.16848 3.89583 2.81217 4.1875 2.52051C4.47917 2.22884 4.83547 2.08301 5.25642 2.08301H11.875L16.25 6.45797V16.4099C16.25 16.8308 16.1041 17.1871 15.8125 17.4788C15.5208 17.7705 15.1645 17.9163 14.7435 17.9163H5.25642ZM11.25 7.08297V3.33299H5.25642C5.19231 3.33299 5.13353 3.3597 5.0801 3.41311C5.02669 3.46654 4.99998 3.52531 4.99998 3.58943V16.4099C4.99998 16.474 5.02669 16.5328 5.0801 16.5862C5.13353 16.6396 5.19231 16.6663 5.25642 16.6663H14.7435C14.8077 16.6663 14.8664 16.6396 14.9199 16.5862C14.9733 16.5328 15 16.474 15 16.4099V7.08297H11.25Z"
-                          fill="#313B49"
-                        />
-                      </svg>
-                    </div>
-                    <div className="tw-flex tw-flex-col tw-justify-start tw-items-start tw-flex-grow tw-gap-2">
-                      <div className="tw-flex tw-flex-col tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0">
-                        <div className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-3">
-                          <p className="tw-flex-grow w-[338px] tw-text-base tw-font-medium tw-text-left tw-text-[#1f2633]">
-                            프로그래밍과 하드웨어의 관계
-                          </p>
-                        </div>
-                        <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
-                          <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[13px] tw-text-left tw-text-[#9ca5b2]">
-                            PDF
-                          </p>
-                          <svg
-                            width={1}
-                            height={6}
-                            viewBox="0 0 1 6"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="flex-grow-0 flex-shrink-0"
-                            preserveAspectRatio="xMidYMid meet"
-                          >
-                            <line x1="0.5" y1="0.5" x2="0.5" y2="5.5" stroke="#9CA5B2" />
-                          </svg>
-                          <p className="tw-containerflex-grow-0 tw-flex-shrink-0 tw-text-[13px] tw-text-left tw-text-[#9ca5b2]">
-                            5mb
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="tw-flex tw-justify-start tw-items-center tw-h-14 tw-px-8 tw-py-5  tw-bg-[#f6f7fb] tw-border-t-0 tw-border-r tw-border-b tw-border-l-0 tw-border-[#e0e4eb]">
-                <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
-                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-lg tw-font-semibold tw-text-left tw-text-[#1f2633]">
-                    질의응답 자료
-                  </p>
-                  <div className="tw-flex tw-flex-col tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2.5 tw-py-px tw-rounded-sm tw-bg-[#e7eaf1]">
-                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-left tw-text-[#1f2633]">
-                      3
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="tw-flex tw-flex-col tw-justify-start tw-items-start ">
-                <div className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-h-[75px] tw-relative tw-gap-4 tw-pl-3 tw-pr-8 tw-py-3 tw-bg-[#fcfcff] tw-border-t-0 tw-border-r tw-border-b tw-border-l-0 tw-border-[#e0e4eb]">
-                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[33px] tw-text-base tw-font-medium tw-text-center tw-text-[#1f2633]">
-                    1
-                  </p>
-                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-13 tw-text-base tw-font-medium tw-text-center tw-text-[#6a7380]">
-                    황혜경
-                  </p>
-                  <p className="tw-flex-grow w-[277px] tw-text-base tw-font-medium tw-text-left tw-text-[#1f2633]">
-                    클라우드를 iot 플랫폼으로 생각할 수 있어? 아니면 둘이 또 다른 개념이야?
-                  </p>
-                </div>
-                <div className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-h-[49px] tw-relative tw-gap-4 tw-pl-3 tw-pr-8 tw-py-3 tw-bg-[#fcfcff] tw-border-t-0 tw-border-r tw-border-b tw-border-l-0 tw-border-[#e0e4eb]">
-                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[33px] tw-text-base tw-font-medium tw-text-center tw-text-[#1f2633]">
-                    2
-                  </p>
-                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-13 tw-text-base tw-font-medium tw-text-center tw-text-[#6a7380]">
-                    권수빈
-                  </p>
-                  <p className="tw-flex-grow w-[277px] tw-text-base tw-font-medium tw-text-left tw-text-[#1f2633]">
-                    rvi가 5는 뭘 의미하는거야?
-                  </p>
-                </div>
-                <div className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-h-[49px] tw-relative tw-gap-4 tw-pl-3 tw-pr-8 tw-py-3 tw-bg-[#fcfcff] tw-border-t-0 tw-border-r tw-border-b tw-border-l-0 tw-border-[#e0e4eb]">
-                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[33px] tw-text-base tw-font-medium tw-text-center tw-text-[#1f2633]">
+                <div className="tw-flex tw-flex-col tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2.5 tw-py-px tw-rounded-sm tw-bg-[#e7eaf1]">
+                  <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-left tw-text-[#1f2633]">
                     3
-                  </p>
-                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-13 tw-text-base tw-font-medium tw-text-center tw-text-[#6a7380]">
-                    김상우
-                  </p>
-                  <p className="tw-flex-grow w-[277px] tw-text-base tw-font-medium tw-text-left tw-text-[#1f2633]">
-                    お。日本語できますか？
-                  </p>
-                </div>
-                <div className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-h-[49px] tw-relative tw-gap-4 tw-pl-3 tw-pr-8 tw-py-3 tw-bg-[#fcfcff] tw-border-t-0 tw-border-r tw-border-b tw-border-l-0 tw-border-[#e0e4eb]">
-                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[33px] tw-text-base tw-font-medium tw-text-center tw-text-[#1f2633]">
-                    4
-                  </p>
-                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-13 tw-text-base tw-font-medium tw-text-center tw-text-[#6a7380]">
-                    김백건
-                  </p>
-                  <p className="tw-flex-grow w-[277px] tw-text-base tw-font-medium tw-text-left tw-text-[#1f2633]">
-                    NFC에 대해 알려줘
-                  </p>
-                </div>
-                <div className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-h-[75px] tw-relative tw-gap-4 tw-pl-3 tw-pr-8 tw-py-3 tw-bg-[#fcfcff] tw-border-t-0 tw-border-r tw-border-b tw-border-l-0 tw-border-[#e0e4eb]">
-                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[33px] tw-text-base tw-font-medium tw-text-center tw-text-[#1f2633]">
-                    5
-                  </p>
-                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-13 tw-text-base tw-font-medium tw-text-center tw-text-[#6a7380]">
-                    권수빈
-                  </p>
-                  <p className="tw-flex-grow w-[277px] tw-text-base tw-font-medium tw-text-left tw-text-[#1f2633]">
-                    AE ID가 고유해야 하는 범위가 어디까지인거야? absolute라 하니까 정확히는 모르겠어
-                  </p>
-                </div>
-                <div className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-h-[75px] tw-relative tw-gap-4 tw-pl-3 tw-pr-8 tw-py-3 tw-bg-[#fcfcff] tw-border-t-0 tw-border-r tw-border-b tw-border-l-0 tw-border-[#e0e4eb]">
-                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[33px] tw-text-base tw-font-medium tw-text-center tw-text-[#1f2633]">
-                    6
-                  </p>
-                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-13 tw-text-base tw-font-medium tw-text-center tw-text-[#6a7380]">
-                    박제혁
-                  </p>
-                  <p className="tw-flex-grow w-[277px] tw-text-base tw-font-medium tw-text-left tw-text-[#1f2633]">
-                    아니 이 개 멍청한 새끼야 아까 말했던 거를 한국어로 하라고 =
-                  </p>
-                </div>
-                <div className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-h-[75px] tw-relative tw-gap-4 tw-pl-3 tw-pr-8 tw-py-3 tw-bg-[#fcfcff] tw-border-t-0 tw-border-r tw-border-b tw-border-l-0 tw-border-[#e0e4eb]">
-                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[33px] tw-text-base tw-font-medium tw-text-center tw-text-[#1f2633]">
-                    7
-                  </p>
-                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-13 tw-text-base tw-font-medium tw-text-center tw-text-[#6a7380]">
-                    오정현
-                  </p>
-                  <p className="tw-flex-grow w-[277px] tw-text-base tw-font-medium tw-text-left tw-text-[#1f2633]">
-                    보통 AE쪽에서 CSE쪽으로 요청하는거 아니야??
-                  </p>
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="tw-col-span-6 tw-flex tw-flex-col  ">
-              {/* Right Column Content */}
-              <div className="tw-flex tw-justify-start tw-items-center tw-h-14 tw-px-8 tw-py-5 tw-rounded-tr-lg tw-bg-[#f6f7fb] tw-border-t-0 tw-border-r tw-border-b tw-border-l-0 tw-border-[#e0e4eb]">
-                <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
-                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-lg tw-font-semibold tw-text-left tw-text-[#1f2633]">
-                    대화
-                  </p>
+            <div className="tw-flex tw-flex-col tw-justify-start tw-items-start tw-bg-[#fcfcff]">
+              <div className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-overflow-hidden tw-gap-3 tw-px-8 tw-py-4">
+                <div className="tw-flex tw-justify-start tw-items-start tw-flex-grow tw-gap-1">
+                  <div className="tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-w-6 tw-h-6 tw-relative tw-gap-2.5">
+                    {isClient && (
+                      <svg
+                        width={20}
+                        height={20}
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-5 tw-h-5 tw-relative"
+                        preserveAspectRatio="xMidYMid meet"
+                      >
+                        <path
+                          d="M5.25642 17.9163C4.83547 17.9163 4.47917 17.7705 4.1875 17.4788C3.89583 17.1871 3.75 16.8308 3.75 16.4099V3.58943C3.75 3.16848 3.89583 2.81217 4.1875 2.52051C4.47917 2.22884 4.83547 2.08301 5.25642 2.08301H11.875L16.25 6.45797V16.4099C16.25 16.8308 16.1041 17.1871 15.8125 17.4788C15.5208 17.7705 15.1645 17.9163 14.7435 17.9163H5.25642ZM11.25 7.08297V3.33299H5.25642C5.19231 3.33299 5.13353 3.3597 5.0801 3.41311C5.02669 3.46654 4.99998 3.52531 4.99998 3.58943V16.4099C4.99998 16.474 5.02669 16.5328 5.0801 16.5862C5.13353 16.6396 5.19231 16.6663 5.25642 16.6663H14.7435C14.8077 16.6663 14.8664 16.6396 14.9199 16.5862C14.9733 16.5328 15 16.474 15 16.4099V7.08297H11.25Z"
+                          fill="#313B49"
+                        />
+                      </svg>
+                    )}
+                  </div>
+                  <div className="tw-flex tw-flex-col tw-justify-start tw-items-start tw-flex-grow tw-gap-2">
+                    <div className="tw-flex tw-flex-col tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0">
+                      <div className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-3">
+                        <div className="tw-flex-grow w-[338px] tw-text-base tw-font-medium tw-text-left tw-text-[#1f2633]">
+                          프로그래밍과 하드웨어의 관계
+                        </div>
+                      </div>
+                      <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
+                        <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[13px] tw-text-left tw-text-[#9ca5b2]">
+                          PDF
+                        </div>
+                        {isClient && (
+                          <svg
+                            width={1}
+                            height={6}
+                            viewBox="0 0 1 6"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="flex-grow-0 flex-shrink-0"
+                            preserveAspectRatio="xMidYMid meet"
+                          >
+                            <line x1="0.5" y1="0.5" x2="0.5" y2="5.5" stroke="#9CA5B2" />
+                          </svg>
+                        )}
+                        <div className="tw-container tw-flex-grow-0 tw-flex-shrink-0 tw-text-[13px] tw-text-left tw-text-[#9ca5b2]">
+                          5mb
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-
-              <div className="tw-overflow-y-auto tw-p-10 tw-h-[580px]">
-                <div>
-                  <img className="tw-w-[61px] tw-h-[56px]" src="/assets/images/main/_chatbot.png" />
-                  <p className="tw-w-[381px] tw-text-xl tw-text-left tw-text-[#313b49] tw-py-8">
-                    <div className="tw-w-[381px] tw-text-lg tw-text-left tw-text-[#313b49]">안녕하세요!</div>
-                    <div className="tw-w-[381px] tw-text-lg tw-text-left tw-text-[#313b49] tw-pt-1">
-                      우리 수업의 AI 조교를 테스트하고,
+              <div className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-overflow-hidden tw-gap-3 tw-px-8 tw-py-4">
+                <div className="tw-flex tw-justify-start tw-items-start tw-flex-grow tw-gap-1">
+                  <div className="tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-w-6 tw-h-6 tw-relative tw-gap-2.5">
+                    {isClient && (
+                      <svg
+                        width={20}
+                        height={20}
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-5 tw-h-5 tw-relative"
+                        preserveAspectRatio="xMidYMid meet"
+                      >
+                        <path
+                          d="M5.25642 17.9163C4.83547 17.9163 4.47917 17.7705 4.1875 17.4788C3.89583 17.1871 3.75 16.8308 3.75 16.4099V3.58943C3.75 3.16848 3.89583 2.81217 4.1875 2.52051C4.47917 2.22884 4.83547 2.08301 5.25642 2.08301H11.875L16.25 6.45797V16.4099C16.25 16.8308 16.1041 17.1871 15.8125 17.4788C15.5208 17.7705 15.1645 17.9163 14.7435 17.9163H5.25642ZM11.25 7.08297V3.33299H5.25642C5.19231 3.33299 5.13353 3.3597 5.0801 3.41311C5.02669 3.46654 4.99998 3.52531 4.99998 3.58943V16.4099C4.99998 16.474 5.02669 16.5328 5.0801 16.5862C5.13353 16.6396 5.19231 16.6663 5.25642 16.6663H14.7435C14.8077 16.6663 14.8664 16.6396 14.9199 16.5862C14.9733 16.5328 15 16.474 15 16.4099V7.08297H11.25Z"
+                          fill="#313B49"
+                        />
+                      </svg>
+                    )}
+                  </div>
+                  <div className="tw-flex tw-flex-col tw-justify-start tw-items-start tw-flex-grow tw-gap-2">
+                    <div className="tw-flex tw-flex-col tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0">
+                      <div className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-3">
+                        <div className="tw-flex-grow w-[338px] tw-text-base tw-font-medium tw-text-left tw-text-[#1f2633]">
+                          프로그래밍과 하드웨어의 관계
+                        </div>
+                      </div>
+                      <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
+                        <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[13px] tw-text-left tw-text-[#9ca5b2]">
+                          PDF
+                        </div>
+                        {isClient && (
+                          <svg
+                            width={1}
+                            height={6}
+                            viewBox="0 0 1 6"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="flex-grow-0 flex-shrink-0"
+                            preserveAspectRatio="xMidYMid meet"
+                          >
+                            <line x1="0.5" y1="0.5" x2="0.5" y2="5.5" stroke="#9CA5B2" />
+                          </svg>
+                        )}
+                        <div className="tw-container flex-grow-0 tw-flex-shrink-0 tw-text-[13px] tw-text-left tw-text-[#9ca5b2]">
+                          5mb
+                        </div>
+                      </div>
                     </div>
-                    <div className="tw-w-[381px] tw-text-lg tw-text-left tw-text-[#313b49] tw-pt-1">
-                      질의 응답된 결과를 확인해보세요!
-                    </div>
-                  </p>
+                  </div>
                 </div>
-                {messages.map(message => (
-                  <div key={message.id} className={`tw-text-sm tw-flex ${getMessageAlignment(message.sender)} tw-mb-4`}>
+              </div>
+            </div>
+            <div className="tw-flex tw-justify-start tw-items-center tw-h-14 tw-px-8 tw-py-5  tw-bg-[#f6f7fb] tw-border-t-0 tw-border-r tw-border-b tw-border-l-0 tw-border-[#e0e4eb]">
+              <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
+                <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-lg tw-font-semibold tw-text-left tw-text-[#1f2633]">
+                  질의응답 자료
+                </div>
+                <div className="tw-flex tw-flex-col tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2.5 tw-py-px tw-rounded-sm tw-bg-[#e7eaf1]">
+                  <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-left tw-text-[#1f2633]">
+                    3
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="tw-flex tw-flex-col tw-justify-start tw-items-start ">
+              <div className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-h-[75px] tw-relative tw-gap-4 tw-pl-3 tw-pr-8 tw-py-3 tw-bg-[#fcfcff] tw-border-t-0 tw-border-r tw-border-b tw-border-l-0 tw-border-[#e0e4eb]">
+                <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[33px] tw-text-base tw-font-medium tw-text-center tw-text-[#1f2633]">
+                  1
+                </div>
+                <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-13 tw-text-base tw-font-medium tw-text-center tw-text-[#6a7380]">
+                  황혜경
+                </div>
+                <div className="tw-flex-grow w-[277px] tw-text-base tw-font-medium tw-text-left tw-text-[#1f2633]">
+                  클라우드를 iot 플랫폼으로 생각할 수 있어? 아니면 둘이 또 다른 개념이야?
+                </div>
+              </div>
+              <div className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-h-[49px] tw-relative tw-gap-4 tw-pl-3 tw-pr-8 tw-py-3 tw-bg-[#fcfcff] tw-border-t-0 tw-border-r tw-border-b tw-border-l-0 tw-border-[#e0e4eb]">
+                <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[33px] tw-text-base tw-font-medium tw-text-center tw-text-[#1f2633]">
+                  2
+                </div>
+                <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-13 tw-text-base tw-font-medium tw-text-center tw-text-[#6a7380]">
+                  권수빈
+                </div>
+                <div className="tw-flex-grow w-[277px] tw-text-base tw-font-medium tw-text-left tw-text-[#1f2633]">
+                  rvi가 5는 뭘 의미하는거야?
+                </div>
+              </div>
+              <div className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-h-[49px] tw-relative tw-gap-4 tw-pl-3 tw-pr-8 tw-py-3 tw-bg-[#fcfcff] tw-border-t-0 tw-border-r tw-border-b tw-border-l-0 tw-border-[#e0e4eb]">
+                <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[33px] tw-text-base tw-font-medium tw-text-center tw-text-[#1f2633]">
+                  3
+                </div>
+                <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-13 tw-text-base tw-font-medium tw-text-center tw-text-[#6a7380]">
+                  김상우
+                </div>
+                <div className="tw-flex-grow w-[277px] tw-text-base tw-font-medium tw-text-left tw-text-[#1f2633]">
+                  お。日本語できますか？
+                </div>
+              </div>
+              <div className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-h-[49px] tw-relative tw-gap-4 tw-pl-3 tw-pr-8 tw-py-3 tw-bg-[#fcfcff] tw-border-t-0 tw-border-r tw-border-b tw-border-l-0 tw-border-[#e0e4eb]">
+                <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[33px] tw-text-base tw-font-medium tw-text-center tw-text-[#1f2633]">
+                  4
+                </div>
+                <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-13 tw-text-base tw-font-medium tw-text-center tw-text-[#6a7380]">
+                  김백건
+                </div>
+                <div className="tw-flex-grow w-[277px] tw-text-base tw-font-medium tw-text-left tw-text-[#1f2633]">
+                  NFC에 대해 알려줘
+                </div>
+              </div>
+              <div className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-h-[75px] tw-relative tw-gap-4 tw-pl-3 tw-pr-8 tw-py-3 tw-bg-[#fcfcff] tw-border-t-0 tw-border-r tw-border-b tw-border-l-0 tw-border-[#e0e4eb]">
+                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[33px] tw-text-base tw-font-medium tw-text-center tw-text-[#1f2633]">
+                  5
+                </p>
+                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-13 tw-text-base tw-font-medium tw-text-center tw-text-[#6a7380]">
+                  권수빈
+                </p>
+                <p className="tw-flex-grow w-[277px] tw-text-base tw-font-medium tw-text-left tw-text-[#1f2633]">
+                  AE ID가 고유해야 하는 범위가 어디까지인거야? absolute라 하니까 정확히는 모르겠어
+                </p>
+              </div>
+              <div className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-h-[75px] tw-relative tw-gap-4 tw-pl-3 tw-pr-8 tw-py-3 tw-bg-[#fcfcff] tw-border-t-0 tw-border-r tw-border-b tw-border-l-0 tw-border-[#e0e4eb]">
+                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[33px] tw-text-base tw-font-medium tw-text-center tw-text-[#1f2633]">
+                  6
+                </p>
+                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-13 tw-text-base tw-font-medium tw-text-center tw-text-[#6a7380]">
+                  박제혁
+                </p>
+                <p className="tw-flex-grow w-[277px] tw-text-base tw-font-medium tw-text-left tw-text-[#1f2633]">
+                  아니 이 개 멍청한 새끼야 아까 말했던 거를 한국어로 하라고 =
+                </p>
+              </div>
+              <div className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-h-[75px] tw-relative tw-gap-4 tw-pl-3 tw-pr-8 tw-py-3 tw-bg-[#fcfcff] tw-border-t-0 tw-border-r tw-border-b tw-border-l-0 tw-border-[#e0e4eb]">
+                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[33px] tw-text-base tw-font-medium tw-text-center tw-text-[#1f2633]">
+                  7
+                </p>
+                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-13 tw-text-base tw-font-medium tw-text-center tw-text-[#6a7380]">
+                  오정현
+                </p>
+                <p className="tw-flex-grow w-[277px] tw-text-base tw-font-medium tw-text-left tw-text-[#1f2633]">
+                  보통 AE쪽에서 CSE쪽으로 요청하는거 아니야??
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="tw-col-span-6 tw-flex tw-flex-col  ">
+            <div className="tw-flex tw-justify-start tw-items-center tw-h-14 tw-px-8 tw-py-5 tw-rounded-tr-lg tw-bg-[#f6f7fb] tw-border-t-0 tw-border-r tw-border-b tw-border-l-0 tw-border-[#e0e4eb]">
+              <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
+                <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-lg tw-font-semibold tw-text-left tw-text-[#1f2633]">
+                  대화
+                </div>
+              </div>
+            </div>
+
+            <div className="tw-overflow-y-auto tw-p-10 tw-h-[580px]" ref={innerScrollRef}>
+              <div>
+                <img className="tw-w-[61px] tw-h-[56px]" src="/assets/images/main/_chatbot.png" />
+                <div className="tw-w-[381px] tw-text-xl tw-text-left tw-text-[#313b49] tw-py-8 tw-font-bold">
+                  <div className="tw-w-[381px] tw-text-lg tw-text-left tw-text-[#313b49]">안녕하세요!</div>
+                  <div className="tw-w-[381px] tw-text-lg tw-text-left tw-text-[#313b49] tw-pt-1">
+                    우리 수업의 AI 조교를 테스트하고,
+                  </div>
+                  <div className="tw-w-[381px] tw-text-lg tw-text-left tw-text-[#313b49] tw-pt-1">
+                    질의 응답된 결과를 확인해보세요!
+                  </div>
+                </div>
+              </div>
+              {[...myDashboardChatList, ...messages].map((message, index) =>
+                message.sender === 'init' ? (
+                  <div
+                    key={`${message.id}-${index}`}
+                    onClick={() => handleInitMessageClick(message.text)}
+                    className={`tw-cursor-pointer tw-text-sm tw-flex ${getMessageAlignment(message.sender)} tw-mb-4`}
+                  >
                     <div className={`tw-p-3 tw-rounded-lg tw-max-w-xs ${getMessageStyle(message.sender)}`}>
                       {message.text}
                     </div>
                   </div>
-                ))}
-                {/* <div ref={messagesEndRef} /> */}
-              </div>
+                ) : (
+                  <div
+                    key={`${message.id}-${index}`}
+                    className={`tw-text-sm tw-flex ${getMessageAlignment(message.sender)} tw-mb-4`}
+                  >
+                    <div className={`tw-p-3 tw-rounded-lg tw-max-w-xs ${getMessageStyle(message.sender)}`}>
+                      {message.text}
+                    </div>
+                  </div>
+                ),
+              )}
 
-              {/* 입력 영역을 하단에 고정 */}
-              <div className="tw-flex tw-items-center tw-p-4 tw-border-t tw-bg-white">
-                <input
-                  type="text"
-                  value={input}
-                  onChange={e => setInput(e.target.value)}
-                  className="tw-flex-1 tw-h-12 tw-px-2 tw-border"
-                  placeholder="메시지를 입력하세요..."
-                />
-                <button onClick={handleSendMessage} className=" tw-text-white tw-rounded-lg">
+              {isLoading && (
+                <div className="tw-flex tw-justify-center tw-items-center tw-h-14">
+                  <svg width={0} height={0}>
+                    <defs>
+                      <linearGradient id="my_gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stopColor="#e01cd5" />
+                        <stop offset="100%" stopColor="#1CB5E0" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                  <CircularProgress sx={{ 'svg circle': { stroke: 'url(#my_gradient)' } }} />
+                </div>
+              )}
+            </div>
+
+            <div className="tw-flex tw-items-center tw-p-4 tw-border-t tw-bg-white">
+              <input
+                type="text"
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                className="tw-flex-1 tw-h-12 tw-px-2 tw-border"
+                placeholder="메시지를 입력하세요..."
+                disabled={isLoading}
+              />
+              <button onClick={e => handleSendMessage()} disabled={isLoading} className=" tw-text-white tw-rounded-lg">
+                {isClient && (
                   <svg
                     width={50}
                     height={50}
@@ -687,11 +682,11 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
                       fill="white"
                     />
                   </svg>
-                </button>
-              </div>
+                )}
+              </button>
             </div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

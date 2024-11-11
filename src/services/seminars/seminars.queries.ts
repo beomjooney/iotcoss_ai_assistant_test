@@ -36,6 +36,7 @@ import {
   professorRequestList,
   myExcel,
   myAllClubExcel,
+  myLectureDashboardChatList,
 } from './seminars.api';
 
 export interface paramProps {
@@ -137,6 +138,22 @@ export const useMyLectureDashboardStudentList = (
   return useQuery<any, Error>(
     QUERY_KEY_FACTORY('STUDENT_DASHBOARD').list({ size: DEFAULT_SIZE, ...params }),
     () => myLectureDashboardStudentList({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+    },
+  );
+};
+export const useMyLectureDashboardChatList = (
+  params?: paramProps,
+  onSuccess?: (data: any) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 10;
+  return useQuery<any, Error>(
+    QUERY_KEY_FACTORY('CHAT_DASHBOARD').list({ size: DEFAULT_SIZE, ...params }),
+    () => myLectureDashboardChatList({ size: DEFAULT_SIZE, ...params }),
     {
       onSuccess,
       onError,

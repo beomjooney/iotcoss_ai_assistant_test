@@ -11,6 +11,7 @@ import {
   saveAnswer,
   deleteQuestion,
   updateSeminar,
+  chatQuery,
 } from './seminars.api';
 
 export const useSaveSeminar = (): UseMutationResult => {
@@ -32,6 +33,19 @@ export const useSaveAnswer = (): UseMutationResult => {
   const queryClient = useQueryClient();
   // TODO : any 타입 변경
   return useMutation<any, any, any>(requestBody => saveAnswer(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('SEMINAR').all),
+    onSuccess: async data => {},
+  });
+};
+
+export const useChatQuery = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  // TODO : any 타입 변경
+  return useMutation<any, any, any>(requestBody => chatQuery(requestBody), {
     onError: (error, variables, context) => {
       const { code, message } = error;
       alert(`mutation error : [${code}] ${message}`);
