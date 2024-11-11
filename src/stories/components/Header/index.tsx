@@ -58,7 +58,7 @@ export interface NavbarProps {
 const cx = classNames.bind(styles);
 
 const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIndex }: NavbarProps) => {
-  const { logged, roles, menu } = useSessionStore.getState();
+  const { logged, roles, menu, tenantName } = useSessionStore.getState();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [anchorElAlarm, setAnchorElAlarm] = useState(null);
   const [contents, setContents] = useState<any>([]);
@@ -289,11 +289,11 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
         <div className="container" style={{ alignItems: 'center' }}>
           {/* <div className={cx('header-link')}> */}
           <div onClick={handleGoHome} className={cx('header-link')}>
-            {getFirstSubdomain() === 'iotcoss' ? (
+            {tenantName === 'iotcoss' ? (
               <div className="tw-flex tw-items-center tw-gap-2">
                 <img src="/assets/images/header/sejong_logo.png" width={250} alt="logo" className={cx('image-logo')} />
               </div>
-            ) : getFirstSubdomain() === 'ai' || getFirstSubdomain() === 'quizup' ? (
+            ) : tenantName === 'ai' || tenantName === 'quizup' ? (
               <div className="tw-flex tw-items-center tw-gap-2">
                 <img src="/assets/images/devus_2.png" width={92} alt="logo" className={cx('image-logo')} />
               </div>
