@@ -8,7 +8,7 @@ export const useOptions = (onSuccess?: (data: ExperiencesResponse) => void, onEr
     onSuccess,
     onError,
     refetchOnWindowFocus: false,
-    staleTime: 5 * 60 * 1000, // 5분 유지
+    // staleTime: 5 * 60 * 1000, // 5분 유지
   });
 };
 
