@@ -268,7 +268,10 @@ export const saveAnswer = async (params: any) =>
   );
 
 export const chatQuery = async (params: any) => {
-  const { data } = await axiosGeneralAPI().post(`/api/v1/llm/ai-playground/query`, params);
+  // Remove properties with null values
+  const filteredParams = Object.fromEntries(Object.entries(params).filter(([_, value]) => value !== null));
+
+  const { data } = await axiosGeneralAPI().post(`/api/v1/llm/ai-playground/query`, filteredParams);
   return data.data;
 };
 

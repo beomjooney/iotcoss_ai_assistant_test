@@ -1,8 +1,10 @@
+'use client';
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import React, { useState, useEffect } from 'react';
 import Divider from '@mui/material/Divider';
 import { useRef } from 'react';
+
 import {
   paramProps,
   useMyLectureList,
@@ -26,6 +28,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
 import router from 'next/router';
 import { useSessionStore } from '../../../store/session';
+import Markdown from 'react-markdown';
 
 export interface LecturePlayGroundTemplateProps {
   /** 세미나 아이디 */
@@ -38,45 +41,18 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
   const { roles } = useSessionStore.getState();
   const [page, setPage] = useState(1);
   const [pageStudent, setPageStudent] = useState(1);
-  const [lecturePage, setLecturePage] = useState(1);
-  const [questionPage, setQuestionPage] = useState(1);
-  const [studentQuestionPage, setStudentQuestionPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [totalStudentPage, setTotalStudentPage] = useState(1);
-  const [totalQuestionPage, setTotalQuestionPage] = useState(1);
-  const [totalStudentQuestionPage, setTotalStudentQuestionPage] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
   const [myClubList, setMyClubList] = useState<any>([]);
   const [myDashboardList, setMyDashboardList] = useState<any>([]);
   const [myDashboardChatList, setMyDashboardChatList] = useState<any>([]);
-  const [myDashboardLectureList, setMyDashboardLectureList] = useState<any>([]);
-  const [myDashboardQA, setMyDashboardQA] = useState<any>([]);
-  const [myDashboardStudentQA, setMyDashboardStudentQA] = useState<any>([]);
-  const [clubStudySequence, setClubStudySequence] = useState('');
   const [selectedClub, setSelectedClub] = useState(null);
-  const [isInputOpen, setIsInputOpen] = useState(false);
-  const [openInputIndex, setOpenInputIndex] = useState(null);
 
   const [myClubParams, setMyClubParams] = useState<any>({
     clubSequence: selectedClub?.clubSequence || id,
     data: { sortType: 'NAME', page: 1 },
   });
-  // const [myClubLectureParams, setMyClubLectureParams] = useState<any>({
-  //   clubSequence: selectedClub?.clubSequence || id,
-  //   data: { orderBy: 'STUDY_ORDER', lecturePage: 1, sortType: 'ASC' },
-  // });
-
-  // const [myClubLectureQA, setMyClubLectureQA] = useState<any>({
-  //   clubSequence: selectedClub?.clubSequence || id,
-  //   sequence: clubStudySequence,
-  //   data: { questionPage: 1 },
-  // });
-
-  // const [myClubLectureStudentQA, setMyClubLectureStudentQA] = useState<any>({
-  //   clubSequence: selectedClub?.clubSequence || id,
-  //   memberUUID: '',
-  //   data: { studentQuestionPage: 1 },
-  // });
 
   const [answer, setAnswer] = useState('');
   const { mutate: onSaveAnswer, isSuccess, isError } = useSaveAnswer();
@@ -105,23 +81,15 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
   }, [chatData]);
 
   const [myClubSequenceParams, setMyClubSequenceParams] = useState<any>({ clubSequence: id });
-  const [params, setParams] = useState<paramProps>({ page });
-  const [selectedValue, setSelectedValue] = useState(id);
-  const [selectedClubSequence, setSelectedClubSequence] = useState(null);
-  const [activeTab, setActiveTab] = useState('myQuiz');
-  // const [activeTab, setActiveTab] = useState('community');
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isStudentModalOpen, setIsStudentModalOpen] = useState(false);
+  const [selectedValue, setSelectedValue] = useState(null);
   const [key, setKey] = useState('');
   const [fileName, setFileName] = useState('');
-  const [memberUUID, setMemberUUID] = useState('');
   const [isClient, setIsClient] = useState(false);
   const [quizList, setQuizList] = useState<any>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
-  const messagesEndRef = useRef(null);
 
   useEffect(() => {
     setIsClient(true);
@@ -133,14 +101,6 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
     clubType: '0200',
     size: 100,
   });
-
-  const handleChangeQuiz = event => {
-    setSortType(event.target.value);
-  };
-
-  const handleChangeLecture = event => {
-    setSortLectureType(event.target.value);
-  };
 
   // 퀴즈클럽 리스트
   const { isFetched: isContentFetched, refetch: refetchMyClub } = useMyLectureList(myClubSubTitleParams, data => {
@@ -162,7 +122,6 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
     console.log('first get data', data);
     setQuizList(data?.contents || []);
     setTotalPage(data?.totalPages);
-    // setSelectedClub(data?.contents[0].clubSequence);
     setTotalElements(data?.totalElements);
   });
 
@@ -196,10 +155,8 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
   }, [pageStudent]);
 
   const handleQuizChange = event => {
-    const value = event.target.value;
-    console.log('value', value);
-    setSelectedValue(value);
-    setSelectedClubSequence(value);
+    const selectedValue = event.target.value === '' ? null : event.target.value;
+    setSelectedValue(selectedValue);
     setMessages([]);
   };
 
@@ -220,13 +177,16 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
   const handleKeyDown = e => {
     if (e.key === 'Enter') {
       if (input === '') return;
+
+      console.log('1', id, selectedValue);
+
       scrollToBottom(); // Scroll the inner container to the bottom
       setInput(''); // Clear input field after sending the message
       setIsLoading(true);
       setMessages(prevMessages => [...prevMessages, { id: messages.length + 1, sender: 'user', text: input }]);
       onChatQuery({
-        clubSequence: selectedClub?.clubSequence || id,
-        clubStudySequence: selectedClub?.clubStudySequence || id,
+        clubSequence: id,
+        clubStudySequence: selectedValue || null,
         query: input,
       }); // 검색 함수 실행
       e.preventDefault(); // 엔터 시 기본 동작 방지
@@ -235,24 +195,27 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
 
   const handleInitMessageClick = (text: string) => {
     if (text === '') return;
+    console.log('2', id, selectedValue);
+
     scrollToBottom(); // Scroll the inner container to the bottom
     setIsLoading(true);
     setMessages(prevMessages => [...prevMessages, { id: messages.length + 1, sender: 'user', text: text }]);
     onChatQuery({
-      clubSequence: selectedClub?.clubSequence || id,
-      clubStudySequence: selectedClub?.clubStudySequence || id,
+      clubSequence: id,
+      clubStudySequence: selectedValue || null,
       query: text,
     }); // 검색 함수 실행
   };
 
   const handleSendMessage = () => {
     if (input === '') return;
+    console.log('3', id, selectedValue);
     scrollToBottom(); // Scroll the inner container to the bottom
     setMessages(prevMessages => [...prevMessages, { id: messages.length + 1, sender: 'user', text: input }]);
     setIsLoading(true);
     onChatQuery({
-      clubSequence: selectedClub?.clubSequence || id,
-      clubStudySequence: selectedClub?.clubStudySequence || id,
+      clubSequence: id,
+      clubStudySequence: selectedValue || null,
       query: input,
     }); // 검색 함수 실행
   };
@@ -277,9 +240,6 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
   );
 
   // 새 메시지가 추가될 때마다 스크롤 하단으로 이동
-
-  // 새 메시지가 추가될 때마다 스크롤 하단으로 이동
-
   const getMessageStyle = (sender: 'user' | 'bot' | 'init') => {
     if (sender === 'user') {
       return 'tw-bg-[#D7ECFF] tw-text-black';
@@ -350,14 +310,20 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
             <Grid item xs={11} className="tw-font-bold tw-text-xl">
               <select
-                className="tw-h-14 form-select block w-full  tw-font-bold tw-px-4"
+                className="tw-h-14 form-select block w-full tw-font-bold tw-px-4"
                 onChange={handleQuizChange}
                 value={selectedValue}
                 aria-label="Default select example"
               >
-                {isContentFetched &&
-                  quizList?.map((session, idx) => {
-                    return (
+                {isContentFetched && (
+                  <>
+                    <option
+                      className="tw-w-20 tw-bg-[#f6f7fb] tw-items-center tw-flex-shrink-0 border-left border-top border-right tw-rounded-t-lg tw-cursor-pointer"
+                      value={''}
+                    >
+                      전체 회차
+                    </option>
+                    {quizList?.map((session, idx) => (
                       <option
                         key={idx}
                         className="tw-w-20 tw-bg-[#f6f7fb] tw-items-center tw-flex-shrink-0 border-left border-top border-right tw-rounded-t-lg tw-cursor-pointer"
@@ -365,8 +331,9 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
                       >
                         회차 {session?.studyOrder}주차 : {session?.clubStudyName}
                       </option>
-                    );
-                  })}
+                    ))}
+                  </>
+                )}
               </select>
             </Grid>
 
@@ -617,15 +584,19 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
                   </div>
                 </div>
               </div>
-              {[...myDashboardChatList, ...messages].map((message, index) =>
-                message.sender === 'init' ? (
+              {[...myDashboardChatList, ...messages].map((message, index) => {
+                // '\n숫자' 패턴을 찾아 공백을 추가
+                const messageText = message.text.replace(/\n(\d+)/g, '\n $1');
+                console.log(messageText);
+
+                return message.sender === 'init' ? (
                   <div
                     key={`${message.id}-${index}`}
-                    onClick={() => handleInitMessageClick(message.text)}
+                    onClick={() => handleInitMessageClick(messageText)}
                     className={`tw-cursor-pointer tw-text-sm tw-flex ${getMessageAlignment(message.sender)} tw-mb-4`}
                   >
                     <div className={`tw-p-3 tw-rounded-lg tw-max-w-xs ${getMessageStyle(message.sender)}`}>
-                      {message.text}
+                      <Markdown className="markdown-container tw-prose tw-pr-2 tw-break-words">{messageText}</Markdown>
                     </div>
                   </div>
                 ) : (
@@ -634,11 +605,15 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
                     className={`tw-text-sm tw-flex ${getMessageAlignment(message.sender)} tw-mb-4`}
                   >
                     <div className={`tw-p-3 tw-rounded-lg tw-max-w-xs ${getMessageStyle(message.sender)}`}>
-                      {message.text}
+                      <div className="flex-wrap flex-grow-0 flex-shrink-0 text-base text-left text-black">
+                        <Markdown className="markdown-container tw-prose tw-pr-2 tw-break-words">
+                          {messageText}
+                        </Markdown>
+                      </div>
                     </div>
                   </div>
-                ),
-              )}
+                );
+              })}
 
               {isLoading && (
                 <div className="tw-flex tw-justify-center tw-items-center tw-h-14">
