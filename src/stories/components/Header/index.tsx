@@ -277,7 +277,7 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
         <div className="container" style={{ alignItems: 'center' }}>
           {/* <div className={cx('header-link')}> */}
           <div onClick={handleGoHome} className={cx('header-link')}>
-            {tenantName === 'sjunv' ? (
+            {tenantName === 'sjunv' || tenantName === 'iotcoss' ? (
               <div className="tw-flex tw-items-center tw-gap-2">
                 <img src="/assets/images/header/sejong_logo.png" width={250} alt="logo" className={cx('image-logo')} />
               </div>

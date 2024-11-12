@@ -6,7 +6,7 @@ const Footer = () => {
 
   return (
     <footer className="tw-border-b-4 border-heading mt-9 md:mt-11 lg:mt-16 3xl:mt-20 pt-2.5 lg:pt-0 2xl:pt-2">
-      {tenantName === 'sjunv' ? (
+      {tenantName === 'sjunv' || tenantName === 'iotcoss' ? (
         <div className="main-container tw-flex tw-justify-center tw-bg-[#31343d]">
           <div className="tw-h-[129px] tw-relative tw-overflow-hidden tw-bg-[#31343d] tw-fixed tw-bottom-0 tw-flex tw-justify-center tw-items-center">
             <div className="tw-grid tw-grid-cols-1 tw-gap-4 tw-items-center tw-justify-between lg:tw-grid-cols-2 container">
