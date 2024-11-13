@@ -227,6 +227,7 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
   };
 
   const handleInitMessageClick = (text: string) => {
+    if (isLoading) return;
     if (text === '') return;
     console.log('2', id, selectedValue);
 
@@ -531,9 +532,13 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
                   <div
                     key={`${message.id}-${index}`}
                     onClick={() => handleInitMessageClick(messageText)}
-                    className={`tw-cursor-pointer tw-text-sm tw-flex ${getMessageAlignment(message.sender)} tw-mb-4`}
+                    className={` tw-text-sm tw-flex ${getMessageAlignment(message.sender)} tw-mb-4`}
                   >
-                    <div className={`tw-p-3 tw-rounded-lg tw-max-w-xs ${getMessageStyle(message.sender)}`}>
+                    <div
+                      className={`tw-p-3 tw-cursor-pointer tw-rounded-lg tw-max-w-xs ${getMessageStyle(
+                        message.sender,
+                      )}`}
+                    >
                       <Markdown className="markdown-container tw-prose tw-pr-2 tw-break-words">{messageText}</Markdown>
                     </div>
                   </div>
@@ -574,7 +579,6 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
                 value={input}
                 onChange={e => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                //  onKeyDown={(e) => activeEnter(e)}
                 className="tw-flex-1 tw-h-12 tw-px-2 tw-border"
                 placeholder="메시지를 입력하세요..."
                 disabled={isLoading}
