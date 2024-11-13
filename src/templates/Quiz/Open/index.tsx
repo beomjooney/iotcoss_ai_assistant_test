@@ -150,72 +150,77 @@ export function QuizOpenTemplate() {
   //temp 조회
   const { refetch: refetchGetTemp }: UseQueryResult<any> = useGetTemp(data => {
     console.log('load temp', data);
-    const clubForm = data?.form || {};
-    const quizList = data?.clubQuizzes || [];
 
-    const quizListData = quizList.map(item => {
-      if (item.quizSequence < 0) {
-        return {
-          order: item.order,
-          weekNumber: item.order, // Assuming weekNumber should match the order as per your example
-          quizSequence: null,
-          publishDate: item.publishDate, // Preserve original publishDate if it exists
-          dayOfWeek: item.dayOfWeek,
-        };
-      }
-      return item;
-    });
+    if (data) {
+      const clubForm = data?.form || {};
+      const quizList = data?.clubQuizzes || [];
 
-    console.log('quizListData', quizListData);
+      const quizListData = quizList.map(item => {
+        if (item.quizSequence < 0) {
+          return {
+            order: item.order,
+            weekNumber: item.order, // Assuming weekNumber should match the order as per your example
+            quizSequence: null,
+            publishDate: item.publishDate, // Preserve original publishDate if it exists
+            dayOfWeek: item.dayOfWeek,
+          };
+        }
+        return item;
+      });
 
-    setClubName(clubForm.clubName || '');
-    setIntroductionText(clubForm.introductionText || '');
-    setRecommendationText(clubForm.recommendationText || '');
-    setLearningText(clubForm.learningText || '');
-    setMemberIntroductionText(clubForm.memberIntroductionText || '');
-    setCareerText(clubForm.careerText || '');
-    setSkills(clubForm.skills || []);
-    setOptionsSkills(prevState => Array.from(new Set([...prevState, ...(clubForm?.skills || [])])));
-    const extractedCodes = clubForm.jobLevels?.map(item => item.code);
-    setRecommendLevels(extractedCodes || []);
-    setNum(clubForm.weekCount || 0);
-    setQuizType(clubForm.quizOpenType || '');
-    setStartDay(clubForm.startAt ? dayjs(clubForm.startAt) : dayjs());
-    setStudyKeywords(clubForm.studyKeywords || []);
-    // setStudyChapter(clubForm.studyChapter || '');
-    setStudySubject(clubForm.studySubject || '');
-    setStudyCycleNum(clubForm.studyCycle || 0);
-    setUniversityCode(clubForm?.jobGroups?.[0]?.code || '');
-    setSelectedUniversityName(clubForm?.jobGroups?.[0]?.name || '');
-    setSelectedJobName(clubForm.jobs?.[0]?.name || '');
-    setJobLevelName(clubForm.jobLevels?.[0]?.name || '');
-    setLevelNames(clubForm.jobLevels?.map(item => item.name));
-    const selected = optionsData?.data?.jobs?.find(u => u.code === clubForm.jobGroups?.[0]?.code);
-    setJobs(selected ? selected.jobs : []);
-    const jobsCode = clubForm.jobs?.map(item => item.code);
-    setSelectedJob(jobsCode || []);
-    const jobsName = clubForm.jobs?.map(item => item.name);
-    console.log(jobsName);
-    setPersonName(jobsName || []);
-    setButtonFlag(true);
-    // setScheduleData(quizList);
-    setScheduleData(quizListData);
-    setAgreements(clubForm.useCurrentProfileImage);
+      console.log('quizListData', quizListData);
 
-    // Filter out items with quizSequence not null and greater than or equal to zero, then extract quizSequence values
-    const quizSequenceNumbers = quizList
-      .filter(item => item.quizSequence !== null && item.quizSequence >= 0)
-      .map(item => item.quizSequence);
+      setClubName(clubForm.clubName || '');
+      setIntroductionText(clubForm.introductionText || '');
+      setRecommendationText(clubForm.recommendationText || '');
+      setLearningText(clubForm.learningText || '');
+      setMemberIntroductionText(clubForm.memberIntroductionText || '');
+      setCareerText(clubForm.careerText || '');
+      setSkills(clubForm.skills || []);
+      setOptionsSkills(prevState => Array.from(new Set([...prevState, ...(clubForm?.skills || [])])));
+      const extractedCodes = clubForm.jobLevels?.map(item => item.code);
+      setRecommendLevels(extractedCodes || []);
+      setNum(clubForm.weekCount || 0);
+      setQuizType(clubForm.quizOpenType || '');
+      setStartDay(clubForm.startAt ? dayjs(clubForm.startAt) : dayjs());
+      setStudyKeywords(clubForm.studyKeywords || []);
+      // setStudyChapter(clubForm.studyChapter || '');
+      setStudySubject(clubForm.studySubject || '');
+      setStudyCycleNum(clubForm.studyCycle || 0);
+      setUniversityCode(clubForm?.jobGroups?.[0]?.code || '');
+      setSelectedUniversityName(clubForm?.jobGroups?.[0]?.name || '');
+      setSelectedJobName(clubForm.jobs?.[0]?.name || '');
+      setJobLevelName(clubForm.jobLevels?.[0]?.name || '');
+      setLevelNames(clubForm.jobLevels?.map(item => item.name));
+      const selected = optionsData?.data?.jobs?.find(u => u.code === clubForm.jobGroups?.[0]?.code);
+      setJobs(selected ? selected.jobs : []);
+      const jobsCode = clubForm.jobs?.map(item => item.code);
+      setSelectedJob(jobsCode || []);
+      const jobsName = clubForm.jobs?.map(item => item.name);
+      console.log(jobsName);
+      setPersonName(jobsName || []);
+      setButtonFlag(true);
+      // setScheduleData(quizList);
+      setScheduleData(quizListData);
+      setAgreements(clubForm.useCurrentProfileImage);
 
-    setSelectedQuizIds(quizSequenceNumbers);
+      // Filter out items with quizSequence not null and greater than or equal to zero, then extract quizSequence values
+      const quizSequenceNumbers = quizList
+        .filter(item => item.quizSequence !== null && item.quizSequence >= 0)
+        .map(item => item.quizSequence);
 
-    setPreview(clubForm.clubImageUrl);
-    setPreviewBanner(clubForm.backgroundImageUrl);
-    setPreviewProfile(clubForm.instructorProfileImageUrl);
+      setSelectedQuizIds(quizSequenceNumbers);
 
-    setSelectedImage('');
-    setSelectedImageBanner('');
-    // setSelectedImageProfile('');
+      setPreview(clubForm.clubImageUrl);
+      setPreviewBanner(clubForm.backgroundImageUrl);
+      setPreviewProfile(clubForm.instructorProfileImageUrl);
+
+      setSelectedImage('');
+      setSelectedImageBanner('');
+      // setSelectedImageProfile('');
+    } else {
+      alert('임시저장 데이터가 없습니다. 임시저장을 해주세요.');
+    }
   });
 
   //temp 등록
@@ -237,7 +242,13 @@ export function QuizOpenTemplate() {
   const [keyWorld, setKeyWorld] = useState('');
   const [myKeyWorld, setMyKeyWorld] = useState('');
   // const { mutate: onQuizSave, isSuccess: postSucces } = useQuizSave();
-  const { mutate: onClubQuizSave, isError, isSuccess: clubSuccess, data: clubDatas } = useClubQuizSave();
+  const {
+    mutate: onClubQuizSave,
+    isError,
+    isSuccess: clubSuccess,
+    data: clubDatas,
+    isError: clubError,
+  } = useClubQuizSave();
 
   const [selectedQuizIds, setSelectedQuizIds] = useState([]);
 
@@ -247,6 +258,12 @@ export function QuizOpenTemplate() {
   const { isFetched: isContentTypeJobFetched } = useContentJobTypes(data => {
     setContentJobType(data.data.contents || []);
   });
+
+  useEffect(() => {
+    if (clubError) {
+      setIsProcessing(false);
+    }
+  }, [clubError]);
 
   const { mutate: onClubTempSave, isSuccess: tempSuccess } = useClubTempSave();
   useEffect(() => {

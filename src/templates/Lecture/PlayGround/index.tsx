@@ -97,7 +97,11 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
 
   const [myClubSequenceParams, setMyClubSequenceParams] = useState<any>({
     page: page,
+    clubStudySequence: selectedClub,
+    clubSequence: id,
+  });
 
+  const [myClubFileParams, setMyClubFileParams] = useState<any>({
     clubStudySequence: selectedClub,
     clubSequence: id,
   });
@@ -130,7 +134,7 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
 
   // 강의클럽 대시 보드 요약 조회
   const { isFetched: isContentFetcheds, refetch: refetchMyContent } = useMyLectureContentList(
-    myClubSequenceParams,
+    myClubFileParams,
     data => {
       console.log('useMyLectureContentList', data);
       setMyContentList(data || []);
@@ -182,6 +186,11 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
       clubSequence: id,
       page: page,
     });
+
+    setMyClubFileParams({
+      clubStudySequence: selectedValue || null,
+      clubSequence: id,
+    });
     setMessages([]);
   };
 
@@ -200,6 +209,7 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
   }, [messages]); // Run when combinedMessages changes
 
   const handleKeyDown = e => {
+    console.log('handleKeyDown', e);
     if (e.key === 'Enter') {
       if (input === '') return;
 
@@ -349,7 +359,7 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
               <select
                 className="tw-h-14 form-select block w-full tw-font-bold tw-px-4"
                 onChange={handleQuizChange}
-                value={selectedValue}
+                value={selectedValue ?? ''}
                 aria-label="Default select example"
               >
                 {isContentFetched && (
@@ -444,7 +454,7 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
             <div className="tw-flex tw-justify-start tw-items-center tw-h-14 tw-px-8 tw-py-5  tw-bg-[#f6f7fb] tw-border-t-0 tw-border-r tw-border-b tw-border-l-0 tw-border-[#e0e4eb]">
               <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
                 <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-lg tw-font-semibold tw-text-left tw-text-[#1f2633]">
-                  질의응답 자료
+                  질의 응답 수
                 </div>
                 <div className="tw-flex tw-flex-col tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2.5 tw-py-px tw-rounded-sm tw-bg-[#e7eaf1]">
                   <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-left tw-text-[#1f2633]">
@@ -516,7 +526,6 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
               {[...myDashboardChatList, ...messages].map((message, index) => {
                 // '\n숫자' 패턴을 찾아 공백을 추가
                 const messageText = message.text.replace(/\n(\d+)/g, '\n $1');
-                console.log(messageText);
 
                 return message.sender === 'init' ? (
                   <div
@@ -565,6 +574,7 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
                 value={input}
                 onChange={e => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
+                //  onKeyDown={(e) => activeEnter(e)}
                 className="tw-flex-1 tw-h-12 tw-px-2 tw-border"
                 placeholder="메시지를 입력하세요..."
                 disabled={isLoading}
