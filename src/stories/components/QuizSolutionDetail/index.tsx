@@ -163,13 +163,15 @@ BannerProps) => {
   }, [isAnswerSave]);
 
   useEffect(() => {
-    console.log('data', data?.answer?.answerStatus);
+    console.log('data', data);
+    setContentUrl(data?.contentUrl);
     if (data?.status?.answerStatus === '0001') {
       setIntroductionMessage(data?.status?.preAnswer);
       setActiveStep(1);
     } else if (data?.status?.answerStatus === '0002') {
       setIntroductionMessage(data?.status?.preAnswer);
       setActiveStep(2);
+      console.log('data2', data);
     }
   }, [data]);
 
@@ -735,9 +737,9 @@ BannerProps) => {
                           />
                         </g>
                         <defs>
-                          <clippath id="clip0_675_10029">
+                          <clipPath id="clip0_675_10029">
                             <rect width={16} height={16} fill="white" />
-                          </clippath>
+                          </clipPath>
                         </defs>
                       </svg>
                       <p className="tw-absolute tw-left-6 tw-top-0 tw-text-sm tw-text-left tw-text-[#31343d]">
