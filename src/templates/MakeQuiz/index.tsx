@@ -235,10 +235,10 @@ export function QuizTemplate() {
         <div className="tw-py-[60px]">
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
             <Grid item xs={2} className="tw-font-bold tw-text-3xl tw-text-black">
-              성장퀴즈
+              퀴즈
             </Grid>
             <Grid item xs={7} className="tw-font-semi tw-text-base tw-text-black">
-              관심 주제별로 성장 퀴즈를 풀고 네트워킹 할 수 있는 클럽을 만나보세요!
+              관심 주제별로 퀴즈를 풀고 네트워킹 할 수 있는 클럽을 만나보세요!
             </Grid>
             <Grid item xs={3} justifyContent="flex-end" className="tw-flex">
               <button
@@ -246,7 +246,7 @@ export function QuizTemplate() {
                 onClick={() => (location.href = '/quiz/open')}
                 className="tw-text-white tw-bg-blue-500 hover:tw-bg-blue-800 tw-focus:ring-4 focus:tw-ring-blue-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5  dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 focus:tw-outline-none dark:focus:tw-ring-blue-800"
               >
-                성장퀴즈 클럽 개설하기 +
+                퀴즈 클럽 개설하기 +
               </button>
             </Grid>
           </Grid>

@@ -270,7 +270,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
       <Desktop>
         <div className={cx('seminar-detail-container')}>
           <BannerDetail
-            title="성장퀴즈"
+            title="퀴즈"
             subTitle="클럽 상세보기"
             imageName="top_banner_seminar.svg"
             data={undefined}
@@ -299,7 +299,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                   aria-label="basic tabs example"
                   className={cx('tabs', 'sticky')}
                 >
-                  <Tab label="성장퀴즈 소개" {...a11yProps(0)} onClick={() => handleClickTab(0)} />
+                  <Tab label="퀴즈 소개" {...a11yProps(0)} onClick={() => handleClickTab(0)} />
                   <Tab label="크루활동" {...a11yProps(1)} onClick={() => handleClickTab(1)} />
                   {/* <Tab label="커리큘럼" {...a11yProps(2)} onClick={() => handleClickTab(2)} />
                   <Tab label="FAQ" {...a11yProps(3)} onClick={() => handleClickTab(3)} />
@@ -324,16 +324,16 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                   </div>
 
                   <div className="tw-text-xl tw-mb-10 tw-font-bold tw-text-black dark:tw-text-gray-400">
-                    성장퀴즈 클럽 소개
+                    퀴즈 클럽 소개
                   </div>
                   <div className="tw-text-base tw-mb-10 tw-font-normal tw-text-black dark:tw-text-gray-400">
                     비전공자 개발자라면, 컴퓨터 공학 지식에 대한 갈증이 있을텐데요. 혼자서는 끝까지 하기 어려운 이 공부,
-                    우리 같이 성장퀴즈로 해봐요. 멀리 가려면 함께 가라는 말이 있는데, 우리 전원 성장퀴즈 달성도 100%
-                    만들고, 컴퓨터 공학 지식 뿌셔요.
+                    우리 같이 퀴즈로 해봐요. 멀리 가려면 함께 가라는 말이 있는데, 우리 전원 퀴즈 달성도 100% 만들고,
+                    컴퓨터 공학 지식 뿌셔요.
                   </div>
 
                   <div className="tw-text-xl tw-mb-10 tw-font-bold tw-text-black dark:tw-text-gray-400">
-                    성장퀴즈 질문 미리보기
+                    퀴즈 질문 미리보기
                   </div>
 
                   <div className="tw-mb-3 tw-text-sm tw-font-normal tw-text-gray-400 dark:tw-text-gray-400">

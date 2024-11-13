@@ -1351,7 +1351,7 @@ export function QuizOpenTemplate() {
           <div className="tw-py-5 tw-mb-0">
             <div className="tw-pt-[60px]">
               <div className="tw-text-[24px] tw-font-bold tw-text-black tw-text-center">
-                성장퀴즈 &gt; 성장퀴즈 클럽 개설하기
+                퀴즈 &gt; 퀴즈 클럽 개설하기
               </div>
               <div className="tw-text-[12px] tw-text-black tw-text-center tw-mb-10">
                 나와 크루들의 성장을 이끌 퀴즈 클럽을 개설해요!
@@ -1391,10 +1391,16 @@ export function QuizOpenTemplate() {
                   </div>
                 ))}
               </div>
-
-              <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">클럽 기본정보 입력</div>
+              <div className="tw-flex tw-justify-between tw-items-center tw-gap-4">
+                <div className=" tw-text-xl tw-font-bold tw-text-black tw-my-10">클럽 기본정보 입력</div>
+                <div className=" tw-text-sm tw-text-black tw-my-10">
+                  <span className="tw-text-red-500 tw-mr-1">*</span>필수입력사항
+                </div>
+              </div>
               <div className={cx('content-area')}>
-                <div className="tw-font-semibold tw-text-sm tw-text-black tw-mb-2">클럽명</div>
+                <div className="tw-font-semibold tw-text-sm tw-text-black tw-mb-2">
+                  클럽명 <span className="tw-text-red-500">*</span>
+                </div>
                 <TextField
                   size="small"
                   fullWidth
@@ -1406,7 +1412,9 @@ export function QuizOpenTemplate() {
                 <div>
                   <div className="tw-grid tw-grid-cols-2 tw-gap-4 tw-content-start">
                     <div>
-                      <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천 대학</div>
+                      <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
+                        추천 대학 <span className="tw-text-red-500">*</span>
+                      </div>
                       <select
                         className="form-select"
                         onChange={handleUniversityChange}
@@ -1495,7 +1503,7 @@ export function QuizOpenTemplate() {
                         </FormControl>
 
                         <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
-                          공개/비공개 설정
+                          공개/비공개 설정 <span className="tw-text-red-500">*</span>
                         </div>
                         <div className="tw-flex tw-items-center tw-gap-2 tw-mt-1">
                           <ToggleButtonGroup value={isPublic} onChange={handleIsPublic} exclusive aria-label="">
@@ -1558,7 +1566,7 @@ export function QuizOpenTemplate() {
                   </div>
                   <div className="tw-pb-5">
                     <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
-                      퀴즈 생성(오픈) 주기
+                      퀴즈 생성(오픈) 주기 <span className="tw-text-red-500">*</span>
                     </div>
 
                     <ToggleButtonGroup value={quizType} exclusive onChange={handleQuizType} aria-label="text alignment">
@@ -1793,7 +1801,7 @@ export function QuizOpenTemplate() {
                     value={studySubject}
                     name="studySubject"
                   />
-                  <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">학습 쳅터</div>
+                  <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">학습 챕터</div>
                   <Tag
                     value={studyKeywords}
                     onChange={setStudyKeywords}
@@ -2120,7 +2128,7 @@ export function QuizOpenTemplate() {
                       className="tw-w-[150px] tw-bg-[#E11837] tw-text-white tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-text-sm tw-rounded"
                       onClick={handleNextOne}
                     >
-                      {activeStep === steps.length - 1 ? '성장퀴즈 클럽 개설하기' : '다음'}{' '}
+                      {activeStep === steps.length - 1 ? '퀴즈 클럽 개설하기' : '다음'}{' '}
                       <NavigateNextIcon fontSize="small" />
                     </button>
                   </div>
@@ -2214,7 +2222,7 @@ export function QuizOpenTemplate() {
                     </svg>
                     <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-medium tw-text-left tw-text-[#9ca5b2]">
                       <button type="button" onClick={e => handleAddClick(null)} className="tw-text-black tw-text-sm ">
-                        성장퀴즈 추가하기
+                        퀴즈 일괄등록하기
                       </button>
                     </p>
                   </div>
@@ -2275,7 +2283,7 @@ export function QuizOpenTemplate() {
                       className="tw-w-[150px] tw-bg-[#E11837] tw-text-white  tw-text-sm tw-font-bold tw-py-3 tw-px-4 tw-rounded tw-flex tw-items-center tw-justify-center tw-gap-1"
                       onClick={handleNextTwo}
                     >
-                      {activeStep === steps.length - 1 ? '성장퀴즈 클럽 개설하기 >' : '다음'}
+                      {activeStep === steps.length - 1 ? '퀴즈 클럽 개설하기 >' : '다음'}
                       <NavigateNextIcon fontSize="small" />
                     </button>
                   </div>

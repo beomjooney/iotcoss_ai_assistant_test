@@ -181,6 +181,27 @@ export const myLectureDashboardList = async (params: any) => {
   return data.data;
 };
 
+// 클럽 퀴즈 목록 조회
+export const myLectureChatList = async (params: any) => {
+  // Remove properties with null values
+  const filteredParams = Object.fromEntries(Object.entries(params).filter(([_, value]) => value !== null));
+
+  const { data } = await axiosGeneralAPI().get(`/api/v1/llm/instructor/ai-assistant/messages`, {
+    params: filteredParams,
+  });
+  return data.data;
+};
+
+export const myLectureContentList = async (params: any) => {
+  // Remove properties with null values
+  const filteredParams = Object.fromEntries(Object.entries(params).filter(([_, value]) => value !== null));
+
+  const { data } = await axiosGeneralAPI().get(`/api/v1/llm/instructor/ai-assistant/message-contents`, {
+    params: filteredParams,
+  });
+  return data.data;
+};
+
 // 내 회원 목록 조회
 export const myMemberRequestList = async (params: any) => {
   console.log(params);

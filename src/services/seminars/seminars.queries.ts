@@ -37,6 +37,8 @@ import {
   myExcel,
   myAllClubExcel,
   myLectureDashboardChatList,
+  myLectureChatList,
+  myLectureContentList,
 } from './seminars.api';
 
 export interface paramProps {
@@ -120,6 +122,42 @@ export const useMyLectureDashboardList = (
     QUERY_KEY_FACTORY('DASHBOARD').list({ ...params }),
 
     () => myLectureDashboardList(params),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+    },
+  );
+};
+
+// 내 대시보드 목록 조회
+export const useMyLectureChatList = (
+  params?: paramProps,
+  onSuccess?: (data: any) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 8;
+  return useQuery<any, Error>(
+    QUERY_KEY_FACTORY('DASHBOARD').list({ size: DEFAULT_SIZE, ...params }),
+    () => myLectureChatList({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+    },
+  );
+};
+
+// 내 대시보드 목록 조회
+export const useMyLectureContentList = (
+  params?: paramProps,
+  onSuccess?: (data: any) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 10;
+  return useQuery<any, Error>(
+    QUERY_KEY_FACTORY('CONTENT_DASHBOARD').list({ size: DEFAULT_SIZE, ...params }),
+    () => myLectureContentList({ size: DEFAULT_SIZE, ...params }),
     {
       onSuccess,
       onError,

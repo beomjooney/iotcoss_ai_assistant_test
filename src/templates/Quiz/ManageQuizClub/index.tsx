@@ -2444,7 +2444,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                   value={studySubject}
                   name="studySubject"
                 />
-                <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">학습 쳅터</div>
+                <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">학습 챕터</div>
                 <Tag
                   value={studyKeywords}
                   onChange={setStudyKeywords}
@@ -2803,7 +2803,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                     </svg>
                     <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-medium tw-text-left tw-text-[#9ca5b2]">
                       <button type="button" onClick={e => handleAddClick(null)} className="tw-text-black tw-text-sm ">
-                        성장퀴즈 추가하기
+                        퀴즈 일괄등록하기
                       </button>
                     </p>
                   </div>

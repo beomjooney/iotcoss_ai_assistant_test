@@ -854,7 +854,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
                     onClick={handleQuizAdd}
                     className="tw-text-white tw-bg-blue-500 tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5 "
                   >
-                    성장퀴즈 추가하기
+                    퀴즈 일괄등록하기
                   </button>
                 </div>
               </Grid>
@@ -915,7 +915,7 @@ export function QuizManageTemplate({ id }: QuizManageTemplateProps) {
                     onClick={handleQuizAdd}
                     className="tw-text-white tw-bg-blue-500 tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5 "
                   >
-                    성장퀴즈 추가하기
+                    퀴즈 일괄등록하기
                   </button>
                 </div>
               </Grid>

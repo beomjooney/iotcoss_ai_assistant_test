@@ -1209,7 +1209,14 @@ export function QuizMakeTemplate() {
                 </div>
               </AccordionSummary>
               <AccordionDetails sx={{ backgroundColor: 'white', padding: 3 }}>
-                <div className="tw-text-sm tw-font-bold tw-py-2">지식콘텐츠 유형</div>
+                <div className="tw-flex tw-justify-between tw-items-center">
+                  <div className="tw-text-sm tw-font-bold tw-py-2">
+                    지식콘텐츠 유형<span className="tw-text-red-500 tw-ml-1">*</span>
+                  </div>
+                  <div className="tw-text-sm  tw-py-2">
+                    <span className="tw-text-red-500 tw-mr-1">*</span>필수입력사항
+                  </div>
+                </div>
                 <div className={cx('mentoring-button__group', 'tw-px-0', 'tw-justify-center', 'tw-items-center')}>
                   {studyStatus.map((item, i) => (
                     <Toggle
@@ -1297,7 +1304,9 @@ export function QuizMakeTemplate() {
                   </div>
                 ) : (
                   <div>
-                    <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식콘텐츠 URL</div>
+                    <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">
+                      지식콘텐츠 URL<span className="tw-text-red-500 tw-ml-1">*</span>
+                    </div>
                     <TextField
                       required
                       disabled={isContentModalClick}
@@ -1315,7 +1324,9 @@ export function QuizMakeTemplate() {
                     />
                   </div>
                 )}
-                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식콘텐츠 제목</div>
+                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">
+                  지식콘텐츠 제목<span className="tw-text-red-500 tw-ml-1">*</span>
+                </div>
                 <TextField
                   required
                   id="username"
@@ -1338,7 +1349,9 @@ export function QuizMakeTemplate() {
                 <div className="tw-text-lg tw-font-bold">지식콘텐츠 태깅</div>
               </AccordionSummary>
               <AccordionDetails sx={{ backgroundColor: 'white', padding: 3 }}>
-                <div className="tw-text-sm tw-font-bold tw-py-2">추천 대학</div>
+                <div className="tw-text-sm tw-font-bold tw-py-2">
+                  추천 대학<span className="tw-text-red-500 tw-ml-1">*</span>
+                </div>
                 <select
                   className="form-select"
                   onChange={handleUniversityChange}

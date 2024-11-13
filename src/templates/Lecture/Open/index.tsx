@@ -1395,7 +1395,7 @@ export function LectureOpenTemplate() {
           <div className="tw-py-5 tw-mb-0">
             <div className="tw-pt-[60px]">
               <div className="tw-text-[24px] tw-font-bold tw-text-black tw-text-center">
-                성장퀴즈 &gt; 성장퀴즈 클럽 개설하기
+                퀴즈 &gt; 퀴즈 클럽 개설하기
               </div>
               <div className="tw-text-[12px] tw-text-black tw-text-center tw-mb-10">
                 나와 크루들의 성장을 이끌 퀴즈 클럽을 개설해요!
@@ -2006,7 +2006,7 @@ export function LectureOpenTemplate() {
                       className="tw-w-[150px]  tw-bg-blue-600 tw-text-white tw-font-bold tw-py-3 tw-px-4 tw-mt-3 tw-text-sm tw-rounded"
                       onClick={handleNextOne}
                     >
-                      {activeStep === steps.length - 1 ? '성장퀴즈 클럽 개설하기' : '다음'}{' '}
+                      {activeStep === steps.length - 1 ? '퀴즈 클럽 개설하기' : '다음'}{' '}
                       <NavigateNextIcon fontSize="small" />
                     </button>
                   </div>
@@ -2346,7 +2346,7 @@ export function LectureOpenTemplate() {
                       className="tw-w-[150px] tw-bg-blue-600 tw-text-white  tw-text-sm tw-font-bold tw-py-3 tw-px-4 tw-rounded tw-flex tw-items-center tw-justify-center tw-gap-1"
                       onClick={handleNextTwo}
                     >
-                      {activeStep === steps.length - 1 ? '성장퀴즈 클럽 개설하기 >' : '다음'}
+                      {activeStep === steps.length - 1 ? '퀴즈 클럽 개설하기 >' : '다음'}
                       <NavigateNextIcon fontSize="small" />
                     </button>
                   </div>

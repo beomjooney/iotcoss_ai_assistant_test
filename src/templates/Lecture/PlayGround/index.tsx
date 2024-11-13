@@ -4,15 +4,17 @@ import classNames from 'classnames/bind';
 import React, { useState, useEffect } from 'react';
 import Divider from '@mui/material/Divider';
 import { useRef } from 'react';
+import Pagination from '@mui/material/Pagination';
+import PaginationItem from '@mui/material/PaginationItem';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 import {
   paramProps,
   useMyLectureList,
-  useMyLectureDashboardList,
+  useMyLectureChatList,
+  useMyLectureContentList,
   useMyLectureDashboardChatList,
-  useMyDashboardLecture,
-  useMyDashboardQA,
-  useMyDashboardStudentQA,
 } from 'src/services/seminars/seminars.queries';
 import { useSaveAnswer, useDeleteQuestion, useChatQuery } from 'src/services/seminars/seminars.mutations';
 import Grid from '@mui/material/Grid';
@@ -29,6 +31,7 @@ import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
 import router from 'next/router';
 import { useSessionStore } from '../../../store/session';
 import Markdown from 'react-markdown';
+import e from 'express';
 
 export interface LecturePlayGroundTemplateProps {
   /** 세미나 아이디 */
@@ -39,13 +42,11 @@ const cx = classNames.bind(styles);
 
 export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps) {
   const { roles } = useSessionStore.getState();
-  const [page, setPage] = useState(1);
-  const [pageStudent, setPageStudent] = useState(1);
-  const [totalPage, setTotalPage] = useState(1);
-  const [totalStudentPage, setTotalStudentPage] = useState(1);
+
   const [totalElements, setTotalElements] = useState(0);
   const [myClubList, setMyClubList] = useState<any>([]);
   const [myDashboardList, setMyDashboardList] = useState<any>([]);
+  const [myContentList, setMyContentList] = useState<any>([]);
   const [myDashboardChatList, setMyDashboardChatList] = useState<any>([]);
   const [selectedClub, setSelectedClub] = useState(null);
 
@@ -80,7 +81,6 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
     }
   }, [chatData]);
 
-  const [myClubSequenceParams, setMyClubSequenceParams] = useState<any>({ clubSequence: id });
   const [selectedValue, setSelectedValue] = useState(null);
   const [key, setKey] = useState('');
   const [fileName, setFileName] = useState('');
@@ -90,6 +90,17 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
 
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
+  const [page, setPage] = useState(1);
+  const [pageStudent, setPageStudent] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
+  const [totalStudentPage, setTotalStudentPage] = useState(1);
+
+  const [myClubSequenceParams, setMyClubSequenceParams] = useState<any>({
+    page: page,
+
+    clubStudySequence: selectedClub,
+    clubSequence: id,
+  });
 
   useEffect(() => {
     setIsClient(true);
@@ -109,12 +120,20 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
   });
 
   // 강의클럽 대시 보드 요약 조회
-  const { isFetched: isDashboardFetched, refetch: refetchMyDashboard } = useMyLectureDashboardList(
+  const { isFetched: isDashboardFetched, refetch: refetchMyDashboard } = useMyLectureChatList(
     myClubSequenceParams,
     data => {
-      console.log('useMyLectureDashboardList', data);
-      console.log('useMyLectureDashboardList', data?.clubStudySequence);
+      console.log('useMyLectureChatList', data);
       setMyDashboardList(data || []);
+    },
+  );
+
+  // 강의클럽 대시 보드 요약 조회
+  const { isFetched: isContentFetcheds, refetch: refetchMyContent } = useMyLectureContentList(
+    myClubSequenceParams,
+    data => {
+      console.log('useMyLectureContentList', data);
+      setMyContentList(data || []);
     },
   );
 
@@ -157,6 +176,12 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
   const handleQuizChange = event => {
     const selectedValue = event.target.value === '' ? null : event.target.value;
     setSelectedValue(selectedValue);
+    console.log('selectedValue', selectedValue, id);
+    setMyClubSequenceParams({
+      clubStudySequence: selectedValue || null,
+      clubSequence: id,
+      page: page,
+    });
     setMessages([]);
   };
 
@@ -177,8 +202,6 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
   const handleKeyDown = e => {
     if (e.key === 'Enter') {
       if (input === '') return;
-
-      console.log('1', id, selectedValue);
 
       scrollToBottom(); // Scroll the inner container to the bottom
       setInput(''); // Clear input field after sending the message
@@ -259,6 +282,20 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
       return 'tw-justify-end '; // init 메시지를 중앙 정렬로
     }
   };
+
+  //request member
+  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+  };
+
+  useEffect(() => {
+    console.log('page', page);
+    setMyClubSequenceParams({
+      clubStudySequence: selectedValue || null,
+      clubSequence: id,
+      page: page,
+    });
+  }, [page]);
 
   return (
     <div className={cx('seminar-container')}>
@@ -351,7 +388,7 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
           </Grid>
         </div>
         <div className="tw-grid tw-grid-cols-10 tw-mt-5">
-          <div className="tw-col-span-4  border-right">
+          <div className="tw-col-span-4  border-right tw-bg-[#fcfcff]">
             <div className="tw-flex tw-justify-start tw-items-center tw-h-14 tw-px-8 tw-py-5 tw-rounded-tl-lg tw-bg-[#f6f7fb] tw-border-t-0 tw-border-r tw-border-b tw-border-l-0 tw-border-[#e0e4eb]">
               <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
                 <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-lg tw-font-semibold tw-text-left tw-text-[#1f2633]">
@@ -359,113 +396,47 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
                 </div>
                 <div className="tw-flex tw-flex-col tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2.5 tw-py-px tw-rounded-sm tw-bg-[#e7eaf1]">
                   <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-left tw-text-[#1f2633]">
-                    3
+                    {myContentList?.length}
                   </div>
                 </div>
               </div>
             </div>
-            <div className="tw-flex tw-flex-col tw-justify-start tw-items-start tw-bg-[#fcfcff]">
+            <div className="tw-flex tw-flex-col tw-justify-start tw-items-start tw-bg-[#fcfcff] tw-h-[180px] tw-overflow-y-auto">
               <div className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-overflow-hidden tw-gap-3 tw-px-8 tw-py-4">
                 <div className="tw-flex tw-justify-start tw-items-start tw-flex-grow tw-gap-1">
-                  <div className="tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-w-6 tw-h-6 tw-relative tw-gap-2.5">
-                    {isClient && (
-                      <svg
-                        width={20}
-                        height={20}
-                        viewBox="0 0 20 20"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-5 tw-h-5 tw-relative"
-                        preserveAspectRatio="xMidYMid meet"
-                      >
-                        <path
-                          d="M5.25642 17.9163C4.83547 17.9163 4.47917 17.7705 4.1875 17.4788C3.89583 17.1871 3.75 16.8308 3.75 16.4099V3.58943C3.75 3.16848 3.89583 2.81217 4.1875 2.52051C4.47917 2.22884 4.83547 2.08301 5.25642 2.08301H11.875L16.25 6.45797V16.4099C16.25 16.8308 16.1041 17.1871 15.8125 17.4788C15.5208 17.7705 15.1645 17.9163 14.7435 17.9163H5.25642ZM11.25 7.08297V3.33299H5.25642C5.19231 3.33299 5.13353 3.3597 5.0801 3.41311C5.02669 3.46654 4.99998 3.52531 4.99998 3.58943V16.4099C4.99998 16.474 5.02669 16.5328 5.0801 16.5862C5.13353 16.6396 5.19231 16.6663 5.25642 16.6663H14.7435C14.8077 16.6663 14.8664 16.6396 14.9199 16.5862C14.9733 16.5328 15 16.474 15 16.4099V7.08297H11.25Z"
-                          fill="#313B49"
-                        />
-                      </svg>
-                    )}
-                  </div>
                   <div className="tw-flex tw-flex-col tw-justify-start tw-items-start tw-flex-grow tw-gap-2">
-                    <div className="tw-flex tw-flex-col tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0">
-                      <div className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-3">
-                        <div className="tw-flex-grow w-[338px] tw-text-base tw-font-medium tw-text-left tw-text-[#1f2633]">
-                          프로그래밍과 하드웨어의 관계
+                    {myContentList?.map((item, index) => (
+                      <div key={index} className="tw-flex  tw-justify-start tw-items-start tw-gap-2">
+                        <div className="tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-w-6 tw-h-6 tw-relative tw-gap-2.5">
+                          {isClient && (
+                            <svg
+                              width={20}
+                              height={20}
+                              viewBox="0 0 20 20"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-5 tw-h-5 tw-relative"
+                              preserveAspectRatio="xMidYMid meet"
+                            >
+                              <path
+                                d="M5.25642 17.9163C4.83547 17.9163 4.47917 17.7705 4.1875 17.4788C3.89583 17.1871 3.75 16.8308 3.75 16.4099V3.58943C3.75 3.16848 3.89583 2.81217 4.1875 2.52051C4.47917 2.22884 4.83547 2.08301 5.25642 2.08301H11.875L16.25 6.45797V16.4099C16.25 16.8308 16.1041 17.1871 15.8125 17.4788C15.5208 17.7705 15.1645 17.9163 14.7435 17.9163H5.25642ZM11.25 7.08297V3.33299H5.25642C5.19231 3.33299 5.13353 3.3597 5.0801 3.41311C5.02669 3.46654 4.99998 3.52531 4.99998 3.58943V16.4099C4.99998 16.474 5.02669 16.5328 5.0801 16.5862C5.13353 16.6396 5.19231 16.6663 5.25642 16.6663H14.7435C14.8077 16.6663 14.8664 16.6396 14.9199 16.5862C14.9733 16.5328 15 16.474 15 16.4099V7.08297H11.25Z"
+                                fill="#313B49"
+                              />
+                            </svg>
+                          )}
                         </div>
-                      </div>
-                      <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
-                        <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[13px] tw-text-left tw-text-[#9ca5b2]">
-                          PDF
-                        </div>
-                        {isClient && (
-                          <svg
-                            width={1}
-                            height={6}
-                            viewBox="0 0 1 6"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="flex-grow-0 flex-shrink-0"
-                            preserveAspectRatio="xMidYMid meet"
+                        <div className="tw-flex tw-justify-start tw-items-start tw-gap-3">
+                          <div
+                            onClick={() => {
+                              window.open(item?.url, '_blank');
+                            }}
+                            className="tw-cursor-pointer tw-flex-grow w-[338px] tw-text-base tw-font-medium tw-text-left tw-text-[#1f2633]"
                           >
-                            <line x1="0.5" y1="0.5" x2="0.5" y2="5.5" stroke="#9CA5B2" />
-                          </svg>
-                        )}
-                        <div className="tw-container tw-flex-grow-0 tw-flex-shrink-0 tw-text-[13px] tw-text-left tw-text-[#9ca5b2]">
-                          5mb
+                            {item?.name}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-overflow-hidden tw-gap-3 tw-px-8 tw-py-4">
-                <div className="tw-flex tw-justify-start tw-items-start tw-flex-grow tw-gap-1">
-                  <div className="tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-w-6 tw-h-6 tw-relative tw-gap-2.5">
-                    {isClient && (
-                      <svg
-                        width={20}
-                        height={20}
-                        viewBox="0 0 20 20"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-5 tw-h-5 tw-relative"
-                        preserveAspectRatio="xMidYMid meet"
-                      >
-                        <path
-                          d="M5.25642 17.9163C4.83547 17.9163 4.47917 17.7705 4.1875 17.4788C3.89583 17.1871 3.75 16.8308 3.75 16.4099V3.58943C3.75 3.16848 3.89583 2.81217 4.1875 2.52051C4.47917 2.22884 4.83547 2.08301 5.25642 2.08301H11.875L16.25 6.45797V16.4099C16.25 16.8308 16.1041 17.1871 15.8125 17.4788C15.5208 17.7705 15.1645 17.9163 14.7435 17.9163H5.25642ZM11.25 7.08297V3.33299H5.25642C5.19231 3.33299 5.13353 3.3597 5.0801 3.41311C5.02669 3.46654 4.99998 3.52531 4.99998 3.58943V16.4099C4.99998 16.474 5.02669 16.5328 5.0801 16.5862C5.13353 16.6396 5.19231 16.6663 5.25642 16.6663H14.7435C14.8077 16.6663 14.8664 16.6396 14.9199 16.5862C14.9733 16.5328 15 16.474 15 16.4099V7.08297H11.25Z"
-                          fill="#313B49"
-                        />
-                      </svg>
-                    )}
-                  </div>
-                  <div className="tw-flex tw-flex-col tw-justify-start tw-items-start tw-flex-grow tw-gap-2">
-                    <div className="tw-flex tw-flex-col tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0">
-                      <div className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-3">
-                        <div className="tw-flex-grow w-[338px] tw-text-base tw-font-medium tw-text-left tw-text-[#1f2633]">
-                          프로그래밍과 하드웨어의 관계
-                        </div>
-                      </div>
-                      <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
-                        <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[13px] tw-text-left tw-text-[#9ca5b2]">
-                          PDF
-                        </div>
-                        {isClient && (
-                          <svg
-                            width={1}
-                            height={6}
-                            viewBox="0 0 1 6"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="flex-grow-0 flex-shrink-0"
-                            preserveAspectRatio="xMidYMid meet"
-                          >
-                            <line x1="0.5" y1="0.5" x2="0.5" y2="5.5" stroke="#9CA5B2" />
-                          </svg>
-                        )}
-                        <div className="tw-container flex-grow-0 tw-flex-shrink-0 tw-text-[13px] tw-text-left tw-text-[#9ca5b2]">
-                          5mb
-                        </div>
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -477,89 +448,47 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
                 </div>
                 <div className="tw-flex tw-flex-col tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2.5 tw-py-px tw-rounded-sm tw-bg-[#e7eaf1]">
                   <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-left tw-text-[#1f2633]">
-                    3
+                    {myDashboardList.totalElements}
                   </div>
                 </div>
               </div>
             </div>
-            <div className="tw-flex tw-flex-col tw-justify-start tw-items-start ">
-              <div className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-h-[75px] tw-relative tw-gap-4 tw-pl-3 tw-pr-8 tw-py-3 tw-bg-[#fcfcff] tw-border-t-0 tw-border-r tw-border-b tw-border-l-0 tw-border-[#e0e4eb]">
-                <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[33px] tw-text-base tw-font-medium tw-text-center tw-text-[#1f2633]">
-                  1
+            <div className="tw-flex tw-flex-col  ">
+              {myDashboardList?.contents?.length === 0 && (
+                <div className="tw-flex tw-justify-center tw-items-center tw-h-14 ">
+                  <div className="tw-text-base tw-font-medium tw-text-left tw-text-[#1f2633]">
+                    질의응답 자료가 없습니다.
+                  </div>
                 </div>
-                <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-13 tw-text-base tw-font-medium tw-text-center tw-text-[#6a7380]">
-                  황혜경
+              )}
+              {myDashboardList?.contents?.map((item, index) => (
+                <div
+                  key={`${index}`}
+                  className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-4 tw-pl-3 tw-pr-8 tw-py-3  tw-border-t-0 tw-border-r tw-border-b tw-border-l-0 tw-border-[#e0e4eb]"
+                >
+                  <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[33px] tw-text-base tw-font-medium tw-text-center tw-text-[#1f2633]">
+                    {index + 1}
+                  </div>
+                  <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-13 tw-text-base tw-font-medium tw-text-center tw-text-[#6a7380]">
+                    {item?.member?.nickname}
+                  </div>
+                  <div className="tw-flex-grow w-[277px] tw-text-base tw-font-medium tw-text-left tw-text-[#1f2633]">
+                    {item?.message}
+                  </div>
                 </div>
-                <div className="tw-flex-grow w-[277px] tw-text-base tw-font-medium tw-text-left tw-text-[#1f2633]">
-                  클라우드를 iot 플랫폼으로 생각할 수 있어? 아니면 둘이 또 다른 개념이야?
-                </div>
-              </div>
-              <div className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-h-[49px] tw-relative tw-gap-4 tw-pl-3 tw-pr-8 tw-py-3 tw-bg-[#fcfcff] tw-border-t-0 tw-border-r tw-border-b tw-border-l-0 tw-border-[#e0e4eb]">
-                <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[33px] tw-text-base tw-font-medium tw-text-center tw-text-[#1f2633]">
-                  2
-                </div>
-                <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-13 tw-text-base tw-font-medium tw-text-center tw-text-[#6a7380]">
-                  권수빈
-                </div>
-                <div className="tw-flex-grow w-[277px] tw-text-base tw-font-medium tw-text-left tw-text-[#1f2633]">
-                  rvi가 5는 뭘 의미하는거야?
-                </div>
-              </div>
-              <div className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-h-[49px] tw-relative tw-gap-4 tw-pl-3 tw-pr-8 tw-py-3 tw-bg-[#fcfcff] tw-border-t-0 tw-border-r tw-border-b tw-border-l-0 tw-border-[#e0e4eb]">
-                <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[33px] tw-text-base tw-font-medium tw-text-center tw-text-[#1f2633]">
-                  3
-                </div>
-                <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-13 tw-text-base tw-font-medium tw-text-center tw-text-[#6a7380]">
-                  김상우
-                </div>
-                <div className="tw-flex-grow w-[277px] tw-text-base tw-font-medium tw-text-left tw-text-[#1f2633]">
-                  お。日本語できますか？
-                </div>
-              </div>
-              <div className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-h-[49px] tw-relative tw-gap-4 tw-pl-3 tw-pr-8 tw-py-3 tw-bg-[#fcfcff] tw-border-t-0 tw-border-r tw-border-b tw-border-l-0 tw-border-[#e0e4eb]">
-                <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[33px] tw-text-base tw-font-medium tw-text-center tw-text-[#1f2633]">
-                  4
-                </div>
-                <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-13 tw-text-base tw-font-medium tw-text-center tw-text-[#6a7380]">
-                  김백건
-                </div>
-                <div className="tw-flex-grow w-[277px] tw-text-base tw-font-medium tw-text-left tw-text-[#1f2633]">
-                  NFC에 대해 알려줘
-                </div>
-              </div>
-              <div className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-h-[75px] tw-relative tw-gap-4 tw-pl-3 tw-pr-8 tw-py-3 tw-bg-[#fcfcff] tw-border-t-0 tw-border-r tw-border-b tw-border-l-0 tw-border-[#e0e4eb]">
-                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[33px] tw-text-base tw-font-medium tw-text-center tw-text-[#1f2633]">
-                  5
-                </p>
-                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-13 tw-text-base tw-font-medium tw-text-center tw-text-[#6a7380]">
-                  권수빈
-                </p>
-                <p className="tw-flex-grow w-[277px] tw-text-base tw-font-medium tw-text-left tw-text-[#1f2633]">
-                  AE ID가 고유해야 하는 범위가 어디까지인거야? absolute라 하니까 정확히는 모르겠어
-                </p>
-              </div>
-              <div className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-h-[75px] tw-relative tw-gap-4 tw-pl-3 tw-pr-8 tw-py-3 tw-bg-[#fcfcff] tw-border-t-0 tw-border-r tw-border-b tw-border-l-0 tw-border-[#e0e4eb]">
-                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[33px] tw-text-base tw-font-medium tw-text-center tw-text-[#1f2633]">
-                  6
-                </p>
-                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-13 tw-text-base tw-font-medium tw-text-center tw-text-[#6a7380]">
-                  박제혁
-                </p>
-                <p className="tw-flex-grow w-[277px] tw-text-base tw-font-medium tw-text-left tw-text-[#1f2633]">
-                  아니 이 개 멍청한 새끼야 아까 말했던 거를 한국어로 하라고 =
-                </p>
-              </div>
-              <div className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-h-[75px] tw-relative tw-gap-4 tw-pl-3 tw-pr-8 tw-py-3 tw-bg-[#fcfcff] tw-border-t-0 tw-border-r tw-border-b tw-border-l-0 tw-border-[#e0e4eb]">
-                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[33px] tw-text-base tw-font-medium tw-text-center tw-text-[#1f2633]">
-                  7
-                </p>
-                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-13 tw-text-base tw-font-medium tw-text-center tw-text-[#6a7380]">
-                  오정현
-                </p>
-                <p className="tw-flex-grow w-[277px] tw-text-base tw-font-medium tw-text-left tw-text-[#1f2633]">
-                  보통 AE쪽에서 CSE쪽으로 요청하는거 아니야??
-                </p>
-              </div>
+              ))}
+            </div>
+            <div className="tw-flex tw-justify-center tw-items-center  tw-bg-[#fcfcff] tw-pt-3 tw-pb-5 ">
+              <Pagination
+                count={myDashboardList.totalPages}
+                size="small"
+                siblingCount={0}
+                page={page}
+                renderItem={item => (
+                  <PaginationItem slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }} {...item} />
+                )}
+                onChange={handlePageChange}
+              />
             </div>
           </div>
           <div className="tw-col-span-6 tw-flex tw-flex-col  ">
