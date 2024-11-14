@@ -1,10 +1,14 @@
 import Modal from 'react-modal';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSessionStore } from '../../../store/session';
+import { Button, Dialog, DialogContent, DialogTitle } from '@mui/material';
+import { Resizable } from 're-resizable';
+const defaultSize = { width: 450, height: 700 };
 
 Modal.setAppElement('#__next'); // Modal 접근성 설정
 
 const ChatbotModal = ({ isOpen, onRequestClose, token }) => {
+  const [size, setSize] = useState(defaultSize);
   const { roles } = useSessionStore.getState();
   // const role = roles?.includes('ROLE_ADMIN') || roles?.includes('ROLE_MANAGER') ? 'professor' : 'student';
   const role =
@@ -29,39 +33,89 @@ const ChatbotModal = ({ isOpen, onRequestClose, token }) => {
     };
   }, [onRequestClose]);
 
+  useEffect(() => {
+    // 컴포넌트가 처음 렌더링될 때 로컬 스토리지에서 사이즈를 불러옵니다.
+    const storedSize = localStorage.getItem('buttonSize');
+    if (storedSize) {
+      setSize(JSON.parse(storedSize));
+    }
+  }, []);
+
+  const handleResizeStop = (e, direction, ref, d) => {
+    // 크기 조정이 멈췄을 때 현재 사이즈를 로컬 스토리지에 저장합니다.
+    const newSize = {
+      width: ref.offsetWidth,
+      height: ref.offsetHeight,
+    };
+    setSize(newSize);
+    localStorage.setItem('buttonSize', JSON.stringify(newSize));
+  };
+
   return (
-    <Modal
-      isOpen={isOpen}
-      onRequestClose={onRequestClose}
-      className="tw-fixed tw-bottom-4 tw-right-4 tw-w-[450px] tw-h-[700px]"
-      overlayClassName="tw-fixed tw-inset-0"
-      contentLabel="Chatbot Modal"
-      shouldCloseOnOverlayClick={false} // 모달 외부 클릭시 닫히지 않도록 설정
-      style={{
-        overlay: { zIndex: 2147483647 },
+    <Dialog
+      sx={{ boxShadow: 3 }}
+      open={isOpen}
+      onClose={(e, reason) => {
+        // 바깥 영역 클릭 시 닫히지 않도록 설정
+        if (reason !== 'backdropClick') {
+          onRequestClose();
+        }
+      }}
+      maxWidth="xl"
+      PaperProps={{
+        style: {
+          // overflow: 'hidden', // 스크롤바가 보이지 않도록 설정
+          zIndex: 2147483647,
+        },
+      }}
+      BackdropProps={{
+        style: {
+          backgroundColor: 'transparent', // 배경을 완전히 투명하게 설정
+        },
       }}
     >
-      <div className=" tw-h-[700px] tw-bg-white tw-rounded-lg tw-overflow-hidden tw-shadow-xl tw-transform tw-transition-all sm:tw-w-full sm:tw-max-w-lg md:tw-max-w-2xl lg:tw-max-w-3xl xl:tw-max-w-4xl">
-        <div className="tw-border-b">
-          {/* <button
-            onClick={onRequestClose}
-            className="tw-absolute tw-top-4 tw-right-4 tw-text-gray-600 tw-hover:tw-text-gray-900"
-          >
-            &times;
-          </button> */}
-        </div>
-        <div className="">
+      <Resizable
+        className="tw-bg-white"
+        size={size}
+        onResizeStop={handleResizeStop}
+        enable={{
+          top: true,
+          right: false,
+          bottom: false,
+          left: true,
+          topRight: false,
+          bottomRight: false,
+          bottomLeft: false,
+          topLeft: false,
+        }}
+        style={{
+          position: 'fixed',
+          right: '20px', // 오른쪽 고정
+          bottom: '20px',
+          borderRadius: '10px', // Resizable 모서리 둥글게 설정
+          overflow: 'hidden', // 내부 요소에 둥근 모서리 적용
+          boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.3)', // 그림자 효과 추가
+        }}
+        handleStyles={{
+          left: {
+            position: 'absolute',
+            left: 0,
+            cursor: 'ew-resize',
+          },
+        }}
+      >
+        <div className=" ">
           <iframe
             src={url}
             loading="lazy"
-            className="tw-w-full tw-h-[690px]"
+            style={{ width: '100%', height: `${size.height}px` }} // iframe 높이 동기화
             frameBorder="0"
             allowFullScreen
             title="Chatbot"
           ></iframe>
         </div>
-      </div>
-    </Modal>
+      </Resizable>
+    </Dialog>
   );
 };
 

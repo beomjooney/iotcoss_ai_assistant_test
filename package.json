@@ -53,6 +53,7 @@
     "ramda": "^0.28.0",
     "raw-loader": "^4.0.2",
     "rc-progress": "^3.5.1",
+    "re-resizable": "^6.10.1",
     "react": "^18.2.0",
     "react-apexcharts": "^1.4.1",
     "react-bootstrap": "^2.10.4",

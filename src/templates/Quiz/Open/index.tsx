@@ -56,6 +56,11 @@ export const generateUUID = () => {
   return uuidv4();
 };
 
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormLabel from '@mui/material/FormLabel';
+
 const cx = classNames.bind(styles);
 
 export function QuizOpenTemplate() {
@@ -112,6 +117,12 @@ export function QuizOpenTemplate() {
   const [previewProfile, setPreviewProfile] = useState(null);
   const [isDisabled, setIsDisabled] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false); // 함수가 실행 중인지 확인하는 상태
+  const [selectedOption, setSelectedOption] = useState('true');
+
+  const handleChange = event => {
+    console.log('test', event.target.value);
+    setSelectedOption(event.target.value);
+  };
 
   useEffect(() => {
     handleImageClick(selectedImageProfile, 'profile', false);
@@ -806,6 +817,8 @@ export function QuizOpenTemplate() {
     formData.append('form.memberIntroductionText', params.clubForm.memberIntroductionText);
     formData.append('form.careerText', params.clubForm.careerText);
     formData.append('form.useCurrentProfileImage', params.clubForm.useCurrentProfileImage);
+    //대표퀴즈 사용 여부
+    // formData.append('form.representativeQuizUse', selectedOption === 'true' ? true : false);
 
     if (selectedImage) {
       console.log('selectedImage', selectedImage);
@@ -1072,6 +1085,8 @@ export function QuizOpenTemplate() {
       clubTemplatePublishType: '0001',
       clubRecruitType: '0100',
       useCurrentProfileImage: agreements,
+      //대표퀴즈 사용 여부
+      // representativeQuizUse: selectedOption === 'true' ? true : false,
     };
 
     const formData = new FormData();
@@ -1098,6 +1113,10 @@ export function QuizOpenTemplate() {
     formData.append('form.memberIntroductionText', clubFormParams.memberIntroductionText);
     formData.append('form.careerText', clubFormParams.careerText);
     formData.append('form.useCurrentProfileImage', clubFormParams.useCurrentProfileImage);
+
+    //대표퀴즈 사용 여부
+    // formData.append('form.representativeQuizUse', selectedOption === 'true' ? true : false);
+
 
     if (selectedImage) {
       console.log('selectedImage', selectedImage);
@@ -1164,6 +1183,7 @@ export function QuizOpenTemplate() {
     }
     setScheduleData(weeks);
     setButtonFlag(true);
+    setSelectedQuizIds([]);
     alert('학습자 자동 오픈 주기 설정이 완료되었습니다.');
   };
 
@@ -1180,6 +1200,7 @@ export function QuizOpenTemplate() {
     }
     setScheduleData(weeks);
     setButtonFlag(true);
+    setSelectedQuizIds([]);
     alert('퀴즈 생성(수동) 주기 설정이 완료되었습니다.');
   };
 
@@ -2245,7 +2266,38 @@ export function QuizOpenTemplate() {
                   </div>
                 </div>
 
-                <div className="tw-mt-10"></div>
+                <div className="tw-text-sm tw-flex tw-justify-end tw-items-center tw-relative tw-gap-3 tw-pt-5">
+                  <div className="form-check form-check-inline">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="inlineRadioOptions"
+                      id="inlineRadio1"
+                      value="true"
+                      checked={selectedOption === 'true'}
+                      onChange={handleChange}
+                    />
+                    <label className="form-check-label" htmlFor="inlineRadio1">
+                      대표퀴즈 사용
+                    </label>
+                  </div>
+                  <div className="form-check form-check-inline">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="inlineRadioOptions"
+                      id="inlineRadio2"
+                      value="false"
+                      checked={selectedOption === 'false'}
+                      onChange={handleChange}
+                    />
+                    <label className="form-check-label" htmlFor="inlineRadio2">
+                      대표퀴즈 사용 안함
+                    </label>
+                  </div>
+                </div>
+
+                <div className="tw-mt-5"></div>
 
                 <Grid container direction="row" justifyContent="left" alignItems="flex-start" rowSpacing={4}>
                   <Grid item xs={1}>
@@ -2255,7 +2307,11 @@ export function QuizOpenTemplate() {
                           key={index}
                           className="tw-h-[234.5px] tw-flex tw-flex-col tw-items-center tw-justify-center"
                         >
-                          <div className=" tw-text-center tw-text-black tw-font-bold tw-text-sm">
+                          <div className="tw-text-center tw-text-black tw-font-bold tw-text-sm">
+                            {index + 1 <= 3 ? '대표' : ''}
+                          </div>
+
+                          <div className="tw-text-center tw-text-black tw-font-bold tw-text-sm">
                             Q{index + 1}. {item.order}회차{' '}
                           </div>
                           {item.weekNumber && (

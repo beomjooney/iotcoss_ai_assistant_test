@@ -209,7 +209,6 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
   }, [messages]); // Run when combinedMessages changes
 
   const handleKeyDown = e => {
-    console.log('handleKeyDown', e);
     if (e.key === 'Enter') {
       if (input === '') return;
 
