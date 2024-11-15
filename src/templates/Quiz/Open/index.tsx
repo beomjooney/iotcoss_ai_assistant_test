@@ -214,6 +214,7 @@ export function QuizOpenTemplate() {
       // setScheduleData(quizList);
       setScheduleData(quizListData);
       setAgreements(clubForm.useCurrentProfileImage);
+      setSelectedOption(data?.isRepresentativeQuizPublic.toString());
 
       // Filter out items with quizSequence not null and greater than or equal to zero, then extract quizSequence values
       const quizSequenceNumbers = quizList
@@ -818,7 +819,7 @@ export function QuizOpenTemplate() {
     formData.append('form.careerText', params.clubForm.careerText);
     formData.append('form.useCurrentProfileImage', params.clubForm.useCurrentProfileImage);
     //대표퀴즈 사용 여부
-    // formData.append('form.representativeQuizUse', selectedOption === 'true' ? true : false);
+    formData.append('isRepresentativeQuizPublic', selectedOption);
 
     if (selectedImage) {
       console.log('selectedImage', selectedImage);
@@ -1086,7 +1087,7 @@ export function QuizOpenTemplate() {
       clubRecruitType: '0100',
       useCurrentProfileImage: agreements,
       //대표퀴즈 사용 여부
-      // representativeQuizUse: selectedOption === 'true' ? true : false,
+      representativeQuizUse: selectedOption === 'true' ? true : false,
     };
 
     const formData = new FormData();
@@ -1115,8 +1116,7 @@ export function QuizOpenTemplate() {
     formData.append('form.useCurrentProfileImage', clubFormParams.useCurrentProfileImage);
 
     //대표퀴즈 사용 여부
-    // formData.append('form.representativeQuizUse', selectedOption === 'true' ? true : false);
-
+    formData.append('isRepresentativeQuizPublic', selectedOption);
 
     if (selectedImage) {
       console.log('selectedImage', selectedImage);
@@ -2377,6 +2377,7 @@ export function QuizOpenTemplate() {
                 jobLevelName={levelNames}
                 selectedJobName={personName}
                 selectedQuizzes={scheduleData}
+                selectedOption={selectedOption}
               />
               <div className="tw-container tw-py-10 tw-px-10 tw-mx-0 tw-min-w-full tw-flex tw-flex-col tw-items-center">
                 <div className="tw-flex tw-gap-5 tw-mt-3">

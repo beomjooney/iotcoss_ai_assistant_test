@@ -222,6 +222,11 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   const [selectedUUIDs, setSelectedUUIDs] = useState<string[]>([]);
   const [pageProfessor, setPageProfessor] = useState(1);
   const [scheduleSaveData, setScheduleSaveData] = useState<any[]>([]);
+  const [selectedOption, setSelectedOption] = useState('true');
+  const handleChange = event => {
+    console.log('test', event.target.value);
+    setSelectedOption(event.target.value);
+  };
 
   const cx = classNames.bind(styles);
 
@@ -388,6 +393,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     setPersonName(jobsName || []);
     setButtonFlag(true);
     setScheduleData(quizList);
+    setSelectedOption(data?.isRepresentativeQuizPublic.toString());
 
     // Filter out items with quizSequence not null and extract quizSequence values
     const quizSequenceNumbers = quizList.filter(item => item.quizSequence !== null).map(item => item.quizSequence);
@@ -1084,7 +1090,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
       quizSequence,
     }));
 
-    onQuizSave({ club: selectedClub?.clubSequence, data: filteredData });
+    onQuizSave({ club: selectedClub?.clubSequence, data: filteredData, selectedOption: selectedOption });
   };
 
   function searchKeyworld(value) {
@@ -2806,6 +2812,37 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                         퀴즈 일괄등록하기
                       </button>
                     </p>
+                  </div>
+                </div>
+
+                <div className="tw-text-sm tw-flex tw-justify-end tw-items-center tw-relative tw-gap-3 tw-pt-5">
+                  <div className="form-check form-check-inline">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="inlineRadioOptions"
+                      id="inlineRadio1"
+                      value="true"
+                      checked={selectedOption === 'true'}
+                      onChange={handleChange}
+                    />
+                    <label className="form-check-label" htmlFor="inlineRadio1">
+                      대표퀴즈 사용
+                    </label>
+                  </div>
+                  <div className="form-check form-check-inline">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="inlineRadioOptions"
+                      id="inlineRadio2"
+                      value="false"
+                      checked={selectedOption === 'false'}
+                      onChange={handleChange}
+                    />
+                    <label className="form-check-label" htmlFor="inlineRadio2">
+                      대표퀴즈 사용 안함
+                    </label>
                   </div>
                 </div>
 
