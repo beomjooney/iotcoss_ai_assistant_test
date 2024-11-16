@@ -510,7 +510,7 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
               </div>
             </div>
 
-            <div className="tw-overflow-y-auto tw-p-10 tw-h-[580px]" ref={innerScrollRef}>
+            <div className="tw-overflow-y-auto tw-p-10 tw-h-[770px]" ref={innerScrollRef}>
               <div>
                 <img className="tw-w-[61px] tw-h-[56px]" src="/assets/images/main/_chatbot.png" />
                 <div className="tw-w-[381px] tw-text-xl tw-text-left tw-text-[#313b49] tw-py-8 tw-font-bold">

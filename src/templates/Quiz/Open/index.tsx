@@ -941,6 +941,19 @@ export function QuizOpenTemplate() {
       return;
     }
 
+    const startAt = startDay ? startDay.format('YYYY-MM-DD') : '';
+    const endAt = endDay ? endDay.format('YYYY-MM-DD') : '';
+
+    if (startAt === endAt) {
+      alert('시작일과 종료일이 같습니다.');
+      return false;
+    }
+
+    if (startAt > endAt) {
+      alert('종료일이 시작일보다 앞에 있습니다.');
+      return false;
+    }
+
     if (quizType == '0100') {
       if (studyCycleNum.length === 0) {
         alert('요일을 입력해주세요.');
