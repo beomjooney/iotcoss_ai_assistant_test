@@ -48,14 +48,14 @@ const CourseCard = ({ data, border = false }) => {
       }`}
     >
       <img
-        src={data.clubImageUrl || '/assets/images/banner/Rectangle_193.png'}
+        src={data?.clubImageUrl || '/assets/images/banner/Rectangle_193.png'}
         className="tw-w-[142px] tw-h-[142px] tw-object-cover tw-float-left"
       />
 
       <div className="tw-flex tw-justify-start tw-items-start tw-gap-1 tw-ml-[160px] tw-mt-4">
         <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-black">
           <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-white">
-            {getButtonText(data.clubStatus)}
+            {getButtonText(data?.clubStatus)}
           </p>
         </div>
         {data?.jobGroups[0]?.name && (
@@ -100,7 +100,7 @@ const CourseCard = ({ data, border = false }) => {
       </div>
       <div className="tw-ml-[160px] tw-mt-1">
         <p className="tw-text-sm tw-text-left tw-text-black">
-          <span className="tw-font-bold">{data.leaderNickname}</span>
+          <span className="tw-font-bold">{data?.leaderNickname}</span>
           {/* <span className="tw-text-left tw-text-[#9ca5b2] tw-ml-4">
             {data.startAt} ~ {data.endAt} | {data.studyCycle.toString() || 'N/A'} | {data.weekCount || 'N/A'} 주 | 학습{' '}
             {data.studyCount && data.studyCount.length > 0 ? `${data.studyCount}회` : null}
