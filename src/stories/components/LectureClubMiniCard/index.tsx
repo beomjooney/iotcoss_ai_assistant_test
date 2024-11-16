@@ -10,7 +10,7 @@ import { useRouter } from 'next/router';
 import { makeStyles } from '@material-ui/core';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import StarIcon from '@mui/icons-material/Star';
-import { useSaveFavorite, useDeleteFavorite } from 'src/services/community/community.mutations';
+import { useSaveFavorite, useDeleteFavorite, useDeleteClub } from 'src/services/community/community.mutations';
 import { getButtonText } from 'src/utils/clubStatus';
 
 export interface LectureClubMiniCardProps {
@@ -27,11 +27,13 @@ export interface LectureClubMiniCardProps {
   onChangeLike?: (boolean) => void;
   memberId: string;
   onPostDeleteSubmit: (...args: any[]) => any;
+  refetch: () => void;
 }
 
 const cx = classNames.bind(styles);
 
 const LectureClubMiniCard = ({
+  refetch,
   item,
   favorite = false,
   xs,
@@ -49,8 +51,13 @@ LectureClubMiniCardProps) => {
 
   const { mutate: onSaveFavorite, isSuccess: isSuccessFavorite } = useSaveFavorite();
   const { mutate: onDeleteFavorite, isSuccess: isSuccessDelete } = useDeleteFavorite();
+  const { mutate: onDeleteClub, isSuccess: isSuccessDeleteClub } = useDeleteClub();
 
-  // console.log('item', item);
+  useEffect(() => {
+    if (isSuccessDeleteClub) {
+      refetch();
+    }
+  }, [isSuccessDeleteClub]);
 
   useEffect(() => {
     if (isSuccessDelete) {
@@ -89,6 +96,12 @@ LectureClubMiniCardProps) => {
   useEffect(() => {
     setIsLiked(item?.isFavorite);
   }, [item]);
+
+  const handleDeleteClub = () => {
+    if (confirm('클럽을 삭제하시겠습니까?')) {
+      onDeleteClub(item?.clubSequence);
+    }
+  };
 
   const router = useRouter();
   const classes = useStyles();
@@ -169,6 +182,18 @@ LectureClubMiniCardProps) => {
               {item?.weekCount} 주 | 학습 : {item?.weekCount}회
             </span>
           </div>
+        </div>
+        <div className="tw-w-[130px]">
+          <button
+            type="button"
+            onClick={e => {
+              e.stopPropagation(); // 이벤트 전파 차단
+              handleDeleteClub();
+            }}
+            className="tw-px-4 tw-h-9 tw-rounded-md tw-bg-[#31343d] tw-text-white tw-text-sm"
+          >
+            클럽삭제
+          </button>
         </div>
       </div>
     </Grid>

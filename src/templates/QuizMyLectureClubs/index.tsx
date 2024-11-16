@@ -196,7 +196,13 @@ export function QuizMyLectureClubsTemplate() {
                     isContentFetched &&
                     (contents.length > 0 ? (
                       contents.map((item, index) => (
-                        <LectureClubMiniCard key={index} item={item} xs={12} className={cx('reply-container__item')} />
+                        <LectureClubMiniCard
+                          refetch={refetch}
+                          key={index}
+                          item={item}
+                          xs={12}
+                          className={cx('reply-container__item')}
+                        />
                       ))
                     ) : (
                       <div className={cx('content--empty tw-py-40')}>데이터가 없습니다.</div>
