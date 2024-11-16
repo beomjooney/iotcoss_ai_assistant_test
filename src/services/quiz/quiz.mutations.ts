@@ -194,8 +194,12 @@ export const useClubQuizSave = (): UseMutationResult => {
   const queryClient = useQueryClient();
   return useMutation<any, any, any>(requestBody => saveClubQuizPost(requestBody), {
     onError: (error, variables, context) => {
-      const { code, message } = error;
-      alert(`mutation error : [${code}] ${message}`);
+      const { responseCode, message } = error;
+      if (responseCode === '1425') {
+        alert('퀴즈 공개일의 경우 종료일을 공개일 이후로 설정해주세요.');
+      } else {
+        alert(`mutation error : [${responseCode}] ${message}`);
+      }
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CAMENITY').all),
     onSuccess: async data => {
@@ -215,8 +219,12 @@ export const useClubTempSave = (): UseMutationResult => {
   const queryClient = useQueryClient();
   return useMutation<any, any, any>(requestBody => saveClubTempPost(requestBody), {
     onError: (error, variables, context) => {
-      const { code, message } = error;
-      alert(`mutation error : [${code}] ${message}`);
+      const { responseCode, message } = error;
+      if (responseCode === '1425') {
+        alert('퀴즈 공개일의 경우 종료일을 공개일 이후로 설정해주세요.');
+      } else {
+        alert(`mutation error : [${responseCode}] ${message}`);
+      }
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('TEMP').all),
     onSuccess: async data => {

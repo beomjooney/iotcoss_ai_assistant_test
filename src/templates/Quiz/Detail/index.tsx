@@ -128,8 +128,8 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                 clubData={clubAbout}
                 user={clubAbout?.leader}
                 selectedUniversityName={clubAbout?.jobGroups?.[0]?.name ?? 'N/A'}
-                jobLevelName={clubAbout?.jobGroups?.[0]?.name ?? 'N/A'}
-                selectedJobName={clubAbout?.jobs?.[0]?.name ?? 'N/A'}
+                jobLevelName={clubAbout?.jobLevels?.[0]?.name ?? ''}
+                selectedJobName={clubAbout?.jobs?.[0]?.name ?? ''}
                 selectedQuizzes={clubAbout?.clubQuizzes}
                 selectedOption={clubAbout?.isRepresentativeQuizPublic.toString()}
               />

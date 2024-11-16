@@ -141,6 +141,11 @@ export function QuizMakeTemplate() {
   const [fileName, setFileName] = useState('');
   const [fileNameCopy, setFileNameCopy] = useState([]);
   const [key, setKey] = useState('');
+  const [selectedOption, setSelectedOption] = useState('false');
+  const handleChangeOption = event => {
+    console.log('test', event.target.value);
+    setSelectedOption(event.target.value);
+  };
 
   // 로딩 상태를 관리하기 위해 useState 훅 사용
   const [isLoading, setIsLoading] = useState(false);
@@ -539,35 +544,35 @@ export function QuizMakeTemplate() {
     }
 
     console.log(selectedSubject);
-    if (!selectedSubject) {
-      alert('주제를 입력해주세요.');
-      return false;
-    }
-    if (!selectedChapter) {
-      alert('챕터를 입력해주세요.');
-      return false;
-    }
-    if (!selected1.length) {
-      alert('학습 키워드를 입력해주세요.');
-      return false;
-    }
-    if (!selected2.length) {
-      alert('스킬을 입력해주세요.');
-      return false;
-    }
+    // if (!selectedSubject) {
+    //   alert('주제를 입력해주세요.');
+    //   return false;
+    // }
+    // if (!selectedChapter) {
+    //   alert('챕터를 입력해주세요.');
+    //   return false;
+    // }
+    // if (!selected1.length) {
+    //   alert('학습 키워드를 입력해주세요.');
+    //   return false;
+    // }
+    // if (!selected2.length) {
+    //   alert('스킬을 입력해주세요.');
+    //   return false;
+    // }
     if (!selectedUniversity) {
       alert('추천 대학을 입력해주세요.');
       return false;
     }
 
-    if (selectedJob.length === 0) {
-      alert('추천 학과를 입력해주세요.');
-      return false;
-    }
-    if (jobLevel.length === 0) {
-      alert('추천 학년을 입력해주세요.');
-      return false;
-    }
+    // if (selectedJob.length === 0) {
+    //   alert('추천 학과를 입력해주세요.');
+    //   return false;
+    // }
+    // if (jobLevel.length === 0) {
+    //   alert('추천 학년을 입력해주세요.');
+    //   return false;
+    // }
     if (isContentModalOpen) {
       // 콘텐츠 등록
       console.log('지식콘텐츠');
@@ -583,6 +588,7 @@ export function QuizMakeTemplate() {
         jobLevels: jobLevel,
         studyKeywords: selected1,
         contentId: 'content_id_' + uuidv4(),
+        publishStatus: selectedOption === 'true' ? '0002' : '0001',
       };
 
       const formData = new FormData();
@@ -611,6 +617,7 @@ export function QuizMakeTemplate() {
       }));
 
       const params = {
+        publishStatus: selectedOption === 'true' ? '0002' : '0001',
         content: {
           isNew: !isContentModalClick, // Simplified ternary expression
           contentSequence: contentSequence,
@@ -1544,7 +1551,9 @@ export function QuizMakeTemplate() {
 
                   {sortQuizType === 'DESC' && (
                     <>
-                      <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">퀴즈</div>
+                      <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">
+                        퀴즈 <span className="tw-text-red-500 tw-ml-1">*</span>
+                      </div>
                       <TextField
                         required
                         id="username"
@@ -1559,7 +1568,9 @@ export function QuizMakeTemplate() {
                           '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
                         }}
                       />
-                      <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">모범답안</div>
+                      <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">
+                        모범답안 <span className="tw-text-red-500 tw-ml-1">*</span>
+                      </div>
                       {/* <TextField
                         required
                         id="username"
@@ -1581,7 +1592,9 @@ export function QuizMakeTemplate() {
                         rows={2} // 두 줄 높이로 설정
                         onChange={handleModelAnswerChange}
                       ></textarea>
-                      <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">채점기준 주요 키워드/문구</div>
+                      <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">
+                        채점기준 주요 키워드/문구 <span className="tw-text-red-500 tw-ml-1">*</span>
+                      </div>
                       {/* <TagsInput
                         value={selected3}
                         onChange={selected3}
@@ -1606,7 +1619,9 @@ export function QuizMakeTemplate() {
 
                   {sortQuizType === 'ASC' && (
                     <>
-                      <div className="tw-text-sm tw-font-bold tw-mt-4">생성할 퀴즈 개수</div>
+                      <div className="tw-text-sm tw-font-bold tw-mt-4">
+                        생성할 퀴즈 개수<span className="tw-text-red-500 tw-ml-1">*</span>
+                      </div>
                       <div className="tw-grid tw-grid-cols-6 tw-items-center">
                         <div className="tw-col-span-5 tw-mr-5">
                           <TextField
@@ -1660,7 +1675,37 @@ export function QuizMakeTemplate() {
               </Accordion>
             )}
 
-            <div className="tw-py-5 tw-text-center">
+            <div className="tw-py-5 tw-text-center tw-flex tw-justify-between tw-items-center">
+              <div className="tw-text-left">
+                <div className="form-check form-check-inline">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="inlineRadioOptions"
+                    id="inlineRadio1"
+                    value="false"
+                    checked={selectedOption === 'false'}
+                    onChange={handleChangeOption}
+                  />
+                  <label className="form-check-label" htmlFor="inlineRadio1">
+                    비공개 퀴즈 생성
+                  </label>
+                </div>
+                <div className="form-check form-check-inline">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="inlineRadioOptions"
+                    id="inlineRadio2"
+                    value="true"
+                    checked={selectedOption === 'true'}
+                    onChange={handleChangeOption}
+                  />
+                  <label className="form-check-label" htmlFor="inlineRadio2">
+                    공개 퀴즈로 전환
+                  </label>
+                </div>
+              </div>
               <div className="tw-text-right">
                 <button
                   onClick={handleQuizInsertClick}

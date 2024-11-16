@@ -203,6 +203,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   const [studyCycleNum, setStudyCycleNum] = useState([]);
   const [num, setNum] = useState(0);
   const [startDay, setStartDay] = React.useState<Dayjs | null>(dayjs());
+  const [endDay, setEndDay] = React.useState<Dayjs | null>(dayjs());
   const [studyKeywords, setStudyKeywords] = useState([]);
   const [optionsSkills, setOptionsSkills] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
@@ -376,6 +377,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     setNum(clubForm.weekCount || 0);
     setQuizType(clubForm.quizOpenType || '');
     setStartDay(clubForm.startAt ? dayjs(clubForm.startAt) : dayjs());
+    setEndDay(clubForm.endAt ? dayjs(clubForm.endAt) : dayjs());
     setStudyKeywords(clubForm.studyKeywords || []);
     setStudySubject(clubForm.studySubject || '');
     setStudyCycleNum(clubForm.studyCycle || 0);
@@ -1153,15 +1155,15 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
       return false;
     }
 
-    if (!selectedJob || selectedJob.length === 0) {
-      alert('최소 하나의 학과를 선택해주세요');
-      return false;
-    }
+    // if (!selectedJob || selectedJob.length === 0) {
+    //   alert('최소 하나의 학과를 선택해주세요');
+    //   return false;
+    // }
 
-    if (!recommendLevels || recommendLevels.length === 0) {
-      alert('최소 하나의 학년을 선택해주세요');
-      return false;
-    }
+    // if (!recommendLevels || recommendLevels.length === 0) {
+    //   alert('최소 하나의 학년을 선택해주세요');
+    //   return false;
+    // }
 
     if (quizType === '0100') {
       if (studyCycleNum.length === 0) {
@@ -1194,6 +1196,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
       participationCode: '',
       studyCycle: studyCycleNum || '',
       startAt: startDay ? startDay.format('YYYY-MM-DD') : '',
+      endAt: endDay ? endDay.format('YYYY-MM-DD') : '',
       studyCount: num,
       studySubject: studySubject || '',
       skills: skills || '',
@@ -1224,6 +1227,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     formData.append('quizOpenType', clubFormParams.quizOpenType);
     formData.append('studyCycle', clubFormParams.studyCycle.toString());
     formData.append('startDate', clubFormParams.startAt);
+    formData.append('endDate', clubFormParams.endAt);
     formData.append('studyWeekCount', clubFormParams.studyCount.toString());
     formData.append('studySubject', clubFormParams.studySubject);
     formData.append('studyKeywords', clubFormParams.studyKeywords.toString());
@@ -1394,6 +1398,17 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
       const formattedDateString = formattedDate.format('YYYY-MM-DD');
       // Set both today and todayEnd
       setStartDay(formattedDate);
+    }
+  };
+
+  const onChangeHandleFromToEndDate = date => {
+    if (date) {
+      // Convert date to a Dayjs object
+      const formattedDate = dayjs(date);
+      // Format the date as 'YYYY-MM-DD'
+      const formattedDateString = formattedDate.format('YYYY-MM-DD');
+      // Set both today and todayEnd
+      setEndDay(formattedDate);
     }
   };
 
@@ -2285,7 +2300,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                 {/* Conditionally render a div based on recommendType and recommendLevels */}
                 {quizType == '0100' && (
                   <div className="tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-[#f6f7fb] tw-pb-5">
-                    <div className="tw-flex tw-p-5 ...">
+                    <div className="tw-flex tw-p-5 tw-gap-5">
                       <div className="tw-flex-grow tw-w-1/2 tw-h-14 ...">
                         <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">
                           퀴즈 주기 (복수선택가능)
@@ -2322,19 +2337,29 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                           ))}
                         </ToggleButtonGroup>
                       </div>
-                      <div className="tw-flex-none tw-w-1/4 tw-h-14 ...">
+                      <div className="tw-flex-none tw-w-1/6 tw-h-14 ...">
                         <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">클럽 시작일</p>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                           <DatePicker
                             format="YYYY-MM-DD"
-                            disabled
                             slotProps={{ textField: { size: 'small', style: { backgroundColor: 'white' } } }}
                             value={startDay}
                             onChange={e => onChangeHandleFromToStartDate(e)}
                           />
                         </LocalizationProvider>
                       </div>
-                      <div className="tw-flex-none tw-w-1/4 tw-h-14 ... ">
+                      <div className="tw-flex-none tw-w-1/6 tw-h-14 ...">
+                        <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">클럽 종료일</p>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DatePicker
+                            format="YYYY-MM-DD"
+                            slotProps={{ textField: { size: 'small', style: { backgroundColor: 'white' } } }}
+                            value={endDay}
+                            onChange={e => onChangeHandleFromToEndDate(e)}
+                          />
+                        </LocalizationProvider>
+                      </div>
+                      <div className="tw-flex-none tw-w-1/6 tw-h-14 ... ">
                         <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">
                           클럽퀴즈 회차 입력
                         </p>

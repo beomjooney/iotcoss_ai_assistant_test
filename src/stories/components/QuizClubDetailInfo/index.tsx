@@ -129,13 +129,16 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
                   <span className="tw-inline-flex tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded">
                     {selectedUniversityName || 'N/A'}
                   </span>
-
-                  <span className="tw-inline-flex tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
-                    {selectedJobName.toString() || 'N/A'}
-                  </span>
-                  <span className="tw-inline-flex tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
-                    {jobLevelName.toString() || 'N/A'}
-                  </span>
+                  {selectedJobName.toString() !== '' && (
+                    <span className="tw-inline-flex tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
+                      {selectedJobName.toString() || 'N/A'}
+                    </span>
+                  )}
+                  {jobLevelName.toString() !== '' && (
+                    <span className="tw-inline-flex tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
+                      {jobLevelName.toString() || 'N/A'}
+                    </span>
+                  )}
                   {clubData?.clubSequence && (
                     <button
                       className="tw-inline-flex tw-ml-auto"
@@ -154,7 +157,9 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
               </Grid>
             </Grid>
             <div className=" tw-flex tw-items-center tw-pt-8">
-              <div className="tw-line-clamp-1 tw-text-xl tw-font-bold  tw-text-[#000000] tw-mr-2">{clubData?.name}</div>
+              <div className="tw-line-clamp-1 tw-text-xl tw-font-bold  tw-text-[#000000] tw-mr-2">
+                {clubData?.clubName}
+              </div>
               <div className="tw-line-clamp-1 tw-text-base  tw-text-[#000000]">{clubData?.description}</div>
             </div>
             <div className="tw-py-5 tw-text-black tw-text-base tw-mb-[12px] tw-font-medium">

@@ -65,6 +65,7 @@ const cx = classNames.bind(styles);
 
 export function QuizOpenTemplate() {
   const [startDay, setStartDay] = React.useState<Dayjs | null>(dayjs());
+  const [endDay, setEndDay] = React.useState<Dayjs | null>(dayjs().add(4, 'month'));
 
   const onChangeHandleFromToStartDate = date => {
     if (date) {
@@ -74,6 +75,16 @@ export function QuizOpenTemplate() {
       const formattedDateString = formattedDate.format('YYYY-MM-DD');
       // Set both today and todayEnd
       setStartDay(formattedDate);
+    }
+  };
+  const onChangeHandleFromToEndDate = date => {
+    if (date) {
+      // Convert date to a Dayjs object
+      const formattedDate = dayjs(date);
+      // Format the date as 'YYYY-MM-DD'
+      const formattedDateString = formattedDate.format('YYYY-MM-DD');
+      // Set both today and todayEnd
+      setEndDay(formattedDate);
     }
   };
 
@@ -194,6 +205,7 @@ export function QuizOpenTemplate() {
       setNum(clubForm.weekCount || 0);
       setQuizType(clubForm.quizOpenType || '');
       setStartDay(clubForm.startAt ? dayjs(clubForm.startAt) : dayjs());
+      setEndDay(clubForm.endAt ? dayjs(clubForm.endAt) : dayjs().add(4, 'month'));
       setStudyKeywords(clubForm.studyKeywords || []);
       // setStudyChapter(clubForm.studyChapter || '');
       setStudySubject(clubForm.studySubject || '');
@@ -807,6 +819,7 @@ export function QuizOpenTemplate() {
     formData.append('form.quizOpenType', params.clubForm.quizOpenType);
     formData.append('form.studyCycle', params.clubForm.studyCycle.toString());
     formData.append('form.startDate', params.clubForm.startAt);
+    formData.append('form.endDate', params.clubForm.endAt);
     formData.append('form.studyWeekCount', params.clubForm.studyCount.toString());
     formData.append('form.studySubject', params.clubForm.studySubject);
     formData.append('form.studyKeywords', params.clubForm.studyKeywords.toString());
@@ -875,6 +888,7 @@ export function QuizOpenTemplate() {
       participationCode: participationCode,
       studyCycle: studyCycleNum,
       startAt: startDay.format('YYYY-MM-DD'),
+      endAt: endDay.format('YYYY-MM-DD'),
       studyCount: num,
       studyWeekCount: num,
       studySubject: studySubject,
@@ -1029,15 +1043,15 @@ export function QuizOpenTemplate() {
       return false;
     }
 
-    if (!selectedJob || selectedJob.length === 0) {
-      alert('최소 하나의 학과를 선택해주세요');
-      return false;
-    }
+    // if (!selectedJob || selectedJob.length === 0) {
+    //   alert('최소 하나의 학과를 선택해주세요');
+    //   return false;
+    // }
 
-    if (!recommendLevels || recommendLevels.length === 0) {
-      alert('최소 하나의 학년을 선택해주세요');
-      return false;
-    }
+    // if (!recommendLevels || recommendLevels.length === 0) {
+    //   alert('최소 하나의 학년을 선택해주세요');
+    //   return false;
+    // }
 
     if (quizType === '0100') {
       if (studyCycleNum.length === 0) {
@@ -1060,6 +1074,19 @@ export function QuizOpenTemplate() {
       return false;
     }
 
+    const startAt = startDay ? startDay.format('YYYY-MM-DD') : '';
+    const endAt = endDay ? endDay.format('YYYY-MM-DD') : '';
+
+    if (startAt === endAt) {
+      alert('시작일과 종료일이 같습니다.');
+      return false;
+    }
+
+    if (startAt > endAt) {
+      alert('종료일이 시작일보다 앞에 있습니다.');
+      return false;
+    }
+
     const clubFormParams = {
       clubName: clubName || '',
       clubImageUrl: imageUrl || '',
@@ -1070,6 +1097,7 @@ export function QuizOpenTemplate() {
       participationCode: '',
       studyCycle: studyCycleNum || '',
       startAt: startDay ? startDay.format('YYYY-MM-DD') : '',
+      endAt: endDay ? endDay.format('YYYY-MM-DD') : '',
       studyCount: num,
       studySubject: studySubject || '',
       studyChapter: studyChapter || '',
@@ -1103,6 +1131,7 @@ export function QuizOpenTemplate() {
     formData.append('form.quizOpenType', clubFormParams.quizOpenType);
     formData.append('form.studyCycle', clubFormParams.studyCycle.toString());
     formData.append('form.startDate', clubFormParams.startAt);
+    formData.append('form.endDate', clubFormParams.endAt);
     formData.append('form.studyWeekCount', clubFormParams.studyCount.toString());
     formData.append('form.studySubject', clubFormParams.studySubject);
     formData.append('form.studyKeywords', clubFormParams.studyKeywords.toString());
@@ -1153,15 +1182,6 @@ export function QuizOpenTemplate() {
     console.log(studyCycleNum);
     console.log(num);
     console.log(startDay.format('YYYY-MM-DD'));
-
-    // const weeks = [];
-    // for (let i = 0; i < num; i++) {
-    //   weeks.push({
-    //     order: i + 1,
-    //     quizSequence: null,
-    //   });
-    // }
-    // setScheduleData(weeks);
 
     setDayParams({
       // ...params,
@@ -1650,7 +1670,7 @@ export function QuizOpenTemplate() {
                   {/* Conditionally render a div based on recommendType and recommendLevels */}
                   {quizType == '0100' && (
                     <div className="tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-[#f6f7fb] tw-pb-5">
-                      <div className="tw-flex tw-p-5 ...">
+                      <div className="tw-flex tw-p-5 tw-gap-3">
                         <div className="tw-flex-grow tw-w-1/2 tw-h-14 ...">
                           <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">
                             퀴즈 주기 (복수선택가능)
@@ -1687,7 +1707,7 @@ export function QuizOpenTemplate() {
                             ))}
                           </ToggleButtonGroup>
                         </div>
-                        <div className="tw-flex-none tw-w-1/4 tw-h-14 ...">
+                        <div className="tw-flex-none tw-w-1/6 tw-h-14 ...">
                           <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">클럽 시작일</p>
                           <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
@@ -1698,7 +1718,18 @@ export function QuizOpenTemplate() {
                             />
                           </LocalizationProvider>
                         </div>
-                        <div className="tw-flex-none tw-w-1/4 tw-h-14 ... ">
+                        <div className="tw-flex-none tw-w-1/6 tw-h-14 ...">
+                          <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">클럽 종료일</p>
+                          <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DatePicker
+                              format="YYYY-MM-DD"
+                              slotProps={{ textField: { size: 'small', style: { backgroundColor: 'white' } } }}
+                              value={endDay}
+                              onChange={e => onChangeHandleFromToEndDate(e)}
+                            />
+                          </LocalizationProvider>
+                        </div>
+                        <div className="tw-flex-none tw-w-1/6 tw-h-14 ... ">
                           <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">
                             클럽퀴즈 회차 입력
                           </p>
@@ -1744,8 +1775,8 @@ export function QuizOpenTemplate() {
 
                   {quizType == '0200' && (
                     <div className="tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-[#f6f7fb] tw-pb-5">
-                      <div className="tw-flex tw-p-5 ...">
-                        <div className="tw-flex-none tw-w-1/4 tw-h-14 ...">
+                      <div className="tw-flex tw-p-5 tw-gap-3">
+                        <div className="tw-flex-none tw-w-1/6 tw-h-14 ...">
                           <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">클럽 시작일</p>
                           <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
@@ -1756,7 +1787,18 @@ export function QuizOpenTemplate() {
                             />
                           </LocalizationProvider>
                         </div>
-                        <div className="tw-flex-none tw-w-1/4 tw-h-14 ... ">
+                        <div className="tw-flex-none tw-w-1/6 tw-h-14 ...">
+                          <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">클럽 종료일</p>
+                          <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DatePicker
+                              format="YYYY-MM-DD"
+                              slotProps={{ textField: { size: 'small', style: { backgroundColor: 'white' } } }}
+                              value={endDay}
+                              onChange={e => onChangeHandleFromToEndDate(e)}
+                            />
+                          </LocalizationProvider>
+                        </div>
+                        <div className="tw-flex-none tw-w-1/6 tw-h-14 ... ">
                           <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">
                             클럽퀴즈 회차 입력
                           </p>
@@ -1789,8 +1831,8 @@ export function QuizOpenTemplate() {
                       <p className="tw-text-sm tw-text-left tw-text-black tw-font-semibold tw-pt-5 tw-px-5">
                         날짜/요일을 지정할 필요 없이 학생이 퀴즈를 풀면 자동으로 다음 회차가 열립니다.
                       </p>
-                      <div className="tw-flex tw-p-5 ...">
-                        <div className="tw-flex-none tw-w-1/4 tw-h-14 ...">
+                      <div className="tw-flex tw-p-5 tw-gap-3">
+                        <div className="tw-flex-none tw-w-1/6 tw-h-14 ...">
                           <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">클럽 시작일</p>
                           <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
@@ -1801,7 +1843,19 @@ export function QuizOpenTemplate() {
                             />
                           </LocalizationProvider>
                         </div>
-                        <div className="tw-flex-none tw-w-1/4 tw-h-14 ... ">
+
+                        <div className="tw-flex-none tw-w-1/6 tw-h-14 ...">
+                          <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">클럽 종료일</p>
+                          <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DatePicker
+                              format="YYYY-MM-DD"
+                              slotProps={{ textField: { size: 'small', style: { backgroundColor: 'white' } } }}
+                              value={endDay}
+                              onChange={e => onChangeHandleFromToEndDate(e)}
+                            />
+                          </LocalizationProvider>
+                        </div>
+                        <div className="tw-flex-none tw-w-1/6 tw-h-14 ... ">
                           <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">
                             클럽퀴즈 회차 입력
                           </p>
@@ -1986,7 +2040,9 @@ export function QuizOpenTemplate() {
               </div>
 
               <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">클럽 꾸미기</div>
-              <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-my-5">클럽 카드 이미지 선택</div>
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-my-5">
+                클럽 카드 이미지 선택<span className="tw-text-red-500 tw-ml-1">*</span>
+              </div>
               <div className="tw-grid tw-grid-flow-col tw-gap-0 tw-content-end">
                 {preview ? (
                   <img src={preview} alt="Image Preview" className="tw-w-[100px] tw-h-[100px] tw-rounded-lg border" />
@@ -2040,7 +2096,9 @@ export function QuizOpenTemplate() {
                 </div>
               </div>
 
-              <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-5">클럽 배경 이미지 선택</div>
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-5">
+                클럽 배경 이미지 선택 <span className="tw-text-red-500">*</span>
+              </div>
               <div className="tw-grid tw-grid-flow-col tw-gap-0 tw-content-end">
                 {previewBanner ? (
                   <img
