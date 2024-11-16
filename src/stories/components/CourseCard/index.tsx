@@ -58,23 +58,23 @@ const CourseCard = ({ data, border = false }) => {
             {getButtonText(data.clubStatus)}
           </p>
         </div>
-        {data.jobGroups[0].name && (
+        {data?.jobGroups[0]?.name && (
           <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#d7ecff]">
             <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#235a8d]">
-              {data.jobGroups[0].name || 'N/A'}
+              {data?.jobGroups[0]?.name || 'N/A'}
             </p>
           </div>
         )}
-        {data.jobs[0].name && (
+        {data?.jobs[0]?.name && (
           <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#e4e4e4]">
             <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#313b49]">
-              {data.jobs[0].name || 'N/A'}
+              {data?.jobs[0]?.name || 'N/A'}
             </p>
           </div>
         )}
         <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-1 tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#ffdede]">
           <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-text-left tw-text-[#b83333]">
-            {data.jobLevels[0].name || 'N/A'}
+            {data?.jobLevels[0]?.name || 'N/A'}
           </p>
         </div>
         <div className="tw-flex tw-justify-end tw-items-center tw-ml-auto tw-pr-4">
@@ -92,10 +92,10 @@ const CourseCard = ({ data, border = false }) => {
 
       <div className="tw-py-0 tw-pr-5">
         <p className="tw-line-clamp-1 tw-ml-[160px] tw-mt-[13px] tw-text-sm tw-font-bold tw-text-left tw-text-black">
-          {data.clubName}
+          {data?.clubName}
         </p>
         <p className="tw-line-clamp-2 tw-ml-[160px] tw-mt-1 tw-text-sm tw-text-left tw-text-black">
-          {data.description}
+          {data?.description}
         </p>
       </div>
       <div className="tw-ml-[160px] tw-mt-1">
@@ -106,9 +106,9 @@ const CourseCard = ({ data, border = false }) => {
             {data.studyCount && data.studyCount.length > 0 ? `${data.studyCount}회` : null}
           </span> */}
           <span className="tw-text-left tw-text-[#9ca5b2] tw-ml-4">
-            {data.startAt.split(' ')[0]} ~ {data.endAt.split(' ')[0]}
-            {data.studyCycle ? ` | ${data.studyCycle.toString()}` : ''}
-            {data.weekCount ? ` ${data.weekCount} 주 ` : ''} | 학습 {data.studyCount || 0}회
+            {data?.startAt.split(' ')[0]} ~ {data?.endAt.split(' ')[0]}
+            {data?.studyCycle ? ` | ${data?.studyCycle.toString()}` : ''}
+            {data?.weekCount ? ` ${data?.weekCount} 주 ` : ''} | 학습 {data?.studyCount || 0}회
           </span>
         </p>
       </div>
