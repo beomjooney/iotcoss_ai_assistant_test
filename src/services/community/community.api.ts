@@ -54,6 +54,8 @@ export const saveFavorite = async (postNo: number) => await axiosGeneralAPI().po
 export const deleteFavorite = async (postId: number) =>
   await axiosGeneralAPI().delete(`/api/v1/clubs/${postId}/favorite`);
 
+export const deleteClub = async (postId: number) => await axiosGeneralAPI().delete(`/api/v1/clubs/${postId}`);
+
 export const saveQuizLiked = async (postNo: number) =>
   await axiosGeneralAPI().post(`/api/v1/club/quiz/answers/${postNo}/like`);
 

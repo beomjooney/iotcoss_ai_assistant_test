@@ -10,8 +10,8 @@ import { useRouter } from 'next/router';
 import { makeStyles } from '@material-ui/core';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import StarIcon from '@mui/icons-material/Star';
-import { useSaveFavorite, useDeleteFavorite } from 'src/services/community/community.mutations';
-import { getButtonText, getClubStatusMessage, getClubAboutStatus } from 'src/utils/clubStatus';
+import { useSaveFavorite, useDeleteFavorite, useDeleteClub } from 'src/services/community/community.mutations';
+import { getClubAboutStatus } from 'src/utils/clubStatus';
 
 export interface ClubMiniCardProps {
   /** 게시판 object */
@@ -27,6 +27,7 @@ export interface ClubMiniCardProps {
   onChangeLike?: (boolean) => void;
   memberId: string;
   onPostDeleteSubmit: (...args: any[]) => any;
+  refetch?: () => void;
 }
 
 const cx = classNames.bind(styles);
@@ -36,6 +37,7 @@ const ClubMiniCard = ({
   favorite = false,
   xs,
   onPostDeleteSubmit,
+  refetch,
 }: // eslint-disable-next-line @typescript-eslint/no-empty-function
 ClubMiniCardProps) => {
   // TODO 좋아요 여부 필드 수정 필요
@@ -47,8 +49,13 @@ ClubMiniCardProps) => {
 
   const { mutate: onSaveFavorite, isSuccess: isSuccessFavorite } = useSaveFavorite();
   const { mutate: onDeleteFavorite, isSuccess: isSuccessDelete } = useDeleteFavorite();
+  const { mutate: onDeleteClub, isSuccess: isSuccessDeleteClub } = useDeleteClub();
 
-  // console.log('item', item);
+  useEffect(() => {
+    if (isSuccessDeleteClub) {
+      refetch();
+    }
+  }, [isSuccessDeleteClub]);
 
   useEffect(() => {
     if (isSuccessDelete) {
@@ -68,6 +75,12 @@ ClubMiniCardProps) => {
       },
     },
   }));
+
+  const handleDeleteClub = () => {
+    if (confirm('클럽을 삭제하시겠습니까?')) {
+      onDeleteClub(item?.clubSequence);
+    }
+  };
 
   const onChangeFavorite = function (postNo: number, isFavorites: boolean) {
     console.log(postNo, isFavorites);
@@ -172,6 +185,18 @@ ClubMiniCardProps) => {
               {item?.weekCount} 주 | 학습 : {item?.weekCount}회
             </span>
           </div>
+        </div>
+        <div className="tw-w-[130px]">
+          <button
+            type="button"
+            onClick={e => {
+              e.stopPropagation(); // 이벤트 전파 차단
+              handleDeleteClub();
+            }}
+            className="tw-px-4 tw-h-9 tw-rounded-md tw-bg-[#31343d] tw-text-white tw-text-sm"
+          >
+            클럽삭제
+          </button>
         </div>
       </div>
     </Grid>
