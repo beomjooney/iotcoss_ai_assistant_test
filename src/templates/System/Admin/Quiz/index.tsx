@@ -1386,7 +1386,7 @@ export function AdminQuizTemplate() {
                           style={{ width: '100%' }}
                           value={data.contentSequence}
                           control={<Radio />}
-                          label={data.description}
+                          label={data.name}
                           onClick={() => {
                             handleClickContent(data);
                           }}
