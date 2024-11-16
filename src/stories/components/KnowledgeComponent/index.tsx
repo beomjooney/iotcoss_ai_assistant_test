@@ -239,10 +239,10 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
     setSelectedChapter(data.content?.studyChapter);
     setSelected2(data.content?.skills);
     setSelected1(data.content?.studyKeywords);
-    setUniversityCode(data.jobGroups[0].code);
+    setUniversityCode(data?.jobGroups[0]?.code);
     setActiveQuiz(data.jobLevels && data.jobLevels.length > 0 ? data.jobLevels[0].code : '');
 
-    const selected = optionsData?.data?.jobs?.find(u => u.code === data.jobGroups[0].code);
+    const selected = optionsData?.data?.jobs?.find(u => u.code === data?.jobGroups[0]?.code);
     setJobs(selected ? selected.jobs : []);
     const jobsCode = data.jobs.map(item => item.code);
     setSelectedJob(jobsCode || []);
@@ -273,10 +273,10 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
       return false;
     }
 
-    if (!selectedJob || selectedJob.length === 0) {
-      alert('하나 이상의 학과를 선택하세요.');
-      return;
-    }
+    // if (!selectedJob || selectedJob.length === 0) {
+    //   alert('하나 이상의 학과를 선택하세요.');
+    //   return;
+    // }
 
     // Find the specific quiz in quizList and create formattedQuizList
     const params = {
@@ -487,19 +487,19 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                 )}
 
                 {data?.jobs?.length > 0 &&
-                  data.jobs.map(
+                  data?.jobs.map(
                     (job, index) =>
                       job?.name && (
                         <div key={index} className="tw-bg-[#ffdede] tw-rounded-[3.5px] tw-px-[10.5px]">
-                          <p className="tw-text-[12.25px] tw-text-[#b83333]">{job.name}</p>
+                          <p className="tw-text-[12.25px] tw-text-[#b83333]">{job?.name}</p>
                         </div>
                       ),
                   )}
 
                 {data?.jobLevels?.length > 0 &&
-                  data.jobLevels.map((jobLevel, index) => (
+                  data?.jobLevels.map((jobLevel, index) => (
                     <div key={index} className="tw-bg-[#e4e4e4] tw-rounded-[3.5px] tw-px-[10.5px]">
-                      <p className="tw-text-[12.25px] tw-text-[#313b49]">{jobLevel.name || 'N/A'}</p>
+                      <p className="tw-text-[12.25px] tw-text-[#313b49]">{jobLevel?.name || 'N/A'}</p>
                     </div>
                   ))}
                 {data?.content?.skills?.map((hashtag, hashtagIndex) => (

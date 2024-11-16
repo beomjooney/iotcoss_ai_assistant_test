@@ -340,13 +340,13 @@ BannerProps) => {
                 <div className="tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
                   <div className="tw-flex tw-gap-[7px]">
                     <div className="tw-bg-[#d7ecff] tw-rounded-[3.5px] tw-px-[10.5px] tw-py-[3.5px]">
-                      <p className="tw-text-[12.25px] tw-text-[#235a8d]">{data?.jobGroups[0].name}</p>
+                      <p className="tw-text-[12.25px] tw-text-[#235a8d]">{data?.jobGroups[0]?.name}</p>
                     </div>
                     <div className="tw-bg-[#e4e4e4] tw-rounded-[3.5px] tw-px-[10.5px] tw-py-[3.5px]">
-                      <p className="tw-text-[12.25px] tw-text-[#313b49]">{data?.jobLevels[0].name}</p>
+                      <p className="tw-text-[12.25px] tw-text-[#313b49]">{data?.jobLevels[0]?.name}</p>
                     </div>
                     <div className="tw-bg-[#ffdede] tw-rounded-[3.5px] tw-px-[10.5px] tw-py-[3.5px]">
-                      <p className="tw-text-[12.25px] tw-text-[#b83333]">{data?.jobs[0].name}</p>
+                      <p className="tw-text-[12.25px] tw-text-[#b83333]">{data?.jobs[0]?.name}</p>
                     </div>
                   </div>
                 </div>

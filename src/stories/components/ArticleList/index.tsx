@@ -151,19 +151,19 @@ const ArticleList: React.FC<any> = ({ data, refetchMyQuizContent }) => {
                   </div>
                 )}
                 {data?.jobs?.length > 0 &&
-                  data.jobs.map(
+                  data?.jobs.map(
                     (job, index) =>
-                      job.name && (
+                      job?.name && (
                         <div key={index} className="tw-bg-[#ffdede] tw-rounded-[3.5px] tw-px-[10.5px]">
-                          <p className="tw-text-[12.25px] tw-text-[#b83333]">{job.name || 'N/A'}</p>
+                          <p className="tw-text-[12.25px] tw-text-[#b83333]">{job?.name || 'N/A'}</p>
                         </div>
                       ),
                   )}
 
                 {data?.jobLevels?.length > 0 &&
-                  data.jobLevels.map((jobLevel, index) => (
+                  data?.jobLevels.map((jobLevel, index) => (
                     <div key={index} className="tw-bg-[#e4e4e4] tw-rounded-[3.5px] tw-px-[10.5px]">
-                      <p className="tw-text-[12.25px] tw-text-[#313b49]">{jobLevel.name || 'N/A'}</p>
+                      <p className="tw-text-[12.25px] tw-text-[#313b49]">{jobLevel?.name || 'N/A'}</p>
                     </div>
                   ))}
                 {data.skills?.map((tag, tagIndex) => (

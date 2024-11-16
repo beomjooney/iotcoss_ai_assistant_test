@@ -133,26 +133,26 @@ ClubMiniCardProps) => {
                   <div className="tw-bg-black tw-rounded-[3.5px] tw-px-2 tw-py-[1px]">
                     <p className="tw-text-[12.25px] tw-text-white">{getClubAboutStatus(item?.clubAboutStatus)}</p>
                   </div>
-                  {item?.jobGroups[0].name && (
+                  {item?.jobGroups[0]?.name && (
                     <div className="tw-bg-[#d7ecff] tw-rounded-[3.5px] tw-px-2 tw-py-[1px]">
-                      <p className="tw-text-[12.25px] tw-text-[#235a8d]">{item?.jobGroups[0].name || 'N/A'}</p>
+                      <p className="tw-text-[12.25px] tw-text-[#235a8d]">{item?.jobGroups[0]?.name || 'N/A'}</p>
                     </div>
                   )}
 
                   {item?.jobs?.length > 0 &&
-                    item.jobs.map(
+                    item?.jobs.map(
                       (job, index) =>
-                        job.name && (
+                        job?.name && (
                           <div key={index} className="tw-bg-[#ffdede] tw-rounded-[3.5px] tw-px-2 tw-py-[1px]">
-                            <p className="tw-text-[12.25px] tw-text-[#b83333]">{job.name}</p>
+                            <p className="tw-text-[12.25px] tw-text-[#b83333]">{job?.name}</p>
                           </div>
                         ),
                     )}
 
                   {item?.jobLevels?.length > 0 &&
-                    item.jobLevels.map((jobLevel, index) => (
+                    item?.jobLevels.map((jobLevel, index) => (
                       <div key={index} className="tw-bg-[#e4e4e4] tw-rounded-[3.5px] tw-px-2 tw-py-[1px]">
-                        <p className="tw-text-[12.25px] tw-text-[#313b49]">{jobLevel.name || 'N/A'}</p>
+                        <p className="tw-text-[12.25px] tw-text-[#313b49]">{jobLevel?.name || 'N/A'}</p>
                       </div>
                     ))}
                 </div>

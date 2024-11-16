@@ -424,10 +424,10 @@ export function QuizMakeTemplate() {
       return;
     }
 
-    if (!selectedJob || selectedJob.length === 0) {
-      alert('하나 이상의 학과를 선택하세요.');
-      return;
-    }
+    // if (!selectedJob || selectedJob.length === 0) {
+    //   alert('하나 이상의 학과를 선택하세요.');
+    //   return;
+    // }
 
     if (quizCount < 1) {
       alert('생성 퀴즈 개수는 1개 이상 설정해야 합니다.');

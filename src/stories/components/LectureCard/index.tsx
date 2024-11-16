@@ -157,7 +157,7 @@ LectureCardProps) => {
               <div className="tw-flex tw-justify-start tw-items-start tw-absolute tw-left-5 tw-top-5 tw-gap-1">
                 <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#e4e4e4]">
                   <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#5f5f5f]">
-                    {item?.jobGroups[0].name || 'N/A'}
+                    {item?.jobGroups[0]?.name || 'N/A'}
                   </p>
                 </div>
 

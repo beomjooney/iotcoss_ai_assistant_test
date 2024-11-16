@@ -142,7 +142,7 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
             <Grid item xs={8}>
               <div className="tw-flex tw-item tw-text-base tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
                 <span className="tw-inline-flex tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded">
-                  {clubData?.jobGroups[0].name || selectedUniversityName || 'N/A'}
+                  {clubData?.jobGroups[0]?.name || selectedUniversityName || 'N/A'}
                 </span>
 
                 {selectedJobName.length > 0 ? (
@@ -159,20 +159,20 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
                 ) : (
                   <>
                     {clubData?.jobs?.length > 0 &&
-                      clubData.jobs.map((job, index) => (
+                      clubData?.jobs.map((job, index) => (
                         <span
                           key={index}
                           className="tw-inline-flex tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
                         >
-                          {job.name || 'N/A'}
+                          {job?.name || 'N/A'}
                         </span>
                       ))}
                   </>
                 )}
 
-                {jobLevelName.length > 0 ? (
+                {jobLevelName?.length > 0 ? (
                   <>
-                    {jobLevelName.map((jobLevel, index) => (
+                    {jobLevelName?.map((jobLevel, index) => (
                       <span
                         key={index}
                         className=" tw-inline-flex tw-bg-gray-200 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
@@ -184,12 +184,12 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
                 ) : (
                   <>
                     {clubData?.jobLevels?.length > 0 &&
-                      clubData.jobLevels.map((jobLevel, index) => (
+                      clubData?.jobLevels.map((jobLevel, index) => (
                         <span
                           key={index}
                           className=" tw-inline-flex tw-bg-gray-200 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
                         >
-                          {jobLevel.name || 'N/A'}
+                          {jobLevel?.name || 'N/A'}
                         </span>
                       ))}
                   </>
@@ -198,7 +198,7 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
                 <button
                   className="tw-inline-flex"
                   onClick={() => {
-                    onChangeLike(clubData.clubSequence, clubData.isFavorite);
+                    onChangeLike(clubData?.clubSequence, clubData?.isFavorite);
                   }}
                 >
                   {isLiked ? (

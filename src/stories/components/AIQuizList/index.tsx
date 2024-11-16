@@ -109,10 +109,10 @@ const AIQuizList = ({
       return false;
     }
 
-    if (!selectedJob || selectedJob.length === 0) {
-      alert('하나 이상의 학과를 선택하세요.');
-      return;
-    }
+    // if (!selectedJob || selectedJob.length === 0) {
+    //   alert('하나 이상의 학과를 선택하세요.');
+    //   return;
+    // }
 
     // Find the specific quiz in quizList and create formattedQuizList
     const params = {

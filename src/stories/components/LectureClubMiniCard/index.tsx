@@ -126,29 +126,29 @@ LectureClubMiniCardProps) => {
                   <div className="tw-bg-black tw-rounded-[3.5px] tw-px-[10px] tw-py-[2px]">
                     <p className="tw-text-[12.25px] tw-text-white">{getButtonText(item?.clubStatus)}</p>
                   </div>
-                  {item.jobGroups[0].name && (
+                  {item?.jobGroups[0]?.name && (
                     <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2 tw-py-0.5 tw-rounded tw-bg-[#d7ecff]">
                       <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[12.25px] tw-text-left tw-text-[#235a8d]">
-                        {item.jobGroups[0].name || 'N/A'}
+                        {item?.jobGroups[0]?.name || 'N/A'}
                       </p>
                     </div>
                   )}
                   {item?.jobs?.length > 0 &&
-                    item.jobs.map(
+                    item?.jobs.map(
                       (job, index) =>
-                        job.name && (
+                        job?.name && (
                           <div key={index} className="tw-bg-[#ffdede] tw-rounded-[3.5px] tw-px-2 tw-py-[1px]">
-                            <p className="tw-text-[12.25px] tw-text-[#b83333]">{job.name}</p>
+                            <p className="tw-text-[12.25px] tw-text-[#b83333]">{job?.name}</p>
                           </div>
                         ),
                     )}
 
                   {item?.jobLevels?.length > 0 &&
-                    item.jobLevels.map(
+                    item?.jobLevels.map(
                       (jobLevel, index) =>
-                        jobLevel.name && (
+                        jobLevel?.name && (
                           <div key={index} className="tw-bg-[#e4e4e4] tw-rounded-[3.5px] tw-px-2 tw-py-[1px]">
-                            <p className="tw-text-[12.25px] tw-text-[#313b49]">{jobLevel.name || 'N/A'}</p>
+                            <p className="tw-text-[12.25px] tw-text-[#313b49]">{jobLevel?.name || 'N/A'}</p>
                           </div>
                         ),
                     )}

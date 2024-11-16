@@ -341,10 +341,10 @@ export function AdminKnowledgeTemplate() {
       return;
     }
 
-    if (!selectedJob || selectedJob.length === 0) {
-      alert('하나 이상의 학과를 선택하세요.');
-      return;
-    }
+    // if (!selectedJob || selectedJob.length === 0) {
+    //   alert('하나 이상의 학과를 선택하세요.');
+    //   return;
+    // }
 
     if (quizCount < 1) {
       alert('생성 퀴즈 개수는 1개 이상 설정해야 합니다.');
@@ -436,14 +436,14 @@ export function AdminKnowledgeTemplate() {
       return false;
     }
 
-    if (selectedJob.length === 0) {
-      alert('추천 학과를 입력해주세요.');
-      return false;
-    }
-    if (jobLevel.length === 0) {
-      alert('추천 학년을 입력해주세요.');
-      return false;
-    }
+    // if (selectedJob.length === 0) {
+    //   alert('추천 학과를 입력해주세요.');
+    //   return false;
+    // }
+    // if (jobLevel.length === 0) {
+    //   alert('추천 학년을 입력해주세요.');
+    //   return false;
+    // }
     if (isContentModalOpen) {
       // 콘텐츠 등록
       console.log('지식콘텐츠');
