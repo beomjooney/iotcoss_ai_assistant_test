@@ -97,7 +97,7 @@ const ArticleList: React.FC<any> = ({ data, refetchMyQuizContent }) => {
         <div className={cx('content-area ')}>
           <div className=" tw-p-8 tw-mb-5 tw-rounded-lg border">
             <div className="tw-flex tw-justify-between tw-items-center">
-              <p className=" tw-text-base tw-text-left tw-text-black">{data?.description}</p>
+              <p className=" tw-text-base tw-text-left tw-text-black">{data?.name}</p>
               <div className="tw-flex tw-justify-end tw-items-center tw-gap-5">
                 <p className="tw-text-sm tw-text-right tw-text-[#9ca5b2]">{data.createdDate}</p>
                 <svg
