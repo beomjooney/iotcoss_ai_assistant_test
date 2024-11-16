@@ -7,7 +7,7 @@ export function StudyRoomPage({ setActiveIndex }: { setActiveIndex: (index: numb
     setActiveIndex(3);
   }, []);
   return (
-    <div className="tw-h-[1800px]">
+    <div className="tw-h-[2300px]">
       <StudyRoomTemplate />
     </div>
   );
