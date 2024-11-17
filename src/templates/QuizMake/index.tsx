@@ -420,7 +420,7 @@ export function QuizMakeTemplate() {
     // }
 
     if (!selectedUniversity || selectedUniversity.length === 0) {
-      alert('하나 이상의 대학을 선택하세요.');
+      alert('추천 대학을 선택하세요.');
       return;
     }
 
@@ -1656,8 +1656,8 @@ export function QuizMakeTemplate() {
             )}
 
             <div className="tw-py-5 tw-text-center tw-flex tw-justify-between tw-items-center">
-              {!isContentModalOpen && (
-                <>
+              <div>
+                {!isContentModalOpen && (
                   <div className="tw-text-left">
                     <div className="form-check form-check-inline">
                       <input
@@ -1688,9 +1688,9 @@ export function QuizMakeTemplate() {
                       </label>
                     </div>
                   </div>
-                </>
-              )}
-              <div className="tw-text-right">
+                )}
+              </div>
+              <div className={`tw-text-right ${isContentModalOpen ? 'tw-flex tw-justify-end tw-w-full' : ''}`}>
                 <button
                   onClick={handleQuizInsertClick}
                   className="tw-text-white tw-text-sm tw-px-7 tw-py-3 tw-text-base tw-bg-[#CA001f] tw-rounded-md"
