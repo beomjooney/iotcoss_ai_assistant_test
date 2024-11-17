@@ -326,7 +326,7 @@ export function AdminKnowledgeTemplate() {
     // }
 
     if (!selectedUniversity || selectedUniversity.length === 0) {
-      alert('하나 이상의 대학을 선택하세요.');
+      alert('대학을 선택하세요.');
       return;
     }
 
