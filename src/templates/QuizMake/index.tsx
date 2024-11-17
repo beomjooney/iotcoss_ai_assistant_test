@@ -363,7 +363,7 @@ export function QuizMakeTemplate() {
       quizSortType: quizSortType,
     });
     // 작은 지연 추가
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo(0, 0);
   }, [page, keyWorld, quizSortType]);
 
   useEffect(() => {
@@ -1571,20 +1571,6 @@ export function QuizMakeTemplate() {
                       <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">
                         모범답안 <span className="tw-text-red-500 tw-ml-1">*</span>
                       </div>
-                      {/* <TextField
-                        required
-                        id="username"
-                        name="username"
-                        value={modelAnswerFinal}
-                        onChange={handleModelAnswerChange}
-                        variant="outlined"
-                        type="search"
-                        size="small"
-                        fullWidth
-                        sx={{
-                          '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
-                        }}
-                      /> */}
                       <textarea
                         value={modelAnswerFinal}
                         className="tw-form-control tw-w-full tw-py-[8px] tw-p-3"
@@ -1595,12 +1581,6 @@ export function QuizMakeTemplate() {
                       <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">
                         채점기준 주요 키워드/문구 <span className="tw-text-red-500 tw-ml-1">*</span>
                       </div>
-                      {/* <TagsInput
-                        value={selected3}
-                        onChange={selected3}
-                        name="fruits"
-                        placeHolder="주요 키워드/문구 입력 후 엔터를 쳐주세요."
-                      /> */}
                       <Tag
                         value={selected3}
                         onChange={setSelected3}

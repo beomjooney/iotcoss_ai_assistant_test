@@ -119,6 +119,11 @@ export function AdminQuizTemplate() {
   const [quizPage, setQuizPage] = useState(1);
   const [totalQuizPage, setTotalQuizPage] = useState(1);
   const [keyWorld, setKeyWorld] = useState('');
+  const [selectedOption, setSelectedOption] = useState('false');
+  const handleChangeOption = event => {
+    console.log('test', event.target.value);
+    setSelectedOption(event.target.value);
+  };
 
   const { data: optionsData }: UseQueryResult<ExperiencesResponse> = useOptions();
   //quiz delete
@@ -154,7 +159,7 @@ export function AdminQuizTemplate() {
 
   useDidMountEffect(() => {
     setContentTitle('');
-    // setContentUrl('');
+    setContentUrl('');
     setSelectedSubject('');
     setSelectedChapter('');
     setSelected1([]);
@@ -167,7 +172,8 @@ export function AdminQuizTemplate() {
     setQuizCount(1);
     setFileName('');
     setFileNameCopy([]);
-
+    setContentType('');
+    setSelectedOption('false');
     toggleDrawer(false);
     setOpen(false);
     QuizRefetchBadge();
@@ -340,10 +346,10 @@ export function AdminQuizTemplate() {
     //   return;
     // }
 
-    if (!selectedUniversity || selectedUniversity.length === 0) {
-      alert('하나 이상의 대학을 선택하세요.');
-      return;
-    }
+    // if (!selectedUniversity || selectedUniversity.length === 0) {
+    //   alert('하나 이상의 대학을 선택하세요.');
+    //   return;
+    // }
 
     // if (!selectedJob || selectedJob.length === 0) {
     //   alert('하나 이상의 학과를 선택하세요.');
@@ -381,10 +387,6 @@ export function AdminQuizTemplate() {
     onAIQuizSave(formData);
   };
 
-  const handleTabClick = tabName => {
-    setActiveTab(tabName);
-  };
-
   const handleQuizInsertClick = async () => {
     console.log(selectedUniversity);
     console.log(isContentModalOpen);
@@ -419,22 +421,22 @@ export function AdminQuizTemplate() {
     }
 
     console.log(selectedSubject);
-    if (!selectedSubject) {
-      alert('주제를 입력해주세요.');
-      return false;
-    }
-    if (!selectedChapter) {
-      alert('챕터를 입력해주세요.');
-      return false;
-    }
-    if (!selected1.length) {
-      alert('학습 키워드를 입력해주세요.');
-      return false;
-    }
-    if (!selected2.length) {
-      alert('스킬을 입력해주세요.');
-      return false;
-    }
+    // if (!selectedSubject) {
+    //   alert('주제를 입력해주세요.');
+    //   return false;
+    // }
+    // if (!selectedChapter) {
+    //   alert('챕터를 입력해주세요.');
+    //   return false;
+    // }
+    // if (!selected1.length) {
+    //   alert('학습 키워드를 입력해주세요.');
+    //   return false;
+    // }
+    // if (!selected2.length) {
+    //   alert('스킬을 입력해주세요.');
+    //   return false;
+    // }
     if (!selectedUniversity) {
       alert('추천 대학을 입력해주세요.');
       return false;
@@ -463,6 +465,7 @@ export function AdminQuizTemplate() {
         jobLevels: jobLevel,
         studyKeywords: selected1,
         contentId: 'content_id_' + uuidv4(),
+        publishStatus: selectedOption === 'true' ? '0002' : '0001',
       };
 
       const formData = new FormData();
@@ -491,6 +494,7 @@ export function AdminQuizTemplate() {
       }));
 
       const params = {
+        publishStatus: selectedOption === 'true' ? '0002' : '0001',
         content: {
           isNew: !isContentModalClick, // Simplified ternary expression
           contentSequence: contentSequence,
@@ -660,6 +664,7 @@ export function AdminQuizTemplate() {
       page,
       keyword: searchKeyword,
     });
+    window.scrollTo(0, 0);
   }, [page, searchKeyword]);
 
   const handleKeyDown = e => {
@@ -705,6 +710,30 @@ export function AdminQuizTemplate() {
     if (index > -1) newState.splice(index, 1);
     else newState.push(id);
     return newState;
+  };
+
+  const handleCloseDrawer = () => {
+    setIsContentModalClick(false);
+    setActive('');
+    setContentTitle('');
+    setContentUrl('');
+    setSelectedSubject('');
+    setSelectedChapter('');
+    setSelected1([]);
+    setSelected2([]);
+    setUniversityCode('');
+    setSelectedUniversity('');
+    setSelectedJob([]);
+    setPersonName([]);
+    setJobLevel([]);
+    setQuizList([]);
+    setQuizCount(1);
+    setFileName('');
+    setFileNameCopy([]);
+    setContentType('');
+    setSelectedOption('false');
+    toggleDrawer(false);
+    setOpen(false);
   };
 
   return (
@@ -854,9 +883,9 @@ export function AdminQuizTemplate() {
               </Desktop>
             </>
           )}
-          <Drawer anchor={'right'} open={open} onClose={toggleDrawer(false)}>
+          <Drawer anchor={'right'} open={open} onClose={handleCloseDrawer}>
             <div className="tw-flex tw-justify-end">
-              <IconButton onClick={toggleDrawer(false)}>
+              <IconButton onClick={handleCloseDrawer}>
                 <CancelIcon />
               </IconButton>
             </div>
@@ -903,7 +932,9 @@ export function AdminQuizTemplate() {
                     </div>
                   </AccordionSummary>
                   <AccordionDetails sx={{ backgroundColor: 'white', padding: 3 }}>
-                    <div className="tw-text-sm tw-font-bold tw-py-2">지식콘텐츠 유형</div>
+                    <div className="tw-text-sm tw-font-bold tw-py-2">
+                      지식콘텐츠 유형<span className="tw-text-red-500 tw-ml-1">*</span>
+                    </div>
                     <div className={cx('mentoring-button__group', 'tw-px-0', 'tw-justify-center', 'tw-items-center')}>
                       {studyStatus.map((item, i) => (
                         <Toggle
@@ -994,7 +1025,9 @@ export function AdminQuizTemplate() {
                       </div>
                     ) : (
                       <div>
-                        <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식콘텐츠 URL</div>
+                        <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">
+                          지식콘텐츠 URL<span className="tw-text-red-500 tw-ml-1">*</span>
+                        </div>
                         <TextField
                           required
                           disabled={isContentModalClick}
@@ -1012,7 +1045,9 @@ export function AdminQuizTemplate() {
                         />
                       </div>
                     )}
-                    <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식콘텐츠 제목</div>
+                    <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">
+                      지식콘텐츠 제목<span className="tw-text-red-500 tw-ml-1">*</span>
+                    </div>
                     <TextField
                       required
                       id="username"
@@ -1035,7 +1070,9 @@ export function AdminQuizTemplate() {
                     <div className="tw-text-lg tw-font-bold">지식콘텐츠 태깅</div>
                   </AccordionSummary>
                   <AccordionDetails sx={{ backgroundColor: 'white', padding: 3 }}>
-                    <div className="tw-text-sm tw-font-bold tw-py-2">추천 대학</div>
+                    <div className="tw-text-sm tw-font-bold tw-py-2">
+                      추천 대학<span className="tw-text-red-500 tw-ml-1">*</span>
+                    </div>
                     <select
                       className="form-select"
                       onChange={handleUniversityChange}
@@ -1325,7 +1362,37 @@ export function AdminQuizTemplate() {
                   </Accordion>
                 )}
 
-                <div className="tw-py-5 tw-text-center">
+                <div className="tw-py-5 tw-text-center tw-flex tw-justify-between tw-items-center">
+                  <div className="tw-text-left">
+                    <div className="form-check form-check-inline">
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="inlineRadioOptions"
+                        id="inlineRadio1"
+                        value="false"
+                        checked={selectedOption === 'false'}
+                        onChange={handleChangeOption}
+                      />
+                      <label className="form-check-label" htmlFor="inlineRadio1">
+                        비공개 퀴즈 생성
+                      </label>
+                    </div>
+                    <div className="form-check form-check-inline">
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="inlineRadioOptions"
+                        id="inlineRadio2"
+                        value="true"
+                        checked={selectedOption === 'true'}
+                        onChange={handleChangeOption}
+                      />
+                      <label className="form-check-label" htmlFor="inlineRadio2">
+                        공개 퀴즈로 전환
+                      </label>
+                    </div>
+                  </div>
                   <div className="tw-text-right">
                     <button
                       onClick={handleQuizInsertClick}

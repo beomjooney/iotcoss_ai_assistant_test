@@ -115,6 +115,11 @@ export function AdminKnowledgeTemplate() {
   const [quizPage, setQuizPage] = useState(1);
   const [totalQuizPage, setTotalQuizPage] = useState(1);
   const [keyWorld, setKeyWorld] = useState('');
+  const [selectedOption, setSelectedOption] = useState('false');
+  const handleChangeOption = event => {
+    console.log('test', event.target.value);
+    setSelectedOption(event.target.value);
+  };
 
   const { data: optionsData }: UseQueryResult<ExperiencesResponse> = useOptions();
   //quiz delete
@@ -157,23 +162,7 @@ export function AdminKnowledgeTemplate() {
   );
 
   useDidMountEffect(() => {
-    setContentTitle('');
-    // setContentUrl('');
-    setSelectedSubject('');
-    setSelectedChapter('');
-    setSelected1([]);
-    setSelected2([]);
-    setSelectedUniversity('');
-    setSelectedJob([]);
-    setPersonName([]);
-    setJobLevel([]);
-    setQuizList([]);
-    setQuizCount(1);
-    setFileName('');
-    setFileNameCopy([]);
-
-    toggleDrawer(false);
-    setOpen(false);
+    handleCloseDrawer();
     QuizRefetchBadge();
   }, [postSuccess, postContentSuccess]);
 
@@ -377,10 +366,6 @@ export function AdminKnowledgeTemplate() {
     onAIQuizSave(formData);
   };
 
-  const handleTabClick = tabName => {
-    setActiveTab(tabName);
-  };
-
   const handleQuizInsertClick = async () => {
     console.log(selectedUniversity);
     console.log(isContentModalOpen);
@@ -415,22 +400,22 @@ export function AdminKnowledgeTemplate() {
     }
 
     console.log(selectedSubject);
-    if (!selectedSubject) {
-      alert('주제를 입력해주세요.');
-      return false;
-    }
-    if (!selectedChapter) {
-      alert('챕터를 입력해주세요.');
-      return false;
-    }
-    if (!selected1.length) {
-      alert('학습 키워드를 입력해주세요.');
-      return false;
-    }
-    if (!selected2.length) {
-      alert('스킬을 입력해주세요.');
-      return false;
-    }
+    // if (!selectedSubject) {
+    //   alert('주제를 입력해주세요.');
+    //   return false;
+    // }
+    // if (!selectedChapter) {
+    //   alert('챕터를 입력해주세요.');
+    //   return false;
+    // }
+    // if (!selected1.length) {
+    //   alert('학습 키워드를 입력해주세요.');
+    //   return false;
+    // }
+    // if (!selected2.length) {
+    //   alert('스킬을 입력해주세요.');
+    //   return false;
+    // }
     if (!selectedUniversity) {
       alert('추천 대학을 입력해주세요.');
       return false;
@@ -650,11 +635,13 @@ export function AdminKnowledgeTemplate() {
   };
 
   useDidMountEffect(() => {
+    console.log('scroll');
     setMemberParams({
       // ...params,
       page,
       keyword: searchKeyword,
     });
+    window.scrollTo(0, 0);
   }, [page, searchKeyword]);
 
   const handleKeyDown = e => {
@@ -668,10 +655,6 @@ export function AdminKnowledgeTemplate() {
   const handleChangeContent = event => {
     console.log(event.target.value);
     setContentSortType(event.target.value);
-  };
-
-  const handleRegister = () => {
-    console.log('등록');
   };
 
   const handleDelete = quizSequence => {
@@ -703,6 +686,30 @@ export function AdminKnowledgeTemplate() {
     if (index > -1) newState.splice(index, 1);
     else newState.push(id);
     return newState;
+  };
+
+  const handleCloseDrawer = () => {
+    setIsContentModalClick(false);
+    setActive('');
+    setContentTitle('');
+    setContentUrl('');
+    setSelectedSubject('');
+    setSelectedChapter('');
+    setSelected1([]);
+    setSelected2([]);
+    setUniversityCode('');
+    setSelectedUniversity('');
+    setSelectedJob([]);
+    setPersonName([]);
+    setJobLevel([]);
+    setQuizList([]);
+    setQuizCount(1);
+    setFileName('');
+    setFileNameCopy([]);
+    setContentType('');
+    setSelectedOption('false');
+    toggleDrawer(false);
+    setOpen(false);
   };
 
   return (
@@ -852,9 +859,9 @@ export function AdminKnowledgeTemplate() {
               </Desktop>
             </>
           )}
-          <Drawer anchor={'right'} open={open} onClose={toggleDrawer(false)}>
+          <Drawer anchor={'right'} open={open} onClose={handleCloseDrawer}>
             <div className="tw-flex tw-justify-end">
-              <IconButton onClick={toggleDrawer(false)}>
+              <IconButton onClick={handleCloseDrawer}>
                 <CancelIcon />
               </IconButton>
             </div>
@@ -902,7 +909,9 @@ export function AdminKnowledgeTemplate() {
                     </div>
                   </AccordionSummary>
                   <AccordionDetails sx={{ backgroundColor: 'white', padding: 3 }}>
-                    <div className="tw-text-sm tw-font-bold tw-py-2">지식콘텐츠 유형</div>
+                    <div className="tw-text-sm tw-font-bold tw-py-2">
+                      지식콘텐츠 유형<span className="tw-text-red-500 tw-ml-1">*</span>
+                    </div>
                     <div className={cx('mentoring-button__group', 'tw-px-0', 'tw-justify-center', 'tw-items-center')}>
                       {studyStatus.map((item, i) => (
                         <Toggle
@@ -993,7 +1002,9 @@ export function AdminKnowledgeTemplate() {
                       </div>
                     ) : (
                       <div>
-                        <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식콘텐츠 URL</div>
+                        <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">
+                          지식콘텐츠 URL <span className="tw-text-red-500 tw-ml-1">*</span>
+                        </div>
                         <TextField
                           required
                           disabled={isContentModalClick}
@@ -1011,7 +1022,9 @@ export function AdminKnowledgeTemplate() {
                         />
                       </div>
                     )}
-                    <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">지식콘텐츠 제목</div>
+                    <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-3">
+                      지식콘텐츠 제목<span className="tw-text-red-500 tw-ml-1">*</span>
+                    </div>
                     <TextField
                       required
                       id="username"
@@ -1034,7 +1047,9 @@ export function AdminKnowledgeTemplate() {
                     <div className="tw-text-lg tw-font-bold">지식콘텐츠 태깅</div>
                   </AccordionSummary>
                   <AccordionDetails sx={{ backgroundColor: 'white', padding: 3 }}>
-                    <div className="tw-text-sm tw-font-bold tw-py-2">추천 대학</div>
+                    <div className="tw-text-sm tw-font-bold tw-py-2">
+                      추천 대학<span className="tw-text-red-500 tw-ml-1">*</span>
+                    </div>
                     <select
                       className="form-select"
                       onChange={handleUniversityChange}
