@@ -91,7 +91,7 @@ const AIQuizList = ({
       const updatedQuizList = {
         ...quizList,
         modelAnswer: aiQuizAnswerData[0].answer,
-        modelAnswerKeywords: aiQuizAnswerData[0].keywords,
+        // modelAnswerKeywords: aiQuizAnswerData[0].keywords,
       };
       setQuizList(updatedQuizList);
       console.log('updatedQuizList', updatedQuizList);

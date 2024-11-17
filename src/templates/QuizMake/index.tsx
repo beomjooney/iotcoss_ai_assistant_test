@@ -1656,7 +1656,7 @@ export function QuizMakeTemplate() {
             )}
 
             <div className="tw-py-5 tw-text-center tw-flex tw-justify-between tw-items-center">
-              {!isContentModalClick && (
+              {!isContentModalOpen && (
                 <>
                   <div className="tw-text-left">
                     <div className="form-check form-check-inline">
