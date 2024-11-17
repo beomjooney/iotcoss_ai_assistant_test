@@ -280,7 +280,7 @@ export function QuizMakeTemplate() {
 
   useEffect(() => {
     if (optionsData) {
-      setJobLevel(optionsData?.data?.jobLevels[0].code);
+      setJobLevel(optionsData?.data?.jobLevels[0]?.code);
     }
   }, [optionsData]);
 

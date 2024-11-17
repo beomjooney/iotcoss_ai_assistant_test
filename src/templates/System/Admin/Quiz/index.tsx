@@ -188,7 +188,7 @@ export function AdminQuizTemplate() {
 
   useEffect(() => {
     if (optionsData) {
-      setJobLevel(optionsData?.data?.jobLevels[0].code);
+      setJobLevel(optionsData?.data?.jobLevels[0]?.code);
     }
   }, [optionsData]);
 
