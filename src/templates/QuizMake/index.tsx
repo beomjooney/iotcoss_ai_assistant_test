@@ -588,7 +588,7 @@ export function QuizMakeTemplate() {
         jobLevels: jobLevel,
         studyKeywords: selected1,
         contentId: 'content_id_' + uuidv4(),
-        publishStatus: selectedOption === 'true' ? '0002' : '0001',
+        // publishStatus: selectedOption === 'true' ? '0002' : '0001',
       };
 
       const formData = new FormData();
@@ -1656,36 +1656,40 @@ export function QuizMakeTemplate() {
             )}
 
             <div className="tw-py-5 tw-text-center tw-flex tw-justify-between tw-items-center">
-              <div className="tw-text-left">
-                <div className="form-check form-check-inline">
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    name="inlineRadioOptions"
-                    id="inlineRadio1"
-                    value="false"
-                    checked={selectedOption === 'false'}
-                    onChange={handleChangeOption}
-                  />
-                  <label className="form-check-label" htmlFor="inlineRadio1">
-                    비공개 퀴즈 생성
-                  </label>
-                </div>
-                <div className="form-check form-check-inline">
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    name="inlineRadioOptions"
-                    id="inlineRadio2"
-                    value="true"
-                    checked={selectedOption === 'true'}
-                    onChange={handleChangeOption}
-                  />
-                  <label className="form-check-label" htmlFor="inlineRadio2">
-                    공개 퀴즈로 전환
-                  </label>
-                </div>
-              </div>
+              {!isContentModalClick && (
+                <>
+                  <div className="tw-text-left">
+                    <div className="form-check form-check-inline">
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="inlineRadioOptions"
+                        id="inlineRadio1"
+                        value="false"
+                        checked={selectedOption === 'false'}
+                        onChange={handleChangeOption}
+                      />
+                      <label className="form-check-label" htmlFor="inlineRadio1">
+                        비공개 퀴즈 생성
+                      </label>
+                    </div>
+                    <div className="form-check form-check-inline">
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="inlineRadioOptions"
+                        id="inlineRadio2"
+                        value="true"
+                        checked={selectedOption === 'true'}
+                        onChange={handleChangeOption}
+                      />
+                      <label className="form-check-label" htmlFor="inlineRadio2">
+                        공개 퀴즈로 전환
+                      </label>
+                    </div>
+                  </div>
+                </>
+              )}
               <div className="tw-text-right">
                 <button
                   onClick={handleQuizInsertClick}
