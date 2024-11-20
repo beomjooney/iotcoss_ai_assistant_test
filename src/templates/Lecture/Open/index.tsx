@@ -8,10 +8,9 @@ import { useRouter } from 'next/router';
 import Grid from '@mui/material/Grid';
 import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
 import { styled } from '@mui/material/styles';
-import TextField, { TextFieldProps } from '@mui/material/TextField';
+import TextField from '@mui/material/TextField';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
-
 import { UseQueryResult } from 'react-query';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { ExperiencesResponse } from 'src/models/experiences';
@@ -20,14 +19,7 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 import { useMyQuiz, useQuizList, useGetSchedule, useLectureGetTemp } from 'src/services/jobs/jobs.queries';
 import Checkbox from '@mui/material/Checkbox';
-import {
-  useClubQuizSave,
-  useQuizSave,
-  useClubTempSave,
-  useLectureTempSave,
-  useLectureSave,
-} from 'src/services/quiz/quiz.mutations';
-import { TagsInput } from 'react-tag-input-component';
+import { useQuizSave, useClubTempSave, useLectureTempSave, useLectureSave } from 'src/services/quiz/quiz.mutations';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import { makeStyles } from '@mui/styles';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
@@ -42,22 +34,17 @@ import LectureOpenDetailInfo from 'src/stories/components/LectureOpenDetailInfo'
 /** drag list */
 import ReactDragList from 'react-drag-list';
 import { useStore } from 'src/store';
-
 import { InputAdornment, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-
 import FormControl from '@mui/material/FormControl';
 import ListItemText from '@mui/material/ListItemText';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-
 import { Toggle, Tag } from 'src/stories/components';
-
 //group
-import { images, imageBanner } from './group';
+import { images, imageBanner, dayGroup } from './group';
 import validator from 'validator';
 import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
-
 import { v4 as uuidv4 } from 'uuid';
 
 export const generateUUID = () => {
@@ -89,7 +76,7 @@ for (let i = 0; i < 2; i++) {
 export function LectureOpenTemplate() {
   const router = useRouter();
   const [startDay, setStartDay] = React.useState<Dayjs | null>(dayjs());
-  const [endDay, setEndDay] = React.useState<Dayjs | null>(dayjs().add(1, 'day'));
+  const [endDay, setEndDay] = React.useState<Dayjs | null>(dayjs().add(4, 'month'));
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [jobGroupsFilter, setJobGroupsFilter] = useState([]);
@@ -105,19 +92,14 @@ export function LectureOpenTemplate() {
   const [quizListParam, setQuizListParam] = useState<any[]>([]);
   const [quizListData, setQuizListData] = useState<any[]>([]);
   const [allQuizData, setAllQuizData] = useState([]);
-  const [scheduleData, setScheduleData] = useState<any[]>(defaultScheduleData);
-  const [scheduleSaveData, setScheduleSaveData] = useState<any[]>([]);
-  const [selectedSessions, setSelectedSessions] = useState([]);
+  const [scheduleData, setScheduleData] = useState<any[]>([]);
   const [selectedUniversity, setSelectedUniversity] = useState('');
   const [selectedUniversityName, setSelectedUniversityName] = useState('');
-  const [selectedJobName, setSelectedJobName] = useState('');
   const [selectedLevel, setSelectedLevel] = useState('');
   const [jobs, setJobs] = useState([]);
   const [selectedJob, setSelectedJob] = useState([]);
   const [totalElements, setTotalElements] = useState(0);
   const [personName, setPersonName] = useState([]);
-  const [inputList, setInputList] = useState([]);
-  const [fileList, setFileList] = useState([]);
   const [lectureLanguage, setLectureLanguage] = useState('kor');
   const [contentLanguage, setContentLanguage] = useState('kor');
   const [lectureAILanguage, setLectureAILanguage] = useState('kor');
@@ -128,31 +110,26 @@ export function LectureOpenTemplate() {
   const [enableAiQuestion, setEnableAiQuestion] = useState('true');
   const [studyKeywords, setStudyKeywords] = useState([]);
   const [forbiddenKeywords, setForbiddenKeywords] = useState([]);
-  const [studyChapter, setStudyChapter] = useState('');
   const [studySubject, setStudySubject] = useState('');
-  const [skills, setSkills] = useState([]);
   const [universityCodeQuiz, setUniversityCodeQuiz] = useState<string>('');
   const [selectedJobQuiz, setSelectedJobQuiz] = useState<string>('');
-
   const steps = ['Step.1 강의 정보입력', 'Step.2 강의 커리큘럼 입력', 'Step.3 개설될 강의 미리보기'];
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set<number>());
   const [quizUrl, setQuizUrl] = React.useState('');
   const [quizName, setQuizName] = React.useState('');
-
   const [recommendLevels, setRecommendLevels] = useState([]);
   const [universityCode, setUniversityCode] = useState<string>('');
   const [levelNames, setLevelNames] = useState([]);
-
   const [quizType, setQuizType] = useState('0100');
   const [recommendLevelsPopUp, setRecommendLevelsPopUp] = useState([]);
   const [clubName, setClubName] = useState<string>('');
   const [num, setNum] = useState(0);
   const [active, setActive] = useState(0);
   const [agreements, setAgreements] = useState(true);
-
   const [keyWorld, setKeyWorld] = useState('');
   const [myKeyWorld, setMyKeyWorld] = useState('');
+  const [studyCycleNum, setStudyCycleNum] = useState([]);
 
   const onChangeHandleFromToStartDate = date => {
     if (date) {
@@ -162,6 +139,7 @@ export function LectureOpenTemplate() {
       const formattedDateString = formattedDate.format('YYYY-MM-DD');
       // Set both today and todayEnd
       setStartDay(formattedDate);
+      generateSchedule(formattedDate, endDay, studyCycleNum);
     }
   };
   const onChangeHandleFromToEndDate = date => {
@@ -172,6 +150,7 @@ export function LectureOpenTemplate() {
       const formattedDateString = formattedDate.format('YYYY-MM-DD');
       // Set both today and todayEnd
       setEndDay(formattedDate);
+      generateSchedule(startDay, formattedDate, studyCycleNum);
     }
   };
 
@@ -412,6 +391,11 @@ export function LectureOpenTemplate() {
       }
     },
   );
+
+  const handleStudyCycle = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
+    setStudyCycleNum(newFormats);
+    generateSchedule(startDay, endDay, newFormats);
+  };
 
   const onFileDownload = function (key: string, fileName: string) {
     console.log(key, fileName);
@@ -833,6 +817,66 @@ export function LectureOpenTemplate() {
         return item;
       }),
     );
+  };
+
+  const koreanToEnglishMap = {
+    월: 'Monday',
+    화: 'Tuesday',
+    수: 'Wednesday',
+    목: 'Thursday',
+    금: 'Friday',
+    토: 'Saturday',
+    일: 'Sunday',
+  };
+
+  // 요일 매핑 (영어 -> 한글)
+  const englishToKoreanMap = {
+    Sunday: '일',
+    Monday: '월',
+    Tuesday: '화',
+    Wednesday: '수',
+    Thursday: '목',
+    Friday: '금',
+    Saturday: '토',
+  };
+
+  const generateSchedule = (startDay, endDay, studyCycleNum) => {
+    if (!startDay || !endDay || studyCycleNum.length === 0) {
+      return [];
+    }
+
+    const schedule = [];
+    let currentDay = startDay.startOf('day');
+    let order = 1;
+
+    // `studyCycleNum` 한글을 영어 요일로 변환
+    const studyCycleEnglish = studyCycleNum.map(day => koreanToEnglishMap[day]);
+
+    while (currentDay.isBefore(endDay) || currentDay.isSame(endDay, 'day')) {
+      const dayOfWeekEng = currentDay.format('dddd'); // 영어 요일 (e.g., "Thursday")
+      const dayOfWeekKor = englishToKoreanMap[dayOfWeekEng]; // 한글 요일 (e.g., "목")
+
+      if (studyCycleEnglish.includes(dayOfWeekEng)) {
+        schedule.push({
+          studyOrder: order,
+          clubStudyName: '',
+          clubStudyType: '0100',
+          clubStudyUrl: '',
+          urls: [],
+          files: [],
+          startDate: currentDay.format('YYYY-MM-DD'),
+          endDate: currentDay.add(1, 'day').format('YYYY-MM-DD'),
+          // weekNumber: currentDay.week(),
+          // publishDate: currentDay.format('YYYY-MM-DD'),
+          // dayOfWeek: dayOfWeekKor,
+        });
+        order++;
+      }
+      currentDay = currentDay.add(1, 'day');
+    }
+
+    console.log('schedule', schedule);
+    return schedule;
   };
 
   const handleUpdate = (evt: any, updated: any) => {
@@ -1478,7 +1522,36 @@ export function LectureOpenTemplate() {
                     </div>
                   </div>
 
-                  <div className="tw-grid tw-grid-cols-2 tw-gap-4 tw-content-start">
+                  <div className="tw-mb-[12px] tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
+                    추천 학년
+                  </div>
+
+                  {optionsData?.data?.jobLevels?.map((item, i) => (
+                    <Toggle
+                      key={item.code}
+                      label={item.name}
+                      name={item.name}
+                      value={item.code}
+                      variant="small"
+                      checked={recommendLevels.indexOf(item.code) >= 0}
+                      isActive
+                      type="tabButton"
+                      onChange={() => {
+                        const index = recommendLevels.indexOf(item.code);
+                        setRecommendLevels(prevState => newCheckItem(item.code, index, prevState));
+                        if (index >= 0) {
+                          // Remove the name if the code is already in the array
+                          setLevelNames(prevNames => prevNames.filter(name => name !== item.name));
+                        } else {
+                          // Add the name if the code is not in the array
+                          setLevelNames(prevNames => [...(prevNames ? prevNames : []), item.name]);
+                        }
+                      }}
+                      className={cx('tw-mr-2 !tw-w-[85px] !tw-h-[37px]')}
+                    />
+                  ))}
+
+                  <div className="tw-grid tw-grid-cols-2 tw-gap-4 tw-mt-5 tw-content-start">
                     <div>
                       <div className="tw-mb-[12px] tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
                         강의 시작일
@@ -1511,34 +1584,49 @@ export function LectureOpenTemplate() {
                     </div>
                   </div>
 
-                  <div className="tw-mb-[12px] tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
-                    추천 학년
-                  </div>
+                  <div className="tw-mb-10 tw-content-start">
+                    <div>
+                      <div className="tw-mb-[12px] tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
+                        강의 반복 설정 (복수선택가능)
+                      </div>
 
-                  {optionsData?.data?.jobLevels?.map((item, i) => (
-                    <Toggle
-                      key={item.code}
-                      label={item.name}
-                      name={item.name}
-                      value={item.code}
-                      variant="small"
-                      checked={recommendLevels.indexOf(item.code) >= 0}
-                      isActive
-                      type="tabButton"
-                      onChange={() => {
-                        const index = recommendLevels.indexOf(item.code);
-                        setRecommendLevels(prevState => newCheckItem(item.code, index, prevState));
-                        if (index >= 0) {
-                          // Remove the name if the code is already in the array
-                          setLevelNames(prevNames => prevNames.filter(name => name !== item.name));
-                        } else {
-                          // Add the name if the code is not in the array
-                          setLevelNames(prevNames => [...(prevNames ? prevNames : []), item.name]);
-                        }
-                      }}
-                      className={cx('tw-mr-2 !tw-w-[85px] !tw-h-[37px]')}
-                    />
-                  ))}
+                      <div className="tw-flex tw-items-center tw-gap-2 tw-mt-1">
+                        <div className="tw-text-sm tw-text-black">매주</div>
+                        <ToggleButtonGroup
+                          value={studyCycleNum}
+                          onChange={handleStudyCycle}
+                          aria-label=""
+                          color="standard"
+                        >
+                          {dayGroup?.map((item, index) => (
+                            <ToggleButton
+                              classes={{ selected: classes.selected }}
+                              key={`job1-${index}`}
+                              value={item.id}
+                              name={item.name}
+                              className="tw-ring-1 tw-ring-slate-900/10"
+                              style={{
+                                borderRadius: '5px',
+                                borderLeft: '0px',
+                                width: '60px',
+                                margin: '5px',
+                                height: '35px',
+                                border: '0px',
+                              }}
+                              sx={{
+                                '&.Mui-selected': {
+                                  backgroundColor: '#000',
+                                  color: '#fff',
+                                },
+                              }}
+                            >
+                              {item.name}
+                            </ToggleButton>
+                          ))}
+                        </ToggleButtonGroup>
+                      </div>
+                    </div>
+                  </div>
 
                   <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-my-2">학습 주제</div>
                   <TextField
@@ -1556,12 +1644,6 @@ export function LectureOpenTemplate() {
                         학습 키워드
                       </div>
                       <Tag value={studyKeywords} onChange={setStudyKeywords} placeHolder="학습 키워드 입력 후 엔터" />
-                      {/* <TagsInput
-                        value={studyKeywords}
-                        onChange={setStudyKeywords}
-                        name="fruits"
-                        placeHolder="학습 키워드 입력 후 엔터"
-                      /> */}
                     </div>
 
                     <div>
