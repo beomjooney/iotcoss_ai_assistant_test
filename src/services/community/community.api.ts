@@ -197,17 +197,17 @@ export const deleteReReply = async (params: any) => {
 };
 
 export const myReReplyUpdate = async (params: any) => {
-  console.log(params);
-  // await axiosGeneralAPI().delete(`/posts/${params.parentPostNo}/replies/${params.postReplyNo}`);
   const { data } = await axiosGeneralAPI().put(`/api/v1/my/replies/${params.answerReplySequence}`, {
     body: params.body,
   });
 };
 
 export const clubJoin = async (params: any) => {
-  console.log(params);
-  // await axiosGeneralAPI().delete(`/posts/${params.parentPostNo}/replies/${params.postReplyNo}`);
   const { data } = await axiosGeneralAPI().post(`/api/v1/clubs/${params.clubSequence}/join`, {
     participationCode: params.participationCode,
   });
+};
+
+export const clubCancel = async (params: any) => {
+  const { data } = await axiosGeneralAPI().put(`/api/v1/clubs/${params.clubSequence}/join/cancel`);
 };

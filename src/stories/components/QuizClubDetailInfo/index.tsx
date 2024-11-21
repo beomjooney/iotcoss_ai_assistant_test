@@ -5,8 +5,8 @@ import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import { useClubJoin } from 'src/services/community/community.mutations';
 import { useSessionStore } from 'src/store/session';
-import { useSaveLike, useDeleteLike } from 'src/services/community/community.mutations';
-import { getClubAboutJoyStatus, getClubStatusMessage, getClubAboutStatus } from 'src/utils/clubStatus';
+import { useSaveLike, useDeleteLike, useClubCancel } from 'src/services/community/community.mutations';
+import { getClubAboutStatus } from 'src/utils/clubStatus';
 import { Button, Modal } from 'src/stories/components';
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
@@ -45,6 +45,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
   const studyWeekCount = parseInt(clubData?.studyWeekCount, 10);
   const totalMeetings = studyWeekCount * clubData?.studyCycle?.length;
   const { mutate: onClubJoin, isSuccess: clubJoinSucces } = useClubJoin();
+  const { mutate: onClubCancel, isSuccess: clubCancelSucces } = useClubCancel();
   let [isLiked, setIsLiked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [participationCode, setParticipationCode] = useState<string>('');
@@ -57,17 +58,21 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
   }, [clubData?.isFavorite]);
 
   useEffect(() => {
-    if (clubJoinSucces) {
+    if (clubJoinSucces || clubCancelSucces) {
       refetchClubAbout();
     }
-  }, [clubJoinSucces]);
+  }, [clubJoinSucces, clubCancelSucces]);
 
   const handlerClubJoin = (clubSequence: number, isPublic: boolean) => {
     setIsModalOpen(true);
-    // onClubJoin({
-    //   clubSequence: clubSequence,
-    //   participationCode: '',
-    // });
+  };
+
+  const handlerClubCancel = (clubSequence: number, isPublic: boolean) => {
+    if (confirm('정말 취소하시겠습니까?')) {
+      onClubCancel({
+        clubSequence: clubSequence,
+      });
+    }
   };
 
   const onChangeLike = function (postNo: number) {
@@ -213,6 +218,16 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
 
               <div className="tw-inline-flex tw-ml-auto">
                 <div className="tw-flex tw-items-center tw-space-x-4">
+                  <div className="tw-flex tw-ml-auto tw-items-center tw-space-x-4">
+                    {clubData?.clubAboutStatus === '0301' && (
+                      <button
+                        onClick={() => handlerClubCancel(clubData?.clubSequence, clubData?.isPublic)}
+                        className="tw-text-[12.25px] tw-font-bold tw-text-center tw-text-white tw-bg-[#e11837] tw-px-4 tw-py-2 tw-rounded"
+                      >
+                        취소하기
+                      </button>
+                    )}
+                  </div>
                   <div className="tw-flex tw-ml-auto tw-items-center tw-space-x-4">
                     {clubData?.clubAboutStatus === '0300' ? (
                       <button
@@ -435,13 +450,15 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
         <div className={cx('seminar-check-popup')}>
           {clubData?.isPublic ? (
             <div>
+              <br></br>
+              <br></br>
               <div className={cx('mb-5')}>
                 <span className={cx('text-bold', 'tw-text-xl', 'tw-font-bold')}>가입 신청이 완료되었습니다!</span>
               </div>
+              <br></br>
               <div>가입 신청 후 클럽장 승인이 완료될때까지 기다려주세요!</div>
-              <div>승인 완료 후 MY페이지나 퀴즈클럽 페이지 상단에서 가입된 클럽을 확인하실 수 있습니다.</div>
-              <br></br>
-              <br></br>
+              <div>승인 완료 후 MY페이지나 퀴즈클럽 페이지 상단에서</div>
+              <div>가입된 클럽을 확인하실 수 있습니다.</div>
               <br></br>
               <br></br>
               <div className="tw-mt-5">
