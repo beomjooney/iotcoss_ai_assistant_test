@@ -137,6 +137,7 @@ export function LectureOpenTemplate() {
   const [keyWorld, setKeyWorld] = useState('');
   const [myKeyWorld, setMyKeyWorld] = useState('');
   const [studyCycleNum, setStudyCycleNum] = useState([]);
+  const [buttonFlag, setButtonFlag] = useState(false);
 
   const onChangeHandleFromToStartDate = date => {
     if (date) {
@@ -152,6 +153,7 @@ export function LectureOpenTemplate() {
         endDate: endDay.format('YYYY-MM-DD'),
       });
     }
+    setButtonFlag(false);
   };
   const onChangeHandleFromToEndDate = date => {
     if (date) {
@@ -160,12 +162,14 @@ export function LectureOpenTemplate() {
       // Format the date as 'YYYY-MM-DD'
       const formattedDateString = formattedDate.format('YYYY-MM-DD');
       // Set both today and todayEnd
+
       setEndDay(formattedDate);
       setDayParams({
         studyCycle: studyCycleNum.join(','),
         startDate: startDay.format('YYYY-MM-DD'),
         endDate: formattedDateString,
       });
+      setButtonFlag(false);
     }
   };
 
@@ -342,6 +346,7 @@ export function LectureOpenTemplate() {
       setSelectedImage('');
       setSelectedImageBanner('');
       // setSelectedImageProfile('');
+      setButtonFlag(true);
 
       // Add fileList and urlList to each item in the data array
       const updatedData = lectureList.map(item => ({
@@ -434,13 +439,29 @@ export function LectureOpenTemplate() {
   );
 
   const handleStudyCycle = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
-    setStudyCycleNum(newFormats);
     console.log('newFormats', newFormats);
-    setDayParams({
-      studyCycle: newFormats.join(','),
-      startDate: startDay.format('YYYY-MM-DD'),
-      endDate: endDay.format('YYYY-MM-DD'),
-    });
+    setStudyCycleNum(newFormats);
+  };
+
+  const handlerClubMake = () => {
+    console.log('handlerClubMake');
+    setButtonFlag(true);
+    if (scheduleData.length > 0) {
+      if (confirm('강의 반복을 선택하면 기존 임시저장 데이터는 사라집니다. 계속하시겠습니까?')) {
+        setDayParams({
+          studyCycle: studyCycleNum.join(','),
+          startDate: startDay.format('YYYY-MM-DD'),
+          endDate: endDay.format('YYYY-MM-DD'),
+        });
+      }
+    } else {
+      alert('강의 반복 설정이 완료되었습니다.');
+      setDayParams({
+        studyCycle: studyCycleNum.join(','),
+        startDate: startDay.format('YYYY-MM-DD'),
+        endDate: endDay.format('YYYY-MM-DD'),
+      });
+    }
   };
 
   const onFileDownload = function (key: string, fileName: string) {
@@ -1107,6 +1128,11 @@ export function LectureOpenTemplate() {
       return false;
     }
 
+    if (buttonFlag == false) {
+      alert('강의 시작일, 종료일, 강의반복 설정 후 확인버튼을 눌러주세요. ');
+      return;
+    }
+
     if (!introductionText) {
       alert('설명을 입력해주세요');
       return false;
@@ -1638,6 +1664,14 @@ export function LectureOpenTemplate() {
                             </ToggleButton>
                           ))}
                         </ToggleButtonGroup>
+                        <button
+                          onClick={handlerClubMake}
+                          className="tw-flex tw-justify-center tw-items-center tw-w-20 tw-relative tw-overflow-hidden tw-gap-2 tw-px-7 tw-py-[10px] tw-rounded tw-bg-[#31343d]"
+                        >
+                          <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-center tw-text-white">
+                            확인
+                          </p>
+                        </button>
                       </div>
                     </div>
                   </div>
