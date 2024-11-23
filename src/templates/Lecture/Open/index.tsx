@@ -440,6 +440,7 @@ export function LectureOpenTemplate() {
 
   const handleStudyCycle = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
     console.log('newFormats', newFormats);
+    setButtonFlag(false);
     setStudyCycleNum(newFormats);
   };
 
