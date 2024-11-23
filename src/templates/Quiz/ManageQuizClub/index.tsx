@@ -374,7 +374,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     setOptionsSkills(prevState => Array.from(new Set([...prevState, ...(clubForm?.skills || [])])));
     const extractedCodes = clubForm.jobLevels?.map(item => item.code);
     setRecommendLevels(extractedCodes || []);
-    setNum(clubForm.weekCount || 0);
+    setNum(clubForm.studyCount || 0);
     setQuizType(clubForm.quizOpenType || '');
     setStartDay(clubForm.startAt ? dayjs(clubForm.startAt) : dayjs());
     setEndDay(clubForm.endAt ? dayjs(clubForm.endAt) : dayjs());
@@ -1164,6 +1164,19 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     //   alert('최소 하나의 학년을 선택해주세요');
     //   return false;
     // }
+
+    const startAt = startDay ? startDay.format('YYYY-MM-DD') : '';
+    const endAt = endDay ? endDay.format('YYYY-MM-DD') : '';
+
+    if (startAt === endAt) {
+      alert('시작일과 종료일이 같습니다.');
+      return false;
+    }
+
+    if (startAt > endAt) {
+      alert('종료일이 시작일보다 앞에 있습니다.');
+      return false;
+    }
 
     if (quizType === '0100') {
       if (studyCycleNum.length === 0) {

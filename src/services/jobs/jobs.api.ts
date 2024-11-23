@@ -32,6 +32,10 @@ export const getGetSchedule = async params => {
   const { data } = await axiosGeneralAPI().get('/api/v1/club/quiz-schedule', { params });
   return data.data;
 };
+export const getGetScheduleDay = async params => {
+  const { data } = await axiosGeneralAPI().get('/api/v1/club/schedules', { params });
+  return data.data;
+};
 
 // 임시저장 조회
 export async function getGetTemp() {

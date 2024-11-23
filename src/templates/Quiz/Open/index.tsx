@@ -209,6 +209,7 @@ export function QuizOpenTemplate() {
       setStudyKeywords(clubForm.studyKeywords || []);
       // setStudyChapter(clubForm.studyChapter || '');
       setStudySubject(clubForm.studySubject || '');
+      setNum(clubForm.studyCount || '');
       setStudyCycleNum(clubForm.studyCycle || 0);
       setUniversityCode(clubForm?.jobGroups?.[0]?.code || '');
       setSelectedUniversityName(clubForm?.jobGroups?.[0]?.name || '');
@@ -820,7 +821,7 @@ export function QuizOpenTemplate() {
     formData.append('form.studyCycle', params.clubForm.studyCycle.toString());
     formData.append('form.startDate', params.clubForm.startAt);
     formData.append('form.endDate', params.clubForm.endAt);
-    formData.append('form.studyWeekCount', params.clubForm.studyCount.toString());
+    formData.append('form.studyCount', params.clubForm.studyCount.toString());
     formData.append('form.studySubject', params.clubForm.studySubject);
     formData.append('form.studyKeywords', params.clubForm.studyKeywords.toString());
     // formData.append('form.studyChapter', clubFormParams.studyChapter);

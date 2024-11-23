@@ -36,6 +36,7 @@ import Pagination from '@mui/material/Pagination';
 import PaginationItem from '@mui/material/PaginationItem';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { dayGroup } from './group';
 
 //comment
 import { useQuizMyClubInfo, useQuizFileDownload } from 'src/services/quiz/quiz.queries';
@@ -78,6 +79,7 @@ import { useLectureModify, useLectureModifyAI, useLectureModifyCur } from 'src/s
 import { v4 as uuidv4 } from 'uuid';
 import validator from 'validator';
 import { useStore } from 'src/store';
+import { useGetScheduleDay } from 'src/services/jobs/jobs.queries';
 
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
@@ -270,6 +272,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
     setUniversityCode(clubForm.jobGroups[0].code || '');
     setRecommendLevels(clubForm.jobLevels.map(item => item.code) || '');
     console.log(clubForm?.jobLevels?.map(item => item.name));
+    setStudyCycleNum(clubForm.studyCycle);
 
     setLevelNames(clubForm.jobLevels.map(item => item.name));
 
@@ -474,10 +477,47 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
   const [activeStep, setActiveStep] = React.useState(0);
   const steps = ['Step.1 강의 정보입력', 'Step.2 강의 커리큘럼 입력', 'Step.3 개설될 강의 미리보기'];
   const [urlCode, setUrlCode] = useState('');
+  const [studyCycleNum, setStudyCycleNum] = useState([]);
   let [key, setKey] = useState('');
   let [fileName, setFileName] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [agreements, setAgreements] = useState(true);
+  const [dayParams, setDayParams] = useState<any>({});
+
+  const handleStudyCycle = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
+    setStudyCycleNum(newFormats);
+    console.log('newFormats', newFormats);
+    setDayParams({
+      studyCycle: newFormats.join(','),
+      startDate: startDay.format('YYYY-MM-DD'),
+      endDate: endDay.format('YYYY-MM-DD'),
+    });
+  };
+
+  //get schedule
+  const { refetch: refetchGetSchedule, isSuccess: isScheduleSuccess }: UseQueryResult<any> = useGetScheduleDay(
+    dayParams,
+    data => {
+      // setScheduleData(data.schedules);
+      // 데이터를 변환하여 schedule에 추가
+      const schedule = [];
+      data.schedules.forEach(item => {
+        const currentDay = moment(item.publishDate, 'YYYY-MM-DD');
+        schedule.push({
+          studyOrder: item.order,
+          clubStudyName: '',
+          clubStudyType: '0100',
+          clubStudyUrl: '',
+          urls: [],
+          files: [],
+          startDate: currentDay.format('YYYY-MM-DD'),
+          endDate: currentDay.add(1, 'days').format('YYYY-MM-DD'),
+        });
+      });
+      console.log('schedule', schedule);
+      setScheduleData(schedule);
+    },
+  );
 
   const { mutate: onLectureModify, isError, isSuccess: clubSuccess, data: clubDatas } = useLectureModify();
   const {
@@ -907,6 +947,12 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
       return false;
     }
 
+    if (studyCycleNum.length === 0) {
+      alert('강의 반복 주기를 선택해주세요');
+      setIsProcessing(false);
+      return false;
+    }
+
     if (startDay && endDay) {
       if (startDay.isSame(endDay, 'day')) {
         alert('시작 날짜와 종료 날짜가 같습니다.');
@@ -987,6 +1033,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
       participationCode: participationCode || '',
       description: introductionText || '',
       useCurrentProfileImage: agreements,
+      studyCycle: studyCycleNum,
     };
 
     console.log(clubFormParams);
@@ -998,6 +1045,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
     formData.append('jobLevels', clubFormParams.jobLevels.toString());
     formData.append('startAt', clubFormParams.startAt);
     formData.append('endAt', clubFormParams.endAt);
+    formData.append('studyCycle', clubFormParams.studyCycle);
     formData.append('studySubject', clubFormParams.studySubject);
     formData.append('studyKeywords', clubFormParams.studyKeywords.toString());
     formData.append('isPublic', clubFormParams.isPublic);
@@ -2253,6 +2301,50 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                             onChange={e => onChangeHandleFromToEndDate(e)}
                           />
                         </LocalizationProvider>
+                      </div>
+                    </div>
+
+                    <div className="tw-mb-10 tw-content-start">
+                      <div>
+                        <div className="tw-mb-[12px] tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
+                          강의 반복 설정 (복수선택가능)
+                        </div>
+
+                        <div className="tw-flex tw-items-center tw-gap-2 tw-mt-1">
+                          <div className="tw-text-sm tw-text-black">매주</div>
+                          <ToggleButtonGroup
+                            value={studyCycleNum}
+                            onChange={handleStudyCycle}
+                            aria-label=""
+                            color="standard"
+                          >
+                            {dayGroup?.map((item, index) => (
+                              <ToggleButton
+                                classes={{ selected: classes.selected }}
+                                key={`job1-${index}`}
+                                value={item.id}
+                                name={item.name}
+                                className="tw-ring-1 tw-ring-slate-900/10"
+                                style={{
+                                  borderRadius: '5px',
+                                  borderLeft: '0px',
+                                  width: '60px',
+                                  margin: '5px',
+                                  height: '35px',
+                                  border: '0px',
+                                }}
+                                sx={{
+                                  '&.Mui-selected': {
+                                    backgroundColor: '#000',
+                                    color: '#fff',
+                                  },
+                                }}
+                              >
+                                {item.name}
+                              </ToggleButton>
+                            ))}
+                          </ToggleButtonGroup>
+                        </div>
                       </div>
                     </div>
 

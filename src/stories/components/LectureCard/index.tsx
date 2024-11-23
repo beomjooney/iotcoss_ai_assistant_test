@@ -31,7 +31,7 @@ const LectureCard = ({
 }: // eslint-disable-next-line @typescript-eslint/no-empty-function
 LectureCardProps) => {
   const { logged, roles, memberId } = useSessionStore.getState();
-  console.log('LectureCardProps', item, roles, memberId, item.leaderUUID);
+  // console.log('LectureCardProps', item, roles, memberId, item.leaderUUID);
   const { mutate: onSaveLike, isSuccess } = useSaveLike();
   const { mutate: onDeleteLike } = useDeleteLike();
 

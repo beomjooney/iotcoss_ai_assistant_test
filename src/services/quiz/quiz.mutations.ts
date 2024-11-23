@@ -237,8 +237,12 @@ export const useClubQuizTempSave = (): UseMutationResult => {
   const queryClient = useQueryClient();
   return useMutation<any, any, any>(requestBody => saveClubQuizTempPost(requestBody), {
     onError: (error, variables, context) => {
-      const { code, message } = error;
-      alert(`mutation error : [${code}] ${message}`);
+      const { responseCode, message } = error;
+      if (responseCode === '1425') {
+        alert('퀴즈 공개일의 경우 종료일을 공개일 이후로 설정해주세요.');
+      } else {
+        alert(`mutation error : [${responseCode}] ${message}`);
+      }
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('TEMP').all),
     onSuccess: async data => {
@@ -251,8 +255,12 @@ export const useLectureTempSave = (): UseMutationResult => {
   const queryClient = useQueryClient();
   return useMutation<any, any, any>(requestBody => saveLectureTempPost(requestBody), {
     onError: (error, variables, context) => {
-      const { code, message } = error;
-      alert(`mutation error : [${code}] ${message}`);
+      const { responseCode, message } = error;
+      if (responseCode === '1426') {
+        alert('다음 커리큘럼 강의에서 종료일을 강의 종료일보다 이전으로 설정해주세요.');
+      } else {
+        alert(`mutation error : [${responseCode}] ${message}`);
+      }
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('TEMP').all),
     onSuccess: async data => {
@@ -295,8 +303,12 @@ export const useLectureModify = (): UseMutationResult => {
   const queryClient = useQueryClient();
   return useMutation<any, any, any>(requestBody => saveLectureModify(requestBody), {
     onError: (error, variables, context) => {
-      const { code, message } = error;
-      alert(`mutation error : [${code}] ${message}`);
+      const { responseCode, message } = error;
+      if (responseCode === '1426') {
+        alert('커리큘럼에서 종료일을 강의 종료일보다 이전으로 설정해주세요.');
+      } else {
+        alert(`mutation error : [${responseCode}] ${message}`);
+      }
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('TEMP').all),
     onSuccess: async data => {

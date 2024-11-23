@@ -17,7 +17,14 @@ import { ExperiencesResponse } from 'src/models/experiences';
 import { useOptions } from 'src/services/experiences/experiences.queries';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
-import { useMyQuiz, useQuizList, useGetSchedule, useLectureGetTemp } from 'src/services/jobs/jobs.queries';
+import moment from 'moment';
+import {
+  useMyQuiz,
+  useQuizList,
+  useGetScheduleDay,
+  useLectureGetTemp,
+  useGetSchedule,
+} from 'src/services/jobs/jobs.queries';
 import Checkbox from '@mui/material/Checkbox';
 import { useQuizSave, useClubTempSave, useLectureTempSave, useLectureSave } from 'src/services/quiz/quiz.mutations';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
@@ -139,7 +146,11 @@ export function LectureOpenTemplate() {
       const formattedDateString = formattedDate.format('YYYY-MM-DD');
       // Set both today and todayEnd
       setStartDay(formattedDate);
-      generateSchedule(formattedDate, endDay, studyCycleNum);
+      setDayParams({
+        studyCycle: studyCycleNum.join(','),
+        startDate: formattedDateString,
+        endDate: endDay.format('YYYY-MM-DD'),
+      });
     }
   };
   const onChangeHandleFromToEndDate = date => {
@@ -150,7 +161,11 @@ export function LectureOpenTemplate() {
       const formattedDateString = formattedDate.format('YYYY-MM-DD');
       // Set both today and todayEnd
       setEndDay(formattedDate);
-      generateSchedule(startDay, formattedDate, studyCycleNum);
+      setDayParams({
+        studyCycle: studyCycleNum.join(','),
+        startDate: startDay.format('YYYY-MM-DD'),
+        endDate: formattedDateString,
+      });
     }
   };
 
@@ -235,9 +250,29 @@ export function LectureOpenTemplate() {
   const { data: myQuizListData, refetch: refetchMyJob }: UseQueryResult<any> = useMyQuiz(myParams);
 
   //get schedule
-  const { refetch: refetchGetSchedule }: UseQueryResult<any> = useGetSchedule(dayParams, data => {
-    setScheduleData(data);
-  });
+  const { refetch: refetchGetSchedule, isSuccess: isScheduleSuccess }: UseQueryResult<any> = useGetScheduleDay(
+    dayParams,
+    data => {
+      // setScheduleData(data.schedules);
+      // 데이터를 변환하여 schedule에 추가
+      const schedule = [];
+      data.schedules.forEach(item => {
+        const currentDay = moment(item.publishDate, 'YYYY-MM-DD');
+        schedule.push({
+          studyOrder: item.order,
+          clubStudyName: '',
+          clubStudyType: '0100',
+          clubStudyUrl: '',
+          urls: [],
+          files: [],
+          startDate: currentDay.format('YYYY-MM-DD'),
+          endDate: currentDay.add(1, 'days').format('YYYY-MM-DD'),
+        });
+      });
+      console.log('schedule', schedule);
+      setScheduleData(schedule);
+    },
+  );
 
   // jobLevels 코드에 해당하는 이름을 찾는 함수
   const getJobLevelNames = (jobLevelCodes, jobLevels) => {
@@ -250,77 +285,83 @@ export function LectureOpenTemplate() {
   //불러오기
   const { refetch: refetchGetTemp }: UseQueryResult<any> = useLectureGetTemp(data => {
     console.log('load temp', data);
-    const clubForm = data?.clubForm || {};
-    const lectureList = data?.clubStudies || [];
-    const lectureContents = data?.lectureContents || [];
 
-    // lectureContents가 빈 객체이면 빈 배열로 변경
-    // if (Object.keys(lectureContents).length === 0) {
-    //   lectureContents([]);
-    // }
+    if (data) {
+      const clubForm = data?.clubForm || {};
+      const lectureList = data?.clubStudies || [];
+      const lectureContents = data?.lectureContents || [];
 
-    setParamss(clubForm);
+      // lectureContents가 빈 객체이면 빈 배열로 변경
+      // if (Object.keys(lectureContents).length === 0) {
+      //   lectureContents([]);
+      // }
 
-    setForbiddenKeywords(clubForm.forbiddenWords || []);
-    setClubName(clubForm.clubName || '');
-    setStartDay(clubForm.startAt ? dayjs(clubForm.startAt) : dayjs());
-    setEndDay(clubForm.endAt ? dayjs(clubForm.endAt) : dayjs());
-    setIsPublic(clubForm.isPublic ? '0001' : '0002');
-    setIsQuestionsPublic(clubForm.isQuestionsPublic ? 'true' : 'false');
-    setEnableAiQuestion(clubForm.enableAiQuestion ? 'true' : 'false');
-    setStudyKeywords(clubForm.studyKeywords || []);
-    setStudySubject(clubForm.studySubject || '');
-    setUniversityCode(clubForm.jobGroups || '');
-    setRecommendLevels(clubForm.jobLevels || '');
-    console.log(clubForm?.jobLevels?.map(item => item.name));
-    const selectedLevel = optionsData?.data?.jobLevels?.find(u => u.code === clubForm?.jobLevels?.toString());
+      setParamss(clubForm);
 
-    // clubForm.jobLevels의 이름 리스트 생성
-    const jobLevelNames = getJobLevelNames(clubForm.jobLevels, optionsData?.data?.jobLevels || []);
-    console.log('jobLevelNames', jobLevelNames);
-    setLevelNames(jobLevelNames);
+      setForbiddenKeywords(clubForm.forbiddenWords || []);
+      setClubName(clubForm.clubName || '');
+      setStartDay(clubForm.startAt ? dayjs(clubForm.startAt) : dayjs());
+      setEndDay(clubForm.endAt ? dayjs(clubForm.endAt) : dayjs());
+      setIsPublic(clubForm.isPublic ? '0001' : '0002');
+      setIsQuestionsPublic(clubForm.isQuestionsPublic ? 'true' : 'false');
+      setEnableAiQuestion(clubForm.enableAiQuestion ? 'true' : 'false');
+      setStudyKeywords(clubForm.studyKeywords || []);
+      setStudySubject(clubForm.studySubject || '');
+      setStudyCycleNum(clubForm.studyCycle || []);
+      setUniversityCode(clubForm.jobGroups || '');
+      setRecommendLevels(clubForm.jobLevels || '');
+      console.log(clubForm?.jobLevels?.map(item => item.name));
+      const selectedLevel = optionsData?.data?.jobLevels?.find(u => u.code === clubForm?.jobLevels?.toString());
 
-    const selected = optionsData?.data?.jobs?.find(u => u.code === clubForm?.jobGroups?.toString());
-    setSelectedUniversityName(selected?.name || '');
-    setJobs(selected ? selected.jobs : []);
-    setSelectedJob(clubForm.jobs || []);
+      // clubForm.jobLevels의 이름 리스트 생성
+      const jobLevelNames = getJobLevelNames(clubForm.jobLevels, optionsData?.data?.jobLevels || []);
+      console.log('jobLevelNames', jobLevelNames);
+      setLevelNames(jobLevelNames);
 
-    const names = selected?.jobs
-      .filter(department => clubForm.jobs.includes(department.code))
-      .map(department => department.name);
+      const selected = optionsData?.data?.jobs?.find(u => u.code === clubForm?.jobGroups?.toString());
+      setSelectedUniversityName(selected?.name || '');
+      setJobs(selected ? selected.jobs : []);
+      setSelectedJob(clubForm.jobs || []);
 
-    setPersonName(names || []);
-    setIntroductionText(clubForm.description || '');
-    setAgreements(clubForm.useCurrentProfileImage);
+      const names = selected?.jobs
+        .filter(department => clubForm.jobs.includes(department.code))
+        .map(department => department.name);
 
-    setLectureLanguage(clubForm.lectureLanguage);
-    setContentLanguage(clubForm.contentLanguage);
-    setLectureAILanguage(clubForm.aiConversationLanguage);
+      setPersonName(names || []);
+      setIntroductionText(clubForm.description || '');
+      setAgreements(clubForm.useCurrentProfileImage);
 
-    setPreview(clubForm.clubImageUrl);
-    setPreviewBanner(clubForm.backgroundImageUrl);
-    setPreviewProfile(clubForm.instructorProfileImageUrl);
+      setLectureLanguage(clubForm.lectureLanguage);
+      setContentLanguage(clubForm.contentLanguage);
+      setLectureAILanguage(clubForm.aiConversationLanguage);
 
-    setSelectedImage('');
-    setSelectedImageBanner('');
-    // setSelectedImageProfile('');
+      setPreview(clubForm.clubImageUrl);
+      setPreviewBanner(clubForm.backgroundImageUrl);
+      setPreviewProfile(clubForm.instructorProfileImageUrl);
 
-    // Add fileList and urlList to each item in the data array
-    const updatedData = lectureList.map(item => ({
-      ...item,
-      isNew: 'false',
-      fileList: [],
-      urlList: [],
-    }));
+      setSelectedImage('');
+      setSelectedImageBanner('');
+      // setSelectedImageProfile('');
 
-    console.log('updatedData', updatedData);
+      // Add fileList and urlList to each item in the data array
+      const updatedData = lectureList.map(item => ({
+        ...item,
+        isNew: 'false',
+        fileList: [],
+        urlList: [],
+      }));
 
-    setScheduleData(updatedData);
-    setLectureContents(lectureContents);
+      console.log('updatedData', updatedData);
 
-    // // Filter out items with quizSequence not null and extract quizSequence values
-    // const quizSequenceNumbers = quizList.filter(item => item.quizSequence !== null).map(item => item.quizSequence);
-    // setSelectedQuizIds(quizSequenceNumbers);
+      setScheduleData(updatedData);
+      setLectureContents(lectureContents);
+
+      // // Filter out items with quizSequence not null and extract quizSequence values
+      // const quizSequenceNumbers = quizList.filter(item => item.quizSequence !== null).map(item => item.quizSequence);
+      // setSelectedQuizIds(quizSequenceNumbers);
+    } else {
+      alert('임시저장 데이터가 없습니다. 임시저장을 해주세요.');
+    }
   });
 
   //temp 등록
@@ -394,7 +435,12 @@ export function LectureOpenTemplate() {
 
   const handleStudyCycle = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
     setStudyCycleNum(newFormats);
-    generateSchedule(startDay, endDay, newFormats);
+    console.log('newFormats', newFormats);
+    setDayParams({
+      studyCycle: newFormats.join(','),
+      startDate: startDay.format('YYYY-MM-DD'),
+      endDate: endDay.format('YYYY-MM-DD'),
+    });
   };
 
   const onFileDownload = function (key: string, fileName: string) {
@@ -840,45 +886,6 @@ export function LectureOpenTemplate() {
     Saturday: '토',
   };
 
-  const generateSchedule = (startDay, endDay, studyCycleNum) => {
-    if (!startDay || !endDay || studyCycleNum.length === 0) {
-      return [];
-    }
-
-    const schedule = [];
-    let currentDay = startDay.startOf('day');
-    let order = 1;
-
-    // `studyCycleNum` 한글을 영어 요일로 변환
-    const studyCycleEnglish = studyCycleNum.map(day => koreanToEnglishMap[day]);
-
-    while (currentDay.isBefore(endDay) || currentDay.isSame(endDay, 'day')) {
-      const dayOfWeekEng = currentDay.format('dddd'); // 영어 요일 (e.g., "Thursday")
-      const dayOfWeekKor = englishToKoreanMap[dayOfWeekEng]; // 한글 요일 (e.g., "목")
-
-      if (studyCycleEnglish.includes(dayOfWeekEng)) {
-        schedule.push({
-          studyOrder: order,
-          clubStudyName: '',
-          clubStudyType: '0100',
-          clubStudyUrl: '',
-          urls: [],
-          files: [],
-          startDate: currentDay.format('YYYY-MM-DD'),
-          endDate: currentDay.add(1, 'day').format('YYYY-MM-DD'),
-          // weekNumber: currentDay.week(),
-          // publishDate: currentDay.format('YYYY-MM-DD'),
-          // dayOfWeek: dayOfWeekKor,
-        });
-        order++;
-      }
-      currentDay = currentDay.add(1, 'day');
-    }
-
-    console.log('schedule', schedule);
-    return schedule;
-  };
-
   const handleUpdate = (evt: any, updated: any) => {
     console.log('handleUpdate', updated);
     // 인덱스로 일정 항목을 보유할 맵
@@ -1062,10 +1069,10 @@ export function LectureOpenTemplate() {
       }
     }
 
-    if (!recommendLevels || recommendLevels.length === 0) {
-      alert('최소 하나의 학년을 선택해주세요');
-      return false;
-    }
+    // if (!recommendLevels || recommendLevels.length === 0) {
+    //   alert('최소 하나의 학년을 선택해주세요');
+    //   return false;
+    // }
 
     // startAt이 endAt보다 앞서야 하고, 두 날짜는 같을 수 없음
     if (startDay && endDay) {
@@ -1093,6 +1100,11 @@ export function LectureOpenTemplate() {
         alert('참여 코드를 입력해주세요');
         return false;
       }
+    }
+
+    if (studyCycleNum.length === 0) {
+      alert('강의 반복 주기를 선택해주세요');
+      return false;
     }
 
     if (!introductionText) {
@@ -1129,6 +1141,7 @@ export function LectureOpenTemplate() {
       enableAiQuestion: enableAiQuestion,
       instructorProfileImageUrl: previewProfile,
       forbiddenWords: forbiddenKeywords,
+      studyCycle: studyCycleNum,
     };
 
     console.log(clubFormParams);
@@ -1151,6 +1164,7 @@ export function LectureOpenTemplate() {
     formData.append('clubForm.aiConversationLanguage', clubFormParams.aiConversationLanguage);
     formData.append('clubForm.description', clubFormParams.description);
     formData.append('clubForm.forbiddenWords', clubFormParams.forbiddenWords);
+    formData.append('clubForm.studyCycle', clubFormParams.studyCycle);
     formData.append('clubForm.useCurrentProfileImage', clubFormParams.useCurrentProfileImage);
 
     if (selectedImage) {
