@@ -1241,7 +1241,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     formData.append('studyCycle', clubFormParams.studyCycle.toString());
     formData.append('startDate', clubFormParams.startAt);
     formData.append('endDate', clubFormParams.endAt);
-    formData.append('studyWeekCount', clubFormParams.studyCount.toString());
+    formData.append('studyCount', clubFormParams.studyCount.toString());
     formData.append('studySubject', clubFormParams.studySubject);
     formData.append('studyKeywords', clubFormParams.studyKeywords.toString());
     // formData.append('form.studyChapter', clubFormParams.studyChapter);
@@ -2379,9 +2379,9 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                         <TextField
                           size="small"
                           fullWidth
+                          disabled
                           onChange={handleNumChange}
                           id="margin-none"
-                          disabled
                           value={num}
                           name="num"
                           style={{ backgroundColor: 'white' }}
@@ -2405,12 +2405,11 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
 
                 {quizType == '0200' && (
                   <div className="tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-[#f6f7fb] tw-pb-5">
-                    <div className="tw-flex tw-p-5 ...">
-                      <div className="tw-flex-none tw-w-1/4 tw-h-14 ...">
+                    <div className="tw-flex tw-p-5 tw-gap-5">
+                      <div className="tw-flex-none tw-w-1/6 tw-h-14 ...">
                         <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">클럽 시작일</p>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                           <DatePicker
-                            disabled
                             format="YYYY-MM-DD"
                             slotProps={{ textField: { size: 'small', style: { backgroundColor: 'white' } } }}
                             value={startDay}
@@ -2418,7 +2417,18 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                           />
                         </LocalizationProvider>
                       </div>
-                      <div className="tw-flex-none tw-w-1/4 tw-h-14 ... ">
+                      <div className="tw-flex-none tw-w-1/6 tw-h-14 ...">
+                        <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">클럽 종료일</p>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DatePicker
+                            format="YYYY-MM-DD"
+                            slotProps={{ textField: { size: 'small', style: { backgroundColor: 'white' } } }}
+                            value={endDay}
+                            onChange={e => onChangeHandleFromToEndDate(e)}
+                          />
+                        </LocalizationProvider>
+                      </div>
+                      <div className="tw-flex-none tw-w-1/6 tw-h-14 ... ">
                         <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">
                           클럽퀴즈 회차 입력
                         </p>
@@ -2444,12 +2454,11 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                     <p className="tw-text-sm tw-text-left tw-text-black tw-font-semibold tw-pt-5 tw-px-5">
                       날짜/요일을 지정할 필요 없이 학생이 퀴즈를 풀면 자동으로 다음 회차가 열립니다.
                     </p>
-                    <div className="tw-flex tw-p-5 ...">
-                      <div className="tw-flex-none tw-w-1/4 tw-h-14 ...">
+                    <div className="tw-flex tw-p-5 tw-gap-5">
+                      <div className="tw-flex-none tw-w-1/6 tw-h-14 ...">
                         <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">클럽 시작일</p>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                           <DatePicker
-                            disabled
                             format="YYYY-MM-DD"
                             slotProps={{ textField: { size: 'small', style: { backgroundColor: 'white' } } }}
                             value={startDay}
@@ -2457,7 +2466,18 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                           />
                         </LocalizationProvider>
                       </div>
-                      <div className="tw-flex-none tw-w-1/4 tw-h-14 ... ">
+                      <div className="tw-flex-none tw-w-1/6 tw-h-14 ...">
+                        <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">클럽 종료일</p>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DatePicker
+                            format="YYYY-MM-DD"
+                            slotProps={{ textField: { size: 'small', style: { backgroundColor: 'white' } } }}
+                            value={endDay}
+                            onChange={e => onChangeHandleFromToEndDate(e)}
+                          />
+                        </LocalizationProvider>
+                      </div>
+                      <div className="tw-flex-none tw-w-1/6 tw-h-14 ... ">
                         <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">
                           클럽퀴즈 회차 입력
                         </p>
