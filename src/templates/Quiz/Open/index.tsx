@@ -891,7 +891,6 @@ export function QuizOpenTemplate() {
       startAt: startDay.format('YYYY-MM-DD'),
       endAt: endDay.format('YYYY-MM-DD'),
       studyCount: num,
-      studyWeekCount: num,
       studySubject: studySubject,
       studyChapter: studyChapter,
       skills: skills,
@@ -1146,7 +1145,7 @@ export function QuizOpenTemplate() {
     formData.append('form.studyCycle', clubFormParams.studyCycle.toString());
     formData.append('form.startDate', clubFormParams.startAt);
     formData.append('form.endDate', clubFormParams.endAt);
-    formData.append('form.studyWeekCount', clubFormParams.studyCount.toString());
+    formData.append('form.studyCount', clubFormParams.studyCount.toString());
     formData.append('form.studySubject', clubFormParams.studySubject);
     formData.append('form.studyKeywords', clubFormParams.studyKeywords.toString());
     // formData.append('form.studyChapter', clubFormParams.studyChapter);
@@ -1193,6 +1192,11 @@ export function QuizOpenTemplate() {
       return;
     }
 
+    if (num == 0) {
+      alert('클럽퀴즈 회차를 입력 해주세요.');
+      return false;
+    }
+
     console.log(studyCycleNum);
     console.log(num);
     console.log(startDay.format('YYYY-MM-DD'));
@@ -1200,7 +1204,7 @@ export function QuizOpenTemplate() {
     setDayParams({
       // ...params,
       studyCycle: studyCycleNum.join(','),
-      studyWeekCount: num,
+      studyCount: num,
       startDate: startDay.format('YYYY-MM-DD'),
     });
     setButtonFlag(true);

@@ -377,7 +377,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
         return {
           order: item.order,
           weekNumber: item.order, // Assuming weekNumber should match the order as per your example
-          quizSequence: null,
+          quizSequence: item.quizSequence,
           publishDate: item.publishDate, // Preserve original publishDate if it exists
           dayOfWeek: item.dayOfWeek,
         };

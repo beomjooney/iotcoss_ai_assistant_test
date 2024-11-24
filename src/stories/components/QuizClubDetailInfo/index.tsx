@@ -139,10 +139,18 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
                       {selectedJobName.toString() || 'N/A'}
                     </span>
                   )}
-                  {jobLevelName.toString() !== '' && (
-                    <span className="tw-inline-flex tw-bg-gray-100 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
-                      {jobLevelName.toString() || 'N/A'}
-                    </span>
+
+                  {jobLevelName?.length > 0 && (
+                    <>
+                      {jobLevelName?.map((jobLevel, index) => (
+                        <span
+                          key={index}
+                          className=" tw-inline-flex tw-bg-gray-200 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
+                        >
+                          {jobLevel.name || jobLevel}
+                        </span>
+                      ))}
+                    </>
                   )}
                   {clubData?.clubSequence && (
                     <button

@@ -6,7 +6,7 @@ const cx = classNames.bind(styles);
 
 const QuizBreakerInfo = ({
   avatarSrc = '',
-  userName = 'Unknown User',
+  userName = '',
   publishDate,
   dayOfWeek,
   questionText,
