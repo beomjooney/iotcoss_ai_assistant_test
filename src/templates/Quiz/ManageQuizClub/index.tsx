@@ -358,11 +358,34 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     setQuizSearch(event.target.value);
   };
 
+  useEffect(() => {
+    if (tempSucces) {
+      console.log('클럽 임시저장 성공');
+      refetchGetTemp();
+      setActiveTab('community');
+    }
+  }, [tempSucces]);
+
   //클럽 정보
   const { refetch: refetchGetTemp }: UseQueryResult<any> = useClubAboutDetailInfo(ids, data => {
     console.log('quiz club temp', data);
     const clubForm = data?.form || {};
     const quizList = data?.clubQuizzes || [];
+
+    const quizListData = quizList.map(item => {
+      if (item.quizSequence < 0) {
+        return {
+          order: item.order,
+          weekNumber: item.order, // Assuming weekNumber should match the order as per your example
+          quizSequence: null,
+          publishDate: item.publishDate, // Preserve original publishDate if it exists
+          dayOfWeek: item.dayOfWeek,
+        };
+      }
+      return item;
+    });
+
+    console.log('quizListData', quizListData);
 
     setClubName(clubForm.clubName || '');
     setIntroductionText(clubForm.introductionText || '');
@@ -394,11 +417,16 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     console.log(jobsName);
     setPersonName(jobsName || []);
     setButtonFlag(true);
-    setScheduleData(quizList);
+    setScheduleData(quizListData);
+    // setQuizList(quizList);
+
     setSelectedOption(data?.isRepresentativeQuizPublic.toString());
 
     // Filter out items with quizSequence not null and extract quizSequence values
-    const quizSequenceNumbers = quizList.filter(item => item.quizSequence !== null).map(item => item.quizSequence);
+    const quizSequenceNumbers = quizList
+      .filter(item => item.quizSequence !== null && item.quizSequence >= 0)
+      .map(item => item.quizSequence);
+
     setSelectedQuizIds(quizSequenceNumbers);
 
     setPreview(clubForm.clubImageUrl || '/assets/images/banner/Rectangle_190.png');
@@ -508,11 +536,10 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     console.log('order', order);
     console.log('eachMaxQuizLength', eachMaxQuizLength);
     console.log('selectedQuizIds', selectedQuizIds.length);
-
-    const nullQuizSequenceCount = quizList.filter(item => item.quizSequence === null).length;
+    const nullQuizSequenceCount = scheduleData.filter(item => item.quizSequence === null).length;
 
     if (order) {
-      const existingOrderQuiz = quizList.find(item => item.order === order && item.quizSequence !== null);
+      const existingOrderQuiz = scheduleData.find(item => item.order === order && item.quizSequence !== null);
 
       // 이미 다른 퀴즈가 매핑된 경우 경고창 표시 및 기존 선택 해제
       if (
@@ -522,7 +549,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
       ) {
         alert('퀴즈가 이미 선택되었습니다. 이전 퀴즈를 취소해주세요.');
         setSelectedQuizIds(prevSelectedQuizIds => prevSelectedQuizIds.filter(id => id !== quizSequence));
-        setQuizList(prevSelectedQuizzes =>
+        setScheduleData(prevSelectedQuizzes =>
           prevSelectedQuizzes.map(quiz =>
             quiz.quizSequence === quizSequence ? { ...quiz, quizSequence: null } : quiz,
           ),
@@ -541,7 +568,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
         ? prevSelectedQuizIds.filter(id => id !== quizSequence)
         : [...prevSelectedQuizIds, quizSequence];
 
-      setQuizList(prevSelectedQuizzes => {
+      setScheduleData(prevSelectedQuizzes => {
         if (!Array.isArray(prevSelectedQuizzes)) {
           return [];
         }
@@ -584,19 +611,19 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
 
           let firstNullItemIndex;
           if (order) {
-            firstNullItemIndex = quizList.findIndex(item => item.order === order);
+            firstNullItemIndex = scheduleData.findIndex(item => item.order === order);
           } else {
-            firstNullItemIndex = quizList.findIndex(item => item.quizSequence === null);
+            firstNullItemIndex = scheduleData.findIndex(item => item.quizSequence === null);
           }
 
           if (firstNullItemIndex !== -1 && newQuiz) {
-            const updatedScheduleData = [...quizList];
+            const updatedScheduleData = [...scheduleData];
             updatedScheduleData[firstNullItemIndex] = {
               ...updatedScheduleData[firstNullItemIndex],
               ...reconstructedQuiz,
             };
             console.log(updatedScheduleData);
-            setQuizList(updatedScheduleData);
+            setScheduleData(updatedScheduleData);
             return updatedScheduleData;
           }
         }
@@ -713,11 +740,11 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   //   console.log(data);
   // });
 
-  const { isFetched: isMyInfoFetched, refetch: refetchMyInfo } = useQuizMyInfo(myQuizParams, data => {
-    console.log('first get data>>>>', data.clubQuizzes);
-    setQuizList(data?.clubQuizzes || []);
-    console.log(data);
-  });
+  // const { isFetched: isMyInfoFetched, refetch: refetchMyInfo } = useQuizMyInfo(myQuizParams, data => {
+  //   console.log('first get data>>>>', data.clubQuizzes);
+  //   setQuizList(data?.clubQuizzes || []);
+  //   console.log(data);
+  // });
 
   // 회원 프로필 정보
   const { isFetched: isProfileFetched, refetch: refetchProfile } = useGetProfile(memberUUID, data => {
@@ -877,9 +904,6 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const handleAddClick = order => {
     console.log('order', order);
-    // console.log('quizList.length', quizList.length);
-    // if (quizList.length > 1) setIsModalOpen(true);
-    // else alert('퀴즈 생성 주기를 입력해주세요.');
     setOrder(order);
     setEachMaxQuizLength(selectedQuizIds.length + 1);
     setIsModalOpen(true);
@@ -1087,7 +1111,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     console.log(quizList);
 
     // publishDate와 quizSequence만 남기기
-    const filteredData = quizList.map(({ publishDate, quizSequence }) => ({
+    const filteredData = scheduleData.map(({ publishDate, quizSequence }) => ({
       publishDate,
       quizSequence,
     }));
@@ -1228,40 +1252,40 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     };
 
     const formData = new FormData();
-    formData.append('clubId', 'quiz_club_' + generateUUID());
-    formData.append('clubName', clubFormParams.clubName);
-    formData.append('jobGroups', clubFormParams.jobGroups.toString());
-    formData.append('jobs', clubFormParams.jobs.toString());
-    formData.append('jobLevels', clubFormParams.jobLevels.toString());
-    formData.append('isPublic', clubFormParams.isPublic.toString());
+    formData.append('form.clubId', 'quiz_club_' + generateUUID());
+    formData.append('form.clubName', clubFormParams.clubName);
+    formData.append('form.jobGroups', clubFormParams.jobGroups.toString());
+    formData.append('form.jobs', clubFormParams.jobs.toString());
+    formData.append('form.jobLevels', clubFormParams.jobLevels.toString());
+    formData.append('form.isPublic', clubFormParams.isPublic.toString());
     if (clubFormParams.participationCode !== '') {
-      formData.append('participationCode', clubFormParams.participationCode);
+      formData.append('form.participationCode', clubFormParams.participationCode);
     }
-    formData.append('quizOpenType', clubFormParams.quizOpenType);
-    formData.append('studyCycle', clubFormParams.studyCycle.toString());
-    formData.append('startDate', clubFormParams.startAt);
-    formData.append('endDate', clubFormParams.endAt);
-    formData.append('studyCount', clubFormParams.studyCount.toString());
-    formData.append('studySubject', clubFormParams.studySubject);
-    formData.append('studyKeywords', clubFormParams.studyKeywords.toString());
+    formData.append('form.quizOpenType', clubFormParams.quizOpenType);
+    formData.append('form.studyCycle', clubFormParams.studyCycle.toString());
+    formData.append('form.startDate', clubFormParams.startAt);
+    formData.append('form.endDate', clubFormParams.endAt);
+    formData.append('form.studyCount', clubFormParams.studyCount.toString());
+    formData.append('form.studySubject', clubFormParams.studySubject);
+    formData.append('form.studyKeywords', clubFormParams.studyKeywords.toString());
     // formData.append('form.studyChapter', clubFormParams.studyChapter);
-    formData.append('skills', clubFormParams.skills.toString());
-    formData.append('introductionText', clubFormParams.introductionText);
-    formData.append('recommendationText', clubFormParams.recommendationText);
-    formData.append('learningText', clubFormParams.learningText);
-    formData.append('memberIntroductionText', clubFormParams.memberIntroductionText);
-    formData.append('careerText', clubFormParams.careerText);
-    formData.append('useCurrentProfileImage', clubFormParams.useCurrentProfileImage);
+    formData.append('form.skills', clubFormParams.skills.toString());
+    formData.append('form.introductionText', clubFormParams.introductionText);
+    formData.append('form.recommendationText', clubFormParams.recommendationText);
+    formData.append('form.learningText', clubFormParams.learningText);
+    formData.append('form.memberIntroductionText', clubFormParams.memberIntroductionText);
+    formData.append('form.careerText', clubFormParams.careerText);
+    formData.append('form.useCurrentProfileImage', clubFormParams.useCurrentProfileImage);
 
     if (selectedImage) {
       console.log('selectedImage', selectedImage);
-      formData.append('clubImageFile', selectedImageCheck);
+      formData.append('form.clubImageFile', selectedImageCheck);
     }
     if (selectedImageBanner) {
-      formData.append('backgroundImageFile', selectedImageBannerCheck);
+      formData.append('form.backgroundImageFile', selectedImageBannerCheck);
     }
     if (selectedImageProfile) {
-      formData.append('instructorProfileImageFile', selectedImageProfileCheck);
+      formData.append('form.instructorProfileImageFile', selectedImageProfileCheck);
     }
 
     // for (let i = 0; i < scheduleData.length; i++) {
@@ -2377,9 +2401,9 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                           클럽퀴즈 회차 입력
                         </p>
                         <TextField
+                          disabled
                           size="small"
                           fullWidth
-                          disabled
                           onChange={handleNumChange}
                           id="margin-none"
                           value={num}
@@ -2435,7 +2459,6 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                         <TextField
                           size="small"
                           fullWidth
-                          disabled
                           onChange={handleNumChange}
                           id="margin-none"
                           value={num}
@@ -2484,7 +2507,6 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                         <TextField
                           size="small"
                           fullWidth
-                          disabled
                           onChange={handleNumChange}
                           id="margin-none"
                           value={num}
@@ -2952,7 +2974,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                 </div>
                 <Grid container direction="row" justifyContent="left" alignItems="start" rowSpacing={4}>
                   <Grid item xs={1}>
-                    {quizList?.map((item, index) => {
+                    {scheduleData?.map((item, index) => {
                       return (
                         <div
                           key={index}
@@ -2984,7 +3006,8 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                   </Grid>
                   <Grid item xs={11}>
                     <ReactDragList
-                      dataSource={quizList}
+                      // dataSource={quizList}
+                      dataSource={scheduleData}
                       rowKey="order"
                       row={dragList}
                       handles={false}
@@ -2997,7 +3020,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                   </Grid>
                 </Grid>
 
-                {quizList.length === 0 && (
+                {scheduleData?.length === 0 && (
                   <div className={cx('tw-flex tw-justify-center tw-items-center tw-h-[50vh]')}>
                     <p className="tw-text-center tw-text-base tw-font-bold tw-text-[#31343d]">
                       퀴즈 데이터가 없습니다.
@@ -3323,7 +3346,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
 
           <p className="tw-text-xl tw-font-bold tw-text-left tw-text-black tw-py-5">
             {/* 퀴즈목록 {totalQuizzElements}개 */}
-            퀴즈목록 전체 : {totalQuizzElements}개 - (퀴즈선택 : {selectedQuizIds?.length} / {quizList.length})
+            퀴즈목록 전체 : {totalQuizzElements}개 - (퀴즈선택 : {selectedQuizIds?.length} / {scheduleData?.length})
           </p>
           {quizListData.map((item, index) => (
             <div key={index}>
