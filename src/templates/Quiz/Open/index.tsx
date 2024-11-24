@@ -1213,6 +1213,12 @@ export function QuizOpenTemplate() {
 
   const handlerClubMakeManual = () => {
     const weeks = [];
+
+    if (num == 0) {
+      alert('클럽퀴즈 회차를 입력 해주세요.');
+      return false;
+    }
+
     for (let i = 0; i < num; i++) {
       weeks.push({
         order: i + 1,
@@ -1227,6 +1233,11 @@ export function QuizOpenTemplate() {
 
   const handlerClubMakeProfessorManual = () => {
     const weeks = [];
+
+    if (num == 0) {
+      alert('클럽퀴즈 회차를 입력 해주세요.');
+      return false;
+    }
     for (let i = 0; i < num; i++) {
       weeks.push({
         order: i + 1,

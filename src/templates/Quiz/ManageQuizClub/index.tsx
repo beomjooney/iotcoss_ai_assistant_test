@@ -377,7 +377,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
         return {
           order: item.order,
           weekNumber: item.order, // Assuming weekNumber should match the order as per your example
-          quizSequence: item.quizSequence,
+          quizSequence: null,
           publishDate: item.publishDate, // Preserve original publishDate if it exists
           dayOfWeek: item.dayOfWeek,
         };
@@ -1112,10 +1112,15 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     console.log(quizList);
 
     // publishDate와 quizSequence만 남기기
-    const filteredData = scheduleData.map(({ publishDate, quizSequence }) => ({
-      publishDate,
-      quizSequence,
-    }));
+    let decrementCounter = -1;
+
+    const filteredData = scheduleData.map(({ publishDate, quizSequence }) => {
+      if (quizSequence === null) {
+        quizSequence = decrementCounter;
+        decrementCounter--;
+      }
+      return { publishDate, quizSequence };
+    });
 
     onQuizSave({ club: selectedClub?.clubSequence, data: filteredData, selectedOption: selectedOption });
   };
