@@ -641,7 +641,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     setSelectedQuizIds(prevSelectedQuizIds => {
       const updatedSelectedQuizIds = prevSelectedQuizIds.filter(id => id !== quizSequence);
       console.log('After Deletion, Selected Quiz IDs:', updatedSelectedQuizIds);
-      setQuizList(prevSelectedQuizzes =>
+      setScheduleData(prevSelectedQuizzes =>
         prevSelectedQuizzes.map(quiz => (quiz.quizSequence === quizSequence ? { ...quiz, quizSequence: null } : quiz)),
       );
       return updatedSelectedQuizIds;
@@ -689,7 +689,8 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
 
   useEffect(() => {
     if (isQuizOpenSuccess) {
-      refetchMyInfo();
+      // refetchMyInfo();
+      refetchGetTemp();
     }
   }, [isQuizOpenSuccess]);
 
