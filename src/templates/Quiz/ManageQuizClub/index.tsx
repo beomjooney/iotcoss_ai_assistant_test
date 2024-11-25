@@ -598,10 +598,10 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                   profileImageUrl: newQuiz.memberProfileImageUrl,
                   nickname: newQuiz.memberNickname,
                 },
-                contentUrl: newQuiz.contentUrl,
                 contentTitle: newQuiz.contentTitle,
                 modelAnswer: newQuiz.modelAnswer,
-                description: newQuiz.content.description,
+                contentName: newQuiz.content.name,
+                contentUrl: newQuiz.content.url,
                 quizUri: newQuiz.quizUri,
               }
             : null;
@@ -895,7 +895,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
         isDeleteQuiz={!item?.hasBeenPublished}
         // isDeleteQuiz={false}
         handleCheckboxDelete={handleCheckboxDelete}
-        knowledgeContentTitle={item?.contentDescription || item?.contentTitle}
+        knowledgeContentTitle={item?.contentDescription || item?.contentTitle || item?.contentName}
         hasBeenPublished={item.hasBeenPublished}
         order={item.order}
       />
@@ -3364,7 +3364,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                 handleCheckboxChange={handleCheckboxChange}
                 tags={item}
                 answerText={item.modelAnswer}
-                knowledgeContentTitle={item?.contentDescription}
+                knowledgeContentTitle={item?.content?.name}
               />
             </div>
           ))}

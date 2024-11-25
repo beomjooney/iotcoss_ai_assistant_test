@@ -578,10 +578,10 @@ export function QuizOpenTemplate() {
                   profileImageUrl: newQuiz.memberProfileImageUrl,
                   nickname: newQuiz.memberNickname,
                 },
-                contentUrl: newQuiz.contentUrl,
                 contentTitle: newQuiz.contentTitle,
                 modelAnswer: newQuiz.modelAnswer,
-                description: newQuiz.content.description,
+                contentName: newQuiz.content.name,
+                contentUrl: newQuiz.content.url,
                 quizUri: newQuiz.quizUri,
               }
             : null;
@@ -794,7 +794,7 @@ export function QuizOpenTemplate() {
         publishDate={item.publishDate}
         dayOfWeek={item.dayOfWeek}
         isPublished={item.isPublished}
-        knowledgeContentTitle={item?.description || item?.contentTitle}
+        knowledgeContentTitle={item?.contentName}
       />
     </div>
   );
@@ -2599,7 +2599,7 @@ export function QuizOpenTemplate() {
                 handleCheckboxChange={handleCheckboxChange}
                 tags={item}
                 answerText={item.modelAnswer}
-                knowledgeContentTitle={item?.content?.description}
+                knowledgeContentTitle={item?.content?.name}
               />
             </div>
           ))}
