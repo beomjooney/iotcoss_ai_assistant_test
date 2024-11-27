@@ -24,7 +24,7 @@ import Grid from '@mui/material/Grid';
 import ReactDragList from 'react-drag-list';
 
 /**import quiz modal  */
-import { useQuizList } from 'src/services/jobs/jobs.queries';
+import { useQuizList, useGetSchedule } from 'src/services/jobs/jobs.queries';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -133,8 +133,6 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   const [keyWorldProfessor, setKeyWorldProfessor] = useState('');
   const [selectedValue, setSelectedValue] = useState(id);
   const [activeTab, setActiveTab] = useState('myQuiz');
-  // const [activeTab, setActiveTab] = useState('community`');
-  console.log('subtitle', subtitle);
   const [pageQuiz, setPageQuiz] = useState(1);
   const [totalQuizPage, setTotalQuizPage] = useState(1);
   const [myQuizParams, setMyQuizParams] = useState<any>({ clubSequence: id, sortType: 'ASC', page });
@@ -275,7 +273,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
       setNum(0);
       setSelectedQuizIds([]);
       setStudyCycleNum([]);
-      setQuizType(newFormats);
+      // setQuizType(newFormats);
     }
   };
 
@@ -301,6 +299,39 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
 
   const handleNumChange = event => {
     setNum(event.target.value);
+  };
+
+  const handleDelete = () => {
+    const updatedScheduleData = scheduleData.filter((_, i) => !selectedSessions.includes(i));
+    setNum(updatedScheduleData.length);
+    setScheduleData(updatedScheduleData);
+    setSelectedSessions([]);
+  };
+
+  const handlerClubMake = () => {
+    if (studyCycleNum.length === 0) {
+      alert('요일을 입력해주세요.');
+      return;
+    }
+
+    if (num == 0) {
+      alert('클럽퀴즈 회차를 입력 해주세요.');
+      return false;
+    }
+    const lastPublishDate = scheduleData[scheduleData.length - 1].publishDate;
+    console.log(studyCycleNum);
+    console.log(num);
+    console.log(lastPublishDate);
+
+    setDayParams({
+      // ...params,
+      studyCycle: studyCycleNum.join(','),
+      studyCount: num,
+      startDate: lastPublishDate,
+    });
+    // setButtonFlag(true);
+    // setSelectedQuizIds([]);
+    // setScheduleData([]);
   };
 
   const handleIsPublic = (event: React.MouseEvent<HTMLElement>, newFormats: string) => {
@@ -366,6 +397,29 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     }
   }, [tempSucces]);
 
+  //퀴즈 스케쥴 정보
+  const { refetch: refetchGetSchedule, isSuccess: isScheduleSuccess }: UseQueryResult<any> = useGetSchedule(
+    dayParams,
+    data => {
+      const updatedData = [...scheduleOriginalData, ...data];
+      console.log('schedule data', updatedData);
+      setScheduleData(updatedData);
+    },
+  );
+
+  useEffect(() => {
+    if (Object.keys(dayParams).length > 0) {
+      console.log('start');
+      refetchGetSchedule();
+    }
+  }, [dayParams]);
+
+  useEffect(() => {
+    if (isScheduleSuccess) {
+      alert('퀴즈 생성(오픈) 주기 설정이 완료되었습니다.');
+    }
+  }, [isScheduleSuccess]);
+
   //클럽 정보
   const { refetch: refetchGetTemp }: UseQueryResult<any> = useClubAboutDetailInfo(ids, data => {
     console.log('quiz club temp', data);
@@ -375,9 +429,10 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     const quizListData = quizList.map(item => {
       if (item.quizSequence < 0) {
         return {
+          clubQuizType: item.clubQuizType,
           order: item.order,
           weekNumber: item.order, // Assuming weekNumber should match the order as per your example
-          quizSequence: null,
+          quizSequence: item.quizSequence,
           publishDate: item.publishDate, // Preserve original publishDate if it exists
           dayOfWeek: item.dayOfWeek,
         };
@@ -418,6 +473,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     setPersonName(jobsName || []);
     setButtonFlag(true);
     setScheduleData(quizListData);
+    setScheduleOriginalData(quizListData);
     // setQuizList(quizList);
 
     setSelectedOption(data?.isRepresentativeQuizPublic.toString());
@@ -466,70 +522,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   };
 
   const [scheduleData, setScheduleData] = useState<any[]>([]);
-  //new logic
-  // const handleCheckboxChange = quizSequence => {
-  //   // Filter out items with quizSequence as null and count them
-  //   const nullQuizSequenceCount = quizList.filter(item => item.quizSequence === null).length;
-
-  //   if (!selectedQuizIds?.includes(quizSequence) && nullQuizSequenceCount <= 0) {
-  //     alert('퀴즈를 추가 할 수 없습니다.');
-  //     return;
-  //   }
-
-  //   setSelectedQuizIds(prevSelectedQuizIds => {
-  //     const updatedSelectedQuizIds = prevSelectedQuizIds.includes(quizSequence)
-  //       ? prevSelectedQuizIds.filter(id => id !== quizSequence)
-  //       : [...prevSelectedQuizIds, quizSequence];
-
-  //     setQuizList(prevSelectedQuizzes => {
-  //       const alreadySelected = prevSelectedQuizzes.some(quiz => quiz.quizSequence === quizSequence);
-  //       console.log(alreadySelected);
-  //       if (alreadySelected) {
-  //         // When unchecked, set quizSequence to null
-  //         return prevSelectedQuizzes.map(quiz =>
-  //           quiz.quizSequence === quizSequence ? { ...quiz, quizSequence: null } : quiz,
-  //         );
-  //       } else {
-  //         console.log(quizList);
-  //         const newQuiz = allQuizData.find(quiz => quiz.quizSequence === quizSequence);
-  //         const reconstructedQuiz = newQuiz
-  //           ? {
-  //               quizSequence: newQuiz.quizSequence,
-  //               question: newQuiz.question,
-  //               leaderUri: newQuiz.memberUri,
-  //               leaderUUID: newQuiz.memberUUID,
-  //               leaderProfileImageUrl: newQuiz.memberProfileImageUrl,
-  //               leaderNickname: newQuiz.memberNickname,
-  //               contentUrl: newQuiz.contentUrl,
-  //               contentTitle: newQuiz.contentTitle,
-  //               modelAnswer: newQuiz.modelAnswer,
-  //               quizUri: newQuiz.quizUri,
-  //               contentDescription: newQuiz.contentDescription,
-  //             }
-  //           : null;
-
-  //         console.log(newQuiz);
-  //         console.log(reconstructedQuiz);
-
-  //         // Find the first item with null values in scheduleData
-  //         const firstNullItemIndex = quizList.findIndex(item => item.quizSequence === null);
-
-  //         if (firstNullItemIndex !== -1 && newQuiz) {
-  //           // Update the first null item with the new quiz data
-  //           const updatedScheduleData = [...quizList];
-  //           updatedScheduleData[firstNullItemIndex] = {
-  //             ...updatedScheduleData[firstNullItemIndex],
-  //             ...reconstructedQuiz,
-  //           };
-  //           console.log(updatedScheduleData);
-  //           setScheduleData(updatedScheduleData);
-  //           return updatedScheduleData;
-  //         }
-  //       }
-  //     });
-  //     return updatedSelectedQuizIds;
-  //   });
-  // };
+  const [scheduleOriginalData, setScheduleOriginalData] = useState<any[]>([]);
   const [order, setOrder] = useState(null);
   const [eachMaxQuizLength, setEachMaxQuizLength] = useState(null);
   const handleCheckboxChange = quizSequence => {
@@ -722,7 +715,6 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     },
   );
 
-  console.log(myClubMemberParams);
   // 내 회원 목록 조회
   const { isFetched: isMemberFetched, refetch: refetchMyMember } = useMyMemberList(myClubMemberParams, data => {
     console.log('isMemberFetched', data);
@@ -730,22 +722,6 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     setTotalElementsMember(data?.totalElements);
     setMyMemberList(data?.contents || []);
   });
-
-  // 퀴즈클럽 정보 조회
-  // const { isFetched: isParticipantListFetched } = useQuizMyClubInfo(myQuizParams, data => {
-  //   console.log('first get data');
-  //   // setQuizList(data?.contents || []);
-  //   setSelectedQuizIds(data?.contents.map(item => item?.quizSequence));
-  //   setTotalQuizPage(data?.totalPages);
-  //   setTotalQuizElements(data?.totalElements);
-  //   console.log(data);
-  // });
-
-  // const { isFetched: isMyInfoFetched, refetch: refetchMyInfo } = useQuizMyInfo(myQuizParams, data => {
-  //   console.log('first get data>>>>', data.clubQuizzes);
-  //   setQuizList(data?.clubQuizzes || []);
-  //   console.log(data);
-  // });
 
   // 회원 프로필 정보
   const { isFetched: isProfileFetched, refetch: refetchProfile } = useGetProfile(memberUUID, data => {
@@ -1046,12 +1022,18 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
 
   function renderDatesAndSessionsModify() {
     return (
-      <div className="tw-grid tw-grid-cols-12 tw-gap-4 tw-p-3">
+      <div className="tw-grid tw-grid-cols-12 tw-gap-4 tw-p-3 tw-mt-4">
         {scheduleData.map((session, index) => (
           <div key={index} className="tw-flex-grow tw-flex-shrink relative">
+            <p className="tw-text-base tw-font-medium tw-text-center tw-text-[#31343d]">{index + 1}회</p>
+            <p className="tw-text-xs tw-font-medium tw-text-center tw-text-[#9ca5b2]">
+              {session.publishDate}
+              {/* {session.replace(/\((.*?)요일\)/, '($1)')} */}
+            </p>
+
             <div className="tw-text-center">
               <Checkbox
-                disabled={true}
+                disabled={session?.clubQuizType === '0001'}
                 checked={selectedSessions.includes(index)}
                 onChange={() => handleCheckboxDayChange(index)}
               />
@@ -1061,7 +1043,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                   style={{ padding: 0, height: 25, width: 25, textAlign: 'center' }}
                   type="text"
                   maxLength={2}
-                  disabled={true}
+                  disabled={session?.clubQuizType === '0001'}
                   className="form-control tw-text-sm"
                   value={session.publishDate.split('-')[1]}
                   onChange={e => handleInputDayChange(index, 'month', e.target.value)}
@@ -1069,7 +1051,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                 <input
                   style={{ padding: 0, height: 25, width: 25, textAlign: 'center' }}
                   type="text"
-                  disabled={true}
+                  disabled={session?.clubQuizType === '0001'}
                   className="form-control tw-text-sm"
                   value={session.publishDate.split('-')[2]}
                   onChange={e => handleInputDayChange(index, 'day', e.target.value)}
@@ -1271,7 +1253,8 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     formData.append('form.studyCycle', clubFormParams.studyCycle.toString());
     formData.append('form.startDate', clubFormParams.startAt);
     formData.append('form.endDate', clubFormParams.endAt);
-    formData.append('form.studyCount', clubFormParams.studyCount.toString());
+    // formData.append('form.studyCount', clubFormParams.studyCount.toString());
+    formData.append('form.studyCount', scheduleData.length.toString());
     formData.append('form.studySubject', clubFormParams.studySubject);
     formData.append('form.studyKeywords', clubFormParams.studyKeywords.toString());
     // formData.append('form.studyChapter', clubFormParams.studyChapter);
@@ -1294,17 +1277,19 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
       formData.append('form.instructorProfileImageFile', selectedImageProfileCheck);
     }
 
-    // for (let i = 0; i < scheduleData.length; i++) {
-    //   const item = scheduleData[i];
-    //   formData.append(`clubQuizzes[${i}].quizSequence`, item.quizSequence || '');
-    //   formData.append(`clubQuizzes[${i}].publishDate`, item.publishDate || '');
-    // }
+    let decrementCounter = -1;
 
-    // const params = {
-    //   clubForm: clubFormParams,
-    //   clubQuizzes: scheduleData,
-    // };
-    console.log(params);
+    const filteredData = scheduleData.map(({ publishDate, quizSequence }) => {
+      // Keep positive values, assign decrementCounter for null or negative values
+      const updatedQuizSequence = quizSequence > 0 ? quizSequence : decrementCounter--;
+      return { publishDate, quizSequence: updatedQuizSequence };
+    });
+    console.log('filteredData', filteredData);
+
+    filteredData.forEach((item, i) => {
+      formData.append(`clubQuizzes[${i}].quizSequence`, item.quizSequence || '');
+      formData.append(`clubQuizzes[${i}].publishDate`, item.publishDate || '');
+    });
 
     const clubParam = {
       clubSequence: selectedClub?.clubSequence,
@@ -2407,7 +2392,6 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                           클럽퀴즈 회차 입력
                         </p>
                         <TextField
-                          disabled
                           size="small"
                           fullWidth
                           onChange={handleNumChange}
@@ -2417,8 +2401,16 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                           style={{ backgroundColor: 'white' }}
                         />
                       </div>
-                      <div className="tw-flex-none tw-h-14 ... tw-ml-5 ">
+                      <div className="tw-flex-none tw-h-14 ">
                         <p className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">&nbsp;</p>
+                        <button
+                          onClick={handlerClubMake}
+                          className="tw-flex tw-justify-center tw-items-center tw-w-20 tw-relative tw-overflow-hidden tw-gap-2 tw-px-7 tw-py-[10px] tw-rounded tw-bg-[#31343d]"
+                        >
+                          <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-center tw-text-white">
+                            확인
+                          </p>
+                        </button>
                       </div>
                     </div>
                     {scheduleData?.length > 0 && (
@@ -2426,7 +2418,13 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                         <div className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">
                           퀴즈 클럽회차
                         </div>
-                        <div className="tw-rounded-lg tw-bg-white">{renderDatesAndSessionsView()}</div>
+                        <div
+                          onClick={handleDelete}
+                          className="tw-cursor-pointer tw-text-sm tw-text-right tw-text-black tw-py-5 tw-font-semibold"
+                        >
+                          선택회차 삭제하기
+                        </div>
+                        {/* <div className="tw-rounded-lg tw-bg-white">{renderDatesAndSessionsView()}</div> */}
                         <div className="tw-rounded-lg tw-bg-white">{renderDatesAndSessionsModify()}</div>
                       </div>
                     )}

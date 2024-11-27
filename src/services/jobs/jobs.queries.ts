@@ -98,7 +98,7 @@ export const useGetSchedule = (
   onSuccess?: (data: any) => void,
   onError?: (error: Error) => void,
 ) => {
-  return useQuery<any, Error>(QUERY_KEY_FACTORY('SCHEDULE').list(params), () => getGetSchedule(params), {
+  return useQuery<any, Error>(QUERY_KEY_FACTORY('SCHEDULE_QUIZ').list(params), () => getGetSchedule(params), {
     onSuccess,
     onError,
     enabled: false,
