@@ -312,6 +312,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     console.log('updatedScheduleData', updatedScheduleData);
     setNum(updatedScheduleData.length);
     setScheduleQuizData(updatedScheduleData);
+    // setScheduleOriginalData(updatedScheduleData);
     setSelectedSessions([]);
   };
 
