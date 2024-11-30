@@ -44,7 +44,7 @@ export function AdminClubTemplate() {
   const { isFetched: isMemberListFetched, refetch: QuizRefetchBadge } = useStudyQuizMemberList(memberParams, data => {
     console.log(data);
     setContents(data?.data?.contents);
-    setTotalPage(data?.data?.totalPage);
+    setTotalPage(data?.data?.totalPages);
     setPage(data?.data?.page);
   });
 
