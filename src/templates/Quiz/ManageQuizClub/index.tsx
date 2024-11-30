@@ -1026,7 +1026,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
 
     // 상태 업데이트
     console.log('mergeData', mergeData);
-    // setQuizList(mergeData);
+    setQuizList(mergeData);
     setScheduleData(mergeData);
   };
 
