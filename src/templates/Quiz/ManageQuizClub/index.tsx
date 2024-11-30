@@ -553,11 +553,15 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   };
 
   const handleOpenQuiz = quizSequence => {
-    let params = {
-      club: selectedClub?.clubSequence,
-      quizSequence,
+    const onDeleteClubQuiz = (clubSequence: string) => {
+      if (confirm('해당 퀴즈를 오픈 하시겠습니까?')) {
+        let params = {
+          club: selectedClub?.clubSequence,
+          quizSequence,
+        };
+        onQuizOpen(params);
+      }
     };
-    onQuizOpen(params);
   };
 
   const [scheduleData, setScheduleData] = useState<any[]>([]);
@@ -3066,7 +3070,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                                 {item?.publishDate?.slice(5, 10)} 오픈됨
                                 {/* {item?.dayOfWeek ? `(${item.dayOfWeek})` : ''} */}
                               </div>
-                            ) : quizType === '0200' ? (
+                            ) : quizType === '0200' && item?.clubQuizType === '0001' ? (
                               <div
                                 onClick={() => handleOpenQuiz(item?.quizSequence)}
                                 className="tw-cursor-pointer tw-mt-2 tw-text-center tw-rounded-md tw-text-xs tw-text-blue-500 border border-primary tw-px-1 tw-py-1"
