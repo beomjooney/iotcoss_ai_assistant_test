@@ -1179,19 +1179,19 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     // });
     // console.log('filteredData', filteredData);
 
-    console.log('scheduleOriginalData', scheduleOriginalData);
+    // console.log('scheduleOriginalData', scheduleOriginalData);
 
-    // Map scheduleDataOrigin `quizSequence` to schedule using `order`
+    // // Map scheduleDataOrigin `quizSequence` to schedule using `order`
     const updatedSchedule = scheduleData.map(item => {
-      const originItem = scheduleOriginalData.find(origin => origin.order === item.order);
+      console.log('item', item);
 
       return {
-        quizSequence: item.quizSequence === null ? originItem.quizSequence : item.quizSequence,
+        quizSequence: item.quizSequence,
         publishDate: item.publishDate,
       };
     });
 
-    console.log('updatedSchedule', updatedSchedule);
+    console.log('updatedSchedule', scheduleData);
 
     onQuizSave({ club: selectedClub?.clubSequence, data: updatedSchedule, selectedOption: selectedOption });
   };
