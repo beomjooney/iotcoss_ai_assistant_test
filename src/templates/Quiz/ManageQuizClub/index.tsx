@@ -329,7 +329,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     console.log(num);
     // console.log(lastPublishDate);
 
-    const quizData = scheduleData.map(item => {
+    const quizData = scheduleQuizData.map(item => {
       return {
         quizSequence: item.quizSequence,
         publishDate: item.publishDate,
@@ -1025,7 +1025,9 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     }));
 
     // 상태 업데이트
-    setQuizList(mergeData);
+    console.log('mergeData', mergeData);
+    // setQuizList(mergeData);
+    setScheduleData(mergeData);
   };
 
   const handleCheckboxDayChange = index => {
@@ -1189,9 +1191,9 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
       };
     });
 
-    console.log('updatedSchedule', scheduleData);
+    console.log('updatedSchedule', updatedSchedule);
 
-    onQuizSave({ club: selectedClub?.clubSequence, data: updatedSchedule, selectedOption: selectedOption });
+    // onQuizSave({ club: selectedClub?.clubSequence, data: updatedSchedule, selectedOption: selectedOption });
   };
 
   function searchKeyworld(value) {
