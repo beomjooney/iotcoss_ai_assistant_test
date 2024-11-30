@@ -146,13 +146,19 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   const [selectedQuizIds, setSelectedQuizIds] = useState([]);
   const [quizListData, setQuizListData] = useState<any[]>([]);
   const [quizListBackupData, setQuizListBackupData] = useState<any[]>([]);
-  const { mutate: onQuizSave, data: quizSaveData } = useSaveQuiz();
+  const { mutate: onQuizSave, data: quizSaveData, isSuccess: isQuizSaveSuccess } = useSaveQuiz();
 
   useEffect(() => {
     if (tempError) {
       refetchGetTemp();
     }
   }, [tempError]);
+
+  useEffect(() => {
+    if (isQuizSaveSuccess) {
+      refetchGetTemp();
+    }
+  }, [isQuizSaveSuccess]);
 
   useEffect(() => {
     if (quizSaveData) {
