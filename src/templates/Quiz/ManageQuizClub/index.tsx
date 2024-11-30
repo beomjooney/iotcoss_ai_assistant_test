@@ -1193,7 +1193,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
 
     console.log('updatedSchedule', updatedSchedule);
 
-    // onQuizSave({ club: selectedClub?.clubSequence, data: updatedSchedule, selectedOption: selectedOption });
+    onQuizSave({ club: selectedClub?.clubSequence, data: updatedSchedule, selectedOption: selectedOption });
   };
 
   function searchKeyworld(value) {
