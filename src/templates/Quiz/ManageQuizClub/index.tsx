@@ -553,15 +553,13 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   };
 
   const handleOpenQuiz = quizSequence => {
-    const onDeleteClubQuiz = (clubSequence: string) => {
-      if (confirm('해당 퀴즈를 오픈 하시겠습니까?')) {
-        let params = {
-          club: selectedClub?.clubSequence,
-          quizSequence,
-        };
-        onQuizOpen(params);
-      }
-    };
+    if (confirm('해당 퀴즈를 오픈 하시겠습니까?')) {
+      let params = {
+        club: selectedClub?.clubSequence,
+        quizSequence,
+      };
+      onQuizOpen(params);
+    }
   };
 
   const [scheduleData, setScheduleData] = useState<any[]>([]);
