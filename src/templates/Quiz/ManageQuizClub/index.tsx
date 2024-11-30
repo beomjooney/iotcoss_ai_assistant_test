@@ -427,12 +427,25 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   }, [tempSucces]);
 
   //퀴즈 스케쥴 정보
-  const { refetch: refetchGetSchedule, isSuccess: isScheduleSuccess }: UseQueryResult<any> = useGetQuizSchedule(
+  const {
+    refetch: refetchGetSchedule,
+    isSuccess: isScheduleSuccess,
+    isError: isScheduleError,
+  }: UseQueryResult<any> = useGetQuizSchedule(
     dayParams,
     data => {
       // const updatedData = [...scheduleOriginalData, ...data];
       console.log('schedule data', data);
       setScheduleQuizData(data);
+    },
+    error => {
+      if (error.responseCode === '1428') {
+        alert('공개된 퀴즈를 변경 또는 삭제 할수 없습니다.');
+      } else if (error.responseCode === '1426') {
+        alert('퀴즈의 공개일이 클럽 시작일/종료일 기간내에 있어야 합니다.');
+      } else {
+        alert('스케쥴 정보 조회에 실패했습니다. : ' + error.responseCode + ' ' + error.message);
+      }
     },
   );
 

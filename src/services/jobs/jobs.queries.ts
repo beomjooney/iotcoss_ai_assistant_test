@@ -115,6 +115,7 @@ export const useGetQuizSchedule = (
     onSuccess,
     onError,
     enabled: false,
+    retry: false,
     refetchOnWindowFocus: false,
   });
 };
