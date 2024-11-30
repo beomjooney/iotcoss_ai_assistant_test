@@ -309,6 +309,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
 
   const handleDelete = () => {
     const updatedScheduleData = scheduleQuizData.filter((_, i) => !selectedSessions.includes(i));
+    console.log('updatedScheduleData', updatedScheduleData);
     setNum(updatedScheduleData.length);
     setScheduleQuizData(updatedScheduleData);
     setSelectedSessions([]);
@@ -344,7 +345,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
       studyCount: num,
       startDate: startDay.format('YYYY-MM-DD'),
       endDate: endDay.format('YYYY-MM-DD'),
-      clubQuizzes: scheduleOriginalData,
+      clubQuizzes: scheduleQuizData,
     };
 
     console.log(transformedData);
