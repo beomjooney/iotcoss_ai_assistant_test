@@ -78,7 +78,7 @@ const ChatbotModal = ({ isOpen, onRequestClose, token }) => {
         className="tw-bg-white"
         size={size}
         onResizeStop={handleResizeStop}
-        minWidth={420} // 최소 넓이
+        minWidth={530} // 최소 넓이
         minHeight={680} // 최소 높이
         enable={{
           top: true,
