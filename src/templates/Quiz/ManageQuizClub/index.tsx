@@ -160,8 +160,8 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
       if (quizSaveData?.data?.responseCode === '0000') {
         // setQuizListData(quizSaveData);
         console.log('퀴즈 수정 성공');
-      } else if (quizSaveData?.data?.responseCode === '0401') {
-        refetchMyInfo();
+      } else if (quizSaveData?.data?.responseCode === '1428') {
+        refetchGetTemp();
         console.log('오픈되어있는 퀴즈는 순서를 변경할 수 없습니다.');
       } else {
         console.log('퀴즈 수정에 실패했습니다. : ' + quizSaveData?.data?.responseCode);
