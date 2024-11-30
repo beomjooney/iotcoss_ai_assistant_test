@@ -462,6 +462,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
           quizSequence: item.quizSequence,
           publishDate: item.publishDate, // Preserve original publishDate if it exists
           dayOfWeek: item.dayOfWeek,
+          hasBeenPublished: item.hasBeenPublished,
         };
       }
       return item;
@@ -1100,7 +1101,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
 
             <div className="tw-text-center">
               <Checkbox
-                disabled={session?.clubQuizType === '0001'}
+                disabled={session?.hasBeenPublished}
                 checked={selectedSessions.includes(index)}
                 onChange={() => handleCheckboxDayChange(index)}
               />
@@ -1110,7 +1111,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                   style={{ padding: 0, height: 25, width: 25, textAlign: 'center' }}
                   type="text"
                   maxLength={2}
-                  disabled={session?.clubQuizType === '0001'}
+                  disabled={session?.hasBeenPublished}
                   className="form-control tw-text-sm"
                   value={session.publishDate.split('-')[1]}
                   onChange={e => handleInputDayChange(index, 'month', e.target.value)}
@@ -1120,7 +1121,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                   style={{ padding: 0, height: 25, width: 25, textAlign: 'center' }}
                   type="text"
                   maxLength={2}
-                  disabled={session?.clubQuizType === '0001'}
+                  disabled={session?.hasBeenPublished}
                   className="form-control tw-text-sm"
                   value={session.publishDate.split('-')[2]}
                   onBlur={() => handleInputBlur(index, 'day')}
@@ -1157,38 +1158,38 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   const handleQuizSave = () => {
     const hasNullQuizSequence = quizList.some(quiz => quiz.quizSequence === null);
 
-    if (hasNullQuizSequence) {
-      alert('퀴즈를 등록해주세요.');
-      return;
-    }
-    console.log(quizList);
+    // if (hasNullQuizSequence) {
+    //   alert('퀴즈를 등록해주세요.');
+    //   return;
+    // }
+    // console.log(quizList);
 
     // publishDate와 quizSequence만 남기기
-    let decrementCounter = -1;
+    // let decrementCounter = -1;
+    // const filteredData = scheduleData.map(({ publishDate, quizSequence }) => {
+    //   if (quizSequence === null) {
+    //     quizSequence = decrementCounter;
+    //     decrementCounter--;
+    //   }
+    //   return { publishDate, quizSequence };
+    // });
+    // console.log('filteredData', filteredData);
 
-    const filteredData = scheduleData.map(({ publishDate, quizSequence }) => {
-      if (quizSequence === null) {
-        quizSequence = decrementCounter;
-        decrementCounter--;
-      }
-      return { publishDate, quizSequence };
-    });
-
-    console.log('filteredData', filteredData);
+    console.log('scheduleOriginalData', scheduleOriginalData);
 
     // Map scheduleDataOrigin `quizSequence` to schedule using `order`
     const updatedSchedule = scheduleData.map(item => {
       const originItem = scheduleOriginalData.find(origin => origin.order === item.order);
 
       return {
-        ...item,
-        quizSequence: originItem ? originItem.quizSequence : item.quizSequence,
+        quizSequence: item.quizSequence === null ? originItem.quizSequence : item.quizSequence,
+        publishDate: item.publishDate,
       };
     });
 
     console.log('updatedSchedule', updatedSchedule);
 
-    onQuizSave({ club: selectedClub?.clubSequence, data: filteredData, selectedOption: selectedOption });
+    onQuizSave({ club: selectedClub?.clubSequence, data: updatedSchedule, selectedOption: selectedOption });
   };
 
   function searchKeyworld(value) {
@@ -2921,7 +2922,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                     sm={10}
                     className="tw-text-xl tw-text-black tw-font-bold"
                   >
-                    퀴즈 목록 ({selectedQuizIds?.length || 0})
+                    퀴즈 목록 ({scheduleData?.length || 0})
                   </Grid>
 
                   <Grid item container justifyContent="flex-end" xs={6} sm={2} style={{ textAlign: 'right' }}>
@@ -3052,7 +3053,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                 </div>
                 <Grid container direction="row" justifyContent="left" alignItems="start" rowSpacing={4}>
                   <Grid item xs={1}>
-                    {scheduleData?.map((item, index) => {
+                    {scheduleOriginalData?.map((item, index) => {
                       return (
                         <div
                           key={index}
@@ -3065,7 +3066,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                                 {item?.publishDate?.slice(5, 10)} 오픈됨
                                 {/* {item?.dayOfWeek ? `(${item.dayOfWeek})` : ''} */}
                               </div>
-                            ) : item?.clubQuizType === '0001' ? (
+                            ) : quizType === '0200' ? (
                               <div
                                 onClick={() => handleOpenQuiz(item?.quizSequence)}
                                 className="tw-cursor-pointer tw-mt-2 tw-text-center tw-rounded-md tw-text-xs tw-text-blue-500 border border-primary tw-px-1 tw-py-1"
