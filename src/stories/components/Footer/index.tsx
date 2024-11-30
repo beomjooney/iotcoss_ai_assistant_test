@@ -36,13 +36,13 @@ const Footer = () => {
                 라이프멘토스(주) ㅣ 대표 : 추병조 ㅣ 서비스 문의 : devus@lifementors.co.kr <br />
                 서울시 마포구 마포대로8길 35, 흥전빌딩 401호 ㅣ 사업자등록번호 : 530-86-02750
               </div>
-              <div className="tw-flex tw-flex-col tw-col-span-1  tw-text-right tw-font-bold">
+              {/* <div className="tw-flex tw-flex-col tw-col-span-1  tw-text-right tw-font-bold">
                 공지사항 ㅣ 이용약관 ㅣ 개인정보처리방침 ㅣ FAQ ㅣ 환불규정
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="tw-flex tw-justify-center tw-items-center tw-py-6">
-            <p className="tw-text-sm tw-text-right">Copyright 2023. DevUs Co., Ltd. all rights reserved.</p>
+            <p className="tw-text-sm tw-text-right">Copyright 2024. DevUs Co., Ltd. all rights reserved.</p>
           </div>
         </div>
       ) : (

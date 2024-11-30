@@ -11,6 +11,7 @@ import {
   getMyQuizThresh,
   getLectureGetTemp,
   getGetScheduleDay,
+  getGetQuizSchedule,
 } from './jobs.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 import { RecommendContentsResponse } from 'src/models/recommend';
@@ -99,6 +100,18 @@ export const useGetSchedule = (
   onError?: (error: Error) => void,
 ) => {
   return useQuery<any, Error>(QUERY_KEY_FACTORY('SCHEDULE_QUIZ').list(params), () => getGetSchedule(params), {
+    onSuccess,
+    onError,
+    enabled: false,
+    refetchOnWindowFocus: false,
+  });
+};
+export const useGetQuizSchedule = (
+  params?: paramProps,
+  onSuccess?: (data: any) => void,
+  onError?: (error: Error) => void,
+) => {
+  return useQuery<any, Error>(QUERY_KEY_FACTORY('SCHEDULE_QUIZ').list(params), () => getGetQuizSchedule(params), {
     onSuccess,
     onError,
     enabled: false,

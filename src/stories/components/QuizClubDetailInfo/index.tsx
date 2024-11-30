@@ -192,7 +192,11 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
                 </div>
               )}
 
-              <div>학습 참여 : 주 {clubData?.studyWeekCount}회</div>
+              {clubData?.quizOpenType === '0100' ? (
+                <div>학습 참여 : 주 {clubData?.studyWeekCount}회</div>
+              ) : (
+                <div>학습 참여 : 총 {clubData?.studyTotalCount}회차</div>
+              )}
               <div>참여 인원 : {clubData?.recruitedMemberCount || '00'}명</div>
             </div>
 
@@ -413,12 +417,21 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
             <div className="tw-flex tw-flex-col">
               <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-5">퀴즈 전체 일정</p>
               {clubData?.endAt ? (
-                <p className="tw-text-base tw-text-left tw-text-black">
-                  {clubData?.startAt?.split(' ')[0]} ~ {clubData?.endAt?.split(' ')[0]} / 주{' '}
-                  {clubData?.studyWeekCount?.toString()}회{' '}
-                  {clubData?.studyCycle?.length > 0 ? `(${clubData?.studyCycle?.toString()})` : ''} 총{' '}
-                  {selectedQuizzes?.length}개 퀴즈
-                </p>
+                clubData?.quizOpenType === '0100' ? (
+                  <p className="tw-text-base tw-text-left tw-text-black">
+                    {clubData?.startAt?.split(' ')[0]} ~ {clubData?.endAt?.split(' ')[0]} / 주{' '}
+                    {clubData?.studyWeekCount?.toString()}회{' '}
+                    {clubData?.studyCycle?.length > 0 ? `(${clubData?.studyCycle?.toString()})` : ''} 총{' '}
+                    {selectedQuizzes?.length}개 퀴즈
+                  </p>
+                ) : (
+                  <p className="tw-text-base tw-text-left tw-text-black">
+                    {clubData?.startAt?.split(' ')[0]} ~ {clubData?.endAt?.split(' ')[0]} / 총 회차 :{' '}
+                    {clubData?.studyTotalCount?.toString()} ,
+                    {clubData?.studyCycle?.length > 0 ? `(${clubData?.studyCycle?.toString()})` : ''} 퀴즈 :{' '}
+                    {selectedQuizzes?.length}개 퀴즈
+                  </p>
+                )
               ) : (
                 <p className="tw-text-base tw-text-left tw-text-black">
                   시작일 : {clubData?.startAt?.split(' ')[0]} {clubData?.studyWeekCount?.toString()}회{' '}

@@ -108,9 +108,10 @@ export const saveClubTempPost = async body => {
 
 export const saveClubQuizTempPost = async body => {
   // body.clubForm.clubId = 'quiz_club_temporary_' + generateUUID();
-  await axiosGeneralAPI().put(`/api/v2/quiz-clubs/${body.clubSequence}`, body.formData, {
+  const { data } = await axiosGeneralAPI().put(`/api/v2/quiz-clubs/${body.clubSequence}`, body.formData, {
     headers: { 'content-type': 'multipart/form-data' },
   });
+  return data;
   // await axiosGeneralAPI().post(`/api/v1/club/temporary`, body);
 };
 

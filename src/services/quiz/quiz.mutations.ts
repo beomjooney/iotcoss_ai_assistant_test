@@ -248,7 +248,7 @@ export const useClubQuizTempSave = (): UseMutationResult => {
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('TEMP').all),
     onSuccess: async data => {
-      alert('저장 되었습니다.');
+      // alert('저장 되었습니다.');
     },
   });
 };

@@ -1,6 +1,6 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Divider from '@mui/material/Divider';
 import {
   paramProps,
@@ -24,7 +24,7 @@ import Grid from '@mui/material/Grid';
 import ReactDragList from 'react-drag-list';
 
 /**import quiz modal  */
-import { useQuizList, useGetSchedule } from 'src/services/jobs/jobs.queries';
+import { useQuizList, useGetQuizSchedule } from 'src/services/jobs/jobs.queries';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -95,7 +95,7 @@ export interface ManageQuizClubTemplateProps {
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
 export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTemplateProps) {
-  const { mutate: onTempSave, isSuccess: tempSucces } = useClubQuizTempSave();
+  const { mutate: onTempSave, isSuccess: tempSucces, data: tempData, isError: tempError } = useClubQuizTempSave();
   const { mutate: onCrewBan, isSuccess: isBanSuccess } = useCrewBanDelete();
   const { mutate: onCrewAccept, isSuccess: isAcceptSuccess } = useCrewAcceptPost();
   const { mutate: onCrewReject, isSuccess: isRejectSuccess } = useCrewRejectPost();
@@ -147,6 +147,12 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   const [quizListData, setQuizListData] = useState<any[]>([]);
   const [quizListBackupData, setQuizListBackupData] = useState<any[]>([]);
   const { mutate: onQuizSave, data: quizSaveData } = useSaveQuiz();
+
+  useEffect(() => {
+    if (tempError) {
+      refetchGetTemp();
+    }
+  }, [tempError]);
 
   useEffect(() => {
     if (quizSaveData) {
@@ -302,9 +308,9 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   };
 
   const handleDelete = () => {
-    const updatedScheduleData = scheduleData.filter((_, i) => !selectedSessions.includes(i));
+    const updatedScheduleData = scheduleQuizData.filter((_, i) => !selectedSessions.includes(i));
     setNum(updatedScheduleData.length);
-    setScheduleData(updatedScheduleData);
+    setScheduleQuizData(updatedScheduleData);
     setSelectedSessions([]);
   };
 
@@ -318,17 +324,33 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
       alert('클럽퀴즈 회차를 입력 해주세요.');
       return false;
     }
-    const lastPublishDate = scheduleData[scheduleData.length - 1].publishDate;
+    // const lastPublishDate = scheduleData[scheduleData.length - 1].publishDate;
     console.log(studyCycleNum);
     console.log(num);
-    console.log(lastPublishDate);
+    // console.log(lastPublishDate);
 
-    setDayParams({
-      // ...params,
+    const quizData = scheduleData.map(item => {
+      return {
+        quizSequence: item.quizSequence,
+        publishDate: item.publishDate,
+      };
+    });
+
+    console.log(quizData);
+
+    const transformedData = {
+      clubId: ids,
       studyCycle: studyCycleNum.join(','),
       studyCount: num,
-      startDate: lastPublishDate,
-    });
+      startDate: startDay.format('YYYY-MM-DD'),
+      endDate: endDay.format('YYYY-MM-DD'),
+      clubQuizzes: scheduleOriginalData,
+    };
+
+    console.log(transformedData);
+
+    setDayParams(transformedData);
+
     // setButtonFlag(true);
     // setSelectedQuizIds([]);
     // setScheduleData([]);
@@ -392,18 +414,23 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   useEffect(() => {
     if (tempSucces) {
       console.log('클럽 임시저장 성공');
-      refetchGetTemp();
-      setActiveTab('community');
+      console.log('tempData', tempData);
+      if (tempData.responseCode === '0000') {
+        setActiveTab('community');
+        refetchGetTemp();
+      } else {
+        alert('클럽 임시저장에 실패했습니다. : ' + tempData.responseCode + ' ' + tempData.message);
+      }
     }
   }, [tempSucces]);
 
   //퀴즈 스케쥴 정보
-  const { refetch: refetchGetSchedule, isSuccess: isScheduleSuccess }: UseQueryResult<any> = useGetSchedule(
+  const { refetch: refetchGetSchedule, isSuccess: isScheduleSuccess }: UseQueryResult<any> = useGetQuizSchedule(
     dayParams,
     data => {
-      const updatedData = [...scheduleOriginalData, ...data];
-      console.log('schedule data', updatedData);
-      setScheduleData(updatedData);
+      // const updatedData = [...scheduleOriginalData, ...data];
+      console.log('schedule data', data);
+      setScheduleQuizData(data);
     },
   );
 
@@ -472,9 +499,20 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     console.log(jobsName);
     setPersonName(jobsName || []);
     setButtonFlag(true);
-    setScheduleData(quizListData);
+
+    const transformQuizData = quizData => {
+      return quizData.map(quiz => ({
+        ...quiz,
+        quizSequence: quiz.quizSequence < 0 ? null : quiz.quizSequence,
+      }));
+    };
+
+    setScheduleQuizData(quizListData);
+
+    const transformedQuizData = transformQuizData(quizListData);
+    console.log('transformedQuizData', transformedQuizData);
+    setScheduleData(transformedQuizData);
     setScheduleOriginalData(quizListData);
-    // setQuizList(quizList);
 
     setSelectedOption(data?.isRepresentativeQuizPublic.toString());
 
@@ -522,6 +560,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   };
 
   const [scheduleData, setScheduleData] = useState<any[]>([]);
+  const [scheduleQuizData, setScheduleQuizData] = useState<any[]>([]);
   const [scheduleOriginalData, setScheduleOriginalData] = useState<any[]>([]);
   const [order, setOrder] = useState(null);
   const [eachMaxQuizLength, setEachMaxQuizLength] = useState(null);
@@ -996,24 +1035,52 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     });
   };
 
-  const handleInputDayChange = (index, part, value) => {
-    const updatedScheduleData = [...scheduleData];
+  const handleInputBlur = (index, part) => {
+    const updatedScheduleData = [...scheduleQuizData];
     const dateParts = updatedScheduleData[index].publishDate.split('-');
+
+    if (part === 'month') {
+      const monthValue = parseInt(dateParts[1], 10);
+      if (monthValue < 10 && dateParts[1].length === 1) {
+        dateParts[1] = `0${monthValue}`; // Add leading zero if necessary
+      }
+    } else if (part === 'day') {
+      const dayValue = parseInt(dateParts[2], 10);
+      if (dayValue < 10 && dateParts[2].length === 1) {
+        dateParts[2] = `0${dayValue}`; // Add leading zero if necessary
+      }
+    }
+
+    updatedScheduleData[index].publishDate = dateParts.join('-');
+    setScheduleData(updatedScheduleData);
+  };
+
+  const handleInputDayChange = (index, part, value) => {
+    const updatedScheduleData = [...scheduleQuizData];
+    const dateParts = updatedScheduleData[index]?.publishDate.split('-');
 
     if (part === 'month') {
       const day = new Date(startDay.format('YYYY-MM-DD'));
       const newDate = new Date(day.getFullYear(), value - 1, dateParts[2]);
-      if (newDate < day) {
-        alert('월은 시작 날짜보다 이전일 수 없습니다.');
-        return;
+      // console.log('newDate', day, newDate);
+
+      if (value < 1 || value > 12) {
+        if (value === '') {
+          dateParts[1] = value;
+        } else {
+          alert('월은 1에서 12 사이여야 합니다.');
+          return;
+        }
       }
-      dateParts[1] = value.padStart(2, '0');
+      // const formattedValue = value < 10 ? `0${value}` : `${value}`;
+      dateParts[1] = value; // Add leading zero for months less than 10
     } else if (part === 'day') {
       if (value < 0 || value > 31) {
         alert('일은 1에서 31 사이여야 합니다.');
         return;
       }
-      dateParts[2] = value.padStart(2);
+      // dateParts[2] = value.padStart(2);
+      dateParts[2] = value;
     }
 
     updatedScheduleData[index].publishDate = dateParts.join('-');
@@ -1023,7 +1090,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   function renderDatesAndSessionsModify() {
     return (
       <div className="tw-grid tw-grid-cols-12 tw-gap-4 tw-p-3 tw-mt-4">
-        {scheduleData.map((session, index) => (
+        {scheduleQuizData.map((session, index) => (
           <div key={index} className="tw-flex-grow tw-flex-shrink relative">
             <p className="tw-text-base tw-font-medium tw-text-center tw-text-[#31343d]">{index + 1}회</p>
             <p className="tw-text-xs tw-font-medium tw-text-center tw-text-[#9ca5b2]">
@@ -1047,13 +1114,16 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                   className="form-control tw-text-sm"
                   value={session.publishDate.split('-')[1]}
                   onChange={e => handleInputDayChange(index, 'month', e.target.value)}
+                  onBlur={() => handleInputBlur(index, 'month')}
                 ></input>
                 <input
                   style={{ padding: 0, height: 25, width: 25, textAlign: 'center' }}
                   type="text"
+                  maxLength={2}
                   disabled={session?.clubQuizType === '0001'}
                   className="form-control tw-text-sm"
                   value={session.publishDate.split('-')[2]}
+                  onBlur={() => handleInputBlur(index, 'day')}
                   onChange={e => handleInputDayChange(index, 'day', e.target.value)}
                 ></input>
                 <p className="tw-text-xs tw-font-medium tw-text-center tw-text-[#9ca5b2]">{session.dayOfWeek}</p>
@@ -1103,6 +1173,20 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
       }
       return { publishDate, quizSequence };
     });
+
+    console.log('filteredData', filteredData);
+
+    // Map scheduleDataOrigin `quizSequence` to schedule using `order`
+    const updatedSchedule = scheduleData.map(item => {
+      const originItem = scheduleOriginalData.find(origin => origin.order === item.order);
+
+      return {
+        ...item,
+        quizSequence: originItem ? originItem.quizSequence : item.quizSequence,
+      };
+    });
+
+    console.log('updatedSchedule', updatedSchedule);
 
     onQuizSave({ club: selectedClub?.clubSequence, data: filteredData, selectedOption: selectedOption });
   };
@@ -1253,8 +1337,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     formData.append('form.studyCycle', clubFormParams.studyCycle.toString());
     formData.append('form.startDate', clubFormParams.startAt);
     formData.append('form.endDate', clubFormParams.endAt);
-    // formData.append('form.studyCount', clubFormParams.studyCount.toString());
-    formData.append('form.studyCount', scheduleData.length.toString());
+    formData.append('form.studyCount', clubFormParams.studyCount.toString());
     formData.append('form.studySubject', clubFormParams.studySubject);
     formData.append('form.studyKeywords', clubFormParams.studyKeywords.toString());
     // formData.append('form.studyChapter', clubFormParams.studyChapter);
@@ -1277,16 +1360,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
       formData.append('form.instructorProfileImageFile', selectedImageProfileCheck);
     }
 
-    let decrementCounter = -1;
-
-    const filteredData = scheduleData.map(({ publishDate, quizSequence }) => {
-      // Keep positive values, assign decrementCounter for null or negative values
-      const updatedQuizSequence = quizSequence > 0 ? quizSequence : decrementCounter--;
-      return { publishDate, quizSequence: updatedQuizSequence };
-    });
-    console.log('filteredData', filteredData);
-
-    filteredData.forEach((item, i) => {
+    scheduleQuizData.forEach((item, i) => {
       formData.append(`clubQuizzes[${i}].quizSequence`, item.quizSequence || '');
       formData.append(`clubQuizzes[${i}].publishDate`, item.publishDate || '');
     });
@@ -1748,7 +1822,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
 
                     <Grid item container justifyContent="flex-end" xs={6} sm={2} style={{ textAlign: 'right' }}>
                       <Pagination
-                        count={totalPageMember}
+                        count={totalPageMemberModal}
                         size="small"
                         siblingCount={0}
                         page={pageMember}
@@ -2413,7 +2487,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                         </button>
                       </div>
                     </div>
-                    {scheduleData?.length > 0 && (
+                    {scheduleQuizData?.length > 0 && (
                       <div className="tw-p-5">
                         <div className="tw-text-sm tw-text-left tw-text-black tw-py-2 tw-font-semibold">
                           퀴즈 클럽회차

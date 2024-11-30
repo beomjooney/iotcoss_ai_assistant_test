@@ -32,6 +32,21 @@ export const getGetSchedule = async params => {
   const { data } = await axiosGeneralAPI().get('/api/v1/club/quiz-schedule', { params });
   return data.data;
 };
+
+// 내 퀴즈 조회
+export const getGetQuizSchedule = async params => {
+  const { data } = await axiosGeneralAPI().post(`/api/v2/quiz-clubs/${params.clubId}/schedules`, {
+    studyCycle: [params.studyCycle], // Ensure studyCycle is sent as an array
+    studyCount: params.studyCount,
+    startDate: params.startDate,
+    endDate: params.endDate,
+    clubQuizzes: params.clubQuizzes.map(quiz => ({
+      quizSequence: quiz.quizSequence,
+      publishDate: quiz.publishDate,
+    })), // Format clubQuizzes correctly
+  });
+  return data.data;
+};
 export const getGetScheduleDay = async params => {
   const { data } = await axiosGeneralAPI().get('/api/v1/club/schedules', { params });
   return data.data;

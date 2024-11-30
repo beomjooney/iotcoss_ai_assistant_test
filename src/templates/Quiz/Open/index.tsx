@@ -1279,24 +1279,76 @@ export function QuizOpenTemplate() {
     );
   }
 
+  // const handleInputDayChange = (index, part, value) => {
+  //   const updatedScheduleData = [...scheduleData];
+  //   const dateParts = updatedScheduleData[index].publishDate?.split('-');
+
+  //   if (part === 'month') {
+  //     const day = new Date(startDay.format('YYYY-MM-DD'));
+  //     const newDate = new Date(day.getFullYear(), value - 1, dateParts[2]);
+  //     if (newDate < day) {
+  //       alert('월은 시작 날짜보다 이전일 수 없습니다.');
+  //       return;
+  //     }
+  //     dateParts[1] = value.padStart(2, '0');
+  //   } else if (part === 'day') {
+  //     if (value < 0 || value > 31) {
+  //       alert('일은 1에서 31 사이여야 합니다.');
+  //       return;
+  //     }
+  //     dateParts[2] = value.padStart(2);
+  //   }
+
+  //   updatedScheduleData[index].publishDate = dateParts.join('-');
+  //   setScheduleSaveData(updatedScheduleData);
+  // };
+
+  const handleInputBlur = (index, part) => {
+    const updatedScheduleData = [...scheduleData];
+    const dateParts = updatedScheduleData[index].publishDate.split('-');
+
+    if (part === 'month') {
+      const monthValue = parseInt(dateParts[1], 10);
+      if (monthValue < 10 && dateParts[1].length === 1) {
+        dateParts[1] = `0${monthValue}`; // Add leading zero if necessary
+      }
+    } else if (part === 'day') {
+      const dayValue = parseInt(dateParts[2], 10);
+      if (dayValue < 10 && dateParts[2].length === 1) {
+        dateParts[2] = `0${dayValue}`; // Add leading zero if necessary
+      }
+    }
+
+    updatedScheduleData[index].publishDate = dateParts.join('-');
+    setScheduleData(updatedScheduleData);
+  };
+
   const handleInputDayChange = (index, part, value) => {
     const updatedScheduleData = [...scheduleData];
-    const dateParts = updatedScheduleData[index].publishDate?.split('-');
+    const dateParts = updatedScheduleData[index].publishDate.split('-');
 
     if (part === 'month') {
       const day = new Date(startDay.format('YYYY-MM-DD'));
       const newDate = new Date(day.getFullYear(), value - 1, dateParts[2]);
-      if (newDate < day) {
-        alert('월은 시작 날짜보다 이전일 수 없습니다.');
-        return;
+      // console.log('newDate', day, newDate);
+
+      if (value < 1 || value > 12) {
+        if (value === '') {
+          dateParts[1] = value;
+        } else {
+          alert('월은 1에서 12 사이여야 합니다.');
+          return;
+        }
       }
-      dateParts[1] = value.padStart(2, '0');
+      // const formattedValue = value < 10 ? `0${value}` : `${value}`;
+      dateParts[1] = value; // Add leading zero for months less than 10
     } else if (part === 'day') {
       if (value < 0 || value > 31) {
         alert('일은 1에서 31 사이여야 합니다.');
         return;
       }
-      dateParts[2] = value.padStart(2);
+      // dateParts[2] = value.padStart(2);
+      dateParts[2] = value;
     }
 
     updatedScheduleData[index].publishDate = dateParts.join('-');
@@ -1349,6 +1401,7 @@ export function QuizOpenTemplate() {
                   className="form-control tw-text-sm"
                   value={session.publishDate?.split('-')[1]}
                   onChange={e => handleInputDayChange(index, 'month', e.target.value)}
+                  onBlur={() => handleInputBlur(index, 'month')}
                 ></input>
                 <input
                   style={{ padding: 0, height: 25, width: 25, textAlign: 'center' }}
@@ -1356,6 +1409,7 @@ export function QuizOpenTemplate() {
                   className="form-control tw-text-sm"
                   value={session.publishDate?.split('-')[2]}
                   onChange={e => handleInputDayChange(index, 'day', e.target.value)}
+                  onBlur={() => handleInputBlur(index, 'day')}
                 ></input>
                 <p className="tw-text-xs tw-font-medium tw-text-center tw-text-[#9ca5b2]">{session.dayOfWeek}</p>
               </div>

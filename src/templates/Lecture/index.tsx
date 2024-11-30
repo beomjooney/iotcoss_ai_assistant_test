@@ -159,7 +159,7 @@ export function LectureTemplate() {
                   fullWidth
                   id="outlined-basic"
                   label=""
-                  placeholder="수업명, 교수님명으로 클럽검색하기"
+                  placeholder="강의명, 교수님명으로 클럽검색하기"
                   variant="outlined"
                   onKeyPress={e => {
                     if (e.key === 'Enter') {
