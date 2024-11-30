@@ -242,6 +242,8 @@ export const useClubQuizTempSave = (): UseMutationResult => {
         alert('퀴즈 공개일의 경우 종료일을 공개일 이후로 설정해주세요.');
       } else if (responseCode === '1428') {
         alert('이미 공개된 퀴즈를 삭제할 수 없습니다.');
+      } else if (responseCode === '1426') {
+        alert('퀴즈의 공개일이 클럽 시작일/종료일 기간내에 있어야 합니다.');
       } else {
         alert(`mutation error : [${responseCode}] ${message}`);
       }
