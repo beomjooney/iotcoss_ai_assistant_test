@@ -426,8 +426,8 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
                   </p>
                 ) : (
                   <p className="tw-text-base tw-text-left tw-text-black">
-                    {clubData?.startAt?.split(' ')[0]} ~ {clubData?.endAt?.split(' ')[0]} / 총 회차 :{' '}
-                    {clubData?.studyTotalCount?.toString()} ,
+                    {clubData?.startAt?.split(' ')[0]} ~ {clubData?.endAt?.split(' ')[0]} / 총 :{' '}
+                    {clubData?.studyTotalCount?.toString()} 회차,
                     {clubData?.studyCycle?.length > 0 ? `(${clubData?.studyCycle?.toString()})` : ''} 퀴즈 :{' '}
                     {selectedQuizzes?.length}개 퀴즈
                   </p>
