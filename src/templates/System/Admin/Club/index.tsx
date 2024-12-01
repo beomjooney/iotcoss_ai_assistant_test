@@ -88,7 +88,7 @@ export function AdminClubTemplate() {
                     <TextField
                       size="small"
                       value={search} // 상태값을 TextField에 반영
-                      placeholder="검색"
+                      placeholder="아이디,회원명,이메일로 검색하세요."
                       onChange={e => setSearch(e.target.value)} // 입력된 값 업데이트
                       onKeyDown={handleKeyDown} // 엔터 키 이벤트 처리
                       InputProps={{

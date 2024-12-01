@@ -749,7 +749,7 @@ export function AdminQuizTemplate() {
                     <TextField
                       size="small"
                       value={search} // 상태값을 TextField에 반영
-                      placeholder="검색"
+                      placeholder="등록자, 퀴즈 타이틀로 검색해주세요."
                       onChange={e => setSearch(e.target.value)} // 입력된 값 업데이트
                       onKeyDown={handleKeyDown} // 엔터 키 이벤트 처리
                       InputProps={{

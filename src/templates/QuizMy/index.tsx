@@ -41,6 +41,7 @@ export function QuizMyTemplate() {
   }
 
   useDidMountEffect(() => {
+    console.log('keyWorld', keyWorld);
     setParams({
       ...params,
       page,
@@ -133,6 +134,7 @@ export function QuizMyTemplate() {
                       <TextField
                         id="outlined-basic"
                         label=""
+                        placeholder="퀴즈클럽 타이틀로 검색해주세요."
                         variant="outlined"
                         InputProps={{
                           style: { height: '43px' },

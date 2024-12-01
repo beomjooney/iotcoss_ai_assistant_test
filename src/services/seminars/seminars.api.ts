@@ -9,7 +9,13 @@ export const clubAboutDetailInfo = async id => {
 export const clubMyList = async params => {
   const endpoint = params.subtitle === undefined || params.subtitle ? '/api/v1/my/clubs' : '/api/manager/v1/clubs';
   const { data, headers } = await axiosGeneralAPI().get(endpoint, {
-    params: { page: params.page, size: params.size, clubType: params.clubType, clubViewFilter: params.clubViewFilter },
+    params: {
+      page: params.page,
+      size: params.size,
+      clubType: params.clubType,
+      clubViewFilter: params.clubViewFilter,
+      keyword: params.keyword,
+    },
   });
   // const { data, headers } = await axiosGeneralAPI().get('/seminars', { params });
   const totalPage = Number(headers['page-count']);

@@ -865,6 +865,7 @@ export function QuizMakeTemplate() {
                 id="outlined-basic"
                 label=""
                 variant="outlined"
+                placeholder="퀴즈 타이틀로 검색해주세요."
                 InputProps={{
                   style: { height: '43px' },
                   startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
