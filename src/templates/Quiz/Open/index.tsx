@@ -227,7 +227,7 @@ export function QuizOpenTemplate() {
       // setScheduleData(quizList);
       setScheduleData(quizListData);
       setAgreements(clubForm.useCurrentProfileImage);
-      setSelectedOption(data?.isRepresentativeQuizPublic.toString());
+      setSelectedOption(data?.isRepresentativeQuizPublic?.toString());
 
       // Filter out items with quizSequence not null and greater than or equal to zero, then extract quizSequence values
       const quizSequenceNumbers = quizList

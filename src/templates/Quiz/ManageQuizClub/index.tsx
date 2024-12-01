@@ -536,7 +536,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     setScheduleData(transformedQuizData);
     setScheduleOriginalData(quizListData);
 
-    setSelectedOption(data?.isRepresentativeQuizPublic.toString());
+    setSelectedOption(data?.isRepresentativeQuizPublic?.toString());
 
     // Filter out items with quizSequence not null and extract quizSequence values
     const quizSequenceNumbers = quizList

@@ -131,7 +131,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
                 jobLevelName={clubAbout?.jobLevels ?? ''}
                 selectedJobName={clubAbout?.jobs?.[0]?.name ?? ''}
                 selectedQuizzes={clubAbout?.clubQuizzes}
-                selectedOption={clubAbout?.isRepresentativeQuizPublic.toString()}
+                selectedOption={clubAbout?.isRepresentativeQuizPublic?.toString()}
               />
             </div>
           )
