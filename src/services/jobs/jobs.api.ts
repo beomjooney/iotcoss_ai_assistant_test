@@ -36,7 +36,7 @@ export const getGetSchedule = async params => {
 // 내 퀴즈 조회
 export const getGetQuizSchedule = async params => {
   const { data } = await axiosGeneralAPI().post(`/api/v2/quiz-clubs/${params.clubId}/schedules`, {
-    studyCycle: [params.studyCycle], // Ensure studyCycle is sent as an array
+    studyCycle: params.studyCycle, // Ensure studyCycle is sent as an array
     studyCount: params.studyCount,
     startDate: params.startDate,
     endDate: params.endDate,

@@ -289,9 +289,10 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     }
   };
 
-  const handleStudyCycle = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
-    setStudyCycleNum(newFormats);
+  const handleStudyCycle = (event, newStudyCycleNum) => {
+    setStudyCycleNum(newStudyCycleNum);
   };
+
   const handleChanges = (event: SelectChangeEvent<typeof personName>) => {
     const {
       target: { value },
@@ -335,7 +336,6 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     // const lastPublishDate = scheduleData[scheduleData.length - 1].publishDate;
     console.log(studyCycleNum);
     console.log(num);
-    // console.log(lastPublishDate);
 
     const quizData = scheduleQuizData.map(item => {
       return {
@@ -348,7 +348,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
 
     const transformedData = {
       clubId: ids,
-      studyCycle: studyCycleNum.join(','),
+      studyCycle: studyCycleNum,
       studyCount: num,
       startDate: startDay.format('YYYY-MM-DD'),
       endDate: endDay.format('YYYY-MM-DD'),
