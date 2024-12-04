@@ -158,7 +158,7 @@ export function QuizMyLectureClubsTemplate() {
                         id="outlined-basic"
                         label=""
                         variant="outlined"
-                        placeholder="강의클럽 타이틀로 검색해주세요."
+                        placeholder="강의클럽명 또는 교수이름을 입력하세요."
                         InputProps={{
                           style: { height: '43px' },
                           startAdornment: <SearchIcon sx={{ color: 'gray' }} />,

@@ -160,7 +160,7 @@ export function QuizTemplate() {
                   fullWidth
                   id="outlined-basic"
                   label=""
-                  placeholder="클럽명, 교수님명으로 클럽검색하기"
+                  placeholder=" 클럽명 또는 교수이름을 입력하세요."
                   variant="outlined"
                   onKeyPress={e => {
                     if (e.key === 'Enter') {
