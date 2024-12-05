@@ -21,7 +21,6 @@ import ToggleButton from '@mui/material/ToggleButton';
 import { useMyQuiz, useQuizList, useGetSchedule, useGetTemp } from 'src/services/jobs/jobs.queries';
 import Checkbox from '@mui/material/Checkbox';
 import { useClubQuizSave, useQuizSave, useClubTempSave } from 'src/services/quiz/quiz.mutations';
-import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import { useUploadImage } from 'src/services/image/image.mutations';
 import { makeStyles } from '@mui/styles';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
@@ -34,7 +33,6 @@ import Divider from '@mui/material/Divider';
 import QuizBreakerInfo from 'src/stories/components/QuizBreakerInfo';
 import QuizBreakerInfoCheck from 'src/stories/components/QuizBreakerInfoCheck';
 import QuizClubDetailInfo from 'src/stories/components/QuizClubDetailInfo';
-import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
 /** drag list */
 import ReactDragList from 'react-drag-list';
 import { useStore } from 'src/store';
@@ -50,7 +48,7 @@ import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 
 //group
-import { dayGroup, privateGroup, levelGroup, openGroup, images, scheduleDataDummy, imageBanner } from './group';
+import { dayGroup, feedbackGroup, openGroup, images, scheduleDataDummy, imageBanner } from './group';
 import { v4 as uuidv4 } from 'uuid';
 export const generateUUID = () => {
   return uuidv4();
@@ -228,7 +226,7 @@ export function QuizOpenTemplate() {
       setScheduleData(quizListData);
       setAgreements(clubForm.useCurrentProfileImage);
       setSelectedOption(data?.isRepresentativeQuizPublic?.toString());
-
+      setFeedbackType(clubForm.feedbackType);
       // Filter out items with quizSequence not null and greater than or equal to zero, then extract quizSequence values
       const quizSequenceNumbers = quizList
         .filter(item => item.quizSequence !== null && item.quizSequence >= 0)
@@ -479,7 +477,7 @@ export function QuizOpenTemplate() {
   const [memberIntroductionText, setMemberIntroductionText] = useState<string>('');
   const [careerText, setCareerText] = useState<string>('');
 
-  const handleQuizType = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
+  const handleQuizType = (event: React.MouseEvent<HTMLElement>, newFormats: string) => {
     if (newFormats) {
       setScheduleData([]);
       setNum(0);
@@ -487,6 +485,9 @@ export function QuizOpenTemplate() {
       setStudyCycleNum([]);
       setQuizType(newFormats);
     }
+  };
+  const handleFeedbackType = (event: React.MouseEvent<HTMLElement>, newFormats: string) => {
+    setFeedbackType(newFormats);
   };
 
   const handleStudyCycle = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
@@ -637,6 +638,7 @@ export function QuizOpenTemplate() {
   const [levelNames, setLevelNames] = useState([]);
 
   const [quizType, setQuizType] = useState('0100');
+  const [feedbackType, setFeedbackType] = useState('0100');
   const [recommendLevelsPopUp, setRecommendLevelsPopUp] = useState([]);
   const [clubName, setClubName] = useState<string>('');
   const [num, setNum] = useState(0);
@@ -810,6 +812,7 @@ export function QuizOpenTemplate() {
     const formData = new FormData();
     formData.append('clubId', 'quiz_club_' + generateUUID());
     formData.append('form.clubName', params.clubForm.clubName);
+    formData.append('form.feedbackType', params.clubForm.feedbackType);
     formData.append('form.jobGroups', params.clubForm.jobGroups.toString());
     formData.append('form.jobs', params.clubForm.jobs.toString());
     formData.append('form.jobLevels', params.clubForm.jobLevels.toString());
@@ -907,6 +910,7 @@ export function QuizOpenTemplate() {
       clubRecruitType: '0100',
       useCurrentProfileImage: agreements,
       instructorProfileImageUrl: previewProfile,
+      feedbackType: feedbackType,
     };
 
     //scheduleData null insert
@@ -1056,16 +1060,6 @@ export function QuizOpenTemplate() {
       return false;
     }
 
-    // if (!selectedJob || selectedJob.length === 0) {
-    //   alert('최소 하나의 학과를 선택해주세요');
-    //   return false;
-    // }
-
-    // if (!recommendLevels || recommendLevels.length === 0) {
-    //   alert('최소 하나의 학년을 선택해주세요');
-    //   return false;
-    // }
-
     if (quizType === '0100') {
       if (studyCycleNum.length === 0) {
         alert('퀴즈 주기를 선택해주세요');
@@ -1127,6 +1121,7 @@ export function QuizOpenTemplate() {
       clubTemplatePublishType: '0001',
       clubRecruitType: '0100',
       useCurrentProfileImage: agreements,
+      feedbackType: feedbackType,
       //대표퀴즈 사용 여부
       representativeQuizUse: selectedOption === 'true' ? true : false,
     };
@@ -1138,6 +1133,7 @@ export function QuizOpenTemplate() {
     formData.append('form.jobs', clubFormParams.jobs.toString());
     formData.append('form.jobLevels', clubFormParams.jobLevels.toString());
     formData.append('form.isPublic', clubFormParams.isPublic.toString());
+    formData.append('form.feedbackType', clubFormParams.feedbackType);
     if (clubFormParams.participationCode !== '') {
       formData.append('form.participationCode', clubFormParams.participationCode);
     }
@@ -1706,49 +1702,95 @@ export function QuizOpenTemplate() {
                     </div>
                   </div>
                   <div className="tw-pb-5">
-                    <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
-                      퀴즈 생성(오픈) 주기 <span className="tw-text-red-500">*</span>
-                    </div>
+                    <div className="tw-flex tw-gap-4">
+                      <div className="tw-flex-1 ">
+                        <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
+                          퀴즈 생성(오픈) 주기 <span className="tw-text-red-500">*</span>
+                        </div>
 
-                    <ToggleButtonGroup value={quizType} exclusive onChange={handleQuizType} aria-label="text alignment">
-                      {openGroup?.map((item, index) => (
-                        <ToggleButton
-                          classes={{ selected: classes.selected }}
-                          key={`open-${index}`}
-                          value={item.name}
-                          aria-label="fff"
-                          className="tw-ring-1 tw-ring-slate-900/10"
-                          style={{
-                            borderRadius: '5px',
-                            borderLeft: '0px',
-                            margin: '5px',
-                            height: '35px',
-                            border: '0px',
-                          }}
-                          sx={{
-                            '&.Mui-selected': {
-                              backgroundColor: '#000',
-                              color: '#fff',
-                            },
-                          }}
+                        <ToggleButtonGroup
+                          value={quizType}
+                          exclusive
+                          onChange={handleQuizType}
+                          aria-label="text alignment"
                         >
-                          <BootstrapTooltip
-                            title={
-                              item.name === '0100'
-                                ? ''
-                                : item.name === '0200'
-                                ? '클럽 관리자가 퀴즈 오픈을 수동으로 설정할 수 있어요!'
-                                : item.name === '0300'
-                                ? '학습자가 이전 퀴즈를 모두 학습/답변하였을 경우에 다음 퀴즈가 자동으로 오픈이 돼요!'
-                                : ''
-                            }
-                            placement="top"
-                          >
-                            {item?.description}
-                          </BootstrapTooltip>
-                        </ToggleButton>
-                      ))}
-                    </ToggleButtonGroup>
+                          {openGroup?.map((item, index) => (
+                            <ToggleButton
+                              classes={{ selected: classes.selected }}
+                              key={`open-${index}`}
+                              value={item.name}
+                              aria-label="fff"
+                              className="tw-ring-1 tw-ring-slate-900/10"
+                              style={{
+                                borderRadius: '5px',
+                                borderLeft: '0px',
+                                margin: '5px',
+                                height: '35px',
+                                border: '0px',
+                              }}
+                              sx={{
+                                '&.Mui-selected': {
+                                  backgroundColor: '#000',
+                                  color: '#fff',
+                                },
+                              }}
+                            >
+                              <BootstrapTooltip
+                                title={
+                                  item.name === '0100'
+                                    ? ''
+                                    : item.name === '0200'
+                                    ? '클럽 관리자가 퀴즈 오픈을 수동으로 설정할 수 있어요!'
+                                    : item.name === '0300'
+                                    ? '학습자가 이전 퀴즈를 모두 학습/답변하였을 경우에 다음 퀴즈가 자동으로 오픈이 돼요!'
+                                    : ''
+                                }
+                                placement="top"
+                              >
+                                {item?.description}
+                              </BootstrapTooltip>
+                            </ToggleButton>
+                          ))}
+                        </ToggleButtonGroup>
+                      </div>
+                      <div className="tw-flex-1 ">
+                        <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
+                          퀴즈 생성(오픈) 주기 <span className="tw-text-red-500">*</span>
+                        </div>
+
+                        <ToggleButtonGroup
+                          value={feedbackType}
+                          exclusive
+                          onChange={handleFeedbackType}
+                          aria-label="text alignment"
+                        >
+                          {feedbackGroup?.map((item, index) => (
+                            <ToggleButton
+                              classes={{ selected: classes.selected }}
+                              key={`open-${index}`}
+                              value={item.name}
+                              aria-label="fff"
+                              className="tw-ring-1 tw-ring-slate-900/10"
+                              style={{
+                                borderRadius: '5px',
+                                borderLeft: '0px',
+                                margin: '5px',
+                                height: '35px',
+                                border: '0px',
+                              }}
+                              sx={{
+                                '&.Mui-selected': {
+                                  backgroundColor: '#000',
+                                  color: '#fff',
+                                },
+                              }}
+                            >
+                              {item?.description}
+                            </ToggleButton>
+                          ))}
+                        </ToggleButtonGroup>
+                      </div>
+                    </div>
                   </div>
                   {/* Conditionally render a div based on recommendType and recommendLevels */}
                   {quizType == '0100' && (
