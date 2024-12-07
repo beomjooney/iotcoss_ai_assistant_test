@@ -24,8 +24,8 @@ export const crewAcceptAllPost = async params => {
 };
 
 export const crewRejectAllPost = async params => {
-  const { data } = await axiosGeneralAPI().put(`/api/v1/clubs/${params.club}/member-requests/approve`, {
-    isAccept: false,
+  const { data } = await axiosGeneralAPI().put(`/api/v1/clubs/${params.club}/member-requests/reject`, {
+    isAccept: true,
   });
   return data;
 };
