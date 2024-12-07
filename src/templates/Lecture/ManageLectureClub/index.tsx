@@ -537,6 +537,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
   useEffect(() => {
     if (clubSuccess || clubSuccessAI || clubSuccessCur) {
       setIsProcessing(false);
+      refetchClubAbout();
     }
   }, [clubSuccess, clubSuccessAI, clubSuccessCur]);
 
