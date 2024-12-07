@@ -536,6 +536,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     const jobsName = clubForm.jobs.map(item => item.name);
     console.log(jobsName);
     setPersonName(jobsName || []);
+    setAnswerExposureType(clubForm.answerExposureType);
     setButtonFlag(true);
 
     const transformQuizData = quizData => {
