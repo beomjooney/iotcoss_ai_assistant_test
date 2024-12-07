@@ -292,13 +292,15 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
             ) : (
               <>
                 <Typography sx={{ fontSize: 14, marginTop: 3, color: 'black', fontWeight: '600' }}>
-                  {selectedLoginType === '0002' ? '학번' : '교번'}
+                  {selectedLoginType === '0100' ? '학번' : selectedLoginType === '0300' ? '이메일' : '교번'}
                 </Typography>
                 <TextField
                   required
                   id="username"
                   name="username"
-                  placeholder={`${selectedLoginType === '0002' ? '학번' : '교번'}을 입력해주세요.`}
+                  placeholder={`${
+                    selectedLoginType === '0100' ? '학번' : selectedLoginType === '0300' ? '이메일' : '교번'
+                  }을 입력해주세요.`}
                   variant="outlined"
                   type="search"
                   fullWidth
