@@ -402,14 +402,12 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
             {/* <Divider className={cx('sign-color')}>또는 이메일 로그인</Divider> */}
           </div>
           <form onSubmit={handleSubmit(onSubmit0002, onError)}>
-            <Typography sx={{ fontSize: 14, marginTop: 3, color: 'black', fontWeight: '600' }}>
-              학번 또는 이메일
-            </Typography>
+            <Typography sx={{ fontSize: 14, marginTop: 3, color: 'black', fontWeight: '600' }}>이메일</Typography>
             <TextField
               required
               id="username"
               name="username"
-              placeholder="학번 또는 이메일을 입력해주세요."
+              placeholder="이메일을 입력해주세요."
               variant="outlined"
               type="search"
               fullWidth
