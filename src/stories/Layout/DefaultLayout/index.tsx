@@ -34,7 +34,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
         tenantName: data?.tenantId,
         tenantUri: data?.tenantUri,
         loginType: data?.loginTypes,
-        // tenantName: data?.tenantName,
+        tenantLoginMemberTypes: data?.tenantLoginMemberTypes,
         redirections: data?.homeUrl,
         registrationAuthenticationType: data?.registrationAuthenticationType,
         menu: {

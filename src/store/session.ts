@@ -16,6 +16,7 @@ export interface Session {
   userAgent?: string;
   logged: boolean;
   roles?: any[];
+  tenantLoginMemberTypes?: any[];
 }
 
 export interface SessionStore {
@@ -27,6 +28,7 @@ export interface SessionStore {
   tenantName?: string;
   tenantUri?: string;
   loginType?: any[];
+  tenantLoginMemberTypes?: any[];
   beforeOnePick?: string;
   job?: string;
   logged?: boolean;
@@ -63,6 +65,7 @@ const useSessionStore = create<any>(
       tenantName: undefined,
       tenantUri: undefined,
       loginType: undefined,
+      tenantLoginMemberTypes: undefined,
       menu: {},
       redirections: {},
       logged: false,

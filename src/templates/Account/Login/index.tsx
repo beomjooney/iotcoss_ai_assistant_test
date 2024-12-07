@@ -34,7 +34,7 @@ interface LoginTemplateProps {
 }
 
 export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps) {
-  const { update, tenantName, tenantUri, loginType } = useSessionStore.getState();
+  const { update, tenantName, tenantUri, loginType, tenantLoginMemberTypes } = useSessionStore.getState();
   const router = useRouter();
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
@@ -216,9 +216,16 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
             value={selectedLoginType}
             aria-label="Default select example"
           >
-            <option value="0100">학생</option>
+            {/* <option value="0100">학생</option>
             <option value="0200">교수</option>
-            <option value="0300">외부사용자</option>
+            <option value="0300">외부사용자</option> */}
+            {tenantLoginMemberTypes?.map((item, index) => {
+              return (
+                <option key={index} value={item?.code}>
+                  {item?.name}
+                </option>
+              );
+            })}
           </select>
           <form onSubmit={handleSubmit(onSubmit0001, onError)}>
             {selectedLoginType === '0001' ? (
