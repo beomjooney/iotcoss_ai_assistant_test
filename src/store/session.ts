@@ -10,6 +10,7 @@ export interface Session {
   beforeOnePick?: string;
   job?: string;
   tenantName?: string;
+  loginType?: any[];
   tenantUri?: string;
   memberName?: string;
   userAgent?: string;
@@ -25,6 +26,7 @@ export interface SessionStore {
   memberName?: string;
   tenantName?: string;
   tenantUri?: string;
+  loginType?: any[];
   beforeOnePick?: string;
   job?: string;
   logged?: boolean;
@@ -60,6 +62,7 @@ const useSessionStore = create<any>(
       beforeOnePick: undefined,
       tenantName: undefined,
       tenantUri: undefined,
+      loginType: undefined,
       menu: {},
       redirections: {},
       logged: false,

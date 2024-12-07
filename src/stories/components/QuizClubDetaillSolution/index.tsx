@@ -1,5 +1,5 @@
 // QuizClubDetailInfo.jsx
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Avatar from '@mui/material/Avatar';
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
@@ -13,6 +13,9 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import StarIcon from '@mui/icons-material/Star';
+import MentorsModal from 'src/stories/components/MentorsModal';
+import useDidMountEffect from 'src/hooks/useDidMountEffect';
+import { useStore } from 'src/store';
 
 import { getButtonText } from 'src/utils/clubStatus';
 
@@ -26,8 +29,9 @@ import {
 } from 'src/services/community/community.mutations';
 import router from 'next/router';
 
-import { CommunityCard } from 'src/stories/components';
-import { Button, Typography, Profile, Modal, ArticleCard } from 'src/stories/components';
+import { useQuizGetAIMyAnswer } from 'src/services/quiz/quiz.queries';
+import { useAIQuizMyAnswerSavePut } from 'src/services/quiz/quiz.mutations';
+import CircularProgress from '@mui/material/CircularProgress';
 const cx = classNames.bind(styles);
 
 //comment
@@ -41,23 +45,106 @@ const QuizClubDetaillSolution = ({
   page,
   totalPage,
   handlePageChange,
+  refetchParticipant,
 }) => {
   const borderStyle = border ? 'border border-[#e9ecf2] tw-mt-14' : '';
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const { user } = useStore();
   let [isLiked, setIsLiked] = useState(contents?.club?.isFavorite);
   const { mutate: onSaveLike, isSuccess } = useSaveLike();
   const { mutate: onDeleteLike } = useDeleteLike();
-
+  const [isResultOpen, setIsResultOpen] = useState<boolean>(false);
+  const [clubQuizThreads, setClubQuizThreads] = useState<any>([]);
+  const [isHideAI, setIsHideAI] = useState(true);
+  const [isAIData, setIsAIData] = useState({});
+  const [isLoadingAI, setIsLoadingAI] = useState(false);
+  const [quizSequence, setQuizSequence] = useState<number>(0);
+  const [quizParams, setQuizParams] = useState<any>({});
+  const [quizParamsAll, setQuizParamsAll] = useState<any>({});
+  const [grade, setGrade] = useState('');
+  const [fileList, setFileList] = useState([]);
+  const [inputList, setInputList] = useState([]);
+  const [clubQuizGetThreads, setClubQuizGetThreads] = useState<any>('');
   const [expandedItems, setExpandedItems] = useState(() => Array(quizList?.length || 0).fill(false));
+  const textInput = useRef(null);
   const [expandedQuizzData, setExpandedQuizzData] = useState(
     () => quizList?.map(item => Array(item?.makeupQuizzes?.length || 0).fill(false)) || [],
   );
+
+  const { isFetched: isQuizGetanswer, refetch: refetchQuizAnswer } = useQuizGetAIMyAnswer(quizParams, data => {
+    console.log('data', data);
+    setClubQuizThreads(data);
+    data.clubQuizThreads.map(item => {
+      // Check if the threadType is '0004' and return null to hide the div
+      if (item?.threadType === '0004') {
+        setIsHideAI(false);
+        setIsAIData(item);
+        console.log('false');
+      }
+    });
+  });
+
+  const handleAddInput = () => {
+    // Ensure inputList is always an array
+    setInputList(prevInputList => [...(prevInputList || []), { id: Date.now(), value: '', url: '' }]);
+  };
 
   const toggleExpand = index => {
     setExpandedItems(prev => {
       const newExpandedItems = [...prev];
       newExpandedItems[index] = !newExpandedItems[index];
       return newExpandedItems;
+    });
+  };
+
+  const handleClick = (memberUUID: string, quizSequence: number, answerStatus: boolean) => {
+    // if (answerStatus !== '0003') {
+    //   alert('AI채점 / 교수채점을 한뒤에\n상세보기를 눌러주세요.');
+    //   return;
+    // }
+    console.log(memberUUID, quizSequence);
+    setIsModalOpen(true);
+    // setClubQuizGetThreads('');
+    setGrade('');
+    setInputList([]);
+    setFileList([]);
+    setIsHideAI(answerStatus);
+    setQuizSequence(quizSequence);
+
+    console.log(clubAbout?.clubSequence);
+    setQuizParams({
+      club: clubAbout?.clubSequence,
+      quiz: quizSequence,
+    });
+  };
+
+  const {
+    mutate: onAIQuizAnswerSavePut,
+    isSuccess: answerSuccessSavePut,
+    isError: answerErrorSavePut,
+    data: aiQuizAnswerDataSavePut,
+  } = useAIQuizMyAnswerSavePut();
+
+  useEffect(() => {
+    if (answerSuccessSavePut) {
+      refetchQuizAnswer();
+      setIsLoadingAI(false);
+    }
+  }, [answerSuccessSavePut, answerErrorSavePut]);
+
+  useEffect(() => {
+    if (aiQuizAnswerDataSavePut) {
+      console.log('aiQuizAnswerDataSavePut', aiQuizAnswerDataSavePut);
+    }
+  }, [aiQuizAnswerDataSavePut]);
+
+  const handlerSave = () => {
+    // Uncomment and replace with actual API call
+    setIsLoadingAI(true);
+    console.log('clubAbout?.clubSequence, quizSequence', clubAbout?.clubSequence, quizSequence);
+    onAIQuizAnswerSavePut({
+      club: clubAbout?.clubSequence,
+      quiz: quizSequence,
     });
   };
 
@@ -90,6 +177,10 @@ const QuizClubDetaillSolution = ({
       onSaveLike(postNo);
     }
   };
+
+  useDidMountEffect(() => {
+    refetchQuizAnswer();
+  }, [quizParams]);
 
   return (
     <div className={`tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white ${borderStyle}`}>
@@ -209,7 +300,7 @@ const QuizClubDetaillSolution = ({
           <div className="tw-overflow-auto tw-rounded-lg">
             <div className="tw-flex tw-flex-row">
               {/* 새로운 div 추가 */}
-              <div className="tw-flex justify-center ">
+              <div className="tw-flex justify-center tw-gap-4">
                 <div className="tw-text-base tw-font-medium tw-text-[#31343d] tw-w-24 tw-text-center">
                   학생
                   <div className="tw-py-2">
@@ -220,8 +311,11 @@ const QuizClubDetaillSolution = ({
                     ></Avatar>
                     <div className="tw-text-sm tw-py-2"> {contents?.progress?.nickname}</div>
                   </div>
+                  <div className="tw-text-sm tw-font-medium tw-text-[#31343d] tw-w-24 tw-text-center  tw-mt-[38px]">
+                    AI 채점/피드백
+                  </div>
                 </div>
-                <div className="tw-text-base tw-font-medium tw-text-[#31343d] tw-w-24 tw-text-center">
+                <div className="tw-text-base tw-font-medium tw-text-[#31343d] tw-w-24 tw-text-center tw-w-[130px]">
                   학습현황
                   <div className="tw-py-5">
                     <div className="tw-flex tw-items-center">
@@ -239,87 +333,119 @@ const QuizClubDetaillSolution = ({
                       <div className="tw-ml-2 tw-text-base tw-font-bold">{contents?.progress?.currentRound}회</div>
                     </div>
                   </div>
+                  <div className="tw-text-sm tw-font-medium tw-text-[#31343d] tw-w-24 tw-text-center tw-w-[130px] tw-mt-[58px]">
+                    합산점수 <span className="tw-font-bold">{contents?.progress?.totalScore?.score}</span>/
+                    <span className="tw-font-bold tw-text-gray-400">{contents?.progress?.totalScore?.total}</span>
+                  </div>
                 </div>
               </div>
 
-              <div className="tw-ml-10 tw-grid tw-grid-cols-9 tw-gap-4" style={{ width: '100%' }}>
-                {contents?.progress?.studyStatuses.map((session, idx) => (
-                  <div key={idx} className="tw-items-center tw-flex-shrink-0 border tw-rounded-lg">
-                    <div className=" border-bottom tw-pb-3 tw-px-0 tw-pt-0 tw-bg-[#f6f7fb] tw-rounded-t-lg">
-                      <p className="tw-text-base tw-font-medium tw-text-center tw-text-[#31343d] tw-pt-1">
-                        {session?.order}회
-                      </p>
-                      <p className="tw-text-xs tw-font-medium tw-text-center tw-text-[#9ca5b2] tw-pt-1">
-                        {session?.publishDate?.split('-').slice(1).join('-') || ''}
-                      </p>
-                    </div>
-                    <div className="tw-pt-3 tw-pb-2">
-                      {
-                        <div className="tw-flex tw-justify-center">
-                          {/* <circle cx={10} cy={10} r={10} fill="#31343D" /> */}
-                          {session?.status === '0003' ? (
-                            <svg
-                              width={20}
-                              height={20}
-                              viewBox="0 0 20 20"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="tw-w-5 tw-h-5"
-                              preserveAspectRatio="none"
-                            >
-                              <circle cx={10} cy={10} r={10} fill="#31343D" />
-                              <path d="M6 9L9.60494 13L14 7" stroke="white" strokeWidth="1.5" />
-                            </svg>
-                          ) : session?.status === '0002' ? (
-                            <div className="tw-w-5 tw-h-5 tw-relative ">
-                              <svg
-                                width={20}
-                                height={20}
-                                viewBox="0 0 20 20"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="absolute left-[-1px] top-[-1px]"
-                                preserveAspectRatio="xMidYMid meet"
-                              >
-                                <circle cx={10} cy={10} r="9.5" fill="white" stroke="#E11837" />
-                              </svg>
-                              <p className="tw-absolute tw-left-[7px] tw-top-[3.5px] tw-text-xs tw-font-medium tw-text-center tw-text-[#e11837]">
-                                ?
+              <div className="tw-overflow-auto tw-rounded-lg  tw-ml-5">
+                <div className="tw-flex tw-flex-row">
+                  {/* 새로운 div 추가 */}
+                  <div className="overflow-auto overflow-auto-hover" style={{ width: '100%' }}>
+                    <div className="tw-grid tw-grid-flow-col tw-gap-4 " style={{ width: 'max-content' }}>
+                      {contents?.progress?.studyStatuses.map((session, idx) => (
+                        <div key={idx}>
+                          <div className="tw-items-center tw-flex-shrink-0 border tw-rounded-lg tw-w-[80px]">
+                            <div className=" border-bottom tw-pb-3 tw-px-0 tw-pt-0 tw-bg-[#f6f7fb] tw-rounded-t-lg">
+                              <p className="tw-text-base tw-font-medium tw-text-center tw-text-[#31343d] tw-pt-1">
+                                {session?.order}회
+                              </p>
+                              <p className="tw-text-xs tw-font-medium tw-text-center tw-text-[#9ca5b2] tw-pt-1">
+                                {session?.publishDate?.split('-').slice(1).join('-') || ''}
                               </p>
                             </div>
-                          ) : session?.status === '0001' ? (
-                            <div className="tw-w-5 tw-h-5">
-                              <svg
-                                width={20}
-                                height={20}
-                                viewBox="0 0 20 20"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                                preserveAspectRatio="xMidYMid meet"
-                              >
-                                <circle cx={10} cy={10} r="9.5" fill="#F6F7FB" stroke="#E0E4EB" />
-                              </svg>
-                              <p className="tw-text-xs tw-font-medium tw-text-center tw-text-white">-</p>
+                            <div className="tw-pt-3 tw-pb-2">
+                              {
+                                <div className="tw-flex tw-justify-center">
+                                  {/* <circle cx={10} cy={10} r={10} fill="#31343D" /> */}
+                                  {session?.status === '0003' ? (
+                                    <svg
+                                      width={20}
+                                      height={20}
+                                      viewBox="0 0 20 20"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      className="tw-w-5 tw-h-5"
+                                      preserveAspectRatio="none"
+                                    >
+                                      <circle cx={10} cy={10} r={10} fill="#31343D" />
+                                      <path d="M6 9L9.60494 13L14 7" stroke="white" strokeWidth="1.5" />
+                                    </svg>
+                                  ) : session?.status === '0002' ? (
+                                    <div className="tw-w-5 tw-h-5 tw-relative ">
+                                      <svg
+                                        width={20}
+                                        height={20}
+                                        viewBox="0 0 20 20"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="absolute left-[-1px] top-[-1px]"
+                                        preserveAspectRatio="xMidYMid meet"
+                                      >
+                                        <circle cx={10} cy={10} r="9.5" fill="white" stroke="#E11837" />
+                                      </svg>
+                                      <p className="tw-absolute tw-left-[7px] tw-top-[3.5px] tw-text-xs tw-font-medium tw-text-center tw-text-[#e11837]">
+                                        ?
+                                      </p>
+                                    </div>
+                                  ) : session?.status === '0001' ? (
+                                    <div className="tw-w-5 tw-h-5">
+                                      <svg
+                                        width={20}
+                                        height={20}
+                                        viewBox="0 0 20 20"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        preserveAspectRatio="xMidYMid meet"
+                                      >
+                                        <circle cx={10} cy={10} r="9.5" fill="#F6F7FB" stroke="#E0E4EB" />
+                                      </svg>
+                                      <p className="tw-text-xs tw-font-medium tw-text-center tw-text-white">-</p>
+                                    </div>
+                                  ) : null}
+                                </div>
+                              }
                             </div>
-                          ) : null}
+                            <p
+                              className={`tw-text-xs tw-font-medium tw-text-center tw-pb-2 ${
+                                session?.answerStatus === '0002' ? 'tw-text-[#e11837]' : 'tw-text-[#9ca5b2]'
+                              }`}
+                            >
+                              {session?.completedDate
+                                ? session?.completedDate
+                                : session?.relativeDaysToPublishDate != null
+                                ? session.relativeDaysToPublishDate > 0
+                                  ? 'D+' + session.relativeDaysToPublishDate
+                                  : 'D' + session.relativeDaysToPublishDate
+                                : ''}
+                            </p>
+                          </div>
+
+                          {session?.status === '0003' && (
+                            <div className="text-xs font-medium text-center text-[#9ca5b2] py-2">
+                              {session?.grade ? (
+                                <div className="tw-text-xs tw-font-medium tw-text-center tw-text-[#9ca5b2] tw-py-2">
+                                  <div className="border-top border-bottom tw-py-3">{session?.grade}</div>
+                                </div>
+                              ) : clubAbout?.feedbackType === '0200' ? (
+                                <div className="tw-text-xs tw-font-medium tw-text-center tw-text-[#9ca5b2] tw-py-2 tw-mt-1">
+                                  <button
+                                    onClick={() => handleClick('sfasd', session?.quizSequence, true)}
+                                    className="tw-py-2.5 tw-px-1 tw-bg-blue-500 tw-text-white tw-rounded tw-w-full"
+                                  >
+                                    채점하기
+                                  </button>
+                                </div>
+                              ) : null}
+                            </div>
+                          )}
                         </div>
-                      }
+                      ))}
                     </div>
-                    <p
-                      className={`tw-text-xs tw-font-medium tw-text-center tw-pb-2 ${
-                        session?.answerStatus === '0002' ? 'tw-text-[#e11837]' : 'tw-text-[#9ca5b2]'
-                      }`}
-                    >
-                      {session?.completedDate
-                        ? session?.completedDate
-                        : session?.relativeDaysToPublishDate != null
-                        ? session.relativeDaysToPublishDate > 0
-                          ? 'D+' + session.relativeDaysToPublishDate
-                          : 'D' + session.relativeDaysToPublishDate
-                        : ''}
-                    </p>
                   </div>
-                ))}
+                </div>
               </div>
             </div>
           </div>
@@ -773,10 +899,14 @@ const QuizClubDetaillSolution = ({
                                     <div className="tw-flex-auto">
                                       <div className="tw-flex tw-justify-end tw-items-center tw-relative tw-gap-2 tw-px-2 tw-py-1 tw-rounded">
                                         <p
-                                          onClick={() => toggleExpand(index)}
+                                          onClick={() => {
+                                            handleClick('sfasd', item?.quizSequence, false);
+                                            // toggleExpand(index)
+                                          }}
                                           className="tw-cursor-pointer tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-bold tw-text-right tw-text-[#9ca5b2]"
                                         >
-                                          {expandedItems[index] ? '접기' : '자세히보기'}
+                                          {/* {expandedItems[index] ? '접기' : '자세히보기'} */}
+                                          자세히보기
                                         </p>
                                         <svg
                                           width={7}
@@ -864,34 +994,194 @@ const QuizClubDetaillSolution = ({
           </div>
         </div>
       </div>
-      <Modal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)} title="퀴즈풀러가기" maxWidth="900px">
-        <div className={cx('seminar-check-popup')}>
-          <div className={cx('mb-5')}>
-            <span className={cx('text-bold', 'tw-text-xl', 'tw-font-bold')}>가입 신청이 완료되었습니다!</span>
+      <MentorsModal
+        isContentModalClick={false}
+        title={'채점 및 피드백 상세보기'}
+        isOpen={isModalOpen}
+        onAfterClose={() => {
+          refetchParticipant();
+          setIsModalOpen(false);
+        }}
+      >
+        {isQuizGetanswer && (
+          <div className="tw-rounded-xl tw-pb-10">
+            <div className="tw-bg-[#F6F7FB] tw-flex tw-items-center tw-px-4 max-lg:tw-p-3 tw-py-4 tw-rounded-t-xl">
+              <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
+                <img
+                  className="tw-w-10 tw-h-10 border tw-rounded-full"
+                  src={clubQuizThreads?.member?.profileImageUrl}
+                />
+                <div className="tw-text-xs tw-text-left tw-text-black">{clubQuizThreads?.member?.nickname}</div>
+              </div>
+              <div className="tw-flex-auto tw-px-10 tw-w-10/12">
+                <div className="tw-font-bold tw-text-black">{clubQuizThreads?.question}</div>
+              </div>
+            </div>
+            {clubQuizThreads?.clubQuizThreads?.map((item, index) => {
+              const isLastItem = index === clubQuizThreads.clubQuizThreads.length - 1;
+              return (
+                <div
+                  key={index}
+                  className={`border-bottom border-left border-right border-secondary tw-bg-white tw-flex tw-p-3 ${
+                    isLastItem ? 'tw-rounded-bl-xl tw-rounded-br-xl' : ''
+                  }`}
+                >
+                  <div className="tw-w-1/12 tw-pt-3 tw-flex tw-flex-col tw-items-center">
+                    <svg
+                      width={24}
+                      height={25}
+                      viewBox="0 0 24 25"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-6 h-6 relative"
+                      preserveAspectRatio="none"
+                    >
+                      <path
+                        d="M6 6.32422V12.3242C6 13.1199 6.31607 13.8829 6.87868 14.4455C7.44129 15.0081 8.20435 15.3242 9 15.3242H19M19 15.3242L15 11.3242M19 15.3242L15 19.3242"
+                        stroke="#c0c3c9"
+                        strokeWidth={2}
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </div>
+                  <div className="tw-w-1.5/12  tw-py-2 tw-flex tw-flex-col">
+                    {item?.threadType === '0003' ? (
+                      <img className="tw-rounded-full tw-w-10 tw-h-10 border" src="/assets/images/main/chatbot2.png" />
+                    ) : (
+                      <img
+                        className="tw-rounded-full tw-w-10 tw-h-10 "
+                        src={item?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
+                      />
+                    )}
+                  </div>
+                  <div className="tw-flex-auto tw-w-9/12 tw-px-3">
+                    <div className="tw-py-2">
+                      <div className="tw-font-medium tw-text-[#9ca5b2] tw-text-sm">
+                        <span
+                          className={`tw-font-bold ${item?.threadType === '0003' ? 'tw-text-black' : 'tw-text-black'}`}
+                        >
+                          {item?.threadType === '0001' && '사전답변'}
+                          {item?.threadType === '0002' && '사후답변'}
+                          {item?.threadType === '0003' && 'AI멘토'}
+                          {item?.threadType === '0004' && '교수님 평가'}
+                        </span>
+                        <span className="tw-px-4">
+                          {item?.createdAt ? item.createdAt.replace('T', ' | ').split('.')[0] : ''}
+                        </span>
+
+                        {item?.threadType === '0003' && (
+                          <>
+                            <div className="tw-float-right tw-text-black">
+                              AI 채점 : <span className="tw-font-bold">{item?.gradingAi}</span>
+                            </div>
+                          </>
+                        )}
+
+                        {item?.threadType === '0004' && (
+                          <div className="tw-float-right">
+                            <div className="tw-float-right tw-text-black">
+                              교수 채점 : <span className="tw-font-bold">{item?.gradingFinal}</span>
+                            </div>
+                            <button
+                              onClick={() => handleUpdate()}
+                              className="tw-px-5 tw-underline tw-float-right tw-text-black"
+                            >
+                              수정하기
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div
+                      className={`tw-font-medium tw-text-[#9ca5b2] tw-text-sm ${
+                        item?.threadType === '0003' ? 'tw-text-black' : ''
+                      }`}
+                    >
+                      {item?.text}
+                    </div>
+
+                    <div className="tw-flex  tw-py-2">
+                      <div className="tw-text-left tw-text-sm">
+                        <ul className="">
+                          {item?.contents?.map((file, index) => {
+                            // Skip rendering if file.url is null or undefined
+                            if (!file.url) return null;
+
+                            return (
+                              <div
+                                onClick={() => {
+                                  let url = file.url;
+                                  // Ensure the URL is absolute
+                                  if (!/^https?:\/\//i.test(url)) {
+                                    // If the URL does not start with 'http://' or 'https://', prepend the base URL
+                                    url = new URL(url, window.location.origin).href;
+                                  }
+                                  console.log(url); // Log the corrected URL to the console
+                                  window.open(url, '_blank'); // Open the corrected URL in a new tab
+                                }}
+                                key={index}
+                                className="tw-cursor-pointer tw-text-[#fca380] tw-underline tw-p-1 tw-mb-1"
+                              >
+                                ㄴ지식컨텐츠 : {file.url}
+                              </div>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                    </div>
+
+                    <div className="tw-text-sm tw-flex tw-items-center tw-gap-2">
+                      {item?.files?.length > 0 && (
+                        <div className="tw-flex ">
+                          <div className="tw-text-left tw-text-sm">
+                            <ul className="">
+                              {item?.files?.map((file, index) => (
+                                <div
+                                  key={index}
+                                  onClick={() => {
+                                    onFileDownload(file.key, file.name);
+                                  }}
+                                  className="tw-underline tw-text-blue-500 tw-cursor-pointer tw-p-1  tw-mb-1"
+                                >
+                                  ㄴ첨부된파일 : {file.name}
+                                </div>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+            {isHideAI === true && (
+              // Check if the threadType is '0004' and return null to hide the div
+              <div>
+                <div className="tw-text-center tw-py-10">
+                  <button
+                    onClick={() => {
+                      setIsModalOpen(false);
+                      refetchParticipant();
+                    }}
+                    className="tw-bg-gray-200 tw-mr-3 tw-text-white tw-text-sm tw-text-black tw-py-3 tw-px-4 tw-w-40 tw-rounded"
+                  >
+                    취소
+                  </button>
+                  <button
+                    onClick={() => {
+                      handlerSave();
+                    }}
+                    className="tw-bg-blue-500 tw-text-white tw-text-sm tw-text-black tw-py-3 tw-px-4 tw-w-40 tw-rounded"
+                  >
+                    {isLoadingAI ? '채점 중입니다.' : 'AI 채점/피드백'}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
-          <div>가입 신청 후 클럽장 승인이 완료될때까지 기다려주세요!</div>
-          <div>승인 완료 후 MY페이지나 퀴즈클럽 페이지 상단에서 가입된 클럽을 확인하실 수 있습니다.</div>
-          <br></br>
-          <br></br>
-          <div className="tw-mt-5">
-            <Button className="tw-mr-5" color="red" label="확인" size="modal" onClick={() => setIsModalOpen(false)} />
-            {/* <Button
-              color="primary"
-              label="연락처 입력하러가기"
-              size="modal"
-              onClick={() =>
-                router.push(
-                  {
-                    pathname: '/profile',
-                    query: { isOpenModal: true, beforeQuizSequence: id },
-                  },
-                  '/profile',
-                )
-              }
-            /> */}
-          </div>
-        </div>
-      </Modal>
+        )}
+      </MentorsModal>
     </div>
   );
 };

@@ -543,6 +543,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
   useEffect(() => {
     if (isError || isErrorAI || isErrorCur) {
       setIsProcessing(false);
+      refetchClubAbout();
     }
   }, [isError, isErrorAI, isErrorCur]);
 
@@ -774,6 +775,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
   const handleSave = () => {
     setIsProcessing(true);
     handlerClubSaveTemp('save');
+    // refetchClubAbout();
   };
 
   const handleClubSave = () => {
@@ -1307,6 +1309,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
   const dragList = (item: any, index: any) => (
     <div key={item.order} className="simple-drag-row">
       <LectureBreakerInfo
+        isProcessing={isProcessing}
         handleStartDayChange={handleStartDayChange}
         handleEndDayChange={handleEndDayChange}
         handleUrlChange={handleUrlChange}

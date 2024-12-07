@@ -28,6 +28,7 @@ import {
   lectureQAInfo,
   lectureStudyQAInfo,
   quizMyInfo,
+  quizGetAIMyAnswer,
 } from './quiz.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 import { User } from 'src/models/user';
@@ -270,9 +271,20 @@ export const useQuizGetAnswer = (params, onSuccess?: (data: any) => void, onErro
     enabled: false,
   });
 };
+
 //클럽퀴즈 진행현황 조회
 export const useQuizGetAIAnswer = (params, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
   return useQuery<any, Error>(QUERY_KEY_FACTORY('EDGE').detail(params), () => quizGetAIAnswer(params), {
+    onSuccess,
+    onError,
+    refetchOnWindowFocus: false,
+    enabled: false,
+  });
+};
+
+//클럽퀴즈 진행현황 조회
+export const useQuizGetAIMyAnswer = (params, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
+  return useQuery<any, Error>(QUERY_KEY_FACTORY('EDGE').detail(params), () => quizGetAIMyAnswer(params), {
     onSuccess,
     onError,
     refetchOnWindowFocus: false,
@@ -370,7 +382,7 @@ export const useClubDetailQuizList = (
     {
       onSuccess,
       onError,
-      refetchOnWindowFocus: true,
+      refetchOnWindowFocus: false,
       enabled: true,
     },
   );

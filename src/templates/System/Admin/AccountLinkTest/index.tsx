@@ -143,7 +143,7 @@ export function AdminAccountLinkTestTemplate() {
     if (username) {
       onLoginIdTest({
         id: username,
-        loginMemberType: selectedLoginType,
+        tenantLoginMemberType: selectedLoginType,
       });
     } else {
       alert('아이디를 입력해주세요.');
@@ -162,7 +162,7 @@ export function AdminAccountLinkTestTemplate() {
       onLoginIdPasswordTest({
         id: username,
         password: password,
-        loginMemberType: selectedLoginType,
+        tenantLoginMemberType: selectedLoginType,
       });
     }
   };
@@ -188,7 +188,7 @@ export function AdminAccountLinkTestTemplate() {
     }
   };
 
-  const [selectedLoginType, setSelectedLoginType] = useState('0002');
+  const [selectedLoginType, setSelectedLoginType] = useState('0100');
 
   const handleLoginTypeChange = event => {
     console.log('event.target.value', event.target.value);
@@ -282,8 +282,8 @@ export function AdminAccountLinkTestTemplate() {
                       value={selectedLoginType}
                       aria-label="Default select example"
                     >
-                      <option value="0002">학생</option>
-                      <option value="0003">교수</option>
+                      <option value="0100">학생</option>
+                      <option value="0200">교수</option>
                     </select>
                   </div>
                   <form
@@ -398,7 +398,7 @@ export function AdminAccountLinkTestTemplate() {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {contents.length > 0 ? (
+                        {contents?.length > 0 ? (
                           contents.map((content, index) => (
                             <TableRow key={index}>
                               <TableCell align="left" component="th" scope="row">

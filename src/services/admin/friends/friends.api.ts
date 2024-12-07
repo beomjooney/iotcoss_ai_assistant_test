@@ -15,6 +15,21 @@ export async function getCamenities(args: CamenityProps) {
   const totalPage = Number(headers['page-count']);
   return { data: data || [], nextPage: params.page + 1, totalPage };
 }
+
+export const crewAcceptAllPost = async params => {
+  const { data } = await axiosGeneralAPI().put(`/api/v1/clubs/${params.club}/member-requests/approve`, {
+    isAccept: true,
+  });
+  return data;
+};
+
+export const crewRejectAllPost = async params => {
+  const { data } = await axiosGeneralAPI().put(`/api/v1/clubs/${params.club}/member-requests/approve`, {
+    isAccept: false,
+  });
+  return data;
+};
+
 export const crewAcceptPost = async params => {
   const { data } = await axiosGeneralAPI().put(
     `/api/v1/my/clubs/${params.club}/member-requests/${params.memberUUID}/decision`,
@@ -24,6 +39,7 @@ export const crewAcceptPost = async params => {
   );
   return data;
 };
+
 export const crewRejectPost = async params => {
   const { data } = await axiosGeneralAPI().put(
     `/api/v1/my/clubs/${params.club}/member-requests/${params.memberUUID}/decision`,

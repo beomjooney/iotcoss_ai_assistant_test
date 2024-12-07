@@ -73,6 +73,7 @@ export const saveAIQuizAnswerListPut = async body => {
   );
   return data.data;
 };
+
 export const saveAIQuizAnswerSavePut = async body => {
   const { data } = await axiosGeneralAPI().put(
     `/api/v1/clubs/${body.quizSaveParams.clubSequence}/quizzes/${body.quizSaveParams.quizSequence}/answers/${body.quizSaveParams.memberUUID}/feedback`,
@@ -84,6 +85,11 @@ export const saveAIQuizAnswerSavePut = async body => {
     },
   );
   return data.data;
+};
+
+export const saveAIQuizMyAnswerSavePut = async body => {
+  const { data } = await axiosGeneralAPI().put(`/api/v1/clubs/${body.club}/quizzes/${body.quiz}/self-evaluation`);
+  return data;
 };
 
 export const saveAIQuizAnswerEvaluation = async body => {
@@ -242,6 +248,11 @@ export const quizGetAIAnswer = async params => {
   const { data } = await axiosGeneralAPI().get(
     `/api/v1/clubs/${params.club}/quizzes/${params.quiz}/answers/${params.memberUUID}/with-ai-feedback`,
   );
+  return data.data;
+};
+
+export const quizGetAIMyAnswer = async params => {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/my/clubs/${params.club}/quizzes/${params.quiz}/answer`);
   return data.data;
 };
 

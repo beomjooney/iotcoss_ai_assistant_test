@@ -69,6 +69,7 @@ export function AdminTemplate({ children }: AdminTemplateProps) {
     {
       no: 0,
       title: '클럽관리',
+      role: 'all',
       sub: [
         { no: 0, title: '신규 클럽 승인', link: '/system/admin/club-approval', role: 'all' },
         { no: 1, title: '승인된 클럽 관리', link: '/system/admin/club-management', role: 'all' },
@@ -77,6 +78,7 @@ export function AdminTemplate({ children }: AdminTemplateProps) {
     {
       no: 1,
       title: '회원관리',
+      role: 'all',
       sub: [
         { no: 0, title: '회원정보 관리', link: '/system/admin/club', role: 'all' },
         { no: 1, title: '교수자 권한 관리', link: '/system/admin/role', role: 'all' },
@@ -87,6 +89,7 @@ export function AdminTemplate({ children }: AdminTemplateProps) {
     {
       no: 2,
       title: '지식콘텐츠/퀴즈 관리',
+      role: 'use_quiz_club',
       sub: [
         { no: 0, title: '지식콘텐츠 관리', link: '/system/admin/knowledge', role: 'all' },
         { no: 1, title: '퀴즈 관리', link: '/system/admin/quiz', role: 'all' },
@@ -95,6 +98,7 @@ export function AdminTemplate({ children }: AdminTemplateProps) {
     {
       no: 3,
       title: '통계/분석',
+      role: 'all',
       sub: [{ no: 0, title: '통계 대시보드', link: '/system/admin/dashboard', role: 'all' }],
     },
   ];
@@ -106,72 +110,6 @@ export function AdminTemplate({ children }: AdminTemplateProps) {
   useEffect(() => {
     showMentorChangeBtn();
   }, []);
-
-  useEffect(() => {
-    // console.log('user', user);
-    setNickname(user?.nickname);
-    setShowMenu(
-      menus.map(menu => {
-        return menu.role === 'all'
-          ? menuItem(menu)
-          : menu.role === 'admin' && user?.roles?.indexOf('ROLE_ADMIN') >= 0 && menuItem(menu);
-      }),
-    );
-    setShowMenuMobile(
-      menus.map(menu => {
-        return menu.role === 'all'
-          ? menuIteMobile(menu)
-          : menu.role === 'admin' && user?.roles?.indexOf('ROLE_ADMIN') >= 0 && menuIteMobile(menu);
-      }),
-    );
-  }, [user]);
-
-  const menuItem = menu => {
-    return (
-      <div key={menu.no} className="tw-mt-0 tw-mb-3 tw-bg-white tw-px-5 tw-rounded-lg tw-font-semibold">
-        <li
-          className={cx({
-            'lnb-content__item': true,
-            'lnb-content__item--active': menu === currentMenu,
-          })}
-        >
-          <span className={cx('ti-angle-right')} />
-          <Link href={`/account/my${menu.link}`} className={cx('lnb-item__link')}>
-            {menu.title}
-          </Link>
-        </li>
-      </div>
-    );
-  };
-
-  const menuIteMobile = menu => {
-    return (
-      <li
-        key={menu.no}
-        className={cx(
-          {
-            'lnb-content__item': true,
-            'lnb-content__item--active': menu === currentMenu,
-          },
-          'tw-bg-white tw-py-4 tw-my-2 tw-rounded-md',
-        )}
-      >
-        <span className={cx('ti-angle-right tw-px-5 tw-text-base')} />
-        <Link href={`/account/my${menu.link}`} className={cx('lnb-item__link')}>
-          <span className="tw-text-lg">{menu.title}</span>
-        </Link>
-      </li>
-    );
-  };
-
-  // 프로필 정보 수정 시 변경 적용
-  // useEffect(() => {
-  //   if (memberUUID) {
-  //     console.log('memberUUID', memberUUID);
-  //     refetchProfile();
-  //     // QuizRefetchBadge();
-  //   }
-  // }, [memberUUID]);
 
   const handleClickProfile = memberUUID => {
     refetchProfile();
@@ -246,7 +184,7 @@ export function AdminTemplate({ children }: AdminTemplateProps) {
               </div>
 
               <ul className={cx('lnb-content', 'tw-px-5', 'tw-pt-0 tw-pb-5')}>
-                {menus.map(menu => (
+                {/* {menus.map(menu => (
                   <Accordion
                     key={menu.no}
                     defaultExpanded
@@ -283,7 +221,49 @@ export function AdminTemplate({ children }: AdminTemplateProps) {
                       </div>
                     </AccordionDetails>
                   </Accordion>
-                ))}
+                ))} */}
+
+                {menus.map(
+                  menua =>
+                    (menua.role === 'all' || (menua.role === 'use_quiz_club' && menu.use_quiz_club === true)) && (
+                      <Accordion
+                        key={menua.no}
+                        defaultExpanded
+                        elevation={0}
+                        sx={{
+                          marginTop: '10px',
+                          '&:before': {
+                            display: 'none',
+                          },
+                        }}
+                      >
+                        <AccordionSummary
+                          expandIcon={<ExpandMoreIcon />}
+                          sx={{ backgroundColor: 'white', borderRadius: '20px', margin: '0px' }}
+                        >
+                          <Typography sx={{ flexGrow: 1, fontWeight: 'bold' }}>{menua.title}</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails sx={{ backgroundColor: '#fbfbfd' }}>
+                          <div className="tw-flex-col tw-items-start tw-justify-between tw-gap-5 tw-pl-4 tw-pr-1">
+                            {menua.sub.map(subMenu => (
+                              <div
+                                key={subMenu.no}
+                                className={cx(
+                                  'tw-py-3 tw-mt-2 tw-text-black tw-flex tw-items-center tw-justify-between',
+                                  { 'tw-font-bold tw-text-blue-500': currentSubMenu.title === subMenu.title }, // Add condition for bold and color change
+                                )}
+                                onClick={() => handleClick(subMenu.title, subMenu.link)}
+                                style={{ cursor: 'pointer' }} // Add pointer cursor for visual feedback
+                              >
+                                {subMenu.title}
+                                <span className={cx('ti-angle-right')} />
+                              </div>
+                            ))}
+                          </div>
+                        </AccordionDetails>
+                      </Accordion>
+                    ),
+                )}
               </ul>
               {/* <ul className={cx('lnb-content', 'tw-px-5', 'tw-pt-0')}>{showMenu}</ul> */}
             </div>

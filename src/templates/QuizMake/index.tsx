@@ -273,7 +273,8 @@ export function QuizMakeTemplate() {
 
   useEffect(() => {
     if (updateError) {
-      alert('AI 퀴즈 생성 중 오류가 발생했습니다.');
+      // console.log('aiQuizData', aiQuizData);
+      // alert('AI 퀴즈 생성 중 오류가 발생했습니다.');
       setIsLoading(false);
     }
   }, [updateError]);

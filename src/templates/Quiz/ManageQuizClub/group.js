@@ -217,3 +217,14 @@ export const openGroup = [
     description: '학습자 학습 오픈',
   },
 ];
+
+export const feedbackGroup = [
+  {
+    name: '0100',
+    description: '교수자 채점/피드백',
+  },
+  {
+    name: '0200',
+    description: '학습자 셀프 채점/피드백',
+  },
+];

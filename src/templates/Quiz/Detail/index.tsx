@@ -39,7 +39,11 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
   });
 
   //my-progress
-  const { isFetched: isParticipantListFetched, isLoading } = useMyProgress(id, data => {
+  const {
+    isFetched: isParticipantListFetched,
+    isLoading,
+    refetch: refetchParticipant,
+  } = useMyProgress(id, data => {
     console.log(data);
     setContents(data);
   });
@@ -114,6 +118,7 @@ export function QuizDetailTemplate({ id }: QuizDetailTemplateProps) {
             totalPage={totalPage}
             page={page}
             handlePageChange={handlePageChange}
+            refetchParticipant={refetchParticipant}
             contents={contents}
             clubAbout={clubAbout}
             quizList={quizList}

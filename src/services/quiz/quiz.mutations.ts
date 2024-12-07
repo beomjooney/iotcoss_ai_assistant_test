@@ -23,6 +23,7 @@ import {
   saveClubQuizTempPost,
   saveLectureModifyAI,
   saveLectureModifyCur,
+  saveAIQuizMyAnswerSavePut,
 } from './quiz.api';
 import router from 'next/router';
 
@@ -91,8 +92,13 @@ export const useAIQuizSave = (): UseMutationResult => {
   const queryClient = useQueryClient();
   return useMutation<any, any, any>(requestBody => saveAIQuizPost(requestBody), {
     onError: (error, variables, context) => {
-      const { code, message } = error;
-      // alert(`mutation error : [${code}] ${message}`);
+      const { responseCode, message } = error;
+      if (responseCode === '1410') {
+        alert('AI 퀴즈 생성이 지원되지 않는 사이트입니다.');
+      } else {
+        alert(`[${responseCode}] AI 퀴즈 생성 실패`);
+        // alert(`mutation error : [${responseCode}] ${message}`);
+      }
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CAMENITY').all),
     onSuccess: async data => {
@@ -172,6 +178,25 @@ export const useAIQuizAnswerSavePut = (): UseMutationResult => {
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_GROWTHEDGE').all),
     onSuccess: async data => {
       // alert('수정이 완료되었습니다.');
+    },
+  });
+};
+
+export const useAIQuizMyAnswerSavePut = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => saveAIQuizMyAnswerSavePut(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_GROWTHEDGE').all),
+    onSuccess: async data => {
+      console.log('data', data);
+      const { responseCode, message } = data;
+      if (responseCode === '0000') {
+      } else {
+        alert(`error : [${responseCode}] ${message}`);
+      }
     },
   });
 };

@@ -75,16 +75,16 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
     // index = data?.clubQuizzes?.findIndex(item => item.isPublished === true);
     // console.log('index', publishDate, index);
     // }
-    setSelectedQuiz(data.clubQuizzes[index]);
-    const selectedSession = data.clubQuizzes[index] ? data.clubQuizzes[index].quizSequence : null;
+    setSelectedQuiz(data?.clubQuizzes[index]);
+    const selectedSession = data?.clubQuizzes[index] ? data?.clubQuizzes[index].quizSequence : null;
     console.log('selectedSession 1', selectedSession);
     setSelectedValue(publishDate || selectedSession);
-    console.log(data.clubQuizzes[index]);
+    console.log(data?.clubQuizzes[index]);
     setContents(data);
 
     setParams({
       club: id,
-      quiz: data.clubQuizzes[index]?.quizSequence,
+      quiz: data?.clubQuizzes[index]?.quizSequence,
       data: { page, keyword: keyWorld },
     });
   });
@@ -108,8 +108,8 @@ export function QuizAnswersAllDetailTemplate({ id }: QuizAnswersAllDetailTemplat
     data: quizAnswerData,
   } = useQuizAnswerMemberDetail(params, data => {
     console.log('useQuizAnswerDetail', data);
-    setQuizListData(data.contents || []);
-    setTotalPage(data.totalPages);
+    setQuizListData(data?.contents || []);
+    setTotalPage(data?.totalPages);
   });
 
   useDidMountEffect(() => {

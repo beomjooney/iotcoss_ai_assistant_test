@@ -33,6 +33,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       update({
         tenantName: data?.tenantId,
         tenantUri: data?.tenantUri,
+        loginType: data?.loginTypes,
         // tenantName: data?.tenantName,
         redirections: data?.homeUrl,
         registrationAuthenticationType: data?.registrationAuthenticationType,

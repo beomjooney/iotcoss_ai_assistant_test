@@ -1,14 +1,12 @@
 import './index.module.scss';
 import { LoginOneTemplate } from 'src/templates';
+import { LoginTemplate } from 'src/templates/Account/Login';
 import { useRouter } from 'next/router';
 import { getCookie, setCookie } from 'cookies-next';
 import { useEffect } from 'react';
 import { useSessionStore } from '../../../../src/store/session';
 import jwt_decode from 'jwt-decode';
 import { UserInfo } from '../../../../src/models/account';
-
-import { useColorPresets, useColorPresetName } from 'src/utils/use-theme-color';
-import { usePresets } from 'src/utils/color-presets';
 
 /* eslint-disable-next-line */
 interface LoginPageProps {}
@@ -68,7 +66,8 @@ export function LoginPage(props: LoginPageProps) {
     authLoginUpdate();
   };
 
-  return <LoginOneTemplate title="" onSubmitLogin={onSubmitLogin} />;
+  // return <LoginOneTemplate title="" onSubmitLogin={onSubmitLogin} />;
+  return <LoginTemplate title="" onSubmitLogin={onSubmitLogin} />;
 }
 
 export default LoginPage;

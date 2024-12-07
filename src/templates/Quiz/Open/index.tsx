@@ -227,6 +227,7 @@ export function QuizOpenTemplate() {
       setAgreements(clubForm.useCurrentProfileImage);
       setSelectedOption(data?.isRepresentativeQuizPublic?.toString());
       setFeedbackType(clubForm.feedbackType);
+      setAnswerExposureType(clubForm.answerExposureType);
       // Filter out items with quizSequence not null and greater than or equal to zero, then extract quizSequence values
       const quizSequenceNumbers = quizList
         .filter(item => item.quizSequence !== null && item.quizSequence >= 0)
@@ -264,6 +265,12 @@ export function QuizOpenTemplate() {
 
   const [keyWorld, setKeyWorld] = useState('');
   const [myKeyWorld, setMyKeyWorld] = useState('');
+  const [answerExposureType, setAnswerExposureType] = useState('0100');
+
+  const handleAnswerExposureTypeChange = event => {
+    setAnswerExposureType(event.target.value);
+  };
+
   // const { mutate: onQuizSave, isSuccess: postSucces } = useQuizSave();
   const {
     mutate: onClubQuizSave,
@@ -812,6 +819,7 @@ export function QuizOpenTemplate() {
     const formData = new FormData();
     formData.append('clubId', 'quiz_club_' + generateUUID());
     formData.append('form.clubName', params.clubForm.clubName);
+    formData.append('form.answerExposureType', params.clubForm.answerExposureType);
     formData.append('form.feedbackType', params.clubForm.feedbackType);
     formData.append('form.jobGroups', params.clubForm.jobGroups.toString());
     formData.append('form.jobs', params.clubForm.jobs.toString());
@@ -911,6 +919,7 @@ export function QuizOpenTemplate() {
       useCurrentProfileImage: agreements,
       instructorProfileImageUrl: previewProfile,
       feedbackType: feedbackType,
+      answerExposureType: answerExposureType,
     };
 
     //scheduleData null insert
@@ -1122,6 +1131,7 @@ export function QuizOpenTemplate() {
       clubRecruitType: '0100',
       useCurrentProfileImage: agreements,
       feedbackType: feedbackType,
+      answerExposureType: answerExposureType,
       //대표퀴즈 사용 여부
       representativeQuizUse: selectedOption === 'true' ? true : false,
     };
@@ -1151,6 +1161,7 @@ export function QuizOpenTemplate() {
     formData.append('form.learningText', clubFormParams.learningText);
     formData.append('form.memberIntroductionText', clubFormParams.memberIntroductionText);
     formData.append('form.careerText', clubFormParams.careerText);
+    formData.append('form.answerExposureType', clubFormParams.answerExposureType);
     formData.append('form.useCurrentProfileImage', clubFormParams.useCurrentProfileImage);
 
     //대표퀴즈 사용 여부
@@ -2008,6 +2019,18 @@ export function QuizOpenTemplate() {
                       </div>
                     </div>
                   )}
+
+                  <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-my-2">답변노출유형</div>
+                  <select
+                    className="tw-h-12 tw-w-[200px] form-select block tw-px-4 tw-mt-2 tw-rounded-xl"
+                    onChange={handleAnswerExposureTypeChange}
+                    value={answerExposureType}
+                    aria-label="Default select example"
+                  >
+                    <option value="0100">교수자 답변노출</option>
+                    <option value="0200">AI 답변노출</option>
+                    <option value="0300">교수자+AI 답변노출</option>
+                  </select>
 
                   <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-my-2">학습 주제</div>
                   <TextField
