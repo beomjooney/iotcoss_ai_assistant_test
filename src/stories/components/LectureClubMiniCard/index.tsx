@@ -47,17 +47,26 @@ LectureClubMiniCardProps) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const [removeIndex, setRemoveIndex] = React.useState('');
+  const [isLoading, setIsLoading] = React.useState(false);
   const textInput = useRef(null);
 
   const { mutate: onSaveFavorite, isSuccess: isSuccessFavorite } = useSaveFavorite();
   const { mutate: onDeleteFavorite, isSuccess: isSuccessDelete } = useDeleteFavorite();
-  const { mutate: onDeleteClub, isSuccess: isSuccessDeleteClub } = useDeleteClub();
+  const { mutate: onDeleteClub, isSuccess: isSuccessDeleteClub, isError: isErrorDeleteClub } = useDeleteClub();
 
   useEffect(() => {
     if (isSuccessDeleteClub) {
+      setIsLoading(false);
       refetch();
     }
   }, [isSuccessDeleteClub]);
+
+  useEffect(() => {
+    if (isErrorDeleteClub) {
+      setIsLoading(false);
+      refetch();
+    }
+  }, [isErrorDeleteClub]);
 
   useEffect(() => {
     if (isSuccessDelete) {
@@ -99,7 +108,10 @@ LectureClubMiniCardProps) => {
 
   const handleDeleteClub = () => {
     if (confirm('클럽을 삭제하시겠습니까?')) {
+      setIsLoading(true);
       onDeleteClub(item?.clubSequence);
+    } else {
+      setIsLoading(false);
     }
   };
 
@@ -192,7 +204,7 @@ LectureClubMiniCardProps) => {
             }}
             className="tw-px-4 tw-h-9 tw-rounded-md tw-bg-[#31343d] tw-text-white tw-text-sm"
           >
-            클럽삭제
+            {isLoading ? '삭제중...' : '클럽삭제'}
           </button>
         </div>
       </div>
