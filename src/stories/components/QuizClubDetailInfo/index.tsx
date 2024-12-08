@@ -180,22 +180,26 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
                 <div>
                   학습 기간 : {clubData?.startAt?.split(' ')[0]} ~ {clubData?.endAt?.split(' ')[0]}
                   {clubData?.studyCycle?.length > 0
-                    ? ` 매주 ${clubData.studyCycle.toString()}요일 (총 ${clubData?.studyWeekCount}회)`
+                    ? ` 매주 ${clubData.studyCycle.toString()}요일 (총 ${
+                        clubData?.studyWeekCount || clubData?.studyCount
+                      }회)`
                     : ''}
                 </div>
               ) : (
                 <div>
                   학습 기간 : {clubData?.startAt?.split(' ')[0]}
                   {clubData?.studyCycle?.length > 0
-                    ? ` 매주 ${clubData.studyCycle.toString()}요일 (총 ${clubData?.studyWeekCount}회)`
+                    ? ` 매주 ${clubData.studyCycle.toString()}요일 (총 ${
+                        clubData?.studyWeekCount || clubData?.studyCount
+                      }회)`
                     : ''}
                 </div>
               )}
 
               {clubData?.quizOpenType === '0100' ? (
-                <div>학습 참여 : 주 {clubData?.studyWeekCount}회</div>
+                <div>학습 참여 : 총 {clubData?.studyWeekCount || clubData?.studyCount}회</div>
               ) : (
-                <div>학습 참여 : 총 {clubData?.studyTotalCount}회차</div>
+                <div>학습 참여 : 총 {clubData?.studyTotalCount || clubData?.studyCount}회차</div>
               )}
               <div>참여 인원 : {clubData?.recruitedMemberCount || '00'}명</div>
             </div>
