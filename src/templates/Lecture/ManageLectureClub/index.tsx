@@ -3049,34 +3049,49 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                           </div>
                           <div className="tw-text-left tw-pl-5 tw-text-sm tw-flex tw-flex-wrap tw-gap-2">
                             {lectureContents.files.map((fileEntry, index) => (
-                              <div key={index} className="border tw-px-3 tw-p-1 tw-rounded">
-                                <span
-                                  onClick={() => {
-                                    onFileDownload(fileEntry.fileKey, fileEntry.name);
-                                  }}
-                                  className="tw-text-blue-600 tw-cursor-pointer"
-                                >
-                                  {fileEntry?.file?.name || fileEntry.name}
-                                </span>
-                                <button
-                                  className="tw-ml-2 tw-cursor-pointer"
-                                  onClick={() => handleRemoveFileLocal(index)}
-                                >
-                                  <svg
-                                    width={8}
-                                    height={8}
-                                    viewBox="0 0 6 6"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="flex-grow-0 flex-shrink-0"
-                                    preserveAspectRatio="none"
+                              <div key={index} className="tw-flex tw-items-center tw-gap-2">
+                                <div className="border tw-px-3 tw-p-1 tw-rounded">
+                                  <span
+                                    onClick={() => {
+                                      onFileDownload(fileEntry.fileKey, fileEntry.name);
+                                    }}
+                                    className="tw-text-blue-600 tw-cursor-pointer"
                                   >
-                                    <path
-                                      d="M5.39571 0L3 2.39571L0.604286 0L0 0.604286L2.39571 3L0 5.39571L0.604286 6L3 3.60429L5.39571 6L6 5.39571L3.60429 3L6 0.604286L5.39571 0Z"
-                                      fill="#6A7380"
-                                    />
-                                  </svg>
-                                </button>
+                                    {fileEntry?.file?.name || fileEntry.name}
+                                  </span>
+                                  <button
+                                    className="tw-ml-2 tw-cursor-pointer"
+                                    onClick={() => handleRemoveFileLocal(index)}
+                                  >
+                                    <svg
+                                      width={8}
+                                      height={8}
+                                      viewBox="0 0 6 6"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      className="flex-grow-0 flex-shrink-0"
+                                      preserveAspectRatio="none"
+                                    >
+                                      <path
+                                        d="M5.39571 0L3 2.39571L0.604286 0L0 0.604286L2.39571 3L0 5.39571L0.604286 6L3 3.60429L5.39571 6L6 5.39571L3.60429 3L6 0.604286L5.39571 0Z"
+                                        fill="#6A7380"
+                                      />
+                                    </svg>
+                                  </button>
+                                </div>
+                                <div className="tw-p-1 tw-text-center tw-bg-black tw-text-white tw-rounded tw-items-center tw-gap-2 tw-px-2">
+                                  {isProcessing
+                                    ? '등록 중'
+                                    : fileEntry.fileUploadStatus === '0000'
+                                    ? '등록 전'
+                                    : fileEntry.fileUploadStatus === '1000'
+                                    ? '등록 중'
+                                    : fileEntry.fileUploadStatus === '2000'
+                                    ? '등록 완료'
+                                    : fileEntry.fileUploadStatus === '3000'
+                                    ? '등록 실패'
+                                    : '등록 전'}
+                                </div>
                               </div>
                             ))}
                           </div>
@@ -3096,27 +3111,42 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                           </div>
                           <div className="tw-text-left tw-pl-5 tw-text-sm tw-flex tw-flex-wrap tw-gap-2">
                             {lectureContents?.urls?.map((file, index) => (
-                              <div key={index} className="border tw-px-3 tw-p-1 tw-rounded">
-                                <span className="tw-text-[#FF8F60]">{file.url}</span>
-                                <button
-                                  className="tw-ml-2 tw-cursor-pointer"
-                                  onClick={() => handleRemoveInputLocal(index)}
-                                >
-                                  <svg
-                                    width={8}
-                                    height={8}
-                                    viewBox="0 0 6 6"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="flex-grow-0 flex-shrink-0"
-                                    preserveAspectRatio="none"
+                              <div key={index} className="tw-flex tw-items-center tw-gap-2">
+                                <div className="border tw-px-3 tw-p-1 tw-rounded">
+                                  <span className="tw-text-[#FF8F60]">{file.url}</span>
+                                  <button
+                                    className="tw-ml-2 tw-cursor-pointer"
+                                    onClick={() => handleRemoveInputLocal(index)}
                                   >
-                                    <path
-                                      d="M5.39571 0L3 2.39571L0.604286 0L0 0.604286L2.39571 3L0 5.39571L0.604286 6L3 3.60429L5.39571 6L6 5.39571L3.60429 3L6 0.604286L5.39571 0Z"
-                                      fill="#6A7380"
-                                    />
-                                  </svg>
-                                </button>
+                                    <svg
+                                      width={8}
+                                      height={8}
+                                      viewBox="0 0 6 6"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      className="flex-grow-0 flex-shrink-0"
+                                      preserveAspectRatio="none"
+                                    >
+                                      <path
+                                        d="M5.39571 0L3 2.39571L0.604286 0L0 0.604286L2.39571 3L0 5.39571L0.604286 6L3 3.60429L5.39571 6L6 5.39571L3.60429 3L6 0.604286L5.39571 0Z"
+                                        fill="#6A7380"
+                                      />
+                                    </svg>
+                                  </button>
+                                </div>
+                                <div className="tw-p-1 tw-text-center tw-bg-black tw-text-white tw-rounded tw-items-center tw-gap-2 tw-px-2">
+                                  {isProcessing
+                                    ? '등록 중'
+                                    : file.fileUploadStatus === '0000'
+                                    ? '등록 전'
+                                    : file.fileUploadStatus === '1000'
+                                    ? '등록 중'
+                                    : file.fileUploadStatus === '2000'
+                                    ? '등록 완료'
+                                    : file.fileUploadStatus === '3000'
+                                    ? '등록 실패'
+                                    : '등록 전'}
+                                </div>
                               </div>
                             ))}
                           </div>

@@ -171,7 +171,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
             </Grid>
             <div className=" tw-flex tw-items-center tw-pt-8">
               <div className="tw-line-clamp-1 tw-text-xl tw-font-bold  tw-text-[#000000] tw-mr-2">
-                {clubData?.clubName}
+                {clubData?.clubName || clubData?.name}
               </div>
               <div className="tw-line-clamp-1 tw-text-base  tw-text-[#000000]">{clubData?.description}</div>
             </div>
@@ -419,24 +419,24 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
               {clubData?.endAt ? (
                 clubData?.quizOpenType === '0100' ? (
                   <p className="tw-text-base tw-text-left tw-text-black">
-                    {clubData?.startAt?.split(' ')[0]} ~ {clubData?.endAt?.split(' ')[0]} / 주{' '}
+                    {clubData?.startAt?.split(' ')[0]} ~ {clubData?.endAt?.split(' ')[0]} /{' '}
                     {clubData?.studyWeekCount?.toString()}회{' '}
-                    {clubData?.studyCycle?.length > 0 ? `(${clubData?.studyCycle?.toString()})` : ''} 총{' '}
-                    {selectedQuizzes?.length}개 퀴즈
+                    {clubData?.studyCycle?.length > 0 ? `(${clubData?.studyCycle?.toString()})` : ''},{' '}
+                    {clubData?.studyTotalCount}개 퀴즈
                   </p>
                 ) : (
                   <p className="tw-text-base tw-text-left tw-text-black">
-                    {clubData?.startAt?.split(' ')[0]} ~ {clubData?.endAt?.split(' ')[0]} / 총{' '}
-                    {clubData?.studyTotalCount?.toString()}회차,
-                    {clubData?.studyCycle?.length > 0 ? `(${clubData?.studyCycle?.toString()})` : ' '}
-                    {selectedQuizzes?.length}개 퀴즈
+                    {clubData?.startAt?.split(' ')[0]} ~ {clubData?.endAt?.split(' ')[0]} /{' '}
+                    {clubData?.studyWeekCount?.toString()}회차
+                    {clubData?.studyCycle?.length > 0 ? `(${clubData?.studyCycle?.toString()})` : ''},{' '}
+                    {clubData?.studyTotalCount}개 퀴즈
                   </p>
                 )
               ) : (
                 <p className="tw-text-base tw-text-left tw-text-black">
                   시작일 : {clubData?.startAt?.split(' ')[0]} {clubData?.studyWeekCount?.toString()}회{' '}
-                  {clubData?.studyCycle?.length > 0 ? `(${clubData?.studyCycle?.toString()})` : ''} 총{' '}
-                  {selectedQuizzes?.length}개 퀴즈
+                  {clubData?.studyCycle?.length > 0 ? `(${clubData?.studyCycle?.toString()})` : ''},{' '}
+                  {clubData?.studyTotalCount}개 퀴즈
                 </p>
               )}
             </div>
