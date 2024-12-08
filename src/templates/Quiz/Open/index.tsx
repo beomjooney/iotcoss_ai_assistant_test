@@ -1766,7 +1766,7 @@ export function QuizOpenTemplate() {
                       </div>
                       <div className="tw-flex-1 ">
                         <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
-                          퀴즈 생성(오픈) 주기 <span className="tw-text-red-500">*</span>
+                          퀴즈 채점/피드백 방식 설정 <span className="tw-text-red-500">*</span>
                         </div>
 
                         <ToggleButtonGroup
