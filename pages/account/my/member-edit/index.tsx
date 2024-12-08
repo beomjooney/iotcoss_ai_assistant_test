@@ -14,7 +14,7 @@ export function MemberEditPage({ error }: MemberEditPageProps) {
   useEffect(() => {
     if (!logged || error) {
       alert('비정상적인 접근입니다.');
-      router.push('/');
+      window.location.href = '/';
     }
   }, [error]);
 
