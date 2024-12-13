@@ -71,16 +71,17 @@ ClubCardProps) => {
             alert('로그인 후 이동할 수 있습니다.');
           }
         }}
-        className=" tw-flex  tw-bg-white border tw-rounded-lg tw-flex-row tw-w-full tw-h-[230px]"
+        className=" tw-flex border tw-rounded-lg tw-flex-row tw-w-full tw-h-[230px]"
       >
-        <div className="tw-flex tw-w-1/2 md:tw-w-auto">
+        <div className="tw-flex tw-basis-2/5 max-sm:tw-w-[150px]">
           <img
-            className="tw-object-cover tw-min-w-[150px] tw-w-[225px] tw-rounded-l-lg tw-h-[240px]"
+            className="tw-object-cover tw-rounded-l-lg tw-h-[240px] max-sm:tw-h-[200px]"
             src={item?.clubImageUrl || '/assets/images/banner/Rectangle_193.png'}
             alt=""
           />
         </div>
-        <div className="tw-flex tw-flex-col sm:tw-flex-col tw-p-[12px]">
+
+        <div className="tw-flex tw-basis-3/5 tw-w-full tw-flex-col sm:tw-flex-col tw-p-5">
           <div className="tw-flex tw-items-center tw-gap-2 tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
             {item?.isPublic ? (
               <svg
@@ -133,8 +134,8 @@ ClubCardProps) => {
               </p>
             </div>
           </div>
-          <div className=" tw-h-[70px]">
-            <h6 className="tw-mt-3 tw-line-clamp-2 tw-h-[112px] tw-text-2xl tw-font-bold tw-tracking-tight tw-text-gray-900">
+          <div className="tw-h-[65px]">
+            <h6 className=" tw-mt-3 tw-w-full tw-line-clamp-2 tw-text-2xl tw-font-bold tw-tracking-tight tw-text-gray-900">
               {item.clubName}
             </h6>
             <div className="tw-line-clamp-1 tw-text-base tw-tracking-tight tw-text-gray-900">{item.description}</div>

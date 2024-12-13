@@ -504,12 +504,13 @@ pre code {
 @media (max-width: 576px) {
   .container {
     /* max-width: 540px; */
-    max-width: 100%; /* 예시: 너비를 100%로 설정 */
+    max-width: 95%; /* 예시: 너비를 100%로 설정 */
   }
 }
 @media (min-width: 768px) {
   .container {
-    max-width: 720px;
+    /* max-width: 760px; */
+    max-width: 95%; /* 예시: 너비를 100%로 설정 */
   }
 }
 @media (min-width: 992px) {

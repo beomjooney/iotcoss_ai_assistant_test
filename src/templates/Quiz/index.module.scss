@@ -73,7 +73,9 @@
   }
 
   article {
-    // height: 1100px;
+    @media (min-width: 900px) {
+      height: 1100px;
+    }
     .filter-area::-webkit-scrollbar {
       display: none;
     }
