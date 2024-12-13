@@ -88,7 +88,14 @@ export function QuizTemplate() {
 
       <div className={cx('container')}>
         <div className="tw-py-[40px] max-lg:tw-py-[40px]">
-          <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
+          <Grid
+            container
+            direction="row"
+            justifyContent="center"
+            alignItems="center"
+            rowSpacing={0}
+            className="max-lg:flex max-lg:flex-col max-lg:items-center"
+          >
             <Grid item xs={12} sm={2} className="tw-font-bold tw-text-4xl tw-text-black max-lg:!tw-text-2xl">
               퀴즈클럽
             </Grid>
@@ -96,11 +103,11 @@ export function QuizTemplate() {
               item
               xs={12}
               sm={8}
-              className="max-lg:tw-py-2 tw-font-light tw-text-base tw-text-black  max-lg:!tw-text-base"
+              className="max-lg:tw-py-2 tw-font-light tw-text-base tw-text-black max-lg:!tw-text-base"
             >
               관심 주제별로 퀴즈를 풀고 네트워킹 할 수 있는 클럽을 만나보세요!
             </Grid>
-            <Grid item xs={12} sm={2} justifyContent="flex-end" className="tw-flex">
+            <Grid item xs={12} sm={2} justifyContent="flex-end" className="tw-flex max-lg:tw-justify-center">
               {isClient && (roles.includes('ROLE_INSTRUCTOR') || roles.includes('ROLE_MANAGER')) && (
                 <button
                   onClick={() => (location.href = '/quiz/open')}
@@ -113,10 +120,11 @@ export function QuizTemplate() {
             </Grid>
           </Grid>
         </div>
+
         {logged && isClient && (
           <Box sx={{ width: '100%', typography: 'body1', marginBottom: '20px' }}>
             <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-              <Grid item xs={12} sm={9} className="tw-font-bold tw-text-3xl tw-text-black tw-pr-2">
+              <Grid item xs={8} sm={9} className="tw-font-bold tw-text-3xl tw-text-black tw-pr-2">
                 <Tabs
                   sx={{
                     '& .MuiTabs-indicator': { display: 'none' },
@@ -133,6 +141,7 @@ export function QuizTemplate() {
                   onChange={handleTabChange}
                   variant="scrollable" // 스크롤 기능 활성화
                   scrollButtons={true} // 필요 시 스크롤 버튼 표시
+                  allowScrollButtonsMobile
                   aria-label="scrollable auto tabs example"
                   className="" // 커스텀 스타일 적용
                 >
@@ -155,7 +164,7 @@ export function QuizTemplate() {
                   {/* 전체보기 탭을 먼저 렌더링 */}
                 </Tabs>
               </Grid>
-              <Grid item xs={6} sm={3} className="tw-font-semi tw-text-base tw-text-black">
+              <Grid item xs={4} sm={3} className="tw-font-semi tw-text-base tw-text-black">
                 <TextField
                   fullWidth
                   id="outlined-basic"
@@ -212,7 +221,7 @@ export function QuizTemplate() {
                   contents.map((item, index) => {
                     return (
                       <React.Fragment key={index}>
-                        <ClubCard item={item} xs={6} className={cx('reply-container__item')} />
+                        <ClubCard item={item} xs={12} sm={6} className={cx('reply-container__item')} />
                       </React.Fragment>
                     );
                   })

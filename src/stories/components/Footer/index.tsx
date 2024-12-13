@@ -52,13 +52,13 @@ const Footer = () => {
               <div className="tw-hidden lg:tw-flex tw-flex-col tw-items-center">
                 <img src="/assets/images/main/logo-1.png" className="tw-w-[131px] tw-h-[92px] tw-object-cover" />
               </div>
-              <div className="tw-flex tw-flex-col tw-col-span-2">
-                <div className="tw-h-[21px]">
+              <div className="tw-flex tw-flex-col tw-col-span-2 max-sm:tw-px-5">
+                <div>
                   <p className="tw-text-base tw-text-white">
                     (47011) 부산광역시 사상구 주례로 47 동서대학교 특성화지원센터상구 주례로 47
                   </p>
                 </div>
-                <div className="tw-h-[42px] tw-flex tw-gap-10">
+                <div className=" tw-flex tw-gap-10">
                   <p className="tw-text-base tw-text-white">TEL : 051-320-4292</p>
                 </div>
                 <div className="tw-flex tw-mt-4">

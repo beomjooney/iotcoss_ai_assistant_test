@@ -521,7 +521,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
   }, [open]);
 
   return (
-    <div className={cx('login-container')}>
+    <div className={cx('login-container', 'max-sm:tw-p-7 sm:tw-p-20')}>
       {step === '1' ? (
         <>
           <p className="tw-text-3xl tw-font-bold tw-text-center tw-text-black tw-pb-10">회원가입</p>
@@ -537,6 +537,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
                 }}
                 fullWidth
                 id="memberId"
+                size="medium"
                 name="memberId"
                 {...registerId('memberId')}
                 error={errorsId.memberId ? true : false}
@@ -568,6 +569,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
                     '& label': { fontSize: 14, color: '#919191', fontWeight: 'bold' },
                   }}
                   fullWidth
+                  size="medium"
                   type="tel"
                   inputProps={{
                     maxLength: 11,
@@ -607,6 +609,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
                     sx={{
                       '& label': { fontSize: 14, color: '#919191', fontWeight: 'bold' },
                     }}
+                    size="medium"
                     label="인증번호"
                     type="search"
                     id="otp"
@@ -654,6 +657,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
                   '& label': { fontSize: 14, color: '#919191', fontWeight: 'bold' },
                 }}
                 fullWidth
+                size="medium"
                 required
                 type="search"
                 id="name"
@@ -677,6 +681,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
                   style: { borderBottomColor: '#e3e3e3 !important' },
                 }}
                 fullWidth
+                size="medium"
                 type={showPassword ? 'text' : 'password'}
                 InputProps={{
                   endAdornment: (
@@ -702,6 +707,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
                 sx={{ '& label': { fontSize: 14, color: '#919191', fontWeight: 'bold' } }}
                 fullWidth
                 type={showPassword1 ? 'text' : 'password'}
+                size="medium"
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
@@ -875,9 +881,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
                           }}
                         />
                       }
-                      label={
-                        <Typography sx={{ fontSize: 13, color: 'black', fontWeight: '700 ' }}>이메일 수신</Typography>
-                      }
+                      label={<Typography sx={{ fontSize: 13, color: 'black', fontWeight: '700 ' }}>이메일</Typography>}
                     />
                   </FormGroup>
                 </Box>
@@ -899,9 +903,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
                           }}
                         />
                       }
-                      label={
-                        <Typography sx={{ fontSize: 13, color: 'black', fontWeight: '700 ' }}>문자 수신</Typography>
-                      }
+                      label={<Typography sx={{ fontSize: 13, color: 'black', fontWeight: '700 ' }}>문자</Typography>}
                     />
                   </FormGroup>
                 </Box>
@@ -924,7 +926,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
                         />
                       }
                       label={
-                        <Typography sx={{ fontSize: 13, color: 'black', fontWeight: '700 ' }}>카카오톡 수신</Typography>
+                        <Typography sx={{ fontSize: 13, color: 'black', fontWeight: '700 ' }}>카카오톡</Typography>
                       }
                     />
                   </FormGroup>
@@ -964,7 +966,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
 
           <div className="tw-mx-4 tw-sm:mx-0 tw-my-10 tw-flex tw-flex-col tw-items-center ">
             <div className="tw-w-full tw-rounded-md tw-bg-gray-50 tw-p-4 tw-dark:bg-gray-700/50 ">
-              <p className="tw-text-center tw-text-sm">
+              <p className="tw-text-center tw-text-sm ">
                 <p>인증 메일은 발송 시점으로부터 24시간 동안 유효하며, 재발송시 기존 인증은 만료됩니다.</p>
                 <p>반드시 마지막에 수신된 메일을 확인 바랍니다.</p>
                 <br />
