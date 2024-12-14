@@ -228,6 +228,7 @@ export function QuizOpenTemplate() {
       setSelectedOption(data?.isRepresentativeQuizPublic?.toString());
       setFeedbackType(clubForm.feedbackType);
       setAnswerExposureType(clubForm.answerExposureType);
+      setAnswerPublishType(clubForm.answerPublishType);
       // Filter out items with quizSequence not null and greater than or equal to zero, then extract quizSequence values
       const quizSequenceNumbers = quizList
         .filter(item => item.quizSequence !== null && item.quizSequence >= 0)
@@ -266,9 +267,14 @@ export function QuizOpenTemplate() {
   const [keyWorld, setKeyWorld] = useState('');
   const [myKeyWorld, setMyKeyWorld] = useState('');
   const [answerExposureType, setAnswerExposureType] = useState('0100');
+  const [answerPublishType, setAnswerPublishType] = useState('0001');
 
   const handleAnswerExposureTypeChange = event => {
     setAnswerExposureType(event.target.value);
+  };
+
+  const handleAnswerPublishTypeChange = event => {
+    setAnswerPublishType(event.target.value);
   };
 
   // const { mutate: onQuizSave, isSuccess: postSucces } = useQuizSave();
@@ -820,6 +826,7 @@ export function QuizOpenTemplate() {
     formData.append('clubId', 'quiz_club_' + generateUUID());
     formData.append('form.clubName', params.clubForm.clubName);
     formData.append('form.answerExposureType', params.clubForm.answerExposureType);
+    formData.append('form.answerPublishType', params.clubForm.answerPublishType);
     formData.append('form.feedbackType', params.clubForm.feedbackType);
     formData.append('form.jobGroups', params.clubForm.jobGroups.toString());
     formData.append('form.jobs', params.clubForm.jobs.toString());
@@ -920,6 +927,7 @@ export function QuizOpenTemplate() {
       instructorProfileImageUrl: previewProfile,
       feedbackType: feedbackType,
       answerExposureType: answerExposureType,
+      answerPublishType: answerPublishType,
     };
 
     //scheduleData null insert
@@ -1132,6 +1140,7 @@ export function QuizOpenTemplate() {
       useCurrentProfileImage: agreements,
       feedbackType: feedbackType,
       answerExposureType: answerExposureType,
+      answerPublishType: answerPublishType,
       //대표퀴즈 사용 여부
       representativeQuizUse: selectedOption === 'true' ? true : false,
     };
@@ -1162,6 +1171,7 @@ export function QuizOpenTemplate() {
     formData.append('form.memberIntroductionText', clubFormParams.memberIntroductionText);
     formData.append('form.careerText', clubFormParams.careerText);
     formData.append('form.answerExposureType', clubFormParams.answerExposureType);
+    formData.append('form.answerPublishType', clubFormParams.answerPublishType);
     formData.append('form.useCurrentProfileImage', clubFormParams.useCurrentProfileImage);
 
     //대표퀴즈 사용 여부
@@ -1520,8 +1530,8 @@ export function QuizOpenTemplate() {
                           index < activeStep
                             ? 'tw-bg-gray-300 tw-text-white'
                             : index === activeStep
-                              ? 'tw-bg-blue-600  tw-text-white'
-                              : 'tw-bg-gray-300 tw-text-white'
+                            ? 'tw-bg-blue-600  tw-text-white'
+                            : 'tw-bg-gray-300 tw-text-white'
                         }`}
                       ></div>
                       <div
@@ -1529,8 +1539,8 @@ export function QuizOpenTemplate() {
                           index < activeStep
                             ? ' tw-text-gray-400'
                             : index === activeStep
-                              ? ' tw-text-black tw-font-bold'
-                              : ' tw-text-gray-400'
+                            ? ' tw-text-black tw-font-bold'
+                            : ' tw-text-gray-400'
                         }`}
                       >
                         {step}
@@ -1751,10 +1761,10 @@ export function QuizOpenTemplate() {
                                   item.name === '0100'
                                     ? ''
                                     : item.name === '0200'
-                                      ? '클럽 관리자가 퀴즈 오픈을 수동으로 설정할 수 있어요!'
-                                      : item.name === '0300'
-                                        ? '학습자가 이전 퀴즈를 모두 학습/답변하였을 경우에 다음 퀴즈가 자동으로 오픈이 돼요!'
-                                        : ''
+                                    ? '클럽 관리자가 퀴즈 오픈을 수동으로 설정할 수 있어요!'
+                                    : item.name === '0300'
+                                    ? '학습자가 이전 퀴즈를 모두 학습/답변하였을 경우에 다음 퀴즈가 자동으로 오픈이 돼요!'
+                                    : ''
                                 }
                                 placement="top"
                               >
@@ -2020,17 +2030,33 @@ export function QuizOpenTemplate() {
                     </div>
                   )}
 
-                  <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-my-2">답변노출유형</div>
-                  <select
-                    className="tw-h-12 tw-w-[200px] form-select block tw-px-4 tw-mt-2 tw-rounded-xl"
-                    onChange={handleAnswerExposureTypeChange}
-                    value={answerExposureType}
-                    aria-label="Default select example"
-                  >
-                    <option value="0100">교수자 답변노출</option>
-                    <option value="0200">AI 답변노출</option>
-                    <option value="0300">교수자+AI 답변노출</option>
-                  </select>
+                  <div className="tw-flex tw-flex-row tw-gap-5">
+                    <div className="tw-flex-1/12">
+                      <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-my-2">답변노출유형</div>
+                      <select
+                        className="tw-h-10 tw-w-[200px] form-select block tw-px-4 tw-mt-2 tw-rounded"
+                        onChange={handleAnswerExposureTypeChange}
+                        value={answerExposureType}
+                        aria-label="Default select example"
+                      >
+                        <option value="0100">교수자 답변노출</option>
+                        <option value="0200">AI 답변노출</option>
+                        <option value="0300">교수자+AI 답변노출</option>
+                      </select>
+                    </div>
+                    <div className="tw-flex-1/12">
+                      <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-my-2">답변공개유형</div>
+                      <select
+                        className="tw-h-10 tw-w-[200px] form-select block tw-px-4 tw-mt-2 tw-rounded"
+                        onChange={handleAnswerPublishTypeChange}
+                        value={answerPublishType}
+                        aria-label="Default select example"
+                      >
+                        <option value="0001">공개</option>
+                        <option value="0002">비공개</option>
+                      </select>
+                    </div>
+                  </div>
 
                   <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-my-2">학습 주제</div>
                   <TextField

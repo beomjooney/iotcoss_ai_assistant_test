@@ -240,9 +240,14 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   const [selectedOption, setSelectedOption] = useState('true');
   const [feedbackType, setFeedbackType] = useState('0100');
   const [answerExposureType, setAnswerExposureType] = useState('0100');
+  const [answerPublishType, setAnswerPublishType] = useState('0001');
 
   const handleAnswerExposureTypeChange = event => {
     setAnswerExposureType(event.target.value);
+  };
+
+  const handleAnswerPublishTypeChange = event => {
+    setAnswerPublishType(event.target.value);
   };
 
   const handleChange = event => {
@@ -537,6 +542,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     console.log(jobsName);
     setPersonName(jobsName || []);
     setAnswerExposureType(clubForm.answerExposureType);
+    setAnswerPublishType(clubForm.answerPublishType);
     setButtonFlag(true);
 
     const transformQuizData = quizData => {
@@ -1381,12 +1387,12 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
       studyKeywords: studyKeywords || '',
       quizOpenType: quizType,
       description: '',
-      answerPublishType: '0001',
       clubTemplatePublishType: '0001',
       clubRecruitType: '0100',
       useCurrentProfileImage: 'false',
       feedbackType: feedbackType,
       answerExposureType: answerExposureType,
+      answerPublishType: answerPublishType,
     };
 
     const formData = new FormData();
@@ -1416,6 +1422,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     formData.append('form.useCurrentProfileImage', clubFormParams.useCurrentProfileImage);
     formData.append('form.feedbackType', clubFormParams.feedbackType);
     formData.append('form.answerExposureType', clubFormParams.answerExposureType);
+    formData.append('form.answerPublishType', clubFormParams.answerPublishType);
 
     if (selectedImage) {
       console.log('selectedImage', selectedImage);
@@ -2729,17 +2736,33 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                   </div>
                 )}
 
-                <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-my-2">답변노출유형</div>
-                <select
-                  className="tw-h-12 tw-w-[200px] form-select block tw-px-4 tw-mt-2 tw-rounded-xl"
-                  onChange={handleAnswerExposureTypeChange}
-                  value={answerExposureType}
-                  aria-label="Default select example"
-                >
-                  <option value="0100">교수자 답변노출</option>
-                  <option value="0200">AI 답변노출</option>
-                  <option value="0300">교수자+AI 답변노출</option>
-                </select>
+                <div className="tw-flex tw-flex-row tw-gap-5">
+                  <div className="tw-flex-1/12">
+                    <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-my-2">답변노출유형</div>
+                    <select
+                      className="tw-h-10 tw-w-[200px] form-select block tw-px-4 tw-mt-2 tw-rounded"
+                      onChange={handleAnswerExposureTypeChange}
+                      value={answerExposureType}
+                      aria-label="Default select example"
+                    >
+                      <option value="0100">교수자 답변노출</option>
+                      <option value="0200">AI 답변노출</option>
+                      <option value="0300">교수자+AI 답변노출</option>
+                    </select>
+                  </div>
+                  <div className="tw-flex-1/12">
+                    <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-my-2">답변공개유형</div>
+                    <select
+                      className="tw-h-10 tw-w-[200px] form-select block tw-px-4 tw-mt-2 tw-rounded"
+                      onChange={handleAnswerPublishTypeChange}
+                      value={answerPublishType}
+                      aria-label="Default select example"
+                    >
+                      <option value="0001">공개</option>
+                      <option value="0002">비공개</option>
+                    </select>
+                  </div>
+                </div>
                 <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">학습 주제</div>
                 <TextField
                   size="small"
