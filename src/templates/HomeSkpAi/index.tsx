@@ -215,10 +215,10 @@ export function HomeSkpAiTemplate({ logged = false, tenantName = '' }: HomeSkpAi
         )}
       >
         <div className={cx(' main-container  md:tw-flex-row tw-justify-center tw-items-center')}>
-          <div className="tw-text-2xl tw-font-bold tw-text-center tw-text-black tw-mb-3">
+          <div className="tw-text-[20px] tw-font-bold tw-text-center tw-text-black tw-mb-1">
             수업 중 궁금했던 키워드와 내용을 언제든 실시간으로 물어보고,
           </div>
-          <div className="tw-text-2xl tw-font-bold tw-text-center tw-text-black">
+          <div className="tw-text-[20px] tw-font-bold tw-text-center tw-text-black">
             강의자료를 기반으로 응답하는 나만의 AI조교를 통해 효과적으로 학습해보세요!
           </div>
         </div>

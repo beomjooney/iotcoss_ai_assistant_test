@@ -223,7 +223,7 @@ export function HomeSkpQuizTemplate({ logged = false, tenantName = '' }: HomeSkp
       >
         <div
           className={cx(
-            'tw-text-black tw-text-2xl tw-font-bold main-container tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center',
+            'tw-text-black tw-text-[20px] tw-font-bold main-container tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center',
           )}
         >
           메타인지를 위한 핵심 퀴즈를 풀면서 스스로 생각하고성장하는 체계적인 학습을 제공합니다.
