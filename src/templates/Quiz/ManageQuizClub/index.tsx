@@ -444,8 +444,9 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
       console.log('클럽 임시저장 성공');
       console.log('tempData', tempData);
       if (tempData.responseCode === '0000') {
-        setActiveTab('community');
+        // setActiveTab('community');
         refetchGetTemp();
+        alert('퀴즈 수정이 완료되었습니다.');
       } else {
         alert('클럽 임시저장에 실패했습니다. : ' + tempData.responseCode + ' ' + tempData.message);
       }
