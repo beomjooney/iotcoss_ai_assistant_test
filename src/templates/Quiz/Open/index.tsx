@@ -267,7 +267,7 @@ export function QuizOpenTemplate() {
   const [keyWorld, setKeyWorld] = useState('');
   const [myKeyWorld, setMyKeyWorld] = useState('');
   const [answerExposureType, setAnswerExposureType] = useState('0100');
-  const [answerPublishType, setAnswerPublishType] = useState('0001');
+  const [answerPublishType, setAnswerPublishType] = useState('0002');
 
   const handleAnswerExposureTypeChange = event => {
     setAnswerExposureType(event.target.value);
@@ -920,7 +920,7 @@ export function QuizOpenTemplate() {
       studyKeywords: studyKeywords,
       quizOpenType: quizType,
       description: '',
-      answerPublishType: '0001',
+      // answerPublishType: '0001',
       clubTemplatePublishType: '0001',
       clubRecruitType: '0100',
       useCurrentProfileImage: agreements,
@@ -1134,7 +1134,7 @@ export function QuizOpenTemplate() {
       studyKeywords: studyKeywords || '',
       quizOpenType: quizType,
       description: '',
-      answerPublishType: '0001',
+      // answerPublishType: '0001',
       clubTemplatePublishType: '0001',
       clubRecruitType: '0100',
       useCurrentProfileImage: agreements,
@@ -2052,8 +2052,8 @@ export function QuizOpenTemplate() {
                         value={answerPublishType}
                         aria-label="Default select example"
                       >
-                        <option value="0001">공개</option>
-                        <option value="0002">비공개</option>
+                        <option value="0002">공개</option>
+                        <option value="0001">비공개</option>
                       </select>
                     </div>
                   </div>

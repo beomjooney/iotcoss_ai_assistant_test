@@ -240,7 +240,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   const [selectedOption, setSelectedOption] = useState('true');
   const [feedbackType, setFeedbackType] = useState('0100');
   const [answerExposureType, setAnswerExposureType] = useState('0100');
-  const [answerPublishType, setAnswerPublishType] = useState('0001');
+  const [answerPublishType, setAnswerPublishType] = useState('0002');
 
   const handleAnswerExposureTypeChange = event => {
     setAnswerExposureType(event.target.value);
@@ -2758,8 +2758,8 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                       value={answerPublishType}
                       aria-label="Default select example"
                     >
-                      <option value="0001">공개</option>
-                      <option value="0002">비공개</option>
+                      <option value="0002">공개</option>
+                      <option value="0001">비공개</option>
                     </select>
                   </div>
                 </div>
