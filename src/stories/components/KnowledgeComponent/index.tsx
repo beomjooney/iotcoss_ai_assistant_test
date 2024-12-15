@@ -132,8 +132,9 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
 
   useEffect(() => {
     if (deletePostQuizSuccess || hidePostQuizSuccess || publishPostQuizSuccess || recoverPostQuizSuccess) {
-      refetchMyQuiz();
+      console.log('deletePostQuizSuccess', deletePostQuizSuccess);
       refetchMyQuizThresh();
+      refetchMyQuiz();
     }
   }, [deletePostQuizSuccess, hidePostQuizSuccess, publishPostQuizSuccess, recoverPostQuizSuccess]);
 
