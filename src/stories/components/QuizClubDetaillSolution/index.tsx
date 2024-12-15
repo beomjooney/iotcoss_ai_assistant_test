@@ -217,8 +217,7 @@ const QuizClubDetaillSolution = ({
             <img
               src={clubAbout?.clubImageUrl || '/assets/images/banner/Rectangle_190.png'}
               width={320}
-              height={320}
-              className="tw-object-cover  tw-h-full"
+              className="tw-object-cover tw-h-[320px]"
             />
           </div>
           <div className="tw-col-span-2 tw-flex tw-flex-col tw-py-4 tw-pr-4">

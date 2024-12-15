@@ -170,7 +170,12 @@ export function QuizAnswersRoundDetailTemplate({ id }: QuizAnswersRoundDetailTem
             </div>
             <div className="tw-h-[280] tw-relative tw-overflow-hidden tw-rounded-[8.75px] tw-bg-white border border-[#e9ecf2] tw-grid tw-grid-cols-3 tw-gap-4">
               <div className="tw-col-span-1">
-                <img src={contents?.club?.clubImageUrl} width={320} height={320} className="tw-object-cover" />
+                <img
+                  src={contents?.club?.clubImageUrl}
+                  width={320}
+                  height={320}
+                  className="tw-object-cover tw-h-[320px]"
+                />
               </div>
               <div className="tw-col-span-2 tw-flex tw-flex-col tw-py-4 tw-pr-4">
                 <div className="tw-col-span-2 tw-flex tw-flex-col tw-py-4 tw-pr-4">
