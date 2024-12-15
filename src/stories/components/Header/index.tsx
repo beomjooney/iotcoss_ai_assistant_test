@@ -281,7 +281,7 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
               <div className="tw-flex tw-items-center tw-gap-2">
                 <img src="/assets/images/header/sejong_logo.png" width={250} alt="logo" className={cx('image-logo')} />
               </div>
-            ) : tenantName === 'ai' || tenantName === 'quizup' ? (
+            ) : tenantName === 'ai' || tenantName === 'quizup' || tenantName === 'skpai' || tenantName === 'skpquiz' ? (
               <div className="tw-flex tw-items-center tw-gap-2">
                 <img src="/assets/images/devus_2.png" width={92} alt="logo" className={cx('image-logo')} />
               </div>

@@ -21,7 +21,7 @@ const Footer = () => {
             </div>
           </div>
         </div>
-      ) : tenantName === 'ai' || tenantName === 'quizup' ? (
+      ) : tenantName === 'ai' || tenantName === 'quizup' || tenantName === 'skpai' || tenantName === 'skpquiz' ? (
         <div>
           <div className="main-container border-top border-bottom ">
             <div className="tw-relative tw-overflow-hidden tw-fixed tw-bottom-0 tw-flex tw-justify-center tw-items-center">

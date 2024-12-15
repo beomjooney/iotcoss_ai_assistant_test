@@ -167,7 +167,7 @@ export function AdminTemplate({ children }: AdminTemplateProps) {
                 관리 페이지
               </Grid>
               <Grid item xs={7} className="tw-font-semi tw-text-base tw-text-black">
-                관리 메인페이지 설명
+                주요 관리 기능과 시스템 현황을 한눈에 확인하고 조작할 수 있습니다.
               </Grid>
               <Grid item xs={3} justifyContent="flex-end" className="tw-flex"></Grid>
             </Grid>

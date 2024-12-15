@@ -17,6 +17,8 @@ app.prepare().then(() => {
   const b2cServer = express();
   const localServer = express();
   const devusServer = express();
+  const skpQuizServer = express();
+  const skpAiServer = express();
 
   // Serve static files from 'public/assets'
   dsuServer.use('/assets', express.static('public/assets'));
@@ -25,6 +27,8 @@ app.prepare().then(() => {
   b2cServer.use('/assets', express.static('public/assets'));
   localServer.use('/assets', express.static('public/assets'));
   devusServer.use('/assets', express.static('public/assets'));
+  skpQuizServer.use('/assets', express.static('public/assets'));
+  skpAiServer.use('/assets', express.static('public/assets'));
 
   dsuServer.get('/', (req, res) => {
     return app.render(req, res, '/dsu', req.query);
@@ -70,7 +74,6 @@ app.prepare().then(() => {
   });
 
   b2cServer.get('/account/login', (req, res) => {
-    // return app.render(req, res, '/account/login', req.query);
     return app.render(req, res, '/quizup/account/login', req.query);
   });
 
@@ -102,21 +105,29 @@ app.prepare().then(() => {
     return handle(req, res);
   });
 
-  // adminServer.get('/*', (req, res) => {
-  //   return app.render(req, res, `/dsu${req.path}`, req.query);
-  // });
+  skpQuizServer.get('/', (req, res) => {
+    return app.render(req, res, '/skpquiz', req.query);
+  });
 
-  // memberServer.get('/', (req, res) => {
-  //   return app.render(req, res, '/member', req.query)
-  // })
+  skpQuizServer.get('/account/login', (req, res) => {
+    return app.render(req, res, '/skpquiz/account/login', req.query);
+  });
 
-  // memberServer.get('/*', (req, res) => {
-  //   return app.render(req, res, `/member${req.path}`, req.query)
-  // })
+  skpQuizServer.all('*', (req, res) => {
+    return handle(req, res);
+  });
 
-  // memberServer.all('*', (req, res) => {
-  //   return handle(req, res)
-  // })
+  skpAiServer.get('/', (req, res) => {
+    return app.render(req, res, '/skpai', req.query);
+  });
+
+  skpAiServer.get('/account/login', (req, res) => {
+    return app.render(req, res, '/skpai/account/login', req.query);
+  });
+
+  skpAiServer.all('*', (req, res) => {
+    return handle(req, res);
+  });
 
   mainServer.use(vhost('dsu.localhost', dsuServer));
   mainServer.use(vhost('devus.localhost', devusServer));
@@ -124,6 +135,8 @@ app.prepare().then(() => {
   mainServer.use(vhost('ai.localhost', b2bServer));
   mainServer.use(vhost('quizup.localhost', b2cServer));
   mainServer.use(vhost('localhost', localServer));
+  mainServer.use(vhost('skpquiz.localhost', skpQuizServer));
+  mainServer.use(vhost('skpai.localhost', skpAiServer));
 
   // mainServer.use(vhost('lvh.me', memberServer))
   // mainServer.use(vhost('www.lvh.me', memberServer))
