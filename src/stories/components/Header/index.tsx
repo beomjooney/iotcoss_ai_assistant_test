@@ -267,6 +267,7 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
       </ListItemButton>
     </Box>
   );
+
   return (
     <header className={`header ${classOption}`}>
       <nav

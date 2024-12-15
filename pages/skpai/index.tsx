@@ -38,7 +38,7 @@ export function IndexPage({ session, setActiveIndex }: { session: Session; setAc
 
   // TODO 로그인 수정 변경
   return (
-    <div className="tw-h-[2050px]">
+    <div className="tw-h-[2065px]">
       <HomeSkpAiTemplate logged={logged} tenantName="ai" />
     </div>
   );

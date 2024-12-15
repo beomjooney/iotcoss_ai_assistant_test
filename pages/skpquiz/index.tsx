@@ -37,7 +37,7 @@ export function IndexPage({ session, setActiveIndex }: { session: Session; setAc
   if (!isMounted) return null;
 
   return (
-    <div className="tw-h-[1950px]">
+    <div className="tw-h-[1981px]">
       <HomeSkpQuizTemplate logged={logged} tenantName="quizup" />
     </div>
   );
