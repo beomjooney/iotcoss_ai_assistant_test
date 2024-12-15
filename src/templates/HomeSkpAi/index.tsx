@@ -32,34 +32,29 @@ export function HomeSkpAiTemplate({ logged = false, tenantName = '' }: HomeSkpAi
       <div
         className="tw-w-full tw-h-[480px] tw-relative tw-overflow-hidden"
         style={{
-          background:
-            'linear-gradient(to right, rgba(254,226,255,0.59) 0%, rgba(207,238,255,0.59) 64.58%, rgba(186,251,255,0.59) 100%)',
+          background: 'url(/assets/images/main/skpbg.png) no-repeat center center',
+          backgroundSize: 'cover',
         }}
       >
         <section
           className={cx(
-            'top-banner tw-h-full',
+            'top-banner tw-h-full container',
             'hero-section',
             'hero-section-3',
-            'tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center',
+            'tw-flex tw-flex-col md:tw-flex-row tw-justify-start tw-items-center',
           )}
         >
           <div className="tw-flex tw-items-center tw-justify-between tw-relative">
             <div>
-              <p className="  tw-top-[124px] tw-text-4xl tw-font-bold tw-text-left tw-text-black">
-                <span className="tw-text-4xl tw-font-bold tw-text-left tw-text-black">전문가와 함께하는 학습,</span>
+              <p className="  tw-top-[110px] tw-text-4xl tw-text-left tw-text-black">
+                <span className="tw-text-2xl  tw-text-left tw-text-gray-700">퀴즈를 통해 스스로 성장하는 학습,</span>
                 <br />
-                <span className="tw-text-4xl tw-font-bold tw-text-left tw-text-black">데브어스 AI조교</span>
+                <span className="tw-text-2xl tw-font-bold tw-text-left tw-text-black ">
+                  [웹풀스택 개발자 과정 7기]와 함께하는
+                </span>
               </p>
-
-              <p className=" tw-text-lg tw-text-left tw-text-black tw-py-10">
-                <span className="tw-text-lg tw-text-left tw-text-black">
-                  AI 기능으로 구축된 체계적이고 효율적인 학습관리 시스템!
-                </span>
-                <br />
-                <span className="tw-text-lg tw-text-left tw-text-black">
-                  이 시대 최고의 리더와 함께 학습할 수 있습니다!
-                </span>
+              <p className=" tw-text-lg tw-text-left tw-text-black tw-py-10 tw-mb-0">
+                <span className="tw-text-3xl tw-font-bold tw-text-left tw-text-black">DevUs AI조교</span>
               </p>
               <button
                 onClick={() => {
@@ -80,13 +75,11 @@ export function HomeSkpAiTemplate({ logged = false, tenantName = '' }: HomeSkpAi
               >
                 <p className=" tw-text-base tw-font-bold tw-text-center tw-text-white">데브어스 AI조교 체험하기</p>
               </button>
+              <div className="tw-flex tw-flex-row tw-gap-2 tw-justify-start tw-items-center tw-mt-2">
+                <img src="/assets/images/main/skp1.png" className="tw-h-[40px]" />
+                <img src="/assets/images/main/skp2.png" className="tw-h-[100%]" />
+              </div>
             </div>
-          </div>
-          <div className="tw-flex tw-items-center tw-justify-center tw-mt-[45px]">
-            <img
-              src="/assets/images/main/ba02_2.png"
-              className="tw-w-[578px] tw-h-[437px]  tw-left-[924px] tw-top-[82px] tw-object-cover"
-            />
           </div>
         </section>
       </div>
@@ -218,13 +211,30 @@ export function HomeSkpAiTemplate({ logged = false, tenantName = '' }: HomeSkpAi
           'top-banner',
           'hero-section',
           'hero-section-3',
+          'tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center tw-py-20 tw-bg-[#f8f8f8]',
+        )}
+      >
+        <div className={cx(' main-container  md:tw-flex-row tw-justify-center tw-items-center')}>
+          <div className="tw-text-2xl tw-font-bold tw-text-center tw-text-black tw-mb-3">
+            수업 중 궁금했던 키워드와 내용을 언제든 실시간으로 물어보고,
+          </div>
+          <div className="tw-text-2xl tw-font-bold tw-text-center tw-text-black">
+            강의자료를 기반으로 응답하는 나만의 AI조교를 통해 효과적으로 학습해보세요!
+          </div>
+        </div>
+      </section>
+      <section
+        className={cx(
+          'top-banner',
+          'hero-section',
+          'hero-section-3',
           'tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center',
         )}
       >
         <div className="tw-w-full md:tw-w-[1120px] tw-h-[320px] md:tw-h-[450px] tw-relative tw-overflow-hidden tw-rounded-[20px]">
           <div className="tw-w-full md:tw-w-[1280px] tw-h-[391px] tw-absolute tw-left-0 md:tw-left-[-1px] tw-top-0 md:tw-top-[-30px] tw-bg-white/20" />
           <p className="tw-absolute tw-left-[24px] tw-top-[40px] md:tw-left-[57px] md:tw-top-[85px] tw-text-base tw-font-bold tw-text-left tw-text-black">
-            DevUs AI Assistant
+            With SK planet , T아카데미
           </p>
           <div className="tw-mt-[130px] tw-ml-[54px] ">
             <p className="tw-text-[34px] tw-text-left tw-text-black">
@@ -238,15 +248,6 @@ export function HomeSkpAiTemplate({ logged = false, tenantName = '' }: HomeSkpAi
               <div className="tw-w-[166px] tw-ml-[154px] tw-h-[3px] tw-bg-[#1b4595]" />
             </div>
           </div>
-          {/* <p className="tw-absolute tw-left-[24px] tw-top-[70px] md:tw-left-[57px] md:tw-top-[146px] tw-text-xl md:tw-text-[32px] tw-text-left tw-text-black">
-            <span className="tw-text-xl md:tw-text-[32px] tw-text-left tw-text-black">CREATIVE </span>
-            <span className="tw-text-xl md:tw-text-[32px] tw-font-bold tw-text-left tw-text-black">LEADERSHIP</span>
-          </p>
-          <p className="tw-absolute tw-left-[224px] tw-top-[70px] md:tw-left-[257px] md:tw-top-[146px] tw-text-xl md:tw-text-[32px] tw-text-left tw-text-black">
-            <span className="tw-text-xl md:tw-text-[32px] tw-text-left tw-text-black">CREATIVE </span>
-            <span className="tw-text-xl md:tw-text-[32px] tw-font-bold tw-text-left tw-text-black">LEADERSHIP</span>
-          </p> */}
-          {/* <div className="tw-w-[48px] md:tw-w-[190px] tw-h-[2px] md:tw-h-[3px] tw-absolute tw-left-[60px] md:tw-left-[210px] tw-top-[90px] md:tw-top-[190px] tw-bg-[#1B4595]" /> */}
           <p className="tw-absolute tw-left-[24px] tw-top-[110px] md:tw-left-[57px] md:tw-top-[239px] tw-text-sm md:tw-text-base tw-font-medium tw-text-left tw-text-black">
             누구나 처음은 어렵습니다. 생소한 키워드, 이해되지 않는 설명, 나만 모르는 것 같은 수업 내용들
             <br />
@@ -266,29 +267,8 @@ export function HomeSkpAiTemplate({ logged = false, tenantName = '' }: HomeSkpAi
           />
         </div>
       </section>
-      <section
-        className={cx(
-          'top-banner',
-          'hero-section',
-          'hero-section-3',
-          'tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center',
-        )}
-      >
-        <div className={cx('main-container tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center')}>
-          <div className="tw-w-full tw-flex tw-flex-col md:tw-flex-row tw-gap-4 md:tw-gap-5">
-            <img
-              src="/assets/images/main/memo1.png"
-              className="tw-w-[553px]  md:tw-h-auto tw-overflow-hidden tw-rounded-[20px] tw-m-1 md:tw-m-0"
-            />
 
-            <img
-              src="/assets/images/main/memo2.png"
-              className="tw-w-[553px]  md:tw-h-auto tw-object-cover tw-rounded-[20px] tw-m-1 md:tw-m-0"
-            />
-          </div>
-        </div>
-      </section>
-      <section className={cx('main-container', 'hero-section-3 tw-h-[918px] tw-bg-[#f8f8f8]')}>
+      <section className={cx('main-container', 'hero-section-3 tw-h-[998px] tw-bg-[#f8f8f8]')}>
         <div className="!tw-px-[180px] ">
           {/* 첫 번째 섹션 */}
           <div
@@ -329,11 +309,7 @@ export function HomeSkpAiTemplate({ logged = false, tenantName = '' }: HomeSkpAi
           </div>
         </div>
       </section>
-      <div className={cx('container tw-py-14  ')}>
-        <div className="tw-w-full tw-relative tw-overflow-hidden tw-px-10">
-          <img src="/assets/images/main/ai-bottom.png" className="tw-w-full tw-object-cover" />
-        </div>
-
+      <div className={cx('container  ')}>
         {isClient && modalIsProfessor && (
           <ProfessorExpModal
             title="교수자 체험하기"
