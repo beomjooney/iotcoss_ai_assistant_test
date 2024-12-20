@@ -206,7 +206,7 @@ const LectureBreakerInfo = ({
             </div>
           </div>
         </div>
-        <div className="tw-h-[315px] tw-flex tw-items-start tw-justify-center tw-my-3 tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white border border-[#e9ecf2]">
+        <div className="tw-h-[315px] tw-flex tw-items-start tw-justify-center tw-my-3 tw-relative tw-overflow-y-auto tw-rounded-lg tw-bg-white border border-[#e9ecf2]">
           <div className="tw-w-full tw-flex tw-justify-between tw-items-start">
             <div className="tw-w-1/12 tw-flex tw-justify-center tw-items-center tw-mt-7">
               <svg

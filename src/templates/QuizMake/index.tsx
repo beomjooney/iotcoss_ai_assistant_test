@@ -8,7 +8,15 @@ import Box from '@mui/system/Box';
 import SearchIcon from '@mui/icons-material/Search';
 import { UseQueryResult } from 'react-query';
 import { useMyQuiz, useMyQuizContents, useMyQuizThresh } from 'src/services/jobs/jobs.queries';
-import { useQuizSave, useAIQuizSave, useAIQuizAnswer, useQuizContentSave } from 'src/services/quiz/quiz.mutations';
+import {
+  useQuizSave,
+  useAIQuizSave,
+  useAIQuizAnswer,
+  useQuizContentSave,
+  useQuizExcelSave,
+  useQuizAiExcelSave,
+  useContentExcelSave,
+} from 'src/services/quiz/quiz.mutations';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import KnowledgeComponent from 'src/stories/components/KnowledgeComponent';
 import ArticleList from 'src/stories/components/ArticleList';
@@ -32,7 +40,7 @@ import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
-import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
+import { useQuizFileDownload, useQuizKnowledgeDownload } from 'src/services/quiz/quiz.queries';
 import { v4 as uuidv4 } from 'uuid';
 export const generateUUID = () => {
   return uuidv4();
@@ -83,6 +91,7 @@ export function QuizMakeTemplate() {
   const [isMounted, setIsMounted] = useState(false); // Need this for the react-tooltip
   const [personName, setPersonName] = React.useState<string[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isModalExcelOpen, setIsModalExcelOpen] = useState<boolean>(false);
   const [isContentModalOpen, setIsContentModalOpen] = useState<boolean>(false);
   const [isContentModalClick, setIsContentModalClick] = useState<boolean>(false);
   const [jobGroup, setJobGroup] = useState([]);
@@ -252,24 +261,126 @@ export function QuizMakeTemplate() {
   const { mutate: onAIQuizSave, isSuccess: updateSuccess, isError: updateError, data: aiQuizData } = useAIQuizSave();
   const { mutate: onAIQuizAnswer, isSuccess: answerSuccess, data: aiQuizAnswerData } = useAIQuizAnswer();
 
-  const { isFetched: isParticipantListFetcheds, isSuccess: isParticipantListSuccess } = useQuizFileDownload(
-    key,
-    data => {
-      console.log('file download', data, fileName);
-      if (data) {
-        // blob 데이터를 파일로 저장하는 로직
-        const url = window.URL.createObjectURL(new Blob([data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', fileName); // 다운로드할 파일 이름과 확장자를 설정합니다.
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        setKey('');
-        setFileName('');
+  //퀴즈 등록 변수
+  const [knowledgeFileName, setKnowledgeFileName] = useState('');
+  const [knowledgeFile, setKnowledgeFile] = useState([]);
+  const [knowledgeQuizFileName, setKnowledgeQuizFileName] = useState('');
+  const [knowledgeQuizFile, setKnowledgeQuizFile] = useState([]);
+  const [knowledgeQuizAIFileName, setKnowledgeQuizAIFileName] = useState('');
+  const [knowledgeQuizAIFile, setKnowledgeQuizAIFile] = useState([]);
+
+  const [excelSuccessFlag, setExcelSuccessFlag] = useState(false);
+  const [quizExcelSuccessFlag, setQuizExcelSuccessFlag] = useState(false);
+  const [quizAIExcelSuccessFlag, setQuizAIExcelSuccessFlag] = useState(false);
+
+  //excel 업로드
+  const { mutate: onExcelSave, isSuccess: excelSuccess, isError: excelError } = useContentExcelSave();
+  const { mutate: onQuizExcelSave, isSuccess: quizExcelSuccess, isError: quizExcelError } = useQuizExcelSave();
+  const { mutate: onQuizAIExcelSave, isSuccess: quizAIExcelSuccess, isError: quizAIExcelError } = useQuizAiExcelSave();
+
+  useEffect(() => {
+    if (excelSuccess) {
+      setExcelSuccessFlag(true);
+    }
+  }, [excelSuccess]);
+
+  useEffect(() => {
+    if (quizExcelSuccess) {
+      setQuizExcelSuccessFlag(true);
+    }
+  }, [quizExcelSuccess]);
+
+  useEffect(() => {
+    if (quizAIExcelSuccess) {
+      setQuizAIExcelSuccessFlag(true);
+    }
+  }, [quizAIExcelSuccess]);
+
+  const onCloseExcelModal = () => {
+    setIsModalExcelOpen(false);
+    setKnowledgeFileName('');
+    setKnowledgeQuizFileName('');
+    setKnowledgeQuizAIFileName('');
+    setKnowledgeFile([]);
+    setKnowledgeQuizFile([]);
+    setKnowledgeQuizAIFile([]);
+    setExcelSuccessFlag(false);
+    setQuizExcelSuccessFlag(false);
+    setQuizAIExcelSuccessFlag(false);
+    refetchMyQuiz();
+    refetchMyQuizContent();
+  };
+
+  //excel 다운로드
+  const {
+    refetch: isExcelDownloadFetcheds,
+    isSuccess: isExcelDownloadSuccess,
+    isError: isExcelDownloadError,
+  } = useQuizKnowledgeDownload(key, data => {
+    console.log('file download', data, fileName);
+    if (data) {
+      // blob 데이터를 파일로 저장하는 로직
+      const url = window.URL.createObjectURL(new Blob([data]));
+      const link = document.createElement('a');
+      link.href = url;
+      if (key === 'content') {
+        link.setAttribute('download', '지식콘텐츠_템플릿.xlsx'); // 다운로드할 파일 이름과 확장자를 설정합니다.
+      } else if (key === 'quiz') {
+        link.setAttribute('download', '지식콘텐츠/퀴즈_템플릿.xlsx'); // 다운로드할 파일 이름과 확장자를 설정합니다.
+      } else if (key === 'quiz-ai') {
+        link.setAttribute('download', '지식콘텐츠/퀴즈_AI퀴즈_템플릿.xlsx'); // 다운로드할 파일 이름과 확장자를 설정합니다.
+      } else {
+        link.setAttribute('download', '템플릿.xlsx'); // 다운로드할 파일 이름과 확장자를 설정합니다.
       }
-    },
-  );
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setKey('');
+      setFileName('');
+    }
+  });
+
+  useEffect(() => {
+    if (isExcelDownloadError) {
+      alert('퀴즈 템플릿 다운로드 중 오류가 발생했습니다.');
+    }
+  }, [isExcelDownloadError]);
+
+  useEffect(() => {
+    if (key) {
+      isExcelDownloadFetcheds();
+    }
+  }, [key]);
+
+  const handleQuizAdd = () => {
+    if (!knowledgeFile && !knowledgeQuizFile && !knowledgeQuizAIFile) {
+      alert('엑셀 파일을 업로드해주세요.');
+      return;
+    }
+
+    if (knowledgeFile.length > 0) {
+      const formData = new FormData();
+      formData.append('file', knowledgeFile[0]);
+      onExcelSave(formData);
+    }
+
+    if (knowledgeQuizFile.length > 0) {
+      const formData = new FormData();
+      formData.append('file', knowledgeQuizFile[0]);
+      onQuizExcelSave(formData);
+    }
+
+    if (knowledgeQuizAIFile.length > 0) {
+      const formData = new FormData();
+      formData.append('file', knowledgeQuizAIFile[0]);
+      onQuizAIExcelSave(formData);
+    }
+    console.log('퀴즈 등록');
+  };
+
+  const handleExcelDownload = (type: string) => {
+    setKey(type);
+  };
 
   useEffect(() => {
     if (updateError) {
@@ -714,6 +825,35 @@ export function QuizMakeTemplate() {
     setModelAnswerFinal(event.target.value);
   };
 
+  const handleExcelChange = (event, type: string) => {
+    const file = event.target.files[0];
+    const allowedExtensions = /(\.xlsx)$/i;
+
+    if (!allowedExtensions.exec(file.name)) {
+      alert('허용되지 않는 파일 형식입니다. xlsx 파일만 업로드 가능합니다.');
+      event.target.value = ''; // input 초기화
+      return;
+    }
+
+    if (file) {
+      if (type === 'content') {
+        setKnowledgeFileName(file.name);
+        setKnowledgeFile([file]);
+        setExcelSuccessFlag(false);
+        setQuizAIExcelSuccessFlag(false);
+      } else if (type === 'quiz') {
+        setKnowledgeQuizFileName(file.name);
+        setKnowledgeQuizFile([file]);
+        setQuizExcelSuccessFlag(false);
+      } else if (type === 'quiz-ai') {
+        setKnowledgeQuizAIFileName(file.name);
+        setKnowledgeQuizAIFile([file]);
+        setQuizAIExcelSuccessFlag(false);
+      }
+    }
+    event.target.value = null;
+  };
+
   const updateQuizList = newQuiz => {
     const index = quizList.findIndex(quiz => quiz.question === newQuiz.question);
 
@@ -794,19 +934,29 @@ export function QuizMakeTemplate() {
       <div className={cx('container')}>
         <div className="tw-py-[60px] tw-pt-[50px]">
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
-            <Grid item xs={12} sm={2} className="tw-font-bold sm:tw-text-3xl tw-text-2xl tw-text-black">
+            <Grid item xs={12} sm={1.5} className="tw-font-bold sm:tw-text-3xl tw-text-2xl tw-text-black">
               My퀴즈
             </Grid>
-            <Grid item xs={12} sm={6} className="tw-font-semi tw-text-base tw-text-black">
+            <Grid item xs={12} sm={4.5} className="tw-font-semi tw-text-base tw-text-black">
               <div>나와 학습자들의 성장을 돕기위해 내가 만든 퀴즈 리스트예요!</div>
             </Grid>
-            <Grid item xs={12} sm={4} justifyContent="flex-end" className="tw-flex">
+            <Grid item xs={12} sm={6} justifyContent="flex-end" className="tw-flex">
+              <BootstrapTooltip title="엑셀 파일을 업로드하여 퀴즈를 일괄등록할 수 있어요!" placement="top">
+                <button
+                  type="button"
+                  onClick={() => setIsModalExcelOpen(true)}
+                  className=" tw-mr-3 tw-font-bold tw-rounded-md tw-text-sm  tw-py-3"
+                  style={{ border: '1px solid #B8B8B8', color: '#2474ED', width: '165px' }}
+                >
+                  + 지식/퀴즈 일괄등록
+                </button>
+              </BootstrapTooltip>
               <BootstrapTooltip title="지식콘텐츠 등록과 퀴즈만들기를 동시에 할 수 있어요!" placement="top">
                 <button
                   type="button"
                   onClick={() => handleAddClick(false)}
-                  className=" tw-text-[#e11837] tw-mr-3 tw-font-bold tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
-                  style={{ border: '1px solid #B8B8B8', color: '#e11837', width: '150px' }}
+                  className="tw-mr-3 tw-font-bold tw-rounded-md tw-text-sm  tw-py-3"
+                  style={{ border: '1px solid #B8B8B8', color: '#2474ED', width: '165px' }}
                 >
                   + 퀴즈 만들기
                 </button>
@@ -815,8 +965,8 @@ export function QuizMakeTemplate() {
                 <button
                   type="button"
                   onClick={() => handleAddClick(true)}
-                  style={{ border: '1px solid #B8B8B8', color: 'black', width: '150px' }}
-                  className="tw-text-black tw-bg-white tw-font-bold tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
+                  style={{ border: '1px solid #B8B8B8', color: 'black', width: '165px' }}
+                  className="tw-text-black tw-bg-white tw-font-bold tw-rounded-md tw-text-sm  tw-py-3"
                 >
                   +지식콘텐츠 등록
                 </button>
@@ -945,24 +1095,6 @@ export function QuizMakeTemplate() {
                       </p>
                     }
                   />
-                  {/* <FormControlLabel
-                    value="0004"
-                    control={
-                      <Radio
-                        sx={{
-                          color: '#ced4de',
-                          '&.Mui-checked': { color: '#e11837' },
-                        }}
-                        icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
-                        checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
-                      />
-                    }
-                    label={
-                      <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                        많이 복사된 순
-                      </p>
-                    }
-                  /> */}
                   <FormControlLabel
                     value="0005"
                     control={
@@ -1486,21 +1618,9 @@ export function QuizMakeTemplate() {
                 ) : (
                   <>
                     <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">학습 키워드</div>
-                    {/* <TagsInput
-                      value={selected1}
-                      onChange={setSelected1}
-                      name="fruits"
-                      placeHolder="학습 키워드 입력 후 엔터를 쳐주세요."
-                    /> */}
                     <Tag value={selected1} onChange={setSelected1} placeHolder="학습 키워드 입력 후 엔터를 쳐주세요." />
                     <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">스킬</div>
                     <Tag value={selected2} onChange={setSelected2} placeHolder="스킬 입력 후 엔터를 쳐주세요." />
-                    {/* <TagsInput
-                      value={selected2}
-                      onChange={setSelected2}
-                      name="fruits"
-                      placeHolder="스킬 입력 후 엔터를 쳐주세요."
-                    /> */}
                   </>
                 )}
               </AccordionDetails>
@@ -1769,6 +1889,370 @@ export function QuizMakeTemplate() {
               </div>
             </div>
           )}
+        </div>
+      </MentorsModal>
+      <MentorsModal
+        isOpen={isModalExcelOpen}
+        onAfterClose={() => {
+          onCloseExcelModal();
+        }}
+        title="지식/퀴즈 일괄 등록하기"
+        isContentModalClick={false}
+        height="60%"
+      >
+        <div className="tw-px-20 tw-pt-10">
+          <div className="tw-mb-14">
+            <div className="tw-flex tw-flex-row tw-items-start tw-justify-between tw-mb-5">
+              <div className=" tw-font-bold tw-text-black tw-flex tw-items-center">지식콘텐츠 일괄등록하기</div>
+              {excelSuccessFlag && (
+                <div className="tw-flex tw-items-center tw-justify-center tw-ml-2">
+                  <svg
+                    width="24"
+                    height="22"
+                    viewBox="0 0 48 48"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="tw-w-6 tw-h-6 tw-relative"
+                    preserveAspectRatio="xMidYMid meet"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M24 42C26.3638 42 28.7044 41.5344 30.8883 40.6298C33.0722 39.7253 35.0565 38.3994 36.7279 36.7279C38.3994 35.0565 39.7253 33.0722 40.6298 30.8883C41.5344 28.7044 42 26.3638 42 24C42 21.6362 41.5344 19.2956 40.6298 17.1117C39.7253 14.9278 38.3994 12.9435 36.7279 11.2721C35.0565 9.60062 33.0722 8.27475 30.8883 7.37017C28.7044 6.46558 26.3638 6 24 6C19.2261 6 14.6477 7.89642 11.2721 11.2721C7.89642 14.6477 6 19.2261 6 24C6 28.7739 7.89642 33.3523 11.2721 36.7279C14.6477 40.1036 19.2261 42 24 42ZM23.536 31.28L33.536 19.28L30.464 16.72L21.864 27.038L17.414 22.586L14.586 25.414L20.586 31.414L22.134 32.962L23.536 31.28Z"
+                      fill="#478AF5"
+                    ></path>
+                  </svg>
+                  <span className="tw-ml-2 tw-font-medium tw-text-black">엑셀 파일 업로드 완료</span>
+                </div>
+              )}
+            </div>
+            <div className="tw-flex tw-items-center tw-justify-start tw-gap-4">
+              <button
+                onClick={() => handleExcelDownload('content')}
+                className="tw-text-sm tw-text-black tw-w-40 tw-h-10 tw-rounded tw-bg-white tw-border border tw-flex tw-items-center tw-justify-center tw-gap-2"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-5 tw-h-5 tw-relative"
+                  preserveAspectRatio="xMidYMid meet"
+                >
+                  <path
+                    d="M3.33203 13.3367V14.1667C3.33203 14.8297 3.59542 15.4656 4.06426 15.9344C4.53311 16.4033 5.16899 16.6667 5.83203 16.6667H14.1654C14.8284 16.6667 15.4643 16.4033 15.9331 15.9344C16.402 15.4656 16.6654 14.8297 16.6654 14.1667V13.3333M9.9987 3.75V12.9167M9.9987 12.9167L12.9154 10M9.9987 12.9167L7.08203 10"
+                    stroke="black"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  ></path>
+                </svg>
+                양식 다운로드
+              </button>
+              {/* 첫 번째 양식 업로드 버튼 */}
+              <label htmlFor="dropzone-file3" className="tw-cursor-pointer">
+                <div className="tw-text-black border tw-text-sm tw-w-40 tw-h-10 tw-rounded tw-bg-white tw-flex tw-items-center tw-justify-center tw-gap-2">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-5 tw-h-5 tw-relative"
+                    preserveAspectRatio="xMidYMid meet"
+                  >
+                    <path
+                      d="M3.33203 13.3367V14.1667C3.33203 14.8297 3.59542 15.4656 4.06426 15.9344C4.53311 16.4033 5.16899 16.6667 5.83203 16.6667H14.1654C14.8284 16.6667 15.4643 16.4033 15.9331 15.9344C16.402 15.4656 16.6654 14.8297 16.6654 14.1667V13.3333M9.9987 12.9167V3.75M9.9987 3.75L12.9154 6.66667M9.9987 3.75L7.08203 6.66667"
+                      stroke="black"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    ></path>
+                  </svg>
+                  양식 업로드
+                </div>
+                <input
+                  id="dropzone-file3"
+                  type="file"
+                  className="tw-hidden"
+                  onChange={e => handleExcelChange(e, 'content')}
+                />
+              </label>
+
+              <div
+                className={`tw-flex tw-items-center tw-justify-start tw-gap-2 tw-w-[200px] tw-h-10 tw-rounded tw-bg-white tw-text-sm tw-text-left ${
+                  knowledgeFileName ? 'tw-text-blue-500 tw-underline' : 'tw-text-gray-500 '
+                }`}
+              >
+                {knowledgeFileName || '선택한 파일 없음'}
+                {knowledgeFileName && (
+                  <div
+                    className="tw-cursor-pointer"
+                    onClick={() => {
+                      setKnowledgeFileName('');
+                      setKnowledgeFile(null);
+                    }}
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-4 tw-h-4 tw-relative"
+                      preserveAspectRatio="xMidYMid meet"
+                    >
+                      <rect width="16" height="16" rx="4" fill="#F6F7FB"></rect>
+                      <path
+                        d="M5.6 11L5 10.4L7.4 8L5 5.6L5.6 5L8 7.4L10.4 5L11 5.6L8.6 8L11 10.4L10.4 11L8 8.6L5.6 11Z"
+                        fill="#313B49"
+                      ></path>
+                    </svg>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="tw-mb-14">
+            <div className="tw-flex tw-flex-row tw-items-start tw-justify-between tw-mb-5">
+              <div className=" tw-font-bold tw-text-black tw-flex tw-items-center ">퀴즈+지식콘텐츠 일괄등록하기</div>
+              {quizExcelSuccessFlag && (
+                <div className="tw-flex tw-items-center tw-justify-center tw-ml-2">
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 48 48"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="tw-w-6 tw-h-6 tw-relative"
+                    preserveAspectRatio="xMidYMid meet"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M24 42C26.3638 42 28.7044 41.5344 30.8883 40.6298C33.0722 39.7253 35.0565 38.3994 36.7279 36.7279C38.3994 35.0565 39.7253 33.0722 40.6298 30.8883C41.5344 28.7044 42 26.3638 42 24C42 21.6362 41.5344 19.2956 40.6298 17.1117C39.7253 14.9278 38.3994 12.9435 36.7279 11.2721C35.0565 9.60062 33.0722 8.27475 30.8883 7.37017C28.7044 6.46558 26.3638 6 24 6C19.2261 6 14.6477 7.89642 11.2721 11.2721C7.89642 14.6477 6 19.2261 6 24C6 28.7739 7.89642 33.3523 11.2721 36.7279C14.6477 40.1036 19.2261 42 24 42ZM23.536 31.28L33.536 19.28L30.464 16.72L21.864 27.038L17.414 22.586L14.586 25.414L20.586 31.414L22.134 32.962L23.536 31.28Z"
+                      fill="#478AF5"
+                    ></path>
+                  </svg>
+                  <span className="tw-ml-2 tw-font-medium tw-text-black">엑셀 파일 업로드 완료</span>
+                </div>
+              )}
+            </div>
+            <div className="tw-flex tw-items-center tw-justify-start tw-gap-4">
+              <button
+                onClick={() => handleExcelDownload('quiz')}
+                className="tw-text-sm tw-text-black tw-w-40 tw-h-10 tw-rounded tw-bg-white tw-border border tw-flex tw-items-center tw-justify-center tw-gap-2"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-5 tw-h-5 tw-relative"
+                  preserveAspectRatio="xMidYMid meet"
+                >
+                  <path
+                    d="M3.33203 13.3367V14.1667C3.33203 14.8297 3.59542 15.4656 4.06426 15.9344C4.53311 16.4033 5.16899 16.6667 5.83203 16.6667H14.1654C14.8284 16.6667 15.4643 16.4033 15.9331 15.9344C16.402 15.4656 16.6654 14.8297 16.6654 14.1667V13.3333M9.9987 3.75V12.9167M9.9987 12.9167L12.9154 10M9.9987 12.9167L7.08203 10"
+                    stroke="black"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  ></path>
+                </svg>
+                양식 다운로드
+              </button>
+              {/* 첫 번째 양식 업로드 버튼 */}
+              <label htmlFor="dropzone-file4" className="tw-cursor-pointer">
+                <div className="tw-text-black border tw-text-sm tw-w-40 tw-h-10 tw-rounded tw-bg-white tw-flex tw-items-center tw-justify-center tw-gap-2">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-5 tw-h-5 tw-relative"
+                    preserveAspectRatio="xMidYMid meet"
+                  >
+                    <path
+                      d="M3.33203 13.3367V14.1667C3.33203 14.8297 3.59542 15.4656 4.06426 15.9344C4.53311 16.4033 5.16899 16.6667 5.83203 16.6667H14.1654C14.8284 16.6667 15.4643 16.4033 15.9331 15.9344C16.402 15.4656 16.6654 14.8297 16.6654 14.1667V13.3333M9.9987 12.9167V3.75M9.9987 3.75L12.9154 6.66667M9.9987 3.75L7.08203 6.66667"
+                      stroke="black"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    ></path>
+                  </svg>
+                  양식 업로드
+                </div>
+                <input
+                  id="dropzone-file4"
+                  type="file"
+                  className="tw-hidden"
+                  onChange={e => handleExcelChange(e, 'quiz')}
+                />
+              </label>
+              <div
+                className={`tw-flex tw-items-center tw-justify-start tw-gap-2 tw-w-[200px] tw-h-10 tw-rounded tw-bg-white tw-text-sm tw-text-left ${
+                  knowledgeQuizFileName ? 'tw-text-blue-500 tw-underline' : 'tw-text-gray-500 '
+                }`}
+              >
+                {knowledgeQuizFileName || '선택한 파일 없음'}
+                {knowledgeQuizFileName && (
+                  <div
+                    className="tw-cursor-pointer"
+                    onClick={() => {
+                      setKnowledgeQuizFileName('');
+                      setKnowledgeQuizFile(null);
+                    }}
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-4 tw-h-4 tw-relative"
+                      preserveAspectRatio="xMidYMid meet"
+                    >
+                      <rect width="16" height="16" rx="4" fill="#F6F7FB"></rect>
+                      <path
+                        d="M5.6 11L5 10.4L7.4 8L5 5.6L5.6 5L8 7.4L10.4 5L11 5.6L8.6 8L11 10.4L10.4 11L8 8.6L5.6 11Z"
+                        fill="#313B49"
+                      ></path>
+                    </svg>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="">
+            <div className="tw-flex tw-items-start tw-justify-between tw-mb-5">
+              <div className=" tw-font-bold tw-text-black">퀴즈+지식콘텐츠 일괄등록하기(AI생성)</div>
+              {quizAIExcelSuccessFlag && (
+                <div className="tw-flex tw-items-center tw-justify-center tw-ml-2">
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 48 48"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="tw-w-6 tw-h-6 tw-relative"
+                    preserveAspectRatio="xMidYMid meet"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M24 42C26.3638 42 28.7044 41.5344 30.8883 40.6298C33.0722 39.7253 35.0565 38.3994 36.7279 36.7279C38.3994 35.0565 39.7253 33.0722 40.6298 30.8883C41.5344 28.7044 42 26.3638 42 24C42 21.6362 41.5344 19.2956 40.6298 17.1117C39.7253 14.9278 38.3994 12.9435 36.7279 11.2721C35.0565 9.60062 33.0722 8.27475 30.8883 7.37017C28.7044 6.46558 26.3638 6 24 6C19.2261 6 14.6477 7.89642 11.2721 11.2721C7.89642 14.6477 6 19.2261 6 24C6 28.7739 7.89642 33.3523 11.2721 36.7279C14.6477 40.1036 19.2261 42 24 42ZM23.536 31.28L33.536 19.28L30.464 16.72L21.864 27.038L17.414 22.586L14.586 25.414L20.586 31.414L22.134 32.962L23.536 31.28Z"
+                      fill="#478AF5"
+                    ></path>
+                  </svg>
+                  <span className="tw-ml-2 tw-font-medium tw-text-black">엑셀 파일 업로드 완료</span>
+                </div>
+              )}
+            </div>
+            <div className="tw-flex tw-items-center tw-justify-start tw-gap-4">
+              <button
+                onClick={() => handleExcelDownload('quiz-ai')}
+                className="tw-text-sm tw-text-black tw-w-40 tw-h-10 tw-rounded tw-bg-white tw-border border tw-flex tw-items-center tw-justify-center tw-gap-2"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-5 tw-h-5 tw-relative"
+                  preserveAspectRatio="xMidYMid meet"
+                >
+                  <path
+                    d="M3.33203 13.3367V14.1667C3.33203 14.8297 3.59542 15.4656 4.06426 15.9344C4.53311 16.4033 5.16899 16.6667 5.83203 16.6667H14.1654C14.8284 16.6667 15.4643 16.4033 15.9331 15.9344C16.402 15.4656 16.6654 14.8297 16.6654 14.1667V13.3333M9.9987 3.75V12.9167M9.9987 12.9167L12.9154 10M9.9987 12.9167L7.08203 10"
+                    stroke="black"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  ></path>
+                </svg>
+                양식 다운로드
+              </button>
+              {/* 첫 번째 양식 업로드 버튼 */}
+              <label htmlFor="dropzone-file5" className="tw-cursor-pointer">
+                <div className="tw-text-black border tw-text-sm tw-w-40 tw-h-10 tw-rounded tw-bg-white tw-flex tw-items-center tw-justify-center tw-gap-2">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-5 tw-h-5 tw-relative"
+                    preserveAspectRatio="xMidYMid meet"
+                  >
+                    <path
+                      d="M3.33203 13.3367V14.1667C3.33203 14.8297 3.59542 15.4656 4.06426 15.9344C4.53311 16.4033 5.16899 16.6667 5.83203 16.6667H14.1654C14.8284 16.6667 15.4643 16.4033 15.9331 15.9344C16.402 15.4656 16.6654 14.8297 16.6654 14.1667V13.3333M9.9987 12.9167V3.75M9.9987 3.75L12.9154 6.66667M9.9987 3.75L7.08203 6.66667"
+                      stroke="black"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    ></path>
+                  </svg>
+                  양식 업로드
+                </div>
+                <input
+                  id="dropzone-file5"
+                  type="file"
+                  className="tw-hidden"
+                  onChange={e => handleExcelChange(e, 'quiz-ai')}
+                />
+              </label>
+              <div
+                className={`tw-flex tw-items-center tw-justify-start tw-gap-2 tw-w-[200px] tw-h-10 tw-rounded tw-bg-white tw-text-sm tw-text-left ${
+                  knowledgeQuizAIFileName ? 'tw-text-blue-500 tw-underline' : 'tw-text-gray-500 '
+                }`}
+              >
+                {knowledgeQuizAIFileName || '선택한 파일 없음'}
+                {knowledgeQuizAIFileName && (
+                  <div
+                    className="tw-cursor-pointer"
+                    onClick={() => {
+                      setKnowledgeQuizAIFileName('');
+                      setKnowledgeQuizAIFile(null);
+                    }}
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-4 tw-h-4 tw-relative"
+                      preserveAspectRatio="xMidYMid meet"
+                    >
+                      <rect width="16" height="16" rx="4" fill="#F6F7FB"></rect>
+                      <path
+                        d="M5.6 11L5 10.4L7.4 8L5 5.6L5.6 5L8 7.4L10.4 5L11 5.6L8.6 8L11 10.4L10.4 11L8 8.6L5.6 11Z"
+                        fill="#313B49"
+                      ></path>
+                    </svg>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="tw-flex tw-items-center tw-justify-center tw-w-full tw-mt-12 tw-gap-4">
+              <button
+                onClick={handleQuizAdd}
+                className="tw-flex tw-items-center tw-justify-center tw-w-[150px] tw-h-11 tw-rounded tw-bg-blue-500 tw-text-base tw-text-white tw-text-left"
+              >
+                등록하기
+              </button>
+              <button
+                onClick={onCloseExcelModal}
+                className="tw-flex tw-items-center tw-justify-center tw-w-[150px] tw-h-11 tw-rounded tw-bg-black tw-text-base tw-text-white tw-text-left"
+              >
+                닫기
+              </button>
+            </div>
+          </div>
         </div>
       </MentorsModal>
     </div>

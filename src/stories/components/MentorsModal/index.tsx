@@ -16,6 +16,7 @@ export interface MentorsModalProps {
   closable?: boolean;
   children?: React.ReactNode;
   zIndex?: number;
+  height?: string;
   onAfterClose?: () => void;
 }
 
@@ -28,6 +29,7 @@ function MentorsModal({
   isQuiz = false,
   isContentModalClick = false,
   zIndex = 3030,
+  height = '90%',
   onAfterClose,
 }: MentorsModalProps) {
   const [isShow, setIsShow] = useState<boolean>(false);
@@ -112,11 +114,12 @@ function MentorsModal({
             },
             content: {
               position: 'absolute',
-              top: '50px',
+              top: '50%',
               left: '50%',
-              transform: 'translateX(-50%)',
+              transform: 'translate(-50%, -50%)', // translateX에서 translate로 변경하여 Y축도 중앙 정렬
+              // transform: 'translateX(-50%)',
               width: isContentModalClick ? '1000px' : isProfile ? '680px' : isQuiz ? '750px' : '55%',
-              height: '90%',
+              height: height,
               border: '1px solid #ccc',
               background: '#fff',
               overflow: 'hidden',

@@ -24,6 +24,9 @@ import {
   saveLectureModifyAI,
   saveLectureModifyCur,
   saveAIQuizMyAnswerSavePut,
+  saveExcel,
+  saveQuizExcel,
+  saveQuizAiExcel,
 } from './quiz.api';
 import router from 'next/router';
 
@@ -57,7 +60,7 @@ export const useSavePost = (): UseMutationResult => {
 
 export const useQuizSave = (): UseMutationResult => {
   const queryClient = useQueryClient();
-  return useMutation<any, any, any>(requestBody => savePost(requestBody), {
+  return useMutation<any, any, any>(requestBody => saveExcel(requestBody), {
     onError: (error, variables, context) => {
       const { code, message } = error;
       alert(`mutation error : [${code}] ${message}`);
@@ -67,6 +70,61 @@ export const useQuizSave = (): UseMutationResult => {
       const { responseCode, message } = data.data;
       if (responseCode === '0000') {
         alert('퀴즈가 등록되었습니다.');
+      } else {
+        alert(`error : [${responseCode}] ${message}`);
+      }
+    },
+  });
+};
+
+export const useQuizExcelSave = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => saveQuizExcel(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CAMENITY').all),
+    onSuccess: async data => {
+      const { responseCode, message } = data.data;
+      if (responseCode === '0000') {
+        // alert('지식콘텐츠/퀴즈가 등록되었습니다.');
+      } else {
+        alert(`error : [${responseCode}] ${message}`);
+      }
+    },
+  });
+};
+export const useQuizAiExcelSave = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => saveQuizAiExcel(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CAMENITY').all),
+    onSuccess: async data => {
+      const { responseCode, message } = data.data;
+      if (responseCode === '0000') {
+        // alert('지식콘텐츠/퀴즈(AI생성) 등록되었습니다.');
+      } else {
+        alert(`error : [${responseCode}] ${message}`);
+      }
+    },
+  });
+};
+export const useContentExcelSave = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => saveExcel(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CAMENITY').all),
+    onSuccess: async data => {
+      const { responseCode, message } = data.data;
+      if (responseCode === '0000') {
+        // alert('지식콘텐츠가 등록되었습니다.');
       } else {
         alert(`error : [${responseCode}] ${message}`);
       }

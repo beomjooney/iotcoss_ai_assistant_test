@@ -23,6 +23,10 @@ export async function getCamenities(args: CamenityProps) {
   return { data: data || [], nextPage: params.page + 1, totalPage };
 }
 export const savePost = async body => await axiosGeneralAPI().post(`/api/v1/quizzes`, body);
+export const saveExcel = async body => await axiosGeneralAPI().post(`/api/v1/quizzes/upload/content`, body);
+export const saveQuizExcel = async body => await axiosGeneralAPI().post(`/api/v1/quizzes/upload/quiz`, body);
+export const saveQuizAiExcel = async body => await axiosGeneralAPI().post(`/api/v1/quizzes/upload/quiz-ai`, body);
+
 export const saveContent = async body => {
   const { data } = await axiosGeneralAPI().post(`/api/v1/content`, body, {
     headers: {
@@ -282,6 +286,18 @@ export const quizFileDownload = async id => {
   });
   return data;
 };
+
+export const quizKnowledgeDownload = async id => {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/quizzes/template/${id}`, {
+    responseType: 'blob',
+    headers: {
+      Accept: '*/*',
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return data;
+};
+
 // 라운지 상세 조회
 export const quizRoungeDetail = async params => {
   const { data } = await axiosGeneralAPI().get(`/api/v1/club/quizzes/lounge`, { params });

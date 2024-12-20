@@ -29,6 +29,7 @@ import {
   lectureStudyQAInfo,
   quizMyInfo,
   quizGetAIMyAnswer,
+  quizKnowledgeDownload,
 } from './quiz.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 import { User } from 'src/models/user';
@@ -146,6 +147,17 @@ export const useQuizFileDownload = (id, onSuccess?: (data: any) => void, onError
     onError,
     refetchOnWindowFocus: false,
     enabled: !!id,
+  });
+};
+export const useQuizKnowledgeDownload = (id, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
+  // return useQuery<SeminarContent, Error>(QUERY_KEY_FACTORY('SEMINAR').detail(id), () => seminarDetail(id), {
+  // TODO : 수정 해주세요. 타입에러 나요. -> 세미나 상세 Profile 컴포넌트에 셋 할때 발생
+  return useQuery<any, Error>(QUERY_KEY_FACTORY('QUIZ').detail(id), () => quizKnowledgeDownload(id), {
+    onSuccess,
+    onError,
+    refetchOnWindowFocus: false,
+    enabled: false,
+    retry: false,
   });
 };
 export const useQuizSolutionDetailStatus = (id, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {

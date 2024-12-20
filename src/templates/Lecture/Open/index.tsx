@@ -1374,6 +1374,7 @@ export function LectureOpenTemplate() {
         handleEndDayChange={handleEndDayChange}
         handleUrlChange={handleUrlChange}
         handleTypeChange={handleTypeChange}
+        onFileDownload={onFileDownload}
         lectureNameChange={lectureNameChange}
         handleRemoveInput={handleRemoveInput}
         scheduleUrlAdd={scheduleUrlAdd}
