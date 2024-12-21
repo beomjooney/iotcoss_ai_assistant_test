@@ -604,7 +604,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                               <p className=" tw-text-sm tw-font-bold tw-text-left tw-text-[#31343d]">승인대기</p>
                               <p
                                 className="  tw-text-2xl tw-font-bold tw-text-left tw-text-blue-600 tw-cursor-pointer"
-                                onClick={() => router.push(`/manage-lecture-club/${selectedClub?.clubSequence}`)}
+                                onClick={() => router.push(`/manage-lecture-club/${selectedValue}`)}
                               >
                                 {myDashboardList?.memberApprovalWaitCount}명
                               </p>
