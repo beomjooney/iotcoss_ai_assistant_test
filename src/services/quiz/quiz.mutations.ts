@@ -82,7 +82,7 @@ export const useQuizExcelSave = (): UseMutationResult => {
   return useMutation<any, any, any>(requestBody => saveQuizExcel(requestBody), {
     onError: (error, variables, context) => {
       const { responseCode, message } = error;
-      alert(`mutation error : [${responseCode}] ${message}`);
+      alert(`[${responseCode}] 지식콘텐츠/퀴즈 일괄등록하기 : ${message}`);
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CAMENITY').all),
     onSuccess: async data => {
@@ -100,7 +100,7 @@ export const useQuizAiExcelSave = (): UseMutationResult => {
   return useMutation<any, any, any>(requestBody => saveQuizAiExcel(requestBody), {
     onError: (error, variables, context) => {
       const { responseCode, message } = error;
-      alert(`mutation error : [${responseCode}] ${message}`);
+      alert(`[${responseCode}] 지식콘텐츠/퀴즈(AI생성) 일괄등록하기 : ${message}`);
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CAMENITY').all),
     onSuccess: async data => {
@@ -118,7 +118,7 @@ export const useContentExcelSave = (): UseMutationResult => {
   return useMutation<any, any, any>(requestBody => saveExcel(requestBody), {
     onError: (error, variables, context) => {
       const { responseCode, message } = error;
-      alert(`mutation error : [${responseCode}] ${message}`);
+      alert(`[${responseCode}] 지식콘텐츠 일괄등록하기 : ${message}`);
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CAMENITY').all),
     onSuccess: async data => {
@@ -289,7 +289,11 @@ export const useClubQuizSave = (): UseMutationResult => {
       console.log('data', data);
       const { responseCode, message } = data;
       if (responseCode === '0000') {
-        alert('클럽이 개설 되었습니다.\n관리자가 클럽 승인대기 중입니다.');
+        if (data?.clubStatus === '0110') {
+          alert('클럽이 개설 되었습니다.\n관리자가 클럽 승인 대기 중입니다.');
+        } else {
+          alert('클럽이 개설 되었습니다.');
+        }
         router.push('/quiz');
       } else {
         alert(`error : [${responseCode}] ${message}`);

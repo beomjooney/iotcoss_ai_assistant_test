@@ -273,26 +273,47 @@ export function QuizMakeTemplate() {
   const [quizExcelSuccessFlag, setQuizExcelSuccessFlag] = useState(false);
   const [quizAIExcelSuccessFlag, setQuizAIExcelSuccessFlag] = useState(false);
 
+  const [excelSuccessLoading, setExcelSuccessLoading] = useState(false);
+  const [quizExcelSuccessLoading, setQuizExcelSuccessLoading] = useState(false);
+  const [quizAIExcelSuccessLoading, setQuizAIExcelSuccessLoading] = useState(false);
+
   //excel 업로드
   const { mutate: onExcelSave, isSuccess: excelSuccess, isError: excelError } = useContentExcelSave();
   const { mutate: onQuizExcelSave, isSuccess: quizExcelSuccess, isError: quizExcelError } = useQuizExcelSave();
   const { mutate: onQuizAIExcelSave, isSuccess: quizAIExcelSuccess, isError: quizAIExcelError } = useQuizAiExcelSave();
 
   useEffect(() => {
+    if (excelError) {
+      setExcelSuccessLoading(false);
+    }
+
+    if (quizExcelError) {
+      setQuizExcelSuccessLoading(false);
+    }
+
+    if (quizAIExcelError) {
+      setQuizAIExcelSuccessLoading(false);
+    }
+  }, [excelError, quizExcelError, quizAIExcelError]);
+
+  useEffect(() => {
     if (excelSuccess) {
       setExcelSuccessFlag(true);
+      setExcelSuccessLoading(false);
     }
   }, [excelSuccess]);
 
   useEffect(() => {
     if (quizExcelSuccess) {
       setQuizExcelSuccessFlag(true);
+      setQuizExcelSuccessLoading(false);
     }
   }, [quizExcelSuccess]);
 
   useEffect(() => {
     if (quizAIExcelSuccess) {
       setQuizAIExcelSuccessFlag(true);
+      setQuizAIExcelSuccessLoading(false);
     }
   }, [quizAIExcelSuccess]);
 
@@ -353,6 +374,9 @@ export function QuizMakeTemplate() {
   }, [key]);
 
   const handleQuizAdd = () => {
+    setQuizAIExcelSuccessFlag(false);
+    setQuizExcelSuccessFlag(false);
+    setExcelSuccessFlag(false);
     if (!knowledgeFile && !knowledgeQuizFile && !knowledgeQuizAIFile) {
       alert('엑셀 파일을 업로드해주세요.');
       return;
@@ -361,18 +385,21 @@ export function QuizMakeTemplate() {
     if (knowledgeFile.length > 0) {
       const formData = new FormData();
       formData.append('file', knowledgeFile[0]);
+      setExcelSuccessLoading(true);
       onExcelSave(formData);
     }
 
     if (knowledgeQuizFile.length > 0) {
       const formData = new FormData();
       formData.append('file', knowledgeQuizFile[0]);
+      setQuizExcelSuccessLoading(true);
       onQuizExcelSave(formData);
     }
 
     if (knowledgeQuizAIFile.length > 0) {
       const formData = new FormData();
       formData.append('file', knowledgeQuizAIFile[0]);
+      setQuizAIExcelSuccessLoading(true);
       onQuizAIExcelSave(formData);
     }
     console.log('퀴즈 등록');
@@ -840,7 +867,6 @@ export function QuizMakeTemplate() {
         setKnowledgeFileName(file.name);
         setKnowledgeFile([file]);
         setExcelSuccessFlag(false);
-        setQuizAIExcelSuccessFlag(false);
       } else if (type === 'quiz') {
         setKnowledgeQuizFileName(file.name);
         setKnowledgeQuizFile([file]);
@@ -1904,6 +1930,47 @@ export function QuizMakeTemplate() {
           <div className="tw-mb-14">
             <div className="tw-flex tw-flex-row tw-items-start tw-justify-between tw-mb-5">
               <div className=" tw-font-bold tw-text-black tw-flex tw-items-center">지식콘텐츠 일괄등록하기</div>
+              {excelSuccessLoading && (
+                <div className="tw-flex tw-items-center tw-justify-center tw-ml-2">
+                  <svg width="40" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+                    <circle fill="#1694FF" stroke="#1694FF" stroke-width="2" r="15" cx="40" cy="100">
+                      <animate
+                        attributeName="opacity"
+                        calcMode="spline"
+                        dur="2"
+                        values="1;0;1;"
+                        keySplines=".5 0 .5 1;.5 0 .5 1"
+                        repeatCount="indefinite"
+                        begin="-.4"
+                      ></animate>
+                    </circle>
+                    <circle fill="#1694FF" stroke="#1694FF" stroke-width="2" r="15" cx="100" cy="100">
+                      <animate
+                        attributeName="opacity"
+                        calcMode="spline"
+                        dur="2"
+                        values="1;0;1;"
+                        keySplines=".5 0 .5 1;.5 0 .5 1"
+                        repeatCount="indefinite"
+                        begin="-.2"
+                      ></animate>
+                    </circle>
+                    <circle fill="#1694FF" stroke="#1694FF" stroke-width="2" r="15" cx="160" cy="100">
+                      <animate
+                        attributeName="opacity"
+                        calcMode="spline"
+                        dur="2"
+                        values="1;0;1;"
+                        keySplines=".5 0 .5 1;.5 0 .5 1"
+                        repeatCount="indefinite"
+                        begin="0"
+                      ></animate>
+                    </circle>
+                  </svg>
+                  <span className="tw-ml-1 tw-font-medium tw-text-black tw-text-sm">엑셀 파일 업로드 중</span>
+                </div>
+              )}
+
               {excelSuccessFlag && (
                 <div className="tw-flex tw-items-center tw-justify-center tw-ml-2">
                   <svg
@@ -1922,7 +1989,7 @@ export function QuizMakeTemplate() {
                       fill="#478AF5"
                     ></path>
                   </svg>
-                  <span className="tw-ml-2 tw-font-medium tw-text-black">엑셀 파일 업로드 완료</span>
+                  <span className="tw-ml-2 tw-font-medium tw-text-black tw-text-sm">엑셀 파일 업로드 완료</span>
                 </div>
               )}
             </div>
@@ -1991,7 +2058,8 @@ export function QuizMakeTemplate() {
                     className="tw-cursor-pointer"
                     onClick={() => {
                       setKnowledgeFileName('');
-                      setKnowledgeFile(null);
+                      setKnowledgeFile([]);
+                      setExcelSuccessFlag(false);
                     }}
                   >
                     <svg
@@ -2017,6 +2085,48 @@ export function QuizMakeTemplate() {
           <div className="tw-mb-14">
             <div className="tw-flex tw-flex-row tw-items-start tw-justify-between tw-mb-5">
               <div className=" tw-font-bold tw-text-black tw-flex tw-items-center ">퀴즈+지식콘텐츠 일괄등록하기</div>
+
+              {quizExcelSuccessLoading && (
+                <div className="tw-flex tw-items-center tw-justify-center tw-ml-2">
+                  <svg width="40" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+                    <circle fill="#1694FF" stroke="#1694FF" stroke-width="2" r="15" cx="40" cy="100">
+                      <animate
+                        attributeName="opacity"
+                        calcMode="spline"
+                        dur="2"
+                        values="1;0;1;"
+                        keySplines=".5 0 .5 1;.5 0 .5 1"
+                        repeatCount="indefinite"
+                        begin="-.4"
+                      ></animate>
+                    </circle>
+                    <circle fill="#1694FF" stroke="#1694FF" stroke-width="2" r="15" cx="100" cy="100">
+                      <animate
+                        attributeName="opacity"
+                        calcMode="spline"
+                        dur="2"
+                        values="1;0;1;"
+                        keySplines=".5 0 .5 1;.5 0 .5 1"
+                        repeatCount="indefinite"
+                        begin="-.2"
+                      ></animate>
+                    </circle>
+                    <circle fill="#1694FF" stroke="#1694FF" stroke-width="2" r="15" cx="160" cy="100">
+                      <animate
+                        attributeName="opacity"
+                        calcMode="spline"
+                        dur="2"
+                        values="1;0;1;"
+                        keySplines=".5 0 .5 1;.5 0 .5 1"
+                        repeatCount="indefinite"
+                        begin="0"
+                      ></animate>
+                    </circle>
+                  </svg>
+                  <span className="tw-ml-1 tw-font-medium tw-text-black tw-text-sm">엑셀 파일 업로드 중</span>
+                </div>
+              )}
+
               {quizExcelSuccessFlag && (
                 <div className="tw-flex tw-items-center tw-justify-center tw-ml-2">
                   <svg
@@ -2035,7 +2145,7 @@ export function QuizMakeTemplate() {
                       fill="#478AF5"
                     ></path>
                   </svg>
-                  <span className="tw-ml-2 tw-font-medium tw-text-black">엑셀 파일 업로드 완료</span>
+                  <span className="tw-ml-2 tw-font-medium tw-text-black tw-text-sm">엑셀 파일 업로드 완료</span>
                 </div>
               )}
             </div>
@@ -2103,7 +2213,8 @@ export function QuizMakeTemplate() {
                     className="tw-cursor-pointer"
                     onClick={() => {
                       setKnowledgeQuizFileName('');
-                      setKnowledgeQuizFile(null);
+                      setKnowledgeQuizFile([]);
+                      setQuizExcelSuccessFlag(false);
                     }}
                   >
                     <svg
@@ -2129,6 +2240,46 @@ export function QuizMakeTemplate() {
           <div className="">
             <div className="tw-flex tw-items-start tw-justify-between tw-mb-5">
               <div className=" tw-font-bold tw-text-black">퀴즈+지식콘텐츠 일괄등록하기(AI생성)</div>
+              {quizAIExcelSuccessLoading && (
+                <div className="tw-flex tw-items-center tw-justify-center tw-ml-2">
+                  <svg width="40" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+                    <circle fill="#1694FF" stroke="#1694FF" stroke-width="2" r="15" cx="40" cy="100">
+                      <animate
+                        attributeName="opacity"
+                        calcMode="spline"
+                        dur="2"
+                        values="1;0;1;"
+                        keySplines=".5 0 .5 1;.5 0 .5 1"
+                        repeatCount="indefinite"
+                        begin="-.4"
+                      ></animate>
+                    </circle>
+                    <circle fill="#1694FF" stroke="#1694FF" stroke-width="2" r="15" cx="100" cy="100">
+                      <animate
+                        attributeName="opacity"
+                        calcMode="spline"
+                        dur="2"
+                        values="1;0;1;"
+                        keySplines=".5 0 .5 1;.5 0 .5 1"
+                        repeatCount="indefinite"
+                        begin="-.2"
+                      ></animate>
+                    </circle>
+                    <circle fill="#1694FF" stroke="#1694FF" stroke-width="2" r="15" cx="160" cy="100">
+                      <animate
+                        attributeName="opacity"
+                        calcMode="spline"
+                        dur="2"
+                        values="1;0;1;"
+                        keySplines=".5 0 .5 1;.5 0 .5 1"
+                        repeatCount="indefinite"
+                        begin="0"
+                      ></animate>
+                    </circle>
+                  </svg>
+                  <span className="tw-ml-1 tw-font-medium tw-text-black tw-text-sm">엑셀 파일 업로드 중</span>
+                </div>
+              )}
               {quizAIExcelSuccessFlag && (
                 <div className="tw-flex tw-items-center tw-justify-center tw-ml-2">
                   <svg
@@ -2147,7 +2298,7 @@ export function QuizMakeTemplate() {
                       fill="#478AF5"
                     ></path>
                   </svg>
-                  <span className="tw-ml-2 tw-font-medium tw-text-black">엑셀 파일 업로드 완료</span>
+                  <span className="tw-ml-2 tw-font-medium tw-text-black tw-text-sm">엑셀 파일 업로드 완료</span>
                 </div>
               )}
             </div>
@@ -2215,7 +2366,8 @@ export function QuizMakeTemplate() {
                     className="tw-cursor-pointer"
                     onClick={() => {
                       setKnowledgeQuizAIFileName('');
-                      setKnowledgeQuizAIFile(null);
+                      setKnowledgeQuizAIFile([]);
+                      setQuizAIExcelSuccessFlag(false);
                     }}
                   >
                     <svg
@@ -2238,7 +2390,7 @@ export function QuizMakeTemplate() {
               </div>
             </div>
 
-            <div className="tw-flex tw-items-center tw-justify-center tw-w-full tw-mt-12 tw-gap-4">
+            <div className="tw-flex tw-items-center tw-justify-center tw-w-full tw-mt-16 tw-gap-4">
               <button
                 onClick={handleQuizAdd}
                 className="tw-flex tw-items-center tw-justify-center tw-w-[150px] tw-h-11 tw-rounded tw-bg-blue-500 tw-text-base tw-text-white tw-text-left"
