@@ -56,7 +56,7 @@ export function HomeSkpAiTemplate({ logged = false, tenantName = '' }: HomeSkpAi
               <p className=" tw-text-lg tw-text-left tw-text-black tw-py-10 tw-mb-0">
                 <span className="tw-text-3xl tw-font-bold tw-text-left tw-text-black">DevUs AI조교</span>
               </p>
-              <button
+              {/* <button
                 onClick={() => {
                   console.log(modalIsProfessor);
                   const role =
@@ -74,7 +74,7 @@ export function HomeSkpAiTemplate({ logged = false, tenantName = '' }: HomeSkpAi
                 className="tw-flex tw-items-center tw-justify-center tw-w-60 tw-h-12 tw-overflow-hidden tw-rounded tw-bg-[#2474ed]"
               >
                 <p className=" tw-text-base tw-font-bold tw-text-center tw-text-white">데브어스 AI조교 체험하기</p>
-              </button>
+              </button> */}
               <div className="tw-flex tw-flex-row tw-gap-2 tw-justify-start tw-items-center tw-mt-2">
                 <img src="/assets/images/main/skp1.png" className="tw-h-[40px]" />
                 <img src="/assets/images/main/skp2.png" className="tw-h-[100%]" />
