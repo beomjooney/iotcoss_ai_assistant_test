@@ -57,7 +57,7 @@ export function HomeSkpQuizTemplate({ logged = false, tenantName = '' }: HomeSkp
               <p className=" tw-text-lg tw-text-left tw-text-black tw-py-10 tw-mb-0">
                 <span className="tw-text-3xl tw-font-bold tw-text-left tw-text-black">DevUs QuizUp</span>
               </p>
-              <button
+              {/* <button
                 onClick={() => {
                   console.log(modalIsProfessor);
                   const role =
@@ -75,8 +75,103 @@ export function HomeSkpQuizTemplate({ logged = false, tenantName = '' }: HomeSkp
                 className="tw-flex tw-items-center tw-justify-center tw-w-60 tw-h-12 tw-overflow-hidden tw-rounded tw-bg-[#2474ed]"
               >
                 <p className=" tw-text-base tw-font-bold tw-text-center tw-text-white">퀴즈클럽 학습하기</p>
-              </button>
-              <div className="tw-flex tw-flex-row tw-gap-2 tw-justify-start tw-items-center tw-mt-2">
+              </button> */}
+              {isClient && menu.use_quiz_club && (
+                <div>
+                  <div
+                    onClick={() => {
+                      router.push('/quiz');
+                    }}
+                    className="tw-cursor-pointer"
+                  >
+                    <div className="tw-bg-white/10 tw-w-[235px] tw-backdrop-blur-[20px] border tw-px-3 tw-py-3 tw-rounded-lg tw-absolute tw-left-[105px] md:tw-left-[250px] tw-top-[167px] md:tw-top-[180px] tw-text-xs md:tw-text-lg tw-text-left tw-text-white">
+                      <div className="tw-flex tw-items-center">
+                        <img
+                          className=" tw-rounded-full tw-w-8 md:tw-w-12 tw-h-8 md:tw-h-12"
+                          src="/assets/images/main/man.png"
+                        />
+                        <div className="tw-flex tw-items-center  tw-gap-3">
+                          <div className="tw-ml-2 md:tw-ml-4">
+                            <span className="tw-text-xs md:tw-text-lg tw-font-bold tw-text-left tw-text-black">
+                              DevUs
+                            </span>
+                            <br />
+                            <span className="tw-text-xs md:tw-text-base tw-font-medium tw-text-left tw-text-black">
+                              학습자 체험하기
+                            </span>
+                          </div>
+                          <svg
+                            width={24}
+                            height={24}
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="w-6 h-6 relative"
+                            preserveAspectRatio="none"
+                          >
+                            <path
+                              d="M16.4666 11.6552L9.25464 4.44319L7.55664 6.13879L13.0766 11.6552L7.55664 17.1704L9.25344 18.8672L16.4666 11.6552Z"
+                              fill="#9CA5B2"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    onClick={() => {
+                      console.log(modalIsProfessor);
+                      const role =
+                        roles?.includes('ROLE_ADMIN') || roles?.includes('ROLE_INSTRUCTOR') ? 'professor' : 'student';
+                      if (logged) {
+                        if (role === 'professor') {
+                          setModalIsProfessor(true);
+                        } else {
+                          alert('교수자만 접근할 수 있는 페이지입니다.');
+                        }
+                      } else {
+                        alert('로그인 후 이용해주세요.');
+                      }
+                    }}
+                    className="tw-cursor-pointer tw-w-36 md:tw-w-48 tw-h-12 md:tw-h-20"
+                  >
+                    <div className="tw-bg-white/10 tw-backdrop-blur-[20px] border tw-px-3  tw-py-3 tw-rounded-lg tw-absolute  tw-top-[167px] md:tw-top-[180px] tw-text-xs md:tw-text-lg tw-text-left tw-text-white">
+                      <div className="tw-flex tw-items-center">
+                        <img
+                          className=" tw-rounded-full tw-w-8 md:tw-w-12 tw-h-8 md:tw-h-12"
+                          src="/assets/images/main/girl.png"
+                        />
+                        <div className="tw-flex tw-items-center tw-gap-3">
+                          <div className="tw-ml-2 md:tw-ml-4">
+                            <span className="tw-text-xs md:tw-text-lg tw-font-bold tw-text-left tw-text-black">
+                              DevUs
+                            </span>
+                            <br />
+                            <span className="tw-text-xs md:tw-text-base tw-font-medium tw-text-left tw-text-black">
+                              교수자 체험하기
+                            </span>
+                          </div>
+                          <svg
+                            width={24}
+                            height={24}
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="w-6 h-6 relative"
+                            preserveAspectRatio="none"
+                          >
+                            <path
+                              d="M16.4666 11.6552L9.25464 4.44319L7.55664 6.13879L13.0766 11.6552L7.55664 17.1704L9.25344 18.8672L16.4666 11.6552Z"
+                              fill="#9CA5B2"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              <div className="tw-flex tw-flex-row tw-gap-2 tw-justify-start tw-items-center">
                 <img src="/assets/images/main/skp1.png" className="tw-h-[40px]" />
                 <img src="/assets/images/main/skp2.png" className="tw-h-[100%]" />
               </div>
