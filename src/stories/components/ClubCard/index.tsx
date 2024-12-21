@@ -75,7 +75,7 @@ ClubCardProps) => {
       >
         <div className="tw-flex tw-basis-2/5 max-sm:tw-w-[150px]">
           <img
-            className="tw-object-cover tw-rounded-l-lg tw-h-[240px] max-sm:tw-h-[200px]"
+            className="tw-object-cover tw-rounded-l-lg tw-h-[240px] max-sm:tw-h-[200px]  tw-w-[215px]"
             src={item?.clubImageUrl || '/assets/images/banner/Rectangle_193.png'}
             alt=""
           />
