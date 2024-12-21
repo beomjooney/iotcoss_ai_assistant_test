@@ -81,8 +81,8 @@ export const useQuizExcelSave = (): UseMutationResult => {
   const queryClient = useQueryClient();
   return useMutation<any, any, any>(requestBody => saveQuizExcel(requestBody), {
     onError: (error, variables, context) => {
-      const { code, message } = error;
-      alert(`mutation error : [${code}] ${message}`);
+      const { responseCode, message } = error;
+      alert(`mutation error : [${responseCode}] ${message}`);
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CAMENITY').all),
     onSuccess: async data => {
@@ -99,8 +99,8 @@ export const useQuizAiExcelSave = (): UseMutationResult => {
   const queryClient = useQueryClient();
   return useMutation<any, any, any>(requestBody => saveQuizAiExcel(requestBody), {
     onError: (error, variables, context) => {
-      const { code, message } = error;
-      alert(`mutation error : [${code}] ${message}`);
+      const { responseCode, message } = error;
+      alert(`mutation error : [${responseCode}] ${message}`);
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CAMENITY').all),
     onSuccess: async data => {
@@ -117,8 +117,8 @@ export const useContentExcelSave = (): UseMutationResult => {
   const queryClient = useQueryClient();
   return useMutation<any, any, any>(requestBody => saveExcel(requestBody), {
     onError: (error, variables, context) => {
-      const { code, message } = error;
-      alert(`mutation error : [${code}] ${message}`);
+      const { responseCode, message } = error;
+      alert(`mutation error : [${responseCode}] ${message}`);
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CAMENITY').all),
     onSuccess: async data => {
