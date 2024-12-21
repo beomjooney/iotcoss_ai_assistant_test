@@ -60,7 +60,7 @@ export const useSavePost = (): UseMutationResult => {
 
 export const useQuizSave = (): UseMutationResult => {
   const queryClient = useQueryClient();
-  return useMutation<any, any, any>(requestBody => saveExcel(requestBody), {
+  return useMutation<any, any, any>(requestBody => savePost(requestBody), {
     onError: (error, variables, context) => {
       const { code, message } = error;
       alert(`mutation error : [${code}] ${message}`);
