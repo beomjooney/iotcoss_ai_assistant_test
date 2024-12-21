@@ -480,7 +480,7 @@ const LectureDetaillSolution = ({
                 <span className={cx('text-bold', 'tw-text-xl', 'tw-font-bold')}>강의클럽가입 신청을 하시겠습니까?</span>
               </div>
               <div>가입 신청 후 클럽장 승인이 완료될때까지 기다려주세요!</div>
-              <div>승인 완료 후 MY학습방이나 강의클럽 페이지 상단에서 가입된 클럽을 확인하실 수 있습니다.</div>
+              <div>승인 완료 후 MY학습방이나 강의클럽 페이지에서 가입된 클럽을 확인하실 수 있습니다.</div>
               <br></br>
               <br></br>
               <br></br>
@@ -506,7 +506,7 @@ const LectureDetaillSolution = ({
                 <span className={cx('text-bold', 'tw-text-xl', 'tw-font-bold')}>참여코드를 입력해주세요.</span>
               </div>
               <div>참여코드 입력 후 클럽장 승인이 완료될때까지 기다려주세요!</div>
-              <div>승인 완료 후 MY학습방이나 강의클럽 페이지 상단에서 가입된 클럽을 확인하실 수 있습니다.</div>
+              <div>승인 완료 후 MY학습방이나 강의클럽 페이지에서 가입된 클럽을 확인하실 수 있습니다.</div>
               <br></br>
               <br></br>
               <div>
