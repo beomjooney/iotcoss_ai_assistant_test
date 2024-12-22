@@ -289,7 +289,7 @@ export const useClubQuizSave = (): UseMutationResult => {
       console.log('data', data);
       const { responseCode, message } = data;
       if (responseCode === '0000') {
-        if (data?.clubStatus === '0110') {
+        if (data?.clubStatus === '0100') {
           alert('클럽이 개설 되었습니다.\n관리자가 클럽 승인 대기 중입니다.');
         } else {
           alert('클럽이 개설 되었습니다.');
