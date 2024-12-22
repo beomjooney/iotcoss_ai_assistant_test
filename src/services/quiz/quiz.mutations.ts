@@ -286,9 +286,10 @@ export const useClubQuizSave = (): UseMutationResult => {
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CAMENITY').all),
     onSuccess: async data => {
-      console.log('data', data);
+      // console.log('data', data);
       const { responseCode, message } = data;
       if (responseCode === '0000') {
+        // console.log('data?.clubStatus', data?.data?.clubStatus);
         if (data?.clubStatus === '0100') {
           alert('클럽이 개설 되었습니다.\n관리자가 클럽 승인 대기 중입니다.');
         } else {
