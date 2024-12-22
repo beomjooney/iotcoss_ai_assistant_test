@@ -83,7 +83,7 @@ export function SignupAuthenticationTemplate({ onSubmitLogin }: SignupAuthentica
                 <p>회원가입이 성공적으로 완료되었습니다.</p>
                 <div>
                   회원가입 내역확인 및 수정은{' '}
-                  <span className="tw-font-bold tw-text-blue-500">마이페이지 &gt; 회원정보수정</span>에서 가능합니다.
+                  <span className="tw-font-bold tw-text-blue-500">마이페이지 &gt; 개인정보관리</span>에서 가능합니다.
                 </div>
               </p>
             </div>
