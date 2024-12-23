@@ -3162,7 +3162,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
       </div>
 
       <MentorsModal
-        zIndex={200}
+        zIndex={2000}
         title="교수자 추가하기"
         isOpen={isModalOpen}
         onAfterClose={() => {
