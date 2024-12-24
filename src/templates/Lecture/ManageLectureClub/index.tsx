@@ -82,6 +82,7 @@ import { useStore } from 'src/store';
 import { useGetScheduleDay } from 'src/services/jobs/jobs.queries';
 import { useSessionStore } from 'src/store/session';
 import { useGetGroupLabel } from 'src/hooks/useGetGroupLabel';
+import { useStudyOrderLabel } from 'src/hooks/useStudyOrderLabel';
 
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
@@ -101,6 +102,7 @@ export interface ManageLectureClubTemplateProps {
 export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLectureClubTemplateProps) {
   const { jobGroupLabelType } = useSessionStore.getState();
   const { groupLabel, subGroupLabel } = useGetGroupLabel(jobGroupLabelType);
+  const { studyOrderLabelType } = useSessionStore.getState();
   const { mutate: onCrewBan, isSuccess: isBanSuccess } = useCrewBanDelete();
   const { mutate: onCrewAccept, isSuccess: isAcceptSuccess } = useCrewAcceptPost();
   const { mutate: onCrewReject, isSuccess: isRejectSuccess } = useCrewRejectPost();
@@ -2858,7 +2860,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                         {/* <div className=" tw-text-center tw-text-black tw-font-bold tw-mt-5">강의</div> */}
                         {item.studyOrder && (
                           <div className="tw-text-center tw-text-lg tw-text-black tw-font-bold tw-mt-4">
-                            {index + 1} 주차
+                            {index + 1} {studyOrderLabel}
                             <div className="tw-flex tw-justify-center tw-mt-2">
                               <svg
                                 width={20}
@@ -2908,7 +2910,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
               <div className="tw-w-full tw-flex tw-justify-between tw-items-center">
                 <div className="tw-w-1/12 tw-flex tw-justify-center tw-items-center">
                   <div className="tw-w-[59px] tw-h-[46px] tw-relative tw-flex tw-flex-col tw-items-center">
-                    <p className="tw-text-base tw-font-bold tw-text-center tw-text-[#ced4de]">주차</p>
+                    <p className="tw-text-base tw-font-bold tw-text-center tw-text-[#ced4de]">{studyOrderLabel}</p>
                     <svg
                       width={20}
                       height={20}
@@ -2955,7 +2957,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                       </svg>
                       <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-medium tw-text-left tw-text-[#9ca5b2]">
                         <button type="button" onClick={handleAddClick} className="tw-text-black tw-text-base ">
-                          강의주차 추가하기
+                          강의{studyOrderLabel} 추가하기
                         </button>
                       </p>
                     </div>

@@ -20,6 +20,7 @@ import { Button, Typography, Profile, Modal, ArticleCard } from 'src/stories/com
 // 챗봇
 import ChatbotModal from 'src/stories/components/ChatBot';
 import { useSessionStore } from '../../../../src/store/session';
+import { useStudyOrderLabel } from 'src/hooks/useStudyOrderLabel';
 
 const cx = classNames.bind(styles);
 
@@ -38,6 +39,8 @@ const LectureDetaillSolution = ({
   selectedImage,
   refetchClubAbout,
 }) => {
+  const { studyOrderLabelType } = useSessionStore.getState();
+  const { studyOrderLabel } = useStudyOrderLabel(studyOrderLabelType);
   console.log('contents', contents);
   console.log('study', study);
   const borderStyle = border ? 'border border-[#e9ecf2] tw-mt-14' : '';
@@ -284,7 +287,8 @@ const LectureDetaillSolution = ({
                               item?.isCompleted ? 'tw-text-black' : 'tw-text-gray-300 tw-font-normal'
                             }`}
                           >
-                            {item?.studyOrder}주차
+                            {item?.studyOrder}
+                            {studyOrderLabel}
                           </div>
                         </Grid>
                         <Grid item xs={12} sm={1} style={{ paddingTop: 10 }}>

@@ -45,6 +45,7 @@ import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
 import Markdown from 'react-markdown';
 import router from 'next/router';
 import { useSessionStore } from '../../../store/session';
+import { useStudyOrderLabel } from 'src/hooks/useStudyOrderLabel';
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   [`&.${tableRowClasses.root}`]: {
@@ -111,7 +112,9 @@ const useStyles = makeStyles(theme => ({
 const cx = classNames.bind(styles);
 
 export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) {
-  const { roles } = useSessionStore.getState();
+  const { roles, studyOrderLabelType } = useSessionStore.getState();
+  const { studyOrderLabel } = useStudyOrderLabel(studyOrderLabelType);
+
   const [page, setPage] = useState(1);
   const [pageStudent, setPageStudent] = useState(1);
   const [lecturePage, setLecturePage] = useState(1);
@@ -517,7 +520,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                   <div className="tw-flex tw-items-center tw-justify-between tw-gap-4">
                     <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-4">
                       <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-xl tw-font-bold tw-text-left tw-text-[#31343d]">
-                        이번주 학습 주차
+                        이번주 학습 {studyOrderLabel}
                       </p>
                       <svg
                         width={1}
@@ -531,7 +534,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                         <line x1="0.5" y1="0.5" x2="0.5" y2="16.5" stroke="#9CA5B2" />
                       </svg>
                       <p className="tw-flex tw-text-xl tw-font-bold tw-text-left tw-text-[#2474ed]">
-                        {myDashboardList?.studyOrder}주차 {myDashboardList?.studyDate}{' '}
+                        {myDashboardList?.studyOrder} {studyOrderLabel} {myDashboardList?.studyDate}{' '}
                         {myDashboardList?.dayOfWeek && `(${myDashboardList.dayOfWeek})`}
                       </p>
                     </div>
@@ -545,7 +548,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                   <div className="tw-flex tw-justify-between tw-items-center tw-gap-3 tw-px-5 tw-my-5 tw-h-[100px] tw-relative tw-rounded-lg tw-bg-white border border-[#e9ecf2]">
                     <div className=" tw-flex">
                       <p className=" tw-text-base tw-text-center tw-text-black tw-mr-5 tw-font-bold">
-                        {myDashboardList?.studyOrder}주차 {myDashboardList?.clubStudyName}
+                        {myDashboardList?.studyOrder} {studyOrderLabel} {myDashboardList?.clubStudyName}
                       </p>
                       <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-gap-2">
                         <div className="tw-flex tw-justify-end tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2 tw-px-2 tw-py-1 tw-rounded tw-bg-white border border-[#2474ed]">
@@ -639,7 +642,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                               <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-4">
                                 <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
                                   <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm  tw-font-bold tw-text-left tw-text-[#31343d]">
-                                    강의 주차
+                                    강의 {studyOrderLabel}
                                   </p>
                                   <svg
                                     width={1}
@@ -1377,7 +1380,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                     <TableHead style={{ backgroundColor: '#F6F7FB' }}>
                       <TableRow>
                         <TableCell align="center" width={98} className="border-right">
-                          <div className="tw-font-bold tw-text-base">강의주차</div>
+                          <div className="tw-font-bold tw-text-base">강의{studyOrderLabel}</div>
                         </TableCell>
                         <TableCell align="center" width={98} className="border-right">
                           <div className="tw-font-bold tw-text-base">강의기간</div>
@@ -1414,7 +1417,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                         <StyledTableRow key={index}>
                           <TableCell align="center" component="th" scope="row" className="border-right">
                             <div className="tw-font-bold tw-text-base">
-                              {info?.studyOrder}회 <br />
+                              {info?.studyOrder}주 <br />
                             </div>
                           </TableCell>
                           <TableCell align="center" component="th" scope="row" className="border-right">
@@ -1449,8 +1452,8 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                       (info.questionAnswer.answerType === '0200'
                                         ? '(강의자료) : '
                                         : info.questionAnswer.answerType === '0300'
-                                        ? '(일반서치) : '
-                                        : '') +
+                                          ? '(일반서치) : '
+                                          : '') +
                                       info.questionAnswer.answer
                                     : ''}
                                 </Markdown>
@@ -1562,8 +1565,8 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                     (questionInfo?.answerType === '0200'
                                       ? '(강의자료) : '
                                       : questionInfo?.answerType === '0300'
-                                      ? '(일반서치) : '
-                                      : '') +
+                                        ? '(일반서치) : '
+                                        : '') +
                                     questionInfo?.answer
                                   : null}
                               </Markdown>
@@ -1715,7 +1718,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
               <TableHead style={{ backgroundColor: '#F6F7FB' }}>
                 <TableRow>
                   <TableCell align="left" width={200} className="border-right">
-                    <div className="tw-font-bold tw-text-base">강의회차</div>
+                    <div className="tw-font-bold tw-text-base">강의{studyOrderLabel}</div>
                   </TableCell>
                   <TableCell align="left" width={250} className="border-right">
                     <div className="tw-font-bold tw-text-base">강의질문</div>
@@ -1737,7 +1740,9 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                             className="tw-w-10 tw-h-10 border tw-rounded-full"
                             alt="Profile"
                           /> */}
-                          <div className="tw-font-bold tw-text-sm">{info?.studyOrder}회차</div>
+                          <div className="tw-font-bold tw-text-sm">
+                            {info?.studyOrder} {studyOrderLabel}
+                          </div>
                           <div className="">
                             {info?.startDate?.substring(5)}({info?.startDayOfWeek}) ~ {info?.endDate?.substring(5)}(
                             {info?.endDayOfWeek})
@@ -1762,8 +1767,8 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                   (info?.answerType === '0200'
                                     ? '(강의자료) : '
                                     : info?.answerType === '0300'
-                                    ? '(일반서치) : '
-                                    : '') +
+                                      ? '(일반서치) : '
+                                      : '') +
                                   info?.answer
                                 : null}
                             </Markdown>

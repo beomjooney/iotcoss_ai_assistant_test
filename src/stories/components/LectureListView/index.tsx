@@ -33,9 +33,10 @@ const cx = classNames.bind(styles);
 //comment
 import { useLectureQAInfo, useLectureStudyQAInfo, useQuizFileDownload } from 'src/services/quiz/quiz.queries';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
-
 // 챗봇
 import { useSessionStore } from '../../../../src/store/session';
+import { useStudyOrderLabel } from 'src/hooks/useStudyOrderLabel';
+
 import ChatbotModal from 'src/stories/components/ChatBot';
 import Markdown from 'react-markdown';
 
@@ -61,7 +62,8 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
   const [totalElements, setTotalElements] = useState(0);
   // const [selectedValue, setSelectedValue] = useState(id);
 
-  const { roles, menu, token, logged } = useSessionStore.getState();
+  const { roles, menu, token, logged, studyOrderLabelType } = useSessionStore.getState();
+  const { studyOrderLabel } = useStudyOrderLabel(studyOrderLabelType);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [isClient, setIsClient] = useState(false); // 클라이언트 사이드에서만 렌어링하도록 상태 추가
   useEffect(() => {
@@ -303,11 +305,12 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
               })}
           </select> */}
         </div>
-        <div className="tw-text-xl tw-text-black  tw-font-bold tw-mt-6">주차 정보</div>
+        <div className="tw-text-xl tw-text-black  tw-font-bold tw-mt-6">{studyOrderLabel} 정보</div>
         <Divider className="tw-py-3 tw-mb-3" />
         <div className="tw-text-black tw-my-5">
           <div className="tw-text-lg tw-font-medium tw-py-3">
-            {studyQAInfo?.studyOrder}주차 : {studyQAInfo?.startDate} ({studyQAInfo?.startDayOfWeek})
+            {studyQAInfo?.studyOrder}
+            {studyOrderLabel} : {studyQAInfo?.startDate} ({studyQAInfo?.startDayOfWeek})
           </div>
           <div className="tw-text-lg tw-font-medium tw-py-3">강의URL : {studyQAInfo?.lectureClub?.clubUri}</div>
         </div>
@@ -620,8 +623,8 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
                                     (questionInfo?.answerType === '0200'
                                       ? '(강의자료) : '
                                       : questionInfo?.answerType === '0300'
-                                      ? '(일반서치) : '
-                                      : '') +
+                                        ? '(일반서치) : '
+                                        : '') +
                                     questionInfo?.answer
                                   : null}
                               </Markdown>

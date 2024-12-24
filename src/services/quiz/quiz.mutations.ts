@@ -361,7 +361,7 @@ export const useLectureTempSave = (): UseMutationResult => {
       if (responseCode === '0000') {
         alert('임시저장이 되었습니다.');
       } else if (responseCode === '1420') {
-        alert('강의 회차 등록 시 시작일이 중복됩니다. 다른 날짜를 선택해 주세요.');
+        alert('시작일이 중복됩니다. 다른 날짜를 선택해 주세요.');
       } else {
         alert(`error : [${responseCode}] ${message}`);
       }

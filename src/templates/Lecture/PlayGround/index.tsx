@@ -29,9 +29,9 @@ import SettingsIcon from '@mui/icons-material/Settings';
 
 import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
 import router from 'next/router';
-import { useSessionStore } from '../../../store/session';
 import Markdown from 'react-markdown';
-import e from 'express';
+import { useSessionStore } from 'src/store/session';
+import { useStudyOrderLabel } from 'src/hooks/useStudyOrderLabel';
 
 export interface LecturePlayGroundTemplateProps {
   /** 세미나 아이디 */
@@ -41,7 +41,8 @@ export interface LecturePlayGroundTemplateProps {
 const cx = classNames.bind(styles);
 
 export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps) {
-  const { roles } = useSessionStore.getState();
+  const { studyOrderLabelType } = useSessionStore.getState();
+  const { studyOrderLabel } = useStudyOrderLabel(studyOrderLabelType);
 
   const [totalElements, setTotalElements] = useState(0);
   const [myClubList, setMyClubList] = useState<any>([]);
@@ -368,7 +369,7 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
                       className="tw-w-20 tw-bg-[#f6f7fb] tw-items-center tw-flex-shrink-0 border-left border-top border-right tw-rounded-t-lg tw-cursor-pointer"
                       value={''}
                     >
-                      전체 회차
+                      전체 {studyOrderLabel}
                     </option>
                     {quizList?.map((session, idx) => (
                       <option
@@ -376,7 +377,8 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
                         className="tw-w-20 tw-bg-[#f6f7fb] tw-items-center tw-flex-shrink-0 border-left border-top border-right tw-rounded-t-lg tw-cursor-pointer"
                         value={session?.clubStudySequence}
                       >
-                        회차 {session?.studyOrder}주차 : {session?.clubStudyName}
+                        {session?.studyOrder}
+                        {studyOrderLabel}: {session?.clubStudyName}
                       </option>
                     ))}
                   </>

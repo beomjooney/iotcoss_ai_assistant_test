@@ -38,8 +38,13 @@ import { useMyAllLectureInfo } from 'src/services/quiz/quiz.queries';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import Markdown from 'react-markdown';
 import { useSaveAnswer } from 'src/services/seminars/seminars.mutations';
+import { useSessionStore } from 'src/store/session';
+import { useStudyOrderLabel } from 'src/hooks/useStudyOrderLabel';
 
 const AllLectureView = ({ border, id }) => {
+  const { studyOrderLabelType } = useSessionStore.getState();
+  const { studyOrderLabel } = useStudyOrderLabel(studyOrderLabelType);
+
   const borderStyle = border ? 'border border-[#e9ecf2] tw-mt-14' : '';
   // const [activeTab, setActiveTab] = useState('myQuiz');
   const [activeTab, setActiveTab] = useState('community');
@@ -337,7 +342,7 @@ const AllLectureView = ({ border, id }) => {
                   <TableHead style={{ backgroundColor: '#F6F7FB' }}>
                     <TableRow>
                       <TableCell align="center" width={100}>
-                        <div className="tw-font-bold tw-text-base">강의주차</div>
+                        <div className="tw-font-bold tw-text-base">강의{studyOrderLabel}</div>
                       </TableCell>
                       <TableCell align="center" width={110}>
                         <div className="tw-font-bold tw-text-base">기간</div>
@@ -507,8 +512,8 @@ const AllLectureView = ({ border, id }) => {
                                     (questionInfo?.answerType === '0200'
                                       ? '(강의자료) : '
                                       : questionInfo?.answerType === '0300'
-                                      ? '(일반서치) : '
-                                      : '') +
+                                        ? '(일반서치) : '
+                                        : '') +
                                     questionInfo?.answer
                                   : null}
                               </Markdown>

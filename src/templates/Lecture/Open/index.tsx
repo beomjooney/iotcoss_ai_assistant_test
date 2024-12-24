@@ -57,6 +57,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { useSessionStore } from 'src/store/session';
 import { useGetGroupLabel } from 'src/hooks/useGetGroupLabel';
+import { useStudyOrderLabel } from 'src/hooks/useStudyOrderLabel';
 
 export const generateUUID = () => {
   return uuidv4();
@@ -85,8 +86,9 @@ for (let i = 0; i < 2; i++) {
   startDate1 = endDate1.add(1, 'day'); // endDate 다음 날부터 시작
 }
 export function LectureOpenTemplate() {
-  const { jobGroupLabelType } = useSessionStore.getState();
+  const { jobGroupLabelType, studyOrderLabelType } = useSessionStore.getState();
   const { groupLabel, subGroupLabel } = useGetGroupLabel(jobGroupLabelType);
+  const { studyOrderLabel } = useStudyOrderLabel(studyOrderLabelType);
 
   const router = useRouter();
   const [startDay, setStartDay] = React.useState<Dayjs | null>(dayjs());
@@ -2162,8 +2164,8 @@ export function LectureOpenTemplate() {
                   <p className="tw-text-xl tw-font-bold tw-text-left tw-text-black tw-py-5">강의 커리큘럼 입력</p>
                   <p className="tw-text-base tw-text-left tw-text-black">
                     <span className="tw-text-base tw-text-left tw-text-black">
-                      주차별 강의 제목 및 커리큘럼을 입력해주세요. 날짜와 온/오프라인 여부 및 강의자료 업로드 등 강의에
-                      대한 상세 내용을 구성해주세요. <br />
+                      {studyOrderLabel} 강의 제목 및 커리큘럼을 입력해주세요. 날짜와 온/오프라인 여부 및 강의자료 업로드
+                      등 강의에 대한 상세 내용을 구성해주세요. <br />
                       추후 강의 대시보드에서도 수정이 가능합니다~ 순서 변경 및 삭제로 편집하여 커리큘럼을 만들어주세요!
                     </span>
                     <br />
@@ -2190,7 +2192,7 @@ export function LectureOpenTemplate() {
                           {/* <div className=" tw-text-center tw-text-black tw-font-bold tw-mt-5">강의</div> */}
                           {item.studyOrder && (
                             <div className="tw-text-center tw-text-lg tw-text-black tw-font-bold tw-mt-4">
-                              {index + 1} 주차
+                              {index + 1} {studyOrderLabel}
                               <div className="tw-flex tw-justify-center tw-mt-2">
                                 <svg
                                   width={20}
@@ -2240,7 +2242,7 @@ export function LectureOpenTemplate() {
                 <div className="tw-w-full tw-flex tw-justify-between tw-items-center">
                   <div className="tw-w-1/12 tw-flex tw-justify-center tw-items-center">
                     <div className="tw-w-[59px] tw-h-[46px] tw-relative tw-flex tw-flex-col tw-items-center">
-                      <p className="tw-text-base tw-font-bold tw-text-center tw-text-[#ced4de]">주차</p>
+                      <p className="tw-text-base tw-font-bold tw-text-center tw-text-[#ced4de]">{studyOrderLabel}</p>
                       <svg
                         width={20}
                         height={20}
@@ -2287,7 +2289,7 @@ export function LectureOpenTemplate() {
                         </svg>
                         <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-medium tw-text-left tw-text-[#9ca5b2]">
                           <button type="button" onClick={handleAddClick} className="tw-text-black tw-text-base ">
-                            강의주차 추가하기
+                            강의{studyOrderLabel} 추가하기
                           </button>
                         </p>
                       </div>
