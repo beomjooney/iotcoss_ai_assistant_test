@@ -84,6 +84,9 @@ import { useUploadImage } from 'src/services/image/image.mutations';
 import { v4 as uuidv4 } from 'uuid';
 import { useClubQuizTempSave } from 'src/services/quiz/quiz.mutations';
 
+import { useSessionStore } from 'src/store/session';
+import { useGetGroupLabel } from 'src/hooks/useGetGroupLabel';
+
 export const generateUUID = () => {
   return uuidv4();
 };
@@ -97,6 +100,8 @@ export interface ManageQuizClubTemplateProps {
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
 export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTemplateProps) {
+  const { jobGroupLabelType } = useSessionStore.getState();
+  const { groupLabel, subGroupLabel } = useGetGroupLabel(jobGroupLabelType);
   const { mutate: onTempSave, isSuccess: tempSucces, data: tempData, isError: tempError } = useClubQuizTempSave();
   const { mutate: onCrewBan, isSuccess: isBanSuccess } = useCrewBanDelete();
   const { mutate: onCrewAccept, isSuccess: isAcceptSuccess } = useCrewAcceptPost();
@@ -1226,28 +1231,6 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   }
 
   const handleQuizSave = () => {
-    const hasNullQuizSequence = quizList.some(quiz => quiz.quizSequence === null);
-
-    // if (hasNullQuizSequence) {
-    //   alert('퀴즈를 등록해주세요.');
-    //   return;
-    // }
-    // console.log(quizList);
-
-    // publishDate와 quizSequence만 남기기
-    // let decrementCounter = -1;
-    // const filteredData = scheduleData.map(({ publishDate, quizSequence }) => {
-    //   if (quizSequence === null) {
-    //     quizSequence = decrementCounter;
-    //     decrementCounter--;
-    //   }
-    //   return { publishDate, quizSequence };
-    // });
-    // console.log('filteredData', filteredData);
-
-    // console.log('scheduleOriginalData', scheduleOriginalData);
-
-    // // Map scheduleDataOrigin `quizSequence` to schedule using `order`
     const updatedSchedule = scheduleData.map(item => {
       console.log('item', item);
 
@@ -1321,16 +1304,6 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
       alert('학교를 선택해주세요');
       return false;
     }
-
-    // if (!selectedJob || selectedJob.length === 0) {
-    //   alert('최소 하나의 학과를 선택해주세요');
-    //   return false;
-    // }
-
-    // if (!recommendLevels || recommendLevels.length === 0) {
-    //   alert('최소 하나의 학년을 선택해주세요');
-    //   return false;
-    // }
 
     const startAt = startDay ? startDay.format('YYYY-MM-DD') : '';
     const endAt = endDay ? endDay.format('YYYY-MM-DD') : '';
@@ -2306,14 +2279,14 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
               <div>
                 <div className="tw-grid tw-grid-cols-2 tw-gap-4 tw-content-start">
                   <div>
-                    <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천 대학</div>
+                    <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천 {groupLabel}</div>
                     <select
                       className="form-select"
                       onChange={handleUniversityChange}
                       aria-label="Default select example"
                       value={universityCode}
                     >
-                      <option value="">대학을 선택해주세요.</option>
+                      <option value="">{groupLabel}을 선택해주세요.</option>
                       {optionsData?.data?.jobs?.map((university, index) => (
                         <option key={index} value={university.code}>
                           {university.name}
@@ -2353,7 +2326,9 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
 
                   <div>
                     <div>
-                      <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천 학과</div>
+                      <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
+                        추천 {subGroupLabel}
+                      </div>
                       <FormControl sx={{ width: '100%' }} size="small">
                         <Select
                           className="tw-w-full tw-text-black"
@@ -2365,7 +2340,9 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                           renderValue={selected => {
                             if (selected.length === 0) {
                               return (
-                                <span style={{ color: 'gray' }}>추천 대학을 먼저 선택하고, 학과를 선택해주세요.</span>
+                                <span style={{ color: 'gray' }}>
+                                  추천 {groupLabel}을 먼저 선택하고, {subGroupLabel}을 선택해주세요.
+                                </span>
                               );
                             }
                             return selected.join(', ');
@@ -2485,10 +2462,10 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                                 item.name === '0100'
                                   ? ''
                                   : item.name === '0200'
-                                  ? '클럽 관리자가 퀴즈 오픈을 수동으로 설정할 수 있어요!'
-                                  : item.name === '0300'
-                                  ? '학습자가 이전 퀴즈를 모두 학습/답변하였을 경우에 다음 퀴즈가 자동으로 오픈이 돼요!'
-                                  : ''
+                                    ? '클럽 관리자가 퀴즈 오픈을 수동으로 설정할 수 있어요!'
+                                    : item.name === '0300'
+                                      ? '학습자가 이전 퀴즈를 모두 학습/답변하였을 경우에 다음 퀴즈가 자동으로 오픈이 돼요!'
+                                      : ''
                               }
                               placement="top"
                             >
@@ -3495,14 +3472,14 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
         <div className="tw-mb-8">
           <div className="tw-grid tw-grid-cols-3 tw-gap-3 tw-pb-4">
             <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
-              <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">대학</p>
+              <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">{groupLabel}</p>
               <select
                 className="form-select"
                 onChange={handleUniversitySearchChange}
                 aria-label="Default select example"
                 value={universityCodeQuiz}
               >
-                <option value="">대학을 선택해주세요.</option>
+                <option value="">{groupLabel}을 선택해주세요.</option>
                 {optionsData?.data?.jobs?.map((university, index) => (
                   <option key={index} value={university.code}>
                     {university.name}
@@ -3512,7 +3489,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
             </div>
 
             <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
-              <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">학과</p>
+              <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">{subGroupLabel}</p>
               <FormControl sx={{ width: '100%' }} size="small">
                 <Select
                   className="tw-w-full tw-text-black"
@@ -3523,7 +3500,11 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                   displayEmpty
                   renderValue={selected => {
                     if (selected.length === 0) {
-                      return <span style={{ color: 'gray' }}>대학을 선택하고, 학과를 선택해주세요.</span>;
+                      return (
+                        <span style={{ color: 'gray' }}>
+                          {groupLabel}을 선택하고, {subGroupLabel}을 선택해주세요.
+                        </span>
+                      );
                     }
                     return selected.join(', ');
                   }}

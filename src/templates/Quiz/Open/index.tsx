@@ -54,9 +54,15 @@ export const generateUUID = () => {
   return uuidv4();
 };
 
+import { useSessionStore } from 'src/store/session';
+import { useGetGroupLabel } from 'src/hooks/useGetGroupLabel';
+
 const cx = classNames.bind(styles);
 
 export function QuizOpenTemplate() {
+  const { jobGroupLabelType } = useSessionStore.getState();
+  const { groupLabel, subGroupLabel } = useGetGroupLabel(jobGroupLabelType);
+
   const [startDay, setStartDay] = React.useState<Dayjs | null>(dayjs());
   const [endDay, setEndDay] = React.useState<Dayjs | null>(dayjs().add(4, 'month'));
 
@@ -1068,7 +1074,7 @@ export function QuizOpenTemplate() {
     }
 
     if (!universityCode) {
-      alert('학교를 선택해주세요');
+      alert('추천 ' + groupLabel + '을 선택해주세요');
       return false;
     }
 
@@ -1525,8 +1531,8 @@ export function QuizOpenTemplate() {
                           index < activeStep
                             ? 'tw-bg-gray-300 tw-text-white'
                             : index === activeStep
-                            ? 'tw-bg-blue-600  tw-text-white'
-                            : 'tw-bg-gray-300 tw-text-white'
+                              ? 'tw-bg-blue-600  tw-text-white'
+                              : 'tw-bg-gray-300 tw-text-white'
                         }`}
                       ></div>
                       <div
@@ -1534,8 +1540,8 @@ export function QuizOpenTemplate() {
                           index < activeStep
                             ? ' tw-text-gray-400'
                             : index === activeStep
-                            ? ' tw-text-black tw-font-bold'
-                            : ' tw-text-gray-400'
+                              ? ' tw-text-black tw-font-bold'
+                              : ' tw-text-gray-400'
                         }`}
                       >
                         {step}
@@ -1566,7 +1572,7 @@ export function QuizOpenTemplate() {
                   <div className="tw-grid tw-grid-cols-2 tw-gap-4 tw-content-start">
                     <div>
                       <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
-                        추천 대학 <span className="tw-text-red-500">*</span>
+                        추천 {groupLabel} <span className="tw-text-red-500">*</span>
                       </div>
                       <select
                         className="form-select"
@@ -1574,7 +1580,7 @@ export function QuizOpenTemplate() {
                         aria-label="Default select example"
                         value={universityCode}
                       >
-                        <option value="">대학을 선택해주세요.</option>
+                        <option value="">{groupLabel}을 선택해주세요.</option>
                         {optionsData?.data?.jobs?.map((university, index) => (
                           <option key={index} value={university.code}>
                             {university.name}
@@ -1622,7 +1628,9 @@ export function QuizOpenTemplate() {
 
                     <div>
                       <div>
-                        <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천 학과</div>
+                        <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
+                          추천 {subGroupLabel}
+                        </div>
                         <FormControl sx={{ width: '100%' }} size="small">
                           <Select
                             className="tw-w-full tw-text-black"
@@ -1634,7 +1642,9 @@ export function QuizOpenTemplate() {
                             renderValue={selected => {
                               if (selected.length === 0) {
                                 return (
-                                  <span style={{ color: 'gray' }}>추천 대학을 먼저 선택하고, 학과를 선택해주세요.</span>
+                                  <span style={{ color: 'gray' }}>
+                                    추천 {groupLabel}을 먼저 선택하고, {subGroupLabel}를 선택해주세요.
+                                  </span>
                                 );
                               }
                               return selected.join(', ');
@@ -1756,10 +1766,10 @@ export function QuizOpenTemplate() {
                                   item.name === '0100'
                                     ? ''
                                     : item.name === '0200'
-                                    ? '클럽 관리자가 퀴즈 오픈을 수동으로 설정할 수 있어요!'
-                                    : item.name === '0300'
-                                    ? '학습자가 이전 퀴즈를 모두 학습/답변하였을 경우에 다음 퀴즈가 자동으로 오픈이 돼요!'
-                                    : ''
+                                      ? '클럽 관리자가 퀴즈 오픈을 수동으로 설정할 수 있어요!'
+                                      : item.name === '0300'
+                                        ? '학습자가 이전 퀴즈를 모두 학습/답변하였을 경우에 다음 퀴즈가 자동으로 오픈이 돼요!'
+                                        : ''
                                 }
                                 placement="top"
                               >
@@ -2433,7 +2443,9 @@ export function QuizOpenTemplate() {
 
                 <div className="tw-grid tw-grid-cols-3 tw-gap-8 tw-py-12">
                   <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
-                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">대학</p>
+                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">
+                      {groupLabel}
+                    </p>
                     <div className="tw-flex-grow tw-flex-shrink tw-relative tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
                       <TextField
                         size="small"
@@ -2446,7 +2458,9 @@ export function QuizOpenTemplate() {
                     </div>
                   </div>
                   <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
-                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">학과</p>
+                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">
+                      {subGroupLabel}
+                    </p>
                     <div className="tw-flex-grow tw-flex-shrink tw-relative tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
                       <TextField size="small" fullWidth id="margin-none" value={personName} disabled />
                     </div>
@@ -2634,14 +2648,14 @@ export function QuizOpenTemplate() {
         <div className="tw-mb-8">
           <div className="tw-grid tw-grid-cols-3 tw-gap-3 tw-pb-4">
             <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
-              <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">대학</p>
+              <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">{groupLabel}</p>
               <select
                 className="form-select"
                 onChange={handleUniversitySearchChange}
                 aria-label="Default select example"
                 value={universityCodeQuiz}
               >
-                <option value="">대학을 선택해주세요.</option>
+                <option value="">{groupLabel}을 선택해주세요.</option>
                 {optionsData?.data?.jobs?.map((university, index) => (
                   <option key={index} value={university.code}>
                     {university.name}
@@ -2651,7 +2665,7 @@ export function QuizOpenTemplate() {
             </div>
 
             <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
-              <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">학과</p>
+              <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">{subGroupLabel}</p>
               <FormControl sx={{ width: '100%' }} size="small">
                 <Select
                   className="tw-w-full tw-text-black"
@@ -2662,7 +2676,11 @@ export function QuizOpenTemplate() {
                   displayEmpty
                   renderValue={selected => {
                     if (selected.length === 0) {
-                      return <span style={{ color: 'gray' }}>대학을 선택하고, 학과를 선택해주세요.</span>;
+                      return (
+                        <span style={{ color: 'gray' }}>
+                          {groupLabel}을 선택하고, {subGroupLabel}를 선택해주세요.
+                        </span>
+                      );
                     }
                     return selected.join(', ');
                   }}

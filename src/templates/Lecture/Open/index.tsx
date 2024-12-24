@@ -18,6 +18,7 @@ import { useOptions } from 'src/services/experiences/experiences.queries';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 import moment from 'moment';
+
 import {
   useMyQuiz,
   useQuizList,
@@ -54,6 +55,9 @@ import validator from 'validator';
 import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
 import { v4 as uuidv4 } from 'uuid';
 
+import { useSessionStore } from 'src/store/session';
+import { useGetGroupLabel } from 'src/hooks/useGetGroupLabel';
+
 export const generateUUID = () => {
   return uuidv4();
 };
@@ -81,6 +85,9 @@ for (let i = 0; i < 2; i++) {
   startDate1 = endDate1.add(1, 'day'); // endDate 다음 날부터 시작
 }
 export function LectureOpenTemplate() {
+  const { jobGroupLabelType } = useSessionStore.getState();
+  const { groupLabel, subGroupLabel } = useGetGroupLabel(jobGroupLabelType);
+
   const router = useRouter();
   const [startDay, setStartDay] = React.useState<Dayjs | null>(dayjs());
   const [endDay, setEndDay] = React.useState<Dayjs | null>(dayjs().add(4, 'month'));
@@ -1072,12 +1079,12 @@ export function LectureOpenTemplate() {
     }
 
     if (!universityCode) {
-      alert('학교를 선택해주세요');
+      alert(groupLabel + '를 선택해주세요');
       return false;
     }
 
     if (!selectedJob || selectedJob.length === 0) {
-      alert('최소 하나의 학과를 선택해주세요');
+      alert('최소 하나의 ' + subGroupLabel + '를 선택해주세요');
       return false;
     }
 
@@ -1090,11 +1097,6 @@ export function LectureOpenTemplate() {
         return false;
       }
     }
-
-    // if (!recommendLevels || recommendLevels.length === 0) {
-    //   alert('최소 하나의 학년을 선택해주세요');
-    //   return false;
-    // }
 
     // startAt이 endAt보다 앞서야 하고, 두 날짜는 같을 수 없음
     if (startDay && endDay) {
@@ -1456,8 +1458,8 @@ export function LectureOpenTemplate() {
                         index < activeStep
                           ? 'tw-bg-gray-300 tw-text-white'
                           : index === activeStep
-                          ? 'tw-bg-blue-600  tw-text-white'
-                          : 'tw-bg-gray-300 tw-text-white'
+                            ? 'tw-bg-blue-600  tw-text-white'
+                            : 'tw-bg-gray-300 tw-text-white'
                       }`}
                     ></div>
                     <div
@@ -1465,8 +1467,8 @@ export function LectureOpenTemplate() {
                         index < activeStep
                           ? ' tw-text-gray-400'
                           : index === activeStep
-                          ? ' tw-text-black tw-font-bold'
-                          : ' tw-text-gray-400'
+                            ? ' tw-text-black tw-font-bold'
+                            : ' tw-text-gray-400'
                       }`}
                     >
                       {step}
@@ -1508,14 +1510,16 @@ export function LectureOpenTemplate() {
                 <div>
                   <div className="tw-grid tw-grid-cols-2 tw-gap-4 tw-content-start">
                     <div>
-                      <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천 대학</div>
+                      <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
+                        추천 {groupLabel}
+                      </div>
                       <select
                         className="form-select"
                         onChange={handleUniversityChange}
                         aria-label="Default select example"
                         value={universityCode}
                       >
-                        <option>대학을 선택해주세요.</option>
+                        <option>추천 {groupLabel}을 선택해주세요.</option>
                         {optionsData?.data?.jobs?.map((university, index) => (
                           <option key={index} value={university.code}>
                             {university.name}
@@ -1527,7 +1531,7 @@ export function LectureOpenTemplate() {
                     <div>
                       <div>
                         <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
-                          추천 학과(다중 선택 가능)
+                          추천 {}(다중 선택 가능)
                         </div>
                         <FormControl sx={{ width: '100%' }} size="small">
                           <Select
@@ -1540,7 +1544,9 @@ export function LectureOpenTemplate() {
                             renderValue={selected => {
                               if (selected.length === 0) {
                                 return (
-                                  <span style={{ color: 'gray' }}>추천 대학을 먼저 선택하고, 학과를 선택해주세요.</span>
+                                  <span style={{ color: 'gray' }}>
+                                    추천 {groupLabel}을 먼저 선택하고, {subGroupLabel}를 선택해주세요.
+                                  </span>
                                 );
                               }
                               return selected.join(', ');

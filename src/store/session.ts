@@ -33,6 +33,8 @@ export interface SessionStore {
   job?: string;
   logged?: boolean;
   roles?: any[];
+  jobGroupLabelType?: string;
+  studyOrderLabelType?: string;
   update: (session: Session) => void;
 }
 
@@ -65,6 +67,8 @@ const useSessionStore = create<any>(
       tenantName: undefined,
       tenantUri: undefined,
       loginType: undefined,
+      jobGroupLabelType: undefined,
+      studyOrderLabelType: undefined,
       tenantLoginMemberTypes: undefined,
       menu: {},
       redirections: {},

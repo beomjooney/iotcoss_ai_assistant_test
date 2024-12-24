@@ -42,21 +42,19 @@ import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlin
 
 import { IconButton, InputAdornment } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { is } from 'ramda';
+import { useGetGroupLabel } from 'src/hooks/useGetGroupLabel';
 const cx = classNames.bind(styles);
 
 export function MemberEditTemplate() {
   const [selectedJobName, setSelectedJobName] = useState('');
   const [open, setOpen] = React.useState(false);
   const { user, setUser } = useStore();
-  const { memberId } = useSessionStore.getState();
+  const { memberId, jobGroupLabelType } = useSessionStore.getState();
+  const { groupLabel, subGroupLabel } = useGetGroupLabel(jobGroupLabelType);
   const [userInfo, setUserInfo] = useState<any>(user);
   const [nickname, setNickname] = useState(null);
   const [phoneNumber, setPhoneNumber] = useState(null);
   const [phoneEditMode, setPhoneEditMode] = useState(false);
-  const [emailReceiveYn, setEmailReceiveYn] = useState(true);
-  const [smsReceiveYn, setSmsReceiveYn] = useState(true);
-  const [kakaoReceiveYn, setKakaoReceiveYn] = useState(true);
   const [edting, setEditing] = useState(false);
   const [file, setFile] = useState(null);
   const [fileImageUrl, setFileImageUrl] = useState(null);
@@ -791,7 +789,7 @@ export function MemberEditTemplate() {
           <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-3">
             <Grid item xs={2}></Grid>
             <Grid item xs={2} className="tw-text-left">
-              대학
+              {groupLabel}
             </Grid>
             <Grid item xs={8}>
               <select
@@ -800,7 +798,7 @@ export function MemberEditTemplate() {
                 aria-label="Default select example"
                 value={universityCode}
               >
-                <option value="">대학을 선택해주세요.</option>
+                <option value="">{groupLabel}을 선택해주세요.</option>
                 {userInfo?.jobOptions?.map((university, index) => (
                   <option key={index} value={university.code}>
                     {university.name}
@@ -812,7 +810,7 @@ export function MemberEditTemplate() {
           <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-3">
             <Grid item xs={2}></Grid>
             <Grid item xs={2} className="tw-text-left">
-              학과
+              {subGroupLabel}
             </Grid>
             <Grid item xs={8}>
               <select
@@ -829,17 +827,6 @@ export function MemberEditTemplate() {
               </select>
             </Grid>
           </Grid>
-          {/* <Grid container direction="row" justifyContent="space-between" alignItems="center" className="tw-py-3">
-            <Grid item xs={2}></Grid>
-            <Grid item xs={2} className="tw-text-left">
-              학번
-            </Grid>
-            <Grid item xs={8}>
-              <div className="tw-text-left tw-flex tw-text-base tw-gap-3">
-                <Textfield className="tw-w-full" size="small" id="outlined-disabled" value="sdfasdfasdf" />
-              </div>
-            </Grid>
-          </Grid> */}
           <Grid container direction="row" justifyContent="flex-start" alignItems="flex-start" className="tw-py-3">
             <Grid item xs={2}></Grid>
             <Grid item xs={2} className="tw-text-left">

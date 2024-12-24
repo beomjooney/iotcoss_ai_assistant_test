@@ -80,6 +80,8 @@ import { v4 as uuidv4 } from 'uuid';
 import validator from 'validator';
 import { useStore } from 'src/store';
 import { useGetScheduleDay } from 'src/services/jobs/jobs.queries';
+import { useSessionStore } from 'src/store/session';
+import { useGetGroupLabel } from 'src/hooks/useGetGroupLabel';
 
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
@@ -97,6 +99,8 @@ export interface ManageLectureClubTemplateProps {
 }
 
 export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLectureClubTemplateProps) {
+  const { jobGroupLabelType } = useSessionStore.getState();
+  const { groupLabel, subGroupLabel } = useGetGroupLabel(jobGroupLabelType);
   const { mutate: onCrewBan, isSuccess: isBanSuccess } = useCrewBanDelete();
   const { mutate: onCrewAccept, isSuccess: isAcceptSuccess } = useCrewAcceptPost();
   const { mutate: onCrewReject, isSuccess: isRejectSuccess } = useCrewRejectPost();
@@ -939,13 +943,13 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
     }
 
     if (!universityCode) {
-      alert('학교를 선택해주세요');
+      alert(groupLabel + '을 선택해주세요');
       setIsProcessing(false);
       return false;
     }
 
     if (!selectedJob || selectedJob.length === 0) {
-      alert('최소 하나의 학과를 선택해주세요');
+      alert('최소 하나의 ' + subGroupLabel + '를 선택해주세요');
       setIsProcessing(false);
       return false;
     }
@@ -2217,14 +2221,16 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                   <div>
                     <div className="tw-grid tw-grid-cols-2 tw-gap-4 tw-content-start">
                       <div>
-                        <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">추천 대학</div>
+                        <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
+                          추천 {groupLabel}
+                        </div>
                         <select
                           className="form-select"
                           onChange={handleUniversityChange}
                           aria-label="Default select example"
                           value={universityCode}
                         >
-                          <option value="">대학을 선택해주세요.</option>
+                          <option value="">{groupLabel}을 선택해주세요.</option>
                           {optionsData?.data?.jobs?.map((university, index) => (
                             <option key={index} value={university.code}>
                               {university.name}
@@ -2236,7 +2242,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                       <div>
                         <div>
                           <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
-                            추천 학과(다중 선택 가능)
+                            추천 {subGroupLabel}(다중 선택 가능)
                           </div>
                           <FormControl sx={{ width: '100%' }} size="small">
                             <Select
@@ -2250,7 +2256,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                                 if (selected.length === 0) {
                                   return (
                                     <span style={{ color: 'gray' }}>
-                                      추천 대학을 먼저 선택하고, 학과를 선택해주세요.
+                                      추천 {groupLabel}을 먼저 선택하고, {subGroupLabel}를 선택해주세요.
                                     </span>
                                   );
                                 }
@@ -3083,14 +3089,14 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                                   {isProcessing
                                     ? '등록 중'
                                     : fileEntry.fileUploadStatus === '0000'
-                                    ? '등록 전'
-                                    : fileEntry.fileUploadStatus === '1000'
-                                    ? '등록 중'
-                                    : fileEntry.fileUploadStatus === '2000'
-                                    ? '등록 완료'
-                                    : fileEntry.fileUploadStatus === '3000'
-                                    ? '등록 실패'
-                                    : '등록 전'}
+                                      ? '등록 전'
+                                      : fileEntry.fileUploadStatus === '1000'
+                                        ? '등록 중'
+                                        : fileEntry.fileUploadStatus === '2000'
+                                          ? '등록 완료'
+                                          : fileEntry.fileUploadStatus === '3000'
+                                            ? '등록 실패'
+                                            : '등록 전'}
                                 </div>
                               </div>
                             ))}
@@ -3138,14 +3144,14 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                                   {isProcessing
                                     ? '등록 중'
                                     : file.fileUploadStatus === '0000'
-                                    ? '등록 전'
-                                    : file.fileUploadStatus === '1000'
-                                    ? '등록 중'
-                                    : file.fileUploadStatus === '2000'
-                                    ? '등록 완료'
-                                    : file.fileUploadStatus === '3000'
-                                    ? '등록 실패'
-                                    : '등록 전'}
+                                      ? '등록 전'
+                                      : file.fileUploadStatus === '1000'
+                                        ? '등록 중'
+                                        : file.fileUploadStatus === '2000'
+                                          ? '등록 완료'
+                                          : file.fileUploadStatus === '3000'
+                                            ? '등록 실패'
+                                            : '등록 전'}
                                 </div>
                               </div>
                             ))}

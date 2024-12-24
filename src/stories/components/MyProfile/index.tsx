@@ -9,11 +9,14 @@ import { Toggle } from 'src/stories/components';
 import { useSaveProfile, useRequestProfessor } from 'src/services/account/account.mutations';
 import { useUploadImage } from 'src/services/image/image.mutations';
 import { useSessionStore } from 'src/store/session';
+import { useGetGroupLabel } from 'src/hooks/useGetGroupLabel';
 
 const cx = classNames.bind(styles);
 
 const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: any) => {
-  const { roles } = useSessionStore.getState();
+  const { roles, jobGroupLabelType } = useSessionStore.getState();
+  const { groupLabel, subGroupLabel } = useGetGroupLabel(jobGroupLabelType);
+
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isProfessor, setIsProfessor] = useState<boolean>(false);
   const [jobs, setJobs] = useState([]);
@@ -62,25 +65,16 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
     // fileImageUrl이 null인 경우 imageUrl을 사용하도록 조건문 추가
     const profileImageKey = imageUrl || profile?.member?.profileImageUrl;
 
-    // const params = {
-    //   profileImageUrl: profileImageKey,
-    //   jobGroup: universityCode,
-    //   job: selectedJob,
-    //   memberId: profile?.email,
-    //   jobLevel: jobLevel,
-    //   introductionMessage: introductionMessage,
-    // };
-
     console.log(universityCode);
     console.log(selectedJob);
 
     if (universityCode === '' || universityCode === undefined) {
-      alert('대학을 선택해주세요.');
+      alert(`${groupLabel}을 선택해주세요.`);
       return;
     }
 
     if (selectedJob === '' || selectedJob === undefined) {
-      alert('학과를 선택해주세요.');
+      alert(`${subGroupLabel}을 선택해주세요.`);
       return;
     }
 
@@ -100,12 +94,12 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
 
   const handleRequestSave = () => {
     if (universityCode === '' || universityCode === undefined) {
-      alert('대학을 선택해주세요.');
+      alert(`${groupLabel}을 선택해주세요.`);
       return;
     }
 
     if (selectedJob === '' || selectedJob === undefined) {
-      alert('학과를 선택해주세요.');
+      alert(`${subGroupLabel}을 선택해주세요.`);
       return;
     }
 
@@ -294,7 +288,7 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
         ) : (
           <>
             <div className="tw-font-semibold tw-text-base tw-text-black tw-mt-0  tw-text-center">
-              대학,학과, 학번 및 학년 등 개인상세정보를 입력해주세요.
+              {groupLabel}, {subGroupLabel}, 학번 및 학년 등 개인상세정보를 입력해주세요.
             </div>
             <div className="tw-font-semibold tw-text-base  tw-text-black tw-mt-0 tw-mb-10 tw-text-center">
               이후 마이페이지에서 수정이 가능합니다.
@@ -350,7 +344,7 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
                 <dd className="tw-text-base tw-leading-6 tw-text-gray-700 tw-col-span-5">{profile?.phoneNumber}</dd>
               </div>
               <div className="tw-px-4 tw-pt-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
-                <dt className="tw-text-base tw-font-bold tw-leading-6 tw-text-gray-900">대학</dt>
+                <dt className="tw-text-base tw-font-bold tw-leading-6 tw-text-gray-900">{groupLabel}</dt>
                 <dd className="tw-text-base tw-leading-6 tw-text-gray-700 tw-col-span-5">
                   <select
                     className="form-select"
@@ -358,7 +352,7 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
                     aria-label="Default select example"
                     value={universityCode}
                   >
-                    <option value="">대학을 선택해주세요.</option>
+                    <option value="">{groupLabel}을 선택해주세요.</option>
                     {optionsData?.data?.jobs?.map((university, index) => (
                       <option key={index} value={university.code}>
                         {university.name}
@@ -368,7 +362,7 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
                 </dd>
               </div>
               <div className="tw-mt-2 tw-px-4 tw-py-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
-                <dt className="tw-text-base tw-font-bold tw-leading-6 tw-text-gray-900">학과</dt>
+                <dt className="tw-text-base tw-font-bold tw-leading-6 tw-text-gray-900">{subGroupLabel}</dt>
                 <dd className="tw-text-base tw-leading-6 tw-text-gray-700 tw-col-span-5">
                   <select
                     className="form-select"
@@ -378,7 +372,7 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
                     value={selectedJob}
                   >
                     <option disabled value="">
-                      학과를 선택해주세요.
+                      {subGroupLabel}을 선택해주세요.
                     </option>
                     {jobs.map((job, index) => (
                       <option key={index} value={job.code}>

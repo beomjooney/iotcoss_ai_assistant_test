@@ -24,6 +24,8 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
 import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
 import { useAIQuizAnswer } from 'src/services/quiz/quiz.mutations';
+import { useSessionStore } from 'src/store/session';
+import { useGetGroupLabel } from 'src/hooks/useGetGroupLabel';
 
 const studyStatus = [
   {
@@ -41,6 +43,8 @@ const studyStatus = [
 ];
 
 const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh = false }) => {
+  const { jobGroupLabelType } = useSessionStore.getState();
+  const { groupLabel, subGroupLabel } = useGetGroupLabel(jobGroupLabelType);
   const [anchorEl, setAnchorEl] = useState(null);
   const [updateFlag, setUpdateFlag] = useState(false);
   const [active, setActive] = useState('0100');
@@ -273,11 +277,6 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
       alert('콘텐츠 URL을 입력해주세요.');
       return false;
     }
-
-    // if (!selectedJob || selectedJob.length === 0) {
-    //   alert('하나 이상의 학과를 선택하세요.');
-    //   return;
-    // }
 
     // Find the specific quiz in quizList and create formattedQuizList
     const params = {
@@ -695,7 +694,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                 <div className="tw-text-lg tw-font-bold">지식콘텐츠 태깅</div>
               </AccordionSummary>
               <AccordionDetails sx={{ backgroundColor: 'white', padding: 3 }}>
-                <div className="tw-text-sm tw-font-bold tw-py-2">추천 대학</div>
+                <div className="tw-text-sm tw-font-bold tw-py-2">추천 {groupLabel}</div>
                 <select
                   className="form-select"
                   onChange={handleUniversityChange}
@@ -703,14 +702,14 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                   aria-label="Default select example"
                   value={universityCode}
                 >
-                  <option value="">대학을 선택해주세요.</option>
+                  <option value="">{groupLabel}을 선택해주세요.</option>
                   {optionsData?.data?.jobs?.map((university, index) => (
                     <option key={index} value={university.code}>
                       {university.name}
                     </option>
                   ))}
                 </select>
-                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">추천 학과</div>
+                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">추천 {subGroupLabel}</div>
                 <FormControl sx={{ width: '100%' }} size="small">
                   <Select
                     className="tw-w-full tw-text-black"
@@ -722,7 +721,11 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                     displayEmpty
                     renderValue={selected => {
                       if (selected.length === 0) {
-                        return <span style={{ color: 'gray' }}>추천 대학을 먼저 선택하고, 학과를 선택해주세요.</span>;
+                        return (
+                          <span style={{ color: 'gray' }}>
+                            추천 {groupLabel}을 먼저 선택하고, {subGroupLabel}을 선택해주세요.
+                          </span>
+                        );
                       }
                       return selected.join(', ');
                     }}

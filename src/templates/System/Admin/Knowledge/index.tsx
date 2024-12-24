@@ -39,6 +39,7 @@ import IconButton from '@mui/material/IconButton';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { useMyQuiz, useMyQuizContents, useMyQuizThresh } from 'src/services/jobs/jobs.queries';
 import { useQuizDelete } from 'src/services/admin/friends/friends.mutations';
+import { useGetGroupLabel } from 'src/hooks/useGetGroupLabel';
 
 const cx = classNames.bind(styles);
 
@@ -58,7 +59,8 @@ const studyStatus = [
 ];
 
 export function AdminKnowledgeTemplate() {
-  const { memberId } = useSessionStore.getState();
+  const { jobGroupLabelType } = useSessionStore.getState();
+  const { groupLabel, subGroupLabel } = useGetGroupLabel(jobGroupLabelType);
 
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
@@ -320,20 +322,10 @@ export function AdminKnowledgeTemplate() {
       return false;
     }
 
-    // if (!contentUrl) {
-    //   alert('콘텐츠 URL을 입력하세요.');
-    //   return;
-    // }
-
     if (!selectedUniversity || selectedUniversity.length === 0) {
-      alert('대학을 선택하세요.');
+      alert(`${groupLabel}을 선택하세요.`);
       return;
     }
-
-    // if (!selectedJob || selectedJob.length === 0) {
-    //   alert('하나 이상의 학과를 선택하세요.');
-    //   return;
-    // }
 
     if (quizCount < 1) {
       alert('생성 퀴즈 개수는 1개 이상 설정해야 합니다.');
@@ -400,35 +392,11 @@ export function AdminKnowledgeTemplate() {
     }
 
     console.log(selectedSubject);
-    // if (!selectedSubject) {
-    //   alert('주제를 입력해주세요.');
-    //   return false;
-    // }
-    // if (!selectedChapter) {
-    //   alert('챕터를 입력해주세요.');
-    //   return false;
-    // }
-    // if (!selected1.length) {
-    //   alert('학습 키워드를 입력해주세요.');
-    //   return false;
-    // }
-    // if (!selected2.length) {
-    //   alert('스킬을 입력해주세요.');
-    //   return false;
-    // }
     if (!selectedUniversity) {
-      alert('추천 대학을 입력해주세요.');
+      alert(`추천 ${groupLabel}을 입력해주세요.`);
       return false;
     }
 
-    // if (selectedJob.length === 0) {
-    //   alert('추천 학과를 입력해주세요.');
-    //   return false;
-    // }
-    // if (jobLevel.length === 0) {
-    //   alert('추천 학년을 입력해주세요.');
-    //   return false;
-    // }
     if (isContentModalOpen) {
       // 콘텐츠 등록
       console.log('지식콘텐츠');
@@ -774,10 +742,10 @@ export function AdminKnowledgeTemplate() {
                             <div className=" tw-text-base tw-font-bold">URL</div>
                           </TableCell>
                           <TableCell align="left" width={180}>
-                            <div className=" tw-text-base tw-font-bold">추천대학</div>
+                            <div className=" tw-text-base tw-font-bold">추천{groupLabel}</div>
                           </TableCell>
                           <TableCell align="left" width={180}>
-                            <div className=" tw-text-base tw-font-bold">추천학과</div>
+                            <div className=" tw-text-base tw-font-bold">추천{subGroupLabel}</div>
                           </TableCell>
                           <TableCell align="left" width={180}>
                             <div className=" tw-text-base tw-font-bold">추천레벨</div>
@@ -1048,7 +1016,8 @@ export function AdminKnowledgeTemplate() {
                   </AccordionSummary>
                   <AccordionDetails sx={{ backgroundColor: 'white', padding: 3 }}>
                     <div className="tw-text-sm tw-font-bold tw-py-2">
-                      추천 대학<span className="tw-text-red-500 tw-ml-1">*</span>
+                      추천 {groupLabel}
+                      <span className="tw-text-red-500 tw-ml-1">*</span>
                     </div>
                     <select
                       className="form-select"
@@ -1057,14 +1026,14 @@ export function AdminKnowledgeTemplate() {
                       disabled={isContentModalClick}
                       value={universityCode}
                     >
-                      <option value="">대학을 선택해주세요.</option>
+                      <option value="">{groupLabel}을 선택해주세요.</option>
                       {optionsData?.data?.jobs?.map((university, index) => (
                         <option key={index} value={university.code}>
                           {university.name}
                         </option>
                       ))}
                     </select>
-                    <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">추천 학과</div>
+                    <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">추천 {subGroupLabel}</div>
                     <FormControl sx={{ width: '100%' }} size="small">
                       <Select
                         className="tw-w-full tw-text-black"
@@ -1076,7 +1045,9 @@ export function AdminKnowledgeTemplate() {
                         renderValue={selected => {
                           if (selected.length === 0) {
                             return (
-                              <span style={{ color: 'gray' }}>추천 대학을 먼저 선택하고, 학과를 선택해주세요.</span>
+                              <span style={{ color: 'gray' }}>
+                                추천 {groupLabel}을 먼저 선택하고, {subGroupLabel}을 선택해주세요.
+                              </span>
                             );
                           }
                           return selected.join(', ');
