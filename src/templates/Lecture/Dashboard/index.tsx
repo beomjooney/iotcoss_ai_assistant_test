@@ -297,7 +297,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   useDidMountEffect(() => {
     setMyClubParams({
       clubSequence: selectedClub?.clubSequence || id,
-      data: { sortType: sortType, page: pageStudent },
+      data: { sortType: sortType, page: pageStudent, orderBy: sortType === 'NAME' ? 'ASC' : 'DESC' },
     });
   }, [pageStudent]);
 
