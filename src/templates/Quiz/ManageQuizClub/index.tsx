@@ -3264,7 +3264,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
       </div>
 
       <MentorsModal
-        zIndex={200}
+        zIndex={2000}
         title="교수자 추가하기"
         isOpen={isProfessorModalOpen}
         onAfterClose={() => {

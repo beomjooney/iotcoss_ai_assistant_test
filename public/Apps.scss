@@ -5,6 +5,14 @@
 @import '../public/assets/scss/style.scss';
 
 /* 구체적인 선택자를 사용 */
+.markdown-container > h1 {
+  font-size: 15px !important;
+}
+
+.markdown-container > h2 {
+  font-size: 12px !important;
+}
+
 .markdown-container > h3 {
   font-size: 12px !important;
 }

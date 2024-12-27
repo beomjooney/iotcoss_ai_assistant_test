@@ -184,7 +184,7 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
             </div>
             <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-3 tw-py-1 tw-rounded tw-bg-[#ffdede]">
               <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#b83333]">
-                {profile?.jobLevels[0]?.name || '레벨'}
+                {profile?.jobLevels?.[0]?.name || '레벨'}
               </div>
             </div>
           </div>

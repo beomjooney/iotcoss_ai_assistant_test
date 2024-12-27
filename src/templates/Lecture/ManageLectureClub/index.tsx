@@ -100,9 +100,9 @@ export interface ManageLectureClubTemplateProps {
 }
 
 export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLectureClubTemplateProps) {
-  const { jobGroupLabelType } = useSessionStore.getState();
+  const { jobGroupLabelType, studyOrderLabelType } = useSessionStore.getState();
   const { groupLabel, subGroupLabel } = useGetGroupLabel(jobGroupLabelType);
-  const { studyOrderLabelType } = useSessionStore.getState();
+  const { studyOrderLabel } = useStudyOrderLabel(studyOrderLabelType);
   const { mutate: onCrewBan, isSuccess: isBanSuccess } = useCrewBanDelete();
   const { mutate: onCrewAccept, isSuccess: isAcceptSuccess } = useCrewAcceptPost();
   const { mutate: onCrewReject, isSuccess: isRejectSuccess } = useCrewRejectPost();
@@ -3091,14 +3091,14 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                                   {isProcessing
                                     ? '등록 중'
                                     : fileEntry.fileUploadStatus === '0000'
-                                      ? '등록 전'
-                                      : fileEntry.fileUploadStatus === '1000'
-                                        ? '등록 중'
-                                        : fileEntry.fileUploadStatus === '2000'
-                                          ? '등록 완료'
-                                          : fileEntry.fileUploadStatus === '3000'
-                                            ? '등록 실패'
-                                            : '등록 전'}
+                                    ? '등록 전'
+                                    : fileEntry.fileUploadStatus === '1000'
+                                    ? '등록 중'
+                                    : fileEntry.fileUploadStatus === '2000'
+                                    ? '등록 완료'
+                                    : fileEntry.fileUploadStatus === '3000'
+                                    ? '등록 실패'
+                                    : '등록 전'}
                                 </div>
                               </div>
                             ))}
@@ -3146,14 +3146,14 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                                   {isProcessing
                                     ? '등록 중'
                                     : file.fileUploadStatus === '0000'
-                                      ? '등록 전'
-                                      : file.fileUploadStatus === '1000'
-                                        ? '등록 중'
-                                        : file.fileUploadStatus === '2000'
-                                          ? '등록 완료'
-                                          : file.fileUploadStatus === '3000'
-                                            ? '등록 실패'
-                                            : '등록 전'}
+                                    ? '등록 전'
+                                    : file.fileUploadStatus === '1000'
+                                    ? '등록 중'
+                                    : file.fileUploadStatus === '2000'
+                                    ? '등록 완료'
+                                    : file.fileUploadStatus === '3000'
+                                    ? '등록 실패'
+                                    : '등록 전'}
                                 </div>
                               </div>
                             ))}

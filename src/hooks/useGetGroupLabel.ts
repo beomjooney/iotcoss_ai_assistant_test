@@ -15,7 +15,7 @@ export const useGetGroupLabel = (jobGroupLabelType: string): GroupLabels => {
     }
     return {
       groupLabel: '직군',
-      subGroupLabel: '직무'
+      subGroupLabel: '직무',
     };
   }, [jobGroupLabelType]);
 };
