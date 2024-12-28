@@ -373,7 +373,8 @@ const AllLectureView = ({ border, id }) => {
                         <TableRow key={idx}>
                           <TableCell align="center" component="th" scope="row">
                             <div className="tw-font-bold tw-text-base">
-                              {item?.studyOrder}회 <br />
+                              {item?.studyOrder}
+                              {studyOrderLabel} <br />
                             </div>
                           </TableCell>
                           <TableCell align="center" component="th" scope="row">
@@ -512,8 +513,8 @@ const AllLectureView = ({ border, id }) => {
                                     (questionInfo?.answerType === '0200'
                                       ? '(강의자료) : '
                                       : questionInfo?.answerType === '0300'
-                                        ? '(일반서치) : '
-                                        : '') +
+                                      ? '(일반서치) : '
+                                      : '') +
                                     questionInfo?.answer
                                   : null}
                               </Markdown>
