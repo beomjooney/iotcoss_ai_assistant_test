@@ -1150,7 +1150,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                           <TableCell key={index} width={90} align="right">
                             <div>
                               <p className="tw-text-base tw-font-bold tw-text-center tw-text-[#31343d] tw-left-[15px] tw-top-0">
-                                {session?.order}회
+                                {session?.order} {studyOrderLabel}
                               </p>
                               <p className="tw-w-full tw-h-3.5 tw-text-xs tw-font-medium tw-text-center tw-text-[#9ca5b2] tw-bottom-0">
                                 {session?.publishDate?.slice(5)} ({session?.dayOfWeek})
@@ -1417,7 +1417,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                         <StyledTableRow key={index}>
                           <TableCell align="center" component="th" scope="row" className="border-right">
                             <div className="tw-font-bold tw-text-base">
-                              {info?.studyOrder}주 <br />
+                              {info?.studyOrder} {studyOrderLabel} <br />
                             </div>
                           </TableCell>
                           <TableCell align="center" component="th" scope="row" className="border-right">
@@ -1452,8 +1452,8 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                       (info.questionAnswer.answerType === '0200'
                                         ? '(강의자료) : '
                                         : info.questionAnswer.answerType === '0300'
-                                          ? '(일반서치) : '
-                                          : '') +
+                                        ? '(일반서치) : '
+                                        : '') +
                                       info.questionAnswer.answer
                                     : ''}
                                 </Markdown>
@@ -1565,8 +1565,8 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                     (questionInfo?.answerType === '0200'
                                       ? '(강의자료) : '
                                       : questionInfo?.answerType === '0300'
-                                        ? '(일반서치) : '
-                                        : '') +
+                                      ? '(일반서치) : '
+                                      : '') +
                                     questionInfo?.answer
                                   : null}
                               </Markdown>
@@ -1767,8 +1767,8 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                   (info?.answerType === '0200'
                                     ? '(강의자료) : '
                                     : info?.answerType === '0300'
-                                      ? '(일반서치) : '
-                                      : '') +
+                                    ? '(일반서치) : '
+                                    : '') +
                                   info?.answer
                                 : null}
                             </Markdown>
