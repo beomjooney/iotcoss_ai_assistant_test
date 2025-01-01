@@ -560,13 +560,20 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
       console.log('file download', data, fileName);
       if (data) {
         // blob 데이터를 파일로 저장하는 로직
-        const url = window.URL.createObjectURL(new Blob([data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', fileName); // 다운로드할 파일 이름과 확장자를 설정합니다.
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        // const url = window.URL.createObjectURL(new Blob([data]));
+        // const link = document.createElement('a');
+        // link.href = url;
+        // link.setAttribute('download', fileName); // 다운로드할 파일 이름과 확장자를 설정합니다.
+        // document.body.appendChild(link);
+        // link.click();
+        // document.body.removeChild(link);
+
+        // blob 데이터를 URL로 변환
+        const url = window.URL.createObjectURL(new Blob([data], { type: 'application/pdf' }));
+
+        // 브라우저에서 PDF를 새 탭에서 열기
+        window.open(url, '_blank', 'noopener,noreferrer');
+
         setKey('');
         setFileName('');
       }
@@ -624,7 +631,6 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
     console.log(key, fileName);
     setKey(key);
     setFileName(fileName);
-    // onFileDownload(key);
   };
 
   const handleRemoveFileLocal = fileIndex => {
@@ -673,11 +679,6 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
 
   const handlerQuizInit = async () => {
     setScheduleData(defaultScheduleData);
-  };
-
-  const handleProfileDelete = e => {
-    setPreviewProfile(null);
-    setSelectedImageProfileCheck(null);
   };
 
   const handleImageChange = (event, type) => {
@@ -2638,13 +2639,6 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                   className="tw-hidden"
                   onChange={e => handleImageChange(e, 'profile')}
                 />
-                {/* <button
-                  onClick={e => handleProfileDelete(e)}
-                  type="button"
-                  className="tw-text-black border tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
-                >
-                  삭제
-                </button> */}
               </div>
             </div>
           </div>
