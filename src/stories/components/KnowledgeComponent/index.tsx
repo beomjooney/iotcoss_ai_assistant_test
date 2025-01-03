@@ -541,7 +541,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
               {data?.content?.contentType === '0320' ? (
                 <p
                   onClick={() => {
-                    onFileDownload(data?.content?.url, data?.content?.name);
+                    onFileDownload(data?.content?.contentKey, data?.content?.name);
                   }}
                   className="tw-cursor-pointer tw-underline tw-text-sm tw-font-medium tw-text-left tw-text-[#9ca5b2]"
                 >
@@ -649,7 +649,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                       <div
                         className="tw-cursor-pointer tw-underline"
                         onClick={() => {
-                          onFileDownload(data?.content?.url, data?.content?.name);
+                          onFileDownload(data?.content?.contentKey, data?.content?.name);
                         }}
                       >
                         {data.content.name || '파일정보가 없습니다.'}

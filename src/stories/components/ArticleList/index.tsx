@@ -189,7 +189,7 @@ const ArticleList: React.FC<any> = ({ data, refetchMyQuizContent }) => {
                 <p
                   onClick={() => {
                     if (data.contentType === '0320') {
-                      onFileDownload(data.url, data.name);
+                      onFileDownload(data.contentKey, data.name);
                     } else {
                       window.open(data.url, '_blank');
                     }
