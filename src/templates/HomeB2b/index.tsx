@@ -61,7 +61,7 @@ export function HomeB2bTemplate({ logged = false, tenantName = '' }: HomeB2bProp
                   이 시대 최고의 리더와 함께 학습할 수 있습니다!
                 </span>
               </p>
-              <button
+              {/* <button
                 onClick={() => {
                   console.log(modalIsProfessor);
                   const role =
@@ -79,7 +79,7 @@ export function HomeB2bTemplate({ logged = false, tenantName = '' }: HomeB2bProp
                 className="tw-flex tw-items-center tw-justify-center tw-w-60 tw-h-12 tw-overflow-hidden tw-rounded tw-bg-[#2474ed]"
               >
                 <p className=" tw-text-base tw-font-bold tw-text-center tw-text-white">데브어스 AI조교 체험하기</p>
-              </button>
+              </button> */}
             </div>
           </div>
           <div className="tw-flex tw-items-center tw-justify-center tw-mt-[45px]">

@@ -61,7 +61,7 @@ export function HomeB2cTemplate({ logged = false, tenantName = '' }: HomeB2cProp
                   이 시대 최고의 리더와 함께 학습할 수 있습니다!
                 </span>
               </p>
-              <button
+              {/* <button
                 onClick={() => {
                   console.log(modalIsProfessor);
                   const role =
@@ -79,7 +79,64 @@ export function HomeB2cTemplate({ logged = false, tenantName = '' }: HomeB2cProp
                 className="tw-flex tw-items-center tw-justify-center tw-w-60 tw-h-12 tw-overflow-hidden tw-rounded tw-bg-[#2474ed]"
               >
                 <p className=" tw-text-base tw-font-bold tw-text-center tw-text-white">데브어스 퀴즈업 체험하기</p>
-              </button>
+              </button> */}
+              <div className="tw-flex tw-items-center tw-justify-start tw-gap-5">
+                <div
+                  onClick={() => {
+                    console.log(modalIsProfessor);
+                    const role =
+                      roles?.includes('ROLE_ADMIN') || roles?.includes('ROLE_INSTRUCTOR') ? 'professor' : 'student';
+                    if (logged) {
+                      if (role === 'professor') {
+                        setModalIsProfessor(true);
+                      } else {
+                        alert('교수자만 접근할 수 있는 페이지입니다.');
+                      }
+                    } else {
+                      alert('로그인 후 이용해주세요.');
+                    }
+                  }}
+                  className=" tw-cursor-pointer tw-w-36 md:tw-w-48 tw-h-12 md:tw-h-20"
+                >
+                  <div className=" tw-text-xs md:tw-text-lg tw-text-left tw-text-white tw-bg-primary tw-rounded-lg tw-px-3 tw-py-1.5">
+                    <div className="tw-flex tw-items-center">
+                      <img
+                        className=" tw-rounded-full tw-w-8 md:tw-w-12 tw-h-8 md:tw-h-12"
+                        src="/assets/images/main/teacher1.png"
+                      />
+                      <div className="tw-ml-2 md:tw-ml-4">
+                        <span className="tw-text-xs md:tw-text-lg tw-font-bold tw-text-left tw-text-white">교수자</span>
+                        <br />
+                        <span className="tw-text-xs md:tw-text-lg tw-font-medium tw-text-left tw-text-white">
+                          체험하기
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  onClick={() => {
+                    router.push('/quiz');
+                  }}
+                  className="tw-cursor-pointer tw-w-36 md:tw-w-48 tw-h-12 md:tw-h-20"
+                >
+                  <div className="tw-text-xs md:tw-text-lg tw-text-left tw-text-white tw-rounded-lg tw-bg-[#7ed869]  tw-px-3 tw-py-1.5">
+                    <div className="tw-flex tw-items-center">
+                      <img
+                        className=" tw-rounded-full tw-w-8 md:tw-w-12 tw-h-8 md:tw-h-12"
+                        src="/assets/images/main/teacher2.png"
+                      />
+                      <div className="tw-ml-2 md:tw-ml-4">
+                        <span className="tw-text-xs md:tw-text-lg tw-font-bold tw-text-left tw-text-white">학습자</span>
+                        <br />
+                        <span className="tw-text-xs md:tw-text-lg tw-font-medium tw-text-left tw-text-white">
+                          체험하기
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <div className="tw-flex tw-items-center tw-justify-center tw-mt-[45px]">

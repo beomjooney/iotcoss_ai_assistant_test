@@ -39,15 +39,9 @@ export function IndexPage({ session, setActiveIndex }: { session: Session; setAc
 
   return (
     <>
-      {tenantName === 'dsunv' ? (
-        <div className="tw-h-[1400px]">
-          <HomeTemplate logged={logged} tenantName="dsu" />
-        </div>
-      ) : (
-        <div className="tw-h-[2450px]">
-          <HomeB2cTemplate logged={logged} tenantName="quizup" />
-        </div>
-      )}
+      <div className="tw-h-[2450px]">
+        <HomeB2cTemplate logged={logged} tenantName="quizup" />
+      </div>
     </>
   );
 }

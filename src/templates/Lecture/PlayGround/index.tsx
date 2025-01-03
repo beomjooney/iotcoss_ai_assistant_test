@@ -260,13 +260,19 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
       console.log('file download', data, fileName);
       if (data) {
         // blob 데이터를 파일로 저장하는 로직
-        const url = window.URL.createObjectURL(new Blob([data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', fileName); // 다운로드할 파일 이름과 확장자를 설정합니다.
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        // const url = window.URL.createObjectURL(new Blob([data]));
+        // const link = document.createElement('a');
+        // link.href = url;
+        // link.setAttribute('download', fileName); // 다운로드할 파일 이름과 확장자를 설정합니다.
+        // document.body.appendChild(link);
+        // link.click();
+        // document.body.removeChild(link);
+
+        // blob 데이터를 URL로 변환
+        const url = window.URL.createObjectURL(new Blob([data], { type: 'application/pdf' }));
+
+        // 브라우저에서 PDF를 새 탭에서 열기
+        window.open(url, '_blank', 'noopener,noreferrer');
         setKey('');
         setFileName('');
       }
@@ -440,7 +446,20 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
                         <div className="tw-flex tw-justify-start tw-items-start tw-gap-3">
                           <div
                             onClick={() => {
-                              window.open(item?.url, '_blank');
+                              // window.open(item?.url, '_blank');
+                              // blob 데이터를 URL로 변환
+
+                              // URL을 새 탭에서 열기
+                              // window.open(item.url, '_blank', 'noopener,noreferrer');
+                              if (item?.url) {
+                                // PDF URL을 새 탭에서 열기
+                                const pdfWindow = window.open(item.url, '_blank', 'noopener,noreferrer');
+                                if (!pdfWindow) {
+                                  console.error('Failed to open a new tab');
+                                }
+                              } else {
+                                console.error('PDF URL is not available');
+                              }
                             }}
                             className="tw-cursor-pointer tw-flex-grow w-[338px] tw-text-base tw-font-medium tw-text-left tw-text-[#1f2633]"
                           >

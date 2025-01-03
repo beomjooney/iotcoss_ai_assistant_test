@@ -6,7 +6,10 @@
 
 /* 구체적인 선택자를 사용 */
 .markdown-container > h1 {
-  font-size: 15px !important;
+  font-size: 18px !important;
+  font-weight: 600;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .markdown-container > h2 {
@@ -14,7 +17,10 @@
 }
 
 .markdown-container > h3 {
-  font-size: 12px !important;
+  font-size: 15px !important;
+  font-weight: 600;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .markdown-container > h4 {

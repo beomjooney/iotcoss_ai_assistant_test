@@ -398,13 +398,19 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
       console.log('file download', data, fileName);
       if (data) {
         // blob 데이터를 파일로 저장하는 로직
-        const url = window.URL.createObjectURL(new Blob([data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', fileName); // 다운로드할 파일 이름과 확장자를 설정합니다.
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        // const url = window.URL.createObjectURL(new Blob([data]));
+        // const link = document.createElement('a');
+        // link.href = url;
+        // link.setAttribute('download', fileName); // 다운로드할 파일 이름과 확장자를 설정합니다.
+        // document.body.appendChild(link);
+        // link.click();
+        // document.body.removeChild(link);
+
+        // blob 데이터를 URL로 변환
+        const url = window.URL.createObjectURL(new Blob([data], { type: 'application/pdf' }));
+
+        // 브라우저에서 PDF를 새 탭에서 열기
+        window.open(url, '_blank', 'noopener,noreferrer');
         setKey('');
         setFileName('');
       }
