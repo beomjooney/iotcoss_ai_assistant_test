@@ -98,7 +98,9 @@ export function HomeTemplate({ logged = false, tenantName = '' }: HomeProps) {
             onClick={() => {
               console.log(modalIsProfessor);
               const role =
-                roles?.includes('ROLE_ADMIN') || roles?.includes('ROLE_INSTRUCTOR') ? 'professor' : 'student';
+                roles?.includes('ROLE_MANAGER') || roles?.includes('ROLE_ADMIN') || roles?.includes('ROLE_INSTRUCTOR')
+                  ? 'professor'
+                  : 'student';
               if (logged) {
                 if (role === 'professor') {
                   setModalIsProfessor(true);

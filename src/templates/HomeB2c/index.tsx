@@ -85,7 +85,11 @@ export function HomeB2cTemplate({ logged = false, tenantName = '' }: HomeB2cProp
                   onClick={() => {
                     console.log(modalIsProfessor);
                     const role =
-                      roles?.includes('ROLE_ADMIN') || roles?.includes('ROLE_INSTRUCTOR') ? 'professor' : 'student';
+                      roles?.includes('ROLE_MANAGER') ||
+                      roles?.includes('ROLE_ADMIN') ||
+                      roles?.includes('ROLE_INSTRUCTOR')
+                        ? 'professor'
+                        : 'student';
                     if (logged) {
                       if (role === 'professor') {
                         setModalIsProfessor(true);
