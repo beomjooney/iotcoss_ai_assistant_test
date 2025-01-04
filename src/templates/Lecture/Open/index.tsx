@@ -1317,6 +1317,7 @@ export function LectureOpenTemplate() {
           if (file.serialNumber) {
             formData.append(`clubStudies[${i}].files[${j}].serialNumber`, file.serialNumber);
             formData.append(`clubStudies[${i}].files[${j}].isNew`, 'false');
+            formData.append(`clubStudies[${i}].files[${j}].externalSharingLink`, file.externalSharingLink);
           } else {
             formData.append(`clubStudies[${i}].files[${j}].isNew`, 'true');
             formData.append(`clubStudies[${i}].files[${j}].file`, file[0]);
@@ -1417,6 +1418,7 @@ export function LectureOpenTemplate() {
       if (file.serialNumber) {
         formData.append('lectureContents.files[' + j + '].isNew', 'false');
         formData.append('lectureContents.files[' + j + '].serialNumber', file.serialNumber);
+        formData.append('lectureContents.files[' + j + '].externalSharingLink', file.externalSharingLink);
       } else {
         formData.append('lectureContents.files[' + j + '].isNew', 'true');
         formData.append('lectureContents.files[' + j + '].file', file.file);
