@@ -42,6 +42,7 @@ const LectureBreakerInfo = ({
   handleRemoveFile,
   fileList,
   lectureNameChange,
+  lectureNameUrl,
   handleTypeChange,
   handleUrlChange,
   handleStartDayChange,
@@ -81,6 +82,9 @@ const LectureBreakerInfo = ({
   const handleInputChange = (order, e) => {
     lectureNameChange(order, e.target.value);
   };
+  const handleInputUrlChange = (order, e: any, serialNumber: boolean, indexs: number) => {
+    lectureNameUrl(order, e.target.value, serialNumber, indexs);
+  };
   const handleInputOnlineUrlChange = (order, e) => {
     handleUrlChange(order, e.target.value);
   };
@@ -106,6 +110,8 @@ const LectureBreakerInfo = ({
     }
 
     scheduleFileAdd(order, files);
+    // 동일 파일 업로드를 허용하기 위해 input 초기화
+    event.target.value = '';
   };
 
   const handleIsPublic = (event: React.MouseEvent<HTMLElement>, newFormats: string) => {
@@ -116,7 +122,6 @@ const LectureBreakerInfo = ({
 
   const fileInputRef = useRef(null);
   const handleButtonClick = () => {
-    console.log('fileInputRef', fileInputRef);
     fileInputRef.current.click();
   };
 
@@ -347,7 +352,9 @@ const LectureBreakerInfo = ({
                       type="file"
                       ref={fileInputRef}
                       style={{ display: 'none' }}
-                      onChange={e => handleFileChange(e, order)}
+                      onChange={e => {
+                        handleFileChange(e, order);
+                      }}
                     />
                   </div>
                   <TextField
@@ -389,7 +396,7 @@ const LectureBreakerInfo = ({
                                     onFileDownload(file.fileKey, file.name);
                                   }}
                                 >
-                                  {file.name}
+                                  {file[0]?.name || file?.name}
                                 </span>
                                 <button
                                   className="tw-ml-2 tw-cursor-pointer"
@@ -411,6 +418,28 @@ const LectureBreakerInfo = ({
                                   </svg>
                                 </button>
                               </div>
+                              <TextField
+                                size="small"
+                                onChange={e => {
+                                  // console.log('e', e);
+                                  if (file.serialNumber) {
+                                    handleInputUrlChange(order, e, true, file.serialNumber);
+                                  } else {
+                                    handleInputUrlChange(order, e, false, index);
+                                  }
+                                }}
+                                id="margin-none"
+                                value={file.externalSharingLink}
+                                name="clubName"
+                                placeholder="파일 url을 입력해주세요."
+                                sx={{
+                                  backgroundColor: 'white',
+                                  '& .MuiInputBase-root': {
+                                    height: '28px', // 원하는 높이로 설정
+                                  },
+                                }}
+                                onDragStart={e => e.preventDefault()} // Prevent default drag behavior on TextField
+                              />
                               <div className="tw-p-1 tw-text-center tw-bg-black tw-text-white tw-rounded tw-items-center tw-gap-2 tw-px-2">
                                 {isProcessing
                                   ? '등록 중'

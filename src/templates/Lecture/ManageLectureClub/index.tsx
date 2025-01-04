@@ -606,10 +606,12 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
           isNew: 'true',
           file: file,
           name: file.name,
+          externalSharingLink: '',
           contentId: 'content_id_' + generateUUID(),
         })),
       ],
     }));
+    event.target.value = '';
   };
 
   const [lectureContents, setLectureContents] = useState({
@@ -782,8 +784,9 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
 
   const handleSave = () => {
     setIsProcessing(true);
+    console.log('scheduleData', scheduleData);
+    console.log('lectureContents', lectureContents);
     handlerClubSaveTemp('save');
-    // refetchClubAbout();
   };
 
   const handleClubSave = () => {
@@ -822,7 +825,8 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
             formData.append(`clubStudies[${i}].files[${j}].isNew`, 'false');
           } else {
             formData.append(`clubStudies[${i}].files[${j}].isNew`, 'true');
-            formData.append(`clubStudies[${i}].files[${j}].file`, file);
+            formData.append(`clubStudies[${i}].files[${j}].file`, file[0]);
+            formData.append(`clubStudies[${i}].files[${j}].externalSharingLink`, file.externalSharingLink);
             formData.append(`clubStudies[${i}].files[${j}].contentId`, 'content_id_' + generateUUID());
           }
         }
@@ -918,6 +922,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
       } else {
         formData.append('lectureContents.files[' + j + '].isNew', 'true');
         formData.append('lectureContents.files[' + j + '].file', file.file);
+        formData.append('lectureContents.files[' + j + '].externalSharingLink', file.externalSharingLink);
         formData.append('lectureContents.files[' + j + '].contentId', 'content_id_' + generateUUID());
       }
     });
@@ -1164,12 +1169,15 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
 
   const scheduleFileAdd = (order: any, updated: any) => {
     console.log('scheduleFileAdd', order, updated);
+    // updated.forEach(file => {
+    //   file.externalSharingLink = '';
+    // });
 
     setScheduleData(
       scheduleData.map(item => {
         // Update the urlList of the item with matching order
         if (item.studyOrder === order) {
-          return { ...item, files: [...(item.files || []), ...updated] };
+          return { ...item, files: [...(item.files || []), { ...updated, externalSharingLink: '' }] };
         }
         return item;
       }),
@@ -1290,6 +1298,79 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
     );
   };
 
+  const lectureNameUrl2 = (order: any, updated: any, flag: boolean, indexs: number) => {
+    console.log('scheduleUrlAdd', order, updated, indexs);
+
+    if (flag) {
+      setLectureContents(prevContents => ({
+        ...prevContents,
+        files: (prevContents.files || []).map(
+          file =>
+            file.serialNumber === indexs
+              ? { ...file, externalSharingLink: updated } // serialNumber가 일치하면 업데이트
+              : file, // 나머지 파일은 그대로 유지
+        ),
+      }));
+    } else {
+      setLectureContents(prevContents => ({
+        ...prevContents,
+        files: (prevContents.files || []).map(
+          (file, index) =>
+            index === indexs
+              ? { ...file, externalSharingLink: updated } // serialNumber가 일치하면 업데이트
+              : file, // 나머지 파일은 그대로 유지
+        ),
+      }));
+    }
+  };
+
+  const lectureNameUrl = (order: any, updated: any, flag: boolean, indexs: number) => {
+    console.log('scheduleUrlAdd', order, updated, indexs);
+
+    if (flag) {
+      setScheduleData(
+        scheduleData.map(item => {
+          if (item.studyOrder === order) {
+            return {
+              ...item,
+              files: item.files
+                ? item.files.map(
+                    file =>
+                      file.serialNumber === indexs
+                        ? { ...file, externalSharingLink: updated } // 해당 파일만 업데이트
+                        : file, // 다른 파일은 그대로 유지
+                  )
+                : [], // files 배열이 없는 경우 빈 배열 유지
+            };
+          }
+          return item;
+        }),
+      );
+    } else {
+      setScheduleData(
+        scheduleData.map(item => {
+          console.log('item', item);
+          if (item.studyOrder === order) {
+            return {
+              ...item,
+              files: item.files.map((file, index) => {
+                console.log(index, index);
+                if (indexs === index) {
+                  return {
+                    ...file,
+                    externalSharingLink: updated, // 해당 파일의 externalSharingLink 업데이트
+                  };
+                }
+                return file; // 다른 파일은 그대로 유지
+              }),
+            };
+          }
+          return item; // 다른 studyOrder는 그대로 유지
+        }),
+      );
+    }
+  };
+
   const scheduleUrlAdd = (order: any, updated: any) => {
     console.log('scheduleUrlAdd', order, updated);
 
@@ -1323,6 +1404,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
         handleUrlChange={handleUrlChange}
         handleTypeChange={handleTypeChange}
         lectureNameChange={lectureNameChange}
+        lectureNameUrl={lectureNameUrl}
         handleRemoveInput={handleRemoveInput}
         scheduleUrlAdd={scheduleUrlAdd}
         scheduleFileAdd={scheduleFileAdd}
@@ -3081,6 +3163,28 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                                     </svg>
                                   </button>
                                 </div>
+                                <TextField
+                                  size="small"
+                                  onChange={e => {
+                                    // console.log('e', e);
+                                    if (fileEntry.serialNumber) {
+                                      lectureNameUrl2(0, e.target.value, true, fileEntry.serialNumber);
+                                    } else {
+                                      lectureNameUrl2(0, e.target.value, false, index);
+                                    }
+                                  }}
+                                  id="margin-none"
+                                  value={fileEntry.externalSharingLink}
+                                  name="clubName"
+                                  placeholder="파일 url을 입력해주세요."
+                                  sx={{
+                                    backgroundColor: 'white',
+                                    '& .MuiInputBase-root': {
+                                      height: '28px', // 원하는 높이로 설정
+                                    },
+                                  }}
+                                  onDragStart={e => e.preventDefault()} // Prevent default drag behavior on TextField
+                                />
                                 <div className="tw-p-1 tw-text-center tw-bg-black tw-text-white tw-rounded tw-items-center tw-gap-2 tw-px-2">
                                   {isProcessing
                                     ? '등록 중'

@@ -213,6 +213,7 @@ export function LectureOpenTemplate() {
           isNew: 'true',
           file: file,
           name: file.name,
+          externalSharingLink: '',
           contentId: 'content_id_' + generateUUID(),
         })),
       ],
@@ -739,6 +740,79 @@ export function LectureOpenTemplate() {
     );
   };
 
+  const lectureNameUrl = (order: any, updated: any, flag: boolean, indexs: number) => {
+    console.log('scheduleUrlAdd', order, updated, indexs);
+
+    if (flag) {
+      setScheduleData(
+        scheduleData.map(item => {
+          if (item.studyOrder === order) {
+            return {
+              ...item,
+              files: item.files
+                ? item.files.map(
+                    file =>
+                      file.serialNumber === indexs
+                        ? { ...file, externalSharingLink: updated } // 해당 파일만 업데이트
+                        : file, // 다른 파일은 그대로 유지
+                  )
+                : [], // files 배열이 없는 경우 빈 배열 유지
+            };
+          }
+          return item;
+        }),
+      );
+    } else {
+      setScheduleData(
+        scheduleData.map(item => {
+          console.log('item', item);
+          if (item.studyOrder === order) {
+            return {
+              ...item,
+              files: item.files.map((file, index) => {
+                console.log(index, index);
+                if (indexs === index) {
+                  return {
+                    ...file,
+                    externalSharingLink: updated, // 해당 파일의 externalSharingLink 업데이트
+                  };
+                }
+                return file; // 다른 파일은 그대로 유지
+              }),
+            };
+          }
+          return item; // 다른 studyOrder는 그대로 유지
+        }),
+      );
+    }
+  };
+
+  const lectureNameUrl2 = (order: any, updated: any, flag: boolean, indexs: number) => {
+    console.log('scheduleUrlAdd', order, updated, indexs);
+
+    if (flag) {
+      setLectureContents(prevContents => ({
+        ...prevContents,
+        files: (prevContents.files || []).map(
+          file =>
+            file.serialNumber === indexs
+              ? { ...file, externalSharingLink: updated } // serialNumber가 일치하면 업데이트
+              : file, // 나머지 파일은 그대로 유지
+        ),
+      }));
+    } else {
+      setLectureContents(prevContents => ({
+        ...prevContents,
+        files: (prevContents.files || []).map(
+          (file, index) =>
+            index === indexs
+              ? { ...file, externalSharingLink: updated } // serialNumber가 일치하면 업데이트
+              : file, // 나머지 파일은 그대로 유지
+        ),
+      }));
+    }
+  };
+
   const lectureNameChange = (order: any, updated: any) => {
     console.log('scheduleUrlAdd', order, updated);
 
@@ -766,6 +840,22 @@ export function LectureOpenTemplate() {
       }),
     );
   };
+  const handleUrlAdd = (order: any, updated: any, externalLink: string) => {
+    console.log('scheduleUrlAdd', order, updated, externalLink);
+
+    setScheduleData(
+      scheduleData.map(item => {
+        // Update the urlList of the item with matching order
+        if (item.studyOrder === order) {
+          return {
+            ...item,
+            externalSharingLink: externalLink, // Add or update the externalSharingLink field
+          };
+        }
+        return item;
+      }),
+    );
+  };
 
   const scheduleFileAdd = (order: any, updated: any) => {
     console.log('scheduleFileAdd', order, updated);
@@ -774,7 +864,8 @@ export function LectureOpenTemplate() {
       scheduleData.map(item => {
         // Update the urlList of the item with matching order
         if (item.studyOrder === order) {
-          return { ...item, files: [...(item.files || []), ...updated] };
+          // return { ...item, files: [...(item.files || []), ...updated] };
+          return { ...item, files: [...(item.files || []), { ...updated, externalSharingLink: '' }] };
         }
         return item;
       }),
@@ -1228,7 +1319,8 @@ export function LectureOpenTemplate() {
             formData.append(`clubStudies[${i}].files[${j}].isNew`, 'false');
           } else {
             formData.append(`clubStudies[${i}].files[${j}].isNew`, 'true');
-            formData.append(`clubStudies[${i}].files[${j}].file`, file);
+            formData.append(`clubStudies[${i}].files[${j}].file`, file[0]);
+            formData.append(`clubStudies[${i}].files[${j}].externalSharingLink`, file.externalSharingLink);
             formData.append(`clubStudies[${i}].files[${j}].contentId`, 'content_id_' + generateUUID());
           }
         }
@@ -1328,6 +1420,7 @@ export function LectureOpenTemplate() {
       } else {
         formData.append('lectureContents.files[' + j + '].isNew', 'true');
         formData.append('lectureContents.files[' + j + '].file', file.file);
+        formData.append('lectureContents.files[' + j + '].externalSharingLink', file.externalSharingLink);
         formData.append('lectureContents.files[' + j + '].contentId', 'content_id_' + generateUUID());
       }
     });
@@ -1376,6 +1469,7 @@ export function LectureOpenTemplate() {
       <LectureBreakerInfo
         handleStartDayChange={handleStartDayChange}
         handleEndDayChange={handleEndDayChange}
+        lectureNameUrl={lectureNameUrl}
         handleUrlChange={handleUrlChange}
         handleTypeChange={handleTypeChange}
         onFileDownload={onFileDownload}
@@ -1460,8 +1554,8 @@ export function LectureOpenTemplate() {
                         index < activeStep
                           ? 'tw-bg-gray-300 tw-text-white'
                           : index === activeStep
-                            ? 'tw-bg-blue-600  tw-text-white'
-                            : 'tw-bg-gray-300 tw-text-white'
+                          ? 'tw-bg-blue-600  tw-text-white'
+                          : 'tw-bg-gray-300 tw-text-white'
                       }`}
                     ></div>
                     <div
@@ -1469,8 +1563,8 @@ export function LectureOpenTemplate() {
                         index < activeStep
                           ? ' tw-text-gray-400'
                           : index === activeStep
-                            ? ' tw-text-black tw-font-bold'
-                            : ' tw-text-gray-400'
+                          ? ' tw-text-black tw-font-bold'
+                          : ' tw-text-gray-400'
                       }`}
                     >
                       {step}
@@ -2389,34 +2483,58 @@ export function LectureOpenTemplate() {
                             </div>
                             <div className="tw-text-left tw-pl-5 tw-text-sm tw-flex tw-flex-wrap tw-gap-2">
                               {lectureContents.files.map((fileEntry, index) => (
-                                <div key={index} className="border tw-px-3 tw-p-1 tw-rounded">
-                                  <span
-                                    onClick={() => {
-                                      onFileDownload(fileEntry.fileKey, fileEntry.name);
-                                    }}
-                                    className="tw-text-blue-600 tw-cursor-pointer"
-                                  >
-                                    {fileEntry?.file?.name || fileEntry.name}
-                                  </span>
-                                  <button
-                                    className="tw-ml-2 tw-cursor-pointer"
-                                    onClick={() => handleRemoveFileLocal(index)}
-                                  >
-                                    <svg
-                                      width={8}
-                                      height={8}
-                                      viewBox="0 0 6 6"
-                                      fill="none"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      className="flex-grow-0 flex-shrink-0"
-                                      preserveAspectRatio="none"
+                                <div key={index} className="tw-flex tw-items-center tw-gap-2">
+                                  <div className="border tw-px-3 tw-p-1 tw-rounded">
+                                    <span
+                                      onClick={() => {
+                                        onFileDownload(fileEntry.fileKey, fileEntry.name);
+                                      }}
+                                      className="tw-text-blue-600 tw-cursor-pointer"
                                     >
-                                      <path
-                                        d="M5.39571 0L3 2.39571L0.604286 0L0 0.604286L2.39571 3L0 5.39571L0.604286 6L3 3.60429L5.39571 6L6 5.39571L3.60429 3L6 0.604286L5.39571 0Z"
-                                        fill="#6A7380"
-                                      />
-                                    </svg>
-                                  </button>
+                                      {fileEntry?.file?.name || fileEntry.name}
+                                    </span>
+                                    <button
+                                      className="tw-ml-2 tw-cursor-pointer"
+                                      onClick={() => handleRemoveFileLocal(index)}
+                                    >
+                                      <svg
+                                        width={8}
+                                        height={8}
+                                        viewBox="0 0 6 6"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="flex-grow-0 flex-shrink-0"
+                                        preserveAspectRatio="none"
+                                      >
+                                        <path
+                                          d="M5.39571 0L3 2.39571L0.604286 0L0 0.604286L2.39571 3L0 5.39571L0.604286 6L3 3.60429L5.39571 6L6 5.39571L3.60429 3L6 0.604286L5.39571 0Z"
+                                          fill="#6A7380"
+                                        />
+                                      </svg>
+                                    </button>
+                                  </div>
+                                  <TextField
+                                    size="small"
+                                    onChange={e => {
+                                      // console.log('e', e);
+                                      if (fileEntry.serialNumber) {
+                                        lectureNameUrl2(0, e.target.value, true, fileEntry.serialNumber);
+                                      } else {
+                                        lectureNameUrl2(0, e.target.value, false, index);
+                                      }
+                                    }}
+                                    id="margin-none"
+                                    value={fileEntry.externalSharingLink}
+                                    name="clubName"
+                                    placeholder="파일 url을 입력해주세요."
+                                    sx={{
+                                      backgroundColor: 'white',
+                                      '& .MuiInputBase-root': {
+                                        height: '28px', // 원하는 높이로 설정
+                                      },
+                                    }}
+                                    onDragStart={e => e.preventDefault()} // Prevent default drag behavior on TextField
+                                  />
                                 </div>
                               ))}
                             </div>
