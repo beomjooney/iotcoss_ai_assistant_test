@@ -101,7 +101,7 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
   useEffect(() => {
     if (aiQuizData) {
       setQuizList((aiQuizData as any).generatedQuizzes);
-      setQuizKeyWorlds((aiQuizData as any).contentKeywords);
+      // setQuizKeyWorlds((aiQuizData as any).contentKeywords);
     }
   }, [aiQuizData]);
 
@@ -173,8 +173,9 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
     setQuizCount(e.target.value);
   };
 
-  const handleQuizMoveClick = question => {
-    setSelectedQuiz(question);
+  const handleQuizMoveClick = item => {
+    setSelectedQuiz(item.question);
+    setQuizKeyWorlds(item.keywords);
   };
 
   const handleQuizClick = (e, index) => {
@@ -610,7 +611,7 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
                   {aiQuizData?.generatedQuizzes.map((item, i) => (
                     <div
                       key={i}
-                      onClick={() => handleQuizMoveClick(item.question)}
+                      onClick={() => handleQuizMoveClick(item)}
                       className={`tw-cursor-pointer tw-rounded-lg tw-bg-[#F6F7FB] border tw-px-5 tw-py-3 tw-my-5 ${
                         selectedQuiz === item.question ? 'border-dark' : ''
                       }`}
