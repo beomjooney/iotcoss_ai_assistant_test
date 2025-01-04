@@ -822,6 +822,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
           const file = item.files[j];
           if (file.serialNumber) {
             formData.append(`clubStudies[${i}].files[${j}].serialNumber`, file.serialNumber);
+            formData.append(`clubStudies[${i}].files[${j}].externalSharingLink`, file.externalSharingLink);
             formData.append(`clubStudies[${i}].files[${j}].isNew`, 'false');
           } else {
             formData.append(`clubStudies[${i}].files[${j}].isNew`, 'true');
@@ -919,6 +920,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
       if (file.serialNumber) {
         formData.append('lectureContents.files[' + j + '].isNew', 'false');
         formData.append('lectureContents.files[' + j + '].serialNumber', file.serialNumber);
+        formData.append('lectureContents.files[' + j + '].externalSharingLink', file.externalSharingLink);
       } else {
         formData.append('lectureContents.files[' + j + '].isNew', 'true');
         formData.append('lectureContents.files[' + j + '].file', file.file);
