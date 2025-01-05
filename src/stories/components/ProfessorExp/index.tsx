@@ -115,6 +115,7 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
     if (aiQuizAnswerData) {
       console.log(aiQuizAnswerData);
       setModelAnswer(aiQuizAnswerData[0].answer);
+      setQuizKeyWorlds(aiQuizAnswerData[0].keywords);
     }
   }, [aiQuizAnswerData]);
 
