@@ -275,8 +275,12 @@ export const useAnswerSave = (): UseMutationResult => {
   // TODO : any 타입 변경
   return useMutation<any, any, any>(requestBody => answerSave(requestBody), {
     onError: (error, variables, context) => {
-      const { code, message } = error;
-      alert(`mutation error : [${code}] ${message}`);
+      const { responseCode, message } = error;
+      if (responseCode === '0413') {
+        alert('유효하지 않은 url입니다.');
+      } else {
+        alert(`mutation error : [${responseCode}] ${message}`);
+      }
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('REPLY').all),
     onSuccess: async data => {
@@ -289,8 +293,12 @@ export const useAnswerUpdate = (): UseMutationResult => {
   // TODO : any 타입 변경
   return useMutation<any, any, any>(requestBody => answerUpdate(requestBody), {
     onError: (error, variables, context) => {
-      const { code, message } = error;
-      alert(`mutation error : [${code}] ${message}`);
+      const { responseCode, message } = error;
+      if (responseCode === '0413') {
+        alert('유효하지 않은 url입니다.');
+      } else {
+        alert(`mutation error : [${responseCode}] ${message}`);
+      }
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('REPLY').all),
     onSuccess: async data => {},

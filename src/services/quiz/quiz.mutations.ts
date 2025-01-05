@@ -48,8 +48,12 @@ export const useSavePost = (): UseMutationResult => {
   const queryClient = useQueryClient();
   return useMutation<any, any, any>(requestBody => savePost(requestBody), {
     onError: (error, variables, context) => {
-      const { code, message } = error;
-      alert(`mutation error : [${code}] ${message}`);
+      const { responseCode, message } = error;
+      if (responseCode === '0413') {
+        alert('유효하지 않은 url입니다.');
+      } else {
+        alert(`mutation error : [${responseCode}] ${message}`);
+      }
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CAMENITY').all),
     onSuccess: async data => {
@@ -153,6 +157,8 @@ export const useAIQuizSave = (): UseMutationResult => {
       const { responseCode, message } = error;
       if (responseCode === '1410') {
         alert('AI 퀴즈 생성이 지원되지 않는 사이트입니다.');
+      } else if (responseCode === '0413') {
+        alert('유효하지 않은 url입니다.');
       } else {
         alert(`[${responseCode}] AI 퀴즈 생성 실패`);
         // alert(`mutation error : [${responseCode}] ${message}`);
@@ -172,6 +178,8 @@ export const useAIQuizAnswer = (): UseMutationResult => {
       const { responseCode, message } = error;
       if (responseCode === 'CO5000') {
         alert('AI 모델 답안 생성 실패');
+      } else if (responseCode === '0413') {
+        alert('유효하지 않은 url입니다.');
       } else {
         alert(`mutation error : [${responseCode}] ${message}`);
       }
@@ -230,8 +238,12 @@ export const useAIQuizAnswerSavePut = (): UseMutationResult => {
   const queryClient = useQueryClient();
   return useMutation<any, any, any>(requestBody => saveAIQuizAnswerSavePut(requestBody), {
     onError: (error, variables, context) => {
-      const { code, message } = error;
-      alert(`mutation error : [${code}] ${message}`);
+      const { responseCode, message } = error;
+      if (responseCode === '0413') {
+        alert('유효하지 않은 url입니다.');
+      } else {
+        alert(`mutation error : [${responseCode}] ${message}`);
+      }
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_GROWTHEDGE').all),
     onSuccess: async data => {
@@ -350,6 +362,8 @@ export const useLectureTempSave = (): UseMutationResult => {
       const { responseCode, message } = error;
       if (responseCode === '1426') {
         alert('다음 커리큘럼 강의에서 종료일을 강의 종료일보다 이전으로 설정해주세요.');
+      } else if (responseCode === '0413') {
+        alert('유효하지 않은 url입니다.');
       } else {
         alert(`mutation error : [${responseCode}] ${message}`);
       }
@@ -373,8 +387,14 @@ export const useLectureSave = (): UseMutationResult => {
   const queryClient = useQueryClient();
   return useMutation<any, any, any>(requestBody => saveLecturePost(requestBody), {
     onError: (error, variables, context) => {
-      const { code, message } = error;
-      alert(`mutation error : [${code}] ${message}`);
+      const { responseCode, message } = error;
+      if (responseCode === '1420') {
+        alert('시작일이 중복됩니다. 다른 날짜를 선택해 주세요.');
+      } else if (responseCode === '0413') {
+        alert('유효하지 않은 url입니다.');
+      } else {
+        alert(`mutation error : [${responseCode}] ${message}`);
+      }
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('TEMP').all),
     onSuccess: async data => {
