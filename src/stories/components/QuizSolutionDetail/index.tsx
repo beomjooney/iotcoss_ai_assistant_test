@@ -36,8 +36,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormLabel from '@mui/material/FormLabel';
 import Radio from '@mui/material/Radio';
-import router from 'next/router';
-import Avatar from '@mui/material/Avatar';
+import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -142,12 +141,28 @@ BannerProps) => {
   const [postIntroductionMessage, setPostIntroductionMessage] = useState<string>('');
   const [contentUrl, setContentUrl] = useState<string>('');
   const [preAnswer, setPreAnswer] = useState<string>('');
+  const [key, setKey] = useState<string>('');
+  const [fileName, setFileName] = useState<string>('');
 
   const { mutate: onSaveLike, isSuccess } = useSaveLike();
   const { mutate: onDeleteLike } = useDeleteLike();
   const { mutate: onAnswerSave, isSuccess: isAnswerSave, data: answerRes } = useAnswerSave();
   const { mutate: onAnswerUpdate, isSuccess: isAnswerUpdate } = useAnswerUpdate();
   const { mutate: onComprehensionSave, isSuccess: isComprehensionSave } = useComprehensionSave();
+
+  const { isFetched: isParticipantListFetcheds, isSuccess: isParticipantListSuccess } = useQuizFileDownload(
+    key,
+    data => {
+      console.log('file download', data, fileName);
+      if (data) {
+        const url = window.URL.createObjectURL(new Blob([data], { type: 'application/pdf' }));
+        // 브라우저에서 PDF를 새 탭에서 열기
+        window.open(url, '_blank', 'noopener,noreferrer');
+        setKey('');
+        setFileName('');
+      }
+    },
+  );
 
   useEffect(() => {
     if (isAnswerUpdate) {
@@ -218,7 +233,7 @@ BannerProps) => {
 
   const handleFileChange = event => {
     const files = Array.from(event.target.files);
-    const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.xls|\.xlsx|\.doc|\.docx|\.ppt|\.pptx|\.hwp)$/i;
+    const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.xls|\.xlsx|\.doc|\.docx|\.ppt|\.pptx|\.hwp|\.pdf)$/i;
 
     for (let i = 0; i < files.length; i++) {
       if (!allowedExtensions.exec(files[i].name)) {
@@ -446,7 +461,7 @@ BannerProps) => {
                         파일추가
                       </button>
                       <input
-                        accept=".jpeg,.jpg,.png,.xls,.xlsx,.doc,.docx,.ppt,.pptx,.hwp"
+                        accept=".jpeg,.jpg,.png,.xls,.xlsx,.doc,.docx,.ppt,.pptx,.hwp,.pdf"
                         type="file"
                         ref={fileInputRef}
                         style={{ display: 'none' }}
@@ -562,7 +577,11 @@ BannerProps) => {
                     <button
                       type="button"
                       onClick={() => {
-                        window.open(contentUrl, '_blank'); // data?.articleUrl을 새 탭으로 열기
+                        if (data?.contentType === '0320') {
+                          setKey(data?.contentKey);
+                        } else {
+                          window.open(contentUrl, '_blank'); // data?.articleUrl을 새 탭으로 열기
+                        }
                       }}
                       className=" tw-text-white tw-w-[150px]  tw-bg-red-500 tw-my-8 tw-text-sm  tw-font-medium tw-rounded tw-text-base tw-px-7 tw-py-3 "
                     >
@@ -763,7 +782,11 @@ BannerProps) => {
                     <button
                       type="button"
                       onClick={() => {
-                        window.open(data?.articleUrl, '_blank'); // data?.articleUrl을 새 탭으로 열기
+                        if (data?.contentType === '0320') {
+                          setKey(data?.contentKey);
+                        } else {
+                          window.open(contentUrl, '_blank'); // data?.articleUrl을 새 탭으로 열기
+                        }
                       }}
                       className=" tw-text-white tw-w-[150px] tw-bg-blue-500 tw-my-8 tw-text-sm  tw-font-medium tw-rounded tw-text-base tw-px-7 tw-py-3 "
                     >
