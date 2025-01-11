@@ -1,25 +1,17 @@
 import classNames from 'classnames/bind';
 import styles from './index.module.scss';
-import Image from 'next/image';
-import { Typography } from '../index';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 import Grid from '@mui/material/Grid';
-import IconButton from '@mui/material/IconButton';
-import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import { useEffect, useState } from 'react';
 import {
   useAnswerSave,
   useAnswerUpdate,
   useComprehensionSave,
   useDeleteLike,
-  useDeleteReply,
   useSaveLike,
-  useSaveReply,
 } from 'src/services/community/community.mutations';
 import { useSessionStore } from 'src/store/session';
 const { logged } = useSessionStore.getState();
-import StarBorderIcon from '@mui/icons-material/StarBorder';
-import StarIcon from '@mui/icons-material/Star';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import React, { useRef } from 'react';
 
@@ -30,11 +22,9 @@ import StepLabel from '@mui/material/StepLabel';
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
 import { StepIconProps } from '@mui/material/StepIcon';
 import styled from '@emotion/styled';
-import MuiTabs from '@material-ui/core/Tabs';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import RadioGroup from '@mui/material/RadioGroup';
-import FormLabel from '@mui/material/FormLabel';
 import Radio from '@mui/material/Radio';
 import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
 
@@ -483,9 +473,9 @@ BannerProps) => {
                           />
                         </g>
                         <defs>
-                          <clippath id="clip0_679_9101">
+                          <clipPath id="clip0_679_9101">
                             <rect width={16} height={16} fill="white" />
-                          </clippath>
+                          </clipPath>
                         </defs>
                       </svg>
                     </div>
@@ -510,9 +500,9 @@ BannerProps) => {
                           />
                         </g>
                         <defs>
-                          <clippath id="clip0_675_10029">
+                          <clipPath id="clip0_675_10029">
                             <rect width={16} height={16} fill="white" />
-                          </clippath>
+                          </clipPath>
                         </defs>
                       </svg>
                       <button
@@ -729,9 +719,9 @@ BannerProps) => {
                           />
                         </g>
                         <defs>
-                          <clippath id="clip0_679_9101">
+                          <clipPath id="clip0_679_9101">
                             <rect width={16} height={16} fill="white" />
-                          </clippath>
+                          </clipPath>
                         </defs>
                       </svg>
                     </div>
