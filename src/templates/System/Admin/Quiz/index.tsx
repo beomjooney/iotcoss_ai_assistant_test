@@ -729,14 +729,14 @@ export function AdminQuizTemplate() {
                     />
                   </div>
                   <div className="tw-flex tw-items-center tw-justify-end tw-py-5">
-                    <button
+                    {/* <button
                       onClick={toggleDrawer(true)}
                       type="button"
                       data-tooltip-target="tooltip-default"
                       className="tw-py-2 tw-px-5 tw-mr-3 tw-bg-blue-600 tw-text-white max-lg:tw-w-[60px] tw-text-sm tw-font-medium  tw-rounded-md"
                     >
                       등록
-                    </button>
+                    </button> */}
                   </div>
                   <TableContainer
                     style={{
