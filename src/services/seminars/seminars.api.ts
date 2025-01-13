@@ -2,6 +2,10 @@ import { axiosGeneralAPI } from '../index';
 
 // lecture 상세 조회
 export const clubAboutDetailInfo = async id => {
+  if (!id) {
+    console.warn('ID is null or undefined, skipping the API call.');
+    return null; // 또는 빈 객체 {} 등 원하는 기본값 반환
+  }
   const { data } = await axiosGeneralAPI().get(`/api/v2/quiz-clubs/${id}`);
   return data.data;
 };

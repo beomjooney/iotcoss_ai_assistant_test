@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import { useSessionStore } from '../../store/session';
 import ChatbotModal from 'src/stories/components/ChatBot';
 import ProfessorExpModal from 'src/stories/components/ProfessorExp';
+import StudentExpModal from 'src/stories/components/StudentExp';
 
 /** date picker */
 import React from 'react';
@@ -26,6 +27,7 @@ export function HomeSejongTemplate({ logged = false, tenantName = '' }: HomeSejo
 
   const [modalIsProfessor, setModalIsProfessor] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [modalIsStudent, setModalIsStudent] = useState(false);
 
   return (
     <div className={cx('career-main')}>
@@ -57,7 +59,8 @@ export function HomeSejongTemplate({ logged = false, tenantName = '' }: HomeSejo
                 <div>
                   <div
                     onClick={() => {
-                      router.push('/quiz');
+                      // router.push('/quiz');
+                      setModalIsStudent(true);
                     }}
                     className=" tw-cursor-pointer tw-w-36 md:tw-w-48 tw-h-12 md:tw-h-20"
                   >
@@ -283,6 +286,16 @@ export function HomeSejongTemplate({ logged = false, tenantName = '' }: HomeSejo
             isOpen={modalIsProfessor}
             onRequestClose={() => {
               setModalIsProfessor(false);
+            }}
+          />
+        )}
+
+        {isClient && modalIsStudent && (
+          <StudentExpModal
+            title="학습자 체험하기"
+            isOpen={modalIsStudent}
+            onRequestClose={() => {
+              setModalIsStudent(false);
             }}
           />
         )}
