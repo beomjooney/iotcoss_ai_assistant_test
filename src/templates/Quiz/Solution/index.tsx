@@ -10,10 +10,6 @@ import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import { useMySeminarList, useSeminarDetail, useSeminarList } from 'src/services/seminars/seminars.queries';
 import { RecommendContent } from 'src/models/recommend';
-import { ArticleEnum } from 'src/config/types';
-import Image from 'next/image';
-import moment from 'moment';
-import Link from 'next/link';
 import {
   useEncoreSeminar,
   useOpenSeminar,
@@ -21,18 +17,10 @@ import {
   useParticipantSeminar,
 } from 'src/services/seminars/seminars.mutations';
 import { useSessionStore } from 'src/store/session';
-import Grid from '@mui/material/Grid';
-import { Desktop, Mobile } from 'src/hooks/mediaQuery';
-import router from 'next/router';
 import QuizSolutionDetail from 'src/stories/components/QuizSolutionDetail';
 import { useQuizSolutionDetail, useQuizSolutionDetailStatus } from 'src/services/quiz/quiz.queries';
-// import { Item } from '@shopify/polaris/build/ts/src/components/ActionList/components';
-// import ReactMarkdown from 'react-markdown';
-// import remarkGfm from 'remark-gfm';
-
-// import { remark } from 'remark';
-// import html from 'remark-html';
 import { useRouter } from 'next/router';
+
 const cx = classNames.bind(styles);
 export interface QuizSolutionTemplateProps {
   /** 세미나 아이디 */

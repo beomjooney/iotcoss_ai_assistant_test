@@ -12,13 +12,11 @@ import { useClubAdminList } from 'src/services/studyroom/studyroom.queries';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import { useClubAboutDetailInfo, useSeminarList } from 'src/services/seminars/seminars.queries';
 import { UseQueryResult } from 'react-query';
-import {
-  paramProps,
-  useMyClubList,
-  useMyMemberList,
-  useMyMemberRequestList,
-  useProfessorRequestList,
-} from 'src/services/seminars/seminars.queries';
+import QuizSolutionDetailDemo from 'src/stories/components/QuizSolutionDetailDemo';
+import { useQuizSolutionDetail, useQuizGetAIMyAnswer } from 'src/services/quiz/quiz.queries';
+import { useStudyRoomList } from 'src/services/studyroom/studyroom.queries';
+import { useClubDetailQuizListDemo } from 'src/services/quiz/quiz.queries';
+import { useAIQuizMyAnswerSavePut } from 'src/services/quiz/quiz.mutations';
 
 const cx = classNames.bind(styles);
 Modal.setAppElement('#__next'); // Modal 접근성 설정
@@ -58,7 +56,11 @@ const StudentExpModal = ({ title, isOpen, onRequestClose, closable = true }) => 
   const [pageQuiz, setPageQuiz] = useState(1);
   const [sortQuizType, setSortQuizType] = useState('ASC');
   const [totalQuizPage, setTotalQuizPage] = useState(1);
-  // const [myQuizParams, setMyQuizParams] = useState<any>({ clubSequence: id, sortType: 'ASC', page });
+  const [quizFlag, setQuizFlag] = useState('one');
+  const [quizParams, setQuizParams] = useState<any>({});
+  const [clubQuizThreads, setClubQuizThreads] = useState<any>([]);
+  const [isHideAI, setIsHideAI] = useState(true);
+  const [isAIData, setIsAIData] = useState<any>({});
 
   useEffect(() => {
     document.body.style.cssText = `
@@ -73,15 +75,7 @@ const StudentExpModal = ({ title, isOpen, onRequestClose, closable = true }) => 
     };
   }, []);
 
-  // useDidMountEffect(() => {
-  //   setMyQuizParams({
-  //     clubSequence: selectedClub?.clubSequence,
-  //     page: pageQuiz,
-  //     sortType: sortQuizType,
-  //   });
-  // }, [pageQuiz, sortQuizType, selectedClub]);
-
-  const { isFetched: isMemberListFetched, refetch: QuizRefetchBadge } = useSeminarList(memberParams, data => {
+  const { isFetched: isMemberListFetched, refetch: QuizRefetchBadge } = useStudyRoomList(memberParams, data => {
     console.log('memberList', data, data?.data?.contents[0].clubSequence);
     setSelectedClub(data?.data?.contents[0].clubSequence);
     setContents(data?.data?.contents);
@@ -89,11 +83,38 @@ const StudentExpModal = ({ title, isOpen, onRequestClose, closable = true }) => 
     setPage(data?.data?.page);
   });
 
-  const { refetch: refetchGetTemp }: UseQueryResult<any> = useClubAboutDetailInfo(selectedClub, data => {
-    console.log(data);
-    const quizList = data?.clubQuizzes || [];
-    setQuizList(quizList);
+  const { isFetched: isQuizListFetched, refetch } = useClubDetailQuizListDemo(params, selectedClub, data => {
+    console.log('quizList', data?.contents);
+    setSelectedValue(data?.contents[0]?.quizSequence);
+    setQuizList(data?.contents);
+    setTotalPage(data?.totalPages);
+    // setTotalElements(data?.totalElements);
   });
+
+  const {
+    isFetched: isParticipantListFetched,
+    refetch: refetchGetStatusQuizTemp,
+    data,
+  } = useQuizSolutionDetail(selectedValue, selectedClub);
+
+  const { isFetched: isQuizGetanswer, refetch: refetchQuizAnswer } = useQuizGetAIMyAnswer(quizParams, data => {
+    console.log('data', data);
+    setClubQuizThreads(data);
+    data.clubQuizThreads.map(item => {
+      // Check if the threadType is '0004' and return null to hide the div
+      if (item?.threadType === '0004') {
+        setIsHideAI(false);
+        setIsAIData(item);
+        console.log('false');
+      }
+    });
+  });
+  const {
+    mutate: onAIQuizAnswerSavePut,
+    isSuccess: answerSuccessSavePut,
+    isError: answerErrorSavePut,
+    data: aiQuizAnswerDataSavePut,
+  } = useAIQuizMyAnswerSavePut();
 
   const { mutate: onAIQuizSave, isSuccess: updateSuccess, isError: updateError, data: aiQuizData } = useAIQuizSave();
   const {
@@ -111,15 +132,41 @@ const StudentExpModal = ({ title, isOpen, onRequestClose, closable = true }) => 
 
   const handleClubChange = event => {
     const value = event.target.value;
-    setSelectedValue(value);
+    console.log('value', value);
+    // setSelectedValue(contents[0].clubSequence);
     setSelectedClub(value);
     setIsPublished('');
     setSortType('ASC');
   };
   const handleQuizChange = event => {
     const value = event.target.value;
+    setSelectedValue(value);
     console.log(value);
   };
+
+  useEffect(() => {
+    if (answerSuccessSavePut) {
+      refetchQuizAnswer();
+      setIsLoadingAI(false);
+    }
+  }, [answerSuccessSavePut, answerErrorSavePut]);
+
+  useDidMountEffect(() => {
+    refetchQuizAnswer();
+  }, [quizParams]);
+
+  useEffect(() => {
+    if (selectedQuiz) {
+      refetchGetStatusQuizTemp();
+    }
+  }, [selectedQuiz]);
+
+  useEffect(() => {
+    if (selectedClub) {
+      console.log('selectedClub', selectedClub);
+      refetch();
+    }
+  }, [selectedClub]);
 
   useEffect(() => {
     if (answerFeedbackSuccess) {
@@ -214,88 +261,18 @@ const StudentExpModal = ({ title, isOpen, onRequestClose, closable = true }) => 
     // }
   };
 
-  const handleQuizCountChange = e => {
-    setQuizCount(e.target.value);
-  };
-
-  const handleQuizMoveClick = item => {
-    setSelectedQuiz(item.question);
-    setQuizKeyWorlds(item.keywords);
-  };
-
-  const handleQuizClick = (e, index) => {
-    e.stopPropagation(); // 이벤트 버블링 중지
-    setSelectedQuizIndex(index);
-    setEditedQuestion(quizList[index].question);
-  };
-  const handleQuizModifyClick = e => {
-    e.stopPropagation(); // 이벤트 버블링 중지
-    setFlag(true);
-    setEditedModifyQuestion(modelAnswer);
-  };
-
-  const handleSaveClick = (e, index) => {
-    e.stopPropagation(); // 이벤트 버블링 중지
-    const updatedQuizList = [...quizList];
-    updatedQuizList[index].question = editedQuestion;
-    setQuizList(updatedQuizList);
-    setSelectedQuizIndex(null);
-    setEditedQuestion('');
-  };
-
-  const handleModifySaveClick = e => {
-    e.stopPropagation(); // 이벤트 버블링 중지
-    setFlag(false);
-    setModelAnswer(editedModifyQuestion);
-  };
-
-  const handleInputChange = e => {
-    e.stopPropagation(); // 이벤트 버블링 중지
-    setEditedQuestion(e.target.value);
-  };
-
-  const handleModifyInputChange = e => {
-    e.stopPropagation(); // 이벤트 버블링 중지
-    setEditedModifyQuestion(e.target.value);
+  const handlerSave = () => {
+    // Uncomment and replace with actual API call
+    setIsLoadingAI(true);
+    onAIQuizAnswerSavePut({
+      club: selectedClub,
+      quiz: selectedValue,
+    });
   };
 
   const handleAnswerChange = e => {
     e.stopPropagation(); // 이벤트 버블링 중지
     setEditedAnswer(e.target.value);
-  };
-
-  const handleInputClick = e => {
-    e.stopPropagation(); // 이벤트 버블링 중지
-  };
-
-  const handleModifyInputClick = e => {
-    e.stopPropagation(); // 이벤트 버블링 중지
-  };
-
-  const handleAnswerClick = e => {
-    e.stopPropagation(); // 이벤트 버블링 중지
-  };
-
-  const handleContentUrlChange = event => {
-    setContentUrl(event.target.value);
-  };
-
-  const fileInputRef = useRef(null);
-  const handleButtonClick = () => {
-    fileInputRef.current.click();
-  };
-
-  const handleFileChange = event => {
-    const file = event.target.files[0];
-    const allowedExtensions = /(\.pdf)$/i;
-
-    if (!allowedExtensions.exec(file.name)) {
-      alert('허용되지 않는 파일 형식입니다.');
-      event.target.value = ''; // input 초기화
-      return;
-    }
-
-    setFileList([file]); // 하나의 파일만 받도록 설정
   };
 
   const onFileDownload = function (key: string, fileName: string) {
@@ -464,12 +441,12 @@ const StudentExpModal = ({ title, isOpen, onRequestClose, closable = true }) => 
               label={
                 <div>
                   <span className="tw-text-lg tw-font-bold tw-normal-case">Step 2</span> <br />
-                  <span className="!tw-mt-5 tw-text-sm">사전답변하기</span>
+                  <span className="!tw-mt-5 tw-text-sm">사전답변하기 - 지식콘텐츠 보기 - 최종답변하기</span>
                 </div>
               }
               wrapped
               sx={{
-                width: '150px',
+                width: '400px',
                 '&:hover': {
                   color: 'black',
                 },
@@ -484,44 +461,6 @@ const StudentExpModal = ({ title, isOpen, onRequestClose, closable = true }) => 
                 <div>
                   <span className="tw-text-lg tw-font-bold tw-normal-case">Step 3</span> <br />
                   <span className="!tw-mt-5 tw-text-sm">지식콘텐츠 보기</span>
-                </div>
-              }
-              wrapped
-              sx={{
-                width: '150px',
-                '&:hover': {
-                  color: 'black',
-                },
-                '&.Mui-selected': {
-                  color: 'black',
-                },
-              }}
-            />
-            <Tab
-              value="four"
-              label={
-                <div>
-                  <span className="tw-text-lg tw-font-bold tw-normal-case">Step 4</span> <br />
-                  <span className="!tw-mt-5 tw-text-sm">최종답변하기</span>
-                </div>
-              }
-              wrapped
-              sx={{
-                width: '150px',
-                '&:hover': {
-                  color: 'black',
-                },
-                '&.Mui-selected': {
-                  color: 'black',
-                },
-              }}
-            />
-            <Tab
-              value="five"
-              label={
-                <div>
-                  <span className="tw-text-lg tw-font-bold tw-normal-case">Step 5</span> <br />
-                  <span className="!tw-mt-5 tw-text-sm">AI 피드백 받기</span>
                 </div>
               }
               wrapped
@@ -558,7 +497,7 @@ const StudentExpModal = ({ title, isOpen, onRequestClose, closable = true }) => 
                     <select
                       className="tw-h-14 form-select block w-full tw-bg-gray-100 tw-font-bold tw-px-8"
                       onChange={handleClubChange}
-                      value={selectedValue}
+                      value={selectedClub}
                       aria-label="Default select example"
                     >
                       {isMemberListFetched &&
@@ -581,20 +520,24 @@ const StudentExpModal = ({ title, isOpen, onRequestClose, closable = true }) => 
                       value={selectedQuiz}
                       aria-label="Default select example"
                     >
-                      {quizList?.map((session, idx) => {
-                        // session?.question 값이 null 또는 undefined인지 확인
-                        if (!session?.question) return null;
+                      {quizList && quizList.length > 0 ? (
+                        quizList.map((session, idx) => {
+                          // session?.question 값이 null 또는 undefined인지 확인
+                          if (!session?.question) return null;
 
-                        return (
-                          <option
-                            key={idx}
-                            className="tw-w-20 tw-bg-[#f6f7fb] tw-items-center tw-flex-shrink-0 border-left border-top border-right tw-rounded-t-lg tw-cursor-pointer"
-                            value={session?.quizSequence}
-                          >
-                            {session?.question}
-                          </option>
-                        );
-                      })}
+                          return (
+                            <option
+                              key={idx}
+                              className="tw-w-20 tw-bg-[#f6f7fb] tw-items-center tw-flex-shrink-0 border-left border-top border-right tw-rounded-t-lg tw-cursor-pointer"
+                              value={session?.quizSequence}
+                            >
+                              {session?.question}
+                            </option>
+                          );
+                        })
+                      ) : (
+                        <option className="tw-text-center tw-text-gray-500">퀴즈 리스트가 없습니다.</option>
+                      )}
                     </select>
                   </div>
                 </AccordionDetails>
@@ -615,7 +558,7 @@ const StudentExpModal = ({ title, isOpen, onRequestClose, closable = true }) => 
               </div>
             </div>
           )}
-          {(value === 'two' || value === 'three') && (
+          {value === 'two' && (
             <div>
               <div className="tw-w-full tw-h-full">
                 <Accordion
@@ -627,134 +570,19 @@ const StudentExpModal = ({ title, isOpen, onRequestClose, closable = true }) => 
                 >
                   <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                     <div className="tw-flex tw-justify-between tw-items-center tw-w-full">
-                      <div className="tw-text-lg tw-font-bold">
-                        {value === 'two' ? '퀴즈 답안정보 입력' : '학습자 답안정보 입력'}
-                      </div>
+                      <div className="tw-text-lg tw-font-bold">사전답변하기</div>
                     </div>
                   </AccordionSummary>
                   <AccordionDetails sx={{ backgroundColor: 'white', padding: 3 }}>
-                    <div className="border tw-rounded-lg tw-my-5">
-                      <div className="border-bottom  tw-bg-[#F6F7FB]  tw-px-5 tw-py-3">
-                        <div className="tw-flex tw-justify-between tw-items-center">
-                          <div className="tw-flex-none tw-w-14 tw-items-center">
-                            <div className="tw-flex tw-flex-col tw-items-center">
-                              <img
-                                className="tw-w-10 border tw-rounded-full"
-                                src="/assets/images/main/ellipse_201.png"
-                                alt={`Quiz`}
-                              />
-                              <p className="tw-pt-1 tw-text-sm tw-text-center tw-text-black">퀴즈 1</p>
-                            </div>
-                          </div>
-                          <div className="tw-flex-auto tw-px-5 tw-w-[370px] tw-text-base">{selectedQuiz}</div>
-                          {modelAnswer ? (
-                            <>
-                              {flag ? (
-                                <button
-                                  onClick={e => handleModifySaveClick(e)}
-                                  className="tw-w-28 tw-px-4 tw-py-3 tw-text-sm tw-bg-white border tw-rounded-md"
-                                >
-                                  저장하기
-                                </button>
-                              ) : (
-                                <button
-                                  onClick={e => handleQuizModifyClick(e)}
-                                  className="tw-w-28 tw-px-4 tw-py-3 tw-text-sm tw-bg-white border tw-rounded-md"
-                                >
-                                  수정하기
-                                </button>
-                              )}
-                            </>
-                          ) : (
-                            <div className="tw-flex-auto !tw-w-[310px] tw-items-center tw-flex tw-justify-end tw-gap-2">
-                              <div className="tw-text-sm tw-font-bold">답안글자수</div>
-                              <select className="tw-pl-1 tw-text-sm">
-                                <option value="100">100이내</option>
-                                <option value="200">200이내</option>
-                                <option value="300">300이내</option>
-                                <option value="400">400이내</option>
-                                <option value="500">500이내</option>
-                              </select>
-                              <button
-                                onClick={() => {
-                                  // Add your button click handler logic here
-                                  handleAIAnswerClick(1, selectedQuiz);
-                                }}
-                                className="tw-w-[140px] tw-px-4 tw-py-[9px] tw-text-sm tw-bg-black tw-text-white tw-rounded-md"
-                              >
-                                {isLoadingAI ? <CircularProgress color="info" size={18} /> : 'AI 모범답안생성'}
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      <div className="tw-flex tw-justify-start tw-items-center tw-px-5 tw-pt-5">
-                        <div className="tw-flex-none tw-w-14 tw-items-center">
-                          <div className="tw-flex tw-flex-col tw-items-center">
-                            <svg
-                              width={24}
-                              height={25}
-                              viewBox="0 0 24 25"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="w-6 h-6 relative"
-                              preserveAspectRatio="none"
-                            >
-                              <path
-                                d="M6 6.3252V12.3252C6 13.1208 6.31607 13.8839 6.87868 14.4465C7.44129 15.0091 8.20435 15.3252 9 15.3252H19M19 15.3252L15 11.3252M19 15.3252L15 19.3252"
-                                stroke="#CED4DE"
-                                strokeWidth={2}
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </div>
-                        </div>
-                        <div className="tw-flex-none tw-w-14 tw-items-center">
-                          <div className="tw-flex tw-flex-col tw-items-center">
-                            <img className="tw-w-9 border tw-rounded-full" src="/assets/images/main/ellipse_202.png" />
-                            <p className="tw-pt-1 tw-text-sm tw-text-center tw-text-black">모범답안</p>
-                          </div>
-                        </div>
-                        <div className="tw-p-5 tw-flex-col tw-items-center tw-w-full">
-                          <div className="tw-py-5">
-                            {flag ? (
-                              <TextField
-                                fullWidth
-                                type="text"
-                                multiline
-                                rows={4}
-                                value={editedModifyQuestion}
-                                onChange={handleModifyInputChange}
-                                onClick={handleModifyInputClick}
-                                className="tw-bg-white tw-w-full tw-border tw-rounded-md tw-px-2 tw-py-1"
-                              />
-                            ) : (
-                              <>
-                                {modelAnswer ? (
-                                  <div className="tw-py-5">{modelAnswer}</div>
-                                ) : (
-                                  <div className="tw-py-5">AI 모범답안버튼을 클릭해주세요.</div>
-                                )}
-                              </>
-                            )}
-                          </div>
-
-                          <div className="tw-py-2">
-                            {/* <TagsInput
-                              value={quizKeyWorlds}
-                              onChange={setQuizKeyWorlds}
-                              name="fruits"
-                              placeHolder="채점기준, 키워드/문구를 입력하고 엔터 입력"
-                            /> */}
-                            <Tag
-                              value={quizKeyWorlds}
-                              onChange={setQuizKeyWorlds}
-                              placeHolder="채점기준, 키워드/문구를 입력하고 엔터 입력"
-                            />
-                          </div>
-                        </div>
-                      </div>
+                    <div>
+                      <QuizSolutionDetailDemo
+                        data={data}
+                        setQuizFlag={setQuizFlag}
+                        // quizStatus={quizSolutionDetailStatus}
+                        title="퀴즈풀기"
+                        subTitle="퀴즈클럽 풀고 천하무적 커리어를 만들어요!"
+                        imageName="top_banner_seminar.svg"
+                      />
                     </div>
                     {value === 'three' && (
                       <>
@@ -822,11 +650,17 @@ const StudentExpModal = ({ title, isOpen, onRequestClose, closable = true }) => 
                       </button>
 
                       <button
+                        disabled={selectedQuiz === undefined}
                         onClick={() => {
-                          if (modelAnswer) {
+                          if (quizFlag === 'three') {
+                            console.log('selectedQuiz', selectedQuiz);
                             setValue('three');
+                            setQuizParams({
+                              club: selectedClub,
+                              quiz: selectedValue,
+                            });
                           } else {
-                            alert('AI 모범답안생성 버튼을 클릭해주세요.');
+                            alert('최종답변을 작성 해주세요.');
                           }
                         }}
                         className="tw-w-[120px] tw-mt-1 tw-px-2 tw-py-3 tw-text-sm  tw-bg-[#313B49] tw-rounded tw-text-white"
@@ -835,7 +669,257 @@ const StudentExpModal = ({ title, isOpen, onRequestClose, closable = true }) => 
                       </button>
                     </div>
                   )}
+                </div>
+                <div className="tw-flex tw-justify-end tw-items-center tw-w-full tw-mt-5 tw-pb-10">
+                  {value === 'three' && (
+                    <div>
+                      <button
+                        onClick={() => {
+                          setValue('two');
+                        }}
+                        className="tw-w-[120px] tw-mt-1 tw-mr-3 tw-px-2 tw-py-3 tw-text-sm  tw-bg-gray-400 tw-rounded tw-text-white"
+                      >
+                        이전
+                      </button>
+                      <button
+                        onClick={() => {
+                          onRequestClose();
+                        }}
+                        className="tw-w-[120px] tw-mt-1 tw-px-2 tw-py-3 tw-text-sm  tw-bg-[#313B49] tw-rounded tw-text-white"
+                      >
+                        종료1
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+          {value === 'three' && (
+            <div>
+              <div className="tw-w-full tw-h-full">
+                <Accordion
+                  disableGutters
+                  sx={{ backgroundColor: '#e9ecf2' }}
+                  defaultExpanded
+                  // expanded={expanded === 0}
+                  // onChange={handleChange(0)}
+                >
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <div className="tw-flex tw-justify-between tw-items-center tw-w-full">
+                      <div className="tw-text-lg tw-font-bold">지식콘텐츠 보기</div>
+                    </div>
+                  </AccordionSummary>
+                  <AccordionDetails sx={{ backgroundColor: 'white', padding: 3 }}>
+                    {value === 'three' && (
+                      <div className="tw-rounded-xl">
+                        <div className="tw-bg-[#F6F7FB] tw-flex tw-items-center tw-px-4 max-lg:tw-p-3 tw-py-4 tw-rounded-t-xl">
+                          <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
+                            <img
+                              className="tw-w-10 tw-h-10 border tw-rounded-full"
+                              src={clubQuizThreads?.member?.profileImageUrl}
+                            />
+                            <div className="tw-text-xs tw-text-left tw-text-black">
+                              {clubQuizThreads?.member?.nickname}
+                            </div>
+                          </div>
+                          <div className="tw-flex-auto tw-px-10 tw-w-10/12">
+                            <div className="tw-font-bold tw-text-black">{clubQuizThreads?.question}</div>
+                          </div>
+                        </div>
+                        {clubQuizThreads?.clubQuizThreads?.map((item, index) => {
+                          const isLastItem = index === clubQuizThreads.clubQuizThreads.length - 1;
+                          return (
+                            <div
+                              key={index}
+                              className={`border-bottom border-left border-right border-secondary tw-bg-white tw-flex tw-p-3 ${
+                                isLastItem ? 'tw-rounded-bl-xl tw-rounded-br-xl' : ''
+                              }`}
+                            >
+                              <div className="tw-w-1/12 tw-pt-3 tw-flex tw-flex-col tw-items-center">
+                                <svg
+                                  width={24}
+                                  height={25}
+                                  viewBox="0 0 24 25"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  className="w-6 h-6 relative"
+                                  preserveAspectRatio="none"
+                                >
+                                  <path
+                                    d="M6 6.32422V12.3242C6 13.1199 6.31607 13.8829 6.87868 14.4455C7.44129 15.0081 8.20435 15.3242 9 15.3242H19M19 15.3242L15 11.3242M19 15.3242L15 19.3242"
+                                    stroke="#c0c3c9"
+                                    strokeWidth={2}
+                                    strokeLinejoin="round"
+                                  />
+                                </svg>
+                              </div>
+                              <div className="tw-w-1.5/12  tw-py-2 tw-flex tw-flex-col">
+                                {item?.threadType === '0003' ? (
+                                  <img
+                                    className="tw-rounded-full tw-w-10 tw-h-10 border"
+                                    src="/assets/images/main/chatbot2.png"
+                                  />
+                                ) : (
+                                  <img
+                                    className="tw-rounded-full tw-w-10 tw-h-10 "
+                                    src={
+                                      item?.member?.profileImageUrl ||
+                                      '/assets/images/account/default_profile_image.png'
+                                    }
+                                  />
+                                )}
+                              </div>
+                              <div className="tw-flex-auto tw-w-9/12 tw-px-3">
+                                <div className="tw-py-2">
+                                  <div className="tw-font-medium tw-text-[#9ca5b2] tw-text-sm">
+                                    <span
+                                      className={`tw-font-bold ${item?.threadType === '0003' ? 'tw-text-black' : 'tw-text-black'}`}
+                                    >
+                                      {item?.threadType === '0001' && '사전답변'}
+                                      {item?.threadType === '0002' && '사후답변'}
+                                      {item?.threadType === '0003' && 'AI멘토'}
+                                      {item?.threadType === '0004' && '교수님 평가'}
+                                    </span>
+                                    <span className="tw-px-4">
+                                      {item?.createdAt ? item.createdAt.replace('T', ' | ').split('.')[0] : ''}
+                                    </span>
 
+                                    {item?.threadType === '0003' && (
+                                      <>
+                                        <div className="tw-float-right tw-text-black">
+                                          AI 채점 : <span className="tw-font-bold">{item?.gradingAi}</span>
+                                        </div>
+                                      </>
+                                    )}
+
+                                    {item?.threadType === '0004' && (
+                                      <div className="tw-float-right">
+                                        <div className="tw-float-right tw-text-black">
+                                          교수 채점 : <span className="tw-font-bold">{item?.gradingFinal}</span>
+                                        </div>
+                                        <button
+                                          onClick={() => handleUpdate()}
+                                          className="tw-px-5 tw-underline tw-float-right tw-text-black"
+                                        >
+                                          수정하기
+                                        </button>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                                <div
+                                  className={`tw-font-medium tw-text-[#9ca5b2] tw-text-sm ${
+                                    item?.threadType === '0003' ? 'tw-text-black' : ''
+                                  }`}
+                                >
+                                  {item?.text}
+                                </div>
+
+                                <div className="tw-flex  tw-py-2">
+                                  <div className="tw-text-left tw-text-sm">
+                                    <ul className="">
+                                      {item?.contents?.map((file, index) => {
+                                        // Skip rendering if file.url is null or undefined
+                                        if (!file.url) return null;
+
+                                        return (
+                                          <div
+                                            onClick={() => {
+                                              let url = file.url;
+                                              // Ensure the URL is absolute
+                                              if (!/^https?:\/\//i.test(url)) {
+                                                // If the URL does not start with 'http://' or 'https://', prepend the base URL
+                                                url = new URL(url, window.location.origin).href;
+                                              }
+                                              console.log(url); // Log the corrected URL to the console
+                                              window.open(url, '_blank'); // Open the corrected URL in a new tab
+                                            }}
+                                            key={index}
+                                            className="tw-cursor-pointer tw-text-[#fca380] tw-underline tw-p-1 tw-mb-1"
+                                          >
+                                            ㄴ지식컨텐츠 : {file.url}
+                                          </div>
+                                        );
+                                      })}
+                                    </ul>
+                                  </div>
+                                </div>
+
+                                <div className="tw-text-sm tw-flex tw-items-center tw-gap-2">
+                                  {item?.files?.length > 0 && (
+                                    <div className="tw-flex ">
+                                      <div className="tw-text-left tw-text-sm">
+                                        <ul className="">
+                                          {item?.files?.map((file, index) => (
+                                            <div
+                                              key={index}
+                                              onClick={() => {
+                                                onFileDownload(file.key, file.name);
+                                              }}
+                                              className="tw-underline tw-text-blue-500 tw-cursor-pointer tw-p-1  tw-mb-1"
+                                            >
+                                              ㄴ첨부된파일 : {file.name}
+                                            </div>
+                                          ))}
+                                        </ul>
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                        {isHideAI === true && (
+                          // Check if the threadType is '0004' and return null to hide the div
+                          <div>
+                            <div className="tw-text-center tw-pt-10">
+                              <button
+                                onClick={() => {
+                                  handlerSave();
+                                }}
+                                className="tw-bg-blue-500 tw-text-white tw-text-sm tw-text-black tw-py-3 tw-px-4 tw-w-40 tw-rounded"
+                              >
+                                {isLoadingAI ? '채점 중입니다.' : 'AI 채점/피드백'}
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </AccordionDetails>
+                </Accordion>
+
+                <div className="tw-flex tw-justify-end tw-items-center tw-w-full tw-mt-5">
+                  {value === 'two' && (
+                    <div>
+                      <button
+                        onClick={() => {
+                          setValue('one');
+                        }}
+                        className="tw-w-[120px] tw-mt-1 tw-mr-3 tw-px-2 tw-py-3 tw-text-sm  tw-bg-gray-400 tw-rounded tw-text-white"
+                      >
+                        이전
+                      </button>
+
+                      <button
+                        disabled={selectedQuiz === undefined}
+                        onClick={() => {
+                          if (quizFlag === 'three') {
+                            setValue('three');
+                          } else {
+                            alert('최종답변을 작성 해주세요.');
+                          }
+                        }}
+                        className="tw-w-[120px] tw-mt-1 tw-px-2 tw-py-3 tw-text-sm  tw-bg-[#313B49] tw-rounded tw-text-white"
+                      >
+                        다음
+                      </button>
+                    </div>
+                  )}
+                </div>
+                <div className="tw-flex tw-justify-end tw-items-center tw-w-full tw-mt-5 tw-pb-10">
                   {value === 'three' && (
                     <div>
                       <button
