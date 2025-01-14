@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import { useSessionStore } from '../../store/session';
 import ChatbotModal from 'src/stories/components/ChatBot';
 import ProfessorExpModal from 'src/stories/components/ProfessorExp';
+import StudentExpModal from 'src/stories/components/StudentExp';
 
 /** date picker */
 import React from 'react';
@@ -26,6 +27,7 @@ export function HomeB2cTemplate({ logged = false, tenantName = '' }: HomeB2cProp
 
   const [modalIsProfessor, setModalIsProfessor] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [modalIsStudent, setModalIsStudent] = useState(false);
 
   return (
     <div className={cx('career-main')}>
@@ -120,7 +122,8 @@ export function HomeB2cTemplate({ logged = false, tenantName = '' }: HomeB2cProp
                 </div>
                 <div
                   onClick={() => {
-                    router.push('/quiz');
+                    // router.push('/quiz');
+                    setModalIsStudent(true);
                   }}
                   className="tw-cursor-pointer tw-w-36 md:tw-w-48 tw-h-12 md:tw-h-20"
                 >
@@ -151,129 +154,6 @@ export function HomeB2cTemplate({ logged = false, tenantName = '' }: HomeB2cProp
           </div>
         </section>
       </div>
-      {/* <div
-        className="tw-mt-4 tw-text-white tw-bg-[url('/assets/images/main/Union.webp')]  tw-bg-cover tw-bg-center tw-bg-no-repeat"
-        style={{ height: '650px' }}
-      >
-        <section
-          className={cx(
-            'top-banner',
-            'hero-section',
-            'hero-section-3',
-            'tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center',
-          )}
-        >
-          <div className="tw-w-full md:tw-w-[1120px] tw-h-[300px] md:tw-h-[510px] tw-relative tw-overflow-hidden tw-rounded-[20px]">
-            <div className="tw-w-full md:tw-w-[1280px] tw-h-[381px] tw-absolute tw-left-0 md:tw-left-[-1px] tw-top-0" />
-            <div className="tw-absolute tw-top-[60px] md:tw-top-[180px] tw-text-xl md:tw-text-[32px] tw-text-left">
-              <div>
-                <div className="tw-text-[40px] tw-font-medium tw-text-left">AI조교 </div>
-                <div className="tw-text-[40px] tw-font-bold tw-text-left tw-mt-[50px]">
-                  IoT, 더 나은 세상을 위한 연결{' '}
-                </div>
-              </div>
-              <div className="tw-absolute  tw-top-[100px] md:tw-top-[120px] tw-text-lg md:tw-text-lg tw-font-medium tw-text-left">
-                IoT Convergence Open Sharing System & <span className="tw-font-bold">DevUs</span>
-              </div>
-              {isClient && menu.use_quiz_club && (
-                <div>
-                  <div
-                    onClick={() => {
-                      router.push('/quiz');
-                    }}
-                    className=" tw-cursor-pointer tw-w-36 md:tw-w-48 tw-h-12 md:tw-h-20"
-                  >
-                    <div className="tw-bg-white/10 tw-backdrop-blur-[20px] border tw-px-3 tw-py-3 tw-rounded-lg tw-absolute tw-left-[105px] md:tw-left-[250px] tw-top-[167px] md:tw-top-[235px] tw-text-xs md:tw-text-lg tw-text-left tw-text-white">
-                      <div className="tw-flex tw-items-center">
-                        <img
-                          className=" tw-rounded-full tw-w-8 md:tw-w-12 tw-h-8 md:tw-h-12"
-                          src="/assets/images/main/man.png"
-                        />
-                        <div className="tw-flex tw-items-center  tw-gap-3">
-                          <div className="tw-ml-2 md:tw-ml-4">
-                            <span className="tw-text-xs md:tw-text-lg tw-font-bold tw-text-left tw-text-white">
-                              DevUs
-                            </span>
-                            <br />
-                            <span className="tw-text-xs md:tw-text-base tw-font-medium tw-text-left tw-text-white">
-                              학습자 체험하기
-                            </span>
-                          </div>
-                          <svg
-                            width={24}
-                            height={24}
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="w-6 h-6 relative"
-                            preserveAspectRatio="none"
-                          >
-                            <path
-                              d="M16.4666 11.6552L9.25464 4.44319L7.55664 6.13879L13.0766 11.6552L7.55664 17.1704L9.25344 18.8672L16.4666 11.6552Z"
-                              fill="#9CA5B2"
-                            />
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    onClick={() => {
-                      console.log(modalIsProfessor);
-                      const role =
-                        roles?.includes('ROLE_ADMIN') || roles?.includes('ROLE_INSTRUCTOR') ? 'professor' : 'student';
-                      if (logged) {
-                        if (role === 'professor') {
-                          setModalIsProfessor(true);
-                        } else {
-                          alert('교수자만 접근할 수 있는 페이지입니다.');
-                        }
-                      } else {
-                        alert('로그인 후 이용해주세요.');
-                      }
-                    }}
-                    className="tw-cursor-pointer tw-w-36 md:tw-w-48 tw-h-12 md:tw-h-20"
-                  >
-                    <div className="tw-bg-white/10 tw-backdrop-blur-[20px] border tw-px-3 tw-py-3 tw-rounded-lg tw-absolute  tw-top-[167px] md:tw-top-[235px] tw-text-xs md:tw-text-lg tw-text-left tw-text-white">
-                      <div className="tw-flex tw-items-center">
-                        <img
-                          className=" tw-rounded-full tw-w-8 md:tw-w-12 tw-h-8 md:tw-h-12"
-                          src="/assets/images/main/girl.png"
-                        />
-                        <div className="tw-flex tw-items-center tw-gap-3">
-                          <div className="tw-ml-2 md:tw-ml-4">
-                            <span className="tw-text-xs md:tw-text-lg tw-font-bold tw-text-left tw-text-white">
-                              DevUs
-                            </span>
-                            <br />
-                            <span className="tw-text-xs md:tw-text-base tw-font-medium tw-text-left tw-text-white">
-                              교수자 체험하기
-                            </span>
-                          </div>
-                          <svg
-                            width={24}
-                            height={24}
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="w-6 h-6 relative"
-                            preserveAspectRatio="none"
-                          >
-                            <path
-                              d="M16.4666 11.6552L9.25464 4.44319L7.55664 6.13879L13.0766 11.6552L7.55664 17.1704L9.25344 18.8672L16.4666 11.6552Z"
-                              fill="#9CA5B2"
-                            />
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </section>
-      </div> */}
       <section
         className={cx(
           'top-banner',
@@ -380,6 +260,16 @@ export function HomeB2cTemplate({ logged = false, tenantName = '' }: HomeB2cProp
             isOpen={modalIsProfessor}
             onRequestClose={() => {
               setModalIsProfessor(false);
+            }}
+          />
+        )}
+
+        {isClient && modalIsStudent && (
+          <StudentExpModal
+            title="학습자 체험하기"
+            isOpen={modalIsStudent}
+            onRequestClose={() => {
+              setModalIsStudent(false);
             }}
           />
         )}
