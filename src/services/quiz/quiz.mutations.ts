@@ -264,6 +264,8 @@ export const useAIQuizMyAnswerSavePut = (): UseMutationResult => {
       console.log('data', data);
       const { responseCode, message } = data;
       if (responseCode === '0000') {
+      } else if (responseCode === '0410') {
+        alert('셀프 채점을 허용하지 않는 클럽입니다.');
       } else {
         alert(`error : [${responseCode}] ${message}`);
       }
