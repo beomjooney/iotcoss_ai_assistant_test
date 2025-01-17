@@ -253,7 +253,7 @@ const QuizClubListView = ({ border, id }) => {
                       }
                       label={
                         <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                          오래된순
+                          오름차순
                         </p>
                       }
                     />
@@ -271,7 +271,7 @@ const QuizClubListView = ({ border, id }) => {
                       }
                       label={
                         <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                          최신순
+                          내림차순
                         </p>
                       }
                     />
