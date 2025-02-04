@@ -185,7 +185,7 @@ const ArticleList: React.FC<any> = ({ data, refetchMyQuizContent }) => {
 
             <div className="tw-flex tw-justify-between">
               <div className="tw-flex">
-                <p className="tw-text-sm tw-font-bold tw-text-left tw-text-black tw-w-12">URL :</p>
+                <p className="tw-text-sm tw-font-bold tw-text-left tw-text-black tw-w-12">URL : </p>
                 <p
                   onClick={() => {
                     if (data.contentType === '0320') {
@@ -194,7 +194,7 @@ const ArticleList: React.FC<any> = ({ data, refetchMyQuizContent }) => {
                       window.open(data.url, '_blank');
                     }
                   }}
-                  className="tw-underline tw-cursor-pointer tw-text-sm tw-text-left tw-text-gray-500 tw-line-clamp-2 tw-w-full"
+                  className="tw-ml-1 tw-underline tw-cursor-pointer tw-text-sm tw-text-left tw-text-gray-500 tw-line-clamp-2 tw-w-full"
                 >
                   {data.contentType === '0320' ? data.name : data.url}
                 </p>

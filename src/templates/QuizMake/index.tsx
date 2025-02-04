@@ -523,11 +523,11 @@ export function QuizMakeTemplate() {
   useEffect(() => {
     setQuizParams({
       page: quizPage,
-      keyword: keyWorldKnowledge,
+      keyword: keyWorld,
       sortType: sortType,
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [quizPage, keyWorldKnowledge, sortType]);
+  }, [quizPage, keyWorld, sortType]);
 
   useEffect(() => {
     setExpanded(0);
@@ -1014,7 +1014,7 @@ export function QuizMakeTemplate() {
                 id="outlined-basic"
                 label=""
                 variant="outlined"
-                placeholder="퀴즈 타이틀로 검색해주세요."
+                placeholder="퀴즈, 지식콘텐츠 제목으로 검색해주세요."
                 InputProps={{
                   style: { height: '43px' },
                   startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
