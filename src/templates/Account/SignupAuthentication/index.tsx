@@ -1,32 +1,7 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import { Button } from '../../../stories/components';
 import { useRouter } from 'next/router';
-import TextField from '@mui/material/TextField';
-import InputAdornment from '@mui/material/InputAdornment';
-import Grid from '@mui/material/Grid';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import React, { useEffect, useRef, useState } from 'react';
-import Dialog, { DialogProps } from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
-import DialogContentText from '@mui/material/DialogContentText';
-import Divider from '@mui/material/Divider';
-import { UseQueryResult } from 'react-query';
-import { useIdVerification, useTermsList } from 'src/services/account/account.queries';
-import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as Yup from 'yup';
-import { useLoginOtp, useLoginOtpVerification, useLoginSignUp } from 'src/services/account/account.mutations';
-import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
-import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
-import { getFirstSubdomain } from 'src/utils/date';
 import { useJoin } from 'src/services/account/account.mutations';
 
 interface SignupAuthenticationTemplateProps {
