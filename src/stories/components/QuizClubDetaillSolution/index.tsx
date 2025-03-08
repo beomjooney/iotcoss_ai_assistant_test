@@ -31,6 +31,7 @@ import router from 'next/router';
 
 import { useQuizGetAIMyAnswer } from 'src/services/quiz/quiz.queries';
 import { useAIQuizMyAnswerSavePut } from 'src/services/quiz/quiz.mutations';
+import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
 
 const cx = classNames.bind(styles);
 
@@ -64,6 +65,21 @@ const QuizClubDetaillSolution = ({
   const [inputList, setInputList] = useState([]);
   const [clubQuizGetThreads, setClubQuizGetThreads] = useState<any>('');
   const [expandedItems, setExpandedItems] = useState(() => Array(quizList?.length || 0).fill(false));
+  const [key, setKey] = useState('');
+  const [fileName, setFileName] = useState('');
+
+  const { isFetched: isParticipantListFetcheds } = useQuizFileDownload(key, data => {
+    if (data) {
+      const url = window.URL.createObjectURL(new Blob([data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', fileName); // 다운로드할 파일 이름과 확장자를 설정합니다.
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  });
+
   const textInput = useRef(null);
   const [expandedQuizzData, setExpandedQuizzData] = useState(
     () => quizList?.map(item => Array(item?.makeupQuizzes?.length || 0).fill(false)) || [],
@@ -82,11 +98,6 @@ const QuizClubDetaillSolution = ({
     });
   });
 
-  const handleAddInput = () => {
-    // Ensure inputList is always an array
-    setInputList(prevInputList => [...(prevInputList || []), { id: Date.now(), value: '', url: '' }]);
-  };
-
   const toggleExpand = index => {
     setExpandedItems(prev => {
       const newExpandedItems = [...prev];
@@ -96,20 +107,13 @@ const QuizClubDetaillSolution = ({
   };
 
   const handleClick = (memberUUID: string, quizSequence: number, answerStatus: boolean) => {
-    // if (answerStatus !== '0003') {
-    //   alert('AI채점 / 교수채점을 한뒤에\n상세보기를 눌러주세요.');
-    //   return;
-    // }
     console.log(memberUUID, quizSequence);
     setIsModalOpen(true);
-    // setClubQuizGetThreads('');
     setGrade('');
     setInputList([]);
     setFileList([]);
     setIsHideAI(answerStatus);
     setQuizSequence(quizSequence);
-
-    console.log(clubAbout?.clubSequence);
     setQuizParams({
       club: clubAbout?.clubSequence,
       quiz: quizSequence,
@@ -179,6 +183,12 @@ const QuizClubDetaillSolution = ({
   useDidMountEffect(() => {
     refetchQuizAnswer();
   }, [quizParams]);
+
+  const onFileDownload = function (key: string, fileName: string) {
+    console.log(key);
+    setKey(key);
+    setFileName(fileName);
+  };
 
   return (
     <div className={`tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white ${borderStyle}`}>
@@ -1136,8 +1146,8 @@ const QuizClubDetaillSolution = ({
                                 <div
                                   key={index}
                                   onClick={() => {
-                                    // onFileDownload(file.key, file.name);
-                                    window.open(file.url, '_blank');
+                                    onFileDownload(file.key, file.name);
+                                    // window.open(file.url, '_blank');
                                   }}
                                   className="tw-underline tw-text-blue-500 tw-cursor-pointer tw-p-1  tw-mb-1"
                                 >
