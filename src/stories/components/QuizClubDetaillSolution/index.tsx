@@ -413,10 +413,10 @@ const QuizClubDetaillSolution = ({
                               {session?.completedDate
                                 ? session?.completedDate
                                 : session?.relativeDaysToPublishDate != null
-                                  ? session.relativeDaysToPublishDate > 0
-                                    ? 'D+' + session.relativeDaysToPublishDate
-                                    : 'D' + session.relativeDaysToPublishDate
-                                  : ''}
+                                ? session.relativeDaysToPublishDate > 0
+                                  ? 'D+' + session.relativeDaysToPublishDate
+                                  : 'D' + session.relativeDaysToPublishDate
+                                : ''}
                             </p>
                           </div>
 
@@ -500,10 +500,7 @@ const QuizClubDetaillSolution = ({
                               </div>
                               <div className="tw-flex-auto tw-text-center tw-text-sm tw-text-black  tw-font-bold">
                                 {/* {item?.publishDate?.split('-').slice(1).join('-')} ({item?.dayOfWeek}) */}
-                                {item?.publishDate?.slice(
-                                  5,
-                                  10,
-                                )} {item?.dayOfWeek ? `(${item.dayOfWeek})` : ''}
+                                {item?.publishDate?.slice(5, 10)} {item?.dayOfWeek ? `(${item.dayOfWeek})` : ''}
                               </div>
                               <div
                                 className={`tw-flex-auto tw-mt-10 tw-text-center tw-text-sm ${
@@ -818,8 +815,8 @@ const QuizClubDetaillSolution = ({
                                 ? item?.answer?.relativeDaysToPublishDate < 0
                                   ? `D${item?.answer?.relativeDaysToPublishDate}`
                                   : item?.answer?.relativeDaysToPublishDate === 0
-                                    ? `D-0`
-                                    : `D+${item?.answer?.relativeDaysToPublishDate}`
+                                  ? `D-0`
+                                  : `D+${item?.answer?.relativeDaysToPublishDate}`
                                 : ''}
                             </div>
                           </Grid>
@@ -1139,7 +1136,8 @@ const QuizClubDetaillSolution = ({
                                 <div
                                   key={index}
                                   onClick={() => {
-                                    onFileDownload(file.key, file.name);
+                                    // onFileDownload(file.key, file.name);
+                                    window.open(file.url, '_blank');
                                   }}
                                   className="tw-underline tw-text-blue-500 tw-cursor-pointer tw-p-1  tw-mb-1"
                                 >

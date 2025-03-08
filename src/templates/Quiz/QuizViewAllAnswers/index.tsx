@@ -1078,7 +1078,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                         파일추가
                       </button>
                       <input
-                        accept=".jpeg,.jpg,.png,.xls,.xlsx,.doc,.docx,.ppt,.pptx,.hwp"
+                        accept=".jpeg,.jpg,.png,.xls,.xlsx,.doc,.docx,.ppt,.pptx,.hwp,.pdf"
                         type="file"
                         ref={fileInputRef}
                         style={{ display: 'none' }}

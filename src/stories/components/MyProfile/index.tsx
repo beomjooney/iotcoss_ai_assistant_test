@@ -152,7 +152,7 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
       setFileImageUrl(image);
     };
     reader.readAsDataURL(file);
-    onSaveImage(file);
+    // onSaveImage(file);
   }, [file]);
 
   const onFileChange = files => {

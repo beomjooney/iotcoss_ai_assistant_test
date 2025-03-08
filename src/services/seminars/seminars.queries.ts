@@ -426,6 +426,7 @@ export const useClubQuizManage = (id, onSuccess?: (data: any) => void, onError?:
     onError,
     refetchOnWindowFocus: false,
     enabled: true,
+    retry: false,
   });
 };
 
@@ -449,6 +450,7 @@ export const useMyProgress = (id, onSuccess?: (data: any) => void, onError?: (er
     onError,
     refetchOnWindowFocus: false,
     enabled: !!id,
+    retry: false,
   });
 };
 
