@@ -523,7 +523,7 @@ const LectureDetaillSolution = ({
                 />
               </div>
               <br></br>
-              <div className="tw-mt-5">
+              <div className="tw-mt-5 tw-flex tw-justify-center gap-3">
                 <Button
                   color="red"
                   label="확인"
@@ -532,14 +532,22 @@ const LectureDetaillSolution = ({
                     if (participationCode.length === 0) {
                       alert('참여코드를 입력해주세요.');
                     } else {
-                      console.log(participationCode, clubData?.clubSequence);
+                      console.log(participationCode, contents?.clubSequence);
                       onClubJoin({
-                        clubSequence: clubData?.clubSequence,
+                        clubSequence: contents?.clubSequence,
                         participationCode: participationCode,
                       });
                       setIsModalOpen(false);
                       setParticipationCode('');
                     }
+                  }}
+                />
+                <Button
+                  color="lite-gray"
+                  label="닫기"
+                  size="modal"
+                  onClick={() => {
+                    setIsModalOpen(false);
                   }}
                 />
               </div>

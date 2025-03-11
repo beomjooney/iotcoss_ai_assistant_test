@@ -520,7 +520,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
                 />
               </div>
               <br></br>
-              <div className="tw-mt-5">
+              <div className="tw-mt-5 tw-flex tw-justify-center gap-3">
                 <Button
                   color="red"
                   label="확인"
@@ -537,6 +537,14 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
                       setIsModalOpen(false);
                       setParticipationCode('');
                     }
+                  }}
+                />
+                <Button
+                  color="lite-gray"
+                  label="닫기"
+                  size="modal"
+                  onClick={() => {
+                    setIsModalOpen(false);
                   }}
                 />
               </div>

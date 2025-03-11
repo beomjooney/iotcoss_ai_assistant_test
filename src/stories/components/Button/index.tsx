@@ -3,7 +3,16 @@ import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 
 type ButtonSize = 'small' | 'medium' | 'large' | 'icon' | 'footer' | 'my-page' | 'main' | 'camen' | 'modal';
-type ButtonColor = 'primary' | 'secondary' | 'gray' | 'disabled' | 'kakao' | 'lite-gray' | 'lite-blue' | 'red';
+type ButtonColor =
+  | 'primary'
+  | 'secondary'
+  | 'gray'
+  | 'disabled'
+  | 'kakao'
+  | 'lite-gray'
+  | 'lite-blue'
+  | 'red'
+  | 'black';
 
 export interface ButtonProps {
   /** 버튼 크기 */

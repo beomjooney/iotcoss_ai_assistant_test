@@ -513,8 +513,13 @@ export const useClubJoin = (): UseMutationResult => {
   // TODO : any 타입 변경
   return useMutation<any, any, any>(requestBody => clubJoin(requestBody), {
     onError: (error, variables, context) => {
-      const { code, message } = error;
-      alert(`mutation error : [${code}] ${message}`);
+      const { responseCode, message } = error;
+      if (responseCode === '0000') {
+      } else if (responseCode === '0401') {
+        alert('유효하지 않은 참여 코드입니다.');
+      } else {
+        alert(`error : [${responseCode}] ${message}`);
+      }
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('REPLY').all),
     onSuccess: async data => {},
