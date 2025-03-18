@@ -455,7 +455,7 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
                     value={requestMessage}
                     className="tw-form-control tw-w-full tw-py-[8px] tw-p-5"
                     id="floatingTextarea"
-                    placeholder="댓글을 입력해주세요."
+                    placeholder="권한 요청에 대한 요청설명을 입력해주세요."
                     ref={textInput}
                     rows={3} // 두 줄 높이로 설정
                     onChange={e => {
@@ -477,7 +477,7 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
                     value={introductionMessage}
                     className="tw-form-control tw-w-full tw-py-[8px] tw-p-5"
                     id="floatingTextarea"
-                    placeholder="댓글을 입력해주세요."
+                    placeholder="자기소개를 입력해주세요."
                     ref={textInput}
                     rows={3} // 두 줄 높이로 설정
                     onChange={e => {

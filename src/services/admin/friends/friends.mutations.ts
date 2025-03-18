@@ -107,8 +107,14 @@ export const useInstructorsAccept = (): UseMutationResult => {
   const queryClient = useQueryClient();
   return useMutation<any, any, any>(requestBody => instructorAccept(requestBody), {
     onError: (error, variables, context) => {
-      const { code, message } = error;
-      alert(`mutation error : [${code}] ${message}`);
+      const { responseCode, message } = error;
+      if (responseCode === '0000') {
+        alert('교수자 권한이 부여되었습니다.');
+      } else if (responseCode === '0401') {
+        alert('교수자 권한이 존재하지 않습니다.');
+      } else {
+        alert(`error : [${responseCode}] ${message}`);
+      }
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('INSTRUCTORS_ACCEPT').all),
     onSuccess: async data => {

@@ -242,7 +242,7 @@ const LectureBreakerInfo = ({
                       value="0100"
                       className="tw-ring-1 tw-ring-slate-900/10"
                       style={{
-                        width: 70,
+                        width: 80,
                         borderRadius: '5px',
                         borderLeft: '0px',
                         margin: '5px',
@@ -256,7 +256,7 @@ const LectureBreakerInfo = ({
                         },
                       }}
                     >
-                      공개
+                      오프라인
                     </ToggleButton>
                     <ToggleButton
                       classes={{ selected: classes.selected }}
@@ -277,7 +277,7 @@ const LectureBreakerInfo = ({
                         },
                       }}
                     >
-                      비공개
+                      온라인
                     </ToggleButton>
                   </ToggleButtonGroup>
                   <TextField
@@ -386,72 +386,74 @@ const LectureBreakerInfo = ({
                         <div className="tw-flex tw-text-sm tw-items-center" style={{ minWidth: '6.1rem' }}>
                           업로드된 파일 :
                         </div>
-                        <div className="tw-text-left tw-pl-5 tw-text-sm tw-flex tw-flex-wrap tw-gap-2">
+                        <div className="tw-text-left tw-pl-5 tw-text-sm tw-flex-col tw-gap-5">
                           {fileList.map((file, index) => (
-                            <div key={index} className="tw-flex tw-items-center tw-gap-2">
-                              <div className="border tw-px-3 tw-p-1 tw-rounded">
-                                <span
-                                  className="tw-text-blue-600 tw-cursor-pointer"
-                                  onClick={() => {
-                                    onFileDownload(file.fileKey, file.name);
-                                  }}
-                                >
-                                  {file[0]?.name || file?.name}
-                                </span>
-                                <button
-                                  className="tw-ml-2 tw-cursor-pointer"
-                                  onClick={() => handleRemoveFile(order, index)}
-                                >
-                                  <svg
-                                    width={8}
-                                    height={8}
-                                    viewBox="0 0 6 6"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="flex-grow-0 flex-shrink-0"
-                                    preserveAspectRatio="none"
+                            <div key={index}>
+                              <div className="tw-flex tw-items-center tw-gap-3 pb-2">
+                                <div className="border tw-px-3 tw-p-1 tw-rounded tw-w-[400px]">
+                                  <span
+                                    className="tw-text-blue-600 tw-cursor-pointer"
+                                    onClick={() => {
+                                      onFileDownload(file.fileKey, file.name);
+                                    }}
                                   >
-                                    <path
-                                      d="M5.39571 0L3 2.39571L0.604286 0L0 0.604286L2.39571 3L0 5.39571L0.604286 6L3 3.60429L5.39571 6L6 5.39571L3.60429 3L6 0.604286L5.39571 0Z"
-                                      fill="#6A7380"
-                                    />
-                                  </svg>
-                                </button>
-                              </div>
-                              <TextField
-                                size="small"
-                                onChange={e => {
-                                  // console.log('e', e);
-                                  if (file.serialNumber) {
-                                    handleInputUrlChange(order, e, true, file.serialNumber);
-                                  } else {
-                                    handleInputUrlChange(order, e, false, index);
-                                  }
-                                }}
-                                id="margin-none"
-                                value={file.externalSharingLink}
-                                name="clubName"
-                                placeholder="파일 url을 입력해주세요."
-                                sx={{
-                                  backgroundColor: 'white',
-                                  '& .MuiInputBase-root': {
-                                    height: '28px', // 원하는 높이로 설정
-                                  },
-                                }}
-                                onDragStart={e => e.preventDefault()} // Prevent default drag behavior on TextField
-                              />
-                              <div className="tw-p-1 tw-text-center tw-bg-black tw-text-white tw-rounded tw-items-center tw-gap-2 tw-px-2">
-                                {isProcessing
-                                  ? '등록 중'
-                                  : file.fileUploadStatus === '0000'
-                                  ? '등록 전'
-                                  : file.fileUploadStatus === '1000'
-                                  ? '등록 중'
-                                  : file.fileUploadStatus === '2000'
-                                  ? '등록 완료'
-                                  : file.fileUploadStatus === '3000'
-                                  ? '등록 실패'
-                                  : '등록 전'}
+                                    {file[0]?.name || file?.name}
+                                  </span>
+                                  <button
+                                    className="tw-ml-2 tw-cursor-pointer"
+                                    onClick={() => handleRemoveFile(order, index)}
+                                  >
+                                    <svg
+                                      width={8}
+                                      height={8}
+                                      viewBox="0 0 6 6"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      className="flex-grow-0 flex-shrink-0"
+                                      preserveAspectRatio="none"
+                                    >
+                                      <path
+                                        d="M5.39571 0L3 2.39571L0.604286 0L0 0.604286L2.39571 3L0 5.39571L0.604286 6L3 3.60429L5.39571 6L6 5.39571L3.60429 3L6 0.604286L5.39571 0Z"
+                                        fill="#6A7380"
+                                      />
+                                    </svg>
+                                  </button>
+                                </div>
+                                <TextField
+                                  size="small"
+                                  onChange={e => {
+                                    // console.log('e', e);
+                                    if (file.serialNumber) {
+                                      handleInputUrlChange(order, e, true, file.serialNumber);
+                                    } else {
+                                      handleInputUrlChange(order, e, false, index);
+                                    }
+                                  }}
+                                  id="margin-none"
+                                  value={file.externalSharingLink}
+                                  name="clubName"
+                                  placeholder="파일 url을 입력해주세요."
+                                  sx={{
+                                    backgroundColor: 'white',
+                                    '& .MuiInputBase-root': {
+                                      height: '28px', // 원하는 높이로 설정
+                                    },
+                                  }}
+                                  onDragStart={e => e.preventDefault()} // Prevent default drag behavior on TextField
+                                />
+                                <div className="tw-w-[80px] tw-p-1.5 tw-text-center tw-bg-black tw-text-white tw-rounded tw-items-center tw-gap-2 tw-px-2">
+                                  {isProcessing
+                                    ? '등록 중'
+                                    : file.fileUploadStatus === '0000'
+                                      ? '등록 전'
+                                      : file.fileUploadStatus === '1000'
+                                        ? '등록 중'
+                                        : file.fileUploadStatus === '2000'
+                                          ? '등록 완료'
+                                          : file.fileUploadStatus === '3000'
+                                            ? '등록 실패'
+                                            : '등록 전'}
+                                </div>
                               </div>
                             </div>
                           ))}
@@ -496,14 +498,14 @@ const LectureBreakerInfo = ({
                                 {isProcessing
                                   ? '등록 중'
                                   : file.fileUploadStatus === '0000'
-                                  ? '등록 전'
-                                  : file.fileUploadStatus === '1000'
-                                  ? '등록 중'
-                                  : file.fileUploadStatus === '2000'
-                                  ? '등록 완료'
-                                  : file.fileUploadStatus === '3000'
-                                  ? '등록 실패'
-                                  : '등록 전'}
+                                    ? '등록 전'
+                                    : file.fileUploadStatus === '1000'
+                                      ? '등록 중'
+                                      : file.fileUploadStatus === '2000'
+                                        ? '등록 완료'
+                                        : file.fileUploadStatus === '3000'
+                                          ? '등록 실패'
+                                          : '등록 전'}
                               </div>
                             </div>
                           ))}

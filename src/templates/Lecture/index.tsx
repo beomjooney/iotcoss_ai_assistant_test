@@ -101,7 +101,7 @@ export function LectureTemplate() {
               item
               xs={12}
               sm={8}
-              className="max-lg:tw-py-2 tw-font-light tw-text-base tw-text-black  max-lg:!tw-text-base"
+              className="max-lg:tw-py-2 tw-font-semibold tw-text-base tw-text-black  max-lg:!tw-text-base"
             >
               강의를 들으며 AI조교를 통해 질의응답을 하며 수업에 참여해보세요!
             </Grid>

@@ -391,7 +391,7 @@ const AllLectureView = ({ border, id }) => {
                           <TableCell align="center" component="th" scope="row">
                             <div className="tw-font-bold tw-text-sm">
                               {' '}
-                              {item?.clubStudyType === '0100' ? '온라인' : '오프라인'}
+                              {item?.clubStudyType === '0100' ? '오프라인' : '온라인'}
                             </div>
                           </TableCell>
                           <TableCell align="center" component="th" scope="row">
@@ -513,8 +513,8 @@ const AllLectureView = ({ border, id }) => {
                                     (questionInfo?.answerType === '0200'
                                       ? '(강의자료) : '
                                       : questionInfo?.answerType === '0300'
-                                      ? '(일반서치) : '
-                                      : '') +
+                                        ? '(일반서치) : '
+                                        : '') +
                                     questionInfo?.answer
                                   : null}
                               </Markdown>

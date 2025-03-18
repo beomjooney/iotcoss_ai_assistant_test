@@ -362,7 +362,11 @@ export function StudyRoomTemplate() {
               <Grid item xs={2} className="tw-font-bold tw-text-3xl tw-text-black max-lg:!tw-text-base">
                 My학습방
               </Grid>
-              <Grid item xs={10} className="max-lg:tw-p-2 tw-font-semi tw-text-base tw-text-black  max-lg:!tw-text-sm">
+              <Grid
+                item
+                xs={10}
+                className="max-lg:tw-p-2 tw-font-semibold tw-text-base tw-text-black  max-lg:!tw-text-sm"
+              >
                 나의 클럽 진행사항을 한 눈에 보여주고 있어요!
               </Grid>
             </Grid>
