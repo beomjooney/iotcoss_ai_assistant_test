@@ -498,7 +498,7 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
                   className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-4 tw-pl-3 tw-pr-8 tw-py-3  tw-border-t-0 tw-border-r tw-border-b tw-border-l-0 tw-border-[#e0e4eb]"
                 >
                   <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[33px] tw-text-base tw-font-medium tw-text-center tw-text-[#1f2633]">
-                    {index + 1}
+                    {(page - 1) * 10 + index + 1}
                   </div>
                   <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-13 tw-text-base tw-font-medium tw-text-center tw-text-[#6a7380]">
                     {item?.member?.nickname}
