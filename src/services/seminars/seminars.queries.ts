@@ -136,7 +136,7 @@ export const useMyLectureChatList = (
   onSuccess?: (data: any) => void,
   onError?: (error: Error) => void,
 ) => {
-  const DEFAULT_SIZE = 8;
+  const DEFAULT_SIZE = 10;
   return useQuery<any, Error>(
     QUERY_KEY_FACTORY('DASHBOARD').list({ size: DEFAULT_SIZE, ...params }),
     () => myLectureChatList({ size: DEFAULT_SIZE, ...params }),

@@ -180,6 +180,7 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
 
   const handleQuizChange = event => {
     const selectedValue = event.target.value === '' ? null : event.target.value;
+    setPage(1);
     setSelectedValue(selectedValue);
     console.log('selectedValue', selectedValue, id);
     setMyClubSequenceParams({
@@ -408,23 +409,23 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
         <div className="tw-grid tw-grid-cols-10 tw-mt-5">
           <div className="tw-col-span-4  border-right tw-bg-[#fcfcff]">
             <div className="tw-flex tw-justify-start tw-items-center tw-h-14 tw-px-8 tw-py-5 tw-rounded-tl-lg tw-bg-[#f6f7fb] tw-border-t-0 tw-border-r tw-border-b tw-border-l-0 tw-border-[#e0e4eb]">
-              <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
+              <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-5">
                 <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-lg tw-font-semibold tw-text-left tw-text-[#1f2633]">
                   질의응답 활용 강의자료
                 </div>
-                <div className="tw-flex tw-flex-col tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2.5 tw-py-px tw-rounded-sm tw-bg-[#e7eaf1]">
-                  <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-left tw-text-[#1f2633]">
+                <div className="tw-flex tw-flex-col tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2.5 tw-py-0.5 tw-rounded tw-bg-[#93c5fd]">
+                  <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-left tw-text-white">
                     {myContentList?.length}
                   </div>
                 </div>
               </div>
             </div>
-            <div className="tw-flex tw-flex-col tw-justify-start tw-items-start tw-bg-[#fcfcff] tw-h-[180px] tw-overflow-y-auto">
+            <div className="tw-flex tw-flex-col tw-justify-start tw-items-start tw-bg-[#fcfcff] tw-h-[200px] tw-overflow-y-auto">
               <div className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-overflow-hidden tw-gap-3 tw-px-8 tw-py-4">
                 <div className="tw-flex tw-justify-start tw-items-start tw-flex-grow tw-gap-1">
                   <div className="tw-flex tw-flex-col tw-justify-start tw-items-start tw-flex-grow tw-gap-2">
                     {myContentList?.map((item, index) => (
-                      <div key={index} className="tw-flex  tw-justify-start tw-items-start tw-gap-2">
+                      <div key={index} className="tw-flex  tw-justify-start tw-items-start tw-gap-3 tw-py-1">
                         <div className="tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-w-6 tw-h-6 tw-relative tw-gap-2.5">
                           {isClient && (
                             <svg
@@ -473,12 +474,12 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
               </div>
             </div>
             <div className="tw-flex tw-justify-start tw-items-center tw-h-14 tw-px-8 tw-py-5  tw-bg-[#f6f7fb] tw-border-t-0 tw-border-r tw-border-b tw-border-l-0 tw-border-[#e0e4eb]">
-              <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2">
+              <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-5">
                 <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-lg tw-font-semibold tw-text-left tw-text-[#1f2633]">
                   질의 응답 수
                 </div>
-                <div className="tw-flex tw-flex-col tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-2.5 tw-px-2.5 tw-py-px tw-rounded-sm tw-bg-[#e7eaf1]">
-                  <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-left tw-text-[#1f2633]">
+                <div className="tw-flex tw-flex-col tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-3 tw-px-3 tw-py-0.5 tw-rounded tw-bg-[#93c5fd]">
+                  <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-left tw-text-white">
                     {myDashboardList.totalElements}
                   </div>
                 </div>
@@ -497,7 +498,7 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
                   key={`${index}`}
                   className="tw-flex tw-justify-start tw-items-start tw-self-stretch tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-4 tw-pl-3 tw-pr-8 tw-py-3  tw-border-t-0 tw-border-r tw-border-b tw-border-l-0 tw-border-[#e0e4eb]"
                 >
-                  <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[33px] tw-text-base tw-font-medium tw-text-center tw-text-[#1f2633]">
+                  <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[36px] tw-text-base tw-font-medium tw-text-center tw-text-[#1f2633]">
                     {(page - 1) * 10 + index + 1}
                   </div>
                   <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-13 tw-text-base tw-font-medium tw-text-center tw-text-[#6a7380]">
@@ -513,7 +514,7 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
               <Pagination
                 count={myDashboardList.totalPages}
                 size="small"
-                siblingCount={0}
+                siblingCount={1}
                 page={page}
                 renderItem={item => (
                   <PaginationItem slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }} {...item} />
