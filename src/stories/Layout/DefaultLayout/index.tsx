@@ -37,6 +37,7 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
         studyOrderLabelType: data?.studyOrderLabelType,
         loginType: data?.loginTypes,
         tenantLoginMemberTypes: data?.tenantLoginMemberTypes,
+        tenantOrganizationCodes: data?.tenantOrganizationCodes,
         redirections: data?.homeUrl,
         registrationAuthenticationType: data?.registrationAuthenticationType,
         menu: {

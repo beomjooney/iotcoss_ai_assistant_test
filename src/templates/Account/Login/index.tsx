@@ -13,9 +13,7 @@ import React, { useEffect, useState } from 'react';
 import Dialog, { DialogProps } from '@mui/material/Dialog';
 import CloseIcon from '@mui/icons-material/Close';
 import DialogContentText from '@mui/material/DialogContentText';
-import { deleteCookie } from 'cookies-next';
 import { useSessionStore } from '../../../../src/store/session';
-import { getFirstSubdomain } from 'src/utils';
 import { useTermsList, useTermsList2 } from 'src/services/account/account.queries';
 import { UseQueryResult } from 'react-query';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -24,7 +22,6 @@ import DialogActions from '@mui/material/DialogActions';
 import { useLoginSignUpDSU } from 'src/services/account/account.mutations';
 import { IconButton, InputAdornment } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import Divider from '@mui/material/Divider';
 
 const cx = classNames.bind(styles);
 
@@ -34,16 +31,21 @@ interface LoginTemplateProps {
 }
 
 export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps) {
-  const { update, tenantName, tenantUri, loginType, tenantLoginMemberTypes } = useSessionStore.getState();
+  const { update, tenantName, tenantUri, loginType, tenantLoginMemberTypes, tenantOrganizationCodes } =
+    useSessionStore.getState();
+
+  console.log('tenantOrganizationCodes', tenantOrganizationCodes);
   const router = useRouter();
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [selectedLoginType, setSelectedLoginType] = useState('0100');
+  const [selectedUniversity, setSelectedUniversity] = useState('0100');
   const [termsParams, setTermsParams] = useState<any>({ type: '0001' });
   const [open, setOpen] = React.useState(false);
   const [scroll, setScroll] = React.useState<DialogProps['scroll']>('paper');
   const [showPassword, setShowPassword] = useState(false);
   const [showPassword1, setShowPassword1] = useState(false);
+  const [activeTab, setActiveTab] = useState('lms');
 
   const handleClickShowPassword = () => setShowPassword(show => !show);
   const handleClickShowPassword1 = () => setShowPassword1(show => !show);
@@ -57,16 +59,31 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
   useEffect(() => {
     console.log('signUpData', signUpData);
     if (signUpData?.data?.responseCode === '0000') {
-      onLogin(
-        paramsWithDefault({
-          username: username,
-          password: password,
-          grant_type: 'password',
-          tenant_uri: tenantUri,
-          login_type: '0100',
-          tenant_login_member_type: selectedLoginType,
-        }),
-      );
+      // onLogin(
+      //   paramsWithDefault({
+      //     username: username,
+      //     password: password,
+      //     grant_type: 'password',
+      //     tenant_uri: tenantUri,
+      //     login_type: '0100',
+      //     tenant_login_member_type: selectedLoginType,
+      //   }),
+      // );
+
+      const loginData = {
+        username: username,
+        password: password,
+        grant_type: 'password',
+        tenant_uri: tenantUri,
+        login_type: '0100',
+        tenant_login_member_type: selectedLoginType,
+      };
+
+      if (selectedUniversity) {
+        loginData['tenant_organization_code'] = selectedUniversity;
+      }
+
+      onLogin(loginData);
     }
   }, [signUpData]);
 
@@ -175,13 +192,30 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
     );
   };
 
+  const onSubmit0003 = data => {
+    console.log('onSubmit', data);
+    setUserName(data.username);
+    setPassword(data.password);
+    onLogin(
+      paramsWithDefault({
+        ...data,
+        tenant_uri: tenantUri,
+        login_type: '0100',
+        tenant_organization_code: selectedUniversity,
+      }),
+    );
+  };
+
   const onError = (e: any) => {
     console.log('error', e);
   };
 
   const handleLoginTypeChange = event => {
-    console.log('event.target.value', event.target.value);
     setSelectedLoginType(event.target.value);
+  };
+
+  const handleUniversityChange = event => {
+    setSelectedUniversity(event.target.value);
   };
 
   const handleClose = () => {
@@ -401,99 +435,200 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
       )}
 
       {loginType?.includes('0200') && (
-        <div>
-          <div className={cx('logo-area')}>
-            {/* <img src="/assets/images/cm_CI_co_1000x225.png" alt="footer logo" width={162} className="img-fluid mb-3" /> */}
-            <p className={cx('tw-font-bold tw-text-[26px] tw-text-black tw-py-5 tw-text-center')}>{title} 로그인</p>
-            {/* <Divider className={cx('sign-color')}>또는 이메일 로그인</Divider> */}
-          </div>
-          <form onSubmit={handleSubmit(onSubmit0002, onError)}>
-            <Typography sx={{ fontSize: 14, marginTop: 3, color: 'black', fontWeight: '600' }}>이메일</Typography>
-            <TextField
-              required
-              id="username"
-              name="username"
-              placeholder="이메일을 입력해주세요."
-              variant="outlined"
-              type="search"
-              fullWidth
-              sx={{
-                backgroundColor: '#F6F7FB',
-                borderRadius: '10px',
-                marginTop: '10px',
-                '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
-                '& fieldset': { border: 'none' },
-                '& input': { height: ' 0.8em;' },
-              }}
-              margin="dense"
-              {...register('username')}
-              error={errors.username ? true : false}
-              helperText={errors.username?.message}
-            />
-            <Typography sx={{ fontSize: 14, marginTop: 3, color: 'black', fontWeight: '600' }}>비밀번호</Typography>
-            <TextField
-              required
-              id="password"
-              name="password"
-              placeholder="비밀번호를 입력해주세요."
-              type="password"
-              fullWidth
-              margin="dense"
-              variant="outlined"
-              sx={{
-                backgroundColor: '#F6F7FB',
-                borderRadius: '10px',
-                marginTop: '10px',
-                '& fieldset': { border: 'none' },
-                '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
-                '& input': { height: ' 0.8em;' },
-              }}
-              {...register('password')}
-              error={errors.password ? true : false}
-              helperText={errors.password?.message}
-            />
-
-            <Grid container spacing={3} direction="row" justifyContent="space-between" alignItems="center">
-              <Grid item xs={6}></Grid>
-              <Grid item xs={6}>
-                <Box
-                  display="flex"
-                  justifyContent="flex-end"
-                  sx={{ fontWeight: 'bold' }}
-                  className="tw-cursor-pointer"
-                  onClick={() => router.push('/account/forgot')}
-                >
-                  <Typography sx={{ fontSize: 12, textDecoration: 'underline' }} className="tw-py-3">
-                    비밀번호를 잊으셨나요?
-                  </Typography>
-                </Box>
-              </Grid>
-            </Grid>
-            <div style={{ marginBottom: '20px', marginTop: '20px', textAlign: 'center' }}>
+        <div className="tw-mt-20">
+          <div className="tw-w-full tw-max-w-md tw-mx-auto">
+            <div className="tw-flex tw-rounded-lg tw-overflow-hidden tw-border tw-border-gray-200 tw-border-solid tw-p-1.5 tw-bg-gray-100">
               <button
-                className={`tw-bg-black tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-text-white`}
-                onClick={() => handleSubmit(onSubmit0002)}
+                className={`tw-flex-1 tw-py-2 tw-text-center tw-font-medium tw-text-sm tw-transition-colors tw-rounded-md ${
+                  activeTab === 'lms' ? 'tw-bg-white' : 'tw-bg-gray-100'
+                }`}
+                onClick={() => setActiveTab('lms')}
               >
-                로그인
+                LMS 로그인
+              </button>
+              <button
+                className={`tw-flex-1 tw-py-2 tw-text-center tw-font-medium tw-text-sm tw-transition-colors tw-rounded-md ${
+                  activeTab === 'general' ? 'tw-bg-white' : 'tw-bg-gray-100'
+                }`}
+                onClick={() => setActiveTab('general')}
+              >
+                일반 로그인
               </button>
             </div>
-          </form>
 
-          {/* <Divider className={cx('sign-color', 'tw-py-3')}>또는</Divider>
-          <div style={{ marginBottom: '20px', marginTop: '20px' }}>
-            <button className="tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-bg-white border tw-text-black">
-              <Typography sx={{ fontWeight: '600', fontSize: 16 }}>학번으로 로그인</Typography>
-            </button>
-          </div> */}
-          <Box display="flex" justifyContent="center" sx={{ fontWeight: 'bold' }}>
-            <Typography
-              onClick={() => router.push('/account/signup')}
-              sx={{ fontSize: 14, textDecoration: 'underline' }}
-              className="tw-py-3  tw-cursor-pointer"
-            >
-              회원가입
-            </Typography>
-          </Box>
+            <div className="mt-4">
+              {activeTab === 'lms' ? (
+                <>
+                  <div className={cx('logo-area')}></div>
+                  <form onSubmit={handleSubmit(onSubmit0003, onError)}>
+                    <select
+                      className="tw-h-12 form-select block w-full tw-font-bold tw-px-4 tw-mt-2 tw-rounded-xl"
+                      onChange={handleUniversityChange}
+                      value={selectedUniversity}
+                      aria-label="대학교를 선택해주세요."
+                    >
+                      {tenantOrganizationCodes?.length > 0 ? (
+                        tenantOrganizationCodes.map((item, index) => (
+                          <option key={index} value={item?.code}>
+                            {item?.name}
+                          </option>
+                        ))
+                      ) : (
+                        <></>
+                      )}
+                    </select>
+
+                    <Typography sx={{ fontSize: 14, marginTop: 3, color: 'black', fontWeight: '600' }}>
+                      교번/학번
+                    </Typography>
+                    <TextField
+                      required
+                      id="username"
+                      name="username"
+                      placeholder="이메일을 입력해주세요."
+                      variant="outlined"
+                      type="search"
+                      fullWidth
+                      sx={{
+                        backgroundColor: '#F6F7FB',
+                        borderRadius: '10px',
+                        marginTop: '10px',
+                        '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
+                        '& fieldset': { border: 'none' },
+                        '& input': { height: ' 0.8em;' },
+                      }}
+                      margin="dense"
+                      {...register('username')}
+                      error={errors.username ? true : false}
+                      helperText={errors.username?.message}
+                    />
+                    <Typography sx={{ fontSize: 14, marginTop: 3, color: 'black', fontWeight: '600' }}>
+                      비밀번호
+                    </Typography>
+                    <TextField
+                      required
+                      id="password"
+                      name="password"
+                      placeholder="비밀번호를 입력해주세요."
+                      type="password"
+                      fullWidth
+                      margin="dense"
+                      variant="outlined"
+                      sx={{
+                        backgroundColor: '#F6F7FB',
+                        borderRadius: '10px',
+                        marginTop: '10px',
+                        '& fieldset': { border: 'none' },
+                        '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
+                        '& input': { height: ' 0.8em;' },
+                      }}
+                      {...register('password')}
+                      error={errors.password ? true : false}
+                      helperText={errors.password?.message}
+                    />
+
+                    <div className="py-5" style={{ marginBottom: '20px', marginTop: '20px', textAlign: 'center' }}>
+                      <button
+                        className={`tw-bg-black tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-text-white`}
+                        onClick={() => handleSubmit(onSubmit0003)}
+                      >
+                        로그인
+                      </button>
+                    </div>
+                  </form>
+                </>
+              ) : (
+                <>
+                  <div className={cx('logo-area')}></div>
+                  <form onSubmit={handleSubmit(onSubmit0002, onError)}>
+                    <Typography sx={{ fontSize: 14, marginTop: 3, color: 'black', fontWeight: '600' }}>
+                      이메일
+                    </Typography>
+                    <TextField
+                      required
+                      id="username"
+                      name="username"
+                      placeholder="이메일을 입력해주세요."
+                      variant="outlined"
+                      type="search"
+                      fullWidth
+                      sx={{
+                        backgroundColor: '#F6F7FB',
+                        borderRadius: '10px',
+                        marginTop: '10px',
+                        '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
+                        '& fieldset': { border: 'none' },
+                        '& input': { height: ' 0.8em;' },
+                      }}
+                      margin="dense"
+                      {...register('username')}
+                      error={errors.username ? true : false}
+                      helperText={errors.username?.message}
+                    />
+                    <Typography sx={{ fontSize: 14, marginTop: 3, color: 'black', fontWeight: '600' }}>
+                      비밀번호
+                    </Typography>
+                    <TextField
+                      required
+                      id="password"
+                      name="password"
+                      placeholder="비밀번호를 입력해주세요."
+                      type="password"
+                      fullWidth
+                      margin="dense"
+                      variant="outlined"
+                      sx={{
+                        backgroundColor: '#F6F7FB',
+                        borderRadius: '10px',
+                        marginTop: '10px',
+                        '& fieldset': { border: 'none' },
+                        '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
+                        '& input': { height: ' 0.8em;' },
+                      }}
+                      {...register('password')}
+                      error={errors.password ? true : false}
+                      helperText={errors.password?.message}
+                    />
+
+                    <Grid container spacing={3} direction="row" justifyContent="space-between" alignItems="center">
+                      <Grid item xs={6}></Grid>
+                      <Grid item xs={6}>
+                        <Box
+                          display="flex"
+                          justifyContent="flex-end"
+                          sx={{ fontWeight: 'bold' }}
+                          className="tw-cursor-pointer"
+                          onClick={() => router.push('/account/forgot')}
+                        >
+                          <Typography sx={{ fontSize: 12, textDecoration: 'underline' }} className="tw-py-3">
+                            비밀번호를 잊으셨나요?
+                          </Typography>
+                        </Box>
+                      </Grid>
+                    </Grid>
+                    <div style={{ marginBottom: '20px', marginTop: '20px', textAlign: 'center' }}>
+                      <button
+                        className={`tw-bg-black tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-text-white`}
+                        onClick={() => handleSubmit(onSubmit0002)}
+                      >
+                        로그인
+                      </button>
+                    </div>
+                  </form>
+                  <Box display="flex" justifyContent="center" sx={{ fontWeight: 'bold' }}>
+                    <Typography
+                      onClick={() => router.push('/account/signup')}
+                      sx={{ fontSize: 14, textDecoration: 'underline' }}
+                      className="tw-py-3  tw-cursor-pointer"
+                    >
+                      회원가입
+                    </Typography>
+                  </Box>
+                </>
+              )}
+            </div>
+          </div>
+
           <div className="tw-mb-40"></div>
         </div>
       )}
@@ -581,7 +716,7 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
           <button
             className="tw-bg-red-500 tw-w-[130px] tw-px-5 tw-rounded-md  tw-h-[38px] tw-text-white"
             onClick={() => {
-              onLoginSignUp({
+              const signUpData = {
                 id: username,
                 password: password,
                 agreedTermsIds: ['service1', 'privacy1'],
@@ -590,7 +725,13 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
                 isKakaoReceive: true,
                 tenantUri: tenantUri,
                 tenantLoginMemberType: selectedLoginType,
-              });
+              };
+
+              if (selectedUniversity) {
+                signUpData['tenantOrganizationCode'] = selectedUniversity;
+              }
+
+              onLoginSignUp(signUpData);
             }}
           >
             동의

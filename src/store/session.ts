@@ -17,6 +17,7 @@ export interface Session {
   logged: boolean;
   roles?: any[];
   tenantLoginMemberTypes?: any[];
+  tenantOrganizationCodes?: any[];
 }
 
 export interface SessionStore {
@@ -29,6 +30,7 @@ export interface SessionStore {
   tenantUri?: string;
   loginType?: any[];
   tenantLoginMemberTypes?: any[];
+  tenantOrganizationCodes?: any[];
   beforeOnePick?: string;
   job?: string;
   logged?: boolean;
