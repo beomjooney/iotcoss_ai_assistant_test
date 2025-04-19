@@ -79,6 +79,7 @@ export const useClubAboutDetailInfo = (id, onSuccess?: (data: any) => void, onEr
     onSuccess,
     onError,
     refetchOnWindowFocus: false,
+    retry: 0,
   });
 };
 
@@ -476,6 +477,7 @@ export const useLectureAboutDetailInfo = (id, onSuccess?: (data: any) => void, o
     onSuccess,
     onError,
     refetchOnWindowFocus: false,
+    retry: false,
   });
 };
 

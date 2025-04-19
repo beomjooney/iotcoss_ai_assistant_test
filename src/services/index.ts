@@ -78,6 +78,14 @@ function createAxios(requestConfig: RequestConfig): AxiosInstance {
       // console.log('error');
       // console.log(data);
       if (status === 401) {
+        const queryParams = new URLSearchParams(window.location.search);
+        const redirectionUrl = queryParams.get('redirectionUrl');
+        if (redirectionUrl) {
+          setCookie('redirectionUrl', redirectionUrl, { maxAge: 3600 });
+        }
+
+        console.log('401 error', data, redirectionUrl);
+
         const { update } = useSessionStore.getState();
         const userData: UserInfo = jwt_decode(process.env['NEXT_PUBLIC_GUEST_TOKEN']);
         /**auth test */
@@ -90,7 +98,7 @@ function createAxios(requestConfig: RequestConfig): AxiosInstance {
           // roles: userData.sub !== 'Guest' ? userData.roles : [],
         });
         setCookie('access_token', process.env['NEXT_PUBLIC_GUEST_TOKEN']);
-        if (data.code === 'CO4007') {
+        if (data.responseCode === 'CO4007') {
           deleteCookie('access_token');
           localStorage.removeItem('auth-store');
           localStorage.removeItem('app-storage');

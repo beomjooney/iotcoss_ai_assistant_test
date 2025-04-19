@@ -161,6 +161,7 @@ export function ProfileTemplate() {
   /**logout */
   const handleLogout = async () => {
     deleteCookie('access_token');
+    deleteCookie('redirectionUrl');
     localStorage.removeItem('auth-store');
     localStorage.removeItem('app-storage');
     location.href = '/';

@@ -152,6 +152,7 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
 
   const handleLogout = async () => {
     deleteCookie('access_token');
+    deleteCookie('redirectionUrl');
     localStorage.removeItem('auth-store');
     localStorage.removeItem('app-storage');
     localStorage.setItem('activeIndex', '0');
