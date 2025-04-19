@@ -22,7 +22,7 @@ import DialogActions from '@mui/material/DialogActions';
 import { useLoginSignUpDSU } from 'src/services/account/account.mutations';
 import { IconButton, InputAdornment } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-
+import { getCookie } from 'cookies-next';
 const cx = classNames.bind(styles);
 
 interface LoginTemplateProps {
@@ -139,7 +139,11 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
         menu: loginData?.menu,
       });
 
-      location.href = '/';
+      if (getCookie('redirectionUrl')) {
+        location.href = getCookie('redirectionUrl').toString();
+      } else {
+        location.href = '/';
+      }
     }
   }, [loginData]);
 
