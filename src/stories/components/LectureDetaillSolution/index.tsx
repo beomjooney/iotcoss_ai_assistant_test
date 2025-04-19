@@ -14,14 +14,14 @@ import { getButtonText, getClubStatusMessage, getClubAboutStatus } from 'src/uti
 
 /**icon */
 import { useSaveLike, useDeleteLike } from 'src/services/community/community.mutations';
-import router from 'next/router';
+import router, { useRouter } from 'next/router';
 import { Button, Typography, Profile, Modal, ArticleCard } from 'src/stories/components';
 
 // 챗봇
 import ChatbotModal from 'src/stories/components/ChatBot';
 import { useSessionStore } from '../../../../src/store/session';
 import { useStudyOrderLabel } from 'src/hooks/useStudyOrderLabel';
-
+import { setCookie } from 'cookies-next';
 const cx = classNames.bind(styles);
 
 //comment
@@ -39,6 +39,16 @@ const LectureDetaillSolution = ({
   selectedImage,
   refetchClubAbout,
 }) => {
+  const router = useRouter();
+  const { redirectionUrl } = router.query;
+  console.log('redirectionUrl', redirectionUrl);
+
+  useEffect(() => {
+    if (redirectionUrl) {
+      setCookie('redirectionUrl', redirectionUrl, { maxAge: 3600 });
+    }
+  }, [redirectionUrl]);
+
   const { studyOrderLabelType } = useSessionStore.getState();
   const { studyOrderLabel } = useStudyOrderLabel(studyOrderLabelType);
   console.log('contents', contents);
