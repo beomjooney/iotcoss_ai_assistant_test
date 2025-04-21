@@ -559,20 +559,25 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
     data => {
       console.log('file download', data, fileName);
       if (data) {
-        // blob 데이터를 파일로 저장하는 로직
-        // const url = window.URL.createObjectURL(new Blob([data]));
-        // const link = document.createElement('a');
-        // link.href = url;
-        // link.setAttribute('download', fileName); // 다운로드할 파일 이름과 확장자를 설정합니다.
-        // document.body.appendChild(link);
-        // link.click();
-        // document.body.removeChild(link);
+        // 파일 확장자 확인
+        const fileExtension = fileName.split('.').pop()?.toLowerCase();
+        const isPdf = fileExtension === 'pdf';
 
-        // blob 데이터를 URL로 변환
-        const url = window.URL.createObjectURL(new Blob([data], { type: 'application/pdf' }));
-
-        // 브라우저에서 PDF를 새 탭에서 열기
-        window.open(url, '_blank', 'noopener,noreferrer');
+        if (isPdf) {
+          // PDF 파일인 경우 새 탭에서 열기
+          const url = window.URL.createObjectURL(new Blob([data], { type: 'application/pdf' }));
+          window.open(url, '_blank', 'noopener,noreferrer');
+        } else {
+          // PDF가 아닌 경우 다운로드
+          const url = window.URL.createObjectURL(new Blob([data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', fileName);
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(url); // URL 객체 해제
+        }
 
         setKey('');
         setFileName('');
@@ -3191,14 +3196,14 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                                   {isProcessing
                                     ? '등록 중'
                                     : fileEntry.fileUploadStatus === '0000'
-                                    ? '등록 전'
-                                    : fileEntry.fileUploadStatus === '1000'
-                                    ? '등록 중'
-                                    : fileEntry.fileUploadStatus === '2000'
-                                    ? '등록 완료'
-                                    : fileEntry.fileUploadStatus === '3000'
-                                    ? '등록 실패'
-                                    : '등록 전'}
+                                      ? '등록 전'
+                                      : fileEntry.fileUploadStatus === '1000'
+                                        ? '등록 중'
+                                        : fileEntry.fileUploadStatus === '2000'
+                                          ? '등록 완료'
+                                          : fileEntry.fileUploadStatus === '3000'
+                                            ? '등록 실패'
+                                            : '등록 전'}
                                 </div>
                               </div>
                             ))}
@@ -3246,14 +3251,14 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                                   {isProcessing
                                     ? '등록 중'
                                     : file.fileUploadStatus === '0000'
-                                    ? '등록 전'
-                                    : file.fileUploadStatus === '1000'
-                                    ? '등록 중'
-                                    : file.fileUploadStatus === '2000'
-                                    ? '등록 완료'
-                                    : file.fileUploadStatus === '3000'
-                                    ? '등록 실패'
-                                    : '등록 전'}
+                                      ? '등록 전'
+                                      : file.fileUploadStatus === '1000'
+                                        ? '등록 중'
+                                        : file.fileUploadStatus === '2000'
+                                          ? '등록 완료'
+                                          : file.fileUploadStatus === '3000'
+                                            ? '등록 실패'
+                                            : '등록 전'}
                                 </div>
                               </div>
                             ))}
