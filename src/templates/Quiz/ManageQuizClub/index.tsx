@@ -21,7 +21,7 @@ import {
 } from 'src/services/admin/friends/friends.mutations';
 
 import Grid from '@mui/material/Grid';
-
+import { useStore } from 'src/store';
 /** drag list */
 import ReactDragList from 'react-drag-list';
 
@@ -101,6 +101,7 @@ const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
 export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTemplateProps) {
   const { jobGroupLabelType } = useSessionStore.getState();
+  const { user, setUser } = useStore();
   const { groupLabel, subGroupLabel } = useGetGroupLabel(jobGroupLabelType);
   const { mutate: onTempSave, isSuccess: tempSucces, data: tempData, isError: tempError } = useClubQuizTempSave();
   const { mutate: onCrewBan, isSuccess: isBanSuccess } = useCrewBanDelete();
@@ -142,6 +143,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   const [keyWorldProfessor, setKeyWorldProfessor] = useState('');
   const [selectedValue, setSelectedValue] = useState(id);
   const [activeTab, setActiveTab] = useState('myQuiz');
+  const [agreements, setAgreements] = useState(true);
   const [pageQuiz, setPageQuiz] = useState(1);
   const [totalQuizPage, setTotalQuizPage] = useState(1);
   const [myQuizParams, setMyQuizParams] = useState<any>({ clubSequence: id, sortType: 'ASC', page });
@@ -519,6 +521,8 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
 
     setClubName(clubForm.clubName || '');
     setIntroductionText(clubForm.introductionText || '');
+    setAgreements(clubForm.useCurrentProfileImage);
+
     setRecommendationText(clubForm.recommendationText || '');
     setLearningText(clubForm.learningText || '');
     setMemberIntroductionText(clubForm.memberIntroductionText || '');
@@ -1363,7 +1367,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
       description: '',
       clubTemplatePublishType: '0001',
       clubRecruitType: '0100',
-      useCurrentProfileImage: 'false',
+      useCurrentProfileImage: agreements,
       feedbackType: feedbackType,
       answerExposureType: answerExposureType,
       answerPublishType: answerPublishType,
@@ -1523,6 +1527,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
         setSelectedImageBannerCheck(file);
       } else if (type === 'profile') {
         // setSelectedImageProfile();
+        setAgreements(false);
         setSelectedImageProfileCheck(file);
       }
       const reader = new FileReader();
@@ -1561,6 +1566,12 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
       // Set both today and todayEnd
       setEndDay(formattedDate);
     }
+  };
+
+  // Define the function to handle checkbox change
+  const handleCheckboxChangeAgreements = event => {
+    console.log('event', event.target.checked);
+    setAgreements(event.target.checked);
   };
 
   const classes = useStyles();
@@ -3011,7 +3022,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
 
             <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-5">강의내 교수 프로필 이미지</div>
 
-            {previewProfile ? (
+            {/* {previewProfile ? (
               <img
                 src={previewProfile}
                 alt="Image Preview"
@@ -3023,10 +3034,28 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                 alt="Image"
                 className="tw-w-[100px] tw-h-[100px] tw-rounded-full border"
               />
+            )} */}
+
+            {agreements === true ? (
+              <img
+                className="border tw-w-28 tw-h-28 tw-rounded-full"
+                src={user?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
+                alt=""
+              />
+            ) : (
+              <img
+                className="border tw-w-28 tw-h-28 tw-rounded-full"
+                src={previewProfile || '/assets/images/account/default_profile_image.png'}
+                alt=""
+              />
             )}
 
-            <div className="tw-text-sm tw-font-bold tw-text-black tw-mt-5 tw-my-5">
+            {/* <div className="tw-text-sm tw-font-bold tw-text-black tw-mt-5 tw-my-5">
               직접 업로드를 하지 않으면 현재 프로필 이미지 사용합니다.
+            </div> */}
+            <div className="tw-flex tw-items-center tw-justify-start tw-gap-1">
+              <Checkbox checked={agreements} onChange={e => handleCheckboxChangeAgreements(e)} />
+              <div className="tw-text-sm tw-font-bold tw-text-black tw-mt-5 tw-my-5">현재 프로필 이미지 사용</div>
             </div>
             <button
               onClick={() => document.getElementById('dropzone-file3').click()}
@@ -3041,13 +3070,13 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
               className="tw-hidden"
               onChange={e => handleImageChange(e, 'profile')}
             />
-            <button
+            {/* <button
               onClick={e => handleProfileDelete(e)}
               type="button"
               className="tw-text-black border tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
             >
               삭제
-            </button>
+            </button> */}
           </div>
         )}
         {activeTab === 'community' && (
