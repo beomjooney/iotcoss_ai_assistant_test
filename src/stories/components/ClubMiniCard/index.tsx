@@ -4,7 +4,7 @@ import { BoardType, ReplyType } from 'src/config/entities';
 import React, { useEffect, useRef, useState } from 'react';
 import { User } from 'src/models/user';
 import { useSessionStore } from 'src/store/session';
-const { logged } = useSessionStore.getState();
+const { logged, roles } = useSessionStore.getState();
 import Grid from '@mui/material/Grid';
 import { useRouter } from 'next/router';
 import { makeStyles } from '@material-ui/core';
@@ -187,16 +187,18 @@ ClubMiniCardProps) => {
           </div>
         </div>
         <div className="tw-w-[130px]">
-          <button
-            type="button"
-            onClick={e => {
-              e.stopPropagation(); // 이벤트 전파 차단
-              handleDeleteClub();
-            }}
-            className="tw-px-4 tw-h-9 tw-rounded-md tw-bg-[#31343d] tw-text-white tw-text-sm"
-          >
-            클럽삭제
-          </button>
+          {roles?.includes('ROLE_ADMIN') && (
+            <button
+              type="button"
+              onClick={e => {
+                e.stopPropagation(); // 이벤트 전파 차단
+                handleDeleteClub();
+              }}
+              className="tw-px-4 tw-h-9 tw-rounded-md tw-bg-[#31343d] tw-text-white tw-text-sm"
+            >
+              클럽삭제
+            </button>
+          )}
         </div>
       </div>
     </Grid>
