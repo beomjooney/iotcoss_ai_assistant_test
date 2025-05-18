@@ -186,8 +186,8 @@ ClubMiniCardProps) => {
             </span>
           </div>
         </div>
-        <div className="tw-w-[130px]">
-          {roles?.includes('ROLE_ADMIN') && (
+        {item?.isClubAdmin && (
+          <div className="tw-w-[130px]">
             <button
               type="button"
               onClick={e => {
@@ -198,8 +198,8 @@ ClubMiniCardProps) => {
             >
               클럽삭제
             </button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </Grid>
   );
