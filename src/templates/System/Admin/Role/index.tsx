@@ -84,7 +84,7 @@ export function AdminRoleTemplate() {
   };
 
   const handleAdminReject = async (tenantUUID: string, memberUUID: string) => {
-    if (confirm('관리자 신청을 거절 하시겠습니까?')) {
+    if (confirm('교수자 신청을 거절 하시겠습니까?')) {
       let params = {
         tenantUUID,
         memberUUID,

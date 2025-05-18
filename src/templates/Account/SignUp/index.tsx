@@ -542,6 +542,9 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
                 {...registerId('memberId')}
                 error={errorsId.memberId ? true : false}
                 helperText={errorsId.memberId?.message}
+                onChange={e => {
+                  setIsDisabledEmail(false);
+                }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
