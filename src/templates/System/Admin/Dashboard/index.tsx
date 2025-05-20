@@ -43,8 +43,8 @@ export function AdminDashboardTemplate() {
   const [clubSummary, setClubSummary] = useState({});
   const [category, setCategory] = useState([]);
 
-  const [startDay, setStartDay] = React.useState<Dayjs | null>(dayjs());
-  const [endDay, setEndDay] = React.useState<Dayjs | null>(dayjs().add(30, 'day'));
+  const [startDay, setStartDay] = React.useState<Dayjs | null>(dayjs().subtract(30, 'day'));
+  const [endDay, setEndDay] = React.useState<Dayjs | null>(dayjs());
 
   const [member, setMember] = useState([]);
   const [club, setClub] = useState([]);
@@ -342,17 +342,6 @@ export function AdminDashboardTemplate() {
                 <div>
                   <div className="tw-flex tw-items-center tw-justify-between tw-mb-5">
                     <div className="tw-font-bold tw-text-xl tw-text-black tw-p-0">통계/분석 </div>
-                    {/* <TextField
-                      size="small"
-                      value={search} // 상태값을 TextField에 반영
-                      placeholder="검색"
-                      onChange={e => setSearch(e.target.value)} // 입력된 값 업데이트
-                      onKeyDown={handleKeyDown} // 엔터 키 이벤트 처리
-                      InputProps={{
-                        style: { height: '43px' },
-                        startAdornment: <SearchIcon sx={{ color: 'gray' }} />,
-                      }}
-                    /> */}
                   </div>
                   {isMemberListFetched && (
                     <div className="">
