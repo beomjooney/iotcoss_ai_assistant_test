@@ -103,15 +103,12 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
   }, [answerSuccess, answerError]);
 
   useEffect(() => {
-    if (aiQuizAnswerData) {
-      // const updatedQuizList = {
-      //   ...quizList,
-      //   modelAnswer: aiQuizAnswerData[0].answer,
-      // };
-      // setQuizList(updatedQuizList);
+    if (aiQuizAnswerData && aiQuizAnswerData.length > 0) {
       setModelAnswerFinal(aiQuizAnswerData[0].answer);
       console.log('aiQuizAnswerData', aiQuizAnswerData);
-      // updateQuizList(updatedQuizList);
+
+      // aiQuizAnswerData가 있을 때 자동으로 handleEditSaveQuiz 호출
+      handleEditSaveQuizModify(aiQuizAnswerData[0].answer);
     }
   }, [aiQuizAnswerData]);
 
@@ -273,7 +270,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
     setFileName(fileName);
   };
 
-  const handleAIAnswerClick = async (quizIndex, quiz) => {
+  const handleAIAnswerClick = async quiz => {
     if (!contentType) {
       alert('지식콘텐츠 유형을 선택하세요.');
       return;
@@ -301,11 +298,7 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
 
     const formData = new FormData();
 
-    if (contentType === '0320') {
-      formData.append('file', fileList[0]);
-    } else {
-      params['contentUrl'] = contentUrl;
-    }
+    formData.append('isNew', 'false');
 
     // 객체를 JSON 문자열로 변환합니다.
     const jsonString = JSON.stringify(params);
@@ -378,6 +371,37 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
       },
       question: question,
       modelAnswerFinal: modelAnswerFinal,
+      modelAnswerKeywords: selected3,
+      jobGroups: [universityCode],
+      jobs: selectedJob,
+      jobLevels: jobLevel,
+    };
+
+    const body = {
+      quizzes: params,
+      quizSequence: data.quizSequence,
+    };
+
+    onQuizModify(body);
+    setIsContentTitle(false);
+  };
+
+  const handleEditSaveQuizModify = quiz => {
+    console.log('edit save quiz');
+    const params = {
+      content: {
+        isNew: false,
+        contentSequence: data.content.contentSequence,
+        contentType: contentType,
+        description: contentTitle,
+        url: contentUrl,
+        studySubject: selectedSubject,
+        studyChapter: selectedChapter,
+        skills: selected2,
+        studyKeywords: selected1,
+      },
+      question: question,
+      modelAnswerFinal: quiz,
       modelAnswerKeywords: selected3,
       jobGroups: [universityCode],
       jobs: selectedJob,
@@ -964,12 +988,20 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                               저장
                             </button>
                           ) : (
-                            <button
-                              onClick={() => handleEditQuizContent()}
-                              className="tw-px-5 tw-py-2.5 tw-text-sm tw-w-28 border tw-bg-white tw-rounded-md "
-                            >
-                              수정하기
-                            </button>
+                            <div className="">
+                              <button
+                                onClick={() => handleEditQuizContent()}
+                                className="tw-mb-2 tw-px-5 tw-py-2.5 tw-text-sm tw-w-28 border tw-bg-white tw-rounded-md "
+                              >
+                                수정하기
+                              </button>
+                              <button
+                                onClick={() => handleAIAnswerClick(modelAnswerFinal)}
+                                className="tw-px-5 tw-py-2.5 tw-text-sm tw-w-28 border tw-bg-white tw-rounded-md "
+                              >
+                                모범답안
+                              </button>
+                            </div>
                           )}
                         </div>
                       </div>

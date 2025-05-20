@@ -943,11 +943,6 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     setPageQuiz(value);
   };
 
-  const handleProfileDelete = e => {
-    setPreviewProfile(null);
-    setSelectedImageProfileCheck(null);
-  };
-
   const dragList = (item: any, index: any) => (
     <div
       key={item.key}
@@ -1409,6 +1404,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     if (selectedImageBanner) {
       formData.append('form.backgroundImageFile', selectedImageBannerCheck);
     }
+    console.log('selectedImageProfile', selectedImageProfile);
     if (selectedImageProfile) {
       formData.append('form.instructorProfileImageFile', selectedImageProfileCheck);
     }
@@ -1526,7 +1522,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
         setSelectedImageBanner('banner');
         setSelectedImageBannerCheck(file);
       } else if (type === 'profile') {
-        // setSelectedImageProfile();
+        setSelectedImageProfile('profile');
         setAgreements(false);
         setSelectedImageProfileCheck(file);
       }
@@ -2473,10 +2469,10 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                                 item.name === '0100'
                                   ? ''
                                   : item.name === '0200'
-                                  ? '클럽 관리자가 퀴즈 오픈을 수동으로 설정할 수 있어요!'
-                                  : item.name === '0300'
-                                  ? '학습자가 이전 퀴즈를 모두 학습/답변하였을 경우에 다음 퀴즈가 자동으로 오픈이 돼요!'
-                                  : ''
+                                    ? '클럽 관리자가 퀴즈 오픈을 수동으로 설정할 수 있어요!'
+                                    : item.name === '0300'
+                                      ? '학습자가 이전 퀴즈를 모두 학습/답변하였을 경우에 다음 퀴즈가 자동으로 오픈이 돼요!'
+                                      : ''
                               }
                               placement="top"
                             >

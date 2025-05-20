@@ -98,7 +98,12 @@ function createAxios(requestConfig: RequestConfig): AxiosInstance {
           // roles: userData.sub !== 'Guest' ? userData.roles : [],
         });
         setCookie('access_token', process.env['NEXT_PUBLIC_GUEST_TOKEN']);
-        if (data.responseCode === 'CO4007' || data.responseCode === '0400') {
+        if (
+          data.responseCode === 'CO4007' ||
+          data.responseCode === '0400' ||
+          data.code === 'CO4007' ||
+          data.code === '0400'
+        ) {
           deleteCookie('access_token');
           localStorage.removeItem('auth-store');
           localStorage.removeItem('app-storage');
