@@ -35,6 +35,11 @@ export const saveContent = async body => {
   });
   return data.data;
 };
+
+export const getContent = async contentSequence => {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/contents/${contentSequence}/used-by-quiz`);
+  return data.data;
+};
 export const saveAIQuizPost = async body => {
   const { data } = await axiosGeneralAPI().post(`/api/v1/ai-quizzes`, body, {
     headers: {

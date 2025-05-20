@@ -27,6 +27,7 @@ import {
   saveExcel,
   saveQuizExcel,
   saveQuizAiExcel,
+  getContent,
 } from './quiz.api';
 import router from 'next/router';
 
@@ -139,6 +140,20 @@ export const useContentExcelSave = (): UseMutationResult => {
 export const useQuizContentSave = (): UseMutationResult => {
   const queryClient = useQueryClient();
   return useMutation<any, any, any>(requestBody => saveContent(requestBody), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`mutation error : [${code}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('PATH').all),
+    onSuccess: async data => {
+      // alert('수정이 완료되었습니다.');
+    },
+  });
+};
+
+export const useQuizContent = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => getContent(requestBody), {
     onError: (error, variables, context) => {
       const { code, message } = error;
       alert(`mutation error : [${code}] ${message}`);
