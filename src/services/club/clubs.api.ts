@@ -23,7 +23,7 @@ export const saveClub = async (memberId: string, body) =>
   await null;
 
 // 클럽삭제
-export const deleteClub = async memberId => await axiosGeneralAPI().delete(``);
+export const deleteClub = async clubSequence => await axiosGeneralAPI().delete(`/api/manager/v1/clubs/${clubSequence}`);
 
 // 클럽퀴즈 목록 조회
 export async function getClubQuizs(params: any) {

@@ -28,6 +28,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
 import SearchIcon from '@mui/icons-material/Search';
+import { useDeleteClub } from 'src/services/club/clubs.mutations';
 
 const cx = classNames.bind(styles);
 
@@ -63,6 +64,14 @@ export function AdminClubsTemplate() {
   //   setTotalPage(data?.data?.totalPage);
   //   setPage(data?.data?.page);
   // });
+
+  const { mutate: deleteClub, isSuccess: deleteClubSuccess, isError: deleteClubError } = useDeleteClub();
+
+  useEffect(() => {
+    if (deleteClubSuccess || deleteClubError) {
+      QuizRefetchBadge();
+    }
+  }, [deleteClubSuccess, deleteClubError]);
 
   // T를 공백으로 바꾸고 소수점 부분을 제거하는 함수
   const formatDate = date => {
@@ -140,7 +149,7 @@ export function AdminClubsTemplate() {
                           <TableCell align="left" width={100}>
                             <div className=" tw-text-base tw-font-bold">구성</div>
                           </TableCell>
-                          <TableCell align="left" width={130}>
+                          <TableCell align="left" width={135}>
                             <div className=" tw-text-base tw-font-bold">운영기간</div>
                           </TableCell>
                           <TableCell align="center" width={130}>
@@ -213,14 +222,28 @@ export function AdminClubsTemplate() {
                               </TableCell>
 
                               <TableCell align="left" component="th" scope="row">
-                                <button
-                                  onClick={toggleDrawer(true, content.clubType, content.clubSequence)}
-                                  type="button"
-                                  data-tooltip-target="tooltip-default"
-                                  className="tw-py-1 tw-bg-black tw-text-white  max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-rounded-md"
-                                >
-                                  클럽관리
-                                </button>
+                                <div className="tw-flex tw-gap-2">
+                                  <button
+                                    onClick={toggleDrawer(true, content.clubType, content.clubSequence)}
+                                    type="button"
+                                    data-tooltip-target="tooltip-default"
+                                    className="tw-py-1 tw-bg-black tw-text-white tw-text-sm tw-w-[50px] tw-font-medium tw-rounded-md"
+                                  >
+                                    관리
+                                  </button>
+                                  <button
+                                    onClick={() => {
+                                      if (confirm('클럽을 삭제하시겠습니까?')) {
+                                        deleteClub(content.clubSequence);
+                                      }
+                                    }}
+                                    type="button"
+                                    data-tooltip-target="tooltip-default"
+                                    className="tw-py-1 tw-bg-black tw-text-white tw-text-sm tw-w-[50px] tw-font-medium  tw-rounded-md"
+                                  >
+                                    삭제
+                                  </button>
+                                </div>
                               </TableCell>
                             </TableRow>
                           ))
