@@ -125,6 +125,7 @@ export function AdminKnowledgeTemplate() {
   const [totalQuizPage, setTotalQuizPage] = useState(1);
   const [keyWorld, setKeyWorld] = useState('');
   const [selectedOption, setSelectedOption] = useState('false');
+  const [quizSequence, setQuizSequence] = useState('');
   const handleChangeOption = event => {
     console.log('test', event.target.value);
     setSelectedOption(event.target.value);
@@ -138,6 +139,25 @@ export function AdminKnowledgeTemplate() {
   const { mutate: onAIQuizAnswer, isSuccess: answerSuccess, data: aiQuizAnswerData } = useAIQuizAnswer();
   const { mutate: onQuizDelete, isSuccess: isAcceptSuccess } = useQuizDelete();
   const { mutate: onQuizContent, isSuccess: isAcceptContentSuccess, data: contentData } = useQuizContent();
+
+  useEffect(() => {
+    if (isAcceptContentSuccess) {
+      console.log(contentData);
+      console.log(quizSequence, contentData);
+      let params = {
+        quizSequence: quizSequence,
+      };
+      if (contentData?.used) {
+        if (confirm('이 콘텐츠와 연관된 다른 콘텐츠가 있습니다. 그래도 삭제하시겠습니까?')) {
+          onQuizDelete(params);
+        }
+      } else {
+        if (confirm('지식컨텐츠를 삭제하시겠습니까?')) {
+          onQuizDelete(params);
+        }
+      }
+    }
+  }, [isAcceptContentSuccess]);
 
   useEffect(() => {
     if (isAcceptSuccess) {
@@ -639,21 +659,9 @@ export function AdminKnowledgeTemplate() {
     setContentSortType(event.target.value);
   };
 
-  const handleDelete = quizSequence => {
+  const handleDelete = async quizSequence => {
     onQuizContent(quizSequence);
-    console.log(quizSequence, contentData?.used);
-    let params = {
-      quizSequence: quizSequence,
-    };
-    if (contentData?.used) {
-      if (confirm('이 콘텐츠와 연관된 다른 콘텐츠가 있습니다. 그래도 삭제하시겠습니까?')) {
-        onQuizDelete(params);
-      }
-    } else {
-      if (confirm('지식컨텐츠를 삭제하시겠습니까?')) {
-        onQuizDelete(params);
-      }
-    }
+    setQuizSequence(quizSequence);
     return;
   };
 
