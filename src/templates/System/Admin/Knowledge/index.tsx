@@ -148,7 +148,7 @@ export function AdminKnowledgeTemplate() {
         quizSequence: quizSequence,
       };
       if (contentData?.used) {
-        if (confirm('이 콘텐츠와 연관된 다른 콘텐츠가 있습니다. 그래도 삭제하시겠습니까?')) {
+        if (confirm('지식콘텐츠 삭제 시 연관 콘텐츠가 있을 경우 연관콘텐츠가 있습니다.삭제 하시겠습니까?')) {
           onQuizDelete(params);
         }
       } else {
