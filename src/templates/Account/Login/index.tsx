@@ -34,6 +34,7 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
   const { update, tenantName, tenantUri, loginType, tenantLoginMemberTypes, tenantOrganizationCodes } =
     useSessionStore.getState();
 
+  console.log('loginType', loginType);
   console.log('tenantOrganizationCodes', tenantOrganizationCodes);
   const router = useRouter();
   const [username, setUserName] = useState('');
@@ -59,17 +60,6 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
   useEffect(() => {
     console.log('signUpData', signUpData);
     if (signUpData?.data?.responseCode === '0000') {
-      // onLogin(
-      //   paramsWithDefault({
-      //     username: username,
-      //     password: password,
-      //     grant_type: 'password',
-      //     tenant_uri: tenantUri,
-      //     login_type: '0100',
-      //     tenant_login_member_type: selectedLoginType,
-      //   }),
-      // );
-
       const loginData = {
         username: username,
         password: password,
@@ -438,7 +428,7 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
         </div>
       )}
 
-      {loginType?.includes('0200') && (
+      {loginType?.includes('0200') && loginType?.includes('0101') && (
         <div className="tw-mt-20">
           <div className="tw-w-full tw-max-w-md tw-mx-auto">
             <div className="tw-flex tw-rounded-lg tw-overflow-hidden tw-border tw-border-gray-200 tw-border-solid tw-p-1.5 tw-bg-gray-100">
@@ -630,6 +620,103 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
                   </Box>
                 </>
               )}
+            </div>
+          </div>
+
+          <div className="tw-mb-40"></div>
+        </div>
+      )}
+      {loginType?.includes('0200') && !loginType?.includes('0101') && (
+        <div className="tw-mt-20">
+          <div className="tw-w-full tw-max-w-md tw-mx-auto">
+            <div className="mt-4">
+              <>
+                <div className={cx('logo-area')}>
+                  <p className={cx('tw-font-bold tw-text-[26px] tw-text-black tw-py-5 tw-text-center')}>로그인</p>
+                </div>
+                <form onSubmit={handleSubmit(onSubmit0002, onError)}>
+                  <Typography sx={{ fontSize: 14, marginTop: 3, color: 'black', fontWeight: '600' }}>이메일</Typography>
+                  <TextField
+                    required
+                    id="username"
+                    name="username"
+                    placeholder="이메일을 입력해주세요."
+                    variant="outlined"
+                    type="search"
+                    fullWidth
+                    sx={{
+                      backgroundColor: '#F6F7FB',
+                      borderRadius: '10px',
+                      marginTop: '10px',
+                      '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
+                      '& fieldset': { border: 'none' },
+                      '& input': { height: ' 0.8em;' },
+                    }}
+                    margin="dense"
+                    {...register('username')}
+                    error={errors.username ? true : false}
+                    helperText={errors.username?.message}
+                  />
+                  <Typography sx={{ fontSize: 14, marginTop: 3, color: 'black', fontWeight: '600' }}>
+                    비밀번호
+                  </Typography>
+                  <TextField
+                    required
+                    id="password"
+                    name="password"
+                    placeholder="비밀번호를 입력해주세요."
+                    type="password"
+                    fullWidth
+                    margin="dense"
+                    variant="outlined"
+                    sx={{
+                      backgroundColor: '#F6F7FB',
+                      borderRadius: '10px',
+                      marginTop: '10px',
+                      '& fieldset': { border: 'none' },
+                      '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
+                      '& input': { height: ' 0.8em;' },
+                    }}
+                    {...register('password')}
+                    error={errors.password ? true : false}
+                    helperText={errors.password?.message}
+                  />
+
+                  <Grid container spacing={3} direction="row" justifyContent="space-between" alignItems="center">
+                    <Grid item xs={6}></Grid>
+                    <Grid item xs={6}>
+                      <Box
+                        display="flex"
+                        justifyContent="flex-end"
+                        sx={{ fontWeight: 'bold' }}
+                        className="tw-cursor-pointer"
+                        onClick={() => router.push('/account/forgot')}
+                      >
+                        <Typography sx={{ fontSize: 12, textDecoration: 'underline' }} className="tw-py-3">
+                          비밀번호를 잊으셨나요?
+                        </Typography>
+                      </Box>
+                    </Grid>
+                  </Grid>
+                  <div style={{ marginBottom: '20px', marginTop: '20px', textAlign: 'center' }}>
+                    <button
+                      className={`tw-bg-black tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-text-white`}
+                      onClick={() => handleSubmit(onSubmit0002)}
+                    >
+                      로그인
+                    </button>
+                  </div>
+                </form>
+                <Box display="flex" justifyContent="center" sx={{ fontWeight: 'bold' }}>
+                  <Typography
+                    onClick={() => router.push('/account/signup')}
+                    sx={{ fontSize: 14, textDecoration: 'underline' }}
+                    className="tw-py-3  tw-cursor-pointer"
+                  >
+                    회원가입
+                  </Typography>
+                </Box>
+              </>
             </div>
           </div>
 
