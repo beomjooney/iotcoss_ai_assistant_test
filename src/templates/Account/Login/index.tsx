@@ -194,7 +194,7 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
       paramsWithDefault({
         ...data,
         tenant_uri: tenantUri,
-        login_type: '0100',
+        login_type: '0101',
         tenant_organization_code: selectedUniversity,
       }),
     );
