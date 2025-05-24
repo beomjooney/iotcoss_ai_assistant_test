@@ -154,6 +154,12 @@ BannerProps) => {
     },
   );
 
+  const onFileDownload = function (key: string, fileName: string) {
+    console.log(key);
+    setKey(key);
+    setFileName(fileName);
+  };
+
   useEffect(() => {
     if (isAnswerUpdate) {
       location.href = `/quiz/${data?.clubSequence}`;
@@ -578,27 +584,6 @@ BannerProps) => {
                       아티클 보기
                     </button>
                   </div>
-                  {/* <div className="border tw-rounded-lg tw-p-5 tw-mt-14">
-                    <div className="tw-text-xl tw-font-bold tw-py-5">오늘의 퀴즈는 알고 있었던 내용이었나요?</div>
-                    <FormControl className="tw-py-5">
-                      <RadioGroup
-                        aria-labelledby="demo-radio-buttons-group-label"
-                        value={type} // 현재 선택된 값 설정
-                        onChange={handleTypeChange} // 라디오 버튼 클릭 이벤트 처리
-                        name="radio-buttons-group"
-                      >
-                        <FormControlLabel value="0001" control={<Radio />} label="처음 들어본 내용이다." />
-                        <FormControlLabel value="0002" control={<Radio />} label="들어본 적은 있지만 잘 모른다." />
-                        <FormControlLabel
-                          value="0003"
-                          control={<Radio />}
-                          label="적용 경험은 없지만, 원리는 알고 있다."
-                        />
-                        <FormControlLabel value="0004" control={<Radio />} label="적용 경험이 있고, 설명할 수 있다." />
-                        <FormControlLabel value="0005" control={<Radio />} label="세미나에서 설명할 수 있을 것 같다." />
-                      </RadioGroup>
-                    </FormControl>
-                  </div> */}
                   <button
                     type="button"
                     onClick={handleComprehension}
@@ -773,9 +758,13 @@ BannerProps) => {
                       type="button"
                       onClick={() => {
                         if (data?.contentType === '0320') {
-                          setKey(data?.contentKey);
+                          // setKey(data?.contentKey);
                         } else {
-                          window.open(contentUrl, '_blank'); // data?.articleUrl을 새 탭으로 열기
+                          if (data?.name?.toLowerCase().endsWith('.pdf')) {
+                            onFileDownload(data?.contentKey, 'test.pdf');
+                          } else {
+                            window.open(contentUrl, '_blank');
+                          }
                         }
                       }}
                       className=" tw-text-white tw-w-[150px] tw-bg-blue-500 tw-my-8 tw-text-sm  tw-font-medium tw-rounded tw-text-base tw-px-7 tw-py-3 "

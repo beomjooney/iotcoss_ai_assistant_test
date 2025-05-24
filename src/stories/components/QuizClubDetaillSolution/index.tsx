@@ -70,13 +70,11 @@ const QuizClubDetaillSolution = ({
 
   const { isFetched: isParticipantListFetcheds } = useQuizFileDownload(key, data => {
     if (data) {
-      const url = window.URL.createObjectURL(new Blob([data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', fileName); // 다운로드할 파일 이름과 확장자를 설정합니다.
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      const url = window.URL.createObjectURL(new Blob([data], { type: 'application/pdf' }));
+      // 브라우저에서 PDF를 새 탭에서 열기
+      window.open(url, '_blank', 'noopener,noreferrer');
+      setKey('');
+      setFileName('');
     }
   });
 
@@ -550,7 +548,8 @@ const QuizClubDetaillSolution = ({
                                       <div className="tw-flex tw-justify-end tw-items-center tw-relative tw-gap-2 tw-px-2 tw-py-1 tw-rounded">
                                         <button
                                           onClick={() => {
-                                            window.open(item?.contentUrl, '_blank'); // data?.articleUrl을 새 탭으로 열기
+                                            // window.open(item?.contentUrl, '_blank'); // data?.articleUrl을 새 탭으로 열기
+                                            onFileDownload(item?.contentUrl, 'test.pdf');
                                           }}
                                           className="tw-bg-black tw-p-1.5 tw-text-white tw-rounded tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-font-bold tw-text-right tw-text-[#9ca5b2]"
                                         >
@@ -853,6 +852,7 @@ const QuizClubDetaillSolution = ({
                                     <div className="tw-flex tw-justify-end tw-items-center tw-relative tw-gap-2 tw-px-2 tw-py-1 tw-rounded">
                                       <button
                                         onClick={() => {
+                                          // onFileDownload(item?.contentKey, 'download.pdf');
                                           window.open(item?.contentUrl, '_blank'); // data?.articleUrl을 새 탭으로 열기
                                         }}
                                         className="tw-bg-black tw-p-1.5 tw-text-white tw-rounded tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-font-bold tw-text-right tw-text-[#9ca5b2]"
