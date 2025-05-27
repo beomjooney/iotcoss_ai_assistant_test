@@ -275,7 +275,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
     console.log('load temp', clubForm.studyKeywords);
     setStudyKeywords(clubForm.studyKeywords || []);
     setStudySubject(clubForm.studySubject || '');
-    setUniversityCode(clubForm.jobGroups[0].code || '');
+    setUniversityCode(clubForm.jobGroups[0]?.code || '');
     setRecommendLevels(clubForm.jobLevels.map(item => item.code) || '');
     console.log(clubForm?.jobLevels?.map(item => item.name));
     setStudyCycleNum(clubForm.studyCycle);
