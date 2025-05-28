@@ -815,7 +815,7 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
                 isSmsReceive: true,
                 isKakaoReceive: true,
                 tenantUri: tenantUri,
-                tenantLoginMemberType: selectedLoginType,
+                tenantLoginMemberType: '0101',
               };
 
               if (selectedUniversity) {
