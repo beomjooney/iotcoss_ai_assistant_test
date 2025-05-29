@@ -65,7 +65,7 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
         password: password,
         grant_type: 'password',
         tenant_uri: tenantUri,
-        login_type: '0100',
+        login_type: '0101',
         tenant_login_member_type: selectedLoginType,
       };
 
