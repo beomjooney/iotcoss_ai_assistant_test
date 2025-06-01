@@ -253,7 +253,7 @@ export function StudyRoomTemplate() {
 
   // 내가푼 퀴즈
   const { isFetched: isQuizFetched, refetch: QuizRefetch } = useStudyQuizList(quizParams, data => {
-    console.log(data);
+    console.log('data', data);
     setQuizList(data.data.contents || []);
     setQuizTotalPage(data.data.totalPages);
   });
@@ -1081,7 +1081,7 @@ export function StudyRoomTemplate() {
                             </Grid>
                           </div>
                         ))}
-                        <Pagination page={quizPage} setPage={setPage} total={totalPage} />
+                        <Pagination page={quizPage} setPage={setQuizPage} total={quizTotalPage} />
                       </div>
                     )}
                     {active === 3 && (
