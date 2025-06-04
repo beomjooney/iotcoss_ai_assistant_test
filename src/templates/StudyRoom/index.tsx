@@ -1024,8 +1024,11 @@ export function StudyRoomTemplate() {
                                     <div className="tw-flex tw-justify-end tw-items-center tw-relative tw-gap-2 tw-px-2 tw-py-1 tw-rounded">
                                       <button
                                         onClick={() => {
-                                          // window.open(item?.quiz?.contentUrl, '_blank'); // data?.articleUrl을 새 탭으로 열기
-                                          onFileDownload(item?.quiz?.file?.key, item?.quiz?.file?.name);
+                                          if (item?.quiz?.file) {
+                                            onFileDownload(item?.quiz?.file?.key, item?.quiz?.file?.name);
+                                          } else {
+                                            window.open(item?.quiz?.contentUrl, '_blank');
+                                          }
                                         }}
                                         className="tw-bg-black tw-p-1.5 tw-text-white tw-rounded tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-font-bold tw-text-right tw-text-[#9ca5b2]"
                                       >
