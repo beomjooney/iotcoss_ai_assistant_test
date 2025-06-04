@@ -49,6 +49,7 @@ import { UseQueryResult } from 'react-query';
 // 챗봇
 import { useSessionStore } from '../../../src/store/session';
 import ChatbotModal from 'src/stories/components/ChatBot';
+import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
 
 const useStyles = makeStyles(theme => ({
   table: {
@@ -193,6 +194,8 @@ export function StudyRoomTemplate() {
   const handleChangeBadgeSortType = event => {
     setBadgeClubViewFilter(event.target.value);
   };
+  const [key, setKey] = useState('');
+  const [fileName, setFileName] = useState('');
 
   /**calendar param */
   const [calendarYearMonth, setCalendarYearMonth] = useState(new Date().toISOString().split('T')[0].slice(0, 7));
@@ -256,6 +259,17 @@ export function StudyRoomTemplate() {
     console.log('data', data);
     setQuizList(data.data.contents || []);
     setQuizTotalPage(data.data.totalPages);
+  });
+
+  // 퀴즈 파일 다운로드
+  const { isFetched: isParticipantListFetcheds } = useQuizFileDownload(key, data => {
+    if (data) {
+      const url = window.URL.createObjectURL(new Blob([data], { type: 'application/pdf' }));
+      // 브라우저에서 PDF를 새 탭에서 열기
+      window.open(url, '_blank', 'noopener,noreferrer');
+      setKey('');
+      setFileName('');
+    }
   });
 
   //지식콘텐츠
@@ -353,6 +367,13 @@ export function StudyRoomTemplate() {
     const clubsForTargetDate = calendarList.find(item => item.date === yearMonth)?.clubs || [];
     setQuizStatusList(clubsForTargetDate);
   };
+
+  const onFileDownload = function (key: string, fileName: string) {
+    console.log(key);
+    setKey(key);
+    setFileName(fileName);
+  };
+
   return (
     <>
       <div className={cx('seminar-container')}>
@@ -1003,7 +1024,8 @@ export function StudyRoomTemplate() {
                                     <div className="tw-flex tw-justify-end tw-items-center tw-relative tw-gap-2 tw-px-2 tw-py-1 tw-rounded">
                                       <button
                                         onClick={() => {
-                                          window.open(item?.quiz?.contentUrl, '_blank'); // data?.articleUrl을 새 탭으로 열기
+                                          // window.open(item?.quiz?.contentUrl, '_blank'); // data?.articleUrl을 새 탭으로 열기
+                                          onFileDownload(item?.quiz?.file?.key, item?.quiz?.file?.name);
                                         }}
                                         className="tw-bg-black tw-p-1.5 tw-text-white tw-rounded tw-flex-grow-0 tw-flex-shrink-0 tw-text-xs tw-font-bold tw-text-right tw-text-[#9ca5b2]"
                                       >
