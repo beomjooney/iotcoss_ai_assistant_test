@@ -32,6 +32,10 @@ import router from 'next/router';
 import { useQuizGetAIMyAnswer } from 'src/services/quiz/quiz.queries';
 import { useAIQuizMyAnswerSavePut } from 'src/services/quiz/quiz.mutations';
 import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
+import dynamic from 'next/dynamic';
+
+// ReactApexChart를 동적으로 import하여 SSR 비활성화
+const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 const cx = classNames.bind(styles);
 
@@ -67,7 +71,30 @@ const QuizClubDetaillSolution = ({
   const [expandedItems, setExpandedItems] = useState(() => Array(quizList?.length || 0).fill(false));
   const [key, setKey] = useState('');
   const [fileName, setFileName] = useState('');
-
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState<boolean>(false);
+  const [state, setState] = React.useState({
+    series: [
+      {
+        name: 'Series 1',
+        data: [80, 50, 30, 40, 100, 20],
+      },
+    ],
+    options: {
+      chart: {
+        height: 350,
+        type: 'radar',
+      },
+      title: {
+        text: 'Basic Radar Chart',
+      },
+      yaxis: {
+        stepSize: 20,
+      },
+      xaxis: {
+        categories: ['January', 'February', 'March', 'April', 'May', 'June'],
+      },
+    },
+  });
   const { isFetched: isParticipantListFetcheds } = useQuizFileDownload(key, data => {
     if (data) {
       const url = window.URL.createObjectURL(new Blob([data], { type: 'application/pdf' }));
@@ -188,6 +215,11 @@ const QuizClubDetaillSolution = ({
     setFileName(fileName);
   };
 
+  const handleUpdate = () => {
+    console.log('Update function called');
+    // 수정 기능 구현
+  };
+
   return (
     <div className={`tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white ${borderStyle}`}>
       <div className="tw-pt-[35px]">
@@ -273,7 +305,7 @@ const QuizClubDetaillSolution = ({
               <div className="tw-flex tw-items-center">
                 <img
                   src={contents?.club?.leaderProfileImageUrl || '/assets/images/account/default_profile_image.png'}
-                  className="tw-mr-2 tw-rounded-full tw-ring-1 tw-ring-[#e9ecf2] tw-w-9 tw-h-9"
+                  className="tw-mr-2 tw-rounded-full tw-ring-1 tw-ring-gray-200 tw-w-9 tw-h-9"
                 />
                 <p className="tw-text-sm tw-text-black">{contents?.club?.leaderNickname}</p>
               </div>
@@ -301,7 +333,22 @@ const QuizClubDetaillSolution = ({
 
         {/* Content Section */}
         <div className="tw-flex tw-flex-col tw-space-y-4 tw-rounded-lg tw-py-4 tw-overflow-hidden">
-          <p className="tw-text-xl tw-font-bold tw-text-black tw-py-4">나의 학습 현황</p>
+          <div className="tw-flex tw-justify-between tw-items-center tw-py-4">
+            <p className="tw-text-xl tw-font-bold tw-text-black">나의 학습 현황</p>
+            <div className="tw-flex tw-items-center tw-gap-2">
+              <div className="tw-flex tw-items-center">
+                <div className="tw-text-base tw-text-black tw-leading-relaxed tw-mr-2">
+                  모든 퀴즈를 완료하였습니다! 총평 피드백을 확인해보세요.
+                </div>
+              </div>
+              <button
+                onClick={() => setIsFeedbackModalOpen(true)}
+                className="tw-bg-blue-500 tw-hover:bg-blue-600 tw-text-white tw-px-4 tw-py-2 tw-rounded-full tw-text-base tw-font-medium"
+              >
+                총평 피드백보기
+              </button>
+            </div>
+          </div>
           <div className="tw-overflow-auto tw-rounded-lg">
             <div className="tw-flex tw-flex-row">
               {/* 새로운 div 추가 */}
@@ -310,7 +357,7 @@ const QuizClubDetaillSolution = ({
                   학생
                   <div className="tw-py-2">
                     <Avatar
-                      className="tw-mx-auto border tw-rounded-full"
+                      className="tw-mx-auto tw-ring-1 tw-ring-gray-200 tw-rounded-full"
                       sx={{ width: 32, height: 32 }}
                       src={contents?.progress?.profileImageUrl}
                     ></Avatar>
@@ -421,10 +468,10 @@ const QuizClubDetaillSolution = ({
                               {session?.completedDate
                                 ? session?.completedDate
                                 : session?.relativeDaysToPublishDate != null
-                                ? session.relativeDaysToPublishDate > 0
-                                  ? 'D+' + session.relativeDaysToPublishDate
-                                  : 'D' + session.relativeDaysToPublishDate
-                                : ''}
+                                  ? session.relativeDaysToPublishDate > 0
+                                    ? 'D+' + session.relativeDaysToPublishDate
+                                    : 'D' + session.relativeDaysToPublishDate
+                                  : ''}
                             </p>
                           </div>
 
@@ -532,7 +579,7 @@ const QuizClubDetaillSolution = ({
                                 >
                                   <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                     <img
-                                      className="tw-w-10 tw-h-10 tw-rounded-full"
+                                      className="tw-w-10 tw-h-10 tw-rounded-full tw-ring-1 tw-ring-gray-200"
                                       src={
                                         item?.maker?.profileImageUrl ||
                                         '/assets/images/account/default_profile_image.png'
@@ -580,7 +627,7 @@ const QuizClubDetaillSolution = ({
                                   </div>
                                   <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                     <img
-                                      className="border tw-rounded-full tw-w-10 tw-h-10 "
+                                      className="tw-rounded-full tw-w-10 tw-h-10 tw-ring-1 tw-ring-gray-200"
                                       src={
                                         item?.answer?.member?.profileImageUrl ||
                                         '/assets/images/account/default_profile_image.png'
@@ -653,7 +700,7 @@ const QuizClubDetaillSolution = ({
                                     >
                                       <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                         <img
-                                          className="tw-w-10 tw-h-10 tw-rounded-full"
+                                          className="tw-w-10 tw-h-10 tw-rounded-full tw-ring-1 tw-ring-gray-200"
                                           src={item?.maker?.profileImageUrl}
                                         />
                                         <div className="tw-text-xs tw-text-left tw-text-black">
@@ -701,7 +748,7 @@ const QuizClubDetaillSolution = ({
                                           </div>
                                           <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                             <img
-                                              className="tw-rounded-full tw-w-10 tw-h-10 "
+                                              className="tw-rounded-full tw-w-10 tw-h-10 tw-ring-1 tw-ring-gray-200"
                                               src={item?.answer?.member?.profileImageUrl}
                                             />
                                             <div className="tw-text-xs tw-text-left tw-text-black">
@@ -767,9 +814,13 @@ const QuizClubDetaillSolution = ({
                                           </svg>
                                         </div>
                                         <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
-                                          <div
-                                            className="border tw-rounded-full tw-w-10 tw-h-10"
-                                            src={item?.maker?.profileImageUrl}
+                                          <img
+                                            className="tw-rounded-full tw-w-10 tw-h-10 tw-ring-1 tw-ring-gray-200"
+                                            src={
+                                              item?.maker?.profileImageUrl ||
+                                              '/assets/images/account/default_profile_image.png'
+                                            }
+                                            alt={item?.maker?.nickname || '사용자'}
                                           />
                                           <div className="tw-text-xs tw-text-left tw-text-black">
                                             {item?.maker?.nickname}
@@ -824,8 +875,8 @@ const QuizClubDetaillSolution = ({
                                 ? item?.answer?.relativeDaysToPublishDate < 0
                                   ? `D${item?.answer?.relativeDaysToPublishDate}`
                                   : item?.answer?.relativeDaysToPublishDate === 0
-                                  ? `D-0`
-                                  : `D+${item?.answer?.relativeDaysToPublishDate}`
+                                    ? `D-0`
+                                    : `D+${item?.answer?.relativeDaysToPublishDate}`
                                 : ''}
                             </div>
                           </Grid>
@@ -839,7 +890,7 @@ const QuizClubDetaillSolution = ({
                               >
                                 <div className="tw-w-1.5/12 tw-py-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                   <img
-                                    className="tw-w-10 tw-h-10 tw-rounded-full tw-mb-1"
+                                    className="tw-w-10 tw-h-10 tw-rounded-full tw-mb-1 tw-ring-1 tw-ring-gray-200"
                                     src={item?.maker?.profileImageUrl}
                                   />
                                   <div className="tw-text-xs tw-text-left tw-text-black">{item?.maker?.nickname}</div>
@@ -889,7 +940,7 @@ const QuizClubDetaillSolution = ({
                                     </div>
                                     <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                       <img
-                                        className="tw-rounded-full tw-w-10 tw-h-10 tw-mb-1"
+                                        className="tw-rounded-full tw-w-10 tw-h-10 tw-mb-1 tw-ring-1 tw-ring-gray-200"
                                         src={
                                           item?.answer?.member?.profileImageUrl ||
                                           '/assets/images/account/default_profile_image.png'
@@ -955,7 +1006,7 @@ const QuizClubDetaillSolution = ({
                                   </div>
                                   <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                     <img
-                                      className="tw-rounded-full tw-w-10 tw-h-10 tw-mb-1"
+                                      className="tw-rounded-full tw-w-10 tw-h-10 tw-mb-1 tw-ring-1 tw-ring-gray-200"
                                       src={
                                         item?.answer?.member?.profileImageUrl ||
                                         '/assets/images/account/default_profile_image.png'
@@ -971,7 +1022,6 @@ const QuizClubDetaillSolution = ({
                                         <button
                                           type="button"
                                           onClick={() => {
-                                            // router.push('/quiz/solution/' + `${item?.quizSequence}`);
                                             router.push(
                                               {
                                                 pathname: `/quiz/solution/${item?.quizSequence}`,
@@ -1018,7 +1068,7 @@ const QuizClubDetaillSolution = ({
             <div className="tw-bg-[#F6F7FB] tw-flex tw-items-center tw-px-4 max-lg:tw-p-3 tw-py-4 tw-rounded-t-xl">
               <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                 <img
-                  className="tw-w-10 tw-h-10 border tw-rounded-full"
+                  className="tw-w-10 tw-h-10 tw-ring-1 tw-ring-gray-200 tw-rounded-full"
                   src={clubQuizThreads?.member?.profileImageUrl}
                 />
                 <div className="tw-text-xs tw-text-left tw-text-black">{clubQuizThreads?.member?.nickname}</div>
@@ -1059,7 +1109,7 @@ const QuizClubDetaillSolution = ({
                       <img className="tw-rounded-full tw-w-10 tw-h-10 border" src="/assets/images/main/chatbot2.png" />
                     ) : (
                       <img
-                        className="tw-rounded-full tw-w-10 tw-h-10 "
+                        className="tw-rounded-full tw-w-10 tw-h-10 tw-ring-1 tw-ring-gray-200"
                         src={item?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
                       />
                     )}
@@ -1192,6 +1242,339 @@ const QuizClubDetaillSolution = ({
             )}
           </div>
         )}
+      </MentorsModal>
+
+      {/* 총평 피드백 모달 */}
+      <MentorsModal
+        isContentModalClick={false}
+        title={'총평 피드백보기'}
+        isOpen={isFeedbackModalOpen}
+        onAfterClose={() => {
+          setIsFeedbackModalOpen(false);
+        }}
+      >
+        <div className="tw-max-h-[80vh] tw-overflow-y-auto">
+          {/* 전체 퀴즈 총평 피드백 */}
+          <div className="border tw-border-gray-200 tw-rounded-lg tw-p-4">
+            <div className="tw-flex tw-items-center tw-mb-4">
+              <div className="tw-w-8 tw-h-8 tw-bg-blue-500 tw-rounded-full tw-flex tw-items-center tw-justify-center tw-mr-3">
+                <span className="tw-text-white tw-text-sm tw-font-bold">AI</span>
+              </div>
+              <div className="tw-flex tw-items-center tw-gap-2">
+                <p className="tw-text-base tw-font-bold tw-text-black">AI피드백</p>
+                <p className="tw-text-sm tw-text-gray-500">10.28(월) 23:50:05</p>
+              </div>
+            </div>
+
+            <div className="tw-text-blue-600 tw-text-base tw-mb-4 tw-font-bold tw-cursor-pointer">학습자 분석</div>
+
+            {/* 학습자 분석 차트 영역 */}
+            <div className=" tw-p-6 tw-rounded-lg tw-mb-6">
+              <div className="tw-grid tw-gap-6" style={{ gridTemplateColumns: '60% 40%' }}>
+                {/* 레이더 차트 영역 (간단한 표현) */}
+                <div className="tw-relative tw-flex tw-items-center tw-justify-center">
+                  {/* 레이더 차트 컨테이너 */}
+                  <div className="tw-w-full tw-h-full">
+                    {typeof window !== 'undefined' && (
+                      <ReactApexChart
+                        as
+                        any
+                        options={{
+                          chart: {
+                            type: 'radar',
+                            toolbar: {
+                              show: false,
+                            },
+                            background: 'transparent',
+                          },
+                          colors: ['#3B82F6', '#F59E0B'],
+                          fill: {
+                            type: 'solid',
+                            opacity: [0.6, 0.3],
+                          },
+                          stroke: {
+                            width: [2, 2],
+                            dashArray: [0, 5],
+                          },
+                          markers: {
+                            size: [4, 4],
+                          },
+                          xaxis: {
+                            categories: ['이해도', '성실도', '사고도', '완성도', '참여도'],
+                            labels: {
+                              style: {
+                                colors: '#374151',
+                                fontSize: '12px',
+                                fontFamily: 'Pretendard Variable, Pretendard, sans-serif',
+                                fontWeight: 500,
+                              },
+                            },
+                          },
+                          yaxis: {
+                            show: false,
+                            min: 0,
+                            max: 100,
+                          },
+                          grid: {
+                            show: false,
+                          },
+                          plotOptions: {
+                            radar: {
+                              size: 130,
+                              polygons: {
+                                fill: {
+                                  colors: ['transparent'],
+                                },
+                              },
+                            },
+                          },
+                          dataLabels: {
+                            enabled: false,
+                          },
+                          legend: {
+                            show: true,
+                            position: 'bottom',
+                            horizontalAlign: 'center',
+                            fontSize: '12px',
+                            fontFamily: 'Pretendard Variable, Pretendard, sans-serif',
+                          },
+                        }}
+                        series={[
+                          {
+                            name: '내 점수',
+                            data: [90, 60, 50, 70, 100], // 이해도, 성실도, 사고도, 완성도, 참여도
+                          },
+                          {
+                            name: '평균 점수',
+                            data: [75, 80, 65, 85, 70], // 비교군 데이터 (점선)
+                          },
+                        ]}
+                        type="radar"
+                        width="100%"
+                        height="110%"
+                      />
+                    )}
+                  </div>
+                </div>
+
+                {/* 상세 점수 */}
+                <div className="tw-space-y-3">
+                  <div className="tw-text-base tw-font-bold tw-text-black tw-mb-4">상세 항목</div>
+
+                  <div className="tw-flex tw-justify-between tw-items-center tw-px-5">
+                    <span className="tw-text-sm tw-text-gray-700">참됨도</span>
+                    <div className="tw-flex tw-items-center tw-gap-2">
+                      <div className="tw-w-40 tw-h-2 tw-bg-gray-200 tw-rounded-full">
+                        <div className="tw-w-[34%] tw-h-full tw-bg-black tw-rounded-full"></div>
+                      </div>
+                    </div>
+                    <div className="tw-flex tw-items-center tw-gap-2">
+                      <span className="tw-text-sm tw-font-medium">34/100</span>
+                    </div>
+                  </div>
+                  <div className="tw-flex tw-justify-between tw-items-center tw-px-5">
+                    <span className="tw-text-sm tw-text-gray-700">참됨도</span>
+                    <div className="tw-flex tw-items-center tw-gap-2">
+                      <div className="tw-w-40 tw-h-2 tw-bg-gray-200 tw-rounded-full">
+                        <div className="tw-w-[34%] tw-h-full tw-bg-black tw-rounded-full"></div>
+                      </div>
+                    </div>
+                    <div className="tw-flex tw-items-center tw-gap-2">
+                      <span className="tw-text-sm tw-font-medium">34/100</span>
+                    </div>
+                  </div>
+                  <div className="tw-flex tw-justify-between tw-items-center tw-px-5">
+                    <span className="tw-text-sm tw-text-gray-700">참됨도</span>
+                    <div className="tw-flex tw-items-center tw-gap-2">
+                      <div className="tw-w-40 tw-h-2 tw-bg-gray-200 tw-rounded-full">
+                        <div className="tw-w-[34%] tw-h-full tw-bg-black tw-rounded-full"></div>
+                      </div>
+                    </div>
+                    <div className="tw-flex tw-items-center tw-gap-2">
+                      <span className="tw-text-sm tw-font-medium">34/100</span>
+                    </div>
+                  </div>
+                  <div className="tw-flex tw-justify-between tw-items-center tw-px-5">
+                    <span className="tw-text-sm tw-text-gray-700">참됨도</span>
+                    <div className="tw-flex tw-items-center tw-gap-2">
+                      <div className="tw-w-40 tw-h-2 tw-bg-gray-200 tw-rounded-full">
+                        <div className="tw-w-[34%] tw-h-full tw-bg-black tw-rounded-full"></div>
+                      </div>
+                    </div>
+                    <div className="tw-flex tw-items-center tw-gap-2">
+                      <span className="tw-text-sm tw-font-medium">34/100</span>
+                    </div>
+                  </div>
+                  <div className="tw-flex tw-justify-between tw-items-center tw-px-5">
+                    <span className="tw-text-sm tw-text-gray-700">참됨도</span>
+                    <div className="tw-flex tw-items-center tw-gap-2">
+                      <div className="tw-w-40 tw-h-2 tw-bg-gray-200 tw-rounded-full">
+                        <div className="tw-w-[34%] tw-h-full tw-bg-black tw-rounded-full"></div>
+                      </div>
+                    </div>
+                    <div className="tw-flex tw-items-center tw-gap-2">
+                      <span className="tw-text-sm tw-font-medium">34/100</span>
+                    </div>
+                  </div>
+
+                  <div className="tw-mt-4 tw-pt-3  tw-border-t tw-border-gray-200">
+                    <div className="tw-flex tw-items-center tw-gap-2">
+                      <span className="tw-text-base tw-font-bold tw-text-black">총점</span>
+                      <div className="tw-flex tw-items-center tw-gap-2">
+                        <div className="tw-text-sm tw-text-gray-600">학습 평점지수 : </div>
+                        <div className="tw-text-sm tw-text-gray-600">3.7</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="tw-flex tw-justify-between tw-items-center border-white tw-rounded-full tw-p-5 tw-bg-[#F3F9FF]">
+                    <span className="tw-text-sm tw-font-bold tw-text-gray-700">내 점수</span>
+                    <div className="tw-flex tw-items-center tw-gap-2">
+                      <div className="tw-w-40 tw-h-2 tw-bg-gray-200 tw-rounded-full">
+                        <div className="tw-w-[50%] tw-h-full tw-bg-blue-500 tw-rounded-full"></div>
+                      </div>
+                    </div>
+                    <div className="tw-flex tw-items-center tw-gap-2">
+                      <span className="tw-text-sm tw-font-medium">100/100</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 학습 총평 피드백 */}
+            <div className="tw-mb-6">
+              <div className="tw-text-blue-600 tw-text-base tw-font-bold tw-mb-3">학습 총평 피드백</div>
+              <div className="tw-rounded-lg">
+                <p className="tw-text-base tw-text-gray-700 tw-leading-relaxed">
+                  학습자님은 이번 학습에서 뛰어난 개념적 이해 능력과 높은 분석적 사고를 보여 주었습니다. 특히 정의 및
+                  개념적인 이해 부분에서 뛰어난 실력을 보여주었고, 알부 구성요소 분석 능력 또한 뛰어났습니다. 다만, 일부
+                  답변에서 보다 구체적인 설명을 통해 응답하시는 뿌리깊은 지식을 바탕으로 심화 학습을 진행하신다면, 더욱
+                  체계적이고 완성도 높은 퀴즈 해결 능력을 갖추실 수 있을 것입니다.
+                </p>
+              </div>
+            </div>
+
+            {/* 강점 */}
+            <div className="tw-mb-6">
+              <div className="tw-text-blue-600 tw-text-base tw-font-bold tw-mb-3">강점</div>
+              <div className="tw-space-y-2">
+                <p className="tw-text-base tw-text-gray-700">
+                  • 핵실 개념(예: Pod, Node, Master 등)의 정의를 정확히 장악되어 있는 시도
+                </p>
+                <p className="tw-text-base tw-text-gray-700">
+                  • 기술 용어 사용에 대한 익숙함 (예: 오브젝트의이션, 클러스터, API Server 등)
+                </p>
+                <p className="tw-text-base tw-text-gray-700">
+                  • 서술형 문장 구성의 우수성 - 비전문자도 이해할 수 있을 정도 명확함
+                </p>
+              </div>
+            </div>
+
+            {/* 약점 */}
+            <div className="tw-mb-6">
+              <div className="tw-text-blue-600 tw-text-base tw-font-bold tw-mb-3">약점</div>
+              <div className="tw-space-y-2">
+                <p className="tw-text-base tw-text-gray-700">
+                  • 문체에서 요구하는 "비교", "단계", "예제 구별" 등을 명확히 서술하지 못한 사이가 저차 분될
+                </p>
+                <p className="tw-text-base tw-text-gray-700">
+                  • 일부 용어 간 구체적인 예시와 실제 상태를 위하는 하고 있지 는 찾라를 생각로 있었음
+                </p>
+                <p className="tw-text-base tw-text-gray-700">
+                  • Kubernetes 구성요소 간의 종체적인 술셀나 레시시트 감히라는 케이피니트가 필뤄던 부답이 있상됨
+                </p>
+              </div>
+            </div>
+
+            {/* 학습 추천 */}
+            <div className="tw-mb-6">
+              <div className="tw-text-blue-600 tw-text-base tw-font-bold tw-mb-3">학습 추천</div>
+              <div className="tw-space-y-2">
+                <p className="tw-text-base tw-text-gray-700">
+                  • Kubernetes 전체 구조를 시각적으로 이해할 수 있는 아키텍처 다이어그램 학습
+                </p>
+                <p className="tw-text-base tw-text-gray-700 tw-ml-4">
+                  <a
+                    href="https://doublepe.monday.com/boards/5349177278/pulses/9235906161"
+                    className="tw-text-blue-500 tw-underline"
+                  >
+                    https://doublepe.monday.com/boards/5349177278/pulses/9235906161
+                  </a>
+                </p>
+                <p className="tw-text-base tw-text-gray-700">
+                  • kubectl 명령어를 활용한 실습을 통해 구성 요소를 설치 학습하고 개별적 연관
+                </p>
+                <p className="tw-text-base tw-text-gray-700 tw-ml-4">
+                  <a
+                    href="https://doublepe.monday.com/boards/6349177278/pulses/9235906161"
+                    className="tw-text-blue-500 tw-underline"
+                  >
+                    https://doublepe.monday.com/boards/6349177278/pulses/9235906161
+                  </a>
+                </p>
+                <p className="tw-text-base tw-text-gray-700">
+                  • "Pod은 왜 컨테이너보다 상위 단위를 쓰는가?" 같은 응용상 질문에 대한 사고 훈련
+                </p>
+              </div>
+            </div>
+
+            {/* 개별 퀴즈 피드백 요약 */}
+            <div className="tw-text-black tw-text-base tw-font-bold tw-mb-3">개별 퀴즈 피드백 요약</div>
+            <div className="tw-mb-4">
+              <div className="border tw-border-gray-200 tw-rounded-lg tw-bg-white">
+                <div className="tw-flex tw-justify-between tw-items-center border-bottom tw-px-4">
+                  <div className="tw-flex tw-items-center tw-gap-3 tw-p-4">
+                    <span className="tw-text-lg tw-font-bold tw-text-black">10회</span>
+                    <span className="tw-text-sm tw-text-gray-600">
+                      10.03 (목) Kubernetes 구성요소의 역할에 대해서 설명하세요. (Master, Node, Pod 등)
+                    </span>
+                  </div>
+                  <span className="tw-text-xs tw-text-gray-500 tw-cursor-pointer tw-flex tw-items-center">
+                    자세히보기
+                    <svg className="tw-w-3 tw-h-3 tw-ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </span>
+                </div>
+
+                <div className="tw-bg-[#F6F7FB] tw-p-6">
+                  <div className="tw-mb-6">
+                    <div className="tw-flex tw-items-center tw-mb-2">
+                      <span className="tw-text-sm tw-font-medium tw-text-gray-700">평점(4.5/5)</span>
+                    </div>
+                    <div className="tw-w-64">
+                      <div className="tw-bg-gray-200 tw-rounded-full tw-h-2">
+                        <div className="tw-bg-blue-500 tw-h-2 tw-rounded-full" style={{ width: '90%' }}></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Feedback Summary */}
+                  <div>
+                    <div className="tw-text-sm tw-font-medium tw-text-gray-700 tw-mb-3">피드백 요약</div>
+                    <ul className="tw-space-y-2">
+                      <li className="tw-flex tw-items-start">
+                        <div className="tw-w-1.5 tw-h-1.5 tw-bg-gray-400 tw-rounded-full tw-mt-2 tw-mr-3 tw-flex-shrink-0"></div>
+                        <span className="tw-text-sm tw-text-gray-600">정의는 잘 기술됨.</span>
+                      </li>
+                      <li className="tw-flex tw-items-start">
+                        <div className="tw-w-1.5 tw-h-1.5 tw-bg-gray-400 tw-rounded-full tw-mt-2 tw-mr-3 tw-flex-shrink-0"></div>
+                        <span className="tw-text-sm tw-text-gray-600">질문 핵심인 "구성요소의 역할"이 빠짐.</span>
+                      </li>
+                      <li className="tw-flex tw-items-start">
+                        <div className="tw-w-1.5 tw-h-1.5 tw-bg-gray-400 tw-rounded-full tw-mt-2 tw-mr-3 tw-flex-shrink-0"></div>
+                        <span className="tw-text-sm tw-text-gray-600">
+                          구성요소별 설명을 덧붙이면 훨씬 완성도 있는 답안이 됩니다.
+                        </span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </MentorsModal>
     </div>
   );

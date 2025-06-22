@@ -114,6 +114,13 @@ function CustomApp({ Component, pageProps = {}, session }: AppPropsWithLayout) {
         {/* <meta name="viewport" content="width=1200" /> */}
         <link rel="shortcut icon" href="#" />
         <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/icons/favicon-16x16.png" />
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+        <link
+          rel="stylesheet"
+          as="style"
+          crossOrigin=""
+          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"
+        />
         {/* <script src="https://js.bootpay.co.kr/bootpay-4.2.6.min.js" type="application/javascript"></script> */}
         {/* Global Site Tag (gtag.js) - Google Analytics */}
       </Head>
