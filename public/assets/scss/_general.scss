@@ -3,23 +3,58 @@
 //
 
 body {
-  font-family: "Noto Sans", "Open Sans", sans-serif;
-    //overflow-x: hidden !important;
-    font-size: $font-size-base;
-    color: $black;
+  font-family:
+    'Pretendard Variable',
+    Pretendard,
+    -apple-system,
+    BlinkMacSystemFont,
+    system-ui,
+    Roboto,
+    'Helvetica Neue',
+    'Segoe UI',
+    'Apple SD Gothic Neo',
+    'Noto Sans KR',
+    'Malgun Gothic',
+    sans-serif;
+  //overflow-x: hidden !important;
+  font-size: $font-size-base;
+  color: $black;
 }
-h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
-  font-family: "Noto Sans", "Open Sans", sans-serif;
-    line-height: 1.5;
-    font-weight: 600;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+  font-family:
+    'Pretendard Variable',
+    Pretendard,
+    -apple-system,
+    BlinkMacSystemFont,
+    system-ui,
+    Roboto,
+    'Helvetica Neue',
+    'Segoe UI',
+    'Apple SD Gothic Neo',
+    'Noto Sans KR',
+    'Malgun Gothic',
+    sans-serif;
+  line-height: 1.5;
+  font-weight: 600;
 }
 ::selection {
-    background: rgba($primary, 0.9);
-    color: $white;
+  background: rgba($primary, 0.9);
+  color: $white;
 }
 a {
-    text-decoration: none !important;
+  text-decoration: none !important;
 }
 p {
-    line-height: 1.6;
+  line-height: 1.6;
 }

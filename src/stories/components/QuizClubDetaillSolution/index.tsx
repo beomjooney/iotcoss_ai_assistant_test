@@ -1520,13 +1520,34 @@ const QuizClubDetaillSolution = ({
             </div>
 
             {/* 개별 퀴즈 피드백 요약 */}
-            <div className="tw-text-black tw-text-base tw-font-bold tw-mb-3">개별 퀴즈 피드백 요약</div>
+            <div
+              className="tw-text-black tw-text-base tw-font-bold tw-mb-3"
+              style={{
+                fontFamily: 'Pretendard Variable, Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif',
+              }}
+            >
+              개별 퀴즈 피드백 요약
+            </div>
             <div className="tw-mb-4">
               <div className="border tw-border-gray-200 tw-rounded-lg tw-bg-white">
                 <div className="tw-flex tw-justify-between tw-items-center border-bottom tw-px-4">
                   <div className="tw-flex tw-items-center tw-gap-3 tw-p-4">
-                    <span className="tw-text-lg tw-font-bold tw-text-black">10회</span>
-                    <span className="tw-text-sm tw-text-gray-600">
+                    <span
+                      className="tw-text-lg tw-font-bold tw-text-black"
+                      style={{
+                        fontFamily:
+                          'Pretendard Variable, Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif',
+                      }}
+                    >
+                      10회
+                    </span>
+                    <span
+                      className="tw-text-sm tw-text-gray-600"
+                      style={{
+                        fontFamily:
+                          'Pretendard Variable, Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif',
+                      }}
+                    >
                       10.03 (목) Kubernetes 구성요소의 역할에 대해서 설명하세요. (Master, Node, Pod 등)
                     </span>
                   </div>
