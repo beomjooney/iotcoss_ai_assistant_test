@@ -6,7 +6,12 @@ const vhost = require('vhost');
 const port = process.env.NEXT_PUBLIC_PORT || 3001;
 const dev = process.env.NODE_ENV !== 'production';
 
-const app = next({ dev });
+const app = next({
+  dev,
+  // 개발 서버 성능 최적화
+  customServer: true,
+  quiet: false, // 로그 출력 활성화
+});
 const handle = app.getRequestHandler();
 
 app.prepare().then(() => {
