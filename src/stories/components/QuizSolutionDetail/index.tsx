@@ -287,22 +287,13 @@ BannerProps) => {
         return;
       }
 
-      const formData = new FormData();
-      formData.append('postAnswer', postIntroductionMessage);
-      formData.append('urls', inputData.toString());
-      fileList.forEach((file, index) => {
-        formData.append('files', file);
-      });
-
-      onAnswerUpdate({
-        formData,
-        club: data?.clubSequence,
-        quiz: data?.quizSequence,
-      });
+      // 팝업창 띄우기
+      setShowSubmitModal(true);
     }
   };
 
   const [fileList, setFileList] = useState([]);
+  const [showSubmitModal, setShowSubmitModal] = useState(false);
 
   const handleDeleteFile = index => {
     setFileList(prevFileList => prevFileList.filter((_, i) => i !== index));
@@ -311,6 +302,30 @@ BannerProps) => {
   const handleComprehension = () => {
     setPostIntroductionMessage(introductionMessage);
     setActiveStep(prevActiveStep => prevActiveStep + 1);
+  };
+
+  const handleFinalSubmit = () => {
+    const inputData = inputList.map(input => input.value).filter(value => value !== '');
+
+    const formData = new FormData();
+    formData.append('postAnswer', postIntroductionMessage);
+    formData.append('urls', inputData.toString());
+    fileList.forEach((file, index) => {
+      formData.append('files', file);
+    });
+
+    onAnswerUpdate({
+      formData,
+      club: data?.clubSequence,
+      quiz: data?.quizSequence,
+    });
+
+    setShowSubmitModal(false);
+    alert('최종답변이 제출되었습니다.');
+  };
+
+  const handleModalClose = () => {
+    setShowSubmitModal(false);
   };
   return (
     <>
@@ -812,6 +827,36 @@ BannerProps) => {
           </div>
         </div>
       </Mobile>
+
+      {/* 최종답변 제출 확인 팝업 */}
+      {showSubmitModal && (
+        <div className="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-50 tw-flex tw-items-center tw-justify-center tw-z-50">
+          <div className="tw-bg-white tw-rounded-xl tw-py-20 tw-max-w-3xl tw-w-full tw-mx-4 tw-shadow-2xl">
+            <div className="tw-text-center">
+              <div className="tw-text-2xl tw-font-bold tw-text-gray-900 tw-mb-4">최종답변을 제출하시겠습니까?</div>
+              <div className="tw-text-black tw-mb-8 tw-leading-relaxed tw-text-lg tw-py-20">
+                제출된 답변은 퀴즈클럽 교수자님께 전달되며, 이후 피드백을 My학습방에서 확인하실 수 있습니다.
+                <br />
+                최종답변을 제출한 후, 교수님 및 스터디팀을 받을 수 있습니다.
+              </div>
+              <div className="tw-flex tw-gap-4 tw-justify-center">
+                <button
+                  onClick={handleModalClose}
+                  className="tw-px-8 tw-py-3 tw-bg-gray-200 tw-text-gray-700 tw-rounded-md tw-font-medium tw-hover:bg-gray-300 tw-transition-colors tw-w-[150px]"
+                >
+                  취소
+                </button>
+                <button
+                  onClick={handleFinalSubmit}
+                  className="tw-px-8 tw-py-3 tw-bg-blue-500 tw-text-white tw-rounded-md tw-font-medium tw-hover:bg-blue-600 tw-transition-colors tw-w-[150px]"
+                >
+                  제출하기
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

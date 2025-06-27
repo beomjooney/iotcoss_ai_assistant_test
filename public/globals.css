@@ -29,7 +29,7 @@
       'Apple Color Emoji',
       'Segoe UI Emoji',
       'Segoe UI Symbol',
-      sans-serif;
+      sans-serif !important;
   }
 
   html {
@@ -48,7 +48,7 @@
       'Apple Color Emoji',
       'Segoe UI Emoji',
       'Segoe UI Symbol',
-      sans-serif;
+      sans-serif !important;
   }
 
   body {
@@ -67,7 +67,7 @@
       'Apple Color Emoji',
       'Segoe UI Emoji',
       'Segoe UI Symbol',
-      sans-serif;
+      sans-serif !important;
   }
 
   /* default theme */
@@ -234,5 +234,24 @@
   }
   .rizzui-select-options {
     z-index: 9999 !important;
+  }
+
+  /* 가로 스크롤바 스타일 */
+  .tw-overflow-x-scroll::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .tw-overflow-x-scroll::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+  }
+
+  .tw-overflow-x-scroll::-webkit-scrollbar-thumb {
+    background: #94a3b8;
+    border-radius: 4px;
+  }
+
+  .tw-overflow-x-scroll::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
   }
 }

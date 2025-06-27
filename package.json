@@ -94,7 +94,6 @@
   },
   "scripts": {
     "dev": "env-cmd -f env/.env.local node server.js",
-    "dev:fast": "env-cmd -f env/.env.local next dev -p 3001 --turbo",
     "dev:simple": "env-cmd -f env/.env.local next dev -p 3001",
     "dong": "env-cmd -f env/.env.dong node server.js",
     "prod": "env-cmd -f env/.env.prod node server.js",
