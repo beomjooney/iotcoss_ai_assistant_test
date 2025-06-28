@@ -124,6 +124,7 @@ export function LectureOpenTemplate() {
   const [isPublic, setIsPublic] = useState('0001');
   const [isQuestionsPublic, setIsQuestionsPublic] = useState('false');
   const [enableAiQuestion, setEnableAiQuestion] = useState('true');
+  const [includeReferenceToAnswer, setIncludeReferenceToAnswer] = useState('true');
   const [studyKeywords, setStudyKeywords] = useState([]);
   const [forbiddenKeywords, setForbiddenKeywords] = useState([]);
   const [studySubject, setStudySubject] = useState('');
@@ -319,6 +320,7 @@ export function LectureOpenTemplate() {
       setIsPublic(clubForm.isPublic ? '0001' : '0002');
       setIsQuestionsPublic(clubForm.isQuestionsPublic ? 'true' : 'false');
       setEnableAiQuestion(clubForm.enableAiQuestion ? 'true' : 'false');
+      setIncludeReferenceToAnswer(clubForm.includeReferenceToAnswer ? 'true' : 'false');
       setStudyKeywords(clubForm.studyKeywords || []);
       setStudySubject(clubForm.studySubject || '');
       setStudyCycleNum(clubForm.studyCycle || []);
@@ -652,6 +654,11 @@ export function LectureOpenTemplate() {
   const handleEnableAiQuestion = (event: React.MouseEvent<HTMLElement>, newFormats: string) => {
     if (newFormats !== null) {
       setEnableAiQuestion(newFormats);
+    }
+  };
+  const handleAnswerReference = (event: React.MouseEvent<HTMLElement>, newFormats: string) => {
+    if (newFormats !== null) {
+      setIncludeReferenceToAnswer(newFormats);
     }
   };
 
@@ -1261,6 +1268,7 @@ export function LectureOpenTemplate() {
       useCurrentProfileImage: agreements,
       isQuestionsPublic: isQuestionsPublic,
       enableAiQuestion: enableAiQuestion,
+      includeReferenceToAnswer: includeReferenceToAnswer,
       instructorProfileImageUrl: previewProfile,
       forbiddenWords: forbiddenKeywords,
       studyCycle: studyCycleNum,
@@ -1273,6 +1281,7 @@ export function LectureOpenTemplate() {
     formData.append('clubForm.jobGroups', clubFormParams.jobGroups.toString());
     formData.append('clubForm.isQuestionsPublic', clubFormParams.isQuestionsPublic);
     formData.append('clubForm.enableAiQuestion', clubFormParams.enableAiQuestion);
+    formData.append('clubForm.includeReferenceToAnswer', clubFormParams.includeReferenceToAnswer);
     formData.append('clubForm.jobs', clubFormParams.jobs.toString());
     formData.append('clubForm.jobLevels', clubFormParams.jobLevels.toString());
     formData.append('clubForm.startAt', clubFormParams.startAt);
@@ -1556,8 +1565,8 @@ export function LectureOpenTemplate() {
                         index < activeStep
                           ? 'tw-bg-gray-300 tw-text-white'
                           : index === activeStep
-                          ? 'tw-bg-blue-600  tw-text-white'
-                          : 'tw-bg-gray-300 tw-text-white'
+                            ? 'tw-bg-blue-600  tw-text-white'
+                            : 'tw-bg-gray-300 tw-text-white'
                       }`}
                     ></div>
                     <div
@@ -1565,8 +1574,8 @@ export function LectureOpenTemplate() {
                         index < activeStep
                           ? ' tw-text-gray-400'
                           : index === activeStep
-                          ? ' tw-text-black tw-font-bold'
-                          : ' tw-text-gray-400'
+                            ? ' tw-text-black tw-font-bold'
+                            : ' tw-text-gray-400'
                       }`}
                     >
                       {step}
@@ -1959,6 +1968,62 @@ export function LectureOpenTemplate() {
                             <ToggleButton
                               classes={{ selected: classes.selected }}
                               value="true"
+                              className="tw-ring-1 tw-ring-slate-900/10"
+                              style={{
+                                width: 70,
+                                borderRadius: '5px',
+                                borderLeft: '0px',
+                                margin: '5px',
+                                height: '35px',
+                                border: '0px',
+                              }}
+                              sx={{
+                                '&.Mui-selected': {
+                                  backgroundColor: '#000',
+                                  color: '#fff',
+                                },
+                              }}
+                            >
+                              OFF
+                            </ToggleButton>
+                          </ToggleButtonGroup>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2">답변레퍼런스 포함여부</div>
+                      <div>
+                        <div className="tw-flex tw-items-center tw-gap-2 tw-mt-1">
+                          <ToggleButtonGroup
+                            value={includeReferenceToAnswer}
+                            onChange={handleAnswerReference}
+                            exclusive
+                            aria-label=""
+                          >
+                            <ToggleButton
+                              classes={{ selected: classes.selected }}
+                              value="true"
+                              className="tw-ring-1 tw-ring-slate-900/10"
+                              style={{
+                                width: 70,
+                                borderRadius: '5px',
+                                borderLeft: '0px',
+                                margin: '5px',
+                                height: '35px',
+                                border: '0px',
+                              }}
+                              sx={{
+                                '&.Mui-selected': {
+                                  backgroundColor: '#000',
+                                  color: '#fff',
+                                },
+                              }}
+                            >
+                              ON
+                            </ToggleButton>
+                            <ToggleButton
+                              classes={{ selected: classes.selected }}
+                              value="false"
                               className="tw-ring-1 tw-ring-slate-900/10"
                               style={{
                                 width: 70,

@@ -64,7 +64,7 @@ export function HomeSejongTemplate({ logged = false, tenantName = '' }: HomeSejo
                     }}
                     className=" tw-cursor-pointer tw-w-36 md:tw-w-48 tw-h-12 md:tw-h-20"
                   >
-                    <div className="tw-bg-white/10 tw-backdrop-blur-[20px] border tw-px-3 tw-py-3 tw-rounded-lg tw-absolute tw-left-[105px] md:tw-left-[250px] tw-top-[167px] md:tw-top-[235px] tw-text-xs md:tw-text-lg tw-text-left tw-text-white">
+                    <div className="tw-bg-white/10 tw-backdrop-blur-[20px] border tw-px-3 tw-py-3 tw-rounded-lg tw-absolute tw-left-[105px] md:tw-left-[240px] tw-top-[167px] md:tw-top-[235px] tw-text-xs md:tw-text-lg tw-text-left tw-text-white">
                       <div className="tw-flex tw-items-center">
                         <img
                           className=" tw-rounded-full tw-w-8 md:tw-w-12 tw-h-8 md:tw-h-12"

@@ -184,45 +184,6 @@ export function AdminTemplate({ children }: AdminTemplateProps) {
               </div>
 
               <ul className={cx('lnb-content', 'tw-px-5', 'tw-pt-0 tw-pb-5')}>
-                {/* {menus.map(menu => (
-                  <Accordion
-                    key={menu.no}
-                    defaultExpanded
-                    elevation={0}
-                    sx={{
-                      marginTop: '10px',
-                      '&:before': {
-                        display: 'none',
-                      },
-                    }}
-                  >
-                    <AccordionSummary
-                      expandIcon={<ExpandMoreIcon />}
-                      sx={{ backgroundColor: 'white', borderRadius: '20px', margin: '0px' }}
-                    >
-                      <Typography sx={{ flexGrow: 1, fontWeight: 'bold' }}>{menu.title}</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails sx={{ backgroundColor: '#fbfbfd' }}>
-                      <div className="tw-flex-col tw-items-start tw-justify-between tw-gap-5 tw-pl-4 tw-pr-1">
-                        {menu.sub.map(subMenu => (
-                          <div
-                            key={subMenu.no}
-                            className={cx(
-                              'tw-py-3 tw-mt-2 tw-text-black tw-flex tw-items-center tw-justify-between',
-                              { 'tw-font-bold tw-text-blue-500': currentSubMenu.title === subMenu.title }, // Add condition for bold and color change
-                            )}
-                            onClick={() => handleClick(subMenu.title, subMenu.link)}
-                            style={{ cursor: 'pointer' }} // Add pointer cursor for visual feedback
-                          >
-                            {subMenu.title}
-                            <span className={cx('ti-angle-right')} />
-                          </div>
-                        ))}
-                      </div>
-                    </AccordionDetails>
-                  </Accordion>
-                ))} */}
-
                 {menus.map(
                   menua =>
                     (menua.role === 'all' || (menua.role === 'use_quiz_club' && menu.use_quiz_club === true)) && (
@@ -256,7 +217,6 @@ export function AdminTemplate({ children }: AdminTemplateProps) {
                                 style={{ cursor: 'pointer' }} // Add pointer cursor for visual feedback
                               >
                                 {subMenu.title}
-                                <span className={cx('ti-angle-right')} />
                               </div>
                             ))}
                           </div>

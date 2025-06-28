@@ -325,6 +325,31 @@ export const useQuizGetAIAnswerAll = (params, onSuccess?: (data: any) => void, o
   });
 };
 
+// AI 피드백 조회 전용 훅
+export const useQuizAIFeedback = (params, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
+  console.log('useQuizAIFeedback params:', params);
+  return useQuery<any, Error>(
+    ['quiz-ai-feedback', params.club, params.quiz, params.memberUUID],
+    () => {
+      console.log('API 호출 시작:', params);
+      return quizGetAIAnswerGet(params);
+    },
+    {
+      onSuccess: data => {
+        console.log('API 응답 성공:', data);
+        onSuccess?.(data);
+      },
+      onError: error => {
+        console.error('API 응답 에러:', error);
+        onError?.(error);
+      },
+      refetchOnWindowFocus: false,
+      enabled: false,
+      retry: false,
+    },
+  );
+};
+
 export const useQuizAnswerMemberDetail = (
   params,
   onSuccess?: (data: any) => void,

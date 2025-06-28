@@ -271,6 +271,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
     console.log('clubForm.enableAiQuestion', clubForm.enableAiQuestion);
     setIsQuestionsPublic(clubForm.isQuestionsPublic ? 'true' : 'false');
     setEnableAiQuestion(clubForm.enableAiQuestion ? 'true' : 'false');
+    setIncludeReferenceToAnswer(clubForm.includeReferenceToAnswer ? 'true' : 'false');
 
     console.log('load temp', clubForm.studyKeywords);
     setStudyKeywords(clubForm.studyKeywords || []);
@@ -457,6 +458,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
   const [isPublic, setIsPublic] = useState('0001');
   const [isQuestionsPublic, setIsQuestionsPublic] = useState('true');
   const [enableAiQuestion, setEnableAiQuestion] = useState('false');
+  const [includeReferenceToAnswer, setIncludeReferenceToAnswer] = useState('true');
   const [recommendLevels, setRecommendLevels] = useState([]);
   const [startDay, setStartDay] = React.useState<Dayjs | null>(dayjs());
   const [endDay, setEndDay] = React.useState<Dayjs | null>(dayjs().add(1, 'day'));
@@ -807,6 +809,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
       aiConversationLanguage: lectureAILanguage || '',
       isQuestionsPublic: isQuestionsPublic,
       enableAiQuestion: enableAiQuestion,
+      includeReferenceToAnswer: includeReferenceToAnswer,
       forbiddenWords: forbiddenKeywords || [],
     };
     onLectureModifyAI({ clubFormParams, id: selectedClub?.clubSequence });
@@ -1117,6 +1120,11 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
   const handleEnableAiQuestion = (event: React.MouseEvent<HTMLElement>, newFormats: string) => {
     if (newFormats !== null) {
       setEnableAiQuestion(newFormats);
+    }
+  };
+  const handleIncludeReferenceToAnswer = (event: React.MouseEvent<HTMLElement>, newFormats: string) => {
+    if (newFormats !== null) {
+      setIncludeReferenceToAnswer(newFormats);
     }
   };
 
@@ -2839,6 +2847,62 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                       <ToggleButton
                         classes={{ selected: classes.selected }}
                         value="true"
+                        className="tw-ring-1 tw-ring-slate-900/10"
+                        style={{
+                          width: 70,
+                          borderRadius: '5px',
+                          borderLeft: '0px',
+                          margin: '5px',
+                          height: '35px',
+                          border: '0px',
+                        }}
+                        sx={{
+                          '&.Mui-selected': {
+                            backgroundColor: '#000',
+                            color: '#fff',
+                          },
+                        }}
+                      >
+                        OFF
+                      </ToggleButton>
+                    </ToggleButtonGroup>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2">답변 참조 포함 여부</div>
+                <div>
+                  <div className="tw-flex tw-items-center tw-gap-2 tw-mt-1">
+                    <ToggleButtonGroup
+                      value={includeReferenceToAnswer}
+                      onChange={handleIncludeReferenceToAnswer}
+                      exclusive
+                      aria-label=""
+                    >
+                      <ToggleButton
+                        classes={{ selected: classes.selected }}
+                        value="true"
+                        className="tw-ring-1 tw-ring-slate-900/10"
+                        style={{
+                          width: 70,
+                          borderRadius: '5px',
+                          borderLeft: '0px',
+                          margin: '5px',
+                          height: '35px',
+                          border: '0px',
+                        }}
+                        sx={{
+                          '&.Mui-selected': {
+                            backgroundColor: '#000',
+                            color: '#fff',
+                          },
+                        }}
+                      >
+                        ON
+                      </ToggleButton>
+                      <ToggleButton
+                        classes={{ selected: classes.selected }}
+                        value="false"
                         className="tw-ring-1 tw-ring-slate-900/10"
                         style={{
                           width: 70,
