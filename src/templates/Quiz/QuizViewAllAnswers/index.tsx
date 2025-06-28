@@ -627,7 +627,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
 
   return (
     <div className={cx('seminar-detail-container')}>
-      <div className={cx('container')}>
+      <div className={cx('container')} style={{ minHeight: '100vh' }}>
         <div className="tw-pt-[35px]">
           <div className="tw-w-[980px] tw-h-[77px] tw-relative tw-overflow-hidden border-t-0 border-r-0 border-b-[0.88px] tw-border-l-0 tw-border-[#e9ecf2]">
             <div className="tw-flex tw-justify-start tw-items-start tw-absolute tw-left-0 tw-top-3.5 tw-gap-[3.5px]">
