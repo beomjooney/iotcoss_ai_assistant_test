@@ -30,6 +30,7 @@ import {
   useQuizGetAIAnswerGet,
   useQuizGetAIAnswerAll,
   useQuizFileDownload,
+  useQuizAIFeedback,
 } from 'src/services/quiz/quiz.queries';
 
 const cx = classNames.bind(styles);
@@ -57,6 +58,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
   const [quizParams, setQuizParams] = useState<any>({});
   const [quizParamsAll, setQuizParamsAll] = useState<any>({});
   const [quizSaveParams, setQuizSaveParams] = useState<any>({});
+  const [aiEvaluationParams, setAiEvaluationParams] = useState<any>({});
   const [totalPage, setTotalPage] = useState(1);
   const [selectedQuiz, setSelectedQuiz] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -68,6 +70,9 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
   const [memberUUID, setMemberUUID] = useState('');
   let [key, setKey] = useState('');
   let [fileName, setFileName] = useState('');
+  const [aiFeedbackData, setAiFeedbackData] = useState<any>([]);
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
+  const [isLoadingFeedback, setIsLoadingFeedback] = useState(false);
 
   const { mutate: onAIQuizAnswer, isError, isSuccess: answerSuccess, data: aiQuizAnswerData } = useAIQuizAnswerList();
 
@@ -205,12 +210,36 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     setClubQuizGetThreads(data);
   });
 
+  // AI 피드백 데이터 조회
+  const { refetch: refetchAIEvaluation } = useQuizAIFeedback(
+    aiEvaluationParams,
+    data => {
+      console.log('AI Evaluation data:', data);
+      setAiFeedbackData(data);
+      setIsLoadingFeedback(false);
+      setIsFeedbackModalOpen(true);
+    },
+    error => {
+      console.error('AI Evaluation error:', error);
+      setIsLoadingFeedback(false);
+      alert('피드백 데이터를 불러오는데 실패했습니다.');
+    },
+  );
+
   useEffect(() => {
     if (isErrorQuizGetAnswerGet) {
       alert('AI피드백 초안생성에 실패하였습니다.');
       setIsLoadingAI(false);
     }
   }, [isErrorQuizGetAnswerGet]);
+
+  useDidMountEffect(() => {
+    if (aiEvaluationParams.club && aiEvaluationParams.quiz && aiEvaluationParams.memberUUID) {
+      console.log('Calling API with params:', aiEvaluationParams);
+      setIsLoadingFeedback(true);
+      refetchAIEvaluation();
+    }
+  }, [aiEvaluationParams]);
 
   const {
     isFetched: isQuizGetanswerAll,
@@ -350,6 +379,8 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     setFileList([]);
     setIsHideAI(true);
     setMemberUUID(memberUUID);
+    setAiFeedbackData(null);
+    setIsLoadingFeedback(false);
     setQuizParams({
       club: id,
       quiz: selectedQuiz?.quizSequence,
@@ -361,6 +392,13 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
       quizSequence: selectedQuiz?.quizSequence,
       memberUUID: memberUUID,
     });
+
+    setAiEvaluationParams({
+      club: id,
+      quiz: selectedQuiz?.quizSequence,
+      memberUUID: memberUUID, // 실제 memberId 사용
+    });
+
     // refetchQuizAnswerGet();
   };
 
@@ -711,14 +749,22 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
             </div>
             <div className="tw-flex tw-justify-end tw-gap-2">
               <button
-                className="tw-w-[150px] tw-bg-black max-lg:tw-mr-1  tw-rounded-md tw-text-sm tw-text-white tw-py-2.5 tw-px-4"
+                className="tw-min-w-[150px] tw-bg-black max-lg:tw-mr-1 tw-rounded-md tw-text-sm tw-text-white tw-py-2.5 tw-px-4 disabled:tw-opacity-70 disabled:tw-cursor-not-allowed"
+                disabled={isLoadingAIAll}
                 onClick={() => {
                   onAIQuizAnswerEvaluation(quizParamsAll);
                   handleClickTime();
                   setIsLoadingAIAll(true);
                 }}
               >
-                {isLoadingAIAll ? <CircularProgress color="info" size={18} /> : '일괄 AI 채점/피드백'}
+                {isLoadingAIAll ? (
+                  <div className="tw-flex tw-items-center tw-justify-center">
+                    <CircularProgress color="inherit" size={18} />
+                    <span className="tw-ml-2">처리 중...</span>
+                  </div>
+                ) : (
+                  '일괄 AI 채점/피드백'
+                )}
               </button>
             </div>
 
@@ -811,9 +857,14 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
           isOpen={isModalOpen}
           onAfterClose={() => setIsModalOpen(false)}
         >
-          {isQuizGetanswer && (
-            <div className="tw-rounded-xl tw-pb-10">
-              <div className="tw-bg-[#F6F7FB] tw-flex tw-items-center tw-px-4 max-lg:tw-p-3 tw-py-4 tw-rounded-t-xl">
+          {!isQuizGetanswer ? (
+            <div className="tw-flex tw-justify-center tw-items-center tw-py-20">
+              <CircularProgress size={40} />
+              <span className="tw-ml-3 tw-text-gray-600">데이터를 불러오는 중...</span>
+            </div>
+          ) : (
+            <div className="tw-rounded-xl tw-pb-10 tw-space-y-5">
+              <div className="border tw-flex tw-items-center tw-px-4 max-lg:tw-p-3 tw-py-4 tw-rounded-lg">
                 <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                   <img
                     className="tw-w-10 tw-h-10 border tw-rounded-full"
@@ -825,125 +876,110 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                   <div className="tw-font-bold tw-text-black">{clubQuizThreads?.question}</div>
                 </div>
               </div>
-              {clubQuizThreads?.clubQuizThreads?.map((item, index) => {
-                const isLastItem = index === clubQuizThreads.clubQuizThreads.length - 1;
-                return (
-                  <div
-                    key={index}
-                    className={`border-bottom border-left border-right border-secondary tw-bg-white tw-flex tw-p-3 ${
-                      isLastItem ? 'tw-rounded-bl-xl tw-rounded-br-xl' : ''
-                    }`}
-                  >
-                    <div className="tw-w-1/12 tw-pt-3 tw-flex tw-flex-col tw-items-center">
-                      <svg
-                        width={24}
-                        height={25}
-                        viewBox="0 0 24 25"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-6 h-6 relative"
-                        preserveAspectRatio="none"
-                      >
-                        <path
-                          d="M6 6.32422V12.3242C6 13.1199 6.31607 13.8829 6.87868 14.4455C7.44129 15.0081 8.20435 15.3242 9 15.3242H19M19 15.3242L15 11.3242M19 15.3242L15 19.3242"
-                          stroke="#c0c3c9"
-                          strokeWidth={2}
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </div>
-                    <div className="tw-w-1.5/12  tw-py-2 tw-flex tw-flex-col">
-                      {item?.threadType === '0003' ? (
-                        <img className="tw-rounded-full tw-w-14 tw-h-14" src="/assets/images/main/chatbot.png" />
-                      ) : (
-                        <img
-                          className="tw-rounded-full tw-w-10 tw-h-10 "
-                          src={item?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
-                        />
-                      )}
-                    </div>
-                    <div className="tw-flex-auto tw-w-9/12 tw-px-3">
-                      <div className="tw-py-2">
-                        <div className="tw-font-medium tw-text-[#9ca5b2] tw-text-sm">
-                          <span
-                            className={`tw-font-bold ${
-                              item?.threadType === '0003' ? 'tw-text-red-500' : 'tw-text-black'
-                            }`}
-                          >
-                            {item?.threadType === '0001' && '사전답변'}
-                            {item?.threadType === '0002' && '사후답변'}
-                            {item?.threadType === '0003' && 'AI피드백'}
-                            {item?.threadType === '0004' && '교수님 평가'}
-                          </span>
-                          <span className="tw-px-4">
-                            {item?.createdAt ? item.createdAt.replace('T', ' | ').split('.')[0] : ''}
-                          </span>
-
-                          {item?.threadType === '0003' && (
-                            <>
-                              <div className="tw-float-right tw-text-black">
-                                AI 채점 : <span className="tw-font-bold">{item?.gradingAi}</span>
-                              </div>
-                            </>
-                          )}
-
-                          {item?.threadType === '0004' && (
-                            <div className="tw-float-right">
-                              <div className="tw-float-right tw-text-black">
-                                교수 채점 : <span className="tw-font-bold">{item?.gradingFinal}</span>
-                              </div>
-                              <button
-                                onClick={() => handleUpdate()}
-                                className="tw-px-5 tw-underline tw-float-right tw-text-black"
-                              >
-                                수정하기
-                              </button>
-                            </div>
-                          )}
-                        </div>
+              {clubQuizThreads?.clubQuizThreads
+                ?.filter(item => item?.threadType !== '0003')
+                ?.map((item, index) => {
+                  const isLastItem = index === clubQuizThreads.clubQuizThreads.length - 1;
+                  return (
+                    <div
+                      key={index}
+                      className={`border tw-flex tw-p-3 tw-rounded-lg ${
+                        item?.threadType === '0001' || item?.threadType === '0002' ? 'tw-bg-[#f6f7fb]' : 'tw-bg-white'
+                      }`}
+                    >
+                      <div className="tw-w-1.5/12  tw-py-2 tw-flex tw-flex-col">
+                        {item?.threadType === '0003' ? (
+                          <img className="tw-rounded-full tw-w-14 tw-h-14" src="/assets/images/main/chatbot.png" />
+                        ) : (
+                          <img
+                            className="tw-rounded-full tw-w-10 tw-h-10 "
+                            src={item?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
+                          />
+                        )}
                       </div>
-                      <div
-                        className={`tw-font-medium tw-text-[#9ca5b2] tw-text-sm ${
-                          item?.threadType === '0003' ? 'tw-text-black' : ''
-                        }`}
-                      >
-                        {item?.text}
-                      </div>
+                      <div className="tw-flex-auto tw-w-9/12 tw-px-3">
+                        <div className="tw-py-2">
+                          <div className="tw-font-medium tw-text-[#9ca5b2] tw-text-base">
+                            <span
+                              className={`tw-font-bold ${
+                                item?.threadType === '0003' ? 'tw-text-red-500' : 'tw-text-black'
+                              }`}
+                            >
+                              {item?.threadType === '0001' && '사전답변'}
+                              {item?.threadType === '0002' && '사후답변'}
+                              {item?.threadType === '0003' && 'AI피드백'}
+                              {item?.threadType === '0004' && '교수님 평가'}
+                            </span>
+                            <span className="tw-px-4 tw-text-sm">
+                              {item?.createdAt ? item.createdAt.replace('T', ' | ').split('.')[0] : ''}
+                            </span>
 
-                      <div className="tw-flex  tw-py-2">
-                        <div className="tw-text-left tw-text-sm">
-                          <ul className="">
-                            {item?.contents?.map((file, index) => {
-                              // Skip rendering if file.url is null or undefined
-                              if (!file.url) return null;
-
-                              return (
-                                <div
-                                  onClick={() => {
-                                    let url = file.url;
-                                    // Ensure the URL is absolute
-                                    if (!/^https?:\/\//i.test(url)) {
-                                      // If the URL does not start with 'http://' or 'https://', prepend the base URL
-                                      url = new URL(url, window.location.origin).href;
-                                    }
-                                    console.log(url); // Log the corrected URL to the console
-                                    window.open(url, '_blank'); // Open the corrected URL in a new tab
-                                  }}
-                                  key={index}
-                                  className="tw-cursor-pointer tw-text-[#fca380] tw-underline tw-p-1 tw-mb-1"
-                                >
-                                  ㄴ지식컨텐츠 : {file.url}
+                            {item?.threadType === '0003' && (
+                              <>
+                                <div className="tw-float-right tw-text-black">
+                                  AI 채점 : <span className="tw-font-bold">{item?.gradingAi}</span>
                                 </div>
-                              );
-                            })}
-                          </ul>
-                        </div>
-                      </div>
+                              </>
+                            )}
 
-                      <div className="tw-text-sm tw-flex tw-items-center tw-gap-2">
-                        {item?.files?.length > 0 && (
-                          <div className="tw-flex ">
-                            <div className="tw-text-left tw-text-sm">
+                            {item?.threadType === '0004' && (
+                              <div className="tw-float-right">
+                                <div className="tw-float-right tw-text-black">
+                                  교수 채점 : <span className="tw-font-bold">{item?.gradingFinal}</span>
+                                </div>
+                                <button
+                                  onClick={() => handleUpdate()}
+                                  className="tw-px-5 tw-underline tw-float-right tw-text-black"
+                                >
+                                  수정하기
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        <div
+                          className={`tw-font-medium tw-text-[#9ca5b2] tw-text-sm ${
+                            item?.threadType === '0003' ? 'tw-text-black' : ''
+                          }`}
+                        >
+                          {item?.text}
+                        </div>
+
+                        <div className="tw-flex  tw-py-2">
+                          <div className="tw-text-left tw-text-sm">
+                            <ul className="">
+                              {item?.contents?.map((file, index) => {
+                                // Skip rendering if file.url is null or undefined
+                                if (!file.url) return null;
+
+                                return (
+                                  <div
+                                    onClick={() => {
+                                      let url = file.url;
+                                      // Ensure the URL is absolute
+                                      if (!/^https?:\/\//i.test(url)) {
+                                        // If the URL does not start with 'http://' or 'https://', prepend the base URL
+                                        url = new URL(url, window.location.origin).href;
+                                      }
+                                      console.log(url); // Log the corrected URL to the console
+                                      window.open(url, '_blank'); // Open the corrected URL in a new tab
+                                    }}
+                                    key={index}
+                                    className="tw-cursor-pointer tw-text-[#fca380] tw-underline tw-p-1 tw-mb-1"
+                                  >
+                                    ㄴ지식컨텐츠 : {file.url}
+                                  </div>
+                                );
+                              })}
+                            </ul>
+                          </div>
+                        </div>
+
+                        <div className="tw-text-sm tw-flex tw-items-center tw-justify-end tw-gap-2">
+                          {item?.files?.length > 0 && (
+                            <div className="tw-text-left tw-text-sm tw-flex tw-items-center tw-gap-2">
+                              <div className="tw-text-sm tw-font-medium tw-text-gray-500 tw-p-1">업로드 파일 : </div>
                               <ul className="">
                                 {item?.files?.map((file, index) => (
                                   <div
@@ -951,23 +987,23 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                                     onClick={() => {
                                       onFileDownload(file.key, file.name);
                                     }}
-                                    className="tw-underline tw-text-blue-500 tw-cursor-pointer tw-p-1  tw-mb-1"
+                                    className="tw-underline tw-text-blue-500 tw-cursor-pointer tw-p-1"
                                   >
-                                    ㄴ첨부된파일 : {file.name}
+                                    {file.name}
                                   </div>
                                 ))}
                               </ul>
                             </div>
-                          </div>
-                        )}
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+
               {isHideAI === true && (
                 // Check if the threadType is '0004' and return null to hide the div
-                <div>
+                <div className="border tw-p-5 tw-mt-5 tw-rounded-lg">
                   <div className="tw-py-5 tw-flex tw-items-center tw-gap-3 tw-text-sm tw-text-black">
                     <img src={user?.member?.profileImageUrl} className="tw-w-10 tw-h-10 border tw-rounded-full" />
                     <div className="tw-flex-grow">
@@ -978,9 +1014,17 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                           setIsLoadingAI(true);
                           // handleAIAnswerClick();
                         }}
-                        className="tw-w-[140px] tw-ml-3 tw-rounded tw-bg-black tw-text-white tw-text-sm tw-text-black tw-py-2 tw-px-4"
+                        disabled={isLoadingAI}
+                        className="tw-min-w-[140px] tw-ml-3 tw-rounded tw-bg-black tw-text-white tw-text-sm tw-py-2 tw-px-4 disabled:tw-opacity-70 disabled:tw-cursor-not-allowed"
                       >
-                        {isLoadingAI ? <CircularProgress color="info" size={18} /> : 'AI피드백 초안생성'}
+                        {isLoadingAI ? (
+                          <div className="tw-flex tw-items-center tw-justify-center">
+                            <CircularProgress color="inherit" size={18} />
+                            <span className="tw-ml-2">생성 중...</span>
+                          </div>
+                        ) : (
+                          'AI피드백 초안생성'
+                        )}
                       </button>
                     </div>
                     <div className="tw-ml-auto">점수 : </div>
@@ -1031,27 +1075,6 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                         지식콘텐츠 추가
                       </button>
                     </div>
-                    {/* <div className="tw-flex tw-items-center tw-gap-1">
-                      <svg
-                        width={17}
-                        height={15}
-                        viewBox="0 0 17 15"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="absolute left-0 top-1"
-                        preserveAspectRatio="none"
-                      >
-                        <path
-                          d="M13.7404 10.9501C14.4723 10.9501 15.1742 10.669 15.6917 10.1685C16.2093 9.66806 16.5 8.98929 16.5 8.28152C16.5 7.57376 16.2093 6.89499 15.6917 6.39452C15.1742 5.89406 14.4723 5.6129 13.7404 5.6129H12.9519C13.0669 5.11727 13.0687 4.60677 12.957 4.11054C12.8454 3.61432 12.6225 3.14209 12.3012 2.72082C11.9799 2.29956 11.5663 1.9375 11.0842 1.65532C10.6021 1.37314 10.0609 1.17637 9.49138 1.07625C8.92189 0.976118 8.33532 0.974593 7.76515 1.07176C7.19499 1.16892 6.6524 1.36287 6.16835 1.64254C5.19079 2.20735 4.51107 3.087 4.27872 4.08798C3.43817 4.05542 2.61153 4.29415 1.94033 4.76329C1.26913 5.23243 0.795119 5.90281 0.599459 6.65963C0.403799 7.41646 0.498659 8.21266 0.867798 8.91191C1.23694 9.61117 1.85739 10.17 2.62293 10.4927M8.22108 7.13783V14M8.22108 14L5.85567 11.7126M8.22108 14L10.5865 11.7126"
-                          stroke="black"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                      <button onClick={handleAddInput} className="tw-text-sm tw-text-left tw-text-[#31343d]">
-                        지식콘텐츠 불러오기
-                      </button>
-                    </div> */}
                     <div className="tw-flex tw-items-center tw-gap-1">
                       <svg
                         width={16}
@@ -1171,6 +1194,61 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                   </div>
                 </div>
               )}
+
+              {isLoadingFeedback ? (
+                <div className="tw-mt-5 tw-bg-white border tw-rounded-lg tw-p-6">
+                  <div className="tw-flex tw-justify-center tw-items-center tw-py-8">
+                    <CircularProgress size={24} />
+                    <span className="tw-ml-3 tw-text-gray-600">AI 피드백을 불러오는 중...</span>
+                  </div>
+                </div>
+              ) : aiFeedbackData ? (
+                <div className="tw-mt-5 tw-bg-white border tw-rounded-lg tw-overflow-hidden">
+                  {/* Header */}
+                  <div className="tw-px-6 tw-py-4 tw-border-b tw-border-gray-200">
+                    <div className="tw-flex tw-items-center tw-justify-between">
+                      <div className="tw-flex tw-items-center tw-space-x-3">
+                        <img src="/assets/images/main/chatbot.png" className="tw-w-12 tw-h-12" />
+                        <div className="tw-flex tw-flex-col tw-justify-center">
+                          <div className="tw-font-semibold tw-text-gray-900">AI피드백</div>
+                          <div className="tw-flex tw-items-center tw-text-sm tw-text-gray-500">
+                            <span>피드백 점수 : {aiFeedbackData?.grading}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="tw-px-6 tw-py-6 tw-space-y-6">
+                    {/* 전체 피드백 */}
+                    <div>
+                      <div className="tw-text-sm tw-font-medium tw-text-gray-500 tw-mb-2">전체 피드백</div>
+                      <p className="tw-text-gray-800 tw-leading-relaxed">{aiFeedbackData?.feedback}</p>
+                    </div>
+
+                    {/* 개선 포인트 */}
+                    <div>
+                      <div className="tw-text-sm tw-font-medium tw-text-gray-500 tw-mb-3">개선 포인트</div>
+                      <div className="tw-space-y-3">
+                        <p className="tw-text-gray-800 tw-leading-relaxed">{aiFeedbackData?.improvePoint}</p>
+                      </div>
+                    </div>
+
+                    {/* 개선 예시 */}
+                    <div>
+                      <div className="tw-text-sm tw-font-medium tw-text-gray-500 tw-mb-3">개선 예시</div>
+                      <p className="tw-text-gray-800 tw-leading-relaxed">{aiFeedbackData?.improveExample}</p>
+                    </div>
+
+                    {/* 피드백 요약 */}
+                    <div>
+                      <div className="tw-text-sm tw-font-medium tw-text-gray-500 tw-mb-3">피드백 요약</div>
+                      <p className="tw-text-gray-800 tw-leading-relaxed">{aiFeedbackData?.summaryFeedback}</p>
+                    </div>
+                  </div>
+                </div>
+              ) : null}
             </div>
           )}
         </MentorsModal>
