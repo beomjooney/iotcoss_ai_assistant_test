@@ -559,7 +559,7 @@ const QuizSolutionDetailDemo = ({
                     onClick={handleNext}
                     className=" tw-text-white tw-bg-red-500 tw-mt-5 tw-focus:ring-4  tw-font-medium tw-rounded tw-text-sm tw-px-7 tw-py-3 "
                   >
-                    {activeStep === 0 ? '답변입력 및 지식콘텐츠 읽기' : '수정완료 및 답변 제출하기'}
+                    {activeStep === 0 ? '답변입력 및 지식콘텐츠 읽기' : '수정완료 및 답변 제출하기1'}
                   </button>
                 </div>
               )}

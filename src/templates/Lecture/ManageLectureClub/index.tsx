@@ -2870,7 +2870,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                 </div>
               </div>
               <div>
-                <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2">답변 참조 포함 여부</div>
+                <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2">답변레퍼런스 포함여부</div>
                 <div>
                   <div className="tw-flex tw-items-center tw-gap-2 tw-mt-1">
                     <ToggleButtonGroup

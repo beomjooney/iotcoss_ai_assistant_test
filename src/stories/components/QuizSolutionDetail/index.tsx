@@ -27,6 +27,8 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import RadioGroup from '@mui/material/RadioGroup';
 import Radio from '@mui/material/Radio';
 import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
+import { useAIQuizMyAnswerSavePut } from 'src/services/quiz/quiz.mutations';
+import MentorsModal from 'src/stories/components/MentorsModal';
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -133,12 +135,21 @@ BannerProps) => {
   const [preAnswer, setPreAnswer] = useState<string>('');
   const [key, setKey] = useState<string>('');
   const [fileName, setFileName] = useState<string>('');
+  const [isLoadingAI, setIsLoadingAI] = useState(false);
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
 
   const { mutate: onSaveLike, isSuccess } = useSaveLike();
   const { mutate: onDeleteLike } = useDeleteLike();
   const { mutate: onAnswerSave, isSuccess: isAnswerSave, data: answerRes } = useAnswerSave();
-  const { mutate: onAnswerUpdate, isSuccess: isAnswerUpdate } = useAnswerUpdate();
+  const { mutate: onAnswerUpdate, isSuccess: isAnswerUpdate, data: answerUpdateRes } = useAnswerUpdate();
   const { mutate: onComprehensionSave, isSuccess: isComprehensionSave } = useComprehensionSave();
+
+  const {
+    mutate: onAIQuizAnswerSavePut,
+    isSuccess: answerSuccessSavePut,
+    isError: answerErrorSavePut,
+    data: aiQuizAnswerDataSavePut,
+  } = useAIQuizMyAnswerSavePut();
 
   const { isFetched: isParticipantListFetcheds, isSuccess: isParticipantListSuccess } = useQuizFileDownload(
     key,
@@ -161,8 +172,20 @@ BannerProps) => {
   };
 
   useEffect(() => {
+    if (answerSuccessSavePut) {
+      setIsFeedbackModalOpen(true);
+      setIsLoadingAI(false);
+    }
+  }, [answerSuccessSavePut]);
+
+  useEffect(() => {
     if (isAnswerUpdate) {
-      location.href = `/quiz/${data?.clubSequence}`;
+      console.log('answerUpdateRes', answerUpdateRes);
+      if (answerUpdateRes?.data?.feedbackType === '0200') {
+        setShowSubmitAnswerModal(true);
+      } else {
+        location.href = `/quiz/${data?.clubSequence}`;
+      }
     }
   }, [isAnswerUpdate]);
 
@@ -294,6 +317,7 @@ BannerProps) => {
 
   const [fileList, setFileList] = useState([]);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
+  const [showSubmitAnswerModal, setShowSubmitAnswerModal] = useState(false);
 
   const handleDeleteFile = index => {
     setFileList(prevFileList => prevFileList.filter((_, i) => i !== index));
@@ -321,11 +345,21 @@ BannerProps) => {
     });
 
     setShowSubmitModal(false);
-    alert('최종답변이 제출되었습니다.');
+  };
+
+  const handleFinalSubmit2 = () => {
+    setIsLoadingAI(true);
+    onAIQuizAnswerSavePut({
+      club: data?.clubSequence,
+      quiz: data?.quizSequence,
+    });
   };
 
   const handleModalClose = () => {
     setShowSubmitModal(false);
+  };
+  const handleModalClose2 = () => {
+    setShowSubmitAnswerModal(false);
   };
   return (
     <>
@@ -851,6 +885,129 @@ BannerProps) => {
                   className="tw-px-8 tw-py-3 tw-bg-blue-500 tw-text-white tw-rounded-md tw-font-medium tw-hover:bg-blue-600 tw-transition-colors tw-w-[150px]"
                 >
                   제출하기
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 피드백 모달 */}
+      <MentorsModal
+        isOpen={isFeedbackModalOpen}
+        onAfterClose={() => setIsFeedbackModalOpen(false)}
+        title="피드백 보기"
+        height="80%"
+        isContentModalClick={false}
+      >
+        <div className="pb-6">
+          <div className="tw-p-6 border tw-rounded-lg">
+            <div>
+              <div className="tw-flex tw-items-center tw-justify-between tw-gap-2 tw-mb-3">
+                <div className="tw-text-black tw-text-xl tw-rounded tw-flex tw-items-center tw-justify-center tw-text-xs tw-font-bold tw-gap-2">
+                  <img src="/assets/images/main/chatbot.png" className="tw-w-12 tw-h-12" />
+                  <span className="tw-text-black tw-text-lg tw-font-bold">AI피드백</span>
+                </div>
+                <div className="tw-text-base tw-font-medium tw-mb-2">
+                  AI 피드백 평점 : {aiQuizAnswerDataSavePut?.data?.grading}
+                </div>
+              </div>
+
+              <div className="tw-mb-4">
+                <div className="tw-text-base tw-font-medium tw-mb-2">전체 피드백</div>
+                <div className="tw-bg-gray-50 tw-p-4 tw-rounded tw-text-base tw-leading-relaxed">
+                  {aiQuizAnswerDataSavePut?.data?.feedback ||
+                    '답변이 전체적으로 Kubernetes의 정의와 목적을 잘 설명하고 있습니다. 특히 "컨테이너화된 애플리케이션을 관리하는 핵심 개념을 담고 있다"는 표현이 매우 적절합니다. 예를 들어 다음과 같은 정보가 추가되면 더 완전한 답변이 됩니다.'}
+                </div>
+              </div>
+
+              <div className="tw-mb-4">
+                <div className="tw-text-base tw-font-medium tw-mb-2">개선 포인트</div>
+                <div className="tw-space-y-2">
+                  {aiQuizAnswerDataSavePut?.data?.improvePoint ? (
+                    <div className="tw-flex tw-items-start tw-gap-2">
+                      <div className="tw-w-1 tw-h-1 tw-bg-gray-400 tw-rounded-full tw-mt-2 tw-flex-shrink-0"></div>
+                      <div className="tw-text-base">{aiQuizAnswerDataSavePut.data.improvePoint}</div>
+                    </div>
+                  ) : null}
+                  {aiQuizAnswerDataSavePut?.data?.improveExample && (
+                    <div className="tw-mt-3 tw-bg-blue-50 tw-p-3 tw-rounded">
+                      <div className="tw-text-base tw-font-medium tw-mb-1 tw-text-blue-700">개선 예시</div>
+                      <div className="tw-text-base tw-text-blue-800">{aiQuizAnswerDataSavePut.data.improveExample}</div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="tw-mb-4">
+                <div className="tw-text-base tw-font-medium tw-mb-2">피드백 요약</div>
+                <div className="tw-bg-gray-50 tw-p-4 tw-rounded tw-text-base tw-leading-relaxed">
+                  {aiQuizAnswerDataSavePut?.data?.summaryFeedback ||
+                    '전반적으로 핵심 개념 설명이 부족하며, 구체적 내용과 자신의 이해를 포함하는 답변이 필요합니다.'}
+                </div>
+              </div>
+
+              {aiQuizAnswerDataSavePut?.data?.additionalResources &&
+                aiQuizAnswerDataSavePut.data.additionalResources.length > 0 && (
+                  <div>
+                    <div className="tw-text-base tw-font-medium tw-mb-2">추가 학습 자료</div>
+                    <div className="tw-bg-blue-50 tw-border tw-border-blue-200 tw-rounded tw-p-4">
+                      <div className="tw-space-y-3">
+                        {aiQuizAnswerDataSavePut.data.additionalResources.map((resource, index) => (
+                          <div key={index} className="tw-flex tw-items-start tw-gap-2">
+                            <div className="tw-w-1.5 tw-h-1.5 tw-bg-blue-500 tw-rounded-full tw-mt-2 tw-flex-shrink-0"></div>
+                            <div className="tw-text-base">
+                              <div className="tw-font-medium tw-text-blue-800 tw-mb-1">{resource.title}</div>
+                              <a
+                                href={resource.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="tw-text-blue-600 tw-underline tw-text-sm tw-break-all"
+                              >
+                                {resource.url}
+                              </a>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+            </div>
+          </div>
+        </div>
+      </MentorsModal>
+
+      {showSubmitAnswerModal && (
+        <div className="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-50 tw-flex tw-items-center tw-justify-center tw-z-50">
+          <div className="tw-bg-white tw-rounded-xl tw-py-20 tw-max-w-3xl tw-w-full tw-mx-4 tw-shadow-2xl">
+            <div className="tw-text-center">
+              <div className="tw-text-2xl tw-font-bold tw-text-gray-900 tw-mb-4">답변이 제출되었습니다.</div>
+              <div className="tw-text-black tw-mb-8 tw-leading-relaxed tw-text-lg tw-py-20">
+                제출한 퀴즈답변에 대한 AI피드백을 받을 수 있습니다.
+                <br />
+                AI피드백을 받으러 갈까요?
+              </div>
+              <div className="tw-flex tw-gap-4 tw-justify-center">
+                <button
+                  onClick={handleModalClose2}
+                  className="tw-px-8 tw-py-3 tw-bg-gray-200 tw-text-gray-700 tw-rounded-md tw-font-medium tw-hover:bg-gray-300 tw-transition-colors tw-w-[180px]"
+                >
+                  닫기
+                </button>
+                <button
+                  onClick={() => {
+                    location.href = `/quiz/${data?.clubSequence}`;
+                  }}
+                  className="tw-px-8 tw-py-3 tw-bg-gray-200 tw-text-gray-700 tw-rounded-md tw-font-medium tw-hover:bg-gray-300 tw-transition-colors tw-w-[180px]"
+                >
+                  퀴즈클럽 가기
+                </button>
+                <button
+                  onClick={handleFinalSubmit2}
+                  className="tw-px-8 tw-py-3 tw-bg-blue-500 tw-text-white tw-rounded-md tw-font-medium tw-hover:bg-blue-600 tw-transition-colors tw-w-[180px]"
+                >
+                  {isLoadingAI ? 'AI피드백 채점 중...' : 'AI피드백 받기'}
                 </button>
               </div>
             </div>

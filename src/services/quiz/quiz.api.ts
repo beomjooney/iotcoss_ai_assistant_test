@@ -265,10 +265,18 @@ export const quizGetAIMyAnswer = async params => {
   return data.data;
 };
 
+export const quizGetAIAnswerGetTotal = async params => {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/quiz-clubs/${params.clubSequence}/evaluation`);
+  return data.data;
+};
+
+export const quizGetAIAnswerGetQuiz = async params => {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/quiz-clubs/${params.clubSequence}/quiz-evaluations`);
+  return data.data;
+};
+
 export const quizGetAIAnswerGet = async params => {
-  const { data } = await axiosGeneralAPI().get(
-    `/api/v1/clubs/${params.club}/quizzes/${params.quiz}/answers/${params.memberUUID}/ai-evaluation`,
-  );
+  const { data } = await axiosGeneralAPI().get(`/api/v1/my/clubs/${params.club}/quizzes/${params.quiz}/answer`);
   return data.data;
 };
 

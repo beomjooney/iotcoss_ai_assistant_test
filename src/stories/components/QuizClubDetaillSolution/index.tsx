@@ -29,7 +29,12 @@ import {
 } from 'src/services/community/community.mutations';
 import router from 'next/router';
 
-import { useQuizGetAIMyAnswer, useQuizAIFeedback } from 'src/services/quiz/quiz.queries';
+import {
+  useQuizGetAIMyAnswer,
+  useQuizAIFeedback,
+  useQuizAIFeedbackTotal,
+  useQuizAIFeedbackQuiz,
+} from 'src/services/quiz/quiz.queries';
 import { useAIQuizMyAnswerSavePut } from 'src/services/quiz/quiz.mutations';
 import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
 import dynamic from 'next/dynamic';
@@ -74,8 +79,13 @@ const QuizClubDetaillSolution = ({
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState<boolean>(false);
   const [isTotalFeedbackModalOpen, setIsTotalFeedbackModalOpen] = useState<boolean>(false);
   const [aiFeedbackData, setAiFeedbackData] = useState<any>(null);
+  const [aiFeedbackDataTotal, setAiFeedbackDataTotal] = useState<any>(null);
+  const [aiFeedbackDataTotalQuiz, setAiFeedbackDataTotalQuiz] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedQuizSequence, setSelectedQuizSequence] = useState<number>(0);
   const [aiEvaluationParams, setAiEvaluationParams] = useState<any>({});
+  const [aiEvaluationParamsTotal, setAiEvaluationParamsTotal] = useState<any>({});
+  const [aiEvaluationParamsTotalQuiz, setAiEvaluationParamsTotalQuiz] = useState<any>({});
   const [state, setState] = React.useState({
     series: [
       {
@@ -141,6 +151,34 @@ const QuizClubDetaillSolution = ({
     },
   );
 
+  // AI 피드백 데이터 조회
+  const { refetch: refetchAIEvaluationTotal } = useQuizAIFeedbackTotal(
+    aiEvaluationParamsTotal,
+    data => {
+      setIsLoading(false);
+      console.log('AI Evaluation data:', data);
+      setAiFeedbackDataTotal(data);
+      setIsTotalFeedbackModalOpen(true);
+    },
+    error => {
+      console.error('AI Evaluation error:', error);
+      alert('피드백 데이터를 불러오는데 실패했습니다.');
+    },
+  );
+
+  // AI 피드백 데이터 조회
+  const { refetch: refetchAIEvaluationTotalQuiz } = useQuizAIFeedbackQuiz(
+    aiEvaluationParamsTotalQuiz,
+    data => {
+      console.log('AI Evaluation data:', data);
+      setAiFeedbackDataTotalQuiz(data);
+    },
+    error => {
+      console.error('AI Evaluation error:', error);
+      alert('피드백 데이터를 불러오는데 실패했습니다.');
+    },
+  );
+
   // aiEvaluationParams가 변경될 때마다 API 호출
   useDidMountEffect(() => {
     if (aiEvaluationParams.club && aiEvaluationParams.quiz && aiEvaluationParams.memberUUID) {
@@ -178,14 +216,26 @@ const QuizClubDetaillSolution = ({
     data: aiQuizAnswerDataSavePut,
   } = useAIQuizMyAnswerSavePut();
 
-  useEffect(() => {
+  useDidMountEffect(() => {
+    if (aiEvaluationParamsTotalQuiz) {
+      refetchAIEvaluationTotalQuiz();
+    }
+  }, [aiEvaluationParamsTotalQuiz]);
+
+  useDidMountEffect(() => {
+    if (aiEvaluationParamsTotal) {
+      refetchAIEvaluationTotal();
+    }
+  }, [aiEvaluationParamsTotal]);
+
+  useDidMountEffect(() => {
     if (answerSuccessSavePut) {
       refetchQuizAnswer();
       setIsLoadingAI(false);
     }
   }, [answerSuccessSavePut, answerErrorSavePut]);
 
-  useEffect(() => {
+  useDidMountEffect(() => {
     if (aiQuizAnswerDataSavePut) {
       console.log('aiQuizAnswerDataSavePut', aiQuizAnswerDataSavePut);
     }
@@ -260,7 +310,20 @@ const QuizClubDetaillSolution = ({
       quiz: quizSequence,
       memberUUID: memberId, // 실제 memberId 사용
     });
+    setIsFeedbackModalOpen(true);
     // useDidMountEffect에서 자동으로 API 호출됨
+  };
+
+  // 총평 피드백 보기
+  const handleTotalFeedbackClick = (clubSequence: number) => {
+    setAiEvaluationParamsTotal({
+      clubSequence: clubAbout?.clubSequence,
+    });
+    setAiEvaluationParamsTotalQuiz({
+      clubSequence: clubAbout?.clubSequence,
+    });
+    setIsTotalFeedbackModalOpen(true);
+    setIsLoading(true);
   };
 
   return (
@@ -385,7 +448,7 @@ const QuizClubDetaillSolution = ({
                 </div>
               </div>
               <button
-                onClick={() => setIsTotalFeedbackModalOpen(true)}
+                onClick={() => handleTotalFeedbackClick(contents?.club?.clubSequence)}
                 className="tw-bg-[#2474ED] tw-hover:bg-blue-600 tw-text-white tw-px-4 tw-py-2 tw-rounded-full tw-text-base tw-font-medium"
               >
                 총평 피드백보기
@@ -510,7 +573,7 @@ const QuizClubDetaillSolution = ({
                         </div>
 
                         {/* 채점하기 버튼 */}
-                        {session?.status === '0003' && clubAbout?.feedbackType === '0200' && !session?.grade && (
+                        {/* {session?.status === '0003' && clubAbout?.feedbackType === '0200' && !session?.grade && (
                           <div className="tw-mt-2">
                             <button
                               onClick={() => handleClick('sfasd', session?.quizSequence, true)}
@@ -518,6 +581,22 @@ const QuizClubDetaillSolution = ({
                             >
                               채점하기
                             </button>
+                          </div>
+                        )} */}
+                        {session?.status === '0003' && (
+                          <div className="text-xs font-medium text-center text-[#9ca5b2] py-2">
+                            {session?.grade ? (
+                              <span className="tw-text-xs tw-text-black tw-rounded-full tw-bg-gray-200 tw-px-2 tw-py-1 tw-font-medium tw-text-center tw-text-[#9ca5b2]">
+                                점수 : {session?.grade}
+                              </span>
+                            ) : clubAbout?.feedbackType === '0200' ? (
+                              <span
+                                onClick={() => handleClick('sfasd', session?.quizSequence, true)}
+                                className="tw-py-1 tw-px-2 tw-bg-blue-500 tw-text-white tw-rounded-full tw-w-full tw-cursor-pointer tw-text-xs"
+                              >
+                                채점하기
+                              </span>
+                            ) : null}
                           </div>
                         )}
                       </div>
@@ -1161,11 +1240,83 @@ const QuizClubDetaillSolution = ({
                         </span>
 
                         {item?.threadType === '0003' && (
-                          <>
-                            <div className="tw-float-right tw-text-black">
-                              AI 채점 : <span className="tw-font-bold">{item?.gradingAi}</span>
+                          // <>
+                          //   <div className="tw-float-right tw-text-black">
+                          //     AI 채점 : <span className="tw-font-bold">{item?.gradingAi}</span>
+                          //   </div>
+                          // </>
+                          <div className=" tw-border-gray-200">
+                            <div className="tw-py-4 tw-space-y-4">
+                              {/* Rating Section */}
+                              <div>
+                                <div className="tw-flex tw-items-center tw-gap-2 tw-mb-2">
+                                  <span className="tw-text-sm tw-font-medium">평점({item?.gradingAi || '4.5'}/5)</span>
+                                </div>
+                                <div className="tw-w-32 tw-h-2 tw-bg-gray-200 tw-rounded-full">
+                                  <div
+                                    className="tw-h-2 tw-bg-blue-500 tw-rounded-full tw-transition-all tw-duration-300"
+                                    style={{ width: `${((parseFloat(item?.gradingAi) || 4.5) / 5) * 100}%` }}
+                                  ></div>
+                                </div>
+                              </div>
+
+                              {/* Content Sections */}
+                              <div className="tw-space-y-3">
+                                <div>
+                                  <div className="tw-text-base tw-font-medium tw-text-gray-500 tw-mb-3">
+                                    전체 피드백
+                                  </div>
+                                  <p className="tw-text-base !tw-tex-black">{item?.aiEvaluation?.feedback}</p>
+                                </div>
+
+                                <div>
+                                  <div className="tw-text-base tw-font-medium tw-text-gray-500 tw-mb-3">
+                                    개선 포인트
+                                  </div>
+                                  <p className="tw-text-base tw-text-black">{item?.aiEvaluation?.improvePoint}</p>
+                                </div>
+                                <div>
+                                  <div className="tw-text-base tw-font-medium tw-text-gray-500 tw-mb-3">개선 예선</div>
+                                  <p className="tw-text-base tw-text-black">{item?.aiEvaluation?.improveExample}</p>
+                                </div>
+
+                                <div>
+                                  <div className="tw-text-base tw-font-medium tw-text-gray-500 tw-mb-3">
+                                    피드백 요약
+                                  </div>
+                                  <p className="tw-text-base tw-text-black">{item?.aiEvaluation?.summaryFeedback}</p>
+                                </div>
+
+                                <div>
+                                  <div className="tw-text-base tw-font-medium tw-text-gray-500 tw-mb-3">
+                                    추가 학습 자료
+                                  </div>
+                                  <div className="tw-bg-blue-50 tw-border tw-border-blue-200 tw-rounded tw-p-4">
+                                    <div className="tw-space-y-3">
+                                      {item?.aiEvaluation?.additionalResources.map((resource, index) => (
+                                        <div key={index} className="tw-flex tw-items-start tw-gap-2">
+                                          <div className="tw-w-1.5 tw-h-1.5 tw-bg-blue-500 tw-rounded-full tw-mt-2 tw-flex-shrink-0"></div>
+                                          <div className="tw-text-base">
+                                            <div className="tw-font-medium tw-text-blue-800 tw-mb-1">
+                                              {resource.title}
+                                            </div>
+                                            <a
+                                              href={resource.url}
+                                              target="_blank"
+                                              rel="noopener noreferrer"
+                                              className="tw-text-blue-600 tw-underline tw-text-xs tw-break-all"
+                                            >
+                                              {resource.url}
+                                            </a>
+                                          </div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
                             </div>
-                          </>
+                          </div>
                         )}
 
                         {item?.threadType === '0004' && (
@@ -1279,751 +1430,524 @@ const QuizClubDetaillSolution = ({
       <MentorsModal
         isContentModalClick={false}
         title={'총평 피드백보기'}
-        isOpen={isFeedbackModalOpen}
+        isOpen={isTotalFeedbackModalOpen}
         onAfterClose={() => {
-          setIsFeedbackModalOpen(false);
+          setIsLoading(false);
+          setIsTotalFeedbackModalOpen(false);
         }}
       >
         <div className="tw-max-h-[80vh] tw-overflow-y-auto">
           {/* 전체 퀴즈 총평 피드백 */}
-          <div className="border tw-border-gray-200 tw-rounded-lg tw-p-4">
-            <div className="tw-flex tw-items-center tw-mb-4">
-              <div className="tw-w-8 tw-h-8 tw-bg-blue-500 tw-rounded-full tw-flex tw-items-center tw-justify-center tw-mr-3">
-                <span className="tw-text-white tw-text-sm tw-font-bold">AI</span>
-              </div>
-              <div className="tw-flex tw-items-center tw-gap-2">
-                <p className="tw-text-base tw-font-bold tw-text-black">AI피드백</p>
-                <p className="tw-text-sm tw-text-gray-500">10.28(월) 23:50:05</p>
-              </div>
+          {isLoading && (
+            <div className="tw-flex tw-items-center tw-justify-center tw-h-full">
+              <div className="tw-animate-spin tw-rounded-full tw-h-12 tw-w-12 tw-border-b-2 tw-border-blue-500 tw-mb-4"></div>
+              <p className="tw-text-gray-600 tw-text-base">총평 피드백을 불러오는 중입니다...</p>
             </div>
+          )}
+          {!isLoading && (
+            <div className="border tw-border-gray-200 tw-rounded-lg tw-p-4">
+              <div className="tw-flex tw-items-center tw-mb-4">
+                <div className="tw-w-8 tw-h-8 tw-bg-blue-500 tw-rounded-full tw-flex tw-items-center tw-justify-center tw-mr-3">
+                  <span className="tw-text-white tw-text-sm tw-font-bold">AI</span>
+                </div>
+                <div className="tw-flex tw-items-center tw-gap-2">
+                  <p className="tw-text-base tw-font-bold tw-text-black">AI피드백</p>
+                  <p className="tw-text-sm tw-text-gray-500">10.28(월) 23:50:05</p>
+                </div>
+              </div>
 
-            <div className="tw-text-blue-600 tw-text-base tw-mb-4 tw-font-bold tw-cursor-pointer">학습자 분석</div>
+              <div className="tw-text-blue-600 tw-text-base tw-mb-4 tw-font-bold tw-cursor-pointer">학습자 분석</div>
 
-            {/* 학습자 분석 차트 영역 */}
-            <div className=" tw-p-6 tw-rounded-lg tw-mb-6">
-              <div className="tw-grid tw-gap-6" style={{ gridTemplateColumns: '60% 40%' }}>
-                {/* 레이더 차트 영역 (간단한 표현) */}
-                <div className="tw-relative tw-flex tw-items-center tw-justify-center">
-                  {/* 레이더 차트 컨테이너 */}
-                  <div className="tw-w-full tw-h-full">
-                    {typeof window !== 'undefined' && (
-                      <ReactApexChart
-                        as
-                        any
-                        options={{
-                          chart: {
-                            type: 'radar',
-                            toolbar: {
-                              show: false,
-                            },
-                            background: 'transparent',
-                          },
-                          colors: ['#3B82F6', '#F59E0B'],
-                          fill: {
-                            type: 'solid',
-                            opacity: [0.6, 0.3],
-                          },
-                          stroke: {
-                            width: [2, 2],
-                            dashArray: [0, 5],
-                          },
-                          markers: {
-                            size: [4, 4],
-                          },
-                          xaxis: {
-                            categories: ['이해도', '성실도', '사고도', '완성도', '참여도'],
-                            labels: {
-                              style: {
-                                colors: '#374151',
-                                fontSize: '12px',
-                                fontFamily: 'Pretendard Variable, Pretendard, sans-serif',
-                                fontWeight: 500,
+              {/* 학습자 분석 차트 영역 */}
+              <div className=" tw-p-6 tw-rounded-lg tw-mb-6">
+                <div className="tw-grid tw-gap-6" style={{ gridTemplateColumns: '60% 40%' }}>
+                  {/* 레이더 차트 영역 (간단한 표현) */}
+                  <div className="tw-relative tw-flex tw-items-center tw-justify-center">
+                    {/* 레이더 차트 컨테이너 */}
+                    <div className="tw-w-full tw-h-full">
+                      {typeof window !== 'undefined' && (
+                        <ReactApexChart
+                          options={{
+                            chart: {
+                              type: 'radar',
+                              toolbar: {
+                                show: false,
                               },
+                              background: 'transparent',
                             },
-                          },
-                          yaxis: {
-                            show: false,
-                            min: 0,
-                            max: 100,
-                          },
-                          grid: {
-                            show: false,
-                          },
-                          plotOptions: {
-                            radar: {
-                              size: 130,
-                              polygons: {
-                                fill: {
-                                  colors: ['transparent'],
+                            colors: ['#3B82F6', '#F59E0B'],
+                            fill: {
+                              type: 'solid',
+                              opacity: [0.6, 0.3],
+                            },
+                            stroke: {
+                              width: [2, 2],
+                              dashArray: [0, 5],
+                            },
+                            markers: {
+                              size: [4, 4],
+                            },
+                            xaxis: {
+                              categories: ['이해도', '성실도', '사고도', '완성도', '참여도'],
+                              labels: {
+                                style: {
+                                  colors: '#374151',
+                                  fontSize: '12px',
+                                  fontFamily: 'Pretendard Variable, Pretendard, sans-serif',
+                                  fontWeight: 500,
                                 },
                               },
                             },
-                          },
-                          dataLabels: {
-                            enabled: false,
-                          },
-                          legend: {
-                            show: true,
-                            position: 'bottom',
-                            horizontalAlign: 'center',
-                            fontSize: '12px',
-                            fontFamily: 'Pretendard Variable, Pretendard, sans-serif',
-                          },
-                        }}
-                        series={[
-                          {
-                            name: '내 점수',
-                            data: [90, 60, 50, 70, 100], // 이해도, 성실도, 사고도, 완성도, 참여도
-                          },
-                          {
-                            name: '평균 점수',
-                            data: [75, 80, 65, 85, 70], // 비교군 데이터 (점선)
-                          },
-                        ]}
-                        type="radar"
-                        width="100%"
-                        height="110%"
-                      />
-                    )}
-                  </div>
-                </div>
-
-                {/* 상세 점수 */}
-                <div className="tw-space-y-3">
-                  <div className="tw-text-base tw-font-bold tw-text-black tw-mb-4">상세 항목</div>
-
-                  <div className="tw-flex tw-justify-between tw-items-center tw-px-5">
-                    <span className="tw-text-sm tw-text-gray-700">참됨도</span>
-                    <div className="tw-flex tw-items-center tw-gap-2">
-                      <div className="tw-w-40 tw-h-2 tw-bg-gray-200 tw-rounded-full">
-                        <div className="tw-w-[34%] tw-h-full tw-bg-black tw-rounded-full"></div>
-                      </div>
-                    </div>
-                    <div className="tw-flex tw-items-center tw-gap-2">
-                      <span className="tw-text-sm tw-font-medium">34/100</span>
-                    </div>
-                  </div>
-                  <div className="tw-flex tw-justify-between tw-items-center tw-px-5">
-                    <span className="tw-text-sm tw-text-gray-700">참됨도</span>
-                    <div className="tw-flex tw-items-center tw-gap-2">
-                      <div className="tw-w-40 tw-h-2 tw-bg-gray-200 tw-rounded-full">
-                        <div className="tw-w-[34%] tw-h-full tw-bg-black tw-rounded-full"></div>
-                      </div>
-                    </div>
-                    <div className="tw-flex tw-items-center tw-gap-2">
-                      <span className="tw-text-sm tw-font-medium">34/100</span>
-                    </div>
-                  </div>
-                  <div className="tw-flex tw-justify-between tw-items-center tw-px-5">
-                    <span className="tw-text-sm tw-text-gray-700">참됨도</span>
-                    <div className="tw-flex tw-items-center tw-gap-2">
-                      <div className="tw-w-40 tw-h-2 tw-bg-gray-200 tw-rounded-full">
-                        <div className="tw-w-[34%] tw-h-full tw-bg-black tw-rounded-full"></div>
-                      </div>
-                    </div>
-                    <div className="tw-flex tw-items-center tw-gap-2">
-                      <span className="tw-text-sm tw-font-medium">34/100</span>
-                    </div>
-                  </div>
-                  <div className="tw-flex tw-justify-between tw-items-center tw-px-5">
-                    <span className="tw-text-sm tw-text-gray-700">참됨도</span>
-                    <div className="tw-flex tw-items-center tw-gap-2">
-                      <div className="tw-w-40 tw-h-2 tw-bg-gray-200 tw-rounded-full">
-                        <div className="tw-w-[34%] tw-h-full tw-bg-black tw-rounded-full"></div>
-                      </div>
-                    </div>
-                    <div className="tw-flex tw-items-center tw-gap-2">
-                      <span className="tw-text-sm tw-font-medium">34/100</span>
-                    </div>
-                  </div>
-                  <div className="tw-flex tw-justify-between tw-items-center tw-px-5">
-                    <span className="tw-text-sm tw-text-gray-700">참됨도</span>
-                    <div className="tw-flex tw-items-center tw-gap-2">
-                      <div className="tw-w-40 tw-h-2 tw-bg-gray-200 tw-rounded-full">
-                        <div className="tw-w-[34%] tw-h-full tw-bg-black tw-rounded-full"></div>
-                      </div>
-                    </div>
-                    <div className="tw-flex tw-items-center tw-gap-2">
-                      <span className="tw-text-sm tw-font-medium">34/100</span>
+                            yaxis: {
+                              show: false,
+                              min: 0,
+                              max: 100,
+                            },
+                            grid: {
+                              show: false,
+                            },
+                            plotOptions: {
+                              radar: {
+                                size: 130,
+                                polygons: {
+                                  fill: {
+                                    colors: ['transparent'],
+                                  },
+                                },
+                              },
+                            },
+                            dataLabels: {
+                              enabled: false,
+                            },
+                            legend: {
+                              show: true,
+                              position: 'bottom',
+                              horizontalAlign: 'center',
+                              fontSize: '12px',
+                              fontFamily: 'Pretendard Variable, Pretendard, sans-serif',
+                            },
+                          }}
+                          series={[
+                            {
+                              name: '내 점수',
+                              data: [
+                                aiFeedbackDataTotal?.myEvaluationScores?.understanding || 0,
+                                aiFeedbackDataTotal?.myEvaluationScores?.diligence || 0,
+                                aiFeedbackDataTotal?.myEvaluationScores?.criticalThinking || 0,
+                                aiFeedbackDataTotal?.myEvaluationScores?.completion || 0,
+                                aiFeedbackDataTotal?.myEvaluationScores?.participation || 0,
+                              ], // 이해도, 성실도, 사고도, 완성도, 참여도
+                            },
+                            {
+                              name: '평균 점수',
+                              data: [
+                                aiFeedbackDataTotal?.averageEvaluationScores?.understanding || 0,
+                                aiFeedbackDataTotal?.averageEvaluationScores?.diligence || 0,
+                                aiFeedbackDataTotal?.averageEvaluationScores?.criticalThinking || 0,
+                                aiFeedbackDataTotal?.averageEvaluationScores?.completion || 0,
+                                aiFeedbackDataTotal?.averageEvaluationScores?.participation || 0,
+                              ], // 비교군 데이터 (점선)
+                            },
+                          ]}
+                          type="radar"
+                          width="100%"
+                          height="110%"
+                        />
+                      )}
                     </div>
                   </div>
 
-                  <div className="tw-mt-4 tw-pt-3  tw-border-t tw-border-gray-200">
-                    <div className="tw-flex tw-items-center tw-gap-2">
-                      <span className="tw-text-base tw-font-bold tw-text-black">총점</span>
+                  {/* 상세 점수 */}
+                  <div className="tw-space-y-3">
+                    <div className="tw-text-base tw-font-bold tw-text-black tw-mb-4">상세 항목</div>
+
+                    <div className="tw-flex tw-justify-between tw-items-center tw-px-5">
+                      <span className="tw-text-sm tw-text-gray-700">이해도</span>
                       <div className="tw-flex tw-items-center tw-gap-2">
-                        <div className="tw-text-sm tw-text-gray-600">학습 평점지수 : </div>
-                        <div className="tw-text-sm tw-text-gray-600">3.7</div>
+                        <div className="tw-w-40 tw-h-2 tw-bg-gray-200 tw-rounded-full">
+                          <div
+                            className="tw-h-full tw-bg-black tw-rounded-full tw-transition-all tw-duration-300"
+                            style={{ width: `${aiFeedbackDataTotal?.myEvaluationScores?.understanding || 0}%` }}
+                          ></div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-
-                  <div className="tw-flex tw-justify-between tw-items-center border-white tw-rounded-full tw-p-5 tw-bg-[#F3F9FF]">
-                    <span className="tw-text-sm tw-font-bold tw-text-gray-700">내 점수</span>
-                    <div className="tw-flex tw-items-center tw-gap-2">
-                      <div className="tw-w-40 tw-h-2 tw-bg-gray-200 tw-rounded-full">
-                        <div className="tw-w-[50%] tw-h-full tw-bg-blue-500 tw-rounded-full"></div>
-                      </div>
-                    </div>
-                    <div className="tw-flex tw-items-center tw-gap-2">
-                      <span className="tw-text-sm tw-font-medium">100/100</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* 학습 총평 피드백 */}
-            <div className="tw-mb-6">
-              <div className="tw-text-blue-600 tw-text-base tw-font-bold tw-mb-3">학습 총평 피드백</div>
-              <div className="tw-rounded-lg">
-                <p className="tw-text-base tw-text-gray-700 tw-leading-relaxed">
-                  학습자님은 이번 학습에서 뛰어난 개념적 이해 능력과 높은 분석적 사고를 보여 주었습니다. 특히 정의 및
-                  개념적인 이해 부분에서 뛰어난 실력을 보여주었고, 알부 구성요소 분석 능력 또한 뛰어났습니다. 다만, 일부
-                  답변에서 보다 구체적인 설명을 통해 응답하시는 뿌리깊은 지식을 바탕으로 심화 학습을 진행하신다면, 더욱
-                  체계적이고 완성도 높은 퀴즈 해결 능력을 갖추실 수 있을 것입니다.
-                </p>
-              </div>
-            </div>
-
-            {/* 강점 */}
-            <div className="tw-mb-6">
-              <div className="tw-text-blue-600 tw-text-base tw-font-bold tw-mb-3">강점</div>
-              <div className="tw-space-y-2">
-                <p className="tw-text-base tw-text-gray-700">
-                  • 핵실 개념(예: Pod, Node, Master 등)의 정의를 정확히 장악되어 있는 시도
-                </p>
-                <p className="tw-text-base tw-text-gray-700">
-                  • 기술 용어 사용에 대한 익숙함 (예: 오브젝트의이션, 클러스터, API Server 등)
-                </p>
-                <p className="tw-text-base tw-text-gray-700">
-                  • 서술형 문장 구성의 우수성 - 비전문자도 이해할 수 있을 정도 명확함
-                </p>
-              </div>
-            </div>
-
-            {/* 약점 */}
-            <div className="tw-mb-6">
-              <div className="tw-text-blue-600 tw-text-base tw-font-bold tw-mb-3">약점</div>
-              <div className="tw-space-y-2">
-                <p className="tw-text-base tw-text-gray-700">
-                  • 문체에서 요구하는 "비교", "단계", "예제 구별" 등을 명확히 서술하지 못한 사이가 저차 분될
-                </p>
-                <p className="tw-text-base tw-text-gray-700">
-                  • 일부 용어 간 구체적인 예시와 실제 상태를 위하는 하고 있지 는 찾라를 생각로 있었음
-                </p>
-                <p className="tw-text-base tw-text-gray-700">
-                  • Kubernetes 구성요소 간의 종체적인 술셀나 레시시트 감히라는 케이피니트가 필뤄던 부답이 있상됨
-                </p>
-              </div>
-            </div>
-
-            {/* 학습 추천 */}
-            <div className="tw-mb-6">
-              <div className="tw-text-blue-600 tw-text-base tw-font-bold tw-mb-3">학습 추천</div>
-              <div className="tw-space-y-2">
-                <p className="tw-text-base tw-text-gray-700">
-                  • Kubernetes 전체 구조를 시각적으로 이해할 수 있는 아키텍처 다이어그램 학습
-                </p>
-                <p className="tw-text-base tw-text-gray-700 tw-ml-4">
-                  <a
-                    href="https://doublepe.monday.com/boards/5349177278/pulses/9235906161"
-                    className="tw-text-blue-500 tw-underline"
-                  >
-                    https://doublepe.monday.com/boards/5349177278/pulses/9235906161
-                  </a>
-                </p>
-                <p className="tw-text-base tw-text-gray-700">
-                  • kubectl 명령어를 활용한 실습을 통해 구성 요소를 설치 학습하고 개별적 연관
-                </p>
-                <p className="tw-text-base tw-text-gray-700 tw-ml-4">
-                  <a
-                    href="https://doublepe.monday.com/boards/6349177278/pulses/9235906161"
-                    className="tw-text-blue-500 tw-underline"
-                  >
-                    https://doublepe.monday.com/boards/6349177278/pulses/9235906161
-                  </a>
-                </p>
-                <p className="tw-text-base tw-text-gray-700">
-                  • "Pod은 왜 컨테이너보다 상위 단위를 쓰는가?" 같은 응용상 질문에 대한 사고 훈련
-                </p>
-              </div>
-            </div>
-
-            {/* 개별 퀴즈 피드백 요약 */}
-            <div
-              className="tw-text-black tw-text-base tw-font-bold tw-mb-3"
-              style={{
-                fontFamily: 'Pretendard Variable, Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif',
-              }}
-            >
-              개별 퀴즈 피드백 요약
-            </div>
-            <div className="tw-mb-4">
-              <div className="border tw-border-gray-200 tw-rounded-lg tw-bg-white">
-                <div className="tw-flex tw-justify-between tw-items-center border-bottom tw-px-4">
-                  <div className="tw-flex tw-items-center tw-gap-3 tw-p-4">
-                    <span
-                      className="tw-text-lg tw-font-bold tw-text-black"
-                      style={{
-                        fontFamily:
-                          'Pretendard Variable, Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif',
-                      }}
-                    >
-                      10회
-                    </span>
-                    <span
-                      className="tw-text-sm tw-text-gray-600"
-                      style={{
-                        fontFamily:
-                          'Pretendard Variable, Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif',
-                      }}
-                    >
-                      10.03 (목) Kubernetes 구성요소의 역할에 대해서 설명하세요. (Master, Node, Pod 등)
-                    </span>
-                  </div>
-                  <span className="tw-text-xs tw-text-gray-500 tw-cursor-pointer tw-flex tw-items-center">
-                    자세히보기
-                    <svg className="tw-w-3 tw-h-3 tw-ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </span>
-                </div>
-
-                <div className="tw-bg-[#F6F7FB] tw-p-6">
-                  <div className="tw-mb-6">
-                    <div className="tw-flex tw-items-center tw-mb-2">
-                      <span className="tw-text-sm tw-font-medium tw-text-gray-700">평점(4.5/5)</span>
-                    </div>
-                    <div className="tw-w-64">
-                      <div className="tw-bg-gray-200 tw-rounded-full tw-h-2">
-                        <div className="tw-bg-blue-500 tw-h-2 tw-rounded-full" style={{ width: '90%' }}></div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Feedback Summary */}
-                  <div>
-                    <div className="tw-text-sm tw-font-medium tw-text-gray-700 tw-mb-3">피드백 요약</div>
-                    <ul className="tw-space-y-2">
-                      <li className="tw-flex tw-items-start">
-                        <div className="tw-w-1.5 tw-h-1.5 tw-bg-gray-400 tw-rounded-full tw-mt-2 tw-mr-3 tw-flex-shrink-0"></div>
-                        <span className="tw-text-sm tw-text-gray-600">정의는 잘 기술됨.</span>
-                      </li>
-                      <li className="tw-flex tw-items-start">
-                        <div className="tw-w-1.5 tw-h-1.5 tw-bg-gray-400 tw-rounded-full tw-mt-2 tw-mr-3 tw-flex-shrink-0"></div>
-                        <span className="tw-text-sm tw-text-gray-600">질문 핵심인 "구성요소의 역할"이 빠짐.</span>
-                      </li>
-                      <li className="tw-flex tw-items-start">
-                        <div className="tw-w-1.5 tw-h-1.5 tw-bg-gray-400 tw-rounded-full tw-mt-2 tw-mr-3 tw-flex-shrink-0"></div>
-                        <span className="tw-text-sm tw-text-gray-600">
-                          구성요소별 설명을 덧붙이면 훨씬 완성도 있는 답안이 됩니다.
+                      <div className="tw-flex tw-items-center tw-gap-2">
+                        <span className="tw-text-sm tw-font-medium">
+                          {aiFeedbackDataTotal?.myEvaluationScores?.understanding || 0}/100
                         </span>
+                      </div>
+                    </div>
+                    <div className="tw-flex tw-justify-between tw-items-center tw-px-5">
+                      <span className="tw-text-sm tw-text-gray-700">성실도</span>
+                      <div className="tw-flex tw-items-center tw-gap-2">
+                        <div className="tw-w-40 tw-h-2 tw-bg-gray-200 tw-rounded-full">
+                          <div
+                            className="tw-h-full tw-bg-black tw-rounded-full tw-transition-all tw-duration-300"
+                            style={{ width: `${aiFeedbackDataTotal?.myEvaluationScores?.diligence || 0}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                      <div className="tw-flex tw-items-center tw-gap-2">
+                        <span className="tw-text-sm tw-font-medium">
+                          {aiFeedbackDataTotal?.myEvaluationScores?.diligence || 0}/100
+                        </span>
+                      </div>
+                    </div>
+                    <div className="tw-flex tw-justify-between tw-items-center tw-px-5">
+                      <span className="tw-text-sm tw-text-gray-700">사고도</span>
+                      <div className="tw-flex tw-items-center tw-gap-2">
+                        <div className="tw-w-40 tw-h-2 tw-bg-gray-200 tw-rounded-full">
+                          <div
+                            className="tw-h-full tw-bg-black tw-rounded-full tw-transition-all tw-duration-300"
+                            style={{ width: `${aiFeedbackDataTotal?.myEvaluationScores?.criticalThinking || 0}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                      <div className="tw-flex tw-items-center tw-gap-2">
+                        <span className="tw-text-sm tw-font-medium">
+                          {aiFeedbackDataTotal?.myEvaluationScores?.criticalThinking || 0}/100
+                        </span>
+                      </div>
+                    </div>
+                    <div className="tw-flex tw-justify-between tw-items-center tw-px-5">
+                      <span className="tw-text-sm tw-text-gray-700">완성도</span>
+                      <div className="tw-flex tw-items-center tw-gap-2">
+                        <div className="tw-w-40 tw-h-2 tw-bg-gray-200 tw-rounded-full">
+                          <div
+                            className="tw-h-full tw-bg-black tw-rounded-full tw-transition-all tw-duration-300"
+                            style={{ width: `${aiFeedbackDataTotal?.myEvaluationScores?.completion || 0}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                      <div className="tw-flex tw-items-center tw-gap-2">
+                        <span className="tw-text-sm tw-font-medium">
+                          {aiFeedbackDataTotal?.myEvaluationScores?.completion || 0}/100
+                        </span>
+                      </div>
+                    </div>
+                    <div className="tw-flex tw-justify-between tw-items-center tw-px-5">
+                      <span className="tw-text-sm tw-text-gray-700">참여도</span>
+                      <div className="tw-flex tw-items-center tw-gap-2">
+                        <div className="tw-w-40 tw-h-2 tw-bg-gray-200 tw-rounded-full">
+                          <div
+                            className="tw-h-full tw-bg-black tw-rounded-full tw-transition-all tw-duration-300"
+                            style={{ width: `${aiFeedbackDataTotal?.myEvaluationScores?.participation || 0}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                      <div className="tw-flex tw-items-center tw-gap-2">
+                        <span className="tw-text-sm tw-font-medium">
+                          {aiFeedbackDataTotal?.myEvaluationScores?.participation || 0}/100
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="tw-mt-4 tw-pt-3  tw-border-t tw-border-gray-200">
+                      <div className="tw-flex tw-items-center tw-gap-2">
+                        <span className="tw-text-base tw-font-bold tw-text-black">총점</span>
+                        <div className="tw-flex tw-items-center tw-gap-2">
+                          <div className="tw-text-sm tw-text-gray-600">학습 평점지수 : </div>
+                          <div className="tw-text-sm tw-text-gray-600">
+                            {aiFeedbackDataTotal?.totalScore?.average || 0}/5
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="tw-flex tw-justify-between tw-items-center border-white tw-rounded-full tw-p-5 tw-bg-[#F3F9FF]">
+                      <span className="tw-text-sm tw-font-bold tw-text-gray-700">내 점수</span>
+                      <div className="tw-flex tw-items-center tw-gap-2">
+                        <div className="tw-w-40 tw-h-2 tw-bg-gray-200 tw-rounded-full">
+                          <div
+                            className="tw-h-full tw-bg-blue-500 tw-rounded-full tw-transition-all tw-duration-300"
+                            style={{ width: `${((aiFeedbackDataTotal?.totalScore?.myScore || 0) / 5) * 100}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                      <div className="tw-flex tw-items-center tw-gap-2">
+                        <span className="tw-text-sm tw-font-medium">
+                          {aiFeedbackDataTotal?.totalScore?.myScore || 0}/5
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 학습 총평 피드백 */}
+              <div className="tw-mb-6">
+                <div className="tw-text-blue-600 tw-text-base tw-font-bold tw-mb-3">학습 총평 피드백</div>
+                <div className="tw-rounded-lg">
+                  <p className="tw-text-base tw-text-gray-700 tw-leading-relaxed">
+                    {aiFeedbackDataTotal?.feedback?.overallFeedback}
+                  </p>
+                </div>
+              </div>
+
+              {/* 강점 */}
+              <div className="tw-mb-6">
+                <div className="tw-text-blue-600 tw-text-base tw-font-bold tw-mb-3">강점</div>
+                <div className="tw-space-y-2">
+                  <p className="tw-text-base tw-text-gray-700">{aiFeedbackDataTotal?.feedback?.strengths}</p>
+                </div>
+              </div>
+
+              {/* 약점 */}
+              <div className="tw-mb-6">
+                <div className="tw-text-blue-600 tw-text-base tw-font-bold tw-mb-3">약점</div>
+                <div className="tw-space-y-2">
+                  <p className="tw-text-base tw-text-gray-700">{aiFeedbackDataTotal?.feedback?.weaknesses}</p>
+                </div>
+              </div>
+              {/* 약점 */}
+              <div className="tw-mb-6">
+                <div className="tw-text-blue-600 tw-text-base tw-font-bold tw-mb-3">개선</div>
+                <div className="tw-space-y-2">
+                  <p className="tw-text-base tw-text-gray-700">{aiFeedbackDataTotal?.feedback?.improvement}</p>
+                </div>
+              </div>
+
+              {/* 학습 추천 */}
+              <div className="tw-mb-6">
+                <div className="tw-text-blue-600 tw-text-base tw-font-bold tw-mb-3">학습 추천</div>
+                <div className="tw-space-y-2">
+                  {aiFeedbackDataTotal?.resourceRecommendations?.map(item => (
+                    <ul className="tw-list-disc tw-ml-4">
+                      <li className="tw-text-base tw-text-gray-700">{item.title}</li>
+                      <li className="tw-text-base tw-text-gray-700 tw-ml-4">
+                        <a href={item.url} className="tw-text-blue-500 tw-underline">
+                          {item.url}
+                        </a>
                       </li>
                     </ul>
-                  </div>
+                  ))}
                 </div>
               </div>
+
+              {/* 개별 퀴즈 피드백 요약 */}
+              {aiFeedbackDataTotalQuiz && (
+                <div>
+                  {aiFeedbackDataTotalQuiz?.contents.map(item => (
+                    <div>
+                      <div
+                        className="tw-text-black tw-text-base tw-font-bold tw-mb-3"
+                        style={{
+                          fontFamily:
+                            'Pretendard Variable, Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif',
+                        }}
+                      >
+                        개별 퀴즈 피드백 요약
+                      </div>
+                      <div className="tw-mb-4">
+                        <div className="border tw-border-gray-200 tw-rounded-lg tw-bg-white">
+                          <div className="tw-flex tw-justify-between tw-items-center border-bottom tw-px-4">
+                            <div className="tw-flex tw-items-center tw-gap-3 tw-p-4">
+                              <span
+                                className="tw-text-lg tw-font-bold tw-text-black"
+                                style={{
+                                  fontFamily:
+                                    'Pretendard Variable, Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif',
+                                }}
+                              >
+                                {item.order}회
+                              </span>
+                              <span
+                                className="tw-text-sm tw-text-gray-600"
+                                style={{
+                                  fontFamily:
+                                    'Pretendard Variable, Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif',
+                                }}
+                              >
+                                {item.publishDate} {item.question}
+                              </span>
+                            </div>
+                            {/* <span className="tw-text-xs tw-text-gray-500 tw-cursor-pointer tw-flex tw-items-center">
+                              자세히보기
+                              <svg
+                                className="tw-w-3 tw-h-3 tw-ml-1"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                              </svg>
+                            </span> */}
+                          </div>
+
+                          <div className="tw-bg-[#F6F7FB] tw-p-6">
+                            <div className="tw-mb-6">
+                              <div className="tw-flex tw-items-center tw-mb-2">
+                                <span className="tw-text-sm tw-font-medium tw-text-gray-700">
+                                  평점({item.grading || 0}/5)
+                                </span>
+                              </div>
+                              <div className="tw-w-64">
+                                <div className="tw-bg-gray-200 tw-rounded-full tw-h-2">
+                                  <div
+                                    className="tw-bg-blue-500 tw-h-2 tw-rounded-full"
+                                    style={{ width: `${((item.grading || 0) / 5) * 100}%` }}
+                                  ></div>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Feedback Summary */}
+                            <div>
+                              <div className="tw-text-sm tw-font-medium tw-text-gray-700 tw-mb-3">피드백 요약</div>
+                              <ul className="tw-space-y-2">
+                                <li className="tw-flex tw-items-start">
+                                  <div className="tw-w-1.5 tw-h-1.5 tw-bg-gray-400 tw-rounded-full tw-mt-2 tw-mr-3 tw-flex-shrink-0"></div>
+                                  <span className="tw-text-sm tw-text-gray-600">
+                                    {item.summaryFeedback || '피드백 요약이 없습니다.'}
+                                  </span>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-          </div>
+          )}
         </div>
       </MentorsModal>
 
       {/* 피드백 모달 */}
       <MentorsModal
         isOpen={isFeedbackModalOpen}
-        onAfterClose={() => setIsFeedbackModalOpen(false)}
+        onAfterClose={() => {
+          setIsFeedbackModalOpen(false);
+        }}
         title="피드백 보기"
         height="80%"
         isContentModalClick={false}
       >
-        <div className="tw-p-6">
-          {/* 피드백 헤더 */}
-          <div className="tw-mb-6">
-            <div className="tw-flex tw-items-center tw-justify-between tw-mb-4">
-              <div>
-                <div className="tw-text-sm tw-text-gray-500 tw-mb-1">단원명</div>
-                <div className="tw-text-lg tw-font-semibold">6회 10-03 (화)</div>
+        <div className="tw-max-w-4xl tw-mx-auto tw-min-h-screen">
+          {/* Header */}
+          <div className="tw-space-y-4">
+            <div className="border tw-rounded-lg">
+              <div className="tw-px-4 tw-py-3 tw-flex tw-items-center tw-justify-between">
+                <div className="tw-flex tw-items-center tw-gap-3">
+                  <span className="tw-text-sm tw-text-gray-500 tw-bg-[#9CA5B2] tw-text-white tw-rounded-full tw-px-2 tw-py-1">
+                    답변완료
+                  </span>
+                  {/* <span className="tw-font-semibold">6회</span>
+                  <span className="tw-text-gray-500 tw-text-sm">10:03(월)</span> */}
+                </div>
+                <div className="tw-flex tw-items-center tw-gap-2">
+                  <span className="tw-text-sm tw-text-gray-500">{aiFeedbackData?.member?.nickname}</span>
+                  <img src={aiFeedbackData?.member?.profileImageUrl} className="tw-w-6 tw-h-6 tw-rounded-full" />
+                </div>
+                {/* Main Topic */}
               </div>
-              <div className="tw-flex tw-items-center tw-gap-2">
-                <div className="tw-w-8 tw-h-8 tw-bg-gray-300 tw-rounded-full"></div>
-                <span className="tw-text-sm tw-text-gray-600">김완혁</span>
-                <button className="tw-bg-gray-100 tw-text-gray-600 tw-px-3 tw-py-1 tw-rounded tw-text-sm">메모</button>
+              <div className="tw-p-4">
+                <p className="tw-text-base tw-text-black">{aiFeedbackData?.question}</p>
               </div>
             </div>
-
-            <div className="tw-bg-blue-50 tw-p-3 tw-rounded tw-text-sm tw-text-blue-800">
-              EAI, ESB, API 게이트 웨이, 서비스 메쉬에 대하여 설명해주세요. [1]
-            </div>
-          </div>
-
-          {/* 피드백 내용 */}
-          <div className="tw-space-y-6">
-            {/* 사전답변 */}
-            <div>
-              <div className="tw-flex tw-items-center tw-gap-2 tw-mb-3">
-                <div className="tw-w-6 tw-h-6 tw-bg-blue-500 tw-text-white tw-rounded tw-flex tw-items-center tw-justify-center tw-text-xs tw-font-bold">
-                  사
+            {/* First Response */}
+            {aiFeedbackData?.clubQuizThreads.map(item => (
+              <div
+                className={`tw-space-y-2 border tw-p-4 tw-rounded-lg ${
+                  item?.threadType === '0001' || item?.threadType === '0002' ? 'tw-bg-[#F6F7FB]' : ''
+                }`}
+              >
+                <div className="tw-flex tw-items-center tw-gap-2">
+                  <span className="tw-font-semibold tw-text-gray-800">
+                    {item.threadType === '0001'
+                      ? '사전답변'
+                      : item.threadType === '0002'
+                        ? '최종답변'
+                        : item.threadType === '0003'
+                          ? 'AI피드백'
+                          : item.threadType === '0004'
+                            ? '교수자답변'
+                            : '최종답변'}
+                  </span>
+                  <span className="tw-text-xs tw-text-gray-500">{item.createdAt}</span>
                 </div>
-                <span className="tw-font-medium">사전답변</span>
-                <span className="tw-text-sm tw-text-gray-500">10-28 (월) | 18:30:25</span>
-              </div>
-              <div className="tw-bg-gray-50 tw-p-4 tw-rounded tw-text-sm tw-leading-relaxed">
-                쿠버네티스는 컨테이너화된 애플리케이션을 배포, 관리, 확장할 때 수반되는 다수의 수동 프로세스를
-                자동화하는 플랫폼입니다.
-              </div>
-            </div>
-
-            {/* 최종답변 */}
-            <div>
-              <div className="tw-flex tw-items-center tw-gap-2 tw-mb-3">
-                <div className="tw-w-6 tw-h-6 tw-bg-green-500 tw-text-white tw-rounded tw-flex tw-items-center tw-justify-center tw-text-xs tw-font-bold">
-                  최
-                </div>
-                <span className="tw-font-medium">최종답변</span>
-                <span className="tw-text-sm tw-text-gray-500">10-28 (월) | 22:30:55</span>
-              </div>
-              <div className="tw-bg-gray-50 tw-p-4 tw-rounded tw-text-sm tw-leading-relaxed">
-                Docker는 쿠버네티스가 오케스트레이션하는 컨테이너 런타임으로 사용할 수 있습니다. 쿠버네티스가 노드에
-                대해 포드를 예약하면 해당 노드의 kubelet이 컨테이너 실행을 보장하는 서비스이며 지속적으로 Docker에게
-                명령 Docker는 쿠버네티스가 오케스트레이션성, 쿠버네티스가 오케스트레이션하는 컨테이너 런타임으로 사용할
-                수 있습니다. Docker는 쿠버네티스가 오케스트레이션하는 컨테이너 런타임으로 사용할 수 있습니다.
-              </div>
-              <div className="tw-mt-2 tw-text-xs tw-text-gray-500">
-                업로드 한 파일 : <span className="tw-text-blue-600 tw-underline">240000_쿠즈자료제출.pdf</span>
-              </div>
-            </div>
-
-            {/* AI 피드백 */}
-            <div>
-              <div className="tw-flex tw-items-center tw-gap-2 tw-mb-3">
-                <div className="tw-w-6 tw-h-6 tw-bg-purple-500 tw-text-white tw-rounded tw-flex tw-items-center tw-justify-center tw-text-xs tw-font-bold">
-                  AI
-                </div>
-                <span className="tw-font-medium">AI피드백</span>
-                <span className="tw-text-sm tw-text-gray-500">10-28 (월) | 23:50:05</span>
-              </div>
-
-              {/* 평점 */}
-              <div className="tw-mb-4">
-                <div className="tw-text-sm tw-font-medium tw-mb-2">
-                  평점({aiFeedbackData?.grading ? (aiFeedbackData.grading * 5).toFixed(1) : '4.5'}/5)
-                </div>
-                <div className="tw-w-full tw-bg-gray-200 tw-rounded-full tw-h-2">
-                  <div
-                    className="tw-bg-blue-500 tw-h-2 tw-rounded-full"
-                    style={{ width: `${aiFeedbackData?.grading ? aiFeedbackData.grading * 100 : 90}%` }}
-                  ></div>
-                </div>
-              </div>
-
-              {/* 전체 피드백 */}
-              <div className="tw-mb-4">
-                <div className="tw-text-sm tw-font-medium tw-mb-2">전체 피드백</div>
-                <div className="tw-bg-gray-50 tw-p-4 tw-rounded tw-text-sm tw-leading-relaxed">
-                  {aiFeedbackData?.feedback ||
-                    '답변이 전체적으로 Kubernetes의 정의와 목적을 잘 설명하고 있습니다. 특히 "컨테이너화된 애플리케이션을 관리하는 핵심 개념을 담고 있다"는 표현이 매우 적절합니다. 예를 들어 다음과 같은 정보가 추가되면 더 완전한 답변이 됩니다.'}
-                </div>
-              </div>
-
-              {/* 개선 포인트 */}
-              <div className="tw-mb-4">
-                <div className="tw-text-sm tw-font-medium tw-mb-2">개선 포인트</div>
-                <div className="tw-space-y-2">
-                  {aiFeedbackData?.improvePoint ? (
-                    <div className="tw-flex tw-items-start tw-gap-2">
-                      <div className="tw-w-1 tw-h-1 tw-bg-gray-400 tw-rounded-full tw-mt-2 tw-flex-shrink-0"></div>
-                      <div className="tw-text-sm">{aiFeedbackData.improvePoint}</div>
-                    </div>
-                  ) : (
-                    <>
-                      <div className="tw-flex tw-items-start tw-gap-2">
-                        <div className="tw-w-1 tw-h-1 tw-bg-gray-400 tw-rounded-full tw-mt-2 tw-flex-shrink-0"></div>
-                        <div className="tw-text-sm">정의는 잘 기술됨.</div>
-                      </div>
-                      <div className="tw-flex tw-items-start tw-gap-2">
-                        <div className="tw-w-1 tw-h-1 tw-bg-gray-400 tw-rounded-full tw-mt-2 tw-flex-shrink-0"></div>
-                        <div className="tw-text-sm">실무 핵심인 "구성요소의 역할"이 빠짐.</div>
-                      </div>
-                      <div className="tw-flex tw-items-start tw-gap-2">
-                        <div className="tw-w-1 tw-h-1 tw-bg-gray-400 tw-rounded-full tw-mt-2 tw-flex-shrink-0"></div>
-                        <div className="tw-text-sm">구성요소별 설명을 덧붙이면 훨씬 완성도 있는 답안이 됩니다.</div>
-                      </div>
-                    </>
-                  )}
-                  {aiFeedbackData?.improveExample && (
-                    <div className="tw-mt-3 tw-bg-blue-50 tw-p-3 tw-rounded">
-                      <div className="tw-text-sm tw-font-medium tw-mb-1 tw-text-blue-700">개선 예시</div>
-                      <div className="tw-text-sm tw-text-blue-800">{aiFeedbackData.improveExample}</div>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* 피드백 요약 */}
-              <div className="tw-mb-4">
-                <div className="tw-text-sm tw-font-medium tw-mb-2">피드백 요약</div>
-                <div className="tw-bg-gray-50 tw-p-4 tw-rounded tw-text-sm tw-leading-relaxed">
-                  {aiFeedbackData?.summaryFeedback ||
-                    '전반적으로 핵심 개념 설명이 부족하며, 구체적 내용과 자신의 이해를 포함하는 답변이 필요합니다.'}
-                </div>
-              </div>
-
-              {/* 과제 해설 */}
-              <div className="tw-mb-4">
-                <div className="tw-text-sm tw-font-medium tw-mb-2">과제 해설</div>
-                <div className="tw-bg-gray-50 tw-p-4 tw-rounded tw-text-sm tw-leading-relaxed">
-                  Kubernetes는 컨테이너 애플리케이션의 배포 및 관리를 자동화하는 오픈소스 플랫폼이며, 주요 구성요소는
-                  Master, Node, Pod가 있습니다. Master는 클러스터 제어와 스케줄링을 담당하며, Node는 실제 작업을
-                  수행하는 서버입니다. Pod는 하나 이상의 컨테이너를 포함하는 배포 단위로, 네트워크와 스토리지를
-                  공유합니다.
-                </div>
-              </div>
-
-              {/* 추가 학습 자료 */}
-              {aiFeedbackData?.additionalResources && aiFeedbackData.additionalResources.length > 0 && (
-                <div>
-                  <div className="tw-text-sm tw-font-medium tw-mb-2">추가 학습 자료</div>
-                  <div className="tw-bg-blue-50 tw-border tw-border-blue-200 tw-rounded tw-p-4">
-                    <div className="tw-space-y-3">
-                      {aiFeedbackData.additionalResources.map((resource, index) => (
-                        <div key={index} className="tw-flex tw-items-start tw-gap-2">
-                          <div className="tw-w-1.5 tw-h-1.5 tw-bg-blue-500 tw-rounded-full tw-mt-2 tw-flex-shrink-0"></div>
-                          <div className="tw-text-sm">
-                            <div className="tw-font-medium tw-text-blue-800 tw-mb-1">{resource.title}</div>
-                            <a
-                              href={resource.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="tw-text-blue-600 tw-underline tw-text-xs tw-break-all"
-                            >
-                              {resource.url}
-                            </a>
+                <div className="tw-rounded-lg tw-border tw-border-gray-200">
+                  {/* <p className="tw-text-sm tw-text-gray-700 tw-leading-relaxed">{item.text}</p> */}
+                  {item?.threadType === '0003' ? (
+                    <div className="">
+                      <div className="tw-py-4 tw-space-y-4">
+                        {/* Rating Section */}
+                        <div>
+                          <div className="tw-flex tw-items-center tw-gap-2 tw-mb-2">
+                            <span className="tw-text-sm tw-font-medium">평점({item?.gradingAi || '4.5'}/5)</span>
+                          </div>
+                          <div className="tw-w-32 tw-h-2 tw-bg-gray-200 tw-rounded-full">
+                            <div
+                              className="tw-h-2 tw-bg-blue-500 tw-rounded-full tw-transition-all tw-duration-300"
+                              style={{ width: `${((parseFloat(item?.gradingAi) || 4.5) / 5) * 100}%` }}
+                            ></div>
                           </div>
                         </div>
-                      ))}
+
+                        {/* Content Sections */}
+                        <div className="tw-space-y-3">
+                          <div>
+                            <div className="tw-text-base tw-font-medium tw-text-gray-500 tw-mb-3">전체 피드백</div>
+                            <p className="tw-text-base !tw-tex-black">{item?.aiEvaluation?.feedback}</p>
+                          </div>
+
+                          <div>
+                            <div className="tw-text-base tw-font-medium tw-text-gray-500 tw-mb-3">개선 포인트</div>
+                            <p className="tw-text-base tw-text-black">{item?.aiEvaluation?.improvePoint}</p>
+                          </div>
+                          <div>
+                            <div className="tw-text-base tw-font-medium tw-text-gray-500 tw-mb-3">개선 예선</div>
+                            <p className="tw-text-base tw-text-black">{item?.aiEvaluation?.improveExample}</p>
+                          </div>
+
+                          <div>
+                            <div className="tw-text-base tw-font-medium tw-text-gray-500 tw-mb-3">피드백 요약</div>
+                            <p className="tw-text-base tw-text-black">{item?.aiEvaluation?.summaryFeedback}</p>
+                          </div>
+
+                          <div>
+                            <div className="tw-text-base tw-font-medium tw-text-gray-500 tw-mb-3">추가 학습 자료</div>
+                            <div className="tw-bg-blue-50 tw-border tw-border-blue-200 tw-rounded tw-p-4">
+                              <div className="tw-space-y-3">
+                                {item?.aiEvaluation?.additionalResources.map((resource, index) => (
+                                  <div key={index} className="tw-flex tw-items-start tw-gap-2">
+                                    <div className="tw-w-1.5 tw-h-1.5 tw-bg-blue-500 tw-rounded-full tw-mt-2 tw-flex-shrink-0"></div>
+                                    <div className="tw-text-base">
+                                      <div className="tw-font-medium tw-text-blue-800 tw-mb-1">{resource.title}</div>
+                                      <a
+                                        href={resource.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="tw-text-blue-600 tw-underline tw-text-xs tw-break-all"
+                                      >
+                                        {resource.url}
+                                      </a>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div
+                      className={`tw-text-[#9ca5b2] tw-text-base ${item?.threadType === '0003' ? 'tw-text-black' : ''}`}
+                    >
+                      {item?.text}
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+              </div>
+            ))}
           </div>
         </div>
       </MentorsModal>
 
       {/* 총평 피드백 모달 */}
-      <MentorsModal
-        isOpen={isTotalFeedbackModalOpen}
-        onAfterClose={() => setIsTotalFeedbackModalOpen(false)}
-        title="총평 피드백"
-        height="85%"
-        isContentModalClick={false}
-      >
-        <div className="tw-p-6">
-          {/* 학습 현황 요약 */}
-          <div className="tw-mb-8">
-            <div className="tw-text-lg tw-font-bold tw-text-black tw-mb-4">학습 현황 요약</div>
-            <div className="tw-bg-[#F6F7FB] tw-rounded-lg tw-p-6">
-              <div className="tw-flex tw-items-center tw-justify-between tw-mb-4">
-                <div className="tw-text-sm tw-text-gray-600">전체 진행률</div>
-                <div className="tw-text-2xl tw-font-bold tw-text-black">85%</div>
-              </div>
-              <div className="tw-w-full tw-bg-gray-200 tw-rounded-full tw-h-3 tw-mb-4">
-                <div className="tw-bg-blue-500 tw-h-3 tw-rounded-full" style={{ width: '85%' }}></div>
-              </div>
-              <div className="tw-grid tw-grid-cols-3 tw-gap-4 tw-text-center">
-                <div>
-                  <div className="tw-text-lg tw-font-bold tw-text-green-600">8</div>
-                  <div className="tw-text-xs tw-text-gray-500">완료</div>
-                </div>
-                <div>
-                  <div className="tw-text-lg tw-font-bold tw-text-orange-500">1</div>
-                  <div className="tw-text-xs tw-text-gray-500">진행중</div>
-                </div>
-                <div>
-                  <div className="tw-text-lg tw-font-bold tw-text-gray-400">0</div>
-                  <div className="tw-text-xs tw-text-gray-500">미완료</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* 학습 총평 피드백 */}
-          <div className="tw-mb-8">
-            <div className="tw-text-lg tw-font-bold tw-text-black tw-mb-4">학습 총평 피드백</div>
-            <div className="tw-bg-white tw-border tw-border-gray-200 tw-rounded-lg tw-p-6">
-              <div className="tw-text-base tw-text-gray-700 tw-leading-relaxed tw-mb-6">
-                학습자님은 이번 학습에서 뛰어난 개념적 이해 능력과 높은 분석적 사고를 보여 주었습니다. 특히 정의 및
-                개념적인 이해 부분에서 뛰어난 실력을 보여주었고, 일부 구성요소 분석 능력 또한 뛰어났습니다. 다만, 일부
-                답변에서 보다 구체적인 설명을 통해 응답하시는 뿌리깊은 지식을 바탕으로 심화 학습을 진행하신다면, 더욱
-                체계적이고 완성도 높은 퀴즈 해결 능력을 갖추실 수 있을 것입니다.
-              </div>
-
-              {/* 강점과 약점 */}
-              <div className="tw-grid tw-grid-cols-2 tw-gap-6">
-                {/* 강점 */}
-                <div>
-                  <div className="tw-text-base tw-font-bold tw-text-green-600 tw-mb-3">강점</div>
-                  <div className="tw-space-y-2">
-                    <div className="tw-flex tw-items-start tw-gap-2">
-                      <div className="tw-w-1.5 tw-h-1.5 tw-bg-green-500 tw-rounded-full tw-mt-2 tw-flex-shrink-0"></div>
-                      <div className="tw-text-sm tw-text-gray-700">
-                        핵심 개념(예: Pod, Node, Master 등)의 정의를 정확히 파악되어 있는 상태
-                      </div>
-                    </div>
-                    <div className="tw-flex tw-items-start tw-gap-2">
-                      <div className="tw-w-1.5 tw-h-1.5 tw-bg-green-500 tw-rounded-full tw-mt-2 tw-flex-shrink-0"></div>
-                      <div className="tw-text-sm tw-text-gray-700">
-                        기술 용어 사용에 대한 익숙함 (예: 오케스트레이션, 클러스터, API Server 등)
-                      </div>
-                    </div>
-                    <div className="tw-flex tw-items-start tw-gap-2">
-                      <div className="tw-w-1.5 tw-h-1.5 tw-bg-green-500 tw-rounded-full tw-mt-2 tw-flex-shrink-0"></div>
-                      <div className="tw-text-sm tw-text-gray-700">
-                        서술형 문장 구성의 우수성 - 비전문자도 이해할 수 있을 정도 명확함
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 약점 */}
-                <div>
-                  <div className="tw-text-base tw-font-bold tw-text-red-600 tw-mb-3">약점</div>
-                  <div className="tw-space-y-2">
-                    <div className="tw-flex tw-items-start tw-gap-2">
-                      <div className="tw-w-1.5 tw-h-1.5 tw-bg-red-500 tw-rounded-full tw-mt-2 tw-flex-shrink-0"></div>
-                      <div className="tw-text-sm tw-text-gray-700">
-                        문제에서 요구하는 "비교", "단계", "예제 구별" 등을 명확히 서술하지 못한 사례가 일부 발견됨
-                      </div>
-                    </div>
-                    <div className="tw-flex tw-items-start tw-gap-2">
-                      <div className="tw-w-1.5 tw-h-1.5 tw-bg-red-500 tw-rounded-full tw-mt-2 tw-flex-shrink-0"></div>
-                      <div className="tw-text-sm tw-text-gray-700">
-                        일부 용어 간 구체적인 예시와 실제 상황을 연결하여 설명하지 못한 부분이 있었음
-                      </div>
-                    </div>
-                    <div className="tw-flex tw-items-start tw-gap-2">
-                      <div className="tw-w-1.5 tw-h-1.5 tw-bg-red-500 tw-rounded-full tw-mt-2 tw-flex-shrink-0"></div>
-                      <div className="tw-text-sm tw-text-gray-700">
-                        Kubernetes 구성요소 간의 종합적인 상호작용 메커니즘에 대한 이해가 필요한 부분이 있음
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* 학습 추천 */}
-          <div className="tw-mb-8">
-            <div className="tw-text-lg tw-font-bold tw-text-black tw-mb-4">학습 추천</div>
-            <div className="tw-bg-blue-50 tw-border tw-border-blue-200 tw-rounded-lg tw-p-6">
-              <div className="tw-space-y-4">
-                <div>
-                  <div className="tw-flex tw-items-start tw-gap-2">
-                    <div className="tw-w-1.5 tw-h-1.5 tw-bg-blue-500 tw-rounded-full tw-mt-2 tw-flex-shrink-0"></div>
-                    <div className="tw-text-sm tw-text-gray-700">
-                      <strong>Kubernetes 전체 구조를 시각적으로 이해할 수 있는 아키텍처 다이어그램 학습</strong>
-                      <div className="tw-mt-1">
-                        <a
-                          href="https://doublepe.monday.com/boards/5349177278/pulses/9235906161"
-                          className="tw-text-blue-600 tw-underline tw-text-xs"
-                        >
-                          https://doublepe.monday.com/boards/5349177278/pulses/9235906161
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div>
-                  <div className="tw-flex tw-items-start tw-gap-2">
-                    <div className="tw-w-1.5 tw-h-1.5 tw-bg-blue-500 tw-rounded-full tw-mt-2 tw-flex-shrink-0"></div>
-                    <div className="tw-text-sm tw-text-gray-700">
-                      <strong>kubectl 명령어를 활용한 실습을 통해 구성 요소를 실제 학습하고 개별적 연관성 파악</strong>
-                      <div className="tw-mt-1">
-                        <a
-                          href="https://doublepe.monday.com/boards/6349177278/pulses/9235906161"
-                          className="tw-text-blue-600 tw-underline tw-text-xs"
-                        >
-                          https://doublepe.monday.com/boards/6349177278/pulses/9235906161
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div>
-                  <div className="tw-flex tw-items-start tw-gap-2">
-                    <div className="tw-w-1.5 tw-h-1.5 tw-bg-blue-500 tw-rounded-full tw-mt-2 tw-flex-shrink-0"></div>
-                    <div className="tw-text-sm tw-text-gray-700">
-                      <strong>"Pod은 왜 컨테이너보다 상위 단위를 쓰는가?" 같은 응용성 질문에 대한 사고 훈련</strong>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* 개별 퀴즈 성과 요약 */}
-          <div>
-            <div className="tw-text-lg tw-font-bold tw-text-black tw-mb-4">개별 퀴즈 성과 요약</div>
-            <div className="tw-space-y-3">
-              {/* 퀴즈 1 */}
-              <div className="tw-bg-white tw-border tw-border-gray-200 tw-rounded-lg tw-p-4">
-                <div className="tw-flex tw-items-center tw-justify-between">
-                  <div className="tw-flex tw-items-center tw-gap-3">
-                    <div className="tw-text-sm tw-font-bold tw-text-black">6회</div>
-                    <div className="tw-text-sm tw-text-gray-600">
-                      10.03 (목) EAI, ESB, API 게이트웨이, 서비스 메쉬에 대하여 설명해주세요.
-                    </div>
-                  </div>
-                  <div className="tw-flex tw-items-center tw-gap-2">
-                    <div className="tw-text-sm tw-font-medium tw-text-green-600">4.5/5</div>
-                    <div className="tw-w-16 tw-h-2 tw-bg-gray-200 tw-rounded-full">
-                      <div className="tw-w-[90%] tw-h-full tw-bg-green-500 tw-rounded-full"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* 퀴즈 2 */}
-              <div className="tw-bg-white tw-border tw-border-gray-200 tw-rounded-lg tw-p-4">
-                <div className="tw-flex tw-items-center tw-justify-between">
-                  <div className="tw-flex tw-items-center tw-gap-3">
-                    <div className="tw-text-sm tw-font-bold tw-text-black">7회</div>
-                    <div className="tw-text-sm tw-text-gray-600">
-                      10.10 (목) Kubernetes 구성요소의 역할에 대해서 설명하세요.
-                    </div>
-                  </div>
-                  <div className="tw-flex tw-items-center tw-gap-2">
-                    <div className="tw-text-sm tw-font-medium tw-text-blue-600">4.2/5</div>
-                    <div className="tw-w-16 tw-h-2 tw-bg-gray-200 tw-rounded-full">
-                      <div className="tw-w-[84%] tw-h-full tw-bg-blue-500 tw-rounded-full"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* 퀴즈 3 */}
-              <div className="tw-bg-white tw-border tw-border-gray-200 tw-rounded-lg tw-p-4">
-                <div className="tw-flex tw-items-center tw-justify-between">
-                  <div className="tw-flex tw-items-center tw-gap-3">
-                    <div className="tw-text-sm tw-font-bold tw-text-black">8회</div>
-                    <div className="tw-text-sm tw-text-gray-600">
-                      10.17 (목) Docker와 Kubernetes의 관계에 대해 설명하세요.
-                    </div>
-                  </div>
-                  <div className="tw-flex tw-items-center tw-gap-2">
-                    <div className="tw-text-sm tw-font-medium tw-text-orange-600">3.8/5</div>
-                    <div className="tw-w-16 tw-h-2 tw-bg-gray-200 tw-rounded-full">
-                      <div className="tw-w-[76%] tw-h-full tw-bg-orange-500 tw-rounded-full"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </MentorsModal>
     </div>
   );
 };
