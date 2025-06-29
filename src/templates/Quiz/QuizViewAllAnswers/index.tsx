@@ -30,6 +30,7 @@ import {
   useQuizGetAIAnswerGet,
   useQuizGetAIAnswerAll,
   useQuizFileDownload,
+  useGetAIQuizAnswer,
 } from 'src/services/quiz/quiz.queries';
 
 const cx = classNames.bind(styles);
@@ -46,6 +47,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
   const [quizListData, setQuizListData] = useState<any[]>([]);
   const [contents, setContents] = useState<any>([]);
   const [quizProgressData, setQuizProgressData] = useState<any>([]);
+  const [quizProgressDataAI, setQuizProgressDataAI] = useState<any>([]);
   const [clubQuizThreads, setClubQuizThreads] = useState<any>([]);
   const [clubQuizGetThreads, setClubQuizGetThreads] = useState<any>('');
   const [clubQuizGetThreadsAll, setClubQuizGetThreadsAll] = useState<any>('');
@@ -55,6 +57,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
   const [page, setPage] = useState(1);
   const [params, setParams] = useState<any>({ id, page });
   const [quizParams, setQuizParams] = useState<any>({});
+  const [quizParamsAI, setQuizParamsAI] = useState<any>({});
   const [quizParamsAll, setQuizParamsAll] = useState<any>({});
   const [quizSaveParams, setQuizSaveParams] = useState<any>({});
   const [aiEvaluationParams, setAiEvaluationParams] = useState<any>({});
@@ -187,14 +190,16 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     console.log('second get data');
     console.log('data', data);
     setClubQuizThreads(data);
-    data.clubQuizThreads.map(item => {
-      // Check if the threadType is '0004' and return null to hide the div
-      if (item?.threadType === '0004') {
-        setIsHideAI(false);
-        setIsAIData(item);
-        console.log('false');
-      }
-    });
+    if (data?.clubQuizThreads?.length > 0) {
+      data.clubQuizThreads.map(item => {
+        // Check if the threadType is '0004' and return null to hide the div
+        if (item?.threadType === '0004') {
+          setIsHideAI(false);
+          setIsAIData(item);
+          console.log('false');
+        }
+      });
+    }
   });
 
   const {
@@ -249,11 +254,17 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     });
     setClubQuizGetThreadsAll(data);
   });
-  console.log('params', params);
+
   const { isFetched: isQuizAnswer, refetch: refetchQuizPrgress } = useQuizGetProgress(params, data => {
-    console.log('second get data');
-    console.log('data', data);
     setQuizProgressData(data);
+  });
+
+  const { refetch: refetchQuizAnswerAI } = useGetAIQuizAnswer(quizParamsAI, data => {
+    // setQuizProgressDataAI(data);
+    console.log('data', data);
+    setIsLoadingAI(false);
+    setGrade(data?.data?.grading);
+    setClubQuizGetThreads(data?.data?.feedback);
   });
 
   const {
@@ -354,6 +365,12 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     setIsHideAI(true);
     setMemberUUID(memberUUID);
     setQuizParams({
+      club: id,
+      quiz: selectedQuiz?.quizSequence,
+      memberUUID: memberUUID,
+    });
+
+    setQuizParamsAI({
       club: id,
       quiz: selectedQuiz?.quizSequence,
       memberUUID: memberUUID,
@@ -821,6 +838,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
           isContentModalClick={false}
           title={'AI답변보기'}
           isOpen={isModalOpen}
+          isProfile={true}
           onAfterClose={() => setIsModalOpen(false)}
         >
           {!isQuizGetanswer ? (
@@ -853,10 +871,10 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                   >
                     <div className="tw-w-1.5/12  tw-py-2 tw-flex tw-flex-col">
                       {item?.threadType === '0003' ? (
-                        <img className="tw-rounded-full tw-w-14 tw-h-14" src="/assets/images/main/chatbot.png" />
+                        <img className="tw-rounded-full tw-w-14 tw-h-14 border" src="/assets/images/main/chatbot.png" />
                       ) : (
                         <img
-                          className="tw-rounded-full tw-w-10 tw-h-10 "
+                          className="tw-rounded-full tw-w-10 tw-h-10 border"
                           src={item?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
                         />
                       )}
@@ -922,12 +940,12 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                             <div className="tw-space-y-3">
                               <div>
                                 <div className="tw-text-base tw-font-medium tw-text-gray-500 tw-mb-3">전체 피드백</div>
-                                <p className="tw-text-base !tw-tex-black">{item?.aiEvaluation?.feedback}</p>
+                                <p className="tw-text-base tw-text-black">{item?.aiEvaluation?.feedback}</p>
                               </div>
 
                               <div>
                                 <div className="tw-text-base tw-font-medium tw-text-gray-500 tw-mb-3">개선 포인트</div>
-                                <p className="tw-text-base tw-text-black">{item?.aiEvaluation?.improvePoint}</p>
+                                <p className="tw-text-base tw-text-black">{item?.aiEvaluation?.improvePoints}</p>
                               </div>
                               <div>
                                 <div className="tw-text-base tw-font-medium tw-text-gray-500 tw-mb-3">개선 예선</div>
@@ -945,24 +963,28 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                                 </div>
                                 <div className="tw-bg-blue-50 tw-border tw-border-blue-200 tw-rounded tw-p-4">
                                   <div className="tw-space-y-3">
-                                    {item?.aiEvaluation?.additionalResources.map((resource, index) => (
-                                      <div key={index} className="tw-flex tw-items-start tw-gap-2">
-                                        <div className="tw-w-1.5 tw-h-1.5 tw-bg-blue-500 tw-rounded-full tw-mt-2 tw-flex-shrink-0"></div>
-                                        <div className="tw-text-base">
-                                          <div className="tw-font-medium tw-text-blue-800 tw-mb-1">
-                                            {resource.title}
+                                    {item?.aiEvaluation?.additionalResources?.length > 0 ? (
+                                      item.aiEvaluation.additionalResources.map((resource, index) => (
+                                        <div key={index} className="tw-flex tw-items-start tw-gap-2">
+                                          <div className="tw-w-1.5 tw-h-1.5 tw-bg-blue-500 tw-rounded-full tw-mt-2 tw-flex-shrink-0"></div>
+                                          <div className="tw-text-base">
+                                            <div className="tw-font-medium tw-text-blue-800 tw-mb-1">
+                                              {resource.title}
+                                            </div>
+                                            <a
+                                              href={resource.url}
+                                              target="_blank"
+                                              rel="noopener noreferrer"
+                                              className="tw-text-blue-600 tw-underline tw-text-xs tw-break-all"
+                                            >
+                                              {resource.url}
+                                            </a>
                                           </div>
-                                          <a
-                                            href={resource.url}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="tw-text-blue-600 tw-underline tw-text-xs tw-break-all"
-                                          >
-                                            {resource.url}
-                                          </a>
                                         </div>
-                                      </div>
-                                    ))}
+                                      ))
+                                    ) : (
+                                      <p className="tw-text-gray-500 tw-text-sm">추가 학습 자료가 없습니다.</p>
+                                    )}
                                   </div>
                                 </div>
                               </div>
@@ -1041,9 +1063,9 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                       {user?.member?.nickname}
                       <button
                         onClick={() => {
-                          refetchQuizAnswerGet();
+                          // refetchQuizAnswerGet();
                           setIsLoadingAI(true);
-                          // handleAIAnswerClick();
+                          refetchQuizAnswerAI();
                         }}
                         disabled={isLoadingAI}
                         className="tw-min-w-[140px] tw-ml-3 tw-rounded tw-bg-black tw-text-white tw-text-sm tw-py-2 tw-px-4 disabled:tw-opacity-70 disabled:tw-cursor-not-allowed"

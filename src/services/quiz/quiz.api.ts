@@ -75,6 +75,14 @@ export const saveAIQuizAnswerList = async body => {
   return data;
 };
 
+export const getAIQuizAnswer = async body => {
+  const { data } = await axiosGeneralAPI().get(
+    `/api/v1/clubs/${body.club}/quizzes/${body.quiz}/answers/${body.memberUUID}/ai-evaluation`,
+  );
+  console.log('data', data);
+  return data;
+};
+
 export const saveAIQuizAnswerListPut = async body => {
   const { data } = await axiosGeneralAPI().put(
     `/api/v1/clubs/${body.clubSequence}/quizzes/${body.quizSequence}/answers/${body.memberUUID}/grade`,

@@ -924,10 +924,10 @@ BannerProps) => {
               <div className="tw-mb-4">
                 <div className="tw-text-base tw-font-medium tw-mb-2">개선 포인트</div>
                 <div className="tw-space-y-2">
-                  {aiQuizAnswerDataSavePut?.data?.improvePoint ? (
+                  {aiQuizAnswerDataSavePut?.data?.improvePoints ? (
                     <div className="tw-flex tw-items-start tw-gap-2">
                       <div className="tw-w-1 tw-h-1 tw-bg-gray-400 tw-rounded-full tw-mt-2 tw-flex-shrink-0"></div>
-                      <div className="tw-text-base">{aiQuizAnswerDataSavePut.data.improvePoint}</div>
+                      <div className="tw-text-base">{aiQuizAnswerDataSavePut?.data?.improvePoints}</div>
                     </div>
                   ) : null}
                   {aiQuizAnswerDataSavePut?.data?.improveExample && (
@@ -947,13 +947,13 @@ BannerProps) => {
                 </div>
               </div>
 
-              {aiQuizAnswerDataSavePut?.data?.additionalResources &&
-                aiQuizAnswerDataSavePut.data.additionalResources.length > 0 && (
-                  <div>
-                    <div className="tw-text-base tw-font-medium tw-mb-2">추가 학습 자료</div>
+              {aiQuizAnswerDataSavePut?.data && (
+                <div>
+                  <div className="tw-text-base tw-font-medium tw-mb-2">추가 학습 자료</div>
+                  {aiQuizAnswerDataSavePut?.data?.additionalResources?.length > 0 ? (
                     <div className="tw-bg-blue-50 tw-border tw-border-blue-200 tw-rounded tw-p-4">
                       <div className="tw-space-y-3">
-                        {aiQuizAnswerDataSavePut.data.additionalResources.map((resource, index) => (
+                        {aiQuizAnswerDataSavePut?.data?.additionalResources?.map((resource, index) => (
                           <div key={index} className="tw-flex tw-items-start tw-gap-2">
                             <div className="tw-w-1.5 tw-h-1.5 tw-bg-blue-500 tw-rounded-full tw-mt-2 tw-flex-shrink-0"></div>
                             <div className="tw-text-base">
@@ -971,8 +971,11 @@ BannerProps) => {
                         ))}
                       </div>
                     </div>
-                  </div>
-                )}
+                  ) : (
+                    <p className="tw-text-gray-500 tw-text-sm">추가 학습 자료가 없습니다.</p>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>

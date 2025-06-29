@@ -32,6 +32,7 @@ import {
   quizKnowledgeDownload,
   quizGetAIAnswerGetTotal,
   quizGetAIAnswerGetQuiz,
+  getAIQuizAnswer,
 } from './quiz.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 import { User } from 'src/models/user';
@@ -297,6 +298,16 @@ export const useQuizGetAIAnswer = (params, onSuccess?: (data: any) => void, onEr
 };
 
 //클럽퀴즈 진행현황 조회
+export const useGetAIQuizAnswer = (params, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
+  return useQuery<any, Error>(QUERY_KEY_FACTORY('CONTENT_DASHBOARD').detail(params), () => getAIQuizAnswer(params), {
+    onSuccess,
+    onError,
+    refetchOnWindowFocus: false,
+    enabled: false,
+  });
+};
+
+//클럽퀴즈 진행현황 조회
 export const useQuizGetAIMyAnswer = (params, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
   return useQuery<any, Error>(QUERY_KEY_FACTORY('EDGE').detail(params), () => quizGetAIMyAnswer(params), {
     onSuccess,
@@ -330,33 +341,19 @@ export const useQuizGetAIAnswerAll = (params, onSuccess?: (data: any) => void, o
 // AI 피드백 조회 전용 훅
 export const useQuizAIFeedback = (params, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
   console.log('useQuizAIFeedback params:', params);
-  return useQuery<any, Error>(
-    ['quiz-ai-feedback', params.club, params.quiz, params.memberUUID],
-    () => {
-      console.log('API 호출 시작:', params);
-      return quizGetAIAnswerGet(params);
-    },
-    {
-      onSuccess: data => {
-        console.log('API 응답 성공:', data);
-        onSuccess?.(data);
-      },
-      onError: error => {
-        console.error('API 응답 에러:', error);
-        onError?.(error);
-      },
-      refetchOnWindowFocus: false,
-      enabled: false,
-      retry: false,
-    },
-  );
+  return useQuery<any, Error>(QUERY_KEY_FACTORY('EDGE').detail(params), () => quizGetAIMyAnswer(params), {
+    onSuccess,
+    onError,
+    refetchOnWindowFocus: false,
+    enabled: false,
+  });
 };
 
 // AI 피드백 조회 전용 훅
 export const useQuizAIFeedbackTotal = (params, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
   console.log('useQuizAIFeedbackTotal params:', params);
   return useQuery<any, Error>(
-    ['quiz-ai-feedback-total', params.clubSequence],
+    ['quiz-ai-feedback-total', params?.clubSequence],
     () => {
       console.log('API 호출 시작:', params);
       return quizGetAIAnswerGetTotal(params);
@@ -380,7 +377,7 @@ export const useQuizAIFeedbackTotal = (params, onSuccess?: (data: any) => void, 
 export const useQuizAIFeedbackQuiz = (params, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
   console.log('useQuizAIFeedbackQuiz params:', params);
   return useQuery<any, Error>(
-    ['quiz-ai-feedback-quiz', params.clubSequence],
+    ['quiz-ai-feedback-quiz', params?.clubSequence],
     () => {
       console.log('API 호출 시작:', params);
       return quizGetAIAnswerGetQuiz(params);

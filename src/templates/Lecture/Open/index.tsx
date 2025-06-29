@@ -1879,53 +1879,38 @@ export function LectureOpenTemplate() {
                     <div>
                       <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2">타 학습자 질의/답변 보기</div>
                       <div>
-                        <div className="tw-flex tw-items-center tw-gap-2 tw-mt-1">
+                        <div className="tw-flex tw-items-center tw-mt-1">
                           <ToggleButtonGroup
                             value={isQuestionsPublic}
                             onChange={handleIsQuestionsPublic}
                             exclusive
                             aria-label=""
-                          >
-                            <ToggleButton
-                              classes={{ selected: classes.selected }}
-                              value="true"
-                              className="tw-ring-1 tw-ring-slate-900/10"
-                              style={{
+                            sx={{
+                              '& .MuiToggleButton-root': {
                                 width: 70,
-                                borderRadius: '5px',
-                                borderLeft: '0px',
-                                margin: '5px',
-                                height: '35px',
-                                border: '0px',
-                              }}
-                              sx={{
+                                height: 35,
+                                margin: '0 8px',
+                                borderRadius: '5px !important',
+                                border: '1px solid rgba(0, 0, 0, 0.12) !important',
                                 '&.Mui-selected': {
                                   backgroundColor: '#000',
                                   color: '#fff',
+                                  borderColor: '#000 !important',
                                 },
-                              }}
-                            >
+                                '&:not(.Mui-selected)': {
+                                  backgroundColor: '#fff',
+                                  color: '#000',
+                                },
+                                '&:hover': {
+                                  backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                                },
+                              },
+                            }}
+                          >
+                            <ToggleButton value="true" className="tw-ring-1 tw-ring-slate-900/10">
                               공개
                             </ToggleButton>
-                            <ToggleButton
-                              classes={{ selected: classes.selected }}
-                              value="false"
-                              className="tw-ring-1 tw-ring-slate-900/10"
-                              style={{
-                                width: 70,
-                                borderRadius: '5px',
-                                borderLeft: '0px',
-                                margin: '5px',
-                                height: '35px',
-                                border: '0px',
-                              }}
-                              sx={{
-                                '&.Mui-selected': {
-                                  backgroundColor: '#000',
-                                  color: '#fff',
-                                },
-                              }}
-                            >
+                            <ToggleButton value="false" className="tw-ring-1 tw-ring-slate-900/10">
                               비공개
                             </ToggleButton>
                           </ToggleButtonGroup>
@@ -1937,53 +1922,38 @@ export function LectureOpenTemplate() {
                         AI 질문제한 (시험 등 AI조교 기능 제한이 필요할 때)
                       </div>
                       <div>
-                        <div className="tw-flex tw-items-center tw-gap-2 tw-mt-1">
+                        <div className="tw-flex tw-items-center tw-mt-1">
                           <ToggleButtonGroup
                             value={enableAiQuestion}
                             onChange={handleEnableAiQuestion}
                             exclusive
                             aria-label=""
-                          >
-                            <ToggleButton
-                              classes={{ selected: classes.selected }}
-                              value="false"
-                              className="tw-ring-1 tw-ring-slate-900/10"
-                              style={{
+                            sx={{
+                              '& .MuiToggleButton-root': {
                                 width: 70,
-                                borderRadius: '5px',
-                                borderLeft: '0px',
-                                margin: '5px',
-                                height: '35px',
-                                border: '0px',
-                              }}
-                              sx={{
+                                height: 35,
+                                margin: '0 8px',
+                                borderRadius: '5px !important',
+                                border: '1px solid rgba(0, 0, 0, 0.12) !important',
                                 '&.Mui-selected': {
                                   backgroundColor: '#000',
                                   color: '#fff',
+                                  borderColor: '#000 !important',
                                 },
-                              }}
-                            >
+                                '&:not(.Mui-selected)': {
+                                  backgroundColor: '#fff',
+                                  color: '#000',
+                                },
+                                '&:hover': {
+                                  backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                                },
+                              },
+                            }}
+                          >
+                            <ToggleButton value="false" className="tw-ring-1 tw-ring-slate-900/10">
                               ON
                             </ToggleButton>
-                            <ToggleButton
-                              classes={{ selected: classes.selected }}
-                              value="true"
-                              className="tw-ring-1 tw-ring-slate-900/10"
-                              style={{
-                                width: 70,
-                                borderRadius: '5px',
-                                borderLeft: '0px',
-                                margin: '5px',
-                                height: '35px',
-                                border: '0px',
-                              }}
-                              sx={{
-                                '&.Mui-selected': {
-                                  backgroundColor: '#000',
-                                  color: '#fff',
-                                },
-                              }}
-                            >
+                            <ToggleButton value="true" className="tw-ring-1 tw-ring-slate-900/10">
                               OFF
                             </ToggleButton>
                           </ToggleButtonGroup>
@@ -1993,53 +1963,38 @@ export function LectureOpenTemplate() {
                     <div>
                       <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2">답변레퍼런스 포함여부</div>
                       <div>
-                        <div className="tw-flex tw-items-center tw-gap-2 tw-mt-1">
+                        <div className="tw-flex tw-items-center tw-mt-1">
                           <ToggleButtonGroup
                             value={includeReferenceToAnswer}
                             onChange={handleAnswerReference}
                             exclusive
                             aria-label=""
-                          >
-                            <ToggleButton
-                              classes={{ selected: classes.selected }}
-                              value="true"
-                              className="tw-ring-1 tw-ring-slate-900/10"
-                              style={{
+                            sx={{
+                              '& .MuiToggleButton-root': {
                                 width: 70,
-                                borderRadius: '5px',
-                                borderLeft: '0px',
-                                margin: '5px',
-                                height: '35px',
-                                border: '0px',
-                              }}
-                              sx={{
+                                height: 35,
+                                margin: '0 8px',
+                                borderRadius: '5px !important',
+                                border: '1px solid rgba(0, 0, 0, 0.12) !important',
                                 '&.Mui-selected': {
                                   backgroundColor: '#000',
                                   color: '#fff',
+                                  borderColor: '#000 !important',
                                 },
-                              }}
-                            >
+                                '&:not(.Mui-selected)': {
+                                  backgroundColor: '#fff',
+                                  color: '#000',
+                                },
+                                '&:hover': {
+                                  backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                                },
+                              },
+                            }}
+                          >
+                            <ToggleButton value="true" className="tw-ring-1 tw-ring-slate-900/10">
                               ON
                             </ToggleButton>
-                            <ToggleButton
-                              classes={{ selected: classes.selected }}
-                              value="false"
-                              className="tw-ring-1 tw-ring-slate-900/10"
-                              style={{
-                                width: 70,
-                                borderRadius: '5px',
-                                borderLeft: '0px',
-                                margin: '5px',
-                                height: '35px',
-                                border: '0px',
-                              }}
-                              sx={{
-                                '&.Mui-selected': {
-                                  backgroundColor: '#000',
-                                  color: '#fff',
-                                },
-                              }}
-                            >
+                            <ToggleButton value="false" className="tw-ring-1 tw-ring-slate-900/10">
                               OFF
                             </ToggleButton>
                           </ToggleButtonGroup>

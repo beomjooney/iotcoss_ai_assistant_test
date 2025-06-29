@@ -1,5 +1,5 @@
 // QuizClubDetailInfo.jsx
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import Avatar from '@mui/material/Avatar';
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
@@ -61,18 +61,15 @@ const QuizClubDetaillSolution = ({
   let [isLiked, setIsLiked] = useState(contents?.club?.isFavorite);
   const { mutate: onSaveLike, isSuccess } = useSaveLike();
   const { mutate: onDeleteLike } = useDeleteLike();
-  const [isResultOpen, setIsResultOpen] = useState<boolean>(false);
   const [clubQuizThreads, setClubQuizThreads] = useState<any>([]);
   const [isHideAI, setIsHideAI] = useState(true);
   const [isAIData, setIsAIData] = useState({});
   const [isLoadingAI, setIsLoadingAI] = useState(false);
   const [quizSequence, setQuizSequence] = useState<number>(0);
   const [quizParams, setQuizParams] = useState<any>({});
-  const [quizParamsAll, setQuizParamsAll] = useState<any>({});
   const [grade, setGrade] = useState('');
   const [fileList, setFileList] = useState([]);
   const [inputList, setInputList] = useState([]);
-  const [clubQuizGetThreads, setClubQuizGetThreads] = useState<any>('');
   const [expandedItems, setExpandedItems] = useState(() => Array(quizList?.length || 0).fill(false));
   const [key, setKey] = useState('');
   const [fileName, setFileName] = useState('');
@@ -83,32 +80,9 @@ const QuizClubDetaillSolution = ({
   const [aiFeedbackDataTotalQuiz, setAiFeedbackDataTotalQuiz] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedQuizSequence, setSelectedQuizSequence] = useState<number>(0);
-  const [aiEvaluationParams, setAiEvaluationParams] = useState<any>({});
-  const [aiEvaluationParamsTotal, setAiEvaluationParamsTotal] = useState<any>({});
-  const [aiEvaluationParamsTotalQuiz, setAiEvaluationParamsTotalQuiz] = useState<any>({});
-  const [state, setState] = React.useState({
-    series: [
-      {
-        name: 'Series 1',
-        data: [80, 50, 30, 40, 100, 20],
-      },
-    ],
-    options: {
-      chart: {
-        height: 350,
-        type: 'radar',
-      },
-      title: {
-        text: 'Basic Radar Chart',
-      },
-      yaxis: {
-        stepSize: 20,
-      },
-      xaxis: {
-        categories: ['January', 'February', 'March', 'April', 'May', 'June'],
-      },
-    },
-  });
+  const [aiEvaluationParams, setAiEvaluationParams] = useState<any>(null);
+  const [aiEvaluationParamsTotal, setAiEvaluationParamsTotal] = useState<any>(null);
+  const [aiEvaluationParamsTotalQuiz, setAiEvaluationParamsTotalQuiz] = useState<any>(null);
   const { isFetched: isParticipantListFetcheds } = useQuizFileDownload(key, data => {
     if (data) {
       const url = window.URL.createObjectURL(new Blob([data], { type: 'application/pdf' }));
@@ -127,14 +101,16 @@ const QuizClubDetaillSolution = ({
   const { isFetched: isQuizGetanswer, refetch: refetchQuizAnswer } = useQuizGetAIMyAnswer(quizParams, data => {
     console.log('data', data);
     setClubQuizThreads(data);
-    data.clubQuizThreads.map(item => {
-      // Check if the threadType is '0004' and return null to hide the div
-      if (item?.threadType === '0004') {
-        setIsHideAI(false);
-        setIsAIData(item);
-        console.log('false');
-      }
-    });
+    if (data?.clubQuizThreads?.length > 0) {
+      data.clubQuizThreads.map(item => {
+        // Check if the threadType is '0004' and return null to hide the div
+        if (item?.threadType === '0004') {
+          setIsHideAI(false);
+          setIsAIData(item);
+          console.log('false');
+        }
+      });
+    }
   });
 
   // AI 피드백 데이터 조회
@@ -179,14 +155,6 @@ const QuizClubDetaillSolution = ({
     },
   );
 
-  // aiEvaluationParams가 변경될 때마다 API 호출
-  useDidMountEffect(() => {
-    if (aiEvaluationParams.club && aiEvaluationParams.quiz && aiEvaluationParams.memberUUID) {
-      console.log('Calling API with params:', aiEvaluationParams);
-      refetchAIEvaluation();
-    }
-  }, [aiEvaluationParams]);
-
   const toggleExpand = index => {
     setExpandedItems(prev => {
       const newExpandedItems = [...prev];
@@ -217,6 +185,12 @@ const QuizClubDetaillSolution = ({
   } = useAIQuizMyAnswerSavePut();
 
   useDidMountEffect(() => {
+    if (aiEvaluationParams) {
+      refetchAIEvaluation();
+    }
+  }, [aiEvaluationParams]);
+
+  useDidMountEffect(() => {
     if (aiEvaluationParamsTotalQuiz) {
       refetchAIEvaluationTotalQuiz();
     }
@@ -236,10 +210,8 @@ const QuizClubDetaillSolution = ({
   }, [answerSuccessSavePut, answerErrorSavePut]);
 
   useDidMountEffect(() => {
-    if (aiQuizAnswerDataSavePut) {
-      console.log('aiQuizAnswerDataSavePut', aiQuizAnswerDataSavePut);
-    }
-  }, [aiQuizAnswerDataSavePut]);
+    refetchQuizAnswer();
+  }, [quizParams]);
 
   const handlerSave = () => {
     // Uncomment and replace with actual API call
@@ -281,10 +253,6 @@ const QuizClubDetaillSolution = ({
     }
   };
 
-  useDidMountEffect(() => {
-    refetchQuizAnswer();
-  }, [quizParams]);
-
   const onFileDownload = function (key: string, fileName: string) {
     console.log(key);
     setKey(key);
@@ -311,7 +279,6 @@ const QuizClubDetaillSolution = ({
       memberUUID: memberId, // 실제 memberId 사용
     });
     setIsFeedbackModalOpen(true);
-    // useDidMountEffect에서 자동으로 API 호출됨
   };
 
   // 총평 피드백 보기
@@ -427,7 +394,7 @@ const QuizClubDetaillSolution = ({
                   </p>
                 </div>
                 <div
-                  className="tw-bg-[#e11837] tw-rounded-[3.5px] tw-px-[24.5px] tw-py-[10.0625px] tw-cursor-pointer"
+                  className="tw-bg-[#2474ED] tw-rounded-[3.5px] tw-px-[24.5px] tw-py-[10.0625px] tw-cursor-pointer"
                   onClick={() => router.push('/quiz/round-answers/' + `${contents?.club?.clubSequence}`)}
                 >
                   <p className="tw-text-[12.25px] tw-font-bold tw-text-white tw-text-center">퀴즈라운지</p>
@@ -1071,13 +1038,12 @@ const QuizClubDetaillSolution = ({
                                       <div className="tw-flex tw-justify-end tw-items-center tw-relative tw-gap-2 tw-px-2 tw-py-1 tw-rounded">
                                         <p
                                           onClick={() => {
-                                            handleClick('sfasd', item?.quizSequence, false);
-                                            // toggleExpand(index)
+                                            handleFeedbackClick(item?.quizSequence);
+                                            // handleClick('sfasd', item?.quizSequence, false);
                                           }}
                                           className="tw-cursor-pointer tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-bold tw-text-right tw-text-[#9ca5b2]"
                                         >
-                                          {/* {expandedItems[index] ? '접기' : '자세히보기'} */}
-                                          자세히보기
+                                          피드백보기
                                         </p>
                                         <svg
                                           width={7}
@@ -1143,7 +1109,7 @@ const QuizClubDetaillSolution = ({
                                             );
                                           }}
                                           data-tooltip-target="tooltip-default"
-                                          className=" max-lg:tw-w-[60px] tw-px-[30.5px] tw-py-[9.5px] tw-rounded tw-bg-[#E11837] tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
+                                          className=" max-lg:tw-w-[60px] tw-px-[30.5px] tw-py-[9.5px] tw-rounded tw-bg-[#2474ED] tw-text-white tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded"
                                         >
                                           퀴즈 풀러가기
                                         </button>
@@ -1266,14 +1232,14 @@ const QuizClubDetaillSolution = ({
                                   <div className="tw-text-base tw-font-medium tw-text-gray-500 tw-mb-3">
                                     전체 피드백
                                   </div>
-                                  <p className="tw-text-base !tw-tex-black">{item?.aiEvaluation?.feedback}</p>
+                                  ㅅㅅ <p className="tw-text-base !tw-text-black">{item?.aiEvaluation?.feedback}</p>
                                 </div>
 
                                 <div>
                                   <div className="tw-text-base tw-font-medium tw-text-gray-500 tw-mb-3">
                                     개선 포인트
                                   </div>
-                                  <p className="tw-text-base tw-text-black">{item?.aiEvaluation?.improvePoint}</p>
+                                  <p className="tw-text-base tw-text-black">{item?.aiEvaluation?.improvePoints}</p>
                                 </div>
                                 <div>
                                   <div className="tw-text-base tw-font-medium tw-text-gray-500 tw-mb-3">개선 예선</div>
@@ -1293,24 +1259,28 @@ const QuizClubDetaillSolution = ({
                                   </div>
                                   <div className="tw-bg-blue-50 tw-border tw-border-blue-200 tw-rounded tw-p-4">
                                     <div className="tw-space-y-3">
-                                      {item?.aiEvaluation?.additionalResources.map((resource, index) => (
-                                        <div key={index} className="tw-flex tw-items-start tw-gap-2">
-                                          <div className="tw-w-1.5 tw-h-1.5 tw-bg-blue-500 tw-rounded-full tw-mt-2 tw-flex-shrink-0"></div>
-                                          <div className="tw-text-base">
-                                            <div className="tw-font-medium tw-text-blue-800 tw-mb-1">
-                                              {resource.title}
+                                      {item?.aiEvaluation?.additionalResources?.length > 0 ? (
+                                        item.aiEvaluation.additionalResources.map((resource, index) => (
+                                          <div key={index} className="tw-flex tw-items-start tw-gap-2">
+                                            <div className="tw-w-1.5 tw-h-1.5 tw-bg-blue-500 tw-rounded-full tw-mt-2 tw-flex-shrink-0"></div>
+                                            <div className="tw-text-base">
+                                              <div className="tw-font-medium tw-text-blue-800 tw-mb-1">
+                                                {resource.title}
+                                              </div>
+                                              <a
+                                                href={resource.url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="tw-text-blue-600 tw-underline tw-text-xs tw-break-all"
+                                              >
+                                                {resource.url}
+                                              </a>
                                             </div>
-                                            <a
-                                              href={resource.url}
-                                              target="_blank"
-                                              rel="noopener noreferrer"
-                                              className="tw-text-blue-600 tw-underline tw-text-xs tw-break-all"
-                                            >
-                                              {resource.url}
-                                            </a>
                                           </div>
-                                        </div>
-                                      ))}
+                                        ))
+                                      ) : (
+                                        <p className="tw-text-gray-500 tw-text-sm">추가 학습 자료가 없습니다.</p>
+                                      )}
                                     </div>
                                   </div>
                                 </div>
@@ -1436,7 +1406,7 @@ const QuizClubDetaillSolution = ({
           setIsTotalFeedbackModalOpen(false);
         }}
       >
-        <div className="tw-max-h-[80vh] tw-overflow-y-auto">
+        <div className="tw-max-h-[80vh] tw-overflow-y-auto tw-pb-20">
           {/* 전체 퀴즈 총평 피드백 */}
           {isLoading && (
             <div className="tw-flex tw-items-center tw-justify-center tw-h-full">
@@ -1710,34 +1680,54 @@ const QuizClubDetaillSolution = ({
               {/* 학습 추천 */}
               <div className="tw-mb-6">
                 <div className="tw-text-blue-600 tw-text-base tw-font-bold tw-mb-3">학습 추천</div>
-                <div className="tw-space-y-2">
-                  {aiFeedbackDataTotal?.resourceRecommendations?.map(item => (
-                    <ul className="tw-list-disc tw-ml-4">
-                      <li className="tw-text-base tw-text-gray-700">{item.title}</li>
-                      <li className="tw-text-base tw-text-gray-700 tw-ml-4">
-                        <a href={item.url} className="tw-text-blue-500 tw-underline">
-                          {item.url}
-                        </a>
-                      </li>
-                    </ul>
-                  ))}
-                </div>
+                {aiFeedbackDataTotal?.recommendations?.length > 0 ? (
+                  <div className="tw-space-y-4">
+                    {aiFeedbackDataTotal.recommendations.map((recommendation, index) => (
+                      <div key={index} className="tw-bg-gray-50 tw-p-4 tw-rounded-lg">
+                        <div className="tw-text-base tw-text-gray-700 tw-mb-3 tw-font-medium">
+                          {recommendation.recommendation}
+                        </div>
+                        {recommendation.resources?.length > 0 && (
+                          <div className="tw-space-y-2">
+                            {recommendation.resources.map((resource, resourceIndex) => (
+                              <div key={resourceIndex} className="tw-pl-4 tw-border-l-2 tw-border-blue-200">
+                                <div className="tw-text-sm tw-font-medium tw-text-blue-800 tw-mb-1">
+                                  {resource.title}
+                                </div>
+                                <a
+                                  href={resource.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="tw-text-blue-500 tw-underline tw-text-sm tw-break-all"
+                                >
+                                  {resource.url}
+                                </a>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="tw-text-gray-500 tw-text-sm">학습 추천 자료가 없습니다.</p>
+                )}
               </div>
 
               {/* 개별 퀴즈 피드백 요약 */}
+              <div
+                className="tw-text-black tw-text-base tw-font-bold tw-mb-3"
+                style={{
+                  fontFamily:
+                    'Pretendard Variable, Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif',
+                }}
+              >
+                개별 퀴즈 피드백 요약
+              </div>
               {aiFeedbackDataTotalQuiz && (
                 <div>
                   {aiFeedbackDataTotalQuiz?.contents.map(item => (
                     <div>
-                      <div
-                        className="tw-text-black tw-text-base tw-font-bold tw-mb-3"
-                        style={{
-                          fontFamily:
-                            'Pretendard Variable, Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif',
-                        }}
-                      >
-                        개별 퀴즈 피드백 요약
-                      </div>
                       <div className="tw-mb-4">
                         <div className="border tw-border-gray-200 tw-rounded-lg tw-bg-white">
                           <div className="tw-flex tw-justify-between tw-items-center border-bottom tw-px-4">
@@ -1761,17 +1751,6 @@ const QuizClubDetaillSolution = ({
                                 {item.publishDate} {item.question}
                               </span>
                             </div>
-                            {/* <span className="tw-text-xs tw-text-gray-500 tw-cursor-pointer tw-flex tw-items-center">
-                              자세히보기
-                              <svg
-                                className="tw-w-3 tw-h-3 tw-ml-1"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                              </svg>
-                            </span> */}
                           </div>
 
                           <div className="tw-bg-[#F6F7FB] tw-p-6">
@@ -1823,9 +1802,10 @@ const QuizClubDetaillSolution = ({
         }}
         title="피드백 보기"
         height="80%"
+        isProfile={true}
         isContentModalClick={false}
       >
-        <div className="tw-max-w-4xl tw-mx-auto tw-min-h-screen">
+        <div className="tw-max-w-4xl tw-mx-auto tw-min-h-screen tw-pb-5">
           {/* Header */}
           <div className="tw-space-y-4">
             <div className="border tw-rounded-lg">
@@ -1890,12 +1870,12 @@ const QuizClubDetaillSolution = ({
                         <div className="tw-space-y-3">
                           <div>
                             <div className="tw-text-base tw-font-medium tw-text-gray-500 tw-mb-3">전체 피드백</div>
-                            <p className="tw-text-base !tw-tex-black">{item?.aiEvaluation?.feedback}</p>
+                            <p className="tw-text-base !tw-text-black">{item?.aiEvaluation?.feedback}</p>
                           </div>
 
                           <div>
                             <div className="tw-text-base tw-font-medium tw-text-gray-500 tw-mb-3">개선 포인트</div>
-                            <p className="tw-text-base tw-text-black">{item?.aiEvaluation?.improvePoint}</p>
+                            <p className="tw-text-base tw-text-black">{item?.aiEvaluation?.improvePoints}</p>
                           </div>
                           <div>
                             <div className="tw-text-base tw-font-medium tw-text-gray-500 tw-mb-3">개선 예선</div>
@@ -1911,22 +1891,26 @@ const QuizClubDetaillSolution = ({
                             <div className="tw-text-base tw-font-medium tw-text-gray-500 tw-mb-3">추가 학습 자료</div>
                             <div className="tw-bg-blue-50 tw-border tw-border-blue-200 tw-rounded tw-p-4">
                               <div className="tw-space-y-3">
-                                {item?.aiEvaluation?.additionalResources.map((resource, index) => (
-                                  <div key={index} className="tw-flex tw-items-start tw-gap-2">
-                                    <div className="tw-w-1.5 tw-h-1.5 tw-bg-blue-500 tw-rounded-full tw-mt-2 tw-flex-shrink-0"></div>
-                                    <div className="tw-text-base">
-                                      <div className="tw-font-medium tw-text-blue-800 tw-mb-1">{resource.title}</div>
-                                      <a
-                                        href={resource.url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="tw-text-blue-600 tw-underline tw-text-xs tw-break-all"
-                                      >
-                                        {resource.url}
-                                      </a>
+                                {item?.aiEvaluation?.additionalResources?.length > 0 ? (
+                                  item.aiEvaluation.additionalResources.map((resource, index) => (
+                                    <div key={index} className="tw-flex tw-items-start tw-gap-2">
+                                      <div className="tw-w-1.5 tw-h-1.5 tw-bg-blue-500 tw-rounded-full tw-mt-2 tw-flex-shrink-0"></div>
+                                      <div className="tw-text-base">
+                                        <div className="tw-font-medium tw-text-blue-800 tw-mb-1">{resource.title}</div>
+                                        <a
+                                          href={resource.url}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="tw-text-blue-600 tw-underline tw-text-xs tw-break-all"
+                                        >
+                                          {resource.url}
+                                        </a>
+                                      </div>
                                     </div>
-                                  </div>
-                                ))}
+                                  ))
+                                ) : (
+                                  <p className="tw-text-gray-500 tw-text-sm">추가 학습 자료가 없습니다.</p>
+                                )}
                               </div>
                             </div>
                           </div>

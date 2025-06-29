@@ -458,7 +458,6 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
               </div>
             </div>
             {/* <DataGrid columns={columns} rows={rows} />; */}
-
             <TableContainer>
               <Table className={classes.table} aria-label="simple table" style={{ tableLayout: 'fixed' }}>
                 <TableHead style={{ backgroundColor: '#F6F7FB' }}>
