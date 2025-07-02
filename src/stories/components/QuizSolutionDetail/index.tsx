@@ -357,9 +357,11 @@ BannerProps) => {
 
   const handleModalClose = () => {
     setShowSubmitModal(false);
+    location.href = `/quiz/${data?.clubSequence}`;
   };
   const handleModalClose2 = () => {
     setShowSubmitAnswerModal(false);
+    location.href = `/quiz/${data?.clubSequence}`;
   };
   return (
     <>
@@ -898,6 +900,7 @@ BannerProps) => {
         onAfterClose={() => setIsFeedbackModalOpen(false)}
         title="피드백 보기"
         height="80%"
+        isProfile={true}
         isContentModalClick={false}
       >
         <div className="pb-6">
@@ -997,14 +1000,6 @@ BannerProps) => {
                   className="tw-px-8 tw-py-3 tw-bg-gray-200 tw-text-gray-700 tw-rounded-md tw-font-medium tw-hover:bg-gray-300 tw-transition-colors tw-w-[180px]"
                 >
                   닫기
-                </button>
-                <button
-                  onClick={() => {
-                    location.href = `/quiz/${data?.clubSequence}`;
-                  }}
-                  className="tw-px-8 tw-py-3 tw-bg-gray-200 tw-text-gray-700 tw-rounded-md tw-font-medium tw-hover:bg-gray-300 tw-transition-colors tw-w-[180px]"
-                >
-                  퀴즈클럽 가기
                 </button>
                 <button
                   onClick={handleFinalSubmit2}
