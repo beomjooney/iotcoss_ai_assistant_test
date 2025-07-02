@@ -410,9 +410,7 @@ const QuizClubDetaillSolution = ({
             <p className="tw-text-xl tw-font-bold tw-text-black">나의 학습 현황</p>
             <div className="tw-flex tw-items-center tw-gap-2">
               <div className="tw-flex tw-items-center">
-                <div className="tw-text-base tw-text-black tw-leading-relaxed tw-mr-2">
-                  모든 퀴즈를 완료하였습니다! 총평 피드백을 확인해보세요.
-                </div>
+                <div className="tw-text-base tw-text-black tw-leading-relaxed tw-mr-2">총평 피드백을 확인해보세요.</div>
               </div>
               <button
                 onClick={() => handleTotalFeedbackClick(contents?.club?.clubSequence)}
