@@ -927,10 +927,10 @@ BannerProps) => {
               <div className="tw-mb-4">
                 <div className="tw-text-base tw-font-medium tw-mb-2">개선 포인트</div>
                 <div className="tw-space-y-2">
-                  {aiQuizAnswerDataSavePut?.data?.improvePoints ? (
+                  {aiQuizAnswerDataSavePut?.data?.improvePoint ? (
                     <div className="tw-flex tw-items-start tw-gap-2">
                       <div className="tw-w-1 tw-h-1 tw-bg-gray-400 tw-rounded-full tw-mt-2 tw-flex-shrink-0"></div>
-                      <div className="tw-text-base">{aiQuizAnswerDataSavePut?.data?.improvePoints}</div>
+                      <div className="tw-text-base">{aiQuizAnswerDataSavePut?.data?.improvePoint}</div>
                     </div>
                   ) : null}
                   {aiQuizAnswerDataSavePut?.data?.improveExample && (

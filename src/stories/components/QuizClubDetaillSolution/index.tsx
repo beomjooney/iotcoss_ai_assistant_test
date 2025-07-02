@@ -439,7 +439,12 @@ const QuizClubDetaillSolution = ({
                       strokeWidth="8"
                       fill="none"
                       strokeDasharray={`${2 * Math.PI * 50}`}
-                      strokeDashoffset={`${2 * Math.PI * 50 * (1 - (contents?.progress?.currentRound || 0) / (contents?.progress?.studyStatuses?.length || 1))}`}
+                      strokeDashoffset={`${
+                        2 *
+                        Math.PI *
+                        50 *
+                        (1 - (contents?.progress?.currentRound || 0) / (contents?.progress?.studyStatuses?.length || 1))
+                      }`}
                       strokeLinecap="round"
                       className="tw-transition-all tw-duration-500"
                     />
@@ -952,8 +957,8 @@ const QuizClubDetaillSolution = ({
                                 ? item?.answer?.relativeDaysToPublishDate < 0
                                   ? `D${item?.answer?.relativeDaysToPublishDate}`
                                   : item?.answer?.relativeDaysToPublishDate === 0
-                                    ? `D-0`
-                                    : `D+${item?.answer?.relativeDaysToPublishDate}`
+                                  ? `D-0`
+                                  : `D+${item?.answer?.relativeDaysToPublishDate}`
                                 : ''}
                             </div>
                           </Grid>
@@ -1239,7 +1244,7 @@ const QuizClubDetaillSolution = ({
                                   <div className="tw-text-base tw-font-medium tw-text-gray-500 tw-mb-3">
                                     개선 포인트
                                   </div>
-                                  <p className="tw-text-base tw-text-black">{item?.aiEvaluation?.improvePoints}</p>
+                                  <p className="tw-text-base tw-text-black">{item?.aiEvaluation?.improvePoint}</p>
                                 </div>
                                 <div>
                                   <div className="tw-text-base tw-font-medium tw-text-gray-500 tw-mb-3">개선 예선</div>
@@ -1839,12 +1844,12 @@ const QuizClubDetaillSolution = ({
                     {item.threadType === '0001'
                       ? '사전답변'
                       : item.threadType === '0002'
-                        ? '최종답변'
-                        : item.threadType === '0003'
-                          ? 'AI피드백'
-                          : item.threadType === '0004'
-                            ? '교수자답변'
-                            : '최종답변'}
+                      ? '최종답변'
+                      : item.threadType === '0003'
+                      ? 'AI피드백'
+                      : item.threadType === '0004'
+                      ? '교수자답변'
+                      : '최종답변'}
                   </span>
                   <span className="tw-text-xs tw-text-gray-500">{item.createdAt}</span>
                 </div>
@@ -1875,7 +1880,7 @@ const QuizClubDetaillSolution = ({
 
                           <div>
                             <div className="tw-text-base tw-font-medium tw-text-gray-500 tw-mb-3">개선 포인트</div>
-                            <p className="tw-text-base tw-text-black">{item?.aiEvaluation?.improvePoints}</p>
+                            <p className="tw-text-base tw-text-black">{item?.aiEvaluation?.improvePoint}</p>
                           </div>
                           <div>
                             <div className="tw-text-base tw-font-medium tw-text-gray-500 tw-mb-3">개선 예선</div>

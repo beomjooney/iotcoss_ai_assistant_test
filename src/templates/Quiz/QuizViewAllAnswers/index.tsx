@@ -945,7 +945,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
 
                               <div>
                                 <div className="tw-text-base tw-font-medium tw-text-gray-500 tw-mb-3">개선 포인트</div>
-                                <p className="tw-text-base tw-text-black">{item?.aiEvaluation?.improvePoints}</p>
+                                <p className="tw-text-base tw-text-black">{item?.aiEvaluation?.improvePoint}</p>
                               </div>
                               <div>
                                 <div className="tw-text-base tw-font-medium tw-text-gray-500 tw-mb-3">개선 예선</div>
@@ -993,7 +993,9 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                         </div>
                       ) : (
                         <div
-                          className={`tw-text-[#9ca5b2] tw-text-base ${item?.threadType === '0003' ? 'tw-text-black' : ''}`}
+                          className={`tw-text-[#9ca5b2] tw-text-base ${
+                            item?.threadType === '0003' ? 'tw-text-black' : ''
+                          }`}
                         >
                           {item?.text}
                         </div>
