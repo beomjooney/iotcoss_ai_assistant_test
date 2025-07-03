@@ -167,8 +167,6 @@ export function ProfileTemplate() {
         <Box sx={{ width: '100%', typography: 'body1' }}>
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
             <Grid item xs={8} className="tw-font-bold tw-text-3xl tw-text-black">
-              {/* <SecondTabs tabs={testBoards} /> */}
-
               <div className={cx('filter-area')}>
                 <div className={cx('mentoring-button__group', 'gap-12', 'justify-content-center')}>
                   <Toggle

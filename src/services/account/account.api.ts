@@ -1,4 +1,3 @@
-import Paragraph from 'antd/es/skeleton/Paragraph';
 import { axiosGeneralAPI } from '../index';
 
 export async function authCheck() {

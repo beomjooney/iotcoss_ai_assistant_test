@@ -4,29 +4,14 @@ import { Pagination, Typography, Chip, Toggle } from 'src/stories/components';
 import React, { useEffect, useState } from 'react';
 import { RecommendContent, SeminarImages } from 'src/models/recommend';
 import { useSeminarList, paramProps, useSeminarImageList } from 'src/services/seminars/seminars.queries';
-import QuizArticleCard from 'src/stories/components/QuizArticleCard';
-import Carousel from 'nuka-carousel';
-import { ArticleEnum } from '../../config/types';
 import { useContentJobTypes, useContentTypes, useJobGroups } from 'src/services/code/code.queries';
-import Banner from '../../stories/components/Banner';
 import { useStore } from 'src/store';
 import { useRouter } from 'next/router';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import Grid from '@mui/material/Grid';
-import Icon from '@mui/material/Icon';
 import Box from '@mui/system/Box';
-import Image from 'next/image';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import SecondTabs from 'src/stories/components/Tab/SecondTab';
-import ListItemtag from 'src/stories/components/QuizItemCard/ListItemTag';
-import SecondTechLogCard from 'src/stories/components/QuizItemCard/SecondTechLogCard';
-import Card6 from 'src/stories/components/QuizItemCard/Card6';
 import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
 import Divider from '@mui/material/Divider';
-import Link from 'next/link';
 import { jobColorKey } from 'src/config/colors';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
@@ -254,8 +239,6 @@ export function QuizTemplate() {
         <Box sx={{ width: '100%', typography: 'body1', marginTop: '20px', marginBottom: '20px' }}>
           <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={0}>
             <Grid item xs={8} className="tw-font-bold tw-text-3xl tw-text-black">
-              {/* <SecondTabs tabs={testBoards} /> */}
-
               <div className={cx('filter-area')}>
                 <div className={cx('mentoring-button__group', 'gap-12', 'justify-content-center')}>
                   <Toggle
