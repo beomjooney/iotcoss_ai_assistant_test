@@ -49,8 +49,6 @@ export * from './MentorsModal/index';
 export { default as MentorsModal } from './MentorsModal/index';
 export * from './MentorPick/index';
 export { default as MentorPick } from './MentorPick/index';
-export * from './Editor/index';
-export { default as Editor } from './Editor/index';
 export * from './Loading/index';
 export { default as Loading } from './Loading/index';
 export * from './Link/index';

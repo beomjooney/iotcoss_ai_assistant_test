@@ -1,6 +1,5 @@
 import './index.module.scss';
 import { HomeTemplate } from '../src/templates';
-import { HomeSejongTemplate } from '../src/templates/HomeSeJong';
 import { Session, useSessionStore } from '../src/store/session';
 import { useMemberInfo } from '../src/services/account/account.queries';
 import { useStore } from 'src/store';
@@ -39,10 +38,6 @@ export function IndexPage({ session, setActiveIndex }: { session: Session; setAc
     localStorage.setItem('activeIndex', '0');
     setActiveIndex(0);
   }, []);
-
-  // const { data: myProfileData } = useMyProfile(data => {
-  //   console.log('useMyProfile : ', data);
-  // });
 
   useEffect(() => {
     if (!COLOR_PRESETS || COLOR_PRESETS.length === 0) return;

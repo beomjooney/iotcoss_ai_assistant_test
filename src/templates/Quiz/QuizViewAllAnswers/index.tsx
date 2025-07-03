@@ -72,8 +72,6 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
   const [memberUUID, setMemberUUID] = useState('');
   let [key, setKey] = useState('');
   let [fileName, setFileName] = useState('');
-  const [aiFeedbackData, setAiFeedbackData] = useState<any>([]);
-  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
 
   const { mutate: onAIQuizAnswer, isError, isSuccess: answerSuccess, data: aiQuizAnswerData } = useAIQuizAnswerList();
 
@@ -1252,23 +1250,6 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
             </div>
           )}
         </MentorsModal>
-
-        {/* <QuizClubAnswersView
-          QuizProgressData={quizProgressData}
-          clubQuizThreads={clubQuizThreads}
-          selectedValue={selectedValue}
-          handleQuizChange={handleQuizChange}
-          border={false}
-          clubInfo={clubInfo}
-          leaders={leaders}
-          clubQuizzes={clubQuizzes}
-          totalElements={totalElements}
-          totalPage={totalPage}
-          page={page}
-          handlePageChange={handlePageChange}
-          quizList={quizList}
-          representativeQuizzes={representativeQuizzes}
-        /> */}
       </div>
     </div>
   );

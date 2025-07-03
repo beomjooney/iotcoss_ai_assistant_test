@@ -119,8 +119,6 @@
     ]
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-build-classic": "^35.2.0",
-    "@ckeditor/ckeditor5-react": "^5.0.2",
     "@next/bundle-analyzer": "^15.3.4",
     "@storybook/addon-actions": "^6.5.10",
     "@storybook/addon-essentials": "^6.5.10",

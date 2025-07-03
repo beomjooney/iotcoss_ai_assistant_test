@@ -591,24 +591,6 @@ export function BadgeTemplate({
                     </div>
                   </div>
                 </div>
-
-                {/* <div className="grid-100 mt-4">
-                  <div className="inpwrap">
-                    <div className="inp-tit">
-                      내용<span className="star">*</span>
-                    </div>
-                    <div className="inp">
-                      <Editor
-                        type="seminar"
-                        data={badge?.content || ''}
-                        onChange={(event, editor) => {
-                          setIntroduceEditor(editor.getData());
-                        }}
-                        disabled={!isEdit}
-                      />
-                    </div>
-                  </div>
-                </div> */}
               </div>
             </div>
           </div>
