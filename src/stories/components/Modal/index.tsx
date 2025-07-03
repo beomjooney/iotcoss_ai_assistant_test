@@ -2,9 +2,15 @@ import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import ReactModal from 'react-modal';
 import React, { useEffect, useState } from 'react';
+import CloseIcon from '@mui/icons-material/Close';
+import dynamic from 'next/dynamic';
 
 const cx = classNames.bind(styles);
-ReactModal.setAppElement('body');
+
+// SSR 환경에서는 ReactModal.setAppElement를 실행하지 않음
+if (typeof window !== 'undefined') {
+  ReactModal.setAppElement('body');
+}
 
 export interface ModalProps {
   title?: string;
@@ -26,45 +32,53 @@ function Modal({
   maxHeight = '368px',
 }: ModalProps) {
   const [isShow, setIsShow] = useState<boolean>(false);
+  const [mounted, setMounted] = useState(false);
 
-  //  모달 오버레이에서 스크롤 방지
+  // 클라이언트에서만 마운트되었음을 표시
   useEffect(() => {
-    document.body.style.cssText = `
-        position: fixed;
-        top: -${window.scrollY}px;
-        overflow-y: scroll;
-        width: 100%;`;
-    return () => {
-      const scrollY = document.body.style.top;
-      document.body.style.cssText = '';
-      window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
-    };
+    setMounted(true);
   }, []);
 
   // 모달이 열릴 때 스크롤을 방지하면서 기존 스크롤 위치를 유지
   useEffect(() => {
+    if (!mounted || typeof window === 'undefined') return;
+
     if (isOpen) {
       const scrollY = window.scrollY;
       document.body.style.position = 'fixed';
       document.body.style.top = `-${scrollY}px`;
       document.body.style.width = '100%';
+      document.body.style.overflow = 'hidden';
     } else {
       const scrollY = document.body.style.top;
       document.body.style.position = '';
       document.body.style.top = '';
-      window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
+      document.body.style.width = '';
+      document.body.style.overflow = '';
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
+      }
     }
+
     return () => {
       // 모달이 닫힐 때 원래 스크롤 위치로 복구
       document.body.style.position = '';
       document.body.style.top = '';
-      window.scrollTo(0, parseInt(document.body.style.top || '0', 10) * -1);
+      document.body.style.width = '';
+      document.body.style.overflow = '';
     };
-  }, [isOpen]);
+  }, [isOpen, mounted]);
 
   useEffect(() => {
-    setIsShow(isOpen);
-  }, [isOpen]);
+    if (mounted) {
+      setIsShow(isOpen);
+    }
+  }, [isOpen, mounted]);
+
+  // SSR 중에는 모달을 렌더링하지 않음
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <ReactModal
@@ -106,10 +120,10 @@ function Modal({
       {closable && (
         <div className={cx('closable', 'tw-bg-white', '')}>
           {title && (
-            <div className="tw-flex tw-justify-between tw-items-center tw-gap-3 tw-px-6 tw-pt-3">
+            <div className="tw-flex tw-justify-between tw-items-start tw-gap-3 tw-px-6 tw-pt-3">
               {/* <span className={cx('modal-header__title', 'tw-px-10 tw-mb-5 tw-font-bold tw-text-[18px] tw-text-black')}> */}
               <span className={cx('', 'tw-font-bold tw-text-[18px] tw-text-black')}>{title}</span>
-              <span className="ti-close tw-cursor-pointer" onClick={() => setIsShow(false)} />
+              <CloseIcon className="tw-cursor-pointer" onClick={() => setIsShow(false)} />
             </div>
           )}
         </div>

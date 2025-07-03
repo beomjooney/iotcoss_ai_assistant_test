@@ -29,6 +29,7 @@ import Radio from '@mui/material/Radio';
 import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
 import { useAIQuizMyAnswerSavePut } from 'src/services/quiz/quiz.mutations';
 import MentorsModal from 'src/stories/components/MentorsModal';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -357,7 +358,6 @@ BannerProps) => {
 
   const handleModalClose = () => {
     setShowSubmitModal(false);
-    location.href = `/quiz/${data?.clubSequence}`;
   };
   const handleModalClose2 = () => {
     setShowSubmitAnswerModal(false);
@@ -994,7 +994,7 @@ BannerProps) => {
                 <br />
                 AI피드백을 받으러 갈까요?
               </div>
-              <div className="tw-flex tw-gap-4 tw-justify-center">
+              <div className="tw-flex tw-gap-4 tw-justify-center  tw-items-center">
                 <button
                   onClick={handleModalClose2}
                   className="tw-px-8 tw-py-3 tw-bg-gray-200 tw-text-gray-700 tw-rounded-md tw-font-medium tw-hover:bg-gray-300 tw-transition-colors tw-w-[180px]"
@@ -1005,8 +1005,16 @@ BannerProps) => {
                   onClick={handleFinalSubmit2}
                   className="tw-px-8 tw-py-3 tw-bg-blue-500 tw-text-white tw-rounded-md tw-font-medium tw-hover:bg-blue-600 tw-transition-colors tw-w-[180px]"
                 >
-                  {isLoadingAI ? 'AI피드백 채점 중...' : 'AI피드백 받기'}
+                  {isLoadingAI ? (
+                    <div className="tw-flex tw-items-center tw-justify-center tw-gap-2">
+                      <CircularProgress color="inherit" size={18} />
+                      <div className="tw-text-sm tw-font-medium">AI피드백 채점 중.</div>
+                    </div>
+                  ) : (
+                    'AI피드백 받기'
+                  )}
                 </button>
+                {isLoadingAI && <div className="tw-text-sm tw-text-gray-500">30~60초 정도 소요됩니다.</div>}
               </div>
             </div>
           </div>

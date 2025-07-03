@@ -32,6 +32,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow, { tableRowClasses } from '@mui/material/TableRow';
 import Modal from 'src/stories/components/Modal';
 import TextField from '@mui/material/TextField';
+import AIFeedbackSummary from 'src/stories/components/AIFeedbackSummary/index';
 
 /** import pagenation */
 import Pagination from '@mui/material/Pagination';
@@ -46,6 +47,7 @@ import Markdown from 'react-markdown';
 import router from 'next/router';
 import { useSessionStore } from '../../../store/session';
 import { useStudyOrderLabel } from 'src/hooks/useStudyOrderLabel';
+import MentorsModal from 'src/stories/components/MentorsModal';
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   [`&.${tableRowClasses.root}`]: {
@@ -95,6 +97,10 @@ const useStyles = makeStyles(theme => ({
   },
   stickyThird: {
     left: 270, // Adjust according to the width of the first two columns
+    // zIndex: 2,
+  },
+  stickyFourth: {
+    left: 370, // Adjust according to the width of the first two columns
     // zIndex: 2,
   },
   // Add a new class for scrollable container
@@ -182,9 +188,11 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   // const [activeTab, setActiveTab] = useState('community');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isStudentModalOpen, setIsStudentModalOpen] = useState(false);
+  const [isAIFeedbackModalOpen, setIsAIFeedbackModalOpen] = useState(false);
   const [key, setKey] = useState('');
   const [fileName, setFileName] = useState('');
   const [memberUUID, setMemberUUID] = useState('');
+  const [selectedStudentInfo, setSelectedStudentInfo] = useState<any>(null);
 
   const [myClubSubTitleParams, setMyClubSubTitleParams] = useState<any>({
     clubSequence: id,
@@ -1025,7 +1033,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
             </div>
 
             {activeTab === 'myQuiz' && (
-              <div>
+              <div className="tw-min-h-[1000px] tw-flex tw-flex-col">
                 <div className="tw-flex tw-justify-between tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-3">
                   <div>
                     <RadioGroup
@@ -1151,6 +1159,9 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                         <TableCell align="center" width={100} className={`${classes.sticky} ${classes.stickyThird}`}>
                           <div className="tw-font-bold tw-text-base">답변/질의</div>
                         </TableCell>
+                        <TableCell align="center" width={100} className={`${classes.sticky} ${classes.stickyThird}`}>
+                          <div className="tw-font-bold tw-text-base">학습총평</div>
+                        </TableCell>
 
                         {myDashboardStudentList?.schedules?.map((session, index) => (
                           <TableCell key={index} width={90} align="right">
@@ -1224,18 +1235,11 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                             align="center"
                             component="th"
                             scope="row"
-                            className={`${classes.stickyWhiteBoard} ${classes.stickyThird}`}
+                            className={`${classes.stickyWhite} ${classes.stickyThird}`}
                           >
                             <div
                               onClick={() => {
                                 //학생별 상세 질의 이력 조회
-                                // setIsStudentModalOpen(true);
-                                // setClubStudySequence(info?.clubStudySequence);
-                                // setMyClubLectureStudentQA({
-                                //   clubSequence: selectedClub?.clubSequence || id,
-                                //   memberUUID: info?.member?.memberUUID,
-                                //   data: { studentQuestionPage: 1 },
-                                // });
                                 setIsStudentModalOpen(true);
                                 setClubStudySequence(info?.clubStudySequence);
                                 setMemberUUID(info?.member?.memberUUID);
@@ -1246,6 +1250,35 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                               <div className=" tw-gap-0 tw-justify-center tw-items-center tw-p-2">
                                 <span className="tw-font-bold">{info?.answeredCount}</span> / {info?.totalQuestionCount}
                               </div>
+                            </div>
+                          </TableCell>
+                          <TableCell
+                            padding="none"
+                            align="center"
+                            component="th"
+                            scope="row"
+                            width={100}
+                            className={`${classes.stickyWhiteBoard} ${classes.stickyFourth}`}
+                          >
+                            <div
+                              onClick={() => {
+                                setSelectedStudentInfo(info);
+                                setIsAIFeedbackModalOpen(true);
+                              }}
+                              className="tw-gap-1 tw-p-1 tw-rounded-[5px] tw-w-[70px] tw-flex tw-justify-center tw-items-center tw-bg-[#6A7380] tw-text-white tw-cursor-pointer tw-text-sm tw-mx-auto"
+                            >
+                              <p>총평확인</p>
+                              <svg
+                                width={7}
+                                height={10}
+                                viewBox="0 0 7 10"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="flex-grow-0 flex-shrink-0"
+                                preserveAspectRatio="none"
+                              >
+                                <path d="M1 1L5 5L1 9" stroke="#fff" strokeWidth="1.5" />
+                              </svg>
                             </div>
                           </TableCell>
                           {info?.lectureParticipation.map((info, index) => {
@@ -1298,7 +1331,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
             )}
 
             {activeTab === 'community' && (
-              <div>
+              <div className="tw-min-h-[1000px] tw-flex tw-flex-col">
                 <div className="tw-flex tw-justify-between tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-3">
                   <div>
                     <RadioGroup
@@ -1458,8 +1491,8 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                       (info.questionAnswer.answerType === '0200'
                                         ? '(강의자료) : '
                                         : info.questionAnswer.answerType === '0300'
-                                        ? '(일반서치) : '
-                                        : '') +
+                                          ? '(일반서치) : '
+                                          : '') +
                                       info.questionAnswer.answer
                                     : ''}
                                 </Markdown>
@@ -1571,8 +1604,8 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                     (questionInfo?.answerType === '0200'
                                       ? '(강의자료) : '
                                       : questionInfo?.answerType === '0300'
-                                      ? '(일반서치) : '
-                                      : '') +
+                                        ? '(일반서치) : '
+                                        : '') +
                                     questionInfo?.answer
                                   : null}
                               </Markdown>
@@ -1632,8 +1665,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                   <div key={fileIndex} className="border tw-px-2 tw-py-0.5 tw-rounded">
                                     <span
                                       onClick={() => {
-                                        window.open(file.url, '_blank');
-                                        // onFileDownload(fileEntry.key, fileEntry.name);
+                                        window.open(fileEntry.url, '_blank');
                                       }}
                                       className="tw-text-gray-400 tw-cursor-pointer"
                                     >
@@ -1773,8 +1805,8 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                   (info?.answerType === '0200'
                                     ? '(강의자료) : '
                                     : info?.answerType === '0300'
-                                    ? '(일반서치) : '
-                                    : '') +
+                                      ? '(일반서치) : '
+                                      : '') +
                                   info?.answer
                                 : null}
                             </Markdown>
@@ -1831,6 +1863,84 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
           />
         </div>
       </Modal>
+
+      {/* AI 피드백 모달 */}
+      <MentorsModal
+        isOpen={isAIFeedbackModalOpen}
+        isContentModalClick={true}
+        onAfterClose={() => {
+          setIsAIFeedbackModalOpen(false);
+          setSelectedStudentInfo(null);
+        }}
+        title={'학습피드백 총평'}
+      >
+        <AIFeedbackSummary
+          aiFeedbackDataTotal={{
+            myEvaluationScores: {
+              understanding: 85,
+              diligence: 90,
+              criticalThinking: 75,
+              completion: 88,
+              participation: 92,
+            },
+            averageEvaluationScores: {
+              understanding: 78,
+              diligence: 82,
+              criticalThinking: 70,
+              completion: 80,
+              participation: 85,
+            },
+            totalScore: {
+              average: 3.8,
+              myScore: 4.2,
+            },
+            feedback: {
+              overallFeedback:
+                '전반적으로 우수한 학습 성과를 보여주고 있습니다. 특히 참여도와 성실도 면에서 뛰어난 모습을 보여주고 있으며, 지속적인 학습 의지가 돋보입니다.',
+              strengths:
+                '높은 참여도와 성실한 학습 태도를 보여주고 있습니다. 수업 중 적극적으로 질문하고 토론에 참여하는 모습이 인상적입니다.',
+              weaknesses:
+                '사고력 측면에서 다소 아쉬운 부분이 있습니다. 문제를 다양한 관점에서 바라보는 능력을 기를 필요가 있습니다.',
+              improvePoints:
+                '비판적 사고력 향상을 위해 다양한 사례 분석과 토론 활동에 더욱 적극적으로 참여하시기 바랍니다.',
+            },
+            recommendations: [
+              {
+                recommendation: '추가 학습 자료를 통한 심화 학습을 권장합니다.',
+                resources: [
+                  {
+                    title: '고급 프로그래밍 패턴',
+                    url: 'https://example.com/advanced-programming',
+                  },
+                  {
+                    title: '알고리즘 문제 해결 전략',
+                    url: 'https://example.com/algorithm-strategy',
+                  },
+                ],
+              },
+            ],
+          }}
+          aiFeedbackDataTotalQuiz={{
+            contents: [
+              {
+                order: 1,
+                publishDate: '2024-10-28',
+                question: '객체지향 프로그래밍의 핵심 개념은?',
+                grading: 4,
+                summaryFeedback: '객체지향의 기본 개념을 잘 이해하고 있으며, 실제 적용 능력도 우수합니다.',
+              },
+              {
+                order: 2,
+                publishDate: '2024-11-04',
+                question: '데이터베이스 정규화 과정을 설명하시오',
+                grading: 3,
+                summaryFeedback: '정규화의 기본 개념은 이해하고 있으나, 실제 적용에서 다소 미흡한 부분이 있습니다.',
+              },
+            ],
+          }}
+          isLoading={false}
+        />
+      </MentorsModal>
     </div>
   );
 }

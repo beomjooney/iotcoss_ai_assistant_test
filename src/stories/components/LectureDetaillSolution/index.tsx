@@ -21,6 +21,10 @@ import { Button, Typography, Profile, Modal, ArticleCard } from 'src/stories/com
 import ChatbotModal from 'src/stories/components/ChatBot';
 import { useSessionStore } from '../../../../src/store/session';
 import { useStudyOrderLabel } from 'src/hooks/useStudyOrderLabel';
+import MentorsModal from 'src/stories/components/MentorsModal';
+import AIFeedbackSummary from 'src/stories/components/AIFeedbackSummary/index';
+import { useQuizAIFeedbackQuiz, useQuizAIFeedbackTotal } from 'src/services/quiz/quiz.queries';
+import useDidMountEffect from 'src/hooks/useDidMountEffect';
 
 const cx = classNames.bind(styles);
 
@@ -50,6 +54,12 @@ const LectureDetaillSolution = ({
   const { mutate: onDeleteLike } = useDeleteLike();
   const [participationCode, setParticipationCode] = useState<string>('');
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [isTotalFeedbackModalOpen, setIsTotalFeedbackModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [aiEvaluationParamsTotal, setAiEvaluationParamsTotal] = useState({});
+  const [aiFeedbackDataTotal, setAiFeedbackDataTotal] = useState(null);
+  const [aiEvaluationParamsTotalQuiz, setAiEvaluationParamsTotalQuiz] = useState({});
+  const [aiFeedbackDataTotalQuiz, setAiFeedbackDataTotalQuiz] = useState(null);
 
   const { roles, menu, token, logged } = useSessionStore.getState();
 
@@ -88,11 +98,107 @@ const LectureDetaillSolution = ({
   const handlerClubJoin = (clubSequence: number, isPublic: boolean) => {
     console.log('test');
     setIsModalOpen(true);
-    // onClubJoin({
-    //   clubSequence: clubSequence,
-    //   participationCode: '',
-    // });
   };
+
+  // 총평 피드백 보기
+  const handleTotalFeedbackClick = (clubSequence: number) => {
+    console.log('=== 총평 피드백 클릭 ===');
+    console.log('clubSequence:', clubSequence);
+    console.log('contents?.clubSequence:', contents?.clubSequence);
+
+    setAiEvaluationParamsTotal({
+      clubSequence: contents?.clubSequence,
+    });
+    setAiEvaluationParamsTotalQuiz({
+      clubSequence: contents?.clubSequence,
+    });
+    setIsTotalFeedbackModalOpen(true);
+    setIsLoading(true);
+
+    console.log('모달 열림 상태:', true);
+    console.log('로딩 상태:', true);
+    console.log('===================');
+  };
+
+  // AI 피드백 데이터 조회
+  const {
+    refetch: refetchAIEvaluationTotal,
+    isError: isErrorAIEvaluationTotal,
+    isSuccess: isSuccessAIEvaluationTotal,
+  } = useQuizAIFeedbackTotal(
+    aiEvaluationParamsTotal,
+    data => {
+      console.log('🎉 AI Evaluation Total SUCCESS:', data);
+      setAiFeedbackDataTotal(data);
+      setIsTotalFeedbackModalOpen(true);
+    },
+    error => {
+      console.error('❌ AI Evaluation Total ERROR:', error);
+      alert('피드백 데이터를 불러오는데 실패했습니다.');
+    },
+  );
+
+  // AI 피드백 데이터 조회
+  const {
+    refetch: refetchAIEvaluationTotalQuiz,
+    isError: isErrorAIEvaluationTotalQuiz,
+    isSuccess: isSuccessAIEvaluationTotalQuiz,
+  } = useQuizAIFeedbackQuiz(
+    aiEvaluationParamsTotalQuiz,
+    data => {
+      console.log('🎉 AI Evaluation TotalQuiz SUCCESS:', data);
+      setAiFeedbackDataTotalQuiz(data);
+    },
+    error => {
+      console.error('❌ AI Evaluation TotalQuiz ERROR:', error);
+      alert('피드백 데이터를 불러오는데 실패했습니다.');
+    },
+  );
+
+  // 모든 상태 변화를 추적하기 위한 useEffect 추가
+  useDidMountEffect(() => {
+    console.log('=== API 상태 변화 감지 ===');
+    console.log('isErrorAIEvaluationTotalQuiz:', isErrorAIEvaluationTotalQuiz);
+    console.log('isErrorAIEvaluationTotal:', isErrorAIEvaluationTotal);
+    console.log('isSuccessAIEvaluationTotalQuiz:', isSuccessAIEvaluationTotalQuiz);
+    console.log('isSuccessAIEvaluationTotal:', isSuccessAIEvaluationTotal);
+    console.log('========================');
+
+    if (
+      isErrorAIEvaluationTotalQuiz ||
+      isErrorAIEvaluationTotal ||
+      isSuccessAIEvaluationTotalQuiz ||
+      isSuccessAIEvaluationTotal
+    ) {
+      setIsLoading(false);
+    }
+  }, [
+    isErrorAIEvaluationTotalQuiz,
+    isErrorAIEvaluationTotal,
+    isSuccessAIEvaluationTotalQuiz,
+    isSuccessAIEvaluationTotal,
+    isLoading,
+  ]);
+
+  useDidMountEffect(() => {
+    console.log('=== TotalQuiz refetch useDidMountEffect ===');
+    console.log('aiEvaluationParamsTotalQuiz:', aiEvaluationParamsTotalQuiz);
+    if (aiEvaluationParamsTotalQuiz) {
+      console.log('TotalQuiz refetch 호출');
+      refetchAIEvaluationTotalQuiz();
+    }
+    console.log('=======================================');
+  }, [aiEvaluationParamsTotalQuiz]);
+
+  useDidMountEffect(() => {
+    console.log('=== Total refetch useDidMountEffect ===');
+    console.log('aiEvaluationParamsTotal:', aiEvaluationParamsTotal);
+    if (aiEvaluationParamsTotal) {
+      console.log('Total refetch 호출');
+      refetchAIEvaluationTotal();
+    }
+    console.log('===================================');
+  }, [aiEvaluationParamsTotal]);
 
   return (
     <div className={`tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white ${borderStyle}`}>
@@ -260,12 +366,26 @@ const LectureDetaillSolution = ({
                   container
                   justifyContent="flex-start"
                   xs={6}
-                  sm={10}
+                  sm={6}
                   className="tw-text-xl tw-text-black tw-font-bold"
                 >
                   강의 목록 ({study?.length || 0})
                 </Grid>
-                <Grid container justifyContent="flex-end" item xs={6} sm={2} style={{ textAlign: 'right' }}></Grid>
+                <Grid container justifyContent="flex-end" item xs={6} sm={6} style={{ textAlign: 'right' }}>
+                  <div className="tw-flex tw-items-center tw-gap-2">
+                    <div className="tw-flex tw-items-center">
+                      <div className="tw-text-base tw-text-black tw-leading-relaxed tw-mr-2">
+                        총평 피드백을 확인해보세요.
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => handleTotalFeedbackClick(contents?.club?.clubSequence)}
+                      className="tw-bg-[#2474ED] tw-hover:bg-blue-600 tw-text-white tw-px-4 tw-py-2 tw-rounded-full tw-text-base tw-font-medium"
+                    >
+                      총평 피드백보기
+                    </button>
+                  </div>
+                </Grid>
               </Grid>
               <Divider className="tw-py-3 tw-mb-3" />
               {study?.map((item, index) => {
@@ -555,6 +675,22 @@ const LectureDetaillSolution = ({
           )}
         </div>
       </Modal>
+      {/* 총평 피드백 모달 */}
+      <MentorsModal
+        isContentModalClick={true}
+        title={'총평 피드백보기'}
+        isOpen={isTotalFeedbackModalOpen}
+        onAfterClose={() => {
+          setIsLoading(false);
+          setIsTotalFeedbackModalOpen(false);
+        }}
+      >
+        <AIFeedbackSummary
+          aiFeedbackDataTotal={aiFeedbackDataTotal}
+          aiFeedbackDataTotalQuiz={aiFeedbackDataTotalQuiz}
+          isLoading={isLoading}
+        />
+      </MentorsModal>
     </div>
   );
 };

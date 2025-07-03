@@ -359,14 +359,8 @@ export const useQuizAIFeedbackTotal = (params, onSuccess?: (data: any) => void, 
       return quizGetAIAnswerGetTotal(params);
     },
     {
-      onSuccess: data => {
-        console.log('API 응답 성공:', data);
-        onSuccess?.(data);
-      },
-      onError: error => {
-        console.error('API 응답 에러:', error);
-        onError?.(error);
-      },
+      onSuccess,
+      onError,
       refetchOnWindowFocus: false,
       enabled: false,
       retry: false,
@@ -383,14 +377,8 @@ export const useQuizAIFeedbackQuiz = (params, onSuccess?: (data: any) => void, o
       return quizGetAIAnswerGetQuiz(params);
     },
     {
-      onSuccess: data => {
-        console.log('API 응답 성공:', data);
-        onSuccess?.(data);
-      },
-      onError: error => {
-        console.error('API 응답 에러:', error);
-        onError?.(error);
-      },
+      onSuccess,
+      onError,
       refetchOnWindowFocus: false,
       enabled: false,
       retry: false,
