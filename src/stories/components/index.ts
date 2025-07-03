@@ -17,8 +17,6 @@ export * from './ImageCard/index';
 export { default as ImageCard } from './ImageCard/index';
 export * from './Textfield/index';
 export { default as Textfield } from './Textfield/index';
-export * from './PlayerYoutube/index';
-export { default as PlayerYoutube } from './PlayerYoutube/index';
 export * from './SectionHeader/index';
 export { default as SectionHeader } from './SectionHeader/index';
 export * from './Banner/index';

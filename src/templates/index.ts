@@ -1,6 +1,5 @@
 export * from './Home/index';
 export * from './HomeSeJong/index';
-export * from './Business/index';
 export * from './Account/Login/index';
 export * from './Account/LoginOne/index';
 export * from './Account/Forgot/index';
