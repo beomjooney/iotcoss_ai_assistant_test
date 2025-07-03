@@ -1453,6 +1453,7 @@ const QuizClubDetaillSolution = ({
             {/* First Response */}
             {aiFeedbackData?.clubQuizThreads.map(item => (
               <div
+                key={item.threadType}
                 className={`tw-space-y-2 border tw-p-4 tw-rounded-lg ${
                   item?.threadType === '0001' || item?.threadType === '0002' ? 'tw-bg-[#F6F7FB]' : ''
                 }`}

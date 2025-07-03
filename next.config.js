@@ -1,3 +1,8 @@
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+  openAnalyzer: false,
+});
+
 const nextConfig = {
   // SWC 컴파일러 최적화 (Next.js 12.2+에서 최상위 레벨로 이동)
   swcMinify: true,
@@ -68,4 +73,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withBundleAnalyzer(nextConfig);

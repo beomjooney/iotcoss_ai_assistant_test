@@ -79,8 +79,6 @@ export * from './Quiz/AnswersDetail/index';
 export * from './Quiz/AnswersRoundDetail/index';
 export * from './Quiz/Detail/index';
 export * from './Seminar/Detail/index';
-export * from './Community/index';
-export * from './Community/Write/index';
 export * from './Admin/Seminar/index';
 export * from './Admin/Club/index';
 export * from './Admin/ClubQuiz/index';
