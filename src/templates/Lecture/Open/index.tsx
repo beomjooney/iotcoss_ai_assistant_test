@@ -17,6 +17,7 @@ import { ExperiencesResponse } from 'src/models/experiences';
 import { useOptions } from 'src/services/experiences/experiences.queries';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import moment from 'moment';
 
 import {
@@ -148,6 +149,15 @@ export function LectureOpenTemplate() {
   const [myKeyWorld, setMyKeyWorld] = useState('');
   const [studyCycleNum, setStudyCycleNum] = useState([]);
   const [buttonFlag, setButtonFlag] = useState(false);
+
+  // AI 학습총평 설정 상태
+  const [aiSummarySettings, setAiSummarySettings] = useState({
+    instructorExecution: true, // 교수자 실행 (기본값: true)
+    studentExecution: false, // 학습자 실행 (기본값: false)
+    instructorView: true, // 교수자 보기 (기본값: true)
+    studentView: false, // 학습자 보기 (기본값: false)
+    minimumCompletionCount: 10, // 최소 실행 설정 (기본값: 10회)
+  });
 
   const onChangeHandleFromToStartDate = date => {
     if (date) {
@@ -662,6 +672,14 @@ export function LectureOpenTemplate() {
     }
   };
 
+  // AI 학습총평 설정 변경 핸들러
+  const handleAiSummarySettingChange = (setting: string, value: boolean | number) => {
+    setAiSummarySettings(prev => ({
+      ...prev,
+      [setting]: value,
+    }));
+  };
+
   useDidMountEffect(() => {
     refetchMyJob();
   }, [postSucces]);
@@ -704,7 +722,6 @@ export function LectureOpenTemplate() {
     } else if (active == 1) {
       setQuizUrl('');
       setQuizName('');
-      setJobGroupPopUp([]);
       setJobs([]);
       setRecommendLevelsPopUp([]);
       setSkillIdsPopUp([]);
@@ -2056,6 +2073,118 @@ export function LectureOpenTemplate() {
                       onChange={setForbiddenKeywords}
                       placeHolder="질문 제한 키워드 입력 해주세요."
                     />
+                  </div>
+
+                  {/* AI 학습총평 설정 패널 */}
+                  <div className="tw-p-6 tw-px-0 tw-border">
+                    <div className="tw-grid tw-grid-cols-3 tw-gap-6">
+                      {/* AI 학습총평 실행 관한 */}
+                      <div>
+                        <div className="tw-font-semibold tw-text-sm tw-text-black tw-mb-3">AI 학습총평 실행 관한</div>
+                        <div className="">
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={aiSummarySettings.instructorExecution}
+                                onChange={e => handleAiSummarySettingChange('instructorExecution', e.target.checked)}
+                                sx={{
+                                  color: '#9CA3AF',
+                                  '&.Mui-checked': {
+                                    color: '#000',
+                                  },
+                                }}
+                              />
+                            }
+                            label={<span className="tw-text-sm tw-text-gray-700">교수자 실행 (기본)</span>}
+                          />
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={aiSummarySettings.studentExecution}
+                                onChange={e => handleAiSummarySettingChange('studentExecution', e.target.checked)}
+                                sx={{
+                                  color: '#9CA3AF',
+                                  '&.Mui-checked': {
+                                    color: '#000',
+                                  },
+                                }}
+                              />
+                            }
+                            label={<span className="tw-text-sm tw-text-gray-700">학습자 실행 (선택)</span>}
+                          />
+                        </div>
+                      </div>
+
+                      {/* AI 학습총평 보기 권한 */}
+                      <div>
+                        <div className="tw-font-semibold tw-text-sm tw-text-black tw-mb-3">AI 학습총평 보기 권한</div>
+                        <div className="">
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={aiSummarySettings.instructorView}
+                                onChange={e => handleAiSummarySettingChange('instructorView', e.target.checked)}
+                                sx={{
+                                  color: '#9CA3AF',
+                                  '&.Mui-checked': {
+                                    color: '#000',
+                                  },
+                                }}
+                              />
+                            }
+                            label={<span className="tw-text-sm tw-text-gray-700">교수자 보기</span>}
+                          />
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={aiSummarySettings.studentView}
+                                onChange={e => handleAiSummarySettingChange('studentView', e.target.checked)}
+                                sx={{
+                                  color: '#9CA3AF',
+                                  '&.Mui-checked': {
+                                    color: '#000',
+                                  },
+                                }}
+                              />
+                            }
+                            label={<span className="tw-text-sm tw-text-gray-700">학습자 보기</span>}
+                          />
+                        </div>
+                      </div>
+
+                      {/* 최소 실행 설정 */}
+                      <div>
+                        <div className="tw-font-semibold tw-text-sm tw-text-black tw-mb-3">
+                          최소 실행 설정 (AI 학습총평을 보기 위한 최소 완료 개수)
+                        </div>
+                        <FormControl size="small" className="tw-w-full">
+                          <Select
+                            value={aiSummarySettings.minimumCompletionCount}
+                            onChange={e =>
+                              handleAiSummarySettingChange('minimumCompletionCount', e.target.value as number)
+                            }
+                            sx={{
+                              backgroundColor: 'white',
+                              '& .MuiOutlinedInput-notchedOutline': {
+                                borderColor: '#D1D5DB',
+                              },
+                              '&:hover .MuiOutlinedInput-notchedOutline': {
+                                borderColor: '#9CA3AF',
+                              },
+                              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                borderColor: '#2474ED',
+                              },
+                            }}
+                          >
+                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map(num => (
+                              <MenuItem key={num} value={num}>
+                                {num}회
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </div>
+                    </div>
                   </div>
 
                   <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">강의 상세정보 입력</div>
