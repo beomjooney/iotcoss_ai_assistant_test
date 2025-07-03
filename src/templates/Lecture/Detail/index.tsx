@@ -1,13 +1,10 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { useStore } from 'src/store';
 import { paramProps, useMyProgress, useLectureAboutDetailInfo } from 'src/services/seminars/seminars.queries';
 import { RecommendContent } from 'src/models/recommend';
-import { useParticipantSeminar } from 'src/services/seminars/seminars.mutations';
 import { useSessionStore } from 'src/store/session';
-import { useClubDetailQuizList } from 'src/services/quiz/quiz.queries';
-import LectureDetailInfo from 'src/stories/components/LectureDetailInfo';
 import LectureDetaillSolution from 'src/stories/components/LectureDetaillSolution';
 
 const cx = classNames.bind(styles);
@@ -21,7 +18,6 @@ export function LectureDetailTemplate({ id }: LectureDetailTemplateProps) {
   const [contents, setContents] = useState<any>({});
   const [clubAbout, setClubAbout] = useState<any>({});
   const [quizList, setQuizList] = useState<RecommendContent[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [clubMemberStatus, setClubMemberStatus] = useState('0001');
   const [applicationButton, setApplicationButton] = useState<ReactNode>(null);
   const { memberId, logged } = useSessionStore.getState();
@@ -37,21 +33,6 @@ export function LectureDetailTemplate({ id }: LectureDetailTemplateProps) {
     console.log('clubMemberStatus', data?.clubMemberStatus);
     console.log('clubStatus ', data?.clubStatus);
   });
-
-  //my-progress
-  const { isFetched: isParticipantListFetched, isLoading } = useMyProgress(id, data => {
-    console.log(data);
-    setContents(data);
-  });
-
-  const { isFetched: isQuizListFetched, refetch } = useClubDetailQuizList(params, id, data => {
-    console.log(data?.contents);
-    setQuizList(data?.contents);
-    setTotalPage(data?.totalPages);
-    setTotalElements(data?.totalElements);
-  });
-
-  const { mutate: onParticipant } = useParticipantSeminar();
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
@@ -108,42 +89,6 @@ export function LectureDetailTemplate({ id }: LectureDetailTemplateProps) {
             selectedImage="/assets/images/banner/Rectangle_190.png"
           />
         )}
-        {/* {isQuizScreen
-          ? isParticipantListFetched && (
-              <LectureDetaillSolution
-                border={false}
-                totalElements={totalElements}
-                totalPage={totalPage}
-                page={page}
-                handlePageChange={handlePageChange}
-                contents={clubAbout.lectureClub || []}
-                study={clubAbout.clubStudies || []}
-                quizList={quizList}
-                // selectedImageBanner={clubAbout?.imageBanner}
-                // selectedImage={clubAbout?.image}
-                selectedImageBanner="/assets/images/banner/Rectangle_200.png"
-                selectedImage="/assets/images/banner/Rectangle_190.png"
-              />
-            )
-          : // 클럽 상세 보기 화면
-            isClubAboutFetched && (
-              <div>
-                <LectureDetailInfo
-                  border={true}
-                  refetchClubAbout={refetchClubAbout}
-                  clubData={clubAbout}
-                  user={clubAbout?.leader}
-                  selectedUniversityName={''}
-                  jobLevelName={[]}
-                  selectedJobName={[]}
-                  selectedQuizzes={clubAbout?.clubQuizzes}
-                  // selectedImageBanner={clubAbout?.imageBanner}
-                  // selectedImage={clubAbout?.image}
-                  selectedImageBanner="/assets/images/banner/Rectangle_200.png"
-                  selectedImage="/assets/images/banner/Rectangle_190.png"
-                />
-              </div>
-            )} */}
       </div>
     </div>
   );

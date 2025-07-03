@@ -72,11 +72,6 @@ const LectureDetaillSolution = ({
     setIsLiked(contents?.isFavorite);
   }, [contents?.isFavorite]);
 
-  const [expandedItems, setExpandedItems] = useState(() => Array(quizList?.length || 0).fill(false));
-  const [expandedQuizzData, setExpandedQuizzData] = useState(
-    () => quizList?.map(item => Array(item?.makeupQuizzes?.length || 0).fill(false)) || [],
-  );
-
   const { mutate: onClubJoin, isSuccess: clubJoinSucces } = useClubJoin();
 
   useEffect(() => {
