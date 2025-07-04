@@ -57,9 +57,12 @@ const QuizClubDetaillSolution = ({
   refetchParticipant,
 }) => {
   const borderStyle = border ? 'border border-[#e9ecf2] tw-mt-14' : '';
+  console.log('contents', contents?.progress?.allQuizzesCompleted);
+  console.log('contents', contents);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const { memberId } = useSessionStore.getState();
   let [isLiked, setIsLiked] = useState(contents?.club?.isFavorite);
+  let [allQuizzesCompleted, setAllQuizzesCompleted] = useState(contents?.progress?.allQuizzesCompleted || false);
   const { mutate: onSaveLike, isSuccess } = useSaveLike();
   const { mutate: onDeleteLike } = useDeleteLike();
   const [clubQuizThreads, setClubQuizThreads] = useState<any>([]);
@@ -415,7 +418,13 @@ const QuizClubDetaillSolution = ({
               </div>
               <button
                 onClick={() => handleTotalFeedbackClick(contents?.club?.clubSequence)}
-                className="tw-bg-[#2474ED] tw-hover:bg-blue-600 tw-text-white tw-px-4 tw-py-2 tw-rounded-full tw-text-base tw-font-medium"
+                disabled={!allQuizzesCompleted}
+                title={!allQuizzesCompleted ? '모든 퀴즈를 완료해야 총평 피드백을 확인할 수 있습니다.' : ''}
+                className={`tw-px-4 tw-py-2 tw-rounded-full tw-text-base tw-font-medium ${
+                  allQuizzesCompleted
+                    ? 'tw-bg-[#2474ED] tw-hover:bg-blue-600 tw-text-white tw-cursor-pointer'
+                    : 'tw-bg-gray-300 tw-text-gray-500 tw-cursor-not-allowed'
+                }`}
               >
                 총평 피드백보기
               </button>
@@ -956,8 +965,8 @@ const QuizClubDetaillSolution = ({
                                 ? item?.answer?.relativeDaysToPublishDate < 0
                                   ? `D${item?.answer?.relativeDaysToPublishDate}`
                                   : item?.answer?.relativeDaysToPublishDate === 0
-                                    ? `D-0`
-                                    : `D+${item?.answer?.relativeDaysToPublishDate}`
+                                  ? `D-0`
+                                  : `D+${item?.answer?.relativeDaysToPublishDate}`
                                 : ''}
                             </div>
                           </Grid>
@@ -1463,12 +1472,12 @@ const QuizClubDetaillSolution = ({
                     {item.threadType === '0001'
                       ? '사전답변'
                       : item.threadType === '0002'
-                        ? '최종답변'
-                        : item.threadType === '0003'
-                          ? 'AI피드백'
-                          : item.threadType === '0004'
-                            ? '교수자답변'
-                            : '최종답변'}
+                      ? '최종답변'
+                      : item.threadType === '0003'
+                      ? 'AI피드백'
+                      : item.threadType === '0004'
+                      ? '교수자답변'
+                      : '최종답변'}
                   </span>
                   <span className="tw-text-xs tw-text-gray-500">{item.createdAt}</span>
                 </div>
