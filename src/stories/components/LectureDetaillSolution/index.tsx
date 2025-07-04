@@ -150,7 +150,7 @@ const LectureDetaillSolution = ({
     },
   );
 
-  // 모든 상태 변화를 추적하기 위한 useEffect 추가
+  // 모든 상태 변화를 추적하기 위한 useEffect 수정
   useDidMountEffect(() => {
     console.log('=== API 상태 변화 감지 ===');
     console.log('isErrorAIEvaluationTotalQuiz:', isErrorAIEvaluationTotalQuiz);
@@ -354,7 +354,7 @@ const LectureDetaillSolution = ({
               </div>
             </div>
 
-            <div className={cx('content-wrap')}>
+            <div className={cx('content-wrap')} style={{ minHeight: '1000px' }}>
               <Grid container direction="row" alignItems="center" rowSpacing={0}>
                 <Grid
                   item
