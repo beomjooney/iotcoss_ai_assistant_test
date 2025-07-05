@@ -1,5 +1,5 @@
 // QuizClubDetailInfo.jsx
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Avatar from '@mui/material/Avatar';
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
@@ -85,8 +85,13 @@ const QuizClubDetaillSolution = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedQuizSequence, setSelectedQuizSequence] = useState<number>(0);
   const [aiEvaluationParams, setAiEvaluationParams] = useState<any>(null);
-  const [aiEvaluationParamsTotal, setAiEvaluationParamsTotal] = useState<any>(null);
-  const [aiEvaluationParamsTotalQuiz, setAiEvaluationParamsTotalQuiz] = useState<any>(null);
+  const [aiEvaluationParamsTotal, setAiEvaluationParamsTotal] = useState<any>({
+    clubSequence: clubAbout?.clubSequence,
+  });
+  const [aiEvaluationParamsTotalQuiz, setAiEvaluationParamsTotalQuiz] = useState<any>({
+    clubSequence: clubAbout?.clubSequence,
+  });
+
   const { isFetched: isParticipantListFetcheds } = useQuizFileDownload(key, data => {
     if (data) {
       const url = window.URL.createObjectURL(new Blob([data], { type: 'application/pdf' }));
@@ -117,6 +122,7 @@ const QuizClubDetaillSolution = ({
 
     if (quizClubEvaluationError) {
       setIsLoading(false);
+      setAiFeedbackDataTotal(null);
       refetchAIEvaluationTotalQuiz();
     }
   }, [quizClubEvaluationSucces, quizClubEvaluationError]);
@@ -135,6 +141,13 @@ const QuizClubDetaillSolution = ({
       });
     }
   });
+
+  useEffect(() => {
+    if (contents?.club?.clubSequence) {
+      refetchAIEvaluationTotal();
+      refetchAIEvaluationTotalQuiz();
+    }
+  }, [contents?.club?.clubSequence]);
 
   // AI 피드백 데이터 조회
   const { refetch: refetchAIEvaluation } = useQuizAIFeedback(
@@ -157,7 +170,6 @@ const QuizClubDetaillSolution = ({
       setIsLoading(false);
       console.log('AI Evaluation data:', data);
       setAiFeedbackDataTotal(data);
-      setIsTotalFeedbackModalOpen(true);
     },
     error => {
       console.error('AI Evaluation error:', error);
@@ -165,7 +177,7 @@ const QuizClubDetaillSolution = ({
     },
   );
 
-  // AI 피드백 데이터 조회
+  // AI 피드백 퀴즈 데이터 조회
   const { refetch: refetchAIEvaluationTotalQuiz } = useQuizAIFeedbackQuiz(
     aiEvaluationParamsTotalQuiz,
     data => {
@@ -294,14 +306,7 @@ const QuizClubDetaillSolution = ({
 
   // 총평 피드백 보기
   const handleTotalFeedbackClick = (clubSequence: number) => {
-    // setAiEvaluationParamsTotal({
-    //   clubSequence: clubAbout?.clubSequence,
-    // });
-    // setAiEvaluationParamsTotalQuiz({
-    //   clubSequence: clubAbout?.clubSequence,
-    // });
     setIsTotalFeedbackModalOpen(true);
-    // setIsLoading(true);
   };
 
   return (
@@ -1430,9 +1435,6 @@ const QuizClubDetaillSolution = ({
           <div className="tw-text-xl tw-font-bold tw-text-black tw-text-center">총평피드백보기</div>
           <button
             onClick={() => {
-              setAiEvaluationParamsTotal({
-                clubSequence: clubAbout?.clubSequence,
-              });
               onQuizClubEvaluation({
                 clubSequence: clubAbout?.clubSequence,
               });

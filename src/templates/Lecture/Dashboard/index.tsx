@@ -152,7 +152,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   const [selectedClub, setSelectedClub] = useState(null);
   const [isInputOpen, setIsInputOpen] = useState(false);
   const [openInputIndex, setOpenInputIndex] = useState(null);
-  const [aiEvaluationParamsTotal, setAiEvaluationParamsTotal] = useState({});
+  const [aiEvaluationParamsTotal, setAiEvaluationParamsTotal] = useState({ clubSequence: id });
   const [aiFeedbackDataTotal, setAiFeedbackDataTotal] = useState<any>(null);
   const [aiFeedbackDataTotalQuiz, setAiFeedbackDataTotalQuiz] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -359,6 +359,9 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
       data: dataParam,
     });
     setPageStudent(1);
+    setAiEvaluationParamsTotal({
+      clubSequence: selectedClub?.clubSequence || id,
+    });
   }, [sortType, selectedClub, sortLectureType, lecturePage]);
 
   useDidMountEffect(() => {

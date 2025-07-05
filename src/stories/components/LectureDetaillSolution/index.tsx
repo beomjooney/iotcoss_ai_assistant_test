@@ -58,7 +58,7 @@ const LectureDetaillSolution = ({
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [isTotalFeedbackModalOpen, setIsTotalFeedbackModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [aiEvaluationParamsTotal, setAiEvaluationParamsTotal] = useState({});
+  const [aiEvaluationParamsTotal, setAiEvaluationParamsTotal] = useState(null);
   const [aiFeedbackDataTotal, setAiFeedbackDataTotal] = useState(null);
   const [aiFeedbackDataTotalQuiz, setAiFeedbackDataTotalQuiz] = useState(null);
 
@@ -68,6 +68,12 @@ const LectureDetaillSolution = ({
   useEffect(() => {
     setIsClient(true); // 클라이언트 사이드에서 상태를 true로 설정
   }, []);
+
+  useEffect(() => {
+    if (contents?.clubSequence) {
+      setAiEvaluationParamsTotal({ clubSequence: contents.clubSequence });
+    }
+  }, [contents?.clubSequence]);
 
   useEffect(() => {
     setIsLiked(contents?.isFavorite);
@@ -115,7 +121,11 @@ const LectureDetaillSolution = ({
 
   // 총평 피드백 보기
   const handleTotalFeedbackClick = (clubSequence: number) => {
-    setIsTotalFeedbackModalOpen(true);
+    if (clubSequence) {
+      setIsTotalFeedbackModalOpen(true);
+    } else {
+      alert('클럽 정보를 불러오는 중입니다. 잠시 후 다시 시도해주세요.');
+    }
   };
 
   // AI 피드백 데이터 조회
@@ -128,7 +138,6 @@ const LectureDetaillSolution = ({
     data => {
       console.log('🎉 AI Evaluation Total SUCCESS:', data);
       setAiFeedbackDataTotal(data);
-      // setIsTotalFeedbackModalOpen(true);
     },
     error => {
       console.error('❌ AI Evaluation Total ERROR:', error);
@@ -330,15 +339,17 @@ const LectureDetaillSolution = ({
                       </div>
                     </div>
                     <button
-                      disabled={!lectureEvaluation?.minimumQuestionsAsked}
+                      disabled={!lectureEvaluation?.minimumQuestionsAsked || !contents?.clubSequence}
                       title={
                         !lectureEvaluation?.minimumQuestionsAsked
                           ? '질의응답을 완료해야 총평 피드백을 확인할 수 있습니다.'
+                          : !contents?.clubSequence
+                          ? '클럽 정보를 불러오는 중입니다.'
                           : ''
                       }
-                      onClick={() => handleTotalFeedbackClick(contents?.club?.clubSequence)}
+                      onClick={() => handleTotalFeedbackClick(contents?.clubSequence)}
                       className={`tw-px-4 tw-py-2 tw-rounded-full tw-text-base tw-font-medium ${
-                        lectureEvaluation?.minimumQuestionsAsked
+                        lectureEvaluation?.minimumQuestionsAsked && contents?.clubSequence
                           ? 'tw-bg-[#2474ED] tw-hover:bg-blue-600 tw-text-white tw-cursor-pointer'
                           : 'tw-bg-gray-300 tw-text-gray-500 tw-cursor-not-allowed'
                       }`}
@@ -650,18 +661,24 @@ const LectureDetaillSolution = ({
           <div className="tw-flex tw-justify-between tw-items-center tw-gap-4 tw-mb-4">
             <div className="tw-text-xl tw-font-bold tw-text-black tw-text-center">총평피드백보기</div>
             <button
+              disabled={!contents?.clubSequence || isLoading}
               onClick={() => {
-                setAiEvaluationParamsTotal({
-                  clubSequence: contents?.clubSequence,
-                });
-                onLectureClubEvaluation({
-                  clubSequence: contents?.clubSequence,
-                });
-                setIsLoading(true);
+                if (contents?.clubSequence) {
+                  onLectureClubEvaluation({
+                    clubSequence: contents.clubSequence,
+                  });
+                  setIsLoading(true);
+                } else {
+                  alert('클럽 정보를 불러오는 중입니다. 잠시 후 다시 시도해주세요.');
+                }
               }}
-              className="tw-text-base tw-text-center tw-bg-black tw-text-white tw-px-4 tw-py-2 tw-rounded-md"
+              className={`tw-text-base tw-text-center tw-px-4 tw-py-2 tw-rounded-md ${
+                contents?.clubSequence && !isLoading
+                  ? 'tw-bg-black tw-text-white tw-cursor-pointer'
+                  : 'tw-bg-gray-300 tw-text-gray-500 tw-cursor-not-allowed'
+              }`}
             >
-              AI피드백 생성
+              {isLoading ? 'AI피드백 생성중...' : 'AI피드백 생성'}
             </button>
           </div>
           <AIFeedbackSummary
