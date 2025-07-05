@@ -35,6 +35,7 @@ import {
   getAIQuizAnswer,
   quizGetAIAnswerGetTotalLecture,
   quizGetAIAnswerPostTotalLecture,
+  quizGetAIAnswerGetTotalLectureMember,
 } from './quiz.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 import { User } from 'src/models/user';
@@ -401,6 +402,23 @@ export const useQuizAIFeedbackLectureGetTotal = (
     QUERY_KEY_FACTORY('DASHBOARD_QUIZ').list({ ...params }),
 
     () => quizGetAIAnswerGetTotalLecture(params),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+    },
+  );
+};
+
+export const useQuizAIFeedbackLectureGetMember = (
+  params,
+  onSuccess?: (data: any) => void,
+  onError?: (error: Error) => void,
+) => {
+  return useQuery<any, Error>(
+    QUERY_KEY_FACTORY('CONTENT_DASHBOARD_QUIZ').list({ ...params }),
+
+    () => quizGetAIAnswerGetTotalLectureMember(params),
     {
       onSuccess,
       onError,

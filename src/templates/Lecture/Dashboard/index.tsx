@@ -43,13 +43,13 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { styled } from '@mui/material/styles';
 
 //**download */
-import { useQuizAIFeedbackLectureGetTotal, useQuizFileDownload } from 'src/services/quiz/quiz.queries';
+import { useQuizAIFeedbackLectureGetMember, useQuizFileDownload } from 'src/services/quiz/quiz.queries';
 import Markdown from 'react-markdown';
 import router from 'next/router';
 import { useSessionStore } from '../../../store/session';
 import { useStudyOrderLabel } from 'src/hooks/useStudyOrderLabel';
 import MentorsModal from 'src/stories/components/MentorsModal';
-import { useLectureClubEvaluation } from 'src/services/community/community.mutations';
+import { useLectureClubEvaluation, useLectureClubEvaluationMember } from 'src/services/community/community.mutations';
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   [`&.${tableRowClasses.root}`]: {
@@ -152,10 +152,25 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   const [selectedClub, setSelectedClub] = useState(null);
   const [isInputOpen, setIsInputOpen] = useState(false);
   const [openInputIndex, setOpenInputIndex] = useState(null);
-  const [aiEvaluationParamsTotal, setAiEvaluationParamsTotal] = useState({ clubSequence: id });
+  const [aiEvaluationParamsTotal, setAiEvaluationParamsTotal] = useState(null);
   const [aiFeedbackDataTotal, setAiFeedbackDataTotal] = useState<any>(null);
   const [aiFeedbackDataTotalQuiz, setAiFeedbackDataTotalQuiz] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [myClubSequenceParams, setMyClubSequenceParams] = useState<any>({ clubSequence: id });
+  const [params, setParams] = useState<paramProps>({ page });
+  const [selectedValue, setSelectedValue] = useState(id);
+  const [activeTab, setActiveTab] = useState('myQuiz');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isStudentModalOpen, setIsStudentModalOpen] = useState(false);
+  const [isAIFeedbackModalOpen, setIsAIFeedbackModalOpen] = useState(false);
+  const [key, setKey] = useState('');
+  const [fileName, setFileName] = useState('');
+  const [memberUUID, setMemberUUID] = useState('');
+  const [memberUUIDList, setMemberUUIDList] = useState('');
+  const [selectedStudentInfo, setSelectedStudentInfo] = useState<any>(null);
+  const [lectureEvaluation, setLectureEvaluation] = useState<any>({});
+  const [sortType, setSortType] = useState('NAME');
+  const [sortLectureType, setSortLectureType] = useState('STUDY_ORDER_ASC');
 
   const [myClubParams, setMyClubParams] = useState<any>({
     clubSequence: selectedClub?.clubSequence || id,
@@ -183,17 +198,17 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   const { mutate: onDeleteQuestion, isSuccess: isDeleteSuccess } = useDeleteQuestion();
 
   const {
-    mutate: onLectureClubEvaluation,
-    isSuccess: lectureClubEvaluationSucces,
-    isError: lectureClubEvaluationError,
-  } = useLectureClubEvaluation();
+    mutate: onLectureClubEvaluationMember,
+    isSuccess: lectureClubEvaluationMemberSucces,
+    isError: lectureClubEvaluationMemberError,
+  } = useLectureClubEvaluationMember();
 
   // AI 피드백 데이터 조회
   const {
     refetch: refetchAIEvaluationTotal,
     isError: isErrorAIEvaluationTotal,
     isSuccess: isSuccessAIEvaluationTotal,
-  } = useQuizAIFeedbackLectureGetTotal(
+  } = useQuizAIFeedbackLectureGetMember(
     aiEvaluationParamsTotal,
     data => {
       console.log('🎉 AI Evaluation Total SUCCESS:', data);
@@ -207,15 +222,15 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   );
 
   useEffect(() => {
-    if (lectureClubEvaluationSucces) {
+    if (lectureClubEvaluationMemberSucces) {
       refetchAIEvaluationTotal();
       setIsLoading(false);
     }
 
-    if (lectureClubEvaluationError) {
+    if (lectureClubEvaluationMemberError) {
       setIsLoading(false);
     }
-  }, [lectureClubEvaluationSucces, lectureClubEvaluationError]);
+  }, [lectureClubEvaluationMemberSucces, lectureClubEvaluationMemberError]);
 
   useDidMountEffect(() => {
     if (isSuccess) {
@@ -230,20 +245,6 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
       refetchMyDashboardStudent();
     }
   }, [isDeleteSuccess]);
-
-  const [myClubSequenceParams, setMyClubSequenceParams] = useState<any>({ clubSequence: id });
-  const [params, setParams] = useState<paramProps>({ page });
-  const [selectedValue, setSelectedValue] = useState(id);
-  const [activeTab, setActiveTab] = useState('myQuiz');
-  // const [activeTab, setActiveTab] = useState('community');
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isStudentModalOpen, setIsStudentModalOpen] = useState(false);
-  const [isAIFeedbackModalOpen, setIsAIFeedbackModalOpen] = useState(false);
-  const [key, setKey] = useState('');
-  const [fileName, setFileName] = useState('');
-  const [memberUUID, setMemberUUID] = useState('');
-  const [selectedStudentInfo, setSelectedStudentInfo] = useState<any>(null);
-  const [lectureEvaluation, setLectureEvaluation] = useState<any>({});
 
   const [myClubSubTitleParams, setMyClubSubTitleParams] = useState<any>({
     clubSequence: id,
@@ -322,11 +323,6 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     },
   );
 
-  /** my quiz replies */
-
-  const [sortType, setSortType] = useState('NAME');
-  const [sortLectureType, setSortLectureType] = useState('STUDY_ORDER_ASC');
-
   useDidMountEffect(() => {
     console.log('clubStudySequence', clubStudySequence);
     refetchMyDashboardQA();
@@ -359,9 +355,6 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
       data: dataParam,
     });
     setPageStudent(1);
-    setAiEvaluationParamsTotal({
-      clubSequence: selectedClub?.clubSequence || id,
-    });
   }, [sortType, selectedClub, sortLectureType, lecturePage]);
 
   useDidMountEffect(() => {
@@ -467,19 +460,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     data => {
       console.log('file download', data, fileName);
       if (data) {
-        // blob 데이터를 파일로 저장하는 로직
-        // const url = window.URL.createObjectURL(new Blob([data]));
-        // const link = document.createElement('a');
-        // link.href = url;
-        // link.setAttribute('download', fileName); // 다운로드할 파일 이름과 확장자를 설정합니다.
-        // document.body.appendChild(link);
-        // link.click();
-        // document.body.removeChild(link);
-
-        // blob 데이터를 URL로 변환
         const url = window.URL.createObjectURL(new Blob([data], { type: 'application/pdf' }));
-
-        // 브라우저에서 PDF를 새 탭에서 열기
         window.open(url, '_blank', 'noopener,noreferrer');
         setKey('');
         setFileName('');
@@ -487,22 +468,13 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     },
   );
 
-  const onFileDownload = function (key: string, fileName: string) {
-    console.log(key, fileName);
-    setKey(key);
-    setFileName(fileName);
-  };
-
   function formatDate(sentAt) {
     if (!sentAt) return '';
-
     const date = new Date(sentAt);
-
     const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
     const day = String(date.getDate()).padStart(2, '0');
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
-
     return `${month}-${day} ${hours}:${minutes}`;
   }
 
@@ -516,6 +488,15 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
       console.error('Session store error:', error);
     }
   }, []);
+
+  // AI 개별 피드백 데이터 조회
+  useDidMountEffect(() => {
+    if (aiEvaluationParamsTotal) {
+      refetchAIEvaluationTotal();
+      console.log('aiEvaluationParamsTotal', aiEvaluationParamsTotal);
+      console.log('aiEvaluationParamsTotal', aiEvaluationParamsTotal);
+    }
+  }, [aiEvaluationParamsTotal]);
 
   // 마운트되지 않았을 때 로딩 표시
   if (!isMounted) {
@@ -535,7 +516,6 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   return (
     <div className={cx('seminar-container')}>
       <div className={cx('container')}>
-        {/* <Divider className="tw-y-5 tw-bg-['#efefef']" /> */}
         <div className="tw-pt-8">
           <div className="tw-flex tw-justify-start tw-items-start tw-left-0 tw-top-3.5 tw-gap-[3.5px]">
             <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[10.5px] tw-text-left tw-text-[#313b49]">
@@ -897,22 +877,6 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                       <div className="tw-relative tw-overflow-hidden tw-rounded-[8.07px] tw-bg-white border tw-border-[#e9ecf2]">
                         <div className="tw-flex tw-px-4 tw-justify-between tw-items-center tw-bg-[#f6f7fb] tw-h-[60.5px] tw-overflow-hidden border-bottom">
                           <p className=" tw-text-base tw-font-bold tw-text-left tw-text-gray-500">AI피드백 현황</p>
-                          {/* <div className="tw-flex">
-                            <svg
-                              width={28}
-                              height={28}
-                              viewBox="0 0 28 28"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="tw-w-7 tw-h-7"
-                              preserveAspectRatio="xMidYMid meet"
-                            >
-                              <path
-                                d="M19.2095 13.5977L10.7955 5.18372L8.81445 7.16192L15.2545 13.5977L8.81445 20.0321L10.7941 22.0117L19.2095 13.5977Z"
-                                fill="#9CA5B2"
-                              />
-                            </svg>
-                          </div> */}
                         </div>
                         <div className=" tw-h-[175px]  tw-flex tw-justify-center tw-items-center">
                           <div className="tw-w-[130px] tw-h-[130px]">
@@ -947,14 +911,6 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                               <span style={{ fontSize: 'xx-small', color: 'white' }}>calories</span>
                             </div>
                           </div>
-                          {/* <Circle
-                            className="tw-h-[120px]"
-                            trailWidth={9}
-                            trailColor="#DADADA"
-                            percent={myDashboardList?.participationPercentage}
-                            strokeWidth={9}
-                            strokeColor="#e11837"
-                          /> */}
                           <div className="tw-flex tw-justify-center tw-items-center tw-absolute tw-h-full tw-w-full">
                             <p className="tw-text-base tw-font-bold tw-text-black">
                               {myDashboardList?.totalQuestionCount}개
@@ -1354,6 +1310,11 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                 if (lectureEvaluation?.minimumQuestionsAsked) {
                                   setSelectedStudentInfo(info);
                                   setIsAIFeedbackModalOpen(true);
+                                  setAiEvaluationParamsTotal({
+                                    clubSequence: selectedClub?.clubSequence || id,
+                                    memberUUID: info?.member?.memberUUID,
+                                  });
+                                  setMemberUUIDList(info?.member?.memberUUID);
                                 }
                               }}
                               className={`tw-gap-1 tw-p-1 tw-rounded-[5px] tw-w-[70px] tw-flex tw-justify-center tw-items-center tw-bg-[#6A7380] tw-text-white tw-cursor-pointer tw-text-sm tw-mx-auto ${
@@ -1921,7 +1882,6 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                   <span
                                     onClick={() => {
                                       window.open(fileEntry.url, '_blank');
-                                      // onFileDownload(fileEntry.key, fileEntry.name);
                                     }}
                                     className="tw-text-gray-400 tw-cursor-pointer"
                                   >
@@ -1974,11 +1934,9 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
             <div className="tw-text-xl tw-font-bold tw-text-black tw-text-center">총평피드백보기</div>
             <button
               onClick={() => {
-                setAiEvaluationParamsTotal({
-                  clubSequence: selectedClub?.clubSequence,
-                });
-                onLectureClubEvaluation({
-                  clubSequence: selectedClub?.clubSequence,
+                onLectureClubEvaluationMember({
+                  clubSequence: selectedClub?.clubSequence || id,
+                  memberUUID: memberUUIDList,
                 });
                 setIsLoading(true);
               }}

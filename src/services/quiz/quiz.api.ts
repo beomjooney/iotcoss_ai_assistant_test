@@ -292,6 +292,13 @@ export const quizGetAIAnswerGetTotalLecture = async params => {
   return data.data;
 };
 
+export const quizGetAIAnswerGetTotalLectureMember = async params => {
+  const { data } = await axiosGeneralAPI().get(
+    `/api/v1/lecture-clubs/${params.clubSequence}/evaluations/${params.memberUUID}`,
+  );
+  return data.data;
+};
+
 export const quizGetAIAnswerPostTotalLecture = async params => {
   const { data } = await axiosGeneralAPI().post(`/api/v1/lecture-clubs/${params.clubSequence}/evaluation`);
   return data.data;
