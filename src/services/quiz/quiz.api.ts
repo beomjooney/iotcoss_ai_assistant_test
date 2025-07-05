@@ -189,6 +189,11 @@ export const quizSolutionDetail = async (id, clubSequence) => {
   return data.data;
 };
 
+export const quizClubEvaluation = async params => {
+  const { data } = await axiosGeneralAPI().post(`/api/v1/quiz-clubs/${params.clubSequence}/quiz-evaluations`);
+  return data.data;
+};
+
 export const quizRoungeInfo = async id => {
   const { data } = await axiosGeneralAPI().get(`/api/v1/clubs/${id}/quizzes`);
   return data.data;
@@ -275,6 +280,16 @@ export const quizGetAIMyAnswer = async params => {
 
 export const quizGetAIAnswerGetTotal = async params => {
   const { data } = await axiosGeneralAPI().get(`/api/v1/quiz-clubs/${params.clubSequence}/evaluation`);
+  return data.data;
+};
+
+export const quizGetAIAnswerGetTotalLecture = async params => {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/lecture-clubs/${params.clubSequence}/evaluation`);
+  return data.data;
+};
+
+export const quizGetAIAnswerPostTotalLecture = async params => {
+  const { data } = await axiosGeneralAPI().post(`/api/v1/lecture-clubs/${params.clubSequence}/evaluation`);
   return data.data;
 };
 

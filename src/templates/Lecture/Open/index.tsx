@@ -149,14 +149,15 @@ export function LectureOpenTemplate() {
   const [myKeyWorld, setMyKeyWorld] = useState('');
   const [studyCycleNum, setStudyCycleNum] = useState([]);
   const [buttonFlag, setButtonFlag] = useState(false);
+  const [comprehensiveEvaluationExecutionPermissions, setComprehensiveEvaluationExecutionPermissions] = useState<
+    string[]
+  >(['0001', '0003']);
 
   // AI 학습총평 설정 상태
   const [aiSummarySettings, setAiSummarySettings] = useState({
-    instructorExecution: true, // 교수자 실행 (기본값: true)
-    studentExecution: false, // 학습자 실행 (기본값: false)
-    instructorView: true, // 교수자 보기 (기본값: true)
-    studentView: false, // 학습자 보기 (기본값: false)
-    minimumCompletionCount: 10, // 최소 실행 설정 (기본값: 10회)
+    minimumCompletionCount: 1, // 최소 실행 설정 (기본값: 10회)
+    comprehensiveEvaluationPermissions: ['0001'], // 배열로 관리
+    comprehensiveEvaluationViewPermissions: ['0001', '0003'], // 배열로 관리
   });
 
   const onChangeHandleFromToStartDate = date => {
@@ -370,6 +371,13 @@ export function LectureOpenTemplate() {
       // setSelectedImageProfile('');
       setButtonFlag(true);
 
+      setAiSummarySettings(prev => ({
+        ...prev,
+        comprehensiveEvaluationPermissions: clubForm.comprehensiveEvaluationPermissions,
+        comprehensiveEvaluationViewPermissions: clubForm.comprehensiveEvaluationViewPermissions,
+        minimumCompletionCount: clubForm.comprehensiveEvaluationMinimumCount,
+      }));
+
       // Add fileList and urlList to each item in the data array
       const updatedData = lectureList.map(item => ({
         ...item,
@@ -382,10 +390,6 @@ export function LectureOpenTemplate() {
 
       setScheduleData(updatedData);
       setLectureContents(lectureContents);
-
-      // // Filter out items with quizSequence not null and extract quizSequence values
-      // const quizSequenceNumbers = quizList.filter(item => item.quizSequence !== null).map(item => item.quizSequence);
-      // setSelectedQuizIds(quizSequenceNumbers);
     } else {
       alert('임시저장 데이터가 없습니다. 임시저장을 해주세요.');
     }
@@ -395,12 +399,6 @@ export function LectureOpenTemplate() {
   const { mutate: onTempSave, isSuccess: tempSucces } = useLectureTempSave();
   const { mutate: onQuizSave, isSuccess: postSucces } = useQuizSave();
   const { mutate: onLectureSave, isError, isSuccess: clubSuccess, data: clubDatas } = useLectureSave();
-
-  //quiz new logic
-  const [selectedQuizIds, setSelectedQuizIds] = useState([]);
-
-  const quizRef = useRef(null);
-  const quizUrlRef = useRef(null);
 
   const [selectedImage, setSelectedImage] = useState('');
   const [selectedImageCheck, setSelectedImageCheck] = useState(null);
@@ -415,7 +413,6 @@ export function LectureOpenTemplate() {
   const [isProcessing, setIsProcessing] = useState(false); // 함수가 실행 중인지 확인하는 상태
 
   const [contentJobType, setContentJobType] = useState<any[]>([]);
-  // const [lectureContents, setLectureContents] = useState<any[]>([]);
   const [lectureContents, setLectureContents] = useState({
     files: [],
     urls: [],
@@ -591,11 +588,6 @@ export function LectureOpenTemplate() {
     event.target.value = null;
   };
 
-  const handleProfileDelete = e => {
-    setPreviewProfile(null);
-    setSelectedImageProfileCheck(null);
-  };
-
   // 파일 이름 추출 함수
   const extractFileName = path => {
     const parts = path.split('/');
@@ -640,10 +632,6 @@ export function LectureOpenTemplate() {
   };
 
   const [introductionText, setIntroductionText] = useState<string>('');
-  const [recommendationText, setRecommendationText] = useState<string>('');
-  const [learningText, setLearningText] = useState<string>('');
-  const [memberIntroductionText, setMemberIntroductionText] = useState<string>('');
-  const [careerText, setCareerText] = useState<string>('');
 
   const handleIsPublic = (event: React.MouseEvent<HTMLElement>, newFormats: string) => {
     if (newFormats !== null) {
@@ -673,7 +661,7 @@ export function LectureOpenTemplate() {
   };
 
   // AI 학습총평 설정 변경 핸들러
-  const handleAiSummarySettingChange = (setting: string, value: boolean | number) => {
+  const handleAiSummarySettingChange = (setting: string, value: boolean | string) => {
     setAiSummarySettings(prev => ({
       ...prev,
       [setting]: value,
@@ -715,7 +703,7 @@ export function LectureOpenTemplate() {
 
   const { isFetched: isJobGroupsFetched } = useJobGroupss(data => setJobGroups(data.data.contents || []));
   const { user, setUser } = useStore();
-  console.log('user', user);
+  // console.log('user', user);
   useEffect(() => {
     if (active == 0) {
       refetch();
@@ -1011,35 +999,8 @@ export function LectureOpenTemplate() {
     );
   };
 
-  const koreanToEnglishMap = {
-    월: 'Monday',
-    화: 'Tuesday',
-    수: 'Wednesday',
-    목: 'Thursday',
-    금: 'Friday',
-    토: 'Saturday',
-    일: 'Sunday',
-  };
-
-  // 요일 매핑 (영어 -> 한글)
-  const englishToKoreanMap = {
-    Sunday: '일',
-    Monday: '월',
-    Tuesday: '화',
-    Wednesday: '수',
-    Thursday: '목',
-    Friday: '금',
-    Saturday: '토',
-  };
-
   const handleUpdate = (evt: any, updated: any) => {
     console.log('handleUpdate', updated);
-    // 인덱스로 일정 항목을 보유할 맵
-    // const scheduleMap = updated.reduce((acc, item, index) => {
-    //   acc[index] = item;
-    //   return acc;
-    // }, {});
-    // // 관련 필드만 추출하고 'order'로 정렬
     const sortedReducedData = updated
       .map(({ order, dayOfWeek, weekNumber, publishDate }) => ({
         order,
@@ -1049,30 +1010,7 @@ export function LectureOpenTemplate() {
       }))
       .sort((a, b) => a.order - b.order);
     console.log(sortedReducedData);
-    // // 정렬된 데이터와 원본 항목의 추가 속성을 병합
-    // const mergeData = sortedReducedData.map((item, index) => ({
-    //   ...item,
-    //   quizSequence: scheduleMap[index].quizSequence,
-    //   question: scheduleMap[index].question,
-    //   leaderUri: scheduleMap[index].leaderUri,
-    //   leaderUUID: scheduleMap[index].leaderUUID,
-    //   leaderProfileImageUrl: scheduleMap[index].leaderProfileImageUrl,
-    //   leaderNickname: scheduleMap[index].leaderNickname,
-    //   contentUrl: scheduleMap[index].contentUrl,
-    //   contentTitle: scheduleMap[index].contentTitle,
-    //   modelAnswer: scheduleMap[index].modelAnswer,
-    //   quizUri: scheduleMap[index].quizUri,
-    // }));
-    // // 상태 업데이트
-    // setScheduleData(mergeData);
   };
-
-  useEffect(() => {
-    // 상태 업데이트 후 추가 작업 수행
-    console.log('scheduleData가 업데이트되었습니다.', scheduleData);
-    // setUpdateKey를 호출하여 강제 리렌더링
-    // setUpdateKey(prevKey => prevKey + 1);
-  }, [scheduleData]);
 
   const containerRef = useRef(null);
 
@@ -1326,6 +1264,21 @@ export function LectureOpenTemplate() {
       formData.append('clubForm.instructorProfileImageFile', selectedImageProfileCheck);
     }
 
+    for (let i = 0; i < aiSummarySettings.comprehensiveEvaluationPermissions.length; i++) {
+      formData.append(
+        'clubForm.comprehensiveEvaluationPermissions[' + i + ']',
+        aiSummarySettings.comprehensiveEvaluationPermissions[i],
+      );
+    }
+    for (let i = 0; i < aiSummarySettings.comprehensiveEvaluationViewPermissions.length; i++) {
+      formData.append(
+        'clubForm.comprehensiveEvaluationViewPermissions[' + i + ']',
+        aiSummarySettings.comprehensiveEvaluationViewPermissions[i],
+      );
+    }
+
+    formData.append('clubForm.comprehensiveEvaluationMinimumCount', aiSummarySettings.minimumCompletionCount);
+
     console.log(clubFormParams);
     console.log('scheduleData', scheduleData);
 
@@ -1474,6 +1427,8 @@ export function LectureOpenTemplate() {
       setParamss(clubFormParams);
       window.scrollTo(0, 0);
     }
+
+    console.log('aiSummarySettings', aiSummarySettings);
   };
 
   const useStyles = makeStyles(theme => ({
@@ -1536,6 +1491,56 @@ export function LectureOpenTemplate() {
 
   const classes = useStyles();
 
+  // AI 학습총평 권한 설정 변경 핸들러 (배열 관리)
+  const handleComprehensiveEvaluationPermissionChange = (code: string, isChecked: boolean) => {
+    setAiSummarySettings(prev => {
+      const currentPermissions = prev.comprehensiveEvaluationPermissions || [];
+
+      let newPermissions;
+      if (isChecked) {
+        // 체크된 경우: 배열에 코드 추가 (중복 방지)
+        if (!currentPermissions.includes(code)) {
+          return {
+            ...prev,
+            comprehensiveEvaluationPermissions: [...currentPermissions, code],
+          };
+        }
+      } else {
+        // 체크 해제된 경우: 배열에서 코드 제거
+        return {
+          ...prev,
+          comprehensiveEvaluationPermissions: currentPermissions.filter(permission => permission !== code),
+        };
+      }
+
+      return prev;
+    });
+  };
+
+  const handleComprehensiveEvaluationViewPermissionChange = (code: string, isChecked: boolean) => {
+    setAiSummarySettings(prev => {
+      const currentPermissions = prev.comprehensiveEvaluationViewPermissions || [];
+
+      if (isChecked) {
+        // 체크된 경우: 배열에 코드 추가 (중복 방지)
+        if (!currentPermissions.includes(code)) {
+          return {
+            ...prev,
+            comprehensiveEvaluationViewPermissions: [...currentPermissions, code],
+          };
+        }
+      } else {
+        // 체크 해제된 경우: 배열에서 코드 제거
+        return {
+          ...prev,
+          comprehensiveEvaluationViewPermissions: currentPermissions.filter(permission => permission !== code),
+        };
+      }
+
+      return prev;
+    });
+  };
+
   return (
     <div className={cx('seminar-container')}>
       <div className={cx('container')}>
@@ -1582,8 +1587,8 @@ export function LectureOpenTemplate() {
                         index < activeStep
                           ? 'tw-bg-gray-300 tw-text-white'
                           : index === activeStep
-                            ? 'tw-bg-blue-600  tw-text-white'
-                            : 'tw-bg-gray-300 tw-text-white'
+                          ? 'tw-bg-blue-600  tw-text-white'
+                          : 'tw-bg-gray-300 tw-text-white'
                       }`}
                     ></div>
                     <div
@@ -1591,8 +1596,8 @@ export function LectureOpenTemplate() {
                         index < activeStep
                           ? ' tw-text-gray-400'
                           : index === activeStep
-                            ? ' tw-text-black tw-font-bold'
-                            : ' tw-text-gray-400'
+                          ? ' tw-text-black tw-font-bold'
+                          : ' tw-text-gray-400'
                       }`}
                     >
                       {step}
@@ -2085,8 +2090,10 @@ export function LectureOpenTemplate() {
                           <FormControlLabel
                             control={
                               <Checkbox
-                                checked={aiSummarySettings.instructorExecution}
-                                onChange={e => handleAiSummarySettingChange('instructorExecution', e.target.checked)}
+                                checked={
+                                  aiSummarySettings.comprehensiveEvaluationPermissions?.includes('0001') || false
+                                }
+                                onChange={e => handleComprehensiveEvaluationPermissionChange('0001', e.target.checked)}
                                 sx={{
                                   color: '#9CA3AF',
                                   '&.Mui-checked': {
@@ -2100,8 +2107,10 @@ export function LectureOpenTemplate() {
                           <FormControlLabel
                             control={
                               <Checkbox
-                                checked={aiSummarySettings.studentExecution}
-                                onChange={e => handleAiSummarySettingChange('studentExecution', e.target.checked)}
+                                checked={
+                                  aiSummarySettings.comprehensiveEvaluationPermissions?.includes('0003') || false
+                                }
+                                onChange={e => handleComprehensiveEvaluationPermissionChange('0003', e.target.checked)}
                                 sx={{
                                   color: '#9CA3AF',
                                   '&.Mui-checked': {
@@ -2122,8 +2131,12 @@ export function LectureOpenTemplate() {
                           <FormControlLabel
                             control={
                               <Checkbox
-                                checked={aiSummarySettings.instructorView}
-                                onChange={e => handleAiSummarySettingChange('instructorView', e.target.checked)}
+                                checked={
+                                  aiSummarySettings.comprehensiveEvaluationViewPermissions?.includes('0001') || false
+                                }
+                                onChange={e =>
+                                  handleComprehensiveEvaluationViewPermissionChange('0001', e.target.checked)
+                                }
                                 sx={{
                                   color: '#9CA3AF',
                                   '&.Mui-checked': {
@@ -2137,8 +2150,12 @@ export function LectureOpenTemplate() {
                           <FormControlLabel
                             control={
                               <Checkbox
-                                checked={aiSummarySettings.studentView}
-                                onChange={e => handleAiSummarySettingChange('studentView', e.target.checked)}
+                                checked={
+                                  aiSummarySettings.comprehensiveEvaluationViewPermissions?.includes('0003') || false
+                                }
+                                onChange={e =>
+                                  handleComprehensiveEvaluationViewPermissionChange('0003', e.target.checked)
+                                }
                                 sx={{
                                   color: '#9CA3AF',
                                   '&.Mui-checked': {
@@ -2370,13 +2387,6 @@ export function LectureOpenTemplate() {
                 className="tw-hidden"
                 onChange={e => handleImageChange(e, 'profile')}
               />
-              {/* <button
-                onClick={e => handleProfileDelete(e)}
-                type="button"
-                className="tw-text-black border tw-font-medium tw-rounded-md tw-text-sm tw-px-5 tw-py-2.5"
-              >
-                삭제
-              </button> */}
 
               <div className="tw-container tw-py-10 tw-px-10 tw-mx-0 tw-min-w-full tw-flex tw-flex-col tw-items-center">
                 <div className="tw-grid tw-grid-rows-3 tw-grid-flow-col tw-gap-4">
@@ -2472,15 +2482,6 @@ export function LectureOpenTemplate() {
                       onUpdate={handleUpdate}
                       key={updateKey} // 상태 업데이트를 강제 트리거
                     />
-                    {/* <div ref={containerRef} style={{ touchAction: 'pan-y' }}>
-                      <DraggableList
-                        itemKey="studyOrder"
-                        template={Item}
-                        list={scheduleData}
-                        onMoveEnd={newList => _onListChange(newList)}
-                        // container={() => containerRef.current}
-                      />
-                    </div> */}
                   </Grid>
                 </Grid>
 
@@ -2798,7 +2799,6 @@ export function LectureOpenTemplate() {
                     ) : (
                       '다음'
                     )}
-                    {/* <NavigateNextIcon fontSize="small" /> */}
                   </button>
                 </div>
               </div>

@@ -289,6 +289,12 @@ export const lectureAboutDetailInfo = async id => {
   return data.data;
 };
 
+// lecture 상세 조회
+export const lectureEvaluation = async id => {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/lecture-clubs/${id}/evaluation/status`);
+  return data.data;
+};
+
 // 강의클럽 질문 답변
 export const saveAnswer = async (params: any) =>
   await axiosGeneralAPI().put(

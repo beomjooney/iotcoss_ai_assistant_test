@@ -2,7 +2,7 @@ import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { useStore } from 'src/store';
-import { paramProps, useLectureAboutDetailInfo } from 'src/services/seminars/seminars.queries';
+import { paramProps, useLectureAboutDetailInfo, useLectureEvaluation } from 'src/services/seminars/seminars.queries';
 import { RecommendContent } from 'src/models/recommend';
 import { useSessionStore } from 'src/store/session';
 import LectureDetaillSolution from 'src/stories/components/LectureDetaillSolution';
@@ -16,6 +16,7 @@ export interface LectureDetailTemplateProps {
 export function LectureDetailTemplate({ id }: LectureDetailTemplateProps) {
   const [contents, setContents] = useState<any>({});
   const [clubAbout, setClubAbout] = useState<any>({});
+  const [lectureEvaluation, setLectureEvaluation] = useState<any>({});
   const [quizList, setQuizList] = useState<RecommendContent[]>([]);
   const [clubMemberStatus, setClubMemberStatus] = useState('0001');
   const [applicationButton, setApplicationButton] = useState<ReactNode>(null);
@@ -27,11 +28,16 @@ export function LectureDetailTemplate({ id }: LectureDetailTemplateProps) {
 
   // 퀴즈 소개 정보 조회
   const { isFetched: isClubAboutFetched, refetch: refetchClubAbout } = useLectureAboutDetailInfo(id, data => {
-    console.log('useLectureAboutDetail', data);
     setClubAbout(data);
-    console.log('clubMemberStatus', data?.clubMemberStatus);
-    console.log('clubStatus ', data?.clubStatus);
   });
+
+  // 강의클럽 총평 상태 조회
+  const { isFetched: isLectureEvaluationStatusFetched, refetch: refetchLectureEvaluationStatus } = useLectureEvaluation(
+    id,
+    data => {
+      setLectureEvaluation(data);
+    },
+  );
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
@@ -58,11 +64,6 @@ export function LectureDetailTemplate({ id }: LectureDetailTemplateProps) {
     }
   }, [logged, contents, clubMemberStatus]);
 
-  // 클럽 상세 보기 이동 상태
-  // 조건 1
-  // - clubMemberStatus : 0000/0009(미가입), 0001(신청 중 - 버튼 텍스트 변경 및 버튼 비활성화), 0003(거절), 0004(강퇴 - 버튼 비활성화)
-  // - clubStatus : 상관 없음
-
   return (
     <div className={cx('seminar-detail-container')}>
       <div className={cx('container')}>
@@ -71,12 +72,14 @@ export function LectureDetailTemplate({ id }: LectureDetailTemplateProps) {
             border={false}
             totalElements={totalElements}
             totalPage={totalPage}
+            lectureEvaluation={lectureEvaluation}
             page={page}
             handlePageChange={handlePageChange}
             contents={clubAbout?.lectureClub || []}
             study={clubAbout?.clubStudies || []}
             quizList={quizList}
             refetchClubAbout={refetchClubAbout}
+            refetchLectureEvaluationStatus={refetchLectureEvaluationStatus}
             selectedImageBanner="/assets/images/banner/Rectangle_200.png"
             selectedImage="/assets/images/banner/Rectangle_190.png"
           />

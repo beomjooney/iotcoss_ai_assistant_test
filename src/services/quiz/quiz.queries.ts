@@ -33,6 +33,8 @@ import {
   quizGetAIAnswerGetTotal,
   quizGetAIAnswerGetQuiz,
   getAIQuizAnswer,
+  quizGetAIAnswerGetTotalLecture,
+  quizGetAIAnswerPostTotalLecture,
 } from './quiz.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 import { User } from 'src/models/user';
@@ -357,6 +359,50 @@ export const useQuizAIFeedbackTotal = (params, onSuccess?: (data: any) => void, 
     () => {
       console.log('API 호출 시작:', params);
       return quizGetAIAnswerGetTotal(params);
+    },
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+      enabled: false,
+      retry: false,
+    },
+  );
+};
+
+export const useQuizAIFeedbackLectureGetTotal = (
+  params,
+  onSuccess?: (data: any) => void,
+  onError?: (error: Error) => void,
+) => {
+  console.log('useQuizAIFeedbackLectureTotal params:', params);
+  return useQuery<any, Error>(
+    ['quiz-ai-feedback-lecture-total', params?.clubSequence],
+    () => {
+      console.log('API 호출 시작:', params);
+      return quizGetAIAnswerGetTotalLecture(params);
+    },
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+      enabled: false,
+      retry: false,
+    },
+  );
+};
+
+export const useQuizAIFeedbackLecturePostTotal = (
+  params,
+  onSuccess?: (data: any) => void,
+  onError?: (error: Error) => void,
+) => {
+  console.log('useQuizAIFeedbackLectureTotal params:', params);
+  return useQuery<any, Error>(
+    ['quiz-ai-feedback-lecture-total', params?.clubSequence],
+    () => {
+      console.log('API 호출 시작:', params);
+      return quizGetAIAnswerPostTotalLecture(params);
     },
     {
       onSuccess,

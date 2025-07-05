@@ -11,6 +11,7 @@ import {
   useMyDashboardLecture,
   useMyDashboardQA,
   useMyDashboardStudentQA,
+  useLectureEvaluation,
 } from 'src/services/seminars/seminars.queries';
 import { useSaveAnswer, useDeleteQuestion } from 'src/services/seminars/seminars.mutations';
 import Grid from '@mui/material/Grid';
@@ -42,12 +43,13 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { styled } from '@mui/material/styles';
 
 //**download */
-import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
+import { useQuizAIFeedbackLectureGetTotal, useQuizFileDownload } from 'src/services/quiz/quiz.queries';
 import Markdown from 'react-markdown';
 import router from 'next/router';
 import { useSessionStore } from '../../../store/session';
 import { useStudyOrderLabel } from 'src/hooks/useStudyOrderLabel';
 import MentorsModal from 'src/stories/components/MentorsModal';
+import { useLectureClubEvaluation } from 'src/services/community/community.mutations';
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   [`&.${tableRowClasses.root}`]: {
@@ -118,6 +120,15 @@ const useStyles = makeStyles(theme => ({
 const cx = classNames.bind(styles);
 
 export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) {
+  // 클라이언트 마운트 상태 추가
+  const [isMounted, setIsMounted] = useState(false);
+
+  // 클라이언트 전용 상태 관리
+  const [clientState, setClientState] = useState({
+    roles: [],
+    studyOrderLabelType: null,
+  });
+
   const { roles, studyOrderLabelType } = useSessionStore.getState();
   const { studyOrderLabel } = useStudyOrderLabel(studyOrderLabelType);
 
@@ -141,6 +152,10 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   const [selectedClub, setSelectedClub] = useState(null);
   const [isInputOpen, setIsInputOpen] = useState(false);
   const [openInputIndex, setOpenInputIndex] = useState(null);
+  const [aiEvaluationParamsTotal, setAiEvaluationParamsTotal] = useState({});
+  const [aiFeedbackDataTotal, setAiFeedbackDataTotal] = useState<any>(null);
+  const [aiFeedbackDataTotalQuiz, setAiFeedbackDataTotalQuiz] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [myClubParams, setMyClubParams] = useState<any>({
     clubSequence: selectedClub?.clubSequence || id,
@@ -166,6 +181,41 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   const [answer, setAnswer] = useState('');
   const { mutate: onSaveAnswer, isSuccess, isError } = useSaveAnswer();
   const { mutate: onDeleteQuestion, isSuccess: isDeleteSuccess } = useDeleteQuestion();
+
+  const {
+    mutate: onLectureClubEvaluation,
+    isSuccess: lectureClubEvaluationSucces,
+    isError: lectureClubEvaluationError,
+  } = useLectureClubEvaluation();
+
+  // AI 피드백 데이터 조회
+  const {
+    refetch: refetchAIEvaluationTotal,
+    isError: isErrorAIEvaluationTotal,
+    isSuccess: isSuccessAIEvaluationTotal,
+  } = useQuizAIFeedbackLectureGetTotal(
+    aiEvaluationParamsTotal,
+    data => {
+      console.log('🎉 AI Evaluation Total SUCCESS:', data);
+      setAiFeedbackDataTotal(data);
+      // setIsTotalFeedbackModalOpen(true);
+    },
+    error => {
+      console.error('❌ AI Evaluation Total ERROR:', error);
+      alert('피드백 데이터를 불러오는데 실패했습니다.');
+    },
+  );
+
+  useEffect(() => {
+    if (lectureClubEvaluationSucces) {
+      refetchAIEvaluationTotal();
+      setIsLoading(false);
+    }
+
+    if (lectureClubEvaluationError) {
+      setIsLoading(false);
+    }
+  }, [lectureClubEvaluationSucces, lectureClubEvaluationError]);
 
   useDidMountEffect(() => {
     if (isSuccess) {
@@ -193,6 +243,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   const [fileName, setFileName] = useState('');
   const [memberUUID, setMemberUUID] = useState('');
   const [selectedStudentInfo, setSelectedStudentInfo] = useState<any>(null);
+  const [lectureEvaluation, setLectureEvaluation] = useState<any>({});
 
   const [myClubSubTitleParams, setMyClubSubTitleParams] = useState<any>({
     clubSequence: id,
@@ -200,6 +251,14 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     clubType: '0200',
     size: 100,
   });
+
+  // 강의클럽 총평 상태 조회
+  const { isFetched: isLectureEvaluationStatusFetched, refetch: refetchLectureEvaluationStatus } = useLectureEvaluation(
+    id,
+    data => {
+      setLectureEvaluation(data);
+    },
+  );
 
   const handleChangeQuiz = event => {
     setSortType(event.target.value);
@@ -442,6 +501,32 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     const minutes = String(date.getMinutes()).padStart(2, '0');
 
     return `${month}-${day} ${hours}:${minutes}`;
+  }
+
+  // 클라이언트 마운트 후 상태 설정
+  useEffect(() => {
+    setIsMounted(true);
+    try {
+      const { roles, studyOrderLabelType } = useSessionStore.getState();
+      setClientState({ roles, studyOrderLabelType });
+    } catch (error) {
+      console.error('Session store error:', error);
+    }
+  }, []);
+
+  // 마운트되지 않았을 때 로딩 표시
+  if (!isMounted) {
+    return (
+      <div className={cx('seminar-container')}>
+        <div className={cx('container')}>
+          <div className="tw-pt-8">
+            <div className="tw-flex tw-justify-center tw-items-center tw-h-[50vh]">
+              <p className="tw-text-center tw-text-base tw-font-bold tw-text-[#31343d]">로딩 중...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -1005,31 +1090,32 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                 </p>
               </div>
               {/* Tab 3: Playground */}
-              {(roles.includes('ROLE_INSTRUCTOR') || roles.includes('ROLE_MANAGER')) && (
-                <div
-                  className={`tw-w-[164px] tw-h-12 tw-relative tw-ml-auto tw-cursor-pointer`}
-                  style={{ marginRight: '-20px' }}
-                  onClick={() => router.push(`/lecture-playground/${id}`)}
-                >
-                  <div className="tw-text-white tw-text-sm tw-rounded-lg tw-bg-black tw-w-[144px] tw-h-10 tw-absolute tw-left-[-1px] tw-top-[-1px] tw-flex tw-justify-center tw-items-center">
-                    <svg
-                      width={19}
-                      height={19}
-                      viewBox="0 0 19 19"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[18px] tw-h-[18px] tw-relative tw-mr-1"
-                      preserveAspectRatio="none"
-                    >
-                      <path
-                        d="M5.75 16.249H4.25V14.749H2V13.249H4.25V11.749H5.75V16.249ZM17 14.749H7.25V13.249H17V14.749ZM13.25 11.749H11.75V10.249H2V8.74902H11.75V7.25802H13.25V11.749ZM17 10.249H14.75V8.74902H17V10.249ZM8.75 7.24902H7.25V5.74902H2V4.24902H7.25V2.74902H8.75V7.24902ZM17 5.74902H10.25V4.24902H17V5.74902Z"
-                        fill="white"
-                      />
-                    </svg>
-                    플레이그라운드
+              {isMounted &&
+                (clientState.roles.includes('ROLE_INSTRUCTOR') || clientState.roles.includes('ROLE_MANAGER')) && (
+                  <div
+                    className={`tw-w-[164px] tw-h-12 tw-relative tw-ml-auto tw-cursor-pointer`}
+                    style={{ marginRight: '-20px' }}
+                    onClick={() => router.push(`/lecture-playground/${id}`)}
+                  >
+                    <div className="tw-text-white tw-text-sm tw-rounded-lg tw-bg-black tw-w-[144px] tw-h-10 tw-absolute tw-left-[-1px] tw-top-[-1px] tw-flex tw-justify-center tw-items-center">
+                      <svg
+                        width={19}
+                        height={19}
+                        viewBox="0 0 19 19"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[18px] tw-h-[18px] tw-relative tw-mr-1"
+                        preserveAspectRatio="none"
+                      >
+                        <path
+                          d="M5.75 16.249H4.25V14.749H2V13.249H4.25V11.749H5.75V16.249ZM17 14.749H7.25V13.249H17V14.749ZM13.25 11.749H11.75V10.249H2V8.74902H11.75V7.25802H13.25V11.749ZM17 10.249H14.75V8.74902H17V10.249ZM8.75 7.24902H7.25V5.74902H2V4.24902H7.25V2.74902H8.75V7.24902ZM17 5.74902H10.25V4.24902H17V5.74902Z"
+                          fill="white"
+                        />
+                      </svg>
+                      플레이그라운드
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
             </div>
 
             {activeTab === 'myQuiz' && (
@@ -1157,7 +1243,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                           <div className="tw-font-bold tw-text-base">학습 참여도</div>
                         </TableCell>
                         <TableCell align="center" width={100} className={`${classes.sticky} ${classes.stickyThird}`}>
-                          <div className="tw-font-bold tw-text-base">답변/질의</div>
+                          <div className="tw-font-bold tw-text-base">질의합산</div>
                         </TableCell>
                         <TableCell align="center" width={100} className={`${classes.sticky} ${classes.stickyThird}`}>
                           <div className="tw-font-bold tw-text-base">학습총평</div>
@@ -1262,10 +1348,16 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                           >
                             <div
                               onClick={() => {
-                                setSelectedStudentInfo(info);
-                                setIsAIFeedbackModalOpen(true);
+                                if (lectureEvaluation?.minimumQuestionsAsked) {
+                                  setSelectedStudentInfo(info);
+                                  setIsAIFeedbackModalOpen(true);
+                                }
                               }}
-                              className="tw-gap-1 tw-p-1 tw-rounded-[5px] tw-w-[70px] tw-flex tw-justify-center tw-items-center tw-bg-[#6A7380] tw-text-white tw-cursor-pointer tw-text-sm tw-mx-auto"
+                              className={`tw-gap-1 tw-p-1 tw-rounded-[5px] tw-w-[70px] tw-flex tw-justify-center tw-items-center tw-bg-[#6A7380] tw-text-white tw-cursor-pointer tw-text-sm tw-mx-auto ${
+                                lectureEvaluation?.minimumQuestionsAsked
+                                  ? 'tw-bg-[#6A7380] tw-text-white tw-cursor-pointer'
+                                  : 'tw-bg-gray-300 tw-text-gray-500 tw-cursor-not-allowed'
+                              }`}
                             >
                               <p>총평확인</p>
                               <svg
@@ -1491,8 +1583,8 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                       (info.questionAnswer.answerType === '0200'
                                         ? '(강의자료) : '
                                         : info.questionAnswer.answerType === '0300'
-                                          ? '(일반서치) : '
-                                          : '') +
+                                        ? '(일반서치) : '
+                                        : '') +
                                       info.questionAnswer.answer
                                     : ''}
                                 </Markdown>
@@ -1604,8 +1696,8 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                     (questionInfo?.answerType === '0200'
                                       ? '(강의자료) : '
                                       : questionInfo?.answerType === '0300'
-                                        ? '(일반서치) : '
-                                        : '') +
+                                      ? '(일반서치) : '
+                                      : '') +
                                     questionInfo?.answer
                                   : null}
                               </Markdown>
@@ -1739,7 +1831,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
         maxHeight="820px"
       >
         <div className={cx('seminar-check-popup', 'tw-h-[650px] tw-overflow-auto')}>
-          {roles.includes('ROLE_MANAGER') && (
+          {isMounted && clientState.roles.includes('ROLE_MANAGER') && (
             <div className="tw-flex tw-justify-end tw-items-center tw-gap-3">
               <button
                 onClick={() => {
@@ -1805,8 +1897,8 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                   (info?.answerType === '0200'
                                     ? '(강의자료) : '
                                     : info?.answerType === '0300'
-                                      ? '(일반서치) : '
-                                      : '') +
+                                    ? '(일반서치) : '
+                                    : '') +
                                   info?.answer
                                 : null}
                             </Markdown>
@@ -1874,72 +1966,30 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
         }}
         title={'학습피드백 총평'}
       >
-        <AIFeedbackSummary
-          aiFeedbackDataTotal={{
-            myEvaluationScores: {
-              understanding: 85,
-              diligence: 90,
-              criticalThinking: 75,
-              completion: 88,
-              participation: 92,
-            },
-            averageEvaluationScores: {
-              understanding: 78,
-              diligence: 82,
-              criticalThinking: 70,
-              completion: 80,
-              participation: 85,
-            },
-            totalScore: {
-              average: 3.8,
-              myScore: 4.2,
-            },
-            feedback: {
-              overallFeedback:
-                '전반적으로 우수한 학습 성과를 보여주고 있습니다. 특히 참여도와 성실도 면에서 뛰어난 모습을 보여주고 있으며, 지속적인 학습 의지가 돋보입니다.',
-              strengths:
-                '높은 참여도와 성실한 학습 태도를 보여주고 있습니다. 수업 중 적극적으로 질문하고 토론에 참여하는 모습이 인상적입니다.',
-              weaknesses:
-                '사고력 측면에서 다소 아쉬운 부분이 있습니다. 문제를 다양한 관점에서 바라보는 능력을 기를 필요가 있습니다.',
-              improvePoints:
-                '비판적 사고력 향상을 위해 다양한 사례 분석과 토론 활동에 더욱 적극적으로 참여하시기 바랍니다.',
-            },
-            recommendations: [
-              {
-                recommendation: '추가 학습 자료를 통한 심화 학습을 권장합니다.',
-                resources: [
-                  {
-                    title: '고급 프로그래밍 패턴',
-                    url: 'https://example.com/advanced-programming',
-                  },
-                  {
-                    title: '알고리즘 문제 해결 전략',
-                    url: 'https://example.com/algorithm-strategy',
-                  },
-                ],
-              },
-            ],
-          }}
-          aiFeedbackDataTotalQuiz={{
-            contents: [
-              {
-                order: 1,
-                publishDate: '2024-10-28',
-                question: '객체지향 프로그래밍의 핵심 개념은?',
-                grading: 4,
-                summaryFeedback: '객체지향의 기본 개념을 잘 이해하고 있으며, 실제 적용 능력도 우수합니다.',
-              },
-              {
-                order: 2,
-                publishDate: '2024-11-04',
-                question: '데이터베이스 정규화 과정을 설명하시오',
-                grading: 3,
-                summaryFeedback: '정규화의 기본 개념은 이해하고 있으나, 실제 적용에서 다소 미흡한 부분이 있습니다.',
-              },
-            ],
-          }}
-          isLoading={false}
-        />
+        <div>
+          <div className="tw-flex tw-justify-between tw-items-center tw-gap-4 tw-mb-4">
+            <div className="tw-text-xl tw-font-bold tw-text-black tw-text-center">총평피드백보기</div>
+            <button
+              onClick={() => {
+                setAiEvaluationParamsTotal({
+                  clubSequence: selectedClub?.clubSequence,
+                });
+                onLectureClubEvaluation({
+                  clubSequence: selectedClub?.clubSequence,
+                });
+                setIsLoading(true);
+              }}
+              className="tw-text-base tw-text-center tw-bg-black tw-text-white tw-px-4 tw-py-2 tw-rounded-md"
+            >
+              AI피드백 생성
+            </button>
+          </div>
+          <AIFeedbackSummary
+            aiFeedbackDataTotal={aiFeedbackDataTotal}
+            aiFeedbackDataTotalQuiz={aiFeedbackDataTotalQuiz}
+            isLoading={isLoading}
+          />
+        </div>
       </MentorsModal>
     </div>
   );

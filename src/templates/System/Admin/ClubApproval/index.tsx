@@ -134,7 +134,7 @@ export function AdminClubApprovalTemplate() {
                     <Table className="" aria-label="simple table">
                       <TableHead style={{ backgroundColor: '#F6F7FB' }}>
                         <TableRow>
-                          <TableCell align="left" width={110}>
+                          <TableCell align="left" width={120}>
                             <div className="tw-text-base tw-font-bold">신청일시</div>
                           </TableCell>
                           <TableCell align="left" width={70}>

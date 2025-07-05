@@ -149,10 +149,10 @@ export function AdminClubsTemplate() {
                           <TableCell align="left" width={100}>
                             <div className=" tw-text-base tw-font-bold">구성</div>
                           </TableCell>
-                          <TableCell align="left" width={135}>
+                          <TableCell align="left" width={150}>
                             <div className=" tw-text-base tw-font-bold">운영기간</div>
                           </TableCell>
-                          <TableCell align="center" width={130}>
+                          <TableCell align="center" width={120}>
                             <div className=" tw-text-base tw-font-bold">관리</div>
                           </TableCell>
                         </TableRow>

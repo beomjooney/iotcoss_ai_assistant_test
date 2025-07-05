@@ -154,6 +154,11 @@ export const quizModify = async (params: any) => {
   return { data: data || [] };
 };
 
+export const lectureClubEvaluation = async params => {
+  const { data } = await axiosGeneralAPI().post(`/api/v1/lecture-clubs/${params.clubSequence}/evaluation`);
+  return data.data;
+};
+
 // 글쓰기 생성
 export const saveCommunity = async (params: any) => await axiosGeneralAPI().post('/posts', params);
 // 글쓰기 수정

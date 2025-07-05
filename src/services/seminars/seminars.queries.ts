@@ -39,6 +39,7 @@ import {
   myLectureDashboardChatList,
   myLectureChatList,
   myLectureContentList,
+  lectureEvaluation,
 } from './seminars.api';
 
 export interface paramProps {
@@ -474,6 +475,15 @@ export const useLectureAboutDetail = (id, onSuccess?: (data: any) => void, onErr
 
 export const useLectureAboutDetailInfo = (id, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
   return useQuery<any, Error>(QUERY_KEY_FACTORY('LECTURE_ABOUT').detail(id), () => lectureAboutDetailInfo(id), {
+    onSuccess,
+    onError,
+    refetchOnWindowFocus: false,
+    retry: false,
+  });
+};
+
+export const useLectureEvaluation = (id, onSuccess?: (data: any) => void, onError?: (error: Error) => void) => {
+  return useQuery<any, Error>(QUERY_KEY_FACTORY('LECTURE_EVALUATION').detail(id), () => lectureEvaluation(id), {
     onSuccess,
     onError,
     refetchOnWindowFocus: false,

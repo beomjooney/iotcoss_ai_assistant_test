@@ -303,6 +303,12 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
     setSelectedImageBannerCheck(clubForm.backgroundImageUrl);
     setPreviewProfile(clubForm.instructorProfileImageUrl);
 
+    setAiSummarySettings({
+      minimumCompletionCount: clubForm.comprehensiveEvaluationMinimumCount,
+      comprehensiveEvaluationPermissions: clubForm.comprehensiveEvaluationPermissions,
+      comprehensiveEvaluationViewPermissions: clubForm.comprehensiveEvaluationViewPermissions,
+    });
+
     setSelectedImage('');
     setSelectedImageBanner('');
     setSelectedImageProfile('');
@@ -491,6 +497,12 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
   const [isProcessing, setIsProcessing] = useState(false);
   const [agreements, setAgreements] = useState(true);
   const [dayParams, setDayParams] = useState<any>({});
+  // AI 학습총평 설정 상태
+  const [aiSummarySettings, setAiSummarySettings] = useState({
+    minimumCompletionCount: 1, // 최소 실행 설정 (기본값: 10회)
+    comprehensiveEvaluationPermissions: ['0001'], // 배열로 관리
+    comprehensiveEvaluationViewPermissions: ['0001', '0003'], // 배열로 관리
+  });
 
   const handleStudyCycle = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
     setStudyCycleNum(newFormats);
@@ -811,7 +823,20 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
       enableAiQuestion: enableAiQuestion,
       includeReferenceToAnswer: includeReferenceToAnswer,
       forbiddenWords: forbiddenKeywords || [],
+      comprehensiveEvaluationPermissions: [],
+      comprehensiveEvaluationViewPermissions: [],
+      comprehensiveEvaluationMinimumCount: 0,
     };
+
+    for (let i = 0; i < aiSummarySettings.comprehensiveEvaluationPermissions.length; i++) {
+      clubFormParams.comprehensiveEvaluationPermissions[i] = aiSummarySettings.comprehensiveEvaluationPermissions[i];
+    }
+    for (let i = 0; i < aiSummarySettings.comprehensiveEvaluationViewPermissions.length; i++) {
+      clubFormParams.comprehensiveEvaluationViewPermissions[i] =
+        aiSummarySettings.comprehensiveEvaluationViewPermissions[i];
+    }
+    clubFormParams.comprehensiveEvaluationMinimumCount = aiSummarySettings.minimumCompletionCount;
+
     onLectureModifyAI({ clubFormParams, id: selectedClub?.clubSequence });
   };
 
@@ -1098,6 +1123,63 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
     }
 
     onLectureModify({ formData, id: selectedClub?.clubSequence });
+  };
+
+  const handleComprehensiveEvaluationPermissionChange = (code: string, isChecked: boolean) => {
+    setAiSummarySettings(prev => {
+      const currentPermissions = prev.comprehensiveEvaluationPermissions || [];
+
+      let newPermissions;
+      if (isChecked) {
+        // 체크된 경우: 배열에 코드 추가 (중복 방지)
+        if (!currentPermissions.includes(code)) {
+          return {
+            ...prev,
+            comprehensiveEvaluationPermissions: [...currentPermissions, code],
+          };
+        }
+      } else {
+        // 체크 해제된 경우: 배열에서 코드 제거
+        return {
+          ...prev,
+          comprehensiveEvaluationPermissions: currentPermissions.filter(permission => permission !== code),
+        };
+      }
+
+      return prev;
+    });
+  };
+
+  const handleComprehensiveEvaluationViewPermissionChange = (code: string, isChecked: boolean) => {
+    setAiSummarySettings(prev => {
+      const currentPermissions = prev.comprehensiveEvaluationViewPermissions || [];
+
+      if (isChecked) {
+        // 체크된 경우: 배열에 코드 추가 (중복 방지)
+        if (!currentPermissions.includes(code)) {
+          return {
+            ...prev,
+            comprehensiveEvaluationViewPermissions: [...currentPermissions, code],
+          };
+        }
+      } else {
+        // 체크 해제된 경우: 배열에서 코드 제거
+        return {
+          ...prev,
+          comprehensiveEvaluationViewPermissions: currentPermissions.filter(permission => permission !== code),
+        };
+      }
+
+      return prev;
+    });
+  };
+
+  // AI 학습총평 설정 변경 핸들러
+  const handleAiSummarySettingChange = (setting: string, value: boolean | string) => {
+    setAiSummarySettings(prev => ({
+      ...prev,
+      [setting]: value,
+    }));
   };
 
   const handleIsPublic = (event: React.MouseEvent<HTMLElement>, newFormats: string) => {
@@ -2933,6 +3015,115 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                 placeHolder="질문 제한 키워드 입력 해주세요."
               />
             </div>
+
+            {/* AI 학습총평 설정 패널 */}
+            <div className="tw-p-6 tw-px-0 tw-border">
+              <div className="tw-grid tw-grid-cols-3 tw-gap-6">
+                {/* AI 학습총평 실행 관한 */}
+                <div>
+                  <div className="tw-font-semibold tw-text-sm tw-text-black tw-mb-3">AI 학습총평 실행 관한</div>
+                  <div className="">
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={aiSummarySettings.comprehensiveEvaluationPermissions?.includes('0001') || false}
+                          onChange={e => handleComprehensiveEvaluationPermissionChange('0001', e.target.checked)}
+                          sx={{
+                            color: '#9CA3AF',
+                            '&.Mui-checked': {
+                              color: '#000',
+                            },
+                          }}
+                        />
+                      }
+                      label={<span className="tw-text-sm tw-text-gray-700">교수자 실행 (기본)</span>}
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={aiSummarySettings.comprehensiveEvaluationPermissions?.includes('0003') || false}
+                          onChange={e => handleComprehensiveEvaluationPermissionChange('0003', e.target.checked)}
+                          sx={{
+                            color: '#9CA3AF',
+                            '&.Mui-checked': {
+                              color: '#000',
+                            },
+                          }}
+                        />
+                      }
+                      label={<span className="tw-text-sm tw-text-gray-700">학습자 실행 (선택)</span>}
+                    />
+                  </div>
+                </div>
+
+                {/* AI 학습총평 보기 권한 */}
+                <div>
+                  <div className="tw-font-semibold tw-text-sm tw-text-black tw-mb-3">AI 학습총평 보기 권한</div>
+                  <div className="">
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={aiSummarySettings.comprehensiveEvaluationViewPermissions?.includes('0001') || false}
+                          onChange={e => handleComprehensiveEvaluationViewPermissionChange('0001', e.target.checked)}
+                          sx={{
+                            color: '#9CA3AF',
+                            '&.Mui-checked': {
+                              color: '#000',
+                            },
+                          }}
+                        />
+                      }
+                      label={<span className="tw-text-sm tw-text-gray-700">교수자 보기</span>}
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={aiSummarySettings.comprehensiveEvaluationViewPermissions?.includes('0003') || false}
+                          onChange={e => handleComprehensiveEvaluationViewPermissionChange('0003', e.target.checked)}
+                          sx={{
+                            color: '#9CA3AF',
+                            '&.Mui-checked': {
+                              color: '#000',
+                            },
+                          }}
+                        />
+                      }
+                      label={<span className="tw-text-sm tw-text-gray-700">학습자 보기</span>}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <div className="tw-font-semibold tw-text-sm tw-text-black tw-mb-3">
+                    최소 실행 설정 (AI 학습총평을 보기 위한 최소 완료 개수)
+                  </div>
+                  <FormControl size="small" className="tw-w-full">
+                    <Select
+                      value={aiSummarySettings.minimumCompletionCount}
+                      onChange={e => handleAiSummarySettingChange('minimumCompletionCount', e.target.value as number)}
+                      sx={{
+                        backgroundColor: 'white',
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#D1D5DB',
+                        },
+                        '&:hover .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#9CA3AF',
+                        },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#2474ED',
+                        },
+                      }}
+                    >
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map(num => (
+                        <MenuItem key={num} value={num}>
+                          {num}회
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </div>
+              </div>
+              {/* 최소 실행 설정 */}
+            </div>
           </div>
         )}
         {activeTab === 'lecture' && (
@@ -3215,14 +3406,14 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                                   {isProcessing
                                     ? '등록 중'
                                     : fileEntry.fileUploadStatus === '0000'
-                                      ? '등록 전'
-                                      : fileEntry.fileUploadStatus === '1000'
-                                        ? '등록 중'
-                                        : fileEntry.fileUploadStatus === '2000'
-                                          ? '등록 완료'
-                                          : fileEntry.fileUploadStatus === '3000'
-                                            ? '등록 실패'
-                                            : '등록 전'}
+                                    ? '등록 전'
+                                    : fileEntry.fileUploadStatus === '1000'
+                                    ? '등록 중'
+                                    : fileEntry.fileUploadStatus === '2000'
+                                    ? '등록 완료'
+                                    : fileEntry.fileUploadStatus === '3000'
+                                    ? '등록 실패'
+                                    : '등록 전'}
                                 </div>
                               </div>
                             ))}
@@ -3270,14 +3461,14 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                                   {isProcessing
                                     ? '등록 중'
                                     : file.fileUploadStatus === '0000'
-                                      ? '등록 전'
-                                      : file.fileUploadStatus === '1000'
-                                        ? '등록 중'
-                                        : file.fileUploadStatus === '2000'
-                                          ? '등록 완료'
-                                          : file.fileUploadStatus === '3000'
-                                            ? '등록 실패'
-                                            : '등록 전'}
+                                    ? '등록 전'
+                                    : file.fileUploadStatus === '1000'
+                                    ? '등록 중'
+                                    : file.fileUploadStatus === '2000'
+                                    ? '등록 완료'
+                                    : file.fileUploadStatus === '3000'
+                                    ? '등록 실패'
+                                    : '등록 전'}
                                 </div>
                               </div>
                             ))}
