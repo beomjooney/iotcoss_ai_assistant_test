@@ -49,7 +49,11 @@ import router from 'next/router';
 import { useSessionStore } from '../../../store/session';
 import { useStudyOrderLabel } from 'src/hooks/useStudyOrderLabel';
 import MentorsModal from 'src/stories/components/MentorsModal';
-import { useLectureClubEvaluation, useLectureClubEvaluationMember } from 'src/services/community/community.mutations';
+import {
+  useLectureClubEvaluation,
+  useLectureClubEvaluationMember,
+  useLectureClubFeedbackSave,
+} from 'src/services/community/community.mutations';
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   [`&.${tableRowClasses.root}`]: {
@@ -181,11 +185,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     data: { orderBy: 'STUDY_ORDER', lecturePage: 1, sortType: 'ASC' },
   });
 
-  const [myClubLectureQA, setMyClubLectureQA] = useState<any>({
-    clubSequence: selectedClub?.clubSequence || id,
-    sequence: clubStudySequence,
-    data: { questionPage: 1 },
-  });
+  const [myClubLectureQA, setMyClubLectureQA] = useState<any>(null);
 
   const [myClubLectureStudentQA, setMyClubLectureStudentQA] = useState<any>({
     clubSequence: selectedClub?.clubSequence || id,
@@ -658,6 +658,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                         setIsModalOpen(true);
                         console.log('setClubStudySequence', myDashboardList?.clubStudySequence);
                         setClubStudySequence(myDashboardList?.clubStudySequence);
+                        refetchMyDashboardQA();
                         setMyClubLectureQA({
                           clubSequence: selectedClub?.clubSequence || id,
                           sequence: myDashboardList?.clubStudySequence,
@@ -1307,7 +1308,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                           >
                             <div
                               onClick={() => {
-                                if (lectureEvaluation?.minimumQuestionsAsked) {
+                                if (!lectureEvaluation?.minimumQuestionsAsked) {
                                   setSelectedStudentInfo(info);
                                   setIsAIFeedbackModalOpen(true);
                                   setAiEvaluationParamsTotal({
@@ -1949,6 +1950,10 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
             aiFeedbackDataTotal={aiFeedbackDataTotal}
             aiFeedbackDataTotalQuiz={aiFeedbackDataTotalQuiz}
             isLoading={isLoading}
+            isFeedbackOptions={true}
+            isAdmin={true}
+            clubSequence={selectedClub?.clubSequence || id}
+            memberUUID={memberUUIDList}
           />
         </div>
       </MentorsModal>

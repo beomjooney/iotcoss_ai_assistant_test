@@ -422,6 +422,7 @@ export const useQuizAIFeedbackLectureGetMember = (
     {
       onSuccess,
       onError,
+      enabled: false,
       refetchOnWindowFocus: false,
     },
   );

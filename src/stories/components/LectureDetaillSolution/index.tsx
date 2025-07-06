@@ -685,6 +685,7 @@ const LectureDetaillSolution = ({
             aiFeedbackDataTotal={aiFeedbackDataTotal}
             aiFeedbackDataTotalQuiz={aiFeedbackDataTotalQuiz}
             isLoading={isLoading}
+            isFeedbackOptions={true}
           />
         </div>
       </MentorsModal>

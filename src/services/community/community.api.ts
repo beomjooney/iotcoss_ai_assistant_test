@@ -166,6 +166,14 @@ export const lectureClubEvaluationMember = async params => {
   return data.data;
 };
 
+export const lectureClubFeedbackSave = async params => {
+  const { data } = await axiosGeneralAPI().post(
+    `/api/v1/lecture-clubs/${params.clubSequence}/members/${params.memberUUID}/instructor-feedback`,
+    params.body,
+  );
+  return data.data;
+};
+
 // 글쓰기 생성
 export const saveCommunity = async (params: any) => await axiosGeneralAPI().post('/posts', params);
 // 글쓰기 수정

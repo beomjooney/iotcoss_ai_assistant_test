@@ -823,19 +823,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
       enableAiQuestion: enableAiQuestion,
       includeReferenceToAnswer: includeReferenceToAnswer,
       forbiddenWords: forbiddenKeywords || [],
-      comprehensiveEvaluationPermissions: [],
-      comprehensiveEvaluationViewPermissions: [],
-      comprehensiveEvaluationMinimumCount: 0,
     };
-
-    for (let i = 0; i < aiSummarySettings.comprehensiveEvaluationPermissions.length; i++) {
-      clubFormParams.comprehensiveEvaluationPermissions[i] = aiSummarySettings.comprehensiveEvaluationPermissions[i];
-    }
-    for (let i = 0; i < aiSummarySettings.comprehensiveEvaluationViewPermissions.length; i++) {
-      clubFormParams.comprehensiveEvaluationViewPermissions[i] =
-        aiSummarySettings.comprehensiveEvaluationViewPermissions[i];
-    }
-    clubFormParams.comprehensiveEvaluationMinimumCount = aiSummarySettings.minimumCompletionCount;
 
     onLectureModifyAI({ clubFormParams, id: selectedClub?.clubSequence });
   };
@@ -1084,10 +1072,14 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
       description: introductionText || '',
       useCurrentProfileImage: agreements,
       studyCycle: studyCycleNum,
+      comprehensiveEvaluationPermissions: [],
+      comprehensiveEvaluationViewPermissions: [],
+      comprehensiveEvaluationMinimumCount: 0,
     };
 
     console.log(clubFormParams);
     const formData = new FormData();
+
     formData.append('clubId', 'lecture_club_' + generateUUID());
     formData.append('clubName', clubFormParams.clubName);
     formData.append('jobGroups', clubFormParams.jobGroups.toString());
@@ -1102,6 +1094,20 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
     formData.append('participationCode', clubFormParams.participationCode);
     formData.append('description', clubFormParams.description);
     formData.append('useCurrentProfileImage', clubFormParams.useCurrentProfileImage);
+
+    for (let i = 0; i < aiSummarySettings.comprehensiveEvaluationPermissions.length; i++) {
+      formData.append(
+        'comprehensiveEvaluationPermissions[' + i + ']',
+        aiSummarySettings.comprehensiveEvaluationPermissions[i],
+      );
+    }
+    for (let i = 0; i < aiSummarySettings.comprehensiveEvaluationViewPermissions.length; i++) {
+      formData.append(
+        'comprehensiveEvaluationViewPermissions[' + i + ']',
+        aiSummarySettings.comprehensiveEvaluationViewPermissions[i],
+      );
+    }
+    formData.append('comprehensiveEvaluationMinimumCount', aiSummarySettings.minimumCompletionCount);
 
     if (selectedImage) {
       console.log('selectedImage', selectedImage);
@@ -2668,6 +2674,129 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                     멀리 가려면 함께 가라는 말이 있는데, 우리 전원 퀴즈클럽 달성도 100% 만들어 보아요!"
                     />
                   </div>
+
+                  {/* AI 학습총평 설정 패널 */}
+                  <div className="tw-p-6 tw-px-0 tw-border tw-mt-5">
+                    <div className="tw-grid tw-grid-cols-3 tw-gap-6">
+                      {/* AI 학습총평 실행 관한 */}
+                      <div>
+                        <div className="tw-font-semibold tw-text-sm tw-text-black tw-mb-3">AI 학습총평 실행 관한</div>
+                        <div className="">
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={
+                                  aiSummarySettings.comprehensiveEvaluationPermissions?.includes('0001') || false
+                                }
+                                onChange={e => handleComprehensiveEvaluationPermissionChange('0001', e.target.checked)}
+                                sx={{
+                                  color: '#9CA3AF',
+                                  '&.Mui-checked': {
+                                    color: '#000',
+                                  },
+                                }}
+                              />
+                            }
+                            label={<span className="tw-text-sm tw-text-gray-700">교수자 실행 (기본)</span>}
+                          />
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={
+                                  aiSummarySettings.comprehensiveEvaluationPermissions?.includes('0003') || false
+                                }
+                                onChange={e => handleComprehensiveEvaluationPermissionChange('0003', e.target.checked)}
+                                sx={{
+                                  color: '#9CA3AF',
+                                  '&.Mui-checked': {
+                                    color: '#000',
+                                  },
+                                }}
+                              />
+                            }
+                            label={<span className="tw-text-sm tw-text-gray-700">학습자 실행 (선택)</span>}
+                          />
+                        </div>
+                      </div>
+
+                      {/* AI 학습총평 보기 권한 */}
+                      <div>
+                        <div className="tw-font-semibold tw-text-sm tw-text-black tw-mb-3">AI 학습총평 보기 권한</div>
+                        <div className="">
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={
+                                  aiSummarySettings.comprehensiveEvaluationViewPermissions?.includes('0001') || false
+                                }
+                                onChange={e =>
+                                  handleComprehensiveEvaluationViewPermissionChange('0001', e.target.checked)
+                                }
+                                sx={{
+                                  color: '#9CA3AF',
+                                  '&.Mui-checked': {
+                                    color: '#000',
+                                  },
+                                }}
+                              />
+                            }
+                            label={<span className="tw-text-sm tw-text-gray-700">교수자 보기</span>}
+                          />
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={
+                                  aiSummarySettings.comprehensiveEvaluationViewPermissions?.includes('0003') || false
+                                }
+                                onChange={e =>
+                                  handleComprehensiveEvaluationViewPermissionChange('0003', e.target.checked)
+                                }
+                                sx={{
+                                  color: '#9CA3AF',
+                                  '&.Mui-checked': {
+                                    color: '#000',
+                                  },
+                                }}
+                              />
+                            }
+                            label={<span className="tw-text-sm tw-text-gray-700">학습자 보기</span>}
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <div className="tw-font-semibold tw-text-sm tw-text-black tw-mb-3">
+                          최소 실행 설정 (AI 학습총평을 보기 위한 최소 완료 개수)
+                        </div>
+                        <FormControl size="small" className="tw-w-full">
+                          <Select
+                            value={aiSummarySettings.minimumCompletionCount}
+                            onChange={e =>
+                              handleAiSummarySettingChange('minimumCompletionCount', e.target.value as number)
+                            }
+                            sx={{
+                              backgroundColor: 'white',
+                              '& .MuiOutlinedInput-notchedOutline': {
+                                borderColor: '#D1D5DB',
+                              },
+                              '&:hover .MuiOutlinedInput-notchedOutline': {
+                                borderColor: '#9CA3AF',
+                              },
+                              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                borderColor: '#2474ED',
+                              },
+                            }}
+                          >
+                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map(num => (
+                              <MenuItem key={num} value={num}>
+                                {num}회
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </div>
+                    </div>
+                    {/* 최소 실행 설정 */}
+                  </div>
                 </div>
 
                 <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">강의 꾸미기</div>
@@ -3014,115 +3143,6 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                 onChange={setForbiddenKeywords}
                 placeHolder="질문 제한 키워드 입력 해주세요."
               />
-            </div>
-
-            {/* AI 학습총평 설정 패널 */}
-            <div className="tw-p-6 tw-px-0 tw-border">
-              <div className="tw-grid tw-grid-cols-3 tw-gap-6">
-                {/* AI 학습총평 실행 관한 */}
-                <div>
-                  <div className="tw-font-semibold tw-text-sm tw-text-black tw-mb-3">AI 학습총평 실행 관한</div>
-                  <div className="">
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={aiSummarySettings.comprehensiveEvaluationPermissions?.includes('0001') || false}
-                          onChange={e => handleComprehensiveEvaluationPermissionChange('0001', e.target.checked)}
-                          sx={{
-                            color: '#9CA3AF',
-                            '&.Mui-checked': {
-                              color: '#000',
-                            },
-                          }}
-                        />
-                      }
-                      label={<span className="tw-text-sm tw-text-gray-700">교수자 실행 (기본)</span>}
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={aiSummarySettings.comprehensiveEvaluationPermissions?.includes('0003') || false}
-                          onChange={e => handleComprehensiveEvaluationPermissionChange('0003', e.target.checked)}
-                          sx={{
-                            color: '#9CA3AF',
-                            '&.Mui-checked': {
-                              color: '#000',
-                            },
-                          }}
-                        />
-                      }
-                      label={<span className="tw-text-sm tw-text-gray-700">학습자 실행 (선택)</span>}
-                    />
-                  </div>
-                </div>
-
-                {/* AI 학습총평 보기 권한 */}
-                <div>
-                  <div className="tw-font-semibold tw-text-sm tw-text-black tw-mb-3">AI 학습총평 보기 권한</div>
-                  <div className="">
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={aiSummarySettings.comprehensiveEvaluationViewPermissions?.includes('0001') || false}
-                          onChange={e => handleComprehensiveEvaluationViewPermissionChange('0001', e.target.checked)}
-                          sx={{
-                            color: '#9CA3AF',
-                            '&.Mui-checked': {
-                              color: '#000',
-                            },
-                          }}
-                        />
-                      }
-                      label={<span className="tw-text-sm tw-text-gray-700">교수자 보기</span>}
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={aiSummarySettings.comprehensiveEvaluationViewPermissions?.includes('0003') || false}
-                          onChange={e => handleComprehensiveEvaluationViewPermissionChange('0003', e.target.checked)}
-                          sx={{
-                            color: '#9CA3AF',
-                            '&.Mui-checked': {
-                              color: '#000',
-                            },
-                          }}
-                        />
-                      }
-                      label={<span className="tw-text-sm tw-text-gray-700">학습자 보기</span>}
-                    />
-                  </div>
-                </div>
-                <div>
-                  <div className="tw-font-semibold tw-text-sm tw-text-black tw-mb-3">
-                    최소 실행 설정 (AI 학습총평을 보기 위한 최소 완료 개수)
-                  </div>
-                  <FormControl size="small" className="tw-w-full">
-                    <Select
-                      value={aiSummarySettings.minimumCompletionCount}
-                      onChange={e => handleAiSummarySettingChange('minimumCompletionCount', e.target.value as number)}
-                      sx={{
-                        backgroundColor: 'white',
-                        '& .MuiOutlinedInput-notchedOutline': {
-                          borderColor: '#D1D5DB',
-                        },
-                        '&:hover .MuiOutlinedInput-notchedOutline': {
-                          borderColor: '#9CA3AF',
-                        },
-                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                          borderColor: '#2474ED',
-                        },
-                      }}
-                    >
-                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map(num => (
-                        <MenuItem key={num} value={num}>
-                          {num}회
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </div>
-              </div>
-              {/* 최소 실행 설정 */}
             </div>
           </div>
         )}

@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { AIFeedbackSummaryProps } from './types';
 import dynamic from 'next/dynamic';
 import Loading from 'src/stories/components/Loading';
+import { useLectureClubFeedbackSave } from 'src/services/community/community.mutations';
 
 // ReactApexChart를 동적으로 import하여 SSR 비활성화
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
@@ -10,8 +11,33 @@ const AIFeedbackSummary: React.FC<AIFeedbackSummaryProps> = ({
   aiFeedbackDataTotal,
   aiFeedbackDataTotalQuiz,
   isLoading = false,
+  isFeedbackOptions = false,
+  isAdmin = false,
+  clubSequence = '',
+  memberUUID = '',
 }) => {
   console.log('aiFeedbackDataTotal', aiFeedbackDataTotal);
+
+  const {
+    mutate: onLectureClubFeedbackSave,
+    isSuccess: lectureClubFeedbackSaveSucces,
+    isError: lectureClubFeedbackSaveError,
+  } = useLectureClubFeedbackSave();
+
+  useEffect(() => {
+    if (lectureClubFeedbackSaveSucces) {
+      alert('피드백 저장 완료');
+    }
+  }, [lectureClubFeedbackSaveSucces]);
+
+  useEffect(() => {
+    if (lectureClubFeedbackSaveError) {
+      alert('피드백 저장 실패');
+    }
+  }, [lectureClubFeedbackSaveError]);
+
+  const [feedback, setFeedback] = useState<string>(`${aiFeedbackDataTotal?.instructorOverallFeedback || ''}`);
+
   return (
     <div className="tw-max-h-[80vh]  tw-pb-20">
       {/* 전체 퀴즈 총평 피드백 */}
@@ -428,6 +454,36 @@ const AIFeedbackSummary: React.FC<AIFeedbackSummaryProps> = ({
               ))}
             </div>
           )}
+        </div>
+      )}
+      {isFeedbackOptions && (
+        <div className="tw-py-5">
+          <div className="tw-text-black tw-text-lg tw-font-bold tw-mb-3">교수자 피드백</div>
+          <textarea
+            onChange={e => {
+              setFeedback(e.target.value);
+            }}
+            className="tw-w-full tw-h-40 tw-p-2 tw-border tw-border-gray-300 tw-rounded-md"
+            value={feedback || ''}
+          />
+        </div>
+      )}
+      {isAdmin && (
+        <div className="tw-py-5 tw-text-center">
+          <button
+            onClick={() => {
+              onLectureClubFeedbackSave({
+                clubSequence: clubSequence,
+                memberUUID: memberUUID,
+                body: {
+                  feedback: feedback,
+                },
+              });
+            }}
+            className="tw-text-base tw-text-center tw-bg-blue-600 tw-text-white tw-px-4 tw-py-2 tw-rounded-md"
+          >
+            피드백 저장하기
+          </button>
         </div>
       )}
     </div>

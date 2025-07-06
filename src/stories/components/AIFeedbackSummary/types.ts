@@ -52,4 +52,8 @@ export interface AIFeedbackSummaryProps {
   aiFeedbackDataTotal?: AIFeedbackDataTotal;
   aiFeedbackDataTotalQuiz?: AIFeedbackDataTotalQuiz;
   isLoading?: boolean;
+  isFeedbackOptions?: boolean;
+  isAdmin?: boolean;
+  clubSequence?: string;
+  memberUUID?: string;
 }
