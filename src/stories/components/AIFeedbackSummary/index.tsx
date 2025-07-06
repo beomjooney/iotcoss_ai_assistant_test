@@ -98,7 +98,7 @@ const AIFeedbackSummary: React.FC<AIFeedbackSummaryProps> = ({
                               size: [4, 4],
                             },
                             xaxis: {
-                              categories: ['이해도', '성실도', '사고도', '완성도', '참여도'],
+                              categories: ['이해도', '성실도', '사고도', '완성도', '자기주도학습능력'],
                               labels: {
                                 style: {
                                   colors: '#374151',
@@ -240,7 +240,7 @@ const AIFeedbackSummary: React.FC<AIFeedbackSummaryProps> = ({
                     </div>
 
                     <div className="tw-flex tw-justify-between tw-items-center tw-px-5">
-                      <span className="tw-text-sm tw-text-gray-700">참여도</span>
+                      <span className="tw-text-sm tw-text-gray-700">자기주도학습능력</span>
                       <div className="tw-flex tw-items-center tw-gap-2">
                         <div className="tw-w-40 tw-h-2 tw-bg-gray-200 tw-rounded-full">
                           <div
