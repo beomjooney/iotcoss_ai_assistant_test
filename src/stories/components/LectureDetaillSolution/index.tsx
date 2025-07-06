@@ -658,7 +658,7 @@ const LectureDetaillSolution = ({
           <div className="tw-flex tw-justify-between tw-items-center tw-gap-4 tw-mb-4">
             <div className="tw-text-xl tw-font-bold tw-text-black tw-text-center">총평피드백보기</div>
             <button
-              disabled={!lectureEvaluation.comprehensiveEvaluationEnabled || isLoading}
+              disabled={!lectureEvaluation?.comprehensiveEvaluationEnabled || isLoading}
               onClick={() => {
                 if (contents?.clubSequence) {
                   onLectureClubEvaluation({
@@ -670,7 +670,7 @@ const LectureDetaillSolution = ({
                 }
               }}
               className={`tw-text-base tw-text-center tw-px-4 tw-py-2 tw-rounded-md ${
-                lectureEvaluation.comprehensiveEvaluationEnabled && !isLoading
+                lectureEvaluation?.comprehensiveEvaluationEnabled && !isLoading
                   ? 'tw-bg-black tw-text-white tw-cursor-pointer'
                   : 'tw-bg-gray-300 tw-text-gray-500 tw-cursor-not-allowed'
               }`}
@@ -678,7 +678,7 @@ const LectureDetaillSolution = ({
               {isLoading ? 'AI피드백 생성중...' : 'AI피드백 생성'}
             </button>
           </div>
-          {lectureEvaluation.comprehensiveEvaluationViewable ? (
+          {lectureEvaluation?.comprehensiveEvaluationViewable ? (
             <AIFeedbackSummary
               aiFeedbackDataTotal={aiFeedbackDataTotal}
               aiFeedbackDataTotalQuiz={aiFeedbackDataTotalQuiz}
