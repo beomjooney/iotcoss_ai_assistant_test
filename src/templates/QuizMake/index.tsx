@@ -1031,7 +1031,7 @@ export function QuizMakeTemplate() {
 
         {/* 퀴즈목록에 해당하는 div */}
         {activeTab === '퀴즈목록' && (
-          <div>
+          <div style={{ minHeight: '100vh' }}>
             <div className="tw-flex tw-justify-start tw-items-center tw-w-[1120px] tw-h-12 tw-gap-6 tw-mb-8">
               <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-3">
                 <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
