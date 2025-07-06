@@ -58,7 +58,7 @@ const LectureDetaillSolution = ({
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [isTotalFeedbackModalOpen, setIsTotalFeedbackModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [aiEvaluationParamsTotal, setAiEvaluationParamsTotal] = useState(null);
+  const [aiEvaluationParamsTotal, setAiEvaluationParamsTotal] = useState({ clubSequence: contents.clubSequence });
   const [aiFeedbackDataTotal, setAiFeedbackDataTotal] = useState(null);
   const [aiFeedbackDataTotalQuiz, setAiFeedbackDataTotalQuiz] = useState(null);
 
@@ -68,12 +68,6 @@ const LectureDetaillSolution = ({
   useEffect(() => {
     setIsClient(true); // 클라이언트 사이드에서 상태를 true로 설정
   }, []);
-
-  useEffect(() => {
-    if (contents?.clubSequence) {
-      setAiEvaluationParamsTotal({ clubSequence: contents.clubSequence });
-    }
-  }, [contents?.clubSequence]);
 
   useEffect(() => {
     setIsLiked(contents?.isFavorite);
@@ -121,12 +115,14 @@ const LectureDetaillSolution = ({
 
   // 총평 피드백 보기
   const handleTotalFeedbackClick = (clubSequence: number) => {
-    if (clubSequence) {
-      setIsTotalFeedbackModalOpen(true);
-    } else {
-      alert('클럽 정보를 불러오는 중입니다. 잠시 후 다시 시도해주세요.');
-    }
+    refetchAIEvaluationTotal();
   };
+
+  useEffect(() => {
+    if (aiFeedbackDataTotal) {
+      setIsTotalFeedbackModalOpen(true);
+    }
+  }, [aiFeedbackDataTotal]);
 
   // AI 피드백 데이터 조회
   const {
@@ -650,18 +646,19 @@ const LectureDetaillSolution = ({
       {/* 총평 피드백 모달 */}
       <MentorsModal
         isContentModalClick={true}
-        title={'총평 피드백보기'}
+        title={'학습총평 피드백보기'}
         isOpen={isTotalFeedbackModalOpen}
         onAfterClose={() => {
           setIsLoading(false);
           setIsTotalFeedbackModalOpen(false);
+          setAiFeedbackDataTotal(null);
         }}
       >
         <div>
           <div className="tw-flex tw-justify-between tw-items-center tw-gap-4 tw-mb-4">
             <div className="tw-text-xl tw-font-bold tw-text-black tw-text-center">총평피드백보기</div>
             <button
-              disabled={!contents?.clubSequence || isLoading}
+              disabled={!lectureEvaluation.comprehensiveEvaluationEnabled || isLoading}
               onClick={() => {
                 if (contents?.clubSequence) {
                   onLectureClubEvaluation({
@@ -673,7 +670,7 @@ const LectureDetaillSolution = ({
                 }
               }}
               className={`tw-text-base tw-text-center tw-px-4 tw-py-2 tw-rounded-md ${
-                contents?.clubSequence && !isLoading
+                lectureEvaluation.comprehensiveEvaluationEnabled && !isLoading
                   ? 'tw-bg-black tw-text-white tw-cursor-pointer'
                   : 'tw-bg-gray-300 tw-text-gray-500 tw-cursor-not-allowed'
               }`}
@@ -681,12 +678,18 @@ const LectureDetaillSolution = ({
               {isLoading ? 'AI피드백 생성중...' : 'AI피드백 생성'}
             </button>
           </div>
-          <AIFeedbackSummary
-            aiFeedbackDataTotal={aiFeedbackDataTotal}
-            aiFeedbackDataTotalQuiz={aiFeedbackDataTotalQuiz}
-            isLoading={isLoading}
-            isFeedbackOptions={true}
-          />
+          {lectureEvaluation.comprehensiveEvaluationViewable ? (
+            <AIFeedbackSummary
+              aiFeedbackDataTotal={aiFeedbackDataTotal}
+              aiFeedbackDataTotalQuiz={aiFeedbackDataTotalQuiz}
+              isLoading={isLoading}
+              isFeedbackOptions={true}
+            />
+          ) : (
+            <div className="tw-h-[400px] tw-flex tw-justify-center tw-items-center">
+              <div className="tw-text-center tw-text-gray-500 tw-text-base">총평 피드백 보기 권한이 없습니다.</div>
+            </div>
+          )}
         </div>
       </MentorsModal>
     </div>

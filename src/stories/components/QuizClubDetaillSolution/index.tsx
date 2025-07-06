@@ -142,13 +142,6 @@ const QuizClubDetaillSolution = ({
     }
   });
 
-  useEffect(() => {
-    if (contents?.club?.clubSequence) {
-      refetchAIEvaluationTotal();
-      refetchAIEvaluationTotalQuiz();
-    }
-  }, [contents?.club?.clubSequence]);
-
   // AI 피드백 데이터 조회
   const { refetch: refetchAIEvaluation } = useQuizAIFeedback(
     aiEvaluationParams,
@@ -162,6 +155,12 @@ const QuizClubDetaillSolution = ({
       alert('피드백 데이터를 불러오는데 실패했습니다.');
     },
   );
+
+  useEffect(() => {
+    if (aiFeedbackDataTotalQuiz && aiFeedbackDataTotal) {
+      setIsTotalFeedbackModalOpen(true);
+    }
+  }, [aiFeedbackDataTotalQuiz, aiFeedbackDataTotal]);
 
   // AI 피드백 데이터 조회
   const { refetch: refetchAIEvaluationTotal } = useQuizAIFeedbackTotal(
@@ -306,7 +305,9 @@ const QuizClubDetaillSolution = ({
 
   // 총평 피드백 보기
   const handleTotalFeedbackClick = (clubSequence: number) => {
-    setIsTotalFeedbackModalOpen(true);
+    refetchAIEvaluationTotal();
+    refetchAIEvaluationTotalQuiz();
+    // setIsTotalFeedbackModalOpen(true);
   };
 
   return (
@@ -1424,11 +1425,13 @@ const QuizClubDetaillSolution = ({
       {/* 총평 피드백 모달 */}
       <MentorsModal
         isContentModalClick={true}
-        title={'총평 피드백보기'}
+        title={'학습총평 피드백보기'}
         isOpen={isTotalFeedbackModalOpen}
         onAfterClose={() => {
           setIsLoading(false);
           setIsTotalFeedbackModalOpen(false);
+          setAiFeedbackDataTotal(null);
+          setAiFeedbackDataTotalQuiz(null);
         }}
       >
         <div className="tw-flex tw-justify-between tw-items-center tw-gap-4 tw-mb-4">

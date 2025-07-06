@@ -406,6 +406,7 @@ export const useQuizAIFeedbackLectureGetTotal = (
       onSuccess,
       onError,
       refetchOnWindowFocus: false,
+      enabled: false,
     },
   );
 };
