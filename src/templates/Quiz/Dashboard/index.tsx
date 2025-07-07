@@ -9,7 +9,7 @@ import Grid from '@mui/material/Grid';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { Line, Circle } from 'rc-progress';
+import { Circle } from 'rc-progress';
 import { Radio, RadioGroup, FormControlLabel } from '@mui/material';
 import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded';
 import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded';
@@ -89,7 +89,6 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
     setMyClubList(data?.data?.contents || []);
   });
 
-  // 퀴즈클럽 대시보드
   const { isFetched: isDashboardFetched, refetch: refetchMyDashboard } = useMyDashboardList(myClubParams, data => {
     console.log(data);
     setMyDashboardList(data || []);
@@ -136,7 +135,7 @@ export function QuizDashboardTemplate({ id }: QuizDashboardTemplateProps) {
   const classes = useStyles();
   return (
     <div className={cx('seminar-detail-container')}>
-      <div className={cx('container')}>
+      <div className={cx('container')} style={{ minHeight: '1500px' }}>
         <>
           <Desktop>
             {/* <Divider className="tw-y-5 tw-bg-['#efefef']" /> */}

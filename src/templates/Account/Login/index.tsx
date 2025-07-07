@@ -34,8 +34,6 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
   const { update, tenantName, tenantUri, loginType, tenantLoginMemberTypes, tenantOrganizationCodes } =
     useSessionStore.getState();
 
-  console.log('loginType', loginType);
-  console.log('tenantOrganizationCodes', tenantOrganizationCodes);
   const router = useRouter();
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');

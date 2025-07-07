@@ -1,31 +1,13 @@
 // QuizClubDetailInfo.jsx
 import React, { useState, useEffect } from 'react';
-import Avatar from '@mui/material/Avatar';
-import styles from './index.module.scss';
-import classNames from 'classnames/bind';
 import CircularProgress from '@mui/material/CircularProgress';
-
-import { useMyClubList } from 'src/services/seminars/seminars.queries';
 import { useAIQuizAnswerList, useAIQuizAnswerListPut } from 'src/services/quiz/quiz.mutations';
 
-/**icon */
-const cx = classNames.bind(styles);
-
-//comment
-import {
-  useQuizAnswerDetail,
-  useQuizRankDetail,
-  useQuizSolutionDetail,
-  useQuizMyClubInfo,
-} from 'src/services/quiz/quiz.queries';
-import useDidMountEffect from 'src/hooks/useDidMountEffect';
-
 const AIAnswerQuizList = ({ info, refetchReply }) => {
-  const [page, setPage] = useState(1);
   const [isLoadingAI, setIsLoadingAI] = useState(false);
   const [value, setValue] = useState('');
   const [valueAI, setValueAI] = useState(null);
-  const [quizList, setQuizList] = useState({});
+
   const { mutate: onAIQuizAnswer, isError, isSuccess: answerSuccess, data: aiQuizAnswerData } = useAIQuizAnswerList();
   const {
     mutate: onAIQuizAnswerPut,
@@ -42,13 +24,11 @@ const AIAnswerQuizList = ({ info, refetchReply }) => {
   useEffect(() => {
     if (aiQuizAnswerData) {
       refetchReply();
-      // setValueAI(aiQuizAnswerData?.grading);
-      // console.log('updatedQuizList', aiQuizAnswerData);
     }
   }, [aiQuizAnswerData]);
+
   useEffect(() => {
     if (isError) {
-      // alert('AI 채점 실패');
       setIsLoadingAI(false);
     }
   }, [isError]);
@@ -67,8 +47,6 @@ const AIAnswerQuizList = ({ info, refetchReply }) => {
   }, [answerSuccess]);
 
   const handleAIAnswerClick = async () => {
-    // Find the specific quiz in quizList and create formattedQuizList
-
     if (info?.answerStatus !== '0003') {
       alert('답변이 없습니다.');
       return;
@@ -82,7 +60,6 @@ const AIAnswerQuizList = ({ info, refetchReply }) => {
 
     console.log('ai quiz click', params);
     setIsLoadingAI(true);
-
     onAIQuizAnswer(params); // Ensure this function returns a promise
   };
 
