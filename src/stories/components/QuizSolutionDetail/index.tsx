@@ -177,7 +177,11 @@ BannerProps) => {
       setIsFeedbackModalOpen(true);
       setIsLoadingAI(false);
     }
-  }, [answerSuccessSavePut]);
+
+    if (answerErrorSavePut) {
+      setIsLoadingAI(false);
+    }
+  }, [answerSuccessSavePut, answerErrorSavePut]);
 
   useEffect(() => {
     if (isAnswerUpdate) {
@@ -361,7 +365,6 @@ BannerProps) => {
   };
   const handleModalClose2 = () => {
     setShowSubmitAnswerModal(false);
-    location.href = `/quiz/${data?.clubSequence}`;
   };
   return (
     <>
@@ -615,6 +618,16 @@ BannerProps) => {
                   >
                     {activeStep === 0 ? '답변입력 및 지식콘텐츠 읽기' : '수정완료 및 답변 제출하기'}
                   </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      location.href = `/quiz/${data?.clubSequence}`;
+                    }}
+                    className="tw-ml-5 tw-text-white tw-bg-black tw-mt-5 tw-focus:ring-4  tw-font-medium tw-rounded tw-text-sm tw-px-7 tw-py-3 "
+                  >
+                    클럽 홈으로 이동
+                  </button>
                 </div>
               )}
 
@@ -641,6 +654,15 @@ BannerProps) => {
                     className="tw-text-white tw-bg-red-500 tw-mt-5 tw-focus:ring-4  tw-font-medium tw-rounded tw-text-sm tw-px-7 tw-py-3 "
                   >
                     답변수정 하러가기
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      location.href = `/quiz/${data?.clubSequence}`;
+                    }}
+                    className="tw-ml-5 tw-text-white tw-bg-black tw-mt-5 tw-focus:ring-4  tw-font-medium tw-rounded tw-text-sm tw-px-7 tw-py-3 "
+                  >
+                    클럽 홈으로 이동
                   </button>
                 </div>
               )}

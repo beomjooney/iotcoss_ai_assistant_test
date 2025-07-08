@@ -837,7 +837,10 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
           title={'AI답변보기'}
           isOpen={isModalOpen}
           isProfile={true}
-          onAfterClose={() => setIsModalOpen(false)}
+          onAfterClose={() => {
+            refetchReply();
+            setIsModalOpen(false);
+          }}
         >
           {!isQuizGetanswer ? (
             <div className="tw-flex tw-justify-center tw-items-center tw-py-20">
@@ -1063,7 +1066,6 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                       {user?.member?.nickname}
                       <button
                         onClick={() => {
-                          // refetchQuizAnswerGet();
                           setIsLoadingAI(true);
                           refetchQuizAnswerAI();
                         }}
@@ -1247,6 +1249,17 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                   </div>
                 </div>
               )}
+              <div className="tw-flex tw-justify-center tw-items-center tw-pt-2">
+                <button
+                  onClick={() => {
+                    setIsModalOpen(false);
+                    refetchReply();
+                  }}
+                  className="tw-bg-black tw-text-white tw-text-sm tw-text-black tw-py-3 tw-px-4 tw-w-40 tw-rounded"
+                >
+                  닫기
+                </button>
+              </div>
             </div>
           )}
         </MentorsModal>

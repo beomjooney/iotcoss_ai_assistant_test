@@ -1247,7 +1247,7 @@ const QuizClubDetaillSolution = ({
                         >
                           {item?.threadType === '0001' && '사전답변'}
                           {item?.threadType === '0002' && '사후답변'}
-                          {item?.threadType === '0003' && 'AI멘토'}
+                          {item?.threadType === '0003' && 'AI 피드백'}
                           {item?.threadType === '0004' && '교수님 평가'}
                         </span>
                         <span className="tw-px-4">
@@ -1521,6 +1521,11 @@ const QuizClubDetaillSolution = ({
                       : '최종답변'}
                   </span>
                   <span className="tw-text-xs tw-text-gray-500">{item.createdAt}</span>
+                  {item?.threadType === '0004' && (
+                    <span className="tw-text-sm tw-text-gray-500 tw-font-semibold tw-ml-auto">
+                      교수자 평점 : {item?.gradingFinal || '0'}/5
+                    </span>
+                  )}
                 </div>
                 <div className="tw-rounded-lg tw-border tw-border-gray-200">
                   {item?.threadType === '0003' ? (
