@@ -11,7 +11,6 @@ import {
   useMyDashboardLecture,
   useMyDashboardQA,
   useMyDashboardStudentQA,
-  useLectureEvaluation,
 } from 'src/services/seminars/seminars.queries';
 import { useSaveAnswer, useDeleteQuestion } from 'src/services/seminars/seminars.mutations';
 import Grid from '@mui/material/Grid';
@@ -172,7 +171,6 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   const [memberUUID, setMemberUUID] = useState('');
   const [memberUUIDList, setMemberUUIDList] = useState('');
   const [selectedStudentInfo, setSelectedStudentInfo] = useState<any>(null);
-  const [lectureEvaluation, setLectureEvaluation] = useState<any>({});
   const [sortType, setSortType] = useState('NAME');
   const [sortLectureType, setSortLectureType] = useState('STUDY_ORDER_ASC');
 
@@ -252,14 +250,6 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     clubType: '0200',
     size: 100,
   });
-
-  // 강의클럽 총평 상태 조회
-  const { isFetched: isLectureEvaluationStatusFetched, refetch: refetchLectureEvaluationStatus } = useLectureEvaluation(
-    id,
-    data => {
-      setLectureEvaluation(data);
-    },
-  );
 
   const handleChangeQuiz = event => {
     setSortType(event.target.value);
@@ -1308,18 +1298,19 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                           >
                             <div
                               onClick={() => {
-                                if (!lectureEvaluation?.minimumQuestionsAsked) {
-                                  setSelectedStudentInfo(info);
-                                  setIsAIFeedbackModalOpen(true);
-                                  setAiEvaluationParamsTotal({
-                                    clubSequence: selectedClub?.clubSequence || id,
-                                    memberUUID: info?.member?.memberUUID,
-                                  });
-                                  setMemberUUIDList(info?.member?.memberUUID);
+                                if (!info?.comprehensiveEvaluationViewable) {
+                                  return;
                                 }
+                                setSelectedStudentInfo(info);
+                                setIsAIFeedbackModalOpen(true);
+                                setAiEvaluationParamsTotal({
+                                  clubSequence: selectedClub?.clubSequence || id,
+                                  memberUUID: info?.member?.memberUUID,
+                                });
+                                setMemberUUIDList(info?.member?.memberUUID);
                               }}
                               className={`tw-gap-1 tw-p-1 tw-rounded-[5px] tw-w-[70px] tw-flex tw-justify-center tw-items-center tw-bg-[#6A7380] tw-text-white tw-cursor-pointer tw-text-sm tw-mx-auto ${
-                                lectureEvaluation?.minimumQuestionsAsked
+                                info?.comprehensiveEvaluationViewable
                                   ? 'tw-bg-[#6A7380] tw-text-white tw-cursor-pointer'
                                   : 'tw-bg-gray-300 tw-text-gray-500 tw-cursor-not-allowed'
                               }`}

@@ -790,7 +790,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                           </div>
                         </TableCell>
                         <TableCell padding="none" align="left" component="th" scope="row">
-                          <div className="tw-text-black tw-text-sm tw-line-clamp-1">
+                          <div className="tw-text-black tw-line-clamp-1">
                             {info?.answerStatus === '0003' ? info?.text : 'AI피드백/채점을 할 수 없습니다.'}
                           </div>
                         </TableCell>

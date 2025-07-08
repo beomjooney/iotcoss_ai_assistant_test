@@ -7,6 +7,7 @@ const AIAnswerQuizList = ({ info, refetchReply }) => {
   const [isLoadingAI, setIsLoadingAI] = useState(false);
   const [value, setValue] = useState('');
   const [valueAI, setValueAI] = useState(null);
+  console.log('info', info);
 
   const { mutate: onAIQuizAnswer, isError, isSuccess: answerSuccess, data: aiQuizAnswerData } = useAIQuizAnswerList();
   const {
@@ -117,9 +118,9 @@ const AIAnswerQuizList = ({ info, refetchReply }) => {
       </button>
       <button
         className={`tw-w-[110px] tw-bg-black tw-rounded-md tw-text-sm tw-text-white tw-py-2.5 tw-ml-2
-              ${valueAI !== null && valueAI !== '' ? 'tw-bg-gray-400' : 'tw-bg-black'}
+              ${info.feedbackStatus === '0001' && info.answerStatus === '0003' ? 'tw-bg-black' : 'tw-bg-gray-400'}
               disabled:tw-bg-gray-400 max-lg:tw-mr-1`}
-        disabled={valueAI !== null && valueAI !== ''} // 초기값이거나 빈 값일 때 활성화
+        disabled={info.answerStatus !== '0003' || info?.feedbackStatus === '0002'}
         onClick={() => {
           handleAIAnswerClick();
         }}

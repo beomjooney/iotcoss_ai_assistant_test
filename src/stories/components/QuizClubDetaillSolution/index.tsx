@@ -566,6 +566,26 @@ const QuizClubDetaillSolution = ({
                         </div>
 
                         {/* 채점하기 버튼 */}
+                        {session?.status === '0002' && (
+                          <div className="tw-mt-2">
+                            <button
+                              onClick={() => {
+                                router.push(
+                                  {
+                                    pathname: `/quiz/solution/${session?.quizSequence}`,
+                                    query: {
+                                      clubSequence: clubAbout?.clubSequence,
+                                    },
+                                  },
+                                  `/quiz/solution/${session?.quizSequence}`,
+                                );
+                              }}
+                              className="tw-text-xs tw-bg-blue-500 tw-text-white tw-px-2 tw-py-1 tw-rounded-full tw-whitespace-nowrap tw-cursor-pointer tw-border-none"
+                            >
+                              퀴즈풀기
+                            </button>
+                          </div>
+                        )}
                         {/* {session?.status === '0003' && clubAbout?.feedbackType === '0200' && !session?.grade && (
                           <div className="tw-mt-2">
                             <button
@@ -578,7 +598,7 @@ const QuizClubDetaillSolution = ({
                         )} */}
                         {session?.status === '0003' && (
                           <div className="text-xs font-medium text-center text-[#9ca5b2] py-2">
-                            {session?.grade ? (
+                            {session?.evaluationStatus === '0002' ? (
                               <span className="tw-text-xs tw-text-black tw-rounded-full tw-bg-gray-200 tw-px-2 tw-py-1 tw-font-medium tw-text-center tw-text-[#9ca5b2]">
                                 점수 : {session?.grade}
                               </span>
@@ -1065,7 +1085,6 @@ const QuizClubDetaillSolution = ({
                                         <p
                                           onClick={() => {
                                             handleFeedbackClick(item?.quizSequence);
-                                            // handleClick('sfasd', item?.quizSequence, false);
                                           }}
                                           className="tw-cursor-pointer tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-bold tw-text-right tw-text-[#9ca5b2]"
                                         >
@@ -1156,6 +1175,7 @@ const QuizClubDetaillSolution = ({
           </div>
         </div>
       </div>
+
       <MentorsModal
         isContentModalClick={false}
         title={'채점 및 피드백 상세보기'}
@@ -1179,6 +1199,7 @@ const QuizClubDetaillSolution = ({
                 <div className="tw-font-bold tw-text-black">{clubQuizThreads?.question}</div>
               </div>
             </div>
+
             {clubQuizThreads?.clubQuizThreads?.map((item, index) => {
               const isLastItem = index === clubQuizThreads.clubQuizThreads.length - 1;
               return (
@@ -1206,6 +1227,7 @@ const QuizClubDetaillSolution = ({
                       />
                     </svg>
                   </div>
+
                   <div className="tw-w-1.5/12  tw-py-2 tw-flex tw-flex-col">
                     {item?.threadType === '0003' ? (
                       <img className="tw-rounded-full tw-w-10 tw-h-10 border" src="/assets/images/main/chatbot2.png" />
@@ -1216,6 +1238,7 @@ const QuizClubDetaillSolution = ({
                       />
                     )}
                   </div>
+
                   <div className="tw-flex-auto tw-w-9/12 tw-px-3">
                     <div className="tw-py-2">
                       <div className="tw-font-medium tw-text-[#9ca5b2] tw-text-sm">
@@ -1232,14 +1255,8 @@ const QuizClubDetaillSolution = ({
                         </span>
 
                         {item?.threadType === '0003' && (
-                          // <>
-                          //   <div className="tw-float-right tw-text-black">
-                          //     AI 채점 : <span className="tw-font-bold">{item?.gradingAi}</span>
-                          //   </div>
-                          // </>
                           <div className=" tw-border-gray-200">
                             <div className="tw-py-4 tw-space-y-4">
-                              {/* Rating Section */}
                               <div>
                                 <div className="tw-flex tw-items-center tw-gap-2 tw-mb-2">
                                   <span className="tw-text-sm tw-font-medium">평점({item?.gradingAi || '4.5'}/5)</span>
@@ -1252,7 +1269,6 @@ const QuizClubDetaillSolution = ({
                                 </div>
                               </div>
 
-                              {/* Content Sections */}
                               <div className="tw-space-y-3">
                                 <div>
                                   <div className="tw-text-base tw-font-medium tw-text-gray-500 tw-mb-3">
@@ -1342,19 +1358,14 @@ const QuizClubDetaillSolution = ({
                       <div className="tw-text-left tw-text-sm">
                         <ul className="">
                           {item?.contents?.map((file, index) => {
-                            // Skip rendering if file.url is null or undefined
                             if (!file.url) return null;
-
                             return (
                               <div
                                 onClick={() => {
                                   let url = file.url;
-                                  // Ensure the URL is absolute
                                   if (!/^https?:\/\//i.test(url)) {
-                                    // If the URL does not start with 'http://' or 'https://', prepend the base URL
                                     url = new URL(url, window.location.origin).href;
                                   }
-                                  console.log(url); // Log the corrected URL to the console
                                   window.open(url, '_blank'); // Open the corrected URL in a new tab
                                 }}
                                 key={index}
@@ -1372,13 +1383,12 @@ const QuizClubDetaillSolution = ({
                       {item?.files?.length > 0 && (
                         <div className="tw-flex ">
                           <div className="tw-text-left tw-text-sm">
-                            <ul className="">
+                            <ul>
                               {item?.files?.map((file, index) => (
                                 <div
                                   key={index}
                                   onClick={() => {
                                     onFileDownload(file.key, file.name);
-                                    // window.open(file.url, '_blank');
                                   }}
                                   className="tw-underline tw-text-blue-500 tw-cursor-pointer tw-p-1  tw-mb-1"
                                 >
@@ -1394,8 +1404,8 @@ const QuizClubDetaillSolution = ({
                 </div>
               );
             })}
+
             {isHideAI === true && (
-              // Check if the threadType is '0004' and return null to hide the div
               <div>
                 <div className="tw-text-center tw-py-10">
                   <button
@@ -1434,8 +1444,12 @@ const QuizClubDetaillSolution = ({
           setAiFeedbackDataTotalQuiz(null);
         }}
       >
-        <div className="tw-flex tw-justify-between tw-items-center tw-gap-4 tw-mb-4">
-          <div className="tw-text-xl tw-font-bold tw-text-black tw-text-center">총평피드백보기</div>
+        <div className="tw-flex tw-justify-end tw-items-center tw-gap-4 tw-mb-4">
+          {aiFeedbackDataTotal?.evaluationStatus === '0001' && (
+            <div className="tw-text-base tw-font-normal tw-text-black tw-text-right">
+              총평피드백이 생성되지 않아습니다. 총평 AI피드백 버튼을 눌러주세요.
+            </div>
+          )}
           <button
             onClick={() => {
               onQuizClubEvaluation({
@@ -1445,7 +1459,6 @@ const QuizClubDetaillSolution = ({
                 clubSequence: clubAbout?.clubSequence,
               });
               setIsLoading(true);
-              // setIsTotalFeedbackModalOpen(false);
             }}
             className="tw-text-base tw-text-center tw-bg-black tw-text-white tw-px-4 tw-py-2 tw-rounded-md"
           >
@@ -1471,7 +1484,6 @@ const QuizClubDetaillSolution = ({
         isContentModalClick={false}
       >
         <div className="tw-max-w-4xl tw-mx-auto tw-min-h-screen tw-pb-5">
-          {/* Header */}
           <div className="tw-space-y-4">
             <div className="border tw-rounded-lg">
               <div className="tw-px-4 tw-py-3 tw-flex tw-items-center tw-justify-between">
@@ -1479,20 +1491,16 @@ const QuizClubDetaillSolution = ({
                   <span className="tw-text-sm tw-text-gray-500 tw-bg-[#9CA5B2] tw-text-white tw-rounded-full tw-px-2 tw-py-1">
                     답변완료
                   </span>
-                  {/* <span className="tw-font-semibold">6회</span>
-                  <span className="tw-text-gray-500 tw-text-sm">10:03(월)</span> */}
                 </div>
                 <div className="tw-flex tw-items-center tw-gap-2">
                   <span className="tw-text-sm tw-text-gray-500">{aiFeedbackData?.member?.nickname}</span>
                   <img src={aiFeedbackData?.member?.profileImageUrl} className="tw-w-6 tw-h-6 tw-rounded-full" />
                 </div>
-                {/* Main Topic */}
               </div>
               <div className="tw-p-4">
                 <p className="tw-text-base tw-text-black">{aiFeedbackData?.question}</p>
               </div>
             </div>
-            {/* First Response */}
             {aiFeedbackData?.clubQuizThreads.map(item => (
               <div
                 key={item.threadType}
@@ -1515,11 +1523,9 @@ const QuizClubDetaillSolution = ({
                   <span className="tw-text-xs tw-text-gray-500">{item.createdAt}</span>
                 </div>
                 <div className="tw-rounded-lg tw-border tw-border-gray-200">
-                  {/* <p className="tw-text-sm tw-text-gray-700 tw-leading-relaxed">{item.text}</p> */}
                   {item?.threadType === '0003' ? (
                     <div className="">
                       <div className="tw-py-4 tw-space-y-4">
-                        {/* Rating Section */}
                         <div>
                           <div className="tw-flex tw-items-center tw-gap-2 tw-mb-2">
                             <span className="tw-text-sm tw-font-medium">평점({item?.gradingAi || '4.5'}/5)</span>
@@ -1532,7 +1538,6 @@ const QuizClubDetaillSolution = ({
                           </div>
                         </div>
 
-                        {/* Content Sections */}
                         <div className="tw-space-y-3">
                           <div>
                             <div className="tw-text-base tw-font-medium tw-text-gray-500 tw-mb-3">전체 피드백</div>
@@ -1596,8 +1601,6 @@ const QuizClubDetaillSolution = ({
           </div>
         </div>
       </MentorsModal>
-
-      {/* 총평 피드백 모달 */}
     </div>
   );
 };

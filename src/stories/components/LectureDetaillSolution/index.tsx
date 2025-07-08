@@ -153,7 +153,7 @@ const LectureDetaillSolution = ({
     if (isErrorAIEvaluationTotal || isSuccessAIEvaluationTotal) {
       setIsLoading(false);
     }
-  }, [isErrorAIEvaluationTotal, isSuccessAIEvaluationTotal, isLoading]);
+  }, [isErrorAIEvaluationTotal, isSuccessAIEvaluationTotal]);
 
   return (
     <div className={`tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white ${borderStyle}`}>
@@ -327,32 +327,34 @@ const LectureDetaillSolution = ({
                   강의 목록 ({study?.length || 0})
                 </Grid>
                 <Grid container justifyContent="flex-end" item xs={6} sm={6} style={{ textAlign: 'right' }}>
-                  <div className="tw-flex tw-items-center tw-gap-2">
-                    <div className="tw-flex tw-items-center">
-                      <div className="tw-text-base tw-text-black tw-leading-relaxed tw-mr-2">
-                        {lectureEvaluation?.minimumQuestionCount}개 이상 질의응답을 해야 총평 피드백을 확인할 수
-                        있습니다.
+                  {lectureEvaluation?.comprehensiveEvaluationViewable ? (
+                    <div className="tw-flex tw-items-center tw-gap-2">
+                      <div className="tw-flex tw-items-center">
+                        <div className="tw-text-base tw-text-black tw-leading-relaxed tw-mr-2">
+                          {lectureEvaluation?.minimumQuestionCount}개 이상 질의응답을 해야 총평 피드백을 확인할 수
+                          있습니다.
+                        </div>
                       </div>
+                      <button
+                        disabled={!lectureEvaluation?.minimumQuestionsAsked || !contents?.clubSequence}
+                        title={
+                          !lectureEvaluation?.minimumQuestionsAsked
+                            ? '질의응답을 완료해야 총평 피드백을 확인할 수 있습니다.'
+                            : !contents?.clubSequence
+                            ? '클럽 정보를 불러오는 중입니다.'
+                            : ''
+                        }
+                        onClick={() => handleTotalFeedbackClick(contents?.clubSequence)}
+                        className={`tw-px-4 tw-py-2 tw-rounded-full tw-text-base tw-font-medium ${
+                          lectureEvaluation?.minimumQuestionsAsked && contents?.clubSequence
+                            ? 'tw-bg-[#2474ED] tw-hover:bg-blue-600 tw-text-white tw-cursor-pointer'
+                            : 'tw-bg-gray-300 tw-text-gray-500 tw-cursor-not-allowed'
+                        }`}
+                      >
+                        총평 피드백보기
+                      </button>
                     </div>
-                    <button
-                      disabled={!lectureEvaluation?.minimumQuestionsAsked || !contents?.clubSequence}
-                      title={
-                        !lectureEvaluation?.minimumQuestionsAsked
-                          ? '질의응답을 완료해야 총평 피드백을 확인할 수 있습니다.'
-                          : !contents?.clubSequence
-                          ? '클럽 정보를 불러오는 중입니다.'
-                          : ''
-                      }
-                      onClick={() => handleTotalFeedbackClick(contents?.clubSequence)}
-                      className={`tw-px-4 tw-py-2 tw-rounded-full tw-text-base tw-font-medium ${
-                        lectureEvaluation?.minimumQuestionsAsked && contents?.clubSequence
-                          ? 'tw-bg-[#2474ED] tw-hover:bg-blue-600 tw-text-white tw-cursor-pointer'
-                          : 'tw-bg-gray-300 tw-text-gray-500 tw-cursor-not-allowed'
-                      }`}
-                    >
-                      총평 피드백보기
-                    </button>
-                  </div>
+                  ) : null}
                 </Grid>
               </Grid>
               <Divider className="tw-py-3 tw-mb-3" />

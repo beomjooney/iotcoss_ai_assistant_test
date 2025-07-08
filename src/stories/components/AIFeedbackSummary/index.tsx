@@ -36,6 +36,12 @@ const AIFeedbackSummary: React.FC<AIFeedbackSummaryProps> = ({
     }
   }, [lectureClubFeedbackSaveError]);
 
+  useEffect(() => {
+    if (aiFeedbackDataTotal) {
+      setFeedback(aiFeedbackDataTotal?.instructorOverallFeedback || '');
+    }
+  }, [aiFeedbackDataTotal]);
+
   const [feedback, setFeedback] = useState<string>(`${aiFeedbackDataTotal?.instructorOverallFeedback || ''}`);
 
   return (
@@ -98,7 +104,17 @@ const AIFeedbackSummary: React.FC<AIFeedbackSummaryProps> = ({
                               size: [4, 4],
                             },
                             xaxis: {
-                              categories: ['이해도', '성실도', '사고도', '참여도', '자기주도학습능력'],
+                              categories: [
+                                '이해도',
+                                '성실도',
+                                '사고도',
+                                aiFeedbackDataTotal?.myEvaluationScores?.selfDirectedLearning
+                                  ? '자기주도학습능력'
+                                  : aiFeedbackDataTotal?.myEvaluationScores?.completion
+                                  ? '완성도'
+                                  : '자기주도학습능력',
+                                '참여도',
+                              ],
                               labels: {
                                 style: {
                                   colors: '#374151',
@@ -144,9 +160,12 @@ const AIFeedbackSummary: React.FC<AIFeedbackSummaryProps> = ({
                                 aiFeedbackDataTotal?.myEvaluationScores?.understanding || 0,
                                 aiFeedbackDataTotal?.myEvaluationScores?.diligence || 0,
                                 aiFeedbackDataTotal?.myEvaluationScores?.criticalThinking || 0,
-                                aiFeedbackDataTotal?.myEvaluationScores?.completion || 0,
+                                // selfDirectedLearning 값이 있으면 그 값을, 아니면 completion 값을 사용
+                                aiFeedbackDataTotal?.myEvaluationScores?.selfDirectedLearning ??
+                                  aiFeedbackDataTotal?.myEvaluationScores?.completion ??
+                                  0,
                                 aiFeedbackDataTotal?.myEvaluationScores?.participation || 0,
-                              ], // 이해도, 성실도, 사고도, 완성도, 참여도
+                              ], // 이해도, 성실도, 사고도, 자기주도학습능력(없으면 완성도), 참여도
                             },
                             {
                               name: '평균 점수',
@@ -154,7 +173,10 @@ const AIFeedbackSummary: React.FC<AIFeedbackSummaryProps> = ({
                                 aiFeedbackDataTotal?.averageEvaluationScores?.understanding || 0,
                                 aiFeedbackDataTotal?.averageEvaluationScores?.diligence || 0,
                                 aiFeedbackDataTotal?.averageEvaluationScores?.criticalThinking || 0,
-                                aiFeedbackDataTotal?.averageEvaluationScores?.completion || 0,
+                                // selfDirectedLearning 값이 있으면 그 값을, 아니면 completion 값을 사용
+                                aiFeedbackDataTotal?.averageEvaluationScores?.selfDirectedLearning ??
+                                  aiFeedbackDataTotal?.averageEvaluationScores?.completion ??
+                                  0,
                                 aiFeedbackDataTotal?.averageEvaluationScores?.participation || 0,
                               ], // 비교군 데이터 (점선)
                             },
@@ -174,7 +196,7 @@ const AIFeedbackSummary: React.FC<AIFeedbackSummaryProps> = ({
                     <div className="tw-flex tw-justify-between tw-items-center tw-px-5">
                       <span className="tw-text-sm tw-text-gray-700">이해도</span>
                       <div className="tw-flex tw-items-center tw-gap-2">
-                        <div className="tw-w-40 tw-h-2 tw-bg-gray-200 tw-rounded-full">
+                        <div className="tw-w-36 tw-h-2 tw-bg-gray-200 tw-rounded-full">
                           <div
                             className="tw-h-full tw-bg-black tw-rounded-full tw-transition-all tw-duration-300"
                             style={{ width: `${aiFeedbackDataTotal?.myEvaluationScores?.understanding || 0}%` }}
@@ -191,7 +213,7 @@ const AIFeedbackSummary: React.FC<AIFeedbackSummaryProps> = ({
                     <div className="tw-flex tw-justify-between tw-items-center tw-px-5">
                       <span className="tw-text-sm tw-text-gray-700">사고도</span>
                       <div className="tw-flex tw-items-center tw-gap-2">
-                        <div className="tw-w-40 tw-h-2 tw-bg-gray-200 tw-rounded-full">
+                        <div className="tw-w-36 tw-h-2 tw-bg-gray-200 tw-rounded-full">
                           <div
                             className="tw-h-full tw-bg-black tw-rounded-full tw-transition-all tw-duration-300"
                             style={{ width: `${aiFeedbackDataTotal?.myEvaluationScores?.criticalThinking || 0}%` }}
@@ -208,7 +230,7 @@ const AIFeedbackSummary: React.FC<AIFeedbackSummaryProps> = ({
                     <div className="tw-flex tw-justify-between tw-items-center tw-px-5">
                       <span className="tw-text-sm tw-text-gray-700">성실도</span>
                       <div className="tw-flex tw-items-center tw-gap-2">
-                        <div className="tw-w-40 tw-h-2 tw-bg-gray-200 tw-rounded-full">
+                        <div className="tw-w-36 tw-h-2 tw-bg-gray-200 tw-rounded-full">
                           <div
                             className="tw-h-full tw-bg-black tw-rounded-full tw-transition-all tw-duration-300"
                             style={{ width: `${aiFeedbackDataTotal?.myEvaluationScores?.diligence || 0}%` }}
@@ -225,24 +247,7 @@ const AIFeedbackSummary: React.FC<AIFeedbackSummaryProps> = ({
                     <div className="tw-flex tw-justify-between tw-items-center tw-px-5">
                       <span className="tw-text-sm tw-text-gray-700">참여도</span>
                       <div className="tw-flex tw-items-center tw-gap-2">
-                        <div className="tw-w-40 tw-h-2 tw-bg-gray-200 tw-rounded-full">
-                          <div
-                            className="tw-h-full tw-bg-black tw-rounded-full tw-transition-all tw-duration-300"
-                            style={{ width: `${aiFeedbackDataTotal?.myEvaluationScores?.completion || 0}%` }}
-                          ></div>
-                        </div>
-                      </div>
-                      <div className="tw-flex tw-items-center tw-gap-2">
-                        <span className="tw-text-sm tw-font-medium">
-                          {aiFeedbackDataTotal?.myEvaluationScores?.completion || 0}/100
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="tw-flex tw-justify-between tw-items-center tw-px-5">
-                      <span className="tw-text-sm tw-text-gray-700">자기주도학습능력</span>
-                      <div className="tw-flex tw-items-center tw-gap-2">
-                        <div className="tw-w-40 tw-h-2 tw-bg-gray-200 tw-rounded-full">
+                        <div className="tw-w-36 tw-h-2 tw-bg-gray-200 tw-rounded-full">
                           <div
                             className="tw-h-full tw-bg-black tw-rounded-full tw-transition-all tw-duration-300"
                             style={{ width: `${aiFeedbackDataTotal?.myEvaluationScores?.participation || 0}%` }}
@@ -255,6 +260,46 @@ const AIFeedbackSummary: React.FC<AIFeedbackSummaryProps> = ({
                         </span>
                       </div>
                     </div>
+
+                    {aiFeedbackDataTotal?.myEvaluationScores?.completion !== undefined && (
+                      <div className="tw-flex tw-justify-between tw-items-center tw-px-5">
+                        <span className="tw-text-sm tw-text-gray-700">완성도</span>
+                        <div className="tw-flex tw-items-center tw-gap-2">
+                          <div className="tw-w-36 tw-h-2 tw-bg-gray-200 tw-rounded-full">
+                            <div
+                              className="tw-h-full tw-bg-black tw-rounded-full tw-transition-all tw-duration-300"
+                              style={{ width: `${aiFeedbackDataTotal?.myEvaluationScores?.completion || 0}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                        <div className="tw-flex tw-items-center tw-gap-2">
+                          <span className="tw-text-sm tw-font-medium">
+                            {aiFeedbackDataTotal?.myEvaluationScores?.completion || 0}/100
+                          </span>
+                        </div>
+                      </div>
+                    )}
+
+                    {aiFeedbackDataTotal?.myEvaluationScores?.selfDirectedLearning !== undefined && (
+                      <div className="tw-flex tw-justify-between tw-items-center tw-px-5">
+                        <span className="tw-text-sm tw-text-gray-700">자기주도학습능력</span>
+                        <div className="tw-flex tw-items-center tw-gap-2">
+                          <div className="tw-w-40 tw-h-2 tw-bg-gray-200 tw-rounded-full">
+                            <div
+                              className="tw-h-full tw-bg-black tw-rounded-full tw-transition-all tw-duration-300"
+                              style={{
+                                width: `${aiFeedbackDataTotal?.myEvaluationScores?.selfDirectedLearning ?? 0}%`,
+                              }}
+                            ></div>
+                          </div>
+                        </div>
+                        <div className="tw-flex tw-items-center tw-gap-2">
+                          <span className="tw-text-sm tw-font-medium">
+                            {aiFeedbackDataTotal?.myEvaluationScores?.selfDirectedLearning ?? 0}/100
+                          </span>
+                        </div>
+                      </div>
+                    )}
 
                     <div className="tw-mt-4 tw-pt-3 tw-border-t tw-border-gray-200">
                       <div className="tw-flex tw-items-center tw-gap-2">
