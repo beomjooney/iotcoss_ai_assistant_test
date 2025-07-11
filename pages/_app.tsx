@@ -1,7 +1,6 @@
 import '../public/assets/css/materialdesignicons.min.css';
 import '../public/Apps.scss';
 import '../public/assets/css/colors/default.css';
-
 import '../public/assets/css/admin/style.css';
 import 'public/assets/css/themify-icons.css';
 import 'public/assets/css/bootstrap.min.css';
@@ -16,7 +15,7 @@ import { DefaultLayout } from '../src/stories/Layout';
 import { ComponentType, useEffect, useState } from 'react';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { axiosSetHeader } from '../src/services';
-import { getCookie, setCookie } from 'cookies-next';
+import { getCookie } from 'cookies-next';
 import { AppContext, AppProps } from 'next/app';
 import { NextPage } from 'next';
 import { AuthError, ForbiddenError, NotFoundError } from '../src/services/error';
@@ -26,8 +25,6 @@ import { UserInfo } from '../src/models/account';
 import { ThemeProvider } from '../src/stories/components/theme-provider';
 import { useColorPresets, useApplyColorPreset } from 'src/utils/use-theme-color';
 import { usePresets } from 'src/utils/color-presets';
-
-/** import gtag */
 import * as gtag from 'src/lib/gtag';
 import Script from 'next/script';
 import { useRouter } from 'next/router';
@@ -43,7 +40,7 @@ export type AppPropsWithLayout<P = Record<string, unknown>> = AppProps<P> & {
 };
 
 function CustomApp({ Component, pageProps = {}, session }: AppPropsWithLayout) {
-  const { update, memberId, job, memberType, token, logged, theme } = useSessionStore.getState();
+  const { update, memberType } = useSessionStore.getState();
   const accessToken = getCookie('access_token');
   if (!accessToken && accessToken === '') {
     update({
@@ -56,25 +53,17 @@ function CustomApp({ Component, pageProps = {}, session }: AppPropsWithLayout) {
     });
   }
 
-  if (token) {
-    // setCookie('access_token', token);
-  }
-
   if (session && session.memberType !== memberType) {
     update(session);
   }
 
+  const router = useRouter();
   const [queryClient] = useState(() => new QueryClient());
   const Layout = Component.Layout ?? DefaultLayout;
   const LayoutProps = Component.LayoutProps ?? {};
-
-  /**color change */
   const { colorPresets } = useColorPresets();
   const COLOR_PRESETS = usePresets();
   useApplyColorPreset<any>(colorPresets ?? COLOR_PRESETS[0].colors);
-
-  /**gtag */
-  const router = useRouter();
 
   useEffect(() => {
     const handleRouteChange = (url: URL) => {
@@ -111,7 +100,6 @@ function CustomApp({ Component, pageProps = {}, session }: AppPropsWithLayout) {
         <meta name="keywords" content="DSU DevUs, devus" />
         <meta name="application-name" content="DSU DevUs" />
         <meta name="application-mobile-web-app-title" content="DSU DevUs" />
-        {/* <meta name="viewport" content="width=1200" /> */}
         <link rel="shortcut icon" href="#" />
         <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/icons/favicon-16x16.png" />
         <link rel="preconnect" href="https://cdn.jsdelivr.net" />
@@ -121,8 +109,6 @@ function CustomApp({ Component, pageProps = {}, session }: AppPropsWithLayout) {
           crossOrigin=""
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"
         />
-        {/* <script src="https://js.bootpay.co.kr/bootpay-4.2.6.min.js" type="application/javascript"></script> */}
-        {/* Global Site Tag (gtag.js) - Google Analytics */}
       </Head>
       <main className="app">
         <ThemeProvider>
