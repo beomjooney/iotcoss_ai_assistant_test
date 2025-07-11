@@ -222,14 +222,6 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
                 <div className="tw-text-sm tw-font-semibold tw-text-black">
                   <div>{user?.nickname || user?.member?.nickname} 교수님</div>
                 </div>
-                {/* <img
-                  className="tw-w-8 tw-h-8 tw-rounded-full"
-                  src={clubData?.leader?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
-                  alt=""
-                />
-                <div className="tw-text-sm tw-font-semibold tw-text-black">
-                  <div>{user?.nickname || user?.member?.nickname} 교수님</div>
-                </div> */}
               </div>
 
               <div className="tw-inline-flex tw-ml-auto">

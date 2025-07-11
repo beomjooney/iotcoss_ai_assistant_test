@@ -144,9 +144,7 @@ const LectureDetaillSolution = ({
   // 모든 상태 변화를 추적하기 위한 useEffect 수정
   useDidMountEffect(() => {
     console.log('=== API 상태 변화 감지 ===');
-    // console.log('isErrorAIEvaluationTotalQuiz:', isErrorAIEvaluationTotalQuiz);
     console.log('isErrorAIEvaluationTotal:', isErrorAIEvaluationTotal);
-    // console.log('isSuccessAIEvaluationTotalQuiz:', isSuccessAIEvaluationTotalQuiz);
     console.log('isSuccessAIEvaluationTotal:', isSuccessAIEvaluationTotal);
     console.log('========================');
 
@@ -261,13 +259,11 @@ const LectureDetaillSolution = ({
                   {contents?.leader?.nickname || 'N/A'}
                 </p>
               </div>
-              {/* <p className="tw-text-[12.25px] tw-text-[#6a7380]">{user?.position}</p> */}
             </div>
           </div>
         </div>
 
         {/* Content Section */}
-        {/* {activeTab === 'myQuiz' && ( */}
         {contents?.clubAboutStatus === '0401' ? (
           <div className="tw-mt-[130px] tw-flex tw-flex-col tw-space-y-4 tw-rounded-lg tw-py-4 tw-overflow-hidden">
             <div className="tw-rounded-[8.75px] tw-mb-[30px] border">

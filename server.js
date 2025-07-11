@@ -41,7 +41,6 @@ app.prepare().then(() => {
 
   dsuServer.get('/account/login', (req, res) => {
     return app.render(req, res, '/dsu/account/login', req.query);
-    // return app.render(req, res, '/account/login', req.query);
   });
 
   dsuServer.all('*', (req, res) => {
@@ -53,7 +52,6 @@ app.prepare().then(() => {
   });
 
   sejongServer.get('/account/login', (req, res) => {
-    // return app.render(req, res, '/account/login', req.query);
     return app.render(req, res, '/iotcoss/account/login', req.query);
   });
 
@@ -142,9 +140,6 @@ app.prepare().then(() => {
   mainServer.use(vhost('localhost', localServer));
   mainServer.use(vhost('skpquiz.localhost', skpQuizServer));
   mainServer.use(vhost('skpai.localhost', skpAiServer));
-
-  // mainServer.use(vhost('lvh.me', memberServer))
-  // mainServer.use(vhost('www.lvh.me', memberServer))
   mainServer.listen(port, err => {
     if (err) throw err;
     console.log(`> Ready on http://localhost:${port}`);

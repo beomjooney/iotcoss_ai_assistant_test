@@ -1,6 +1,6 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useStore } from 'src/store';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
@@ -47,7 +47,6 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
   const [quizListData, setQuizListData] = useState<any[]>([]);
   const [contents, setContents] = useState<any>([]);
   const [quizProgressData, setQuizProgressData] = useState<any>([]);
-  const [quizProgressDataAI, setQuizProgressDataAI] = useState<any>([]);
   const [clubQuizThreads, setClubQuizThreads] = useState<any>([]);
   const [clubQuizGetThreads, setClubQuizGetThreads] = useState<any>('');
   const [clubQuizGetThreadsAll, setClubQuizGetThreadsAll] = useState<any>('');
@@ -60,7 +59,6 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
   const [quizParamsAI, setQuizParamsAI] = useState<any>({});
   const [quizParamsAll, setQuizParamsAll] = useState<any>({});
   const [quizSaveParams, setQuizSaveParams] = useState<any>({});
-  const [aiEvaluationParams, setAiEvaluationParams] = useState<any>({});
   const [totalPage, setTotalPage] = useState(1);
   const [selectedQuiz, setSelectedQuiz] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
