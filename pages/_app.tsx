@@ -6,7 +6,6 @@ import 'public/assets/css/themify-icons.css';
 import 'public/assets/css/bootstrap.min.css';
 import 'public/assets/css/style.css';
 import 'public/assets/css/responsive.css';
-import 'public/assets/css/diagram.css';
 import '../public/globals.css';
 
 import Head from 'next/head';
