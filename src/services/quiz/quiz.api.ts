@@ -110,11 +110,21 @@ export const saveAIQuizMyAnswerSavePut = async body => {
 };
 
 export const saveAIQuizAnswerEvaluation = async body => {
-  const { data } = await axiosGeneralAPI().put(`/api/v1/clubs/${body.club}/quizzes/${body.quiz}/answers-evaluation`);
+  console.log('body', body);
+  const quizCount = body.quizSize || 1;
+  const timeoutMs = quizCount * 30000;
+  // const { data } = await axiosGeneralAPI().put(`/api/v1/clubs/${body.club}/quizzes/${body.quiz}/answers-evaluation`);
+  const { data } = await axiosGeneralAPI().put(
+    `/api/v1/clubs/${body.club}/quizzes/${body.quiz}/answers-evaluation`,
+    {},
+    {
+      timeout: timeoutMs,
+    },
+  );
   return data.data;
 };
+
 export const saveClubQuizPost = async body => {
-  // body.clubForm.clubId = 'quiz_club_' + generateUUID();
   const { data } = await axiosGeneralAPI().post(`/api/v2/quiz-club`, body, {
     headers: { 'content-type': 'multipart/form-data' },
   });

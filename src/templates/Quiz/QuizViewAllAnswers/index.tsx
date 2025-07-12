@@ -518,13 +518,6 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
       return false;
     }
     formData.append('grading', grade);
-    // formData.append('isNew', grade);
-
-    // Validate inputList
-    // if (!Array.isArray(inputList)) {
-    //   alert('Invalid input list');
-    //   return false;
-    // }
 
     for (let i = 0; i < inputList?.length; i++) {
       const input = inputList[i];
@@ -590,18 +583,6 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     console.log(key);
     setKey(key);
     setFileName(fileName);
-  };
-
-  // Find the specific quiz in quizList and create formattedQuizList
-  const handleAIAnswerClick = async () => {
-    setClubQuizGetThreads('');
-    setIsLoadingAI(true);
-
-    onAIQuizAnswer({
-      clubSequence: id,
-      quizSequence: selectedQuiz?.quizSequence,
-      memberUUID: memberUUID,
-    }); // Ensure this function returns a promise
   };
 
   return (
@@ -731,7 +712,10 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                 className="tw-min-w-[150px] tw-bg-black max-lg:tw-mr-1 tw-rounded-md tw-text-sm tw-text-white tw-py-2.5 tw-px-4 disabled:tw-opacity-70 disabled:tw-cursor-not-allowed"
                 disabled={isLoadingAIAll}
                 onClick={() => {
-                  onAIQuizAnswerEvaluation(quizParamsAll);
+                  onAIQuizAnswerEvaluation({
+                    ...quizParamsAll,
+                    quizSize: quizListData.length,
+                  });
                   handleClickTime();
                   setIsLoadingAIAll(true);
                 }}

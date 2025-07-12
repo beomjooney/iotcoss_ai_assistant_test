@@ -68,7 +68,25 @@ function createAxios(requestConfig: RequestConfig): AxiosInstance {
       return response;
     },
     async error => {
-      // console.error('API call failed: ', error.response.config?.url);
+      // Timeout 에러 처리 - 먼저 확인
+      if (error.code === 'ECONNABORTED' && error.message.includes('timeout')) {
+        console.error('Timeout 에러 발생:', error);
+        // timeout 에러는 그대로 throw하여 API 함수에서 처리하도록 함
+        return Promise.reject({
+          code: 'TIMEOUT',
+          message: 'AI 답변 평가 처리 시간이 초과되었습니다. 다시 시도해주세요.',
+        });
+      }
+
+      // response가 없는 네트워크 에러들
+      if (!error.response) {
+        console.error('네트워크 연결 오류:', error.message);
+        return Promise.reject({
+          code: 'NETWORK_ERROR',
+          message: '네트워크 연결에 문제가 있습니다. 다시 시도해주세요.',
+        });
+      }
+
       const {
         config,
         response: { status, data },
@@ -158,10 +176,6 @@ function createAxios(requestConfig: RequestConfig): AxiosInstance {
   );
 
   return axiosInstance;
-}
-
-function camelCase(str: string) {
-  return str.replace('/codes/', '').replace(/\b[/-]([a-z])/g, (_, char) => char.toUpperCase());
 }
 
 const axiosClient = createAxios({ baseURL: process.env['NEXT_PUBLIC_GENERAL_API_URL'] });
