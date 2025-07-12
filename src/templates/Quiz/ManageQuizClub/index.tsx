@@ -248,6 +248,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
   const [feedbackType, setFeedbackType] = useState('0100');
   const [answerExposureType, setAnswerExposureType] = useState('0100');
   const [answerPublishType, setAnswerPublishType] = useState('0002');
+  const [comprehensiveEvaluationMinimumCount, setComprehensiveEvaluationMinimumCount] = useState(1);
 
   const handleAnswerExposureTypeChange = event => {
     setAnswerExposureType(event.target.value);
@@ -350,6 +351,23 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     setSelectedSessions([]);
   };
 
+  // minimumCompletionCount 변경 핸들러 추가
+  const handleComprehensiveEvaluationMinimumCountChange = event => {
+    const value = Number(event.target.value);
+    const maxPossibleCount = num;
+
+    if (value < 1) {
+      alert('총평실행 최소답변수는 1 이상이어야 합니다.');
+      return;
+    }
+
+    if (value > maxPossibleCount) {
+      alert(`총평실행 최소답변수는 ${maxPossibleCount}를 초과할 수 없습니다.`);
+      return;
+    }
+    setComprehensiveEvaluationMinimumCount(value);
+  };
+
   const handlerClubMake = () => {
     if (studyCycleNum.length === 0) {
       alert('요일을 입력해주세요.');
@@ -383,12 +401,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     };
 
     console.log(transformedData);
-
     setDayParams(transformedData);
-
-    // setButtonFlag(true);
-    // setSelectedQuizIds([]);
-    // setScheduleData([]);
   };
 
   const handleIsPublic = (event: React.MouseEvent<HTMLElement>, newFormats: string) => {
@@ -522,7 +535,6 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     setClubName(clubForm.clubName || '');
     setIntroductionText(clubForm.introductionText || '');
     setAgreements(clubForm.useCurrentProfileImage);
-
     setRecommendationText(clubForm.recommendationText || '');
     setLearningText(clubForm.learningText || '');
     setMemberIntroductionText(clubForm.memberIntroductionText || '');
@@ -554,6 +566,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     setAnswerExposureType(clubForm.answerExposureType);
     setAnswerPublishType(clubForm.answerPublishType);
     setButtonFlag(true);
+    setComprehensiveEvaluationMinimumCount(clubForm.comprehensiveEvaluationMinimumCount);
 
     const transformQuizData = quizData => {
       return quizData.map(quiz => ({
@@ -1366,6 +1379,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
       feedbackType: feedbackType,
       answerExposureType: answerExposureType,
       answerPublishType: answerPublishType,
+      comprehensiveEvaluationMinimumCount: comprehensiveEvaluationMinimumCount,
     };
 
     const formData = new FormData();
@@ -1396,6 +1410,7 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
     formData.append('form.feedbackType', clubFormParams.feedbackType);
     formData.append('form.answerExposureType', clubFormParams.answerExposureType);
     formData.append('form.answerPublishType', clubFormParams.answerPublishType);
+    formData.append('form.comprehensiveEvaluationMinimumCount', clubFormParams.comprehensiveEvaluationMinimumCount);
 
     if (selectedImage) {
       console.log('selectedImage', selectedImage);
@@ -2469,10 +2484,10 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                                 item.name === '0100'
                                   ? ''
                                   : item.name === '0200'
-                                    ? '클럽 관리자가 퀴즈 오픈을 수동으로 설정할 수 있어요!'
-                                    : item.name === '0300'
-                                      ? '학습자가 이전 퀴즈를 모두 학습/답변하였을 경우에 다음 퀴즈가 자동으로 오픈이 돼요!'
-                                      : ''
+                                  ? '클럽 관리자가 퀴즈 오픈을 수동으로 설정할 수 있어요!'
+                                  : item.name === '0300'
+                                  ? '학습자가 이전 퀴즈를 모두 학습/답변하였을 경우에 다음 퀴즈가 자동으로 오픈이 돼요!'
+                                  : ''
                               }
                               placement="top"
                             >
@@ -2746,6 +2761,18 @@ export function ManageQuizClubTemplate({ id, title, subtitle }: ManageQuizClubTe
                       <option value="0002">공개</option>
                       <option value="0001">비공개</option>
                     </select>
+                  </div>
+                  <div className="tw-flex-1/12">
+                    <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-my-2">총평실행 최소답변수</div>
+                    <TextField
+                      size="small"
+                      fullWidth
+                      onChange={handleComprehensiveEvaluationMinimumCountChange}
+                      id="margin-none"
+                      value={comprehensiveEvaluationMinimumCount}
+                      name="comprehensiveEvaluationMinimumCount"
+                      style={{ backgroundColor: 'white' }}
+                    />
                   </div>
                 </div>
                 <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">학습 주제</div>

@@ -1,7 +1,7 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import { MentorsModal, Pagination, Tag } from 'src/stories/components';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { paramProps } from 'src/services/seminars/seminars.queries';
 import { useContentJobTypes, useJobGroupss } from 'src/services/code/code.queries';
 import { useRouter } from 'next/router';
@@ -18,9 +18,9 @@ import { ExperiencesResponse } from 'src/models/experiences';
 import { useOptions } from 'src/services/experiences/experiences.queries';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
-import { useMyQuiz, useQuizList, useGetSchedule, useGetTemp } from 'src/services/jobs/jobs.queries';
+import { useQuizList, useGetSchedule, useGetTemp } from 'src/services/jobs/jobs.queries';
 import Checkbox from '@mui/material/Checkbox';
-import { useClubQuizSave, useQuizSave, useClubTempSave } from 'src/services/quiz/quiz.mutations';
+import { useClubQuizSave, useClubTempSave } from 'src/services/quiz/quiz.mutations';
 import { useUploadImage } from 'src/services/image/image.mutations';
 import { makeStyles } from '@mui/styles';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
@@ -230,6 +230,7 @@ export function QuizOpenTemplate() {
       setFeedbackType(clubForm.feedbackType);
       setAnswerExposureType(clubForm.answerExposureType);
       setAnswerPublishType(clubForm.answerPublishType);
+      setComprehensiveEvaluationMinimumCount(clubForm.comprehensiveEvaluationMinimumCount);
       // Filter out items with quizSequence not null and greater than or equal to zero, then extract quizSequence values
       const quizSequenceNumbers = quizList
         .filter(item => item.quizSequence !== null && item.quizSequence >= 0)
@@ -269,6 +270,7 @@ export function QuizOpenTemplate() {
   const [myKeyWorld, setMyKeyWorld] = useState('');
   const [answerExposureType, setAnswerExposureType] = useState('0100');
   const [answerPublishType, setAnswerPublishType] = useState('0002');
+  const [comprehensiveEvaluationMinimumCount, setComprehensiveEvaluationMinimumCount] = useState(1);
 
   const handleAnswerExposureTypeChange = event => {
     setAnswerExposureType(event.target.value);
@@ -584,10 +586,6 @@ export function QuizOpenTemplate() {
                 quizSequence: newQuiz.quizSequence,
                 question: newQuiz.question,
                 member: {
-                  // leaderUri: newQuiz.memberUri,
-                  // leaderUUID: newQuiz.memberUUID,
-                  // leaderProfileImageUrl: newQuiz.memberProfileImageUrl,
-                  // leaderNickname: newQuiz.memberNickname,
                   leaderUri: newQuiz.memberUri,
                   leaderUUID: newQuiz.memberUUID,
                   profileImageUrl: newQuiz.memberProfileImageUrl,
@@ -679,9 +677,7 @@ export function QuizOpenTemplate() {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const [value, setValue] = React.useState(0);
-
   const steps = ['Step 1.클럽 세부사항 설정', 'Step 2.퀴즈 선택', 'Step 3. 개설될 클럽 미리보기'];
-
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set<number>());
   const [quizUrl, setQuizUrl] = React.useState('');
@@ -734,22 +730,6 @@ export function QuizOpenTemplate() {
       }))
       .sort((a, b) => a.order - b.order);
 
-    // 정렬된 데이터와 원본 항목의 추가 속성을 병합
-    // const mergeData = sortedReducedData.map((item, index) => ({
-    //   ...item,
-    //   quizSequence: scheduleMap[index].quizSequence,
-    //   question: scheduleMap[index].question,
-    //   leaderUri: scheduleMap[index].leaderUri,
-    //   leaderUUID: scheduleMap[index].leaderUUID,
-    //   leaderProfileImageUrl: scheduleMap[index].leaderProfileImageUrl,
-    //   leaderNickname: scheduleMap[index].leaderNickname,
-    //   contentUrl: scheduleMap[index].contentUrl,
-    //   contentTitle: scheduleMap[index].contentTitle,
-    //   modelAnswer: scheduleMap[index].modelAnswer,
-    //   quizUri: scheduleMap[index].quizUri,
-    // }));
-
-    // 정렬된 데이터와 원본 항목의 추가 속성을 병합
     const mergeData = sortedReducedData.map((item, index) => ({
       ...item,
       quizSequence: scheduleMap[index].quizSequence,
@@ -766,14 +746,11 @@ export function QuizOpenTemplate() {
       quizUri: scheduleMap[index].quizUri,
     }));
 
-    // 상태 업데이트
     setScheduleData(mergeData);
   };
 
   useEffect(() => {
-    // 상태 업데이트 후 추가 작업 수행
     console.log('scheduleData가 업데이트되었습니다.', scheduleData);
-    // setUpdateKey를 호출하여 강제 리렌더링
     setUpdateKey(prevKey => prevKey + 1);
   }, [scheduleData]);
 
@@ -843,7 +820,6 @@ export function QuizOpenTemplate() {
     formData.append('form.studyCount', params.clubForm.studyCount.toString());
     formData.append('form.studySubject', params.clubForm.studySubject);
     formData.append('form.studyKeywords', params.clubForm.studyKeywords.toString());
-    // formData.append('form.studyChapter', clubFormParams.studyChapter);
     formData.append('form.skills', params.clubForm.skills.toString());
     formData.append('form.introductionText', params.clubForm.introductionText);
     formData.append('form.recommendationText', params.clubForm.recommendationText);
@@ -851,7 +827,6 @@ export function QuizOpenTemplate() {
     formData.append('form.memberIntroductionText', params.clubForm.memberIntroductionText);
     formData.append('form.careerText', params.clubForm.careerText);
     formData.append('form.useCurrentProfileImage', params.clubForm.useCurrentProfileImage);
-    //대표퀴즈 사용 여부
     formData.append('isRepresentativeQuizPublic', selectedOption);
 
     if (selectedImage) {
@@ -894,7 +869,6 @@ export function QuizOpenTemplate() {
       optionsData?.data?.jobs?.find(u => u.code === selectedUniversity)?.code || universityCode;
     setUniversityCode(_selectedUniversityCode);
     console.log(jobs);
-    // const selectedJobCode = jobs.find(j => j.code === selectedJob)?.code || 'None';
     console.log('selectedJob', selectedJob);
     console.log('preview', preview);
 
@@ -921,7 +895,6 @@ export function QuizOpenTemplate() {
       studyKeywords: studyKeywords,
       quizOpenType: quizType,
       description: '',
-      // answerPublishType: '0001',
       clubTemplatePublishType: '0001',
       clubRecruitType: '0100',
       useCurrentProfileImage: agreements,
@@ -948,10 +921,6 @@ export function QuizOpenTemplate() {
     setParamss(params);
     console.log(quizType);
     console.log('next', params);
-    // if (jobGroup.length === 0) {
-    //   alert('등록을 원하는 분야를 선택해주세요.');
-    //   return;
-    // }
 
     if (num == 0) {
       alert('클럽퀴즈 회차를 입력 해주세요.');
@@ -990,7 +959,6 @@ export function QuizOpenTemplate() {
         alert('클럽퀴즈 회차 입력 후 확인 버튼 눌러주세요.');
         return;
       }
-      // handlerClubMakeManual();
     }
 
     let newSkipped = skipped;
@@ -1135,15 +1103,14 @@ export function QuizOpenTemplate() {
       studyKeywords: studyKeywords || '',
       quizOpenType: quizType,
       description: '',
-      // answerPublishType: '0001',
       clubTemplatePublishType: '0001',
       clubRecruitType: '0100',
       useCurrentProfileImage: agreements,
       feedbackType: feedbackType,
       answerExposureType: answerExposureType,
       answerPublishType: answerPublishType,
-      //대표퀴즈 사용 여부
       representativeQuizUse: selectedOption === 'true' ? true : false,
+      comprehensiveEvaluationMinimumCount: comprehensiveEvaluationMinimumCount,
     };
 
     const formData = new FormData();
@@ -1164,7 +1131,6 @@ export function QuizOpenTemplate() {
     formData.append('form.studyCount', clubFormParams.studyCount.toString());
     formData.append('form.studySubject', clubFormParams.studySubject);
     formData.append('form.studyKeywords', clubFormParams.studyKeywords.toString());
-    // formData.append('form.studyChapter', clubFormParams.studyChapter);
     formData.append('form.skills', clubFormParams.skills.toString());
     formData.append('form.introductionText', clubFormParams.introductionText);
     formData.append('form.recommendationText', clubFormParams.recommendationText);
@@ -1174,6 +1140,7 @@ export function QuizOpenTemplate() {
     formData.append('form.answerExposureType', clubFormParams.answerExposureType);
     formData.append('form.answerPublishType', clubFormParams.answerPublishType);
     formData.append('form.useCurrentProfileImage', clubFormParams.useCurrentProfileImage);
+    formData.append('form.comprehensiveEvaluationMinimumCount', clubFormParams.comprehensiveEvaluationMinimumCount);
 
     //대표퀴즈 사용 여부
     formData.append('isRepresentativeQuizPublic', selectedOption);
@@ -1195,12 +1162,7 @@ export function QuizOpenTemplate() {
       formData.append(`clubQuizzes[${i}].publishDate`, item.publishDate || '');
     }
 
-    // const params = {
-    //   clubForm: clubFormParams,
-    //   clubQuizzes: scheduleData,
-    // };
     console.log(params);
-
     onTempSave(formData);
   };
 
@@ -1468,6 +1430,23 @@ export function QuizOpenTemplate() {
 
   const classes = useStyles();
 
+  // minimumCompletionCount 변경 핸들러 추가
+  const handleComprehensiveEvaluationMinimumCountChange = event => {
+    const value = Number(event.target.value);
+    const maxPossibleCount = num;
+
+    if (value < 1) {
+      alert('총평실행 최소답변수는 1 이상이어야 합니다.');
+      return;
+    }
+
+    if (value > maxPossibleCount) {
+      alert(`총평실행 최소답변수는 ${maxPossibleCount}를 초과할 수 없습니다.`);
+      return;
+    }
+    setComprehensiveEvaluationMinimumCount(value);
+  };
+
   return (
     <div className={cx('seminar-container')}>
       <div className={cx('container')}>
@@ -1531,8 +1510,8 @@ export function QuizOpenTemplate() {
                           index < activeStep
                             ? 'tw-bg-gray-300 tw-text-white'
                             : index === activeStep
-                              ? 'tw-bg-blue-600  tw-text-white'
-                              : 'tw-bg-gray-300 tw-text-white'
+                            ? 'tw-bg-blue-600  tw-text-white'
+                            : 'tw-bg-gray-300 tw-text-white'
                         }`}
                       ></div>
                       <div
@@ -1540,8 +1519,8 @@ export function QuizOpenTemplate() {
                           index < activeStep
                             ? ' tw-text-gray-400'
                             : index === activeStep
-                              ? ' tw-text-black tw-font-bold'
-                              : ' tw-text-gray-400'
+                            ? ' tw-text-black tw-font-bold'
+                            : ' tw-text-gray-400'
                         }`}
                       >
                         {step}
@@ -1766,10 +1745,10 @@ export function QuizOpenTemplate() {
                                   item.name === '0100'
                                     ? ''
                                     : item.name === '0200'
-                                      ? '클럽 관리자가 퀴즈 오픈을 수동으로 설정할 수 있어요!'
-                                      : item.name === '0300'
-                                        ? '학습자가 이전 퀴즈를 모두 학습/답변하였을 경우에 다음 퀴즈가 자동으로 오픈이 돼요!'
-                                        : ''
+                                    ? '클럽 관리자가 퀴즈 오픈을 수동으로 설정할 수 있어요!'
+                                    : item.name === '0300'
+                                    ? '학습자가 이전 퀴즈를 모두 학습/답변하였을 경우에 다음 퀴즈가 자동으로 오픈이 돼요!'
+                                    : ''
                                 }
                                 placement="top"
                               >
@@ -2060,6 +2039,20 @@ export function QuizOpenTemplate() {
                         <option value="0002">공개</option>
                         <option value="0001">비공개</option>
                       </select>
+                    </div>
+                    <div className="tw-flex-1/12">
+                      <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-my-2">
+                        총평실행 최소답변수
+                      </div>
+                      <TextField
+                        size="small"
+                        fullWidth
+                        onChange={handleComprehensiveEvaluationMinimumCountChange}
+                        id="margin-none"
+                        value={comprehensiveEvaluationMinimumCount}
+                        name="comprehensiveEvaluationMinimumCount"
+                        style={{ backgroundColor: 'white' }}
+                      />
                     </div>
                   </div>
 

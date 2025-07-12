@@ -427,14 +427,20 @@ const QuizClubDetaillSolution = ({
             <p className="tw-text-xl tw-font-bold tw-text-black">나의 학습 현황</p>
             <div className="tw-flex tw-items-center tw-gap-2">
               <div className="tw-flex tw-items-center">
-                <div className="tw-text-base tw-text-black tw-leading-relaxed tw-mr-2">총평 피드백을 확인해보세요.</div>
+                <div className="tw-text-base tw-text-black tw-leading-relaxed tw-mr-2">
+                  {contents?.progress?.minimumQuizzesRequiredCount || 0}개 이상 퀴즈를 풀면 총평을 받을 수 있습니다.
+                </div>
               </div>
               <button
                 onClick={() => handleTotalFeedbackClick(contents?.club?.clubSequence)}
-                disabled={!allQuizzesCompleted}
-                title={!allQuizzesCompleted ? '모든 퀴즈를 완료해야 총평 피드백을 확인할 수 있습니다.' : ''}
+                disabled={!contents?.progress?.minimumQuizzesCompleted}
+                title={
+                  !contents?.progress?.minimumQuizzesCompleted
+                    ? '모든 퀴즈를 완료해야 총평 피드백을 확인할 수 있습니다.'
+                    : ''
+                }
                 className={`tw-px-4 tw-py-2 tw-rounded-full tw-text-base tw-font-medium ${
-                  allQuizzesCompleted
+                  contents?.progress?.minimumQuizzesCompleted
                     ? 'tw-bg-[#2474ED] tw-hover:bg-blue-600 tw-text-white tw-cursor-pointer'
                     : 'tw-bg-gray-300 tw-text-gray-500 tw-cursor-not-allowed'
                 }`}
