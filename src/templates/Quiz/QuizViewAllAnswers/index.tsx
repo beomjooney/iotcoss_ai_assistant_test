@@ -13,7 +13,11 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import MentorsModal from 'src/stories/components/MentorsModal';
 import CircularProgress from '@mui/material/CircularProgress';
-import { useAIQuizAnswerSavePut, useAIQuizAnswerEvaluation } from 'src/services/quiz/quiz.mutations';
+import {
+  useAIQuizAnswerSavePut,
+  useAIQuizAnswerEvaluation,
+  useAIQuizAnswerListPut,
+} from 'src/services/quiz/quiz.mutations';
 import Pagination from '@mui/material/Pagination';
 import { useAIQuizAnswerList } from 'src/services/quiz/quiz.mutations';
 
@@ -32,6 +36,7 @@ import {
   useQuizFileDownload,
   useGetAIQuizAnswer,
 } from 'src/services/quiz/quiz.queries';
+import { info } from 'console';
 
 const cx = classNames.bind(styles);
 export interface QuizViewAllAnswersTemplateProps {
@@ -64,6 +69,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoadingAI, setIsLoadingAI] = useState(false);
   const [isLoadingAIAll, setIsLoadingAIAll] = useState(false);
+  const [isLoadingAIAllSave, setIsLoadingAIAllSave] = useState(false);
   const [isCompleteAI, setIsCompleteAI] = useState(false);
   const [isHideAI, setIsHideAI] = useState(true);
   const [isAIData, setIsAIData] = useState({});
@@ -181,6 +187,12 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
       }
     }
   }, [aiQuizAnswerData]);
+
+  const {
+    mutate: onAIQuizAnswerPut,
+    isSuccess: answerSuccessPut,
+    data: aiQuizAnswerDataPut,
+  } = useAIQuizAnswerListPut();
 
   const { isFetched: isQuizGetanswer, refetch: refetchQuizAnswer } = useQuizGetAIAnswer(quizParams, data => {
     console.log('second get data');
@@ -585,6 +597,105 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     setFileName(fileName);
   };
 
+  // 각 항목의 점수를 관리하는 state 추가
+  const [gradeScores, setGradeScores] = useState({});
+
+  // 점수 업데이트 핸들러
+  const handleGradeUpdate = (memberUUID, quizSequence, score) => {
+    const key = `${memberUUID}_${quizSequence}`;
+    setGradeScores(prev => ({
+      ...prev,
+      [key]: score,
+    }));
+  };
+
+  // quizListData가 로드되면 기존 점수 데이터 초기화
+  useEffect(() => {
+    if (quizListData.length > 0) {
+      const existingGrades = {};
+      quizListData.forEach(item => {
+        if (item.gradingFinal) {
+          const key = `${item.member.memberUUID}_${item.quizSequence}`;
+          existingGrades[key] = item.gradingFinal;
+        }
+      });
+      setGradeScores(existingGrades);
+    }
+  }, [quizListData]);
+
+  // 일괄채점 처리 함수
+  const handleBulkGrading = async () => {
+    // 점수가 입력된 항목들 필터링
+    const gradedItems = quizListData.filter(item => {
+      const key = `${item.member.memberUUID}_${item.quizSequence}`;
+      const score = gradeScores[key];
+      return score && score !== '' && !isNaN(parseFloat(score));
+    });
+
+    if (gradedItems.length === 0) {
+      alert('채점할 항목이 없습니다. 점수를 입력해주세요.');
+      return;
+    }
+
+    // 유효성 검증
+    const invalidItems = gradedItems.filter(item => {
+      const key = `${item.member.memberUUID}_${item.quizSequence}`;
+      const grade = parseFloat(gradeScores[key]);
+      return isNaN(grade) || grade < 0 || grade > 5;
+    });
+
+    if (invalidItems.length > 0) {
+      alert(
+        `유효하지 않은 점수가 있습니다. 0~5점 사이의 값을 입력해주세요.\n문제가 있는 항목: ${invalidItems.length}개`,
+      );
+      return;
+    }
+
+    setIsLoadingAIAllSave(true);
+
+    try {
+      const results = [];
+
+      // 순차적으로 처리
+      for (const item of gradedItems) {
+        try {
+          const key = `${item.member.memberUUID}_${item.quizSequence}`;
+          const params = {
+            clubSequence: item.clubSequence,
+            quizSequence: item.quizSequence,
+            memberUUID: item.member.memberUUID,
+            grading: parseFloat(gradeScores[key]),
+          };
+
+          await onAIQuizAnswerPut(params);
+          results.push({ success: true, item });
+        } catch (error) {
+          console.error('채점 실패:', error);
+          results.push({ success: false, item, error });
+        }
+      }
+
+      const successCount = results.filter(r => r.success).length;
+      const failCount = results.filter(r => !r.success).length;
+
+      if (failCount === 0) {
+        alert(`일괄채점이 완료되었습니다.\n성공: ${successCount}개`);
+
+        // 성공 시 입력된 점수 초기화 (최신 데이터로 업데이트됨)
+        setGradeScores({});
+      } else {
+        alert(
+          `일괄채점이 완료되었습니다.\n성공: ${successCount}개\n실패: ${failCount}개\n\n실패한 항목은 다시 시도해주세요.`,
+        );
+      }
+    } catch (error) {
+      console.error('일괄채점 오류:', error);
+      alert('일괄채점 중 오류가 발생했습니다. 다시 시도해주세요.');
+    } finally {
+      setIsLoadingAIAllSave(false);
+    }
+  };
+
   return (
     <div className={cx('seminar-detail-container')}>
       <div className={cx('container')} style={{ minHeight: '100vh' }}>
@@ -710,6 +821,20 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
             <div className="tw-flex tw-justify-end tw-gap-2">
               <button
                 className="tw-min-w-[150px] tw-bg-black max-lg:tw-mr-1 tw-rounded-md tw-text-sm tw-text-white tw-py-2.5 tw-px-4 disabled:tw-opacity-70 disabled:tw-cursor-not-allowed"
+                disabled={isLoadingAIAllSave || quizListData.length === 0}
+                onClick={handleBulkGrading}
+              >
+                {isLoadingAIAllSave ? (
+                  <div className="tw-flex tw-items-center tw-justify-center">
+                    <CircularProgress color="inherit" size={18} />
+                    <span className="tw-ml-2">채점 중...</span>
+                  </div>
+                ) : (
+                  '일괄 채점'
+                )}
+              </button>
+              <button
+                className="tw-min-w-[150px] tw-bg-black max-lg:tw-mr-1 tw-rounded-md tw-text-sm tw-text-white tw-py-2.5 tw-px-4 disabled:tw-opacity-70 disabled:tw-cursor-not-allowed"
                 disabled={isLoadingAIAll}
                 onClick={() => {
                   onAIQuizAnswerEvaluation({
@@ -791,7 +916,14 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                           )}
                         </TableCell>
                         <TableCell padding="none" align="center" component="th" scope="row">
-                          <AIAnswerQuizList info={info} refetchReply={refetchReply} />
+                          <AIAnswerQuizList
+                            info={info}
+                            refetchReply={refetchQuizAnswer}
+                            onGradeChange={score => handleGradeUpdate(info.member.memberUUID, info.quizSequence, score)}
+                            initialValue={
+                              gradeScores[`${info.member.memberUUID}_${info.quizSequence}`] || info.gradingFinal || ''
+                            }
+                          />
                         </TableCell>
                         <TableCell padding="none" align="center" component="th" scope="row">
                           <button
@@ -844,7 +976,6 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                 </div>
               </div>
               {clubQuizThreads?.clubQuizThreads?.map((item, index) => {
-                const isLastItem = index === clubQuizThreads.clubQuizThreads.length - 1;
                 return (
                   <div
                     key={index}
