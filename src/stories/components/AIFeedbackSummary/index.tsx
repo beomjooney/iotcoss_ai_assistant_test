@@ -105,15 +105,15 @@ const AIFeedbackSummary: React.FC<AIFeedbackSummaryProps> = ({
                             },
                             xaxis: {
                               categories: [
-                                '이해도',
-                                '성실도',
-                                '사고도',
+                                '이해도 ',
+                                '성실도 ',
+                                '사고도 ',
                                 aiFeedbackDataTotal?.myEvaluationScores?.selfDirectedLearning
                                   ? '자기주도학습능력'
                                   : aiFeedbackDataTotal?.myEvaluationScores?.completion
-                                  ? '완성도'
+                                  ? '완성도 '
                                   : '자기주도학습능력',
-                                '참여도',
+                                '참여도 ',
                               ],
                               labels: {
                                 style: {
@@ -194,9 +194,9 @@ const AIFeedbackSummary: React.FC<AIFeedbackSummaryProps> = ({
                     <div className="tw-text-base tw-font-bold tw-text-black tw-mb-4">상세 항목</div>
 
                     <div className="tw-flex tw-justify-between tw-items-center tw-px-5">
-                      <span className="tw-text-sm tw-text-gray-700">이해도</span>
+                      <span className="tw-text-sm tw-text-gray-700 tw-w-16">이해도</span>
                       <div className="tw-flex tw-items-center tw-gap-2">
-                        <div className="tw-w-36 tw-h-2 tw-bg-gray-200 tw-rounded-full">
+                        <div className="tw-w-40 tw-h-2 tw-bg-gray-200 tw-rounded-full">
                           <div
                             className="tw-h-full tw-bg-black tw-rounded-full tw-transition-all tw-duration-300"
                             style={{ width: `${aiFeedbackDataTotal?.myEvaluationScores?.understanding || 0}%` }}
@@ -211,9 +211,9 @@ const AIFeedbackSummary: React.FC<AIFeedbackSummaryProps> = ({
                     </div>
 
                     <div className="tw-flex tw-justify-between tw-items-center tw-px-5">
-                      <span className="tw-text-sm tw-text-gray-700">사고도</span>
+                      <span className="tw-text-sm tw-text-gray-700 tw-w-16">사고도</span>
                       <div className="tw-flex tw-items-center tw-gap-2">
-                        <div className="tw-w-36 tw-h-2 tw-bg-gray-200 tw-rounded-full">
+                        <div className="tw-w-40 tw-h-2 tw-bg-gray-200 tw-rounded-full">
                           <div
                             className="tw-h-full tw-bg-black tw-rounded-full tw-transition-all tw-duration-300"
                             style={{ width: `${aiFeedbackDataTotal?.myEvaluationScores?.criticalThinking || 0}%` }}
@@ -228,9 +228,9 @@ const AIFeedbackSummary: React.FC<AIFeedbackSummaryProps> = ({
                     </div>
 
                     <div className="tw-flex tw-justify-between tw-items-center tw-px-5">
-                      <span className="tw-text-sm tw-text-gray-700">성실도</span>
+                      <span className="tw-text-sm tw-text-gray-700 tw-w-16">성실도</span>
                       <div className="tw-flex tw-items-center tw-gap-2">
-                        <div className="tw-w-36 tw-h-2 tw-bg-gray-200 tw-rounded-full">
+                        <div className="tw-w-40 tw-h-2 tw-bg-gray-200 tw-rounded-full">
                           <div
                             className="tw-h-full tw-bg-black tw-rounded-full tw-transition-all tw-duration-300"
                             style={{ width: `${aiFeedbackDataTotal?.myEvaluationScores?.diligence || 0}%` }}
@@ -245,9 +245,9 @@ const AIFeedbackSummary: React.FC<AIFeedbackSummaryProps> = ({
                     </div>
 
                     <div className="tw-flex tw-justify-between tw-items-center tw-px-5">
-                      <span className="tw-text-sm tw-text-gray-700">참여도</span>
+                      <span className="tw-text-sm tw-text-gray-700 tw-w-16">참여도</span>
                       <div className="tw-flex tw-items-center tw-gap-2">
-                        <div className="tw-w-36 tw-h-2 tw-bg-gray-200 tw-rounded-full">
+                        <div className="tw-w-40 tw-h-2 tw-bg-gray-200 tw-rounded-full">
                           <div
                             className="tw-h-full tw-bg-black tw-rounded-full tw-transition-all tw-duration-300"
                             style={{ width: `${aiFeedbackDataTotal?.myEvaluationScores?.participation || 0}%` }}
@@ -263,9 +263,9 @@ const AIFeedbackSummary: React.FC<AIFeedbackSummaryProps> = ({
 
                     {aiFeedbackDataTotal?.myEvaluationScores?.completion !== undefined && (
                       <div className="tw-flex tw-justify-between tw-items-center tw-px-5">
-                        <span className="tw-text-sm tw-text-gray-700">완성도</span>
+                        <span className="tw-text-sm tw-text-gray-700 tw-w-16">완성도</span>
                         <div className="tw-flex tw-items-center tw-gap-2">
-                          <div className="tw-w-36 tw-h-2 tw-bg-gray-200 tw-rounded-full">
+                          <div className="tw-w-40 tw-h-2 tw-bg-gray-200 tw-rounded-full">
                             <div
                               className="tw-h-full tw-bg-black tw-rounded-full tw-transition-all tw-duration-300"
                               style={{ width: `${aiFeedbackDataTotal?.myEvaluationScores?.completion || 0}%` }}
@@ -282,7 +282,11 @@ const AIFeedbackSummary: React.FC<AIFeedbackSummaryProps> = ({
 
                     {aiFeedbackDataTotal?.myEvaluationScores?.selfDirectedLearning !== undefined && (
                       <div className="tw-flex tw-justify-between tw-items-center tw-px-5">
-                        <span className="tw-text-sm tw-text-gray-700">자기주도학습능력</span>
+                        <span className="tw-text-sm tw-text-gray-700 tw-w-16">
+                          자기주도
+                          <br />
+                          학습능력
+                        </span>
                         <div className="tw-flex tw-items-center tw-gap-2">
                           <div className="tw-w-40 tw-h-2 tw-bg-gray-200 tw-rounded-full">
                             <div
@@ -305,7 +309,7 @@ const AIFeedbackSummary: React.FC<AIFeedbackSummaryProps> = ({
                       <div className="tw-flex tw-items-center tw-gap-2">
                         <span className="tw-text-base tw-font-bold tw-text-black">총점</span>
                         <div className="tw-flex tw-items-center tw-gap-2">
-                          <div className="tw-text-sm tw-text-gray-600">학습 평점지수 : </div>
+                          <div className="tw-text-sm tw-text-gray-600">학과 평균점수 : </div>
                           <div className="tw-text-sm tw-text-gray-600">
                             {aiFeedbackDataTotal?.totalScore?.average || 0}/5
                           </div>
