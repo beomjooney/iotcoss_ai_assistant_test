@@ -138,6 +138,7 @@ BannerProps) => {
   const [fileName, setFileName] = useState<string>('');
   const [isLoadingAI, setIsLoadingAI] = useState(false);
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
+  const [isFeedbackClose, setIsFeedbackClose] = useState(false);
 
   const { mutate: onSaveLike, isSuccess } = useSaveLike();
   const { mutate: onDeleteLike } = useDeleteLike();
@@ -174,7 +175,9 @@ BannerProps) => {
 
   useEffect(() => {
     if (answerSuccessSavePut) {
+      setShowSubmitAnswerModal(false);
       setIsFeedbackModalOpen(true);
+
       setIsLoadingAI(false);
     }
 
@@ -626,7 +629,7 @@ BannerProps) => {
                     }}
                     className="tw-ml-5 tw-text-white tw-bg-black tw-mt-5 tw-focus:ring-4  tw-font-medium tw-rounded tw-text-sm tw-px-7 tw-py-3 "
                   >
-                    클럽 홈으로 이동
+                    클럽으로 이동
                   </button>
                 </div>
               )}
@@ -662,7 +665,7 @@ BannerProps) => {
                     }}
                     className="tw-ml-5 tw-text-white tw-bg-black tw-mt-5 tw-focus:ring-4  tw-font-medium tw-rounded tw-text-sm tw-px-7 tw-py-3 "
                   >
-                    클럽 홈으로 이동
+                    클럽으로 이동
                   </button>
                 </div>
               )}
@@ -919,7 +922,10 @@ BannerProps) => {
       {/* 피드백 모달 */}
       <MentorsModal
         isOpen={isFeedbackModalOpen}
-        onAfterClose={() => setIsFeedbackModalOpen(false)}
+        onAfterClose={() => {
+          setIsFeedbackModalOpen(false);
+          setIsFeedbackClose(true);
+        }}
         title="피드백 보기"
         height="80%"
         isProfile={true}
@@ -1037,6 +1043,34 @@ BannerProps) => {
                   )}
                 </button>
                 {isLoadingAI && <div className="tw-text-sm tw-text-gray-500">30~60초 정도 소요됩니다.</div>}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {isFeedbackClose && (
+        <div className="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-50 tw-flex tw-items-center tw-justify-center tw-z-50">
+          <div className="tw-bg-white tw-rounded-xl tw-py-20 tw-max-w-3xl tw-w-full tw-mx-4 tw-shadow-2xl">
+            <div className="tw-text-center">
+              <div className="tw-text-2xl tw-font-bold tw-text-gray-900 tw-mb-4">피드백 보기</div>
+              <div className="tw-text-black tw-mb-8 tw-leading-relaxed tw-text-lg tw-py-20">
+                피드백을 다시 보고 싶다면 My학습방 - 클럽 선택 - 나의 학습 현황에서 확인하실 수 있습니다.
+              </div>
+              <div className="tw-flex tw-gap-4 tw-justify-center  tw-items-center">
+                <button
+                  onClick={() => setIsFeedbackClose(false)}
+                  className="tw-px-8 tw-py-3 tw-bg-gray-200 tw-text-gray-700 tw-rounded-md tw-font-medium tw-hover:bg-gray-300 tw-transition-colors tw-w-[180px]"
+                >
+                  닫기
+                </button>
+                <button
+                  onClick={() => {
+                    location.href = `/quiz/${data?.clubSequence}`;
+                  }}
+                  className="tw-px-8 tw-py-3 tw-bg-blue-500 tw-text-white tw-rounded-md tw-font-medium tw-hover:bg-blue-600 tw-transition-colors tw-w-[180px]"
+                >
+                  클럽으로 이동
+                </button>
               </div>
             </div>
           </div>
