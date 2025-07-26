@@ -144,6 +144,8 @@ function getButtonClass(tenantName) {
       return 'tw-bg-[#e11837]';
     case 'iotcoss':
       return 'tw-bg-black';
+    case 'dsuai':
+      return 'tw-bg-black';
     case 'abc':
       return 'tw-bg-green-500';
     // 더 많은 조건을 추가할 수 있습니다.

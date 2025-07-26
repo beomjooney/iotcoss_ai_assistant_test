@@ -67,6 +67,16 @@ export const usePresets = () => {
       },
     },
     {
+      name: 'dsuai',
+      colors: {
+        lighter: '#ccfbf1', // Teal 100
+        light: '#5eead4', // Teal 300
+        default: '#0d9488', // Teal 600
+        dark: '#115e59', // Teal 800
+        foreground: '#ffffff',
+      },
+    },
+    {
       name: 'b2b',
       colors: {
         lighter: '#ede9fe', // Violet 100

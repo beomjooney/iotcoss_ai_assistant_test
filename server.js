@@ -18,6 +18,7 @@ app.prepare().then(() => {
   const mainServer = express();
   const dsuServer = express();
   const sejongServer = express();
+  const dsuAiServer = express();
   const b2bServer = express();
   const b2cServer = express();
   const localServer = express();
@@ -56,6 +57,18 @@ app.prepare().then(() => {
   });
 
   sejongServer.all('*', (req, res) => {
+    return handle(req, res);
+  });
+
+  dsuAiServer.get('/', (req, res) => {
+    return app.render(req, res, '/dsuai', req.query);
+  });
+
+  dsuAiServer.get('/account/login', (req, res) => {
+    return app.render(req, res, '/dsuai/account/login', req.query);
+  });
+
+  dsuAiServer.all('*', (req, res) => {
     return handle(req, res);
   });
 
@@ -135,6 +148,7 @@ app.prepare().then(() => {
   mainServer.use(vhost('dsu.localhost', dsuServer));
   mainServer.use(vhost('devus.localhost', devusServer));
   mainServer.use(vhost('iotcoss.localhost', sejongServer));
+  mainServer.use(vhost('dsuai.localhost', dsuAiServer));
   mainServer.use(vhost('ai.localhost', b2bServer));
   mainServer.use(vhost('quizup.localhost', b2cServer));
   mainServer.use(vhost('localhost', localServer));
