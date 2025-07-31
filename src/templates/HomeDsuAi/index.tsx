@@ -1,7 +1,6 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
 import { useSessionStore } from '../../store/session';
 import ChatbotModal from 'src/stories/components/ChatBot';
 import ProfessorExpModal from 'src/stories/components/ProfessorExp';
@@ -14,8 +13,7 @@ export interface HomeDsuAiProps {
 }
 
 export function HomeDsuAiTemplate({ logged = false, tenantName = '' }: HomeDsuAiProps) {
-  const router = useRouter();
-  const { token, roles, menu } = useSessionStore.getState();
+  const { token, menu } = useSessionStore.getState();
 
   const [isClient, setIsClient] = useState(false); // 클라이언트 사이드에서만 렌어링하도록 상태 추가
   useEffect(() => {
@@ -164,93 +162,103 @@ export function HomeDsuAiTemplate({ logged = false, tenantName = '' }: HomeDsuAi
           </div>
         </section>
       </div>
-      <section
-        className={cx(
-          'top-banner',
-          'hero-section',
-          'hero-section-3',
-          'tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center tw-bg-[#ffff]',
-        )}
-      >
+
+      {/* 첫 번째 섹션 */}
+      <section className="tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center tw-bg-[#f8f8f8]">
         <div className="tw-w-full md:tw-w-[1120px] tw-h-[520px] md:tw-h-[1050px] tw-relative tw-overflow-hidden">
-          <div className="tw-w-full tw-h-[520px] tw-absolute tw-left-0 md:tw-left-[-1px] tw-top-0 tw-p-2">
-            <div className="tw-mt-12 tw-space-y-3 tw-text-left">
-              <div className="tw-text-xl tw-font-bold tw-text-red-500">What is AI조교?</div>
-              <div className="tw-text-3xl tw-text-gray-800 tw-font-medium">
-                학습자의 뇌를 깨우는 <span className="tw-font-bold">AI기반 온라인 학습 시스템</span>
-              </div>
+          <div className="tw-mt-12 tw-space-y-3 tw-text-left">
+            <div className="tw-text-xl tw-font-bold tw-text-red-500">What is AI조교?</div>
+            <div className="tw-text-3xl tw-text-gray-800 tw-font-medium">
+              학습자의 뇌를 깨우는 <span className="tw-font-bold">AI기반 온라인 학습 시스템</span>
             </div>
+          </div>
 
-            <div className={cx('tw-flex tw-justify-center tw-items-center tw-pt-24')}>
+          <div className={cx('tw-flex tw-justify-center tw-items-center tw-pt-24')}>
+            <div className="tw-w-full tw-flex md:tw-flex-row tw-gap-4 md:tw-gap-28 tw-justify-center tw-items-center">
+              <img
+                src="/assets/images/dsuai/bg-2.svg"
+                className="tw-w-[410px]  md:tw-h-auto tw-overflow-hidden tw-m-1 md:tw-m-0"
+              />
+
+              <img
+                src="/assets/images/dsuai/bg-3.svg"
+                className="tw-w-[410px]  md:tw-h-auto tw-object-cover tw-m-1 md:tw-m-0"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 두 번째 섹션 */}
+      <section className="tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center tw-bg-[#fff]">
+        <div className="md:tw-w-[1120px] tw-h-[520px] md:tw-h-[1050px] tw-relative tw-overflow-hidden">
+          <div className="tw-mt-12 tw-space-y-3 tw-text-left">
+            <div className="tw-text-xl tw-font-bold tw-text-red-500">AI조교의 특징</div>
+            <div className="tw-text-3xl tw-text-gray-800 tw-font-medium">
+              학습자와 교수자의 <span className="tw-font-bold">효과적인 연결</span>
+            </div>
+          </div>
+
+          <div className="tw-flex tw-justify-center tw-items-center tw-pt-10">
+            <div className="tw-w-full tw-flex md:tw-flex-row tw-gap-4 md:tw-gap-28 tw-justify-center tw-items-center">
+              <img src="/assets/images/dsuai/bg-4.svg" className="md:tw-h-auto tw-overflow-hidden tw-m-1 md:tw-m-0" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center tw-bg-[#fff]">
+        <div className="md:tw-w-[1120px]  tw-relative tw-overflow-hidden">
+          <div className="tw-mt-12 tw-space-y-3 tw-text-left">
+            <div className="tw-text-xl tw-font-bold tw-text-red-500">AI조교의 특징</div>
+            <div className="tw-text-3xl tw-text-gray-800 tw-font-medium">
+              학습자와 교수자를 연결하는 <span className="tw-font-bold">효과적인 학습 솔루션</span>
+            </div>
+          </div>
+
+          <div className="tw-space-y-8">
+            <div className="tw-flex tw-justify-center tw-items-center">
               <div className="tw-w-full tw-flex md:tw-flex-row tw-gap-4 md:tw-gap-28 tw-justify-center tw-items-center">
-                <img
-                  src="/assets/images/dsuai/bg-2.svg"
-                  className="tw-w-[410px]  md:tw-h-auto tw-overflow-hidden tw-m-1 md:tw-m-0"
-                />
-
-                <img
-                  src="/assets/images/dsuai/bg-3.svg"
-                  className="tw-w-[410px]  md:tw-h-auto tw-object-cover tw-m-1 md:tw-m-0"
-                />
+                <img src="/assets/images/dsuai/info_1.svg" />
+              </div>
+            </div>
+            <div className="tw-flex tw-justify-center tw-items-center">
+              <div className="tw-w-full tw-flex md:tw-flex-row tw-gap-4 md:tw-gap-28 tw-justify-center tw-items-center">
+                <img src="/assets/images/dsuai/info_2.svg" />
+              </div>
+            </div>
+            <div className="tw-flex tw-justify-center tw-items-center">
+              <div className="tw-w-full tw-flex md:tw-flex-row tw-gap-4 md:tw-gap-28 tw-justify-center tw-items-center">
+                <img src="/assets/images/dsuai/info_3.svg" />
+              </div>
+            </div>
+            <div className="tw-flex tw-justify-center tw-items-center">
+              <div className="tw-w-full tw-flex md:tw-flex-row tw-gap-4 md:tw-gap-28 tw-justify-center tw-items-center">
+                <img src="/assets/images/dsuai/info_4.svg" />
+              </div>
+            </div>
+            <div className="tw-flex tw-justify-center tw-items-center">
+              <div className="tw-w-full tw-flex md:tw-flex-row tw-gap-4 md:tw-gap-28 tw-justify-center tw-items-center">
+                <img src="/assets/images/dsuai/info_5.svg" />
+              </div>
+            </div>
+            <div className="tw-flex tw-justify-center tw-items-center">
+              <div className="tw-w-full tw-flex md:tw-flex-row tw-gap-4 md:tw-gap-28 tw-justify-center tw-items-center">
+                <img src="/assets/images/dsuai/info_6.svg" />
               </div>
             </div>
           </div>
         </div>
       </section>
-      <section
-        className={cx(
-          'top-banner',
-          'hero-section',
-          'hero-section-3',
-          'tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center',
-        )}
-      ></section>
-      <section className={cx('main-container', 'hero-section-3 tw-h-[918px] tw-bg-[#f8f8f8]')}>
-        <div className="!tw-px-[180px] ">
-          {/* 첫 번째 섹션 */}
-          <div
-            className={cx(
-              'tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center tw-gap-6 md:tw-gap-12 tw-mb-8 tw-px-10',
-            )}
-          >
-            <div className="tw-w-[553px]  tw-mt-20 tw-mb-1 tw-overflow-hidden tw-rounded-[20px] tw-flex tw-flex-col tw-justify-center tw-items-center">
-              <div className="tw-text-[#1B4595] tw-text-base tw-font-bold tw-font-['Inter']">Why AI조교</div>
-              <div className="tw-text-black tw-text-xl tw-font-bold tw-font-['Inter'] tw-mt-3">
-                이제 궁금한 건 모두 물어보세요!
-              </div>
-            </div>
-            <div className="tw-w-[553px] tw-mt-20 tw-mb-1 tw-overflow-hidden tw-rounded-[20px] tw-flex tw-flex-col tw-justify-center tw-items-center">
-              <div className="tw-text-[#0A7441] tw-text-base tw-font-bold tw-font-['Inter']">With AI조교</div>
-              <div className="tw-text-black tw-text-xl tw-font-bold tw-font-['Inter'] tw-mt-3">
-                학습자와의 거리를 좁히는 AI조교!
-              </div>
-            </div>
-          </div>
 
-          {/* 두 번째 섹션 */}
-          <div className={cx('tw-flex tw-justify-center tw-items-start tw-px-0')}>
-            <img src="/assets/images/main/lec_1.png" className="tw-w-[573px]   tw-object-cover " />
-            <img src="/assets/images/main/lec_2.png" className="tw-w-[573px]  tw-object-cover " />
-          </div>
-
-          {/* 세 번째 섹션 */}
-          <div className={cx('tw-flex tw-justify-center tw-items-start tw-px-0 tw-mt-[-40px]')}>
-            <img src="/assets/images/main/lec_3.png" className="tw-w-[573px]  tw-object-cover " />
-            <img src="/assets/images/main/lec_4.png" className="tw-w-[573px]   tw-object-cover" />
-          </div>
-
-          {/* 네 번째 섹션 */}
-          <div className={cx('tw-flex tw-justify-center tw-items-start tw-px-0 tw-mt-[-40px]')}>
-            <img src="/assets/images/main/lec_5.png" className="  tw-w-[573px]  tw-object-cover " />
-            <img src="/assets/images/main/lec_6.png" className="tw-w-[573px]  tw-object-cover" />
-          </div>
+      <section className="tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center tw-bg-[#fff] ">
+        <div className="tw-w-full tw-relative tw-overflow-hidden tw-py-20">
+          <img src="/assets/images/dsuai/bg-footer.svg" className="tw-w-full tw-object-cover" />
         </div>
       </section>
+
+      {/* 세 번째 섹션 */}
       <div className={cx('container tw-py-14  ')}>
-        <div className="tw-w-full tw-relative tw-overflow-hidden tw-px-10">
-          <img src="/assets/images/main/bottom.png" className="tw-w-full tw-object-cover" />
-        </div>
-
         {isClient && modalIsProfessor && (
           <ProfessorExpModal
             title="교수자 체험하기"
