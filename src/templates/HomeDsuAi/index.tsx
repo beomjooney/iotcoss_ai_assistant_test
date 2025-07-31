@@ -191,7 +191,7 @@ export function HomeDsuAiTemplate({ logged = false, tenantName = '' }: HomeDsuAi
 
       {/* 두 번째 섹션 */}
       <section className="tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center tw-bg-[#fff]">
-        <div className="md:tw-w-[1120px] tw-h-[520px] md:tw-h-[1050px] tw-relative tw-overflow-hidden">
+        <div className="md:tw-w-[1120px]  tw-relative tw-overflow-hidden">
           <div className="tw-mt-12 tw-space-y-3 tw-text-left">
             <div className="tw-text-xl tw-font-bold tw-text-red-500">AI조교의 특징</div>
             <div className="tw-text-3xl tw-text-gray-800 tw-font-medium">
@@ -207,7 +207,7 @@ export function HomeDsuAiTemplate({ logged = false, tenantName = '' }: HomeDsuAi
         </div>
       </section>
 
-      <section className="tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center tw-bg-[#fff]">
+      <section className="tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center tw-bg-[#fff] tw-pt-24">
         <div className="md:tw-w-[1120px]  tw-relative tw-overflow-hidden">
           <div className="tw-mt-12 tw-space-y-3 tw-text-left">
             <div className="tw-text-xl tw-font-bold tw-text-red-500">AI조교의 특징</div>
@@ -216,7 +216,7 @@ export function HomeDsuAiTemplate({ logged = false, tenantName = '' }: HomeDsuAi
             </div>
           </div>
 
-          <div className="tw-space-y-8">
+          <div className="tw-space-y-8 tw-mt-10">
             <div className="tw-flex tw-justify-center tw-items-center">
               <div className="tw-w-full tw-flex md:tw-flex-row tw-gap-4 md:tw-gap-28 tw-justify-center tw-items-center">
                 <img src="/assets/images/dsuai/info_1.svg" />
