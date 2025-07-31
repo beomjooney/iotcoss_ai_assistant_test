@@ -18,7 +18,6 @@ import AttachmentIcon from '@mui/icons-material/Attachment';
 import EscalatorWarningIcon from '@mui/icons-material/EscalatorWarning';
 import DvrIcon from '@mui/icons-material/Dvr';
 import AddLinkIcon from '@mui/icons-material/AddLink';
-
 import { Typography } from '../index';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 import Tooltip from '@mui/material/Tooltip';
@@ -37,10 +36,7 @@ import ListItem from '@mui/material/ListItem';
 import Divider from '@mui/material/Divider';
 import { useQuizAlarmHistory } from 'src/services/quiz/quiz.queries';
 import { useCheckAlarm } from 'src/services/community/community.mutations';
-import { setCookie } from 'cookies-next';
-import { useColorPresets, useColorPresetName } from 'src/utils/use-theme-color';
 import cn from 'src/utils/class-names';
-import { getFirstSubdomain } from 'src/utils';
 
 export interface NavbarProps {
   /** 테마 색상 */
@@ -82,22 +78,18 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
   };
 
   const router = useRouter();
-  const { update, tenantName } = useSessionStore.getState();
-  const { user, setUser } = useStore();
+  const { tenantName } = useSessionStore.getState();
+  const { user } = useStore();
   const [scroll, setScroll] = useState(0);
   const [headerTop, setHeaderTop] = useState(0);
   const [logoutButton, setLogoutButton] = useState<ReactNode>(null);
   const [adminButton, setAdminButton] = useState<ReactNode>(null);
   const [isShowMenu, setIsShowMenu] = useState<boolean>(false);
-  const { setColorPresets } = useColorPresets();
   const [baseUrl, setBaseUrl] = useState('');
-  const savedIndex = localStorage.getItem('activeIndex');
 
   useEffect(() => {
-    localStorage.setItem('activeIndex', activeIndex);
+    localStorage.setItem('activeIndex', activeIndex?.toString());
   }, [activeIndex]);
-
-  // console.log('header user', user);
 
   useEffect(() => {
     // 이 코드는 클라이언트 측에서만 실행됩니다
@@ -145,7 +137,6 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
     if (logged) {
       await router.push('/account/my/activity');
     } else {
-      // await router.push(`${baseUrl}/account/login`);
       location.href = `${baseUrl}/account/login`;
     }
   };
@@ -160,7 +151,6 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
   };
 
   const handleGoHome = async () => {
-    // await router.push('/');
     location.href = '/';
   };
 
@@ -258,11 +248,7 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
         </ListItem>
       </Link>
       <ListItemButton>
-        <li className={cx('custom-item', 'pt-3')}>
-          {/* <Button size="small" color="primary" onClick={handleClick}>
-            {buttonName}
-          </Button> */}
-        </li>
+        <li className={cx('custom-item', 'pt-3')}></li>
         <li className={cx('custom-item', 'pt-3')}>{adminButton}</li>
         <li className={cx('custom-item', 'pt-3')}>{logoutButton}</li>
       </ListItemButton>
@@ -277,7 +263,6 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
         } ${scroll > headerTop ? 'affix' : ''}`}
       >
         <div className="container" style={{ alignItems: 'center' }}>
-          {/* <div className={cx('header-link')}> */}
           <div onClick={handleGoHome} className={cx('header-link')}>
             {tenantName === 'sjunv' || tenantName === 'iotcoss' || tenantName === 'dsuai' ? (
               <div className="tw-flex tw-items-center tw-gap-2">
@@ -287,8 +272,18 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
               <div className="tw-flex tw-items-center tw-gap-2">
                 <img src="/assets/images/devus_2.png" width={92} alt="logo" className={cx('image-logo')} />
               </div>
+            ) : tenantName === 'dsuai' ? (
+              <div className="tw-flex tw-items-center tw-gap-2">
+                <img
+                  src="/assets/images/dsuai/logo.svg"
+                  width={148}
+                  height={36}
+                  alt="logo"
+                  className={cx('image-logo')}
+                />
+              </div>
             ) : (
-              <img src="/assets/images/header/image_1.png" width={130} alt="logo" className={cx('image-logo')} />
+              <img src="/assets/images/header/image_1.png" width={148} alt="logo" className={cx('image-logo')} />
             )}
           </div>
           <Mobile>
@@ -585,11 +580,6 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
                         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                       >
-                        {/* <MenuItem onClick={() => (location.href = '/quiz-make')}>내가 만든 퀴즈</MenuItem> */}
-                        {/* <Divider />
-                      <MenuItem onClick={() => (location.href = '/account/my/point')}>내 포인트 내역</MenuItem> */}
-                        {/* <Divider />
-                      <MenuItem onClick={() => (location.href = '/profile')}>내 프로필</MenuItem> */}
                         <MenuItem onClick={handleClick}>마이페이지</MenuItem>
                         <Divider />
                         <MenuItem onClick={handleLogout}>

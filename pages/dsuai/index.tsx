@@ -1,5 +1,5 @@
 import './index.module.scss';
-import { HomeSejongTemplate } from '../../src/templates/HomeSeJong';
+import { HomeDsuAiTemplate } from '../../src/templates/HomeDsuAi';
 import { useMemberInfo, useMyProfile } from '../../src/services/account/account.queries';
 import { useStore } from 'src/store';
 import { useEffect } from 'react';
@@ -40,7 +40,7 @@ export function IndexPage({ session, setActiveIndex }: { session: Session; setAc
   // TODO 로그인 수정 변경
   return (
     <div className="tw-h-[2550px]">
-      <HomeSejongTemplate logged={logged} tenantName="sejong" />
+      <HomeDsuAiTemplate logged={logged} tenantName="dsuai" />
     </div>
   );
 }

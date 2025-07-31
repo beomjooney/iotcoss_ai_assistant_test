@@ -1,5 +1,6 @@
 export * from './Home/index';
 export * from './HomeSeJong/index';
+export * from './HomeDsuAi/index';
 export * from './Account/Login/index';
 export * from './Account/LoginOne/index';
 export * from './Account/Forgot/index';
