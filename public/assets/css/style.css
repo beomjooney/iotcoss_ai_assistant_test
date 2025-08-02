@@ -986,37 +986,6 @@ span.sub-title {
   width: 100%;
 }
 
-.hero-7 {
-  width: 100%;
-  position: relative;
-}
-.hero-7:after {
-  content: ' ';
-  background-image: url('../img/hero-bg-2.jpg');
-  background-size: cover;
-  background-position: center center;
-  position: absolute;
-  width: 100%;
-  border-radius: 0;
-  transform: skewY(-5deg);
-  top: -180px;
-  right: 0;
-  bottom: 140px;
-  z-index: -1;
-}
-.hero-7:before {
-  position: absolute;
-  content: '';
-  background: rgba(0, 67, 139, 0.85);
-  width: 100%;
-  height: 100%;
-  left: 0;
-  transform: skewY(-5deg);
-  top: -140px;
-  right: 0;
-  bottom: -50px;
-}
-
 /*hero subscribe form*/
 .subscribe-form {
   position: relative;
@@ -1468,43 +1437,6 @@ span.sub-title {
   animation-iteration-count: infinite;
 }
 
-/*hero 2 css*/
-.hero-section-2,
-.hero-section-3 {
-  position: relative;
-  overflow: hidden;
-}
-
-.hero-section-2:before {
-  content: '';
-  position: absolute;
-  z-index: -1;
-  width: 100%;
-  height: 175%;
-  bottom: 0;
-  background-image: url(../img/hero-bg-shape-3.svg);
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-
-.shape-image {
-  position: absolute;
-  width: 100%;
-  height: auto;
-  bottom: 76px;
-  z-index: 0;
-  left: 268px;
-  overflow: hidden;
-  background-size: cover;
-  right: 0;
-}
-
-@media (min-width: 320px) and (max-width: 767px) {
-  .shape-image {
-    display: none;
-  }
-}
-
 /*hero background video css*/
 
 .video-section-wrap {
@@ -1550,14 +1482,6 @@ span.sub-title {
 .single-promo-1 {
   box-shadow: 0 3px 20px 0px rgba(0, 0, 0, 0.12);
   border-radius: 1.5rem !important;
-}
-.single-promo-1 span {
-  font-size: 35px;
-  background-image: url('../img/promo-icon-bg.svg');
-  background-size: 150px;
-  padding: 35px;
-  background-repeat: no-repeat;
-  background-position: 45% 20%;
 }
 .single-promo img {
   width: 70px;
@@ -1854,25 +1778,6 @@ span.sub-title {
     width: 90%;
     margin: 0 5%;
   }
-}
-
-/*about us app*/
-.overflow-hidden {
-  overflow: hidden;
-}
-.background-shape-img {
-  position: relative;
-}
-.background-shape-img:before {
-  content: '';
-  position: absolute;
-  z-index: -1;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  background-image: url('../img/about-bg-shape.svg');
-  background-repeat: no-repeat;
-  background-size: cover;
 }
 
 /*=========================================
@@ -2310,21 +2215,6 @@ span.sub-title {
   position: relative;
 }
 
-.screenshot-frame {
-  background-image: url(../img/phone-frame2.png);
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-  display: block;
-  width: 285px;
-  height: 518px;
-  position: absolute;
-  top: -10px;
-  left: calc(50% + 0.5px);
-  -webkit-transform: translateX(-50%);
-  transform: translateX(-50%);
-  z-index: 2;
-  border-radius: 40px;
-}
 @media (min-width: 320px) and (max-width: 1200px) {
   .screenshot-frame {
     display: none;
@@ -2452,17 +2342,6 @@ span.sub-title {
 
 .background-shape-right {
   position: relative;
-}
-.background-shape-right:before {
-  content: '';
-  position: absolute;
-  z-index: -1;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 50%;
-  background-image: url(../img/shape-bg-right.svg);
-  background-repeat: no-repeat;
 }
 
 /*=========================================
