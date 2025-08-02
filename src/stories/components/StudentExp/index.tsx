@@ -3,8 +3,9 @@ import Modal from 'react-modal';
 import ReactModal from 'react-modal';
 import classNames from 'classnames/bind';
 import styles from './index.module.scss';
-import { Tabs, Tab, Accordion, AccordionSummary, AccordionDetails, TextField } from '@mui/material';
+import { Tabs, Tab, Accordion, AccordionSummary, AccordionDetails, TextField, IconButton } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import CloseIcon from '@mui/icons-material/Close';
 import { Toggle, Tag } from 'src/stories/components';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useAIQuizSave, useAIQuizAnswer, useAIQuizAnswerFeedback } from 'src/services/quiz/quiz.mutations';
@@ -76,8 +77,8 @@ const StudentExpModal = ({ title, isOpen, onRequestClose, closable = true }) => 
   }, []);
 
   const { isFetched: isMemberListFetched, refetch: QuizRefetchBadge } = useStudyRoomList(memberParams, data => {
-    console.log('memberList', data, data?.data?.contents[0].clubSequence);
-    setSelectedClub(data?.data?.contents[0].clubSequence);
+    console.log('memberList', data, data?.data?.contents[0]?.clubSequence);
+    setSelectedClub(data?.data?.contents[0]?.clubSequence);
     setContents(data?.data?.contents);
     setTotalPage(data?.data?.totalPages);
     setPage(data?.data?.page);
@@ -401,9 +402,19 @@ const StudentExpModal = ({ title, isOpen, onRequestClose, closable = true }) => 
           <div className={cx('closable tw-font-bold tw-text-xl tw-text-black tw-my-10 tw-mb-2 tw-text-left tw-mt-0')}>
             {title}
           </div>
-          <div className={cx('closable')} onClick={onRequestClose}>
-            <span className="ti-close" style={{ cursor: 'pointer' }} />
-          </div>
+          <IconButton
+            onClick={onRequestClose}
+            className={cx('closable')}
+            size="small"
+            sx={{
+              color: '#666',
+              '&:hover': {
+                backgroundColor: 'rgba(0, 0, 0, 0.04)',
+              },
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
         </div>
       )}
       <div className={cx('content tw-bg-[#fdfdff] tw-h-[90%]  tw-flex tw-flex-col tw-items-center')}>
@@ -775,7 +786,9 @@ const StudentExpModal = ({ title, isOpen, onRequestClose, closable = true }) => 
                                 <div className="tw-py-2">
                                   <div className="tw-font-medium tw-text-[#9ca5b2] tw-text-sm">
                                     <span
-                                      className={`tw-font-bold ${item?.threadType === '0003' ? 'tw-text-black' : 'tw-text-black'}`}
+                                      className={`tw-font-bold ${
+                                        item?.threadType === '0003' ? 'tw-text-black' : 'tw-text-black'
+                                      }`}
                                     >
                                       {item?.threadType === '0001' && '사전답변'}
                                       {item?.threadType === '0002' && '사후답변'}

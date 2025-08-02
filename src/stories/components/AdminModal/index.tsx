@@ -2,6 +2,8 @@ import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import ReactModal from 'react-modal';
 import React, { useEffect, useState } from 'react';
+import { IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
 const cx = classNames.bind(styles);
 ReactModal.setAppElement('body');
@@ -70,7 +72,14 @@ function AdminModal({
       {closable && (
         <div className={cx('modal-header', 'closable')} onClick={() => setIsShow(false)}>
           {title && <span className={cx('modal-header__title')}>{title}</span>}
-          <span className="ti-close" />
+          <IconButton
+            onClick={() => setIsShow(false)}
+            className={cx('closable')}
+            size="small"
+            sx={{ color: '#666', '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.04)' } }}
+          >
+            <CloseIcon />
+          </IconButton>
         </div>
       )}
       <div className={cx('content-wrap')}>

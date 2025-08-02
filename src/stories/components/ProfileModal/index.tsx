@@ -3,6 +3,8 @@ import classNames from 'classnames/bind';
 import ReactModal from 'react-modal';
 import React, { useEffect, useState } from 'react';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
+import { IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
 const cx = classNames.bind(styles);
 ReactModal.setAppElement('body');
@@ -39,11 +41,13 @@ function ProfileModal({ isOpen, children, closable = true, onAfterClose }: Profi
             },
             content: {
               position: 'absolute',
-              top: '60px',
+              top: '10%',
               left: '50%',
+              right: 'auto',
+              bottom: 'auto',
               transform: 'translateX(-50%)',
-              width: '95%',
-              height: '85%',
+              width: '90%',
+              height: '80%',
               border: '1px solid #ccc',
               background: '#fff',
               overflow: 'hidden',
@@ -55,9 +59,22 @@ function ProfileModal({ isOpen, children, closable = true, onAfterClose }: Profi
           }}
         >
           {closable && (
-            <div className={cx('closable')} onClick={() => setIsShow(false)}>
-              <span className="ti-close" style={{ cursor: 'pointer' }} />
-            </div>
+            <IconButton
+              onClick={() => setIsShow(false)}
+              className={cx('closable')}
+              size="small"
+              sx={{
+                position: 'absolute',
+                right: 8,
+                top: 8,
+                color: '#666',
+                '&:hover': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                },
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
           )}
           <div className={cx('content')}>{children}</div>
         </ReactModal>
@@ -95,9 +112,22 @@ function ProfileModal({ isOpen, children, closable = true, onAfterClose }: Profi
           }}
         >
           {closable && (
-            <div className={cx('closable')} onClick={() => setIsShow(false)}>
-              <span className="ti-close" style={{ cursor: 'pointer' }} />
-            </div>
+            <IconButton
+              onClick={() => setIsShow(false)}
+              className={cx('closable')}
+              size="small"
+              sx={{
+                position: 'absolute',
+                right: 8,
+                top: 8,
+                color: '#666',
+                '&:hover': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                },
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
           )}
           <div className={cx('content')}>{children}</div>
         </ReactModal>

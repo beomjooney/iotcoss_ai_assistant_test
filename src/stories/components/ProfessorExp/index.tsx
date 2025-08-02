@@ -3,8 +3,9 @@ import Modal from 'react-modal';
 import ReactModal from 'react-modal';
 import classNames from 'classnames/bind';
 import styles from './index.module.scss';
-import { Tabs, Tab, Accordion, AccordionSummary, AccordionDetails, TextField } from '@mui/material';
+import { Tabs, Tab, Accordion, AccordionSummary, AccordionDetails, TextField, IconButton } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import CloseIcon from '@mui/icons-material/Close';
 import { Toggle, Tag } from 'src/stories/components';
 import CircularProgress from '@mui/material/CircularProgress';
 import { TagsInput } from 'react-tag-input-component';
@@ -379,9 +380,19 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
           <div className={cx('closable tw-font-bold tw-text-xl tw-text-black tw-my-10 tw-mb-2 tw-text-left tw-mt-0')}>
             {title}
           </div>
-          <div className={cx('closable')} onClick={onRequestClose}>
-            <span className="ti-close" style={{ cursor: 'pointer' }} />
-          </div>
+          <IconButton
+            onClick={onRequestClose}
+            className={cx('closable')}
+            size="small"
+            sx={{
+              color: '#666',
+              '&:hover': {
+                backgroundColor: 'rgba(0, 0, 0, 0.04)',
+              },
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
         </div>
       )}
       <div className={cx('content tw-bg-[#fdfdff] tw-h-[90%]  tw-flex tw-flex-col tw-items-center')}>

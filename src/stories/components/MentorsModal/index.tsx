@@ -4,6 +4,7 @@ import ReactModal from 'react-modal';
 import React, { useEffect, useState } from 'react';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 import CloseIcon from '@mui/icons-material/Close';
+import { IconButton } from '@mui/material';
 
 const cx = classNames.bind(styles);
 ReactModal.setAppElement('body');
@@ -88,11 +89,14 @@ function MentorsModal({
           }}
         >
           {closable && (
-            <>
-              <div className={cx('closable')} onClick={() => setIsShow(false)}>
-                <span className="ti-close" style={{ cursor: 'pointer' }} />
-              </div>
-            </>
+            <IconButton
+              onClick={() => setIsShow(false)}
+              className={cx('closable')}
+              size="small"
+              sx={{ color: '#666', '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.04)' } }}
+            >
+              <CloseIcon />
+            </IconButton>
           )}
           <div className={cx('content')}>{children}</div>
         </ReactModal>
