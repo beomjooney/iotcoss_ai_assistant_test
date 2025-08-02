@@ -1,29 +1,42 @@
 import './index.module.scss';
 import { HomeDsuAiTemplate } from '../../src/templates/HomeDsuAi';
-import { useMemberInfo, useMyProfile } from '../../src/services/account/account.queries';
+import { useMemberInfo } from '../../src/services/account/account.queries';
 import { useStore } from 'src/store';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Session, useSessionStore } from '../../src/store/session';
 
 import { GetServerSideProps } from 'next';
 
 export function IndexPage({ session, setActiveIndex }: { session: Session; setActiveIndex: (index: number) => void }) {
-  // redirection 처리
-  const { update, logged, memberId } = useSessionStore.getState();
+  const [isClient, setIsClient] = useState(false);
+  const [logged, setLogged] = useState(false);
+  const [memberId, setMemberId] = useState<string>('');
+
+  // 세션 스토어 업데이트
+  const { update } = useSessionStore.getState();
 
   useEffect(() => {
-    // session이 존재하는 경우에만 상태 업데이트를 수행
-    if (session) {
-      update(session);
-    }
-  }, [session, update]); // 의존성 배열에 session과 update 포함
+    setIsClient(true);
 
-  // session이 존재하는 경우에만 상태 업데이트를 수행
-  useEffect(() => {
-    if (session) {
-      update(session);
+    // 클라이언트에서만 실행되는 로직
+    if (typeof window !== 'undefined') {
+      // session이 존재하는 경우에만 상태 업데이트를 수행
+      if (session) {
+        update(session);
+      }
+
+      // 세션 스토어에서 로그인 상태와 멤버 ID 가져오기
+      const { logged: sessionLogged, memberId: sessionMemberId } = useSessionStore.getState();
+      setLogged(sessionLogged);
+      setMemberId(sessionMemberId || '');
+
+      // localStorage 접근
+      localStorage.setItem('activeIndex', '0');
+      if (setActiveIndex) {
+        setActiveIndex(0);
+      }
     }
-  }, [session, update]);
+  }, [session, update, setActiveIndex]);
 
   const { setUser } = useStore();
   const { data } = useMemberInfo(memberId, data => {
@@ -31,15 +44,17 @@ export function IndexPage({ session, setActiveIndex }: { session: Session; setAc
     setUser({ user: data });
   });
 
-  useEffect(() => {
-    console.log('setActiveIndex');
-    localStorage.setItem('activeIndex', '0');
-    setActiveIndex(0);
-  }, []);
+  // 클라이언트 렌더링이 준비되지 않았으면 기본 UI 표시
+  if (!isClient) {
+    return (
+      <div className="">
+        <HomeDsuAiTemplate logged={false} tenantName="dsuai" />
+      </div>
+    );
+  }
 
-  // TODO 로그인 수정 변경
   return (
-    <div className="tw-h-[5570px]">
+    <div className="">
       <HomeDsuAiTemplate logged={logged} tenantName="dsuai" />
     </div>
   );
@@ -69,11 +84,6 @@ export const getServerSideProps: GetServerSideProps = async context => {
       console.log('parsedAuthStore', decodedAuthStore);
       session = JSON.parse(decodedAuthStore);
       console.log('session', session);
-    } else {
-      // let queryClient = await fetchGuestTenats('iotcoss');
-      // return {
-      //   props: { ...query, dehydratedState: JSON.parse(JSON.stringify(dehydrate(queryClient))) },
-      // };
     }
 
     return {
