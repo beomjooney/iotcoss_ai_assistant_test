@@ -14,6 +14,7 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { useSessionStore } from 'src/store/session';
+import SearchIcon from '@mui/icons-material/Search';
 import { useQuizRankDetail, useQuizRoungeDetail } from 'src/services/quiz/quiz.queries';
 import MuiToggleButton from '@mui/material/ToggleButton';
 import { styled } from '@mui/material/styles';
