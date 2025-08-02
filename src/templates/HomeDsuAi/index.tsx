@@ -190,115 +190,114 @@ export function HomeDsuAiTemplate({ logged = false, tenantName = '' }: HomeDsuAi
         </div>
       )}
       {/* 첫 번째 섹션 */}
-      {roles.includes('ROLE_INSTRUCTOR') ||
-        (roles.includes('ROLE_ADMIN') && (
-          <div>
-            <section className="tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center tw-bg-[#fcfcff]">
-              <div className="tw-w-full md:tw-w-[1120px] tw-relative tw-overflow-hidden">
-                <div className="tw-mt-24 tw-space-y-3 tw-text-left">
-                  <div className="tw-text-xl tw-font-bold tw-text-red-500">What is AI조교?</div>
-                  <div className="tw-text-3xl tw-text-gray-800 tw-font-medium">
-                    학습자의 뇌를 깨우는 <span className="tw-font-bold">AI기반 온라인 학습 시스템</span>
-                  </div>
+      {(roles.includes('ROLE_INSTRUCTOR') || roles.includes('ROLE_ADMIN')) && (
+        <div>
+          <section className="tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center tw-bg-[#fcfcff]">
+            <div className="tw-w-full md:tw-w-[1120px] tw-relative tw-overflow-hidden">
+              <div className="tw-mt-24 tw-space-y-3 tw-text-left">
+                <div className="tw-text-xl tw-font-bold tw-text-red-500">What is AI조교?</div>
+                <div className="tw-text-3xl tw-text-gray-800 tw-font-medium">
+                  학습자의 뇌를 깨우는 <span className="tw-font-bold">AI기반 온라인 학습 시스템</span>
                 </div>
+              </div>
 
-                <div className="tw-flex tw-justify-center tw-items-center tw-pt-24">
+              <div className="tw-flex tw-justify-center tw-items-center tw-pt-24">
+                <img
+                  src="/assets/images/dsuai/instrator-1.svg"
+                  className="tw-w-[800px]  md:tw-h-auto tw-overflow-hidden tw-m-1 md:tw-m-0"
+                  alt="AI조교 이미지"
+                />
+              </div>
+              <div className="tw-flex tw-justify-center tw-items-center tw-py-24">
+                <div className="tw-w-full tw-flex md:tw-flex-row tw-gap-10 md:tw-gap-10 tw-justify-center tw-items-center">
                   <img
-                    src="/assets/images/dsuai/instrator-1.svg"
-                    className="tw-w-[800px]  md:tw-h-auto tw-overflow-hidden tw-m-1 md:tw-m-0"
+                    src="/assets/images/dsuai/instrator-2.svg"
+                    className="tw-w-[308px]  md:tw-h-auto tw-overflow-hidden tw-m-1 md:tw-m-0"
+                    alt="AI조교 이미지"
+                  />
+
+                  <img
+                    src="/assets/images/dsuai/instrator-3.svg"
+                    className="tw-w-[362px]  md:tw-h-auto tw-object-cover tw-m-1 md:tw-m-0"
+                    alt="AI조교 이미지"
+                  />
+                  <img
+                    src="/assets/images/dsuai/instrator-4.svg"
+                    className="tw-w-[308px]  md:tw-h-auto tw-object-cover tw-m-1 md:tw-m-0"
                     alt="AI조교 이미지"
                   />
                 </div>
-                <div className="tw-flex tw-justify-center tw-items-center tw-py-24">
-                  <div className="tw-w-full tw-flex md:tw-flex-row tw-gap-10 md:tw-gap-10 tw-justify-center tw-items-center">
-                    <img
-                      src="/assets/images/dsuai/instrator-2.svg"
-                      className="tw-w-[308px]  md:tw-h-auto tw-overflow-hidden tw-m-1 md:tw-m-0"
-                      alt="AI조교 이미지"
-                    />
+              </div>
+            </div>
+          </section>
 
-                    <img
-                      src="/assets/images/dsuai/instrator-3.svg"
-                      className="tw-w-[362px]  md:tw-h-auto tw-object-cover tw-m-1 md:tw-m-0"
-                      alt="AI조교 이미지"
-                    />
-                    <img
-                      src="/assets/images/dsuai/instrator-4.svg"
-                      className="tw-w-[308px]  md:tw-h-auto tw-object-cover tw-m-1 md:tw-m-0"
-                      alt="AI조교 이미지"
-                    />
-                  </div>
+          {/* Professor */}
+          <section className="tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center tw-bg-[#fff]">
+            <div className="md:tw-w-[1120px]  tw-relative tw-overflow-hidden">
+              <div className="tw-mt-12 tw-space-y-3 tw-text-left">
+                <div className="tw-text-xl tw-font-bold tw-text-red-500">AI조교의 특징</div>
+                <div className="tw-text-3xl tw-text-gray-800 tw-font-medium">
+                  학습자와 교수자의 <span className="tw-font-bold">효과적인 연결</span>
                 </div>
               </div>
-            </section>
 
-            {/* Professor */}
-            <section className="tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center tw-bg-[#fff]">
-              <div className="md:tw-w-[1120px]  tw-relative tw-overflow-hidden">
-                <div className="tw-mt-12 tw-space-y-3 tw-text-left">
-                  <div className="tw-text-xl tw-font-bold tw-text-red-500">AI조교의 특징</div>
-                  <div className="tw-text-3xl tw-text-gray-800 tw-font-medium">
-                    학습자와 교수자의 <span className="tw-font-bold">효과적인 연결</span>
-                  </div>
+              <div className="tw-flex tw-justify-center tw-items-center tw-pt-10">
+                <div className="tw-w-full tw-flex md:tw-flex-row tw-gap-4 md:tw-gap-28 tw-justify-center tw-items-center">
+                  <img
+                    src="/assets/images/dsuai/bg-4.svg"
+                    className="md:tw-h-auto tw-overflow-hidden tw-m-1 md:tw-m-0"
+                    alt="AI조교 이미지"
+                  />
                 </div>
+              </div>
+            </div>
+          </section>
 
-                <div className="tw-flex tw-justify-center tw-items-center tw-pt-10">
+          <section className="tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center tw-bg-[#fff] tw-pt-24">
+            <div className="md:tw-w-[1120px]  tw-relative tw-overflow-hidden">
+              <div className="tw-mt-12 tw-space-y-3 tw-text-left">
+                <div className="tw-text-xl tw-font-bold tw-text-red-500">AI조교의 특징</div>
+                <div className="tw-text-3xl tw-text-gray-800 tw-font-medium">
+                  학습자와 교수자를 연결하는 <span className="tw-font-bold">효과적인 학습 솔루션</span>
+                </div>
+              </div>
+
+              <div className="tw-space-y-8 tw-mt-10">
+                <div className="tw-flex tw-justify-center tw-items-center">
                   <div className="tw-w-full tw-flex md:tw-flex-row tw-gap-4 md:tw-gap-28 tw-justify-center tw-items-center">
-                    <img
-                      src="/assets/images/dsuai/bg-4.svg"
-                      className="md:tw-h-auto tw-overflow-hidden tw-m-1 md:tw-m-0"
-                      alt="AI조교 이미지"
-                    />
+                    <img src="/assets/images/dsuai/info_1.svg" alt="AI조교 이미지" />
+                  </div>
+                </div>
+                <div className="tw-flex tw-justify-center tw-items-center">
+                  <div className="tw-w-full tw-flex md:tw-flex-row tw-gap-4 md:tw-gap-28 tw-justify-center tw-items-center">
+                    <img src="/assets/images/dsuai/info_2.svg" alt="AI조교 이미지" />
+                  </div>
+                </div>
+                <div className="tw-flex tw-justify-center tw-items-center">
+                  <div className="tw-w-full tw-flex md:tw-flex-row tw-gap-4 md:tw-gap-28 tw-justify-center tw-items-center">
+                    <img src="/assets/images/dsuai/info_3.svg" alt="AI조교 이미지" />
+                  </div>
+                </div>
+                <div className="tw-flex tw-justify-center tw-items-center">
+                  <div className="tw-w-full tw-flex md:tw-flex-row tw-gap-4 md:tw-gap-28 tw-justify-center tw-items-center">
+                    <img src="/assets/images/dsuai/info_4.svg" alt="AI조교 이미지" />
+                  </div>
+                </div>
+                <div className="tw-flex tw-justify-center tw-items-center">
+                  <div className="tw-w-full tw-flex md:tw-flex-row tw-gap-4 md:tw-gap-28 tw-justify-center tw-items-center">
+                    <img src="/assets/images/dsuai/info_5.svg" alt="AI조교 이미지" />
+                  </div>
+                </div>
+                <div className="tw-flex tw-justify-center tw-items-center">
+                  <div className="tw-w-full tw-flex md:tw-flex-row tw-gap-4 md:tw-gap-28 tw-justify-center tw-items-center">
+                    <img src="/assets/images/dsuai/info_6.svg" alt="AI조교 이미지" />
                   </div>
                 </div>
               </div>
-            </section>
-
-            <section className="tw-flex tw-flex-col md:tw-flex-row tw-justify-center tw-items-center tw-bg-[#fff] tw-pt-24">
-              <div className="md:tw-w-[1120px]  tw-relative tw-overflow-hidden">
-                <div className="tw-mt-12 tw-space-y-3 tw-text-left">
-                  <div className="tw-text-xl tw-font-bold tw-text-red-500">AI조교의 특징</div>
-                  <div className="tw-text-3xl tw-text-gray-800 tw-font-medium">
-                    학습자와 교수자를 연결하는 <span className="tw-font-bold">효과적인 학습 솔루션</span>
-                  </div>
-                </div>
-
-                <div className="tw-space-y-8 tw-mt-10">
-                  <div className="tw-flex tw-justify-center tw-items-center">
-                    <div className="tw-w-full tw-flex md:tw-flex-row tw-gap-4 md:tw-gap-28 tw-justify-center tw-items-center">
-                      <img src="/assets/images/dsuai/info_1.svg" alt="AI조교 이미지" />
-                    </div>
-                  </div>
-                  <div className="tw-flex tw-justify-center tw-items-center">
-                    <div className="tw-w-full tw-flex md:tw-flex-row tw-gap-4 md:tw-gap-28 tw-justify-center tw-items-center">
-                      <img src="/assets/images/dsuai/info_2.svg" alt="AI조교 이미지" />
-                    </div>
-                  </div>
-                  <div className="tw-flex tw-justify-center tw-items-center">
-                    <div className="tw-w-full tw-flex md:tw-flex-row tw-gap-4 md:tw-gap-28 tw-justify-center tw-items-center">
-                      <img src="/assets/images/dsuai/info_3.svg" alt="AI조교 이미지" />
-                    </div>
-                  </div>
-                  <div className="tw-flex tw-justify-center tw-items-center">
-                    <div className="tw-w-full tw-flex md:tw-flex-row tw-gap-4 md:tw-gap-28 tw-justify-center tw-items-center">
-                      <img src="/assets/images/dsuai/info_4.svg" alt="AI조교 이미지" />
-                    </div>
-                  </div>
-                  <div className="tw-flex tw-justify-center tw-items-center">
-                    <div className="tw-w-full tw-flex md:tw-flex-row tw-gap-4 md:tw-gap-28 tw-justify-center tw-items-center">
-                      <img src="/assets/images/dsuai/info_5.svg" alt="AI조교 이미지" />
-                    </div>
-                  </div>
-                  <div className="tw-flex tw-justify-center tw-items-center">
-                    <div className="tw-w-full tw-flex md:tw-flex-row tw-gap-4 md:tw-gap-28 tw-justify-center tw-items-center">
-                      <img src="/assets/images/dsuai/info_6.svg" alt="AI조교 이미지" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-          </div>
-        ))}
+            </div>
+          </section>
+        </div>
+      )}
 
       {/* Student */}
       {roles.includes('ROLE_USER') && (
