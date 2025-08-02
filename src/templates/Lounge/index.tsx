@@ -1,19 +1,15 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import { Toggle, Pagination, Typography, Chip, ClubCard } from 'src/stories/components';
-import React, { useEffect, useState } from 'react';
-import { RecommendContent, SeminarImages } from 'src/models/recommend';
-import { useSeminarList, paramProps, useSeminarImageList } from 'src/services/seminars/seminars.queries';
-import QuizArticleCard from 'src/stories/components/QuizArticleCard';
-import Carousel from 'nuka-carousel';
+import { Pagination } from 'src/stories/components';
+import React, { useState } from 'react';
+import { RecommendContent } from 'src/models/recommend';
+import { paramProps } from 'src/services/seminars/seminars.queries';
 import { useContentTypes, useJobGroups } from 'src/services/code/code.queries';
 import { useStore } from 'src/store';
 import { useRouter } from 'next/router';
 import Grid from '@mui/material/Grid';
-import Icon from '@mui/material/Icon';
 import Box from '@mui/system/Box';
 import TextField from '@mui/material/TextField';
-import SearchIcon from '@mui/icons-material/Search';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -52,14 +48,11 @@ const levelGroup = [
 const cx = classNames.bind(styles);
 
 export function LoungeTemplate() {
-  const { jobGroups, setJobGroups, contentTypes, setContentTypes } = useStore();
-  const { logged } = useSessionStore.getState();
+  const { setJobGroups, contentTypes, setContentTypes } = useStore();
   const router = useRouter();
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [params, setParams] = useState<paramProps>({ page });
-  const [active, setActive] = useState(0);
-  const [contentType, setContentType] = useState(0);
   const { isFetched: isJobGroupFetched } = useJobGroups(data => setJobGroups(data || []));
   const [recommendLevels, setRecommendLevels] = useState([]);
   const [keyWorld, setKeyWorld] = useState('');

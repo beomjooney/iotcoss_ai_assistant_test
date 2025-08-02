@@ -10,19 +10,6 @@ export * from './Account/MemberRegistrationComplete/index';
 export * from './Account/SignupAuthentication/index';
 export * from './Account/Join/index';
 export * from './Account/My/index';
-
-//system admin
-export * from './System/Admin/index';
-export * from './System/Admin/Club/index';
-export * from './System/Admin/Role/index';
-export * from './System/Admin/Knowledge/index';
-export * from './System/Admin/Quiz/index';
-export * from './System/Admin/ClubApproval/index';
-export * from './System/Admin/ClubManagement/index';
-export * from './System/Admin/Dashboard/index';
-export * from './System/Admin/Terms/index';
-export * from './System/Admin/AccountLinkTest/index';
-
 export * from './Account/My/MentorPick/index';
 export * from './Account/My/Activity/index';
 export * from './Account/My/Point/index';
@@ -41,9 +28,7 @@ export * from './Mentoring/Edit/index';
 export * from './Mentoring/Introduce/Program/GroupStudy/index';
 export * from './Mentoring/Introduce/Program/Seminar/index';
 export * from './Mentoring/Detail/index';
-export * from './Service/index';
 export * from './Contents/index';
-export * from './Seminar/index';
 export * from './Quiz/index';
 export * from './Blog/index';
 export * from './Lecture/index';
@@ -76,7 +61,18 @@ export * from './Quiz/Growth/index';
 export * from './Quiz/AnswersDetail/index';
 export * from './Quiz/AnswersRoundDetail/index';
 export * from './Quiz/Detail/index';
-export * from './Seminar/Detail/index';
 export * from './Admin/ClubQuiz/index';
 export * from './Monthly/Quiz/index';
 export * from './Monthly/Maker/index';
+
+//system admin
+export * from './System/Admin/index';
+export * from './System/Admin/Club/index';
+export * from './System/Admin/Role/index';
+export * from './System/Admin/Knowledge/index';
+export * from './System/Admin/Quiz/index';
+export * from './System/Admin/ClubApproval/index';
+export * from './System/Admin/ClubManagement/index';
+export * from './System/Admin/Dashboard/index';
+export * from './System/Admin/Terms/index';
+export * from './System/Admin/AccountLinkTest/index';
