@@ -3,12 +3,9 @@ import styles from './index.module.scss';
 import React, { useState } from 'react';
 import ClubMiniCard from 'src/stories/components/ClubMiniCard';
 import { Pagination } from 'src/stories/components';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useSessionStore } from '../../../../store/session';
 import { useClubWaitingList } from 'src/services/seminars/seminars.queries';
-import Grid from '@mui/material/Grid';
-import { jobColorKey } from 'src/config/colors';
 
 const cx = classNames.bind(styles);
 

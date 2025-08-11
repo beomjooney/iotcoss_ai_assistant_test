@@ -40,6 +40,9 @@ import {
   myLectureChatList,
   myLectureContentList,
   lectureEvaluation,
+  professorManageList,
+  professorCandidateList,
+  myStudentsList,
 } from './seminars.api';
 
 export interface paramProps {
@@ -56,6 +59,7 @@ export interface paramProps {
   lecturerMemberId?: string;
   recruitType?: string;
   clubType?: string;
+  memberSortType?: string;
 }
 
 export const useMyLectureList = (
@@ -93,6 +97,24 @@ export const useMyClubList = (
   return useQuery<any, Error>(
     QUERY_KEY_FACTORY('SEMINAR').list({ size: params.size, ...params }),
     () => clubMyList({ size: params.size, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+    },
+  );
+};
+
+//
+export const useMyStudentsList = (
+  params?: paramProps,
+  onSuccess?: (data: any) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 10;
+  return useQuery<any, Error>(
+    QUERY_KEY_FACTORY('STUDENT').list({ size: DEFAULT_SIZE, ...params }),
+    () => myStudentsList({ size: DEFAULT_SIZE, ...params }),
     {
       onSuccess,
       onError,
@@ -387,6 +409,41 @@ export const useClubWaitingList = (
   return useQuery<any, Error>(
     QUERY_KEY_FACTORY('SEMINAR').list({ size: DEFAULT_SIZE, ...params }),
     () => clubWaitingList({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: true,
+    },
+  );
+};
+
+export const useProfessorManageList = (
+  params?: paramProps,
+  onSuccess?: (data: any) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 10;
+  return useQuery<any, Error>(
+    QUERY_KEY_FACTORY('PROFESSOR_REQUEST').list({ size: DEFAULT_SIZE, ...params }),
+    () => professorManageList({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: true,
+    },
+  );
+};
+
+// 지도교수자 신청 목록 조회
+export const useProfessorCandidateList = (
+  params?: paramProps,
+  onSuccess?: (data: any) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 7;
+  return useQuery<any, Error>(
+    QUERY_KEY_FACTORY('PROFESSOR_CANDIDATE').list({ size: DEFAULT_SIZE, ...params }),
+    () => professorCandidateList({ size: DEFAULT_SIZE, ...params }),
     {
       onSuccess,
       onError,

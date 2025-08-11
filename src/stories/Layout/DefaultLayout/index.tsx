@@ -122,6 +122,16 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
     {
       no: 7,
       option: 'nav-item',
+      title: 'My학습자',
+      link: '/my-students',
+      dropdown: [],
+      login: logged,
+      role: ['ROLE_INSTRUCTOR', 'ROLE_MANAGER'], // Multiple roles
+      menu: 'all',
+    },
+    {
+      no: 8,
+      option: 'nav-item',
       title: '관리 페이지',
       link: '/system/admin/club-approval',
       dropdown: [],

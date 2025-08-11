@@ -12,6 +12,8 @@ import {
   deleteQuestion,
   updateSeminar,
   chatQuery,
+  requestAdvisors,
+  deleteAdvisor,
 } from './seminars.api';
 
 export const useSaveSeminar = (): UseMutationResult => {
@@ -175,6 +177,42 @@ export const useDeleteSeminar = (): UseMutationResult => {
     },
     onSuccess: async () => {
       alert('삭제되었습니다.');
+    },
+  });
+};
+
+// 지도교수자 신청
+export const useRequestAdvisors = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, string[]>(advisorUUIDs => requestAdvisors(advisorUUIDs), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`지도교수자 신청 실패: [${code}] ${message}`);
+    },
+    onSettled: async () => {
+      await queryClient.invalidateQueries(QUERY_KEY_FACTORY('PROFESSOR_REQUEST').all);
+      await queryClient.invalidateQueries(QUERY_KEY_FACTORY('PROFESSOR_CANDIDATE').all);
+    },
+    onSuccess: async () => {
+      alert('지도교수자 신청이 완료되었습니다.');
+    },
+  });
+};
+
+// 지도교수자 삭제
+export const useDeleteAdvisor = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, string>(advisorUUID => deleteAdvisor(advisorUUID), {
+    onError: (error, variables, context) => {
+      const { code, message } = error;
+      alert(`지도교수자 삭제 실패: [${code}] ${message}`);
+    },
+    onSettled: async () => {
+      await queryClient.invalidateQueries(QUERY_KEY_FACTORY('PROFESSOR_REQUEST').all);
+      await queryClient.invalidateQueries(QUERY_KEY_FACTORY('PROFESSOR_CANDIDATE').all);
+    },
+    onSuccess: async () => {
+      alert('지도교수자가 삭제되었습니다.');
     },
   });
 };

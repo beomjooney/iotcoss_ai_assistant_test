@@ -130,7 +130,7 @@ function MentorsModal({
               overflow: 'hidden',
               overflowY: 'auto',
               WebkitOverflowScrolling: 'touch',
-              borderRadius: '4px',
+              borderRadius: '10px',
               outline: 'none',
               padding: '20px',
             },
@@ -150,9 +150,7 @@ function MentorsModal({
               </div>
             </>
           )}
-          <div className={cx('content')}>
-            <div>{children}</div>
-          </div>
+          <div className={cx('content')}>{children}</div>
         </ReactModal>
       </Desktop>
     </>

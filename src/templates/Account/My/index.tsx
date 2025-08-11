@@ -13,9 +13,9 @@ import { deleteCookie } from 'cookies-next';
 import Image from 'next/image';
 import MentorsModal from 'src/stories/components/MentorsModal';
 import MyProfile from 'src/stories/components/MyProfile';
-import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import { useStudyQuizOpponentBadgeList } from 'src/services/studyroom/studyroom.queries';
 import { useSessionStore } from 'src/store/session';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 const cx = classNames.bind(styles);
 
@@ -70,19 +70,12 @@ export function MyTemplate({ children }: MyTemplateProps) {
   // TODO 위에 타이틀 보여지게 하기 - menus에 다 넣고 옵션 값에 따라 role 맞춰 보여주기
   const menus = [
     { no: 0, title: '나의 활동', link: '/activity', role: 'all' },
+    { no: 0, title: '내 지도교수자 관리', link: '/my-advisor-manager', role: 'all' },
     { no: 1, title: '가입승인 대기 클럽목록', link: '/club-waiting', role: 'all' },
     { no: 3, title: '클럽 즐겨찾기 목록', link: '/favorites', role: 'all' },
     { no: 4, title: '내 친구관리', link: '/friends', role: 'all' },
-    // { no: 5, title: '포인트 적립 내역', link: '/point', role: 'all' },
     { no: 2, title: '커뮤니티 작성글', link: '/admin-club', role: 'all' },
     { no: 6, title: '개인정보관리', link: '/member-edit', role: 'all' },
-    // { no: 1, title: 'MY 레벨&성향', link: '/level-tendency', role: 'all' },
-    // { no: 1, title: 'MY 학습 픽', link: '/learning' , role: 'all' },
-    // { no: 3, title: '세미나 신청 내역', link: '/seminar-applications', role: 'all' },
-    // { no: 4, title: '참여중인 그룹 스터디', link: '/study' , role: 'all' },
-    // { no: 6, title: 'MY 멘토 프로필', link: '/growth-story', role: 'mentor' },
-    // { no: 7, title: 'MY 멘토 픽', link: '/mentor', role: 'mentor' },
-    // { no: 8, title: '새로운 세미나 개설하기', link: '/register-seminar', role: 'admin' },
   ];
   const currentMenu = menus.find(menu => currentPath.includes(menu.link));
   const handleMoveToMentorRegist = () => {
@@ -129,7 +122,10 @@ export function MyTemplate({ children }: MyTemplateProps) {
             'lnb-content__item--active': menu === currentMenu,
           })}
         >
-          <span className={cx('ti-angle-right')} />
+          <span className="tw-text-gray-400 tw-mr-2">
+            <ChevronRightIcon color="action" />
+          </span>
+
           <Link href={`/account/my${menu.link}`} className={cx('lnb-item__link')}>
             {menu.title}
           </Link>

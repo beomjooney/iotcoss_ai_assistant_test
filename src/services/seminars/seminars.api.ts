@@ -9,6 +9,7 @@ export const clubAboutDetailInfo = async id => {
   const { data } = await axiosGeneralAPI().get(`/api/v2/quiz-clubs/${id}`);
   return data.data;
 };
+
 // 세미나 목록 조회
 export const clubMyList = async params => {
   const endpoint = params.subtitle === undefined || params.subtitle ? '/api/v1/my/clubs' : '/api/manager/v1/clubs';
@@ -21,7 +22,19 @@ export const clubMyList = async params => {
       keyword: params.keyword,
     },
   });
-  // const { data, headers } = await axiosGeneralAPI().get('/seminars', { params });
+  const totalPage = Number(headers['page-count']);
+  return { data: data.data || [], nextPage: params.page + 1, totalPage };
+};
+
+// 학생 목록 조회
+export const myStudentsList = async params => {
+  const endpoint = '/api/v1/advisees';
+  const { data, headers } = await axiosGeneralAPI().get(endpoint, {
+    params: {
+      page: params.page,
+      size: params.size,
+    },
+  });
   const totalPage = Number(headers['page-count']);
   return { data: data.data || [], nextPage: params.page + 1, totalPage };
 };
@@ -56,6 +69,14 @@ export const clubWaitingList = async params => {
   const totalPage = Number(headers['page-count']);
   return { data: data.data || [], nextPage: params.page + 1, totalPage };
 };
+
+// 지도교수자 신청 목록 조회
+export const professorCandidateList = async params => {
+  const { data, headers } = await axiosGeneralAPI().get('/api/v1/advisor-candidates', { params });
+  const totalPage = Number(headers['page-count']);
+  return { data: data.data || [], nextPage: params.page + 1, totalPage };
+};
+
 export const clubFavoriteList = async params => {
   const { data, headers } = await axiosGeneralAPI().get('/api/v1/my/favorite/clubs', { params });
   const totalPage = Number(headers['page-count']);
@@ -237,6 +258,32 @@ export const professorRequestList = async (params: any) => {
     },
   });
   return data.data;
+};
+
+// 지도교수자 관리 목록 조회
+export const professorManageList = async (params: any) => {
+  console.log(params);
+  const { data } = await axiosGeneralAPI().get(`/api/v1/advisors`, {
+    params: {
+      page: params.page,
+      size: params.size,
+    },
+  });
+  return data.data;
+};
+
+// 지도교수자 신청
+export const requestAdvisors = async (advisorUUIDs: string[]) => {
+  const { data } = await axiosGeneralAPI().post('/api/v1/advisors', {
+    advisorUUIDs,
+  });
+  return data;
+};
+
+// 지도교수자 삭제
+export const deleteAdvisor = async (advisorUUID: string) => {
+  const { data } = await axiosGeneralAPI().delete(`/api/v1/advisors/${advisorUUID}`);
+  return data;
 };
 
 // 내 회원 목록 조회
