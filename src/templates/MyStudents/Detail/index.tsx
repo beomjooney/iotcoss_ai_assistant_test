@@ -419,7 +419,7 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
 
                               <TableCell align="center">
                                 <div className="tw-flex tw-justify-center tw-items-center tw-gap-2">
-                                  <div
+                                  <button
                                     onClick={() => {
                                       // 개별 클럽의 로딩 상태 설정
                                       setLoadingClubs(prev => ({ ...prev, [clubContent.clubSequence]: true }));
@@ -428,8 +428,9 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
                                         memberUUID: clubContent?.instructor?.memberUUID,
                                       });
                                     }}
+                                    disabled={!clubContent?.comprehensiveEvaluationEnabled}
                                     className={`tw-w-[90px] tw-gap-1 tw-p-1 tw-rounded-[5px] tw-flex tw-justify-center tw-items-center tw-bg-[#6A7380] tw-text-white tw-cursor-pointer tw-text-sm tw-mx-auto ${
-                                      !clubContent?.comprehensiveEvaluationViewable
+                                      clubContent?.comprehensiveEvaluationEnabled
                                         ? 'tw-bg-[#6A7380] tw-text-white tw-cursor-pointer'
                                         : 'tw-bg-gray-300 tw-text-gray-500 tw-cursor-not-allowed'
                                     }`}
@@ -446,8 +447,8 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
                                     >
                                       <path d="M1 1L5 5L1 9" stroke="#fff" strokeWidth="1.5" />
                                     </svg>
-                                  </div>
-                                  <div
+                                  </button>
+                                  <button
                                     onClick={() => {
                                       if (!clubContent?.comprehensiveEvaluationViewable) {
                                         return;
@@ -460,6 +461,7 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
                                       });
                                       setMemberUUIDList(clubContent?.instructor?.memberUUID);
                                     }}
+                                    disabled={!clubContent?.comprehensiveEvaluationViewable}
                                     className={`tw-gap-1 tw-p-1 tw-rounded-[5px] tw-w-[70px] tw-flex tw-justify-center tw-items-center tw-bg-[#6A7380] tw-text-white tw-cursor-pointer tw-text-sm tw-mx-auto ${
                                       clubContent?.comprehensiveEvaluationViewable
                                         ? 'tw-bg-[#6A7380] tw-text-white tw-cursor-pointer'
@@ -478,7 +480,7 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
                                     >
                                       <path d="M1 1L5 5L1 9" stroke="#fff" strokeWidth="1.5" />
                                     </svg>
-                                  </div>
+                                  </button>
                                 </div>
                               </TableCell>
                             </TableRow>
