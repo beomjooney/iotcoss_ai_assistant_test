@@ -80,13 +80,6 @@ export function SkillPage() {
     }),
   );
 
-  // const { data: experienceData }: UseQueryResult<any> = useExperiences(
-  //   paramsWithDefault({
-  //     page: page,
-  //     size: size,
-  //   }),
-  // );
-
   useEffect(() => {
     skillId && refetch();
   }, [skillId]);
@@ -133,9 +126,6 @@ export function SkillPage() {
 
   const onSearch = async (params: SearchParamsProps) => {
     setPage(1);
-    // if (!params?.createdAtFrom || !params?.createdAtTo) {
-    //   alert('기간을 설정하세요');
-    // }
 
     if (typeof params === 'object') {
       setParams({
