@@ -31,6 +31,8 @@ export interface SearchParamsProps {
   createdAtTo: string;
   keyword: string;
 }
+//
+const skillId = '1';
 
 export function SkillPage() {
   const now = dayjs();
