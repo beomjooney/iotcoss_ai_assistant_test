@@ -43,6 +43,7 @@ import {
   professorManageList,
   professorCandidateList,
   myStudentsList,
+  myStudentsDetail,
 } from './seminars.api';
 
 export interface paramProps {
@@ -59,6 +60,7 @@ export interface paramProps {
   lecturerMemberId?: string;
   recruitType?: string;
   clubType?: string;
+  adviseeUUID?: string;
   memberSortType?: string;
 }
 
@@ -105,16 +107,34 @@ export const useMyClubList = (
   );
 };
 
-//
+// 학생 목록 조회
 export const useMyStudentsList = (
   params?: paramProps,
   onSuccess?: (data: any) => void,
   onError?: (error: Error) => void,
 ) => {
-  const DEFAULT_SIZE = 10;
+  const DEFAULT_SIZE = 2;
   return useQuery<any, Error>(
     QUERY_KEY_FACTORY('STUDENT').list({ size: DEFAULT_SIZE, ...params }),
     () => myStudentsList({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+    },
+  );
+};
+
+// 학생 상세 조회
+export const useMyStudentsDetail = (
+  params?: paramProps,
+  onSuccess?: (data: any) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 2;
+  return useQuery<any, Error>(
+    QUERY_KEY_FACTORY('STUDENT_DETAIL').list({ size: DEFAULT_SIZE, ...params }),
+    () => myStudentsDetail({ size: DEFAULT_SIZE, ...params }),
     {
       onSuccess,
       onError,

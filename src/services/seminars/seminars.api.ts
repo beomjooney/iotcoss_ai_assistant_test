@@ -33,6 +33,22 @@ export const myStudentsList = async params => {
     params: {
       page: params.page,
       size: params.size,
+      keyword: params.keyword,
+    },
+  });
+  const totalPage = Number(headers['page-count']);
+  return { data: data.data || [], nextPage: params.page + 1, totalPage };
+};
+
+// 학생 상세 조회
+export const myStudentsDetail = async params => {
+  console.log('paramsss', params);
+  const endpoint = `/api/v1/advisees/${params.adviseeUUID}/lecture-clubs`;
+  const { data, headers } = await axiosGeneralAPI().get(endpoint, {
+    params: {
+      page: params.page,
+      size: params.size,
+      keyword: params.keyword,
     },
   });
   const totalPage = Number(headers['page-count']);

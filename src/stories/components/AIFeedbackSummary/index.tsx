@@ -15,6 +15,7 @@ const AIFeedbackSummary: React.FC<AIFeedbackSummaryProps> = ({
   isAdmin = false,
   clubSequence = '',
   memberUUID = '',
+  isTotalFeedback = true,
 }) => {
   console.log('aiFeedbackDataTotal', aiFeedbackDataTotal);
 
@@ -517,7 +518,7 @@ const AIFeedbackSummary: React.FC<AIFeedbackSummaryProps> = ({
           />
         </div>
       )}
-      {isAdmin && (
+      {isAdmin && isTotalFeedback && (
         <div className="tw-py-5 tw-text-center">
           <button
             onClick={() => {

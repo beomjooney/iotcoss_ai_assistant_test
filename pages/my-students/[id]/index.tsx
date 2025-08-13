@@ -1,5 +1,5 @@
 import './index.module.scss';
-import { QuizDetailTemplate } from 'src/templates';
+import { MyStudentsDetailTemplate } from 'src/templates';
 import { useSessionStore } from 'src/store/session';
 import { useRouter } from 'next/router';
 import { NextPageContext } from 'next';
@@ -10,7 +10,7 @@ export function QuizDetailPage() {
   const router = useRouter();
   const id = router.query['id'].toString();
 
-  return <QuizDetailTemplate id={id} />;
+  return <MyStudentsDetailTemplate id={id} />;
 }
 
 export default QuizDetailPage;

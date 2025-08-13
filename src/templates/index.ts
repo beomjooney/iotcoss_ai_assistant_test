@@ -66,6 +66,7 @@ export * from './Quiz/Detail/index';
 export * from './Admin/ClubQuiz/index';
 export * from './Monthly/Quiz/index';
 export * from './Monthly/Maker/index';
+export * from './MyStudents/Detail/index';
 
 //system admin
 export * from './System/Admin/index';

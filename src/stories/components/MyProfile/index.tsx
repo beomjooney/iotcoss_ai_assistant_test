@@ -10,10 +10,18 @@ import { useSaveProfile, useRequestProfessor } from 'src/services/account/accoun
 import { useUploadImage } from 'src/services/image/image.mutations';
 import { useSessionStore } from 'src/store/session';
 import { useGetGroupLabel } from 'src/hooks/useGetGroupLabel';
+import { truncate } from 'lodash';
 
 const cx = classNames.bind(styles);
 
-const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: any) => {
+const MyProfile = ({
+  profile,
+  badgeContents,
+  refetchProfile,
+  admin = false,
+  isProfile = true,
+  isRequest = truncate,
+}: any) => {
   const { roles, jobGroupLabelType } = useSessionStore.getState();
   const { groupLabel, subGroupLabel } = useGetGroupLabel(jobGroupLabelType);
 
@@ -224,7 +232,7 @@ const MyProfile = ({ profile, badgeContents, refetchProfile, admin = false }: an
               </p>
             </div>
           </div>
-          {admin && (
+          {admin && isProfile && (
             <div>
               <button
                 onClick={() => {

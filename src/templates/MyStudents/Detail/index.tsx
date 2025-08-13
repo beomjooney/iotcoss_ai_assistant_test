@@ -1,0 +1,567 @@
+import styles from './index.module.scss';
+import classNames from 'classnames/bind';
+import React, { ReactNode, useEffect, useState } from 'react';
+import { useStore } from 'src/store';
+import { paramProps, useMyStudentsDetail } from 'src/services/seminars/seminars.queries';
+import { RecommendContent } from 'src/models/recommend';
+import { useParticipantSeminar } from 'src/services/seminars/seminars.mutations';
+import { useSessionStore } from 'src/store/session';
+import { MyClubsListResponse, ClubContent } from 'src/models/user';
+import { AdvisorData, MentorsModal, Pagination } from 'src/stories/components';
+import {
+  CircularProgress,
+  TableContainer,
+  Paper,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Avatar,
+  Chip,
+  Divider,
+} from '@mui/material';
+import AIFeedbackSummary from 'src/stories/components/AIFeedbackSummary';
+import { useLectureClubEvaluationMember } from 'src/services/community/community.mutations';
+import { useQuizAIFeedbackLectureGetTotal } from 'src/services/quiz/quiz.queries';
+import useDidMountEffect from 'src/hooks/useDidMountEffect';
+import { useGetProfile } from 'src/services/account/account.queries';
+import MyProfile from 'src/stories/components/MyProfile';
+
+const cx = classNames.bind(styles);
+
+const ITEMS_PER_PAGE = 10;
+
+export interface MyStudentsDetailTemplateProps {
+  /** 학생 아이디 */
+  id?: any;
+}
+
+export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) {
+  const { user } = useStore();
+  const [contents, setContents] = useState<ClubContent[]>([]);
+  const [advisor, setAdvisor] = useState<AdvisorData[]>([]);
+  const [clubAbout, setClubAbout] = useState<any>({});
+  const [quizList, setQuizList] = useState<RecommendContent[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [clubMemberStatus, setClubMemberStatus] = useState('0001');
+  const [applicationButton, setApplicationButton] = useState<ReactNode>(null);
+  const { memberId, logged } = useSessionStore.getState();
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
+  const [totalElements, setTotalElements] = useState(0);
+  const [params, setParams] = useState<paramProps>({ page, adviseeUUID: id, size: ITEMS_PER_PAGE });
+  const [selectedStudentInfo, setSelectedStudentInfo] = useState<any>(null);
+  const [isAIFeedbackModalOpen, setIsAIFeedbackModalOpen] = useState(false);
+  const [aiEvaluationParamsTotal, setAiEvaluationParamsTotal] = useState(null);
+  const [memberUUIDList, setMemberUUIDList] = useState('');
+  // 개별 클럽별 로딩 상태 관리
+  const [loadingClubs, setLoadingClubs] = useState<Record<number, boolean>>({});
+  const [aiFeedbackDataTotal, setAiFeedbackDataTotal] = useState<any>(null);
+  const [aiFeedbackDataTotalQuiz, setAiFeedbackDataTotalQuiz] = useState<any>(null);
+  const [profile, setProfile] = useState<any>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // 클럽 목록 조회
+  const {
+    isFetched: isContentFetched,
+    isLoading: isDataLoading,
+    refetch,
+  } = useMyStudentsDetail(params, (data: MyClubsListResponse) => {
+    console.log('data', data);
+    if (data?.data) {
+      console.log('data.data.member', data.data.member);
+      setContents(data.data.paging.contents || []);
+      setAdvisor(data.data.member || {});
+      setTotalPage(data.data.paging.totalPages || 1);
+      setTotalElements(data.data.paging.totalElements || 0);
+    }
+  });
+
+  const { mutate: onParticipant } = useParticipantSeminar();
+
+  useEffect(() => {
+    setParams({
+      ...params,
+      page,
+    });
+  }, [page]);
+
+  useEffect(() => {
+    if (!logged) {
+      setApplicationButton(
+        <button
+          disabled
+          type="button"
+          className="tw-w-full tw-text-white tw-bg-gray-400 tw-font-semibold tw-text-xl tw-px-5 tw-py-5"
+        >
+          로그인 후 신청 가능합니다.
+        </button>,
+      );
+    }
+  }, [logged, contents, clubMemberStatus]);
+
+  // 상태 코드에 따른 라벨 반환
+  const getStatusLabel = (status: string) => {
+    const statusMap = {
+      '0000': '임시',
+      /* 클럽 개설 승인 요청 상태 */
+      '0100': '개설 요청',
+      /* 개설 승인 */
+      '0110': '개설 승인',
+      /* 개설 반려 */
+      '0120': '개설 반려',
+      /* 진행 예정 */
+      '0200': '진행 예정',
+      /* 진행 연기 */
+      '0210': '진행 연기',
+      /* 취소 */
+      '0220': '취소',
+      /* 모집중 */
+      '0300': '모집중',
+      /* 모집기간 완료. 시작 전 대기 */
+      '0310': '모집 완료',
+      /* 진행 중 */
+      '0400': '진행 중',
+      /* 완료 */
+      '0500': '완료',
+      /* 삭제 */
+      '0900': '삭제',
+    };
+    return statusMap[status] || status;
+  };
+
+  // 상태에 따른 색상 반환
+  const getStatusColor = (status: string) => {
+    const colorMap = {
+      '0400': 'success',
+      '0401': 'default',
+      '0402': 'warning',
+      '0403': 'error',
+    };
+    return colorMap[status] || 'default';
+  };
+
+  const handleRowClick = (clubSequence: number) => {
+    console.log('클럽 상세 이동:', clubSequence);
+    // 필요시 라우터 이동 로직 추가
+  };
+
+  // AI 피드백 데이터 조회
+  const {
+    refetch: refetchAIEvaluationTotal,
+    isError: isErrorAIEvaluationTotal,
+    isSuccess: isSuccessAIEvaluationTotal,
+  } = useQuizAIFeedbackLectureGetTotal(
+    aiEvaluationParamsTotal,
+    data => {
+      console.log('🎉 AI Evaluation Total SUCCESS:', data);
+      setAiFeedbackDataTotal(data);
+    },
+    error => {
+      console.error('❌ AI Evaluation Total ERROR:', error);
+      alert('피드백 데이터를 불러오는데 실패했습니다.');
+    },
+  );
+
+  useEffect(() => {
+    if (isErrorAIEvaluationTotal) {
+      // 모든 로딩 상태 해제
+      setLoadingClubs({});
+      setIsLoading(false);
+    }
+  }, [isErrorAIEvaluationTotal]);
+
+  // AI 개별 피드백 데이터 조회
+  useDidMountEffect(() => {
+    if (aiEvaluationParamsTotal) {
+      refetchAIEvaluationTotal();
+    }
+  }, [aiEvaluationParamsTotal]);
+
+  const {
+    mutate: onLectureClubEvaluationMember,
+    isSuccess: lectureClubEvaluationMemberSucces,
+    isError: lectureClubEvaluationMemberError,
+  } = useLectureClubEvaluationMember();
+
+  useEffect(() => {
+    if (lectureClubEvaluationMemberError) {
+      // 모든 로딩 상태 해제
+      setLoadingClubs({});
+    }
+  }, [lectureClubEvaluationMemberError]);
+
+  useEffect(() => {
+    if (lectureClubEvaluationMemberSucces) {
+      // 성공 시에도 모든 로딩 상태 해제
+      setLoadingClubs({});
+      refetch();
+    }
+  }, [lectureClubEvaluationMemberSucces]);
+
+  // 회원 프로필 정보
+  const { isFetched: isProfileFetched, refetch: refetchProfile } = useGetProfile(advisor.memberUUID, data => {
+    console.log(data?.data?.data);
+    setProfile(data?.data?.data);
+  });
+
+  const handleClickProfile = memberUUID => {
+    refetchProfile();
+    setIsModalOpen(true);
+    console.log('memberUUID1', memberUUID);
+  };
+
+  return (
+    <div className={cx('seminar-container')}>
+      <div className={cx('container')}>
+        <div className="tw-pt-8">
+          <div className="tw-flex tw-justify-start tw-items-start tw-left-0 tw-top-3.5 tw-gap-[3.5px]">
+            <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[10.5px] tw-text-left tw-text-[#313b49]">My학습자</p>
+            <svg
+              width={17}
+              height={16}
+              viewBox="0 0 17 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[15.75px] tw-h-[15.75px] tw-relative"
+              preserveAspectRatio="none"
+            >
+              <path
+                d="M6.96925 11.25L10.3438 7.8755L6.96925 4.50101L6.40651 5.06336L9.21905 7.8755L6.40651 10.6877L6.96925 11.25Z"
+                fill="#313B49"
+              />
+            </svg>
+            <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[10.5px] tw-text-left tw-text-[#313b49]">
+              지도학생 상세보기
+            </p>
+          </div>
+          <div className="tw-flex tw-justify-start tw-items-center tw-left-0 tw-top-[31.5px] tw-gap-3.5">
+            <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[21px] tw-font-bold tw-text-left tw-text-black">
+              지도학생 상세보기
+            </p>
+          </div>
+        </div>
+        <Divider className="tw-py-3 tw-mb-5" />
+        <div className={cx('content-area tw-pt-30')}>
+          <div>
+            <div className="tw-bg-white border tw-rounded-lg  tw-p-6 tw-flex tw-justify-between tw-items-center">
+              <div className="tw-grid tw-grid-cols-12 tw-gap-4 tw-items-center">
+                {/* 교수자 정보 */}
+                <div className="tw-col-span-2 tw-flex tw-items-center tw-gap-3">
+                  <div className="tw-flex-shrink-0">
+                    <img
+                      src={advisor.profileImageUrl || '/assets/images/banner/Rectangle_193.png'}
+                      alt={`${advisor.nickname} 프로필`}
+                      className="tw-w-9 tw-h-9 tw-rounded-full tw-object-cover tw-border-2 tw-border-gray-200"
+                      onError={e => {
+                        (e.target as HTMLImageElement).src = '/assets/images/banner/Rectangle_193.png';
+                      }}
+                    />
+                  </div>
+
+                  <div className="tw-min-w-0 tw-flex-1 ">
+                    <div className="tw-text-sm tw-font-semibold tw-text-gray-900 tw-truncate tw-flex tw-items-center tw-gap-2">
+                      <span className="tw-inline-flex tw-px-2 tw-py-1 tw-rounded-lg tw-text-sm tw-font-semibold border tw-text-gray-700">
+                        교수자
+                      </span>
+                      {advisor.nickname}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 이메일 */}
+                <div className="tw-col-span-6 tw-flex tw-items-center tw-gap-2">
+                  <span className="tw-text-sm tw-text-gray-900 tw-truncate">{advisor.memberId}</span>
+
+                  <span className="tw-inline-flex tw-px-2 tw-py-1 tw-rounded-lg tw-text-sm tw-font-semibold tw-bg-blue-100 tw-text-blue-700 tw-truncate tw-max-w-full tw-text-center">
+                    {advisor.jobGroup?.name}
+                  </span>
+
+                  <span className="tw-inline-flex tw-px-2 tw-py-1 tw-rounded-lg tw-text-sm tw-font-semibold tw-bg-gray-100 tw-text-gray-700 tw-truncate tw-max-w-full">
+                    {advisor.job?.name}
+                  </span>
+                </div>
+              </div>
+              <button
+                onClick={() => handleClickProfile(advisor.memberUUID)}
+                className="tw-text-base tw-text-center border tw-text-black tw-px-4 tw-py-2 tw-rounded-md tw-w-[150px]"
+              >
+                프로필 보기
+              </button>
+            </div>
+          </div>
+          <section className={cx('content', 'flex-wrap-container tw-w-full tw-mt-10')}>
+            {isDataLoading ? (
+              <div className="tw-flex tw-justify-center tw-items-center tw-py-40">
+                <CircularProgress />
+              </div>
+            ) : (
+              isContentFetched && (
+                <TableContainer
+                  component={Paper}
+                  className="tw-rounded-lg"
+                  sx={{
+                    boxShadow: 'none',
+                    border: 'none',
+                    '& .MuiTableCell-root': {},
+                  }}
+                >
+                  <Table sx={{ minWidth: 650, border: 'none', minHeight: '500px' }} aria-label="클럽 테이블">
+                    <TableHead style={{ backgroundColor: '#F6F7FB' }}>
+                      <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
+                        <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
+                          No
+                        </TableCell>
+                        <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '15px', width: '300px' }}>
+                          강의명
+                        </TableCell>
+                        <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
+                          대학명
+                        </TableCell>
+                        <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
+                          학과명
+                        </TableCell>
+                        <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
+                          기간
+                        </TableCell>
+                        <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
+                          교수자
+                        </TableCell>
+                        <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
+                          수강현황
+                        </TableCell>
+                        <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
+                          총평
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {contents.length > 0 ? (
+                        contents.map((clubContent, index) => {
+                          const displayIndex = (page - 1) * ITEMS_PER_PAGE + index + 1;
+
+                          return (
+                            <TableRow
+                              key={clubContent.clubSequence}
+                              onClick={() => handleRowClick(clubContent.clubSequence)}
+                              sx={{
+                                cursor: 'pointer',
+                                '&:hover': {
+                                  backgroundColor: '#f9f9f9',
+                                },
+                              }}
+                            >
+                              <TableCell align="center" sx={{ fontSize: '15px' }}>
+                                {displayIndex}
+                              </TableCell>
+                              <TableCell align="left" sx={{ fontSize: '15px', fontWeight: '500' }}>
+                                {clubContent.clubName}
+                              </TableCell>
+                              <TableCell align="center" sx={{ fontSize: '15px' }}>
+                                <div className="tw-flex tw-flex-col tw-gap-1">
+                                  {clubContent.jobGroups.map((jobGroup, idx) => (
+                                    <span key={idx} className="tw-text-blue-600">
+                                      {jobGroup.name}
+                                    </span>
+                                  ))}
+                                </div>
+                              </TableCell>
+                              <TableCell align="center" sx={{ fontSize: '15px' }}>
+                                <div className="tw-flex tw-flex-col tw-gap-1">
+                                  {clubContent.jobs.map((job, idx) => (
+                                    <span key={idx} className="tw-text-gray-600">
+                                      {job.name}
+                                    </span>
+                                  ))}
+                                </div>
+                              </TableCell>
+                              <TableCell align="center" sx={{ fontSize: '14px', color: '#666' }}>
+                                <div className="tw-flex tw-flex-col tw-gap-1">
+                                  <span>
+                                    {new Date(clubContent.startAt).toLocaleDateString('ko-KR', {
+                                      year: '2-digit',
+                                      month: '2-digit',
+                                      day: '2-digit',
+                                    })}
+                                    ~
+                                  </span>
+                                  <span>
+                                    {new Date(clubContent.endAt).toLocaleDateString('ko-KR', {
+                                      year: '2-digit',
+                                      month: '2-digit',
+                                      day: '2-digit',
+                                    })}
+                                  </span>
+                                </div>
+                              </TableCell>
+                              <TableCell align="center">
+                                <div className="tw-flex tw-items-center tw-justify-center tw-gap-2">
+                                  <Avatar
+                                    src={clubContent.instructor.profileImageUrl || undefined}
+                                    alt={clubContent.instructor.nickname}
+                                    sx={{ width: 32, height: 32 }}
+                                  >
+                                    {!clubContent.instructor.profileImageUrl &&
+                                      clubContent.instructor.nickname?.charAt(0)}
+                                  </Avatar>
+                                  <span className="tw-text-sm tw-font-medium">{clubContent.instructor.nickname}</span>
+                                </div>
+                              </TableCell>
+                              <TableCell align="center">
+                                <Chip
+                                  label={getStatusLabel(clubContent.status)}
+                                  color={getStatusColor(clubContent.status)}
+                                  size="small"
+                                  variant="outlined"
+                                />
+                              </TableCell>
+
+                              <TableCell align="center">
+                                <div className="tw-flex tw-justify-center tw-items-center tw-gap-2">
+                                  <div
+                                    onClick={() => {
+                                      // 개별 클럽의 로딩 상태 설정
+                                      setLoadingClubs(prev => ({ ...prev, [clubContent.clubSequence]: true }));
+                                      onLectureClubEvaluationMember({
+                                        clubSequence: clubContent?.clubSequence || id,
+                                        memberUUID: clubContent?.instructor?.memberUUID,
+                                      });
+                                    }}
+                                    className={`tw-w-[90px] tw-gap-1 tw-p-1 tw-rounded-[5px] tw-flex tw-justify-center tw-items-center tw-bg-[#6A7380] tw-text-white tw-cursor-pointer tw-text-sm tw-mx-auto ${
+                                      !clubContent?.comprehensiveEvaluationViewable
+                                        ? 'tw-bg-[#6A7380] tw-text-white tw-cursor-pointer'
+                                        : 'tw-bg-gray-300 tw-text-gray-500 tw-cursor-not-allowed'
+                                    }`}
+                                  >
+                                    <p>{loadingClubs[clubContent.clubSequence] ? '50초 소요' : 'AI총평생성'}</p>
+                                    <svg
+                                      width={7}
+                                      height={10}
+                                      viewBox="0 0 7 10"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      className="flex-grow-0 flex-shrink-0"
+                                      preserveAspectRatio="none"
+                                    >
+                                      <path d="M1 1L5 5L1 9" stroke="#fff" strokeWidth="1.5" />
+                                    </svg>
+                                  </div>
+                                  <div
+                                    onClick={() => {
+                                      if (!clubContent?.comprehensiveEvaluationViewable) {
+                                        return;
+                                      }
+                                      setSelectedStudentInfo(clubContent);
+                                      setIsAIFeedbackModalOpen(true);
+                                      setAiEvaluationParamsTotal({
+                                        clubSequence: clubContent?.clubSequence || id,
+                                        memberUUID: clubContent?.instructor?.memberUUID,
+                                      });
+                                      setMemberUUIDList(clubContent?.instructor?.memberUUID);
+                                    }}
+                                    className={`tw-gap-1 tw-p-1 tw-rounded-[5px] tw-w-[70px] tw-flex tw-justify-center tw-items-center tw-bg-[#6A7380] tw-text-white tw-cursor-pointer tw-text-sm tw-mx-auto ${
+                                      clubContent?.comprehensiveEvaluationViewable
+                                        ? 'tw-bg-[#6A7380] tw-text-white tw-cursor-pointer'
+                                        : 'tw-bg-gray-300 tw-text-gray-500 tw-cursor-not-allowed'
+                                    }`}
+                                  >
+                                    <p>총평확인</p>
+                                    <svg
+                                      width={7}
+                                      height={10}
+                                      viewBox="0 0 7 10"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      className="flex-grow-0 flex-shrink-0"
+                                      preserveAspectRatio="none"
+                                    >
+                                      <path d="M1 1L5 5L1 9" stroke="#fff" strokeWidth="1.5" />
+                                    </svg>
+                                  </div>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })
+                      ) : (
+                        <TableRow>
+                          <TableCell colSpan={7} align="center" sx={{ py: 4, color: '#999' }}>
+                            {isDataLoading ? '데이터를 불러오는 중...' : '등록된 클럽이 없습니다.'}
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              )
+            )}
+          </section>
+          <div className="tw-flex tw-flex-col tw-items-center tw-py-10 tw-gap-2">
+            <Pagination page={page} setPage={setPage} total={totalPage} />
+          </div>
+        </div>
+      </div>
+      {/* AI 피드백 모달 */}
+      <MentorsModal
+        isOpen={isAIFeedbackModalOpen}
+        isContentModalClick={true}
+        onAfterClose={() => {
+          setIsAIFeedbackModalOpen(false);
+          setSelectedStudentInfo(null);
+        }}
+        title={'학습피드백 총평'}
+      >
+        <div>
+          <div className="tw-flex tw-justify-between tw-items-center tw-gap-4 tw-mb-4">
+            <div className="tw-text-xl tw-font-bold tw-text-black tw-text-center">총평피드백보기</div>
+            <button
+              onClick={() => {
+                onLectureClubEvaluationMember({
+                  clubSequence: selectedStudentInfo?.clubSequence || id,
+                  memberUUID: memberUUIDList,
+                });
+                setIsLoading(true);
+              }}
+              className="tw-text-base tw-text-center tw-bg-black tw-text-white tw-px-4 tw-py-2 tw-rounded-md"
+            >
+              AI피드백 생성
+            </button>
+          </div>
+          <AIFeedbackSummary
+            aiFeedbackDataTotal={aiFeedbackDataTotal}
+            aiFeedbackDataTotalQuiz={aiFeedbackDataTotalQuiz}
+            isLoading={isLoading}
+            isFeedbackOptions={true}
+            isAdmin={true}
+            clubSequence={selectedStudentInfo?.clubSequence || id}
+            memberUUID={memberUUIDList}
+            isTotalFeedback={false}
+          />
+        </div>
+      </MentorsModal>
+      <MentorsModal
+        title={'프로필 보기'}
+        isOpen={isModalOpen}
+        isProfile={true}
+        isContentModalClick={false}
+        onAfterClose={() => setIsModalOpen(false)}
+      >
+        {isProfileFetched && (
+          <div>
+            <MyProfile
+              admin={true}
+              profile={profile}
+              badgeContents={[]}
+              refetchProfile={refetchProfile}
+              isProfile={false}
+              isRequestingAdvisors={false}
+            />
+          </div>
+        )}
+      </MentorsModal>
+    </div>
+  );
+}
+
+export default MyStudentsDetailTemplate;

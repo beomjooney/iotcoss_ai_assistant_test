@@ -56,4 +56,5 @@ export interface AIFeedbackSummaryProps {
   isAdmin?: boolean;
   clubSequence?: string;
   memberUUID?: string;
+  isTotalFeedback?: boolean;
 }

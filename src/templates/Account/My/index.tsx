@@ -333,6 +333,7 @@ export function MyTemplate({ children }: MyTemplateProps) {
       <MentorsModal
         title={'프로필 보기'}
         isOpen={isModalOpen}
+        isContentModalClick={false}
         isProfile={true}
         onAfterClose={() => setIsModalOpen(false)}
       >

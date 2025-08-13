@@ -211,7 +211,6 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     data => {
       console.log('🎉 AI Evaluation Total SUCCESS:', data);
       setAiFeedbackDataTotal(data);
-      // setIsTotalFeedbackModalOpen(true);
     },
     error => {
       console.error('❌ AI Evaluation Total ERROR:', error);

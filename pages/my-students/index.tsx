@@ -8,7 +8,7 @@ export function MyStudentsPage({ setActiveIndex }: { setActiveIndex: (index: num
   }, []);
 
   return (
-    <div className="tw-h-[2000px]">
+    <div className="tw-h-[1000px]">
       <MyStudentsTemplate />
     </div>
   );
