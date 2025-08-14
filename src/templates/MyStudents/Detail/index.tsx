@@ -271,12 +271,12 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
               <div className="tw-flex tw-justify-end tw-items-center tw-gap-2 tw-w-[300px]">
                 <button
                   onClick={() => handleClickProfile(advisor.memberUUID)}
-                  className="tw-text-sm tw-text-center border tw-text-black tw-px-4 tw-py-2 tw-rounded-md tw-w-[120px]"
+                  className="tw-text-sm tw-text-center border tw-text-black tw-px-4 tw-py-2 tw-rounded-md tw-w-[100px]"
                 >
                   프로필 보기
                 </button>
                 <button
-                  className="border tw-text-gray-400 tw-px-4 tw-py-2 tw-rounded-md tw-w-[120px] tw-text-sm"
+                  className="border tw-text-gray-400 tw-px-4 tw-py-2 tw-rounded-md tw-w-[100px] tw-text-sm"
                   onClick={handleBack}
                 >
                   뒤로가기기
@@ -339,7 +339,6 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
                               key={clubContent.clubSequence}
                               onClick={() => handleRowClick(clubContent.clubSequence)}
                               sx={{
-                                cursor: 'pointer',
                                 '&:hover': {
                                   backgroundColor: '#f9f9f9',
                                 },
@@ -388,7 +387,7 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
                                   </span>
                                 </div>
                               </TableCell>
-                              <TableCell align="center">
+                              <TableCell align="left">
                                 <div className="tw-flex tw-items-center tw-justify-center tw-gap-2">
                                   <Avatar
                                     src={clubContent.instructor.profileImageUrl || undefined}
