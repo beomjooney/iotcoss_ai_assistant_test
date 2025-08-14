@@ -166,6 +166,11 @@ export const lectureClubEvaluationMember = async params => {
   return data.data;
 };
 
+export const lectureClubEvaluationReport = async params => {
+  const { data } = await axiosGeneralAPI().post(`/api/v1/cqi-reports/${params.clubSequence}`);
+  return data.data;
+};
+
 export const lectureClubFeedbackSave = async params => {
   const { data } = await axiosGeneralAPI().post(
     `/api/v1/lecture-clubs/${params.clubSequence}/members/${params.memberUUID}/instructor-feedback`,

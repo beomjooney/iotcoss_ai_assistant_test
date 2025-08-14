@@ -94,14 +94,6 @@ export function MyStudentsTemplate() {
     router.push('/my-students/' + memberUUID);
   };
 
-  const handleDeleteClub = (clubSequence: string, event: React.MouseEvent) => {
-    event.stopPropagation(); // 행 클릭 이벤트 전파 차단
-    if (confirm('클럽을 삭제하시겠습니까?')) {
-      setIsLoading(true);
-      onDeleteClub(clubSequence);
-    }
-  };
-
   return (
     <>
       <div className={cx('seminar-container')}>

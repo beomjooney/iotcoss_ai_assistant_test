@@ -39,6 +39,7 @@ import {
   lectureClubEvaluation,
   lectureClubEvaluationMember,
   lectureClubFeedbackSave,
+  lectureClubEvaluationReport,
 } from './community.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 
@@ -550,6 +551,25 @@ export const useLectureClubEvaluationMember = (): UseMutationResult => {
   const queryClient = useQueryClient();
   // TODO : any 타입 변경
   return useMutation<any, any, any>(requestBody => lectureClubEvaluationMember(requestBody), {
+    onError: (error, variables, context) => {
+      const { responseCode, message } = error;
+      if (responseCode === '0000') {
+      } else if (responseCode === '0401') {
+        alert('유효하지 않은 참여 코드입니다.');
+      } else {
+        alert(`error : [${responseCode}] ${message}`);
+      }
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('REPLY').all),
+    onSuccess: async data => {},
+  });
+};
+
+/** 개별 클럽의 CQI 보고서 생성 */
+export const useLectureClubEvaluationReport = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  // TODO : any 타입 변경
+  return useMutation<any, any, any>(requestBody => lectureClubEvaluationReport(requestBody), {
     onError: (error, variables, context) => {
       const { responseCode, message } = error;
       if (responseCode === '0000') {

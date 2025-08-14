@@ -33,6 +33,7 @@ import TableRow, { tableRowClasses } from '@mui/material/TableRow';
 import Modal from 'src/stories/components/Modal';
 import TextField from '@mui/material/TextField';
 import AIFeedbackSummary from 'src/stories/components/AIFeedbackSummary/index';
+import AICqiReport from 'src/stories/components/AICqiReport/index';
 
 /** import pagenation */
 import Pagination from '@mui/material/Pagination';
@@ -42,17 +43,17 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { styled } from '@mui/material/styles';
 
 //**download */
-import { useQuizAIFeedbackLectureGetMember, useQuizFileDownload } from 'src/services/quiz/quiz.queries';
+import {
+  useQuizAIFeedbackLectureGetMember,
+  useQuizFileDownload,
+  useQuizAIFeedbackLectureGetMemberReport,
+} from 'src/services/quiz/quiz.queries';
 import Markdown from 'react-markdown';
 import router from 'next/router';
 import { useSessionStore } from '../../../store/session';
 import { useStudyOrderLabel } from 'src/hooks/useStudyOrderLabel';
 import MentorsModal from 'src/stories/components/MentorsModal';
-import {
-  useLectureClubEvaluation,
-  useLectureClubEvaluationMember,
-  useLectureClubFeedbackSave,
-} from 'src/services/community/community.mutations';
+import { useLectureClubEvaluationMember } from 'src/services/community/community.mutations';
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   [`&.${tableRowClasses.root}`]: {
@@ -156,9 +157,13 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   const [isInputOpen, setIsInputOpen] = useState(false);
   const [openInputIndex, setOpenInputIndex] = useState(null);
   const [aiEvaluationParamsTotal, setAiEvaluationParamsTotal] = useState(null);
+  const [aiEvaluationParamsTotalReport, setAiEvaluationParamsTotalReport] = useState(null);
   const [aiFeedbackDataTotal, setAiFeedbackDataTotal] = useState<any>(null);
+  const [aiFeedbackDataTotalReport, setAiFeedbackDataTotalReport] = useState<any>(null);
   const [aiFeedbackDataTotalQuiz, setAiFeedbackDataTotalQuiz] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingCQIReport, setIsLoadingCQIReport] = useState(false);
+  const [isCQIReportModalOpen, setIsCQIReportModalOpen] = useState(false);
   const [myClubSequenceParams, setMyClubSequenceParams] = useState<any>({ clubSequence: id });
   const [params, setParams] = useState<paramProps>({ page });
   const [selectedValue, setSelectedValue] = useState(id);
@@ -173,6 +178,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   const [selectedStudentInfo, setSelectedStudentInfo] = useState<any>(null);
   const [sortType, setSortType] = useState('NAME');
   const [sortLectureType, setSortLectureType] = useState('STUDY_ORDER_ASC');
+  const [loading, setLoading] = useState(false);
 
   const [myClubParams, setMyClubParams] = useState<any>({
     clubSequence: selectedClub?.clubSequence || id,
@@ -191,15 +197,36 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     data: { studentQuestionPage: 1 },
   });
 
-  const [answer, setAnswer] = useState('');
-  const { mutate: onSaveAnswer, isSuccess, isError } = useSaveAnswer();
-  const { mutate: onDeleteQuestion, isSuccess: isDeleteSuccess } = useDeleteQuestion();
-
+  /** 개별 클럽의 로딩 상태 설정 */
   const {
     mutate: onLectureClubEvaluationMember,
     isSuccess: lectureClubEvaluationMemberSucces,
     isError: lectureClubEvaluationMemberError,
   } = useLectureClubEvaluationMember();
+
+  const [answer, setAnswer] = useState('');
+  const { mutate: onSaveAnswer, isSuccess, isError } = useSaveAnswer();
+  const { mutate: onDeleteQuestion, isSuccess: isDeleteSuccess } = useDeleteQuestion();
+
+  /** 개별 클럽의 CQI 보고서 생성 */
+
+  const {
+    refetch: refetchLectureClubEvaluationReport,
+    isError: isErrorLectureClubEvaluationReport,
+    isSuccess: isSuccessLectureClubEvaluationReport,
+  } = useQuizAIFeedbackLectureGetMemberReport(
+    myClubSequenceParams,
+    data => {
+      console.log('🎉 AI Evaluation Total SUCCESS-----:', data);
+      setAiFeedbackDataTotalReport(data);
+      setIsLoadingCQIReport(false); // 성공 시 로딩 상태를 false로 설정
+    },
+    error => {
+      console.error('❌ AI Evaluation Total ERROR:', error);
+      alert('피드백 데이터를 불러오는데 실패했습니다.');
+      setIsLoadingCQIReport(false); // 에러 시에도 로딩 상태를 false로 설정
+    },
+  );
 
   // AI 피드백 데이터 조회
   const {
@@ -479,6 +506,14 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   }, []);
 
   // AI 개별 피드백 데이터 조회
+  useDidMountEffect(() => {
+    if (aiEvaluationParamsTotal) {
+      refetchAIEvaluationTotal();
+      console.log('aiEvaluationParamsTotal', aiEvaluationParamsTotal);
+      console.log('aiEvaluationParamsTotal', aiEvaluationParamsTotal);
+    }
+  }, [aiEvaluationParamsTotal]);
+
   useDidMountEffect(() => {
     if (aiEvaluationParamsTotal) {
       refetchAIEvaluationTotal();
@@ -1041,27 +1076,49 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
               {/* Tab 3: Playground */}
               {isMounted &&
                 (clientState.roles.includes('ROLE_INSTRUCTOR') || clientState.roles.includes('ROLE_MANAGER')) && (
-                  <div
-                    className={`tw-w-[164px] tw-h-12 tw-relative tw-ml-auto tw-cursor-pointer`}
-                    style={{ marginRight: '-20px' }}
-                    onClick={() => router.push(`/lecture-playground/${id}`)}
-                  >
-                    <div className="tw-text-white tw-text-sm tw-rounded-lg tw-bg-black tw-w-[144px] tw-h-10 tw-absolute tw-left-[-1px] tw-top-[-1px] tw-flex tw-justify-center tw-items-center">
-                      <svg
-                        width={19}
-                        height={19}
-                        viewBox="0 0 19 19"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[18px] tw-h-[18px] tw-relative tw-mr-1"
-                        preserveAspectRatio="none"
-                      >
-                        <path
-                          d="M5.75 16.249H4.25V14.749H2V13.249H4.25V11.749H5.75V16.249ZM17 14.749H7.25V13.249H17V14.749ZM13.25 11.749H11.75V10.249H2V8.74902H11.75V7.25802H13.25V11.749ZM17 10.249H14.75V8.74902H17V10.249ZM8.75 7.24902H7.25V5.74902H2V4.24902H7.25V2.74902H8.75V7.24902ZM17 5.74902H10.25V4.24902H17V5.74902Z"
-                          fill="white"
-                        />
-                      </svg>
-                      플레이그라운드
+                  <div className="tw-relative tw-ml-auto tw-flex tw-items-center tw-gap-4">
+                    <div
+                      className={`tw-w-[164px] tw-h-12 tw-cursor-pointer tw-relative tw-ml-auto `}
+                      style={{ marginRight: '-20px' }}
+                      onClick={() => {
+                        setIsCQIReportModalOpen(true);
+                      }}
+                    >
+                      <div className="tw-text-white tw-text-sm tw-rounded-lg tw-bg-black tw-w-[144px] tw-h-10 tw-absolute tw-left-[-1px] tw-top-[-1px] tw-flex tw-justify-center tw-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="20" viewBox="0 0 19 20" fill="none">
+                          <path
+                            d="M7.12467 4.45833H5.54134C5.12142 4.45833 4.71869 4.62515 4.42176 4.92208C4.12482 5.21901 3.95801 5.62174 3.95801 6.04167V15.5417C3.95801 15.9616 4.12482 16.3643 4.42176 16.6613C4.71869 16.9582 5.12142 17.125 5.54134 17.125H13.458C13.8779 17.125 14.2807 16.9582 14.5776 16.6613C14.8745 16.3643 15.0413 15.9616 15.0413 15.5417V6.04167C15.0413 5.62174 14.8745 5.21901 14.5776 4.92208C14.2807 4.62515 13.8779 4.45833 13.458 4.45833H11.8747M7.12467 4.45833C7.12467 4.03841 7.29149 3.63568 7.58842 3.33875C7.88536 3.04181 8.28808 2.875 8.70801 2.875H10.2913C10.7113 2.875 11.114 3.04181 11.4109 3.33875C11.7079 3.63568 11.8747 4.03841 11.8747 4.45833M7.12467 4.45833C7.12467 4.87826 7.29149 5.28099 7.58842 5.57792C7.88536 5.87485 8.28808 6.04167 8.70801 6.04167H10.2913C10.7113 6.04167 11.114 5.87485 11.4109 5.57792C11.7079 5.28099 11.8747 4.87826 11.8747 4.45833M7.12467 10H11.8747M7.12467 13.1667H11.8747"
+                            stroke="white"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                        CQI 보고서 생성
+                      </div>
+                    </div>
+                    <div
+                      className={`tw-w-[164px] tw-h-12 tw-relative tw-ml-auto tw-cursor-pointer`}
+                      style={{ marginRight: '-20px' }}
+                      onClick={() => router.push(`/lecture-playground/${id}`)}
+                    >
+                      <div className="tw-text-white tw-text-sm tw-rounded-lg tw-bg-black tw-w-[144px] tw-h-10 tw-absolute tw-left-[-1px] tw-top-[-1px] tw-flex tw-justify-center tw-items-center">
+                        <svg
+                          width={19}
+                          height={19}
+                          viewBox="0 0 19 19"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[18px] tw-h-[18px] tw-relative tw-mr-1"
+                          preserveAspectRatio="none"
+                        >
+                          <path
+                            d="M5.75 16.249H4.25V14.749H2V13.249H4.25V11.749H5.75V16.249ZM17 14.749H7.25V13.249H17V14.749ZM13.25 11.749H11.75V10.249H2V8.74902H11.75V7.25802H13.25V11.749ZM17 10.249H14.75V8.74902H17V10.249ZM8.75 7.24902H7.25V5.74902H2V4.24902H7.25V2.74902H8.75V7.24902ZM17 5.74902H10.25V4.24902H17V5.74902Z"
+                            fill="white"
+                          />
+                        </svg>
+                        플레이그라운드
+                      </div>
                     </div>
                   </div>
                 )}
@@ -1944,6 +2001,37 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
             isAdmin={true}
             clubSequence={selectedClub?.clubSequence || id}
             memberUUID={memberUUIDList}
+          />
+        </div>
+      </MentorsModal>
+
+      {/* CQI 보고서 모달 */}
+      <MentorsModal
+        isOpen={isCQIReportModalOpen}
+        isContentModalClick={true}
+        title={'CQI 보고서'}
+        onAfterClose={() => {
+          setIsCQIReportModalOpen(false);
+          setIsLoadingCQIReport(false);
+        }}
+      >
+        <div>
+          <div className="tw-flex  tw-justify-end tw-items-center tw-gap-4 tw-mb-4">
+            <button
+              onClick={() => {
+                refetchLectureClubEvaluationReport();
+                setIsLoadingCQIReport(true);
+              }}
+              className="tw-text-base tw-text-center tw-bg-black tw-text-white tw-px-4 tw-py-2 tw-rounded-md"
+            >
+              CQI 보고서 생성
+            </button>
+          </div>
+          <AICqiReport
+            aiFeedbackDataTotal={aiFeedbackDataTotalReport}
+            isLoading={isLoadingCQIReport}
+            isAdmin={true}
+            clubSequence={selectedClub?.clubSequence || id}
           />
         </div>
       </MentorsModal>

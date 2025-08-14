@@ -309,6 +309,11 @@ export const quizGetAIAnswerGetTotalLectureMember = async params => {
   return data.data;
 };
 
+export const quizGetAIAnswerGetTotalLectureMemberReport = async params => {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/cqi-reports/${params.clubSequence}`);
+  return data.data;
+};
+
 export const quizGetAIAnswerPostTotalLecture = async params => {
   const { data } = await axiosGeneralAPI().post(`/api/v1/lecture-clubs/${params.clubSequence}/evaluation`);
   return data.data;
