@@ -142,7 +142,7 @@ export function MyStudentsTemplate() {
 
           <article>
             <div className={cx('content-area')}>
-              <section className={cx('content', 'flex-wrap-container tw-w-full')}>
+              <section className={cx('content', 'flex-wrap-container tw-w-full tw-min-h-[500px]')}>
                 {isDataLoading ? (
                   <div className="tw-flex tw-justify-center tw-items-center tw-py-40">
                     <CircularProgress />
@@ -161,22 +161,22 @@ export function MyStudentsTemplate() {
                       <Table sx={{ minWidth: 650, border: 'none' }} aria-label="학습자 테이블">
                         <TableHead style={{ backgroundColor: '#F6F7FB' }}>
                           <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
-                            <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
+                            <TableCell align="left" sx={{ fontWeight: 'bold', fontSize: '15px', textAlign: 'center' }}>
                               No
                             </TableCell>
-                            <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
-                              직군
+                            <TableCell align="left" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
+                              대학교
                             </TableCell>
-                            <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
-                              직업
+                            <TableCell align="left" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
+                              학과
                             </TableCell>
-                            <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
+                            <TableCell align="left" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
                               아이디
                             </TableCell>
-                            <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
+                            <TableCell align="left" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
                               학생명
                             </TableCell>
-                            <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
+                            <TableCell align="left" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
                               등록일시
                             </TableCell>
                           </TableRow>
@@ -198,16 +198,16 @@ export function MyStudentsTemplate() {
                                     },
                                   }}
                                 >
-                                  <TableCell align="center" sx={{ fontSize: '15px' }}>
+                                  <TableCell align="left" sx={{ fontSize: '15px' }}>
                                     {displayIndex}
                                   </TableCell>
-                                  <TableCell align="center" sx={{ fontSize: '15px' }}>
+                                  <TableCell align="left" sx={{ fontSize: '15px' }}>
                                     {student.jobGroup?.name || '-'}
                                   </TableCell>
-                                  <TableCell align="center" sx={{ fontSize: '15px' }}>
+                                  <TableCell align="left" sx={{ fontSize: '15px' }}>
                                     {student.job?.name || '-'}
                                   </TableCell>
-                                  <TableCell align="center" sx={{ fontSize: '15px' }}>
+                                  <TableCell align="left" sx={{ fontSize: '15px' }}>
                                     {student.memberId}
                                   </TableCell>
                                   <TableCell align="left">
@@ -222,7 +222,7 @@ export function MyStudentsTemplate() {
                                       <span className="tw-text-sm tw-font-medium">{student.nickname}</span>
                                     </div>
                                   </TableCell>
-                                  <TableCell align="center" sx={{ fontSize: '15px', color: '#666' }}>
+                                  <TableCell align="left" sx={{ fontSize: '15px', color: '#666' }}>
                                     {new Date(studentContent.registeredAt).toLocaleString('ko-KR', {
                                       year: '2-digit',
                                       month: '2-digit',

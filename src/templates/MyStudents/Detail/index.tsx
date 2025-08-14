@@ -3,7 +3,6 @@ import classNames from 'classnames/bind';
 import React, { ReactNode, useEffect, useState } from 'react';
 import { useStore } from 'src/store';
 import { paramProps, useMyStudentsDetail } from 'src/services/seminars/seminars.queries';
-import { RecommendContent } from 'src/models/recommend';
 import { useParticipantSeminar } from 'src/services/seminars/seminars.mutations';
 import { useSessionStore } from 'src/store/session';
 import { MyClubsListResponse, ClubContent } from 'src/models/user';
@@ -27,6 +26,7 @@ import { useQuizAIFeedbackLectureGetTotal } from 'src/services/quiz/quiz.queries
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import { useGetProfile } from 'src/services/account/account.queries';
 import MyProfile from 'src/stories/components/MyProfile';
+import { useRouter } from 'next/router';
 
 const cx = classNames.bind(styles);
 
@@ -38,15 +38,10 @@ export interface MyStudentsDetailTemplateProps {
 }
 
 export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) {
-  const { user } = useStore();
+  const router = useRouter();
   const [contents, setContents] = useState<ClubContent[]>([]);
-  const [advisor, setAdvisor] = useState<AdvisorData[]>([]);
-  const [clubAbout, setClubAbout] = useState<any>({});
-  const [quizList, setQuizList] = useState<RecommendContent[]>([]);
+  const [advisor, setAdvisor] = useState<AdvisorData>({} as AdvisorData);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [clubMemberStatus, setClubMemberStatus] = useState('0001');
-  const [applicationButton, setApplicationButton] = useState<ReactNode>(null);
-  const { memberId, logged } = useSessionStore.getState();
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
@@ -86,20 +81,6 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
       page,
     });
   }, [page]);
-
-  useEffect(() => {
-    if (!logged) {
-      setApplicationButton(
-        <button
-          disabled
-          type="button"
-          className="tw-w-full tw-text-white tw-bg-gray-400 tw-font-semibold tw-text-xl tw-px-5 tw-py-5"
-        >
-          로그인 후 신청 가능합니다.
-        </button>,
-      );
-    }
-  }, [logged, contents, clubMemberStatus]);
 
   // 상태 코드에 따른 라벨 반환
   const getStatusLabel = (status: string) => {
@@ -201,7 +182,7 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
   }, [lectureClubEvaluationMemberSucces]);
 
   // 회원 프로필 정보
-  const { isFetched: isProfileFetched, refetch: refetchProfile } = useGetProfile(advisor.memberUUID, data => {
+  const { isFetched: isProfileFetched, refetch: refetchProfile } = useGetProfile(advisor.memberUUID, (data: any) => {
     console.log(data?.data?.data);
     setProfile(data?.data?.data);
   });
@@ -210,6 +191,10 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
     refetchProfile();
     setIsModalOpen(true);
     console.log('memberUUID1', memberUUID);
+  };
+
+  const handleBack = () => {
+    router.push('/my-students');
   };
 
   return (
@@ -248,7 +233,7 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
             <div className="tw-bg-white border tw-rounded-lg  tw-p-6 tw-flex tw-justify-between tw-items-center">
               <div className="tw-grid tw-grid-cols-12 tw-gap-4 tw-items-center">
                 {/* 교수자 정보 */}
-                <div className="tw-col-span-2 tw-flex tw-items-center tw-gap-3">
+                <div className="tw-col-span-3 tw-flex tw-items-center tw-gap-3">
                   <div className="tw-flex-shrink-0">
                     <img
                       src={advisor.profileImageUrl || '/assets/images/banner/Rectangle_193.png'}
@@ -260,7 +245,7 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
                     />
                   </div>
 
-                  <div className="tw-min-w-0 tw-flex-1 ">
+                  <div className="">
                     <div className="tw-text-sm tw-font-semibold tw-text-gray-900 tw-truncate tw-flex tw-items-center tw-gap-2">
                       <span className="tw-inline-flex tw-px-2 tw-py-1 tw-rounded-lg tw-text-sm tw-font-semibold border tw-text-gray-700">
                         교수자
@@ -283,15 +268,23 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
                   </span>
                 </div>
               </div>
-              <button
-                onClick={() => handleClickProfile(advisor.memberUUID)}
-                className="tw-text-base tw-text-center border tw-text-black tw-px-4 tw-py-2 tw-rounded-md tw-w-[150px]"
-              >
-                프로필 보기
-              </button>
+              <div className="tw-flex tw-justify-end tw-items-center tw-gap-2 tw-w-[300px]">
+                <button
+                  onClick={() => handleClickProfile(advisor.memberUUID)}
+                  className="tw-text-sm tw-text-center border tw-text-black tw-px-4 tw-py-2 tw-rounded-md tw-w-[120px]"
+                >
+                  프로필 보기
+                </button>
+                <button
+                  className="border tw-text-gray-400 tw-px-4 tw-py-2 tw-rounded-md tw-w-[120px] tw-text-sm"
+                  onClick={handleBack}
+                >
+                  뒤로가기기
+                </button>
+              </div>
             </div>
           </div>
-          <section className={cx('content', 'flex-wrap-container tw-w-full tw-mt-10')}>
+          <section className={cx('content', 'flex-wrap-container tw-w-full tw-mt-10 tw-min-h-[500px]')}>
             {isDataLoading ? (
               <div className="tw-flex tw-justify-center tw-items-center tw-py-40">
                 <CircularProgress />
@@ -307,31 +300,31 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
                     '& .MuiTableCell-root': {},
                   }}
                 >
-                  <Table sx={{ minWidth: 650, border: 'none', minHeight: '500px' }} aria-label="클럽 테이블">
+                  <Table sx={{ minWidth: 650, border: 'none' }} aria-label="클럽 테이블">
                     <TableHead style={{ backgroundColor: '#F6F7FB' }}>
                       <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
-                        <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
+                        <TableCell align="left" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
                           No
                         </TableCell>
-                        <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '15px', width: '300px' }}>
+                        <TableCell align="left" sx={{ fontWeight: 'bold', fontSize: '15px', width: '300px' }}>
                           강의명
                         </TableCell>
-                        <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
+                        <TableCell align="left" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
                           대학명
                         </TableCell>
-                        <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
+                        <TableCell align="left" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
                           학과명
                         </TableCell>
-                        <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
+                        <TableCell align="left" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
                           기간
                         </TableCell>
-                        <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
+                        <TableCell align="left" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
                           교수자
                         </TableCell>
-                        <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
+                        <TableCell align="left" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
                           수강현황
                         </TableCell>
-                        <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
+                        <TableCell align="left" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
                           총평
                         </TableCell>
                       </TableRow>
@@ -425,7 +418,7 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
                                       setLoadingClubs(prev => ({ ...prev, [clubContent.clubSequence]: true }));
                                       onLectureClubEvaluationMember({
                                         clubSequence: clubContent?.clubSequence || id,
-                                        memberUUID: clubContent?.instructor?.memberUUID,
+                                        memberUUID: advisor?.memberUUID,
                                       });
                                     }}
                                     disabled={!clubContent?.comprehensiveEvaluationEnabled}
@@ -457,9 +450,9 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
                                       setIsAIFeedbackModalOpen(true);
                                       setAiEvaluationParamsTotal({
                                         clubSequence: clubContent?.clubSequence || id,
-                                        memberUUID: clubContent?.instructor?.memberUUID,
+                                        memberUUID: advisor?.memberUUID,
                                       });
-                                      setMemberUUIDList(clubContent?.instructor?.memberUUID);
+                                      setMemberUUIDList(advisor?.memberUUID);
                                     }}
                                     disabled={!clubContent?.comprehensiveEvaluationViewable}
                                     className={`tw-gap-1 tw-p-1 tw-rounded-[5px] tw-w-[70px] tw-flex tw-justify-center tw-items-center tw-bg-[#6A7380] tw-text-white tw-cursor-pointer tw-text-sm tw-mx-auto ${
