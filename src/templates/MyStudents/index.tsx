@@ -214,7 +214,7 @@ export function MyStudentsTemplate() {
                                       <span className="tw-text-sm tw-font-medium">{student.nickname}</span>
                                     </div>
                                   </TableCell>
-                                  <TableCell align="left" sx={{ fontSize: '15px', color: '#666' }}>
+                                  <TableCell align="left" sx={{ fontSize: '14px', color: '#666' }}>
                                     {new Date(studentContent.registeredAt).toLocaleString('ko-KR', {
                                       year: '2-digit',
                                       month: '2-digit',

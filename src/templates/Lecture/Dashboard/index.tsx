@@ -18,7 +18,7 @@ import Paginations from 'src/stories/components/Pagination';
 
 /**import quiz modal  */
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
-import { Desktop, Mobile } from 'src/hooks/mediaQuery';
+import { Mobile } from 'src/hooks/mediaQuery';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { Radio, RadioGroup, FormControlLabel } from '@mui/material';
 import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded';
@@ -157,7 +157,6 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   const [isInputOpen, setIsInputOpen] = useState(false);
   const [openInputIndex, setOpenInputIndex] = useState(null);
   const [aiEvaluationParamsTotal, setAiEvaluationParamsTotal] = useState(null);
-  const [aiEvaluationParamsTotalReport, setAiEvaluationParamsTotalReport] = useState(null);
   const [aiFeedbackDataTotal, setAiFeedbackDataTotal] = useState<any>(null);
   const [aiFeedbackDataTotalReport, setAiFeedbackDataTotalReport] = useState<any>(null);
   const [aiFeedbackDataTotalQuiz, setAiFeedbackDataTotalQuiz] = useState<any>(null);
@@ -178,7 +177,12 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   const [selectedStudentInfo, setSelectedStudentInfo] = useState<any>(null);
   const [sortType, setSortType] = useState('NAME');
   const [sortLectureType, setSortLectureType] = useState('STUDY_ORDER_ASC');
-  const [loading, setLoading] = useState(false);
+  const [myClubSubTitleParams, setMyClubSubTitleParams] = useState<any>({
+    clubSequence: id,
+    page,
+    clubType: '0200',
+    size: 100,
+  });
 
   const [myClubParams, setMyClubParams] = useState<any>({
     clubSequence: selectedClub?.clubSequence || id,
@@ -269,13 +273,6 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
       refetchMyDashboardStudent();
     }
   }, [isDeleteSuccess]);
-
-  const [myClubSubTitleParams, setMyClubSubTitleParams] = useState<any>({
-    clubSequence: id,
-    page,
-    clubType: '0200',
-    size: 100,
-  });
 
   const handleChangeQuiz = event => {
     setSortType(event.target.value);
@@ -509,16 +506,12 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   useDidMountEffect(() => {
     if (aiEvaluationParamsTotal) {
       refetchAIEvaluationTotal();
-      console.log('aiEvaluationParamsTotal', aiEvaluationParamsTotal);
-      console.log('aiEvaluationParamsTotal', aiEvaluationParamsTotal);
     }
   }, [aiEvaluationParamsTotal]);
 
   useDidMountEffect(() => {
     if (aiEvaluationParamsTotal) {
       refetchAIEvaluationTotal();
-      console.log('aiEvaluationParamsTotal', aiEvaluationParamsTotal);
-      console.log('aiEvaluationParamsTotal', aiEvaluationParamsTotal);
     }
   }, [aiEvaluationParamsTotal]);
 
@@ -1877,11 +1870,6 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                       {/* Render the student info only for the first question */}
                       <TableCell align="left" component="th" scope="row" className="border-right">
                         <div className="">
-                          {/* <img
-                            src={info?.icon?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
-                            className="tw-w-10 tw-h-10 border tw-rounded-full"
-                            alt="Profile"
-                          /> */}
                           <div className="tw-font-bold tw-text-sm">
                             {info?.studyOrder} {studyOrderLabel}
                           </div>
