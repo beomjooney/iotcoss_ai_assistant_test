@@ -190,7 +190,7 @@ export function MyStudentsTemplate() {
                                     },
                                   }}
                                 >
-                                  <TableCell align="left" sx={{ fontSize: '15px' }}>
+                                  <TableCell align="center" sx={{ fontSize: '15px' }}>
                                     {displayIndex}
                                   </TableCell>
                                   <TableCell align="left" sx={{ fontSize: '15px' }}>
