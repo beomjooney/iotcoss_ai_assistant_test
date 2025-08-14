@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Avatar } from '@mui/material';
 import { MemberSortRadio } from '../index';
 
 export interface ProfessorData {
@@ -176,11 +177,13 @@ function ProfessorList({
                       </label>
                     </td>
                     <td className="tw-py-3 tw-px-4 tw-align-middle">
-                      <img
-                        src={professor.profileImageUrl || '/assets/images/banner/Rectangle_193.png'}
+                      <Avatar
+                        src={professor.profileImageUrl || undefined}
                         alt={`${professor.nickname} 프로필`}
-                        className="tw-w-8 tw-h-8 tw-rounded-full tw-object-cover tw-border-2 tw-border-gray-200"
-                      />
+                        sx={{ width: 31, height: 31 }}
+                      >
+                        {!professor.profileImageUrl && professor.nickname?.charAt(0)}
+                      </Avatar>
                     </td>
                     <td className="tw-py-3 tw-px-4 tw-text-sm tw-font-medium tw-text-gray-900 tw-align-middle">
                       {professor.nickname}
