@@ -1,10 +1,7 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import React, { ReactNode, useEffect, useState } from 'react';
-import { useStore } from 'src/store';
+import React, { useEffect, useState } from 'react';
 import { paramProps, useMyStudentsDetail } from 'src/services/seminars/seminars.queries';
-import { useParticipantSeminar } from 'src/services/seminars/seminars.mutations';
-import { useSessionStore } from 'src/store/session';
 import { MyClubsListResponse, ClubContent } from 'src/models/user';
 import { AdvisorData, MentorsModal, Pagination } from 'src/stories/components';
 import {
@@ -17,7 +14,6 @@ import {
   TableCell,
   TableBody,
   Avatar,
-  Chip,
   Divider,
 } from '@mui/material';
 import AIFeedbackSummary from 'src/stories/components/AIFeedbackSummary';
@@ -73,69 +69,12 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
     }
   });
 
-  const { mutate: onParticipant } = useParticipantSeminar();
-
   useEffect(() => {
     setParams({
       ...params,
       page,
     });
   }, [page]);
-
-  // 상태 코드에 따른 라벨 반환
-  const getStatusLabel = (status: string | number) => {
-    // 숫자를 문자열로 변환하여 처리
-    const statusString = String(status);
-
-    const statusMap = {
-      '0000': '임시',
-      /* 클럽 개설 승인 요청 상태 */
-      '0100': '개설 요청',
-      /* 개설 승인 */
-      '0110': '개설 승인',
-      /* 개설 반려 */
-      '0120': '개설 반려',
-      /* 진행 예정 */
-      '0200': '진행 예정',
-      /* 진행 연기 */
-      '0210': '진행 연기',
-      /* 취소 */
-      '0220': '취소',
-      /* 모집중 */
-      '0300': '모집중',
-      /* 모집기간 완료. 시작 전 대기 */
-      '0310': '모집 완료',
-      /* 진행 중 */
-      '0400': '진행 중',
-      /* 완료 */
-      '0500': '완료',
-      /* 삭제 */
-      '0900': '삭제',
-    };
-
-    console.log('Status Debug:', { original: status, converted: statusString, mapped: statusMap[statusString] });
-
-    return statusMap[statusString] || statusString;
-  };
-
-  // 상태에 따른 색상 반환
-  const getStatusColor = (status: string | number) => {
-    const statusString = String(status);
-
-    const colorMap = {
-      '0400': 'success',
-      '0401': 'default',
-      '0402': 'warning',
-      '0403': 'error',
-    };
-
-    return colorMap[statusString] || 'default';
-  };
-
-  const handleRowClick = (clubSequence: number) => {
-    console.log('클럽 상세 이동:', clubSequence);
-    // 필요시 라우터 이동 로직 추가
-  };
 
   // AI 피드백 데이터 조회
   const {
@@ -347,7 +286,6 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
                           return (
                             <TableRow
                               key={clubContent.clubSequence}
-                              onClick={() => handleRowClick(clubContent.clubSequence)}
                               sx={{
                                 '&:hover': {
                                   backgroundColor: '#f9f9f9',
@@ -411,12 +349,31 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
                                 </div>
                               </TableCell>
                               <TableCell align="center">
-                                <Chip
+                                {/* <Chip
                                   label={getStatusLabel(clubContent.status)}
                                   color={getStatusColor(clubContent.status)}
                                   size="small"
                                   variant="outlined"
-                                />
+                                /> */}
+                                <div className="tw-text-base">
+                                  {(() => {
+                                    const statusLabels = {
+                                      '0000': '임시',
+                                      '0100': '개설 요청',
+                                      '0110': '개설 승인',
+                                      '0120': '개설 반려',
+                                      '0200': '진행 예정',
+                                      '0210': '진행 연기',
+                                      '0220': '취소',
+                                      '0300': '모집중',
+                                      '0310': '모집 완료',
+                                      '0400': '진행 중',
+                                      '0500': '완료',
+                                      '0900': '삭제',
+                                    };
+                                    return statusLabels[clubContent.status] || clubContent.status;
+                                  })()}
+                                </div>
                               </TableCell>
 
                               <TableCell align="center">
