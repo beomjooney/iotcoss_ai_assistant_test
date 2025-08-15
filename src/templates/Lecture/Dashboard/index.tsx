@@ -227,7 +227,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     },
     error => {
       console.error('❌ AI Evaluation Total ERROR:', error);
-      alert('피드백 데이터를 불러오는데 실패했습니다.');
+      alert('CQI 보고서 데이터를 불러오는데 실패했습니다.');
       setIsLoadingCQIReport(false); // 에러 시에도 로딩 상태를 false로 설정
     },
   );
@@ -436,6 +436,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     console.log('value', value);
     setSelectedValue(value);
     setSelectedClub(selectedSession);
+    setAiFeedbackDataTotalReport({});
     console.log(selectedSession);
   };
 
@@ -1075,6 +1076,8 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                       style={{ marginRight: '-20px' }}
                       onClick={() => {
                         setIsCQIReportModalOpen(true);
+                        console.log(aiFeedbackDataTotalReport);
+                        console.log(isLoadingCQIReport);
                       }}
                     >
                       <div className="tw-text-white tw-text-sm tw-rounded-lg tw-bg-black tw-w-[144px] tw-h-10 tw-absolute tw-left-[-1px] tw-top-[-1px] tw-flex tw-justify-center tw-items-center">
@@ -2001,12 +2004,14 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
         onAfterClose={() => {
           setIsCQIReportModalOpen(false);
           setIsLoadingCQIReport(false);
+          setAiFeedbackDataTotalReport({});
         }}
       >
         <div>
           <div className="tw-flex  tw-justify-end tw-items-center tw-gap-4 tw-mb-4">
             <button
               onClick={() => {
+                console.log('CQI 보고서 생성');
                 refetchLectureClubEvaluationReport();
                 setIsLoadingCQIReport(true);
               }}

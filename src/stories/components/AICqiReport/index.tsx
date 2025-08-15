@@ -4,17 +4,7 @@ import dynamic from 'next/dynamic';
 import Loading from 'src/stories/components/Loading';
 import { ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
-// ReactApexChart를 동적으로 import하여 SSR 비활성화
-
-const AICqiReport: React.FC<AICqiReportProps> = ({
-  aiFeedbackDataTotal,
-  lectureAnalysisData,
-  isLoading = false,
-  isAdmin = false,
-  clubSequence = '',
-}) => {
-  console.log('aiFeedbackDataTotal======  ', aiFeedbackDataTotal);
-
+const AICqiReport: React.FC<AICqiReportProps> = ({ aiFeedbackDataTotal, isLoading = false }) => {
   // AI 사용 현황 데이터를 차트용으로 변환
   const aiUsageData = [
     {
@@ -50,8 +40,6 @@ const AICqiReport: React.FC<AICqiReportProps> = ({
 
   // 강의 분석 데이터가 있는 경우의 렌더링 함수
   const renderLectureAnalysis = () => {
-    // if (!lectureAnalysisData) return null;
-
     return (
       <div className="tw-max-w-7xl tw-mx-auto tw-space-y-8 tw-pb-10">
         {/* Header Section */}
@@ -277,15 +265,25 @@ const AICqiReport: React.FC<AICqiReportProps> = ({
 
       {!isLoading && (
         <div className="">
-          {aiFeedbackDataTotal && renderLectureAnalysis()}
+          {(() => {
+            // 객체가 존재하고 실제 데이터가 있는지 확인
+            const hasValidData =
+              aiFeedbackDataTotal &&
+              Object.keys(aiFeedbackDataTotal).length > 0 &&
+              (aiFeedbackDataTotal.studentFeedback || aiFeedbackDataTotal.aiUsage || aiFeedbackDataTotal.answerType);
 
-          {!aiFeedbackDataTotal && (
-            <div>
-              <p className="tw-text-base tw-text-center tw-text-gray-500 tw-h-[400px] tw-flex tw-items-center tw-justify-center">
-                AI 분석 리포트를 생성하려면 데이터를 불러와주세요.
-              </p>
-            </div>
-          )}
+            if (hasValidData) {
+              return renderLectureAnalysis();
+            }
+
+            return (
+              <div>
+                <p className="tw-text-base tw-text-center tw-text-gray-500 tw-h-[400px] tw-flex tw-items-center tw-justify-center">
+                  AI 분석 리포트를 생성하려면 데이터를 불러와주세요.
+                </p>
+              </div>
+            );
+          })()}
         </div>
       )}
     </div>
