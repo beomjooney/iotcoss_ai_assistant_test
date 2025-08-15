@@ -83,7 +83,10 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
   }, [page]);
 
   // 상태 코드에 따른 라벨 반환
-  const getStatusLabel = (status: string) => {
+  const getStatusLabel = (status: string | number) => {
+    // 숫자를 문자열로 변환하여 처리
+    const statusString = String(status);
+
     const statusMap = {
       '0000': '임시',
       /* 클럽 개설 승인 요청 상태 */
@@ -109,18 +112,24 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
       /* 삭제 */
       '0900': '삭제',
     };
-    return statusMap[status] || status;
+
+    console.log('Status Debug:', { original: status, converted: statusString, mapped: statusMap[statusString] });
+
+    return statusMap[statusString] || statusString;
   };
 
   // 상태에 따른 색상 반환
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: string | number) => {
+    const statusString = String(status);
+
     const colorMap = {
       '0400': 'success',
       '0401': 'default',
       '0402': 'warning',
       '0403': 'error',
     };
-    return colorMap[status] || 'default';
+
+    return colorMap[statusString] || 'default';
   };
 
   const handleRowClick = (clubSequence: number) => {
@@ -170,6 +179,7 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
     if (lectureClubEvaluationMemberError) {
       // 모든 로딩 상태 해제
       setLoadingClubs({});
+      setIsLoading(false);
     }
   }, [lectureClubEvaluationMemberError]);
 
@@ -502,6 +512,7 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
         isContentModalClick={true}
         onAfterClose={() => {
           setIsAIFeedbackModalOpen(false);
+          setIsLoading(false);
           setSelectedStudentInfo(null);
         }}
         title={'학습피드백 총평'}
