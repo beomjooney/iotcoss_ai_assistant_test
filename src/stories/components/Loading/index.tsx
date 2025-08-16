@@ -9,7 +9,7 @@ function Loading() {
   return (
     <div className={cx('loading')}>
       <div className={cx('loading-text')}>잠시만 기다려 주세요.</div>
-      <Image src={Spinner} alt="로딩중" />
+      <Image src={Spinner} alt="로딩중" width={100} height={100} />
     </div>
   );
 }

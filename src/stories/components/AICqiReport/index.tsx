@@ -278,8 +278,9 @@ const AICqiReport: React.FC<AICqiReportProps> = ({ aiFeedbackDataTotal, isLoadin
 
             return (
               <div>
-                <p className="tw-text-base tw-text-center tw-text-gray-500 tw-h-[400px] tw-flex tw-items-center tw-justify-center">
-                  AI 분석 리포트를 생성하려면 데이터를 불러와주세요.
+                <p className="tw-text-lg tw-text-center tw-text-gray-500 tw-h-[600px] tw-flex tw-items-center tw-justify-center">
+                  CQI 보고서를 생성하려면 <br />
+                  CQI 보고서 AI초안생성 버튼을 눌러주세요.
                 </p>
               </div>
             );

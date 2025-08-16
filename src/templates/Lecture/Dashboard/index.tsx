@@ -1981,11 +1981,15 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
               }}
               className="tw-text-base tw-text-center tw-bg-black tw-text-white tw-px-4 tw-py-2 tw-rounded-md"
             >
-              AI피드백 생성
+              {isLoading
+                ? 'AI피드백 생성중...'
+                : aiFeedbackDataTotal?.evaluationStatus === '0001'
+                ? 'AI피드백 생성'
+                : 'AI피드백 재생성'}
             </button>
           </div>
           <AIFeedbackSummary
-            aiFeedbackDataTotal={aiFeedbackDataTotal}
+            aiFeedbackDataTotal={aiFeedbackDataTotal || null}
             aiFeedbackDataTotalQuiz={aiFeedbackDataTotalQuiz}
             isLoading={isLoading}
             isFeedbackOptions={true}
@@ -2017,7 +2021,11 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
               }}
               className="tw-text-base tw-text-center tw-bg-black tw-text-white tw-px-4 tw-py-2 tw-rounded-md"
             >
-              CQI 보고서 생성
+              {isLoadingCQIReport
+                ? 'CQI 보고서 생성중...'
+                : aiFeedbackDataTotalReport
+                ? 'CQI 보고서 AI초안 재생성'
+                : 'CQI 보고서 AI초안 생성'}
             </button>
           </div>
           <AICqiReport

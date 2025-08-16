@@ -55,14 +55,14 @@ const AIFeedbackSummary: React.FC<AIFeedbackSummaryProps> = ({
             <p className="tw-text-gray-600 tw-text-base tw-font-medium tw-text-center">
               총평 피드백을 불러오는 중입니다...
               <br />
-              30~60초 소요됩니다.
+              1~2분 기다려주세요.
             </p>
           </div>
         </div>
       )}
       {!isLoading && (
         <div className="border tw-border-gray-200 tw-rounded-lg tw-p-4">
-          {aiFeedbackDataTotal !== null ? (
+          {aiFeedbackDataTotal?.evaluationStatus !== '0001' ? (
             <div>
               <div className="tw-flex tw-items-center tw-mb-4">
                 <div className="tw-w-8 tw-h-8 tw-bg-blue-500 tw-rounded-full tw-flex tw-items-center tw-justify-center tw-mr-3">
@@ -423,8 +423,9 @@ const AIFeedbackSummary: React.FC<AIFeedbackSummaryProps> = ({
             </div>
           ) : (
             <div>
-              <p className="tw-text-base tw-text-center tw-text-gray-500 tw-h-[400px] tw-flex tw-items-center tw-justify-center">
-                AI피드백 생성 버튼을 눌러 학습 총평을 확인해주세요.
+              <p className="tw-text-lg tw-text-center tw-text-gray-500 tw-h-[500px] tw-flex tw-items-center tw-justify-center">
+                총평피드백이 생성되지 않아습니다. <br />
+                총평 AI피드백 버튼을 눌러주세요.
               </p>
             </div>
           )}
