@@ -447,7 +447,7 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
                                         : 'tw-bg-gray-300 tw-text-gray-500 tw-cursor-not-allowed'
                                     }`}
                                   >
-                                    <p>{loadingClubs[clubContent.clubSequence] ? '50초 소요' : 'AI총평생성'}</p>
+                                    <p>{loadingClubs[clubContent.clubSequence] ? '1~2분소요' : 'AI총평생성'}</p>
                                     <svg
                                       width={7}
                                       height={10}
