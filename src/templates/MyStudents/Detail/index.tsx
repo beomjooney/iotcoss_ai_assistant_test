@@ -356,7 +356,60 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
                                   variant="outlined"
                                 /> */}
                                 <div className="tw-text-base">
-                                  {(() => {
+                                  {clubContent.status === '0000' ? (
+                                    <div className="tw-text-gray-600">
+                                      <p>임시저장</p>
+                                    </div>
+                                  ) : clubContent.status === '0100' ? (
+                                    <div className="tw-text-blue-600">
+                                      <p>개설요청대기</p>
+                                    </div>
+                                  ) : clubContent.status === '0110' ? (
+                                    <div className="tw-text-blue-600">
+                                      <p>개설요청승인</p>
+                                    </div>
+                                  ) : clubContent.status === '0120' ? (
+                                    <div className="tw-text-red-600">
+                                      <p>개설요청반려</p>
+                                    </div>
+                                  ) : clubContent.status === '0200' ? (
+                                    <div className="tw-text-blue-600">
+                                      <p>진행예정</p>
+                                    </div>
+                                  ) : clubContent.status === '0210' ? (
+                                    <div className="tw-text-blue-600">
+                                      <p>진행연기</p>
+                                    </div>
+                                  ) : clubContent.status === '0220' ? (
+                                    <div className="tw-text-blue-600">
+                                      <p>취소</p>
+                                    </div>
+                                  ) : clubContent.status === '0300' ? (
+                                    <div className="tw-text-blue-600">
+                                      <p>모집중</p>
+                                    </div>
+                                  ) : clubContent.status === '0310' ? (
+                                    <div className="tw-text-blue-600">
+                                      <p>모집마감</p>
+                                    </div>
+                                  ) : clubContent.status === '0400' ? (
+                                    <div className="tw-text-blue-600">
+                                      <p>진행중</p>
+                                    </div>
+                                  ) : clubContent.status === '0500' ? (
+                                    <div className="tw-text-blue-600">
+                                      <p>진행완료</p>
+                                    </div>
+                                  ) : clubContent.status === '0900' ? (
+                                    <div className="tw-text-blue-600">
+                                      <p>삭제</p>
+                                    </div>
+                                  ) : (
+                                    <div className="tw-text-gray-600">
+                                      <p>모집 대기중</p>
+                                    </div>
+                                  )}
+                                  {/* {(() => {
                                     const statusLabels = {
                                       '0000': '임시',
                                       '0100': '개설 요청',
@@ -372,7 +425,7 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
                                       '0900': '삭제',
                                     };
                                     return statusLabels[clubContent.status] || clubContent.status;
-                                  })()}
+                                  })()} */}
                                 </div>
                               </TableCell>
 
