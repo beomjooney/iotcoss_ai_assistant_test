@@ -139,7 +139,6 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
 
   const { roles, studyOrderLabelType } = useSessionStore.getState();
   const { studyOrderLabel } = useStudyOrderLabel(studyOrderLabelType);
-
   const [page, setPage] = useState(1);
   const [pageStudent, setPageStudent] = useState(1);
   const [lecturePage, setLecturePage] = useState(1);
@@ -169,7 +168,6 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   const [isLoadingCQIReport, setIsLoadingCQIReport] = useState(false);
   const [isCQIReportModalOpen, setIsCQIReportModalOpen] = useState(false);
   const [myClubSequenceParams, setMyClubSequenceParams] = useState<any>({ clubSequence: id });
-  const [params, setParams] = useState<paramProps>({ page });
   const [selectedValue, setSelectedValue] = useState(id);
   const [activeTab, setActiveTab] = useState('myQuiz');
   const [isModalOpen, setIsModalOpen] = useState(false);
