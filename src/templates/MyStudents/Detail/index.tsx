@@ -46,6 +46,7 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
   const [isAIFeedbackModalOpen, setIsAIFeedbackModalOpen] = useState(false);
   const [aiEvaluationParamsTotal, setAiEvaluationParamsTotal] = useState(null);
   const [memberUUIDList, setMemberUUIDList] = useState('');
+  const [comprehensiveEvaluationEnabled, setComprehensiveEvaluationEnabled] = useState(false);
   // 개별 클럽별 로딩 상태 관리
   const [loadingClubs, setLoadingClubs] = useState<Record<number, boolean>>({});
   const [aiFeedbackDataTotal, setAiFeedbackDataTotal] = useState<any>(null);
@@ -398,23 +399,6 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
                                       <p>모집 대기중</p>
                                     </div>
                                   )}
-                                  {/* {(() => {
-                                    const statusLabels = {
-                                      '0000': '임시',
-                                      '0100': '개설 요청',
-                                      '0110': '개설 승인',
-                                      '0120': '개설 반려',
-                                      '0200': '진행 예정',
-                                      '0210': '진행 연기',
-                                      '0220': '취소',
-                                      '0300': '모집중',
-                                      '0310': '모집 완료',
-                                      '0400': '진행 중',
-                                      '0500': '완료',
-                                      '0900': '삭제',
-                                    };
-                                    return statusLabels[clubContent.status] || clubContent.status;
-                                  })()} */}
                                 </div>
                               </TableCell>
 
@@ -461,6 +445,7 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
                                         memberUUID: advisor?.memberUUID,
                                       });
                                       setMemberUUIDList(advisor?.memberUUID);
+                                      setComprehensiveEvaluationEnabled(clubContent?.comprehensiveEvaluationEnabled);
                                     }}
                                     disabled={!clubContent?.comprehensiveEvaluationViewable}
                                     className={`tw-gap-1 tw-p-1 tw-rounded-[5px] tw-w-[70px] tw-flex tw-justify-center tw-items-center tw-bg-[#6A7380] tw-text-white tw-cursor-pointer tw-text-sm tw-mx-auto ${
@@ -519,24 +504,37 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
       >
         <div>
           <div className="tw-flex tw-justify-between tw-items-center tw-gap-4 tw-mb-4">
-            <div className="tw-text-xl tw-font-bold tw-text-black tw-text-center">총평피드백보기</div>
-            <button
-              onClick={() => {
-                onLectureClubEvaluationMember({
-                  clubSequence: selectedStudentInfo?.clubSequence || id,
-                  memberUUID: memberUUIDList,
-                });
-                setIsLoading(true);
-                console.log('refetchAIEvaluationTotal');
-              }}
-              className="tw-text-base tw-text-center tw-bg-black tw-text-white tw-px-4 tw-py-2 tw-rounded-md"
-            >
-              {isLoading
-                ? 'AI피드백 생성중...'
-                : aiFeedbackDataTotal?.evaluationStatus === '0001'
-                ? 'AI피드백 생성'
-                : 'AI피드백 재생성'}
-            </button>
+            <div className="tw-text-xl tw-font-bold tw-text-black tw-text-center">총평피드백 보기</div>
+
+            {comprehensiveEvaluationEnabled && (
+              <button
+                disabled={!comprehensiveEvaluationEnabled}
+                onClick={() => {
+                  onLectureClubEvaluationMember({
+                    clubSequence: selectedStudentInfo?.clubSequence || id,
+                    memberUUID: memberUUIDList,
+                  });
+                  setIsLoading(true);
+                  console.log('refetchAIEvaluationTotal');
+                }}
+                className={`tw-text-base tw-text-center tw-bg-black tw-text-white tw-px-4 tw-py-2 tw-rounded-md ${
+                  !comprehensiveEvaluationEnabled
+                    ? 'tw-bg-gray-300 tw-text-gray-500 tw-cursor-not-allowed'
+                    : 'tw-bg-black tw-text-white tw-cursor-pointer'
+                }`}
+              >
+                {isLoading
+                  ? 'AI피드백 생성중...'
+                  : aiFeedbackDataTotal?.evaluationStatus === '0001'
+                  ? 'AI피드백 생성'
+                  : 'AI피드백 재생성'}
+              </button>
+            )}
+            {!comprehensiveEvaluationEnabled && (
+              <div className="tw-text-base tw-text-center tw-bg-gray-300 tw-text-gray-500 tw-px-4 tw-py-2 tw-rounded-md">
+                총평을 생성하기에 질문이 부족합니다.
+              </div>
+            )}
           </div>
           <AIFeedbackSummary
             aiFeedbackDataTotal={aiFeedbackDataTotal}

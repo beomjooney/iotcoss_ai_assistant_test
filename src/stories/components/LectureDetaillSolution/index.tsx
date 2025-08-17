@@ -654,7 +654,7 @@ const LectureDetaillSolution = ({
       >
         <div>
           <div className="tw-flex tw-justify-between tw-items-center tw-gap-4 tw-mb-4">
-            <div className="tw-text-xl tw-font-bold tw-text-black tw-text-center">총평피드백보기</div>
+            <div className="tw-text-xl tw-font-bold tw-text-black tw-text-center">총평피드백 보기</div>
             <button
               disabled={!lectureEvaluation?.comprehensiveEvaluationEnabled || isLoading}
               onClick={() => {
