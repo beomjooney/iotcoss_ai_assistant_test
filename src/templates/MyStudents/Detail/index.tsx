@@ -433,40 +433,42 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
                                       <path d="M1 1L5 5L1 9" stroke="#fff" strokeWidth="1.5" />
                                     </svg>
                                   </button> */}
-                                  <button
-                                    onClick={() => {
-                                      if (!clubContent?.comprehensiveEvaluationViewable) {
-                                        return;
-                                      }
-                                      setSelectedStudentInfo(clubContent);
-                                      setIsAIFeedbackModalOpen(true);
-                                      setAiEvaluationParamsTotal({
-                                        clubSequence: clubContent?.clubSequence || id,
-                                        memberUUID: advisor?.memberUUID,
-                                      });
-                                      setMemberUUIDList(advisor?.memberUUID);
-                                      setComprehensiveEvaluationEnabled(clubContent?.comprehensiveEvaluationEnabled);
-                                    }}
-                                    disabled={!clubContent?.comprehensiveEvaluationViewable}
-                                    className={`tw-gap-1 tw-p-1 tw-rounded-[5px] tw-w-[70px] tw-flex tw-justify-center tw-items-center tw-bg-[#6A7380] tw-text-white tw-cursor-pointer tw-text-sm tw-mx-auto ${
-                                      clubContent?.comprehensiveEvaluationViewable
-                                        ? 'tw-bg-[#6A7380] tw-text-white tw-cursor-pointer'
-                                        : 'tw-bg-gray-300 tw-text-gray-500 tw-cursor-not-allowed'
-                                    }`}
-                                  >
-                                    <p>총평확인</p>
-                                    <svg
-                                      width={7}
-                                      height={10}
-                                      viewBox="0 0 7 10"
-                                      fill="none"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      className="flex-grow-0 flex-shrink-0"
-                                      preserveAspectRatio="none"
+                                  {clubContent.status !== '0900' && (
+                                    <button
+                                      onClick={() => {
+                                        if (!clubContent?.comprehensiveEvaluationViewable) {
+                                          return;
+                                        }
+                                        setSelectedStudentInfo(clubContent);
+                                        setIsAIFeedbackModalOpen(true);
+                                        setAiEvaluationParamsTotal({
+                                          clubSequence: clubContent?.clubSequence || id,
+                                          memberUUID: advisor?.memberUUID,
+                                        });
+                                        setMemberUUIDList(advisor?.memberUUID);
+                                        setComprehensiveEvaluationEnabled(clubContent?.comprehensiveEvaluationEnabled);
+                                      }}
+                                      disabled={!clubContent?.comprehensiveEvaluationViewable}
+                                      className={`tw-gap-1 tw-p-1 tw-rounded-[5px] tw-w-[70px] tw-flex tw-justify-center tw-items-center tw-bg-[#6A7380] tw-text-white tw-cursor-pointer tw-text-sm tw-mx-auto ${
+                                        clubContent?.comprehensiveEvaluationViewable
+                                          ? 'tw-bg-[#6A7380] tw-text-white tw-cursor-pointer'
+                                          : 'tw-bg-gray-300 tw-text-gray-500 tw-cursor-not-allowed'
+                                      }`}
                                     >
-                                      <path d="M1 1L5 5L1 9" stroke="#fff" strokeWidth="1.5" />
-                                    </svg>
-                                  </button>
+                                      <p>총평확인</p>
+                                      <svg
+                                        width={7}
+                                        height={10}
+                                        viewBox="0 0 7 10"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="flex-grow-0 flex-shrink-0"
+                                        preserveAspectRatio="none"
+                                      >
+                                        <path d="M1 1L5 5L1 9" stroke="#fff" strokeWidth="1.5" />
+                                      </svg>
+                                    </button>
+                                  )}
                                 </div>
                               </TableCell>
                             </TableRow>
