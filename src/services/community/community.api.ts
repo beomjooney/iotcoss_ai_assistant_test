@@ -167,7 +167,7 @@ export const lectureClubEvaluationMember = async params => {
 };
 
 export const lectureClubEvaluationReport = async params => {
-  const { data } = await axiosGeneralAPI().post(`/api/v1/cqi-reports/${params.clubSequence}`);
+  const { data } = await axiosGeneralAPI().put(`/api/v1/cqi-reports/${params.clubSequence}`);
   return data.data;
 };
 

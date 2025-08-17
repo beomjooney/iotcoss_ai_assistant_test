@@ -257,7 +257,7 @@ const AICqiReport: React.FC<AICqiReportProps> = ({ aiFeedbackDataTotal, isLoadin
             <p className="tw-text-gray-600 tw-text-base tw-font-medium tw-text-center">
               CQI 리포트를 불러오는 중입니다...
               <br />
-              30~60초 소요됩니다.
+              1~2분 기다려주세요.
             </p>
           </div>
         </div>
@@ -270,7 +270,7 @@ const AICqiReport: React.FC<AICqiReportProps> = ({ aiFeedbackDataTotal, isLoadin
             const hasValidData =
               aiFeedbackDataTotal &&
               Object.keys(aiFeedbackDataTotal).length > 0 &&
-              (aiFeedbackDataTotal.studentFeedback || aiFeedbackDataTotal.aiUsage || aiFeedbackDataTotal.answerType);
+              aiFeedbackDataTotal.studentAiInteractionCount;
 
             if (hasValidData) {
               return renderLectureAnalysis();

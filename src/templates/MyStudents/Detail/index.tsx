@@ -18,7 +18,7 @@ import {
 } from '@mui/material';
 import AIFeedbackSummary from 'src/stories/components/AIFeedbackSummary';
 import { useLectureClubEvaluationMember } from 'src/services/community/community.mutations';
-import { useQuizAIFeedbackLectureGetTotal } from 'src/services/quiz/quiz.queries';
+import { useQuizAIFeedbackLectureGetMember, useQuizAIFeedbackLectureGetTotal } from 'src/services/quiz/quiz.queries';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import { useGetProfile } from 'src/services/account/account.queries';
 import MyProfile from 'src/stories/components/MyProfile';
@@ -81,23 +81,17 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
     refetch: refetchAIEvaluationTotal,
     isError: isErrorAIEvaluationTotal,
     isSuccess: isSuccessAIEvaluationTotal,
-  } = useQuizAIFeedbackLectureGetTotal(
-    aiEvaluationParamsTotal,
-    data => {
-      console.log('🎉 AI Evaluation Total SUCCESS:', data);
-      setAiFeedbackDataTotal(data);
-    },
-    error => {
-      console.error('❌ AI Evaluation Total ERROR:', error);
-      alert('피드백 데이터를 불러오는데 실패했습니다.');
-    },
-  );
+  } = useQuizAIFeedbackLectureGetMember(aiEvaluationParamsTotal, data => {
+    console.log('🎉 AI Evaluation Total SUCCESS:', data);
+    setAiFeedbackDataTotal(data);
+  });
 
   useEffect(() => {
     if (isErrorAIEvaluationTotal) {
       // 모든 로딩 상태 해제
       setLoadingClubs({});
       setIsLoading(false);
+      setIsAIFeedbackModalOpen(false);
     }
   }, [isErrorAIEvaluationTotal]);
 
@@ -115,20 +109,13 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
   } = useLectureClubEvaluationMember();
 
   useEffect(() => {
-    if (lectureClubEvaluationMemberError) {
+    if (lectureClubEvaluationMemberError || lectureClubEvaluationMemberSucces) {
       // 모든 로딩 상태 해제
       setLoadingClubs({});
       setIsLoading(false);
+      setAiFeedbackDataTotal(null);
     }
-  }, [lectureClubEvaluationMemberError]);
-
-  useEffect(() => {
-    if (lectureClubEvaluationMemberSucces) {
-      // 성공 시에도 모든 로딩 상태 해제
-      setLoadingClubs({});
-      refetch();
-    }
-  }, [lectureClubEvaluationMemberSucces]);
+  }, [lectureClubEvaluationMemberError, lectureClubEvaluationMemberSucces]);
 
   // 회원 프로필 정보
   const { isFetched: isProfileFetched, refetch: refetchProfile } = useGetProfile(advisor.memberUUID, (data: any) => {
@@ -273,7 +260,7 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
                         <TableCell align="left" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
                           수강현황
                         </TableCell>
-                        <TableCell align="left" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
+                        <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '15px' }}>
                           총평
                         </TableCell>
                       </TableRow>
@@ -431,7 +418,7 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
 
                               <TableCell align="center">
                                 <div className="tw-flex tw-justify-center tw-items-center tw-gap-2">
-                                  <button
+                                  {/* <button
                                     onClick={() => {
                                       // 개별 클럽의 로딩 상태 설정
                                       setLoadingClubs(prev => ({ ...prev, [clubContent.clubSequence]: true }));
@@ -459,7 +446,7 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
                                     >
                                       <path d="M1 1L5 5L1 9" stroke="#fff" strokeWidth="1.5" />
                                     </svg>
-                                  </button>
+                                  </button> */}
                                   <button
                                     onClick={() => {
                                       if (!clubContent?.comprehensiveEvaluationViewable) {
@@ -524,6 +511,7 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
           setIsAIFeedbackModalOpen(false);
           setIsLoading(false);
           setSelectedStudentInfo(null);
+          setAiFeedbackDataTotal(null);
         }}
         title={'학습피드백 총평'}
       >
@@ -540,7 +528,11 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
               }}
               className="tw-text-base tw-text-center tw-bg-black tw-text-white tw-px-4 tw-py-2 tw-rounded-md"
             >
-              AI피드백 생성
+              {isLoading
+                ? 'AI피드백 생성중...'
+                : aiFeedbackDataTotal?.evaluationStatus === '0001'
+                ? 'AI피드백 생성'
+                : 'AI피드백 재생성'}
             </button>
           </div>
           <AIFeedbackSummary

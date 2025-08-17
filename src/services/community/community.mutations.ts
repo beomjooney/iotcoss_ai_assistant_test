@@ -547,6 +547,8 @@ export const useLectureClubEvaluation = (): UseMutationResult => {
     onSuccess: async data => {},
   });
 };
+
+/** 개별 클럽의 피드백 생성 */
 export const useLectureClubEvaluationMember = (): UseMutationResult => {
   const queryClient = useQueryClient();
   // TODO : any 타입 변경
@@ -564,6 +566,8 @@ export const useLectureClubEvaluationMember = (): UseMutationResult => {
     onSuccess: async data => {},
   });
 };
+
+
 
 /** 개별 클럽의 CQI 보고서 생성 */
 export const useLectureClubEvaluationReport = (): UseMutationResult => {

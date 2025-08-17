@@ -47,13 +47,17 @@ import {
   useQuizAIFeedbackLectureGetMember,
   useQuizFileDownload,
   useQuizAIFeedbackLectureGetMemberReport,
+  useQuizAIFeedbackLectureGetMemberCQI,
 } from 'src/services/quiz/quiz.queries';
 import Markdown from 'react-markdown';
 import router from 'next/router';
 import { useSessionStore } from '../../../store/session';
 import { useStudyOrderLabel } from 'src/hooks/useStudyOrderLabel';
 import MentorsModal from 'src/stories/components/MentorsModal';
-import { useLectureClubEvaluationMember } from 'src/services/community/community.mutations';
+import {
+  useLectureClubEvaluationMember,
+  useLectureClubEvaluationReport,
+} from 'src/services/community/community.mutations';
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   [`&.${tableRowClasses.root}`]: {
@@ -157,6 +161,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   const [isInputOpen, setIsInputOpen] = useState(false);
   const [openInputIndex, setOpenInputIndex] = useState(null);
   const [aiEvaluationParamsTotal, setAiEvaluationParamsTotal] = useState(null);
+  const [aiEvaluationParamsTotalCQI, setAiEvaluationParamsTotalCQI] = useState(null);
   const [aiFeedbackDataTotal, setAiFeedbackDataTotal] = useState<any>(null);
   const [aiFeedbackDataTotalReport, setAiFeedbackDataTotalReport] = useState<any>(null);
   const [aiFeedbackDataTotalQuiz, setAiFeedbackDataTotalQuiz] = useState<any>(null);
@@ -200,6 +205,9 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     memberUUID: '',
     data: { studentQuestionPage: 1 },
   });
+  const [answer, setAnswer] = useState('');
+  const { mutate: onSaveAnswer, isSuccess, isError } = useSaveAnswer();
+  const { mutate: onDeleteQuestion, isSuccess: isDeleteSuccess } = useDeleteQuestion();
 
   /** 개별 클럽의 로딩 상태 설정 */
   const {
@@ -208,29 +216,12 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     isError: lectureClubEvaluationMemberError,
   } = useLectureClubEvaluationMember();
 
-  const [answer, setAnswer] = useState('');
-  const { mutate: onSaveAnswer, isSuccess, isError } = useSaveAnswer();
-  const { mutate: onDeleteQuestion, isSuccess: isDeleteSuccess } = useDeleteQuestion();
-
   /** 개별 클럽의 CQI 보고서 생성 */
-
   const {
-    refetch: refetchLectureClubEvaluationReport,
-    isError: isErrorLectureClubEvaluationReport,
-    isSuccess: isSuccessLectureClubEvaluationReport,
-  } = useQuizAIFeedbackLectureGetMemberReport(
-    myClubSequenceParams,
-    data => {
-      console.log('🎉 AI Evaluation Total SUCCESS-----:', data);
-      setAiFeedbackDataTotalReport(data);
-      setIsLoadingCQIReport(false); // 성공 시 로딩 상태를 false로 설정
-    },
-    error => {
-      console.error('❌ AI Evaluation Total ERROR:', error);
-      alert('CQI 보고서 데이터를 불러오는데 실패했습니다.');
-      setIsLoadingCQIReport(false); // 에러 시에도 로딩 상태를 false로 설정
-    },
-  );
+    mutate: onLectureClubEvaluationReport,
+    isSuccess: lectureClubEvaluationReportSucces,
+    isError: lectureClubEvaluationReportError,
+  } = useLectureClubEvaluationReport();
 
   // AI 피드백 데이터 조회
   const {
@@ -249,16 +240,43 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     },
   );
 
+  // CQI 피드백 데이터 조회
+  const {
+    refetch: refetchAIEvaluationTotalCQI,
+    isError: isErrorAIEvaluationTotalCQI,
+    isSuccess: isSuccessAIEvaluationTotalCQI,
+  } = useQuizAIFeedbackLectureGetMemberCQI(
+    aiEvaluationParamsTotalCQI,
+    data => {
+      console.log('🎉 AI Evaluation Total SUCCESS:', data);
+      setAiFeedbackDataTotalReport(data);
+    },
+    error => {
+      console.error('❌ AI Evaluation Total ERROR:', error);
+      alert('피드백 데이터를 불러오는데 실패했습니다.');
+    },
+  );
+
   useEffect(() => {
-    if (lectureClubEvaluationMemberSucces) {
+    if (lectureClubEvaluationReportSucces || lectureClubEvaluationReportError) {
+      refetchAIEvaluationTotalCQI();
+      setIsLoadingCQIReport(false);
+    }
+  }, [lectureClubEvaluationReportSucces, lectureClubEvaluationReportError]);
+
+  useEffect(() => {
+    if (lectureClubEvaluationMemberSucces || lectureClubEvaluationMemberError) {
       refetchAIEvaluationTotal();
       setIsLoading(false);
     }
-
-    if (lectureClubEvaluationMemberError) {
-      setIsLoading(false);
-    }
   }, [lectureClubEvaluationMemberSucces, lectureClubEvaluationMemberError]);
+
+  useEffect(() => {
+    if (isSuccessAIEvaluationTotalCQI || isErrorAIEvaluationTotalCQI) {
+      refetchAIEvaluationTotalCQI();
+      setIsLoadingCQIReport(false);
+    }
+  }, [isSuccessAIEvaluationTotalCQI, isErrorAIEvaluationTotalCQI]);
 
   useDidMountEffect(() => {
     if (isSuccess) {
@@ -511,10 +529,10 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   }, [aiEvaluationParamsTotal]);
 
   useDidMountEffect(() => {
-    if (aiEvaluationParamsTotal) {
-      refetchAIEvaluationTotal();
+    if (aiEvaluationParamsTotalCQI) {
+      refetchAIEvaluationTotalCQI();
     }
-  }, [aiEvaluationParamsTotal]);
+  }, [aiEvaluationParamsTotalCQI]);
 
   // 마운트되지 않았을 때 로딩 표시
   if (!isMounted) {
@@ -1076,8 +1094,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                       style={{ marginRight: '-20px' }}
                       onClick={() => {
                         setIsCQIReportModalOpen(true);
-                        console.log(aiFeedbackDataTotalReport);
-                        console.log(isLoadingCQIReport);
+                        setAiEvaluationParamsTotalCQI({ clubSequence: selectedClub?.clubSequence || id });
                       }}
                     >
                       <div className="tw-text-white tw-text-sm tw-rounded-lg tw-bg-black tw-w-[144px] tw-h-10 tw-absolute tw-left-[-1px] tw-top-[-1px] tw-flex tw-justify-center tw-items-center">
@@ -2016,14 +2033,16 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
             <button
               onClick={() => {
                 console.log('CQI 보고서 생성');
-                refetchLectureClubEvaluationReport();
+                onLectureClubEvaluationReport({
+                  clubSequence: selectedClub?.clubSequence || id,
+                });
                 setIsLoadingCQIReport(true);
               }}
               className="tw-text-base tw-text-center tw-bg-black tw-text-white tw-px-4 tw-py-2 tw-rounded-md"
             >
               {isLoadingCQIReport
                 ? 'CQI 보고서 생성중...'
-                : aiFeedbackDataTotalReport
+                : aiFeedbackDataTotalReport?.studentFeedback
                 ? 'CQI 보고서 AI초안 재생성'
                 : 'CQI 보고서 AI초안 생성'}
             </button>

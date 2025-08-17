@@ -37,6 +37,7 @@ import {
   quizGetAIAnswerPostTotalLecture,
   quizGetAIAnswerGetTotalLectureMember,
   quizGetAIAnswerGetTotalLectureMemberReport,
+  quizGetAIAnswerGetTotalLectureMemberCQI,
 } from './quiz.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 import { User } from 'src/models/user';
@@ -421,6 +422,28 @@ export const useQuizAIFeedbackLectureGetMember = (
     QUERY_KEY_FACTORY('CONTENT_DASHBOARD_QUIZ').list({ ...params }),
 
     () => quizGetAIAnswerGetTotalLectureMember(params),
+    {
+      onSuccess,
+      onError: error => {
+        const { responseCode, message } = error;
+        alert(`error : [${responseCode}] ${message}`);
+      },
+      enabled: false,
+      retry: false,
+      refetchOnWindowFocus: false,
+    },
+  );
+};
+
+export const useQuizAIFeedbackLectureGetMemberCQI = (
+  params,
+  onSuccess?: (data: any) => void,
+  onError?: (error: Error) => void,
+) => {
+  return useQuery<any, Error>(
+    QUERY_KEY_FACTORY('DASHBOARD_QUIZ_REPORT_CQI').list({ ...params }),
+
+    () => quizGetAIAnswerGetTotalLectureMemberCQI(params),
     {
       onSuccess,
       onError,
