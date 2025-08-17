@@ -111,6 +111,8 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
   useEffect(() => {
     if (lectureClubEvaluationMemberError || lectureClubEvaluationMemberSucces) {
       // 모든 로딩 상태 해제
+      console.log('refetchAIEvaluationTotal');
+      refetchAIEvaluationTotal();
       setLoadingClubs({});
       setIsLoading(false);
       setAiFeedbackDataTotal(null);
@@ -525,6 +527,7 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
                   memberUUID: memberUUIDList,
                 });
                 setIsLoading(true);
+                console.log('refetchAIEvaluationTotal');
               }}
               className="tw-text-base tw-text-center tw-bg-black tw-text-white tw-px-4 tw-py-2 tw-rounded-md"
             >
