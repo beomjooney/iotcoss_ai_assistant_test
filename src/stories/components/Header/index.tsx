@@ -173,6 +173,8 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
             <Typography>사물인터넷 혁신융합대학사업단</Typography>
           ) : tenantName === 'ai' ? (
             <Typography>AI조교</Typography>
+          ) : tenantName === 'dsuai' ? (
+            <Typography>DSU AI조교</Typography>
           ) : (
             <Typography>DSU QuizUp</Typography>
           )}
@@ -198,40 +200,37 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
         return (
           item?.login && (
             <div key={index}>
-              <Link href={item.link} className="nav-link">
-                <ListItem
-                  key={item.no}
-                  disablePadding
-                  sx={{ justifyContent: 'start !important', padding: '0.5 !important' }}
+              <ListItem
+                key={item.no}
+                disablePadding
+                sx={{ justifyContent: 'start !important', padding: '0.5 !important' }}
+              >
+                <ListItemButton
+                  onClick={event => {
+                    setMenuOpen(false);
+                    location.href = item.link;
+                  }}
                 >
-                  <ListItemButton
-                    onClick={event => {
-                      setMenuOpen(false);
-                    }}
-                  >
-                    <ListItemIcon>
-                      {index === 0 ? (
-                        <ContentPasteIcon />
-                      ) : index === 1 ? (
-                        <ForkRightIcon />
-                      ) : index === 2 ? (
-                        <AttachmentIcon />
-                      ) : index === 3 ? (
-                        <EscalatorWarningIcon />
-                      ) : index === 4 ? (
-                        <DvrIcon />
-                      ) : index === 5 ? (
-                        <AddLinkIcon />
-                      ) : (
-                        <AdUnitsIcon />
-                      )}
-                    </ListItemIcon>
-                    {/* <Link href={item.link} className="nav-link"> */}
-                    {item.title}
-                    {/* </Link> */}
-                  </ListItemButton>
-                </ListItem>
-              </Link>
+                  <ListItemIcon>
+                    {index === 0 ? (
+                      <ContentPasteIcon />
+                    ) : index === 1 ? (
+                      <ForkRightIcon />
+                    ) : index === 2 ? (
+                      <AttachmentIcon />
+                    ) : index === 3 ? (
+                      <EscalatorWarningIcon />
+                    ) : index === 4 ? (
+                      <DvrIcon />
+                    ) : index === 5 ? (
+                      <AddLinkIcon />
+                    ) : (
+                      <AdUnitsIcon />
+                    )}
+                  </ListItemIcon>
+                  {item.title}
+                </ListItemButton>
+              </ListItem>
               <Divider variant="inset" component="li" />
             </div>
           )
