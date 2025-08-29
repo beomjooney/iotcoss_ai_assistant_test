@@ -2,6 +2,8 @@ import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
 import { useSessionStore } from '../../store/session';
+import ChatbotModal from 'src/stories/components/ChatBot';
+import ProfessorExpModal from 'src/stories/components/ProfessorExp';
 
 const cx = classNames.bind(styles);
 export interface HomeDsuAiProps {
@@ -12,6 +14,10 @@ export interface HomeDsuAiProps {
 export function HomeDsuAiTemplate({ logged = false, tenantName = '' }: HomeDsuAiProps) {
   const [isClient, setIsClient] = useState(false);
   const [roles, setRoles] = useState<string[]>([]);
+  const [menu, setMenu] = useState<any>({});
+  const [token, setToken] = useState<string>('');
+  const [modalIsProfessor, setModalIsProfessor] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
   // 클라이언트 사이드에서만 렌더링하도록 상태 관리
   useEffect(() => {
@@ -19,8 +25,10 @@ export function HomeDsuAiTemplate({ logged = false, tenantName = '' }: HomeDsuAi
 
     // 클라이언트에서만 세션 스토어에 접근
     if (typeof window !== 'undefined') {
-      const { roles: sessionRoles } = useSessionStore.getState();
+      const { roles: sessionRoles, menu, token } = useSessionStore.getState();
       setRoles(sessionRoles || []);
+      setMenu(menu || {});
+      setToken(token || '');
       console.log(sessionRoles);
     }
   }, []);
@@ -425,6 +433,27 @@ export function HomeDsuAiTemplate({ logged = false, tenantName = '' }: HomeDsuAi
           <img src="/assets/images/dsuai/bg-footer.svg" className="tw-w-full tw-object-cover" alt="AI조교 이미지" />
         </div>
       </section>
+      <div className={cx('container  ')}>
+        {isClient && modalIsProfessor && (
+          <ProfessorExpModal
+            title="교수자 체험하기"
+            isOpen={modalIsProfessor}
+            onRequestClose={() => {
+              setModalIsProfessor(false);
+            }}
+          />
+        )}
+
+        {isClient && !modalIsOpen && logged && menu.use_lecture_club && (
+          <div
+            className="tw-fixed tw-bottom-0 tw-right-0  tw-mr-4 md:tw-mr-10 tw-mb-4 md:tw-mb-8 tw-cursor-pointer tw-z-10"
+            onClick={() => setModalIsOpen(true)}
+          >
+            <img alt="chatbot" className="tw-w-[140px] tw-h-[140px]" src="/assets/images/main/chatbot.png" />
+          </div>
+        )}
+        {isClient && <ChatbotModal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)} token={token} />}
+      </div>
     </div>
   );
 }
