@@ -222,6 +222,7 @@ const LectureDetaillSolution = ({
             <Grid item xs={4} container justifyContent="flex-end">
               <div className="tw-z-0">
                 <img
+                  alt="Rectangle_190"
                   className="tw-w-40 tw-h-40 tw-rounded-lg "
                   src={contents?.clubImageUrl || '/assets/images/banner/Rectangle_190.png'}
                 />
@@ -247,6 +248,7 @@ const LectureDetaillSolution = ({
         <div className="tw-pointer-events-none tw-px-[50px] tw-absolute tw-top-[300px] tw-left-0 tw-right-0 tw-bottom-0 tw-rounded-[8.75px] tw-py-[40px]">
           <div className="tw-flex tw-items-end tw-gap-[16px]">
             <img
+              alt="default_profile_image"
               className="tw-w-40 tw-h-40 tw-rounded-full"
               src={contents?.leader?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
             />
@@ -270,6 +272,7 @@ const LectureDetaillSolution = ({
               <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-py-10  tw-p-0">
                 <div className="tw-col-start-1 tw-col-end-1 tw-flex tw-justify-center">
                   <img
+                    alt="Calendar_perspective_matte"
                     src="/assets/images/quiz/Calendar_perspective_matte.png"
                     className="tw-max-w-[22.75px] tw-max-h-[23.19px] tw-object-cover"
                   />
@@ -471,6 +474,7 @@ const LectureDetaillSolution = ({
               <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-py-10  tw-p-0">
                 <div className="tw-col-start-1 tw-col-end-1 tw-flex tw-justify-center">
                   <img
+                    alt="Comment_perspective_matte"
                     src="/assets/images/quiz/Comment_perspective_matte.png"
                     className="tw-max-w-[22.75px] tw-max-h-[23.19px] tw-object-cover"
                   />
@@ -487,6 +491,7 @@ const LectureDetaillSolution = ({
               <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-py-10  tw-p-0">
                 <div className="tw-col-start-1 tw-col-end-1 tw-flex tw-justify-center">
                   <img
+                    alt="Message_perspective_matte"
                     src="/assets/images/quiz/Message_perspective_matte.png"
                     className="tw-max-w-[22.75px] tw-max-h-[23.19px] tw-object-cover"
                   />
@@ -513,6 +518,7 @@ const LectureDetaillSolution = ({
               <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-py-10  tw-p-0">
                 <div className="tw-col-start-1 tw-col-end-1 tw-flex tw-justify-center">
                   <img
+                    alt="Success_perspective_matte"
                     src="/assets/images/quiz/Success_perspective_matte.png"
                     className="tw-max-w-[22.75px] tw-max-h-[23.19px] tw-object-cover"
                   />
@@ -530,6 +536,7 @@ const LectureDetaillSolution = ({
               <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-py-10  tw-p-0">
                 <div className="tw-col-start-1 tw-col-end-1 tw-flex tw-justify-center">
                   <img
+                    alt="Calendar_perspective_matte"
                     src="/assets/images/quiz/Calendar_perspective_matte.png"
                     className="tw-max-w-[22.75px] tw-max-h-[23.19px] tw-object-cover"
                   />
@@ -556,7 +563,7 @@ const LectureDetaillSolution = ({
               className="tw-fixed tw-bottom-0 tw-right-0  tw-mr-4 md:tw-mr-10 tw-mb-4 md:tw-mb-8 tw-cursor-pointer tw-z-10"
               onClick={() => setModalIsOpen(true)}
             >
-              <img className="tw-w-[140px] tw-h-[140px]" src="/assets/images/main/chatbot.png" />
+              <img alt="chatbot" className="tw-w-[140px] tw-h-[140px]" src="/assets/images/main/chatbot.png" />
             </div>
           </div>
         )}

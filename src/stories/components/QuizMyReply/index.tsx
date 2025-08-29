@@ -181,7 +181,13 @@ QuizMyReplyProps) => {
         <div className={cx('board-header', 'row')}>
           <div className="tw-flex tw-items-center tw-space-x-4 tw-my-5 tw-gap-2">
             {/* {board.postNo} */}
-            <img src={board?.imageUrl} alt={'image'} className={cx('rounded-circle', 'profile-image', 'tw-h-12')} />
+            <img
+              src={board?.imageUrl}
+              alt={'image'}
+              className={cx('rounded-circle', 'profile-image', 'tw-h-12')}
+              onError={e => {
+                (e.target as HTMLImageElement).src = '/assets/images/account/default_profile_image.png';
+              }}
             <div>
               {/*TODO 원래 job(직업)임*/}
               <div className="tw-font-bold tw-text-lg tw-text-black">{board?.nickname}</div>

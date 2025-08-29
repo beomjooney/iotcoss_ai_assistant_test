@@ -394,6 +394,7 @@ const QuizClubListView = ({
               <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[77px] tw-h-9">
                 <p className="tw-absolute tw-left-11 tw-top-[9px] tw-text-xs tw-text-left tw-text-black">김승태</p>
                 <img
+                  alt="아그리파_1"
                   className="tw-absolute tw-left-[-0.5px] tw-top-[-0.5px]"
                   src="/assets/images/quiz/아그리파_1.png"
                 />
@@ -437,6 +438,7 @@ const QuizClubListView = ({
               <div className="tw-flex-grow-0 tw-flex-shrink-0 tw-w-[77px] tw-h-9">
                 <p className="tw-absolute tw-left-11 tw-top-[9px] tw-text-xs tw-text-left tw-text-black">김승태</p>
                 <img
+                  alt="아그리파_1"
                   className="tw-absolute tw-left-[-0.5px] tw-top-[-0.5px]"
                   src="/assets/images/quiz/아그리파_1.png"
                 />
@@ -463,6 +465,7 @@ const QuizClubListView = ({
                     양황규 교수님
                   </p>
                   <img
+                    alt="ellipse_209_2"
                     className="tw-absolute tw-left-[-0.5px] tw-top-[-0.5px]"
                     src="/assets/images/quiz/ellipse_209_2.png"
                   />
@@ -521,7 +524,7 @@ const QuizClubListView = ({
             <div>
               <div className="tw-flex tw-pt-14">
                 <div className="tw-flex tw-justify-start tw-items-center tw-top-[13px] tw-left-4 tw-gap-3">
-                  <img className="tw-flex-shrink-0" src="/assets/images/quiz/ellipse_209_2.png" />
+                  <img alt="ellipse_209_2" className="tw-flex-shrink-0" src="/assets/images/quiz/ellipse_209_2.png" />
                   <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[12px] tw-text-center tw-text-black">
                     양황규 교수님
                   </p>

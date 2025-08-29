@@ -423,6 +423,7 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
                     <div className="tw-bg-[#F6F7FB] tw-flex tw-items-center tw-px-4 tw-py-1 tw-rounded-xl tw-my-3">
                       <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                         <img
+                          alt="default_profile_image"
                           className="tw-w-10 tw-h-10 border tw-rounded-full"
                           src={item?.questioner?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
                         />
@@ -623,8 +624,8 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
                                     (questionInfo?.answerType === '0200'
                                       ? '(강의자료) : '
                                       : questionInfo?.answerType === '0300'
-                                        ? '(일반서치) : '
-                                        : '') +
+                                      ? '(일반서치) : '
+                                      : '') +
                                     questionInfo?.answer
                                   : null}
                               </Markdown>

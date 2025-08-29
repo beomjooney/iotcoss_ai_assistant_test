@@ -76,8 +76,8 @@ export function HomeSkpAiTemplate({ logged = false, tenantName = '' }: HomeSkpAi
                 <p className=" tw-text-base tw-font-bold tw-text-center tw-text-white">데브어스 AI조교 체험하기</p>
               </button> */}
               <div className="tw-flex tw-flex-row tw-gap-2 tw-justify-start tw-items-center tw-mt-2">
-                <img src="/assets/images/main/skp1.png" className="tw-h-[40px]" />
-                <img src="/assets/images/main/skp2.png" className="tw-h-[100%]" />
+                <img alt="skp1" src="/assets/images/main/skp1.png" className="tw-h-[40px]" />
+                <img alt="skp2" src="/assets/images/main/skp2.png" className="tw-h-[100%]" />
               </div>
             </div>
           </div>
@@ -169,20 +169,20 @@ export function HomeSkpAiTemplate({ logged = false, tenantName = '' }: HomeSkpAi
 
           {/* 두 번째 섹션 */}
           <div className={cx('tw-flex tw-justify-center tw-items-start tw-px-0')}>
-            <img src="/assets/images/main/lec_1.png" className="tw-w-[573px]   tw-object-cover " />
-            <img src="/assets/images/main/lec_2.png" className="tw-w-[573px]  tw-object-cover " />
+            <img alt="lec_1" src="/assets/images/main/lec_1.png" className="tw-w-[573px]   tw-object-cover " />
+            <img alt="lec_2" src="/assets/images/main/lec_2.png" className="tw-w-[573px]  tw-object-cover " />
           </div>
 
           {/* 세 번째 섹션 */}
           <div className={cx('tw-flex tw-justify-center tw-items-start tw-px-0 tw-mt-[-40px]')}>
-            <img src="/assets/images/main/lec_3.png" className="tw-w-[573px]  tw-object-cover " />
-            <img src="/assets/images/main/lec_4.png" className="tw-w-[573px]   tw-object-cover" />
+            <img alt="lec_3" src="/assets/images/main/lec_3.png" className="tw-w-[573px]  tw-object-cover " />
+            <img alt="lec_4" src="/assets/images/main/lec_4.png" className="tw-w-[573px]   tw-object-cover" />
           </div>
 
           {/* 네 번째 섹션 */}
           <div className={cx('tw-flex tw-justify-center tw-items-start tw-px-0 tw-mt-[-40px]')}>
-            <img src="/assets/images/main/lec_5.png" className="  tw-w-[573px]  tw-object-cover " />
-            <img src="/assets/images/main/lec_6.png" className="tw-w-[573px]  tw-object-cover" />
+            <img alt="lec_5" src="/assets/images/main/lec_5.png" className="  tw-w-[573px]  tw-object-cover " />
+            <img alt="lec_6" src="/assets/images/main/lec_6.png" className="tw-w-[573px]  tw-object-cover" />
           </div>
         </div>
       </section>

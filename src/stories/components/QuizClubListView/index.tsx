@@ -331,6 +331,7 @@ const QuizClubListView = ({ border, id }) => {
                           <div className="tw-bg-[#F6F7FB] tw-flex tw-items-center tw-px-4 max-lg:tw-p-3 tw-py-1 tw-rounded-xl">
                             <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                               <img
+                                alt="Default_profile_image"
                                 className="tw-w-10 tw-h-10 border tw-rounded-full"
                                 src={item?.maker?.profileImageUrl}
                               />

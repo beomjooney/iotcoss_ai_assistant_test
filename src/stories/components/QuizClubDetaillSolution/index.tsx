@@ -343,6 +343,7 @@ const QuizClubDetaillSolution = ({
         <div className="tw-h-[280] tw-relative tw-overflow-hidden tw-rounded-[8.75px] tw-bg-white border border-[#e9ecf2] tw-grid tw-grid-cols-3 tw-gap-4">
           <div className="tw-col-span-1">
             <img
+              alt="Rectangle_190"
               src={clubAbout?.clubImageUrl || '/assets/images/banner/Rectangle_190.png'}
               width={320}
               className="tw-object-cover tw-h-[320px]"
@@ -394,6 +395,7 @@ const QuizClubDetaillSolution = ({
             <div className="tw-flex tw-items-center tw-mt-auto tw-justify-between tw-w-full tw-py-2">
               <div className="tw-flex tw-items-center">
                 <img
+                  alt="Default_profile_image"
                   src={contents?.club?.leaderProfileImageUrl || '/assets/images/account/default_profile_image.png'}
                   className="tw-mr-2 tw-rounded-full tw-ring-1 tw-ring-gray-200 tw-w-9 tw-h-9"
                 />
@@ -708,6 +710,7 @@ const QuizClubDetaillSolution = ({
                                 >
                                   <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                     <img
+                                      alt="Default_profile_image"
                                       className="tw-w-10 tw-h-10 tw-rounded-full tw-ring-1 tw-ring-gray-200"
                                       src={
                                         item?.maker?.profileImageUrl ||
@@ -756,6 +759,7 @@ const QuizClubDetaillSolution = ({
                                   </div>
                                   <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                     <img
+                                      alt="Default_profile_image"
                                       className="tw-rounded-full tw-w-10 tw-h-10 tw-ring-1 tw-ring-gray-200"
                                       src={
                                         item?.answer?.member?.profileImageUrl ||
@@ -829,6 +833,7 @@ const QuizClubDetaillSolution = ({
                                     >
                                       <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                         <img
+                                          alt="Default_profile_image"
                                           className="tw-w-10 tw-h-10 tw-rounded-full tw-ring-1 tw-ring-gray-200"
                                           src={item?.maker?.profileImageUrl}
                                         />
@@ -877,6 +882,7 @@ const QuizClubDetaillSolution = ({
                                           </div>
                                           <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                             <img
+                                              alt="Default_profile_image"
                                               className="tw-rounded-full tw-w-10 tw-h-10 tw-ring-1 tw-ring-gray-200"
                                               src={item?.answer?.member?.profileImageUrl}
                                             />
@@ -1019,6 +1025,7 @@ const QuizClubDetaillSolution = ({
                               >
                                 <div className="tw-w-1.5/12 tw-py-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                   <img
+                                    alt="Default_profile_image"
                                     className="tw-w-10 tw-h-10 tw-rounded-full tw-mb-1 tw-ring-1 tw-ring-gray-200"
                                     src={item?.maker?.profileImageUrl}
                                   />
@@ -1069,6 +1076,7 @@ const QuizClubDetaillSolution = ({
                                     </div>
                                     <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                       <img
+                                        alt="Default_profile_image"
                                         className="tw-rounded-full tw-w-10 tw-h-10 tw-mb-1 tw-ring-1 tw-ring-gray-200"
                                         src={
                                           item?.answer?.member?.profileImageUrl ||
@@ -1133,6 +1141,7 @@ const QuizClubDetaillSolution = ({
                                   </div>
                                   <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                     <img
+                                      alt="Default_profile_image"
                                       className="tw-rounded-full tw-w-10 tw-h-10 tw-mb-1 tw-ring-1 tw-ring-gray-200"
                                       src={
                                         item?.answer?.member?.profileImageUrl ||
@@ -1196,6 +1205,7 @@ const QuizClubDetaillSolution = ({
             <div className="tw-bg-[#F6F7FB] tw-flex tw-items-center tw-px-4 max-lg:tw-p-3 tw-py-4 tw-rounded-t-xl">
               <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                 <img
+                  alt="Default_profile_image"
                   className="tw-w-10 tw-h-10 tw-ring-1 tw-ring-gray-200 tw-rounded-full"
                   src={clubQuizThreads?.member?.profileImageUrl}
                 />
@@ -1236,9 +1246,14 @@ const QuizClubDetaillSolution = ({
 
                   <div className="tw-w-1.5/12  tw-py-2 tw-flex tw-flex-col">
                     {item?.threadType === '0003' ? (
-                      <img className="tw-rounded-full tw-w-10 tw-h-10 border" src="/assets/images/main/chatbot2.png" />
+                      <img
+                        alt="chatbot2"
+                        className="tw-rounded-full tw-w-10 tw-h-10 border"
+                        src="/assets/images/main/chatbot2.png"
+                      />
                     ) : (
                       <img
+                        alt="Default_profile_image"
                         className="tw-rounded-full tw-w-10 tw-h-10 tw-ring-1 tw-ring-gray-200"
                         src={item?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
                       />
@@ -1500,7 +1515,11 @@ const QuizClubDetaillSolution = ({
                 </div>
                 <div className="tw-flex tw-items-center tw-gap-2">
                   <span className="tw-text-sm tw-text-gray-500">{aiFeedbackData?.member?.nickname}</span>
-                  <img src={aiFeedbackData?.member?.profileImageUrl} className="tw-w-6 tw-h-6 tw-rounded-full" />
+                  <img
+                    alt="Default_profile_image"
+                    src={aiFeedbackData?.member?.profileImageUrl}
+                    className="tw-w-6 tw-h-6 tw-rounded-full"
+                  />
                 </div>
               </div>
               <div className="tw-p-4">

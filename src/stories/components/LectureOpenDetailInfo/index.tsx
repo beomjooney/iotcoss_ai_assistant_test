@@ -317,6 +317,7 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
           <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-py-10  tw-p-0">
             <div className="tw-col-start-1 tw-col-end-1 tw-flex tw-justify-center">
               <img
+                alt="Message_perspective_matte"
                 src="/assets/images/quiz/Message_perspective_matte.png"
                 className="tw-max-w-[22.75px] tw-max-h-[23.19px] tw-object-cover"
               />
@@ -334,6 +335,7 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
           <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-py-10  tw-p-0">
             <div className="tw-col-start-1 tw-col-end-1 tw-flex tw-justify-center">
               <img
+                alt="Success_perspective_matte"
                 src="/assets/images/quiz/Success_perspective_matte.png"
                 className="tw-max-w-[22.75px] tw-max-h-[23.19px] tw-object-cover"
               />
@@ -351,6 +353,7 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
           <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-py-10  tw-p-0">
             <div className="tw-col-start-1 tw-col-end-1 tw-flex tw-justify-center">
               <img
+                alt="Calendar_perspective_matte"
                 src="/assets/images/quiz/Calendar_perspective_matte.png"
                 className="tw-max-w-[22.75px] tw-max-h-[23.19px] tw-object-cover"
               />

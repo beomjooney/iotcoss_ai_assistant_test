@@ -263,6 +263,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
         <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-pt-10">
           <div className="tw-col-start-1 tw-col-end-2 tw-flex tw-justify-center">
             <img
+              alt="Success_perspective_matte"
               src="/assets/images/quiz/Success_perspective_matte.png"
               className="tw-max-w-[22.75px] tw-max-h-[23.19px] tw-object-cover"
             />
@@ -278,6 +279,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
         <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-pt-10">
           <div className="tw-col-start-1 tw-col-end-1 tw-flex tw-justify-center">
             <img
+              alt="User_perspective_matte"
               src="/assets/images/quiz/User_perspective_matte.png"
               className="tw-max-w-[22.75px] tw-max-h-[23.19px] tw-object-cover"
             />
@@ -294,6 +296,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
         <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-pt-10">
           <div className="tw-col-start-1 tw-col-end-1 tw-flex tw-justify-center">
             <img
+              alt="Trophy_perspective_matte"
               src="/assets/images/quiz/Trophy_perspective_matte.png"
               className="tw-max-w-[22.75px] tw-max-h-[23.19px] tw-object-cover"
             />
@@ -314,6 +317,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
             <div className="tw-flex tw-items-start tw-gap-[16px]">
               {clubData?.useCurrentProfileImage === true ? (
                 <img
+                  alt="Default_profile_image"
                   className="tw-w-28 tw-h-28 border tw-rounded-full border"
                   src={user?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
                 />
@@ -371,6 +375,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
             <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-py-10  tw-p-0">
               <div className="tw-col-start-1 tw-col-end-1 tw-flex tw-justify-center">
                 <img
+                  alt="Comment_perspective_matte"
                   src="/assets/images/quiz/Comment_perspective_matte.png"
                   className="tw-max-w-[22.75px] tw-max-h-[23.19px] tw-object-cover"
                 />
@@ -387,6 +392,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
             <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-py-10  tw-p-0">
               <div className="tw-col-start-1 tw-col-end-1 tw-flex tw-justify-center">
                 <img
+                  alt="Crown_perspective_matte"
                   src="/assets/images/quiz/Crown_perspective_matte.png"
                   className="tw-max-w-[22.75px] tw-max-h-[23.19px] tw-object-cover"
                 />
@@ -405,6 +411,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
         <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-py-10  tw-p-0">
           <div className="tw-col-start-1 tw-col-end-1 tw-flex tw-justify-center">
             <img
+              alt="Calendar_perspective_matte"
               src="/assets/images/quiz/Calendar_perspective_matte.png"
               className="tw-max-w-[22.75px] tw-max-h-[23.19px] tw-object-cover"
             />
@@ -443,6 +450,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
           <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-pt-5 tw-pb-10">
             <div className="tw-col-start-1 tw-col-end-1 tw-flex tw-justify-center">
               <img
+                alt="Message_perspective_matte"
                 src="/assets/images/quiz/Message_perspective_matte.png"
                 className="tw-max-w-[22.75px] tw-max-h-[23.19px] tw-object-cover"
               />
