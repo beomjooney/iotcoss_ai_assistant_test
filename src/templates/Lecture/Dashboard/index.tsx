@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import Divider from '@mui/material/Divider';
 import { PieChart } from 'react-minimal-pie-chart';
 import {
-  paramProps,
   useMyLectureList,
   useMyLectureDashboardList,
   useMyLectureDashboardStudentList,
@@ -46,7 +45,6 @@ import { styled } from '@mui/material/styles';
 import {
   useQuizAIFeedbackLectureGetMember,
   useQuizFileDownload,
-  useQuizAIFeedbackLectureGetMemberReport,
   useQuizAIFeedbackLectureGetMemberCQI,
 } from 'src/services/quiz/quiz.queries';
 import Markdown from 'react-markdown';
@@ -1646,9 +1644,6 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
             )}
           </>
         )}
-        {/* <div className="tw-mt-10">
-          <Paginations page={pageStudent} setPage={setPageStudent} total={totalStudentPage} />
-        </div> */}
       </div>
       <Modal
         isOpen={isModalOpen}
