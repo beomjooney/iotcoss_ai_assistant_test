@@ -142,7 +142,7 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
             <Grid item xs={8}>
               <div className="tw-flex tw-item tw-text-base tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
                 <span className="tw-inline-flex tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded">
-                  {clubData?.jobGroups[0]?.name || selectedUniversityName || 'N/A'}
+                  {clubData?.jobGroups[0]?.name || selectedUniversityName || ''}
                 </span>
 
                 {selectedJobName.length > 0 ? (
@@ -164,7 +164,7 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
                           key={index}
                           className="tw-inline-flex tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
                         >
-                          {job?.name || 'N/A'}
+                          {job?.name || ''}
                         </span>
                       ))}
                   </>
@@ -189,7 +189,7 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
                           key={index}
                           className=" tw-inline-flex tw-bg-gray-200 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded "
                         >
-                          {jobLevel?.name || 'N/A'}
+                          {jobLevel?.name || ''}
                         </span>
                       ))}
                   </>
@@ -210,7 +210,7 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
               </div>
 
               <div className="tw-text-black tw-text-3xl tw-font-bold tw-py-3">
-                {clubData?.name || clubData?.clubName || 'N/A'}
+                {clubData?.name || clubData?.clubName || ''}
               </div>
             </Grid>
             <Grid item xs={4} container justifyContent="flex-end">
@@ -268,7 +268,7 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
             </div>
             <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-[14px]  tw-gap-3">
               <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[21.875px] tw-font-bold tw-text-left tw-text-black">
-                {user?.nickname || user?.member?.nickname || 'N/A'}
+                {user?.nickname || user?.member?.nickname || ''}
               </p>
             </div>
             <p className="tw-text-[12.25px] tw-text-[#6a7380]">{user?.position}</p>
@@ -298,6 +298,7 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
           <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-py-10  tw-p-0">
             <div className="tw-col-start-1 tw-col-end-1 tw-flex tw-justify-center">
               <img
+                alt="Comment_perspective_matte"
                 src="/assets/images/quiz/Comment_perspective_matte.png"
                 className="tw-max-w-[22.75px] tw-max-h-[23.19px] tw-object-cover"
               />
@@ -306,7 +307,7 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
               <div className="tw-flex tw-flex-col">
                 <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-5">학습 주제</p>
                 <p className="tw-text-sm tw-text-left tw-text-black">
-                  {clubData?.studySubject || clubData?.studySubject || 'N/A'}
+                  {clubData?.studySubject || clubData?.studySubject || ''}
                 </p>
               </div>
             </div>
@@ -325,7 +326,7 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
             <div className="tw-col-start-2 tw-col-end-12">
               <div className="tw-flex tw-flex-col">
                 <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-5">학습 키워드</p>
-                <p className="tw-text-sm tw-text-left tw-text-black">{clubData?.studyKeywords?.toString() || 'N/A'}</p>
+                <p className="tw-text-sm tw-text-left tw-text-black">{clubData?.studyKeywords?.toString() || ''}</p>
               </div>
             </div>
           </div>
