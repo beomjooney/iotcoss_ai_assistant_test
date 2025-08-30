@@ -1,17 +1,13 @@
 import React from 'react';
-import classNames from 'classnames/bind';
-import styles from './index.module.scss';
 import { useState, useRef } from 'react';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { makeStyles } from '@mui/styles';
 import { TextField, InputAdornment, IconButton } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { useEffect } from 'react';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import validator from 'validator';
 
 const useStyles = makeStyles(theme => ({
@@ -234,7 +230,7 @@ const LectureBreakerInfo = ({
             </div>
             <div className="tw-w-11/12 tw-py-5">
               <div className="tw-w-full tw-flex tw-justify-start tw-items-center">
-                <div className="tw-flex tw-text-black tw-text-base tw-w-[140px] tw-line-clamp-1">강의유형 설정 : </div>
+                <div className="tw-flex tw-text-black tw-text-base tw-w-[120px] tw-line-clamp-1">강의유형 설정 : </div>
                 <div className="tw-flex tw-items-center tw-gap-1 tw-w-full tw-px-4">
                   <ToggleButtonGroup value={item.clubStudyType} onChange={handleIsPublic} exclusive aria-label="">
                     <ToggleButton
@@ -296,7 +292,10 @@ const LectureBreakerInfo = ({
                       <DatePicker
                         format="YYYY-MM-DD"
                         slotProps={{
-                          textField: { size: 'small', style: { backgroundColor: 'white', width: '140px' } },
+                          textField: {
+                            size: 'small',
+                            style: { backgroundColor: 'white', width: '150px' },
+                          },
                         }}
                         value={dayjs(item?.startDate)}
                         onChange={e => onChangeHandleFromToStartDate(e)}
@@ -307,7 +306,7 @@ const LectureBreakerInfo = ({
                       <DatePicker
                         format="YYYY-MM-DD"
                         slotProps={{
-                          textField: { size: 'small', style: { backgroundColor: 'white', width: '140px' } },
+                          textField: { size: 'small', style: { backgroundColor: 'white', width: '150px' } },
                         }}
                         value={dayjs(item?.endDate)}
                         onChange={e => onChangeHandleFromToEndDate(e)}
@@ -317,7 +316,7 @@ const LectureBreakerInfo = ({
                 </div>
               </div>
               <div className="tw-mt-3 tw-w-full tw-flex tw-justify-start tw-items-center">
-                <div className="tw-flex tw-text-black tw-text-base tw-w-[140px]">강의자료 업로드 : </div>
+                <div className="tw-flex tw-text-black tw-text-base tw-w-[120px]">강의자료 업로드 :</div>
                 <div className="tw-flex tw-items-center tw-gap-2 tw-w-full tw-px-5">
                   <div className="tw-w-[160px] tw-flex tw-items-center tw-gap-2 border tw-px-2 tw-py-2.5 tw-rounded">
                     <svg
@@ -445,14 +444,14 @@ const LectureBreakerInfo = ({
                                   {isProcessing
                                     ? '등록 중'
                                     : file.fileUploadStatus === '0000'
-                                      ? '등록 전'
-                                      : file.fileUploadStatus === '1000'
-                                        ? '등록 중'
-                                        : file.fileUploadStatus === '2000'
-                                          ? '등록 완료'
-                                          : file.fileUploadStatus === '3000'
-                                            ? '등록 실패'
-                                            : '등록 전'}
+                                    ? '등록 전'
+                                    : file.fileUploadStatus === '1000'
+                                    ? '등록 중'
+                                    : file.fileUploadStatus === '2000'
+                                    ? '등록 완료'
+                                    : file.fileUploadStatus === '3000'
+                                    ? '등록 실패'
+                                    : '등록 전'}
                                 </div>
                               </div>
                             </div>
@@ -498,14 +497,14 @@ const LectureBreakerInfo = ({
                                 {isProcessing
                                   ? '등록 중'
                                   : file.fileUploadStatus === '0000'
-                                    ? '등록 전'
-                                    : file.fileUploadStatus === '1000'
-                                      ? '등록 중'
-                                      : file.fileUploadStatus === '2000'
-                                        ? '등록 완료'
-                                        : file.fileUploadStatus === '3000'
-                                          ? '등록 실패'
-                                          : '등록 전'}
+                                  ? '등록 전'
+                                  : file.fileUploadStatus === '1000'
+                                  ? '등록 중'
+                                  : file.fileUploadStatus === '2000'
+                                  ? '등록 완료'
+                                  : file.fileUploadStatus === '3000'
+                                  ? '등록 실패'
+                                  : '등록 전'}
                               </div>
                             </div>
                           ))}

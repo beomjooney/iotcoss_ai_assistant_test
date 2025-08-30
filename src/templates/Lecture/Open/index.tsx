@@ -1,13 +1,11 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import React, { useEffect, useState, useRef, forwardRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { paramProps } from 'src/services/seminars/seminars.queries';
 import { useContentJobTypes, useJobGroupss } from 'src/services/code/code.queries';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useRouter } from 'next/router';
 import Grid from '@mui/material/Grid';
-import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
-import { styled } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
@@ -19,14 +17,7 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import moment from 'moment';
-
-import {
-  useMyQuiz,
-  useQuizList,
-  useGetScheduleDay,
-  useLectureGetTemp,
-  useGetSchedule,
-} from 'src/services/jobs/jobs.queries';
+import { useMyQuiz, useQuizList, useGetScheduleDay, useLectureGetTemp } from 'src/services/jobs/jobs.queries';
 import Checkbox from '@mui/material/Checkbox';
 import { useQuizSave, useClubTempSave, useLectureTempSave, useLectureSave } from 'src/services/quiz/quiz.mutations';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
@@ -40,7 +31,6 @@ import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import LectureBreakerInfo from 'src/stories/components/LectureBreakerInfo';
 import LectureOpenDetailInfo from 'src/stories/components/LectureOpenDetailInfo';
-/** drag list */
 import ReactDragList from 'react-drag-list';
 import { useStore } from 'src/store';
 import { InputAdornment, IconButton } from '@mui/material';
@@ -50,7 +40,6 @@ import ListItemText from '@mui/material/ListItemText';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { Toggle, Tag } from 'src/stories/components';
-//group
 import { images, imageBanner, dayGroup } from './group';
 import validator from 'validator';
 import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
@@ -106,7 +95,6 @@ export function LectureOpenTemplate() {
   const [params, setParams] = useState<any>({ page });
   const [dayParams, setDayParams] = useState<any>({});
   const [myParams, setMyParams] = useState<paramProps>({ page });
-  const [quizListParam, setQuizListParam] = useState<any[]>([]);
   const [quizListData, setQuizListData] = useState<any[]>([]);
   const [allQuizData, setAllQuizData] = useState([]);
   const [scheduleData, setScheduleData] = useState<any[]>([]);
@@ -133,25 +121,35 @@ export function LectureOpenTemplate() {
   const [selectedJobQuiz, setSelectedJobQuiz] = useState<string>('');
   const steps = ['Step.1 강의 정보입력', 'Step.2 강의 커리큘럼 입력', 'Step.3 개설될 강의 미리보기'];
   const [activeStep, setActiveStep] = React.useState(0);
-  const [skipped, setSkipped] = React.useState(new Set<number>());
   const [quizUrl, setQuizUrl] = React.useState('');
   const [quizName, setQuizName] = React.useState('');
   const [recommendLevels, setRecommendLevels] = useState([]);
   const [universityCode, setUniversityCode] = useState<string>('');
   const [levelNames, setLevelNames] = useState([]);
-  const [quizType, setQuizType] = useState('0100');
   const [recommendLevelsPopUp, setRecommendLevelsPopUp] = useState([]);
   const [clubName, setClubName] = useState<string>('');
-  const [num, setNum] = useState(0);
   const [active, setActive] = useState(0);
   const [agreements, setAgreements] = useState(true);
   const [keyWorld, setKeyWorld] = useState('');
   const [myKeyWorld, setMyKeyWorld] = useState('');
   const [studyCycleNum, setStudyCycleNum] = useState([]);
   const [buttonFlag, setButtonFlag] = useState(false);
-  const [comprehensiveEvaluationExecutionPermissions, setComprehensiveEvaluationExecutionPermissions] = useState<
-    string[]
-  >(['0001', '0003']);
+  const [selectedImage, setSelectedImage] = useState('');
+  const [selectedImageCheck, setSelectedImageCheck] = useState(null);
+  const [selectedImageBanner, setSelectedImageBanner] = useState('');
+  const [selectedImageBannerCheck, setSelectedImageBannerCheck] = useState(null);
+  const [selectedImageProfile, setSelectedImageProfile] = useState('/assets/images/account/default_profile_image.png');
+  const [selectedImageProfileCheck, setSelectedImageProfileCheck] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [previewBanner, setPreviewBanner] = useState(null);
+  const [previewProfile, setPreviewProfile] = useState(null);
+  const [isDisabled, setIsDisabled] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false); // 함수가 실행 중인지 확인하는 상태
+  const [contentJobType, setContentJobType] = useState<any[]>([]);
+  const [lectureContents, setLectureContents] = useState({
+    files: [],
+    urls: [],
+  });
 
   // AI 학습총평 설정 상태
   const [aiSummarySettings, setAiSummarySettings] = useState({
@@ -399,24 +397,6 @@ export function LectureOpenTemplate() {
   const { mutate: onTempSave, isSuccess: tempSucces } = useLectureTempSave();
   const { mutate: onQuizSave, isSuccess: postSucces } = useQuizSave();
   const { mutate: onLectureSave, isError, isSuccess: clubSuccess, data: clubDatas } = useLectureSave();
-
-  const [selectedImage, setSelectedImage] = useState('');
-  const [selectedImageCheck, setSelectedImageCheck] = useState(null);
-  const [selectedImageBanner, setSelectedImageBanner] = useState('');
-  const [selectedImageBannerCheck, setSelectedImageBannerCheck] = useState(null);
-  const [selectedImageProfile, setSelectedImageProfile] = useState('/assets/images/account/default_profile_image.png');
-  const [selectedImageProfileCheck, setSelectedImageProfileCheck] = useState(null);
-  const [preview, setPreview] = useState(null);
-  const [previewBanner, setPreviewBanner] = useState(null);
-  const [previewProfile, setPreviewProfile] = useState(null);
-  const [isDisabled, setIsDisabled] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false); // 함수가 실행 중인지 확인하는 상태
-
-  const [contentJobType, setContentJobType] = useState<any[]>([]);
-  const [lectureContents, setLectureContents] = useState({
-    files: [],
-    urls: [],
-  });
 
   useEffect(() => {
     if (isError) {
@@ -719,10 +699,6 @@ export function LectureOpenTemplate() {
     }
   }, [active]);
 
-  const isStepSkipped = (step: number) => {
-    return skipped.has(step);
-  };
-
   const handleNextTwo = () => {
     console.log('next');
     handlerClubSaveTemp('validation');
@@ -852,22 +828,6 @@ export function LectureOpenTemplate() {
       }),
     );
   };
-  const handleUrlAdd = (order: any, updated: any, externalLink: string) => {
-    console.log('scheduleUrlAdd', order, updated, externalLink);
-
-    setScheduleData(
-      scheduleData.map(item => {
-        // Update the urlList of the item with matching order
-        if (item.studyOrder === order) {
-          return {
-            ...item,
-            externalSharingLink: externalLink, // Add or update the externalSharingLink field
-          };
-        }
-        return item;
-      }),
-    );
-  };
 
   const scheduleFileAdd = (order: any, updated: any) => {
     console.log('scheduleFileAdd', order, updated);
@@ -934,7 +894,6 @@ export function LectureOpenTemplate() {
   };
 
   const handleRemoveFileLocal = fileIndex => {
-    // setFileList(fileList.filter((_, i) => i !== fileIndex));
     setLectureContents(prevContents => ({
       ...prevContents,
       files: prevContents.files.filter((_, i) => i !== fileIndex),
@@ -1012,67 +971,12 @@ export function LectureOpenTemplate() {
     console.log(sortedReducedData);
   };
 
-  const containerRef = useRef(null);
-
-  const _onListChange = newList => {
-    setScheduleData(newList);
-  };
-
-  const Item = React.forwardRef(({ item, itemSelected, dragHandleProps }, ref) => {
-    const { onMouseDown, onTouchStart } = dragHandleProps;
-
-    return (
-      <div key={item.studyOrder} ref={ref}>
-        <LectureBreakerInfo
-          onMouseDown={onMouseDown}
-          onTouchStart={onTouchStart}
-          handleStartDayChange={handleStartDayChange}
-          handleEndDayChange={handleEndDayChange}
-          handleUrlChange={handleUrlChange}
-          handleTypeChange={handleTypeChange}
-          lectureNameChange={lectureNameChange}
-          handleRemoveInput={handleRemoveInput}
-          scheduleUrlAdd={scheduleUrlAdd}
-          scheduleFileAdd={scheduleFileAdd}
-          handleRemoveFile={handleRemoveFile}
-          onFileDownload={onFileDownload}
-          item={item}
-          // avatarSrc={item.leaderProfileImageUrl}
-          urlList={item.urls}
-          fileList={item.files}
-          userName={item.leaderNickname}
-          questionText={item.question}
-          order={item.studyOrder !== undefined ? item.studyOrder : null}
-          answerText={item.modelAnswer}
-          handleCheckboxDelete={handleCheckboxDelete}
-          handleAddClick={handleAddClick}
-          publishDate={item.publishDate}
-          dayOfWeek={item.dayOfWeek}
-          isPublished={item.isPublished}
-        />
-      </div>
-    );
-  });
-
   const handleNextThree = () => {
     // 버튼을 비활성화시켜 클릭 잠금
     if (isProcessing) return; // 이미 함수가 실행 중이면 종료
     setIsProcessing(true); // 함수가 실행 중임을 표시
     handlerClubSaveTemp('save');
   };
-
-  const BootstrapTooltip = styled(({ className, ...props }: TooltipProps) => (
-    <Tooltip {...props} arrow classes={{ popper: className }} />
-  ))(({ theme }) => ({
-    [`& .${tooltipClasses.arrow}`]: {
-      color: '#D8ECFF',
-    },
-    [`& .${tooltipClasses.tooltip}`]: {
-      backgroundColor: '#D8ECFF',
-      color: '#478AF5',
-      fontSize: '11px',
-    },
-  }));
 
   const handleNextOne = () => {
     handlerClubSaveTemp('validation');
@@ -1164,15 +1068,15 @@ export function LectureOpenTemplate() {
       }
     }
 
-    if (!studySubject) {
-      alert('학습 주제를 입력해주세요');
-      return false;
-    }
+    // if (!studySubject) {
+    //   alert('학습 주제를 입력해주세요');
+    //   return false;
+    // }
 
-    if (studyKeywords.length === 0) {
-      alert('학습 키워드를 입력해주세요');
-      return false;
-    }
+    // if (studyKeywords.length === 0) {
+    //   alert('학습 키워드를 입력해주세요');
+    //   return false;
+    // }
 
     if (isPublic === '0002') {
       if (!participationCode) {
@@ -1191,10 +1095,10 @@ export function LectureOpenTemplate() {
       return;
     }
 
-    if (!introductionText) {
-      alert('설명을 입력해주세요');
-      return false;
-    }
+    // if (!introductionText) {
+    //   alert('설명을 입력해주세요');
+    //   return false;
+    // }
 
     if (!preview) {
       alert('강의 카드 이미지를 선택해주세요.');
@@ -1624,9 +1528,16 @@ export function LectureOpenTemplate() {
         {activeStep === 0 && (
           <article>
             <Desktop>
-              <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">강의 기본정보 입력</div>
+              <div className="tw-flex tw-justify-between tw-items-center tw-w-full">
+                <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">강의 기본정보 입력</div>
+                <div className="tw-text-sm tw-text-black tw-my-10">
+                  <span className="tw-text-red-500 tw-mr-1">*</span>필수입력사항
+                </div>
+              </div>
               <div className={cx('content-area')}>
-                <div className="tw-font-semibold tw-text-sm tw-text-black tw-mb-2">강의명</div>
+                <div className="tw-font-semibold tw-text-sm tw-text-black tw-mb-2">
+                  강의명 <span className="tw-text-red-500">*</span>
+                </div>
                 <TextField
                   size="small"
                   fullWidth
@@ -1640,7 +1551,7 @@ export function LectureOpenTemplate() {
                   <div className="tw-grid tw-grid-cols-2 tw-gap-4 tw-content-start">
                     <div>
                       <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
-                        추천 {groupLabel}
+                        추천 {groupLabel} <span className="tw-text-red-500">*</span>
                       </div>
                       <select
                         className="form-select"
@@ -1660,7 +1571,7 @@ export function LectureOpenTemplate() {
                     <div>
                       <div>
                         <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
-                          추천 {}(다중 선택 가능)
+                          추천 학과 (다중 선택 가능) <span className="tw-text-red-500">*</span>
                         </div>
                         <FormControl sx={{ width: '100%' }} size="small">
                           <Select
@@ -1700,7 +1611,7 @@ export function LectureOpenTemplate() {
                   </div>
 
                   <div className="tw-mb-[12px] tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
-                    추천 학년
+                    추천 학년 <span className="tw-text-red-500">*</span>
                   </div>
 
                   {optionsData?.data?.jobLevels?.map((item, i) => (
@@ -1731,7 +1642,7 @@ export function LectureOpenTemplate() {
                   <div className="tw-grid tw-grid-cols-2 tw-gap-4 tw-mt-5 tw-content-start">
                     <div>
                       <div className="tw-mb-[12px] tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
-                        강의 시작일
+                        강의 시작일 <span className="tw-text-red-500">*</span>
                       </div>
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
@@ -1746,7 +1657,7 @@ export function LectureOpenTemplate() {
                     </div>
                     <div>
                       <div className="tw-mb-[12px] tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
-                        강의 종료일
+                        강의 종료일 <span className="tw-text-red-500">*</span>
                       </div>
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
@@ -1764,7 +1675,7 @@ export function LectureOpenTemplate() {
                   <div className="tw-mb-10 tw-content-start">
                     <div>
                       <div className="tw-mb-[12px] tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
-                        강의 반복 설정 (복수선택가능)
+                        강의 반복 설정 (복수선택가능) <span className="tw-text-red-500">*</span>
                       </div>
 
                       <div className="tw-flex tw-items-center tw-gap-2 tw-mt-1">
@@ -2223,7 +2134,9 @@ export function LectureOpenTemplate() {
               </div>
 
               <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">강의 꾸미기</div>
-              <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-my-5">강의 카드 이미지 선택</div>
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-my-5">
+                강의 카드 이미지 선택 <span className="tw-text-red-500">*</span>
+              </div>
               <div className="tw-grid tw-grid-flow-col tw-gap-0 tw-content-end">
                 {preview ? (
                   <img src={preview} alt="Image Preview" className="tw-w-[100px] tw-h-[100px] tw-rounded-lg border" />
@@ -2277,7 +2190,9 @@ export function LectureOpenTemplate() {
                 </div>
               </div>
 
-              <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-5">강의 배경 이미지 선택</div>
+              <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-5">
+                강의 배경 이미지 선택 <span className="tw-text-red-500">*</span>
+              </div>
               <div className="tw-grid tw-grid-flow-col tw-gap-0 tw-content-end">
                 {previewBanner ? (
                   <img
@@ -2338,21 +2253,6 @@ export function LectureOpenTemplate() {
               <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-5">
                 강의내 교수 프로필 이미지
               </div>
-
-              {/* {previewProfile ? (
-                <img
-                  src={previewProfile}
-                  alt="Image Preview"
-                  className="border tw-w-[100px] tw-h-[100px] tw-rounded-full"
-                />
-              ) : (
-                <img
-                  src="/assets/images/account/default_profile_image.png"
-                  alt="Image"
-                  className="tw-w-[100px] tw-h-[100px] tw-rounded-full border"
-                />
-              )} */}
-
               {agreements === true ? (
                 <img
                   className="border tw-w-28 tw-h-28 tw-rounded-full"
@@ -2367,9 +2267,6 @@ export function LectureOpenTemplate() {
                 />
               )}
 
-              {/* <div className="tw-text-sm tw-font-bold tw-text-black tw-mt-5 tw-my-5">
-                직접 업로드를 하지 않으면 현재 프로필 이미지 사용합니다.
-              </div> */}
               <div className="tw-flex tw-items-center tw-justify-start tw-gap-1">
                 <Checkbox checked={agreements} onChange={e => handleCheckboxChangeAgreements(e)} />
                 <div className="tw-text-sm tw-font-bold tw-text-black tw-mt-5 tw-my-5">현재 프로필 이미지 사용</div>

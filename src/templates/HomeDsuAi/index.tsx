@@ -1,3 +1,4 @@
+/* cspell:words instrator */
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
@@ -215,9 +216,9 @@ export function HomeDsuAiTemplate({ logged = false, tenantName = '' }: HomeDsuAi
 
               <div className="tw-flex tw-justify-center tw-items-center tw-pt-12 md:tw-pt-24">
                 <img
-                  src="/assets/images/dsuai/instrator-1.svg"
-                  className="tw-w-full tw-max-w-[600px] md:tw-w-[800px] md:tw-max-w-none tw-h-auto tw-overflow-hidden"
                   alt="AI조교 이미지"
+                  className="tw-w-full tw-max-w-[600px] md:tw-w-[800px] md:tw-max-w-none tw-h-auto tw-overflow-hidden"
+                  src="/assets/images/dsuai/instrator-1.svg"
                 />
               </div>
               <div className="tw-flex tw-justify-center tw-items-center tw-py-12 md:tw-py-24">
