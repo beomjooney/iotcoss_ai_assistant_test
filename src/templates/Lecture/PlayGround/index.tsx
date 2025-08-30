@@ -8,25 +8,19 @@ import Pagination from '@mui/material/Pagination';
 import PaginationItem from '@mui/material/PaginationItem';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-
 import {
-  paramProps,
   useMyLectureList,
   useMyLectureChatList,
   useMyLectureContentList,
   useMyLectureDashboardChatList,
 } from 'src/services/seminars/seminars.queries';
-import { useSaveAnswer, useDeleteQuestion, useChatQuery } from 'src/services/seminars/seminars.mutations';
+import { useChatQuery } from 'src/services/seminars/seminars.mutations';
 import Grid from '@mui/material/Grid';
 import { useMyAllLectureInfo } from 'src/services/quiz/quiz.queries';
-import Paginations from 'src/stories/components/Pagination';
-import CircularProgress, { circularProgressClasses } from '@mui/material/CircularProgress';
-
-/**import quiz modal  */
+import CircularProgress from '@mui/material/CircularProgress';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
-import { Desktop, Mobile } from 'src/hooks/mediaQuery';
+import { Mobile } from 'src/hooks/mediaQuery';
 import SettingsIcon from '@mui/icons-material/Settings';
-
 import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
 import router from 'next/router';
 import Markdown from 'react-markdown';
@@ -43,22 +37,49 @@ const cx = classNames.bind(styles);
 export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps) {
   const { studyOrderLabelType } = useSessionStore.getState();
   const { studyOrderLabel } = useStudyOrderLabel(studyOrderLabelType);
-
   const [totalElements, setTotalElements] = useState(0);
   const [myClubList, setMyClubList] = useState<any>([]);
   const [myDashboardList, setMyDashboardList] = useState<any>([]);
   const [myContentList, setMyContentList] = useState<any>([]);
   const [myDashboardChatList, setMyDashboardChatList] = useState<any>([]);
   const [selectedClub, setSelectedClub] = useState(null);
+  const [selectedValue, setSelectedValue] = useState(null);
+  const [key, setKey] = useState('');
+  const [fileName, setFileName] = useState('');
+  const [isClient, setIsClient] = useState(false);
+  const [quizList, setQuizList] = useState<any>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState('');
+  const [page, setPage] = useState(1);
+  const [pageStudent, setPageStudent] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
+  const [totalStudentPage, setTotalStudentPage] = useState(1);
+  const [sortType, setSortType] = useState('NAME');
 
   const [myClubParams, setMyClubParams] = useState<any>({
     clubSequence: selectedClub?.clubSequence || id,
     data: { sortType: 'NAME', page: 1 },
   });
 
-  const [answer, setAnswer] = useState('');
-  const { mutate: onSaveAnswer, isSuccess, isError } = useSaveAnswer();
-  const { mutate: onDeleteQuestion, isSuccess: isDeleteSuccess } = useDeleteQuestion();
+  const [myClubSequenceParams, setMyClubSequenceParams] = useState<any>({
+    page: page,
+    clubStudySequence: selectedClub,
+    clubSequence: id,
+  });
+
+  const [myClubFileParams, setMyClubFileParams] = useState<any>({
+    clubStudySequence: selectedClub,
+    clubSequence: id,
+  });
+
+  const [myClubSubTitleParams, setMyClubSubTitleParams] = useState<any>({
+    clubSequence: id,
+    page,
+    clubType: '0200',
+    size: 100,
+  });
+
   const { mutate: onChatQuery, isSuccess: isChatSuccess, data: chatData, isError: isChatError } = useChatQuery();
 
   useEffect(() => {
@@ -82,41 +103,9 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
     }
   }, [chatData]);
 
-  const [selectedValue, setSelectedValue] = useState(null);
-  const [key, setKey] = useState('');
-  const [fileName, setFileName] = useState('');
-  const [isClient, setIsClient] = useState(false);
-  const [quizList, setQuizList] = useState<any>([]);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
-  const [page, setPage] = useState(1);
-  const [pageStudent, setPageStudent] = useState(1);
-  const [totalPage, setTotalPage] = useState(1);
-  const [totalStudentPage, setTotalStudentPage] = useState(1);
-
-  const [myClubSequenceParams, setMyClubSequenceParams] = useState<any>({
-    page: page,
-    clubStudySequence: selectedClub,
-    clubSequence: id,
-  });
-
-  const [myClubFileParams, setMyClubFileParams] = useState<any>({
-    clubStudySequence: selectedClub,
-    clubSequence: id,
-  });
-
   useEffect(() => {
     setIsClient(true);
   }, []);
-
-  const [myClubSubTitleParams, setMyClubSubTitleParams] = useState<any>({
-    clubSequence: id,
-    page,
-    clubType: '0200',
-    size: 100,
-  });
 
   // 퀴즈클럽 리스트
   const { isFetched: isContentFetched, refetch: refetchMyClub } = useMyLectureList(myClubSubTitleParams, data => {
@@ -165,11 +154,6 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
     setMyDashboardChatList(formattedQuestions);
     setTotalStudentPage(data?.students?.totalPages);
   });
-
-  /** my quiz replies */
-
-  const [sortType, setSortType] = useState('NAME');
-  const [sortLectureType, setSortLectureType] = useState('STUDY_ORDER_ASC');
 
   useDidMountEffect(() => {
     setMyClubParams({
@@ -260,19 +244,7 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
     data => {
       console.log('file download', data, fileName);
       if (data) {
-        // blob 데이터를 파일로 저장하는 로직
-        // const url = window.URL.createObjectURL(new Blob([data]));
-        // const link = document.createElement('a');
-        // link.href = url;
-        // link.setAttribute('download', fileName); // 다운로드할 파일 이름과 확장자를 설정합니다.
-        // document.body.appendChild(link);
-        // link.click();
-        // document.body.removeChild(link);
-
-        // blob 데이터를 URL로 변환
         const url = window.URL.createObjectURL(new Blob([data], { type: 'application/pdf' }));
-
-        // 브라우저에서 PDF를 새 탭에서 열기
         window.open(url, '_blank', 'noopener,noreferrer');
         setKey('');
         setFileName('');
@@ -447,13 +419,7 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
                         <div className="tw-flex tw-justify-start tw-items-start tw-gap-3">
                           <div
                             onClick={() => {
-                              // window.open(item?.url, '_blank');
-                              // blob 데이터를 URL로 변환
-
-                              // URL을 새 탭에서 열기
-                              // window.open(item.url, '_blank', 'noopener,noreferrer');
                               if (item?.url) {
-                                // PDF URL을 새 탭에서 열기
                                 const pdfWindow = window.open(item.url, '_blank', 'noopener,noreferrer');
                                 if (!pdfWindow) {
                                   console.error('Failed to open a new tab');
@@ -534,7 +500,7 @@ export function LecturePlayGroundTemplate({ id }: LecturePlayGroundTemplateProps
 
             <div className="tw-overflow-y-auto tw-p-10 tw-h-[770px]" ref={innerScrollRef}>
               <div>
-                <img className="tw-w-[61px] tw-h-[56px]" src="/assets/images/main/_chatbot.png" />
+                <img alt="chatbot" className="tw-w-[61px] tw-h-[56px]" src="/assets/images/main/_chatbot.png" />
                 <div className="tw-w-[381px] tw-text-xl tw-text-left tw-text-[#313b49] tw-py-8 tw-font-bold">
                   <div className="tw-w-[381px] tw-text-lg tw-text-left tw-text-[#313b49]">안녕하세요!</div>
                   <div className="tw-w-[381px] tw-text-lg tw-text-left tw-text-[#313b49] tw-pt-1">

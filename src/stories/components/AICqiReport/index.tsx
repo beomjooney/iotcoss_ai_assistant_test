@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { AICqiReportProps } from './types';
-import dynamic from 'next/dynamic';
 import Loading from 'src/stories/components/Loading';
 import { ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
