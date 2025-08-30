@@ -56,7 +56,7 @@ export function HomeDsuAiTemplate({ logged = false, tenantName = '' }: HomeDsuAi
                 <div className="tw-max-w-2xl tw-mx-auto tw-p-4 md:tw-p-8 tw-rounded-lg">
                   <div className="tw-space-y-3 md:tw-space-y-4 tw-text-left">
                     <h4 className="tw-pb-1 tw-font-semibold tw-text-gray-700 tw-text-sm md:tw-text-base">
-                      강의 자료 기반 온라인 챗봇
+                      교수자 지식기반 온라인 AI 챗봇
                     </h4>
                     <h1 className="tw-text-2xl md:tw-text-4xl tw-font-bold tw-text-black tw-leading-tight">
                       DSU x DevUs - <span className="tw-text-red-500">AI조교</span>
@@ -100,7 +100,7 @@ export function HomeDsuAiTemplate({ logged = false, tenantName = '' }: HomeDsuAi
               <div className="tw-max-w-2xl tw-mx-auto tw-p-4 md:tw-p-8 tw-rounded-lg">
                 <div className="tw-space-y-3 md:tw-space-y-4 tw-text-left">
                   <h4 className="tw-pb-1 tw-font-semibold tw-text-gray-700 tw-text-sm md:tw-text-base">
-                    강의 자료 기반 온라인 챗봇
+                    교수자 지식기반 온라인 AI 챗봇
                   </h4>
 
                   <h1 className="tw-text-2xl md:tw-text-4xl tw-font-bold tw-text-black tw-leading-tight">
@@ -127,7 +127,7 @@ export function HomeDsuAiTemplate({ logged = false, tenantName = '' }: HomeDsuAi
               <div className="tw-mt-12 md:tw-mt-24 tw-space-y-2 md:tw-space-y-3 tw-text-center md:tw-text-left">
                 <div className="tw-text-lg md:tw-text-xl tw-font-bold tw-text-red-500">What is AI조교?</div>
                 <div className="tw-text-xl md:tw-text-3xl tw-text-gray-800 tw-font-medium tw-leading-tight">
-                  학습자의 뇌를 깨우는 <span className="tw-font-bold">AI기반 온라인 학습 시스템</span>
+                  학습자 개인 맞춤형 피드백을 위한 <span className="tw-font-bold">AI기반 온라인 학습 시스템</span>
                 </div>
               </div>
 
@@ -210,7 +210,7 @@ export function HomeDsuAiTemplate({ logged = false, tenantName = '' }: HomeDsuAi
               <div className="tw-mt-12 md:tw-mt-24 tw-space-y-2 md:tw-space-y-3 tw-text-center md:tw-text-left">
                 <div className="tw-text-lg md:tw-text-xl tw-font-bold tw-text-red-500">What is AI조교?</div>
                 <div className="tw-text-xl md:tw-text-3xl tw-text-gray-800 tw-font-medium tw-leading-tight">
-                  학습자의 뇌를 깨우는 <span className="tw-font-bold">AI기반 온라인 학습 시스템</span>
+                  학습자 개인 맞춤형 피드백을 위한 <span className="tw-font-bold">AI기반 온라인 학습 시스템</span>
                 </div>
               </div>
 
@@ -271,7 +271,7 @@ export function HomeDsuAiTemplate({ logged = false, tenantName = '' }: HomeDsuAi
               <div className="tw-mt-8 md:tw-mt-12 tw-space-y-2 md:tw-space-y-3 tw-text-center md:tw-text-left">
                 <div className="tw-text-lg md:tw-text-xl tw-font-bold tw-text-red-500">AI조교의 특징</div>
                 <div className="tw-text-xl md:tw-text-3xl tw-text-gray-800 tw-font-medium tw-leading-tight">
-                  학습자와 교수자를 연결하는 <span className="tw-font-bold">효과적인 학습 솔루션</span>
+                  학습자 개인 맞춤형 피드백을 위한 <span className="tw-font-bold">AI기반 온라인 학습 시스템</span>
                 </div>
               </div>
 
@@ -344,7 +344,7 @@ export function HomeDsuAiTemplate({ logged = false, tenantName = '' }: HomeDsuAi
               <div className="tw-mt-12 md:tw-mt-24 tw-space-y-2 md:tw-space-y-3 tw-text-center md:tw-text-left">
                 <div className="tw-text-lg md:tw-text-xl tw-font-bold tw-text-red-500">What is AI조교?</div>
                 <div className="tw-text-xl md:tw-text-3xl tw-text-gray-800 tw-font-medium tw-leading-tight">
-                  학습자의 뇌를 깨우는 <span className="tw-font-bold">AI기반 온라인 학습 시스템</span>
+                  학습자 개인 맞춤형 피드백을 위한 <span className="tw-font-bold">AI기반 온라인 학습 시스템</span>
                 </div>
               </div>
 
