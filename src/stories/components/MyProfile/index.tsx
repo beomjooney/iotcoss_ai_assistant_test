@@ -1,7 +1,6 @@
 import classNames from 'classnames/bind';
 import styles from './index.module.scss';
 import ProfileModal from 'src/stories/components/ProfileModal';
-import TextField from '@mui/material/TextField';
 import React, { useEffect, useRef, useState } from 'react';
 import { UseQueryResult } from 'react-query';
 import { useOptions } from 'src/services/experiences/experiences.queries';
@@ -11,6 +10,7 @@ import { useUploadImage } from 'src/services/image/image.mutations';
 import { useSessionStore } from 'src/store/session';
 import { useGetGroupLabel } from 'src/hooks/useGetGroupLabel';
 import { truncate } from 'lodash';
+import { TextField } from '@mui/material';
 
 const cx = classNames.bind(styles);
 
@@ -32,18 +32,46 @@ const MyProfile = ({
   const phoneRef = useRef(null);
   const [activeQuiz, setActiveQuiz] = useState('0001');
   const [memberId, setMemberId] = useState('');
-
-  console.log(profile);
-
   const [universityCode, setUniversityCode] = useState('');
   const [selectedUniversity, setSelectedUniversity] = useState('');
   const [jobLevel, setJobLevel] = useState('0001');
   const [introductionMessage, setIntroductionMessage] = useState('');
   const [requestMessage, setRequestMessage] = useState('');
-
-  /**file image  */
   const [file, setFile] = useState(null);
   const [fileImageUrl, setFileImageUrl] = useState(null);
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneNumberError, setPhoneNumberError] = useState('');
+
+  // 전화번호 유효성 검사 함수
+  const validatePhoneNumber = (phone: string) => {
+    // 전화번호가 비어있는 경우는 허용
+    if (!phone) return true;
+
+    // 한국 전화번호 정규식 패턴
+    const phonePattern = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+    return phonePattern.test(phone.replace(/-/g, ''));
+  };
+
+  // 전화번호 형식화 함수
+  const formatPhoneNumber = (phone: string) => {
+    const numbers = phone.replace(/[^0-9]/g, '');
+    if (numbers.length <= 3) return numbers;
+    if (numbers.length <= 7) return `${numbers.slice(0, 3)}-${numbers.slice(3)}`;
+    return `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(7, 11)}`;
+  };
+
+  // handlePhoneNumberChange 함수 추가
+  const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const formattedNumber = formatPhoneNumber(value);
+    setPhoneNumber(formattedNumber);
+
+    if (!validatePhoneNumber(formattedNumber)) {
+      setPhoneNumberError('올바른 전화번호 형식이 아닙니다.');
+    } else {
+      setPhoneNumberError('');
+    }
+  };
 
   const textInput = useRef(null);
 
@@ -69,9 +97,17 @@ const MyProfile = ({
     }
   }, [onRequestSuccess]);
 
+  useEffect(() => {
+    if (profile?.phoneNumber) {
+      setPhoneNumber(profile.phoneNumber);
+    }
+  }, [profile?.phoneNumber]);
+
   const handleProfileSave = () => {
-    // fileImageUrl이 null인 경우 imageUrl을 사용하도록 조건문 추가
-    const profileImageKey = imageUrl || profile?.member?.profileImageUrl;
+    if (phoneNumber && !validatePhoneNumber(phoneNumber)) {
+      alert('올바른 전화번호 형식이 아닙니다.');
+      return;
+    }
 
     console.log(universityCode);
     console.log(selectedJob);
@@ -94,6 +130,7 @@ const MyProfile = ({
     formData.append('memberId', profile?.email || profile?.member?.memberId);
     formData.append('jobLevel', jobLevel);
     formData.append('introductionMessage', introductionMessage);
+    formData.append('phoneNumber', phoneNumber.replace(/-/g, '')); // 하이픈 제거 후 저장
 
     console.log('formData', formData);
     onSave({ formData, isProfessor: false });
@@ -127,6 +164,7 @@ const MyProfile = ({
     formData.append('memberId', profile?.email || profile?.member?.memberId);
     formData.append('jobLevel', jobLevel);
     formData.append('introductionMessage', introductionMessage);
+    formData.append('phoneNumber', phoneNumber); // 전화번호 추가
 
     console.log('formData', formData);
     onSave({ formData, isProfessor: true });
@@ -308,6 +346,7 @@ const MyProfile = ({
           <div className="tw-font-bold tw-text-base tw-text-black">개인정보</div>
           <div className=" tw-mt-7 tw-ml-7 tw-relative tw-flex tw-flex-col tw-items-center">
             <img
+              alt="profile-image"
               src={
                 fileImageUrl ?? (profile?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png')
               }
@@ -333,7 +372,7 @@ const MyProfile = ({
           </div>
           <div className="tw-mt-2 tw-border-t tw-border-gray-100">
             <dl className="tw-divide-y tw-divide-gray-100">
-              <div className="tw-px-4 tw-py-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
+              <div className="tw-px-4 tw-py-4 tw-grid tw-grid-cols-6 tw-gap-4">
                 <dt className="tw-text-base tw-font-bold tw-leading-6 tw-text-gray-900">
                   {profile?.email ? '이메일' : '학번'}
                 </dt>
@@ -341,17 +380,28 @@ const MyProfile = ({
                   {profile?.email || profile?.member?.memberId}
                 </dd>
               </div>
-              <div className="tw-px-4 tw-py-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
+              <div className="tw-px-4 tw-py-3 tw-grid tw-grid-cols-6 tw-gap-4 ">
                 <dt className="tw-text-base tw-font-bold tw-leading-6 tw-text-gray-900">이름</dt>
                 <dd className="tw-text-base tw-leading-6 tw-text-gray-700 tw-col-span-5">
                   {profile?.member?.nickname}
                 </dd>
               </div>
-              <div className="tw-px-4 tw-py-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0  tw-flex tw-justify-center tw-items-center">
+              <div className="tw-px-4 tw-pt-3 tw-grid tw-grid-cols-6 tw-gap-4 tw-justify-center tw-items-center">
                 <dt className="tw-text-base tw-font-bold tw-leading-6 tw-text-gray-900">전화번호</dt>
-                <dd className="tw-text-base tw-leading-6 tw-text-gray-700 tw-col-span-5">{profile?.phoneNumber}</dd>
+                <dd className="tw-text-base tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                  <TextField
+                    fullWidth
+                    size="small"
+                    type="text"
+                    value={phoneNumber}
+                    onChange={handlePhoneNumberChange}
+                    error={!!phoneNumberError}
+                    helperText={phoneNumberError}
+                    placeholder="010-0000-0000"
+                  />
+                </dd>
               </div>
-              <div className="tw-px-4 tw-pt-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+              <div className="tw-mt-4 tw-px-4 tw-grid tw-grid-cols-6 tw-gap-4  tw-justify-center tw-items-center">
                 <dt className="tw-text-base tw-font-bold tw-leading-6 tw-text-gray-900">{groupLabel}</dt>
                 <dd className="tw-text-base tw-leading-6 tw-text-gray-700 tw-col-span-5">
                   <select
@@ -369,7 +419,7 @@ const MyProfile = ({
                   </select>
                 </dd>
               </div>
-              <div className="tw-mt-2 tw-px-4 tw-py-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+              <div className="tw-pt-4 tw-px-4 tw-py-3 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
                 <dt className="tw-text-base tw-font-bold tw-leading-6 tw-text-gray-900">{subGroupLabel}</dt>
                 <dd className="tw-text-base tw-leading-6 tw-text-gray-700 tw-col-span-5">
                   <select
@@ -390,7 +440,7 @@ const MyProfile = ({
                   </select>
                 </dd>
               </div>
-              <div className="tw-mt-2 tw-px-4 tw-pt-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0 tw-flex tw-justify-center tw-items-center">
+              <div className="tw-px-4 tw-pt-2 tw-grid tw-grid-cols-6 tw-gap-4 tw-justify-center tw-items-center">
                 <dt className="tw-text-base tw-font-bold tw-leading-6 tw-text-gray-900">학년</dt>
                 <dd className="tw-text-base tw-leading-6 tw-text-gray-700 tw-col-span-5">
                   {optionsData?.data?.jobLevels?.map((item, i) => (
@@ -411,42 +461,6 @@ const MyProfile = ({
                       className={cx('tw-mr-3 !tw-w-[75px] tw-line-clamp-1')}
                     />
                   ))}
-                </dd>
-              </div>
-
-              <div className="tw-px-4 tw-grid tw-grid-cols-6 tw-gap-4 tw-px-0">
-                <dt className="tw-text-sm tw-font-bold tw-leading-6 tw-text-gray-900"></dt>
-                <dd className="tw-mt-0 tw-text-sm tw-leading-6 tw-text-gray-700 tw-col-span-5 tw-mt-0">
-                  {/* {jobLevel?.toString() === '0001' && (
-                    <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
-                      0레벨 : 직무스킬 학습 중. 상용서비스 개발 경험 없음.
-                    </div>
-                  )}
-                  {jobLevel?.toString() === '0002' && (
-                    <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
-                      1레벨 : 상용서비스 단위모듈 수준 개발 가능. 서비스 개발 리딩 시니어 필요.
-                    </div>
-                  )}
-                  {jobLevel?.toString() === '0003' && (
-                    <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
-                      2레벨 : 상용 서비스 개발 1인분 가능한 사람. 소규모 서비스 독자 개발 가능.
-                    </div>
-                  )}
-                  {jobLevel?.toString() === '0004' && (
-                    <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
-                      3레벨 : 상용서비스 개발 리더. 담당직무분야 N명 업무가이드 및 리딩 가능.
-                    </div>
-                  )}
-                  {jobLevel?.toString() === '0005' && (
-                    <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
-                      4레벨 : 다수 상용서비스 개발 리더. 수십명 혹은 수백명 수준의 개발자 총괄 리더.
-                    </div>
-                  )}
-                  {jobLevel?.toString() === '0006' && (
-                    <div className="tw-text-sm tw-text-gray-500 tw-mt-2 tw-my-0">
-                      5레벨 : 본인 오픈소스/방법론 등이 범용적 사용, 수백명이상 다수 직군 리딩.
-                    </div>
-                  )} */}
                 </dd>
               </div>
             </dl>
