@@ -31,11 +31,10 @@ interface LoginTemplateProps {
 }
 
 export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps) {
-  const { update, tenantName, tenantUri, tenantLoginMemberTypes, tenantOrganizationCodes } = useSessionStore.getState();
-  // const { update, tenantName, tenantUri, loginType, tenantLoginMemberTypes, tenantOrganizationCodes } =
-  //   useSessionStore.getState();
+  const { update, tenantName, tenantUri, loginType, tenantLoginMemberTypes, tenantOrganizationCodes } =
+    useSessionStore.getState();
 
-  const loginType = '0100';
+  // const loginType = '0100';
   const router = useRouter();
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
