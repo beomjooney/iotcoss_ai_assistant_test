@@ -47,6 +47,7 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
   const [showPassword1, setShowPassword1] = useState(false);
   const [activeTab, setActiveTab] = useState('lms');
   const [activeTab2, setActiveTab2] = useState('dsu');
+  const [clientTenantName, setClientTenantName] = useState(null);
 
   const handleClickShowPassword = () => setShowPassword(show => !show);
   const handleClickShowPassword1 = () => setShowPassword1(show => !show);
@@ -86,7 +87,6 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
 
   const { data: termList2, isLoading: termListLoading2, refetch: refetch2 }: UseQueryResult<any> = useTermsList2();
 
-  const [clientTenantName, setClientTenantName] = useState(null);
   useEffect(() => {
     localStorage.setItem('activeIndex', '0');
     setClientTenantName(tenantName);
