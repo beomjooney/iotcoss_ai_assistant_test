@@ -1128,18 +1128,18 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
                 isSmsReceive: true,
                 isKakaoReceive: true,
                 tenantUri: tenantUri,
-                tenantLoginMemberType: selectedLoginType,
+                // tenantLoginMemberType: selectedLoginType,
               };
 
               if (selectedUniversity && tenantUri !== 'dsuai') {
                 signUpData['tenantOrganizationCode'] = selectedUniversity;
               }
 
-              // if (tenantUri === 'dsuai') {
-              //   signUpData['tenantLoginMemberType'] = selectedLoginType;
-              // } else {
-              //   signUpData['tenantLoginMemberType'] = '0101';
-              // }
+              if (loginType?.includes('0101')) {
+                signUpData['tenantLoginMemberType'] = '0101';
+              } else {
+                signUpData['tenantLoginMemberType'] = selectedLoginType;
+              }
 
               onLoginSignUp(signUpData);
             }}
