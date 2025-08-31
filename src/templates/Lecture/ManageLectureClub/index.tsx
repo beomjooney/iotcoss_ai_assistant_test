@@ -2680,7 +2680,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                     <div className="tw-grid tw-grid-cols-3 tw-gap-6">
                       {/* AI 학습총평 실행 관한 */}
                       <div>
-                        <div className="tw-font-semibold tw-text-sm tw-text-black tw-mb-3">AI 학습총평 실행 관한</div>
+                        <div className="tw-font-semibold tw-text-sm tw-text-black tw-mb-3">AI 학습총평 실행 권한</div>
                         <div className="">
                           <FormControlLabel
                             control={
