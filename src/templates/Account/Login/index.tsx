@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import Typography from '@mui/material/Typography';
@@ -31,9 +31,11 @@ interface LoginTemplateProps {
 }
 
 export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps) {
-  const { update, tenantName, tenantUri, loginType, tenantLoginMemberTypes, tenantOrganizationCodes } =
-    useSessionStore.getState();
+  const { update, tenantName, tenantUri, tenantLoginMemberTypes, tenantOrganizationCodes } = useSessionStore.getState();
+  // const { update, tenantName, tenantUri, loginType, tenantLoginMemberTypes, tenantOrganizationCodes } =
+  //   useSessionStore.getState();
 
+  const loginType = '0100';
   const router = useRouter();
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
@@ -399,7 +401,7 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
       </form>
       <Box display="center" justifyContent="center" sx={{ fontWeight: 'bold' }}>
         <Typography sx={{ fontSize: 14 }} className="tw-py-3">
-          동서대학교 QuizUp 계정이 없으신가요?
+          동서대학교 계정이 없으신가요?
         </Typography>
       </Box>
       <Box display="center" justifyContent="center" sx={{ fontWeight: 'bold' }}>
@@ -1127,11 +1129,15 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
                 isSmsReceive: true,
                 isKakaoReceive: true,
                 tenantUri: tenantUri,
-                tenantLoginMemberType: '0101',
               };
 
-              if (selectedUniversity) {
+              if (selectedUniversity && tenantUri !== 'dsuai') {
                 signUpData['tenantOrganizationCode'] = selectedUniversity;
+              }
+              if (tenantUri === 'dsuai') {
+                signUpData['tenantLoginMemberType'] = selectedLoginType;
+              } else {
+                signUpData['tenantLoginMemberType'] = '0101';
               }
 
               onLoginSignUp(signUpData);

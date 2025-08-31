@@ -120,6 +120,8 @@ export const useLogin = (): UseMutationResult => {
         alert('로그인 시도 횟수를 초과했습니다.');
       } else if (responseCode === 'C06002') {
         alert('이메일 계정 또는 암호가 일치하지 않습니다. 다시 한번 확인해 주세요.');
+      } else if (responseCode === '5000') {
+        alert('아이디 및 패스워드를 확인해주세요. 또는 회원유형을 확인해주세요.');
       } else {
         alert(`error : [${responseCode}] ${message}`);
       }
@@ -135,16 +137,6 @@ export const useLogin = (): UseMutationResult => {
       } else {
         alert(`error : [${responseCode}] ${message}`);
       }
-
-      // if (typeof data.responseCode === 'undefined') {
-      //   setCookie('access_token', data?.access_token);
-      //   // location.href = '/';
-      // } else if (responseCode === '0400') {
-      //   alert('테넌트 정보를 찾을 수 없습니다.');
-      //   router.push('/account/login');
-      // } else {
-      //   alert(`error : [${responseCode}] ${message}`);
-      // }
     },
   });
 };

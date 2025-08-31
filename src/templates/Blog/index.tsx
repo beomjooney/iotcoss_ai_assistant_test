@@ -87,7 +87,7 @@ export function BlogTemplate({ logged = false, tenantName = '' }: BlogProps) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer sk-proj-EQRpCFUOrWX31G6qtbfuT3BlbkFJbpINIqMxynuo438hg4yP`,
+          Authorization: `Bearer sk-`,
         },
         body: JSON.stringify({
           model: 'gpt-4o',
