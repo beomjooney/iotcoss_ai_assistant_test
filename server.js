@@ -2,7 +2,6 @@ const express = require('express');
 const next = require('next');
 const vhost = require('vhost');
 
-// const port = process.env.PORT || 3001;
 const port = process.env.NEXT_PUBLIC_PORT || 3001;
 const dev = process.env.NODE_ENV !== 'production';
 
@@ -77,7 +76,6 @@ app.prepare().then(() => {
   });
 
   b2bServer.get('/account/login', (req, res) => {
-    // return app.render(req, res, '/account/login', req.query);
     return app.render(req, res, '/ai/account/login', req.query);
   });
 

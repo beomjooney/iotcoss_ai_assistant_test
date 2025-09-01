@@ -5,21 +5,18 @@ import React, { useState } from 'react';
 import { useMemberActiveSummaryInfo } from 'src/services/account/account.queries';
 import { useLoginList } from 'src/services/studyroom/studyroom.queries';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
-import router from 'next/router';
-import { Mobile, Desktop } from 'src/hooks/mediaQuery';
-import { useQuizActivityHistory } from 'src/services/quiz/quiz.queries';
+import { Desktop } from 'src/hooks/mediaQuery';
 import { Pagination } from 'src/stories/components';
 import { useEffect } from 'react';
 import { TextField } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
-import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm } from 'react-hook-form';
 import { useLoginIdTest, useLoginIdPasswordTest } from 'src/services/account/account.mutations';
+import { CircularProgress } from '@mui/material';
 
 /**table */
-import SettingsIcon from '@mui/icons-material/Settings';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -28,28 +25,18 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Typography from '@mui/material/Typography';
 import SearchIcon from '@mui/icons-material/Search';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import * as Yup from 'yup';
-import { IconButton, InputAdornment } from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 const cx = classNames.bind(styles);
 
 export function AdminAccountLinkTestTemplate() {
   const { memberId } = useSessionStore.getState();
-  const handleClickShowPassword1 = () => setShowPassword1(show => !show);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
-  const [params, setParams] = useState<any>({ page });
   const [contents, setContents] = useState<any>([]);
-
   const [summary, setSummary] = useState({});
   const [search, setSearch] = useState(null);
   const [searchKeyword, setSearchKeyword] = useState(null);
-  const [memberList, setMemberList] = useState<any[]>([]);
   const [startDay, setStartDay] = React.useState<Dayjs | null>(dayjs().subtract(1, 'month'));
-
   const [endDay, setEndDay] = React.useState<Dayjs | null>(dayjs());
   const [memberParams, setMemberParams] = useState<any>({
     page,
@@ -58,21 +45,17 @@ export function AdminAccountLinkTestTemplate() {
   });
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(true);
   const [showPassword1, setShowPassword1] = useState(true);
+  const [selectedLoginType, setSelectedLoginType] = useState('0100');
+  const [loadingId, setLoadingId] = useState(false);
+  const [loadingIdPassword, setLoadingIdPassword] = useState(false);
 
   const { isFetched: isUserFetched } = useMemberActiveSummaryInfo(data => setSummary(data));
-  const {
-    mutate: onLoginIdTest,
-    isSuccess: isLoginIdTestSuccess,
-    isError: isLoginIdTestError,
-    data: loginData,
-  } = useLoginIdTest();
+  const { mutate: onLoginIdTest, isSuccess: isLoginIdTestSuccess, isError: isLoginIdTestError } = useLoginIdTest();
   const {
     mutate: onLoginIdPasswordTest,
     isSuccess: isLoginIdPasswordTestSuccess,
     isError: isLoginIdPasswordTestError,
-    data: loginIdPasswordData,
   } = useLoginIdPasswordTest();
 
   const { isFetched: isMemberListFetched, refetch: QuizRefetchBadge } = useLoginList(memberParams, data => {
@@ -83,32 +66,27 @@ export function AdminAccountLinkTestTemplate() {
   });
 
   useEffect(() => {
-    if (isLoginIdTestSuccess || isLoginIdPasswordTestSuccess || isLoginIdPasswordTestError || isLoginIdTestError) {
-      // alert('계정연동테스트가 완료되었습니다.');
+    if (isLoginIdTestSuccess) {
+      setLoadingId(false);
       QuizRefetchBadge();
     }
-  }, [isLoginIdTestSuccess, isLoginIdPasswordTestSuccess, isLoginIdPasswordTestError, isLoginIdTestError]);
+    if (isLoginIdPasswordTestSuccess) {
+      setLoadingIdPassword(false);
+      QuizRefetchBadge();
+    }
 
-  const handleClickShowPassword = () => setShowPassword(show => !show);
-
-  const validationSchema = Yup.object().shape({
-    // username: Yup.string().required('Email is required').email('Email is invalid'),
-    password: Yup.string()
-      .required('Password is required')
-      .min(4, 'Password must be at least 4 characters')
-      .max(20, 'Password must not exceed 20 characters'),
-  });
-  const validationSchemaId = Yup.object().shape({
-    username: Yup.string().required('Email is required').email('Email is invalid'),
-  });
+    if (isLoginIdTestError) {
+      setLoadingId(false);
+      QuizRefetchBadge();
+    }
+    if (isLoginIdPasswordTestError) {
+      setLoadingIdPassword(false);
+      QuizRefetchBadge();
+    }
+  }, [isLoginIdTestSuccess, isLoginIdPasswordTestSuccess, isLoginIdTestError, isLoginIdPasswordTestError]);
 
   const onError = (e: any) => {
     console.log('error', e);
-  };
-
-  // T를 공백으로 바꾸고 소수점 부분을 제거하는 함수
-  const formatDate = date => {
-    return date?.split('.')[0].replace('T', ' '); // T를 공백으로 바꾸고 소수점 이하 제거
   };
 
   useDidMountEffect(() => {
@@ -141,6 +119,8 @@ export function AdminAccountLinkTestTemplate() {
   const onCheckId = () => {
     console.log('onCheckId', username);
     if (username) {
+      setLoadingId(true);
+      setLoadingIdPassword(false); // 다른 버튼 로딩 상태 초기화
       onLoginIdTest({
         id: username,
         tenantLoginMemberType: selectedLoginType,
@@ -159,6 +139,8 @@ export function AdminAccountLinkTestTemplate() {
       alert('비밀번호를 입력해주세요.');
       return;
     } else {
+      setLoadingIdPassword(true);
+      setLoadingId(false); // 다른 버튼 로딩 상태 초기화
       onLoginIdPasswordTest({
         id: username,
         password: password,
@@ -169,26 +151,17 @@ export function AdminAccountLinkTestTemplate() {
 
   const onChangeHandleFromToStartDate = date => {
     if (date) {
-      // Convert date to a Dayjs object
       const formattedDate = dayjs(date);
-      // Format the date as 'YYYY-MM-DD'
-      const formattedDateString = formattedDate.format('YYYY-MM-DD');
-      // Set both today and todayEnd
       setStartDay(formattedDate);
     }
   };
+
   const onChangeHandleFromToEndDate = date => {
     if (date) {
-      // Convert date to a Dayjs object
       const formattedDate = dayjs(date);
-      // Format the date as 'YYYY-MM-DD'
-      const formattedDateString = formattedDate.format('YYYY-MM-DD');
-      // Set both today and todayEnd
       setEndDay(formattedDate);
     }
   };
-
-  const [selectedLoginType, setSelectedLoginType] = useState('0100');
 
   const handleLoginTypeChange = event => {
     console.log('event.target.value', event.target.value);
@@ -248,7 +221,7 @@ export function AdminAccountLinkTestTemplate() {
                         <DatePicker
                           format="YYYY-MM-DD"
                           slotProps={{
-                            textField: { size: 'small', style: { backgroundColor: 'white', width: '140px' } },
+                            textField: { size: 'small', style: { backgroundColor: 'white', width: '150px' } },
                           }}
                           value={startDay}
                           onChange={e => onChangeHandleFromToStartDate(e)}
@@ -259,7 +232,7 @@ export function AdminAccountLinkTestTemplate() {
                         <DatePicker
                           format="YYYY-MM-DD"
                           slotProps={{
-                            textField: { size: 'small', style: { backgroundColor: 'white', width: '140px' } },
+                            textField: { size: 'small', style: { backgroundColor: 'white', width: '150px' } },
                           }}
                           value={endDay}
                           onChange={e => onChangeHandleFromToEndDate(e)}
@@ -313,7 +286,6 @@ export function AdminAccountLinkTestTemplate() {
                         '& input': { height: ' 0.8em;' },
                       }}
                       margin="dense"
-                      // {...register('username')}
                       {...register('username', {
                         onChange: e => {
                           setUserName(e.target.value);
@@ -324,7 +296,6 @@ export function AdminAccountLinkTestTemplate() {
                     />
                     <Typography sx={{ fontSize: 14, color: 'black', fontWeight: '600' }}>비밀번호</Typography>
                     <TextField
-                      // required
                       id="password"
                       name="password"
                       placeholder="비밀번호를 입력해주세요."
@@ -343,7 +314,6 @@ export function AdminAccountLinkTestTemplate() {
                         '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
                         '& input': { height: ' 0.8em;' },
                       }}
-                      // {...register('password')}
                       {...register('password', {
                         onChange: e => {
                           setPassword(e.target.value);
@@ -358,14 +328,19 @@ export function AdminAccountLinkTestTemplate() {
                         e.preventDefault(); // 기본 제출 동작 막기
                         onCheckId();
                       }}
+                      disabled={loadingId || loadingIdPassword}
                     >
-                      아이디 검증
+                      {loadingId ? <CircularProgress color="inherit" size={20} /> : '아이디 검증'}
                     </button>
                     <button
-                      className="tw-bg-blue-500 tw-text-sm tw-font-bold tw-rounded-md tw-w-[110px] tw-h-[40px] tw-text-white"
-                      onClick={() => handleSubmit(onSubmit)}
+                      className="tw-bg-blue-500 tw-px-4 tw-text-sm tw-font-bold tw-rounded-md tw-h-[40px] tw-w-[140px] tw-text-white"
+                      onClick={e => {
+                        e.preventDefault(); // 기본 제출 동작 막기
+                        handleSubmit(onSubmit)();
+                      }}
+                      disabled={loadingId || loadingIdPassword}
                     >
-                      아이디/비밀번호 검증
+                      {loadingIdPassword ? <CircularProgress color="inherit" size={20} /> : '아이디/비밀번호 검증'}
                     </button>
                   </form>
                   <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-py-5 tw-flex tw-items-center tw-justify-between tw-gap-5"></div>
@@ -407,10 +382,10 @@ export function AdminAccountLinkTestTemplate() {
                                     {content.requestType === '0101'
                                       ? '로그인'
                                       : content.requestType === '0201'
-                                      ? '아이디검증'
-                                      : content.requestType === '0202'
-                                      ? '패스워드검증'
-                                      : ''}
+                                        ? '아이디검증'
+                                        : content.requestType === '0202'
+                                          ? '패스워드검증'
+                                          : ''}
                                   </span>
                                 </div>
                               </TableCell>
@@ -419,8 +394,8 @@ export function AdminAccountLinkTestTemplate() {
                                   {content.externalMemberType === '0001'
                                     ? '학생'
                                     : content.externalMemberType === '0002'
-                                    ? '교수'
-                                    : '외부'}
+                                      ? '교수'
+                                      : '외부'}
                                 </div>
                               </TableCell>
                               <TableCell align="left" component="th" scope="row">
@@ -457,7 +432,6 @@ export function AdminAccountLinkTestTemplate() {
               </Desktop>
             </>
           )}
-          <div className="tw-mt-10">{/* <Pagination page={page} setPage={setPage} total={totalPage} /> */}</div>
         </div>
       </section>
     </div>
