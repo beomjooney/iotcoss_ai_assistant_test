@@ -830,7 +830,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                     <span className="tw-ml-2">채점 중...</span>
                   </div>
                 ) : (
-                  '일괄 채점'
+                  '일괄 저장'
                 )}
               </button>
               <button
@@ -851,7 +851,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                     <span className="tw-ml-2">처리 중...</span>
                   </div>
                 ) : (
-                  '일괄 AI 채점/피드백'
+                  '일괄 AI채점/피드백'
                 )}
               </button>
             </div>
