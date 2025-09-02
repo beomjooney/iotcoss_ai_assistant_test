@@ -49,6 +49,47 @@ const Footer = () => {
             <p className="tw-text-sm tw-text-right">Copyright 2024. DevUs Co., Ltd. all rights reserved.</p>
           </div>
         </div>
+      ) : tenantName === 'dsuai' ? (
+        <div>
+          <div className="main-container border-top border-bottom ">
+            <div className="tw-relative tw-overflow-hidden tw-fixed tw-bottom-0 tw-flex tw-justify-center tw-items-center">
+              <div className="tw-grid tw-grid-cols-1 tw-gap-4 tw-items-center tw-justify-between lg:tw-grid-cols-2 container tw-py-10">
+                <div className="tw-flex tw-flex-col tw-col-span-1 tw-hidden lg:tw-flex tw-flex-col tw-items-start">
+                  <img
+                    alt="devus_footer"
+                    src="/assets/images/main/devus_footer.png"
+                    className="tw-w-[103px] tw-object-cover tw-ml-0"
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="tw-grid tw-grid-cols-1 tw-gap-4 tw-items-center tw-justify-between lg:tw-grid-cols-2 container tw-pb-10">
+              <div className="tw-space-y-4 tw-flex tw-flex-col tw-col-span-1 tw-hidden lg:tw-flex tw-flex-col tw-items-start tw-text-base ">
+                <span
+                  className="tw-font-bold tw-cursor-pointer tw-text-[#df2f4a]"
+                  onClick={() => {
+                    window.open('https://devus.co.kr/policies/privacy');
+                  }}
+                >
+                  개인정보 처리방식
+                </span>
+                라이프멘토스(주) ㅣ 대표 : 추병조 ㅣ 서비스 문의 : devus@lifementors.co.kr <br />
+                서울시 마포구 마포대로8길 35, 흥전빌딩 401호 ㅣ 사업자등록번호 : 530-86-02750
+              </div>
+              <div
+                className="tw-font-bold tw-cursor-pointer tw-text-right"
+                onClick={() => {
+                  window.open('https://www.dongseo.ac.kr');
+                }}
+              >
+                관련사이트 바로가기
+              </div>
+            </div>
+          </div>
+          <div className="tw-flex tw-justify-center tw-items-center tw-py-6">
+            <p className="tw-text-sm tw-text-right">Copyright 2024. LifeMentors Co., Ltd. all rights reserved.</p>
+          </div>
+        </div>
       ) : (
         <div className="main-container tw-flex tw-justify-center tw-bg-[#31343d]">
           <div className="tw-w-full tw-h-[229px] tw-relative tw-overflow-hidden tw-bg-[#31343d] tw-fixed tw-bottom-0 tw-flex tw-justify-center tw-items-center">
