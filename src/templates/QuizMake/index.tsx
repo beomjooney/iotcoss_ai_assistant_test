@@ -123,10 +123,8 @@ export function QuizMakeTemplate() {
   const [keyWorld, setKeyWorld] = useState('');
   const [keyWorldKnowledge, setKeyWorldKnowledge] = useState('');
   const [contentSequence, setContentSequence] = useState('');
-
   const [expanded, setExpanded] = useState(0); // 현재 확장된 Accordion의 인덱스
   const [isModify, setIsModify] = useState(false);
-
   const [selected1, setSelected1] = useState([]);
   const [selected2, setSelected2] = useState([]);
   const [selected3, setSelected3] = useState([]);
@@ -136,7 +134,6 @@ export function QuizMakeTemplate() {
   const [contentSortType, setContentSortType] = useState('');
   const [threshSortType, setThreshSortType] = useState('0001');
   const [sortType, setSortType] = useState('DESC');
-
   const [universityCode, setUniversityCode] = useState('');
   const [selectedUniversity, setSelectedUniversity] = useState('');
   const [selectedUniversityName, setSelectedUniversityName] = useState('');
