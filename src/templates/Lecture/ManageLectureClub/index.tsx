@@ -1095,19 +1095,19 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
     formData.append('description', clubFormParams.description);
     formData.append('useCurrentProfileImage', clubFormParams.useCurrentProfileImage);
 
-    for (let i = 0; i < aiSummarySettings.comprehensiveEvaluationPermissions.length; i++) {
+    for (let i = 0; i < aiSummarySettings?.comprehensiveEvaluationPermissions?.length; i++) {
       formData.append(
         'comprehensiveEvaluationPermissions[' + i + ']',
         aiSummarySettings.comprehensiveEvaluationPermissions[i],
       );
     }
-    for (let i = 0; i < aiSummarySettings.comprehensiveEvaluationViewPermissions.length; i++) {
+    for (let i = 0; i < aiSummarySettings?.comprehensiveEvaluationViewPermissions?.length; i++) {
       formData.append(
         'comprehensiveEvaluationViewPermissions[' + i + ']',
-        aiSummarySettings.comprehensiveEvaluationViewPermissions[i],
+        aiSummarySettings?.comprehensiveEvaluationViewPermissions[i],
       );
     }
-    formData.append('comprehensiveEvaluationMinimumCount', aiSummarySettings.minimumCompletionCount);
+    formData.append('comprehensiveEvaluationMinimumCount', aiSummarySettings?.minimumCompletionCount);
 
     if (selectedImage) {
       console.log('selectedImage', selectedImage);
@@ -3426,14 +3426,14 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                                   {isProcessing
                                     ? '등록 중'
                                     : fileEntry.fileUploadStatus === '0000'
-                                    ? '등록 전'
-                                    : fileEntry.fileUploadStatus === '1000'
-                                    ? '등록 중'
-                                    : fileEntry.fileUploadStatus === '2000'
-                                    ? '등록 완료'
-                                    : fileEntry.fileUploadStatus === '3000'
-                                    ? '등록 실패'
-                                    : '등록 전'}
+                                      ? '등록 전'
+                                      : fileEntry.fileUploadStatus === '1000'
+                                        ? '등록 중'
+                                        : fileEntry.fileUploadStatus === '2000'
+                                          ? '등록 완료'
+                                          : fileEntry.fileUploadStatus === '3000'
+                                            ? '등록 실패'
+                                            : '등록 전'}
                                 </div>
                               </div>
                             ))}
@@ -3481,14 +3481,14 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                                   {isProcessing
                                     ? '등록 중'
                                     : file.fileUploadStatus === '0000'
-                                    ? '등록 전'
-                                    : file.fileUploadStatus === '1000'
-                                    ? '등록 중'
-                                    : file.fileUploadStatus === '2000'
-                                    ? '등록 완료'
-                                    : file.fileUploadStatus === '3000'
-                                    ? '등록 실패'
-                                    : '등록 전'}
+                                      ? '등록 전'
+                                      : file.fileUploadStatus === '1000'
+                                        ? '등록 중'
+                                        : file.fileUploadStatus === '2000'
+                                          ? '등록 완료'
+                                          : file.fileUploadStatus === '3000'
+                                            ? '등록 실패'
+                                            : '등록 전'}
                                 </div>
                               </div>
                             ))}

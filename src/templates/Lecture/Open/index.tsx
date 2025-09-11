@@ -373,7 +373,7 @@ export function LectureOpenTemplate() {
         ...prev,
         comprehensiveEvaluationPermissions: clubForm.comprehensiveEvaluationPermissions,
         comprehensiveEvaluationViewPermissions: clubForm.comprehensiveEvaluationViewPermissions,
-        minimumCompletionCount: clubForm.comprehensiveEvaluationMinimumCount,
+        minimumCompletionCount: clubForm.comprehensiveEvaluationMinimumCount || 1,
       }));
 
       // Add fileList and urlList to each item in the data array
@@ -1168,20 +1168,20 @@ export function LectureOpenTemplate() {
       formData.append('clubForm.instructorProfileImageFile', selectedImageProfileCheck);
     }
 
-    for (let i = 0; i < aiSummarySettings.comprehensiveEvaluationPermissions.length; i++) {
+    for (let i = 0; i < aiSummarySettings?.comprehensiveEvaluationPermissions?.length; i++) {
       formData.append(
         'clubForm.comprehensiveEvaluationPermissions[' + i + ']',
-        aiSummarySettings.comprehensiveEvaluationPermissions[i],
+        aiSummarySettings?.comprehensiveEvaluationPermissions[i],
       );
     }
-    for (let i = 0; i < aiSummarySettings.comprehensiveEvaluationViewPermissions.length; i++) {
+    for (let i = 0; i < aiSummarySettings?.comprehensiveEvaluationViewPermissions?.length; i++) {
       formData.append(
         'clubForm.comprehensiveEvaluationViewPermissions[' + i + ']',
-        aiSummarySettings.comprehensiveEvaluationViewPermissions[i],
+        aiSummarySettings?.comprehensiveEvaluationViewPermissions[i],
       );
     }
 
-    formData.append('clubForm.comprehensiveEvaluationMinimumCount', aiSummarySettings.minimumCompletionCount);
+    formData.append('clubForm.comprehensiveEvaluationMinimumCount', aiSummarySettings?.minimumCompletionCount || 1);
 
     console.log(clubFormParams);
     console.log('scheduleData', scheduleData);
@@ -1491,8 +1491,8 @@ export function LectureOpenTemplate() {
                         index < activeStep
                           ? 'tw-bg-gray-300 tw-text-white'
                           : index === activeStep
-                          ? 'tw-bg-blue-600  tw-text-white'
-                          : 'tw-bg-gray-300 tw-text-white'
+                            ? 'tw-bg-blue-600  tw-text-white'
+                            : 'tw-bg-gray-300 tw-text-white'
                       }`}
                     ></div>
                     <div
@@ -1500,8 +1500,8 @@ export function LectureOpenTemplate() {
                         index < activeStep
                           ? ' tw-text-gray-400'
                           : index === activeStep
-                          ? ' tw-text-black tw-font-bold'
-                          : ' tw-text-gray-400'
+                            ? ' tw-text-black tw-font-bold'
+                            : ' tw-text-gray-400'
                       }`}
                     >
                       {step}
@@ -2087,7 +2087,7 @@ export function LectureOpenTemplate() {
                         </div>
                         <FormControl size="small" className="tw-w-full">
                           <Select
-                            value={aiSummarySettings.minimumCompletionCount}
+                            value={aiSummarySettings?.minimumCompletionCount || 1}
                             onChange={e =>
                               handleAiSummarySettingChange('minimumCompletionCount', e.target.value as number)
                             }
