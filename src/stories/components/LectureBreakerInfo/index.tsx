@@ -347,6 +347,7 @@ const LectureBreakerInfo = ({
                       파일 업로드 +
                     </button>
                     <input
+                      multiple
                       accept=".pdf"
                       type="file"
                       ref={fileInputRef}

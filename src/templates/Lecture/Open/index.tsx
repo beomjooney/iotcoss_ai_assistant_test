@@ -2680,7 +2680,7 @@ export function LectureOpenTemplate() {
                 selectedQuizzes={scheduleData}
               />
               {isProcessing && (
-                <div className="tw-text-center tw-text-sm tw-text-gray-500 tw-mb-4">
+                <div className="tw-text-center tw-text-base tw-text-gray-500 tw-my-6">
                   강의 준비에 약 2분이 소요될 예정입니다. 잠시만 기다려 주세요 😊
                 </div>
               )}
