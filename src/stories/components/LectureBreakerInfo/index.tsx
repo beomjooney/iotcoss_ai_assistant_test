@@ -91,21 +91,25 @@ const LectureBreakerInfo = ({
     const allowedExtensions = /(\.pdf)$/i;
     const maxFileSize = 50 * 1024 * 1024; // 50MB in bytes
 
-    for (let i = 0; i < files.length; i++) {
-      if (!allowedExtensions.exec(files[i].name)) {
-        alert('허용되지 않는 파일 형식입니다.');
-        event.target.value = ''; // input 초기화
-        return;
+    // 유효한 파일만 필터링
+    const validFiles = files.filter(file => {
+      if (!allowedExtensions.exec(file.name)) {
+        alert(`'${file.name}'은(는) 허용되지 않는 파일 형식입니다.`);
+        return false;
       }
 
-      if (files[i].size > maxFileSize) {
-        alert('파일 크기는 50MB를 초과할 수 없습니다.');
-        event.target.value = ''; // input 초기화
-        return;
+      if (file.size > maxFileSize) {
+        alert(`'${file.name}'의 크기가 50MB를 초과합니다.`);
+        return false;
       }
+
+      return true;
+    });
+
+    if (validFiles.length > 0) {
+      scheduleFileAdd(order, validFiles);
     }
 
-    scheduleFileAdd(order, files);
     // 동일 파일 업로드를 허용하기 위해 input 초기화
     event.target.value = '';
   };
