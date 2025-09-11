@@ -349,7 +349,6 @@ const LectureBreakerInfo = ({
                     <input
                       accept=".pdf"
                       type="file"
-                      multiple
                       ref={fileInputRef}
                       style={{ display: 'none' }}
                       onChange={e => {
@@ -392,7 +391,7 @@ const LectureBreakerInfo = ({
                               <div className="tw-flex tw-items-center tw-gap-3 pb-2">
                                 <div className="border tw-px-3 tw-p-1 tw-rounded tw-w-[400px]">
                                   <span
-                                    className="tw-text-blue-600 tw-cursor-pointer tw-break-all"
+                                    className="tw-text-blue-600 tw-cursor-pointer"
                                     onClick={() => {
                                       onFileDownload(file.fileKey, file.name);
                                     }}
