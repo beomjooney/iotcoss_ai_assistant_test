@@ -1324,6 +1324,7 @@ export function LectureOpenTemplate() {
     if (type === 'temp') {
       onTempSave(formData);
     } else if (type === 'save') {
+      // alert('강의 준비에 약 2분이 소요될 예정입니다. 잠시만 기다려 주세요 😊');
       onLectureSave(formData);
     } else if (type === 'validation') {
       console.log(prevActiveStep => prevActiveStep + 1);
@@ -1491,8 +1492,8 @@ export function LectureOpenTemplate() {
                         index < activeStep
                           ? 'tw-bg-gray-300 tw-text-white'
                           : index === activeStep
-                            ? 'tw-bg-blue-600  tw-text-white'
-                            : 'tw-bg-gray-300 tw-text-white'
+                          ? 'tw-bg-blue-600  tw-text-white'
+                          : 'tw-bg-gray-300 tw-text-white'
                       }`}
                     ></div>
                     <div
@@ -1500,8 +1501,8 @@ export function LectureOpenTemplate() {
                         index < activeStep
                           ? ' tw-text-gray-400'
                           : index === activeStep
-                            ? ' tw-text-black tw-font-bold'
-                            : ' tw-text-gray-400'
+                          ? ' tw-text-black tw-font-bold'
+                          : ' tw-text-gray-400'
                       }`}
                     >
                       {step}
@@ -2678,6 +2679,11 @@ export function LectureOpenTemplate() {
                 selectedJobName={personName}
                 selectedQuizzes={scheduleData}
               />
+              {isProcessing && (
+                <div className="tw-text-center tw-text-sm tw-text-gray-500 tw-mb-4">
+                  강의 준비에 약 2분이 소요될 예정입니다. 잠시만 기다려 주세요 😊
+                </div>
+              )}
               <div className="tw-container tw-py-10 tw-px-10 tw-mx-0 tw-min-w-full tw-flex tw-flex-col tw-items-center">
                 <div className="tw-flex tw-gap-5 tw-mt-3">
                   <button

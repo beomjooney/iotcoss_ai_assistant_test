@@ -437,9 +437,7 @@ export const useLectureSave = (): UseMutationResult => {
       console.log('data', data);
       const { responseCode, message } = data;
       if (responseCode === '0000') {
-        alert(
-          '🎉 강의클럽이 성공적으로 개설되었습니다! \n강의 준비에 약 2분이 소요될 예정입니다. 잠시만 기다려 주세요 😊',
-        );
+        alert('🎉 강의클럽이 성공적으로 개설되었습니다!');
       } else {
         alert(`error : [${responseCode}] ${message}`);
       }
