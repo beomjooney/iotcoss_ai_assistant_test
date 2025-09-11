@@ -2496,6 +2496,7 @@ export function LectureOpenTemplate() {
                         <input
                           accept=".pdf"
                           type="file"
+                          multiple
                           ref={fileInputRef}
                           style={{ display: 'none' }}
                           onChange={handleFileChange}
