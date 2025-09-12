@@ -836,8 +836,13 @@ export function LectureOpenTemplate() {
       scheduleData.map(item => {
         // Update the urlList of the item with matching order
         if (item.studyOrder === order) {
-          // return { ...item, files: [...(item.files || []), ...updated] };
-          return { ...item, files: [...(item.files || []), { ...updated, externalSharingLink: '' }] };
+          // File 객체를 직접 저장하되, 필요한 속성만 추가
+          const newFiles = updated.map(file => {
+            // File 객체에 추가 속성을 설정
+            file.externalSharingLink = '';
+            return file;
+          });
+          return { ...item, files: [...(item.files || []), ...newFiles] };
         }
         return item;
       }),
@@ -1223,7 +1228,7 @@ export function LectureOpenTemplate() {
             formData.append(`clubStudies[${i}].files[${j}].externalSharingLink`, file.externalSharingLink);
           } else {
             formData.append(`clubStudies[${i}].files[${j}].isNew`, 'true');
-            formData.append(`clubStudies[${i}].files[${j}].file`, file[0]);
+            formData.append(`clubStudies[${i}].files[${j}].file`, file); // file[0] → file로 변경
             formData.append(`clubStudies[${i}].files[${j}].externalSharingLink`, file.externalSharingLink);
             formData.append(`clubStudies[${i}].files[${j}].contentId`, 'content_id_' + generateUUID());
           }
@@ -2489,7 +2494,10 @@ export function LectureOpenTemplate() {
                   <div className="tw-w-full tw-flex tw-justify-start tw-items-center ">
                     <div className="tw-flex tw-text-black tw-text-base tw-w-[140px]">강의자료 업로드 : </div>
                     <div className="tw-flex tw-items-center tw-gap-2 tw-w-full tw-px-5">
-                      <div className="tw-w-[160px] tw-flex tw-items-center tw-gap-2 border tw-px-2 tw-py-2.5 tw-rounded">
+                      <div
+                        onClick={handleButtonClick}
+                        className="cursor-pointer tw-w-[160px] tw-flex tw-items-center tw-gap-2 border tw-px-2 tw-py-2.5 tw-rounded"
+                      >
                         <svg
                           width={16}
                           height={16}
@@ -2511,9 +2519,7 @@ export function LectureOpenTemplate() {
                             </clipPath>
                           </defs>
                         </svg>
-                        <button className=" tw-text-sm tw-text-left tw-text-[#31343d]" onClick={handleButtonClick}>
-                          파일 업로드 +
-                        </button>
+                        <button className=" tw-text-sm tw-text-left tw-text-[#31343d]">파일 업로드 +</button>
                         <input
                           accept=".pdf"
                           type="file"
@@ -2549,7 +2555,7 @@ export function LectureOpenTemplate() {
                       <div className="tw-w-11/12 tw-pt-5">
                         <div className="tw-w-full tw-flex tw-justify-start tw-px-5 tw-items-center">
                           <div className="tw-flex tw-py-2">
-                            <div className="tw-flex tw-text-sm tw-items-center" style={{ minWidth: '6.1rem' }}>
+                            <div className="tw-flex tw-text-sm tw-items-start tw-mt-1" style={{ minWidth: '6.1rem' }}>
                               업로드된 파일 :
                             </div>
                             <div className="tw-text-left tw-pl-5 tw-text-sm tw-flex tw-flex-wrap tw-gap-2">

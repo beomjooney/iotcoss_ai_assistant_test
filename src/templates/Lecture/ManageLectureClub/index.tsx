@@ -847,7 +847,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
             formData.append(`clubStudies[${i}].files[${j}].isNew`, 'false');
           } else {
             formData.append(`clubStudies[${i}].files[${j}].isNew`, 'true');
-            formData.append(`clubStudies[${i}].files[${j}].file`, file[0]);
+            formData.append(`clubStudies[${i}].files[${j}].file`, file);
             formData.append(`clubStudies[${i}].files[${j}].externalSharingLink`, file.externalSharingLink);
             formData.append(`clubStudies[${i}].files[${j}].contentId`, 'content_id_' + generateUUID());
           }
@@ -1272,15 +1272,18 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
 
   const scheduleFileAdd = (order: any, updated: any) => {
     console.log('scheduleFileAdd', order, updated);
-    // updated.forEach(file => {
-    //   file.externalSharingLink = '';
-    // });
 
     setScheduleData(
       scheduleData.map(item => {
         // Update the urlList of the item with matching order
         if (item.studyOrder === order) {
-          return { ...item, files: [...(item.files || []), { ...updated, externalSharingLink: '' }] };
+          // File 객체를 직접 저장하되, 필요한 속성만 추가
+          const newFiles = updated.map(file => {
+            // File 객체에 추가 속성을 설정
+            file.externalSharingLink = '';
+            return file;
+          });
+          return { ...item, files: [...(item.files || []), ...newFiles] };
         }
         return item;
       }),
@@ -3426,14 +3429,14 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                                   {isProcessing
                                     ? '등록 중'
                                     : fileEntry.fileUploadStatus === '0000'
-                                      ? '등록 전'
-                                      : fileEntry.fileUploadStatus === '1000'
-                                        ? '등록 중'
-                                        : fileEntry.fileUploadStatus === '2000'
-                                          ? '등록 완료'
-                                          : fileEntry.fileUploadStatus === '3000'
-                                            ? '등록 실패'
-                                            : '등록 전'}
+                                    ? '등록 전'
+                                    : fileEntry.fileUploadStatus === '1000'
+                                    ? '등록 중'
+                                    : fileEntry.fileUploadStatus === '2000'
+                                    ? '등록 완료'
+                                    : fileEntry.fileUploadStatus === '3000'
+                                    ? '등록 실패'
+                                    : '등록 전'}
                                 </div>
                               </div>
                             ))}
@@ -3481,14 +3484,14 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                                   {isProcessing
                                     ? '등록 중'
                                     : file.fileUploadStatus === '0000'
-                                      ? '등록 전'
-                                      : file.fileUploadStatus === '1000'
-                                        ? '등록 중'
-                                        : file.fileUploadStatus === '2000'
-                                          ? '등록 완료'
-                                          : file.fileUploadStatus === '3000'
-                                            ? '등록 실패'
-                                            : '등록 전'}
+                                    ? '등록 전'
+                                    : file.fileUploadStatus === '1000'
+                                    ? '등록 중'
+                                    : file.fileUploadStatus === '2000'
+                                    ? '등록 완료'
+                                    : file.fileUploadStatus === '3000'
+                                    ? '등록 실패'
+                                    : '등록 전'}
                                 </div>
                               </div>
                             ))}

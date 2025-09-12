@@ -347,6 +347,7 @@ const LectureBreakerInfo = ({
                       파일 업로드 +
                     </button>
                     <input
+                      multiple
                       accept=".pdf"
                       type="file"
                       ref={fileInputRef}
@@ -382,7 +383,7 @@ const LectureBreakerInfo = ({
                   <div className="tw-w-full tw-flex tw-justify-start tw-px-5 tw-items-center">
                     {fileList?.length > 0 && (
                       <div className="tw-flex tw-py-2">
-                        <div className="tw-flex tw-text-sm tw-items-center" style={{ minWidth: '6.1rem' }}>
+                        <div className="tw-flex tw-text-sm tw-items-start tw-mt-1" style={{ minWidth: '6.1rem' }}>
                           업로드된 파일 :
                         </div>
                         <div className="tw-text-left tw-pl-5 tw-text-sm tw-flex-col tw-gap-5">
@@ -396,7 +397,7 @@ const LectureBreakerInfo = ({
                                       onFileDownload(file.fileKey, file.name);
                                     }}
                                   >
-                                    {file[0]?.name || file?.name}
+                                    {file.name}
                                   </span>
                                   <button
                                     className="tw-ml-2 tw-cursor-pointer"
