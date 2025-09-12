@@ -1032,6 +1032,26 @@ export function LectureOpenTemplate() {
     // const selectedJobCode = jobs.find(j => j.code === selectedJob)?.code || '';
 
     // 필수 항목 체크
+    if (clubName.length > 256) {
+      alert('강의명은 256자 이하로 입력해주세요');
+      return false;
+    }
+
+    if (studySubject.length > 1024) {
+      alert('학습 주제는 1024자 이하로 입력해주세요');
+      return false;
+    }
+
+    if (studyKeywords.toString().length > 1024) {
+      alert('학습 키워드는 1024자 이하로 입력해주세요');
+      return false;
+    }
+
+    if (introductionText.length > 1024) {
+      alert('강의소개는 1024자 이하로 입력해주세요');
+      return false;
+    }
+
     if (!clubName) {
       alert('클럽 이름을 입력해주세요');
       return false;
