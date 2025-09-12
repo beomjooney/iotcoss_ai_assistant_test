@@ -1228,8 +1228,8 @@ export function LectureOpenTemplate() {
             formData.append(`clubStudies[${i}].files[${j}].externalSharingLink`, file.externalSharingLink);
           } else {
             formData.append(`clubStudies[${i}].files[${j}].isNew`, 'true');
-            formData.append(`clubStudies[${i}].files[${j}].file`, file); // file[0] → file로 변경
-            formData.append(`clubStudies[${i}].files[${j}].externalSharingLink`, file.externalSharingLink);
+            formData.append(`clubStudies[${i}].files[${j}].file`, file.file || file); // 래핑된 객체면 file.file, 아니면 file
+            formData.append(`clubStudies[${i}].files[${j}].externalSharingLink`, file.externalSharingLink || '');
             formData.append(`clubStudies[${i}].files[${j}].contentId`, 'content_id_' + generateUUID());
           }
         }
@@ -1329,8 +1329,8 @@ export function LectureOpenTemplate() {
         formData.append('lectureContents.files[' + j + '].externalSharingLink', file.externalSharingLink);
       } else {
         formData.append('lectureContents.files[' + j + '].isNew', 'true');
-        formData.append('lectureContents.files[' + j + '].file', file.file);
-        formData.append('lectureContents.files[' + j + '].externalSharingLink', file.externalSharingLink);
+        formData.append('lectureContents.files[' + j + '].file', file.file || file);
+        formData.append('lectureContents.files[' + j + '].externalSharingLink', file.externalSharingLink || '');
         formData.append('lectureContents.files[' + j + '].contentId', 'content_id_' + generateUUID());
       }
     });

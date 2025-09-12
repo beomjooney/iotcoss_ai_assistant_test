@@ -847,8 +847,8 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
             formData.append(`clubStudies[${i}].files[${j}].isNew`, 'false');
           } else {
             formData.append(`clubStudies[${i}].files[${j}].isNew`, 'true');
-            formData.append(`clubStudies[${i}].files[${j}].file`, file);
-            formData.append(`clubStudies[${i}].files[${j}].externalSharingLink`, file.externalSharingLink);
+            formData.append(`clubStudies[${i}].files[${j}].file`, file.file || file);
+            formData.append(`clubStudies[${i}].files[${j}].externalSharingLink`, file.externalSharingLink || '');
             formData.append(`clubStudies[${i}].files[${j}].contentId`, 'content_id_' + generateUUID());
           }
         }
@@ -944,8 +944,8 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
         formData.append('lectureContents.files[' + j + '].externalSharingLink', file.externalSharingLink);
       } else {
         formData.append('lectureContents.files[' + j + '].isNew', 'true');
-        formData.append('lectureContents.files[' + j + '].file', file.file);
-        formData.append('lectureContents.files[' + j + '].externalSharingLink', file.externalSharingLink);
+        formData.append('lectureContents.files[' + j + '].file', file.file || file);
+        formData.append('lectureContents.files[' + j + '].externalSharingLink', file.externalSharingLink || '');
         formData.append('lectureContents.files[' + j + '].contentId', 'content_id_' + generateUUID());
       }
     });
@@ -1277,12 +1277,14 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
       scheduleData.map(item => {
         // Update the urlList of the item with matching order
         if (item.studyOrder === order) {
-          // File 객체를 직접 저장하되, 필요한 속성만 추가
-          const newFiles = updated.map(file => {
-            // File 객체에 추가 속성을 설정
-            file.externalSharingLink = '';
-            return file;
-          });
+          // File 객체를 래핑하는 객체 생성 (File 객체는 수정하지 않음)
+          const newFiles = updated.map(file => ({
+            file: file, // 원본 File 객체 보존
+            name: file.name,
+            size: file.size,
+            type: file.type,
+            externalSharingLink: '',
+          }));
           return { ...item, files: [...(item.files || []), ...newFiles] };
         }
         return item;
