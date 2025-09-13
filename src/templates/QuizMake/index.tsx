@@ -906,7 +906,7 @@ export function QuizMakeTemplate() {
 
   const handleFileChange = event => {
     const file = event.target.files[0];
-    const allowedExtensions = /(\.pdf|\.ppt|\.pptx)$/i;
+    const allowedExtensions = /(\.pdf|\.pptx)$/i;
 
     if (!allowedExtensions.exec(file.name)) {
       alert('허용되지 않는 파일 형식입니다.');
@@ -1432,7 +1432,7 @@ export function QuizMakeTemplate() {
                             파일추가
                           </button>
                           <input
-                            accept=".pdf,.ppt,.pptx"
+                            accept=".pdf,.pptx"
                             type="file"
                             ref={fileInputRef}
                             style={{ display: 'none' }}

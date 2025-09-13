@@ -226,7 +226,7 @@ const QuizSolutionDetailDemo = ({
 
   const handleFileChange = event => {
     const files = Array.from(event.target.files);
-    const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.xls|\.xlsx|\.doc|\.docx|\.ppt|\.pptx|\.hwp|\.pdf)$/i;
+    const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.xls|\.xlsx|\.doc|\.docx|\.pptx|\.hwp|\.pdf)$/i;
 
     for (let i = 0; i < files.length; i++) {
       if (!allowedExtensions.exec(files[i].name)) {
