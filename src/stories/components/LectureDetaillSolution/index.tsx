@@ -408,7 +408,7 @@ const LectureDetaillSolution = ({
                             >
                               <div className="tw-flex tw-item-center  tw-px-5 tw-w-10/12 tw-gap-4">
                                 <div className="tw-flex tw-font-medium tw-text-black">{item?.clubStudyName}</div>
-                                {item?.clubStudyType === '0100' ? (
+                                {item?.clubStudyType === '0200' ? (
                                   <div className="tw-text-xs tw-text-center tw-px-2 tw-py-1 tw-text-white tw-bg-blue-500 tw-rounded-md">
                                     온라인
                                   </div>
