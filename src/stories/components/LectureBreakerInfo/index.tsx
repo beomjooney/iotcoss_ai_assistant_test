@@ -88,7 +88,7 @@ const LectureBreakerInfo = ({
   const handleFileChange = (event, order) => {
     console.log('files', event.target.files);
     const files = Array.from(event.target.files);
-    const allowedExtensions = /(\.pdf)$/i;
+    const allowedExtensions = /(\.pdf|\.ppt|\.pptx)$/i;
     const maxFileSize = 50 * 1024 * 1024; // 50MB in bytes
 
     for (let i = 0; i < files.length; i++) {

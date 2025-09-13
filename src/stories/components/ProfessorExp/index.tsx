@@ -244,7 +244,7 @@ const ProfessorExpModal = ({ title, isOpen, onRequestClose, closable = true }) =
 
   const handleFileChange = event => {
     const file = event.target.files[0];
-    const allowedExtensions = /(\.pdf)$/i;
+    const allowedExtensions = /(\.pdf|\.ppt|\.pptx)$/i;
 
     if (!allowedExtensions.exec(file.name)) {
       alert('허용되지 않는 파일 형식입니다.');
