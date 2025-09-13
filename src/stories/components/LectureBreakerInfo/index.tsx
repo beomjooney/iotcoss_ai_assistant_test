@@ -58,18 +58,18 @@ const LectureBreakerInfo = ({
     if (date) {
       // Convert date to a Dayjs object
       const formattedDate = dayjs(date);
-      // Format the date as 'YYYY-MM-DD'
-      const formattedDateString = formattedDate.format('YYYY-MM-DD');
+      // Format the date as 'YYYY-MM-DD' and add start of day time
+      const formattedDateString = formattedDate.format('YYYY-MM-DD') + 'T00:00:00';
       // Set both today and todayEnd
       handleStartDayChange(order, formattedDateString);
     }
   };
   const onChangeHandleFromToEndDate = date => {
     if (date) {
-      // Convert date to a Dayjs object
-      const formattedDate = dayjs(date);
-      // Format the date as 'YYYY-MM-DD'
-      const formattedDateString = formattedDate.format('YYYY-MM-DD');
+      // Convert date to a Dayjs object and set to end of day
+      const formattedDate = dayjs(date).endOf('day');
+      // Format the date as ISO string with time
+      const formattedDateString = formattedDate.format('YYYY-MM-DD' + 'T23:59:59');
       // Set both today and todayEnd
       handleEndDayChange(order, formattedDateString);
     }
@@ -88,7 +88,7 @@ const LectureBreakerInfo = ({
   const handleFileChange = (event, order) => {
     console.log('files', event.target.files);
     const files = Array.from(event.target.files);
-    const allowedExtensions = /(\.pdf|\.pptx)$/i;
+    const allowedExtensions = /(\.pdf|\.ppt|  .pptx)$/i;
     const maxFileSize = 50 * 1024 * 1024; // 50MB in bytes
 
     for (let i = 0; i < files.length; i++) {

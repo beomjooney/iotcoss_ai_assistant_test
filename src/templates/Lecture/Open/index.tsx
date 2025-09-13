@@ -73,7 +73,7 @@ for (let i = 0; i < 2; i++) {
   });
 
   // 첫 번째 일정과 두 번째 일정 사이에 하루를 건너뜁니다
-  startDate1 = endDate1.add(1, 'day'); // endDate 다음 날부터 시작
+  startDate1 = endDate1.add(0, 'day'); // endDate 다음 날부터 시작
 }
 export function LectureOpenTemplate() {
   const router = useRouter();
@@ -289,7 +289,9 @@ export function LectureOpenTemplate() {
           urls: [],
           files: [],
           startDate: currentDay.format('YYYY-MM-DD'),
-          endDate: currentDay.add(1, 'days').format('YYYY-MM-DD'),
+          // endDate: currentDay.add(1, 'days').format('YYYY-MM-DD'),
+          endDate: currentDay.format('YYYY-MM-DD'),
+          // endDate: currentDay.add(0, 'days').format('YYYY-MM-DD'),
         });
       });
       console.log('schedule', schedule);
@@ -1005,7 +1007,7 @@ export function LectureOpenTemplate() {
     let startDate = dayjs(); // 오늘 날짜로 시작
 
     for (let i = 0; i < 2; i++) {
-      const endDate = startDate.add(1, 'day'); // startDate의 다음 날을 endDate로 설정
+      const endDate = startDate.add(0, 'day'); // startDate의 다음 날을 endDate로 설정
 
       defaultScheduleDataInit.push({
         studyOrder: i + 1,
@@ -1134,7 +1136,7 @@ export function LectureOpenTemplate() {
       jobs: selectedJob || [],
       jobLevels: recommendLevels || [],
       startAt: (startDay ? startDay.format('YYYY-MM-DD') : '') + 'T00:00:00',
-      endAt: (endDay ? endDay.format('YYYY-MM-DD') : '') + 'T00:00:00',
+      endAt: (endDay ? endDay.format('YYYY-MM-DD') : '') + 'T23:59:59',
       studySubject: studySubject || '',
       studyKeywords: studyKeywords || '',
       isPublic: isPublic === '0001' ? 'true' : 'false',
@@ -1260,11 +1262,11 @@ export function LectureOpenTemplate() {
         const nextDay4 = dayjs(item.endDate);
 
         // 시작일이 종료일보다 크거나 같을 경우 오류 처리
-        if (!dayjs(nextDay4).isAfter(dayjs(nextDay3))) {
-          alert(`${i + 1}번째 강의 : 종료일은 시작일보다 뒤에 있어야 합니다.`);
-          setIsProcessing(false);
-          return; // 혹은 필요에 따라 validation 실패시 코드 실행 중단
-        }
+        // if (!dayjs(nextDay4).isAfter(dayjs(nextDay3))) {
+        //   alert(`${i + 1}번째 강의 : 종료일은 시작일보다 뒤에 있어야 합니다.`);
+        //   setIsProcessing(false);
+        //   return; // 혹은 필요에 따라 validation 실패시 코드 실행 중단
+        // }
 
         // 중복된 날짜 검사
         // for (let prev of previousSchedules) {
