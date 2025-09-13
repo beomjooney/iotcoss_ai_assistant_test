@@ -3337,7 +3337,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                         파일 업로드 +
                       </button>
                       <input
-                        accept=".pdf"
+                        accept=".pdf .ppt .pptx"
                         type="file"
                         ref={fileInputRef}
                         style={{ display: 'none' }}

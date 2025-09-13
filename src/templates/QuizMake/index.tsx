@@ -1432,7 +1432,7 @@ export function QuizMakeTemplate() {
                             파일추가
                           </button>
                           <input
-                            accept=".pdf"
+                            accept=".pdf,.ppt,.pptx"
                             type="file"
                             ref={fileInputRef}
                             style={{ display: 'none' }}

@@ -348,7 +348,7 @@ const LectureBreakerInfo = ({
                     </button>
                     <input
                       multiple
-                      accept=".pdf"
+                      accept=".pdf,.ppt,.pptx"
                       type="file"
                       ref={fileInputRef}
                       style={{ display: 'none' }}

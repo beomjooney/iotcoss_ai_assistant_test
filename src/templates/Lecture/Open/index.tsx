@@ -199,7 +199,7 @@ export function LectureOpenTemplate() {
   };
   const handleFileChange = event => {
     const files = Array.from(event.target.files);
-    const allowedExtensions = /(\.pdf)$/i;
+    const allowedExtensions = /(\.pdf .ppt .pptx)$/i;
     const maxFileSize = 50 * 1024 * 1024; // 50MB in bytes
 
     for (let i = 0; i < files.length; i++) {
@@ -2521,7 +2521,7 @@ export function LectureOpenTemplate() {
                         </svg>
                         <button className=" tw-text-sm tw-text-left tw-text-[#31343d]">파일 업로드 +</button>
                         <input
-                          accept=".pdf"
+                          accept=".pdf,.ppt,.pptx"
                           type="file"
                           multiple
                           ref={fileInputRef}
