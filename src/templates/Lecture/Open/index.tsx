@@ -1,7 +1,7 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import React, { useEffect, useState, useRef } from 'react';
-import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
+import Tooltip from '@mui/material/Tooltip';
 import { paramProps } from 'src/services/seminars/seminars.queries';
 import { useContentJobTypes, useJobGroupss } from 'src/services/code/code.queries';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -45,7 +45,6 @@ import { images, imageBanner, dayGroup } from './group';
 import validator from 'validator';
 import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
 import { v4 as uuidv4 } from 'uuid';
-
 import { useSessionStore } from 'src/store/session';
 import { useGetGroupLabel } from 'src/hooks/useGetGroupLabel';
 import { useStudyOrderLabel } from 'src/hooks/useStudyOrderLabel';
@@ -77,11 +76,10 @@ for (let i = 0; i < 2; i++) {
   startDate1 = endDate1.add(1, 'day'); // endDate 다음 날부터 시작
 }
 export function LectureOpenTemplate() {
+  const router = useRouter();
   const { jobGroupLabelType, studyOrderLabelType } = useSessionStore.getState();
   const { groupLabel, subGroupLabel } = useGetGroupLabel(jobGroupLabelType);
   const { studyOrderLabel } = useStudyOrderLabel(studyOrderLabelType);
-
-  const router = useRouter();
   const [startDay, setStartDay] = React.useState<Dayjs | null>(dayjs());
   const [endDay, setEndDay] = React.useState<Dayjs | null>(dayjs().add(4, 'month'));
   const [page, setPage] = useState(1);
@@ -315,11 +313,6 @@ export function LectureOpenTemplate() {
       const clubForm = data?.clubForm || {};
       const lectureList = data?.clubStudies || [];
       const lectureContents = data?.lectureContents || [];
-
-      // lectureContents가 빈 객체이면 빈 배열로 변경
-      // if (Object.keys(lectureContents).length === 0) {
-      //   lectureContents([]);
-      // }
 
       setParamss(clubForm);
 
