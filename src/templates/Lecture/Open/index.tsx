@@ -1256,10 +1256,6 @@ export function LectureOpenTemplate() {
           return; // 함수 전체를 종료
         }
 
-        // 현재 날짜 값에 하루를 더하기
-        const nextDay = dayjs(item.startDate).format('YYYY-MM-DD');
-        const nextDay2 = dayjs(item.endDate).format('YYYY-MM-DD');
-
         const nextDay3 = dayjs(item.startDate);
         const nextDay4 = dayjs(item.endDate);
 
@@ -1271,22 +1267,22 @@ export function LectureOpenTemplate() {
         }
 
         // 중복된 날짜 검사
-        for (let prev of previousSchedules) {
-          if (
-            nextDay3.isBetween(prev.startDate, prev.endDate, null, '[]') ||
-            nextDay4.isBetween(prev.startDate, prev.endDate, null, '[]') ||
-            prev.startDate.isBetween(nextDay3, nextDay4, null, '[]') ||
-            prev.endDate.isBetween(nextDay3, nextDay4, null, '[]')
-          ) {
-            alert(
-              `${i + 1}번째 강의의 시작일(${nextDay3.format('YYYY-MM-DD')})과 종료일(${nextDay4.format(
-                'YYYY-MM-DD',
-              )})이 이전 강의날짜와 겹칩니다.`,
-            );
-            setIsProcessing(false);
-            return;
-          }
-        }
+        // for (let prev of previousSchedules) {
+        //   if (
+        //     nextDay3.isBetween(prev.startDate, prev.endDate, null, '[]') ||
+        //     nextDay4.isBetween(prev.startDate, prev.endDate, null, '[]') ||
+        //     prev.startDate.isBetween(nextDay3, nextDay4, null, '[]') ||
+        //     prev.endDate.isBetween(nextDay3, nextDay4, null, '[]')
+        //   ) {
+        //     alert(
+        //       `${i + 1}번째 강의의 시작일(${nextDay3.format('YYYY-MM-DD')})과 종료일(${nextDay4.format(
+        //         'YYYY-MM-DD',
+        //       )})이 이전 강의날짜와 겹칩니다.`,
+        //     );
+        //     setIsProcessing(false);
+        //     return;
+        //   }
+        // }
 
         // 이전 강의 리스트에 현재 강의 추가
         previousSchedules.push({ startDate: nextDay3, endDate: nextDay4 });
