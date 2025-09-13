@@ -3350,7 +3350,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                       size="small"
                       value={urlCode}
                       onChange={e => setUrlCode(e.target.value)}
-                      placeholder="강의자료 URL을 입력해주세요. http://"
+                      placeholder="강의영상 유튜브 URL을 입력해주세요. https://www.youtube.com/"
                       id="margin-none"
                       InputProps={{
                         endAdornment: (

@@ -3,7 +3,7 @@ import { useState, useRef } from 'react';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { makeStyles } from '@mui/styles';
-import { TextField, InputAdornment, IconButton } from '@mui/material';
+import { TextField, InputAdornment, IconButton, Tooltip } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -254,6 +254,7 @@ const LectureBreakerInfo = ({
                     >
                       오프라인
                     </ToggleButton>
+
                     <ToggleButton
                       classes={{ selected: classes.selected }}
                       value="0200"
@@ -273,19 +274,21 @@ const LectureBreakerInfo = ({
                         },
                       }}
                     >
-                      온라인
+                      <span className="tw-w-full">온라인</span>
                     </ToggleButton>
                   </ToggleButtonGroup>
-                  <TextField
-                    fullWidth
-                    className="tw-pl-1"
-                    size="small"
-                    value={item.clubStudyUrl}
-                    disabled={item.clubStudyType === '0100'}
-                    onChange={e => handleInputOnlineUrlChange(order, e)}
-                    placeholder="온라인 강의 URL을 입력해주세요."
-                    id="margin-none"
-                  />
+                  <Tooltip title="학습자 대시보드에서 해당 URL로 바로 이동 가능합니다." disableInteractive>
+                    <TextField
+                      fullWidth
+                      className="tw-pl-1"
+                      size="small"
+                      value={item.clubStudyUrl}
+                      disabled={item.clubStudyType === '0100'}
+                      onChange={e => handleInputOnlineUrlChange(order, e)}
+                      placeholder="온라인 강의 URL을 입력해주세요."
+                      id="margin-none"
+                    />
+                  </Tooltip>
                   <div className="tw-flex tw-items-center">
                     <div className="tw-text-black tw-text-base tw-pl-2  tw-w-[60px]">시작일:</div>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -357,24 +360,26 @@ const LectureBreakerInfo = ({
                       }}
                     />
                   </div>
-                  <TextField
-                    fullWidth
-                    className="tw-pl-1"
-                    size="small"
-                    value={input}
-                    onChange={e => setInput(e.target.value)}
-                    placeholder="강의자료 URL을 입력해주세요. http://"
-                    id="margin-none"
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton onClick={() => handleAddInput(order)}>
-                            <AddIcon />
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
+                  <Tooltip title="현재 강의영상은 유튜브만 지원하고 있습니다." disableInteractive>
+                    <TextField
+                      fullWidth
+                      className="tw-pl-1"
+                      size="small"
+                      value={input}
+                      onChange={e => setInput(e.target.value)}
+                      placeholder="강의영상 유튜브 URL을 입력해주세요. https://www.youtube.com/"
+                      id="margin-none"
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton onClick={() => handleAddInput(order)}>
+                              <AddIcon />
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Tooltip>
                 </div>
               </div>
               <div className="tw-flex">
@@ -389,7 +394,7 @@ const LectureBreakerInfo = ({
                         <div className="tw-text-left tw-pl-5 tw-text-sm tw-flex-col tw-gap-5">
                           {fileList.map((file, index) => (
                             <div key={index}>
-                              <div className="tw-flex tw-items-center tw-gap-3 pb-2">
+                              <div className="tw-flex tw-items-center tw-gap-3 tw-pb-2">
                                 <div className="border tw-px-3 tw-p-1 tw-rounded tw-w-[400px]">
                                   <span
                                     className="tw-text-blue-600 tw-cursor-pointer"
@@ -469,12 +474,12 @@ const LectureBreakerInfo = ({
                   <div className="tw-w-full tw-flex tw-justify-start tw-px-5 tw-items-center">
                     {urlList?.length > 0 && (
                       <div className="tw-flex tw-py-2">
-                        <div className="tw-flex tw-text-sm tw-items-start" style={{ minWidth: '6.1rem' }}>
+                        <div className="tw-flex tw-text-sm tw-items-start tw-mt-1" style={{ minWidth: '6.1rem' }}>
                           첨부된 URL :
                         </div>
-                        <div className="tw-text-left tw-pl-5 tw-text-sm tw-flex tw-flex-wrap tw-gap-2">
+                        <div className="tw-text-left tw-pl-5 tw-text-sm tw-flex-col">
                           {urlList.map((file, index) => (
-                            <div key={index} className="tw-flex tw-items-center tw-gap-2">
+                            <div key={index} className="tw-flex tw-items-center tw-gap-3 pb-2">
                               <div className="border tw-px-3 tw-p-1 tw-rounded">
                                 <span className="tw-text-[#FF8F60]">{file.url}</span>
                                 <button className="tw-ml-2 tw-cursor-pointer" onClick={() => handleDeleteInput(index)}>
