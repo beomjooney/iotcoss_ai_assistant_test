@@ -1,6 +1,7 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import React, { useEffect, useState, useRef } from 'react';
+import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
 import { paramProps } from 'src/services/seminars/seminars.queries';
 import { useContentJobTypes, useJobGroupss } from 'src/services/code/code.queries';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -2529,24 +2530,26 @@ export function LectureOpenTemplate() {
                           onChange={handleFileChange}
                         />
                       </div>
-                      <TextField
-                        fullWidth
-                        className="tw-pl-1"
-                        size="small"
-                        value={urlCode}
-                        onChange={e => setUrlCode(e.target.value)}
-                        placeholder="강의영상 유튜브 URL을 입력해주세요. https://www.youtube.com/"
-                        id="margin-none"
-                        InputProps={{
-                          endAdornment: (
-                            <InputAdornment position="end">
-                              <IconButton onClick={() => handleAddInput(urlCode)}>
-                                <AddIcon />
-                              </IconButton>
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
+                      <Tooltip title="현재 강의영상은 유튜브만 지원하고 있습니다." disableInteractive>
+                        <TextField
+                          fullWidth
+                          className="tw-pl-1"
+                          size="small"
+                          value={urlCode}
+                          onChange={e => setUrlCode(e.target.value)}
+                          placeholder="강의영상 유튜브 URL을 입력해주세요. https://www.youtube.com/"
+                          id="margin-none"
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <IconButton onClick={() => handleAddInput(urlCode)}>
+                                  <AddIcon />
+                                </IconButton>
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                      </Tooltip>
                     </div>
                   </div>
                   {lectureContents.files?.length > 0 && (
