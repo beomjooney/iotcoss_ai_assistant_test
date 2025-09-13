@@ -357,9 +357,9 @@ export function LectureOpenTemplate() {
       setIntroductionText(clubForm.description || '');
       setAgreements(clubForm.useCurrentProfileImage);
 
-      setLectureLanguage(clubForm.lectureLanguage);
-      setContentLanguage(clubForm.contentLanguage);
-      setLectureAILanguage(clubForm.aiConversationLanguage);
+      setLectureLanguage(clubForm.lectureLanguage || 'kor');
+      setContentLanguage(clubForm.contentLanguage || 'kor');
+      setLectureAILanguage(clubForm.aiConversationLanguage || 'kor');
 
       setPreview(clubForm.clubImageUrl);
       setPreviewBanner(clubForm.backgroundImageUrl);
