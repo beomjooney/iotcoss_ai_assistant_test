@@ -362,13 +362,13 @@ export function AdminAccountLinkTestTemplate() {
                             <div className=" tw-text-base tw-font-bold">아이디</div>
                           </TableCell>
                           <TableCell align="left" width={110}>
-                            <div className=" tw-text-base tw-font-bold">테스트결과</div>
+                            <div className=" tw-text-base tw-font-bold">테스트 결과</div>
                           </TableCell>
                           <TableCell align="left" width={160}>
-                            <div className=" tw-text-base tw-font-bold">테스트일시</div>
+                            <div className=" tw-text-base tw-font-bold">테스트 일시</div>
                           </TableCell>
                           <TableCell align="left" width={300}>
-                            <div className=" tw-text-base tw-font-bold">테스트결과상세</div>
+                            <div className=" tw-text-base tw-font-bold">테스트결과 상세</div>
                           </TableCell>
                         </TableRow>
                       </TableHead>
@@ -382,20 +382,20 @@ export function AdminAccountLinkTestTemplate() {
                                     {content.requestType === '0101'
                                       ? '로그인'
                                       : content.requestType === '0201'
-                                        ? '아이디검증'
-                                        : content.requestType === '0202'
-                                          ? '패스워드검증'
-                                          : ''}
+                                      ? '아이디검증'
+                                      : content.requestType === '0202'
+                                      ? '패스워드검증'
+                                      : ''}
                                   </span>
                                 </div>
                               </TableCell>
                               <TableCell align="left" component="th" scope="row">
                                 <div className="tw-text-sm tw-line-clamp-1">
-                                  {content.externalMemberType === '0001'
+                                  {content.tenantLoginMemberType?.code === '0100'
                                     ? '학생'
-                                    : content.externalMemberType === '0002'
-                                      ? '교수'
-                                      : '외부'}
+                                    : content.tenantLoginMemberType?.code === '0200'
+                                    ? '교수'
+                                    : '외부'}
                                 </div>
                               </TableCell>
                               <TableCell align="left" component="th" scope="row">
