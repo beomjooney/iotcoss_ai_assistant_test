@@ -402,11 +402,11 @@ const LectureDetaillSolution = ({
                         <Grid item xs={12} sm={10}>
                           <div className="tw-rounded-xl">
                             <div
-                              className={`tw-py-7 tw-flex tw-items-center tw-px-4 max-lg:tw-p-3 tw-py-1 tw-rounded-lg ${
+                              className={`tw-py-7 tw-flex tw-items-center tw-px-4 max-lg:tw-p-3 tw-rounded-lg ${
                                 item?.isCompleted ? 'tw-bg-[#F6F7FB] ' : 'tw-bg-white border  tw-opacity-50'
                               }`}
                             >
-                              <div className="tw-flex tw-item-center  tw-px-5 tw-w-10/12 tw-gap-4">
+                              <div className="tw-flex tw-item-center tw-px-5  tw-w-10/12 tw-gap-4">
                                 <div className="tw-flex tw-font-medium tw-text-black">{item?.clubStudyName}</div>
                                 {item?.clubStudyType === '0200' ? (
                                   <div className="tw-text-xs tw-text-center tw-px-2 tw-py-1 tw-text-white tw-bg-blue-500 tw-rounded-md">
@@ -416,6 +416,11 @@ const LectureDetaillSolution = ({
                                   <div className="border border-primary tw-text-xs tw-text-center tw-px-2 tw-py-1 tw-text-blue-500 tw-bg-white tw-rounded-md">
                                     오프라인
                                   </div>
+                                )}
+                                {item?.clubStudyUrl && (
+                                  <span className="tw-text-sm tw-text-center tw-px-2 tw-text-whit tw-flex tw-items-center">
+                                    <span className="tw-font-bold tw-pr-2">강의 URL : </span> {item?.clubStudyUrl}
+                                  </span>
                                 )}
                               </div>
                               <div className="tw-flex-auto">
@@ -484,7 +489,7 @@ const LectureDetaillSolution = ({
                 <div className="tw-col-start-2 tw-col-end-12">
                   <div className="tw-flex tw-flex-col">
                     <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-5">학습 주제</p>
-                    <p className="tw-text-sm tw-text-left tw-text-black">{contents?.clubName || ''}</p>
+                    <p className="tw-text-base tw-text-left tw-text-black">{contents?.clubName || ''}</p>
                   </div>
                 </div>
               </div>
@@ -501,11 +506,11 @@ const LectureDetaillSolution = ({
                 <div className="tw-col-start-2 tw-col-end-12">
                   <div className="tw-flex tw-flex-col">
                     <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-5">학습 키워드</p>
-                    <p className="tw-text-left">
+                    <p className="tw-text-left tw-flex tw-flex-wrap tw-gap-2">
                       {contents?.studyKeywords?.map((keyword, index) => (
                         <span
                           key={index}
-                          className="tw-text-sm tw-mr-2 tw-bg-[#6A7380] tw-px-3 tw-py-1 tw-text-white tw-rounded"
+                          className="tw-text-sm tw-bg-[#6A7380] tw-px-3 tw-py-1 tw-text-white tw-rounded tw-break-words tw-inline-block"
                         >
                           {keyword}
                         </span>
@@ -528,7 +533,7 @@ const LectureDetaillSolution = ({
                 <div className="tw-col-start-2 tw-col-end-12">
                   <div className="tw-flex tw-flex-col">
                     <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-5">강의 소개</p>
-                    <p className="tw-text-sm tw-text-left tw-text-black">{contents?.description}</p>
+                    <p className="tw-text-base tw-text-left tw-text-black">{contents?.description}</p>
                   </div>
                 </div>
               </div>
@@ -546,10 +551,10 @@ const LectureDetaillSolution = ({
                 <div className="tw-col-start-2 tw-col-end-12">
                   <div className="tw-flex tw-flex-col">
                     <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-5">강의 일정</p>
-                    <p className="tw-text-sm tw-text-left tw-text-black">
+                    <p className="tw-text-base tw-text-left tw-text-black">
                       시작일 : {contents?.startAt?.replace('T', ' ').split(' ')[0]}
                     </p>
-                    <p className="tw-text-sm tw-text-left tw-text-black">
+                    <p className="tw-text-base tw-text-left tw-text-black">
                       종료일 : {contents?.endAt?.replace('T', ' ').split(' ')[0]}
                     </p>
                   </div>
@@ -571,11 +576,11 @@ const LectureDetaillSolution = ({
         )}
         {isClient && <ChatbotModal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)} token={token} />}
       </div>
-      <Modal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)} title="" maxWidth="900px">
+      <Modal title="&nbsp;" isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)} maxWidth="900px">
         <div className={cx('seminar-check-popup')}>
           {contents?.isPublic ? (
             <div>
-              <div className={cx('mb-5')}>
+              <div className={cx('tw-mt-14', 'tw-mb-10')}>
                 <span className={cx('text-bold', 'tw-text-xl', 'tw-font-bold')}>강의클럽가입 신청을 하시겠습니까?</span>
               </div>
               <div>가입 신청 후 클럽장 승인이 완료될때까지 기다려주세요!</div>
@@ -601,7 +606,7 @@ const LectureDetaillSolution = ({
             </div>
           ) : (
             <div>
-              <div className={cx('tw-my-5')}>
+              <div className={cx('tw-my-10')}>
                 <span className={cx('text-bold', 'tw-text-xl', 'tw-font-bold')}>참여코드를 입력해주세요.</span>
               </div>
               <div>참여코드 입력 후 클럽장 승인이 완료될때까지 기다려주세요!</div>

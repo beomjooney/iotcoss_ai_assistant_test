@@ -312,7 +312,7 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
             {studyQAInfo?.studyOrder}
             {studyOrderLabel} : {studyQAInfo?.startDate} ({studyQAInfo?.startDayOfWeek})
           </div>
-          <div className="tw-text-lg tw-font-medium tw-py-3">강의URL : {studyQAInfo?.lectureClub?.clubUri}</div>
+          <div className="tw-text-lg tw-font-medium tw-py-3">강의URL : {studyQAInfo?.clubStudyUrl}</div>
         </div>
         <div className="tw-flex tw-flex-col tw-space-y-4 tw-rounded-lg">
           <div className={cx('content-wrap')}>

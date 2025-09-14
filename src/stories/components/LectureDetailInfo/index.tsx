@@ -240,7 +240,7 @@ const LectureOpenDetailInfo: React.FC<LectureOpenDetailInfoProps> = ({
             <div className="tw-col-start-2 tw-col-end-12 ">
               <div className="tw-flex tw-flex-col">
                 <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-5">학습 주제</p>
-                <p className="tw-text-sm tw-text-left tw-text-black">ㅁㅇㄴㄻㄹ{clubData?.memberIntroductionText}</p>
+                <p className="tw-text-sm tw-text-left tw-text-black">{clubData?.memberIntroductionText}</p>
               </div>
             </div>
           </div>
@@ -328,7 +328,7 @@ const LectureOpenDetailInfo: React.FC<LectureOpenDetailInfoProps> = ({
             </div>
           ) : (
             <div>
-              <div className={cx('tw-my-5')}>
+              <div className={cx('tw-my-')}>
                 <span className={cx('text-bold', 'tw-text-xl', 'tw-font-bold')}>참여코드를 입력해주세요.</span>
               </div>
               <div>참여코드 입력 후 클럽장 승인이 완료될때까지 기다려주세요!</div>
