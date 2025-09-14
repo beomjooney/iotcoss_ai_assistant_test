@@ -997,9 +997,20 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                               </button>
                               <button
                                 onClick={() => handleAIAnswerClick(modelAnswerFinal)}
-                                className="tw-px-5 tw-py-2.5 tw-text-sm tw-w-28 border tw-bg-white tw-rounded-md "
+                                disabled={isLoadingAI}
+                                className={`tw-px-5 tw-py-2.5 tw-text-sm tw-w-28 border tw-rounded-md ${
+                                  isLoadingAI
+                                    ? 'tw-bg-gray-100 tw-cursor-not-allowed'
+                                    : 'tw-bg-white hover:tw-bg-gray-50'
+                                }`}
                               >
-                                모범답안
+                                {isLoadingAI ? (
+                                  <div className="tw-flex tw-items-center tw-justify-center">
+                                    <CircularProgress color="info" size={18} />
+                                  </div>
+                                ) : (
+                                  '모범답안'
+                                )}
                               </button>
                             </div>
                           )}
