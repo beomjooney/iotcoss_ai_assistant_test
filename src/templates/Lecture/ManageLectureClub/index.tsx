@@ -887,7 +887,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
       const nextDay4 = dayjs(item.endDate);
 
       // 시작일이 종료일보다 크거나 같을 경우 오류 처리
-      if (!dayjs(nextDay4).isAfter(dayjs(nextDay3))) {
+      if (dayjs(nextDay4).isBefore(dayjs(nextDay3), 'day')) {
         alert(`${i + 1}번째 강의 : 종료일은 시작일보다 뒤에 있어야 합니다.`);
         setIsProcessing(false);
         return; // 혹은 필요에 따라 validation 실패시 코드 실행 중단

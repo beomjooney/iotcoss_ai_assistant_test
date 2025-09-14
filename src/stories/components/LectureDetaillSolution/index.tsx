@@ -606,7 +606,7 @@ const LectureDetaillSolution = ({
             </div>
           ) : (
             <div>
-              <div className={cx('tw-my-10')}>
+              <div className={cx('tw-my-5')}>
                 <span className={cx('text-bold', 'tw-text-xl', 'tw-font-bold')}>참여코드를 입력해주세요.</span>
               </div>
               <div>참여코드 입력 후 클럽장 승인이 완료될때까지 기다려주세요!</div>
