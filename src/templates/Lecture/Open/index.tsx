@@ -441,6 +441,13 @@ export function LectureOpenTemplate() {
 
   const handlerClubMake = () => {
     console.log('handlerClubMake');
+
+    // 강의 반복 주기가 선택되지 않았을 때 알림
+    if (studyCycleNum.length === 0) {
+      alert('강의 반복 주기를 선택해주세요.');
+      return;
+    }
+
     setButtonFlag(true);
     if (scheduleData.length > 0) {
       if (confirm('강의 반복을 선택하면 기존 임시저장 데이터는 사라집니다. 계속하시겠습니까?')) {
