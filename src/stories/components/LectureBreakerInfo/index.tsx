@@ -385,27 +385,29 @@ const LectureBreakerInfo = ({
               <div className="tw-flex">
                 <div className="tw-w-[130px] tw-py-5"></div>
                 <div className="tw-w-11/12 tw-pt-5">
-                  <div className="tw-w-full tw-flex tw-justify-start tw-px-5 tw-items-center">
+                  <div className="tw-w-full tw-flex tw-justify-start tw-pr-5 tw-items-center">
                     {fileList?.length > 0 && (
-                      <div className="tw-flex tw-py-2">
+                      <div className="tw-flex tw-py-2 ">
                         <div className="tw-flex tw-text-sm tw-items-start tw-mt-1" style={{ minWidth: '6.1rem' }}>
                           업로드된 파일 :
                         </div>
-                        <div className="tw-text-left tw-pl-5 tw-text-sm tw-flex-col tw-gap-5">
+                        <div className="tw-text-left tw-text-sm tw-flex-col tw-gap-5">
                           {fileList.map((file, index) => (
                             <div key={index}>
                               <div className="tw-flex tw-items-center tw-gap-3 tw-pb-2">
-                                <div className="border tw-px-3 tw-p-1 tw-rounded tw-w-[400px]">
-                                  <span
-                                    className="tw-text-blue-600 tw-cursor-pointer tw-line-clamp-1"
-                                    onClick={() => {
-                                      onFileDownload(file.fileKey, file.name);
-                                    }}
-                                  >
-                                    {file.name}
-                                  </span>
+                                <div className="border tw-flex tw-justify-between  tw-w-[400px]">
+                                  <div className=" tw-px-2 tw-p-1 tw-rounded tw-line-clamp-1">
+                                    <span
+                                      className="tw-text-blue-600 tw-cursor-pointer tw-line-clamp-1"
+                                      onClick={() => {
+                                        onFileDownload(file.fileKey, file.name);
+                                      }}
+                                    >
+                                      {file.name}
+                                    </span>
+                                  </div>
                                   <button
-                                    className="tw-ml-2 tw-cursor-pointer"
+                                    className="tw-cursor-pointer px-2"
                                     onClick={() => handleRemoveFile(order, index)}
                                   >
                                     <svg
@@ -469,9 +471,8 @@ const LectureBreakerInfo = ({
                 </div>
               </div>
               <div className="tw-flex">
-                <div className="tw-w-[130px] tw-py-5"></div>
                 <div className="tw-w-11/12">
-                  <div className="tw-w-full tw-flex tw-justify-start tw-px-5 tw-items-center">
+                  <div className="tw-w-full tw-flex tw-justify-start tw-items-center">
                     {urlList?.length > 0 && (
                       <div className="tw-flex tw-py-2">
                         <div className="tw-flex tw-text-sm tw-items-start tw-mt-1" style={{ minWidth: '6.1rem' }}>
