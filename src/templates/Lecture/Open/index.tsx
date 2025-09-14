@@ -2560,7 +2560,7 @@ export function LectureOpenTemplate() {
                                       onClick={() => {
                                         onFileDownload(fileEntry.fileKey, fileEntry.name);
                                       }}
-                                      className="tw-text-blue-600 tw-cursor-pointer"
+                                      className="tw-text-blue-600 tw-cursor-pointer tw-line-clamp-1"
                                     >
                                       {fileEntry?.file?.name || fileEntry.name}
                                     </span>
