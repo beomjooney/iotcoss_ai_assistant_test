@@ -587,7 +587,7 @@ const LectureDetaillSolution = ({
               <div className="tw-mt-5 tw-flex tw-justify-center gap-3">
                 <Button
                   color="red"
-                  label="강의클럽 가입확인"
+                  label="강의클럽 가입요청"
                   size="modal"
                   onClick={() => {
                     setIsModalOpen(false);
@@ -601,7 +601,7 @@ const LectureDetaillSolution = ({
             </div>
           ) : (
             <div>
-              <div className={cx('mb-5')}>
+              <div className={cx('tw-my-5')}>
                 <span className={cx('text-bold', 'tw-text-xl', 'tw-font-bold')}>참여코드를 입력해주세요.</span>
               </div>
               <div>참여코드 입력 후 클럽장 승인이 완료될때까지 기다려주세요!</div>
