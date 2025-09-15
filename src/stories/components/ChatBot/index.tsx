@@ -39,7 +39,7 @@ const ChatbotModal = ({ isOpen, onRequestClose, token }) => {
     }
   }, []);
 
-  const handleResizeStop = (e, direction, ref, d) => {
+  const handleResizeStop = ref => {
     // 크기 조정이 멈췄을 때 현재 사이즈를 로컬 스토리지에 저장합니다.
     const newSize = {
       width: ref.offsetWidth,
