@@ -3370,23 +3370,25 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                     <div className="tw-w-11/12 tw-pt-5">
                       <div className="tw-w-full tw-flex tw-justify-start tw-px-5 tw-items-center">
                         <div className="tw-flex tw-py-2">
-                          <div className="tw-flex tw-text-sm tw-items-center" style={{ minWidth: '6.1rem' }}>
+                          <div className="tw-flex tw-text-sm tw-items-start tw-mt-1" style={{ minWidth: '6.1rem' }}>
                             업로드된 파일 :
                           </div>
                           <div className="tw-text-left tw-pl-5 tw-text-sm tw-flex tw-flex-wrap tw-gap-2">
                             {lectureContents.files.map((fileEntry, index) => (
                               <div key={index} className="tw-flex tw-items-center tw-gap-2">
-                                <div className="border tw-px-3 tw-p-1 tw-rounded">
-                                  <span
-                                    onClick={() => {
-                                      onFileDownload(fileEntry.fileKey, fileEntry.name);
-                                    }}
-                                    className="tw-text-blue-600 tw-cursor-pointer tw-line-clamp-1"
-                                  >
-                                    {fileEntry?.file?.name || fileEntry.name}
-                                  </span>
+                                <div className="border tw-flex tw-justify-between  tw-w-[400px]">
+                                  <div className=" tw-px-2 tw-p-1 tw-rounded tw-line-clamp-1">
+                                    <span
+                                      onClick={() => {
+                                        onFileDownload(fileEntry.fileKey, fileEntry.name);
+                                      }}
+                                      className="tw-text-blue-600 tw-cursor-pointer tw-line-clamp-1"
+                                    >
+                                      {fileEntry?.file?.name || fileEntry.name}
+                                    </span>
+                                  </div>
                                   <button
-                                    className="tw-ml-2 tw-cursor-pointer"
+                                    className="tw-px-2 tw-cursor-pointer"
                                     onClick={() => handleRemoveFileLocal(index)}
                                   >
                                     <svg
@@ -3431,14 +3433,14 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                                   {isProcessing
                                     ? '등록 중'
                                     : fileEntry.fileUploadStatus === '0000'
-                                    ? '등록 전'
-                                    : fileEntry.fileUploadStatus === '1000'
-                                    ? '등록 중'
-                                    : fileEntry.fileUploadStatus === '2000'
-                                    ? '등록 완료'
-                                    : fileEntry.fileUploadStatus === '3000'
-                                    ? '등록 실패'
-                                    : '등록 전'}
+                                      ? '등록 전'
+                                      : fileEntry.fileUploadStatus === '1000'
+                                        ? '등록 중'
+                                        : fileEntry.fileUploadStatus === '2000'
+                                          ? '등록 완료'
+                                          : fileEntry.fileUploadStatus === '3000'
+                                            ? '등록 실패'
+                                            : '등록 전'}
                                 </div>
                               </div>
                             ))}
@@ -3486,14 +3488,14 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                                   {isProcessing
                                     ? '등록 중'
                                     : file.fileUploadStatus === '0000'
-                                    ? '등록 전'
-                                    : file.fileUploadStatus === '1000'
-                                    ? '등록 중'
-                                    : file.fileUploadStatus === '2000'
-                                    ? '등록 완료'
-                                    : file.fileUploadStatus === '3000'
-                                    ? '등록 실패'
-                                    : '등록 전'}
+                                      ? '등록 전'
+                                      : file.fileUploadStatus === '1000'
+                                        ? '등록 중'
+                                        : file.fileUploadStatus === '2000'
+                                          ? '등록 완료'
+                                          : file.fileUploadStatus === '3000'
+                                            ? '등록 실패'
+                                            : '등록 전'}
                                 </div>
                               </div>
                             ))}

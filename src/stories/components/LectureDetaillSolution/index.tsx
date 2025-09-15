@@ -158,7 +158,7 @@ const LectureDetaillSolution = ({
       <div className="tw-pt-[35px]">
         <div className="tw-w-[980px] tw-h-[77px] tw-relative tw-overflow-hidden border-t-0 border-r-0 border-b-[0.88px] tw-border-l-0 tw-border-[#e9ecf2]">
           <div className="tw-flex tw-justify-start tw-items-start tw-absolute tw-left-0 tw-top-3.5 tw-gap-[3.5px]">
-            <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[10.5px] tw-text-left tw-text-[#313b49]">강의클럽</p>
+            <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#313b49]">강의클럽</p>
             <svg
               width={17}
               height={16}
@@ -173,9 +173,7 @@ const LectureDetaillSolution = ({
                 fill="#313B49"
               />
             </svg>
-            <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[10.5px] tw-text-left tw-text-[#313b49]">
-              강의 상세보기
-            </p>
+            <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-[#313b49]">강의 상세보기</p>
           </div>
           <div className="tw-flex tw-justify-start tw-items-center tw-absolute tw-left-0 tw-top-[31.5px] tw-gap-3.5">
             <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[21px] tw-font-bold tw-text-left tw-text-black">
@@ -279,35 +277,35 @@ const LectureDetaillSolution = ({
                     className="tw-max-w-[22.75px] tw-max-h-[23.19px] tw-object-cover"
                   />
                 </div>
-                <div className="tw-col-start-2 tw-col-end-12">
+                <div className="tw-col-start-2 tw-col-end-12 tw-space-y-1">
                   <div className="tw-flex tw-flex-col">
                     <p className="tw-text-[17.5px] tw-font-bold tw-text-left tw-text-black tw-pb-5">강의 일정</p>
                   </div>
                   <div className="tw-flex">
-                    <p className="tw-text-sm tw-font-bold tw-text-left tw-text-black">강의기간 : </p>
-                    <p className="tw-text-sm tw-text-left tw-text-black tw-pl-2">
+                    <p className="tw-text-base tw-font-semibold tw-text-left tw-text-black">강의 기간 : </p>
+                    <p className="tw-text-base tw-text-left tw-text-black tw-pl-2">
                       {contents?.startAt?.split('T')[0]} ~ {contents?.endAt?.split('T')[0]}
                     </p>
                   </div>
                   <div className="tw-flex">
-                    <p className="tw-text-sm tw-font-bold tw-text-left tw-text-black">강의현황 : </p>
-                    <p className="tw-text-sm tw-text-left tw-text-black tw-pl-2 ">
+                    <p className="tw-text-base tw-font-semibold tw-text-left tw-text-black">강의 현황 : </p>
+                    <p className="tw-text-base tw-text-left tw-text-black tw-pl-2 ">
                       {getButtonText(contents?.clubStatus)}
                     </p>
                   </div>
                   <div className="tw-flex">
-                    <p className="tw-text-sm tw-font-bold tw-text-left tw-text-black">학습 주제 : </p>
-                    <p className="tw-text-sm tw-text-left tw-text-black tw-pl-2 ">{contents?.studySubject}</p>
+                    <p className="tw-text-base tw-font-semibold tw-text-left tw-text-black">학습 주제 : </p>
+                    <p className="tw-text-base tw-text-left tw-text-black tw-pl-2 ">{contents?.studySubject}</p>
                   </div>
                   <div className="tw-flex">
-                    <p className="tw-text-sm tw-font-bold tw-text-left tw-text-black">학습 키워드 : </p>
-                    <p className="tw-text-sm tw-text-left tw-text-black tw-pl-2 ">
+                    <p className="tw-text-base tw-font-semibold tw-text-left tw-text-black">학습 키워드 : </p>
+                    <p className="tw-text-base tw-text-left tw-text-black tw-pl-2 ">
                       {contents?.studyKeywords?.toString()}
                     </p>
                   </div>
                   <div className="tw-flex">
-                    <p className="tw-text-sm tw-font-bold tw-text-left tw-text-black">참여 인원 : </p>
-                    <p className="tw-text-sm tw-text-left tw-text-black tw-pl-2 ">
+                    <p className="tw-text-base tw-font-semibold tw-text-left tw-text-black">참여 인원 : </p>
+                    <p className="tw-text-base tw-text-left tw-text-black tw-pl-2 ">
                       {contents?.recruitedMemberCount || 0} / {contents?.recruitMemberCount || 0}
                     </p>
                   </div>
@@ -342,8 +340,8 @@ const LectureDetaillSolution = ({
                           !lectureEvaluation?.minimumQuestionsAsked
                             ? '질의응답을 완료해야 총평 피드백을 확인할 수 있습니다.'
                             : !contents?.clubSequence
-                            ? '클럽 정보를 불러오는 중입니다.'
-                            : ''
+                              ? '클럽 정보를 불러오는 중입니다.'
+                              : ''
                         }
                         onClick={() => handleTotalFeedbackClick(contents?.clubSequence)}
                         className={`tw-px-4 tw-py-2 tw-rounded-full tw-text-base tw-font-medium ${

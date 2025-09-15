@@ -80,8 +80,6 @@ export function QuizTemplate() {
     });
   }, [page, keyWorld]);
 
-  console.log('logged', logged);
-
   return (
     <div className={cx('seminar-container')}>
       {/* <Banner title="커리어멘토스 세미나" subTitle="커멘세미나" /> */}

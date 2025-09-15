@@ -1,8 +1,7 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import { ToggleLabel, Pagination, Typography, Chip, ClubCard, CourseCard } from 'src/stories/components';
+import { ToggleLabel, Pagination, CourseCard } from 'src/stories/components';
 import React, { useEffect, useState } from 'react';
-import { RecommendContent, SeminarImages } from 'src/models/recommend';
 import {
   useStudyRoomList,
   useStudyReminder,
@@ -11,8 +10,7 @@ import {
   useStudyQuizCalendarList,
   useStudyQuizBadgeList,
 } from 'src/services/studyroom/studyroom.queries';
-import { useMyQuiz, useMyQuizContents } from 'src/services/jobs/jobs.queries';
-import { useStore } from 'src/store';
+import { useMyQuizContents } from 'src/services/jobs/jobs.queries';
 import { useRouter } from 'next/router';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/system/Box';
@@ -25,7 +23,7 @@ import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded';
 /** import galendar  */
 import moment from 'moment';
 import { PickersDay, PickersDayProps } from '@mui/x-date-pickers/PickersDay';
-import dayjs, { Dayjs } from 'dayjs';
+import { Dayjs } from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
@@ -33,7 +31,6 @@ import Badge from '@mui/material/Badge';
 
 /** import pagenation */
 import _Pagination from '@mui/material/Pagination';
-import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 
 /** table */
 import { makeStyles } from '@material-ui/core/styles';
@@ -166,7 +163,6 @@ export function StudyRoomTemplate() {
     setIsClient(true); // 클라이언트 사이드에서 상태를 true로 설정
   }, []);
 
-  console.log('roles', roles, menu);
   /**badge */
   const [badgeClubViewFilter, setBadgeClubViewFilter] = useState('0001');
   const [badgeParams, setBadgeParams] = useState<any>({ page: badgePage, isAchieved: true });
