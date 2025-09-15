@@ -16,7 +16,7 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/system/Box';
 import Divider from '@mui/material/Divider';
 
-import { Radio, RadioGroup, FormControlLabel, TextField } from '@mui/material';
+import { Radio, RadioGroup, FormControlLabel } from '@mui/material';
 import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded';
 import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded';
 
@@ -1054,6 +1054,7 @@ export function StudyRoomTemplate() {
                                   </div>
                                   <div className="tw-w-1/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                     <img
+                                      alt="아그리파"
                                       className="border tw-rounded-full tw-w-10 tw-h-10 "
                                       src={
                                         item?.member?.profileImageUrl ||
@@ -1273,7 +1274,7 @@ export function StudyRoomTemplate() {
             className="tw-fixed tw-bottom-0 tw-right-0  tw-mr-4 md:tw-mr-10 tw-mb-4 md:tw-mb-8 tw-cursor-pointer tw-z-10"
             onClick={() => setModalIsOpen(true)}
           >
-            <img className="tw-w-[140px] tw-h-[140px]" src="/assets/images/main/chatbot.png" />
+            <img alt="chatbot" className="tw-w-[140px] tw-h-[140px]" src="/assets/images/main/chatbot.png" />
           </div>
         )}
         {isClient && <ChatbotModal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)} token={token} />}
