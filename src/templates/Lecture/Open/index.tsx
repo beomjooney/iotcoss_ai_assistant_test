@@ -17,11 +17,9 @@ import { useOptions } from 'src/services/experiences/experiences.queries';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import moment from 'moment';
-import { useMyQuiz, useQuizList, useGetScheduleDay, useLectureGetTemp } from 'src/services/jobs/jobs.queries';
+import { useQuizList, useLectureGetTemp } from 'src/services/jobs/jobs.queries';
 import Checkbox from '@mui/material/Checkbox';
-import { useQuizSave, useClubTempSave, useLectureTempSave, useLectureSave } from 'src/services/quiz/quiz.mutations';
-import useDidMountEffect from 'src/hooks/useDidMountEffect';
+import { useClubTempSave, useLectureTempSave, useLectureSave } from 'src/services/quiz/quiz.mutations';
 import { makeStyles } from '@mui/styles';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
@@ -48,6 +46,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { useSessionStore } from 'src/store/session';
 import { useGetGroupLabel } from 'src/hooks/useGetGroupLabel';
 import { useStudyOrderLabel } from 'src/hooks/useStudyOrderLabel';
+import 'dayjs/locale/ko';
+
+// locale 설정
+dayjs.locale('ko');
 
 export const generateUUID = () => {
   return uuidv4();
@@ -55,26 +57,6 @@ export const generateUUID = () => {
 
 const cx = classNames.bind(styles);
 
-const defaultScheduleData = [];
-let startDate1 = dayjs(); // 오늘 날짜로 시작
-
-for (let i = 0; i < 2; i++) {
-  const endDate1 = startDate1.add(1, 'day'); // startDate의 다음 날을 endDate로 설정
-
-  defaultScheduleData.push({
-    studyOrder: i + 1,
-    clubStudyName: '',
-    urls: [],
-    files: [],
-    clubStudyType: '0100',
-    clubStudyUrl: '',
-    startDate: startDate1.format('YYYY-MM-DD'), // 시작 날짜
-    endDate: endDate1.format('YYYY-MM-DD'), // 종료 날짜
-  });
-
-  // 첫 번째 일정과 두 번째 일정 사이에 하루를 건너뜁니다
-  startDate1 = endDate1.add(0, 'day'); // endDate 다음 날부터 시작
-}
 export function LectureOpenTemplate() {
   const router = useRouter();
   const { jobGroupLabelType, studyOrderLabelType } = useSessionStore.getState();
@@ -92,7 +74,6 @@ export function LectureOpenTemplate() {
   const [seminarFilter, setSeminarFilter] = useState(['0002']);
   const [paramss, setParamss] = useState({});
   const [params, setParams] = useState<any>({ page });
-  const [dayParams, setDayParams] = useState<any>({});
   const [myParams, setMyParams] = useState<paramProps>({ page });
   const [quizListData, setQuizListData] = useState<any[]>([]);
   const [allQuizData, setAllQuizData] = useState([]);
@@ -131,7 +112,7 @@ export function LectureOpenTemplate() {
   const [agreements, setAgreements] = useState(true);
   const [keyWorld, setKeyWorld] = useState('');
   const [myKeyWorld, setMyKeyWorld] = useState('');
-  const [studyCycleNum, setStudyCycleNum] = useState([]);
+  const [studyCycleNum, setStudyCycleNum] = useState(0);
   const [buttonFlag, setButtonFlag] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
   const [selectedImageCheck, setSelectedImageCheck] = useState(null);
@@ -165,11 +146,6 @@ export function LectureOpenTemplate() {
       const formattedDateString = formattedDate.format('YYYY-MM-DD');
       // Set both today and todayEnd
       setStartDay(formattedDate);
-      setDayParams({
-        studyCycle: studyCycleNum.join(','),
-        startDate: formattedDateString,
-        endDate: endDay.format('YYYY-MM-DD'),
-      });
     }
     setButtonFlag(false);
   };
@@ -182,11 +158,6 @@ export function LectureOpenTemplate() {
       // Set both today and todayEnd
 
       setEndDay(formattedDate);
-      setDayParams({
-        studyCycle: studyCycleNum.join(','),
-        startDate: startDay.format('YYYY-MM-DD'),
-        endDate: formattedDateString,
-      });
       setButtonFlag(false);
     }
   };
@@ -196,6 +167,7 @@ export function LectureOpenTemplate() {
     console.log('event', event.target.checked);
     setAgreements(event.target.checked);
   };
+
   const handleFileChange = event => {
     const files = Array.from(event.target.files);
     const allowedExtensions = /(\.pdf|\.pptx)$/i;
@@ -230,6 +202,7 @@ export function LectureOpenTemplate() {
   };
 
   const fileInputRef = useRef(null);
+  const studyCycleNumRef = useRef<HTMLInputElement>(null);
   const handleButtonClick = () => {
     fileInputRef.current.click();
   };
@@ -270,35 +243,6 @@ export function LectureOpenTemplate() {
     setTotalPage(data.totalPages);
   });
 
-  const { data: myQuizListData, refetch: refetchMyJob }: UseQueryResult<any> = useMyQuiz(myParams);
-
-  //get schedule
-  const { refetch: refetchGetSchedule, isSuccess: isScheduleSuccess }: UseQueryResult<any> = useGetScheduleDay(
-    dayParams,
-    data => {
-      // setScheduleData(data.schedules);
-      // 데이터를 변환하여 schedule에 추가
-      const schedule = [];
-      data.schedules.forEach(item => {
-        const currentDay = moment(item.publishDate, 'YYYY-MM-DD');
-        schedule.push({
-          studyOrder: item.order,
-          clubStudyName: '',
-          clubStudyType: '0100',
-          clubStudyUrl: '',
-          urls: [],
-          files: [],
-          startDate: currentDay.format('YYYY-MM-DD'),
-          // endDate: currentDay.add(1, 'days').format('YYYY-MM-DD'),
-          endDate: currentDay.format('YYYY-MM-DD'),
-          // endDate: currentDay.add(0, 'days').format('YYYY-MM-DD'),
-        });
-      });
-      console.log('schedule', schedule);
-      setScheduleData(schedule);
-    },
-  );
-
   // jobLevels 코드에 해당하는 이름을 찾는 함수
   const getJobLevelNames = (jobLevelCodes, jobLevels) => {
     return jobLevelCodes?.map(code => {
@@ -328,7 +272,7 @@ export function LectureOpenTemplate() {
       setIncludeReferenceToAnswer(clubForm.includeReferenceToAnswer ? 'true' : 'false');
       setStudyKeywords(clubForm.studyKeywords || []);
       setStudySubject(clubForm.studySubject || '');
-      setStudyCycleNum(clubForm.studyCycle || []);
+      setStudyCycleNum(clubForm.clubStudyCount || 0);
       setUniversityCode(clubForm.jobGroups || '');
       setRecommendLevels(clubForm.jobLevels || '');
       console.log(clubForm?.jobLevels?.map(item => item.name));
@@ -391,7 +335,6 @@ export function LectureOpenTemplate() {
 
   //temp 등록
   const { mutate: onTempSave, isSuccess: tempSucces } = useLectureTempSave();
-  const { mutate: onQuizSave, isSuccess: postSucces } = useQuizSave();
   const { mutate: onLectureSave, isError, isSuccess: clubSuccess, data: clubDatas } = useLectureSave();
 
   useEffect(() => {
@@ -433,38 +376,38 @@ export function LectureOpenTemplate() {
     },
   );
 
-  const handleStudyCycle = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
-    console.log('newFormats', newFormats);
+  const handleStudyCycleNum = event => {
     setButtonFlag(false);
-    setStudyCycleNum(newFormats);
+    setStudyCycleNum(event.target.value);
   };
 
   const handlerClubMake = () => {
-    console.log('handlerClubMake');
-
     // 강의 반복 주기가 선택되지 않았을 때 알림
-    if (studyCycleNum.length === 0) {
-      alert('강의 반복 주기를 선택해주세요.');
+    if (!studyCycleNum || studyCycleNum === 0) {
+      alert('강의 회차를 설정해주세요.');
       return;
     }
 
     setButtonFlag(true);
-    if (scheduleData.length > 0) {
-      if (confirm('강의 반복을 선택하면 기존 임시저장 데이터는 사라집니다. 계속하시겠습니까?')) {
-        setDayParams({
-          studyCycle: studyCycleNum.join(','),
-          startDate: startDay.format('YYYY-MM-DD'),
-          endDate: endDay.format('YYYY-MM-DD'),
-        });
-      }
-    } else {
-      alert('강의 반복 설정이 완료되었습니다.');
-      setDayParams({
-        studyCycle: studyCycleNum.join(','),
+
+    // 기존 scheduleData 초기화 후 새로운 스케줄 항목 생성
+    const newScheduleItems = Array.from({ length: Number(studyCycleNum) }, (_, index) => {
+      return {
+        studyOrder: index + 1, // 1부터 시작
+        clubStudyName: '',
+        clubStudyType: '0100',
+        clubStudyUrl: '',
+        urls: [],
+        files: [],
         startDate: startDay.format('YYYY-MM-DD'),
         endDate: endDay.format('YYYY-MM-DD'),
-      });
-    }
+      };
+    });
+
+    // 기존 scheduleData를 대체 (추가가 아닌 교체)
+    setScheduleData(newScheduleItems);
+
+    alert('강의 회차 설정이 완료되었습니다.');
   };
 
   const onFileDownload = function (key: string, fileName: string) {
@@ -494,13 +437,6 @@ export function LectureOpenTemplate() {
       return mergedQuizData;
     });
   }, [quizListData]);
-
-  useEffect(() => {
-    if (Object.keys(dayParams).length > 0) {
-      console.log('start');
-      refetchGetSchedule();
-    }
-  }, [dayParams]);
 
   useEffect(() => {
     setParams({
@@ -650,10 +586,6 @@ export function LectureOpenTemplate() {
       [setting]: value,
     }));
   };
-
-  useDidMountEffect(() => {
-    refetchMyJob();
-  }, [postSucces]);
 
   // Function to handle adding new data
   const handleAddClick = () => {
@@ -1011,11 +943,8 @@ export function LectureOpenTemplate() {
   };
   const handlerQuizInit = async () => {
     const defaultScheduleDataInit = [];
-    let startDate = dayjs(); // 오늘 날짜로 시작
 
-    for (let i = 0; i < 2; i++) {
-      const endDate = startDate.add(0, 'day'); // startDate의 다음 날을 endDate로 설정
-
+    for (let i = 0; i < studyCycleNum; i++) {
       defaultScheduleDataInit.push({
         studyOrder: i + 1,
         clubStudyName: '',
@@ -1023,12 +952,9 @@ export function LectureOpenTemplate() {
         files: [],
         clubStudyType: '0100',
         clubStudyUrl: '',
-        startDate: startDate.format('YYYY-MM-DD'), // 시작 날짜
-        endDate: endDate.format('YYYY-MM-DD'), // 종료 날짜
+        startDate: startDay.format('YYYY-MM-DD'), // 시작 날짜
+        endDate: endDay.format('YYYY-MM-DD'), // 종료 날짜
       });
-
-      // 다음 루프에서는 현재 endDate의 다음 날을 startDate로 설정
-      startDate = endDate.add(1, 'day');
     }
 
     setScheduleData(defaultScheduleDataInit);
@@ -1037,8 +963,6 @@ export function LectureOpenTemplate() {
   //임시저장
   const handlerClubSaveTemp = type => {
     console.log('handlerClubSaveTemp', type);
-    // const selectedJobCode = jobs.find(j => j.code === selectedJob)?.code || '';
-
     // 필수 항목 체크
     if (clubName.length > 256) {
       alert('강의명은 256자 이하로 입력해주세요');
@@ -1096,16 +1020,6 @@ export function LectureOpenTemplate() {
       }
     }
 
-    // if (!studySubject) {
-    //   alert('학습 주제를 입력해주세요');
-    //   return false;
-    // }
-
-    // if (studyKeywords.length === 0) {
-    //   alert('학습 키워드를 입력해주세요');
-    //   return false;
-    // }
-
     if (isPublic === '0002') {
       if (!participationCode) {
         alert('참여 코드를 입력해주세요');
@@ -1113,20 +1027,22 @@ export function LectureOpenTemplate() {
       }
     }
 
-    if (studyCycleNum.length === 0) {
-      alert('강의 반복 주기를 선택해주세요');
+    if (studyCycleNum === 0) {
+      alert('강의 회차를 입력해주세요');
+      setTimeout(() => {
+        studyCycleNumRef.current?.focus();
+      }, 100);
       return false;
     }
 
     if (buttonFlag == false) {
-      alert('강의 시작일, 종료일, 강의반복 설정 후 확인버튼을 눌러주세요. ');
+      alert('강의 회차를 입력 후 확인버튼을 눌러주세요. ');
+      // 경고창 후 강의 회차 입력 필드로 포커스 이동
+      setTimeout(() => {
+        studyCycleNumRef.current?.focus();
+      }, 100);
       return;
     }
-
-    // if (!introductionText) {
-    //   alert('설명을 입력해주세요');
-    //   return false;
-    // }
 
     if (!preview) {
       alert('강의 카드 이미지를 선택해주세요.');
@@ -1158,7 +1074,7 @@ export function LectureOpenTemplate() {
       includeReferenceToAnswer: includeReferenceToAnswer,
       instructorProfileImageUrl: previewProfile,
       forbiddenWords: forbiddenKeywords,
-      studyCycle: studyCycleNum,
+      clubStudyCount: studyCycleNum,
     };
 
     console.log(clubFormParams);
@@ -1182,7 +1098,7 @@ export function LectureOpenTemplate() {
     formData.append('clubForm.aiConversationLanguage', clubFormParams.aiConversationLanguage);
     formData.append('clubForm.description', clubFormParams.description);
     formData.append('clubForm.forbiddenWords', clubFormParams.forbiddenWords);
-    formData.append('clubForm.studyCycle', clubFormParams.studyCycle);
+    formData.append('clubForm.clubStudyCount ', clubFormParams.clubStudyCount);
     formData.append('clubForm.useCurrentProfileImage', clubFormParams.useCurrentProfileImage);
 
     if (selectedImage) {
@@ -1274,24 +1190,6 @@ export function LectureOpenTemplate() {
           setIsProcessing(false);
           return; // 혹은 필요에 따라 validation 실패시 코드 실행 중단
         }
-
-        // 중복된 날짜 검사
-        // for (let prev of previousSchedules) {
-        //   if (
-        //     nextDay3.isBetween(prev.startDate, prev.endDate, null, '[]') ||
-        //     nextDay4.isBetween(prev.startDate, prev.endDate, null, '[]') ||
-        //     prev.startDate.isBetween(nextDay3, nextDay4, null, '[]') ||
-        //     prev.endDate.isBetween(nextDay3, nextDay4, null, '[]')
-        //   ) {
-        //     alert(
-        //       `${i + 1}번째 강의의 시작일(${nextDay3.format('YYYY-MM-DD')})과 종료일(${nextDay4.format(
-        //         'YYYY-MM-DD',
-        //       )})이 이전 강의날짜와 겹칩니다.`,
-        //     );
-        //     setIsProcessing(false);
-        //     return;
-        //   }
-        // }
 
         // 이전 강의 리스트에 현재 강의 추가
         previousSchedules.push({ startDate: nextDay3, endDate: nextDay4 });
@@ -1516,8 +1414,8 @@ export function LectureOpenTemplate() {
                         index < activeStep
                           ? 'tw-bg-gray-300 tw-text-white'
                           : index === activeStep
-                          ? 'tw-bg-blue-600  tw-text-white'
-                          : 'tw-bg-gray-300 tw-text-white'
+                            ? 'tw-bg-blue-600  tw-text-white'
+                            : 'tw-bg-gray-300 tw-text-white'
                       }`}
                     ></div>
                     <div
@@ -1525,8 +1423,8 @@ export function LectureOpenTemplate() {
                         index < activeStep
                           ? ' tw-text-gray-400'
                           : index === activeStep
-                          ? ' tw-text-black tw-font-bold'
-                          : ' tw-text-gray-400'
+                            ? ' tw-text-black tw-font-bold'
+                            : ' tw-text-gray-400'
                       }`}
                     >
                       {step}
@@ -1554,7 +1452,7 @@ export function LectureOpenTemplate() {
           <article>
             <Desktop>
               <div className="tw-flex tw-justify-between tw-items-center tw-w-full">
-                <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">강의 기본정보 입력</div>
+                <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">1. 강의 기본정보 입력</div>
                 <div className="tw-text-sm tw-text-black tw-my-10">
                   <span className="tw-text-red-500 tw-mr-1">*</span>필수입력사항
                 </div>
@@ -1669,7 +1567,7 @@ export function LectureOpenTemplate() {
                       <div className="tw-mb-[12px] tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
                         강의 시작일 <span className="tw-text-red-500">*</span>
                       </div>
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ko">
                         <DatePicker
                           format="YYYY-MM-DD"
                           slotProps={{
@@ -1700,43 +1598,23 @@ export function LectureOpenTemplate() {
                   <div className="tw-mb-10 tw-content-start">
                     <div>
                       <div className="tw-mb-[12px] tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
-                        강의 반복 설정 (복수선택가능) <span className="tw-text-red-500">*</span>
+                        강의 회차 설정 <span className="tw-text-red-500">*</span>
                       </div>
 
                       <div className="tw-flex tw-items-center tw-gap-2 tw-mt-1">
-                        <div className="tw-text-sm tw-text-black">매주</div>
-                        <ToggleButtonGroup
+                        <TextField
+                          size="small"
+                          type="number"
+                          onChange={handleStudyCycleNum}
+                          id="margin-none"
                           value={studyCycleNum}
-                          onChange={handleStudyCycle}
-                          aria-label=""
-                          color="standard"
-                        >
-                          {dayGroup?.map((item, index) => (
-                            <ToggleButton
-                              classes={{ selected: classes.selected }}
-                              key={`job1-${index}`}
-                              value={item.id}
-                              name={item.name}
-                              className="tw-ring-1 tw-ring-slate-900/10"
-                              style={{
-                                borderRadius: '5px',
-                                borderLeft: '0px',
-                                width: '60px',
-                                margin: '5px',
-                                height: '35px',
-                                border: '0px',
-                              }}
-                              sx={{
-                                '&.Mui-selected': {
-                                  backgroundColor: '#000',
-                                  color: '#fff',
-                                },
-                              }}
-                            >
-                              {item.name}
-                            </ToggleButton>
-                          ))}
-                        </ToggleButtonGroup>
+                          inputProps={{
+                            min: 1,
+                            max: 100,
+                          }}
+                          name="studyCycleNum"
+                          inputRef={studyCycleNumRef}
+                        />
                         <button
                           onClick={handlerClubMake}
                           className="tw-flex tw-justify-center tw-items-center tw-w-20 tw-relative tw-overflow-hidden tw-gap-2 tw-px-7 tw-py-[10px] tw-rounded tw-bg-[#31343d]"
@@ -1832,7 +1710,7 @@ export function LectureOpenTemplate() {
                     </div>
                   </div>
 
-                  <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">AI조교 설정</div>
+                  <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">2. AI조교 설정</div>
                   <div className="tw-grid tw-grid-cols-3 tw-gap-4 tw-content-start">
                     <div>
                       <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2">타 학습자 질의/답변 보기</div>
@@ -2140,7 +2018,7 @@ export function LectureOpenTemplate() {
                     </div>
                   </div>
 
-                  <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">강의 상세정보 입력</div>
+                  <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">3. 강의 상세정보 입력</div>
                   <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-mb-2">
                     간략한 강의 소개 내용을 입력해주세요.
                   </div>
@@ -2158,7 +2036,7 @@ export function LectureOpenTemplate() {
                 </div>
               </div>
 
-              <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">강의 꾸미기</div>
+              <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">4. 강의 꾸미기</div>
               <div className="tw-font-semibold tw-text-sm tw-text-black tw-mt-5 tw-my-5">
                 강의 카드 이미지 선택 <span className="tw-text-red-500">*</span>
               </div>
@@ -2366,7 +2244,6 @@ export function LectureOpenTemplate() {
                     {scheduleData.map((item, index) => {
                       return (
                         <div key={index} className="tw-h-[412px] tw-flex tw-flex-col tw-items-center tw-justify-start">
-                          {/* <div className=" tw-text-center tw-text-black tw-font-bold tw-mt-5">강의</div> */}
                           {item.studyOrder && (
                             <div className="tw-text-center tw-text-lg tw-text-black tw-font-bold tw-mt-4">
                               {index + 1} {studyOrderLabel}
