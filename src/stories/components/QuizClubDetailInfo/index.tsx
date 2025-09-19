@@ -40,15 +40,16 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
 }) => {
   console.log('club detail user ', user);
   console.log('club detail clubData', clubData);
-  const { logged } = useSessionStore.getState();
   const borderStyle = border ? 'border border-[#e9ecf2] tw-mt-14' : '';
-  const studyWeekCount = parseInt(clubData?.studyWeekCount, 10);
-  const totalMeetings = studyWeekCount * clubData?.studyCycle?.length;
-  const { mutate: onClubJoin, isSuccess: clubJoinSucces } = useClubJoin();
-  const { mutate: onClubCancel, isSuccess: clubCancelSucces } = useClubCancel();
+
+  const { logged } = useSessionStore.getState();
+
   let [isLiked, setIsLiked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [participationCode, setParticipationCode] = useState<string>('');
+
+  const { mutate: onClubJoin, isSuccess: clubJoinSucces } = useClubJoin();
+  const { mutate: onClubCancel, isSuccess: clubCancelSucces } = useClubCancel();
 
   const { mutate: onSaveLike, isSuccess } = useSaveLike();
   const { mutate: onDeleteLike } = useDeleteLike();
@@ -250,7 +251,6 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
                         className="tw-text-[12.25px] tw-font-bold tw-text-center tw-text-white tw-bg-black tw-px-4 tw-py-2 tw-rounded"
                       >
                         {getClubAboutStatus(clubData?.clubAboutStatus)}
-                        {/* {getClubAboutJoyStatus(clubData?.clubStatus)} */}
                       </button>
                     )}
                   </div>
