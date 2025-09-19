@@ -1043,7 +1043,6 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
     formData.append('jobLevels', clubFormParams.jobLevels.toString());
     formData.append('startAt', clubFormParams.startAt);
     formData.append('endAt', clubFormParams.endAt);
-    formData.append('studyCycle', ['월']);
     formData.append('clubStudyCount', clubFormParams.clubStudyCount);
     formData.append('studySubject', clubFormParams.studySubject);
     formData.append('studyKeywords', clubFormParams.studyKeywords.toString());
@@ -1771,7 +1770,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
               } border-top border-right`}
             />
             <p
-              className={`tw-absolute tw-left-[52px] tw-top-3 tw-text-base tw-text-center ${
+              className={`tw-absolute tw-top-3 tw-left-0 tw-right-0 tw-text-base tw-text-center ${
                 activeTab === 'myQuiz' ? 'tw-font-bold tw-text-black' : 'tw-text-[#9ca5b2]'
               }`}
             >
@@ -1790,7 +1789,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
               } border-top border-right`}
             />
             <p
-              className={`tw-absolute tw-left-[43px] tw-top-3 tw-text-base tw-text-center ${
+              className={`tw-absolute tw-top-3 tw-left-0 tw-right-0 tw-text-base tw-text-center ${
                 activeTab === 'member' ? 'tw-font-bold tw-text-black' : 'tw-text-[#9ca5b2]'
               }`}
             >
@@ -1811,7 +1810,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
               } border-right border-top border-left`}
             />
             <p
-              className={`tw-absolute tw-left-[35px] tw-top-3 tw-text-base tw-text-center ${
+              className={`tw-absolute tw-top-3 tw-left-0 tw-right-0 tw-text-base tw-text-center ${
                 activeTab === 'community' ? 'tw-font-bold tw-text-black' : 'tw-text-[#9ca5b2]'
               }`}
             >
@@ -1830,7 +1829,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
               } border-right border-top border-left`}
             />
             <p
-              className={`tw-absolute tw-left-[35px] tw-top-3 tw-text-base tw-text-center ${
+              className={`tw-absolute tw-top-3 tw-left-0 tw-right-0 tw-text-base tw-text-center ${
                 activeTab === 'lecture' ? 'tw-font-bold tw-text-black' : 'tw-text-[#9ca5b2]'
               }`}
             >
@@ -1849,7 +1848,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
               } border-right border-top border-left`}
             />
             <p
-              className={`tw-absolute tw-left-[45px] tw-top-3 tw-text-base tw-text-center ${
+              className={`tw-absolute tw-top-3 tw-left-0 tw-right-0 tw-text-base tw-text-center ${
                 activeTab === 'ai' ? 'tw-font-bold tw-text-black' : 'tw-text-[#9ca5b2]'
               }`}
             >
@@ -2346,6 +2345,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
         )}
         {activeTab === 'community' && (
           <div className="tw-flex tw-flex-col tw-space-y-4 tw-rounded-lg">
+            {/* 강의 기본정보 */}
             <div className={cx('content-wrap')}>
               <div className={cx('container')}>
                 <div className="tw-flex tw-justify-between tw-items-center tw-relative tw-gap-3">
@@ -2475,6 +2475,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
 
                         <div className="tw-flex tw-items-center tw-gap-2 tw-mt-1">
                           <TextField
+                            disabled={true}
                             size="small"
                             type="number"
                             onChange={handleStudyCycleNum}
@@ -3096,6 +3097,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
         )}
         {activeTab === 'lecture' && (
           <div>
+            {/* 강의 커리큘럼 */}
             <article>
               <div className="tw-relative">
                 <div className="tw-flex tw-justify-between tw-items-center tw-relative tw-gap-3">
@@ -3367,14 +3369,14 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                                   {isProcessing
                                     ? '등록 중'
                                     : fileEntry.fileUploadStatus === '0000'
-                                      ? '등록 전'
-                                      : fileEntry.fileUploadStatus === '1000'
-                                        ? '등록 중'
-                                        : fileEntry.fileUploadStatus === '2000'
-                                          ? '등록 완료'
-                                          : fileEntry.fileUploadStatus === '3000'
-                                            ? '등록 실패'
-                                            : '등록 전'}
+                                    ? '등록 전'
+                                    : fileEntry.fileUploadStatus === '1000'
+                                    ? '등록 중'
+                                    : fileEntry.fileUploadStatus === '2000'
+                                    ? '등록 완료'
+                                    : fileEntry.fileUploadStatus === '3000'
+                                    ? '등록 실패'
+                                    : '등록 전'}
                                 </div>
                               </div>
                             ))}
@@ -3422,14 +3424,14 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                                   {isProcessing
                                     ? '등록 중'
                                     : file.fileUploadStatus === '0000'
-                                      ? '등록 전'
-                                      : file.fileUploadStatus === '1000'
-                                        ? '등록 중'
-                                        : file.fileUploadStatus === '2000'
-                                          ? '등록 완료'
-                                          : file.fileUploadStatus === '3000'
-                                            ? '등록 실패'
-                                            : '등록 전'}
+                                    ? '등록 전'
+                                    : file.fileUploadStatus === '1000'
+                                    ? '등록 중'
+                                    : file.fileUploadStatus === '2000'
+                                    ? '등록 완료'
+                                    : file.fileUploadStatus === '3000'
+                                    ? '등록 실패'
+                                    : '등록 전'}
                                 </div>
                               </div>
                             ))}
