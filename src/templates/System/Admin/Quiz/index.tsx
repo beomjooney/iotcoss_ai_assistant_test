@@ -2,12 +2,10 @@ import classNames from 'classnames/bind';
 import styles from './index.module.scss';
 import React, { useState, useRef, useEffect } from 'react';
 import { useSessionStore } from 'src/store/session';
-import { useMemberActiveSummaryInfo } from 'src/services/account/account.queries';
 import { useQuizList } from 'src/services/studyroom/studyroom.queries';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import Divider from '@mui/material/Divider';
-
-import { Mobile, Desktop } from 'src/hooks/mediaQuery';
+import { Desktop } from 'src/hooks/mediaQuery';
 import Drawer from '@mui/material/Drawer';
 
 /**table */
@@ -21,7 +19,7 @@ import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
 
 /**accordion */
 import { useQuizSave, useAIQuizSave, useAIQuizAnswer, useQuizContentSave } from 'src/services/quiz/quiz.mutations';
-import { Toggle, Pagination, MentorsModal, AIQuizList, Tag } from 'src/stories/components';
+import { Toggle, Pagination, AIQuizList, Tag } from 'src/stories/components';
 import { Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -37,11 +35,10 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Checkbox from '@mui/material/Checkbox';
 import validator from 'validator';
 import { UseQueryResult } from 'react-query';
-import { useMyQuiz, useMyQuizContents, useMyQuizThresh } from 'src/services/jobs/jobs.queries';
+import { useMyQuizContents } from 'src/services/jobs/jobs.queries';
 import IconButton from '@mui/material/IconButton';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { useQuizContentDelete } from 'src/services/admin/friends/friends.mutations';
-
 import { useGetGroupLabel } from 'src/hooks/useGetGroupLabel';
 
 const cx = classNames.bind(styles);
@@ -67,13 +64,9 @@ export function AdminQuizTemplate() {
 
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
-  const [params, setParams] = useState<any>({ page });
   const [contents, setContents] = useState<any>([]);
-
-  const [summary, setSummary] = useState({});
   const [search, setSearch] = useState('');
   const [searchKeyword, setSearchKeyword] = useState('');
-  const [memberList, setMemberList] = useState<any[]>([]);
   const [memberParams, setMemberParams] = useState<any>({ page: page, keyword: search });
   const [open, setOpen] = React.useState(false);
 
@@ -116,7 +109,6 @@ export function AdminQuizTemplate() {
   const [index, setIndex] = useState(0);
   const [contentSequence, setContentSequence] = useState('');
   const [quizSortType, setQuizSortType] = useState('0001');
-  const [threshSortType, setThreshSortType] = useState('0001');
   const [sortType, setSortType] = useState('DESC');
   const [activeTab, setActiveTab] = useState('퀴즈목록');
   const [quizPage, setQuizPage] = useState(1);
@@ -146,18 +138,8 @@ export function AdminQuizTemplate() {
     data => {
       console.log('file download', data, fileName);
       if (data) {
-        // blob 데이터를 파일로 저장하는 로직
-        // const url = window.URL.createObjectURL(new Blob([data]));
-        // const link = document.createElement('a');
-        // link.href = url;
-        // link.setAttribute('download', fileName); // 다운로드할 파일 이름과 확장자를 설정합니다.
-        // document.body.appendChild(link);
-        // link.click();
-        // document.body.removeChild(link);
-
         // blob 데이터를 URL로 변환
         const url = window.URL.createObjectURL(new Blob([data], { type: 'application/pdf' }));
-
         // 브라우저에서 PDF를 새 탭에서 열기
         window.open(url, '_blank', 'noopener,noreferrer');
         setKey('');
@@ -332,14 +314,13 @@ export function AdminQuizTemplate() {
 
   useEffect(() => {
     if (isAcceptSuccess) {
-      // alert('지식콘텐츠 삭제가 되었습니다.');
       QuizRefetchBadge();
     }
   }, [isAcceptSuccess]);
 
+  // 유효성 검사
   const handleAIQuizClick = () => {
     console.log('ai quiz click', quizCount, quizSortType);
-    // 유효성 검사
     if (!contentType) {
       alert('지식콘텐츠 유형을 선택하세요.');
       return;
@@ -376,7 +357,6 @@ export function AdminQuizTemplate() {
     const jsonString = JSON.stringify(params);
     const blob = new Blob([jsonString], { type: 'application/json' });
     formData.append('request', blob);
-    // 로딩 상태를 true로 설정
     setIsLoading(true);
     onAIQuizSave(formData);
   };
