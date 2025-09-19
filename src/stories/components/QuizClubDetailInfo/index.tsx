@@ -131,7 +131,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
           <div className="tw-flex tw-w-full tw-flex-col tw-p-7 tw-pb-0">
             <Grid container direction="row" justifyContent="space-between" alignItems="center" rowSpacing={0}>
               <Grid item xs={12}>
-                <div className="tw-flex tw-flex-wrap tw-text-base tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
+                <div className="tw-flex tw-flex-wrap tw-text-base tw-mb-0 tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
                   <span className="tw-inline-flex tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded">
                     {selectedUniversityName || 'N/A'}
                   </span>
