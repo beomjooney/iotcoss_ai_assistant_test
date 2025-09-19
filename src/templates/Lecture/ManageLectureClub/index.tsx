@@ -77,14 +77,11 @@ import { useGetScheduleDay } from 'src/services/jobs/jobs.queries';
 import { useSessionStore } from 'src/store/session';
 import { useGetGroupLabel } from 'src/hooks/useGetGroupLabel';
 import { useStudyOrderLabel } from 'src/hooks/useStudyOrderLabel';
-
 import 'dayjs/locale/ko';
-
 // locale 설정
 dayjs.locale('ko');
 
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
-
 export const generateUUID = () => {
   return uuidv4();
 };
@@ -247,7 +244,6 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
   useEffect(() => {
     // 상태 업데이트 후 추가 작업 수행
     console.log('scheduleData가 업데이트되었습니다.', quizList);
-    // setUpdateKey를 호출하여 강제 리렌더링
     setUpdateKey(prevKey => prevKey + 1);
   }, [quizList]);
 
@@ -275,7 +271,6 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
   };
 
   // 퀴즈 소개 정보 조회
-  console.log('data.lectureClub ids', ids);
   const { isFetched: isClubAboutFetched, refetch: refetchClubAbout } = useLectureAboutDetailInfo(ids, data => {
     console.log('data.lectureClub', data);
     if (!data?.lectureClub) {
@@ -384,8 +379,6 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
     professorRequestParams,
     data => {
       console.log('교수자 요청 회원 목록 조회', data);
-      // const repeatedList = [...data?.contents, ...Array(100).fill(null)];
-      // setRequestProfessorList(repeatedList);
       setRequestProfessorList(data?.contents || []);
       setTotalElementsProfessor(data?.totalElements);
     },
@@ -625,7 +618,6 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
   };
 
   const handleRemoveFileLocal = fileIndex => {
-    // setFileList(fileList.filter((_, i) => i !== fileIndex));
     setLectureContents(prevContents => ({
       ...prevContents,
       files: prevContents.files.filter((_, i) => i !== fileIndex),
@@ -666,10 +658,6 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
       }));
       setUrlCode(''); // Clear the input field after adding
     }
-  };
-
-  const handlerQuizInit = async () => {
-    setScheduleData(defaultScheduleData);
   };
 
   const handleImageChange = (event, type) => {
@@ -775,13 +763,13 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
     }
   };
 
+  // 강의 AI 수정
   const handleSave = () => {
     setIsProcessing(true);
-    console.log('scheduleData', scheduleData);
-    console.log('lectureContents', lectureContents);
     handlerClubSaveTemp('save');
   };
 
+  // 강의 수정
   const handleClubSave = () => {
     setIsProcessing(true);
     handlerClubSave();
@@ -939,8 +927,9 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
       onLectureModifyCur({ formData, id: selectedClub?.clubSequence });
     }
   };
+
+  // 강의 수정
   const handlerClubSave = () => {
-    // 필수 항목 체크
     if (!clubName) {
       alert('클럽 이름을 입력해주세요');
       setIsProcessing(false);
@@ -959,11 +948,11 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
       return false;
     }
 
-    if (studyCycleNum.length === 0) {
-      alert('강의 반복 주기를 선택해주세요');
-      setIsProcessing(false);
-      return false;
-    }
+    // if (studyCycleNum.length === 0) {
+    //   alert('강의 회차 설정을 해주세요.');
+    //   setIsProcessing(false);
+    //   return false;
+    // }
 
     if (startDay && endDay) {
       if (startDay.isSame(endDay, 'day')) {
@@ -1911,6 +1900,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                           <Grid item xs={12} sm={1}>
                             <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                               <img
+                                alt="profile"
                                 className="tw-w-10 tw-h-10 border tw-rounded-full"
                                 src={
                                   item?.member?.profileImageUrl || '/assets/images/account/default_profile_image.png'
@@ -3231,16 +3221,6 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                   </span>
                   <br />
                 </p>
-                <div className="tw-absolute tw-bottom-0 tw-right-0">
-                  <button
-                    onClick={handlerQuizInit}
-                    className="tw-flex tw-justify-center tw-items-center tw-w-[124px] tw-relative tw-overflow-hidden tw-gap-2 tw-px-7 tw-py-[11.5px] tw-rounded tw-bg-[#e9ecf2]"
-                  >
-                    <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-center tw-text-[#6a7380]">
-                      초기화
-                    </p>
-                  </button>
-                </div>
               </div>
 
               <div className=" tw-p-5 tw-mt-14  border tw-rounded-lg">
