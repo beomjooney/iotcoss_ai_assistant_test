@@ -50,7 +50,6 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
 
   const { mutate: onClubJoin, isSuccess: clubJoinSucces } = useClubJoin();
   const { mutate: onClubCancel, isSuccess: clubCancelSucces } = useClubCancel();
-
   const { mutate: onSaveLike, isSuccess } = useSaveLike();
   const { mutate: onDeleteLike } = useDeleteLike();
 
@@ -127,7 +126,6 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
             src={clubData?.clubImageUrl || '/assets/images/banner/Rectangle_190.png'}
             alt=""
           />
-
           <div className="tw-flex tw-w-full tw-flex-col tw-p-7 tw-pb-0">
             <Grid container direction="row" justifyContent="space-between" alignItems="center" rowSpacing={0}>
               <Grid item xs={12}>
@@ -224,7 +222,6 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
                   <div>{user?.nickname || user?.member?.nickname} 교수님</div>
                 </div>
               </div>
-
               <div className="tw-inline-flex tw-ml-auto">
                 <div className="tw-flex tw-items-center tw-space-x-4">
                   <div className="tw-flex tw-ml-auto tw-items-center tw-space-x-4">
@@ -311,6 +308,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
           </div>
         </div>
       </div>
+
       <div className="tw-mt-[40px] ">
         <div className="tw-bg-[#f6f7fb] tw-w-full tw-overflow-hidden tw-px-[108.13px] tw-pt-[40px]">
           <div className=" tw-rounded-[8.75px] tw-py-[40px]">
