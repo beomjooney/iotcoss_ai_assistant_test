@@ -64,11 +64,11 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
     }
   }, [clubJoinSucces, clubCancelSucces]);
 
-  const handlerClubJoin = (clubSequence: number, isPublic: boolean) => {
+  const handlerClubJoin = () => {
     setIsModalOpen(true);
   };
 
-  const handlerClubCancel = (clubSequence: number, isPublic: boolean) => {
+  const handlerClubCancel = (clubSequence: number) => {
     if (confirm('정말 취소하시겠습니까?')) {
       onClubCancel({
         clubSequence: clubSequence,
@@ -157,7 +157,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
                     <button
                       className="tw-inline-flex tw-ml-auto"
                       onClick={() => {
-                        onChangeLike(clubData.clubSequence, clubData.isFavorite);
+                        onChangeLike(clubData.clubSequence);
                       }}
                     >
                       {isLiked ? (
@@ -205,7 +205,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
               <div>참여 인원 : {clubData?.recruitedMemberCount || '00'}명</div>
             </div>
 
-            <div className="tw-flex tw-items-center tw-text-base tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
+            <div className="tw-flex tw-items-center tw-text-base tw-mb-0 tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
               <div className="tw-inline-flex tw-items-center tw-gap-4">
                 {clubData?.useCurrentProfileImage === true ? (
                   <img
@@ -230,7 +230,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
                   <div className="tw-flex tw-ml-auto tw-items-center tw-space-x-4">
                     {clubData?.clubAboutStatus === '0301' && (
                       <button
-                        onClick={() => handlerClubCancel(clubData?.clubSequence, clubData?.isPublic)}
+                        onClick={() => handlerClubCancel(clubData?.clubSequence)}
                         className="tw-text-[12.25px] tw-font-bold tw-text-center tw-text-white tw-bg-[#e11837] tw-px-4 tw-py-2 tw-rounded"
                       >
                         취소하기
@@ -240,7 +240,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
                   <div className="tw-flex tw-ml-auto tw-items-center tw-space-x-4">
                     {clubData?.clubAboutStatus === '0300' ? (
                       <button
-                        onClick={() => handlerClubJoin(clubData?.clubSequence, clubData?.isPublic)}
+                        onClick={() => handlerClubJoin()}
                         className="tw-text-[12.25px] tw-font-bold tw-text-center tw-text-white tw-bg-[#e11837] tw-px-4 tw-py-2 tw-rounded"
                       >
                         참여하기
