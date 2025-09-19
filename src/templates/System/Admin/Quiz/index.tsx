@@ -746,7 +746,7 @@ export function AdminQuizTemplate() {
                     <Table className="" aria-label="simple table" style={{ tableLayout: 'fixed' }}>
                       <TableHead style={{ backgroundColor: '#F6F7FB' }}>
                         <TableRow>
-                          <TableCell align="left" width={160}>
+                          <TableCell align="left" width={170}>
                             <div className="tw-text-base tw-font-bold">등록일자</div>
                           </TableCell>
                           <TableCell align="left" width={100}>
