@@ -50,7 +50,6 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
   }
 
   const { menu, roles } = useSessionStore.getState();
-  // console.log('menu', menu);
 
   const menuItem = [
     {
@@ -143,7 +142,6 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
 
   // Check if menuRole is empty
   const isMenuRoleEmpty = Object.keys(menu).length === 0;
-
   // Filter menu items based on menuRole and the empty case
   const filteredMenuItems = menuItem.filter(item => {
     // 접근 권한을 확인하는 함수
@@ -161,7 +159,6 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       return (item.menu === 'all' || (item.menu && menu[item.menu])) && hasAccess();
     }
   });
-  // console.log(filteredMenuItems);
 
   useEffect(() => {
     setIsMounted(true);
@@ -210,7 +207,6 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
         <Header darkBg={darkBg} classOption={classOption} title={title} menuItem={filteredMenuItems} />
       </Mobile>
 
-      {/* <section className="hero-section ptb-100">{children}</section> */}
       <section className="hero-section ptb-100"> {renderChildrenWithProps()}</section>
       {isContentRendered && <Footer />}
     </div>

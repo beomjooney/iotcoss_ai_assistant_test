@@ -1975,6 +1975,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
         onAfterClose={() => {
           setIsAIFeedbackModalOpen(false);
           setSelectedStudentInfo(null);
+          setIsLoading(false); // loading 상태 초기화 추가
         }}
         title={'학습피드백 총평'}
       >
@@ -1994,8 +1995,8 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
               {isLoading
                 ? 'AI피드백 생성중...'
                 : aiFeedbackDataTotal?.evaluationStatus === '0001'
-                ? 'AI피드백 생성'
-                : 'AI피드백 재생성'}
+                ? 'AI피드백 재생성'
+                : 'AI피드백 생성'}
             </button>
           </div>
           <AIFeedbackSummary
