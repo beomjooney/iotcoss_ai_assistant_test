@@ -58,16 +58,24 @@ const LectureDetaillSolution = ({
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [isTotalFeedbackModalOpen, setIsTotalFeedbackModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [aiEvaluationParamsTotal, setAiEvaluationParamsTotal] = useState({ clubSequence: contents.clubSequence });
+  // contents.clubSequence가 undefined일 수 있으므로 기본값을 null로 설정
+  const [aiEvaluationParamsTotal, setAiEvaluationParamsTotal] = useState({ clubSequence: null });
   const [aiFeedbackDataTotal, setAiFeedbackDataTotal] = useState(null);
   const [aiFeedbackDataTotalQuiz, setAiFeedbackDataTotalQuiz] = useState(null);
 
   const { roles, menu, token, logged } = useSessionStore.getState();
 
-  const [isClient, setIsClient] = useState(false); // 클라이언트 사이드에서만 렌어링하도록 상태 추가
+  const [isClient, setIsClient] = useState(false);
   useEffect(() => {
-    setIsClient(true); // 클라이언트 사이드에서 상태를 true로 설정
+    setIsClient(true);
   }, []);
+
+  // contents가 로드되면 aiEvaluationParamsTotal 업데이트
+  useEffect(() => {
+    if (contents?.clubSequence) {
+      setAiEvaluationParamsTotal({ clubSequence: contents.clubSequence });
+    }
+  }, [contents?.clubSequence]);
 
   useEffect(() => {
     setIsLiked(contents?.isFavorite);
@@ -82,14 +90,17 @@ const LectureDetaillSolution = ({
 
   useEffect(() => {
     if (lectureClubEvaluationSucces) {
-      refetchAIEvaluationTotal();
+      // contents.clubSequence가 유효할 때만 refetch 실행
+      if (contents?.clubSequence) {
+        refetchAIEvaluationTotal();
+      }
       setIsLoading(false);
     }
 
     if (lectureClubEvaluationError) {
       setIsLoading(false);
     }
-  }, [lectureClubEvaluationSucces, lectureClubEvaluationError]);
+  }, [lectureClubEvaluationSucces, lectureClubEvaluationError, contents?.clubSequence]);
 
   useEffect(() => {
     if (clubJoinSucces) {
@@ -115,6 +126,10 @@ const LectureDetaillSolution = ({
 
   // 총평 피드백 보기
   const handleTotalFeedbackClick = (clubSequence: number) => {
+    console.log('handleTotalFeedbackClick', clubSequence);
+    setAiEvaluationParamsTotal({
+      clubSequence: clubSequence,
+    });
     refetchAIEvaluationTotal();
   };
 
@@ -137,7 +152,10 @@ const LectureDetaillSolution = ({
     },
     error => {
       console.error('❌ AI Evaluation Total ERROR:', error);
-      alert('피드백 데이터를 불러오는데 실패했습니다.');
+      // clubSequence가 없을 때는 에러 메시지를 표시하지 않음
+      if (aiEvaluationParamsTotal.clubSequence) {
+        alert('피드백 데이터를 불러오는데 실패했습니다.');
+      }
     },
   );
 
@@ -340,8 +358,8 @@ const LectureDetaillSolution = ({
                           !lectureEvaluation?.minimumQuestionsAsked
                             ? '질의응답을 완료해야 총평 피드백을 확인할 수 있습니다.'
                             : !contents?.clubSequence
-                              ? '클럽 정보를 불러오는 중입니다.'
-                              : ''
+                            ? '클럽 정보를 불러오는 중입니다.'
+                            : ''
                         }
                         onClick={() => handleTotalFeedbackClick(contents?.clubSequence)}
                         className={`tw-px-4 tw-py-2 tw-rounded-full tw-text-base tw-font-medium ${
