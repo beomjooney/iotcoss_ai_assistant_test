@@ -7,8 +7,6 @@ import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import Divider from '@mui/material/Divider';
 import { Desktop } from 'src/hooks/mediaQuery';
 import Drawer from '@mui/material/Drawer';
-
-/**table */
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -16,8 +14,6 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import { useQuizFileDownload } from 'src/services/quiz/quiz.queries';
-
-/**accordion */
 import { useQuizSave, useAIQuizSave, useAIQuizAnswer, useQuizContentSave } from 'src/services/quiz/quiz.mutations';
 import { Toggle, Pagination, AIQuizList, Tag } from 'src/stories/components';
 import { Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
@@ -69,8 +65,6 @@ export function AdminQuizTemplate() {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [memberParams, setMemberParams] = useState<any>({ page: page, keyword: search });
   const [open, setOpen] = React.useState(false);
-
-  /**accordion */
   const [isContentModalClick, setIsContentModalClick] = useState<boolean>(false);
   const [isContentModalOpen, setIsContentModalOpen] = useState<boolean>(false);
   const [active, setActive] = useState('');
@@ -96,14 +90,12 @@ export function AdminQuizTemplate() {
   const [personName, setPersonName] = React.useState<string[]>([]);
   const [selectedUniversity, setSelectedUniversity] = useState('');
   const [selectedUniversityName, setSelectedUniversityName] = useState('');
-  const [selectedJobName, setSelectedJobName] = useState('');
   const [selectedJob, setSelectedJob] = useState([]);
   const [quizCount, setQuizCount] = useState(1);
   const [question, setQuestion] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [modelAnswerFinal, setModelAnswerFinal] = useState('');
   const [isModify, setIsModify] = useState(false);
-  // 로딩 상태를 관리하기 위해 useState 훅 사용
   const [isGlobalLoading, setIsGlobalLoading] = useState(false);
   const [isLoadingAI, setIsLoadingAI] = useState({});
   const [index, setIndex] = useState(0);
@@ -113,8 +105,8 @@ export function AdminQuizTemplate() {
   const [activeTab, setActiveTab] = useState('퀴즈목록');
   const [quizPage, setQuizPage] = useState(1);
   const [totalQuizPage, setTotalQuizPage] = useState(1);
-  const [keyWorld, setKeyWorld] = useState('');
   const [selectedOption, setSelectedOption] = useState('false');
+
   const handleChangeOption = event => {
     console.log('test', event.target.value);
     setSelectedOption(event.target.value);
@@ -133,14 +125,13 @@ export function AdminQuizTemplate() {
     setTotalPage(data?.data?.totalPages);
     setPage(data?.data?.page);
   });
+
   const { isFetched: isParticipantListFetcheds, isSuccess: isParticipantListSuccess } = useQuizFileDownload(
     key,
     data => {
       console.log('file download', data, fileName);
       if (data) {
-        // blob 데이터를 URL로 변환
         const url = window.URL.createObjectURL(new Blob([data], { type: 'application/pdf' }));
-        // 브라우저에서 PDF를 새 탭에서 열기
         window.open(url, '_blank', 'noopener,noreferrer');
         setKey('');
         setFileName('');
@@ -610,7 +601,6 @@ export function AdminQuizTemplate() {
 
   useDidMountEffect(() => {
     setMemberParams({
-      // ...params,
       page,
       keyword: searchKeyword,
     });
