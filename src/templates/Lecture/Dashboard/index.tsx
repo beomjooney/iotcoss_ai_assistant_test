@@ -177,6 +177,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   const [memberUUIDList, setMemberUUIDList] = useState('');
   const [selectedStudentInfo, setSelectedStudentInfo] = useState<any>(null);
   const [sortType, setSortType] = useState('NAME');
+  const [myClubLectureQA, setMyClubLectureQA] = useState<any>(null);
   const [sortLectureType, setSortLectureType] = useState('STUDY_ORDER_ASC');
   const [myClubSubTitleParams, setMyClubSubTitleParams] = useState<any>({
     clubSequence: id,
@@ -194,14 +195,13 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     data: { orderBy: 'STUDY_ORDER', lecturePage: 1, sortType: 'ASC' },
   });
 
-  const [myClubLectureQA, setMyClubLectureQA] = useState<any>(null);
-
   const [myClubLectureStudentQA, setMyClubLectureStudentQA] = useState<any>({
     clubSequence: selectedClub?.clubSequence || id,
     memberUUID: '',
     data: { studentQuestionPage: 1 },
   });
   const [answer, setAnswer] = useState('');
+
   const { mutate: onSaveAnswer, isSuccess, isError } = useSaveAnswer();
   const { mutate: onDeleteQuestion, isSuccess: isDeleteSuccess } = useDeleteQuestion();
 
@@ -468,6 +468,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   const handleTabClick = tab => {
     setActiveTab(tab);
   };
+
   const classes = useStyles();
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
@@ -818,22 +819,6 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                               {myDashboardList?.recentQuestions?.totalElements || 0}
                             </div>
                             ]
-                            {/* <div className="tw-flex">
-                              <svg
-                                width={28}
-                                height={28}
-                                viewBox="0 0 28 28"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="tw-w-7 tw-h-7"
-                                preserveAspectRatio="xMidYMid meet"
-                              >
-                                <path
-                                  d="M19.2095 13.5977L10.7955 5.18372L8.81445 7.16192L15.2545 13.5977L8.81445 20.0321L10.7941 22.0117L19.2095 13.5977Z"
-                                  fill="#9CA5B2"
-                                />
-                              </svg>
-                            </div> */}
                           </div>
                         </div>
                         <div className="tw-overflow-auto tw-h-[267px]">
@@ -888,6 +873,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                               <div className=" tw-text-sm tw-flex tw-justify-start tw-items-center tw-left-6 tw-top-3 tw-gap-3">
                                 <div className="tw-flex tw-flex-col tw-items-center tw-w-10">
                                   <img
+                                    alt="Profile"
                                     className="tw-w-8 tw-h-8 tw-rounded-full"
                                     src={
                                       data?.member?.profileImageUrl ||
