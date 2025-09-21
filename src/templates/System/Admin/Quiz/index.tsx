@@ -106,6 +106,8 @@ export function AdminQuizTemplate() {
   const [quizPage, setQuizPage] = useState(1);
   const [totalQuizPage, setTotalQuizPage] = useState(1);
   const [selectedOption, setSelectedOption] = useState('false');
+  const [keyWorldKnowledge, setKeyWorldKnowledge] = useState('');
+  const [quizSearch, setQuizSearch] = React.useState('');
 
   const handleChangeOption = event => {
     console.log('test', event.target.value);
@@ -475,9 +477,6 @@ export function AdminQuizTemplate() {
     }
   };
 
-  const [keyWorldKnowledge, setKeyWorldKnowledge] = useState('');
-  const [quizSearch, setQuizSearch] = React.useState('');
-
   const handleInputQuizSearchChange = event => {
     setQuizSearch(event.target.value);
   };
@@ -578,7 +577,6 @@ export function AdminQuizTemplate() {
     setFileNameCopy(data.name);
     setQuizCount(1);
     setQuizList([]);
-    // setFileName(data.name);
   };
 
   const handleUniversityChange = e => {

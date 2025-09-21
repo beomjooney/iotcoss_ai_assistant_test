@@ -85,7 +85,7 @@ const AICqiReport: React.FC<AICqiReportProps> = ({ aiFeedbackDataTotal, isLoadin
                         className="tw-h-4"
                         style={{
                           backgroundColor: item.color,
-                          width: `${(item.count / 300) * 100}%`,
+                          width: `${(item.count / 1000) * 100}%`,
                         }}
                       />
                     </div>

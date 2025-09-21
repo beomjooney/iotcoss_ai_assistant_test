@@ -18,21 +18,17 @@ import { Radio, RadioGroup, FormControlLabel, TextField } from '@mui/material';
 import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded';
 import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded';
 import { Modal } from 'src/stories/components';
-const cx = classNames.bind(styles);
-
-//comment
 import { useLectureQAInfo, useLectureStudyQAInfo, useQuizFileDownload } from 'src/services/quiz/quiz.queries';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
-// 챗봇
 import { useSessionStore } from '../../../../src/store/session';
 import { useStudyOrderLabel } from 'src/hooks/useStudyOrderLabel';
-
 import ChatbotModal from 'src/stories/components/ChatBot';
 import Markdown from 'react-markdown';
 
+const cx = classNames.bind(styles);
+
 const LectureListView = ({ border, id, clubStudySequence }) => {
   const borderStyle = border ? 'border border-[#e9ecf2] tw-mt-14' : '';
-
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [myClubList, setMyClubList] = useState<any>([]);
   const [quizList, setQuizList] = useState<any>([]);
@@ -56,6 +52,7 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
   const [openInputIndex, setOpenInputIndex] = useState(null);
   const [clubAbout, setClubAbout] = useState<any>({});
   const [isClient, setIsClient] = useState(false); // 클라이언트 사이드에서만 렌어링하도록 상태 추가
+
   useEffect(() => {
     setIsClient(true); // 클라이언트 사이드에서 상태를 true로 설정
   }, []);
@@ -73,6 +70,7 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
     questionStatuses: '',
     page,
   });
+
   const [myStudyClubParams, setMyStudyClubParams] = useState<any>({
     clubSequence: id,
     clubStudySequence: studySequence,
@@ -82,6 +80,7 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
     console.log('second get data', data);
     setStudyQAInfo(data || []);
   });
+
   const { isFetched: isQAInfoFetched } = useLectureQAInfo(myClubParams, data => {
     console.log('first get data', data);
     setQuizList(data?.contents || []);
@@ -232,7 +231,6 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
         </div>
         <Divider className="tw-mb-5" />
         <div className="tw-flex tw-items-center tw-mt-6">
-          {/* <span className="tw-text-blue-500 tw-pr-5">강의명</span> {studyQAInfo?.clubStudyName} */}
           <select
             className="tw-h-14 form-select block w-full  tw-font-bold tw-px-4"
             onChange={handleQuizChange}
@@ -253,7 +251,9 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
               })}
           </select>
         </div>
+
         <div className="tw-text-xl tw-text-black  tw-font-bold tw-mt-6">{studyOrderLabel} 정보</div>
+
         <Divider className="tw-py-3 tw-mb-3" />
         <div className="tw-text-black tw-my-5">
           <div className="tw-text-lg tw-font-medium tw-py-3">
@@ -316,6 +316,7 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
                         </p>
                       }
                     />
+
                     <FormControlLabel
                       value="0200"
                       control={
@@ -473,6 +474,7 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
             </div>
           </div>
         </div>
+
         {isClient && !modalIsOpen && logged && menu.use_lecture_club && (
           <div
             className="tw-fixed tw-bottom-0 tw-right-0  tw-mr-4 md:tw-mr-10 tw-mb-4 md:tw-mb-8 tw-cursor-pointer tw-z-10"
@@ -483,6 +485,7 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
         )}
         {isClient && <ChatbotModal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)} token={token} />}
       </div>
+
       <Modal
         isOpen={isModalOpen}
         onAfterClose={() => {
@@ -512,6 +515,7 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
                   </TableCell>
                 </TableRow>
               </TableHead>
+
               <TableBody>
                 {myDashboardQA?.members?.map((info, memberIndex) => (
                   <React.Fragment key={memberIndex}>
