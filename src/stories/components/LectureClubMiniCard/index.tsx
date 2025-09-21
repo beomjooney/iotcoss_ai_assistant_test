@@ -1,10 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './index.module.scss';
-import { BoardType, ReplyType } from 'src/config/entities';
 import React, { useEffect, useRef, useState } from 'react';
-import { User } from 'src/models/user';
 import { useSessionStore } from 'src/store/session';
-const { logged } = useSessionStore.getState();
 import Grid from '@mui/material/Grid';
 import { useRouter } from 'next/router';
 import { makeStyles } from '@material-ui/core';
@@ -12,6 +9,7 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import StarIcon from '@mui/icons-material/Star';
 import { useSaveFavorite, useDeleteFavorite, useDeleteClub } from 'src/services/community/community.mutations';
 import { getButtonText } from 'src/utils/clubStatus';
+const { logged } = useSessionStore.getState();
 
 export interface LectureClubMiniCardProps {
   /** 게시판 object */
@@ -30,8 +28,6 @@ export interface LectureClubMiniCardProps {
   refetch: () => void;
 }
 
-const cx = classNames.bind(styles);
-
 const LectureClubMiniCard = ({
   refetch,
   item,
@@ -45,10 +41,7 @@ LectureClubMiniCardProps) => {
   // TODO 좋아요 여부 필드 수정 필요
   let [isLiked, setIsLiked] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const [removeIndex, setRemoveIndex] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
-  const textInput = useRef(null);
 
   const { mutate: onSaveFavorite, isSuccess: isSuccessFavorite } = useSaveFavorite();
   const { mutate: onDeleteFavorite, isSuccess: isSuccessDelete } = useDeleteFavorite();
@@ -116,7 +109,6 @@ LectureClubMiniCardProps) => {
   };
 
   const router = useRouter();
-  const classes = useStyles();
   return (
     <Grid item xs={xs} className="tw-w-full">
       <div

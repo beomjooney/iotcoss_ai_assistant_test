@@ -431,7 +431,6 @@ const LectureDetaillSolution = ({
                                   {item?.isCompleted ? (
                                     <button
                                       onClick={() => {
-                                        // router.push('/lecture-list/' + `${contents?.clubSequence}`);
                                         router.push(
                                           {
                                             pathname: `/lecture-list/${contents?.clubSequence}`,
