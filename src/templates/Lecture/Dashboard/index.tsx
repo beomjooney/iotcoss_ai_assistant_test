@@ -120,10 +120,8 @@ const useStyles = makeStyles(theme => ({
 const cx = classNames.bind(styles);
 
 export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) {
-  // 클라이언트 마운트 상태 추가
+  const classes = useStyles();
   const [isMounted, setIsMounted] = useState(false);
-
-  // 클라이언트 전용 상태 관리
   const [clientState, setClientState] = useState({
     roles: [],
     studyOrderLabelType: null,
@@ -462,8 +460,6 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
   const handleTabClick = tab => {
     setActiveTab(tab);
   };
-
-  const classes = useStyles();
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     console.log('handlePageChange', value);
