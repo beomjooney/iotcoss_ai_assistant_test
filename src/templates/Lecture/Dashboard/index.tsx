@@ -14,8 +14,6 @@ import {
 import { useSaveAnswer, useDeleteQuestion } from 'src/services/seminars/seminars.mutations';
 import Grid from '@mui/material/Grid';
 import Paginations from 'src/stories/components/Pagination';
-
-/**import quiz modal  */
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import { Mobile } from 'src/hooks/mediaQuery';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -33,15 +31,11 @@ import Modal from 'src/stories/components/Modal';
 import TextField from '@mui/material/TextField';
 import AIFeedbackSummary from 'src/stories/components/AIFeedbackSummary/index';
 import AICqiReport from 'src/stories/components/AICqiReport/index';
-
-/** import pagenation */
 import Pagination from '@mui/material/Pagination';
 import PaginationItem from '@mui/material/PaginationItem';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { styled } from '@mui/material/styles';
-
-//**download */
 import {
   useQuizAIFeedbackLectureGetMember,
   useQuizFileDownload,
@@ -135,7 +129,7 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
     studyOrderLabelType: null,
   });
 
-  const { roles, studyOrderLabelType } = useSessionStore.getState();
+  const { studyOrderLabelType } = useSessionStore.getState();
   const { studyOrderLabel } = useStudyOrderLabel(studyOrderLabelType);
   const [page, setPage] = useState(1);
   const [pageStudent, setPageStudent] = useState(1);
