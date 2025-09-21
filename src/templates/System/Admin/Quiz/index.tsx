@@ -559,7 +559,6 @@ export function AdminQuizTemplate() {
     setContentTitle(data.description || '');
     setSelectedSubject(data.studySubject || '');
     setSelectedChapter(data.studyChapter || '');
-    // setJobLevel(data.jobLevels && data.jobLevels.length > 0 ? data.jobLevels[0].code : '0001');
     setJobLevel(data.jobLevels.map(item => item.code));
     setSelectedUniversity(data.jobGroups[0]?.code || '');
     setUniversityCode(data.jobGroups[0]?.code || '');
@@ -1339,7 +1338,7 @@ export function AdminQuizTemplate() {
                   <div className="tw-text-right">
                     <button
                       onClick={handleQuizInsertClick}
-                      className="tw-text-white tw-text-sm tw-px-7 tw-py-3 tw-text-base tw-bg-[#CA001f] tw-rounded-md"
+                      className="tw-text-white tw-px-7 tw-py-3 tw-text-base tw-bg-[#CA001f] tw-rounded-md"
                     >
                       등록하기
                     </button>
@@ -1412,7 +1411,7 @@ export function AdminQuizTemplate() {
               )}
             </div>
           </Drawer>
-          <div className="tw-mt-10">{/* <Pagination page={page} setPage={setPage} total={totalPage} /> */}</div>
+          <div className="tw-mt-10"></div>
         </div>
       </section>
     </div>

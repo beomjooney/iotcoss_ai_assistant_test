@@ -1,23 +1,16 @@
-// QuizClubDetailInfo.jsx
 import React, { useState, useEffect } from 'react';
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import { TextField } from '@mui/material';
-
-/** import pagenation */
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import StarIcon from '@mui/icons-material/Star';
 import { useClubJoin, useLectureClubEvaluation } from 'src/services/community/community.mutations';
 import { getButtonText, getClubAboutStatus } from 'src/utils/clubStatus';
-
-/**icon */
 import { useSaveLike, useDeleteLike } from 'src/services/community/community.mutations';
 import router from 'next/router';
 import { Button, Modal } from 'src/stories/components';
-
-// 챗봇
 import ChatbotModal from 'src/stories/components/ChatBot';
 import { useSessionStore } from '../../../../src/store/session';
 import { useStudyOrderLabel } from 'src/hooks/useStudyOrderLabel';
@@ -29,7 +22,6 @@ import useDidMountEffect from 'src/hooks/useDidMountEffect';
 const cx = classNames.bind(styles);
 
 //comment
-
 const LectureDetaillSolution = ({
   totalElements,
   contents,
@@ -47,25 +39,31 @@ const LectureDetaillSolution = ({
 }) => {
   const { studyOrderLabelType } = useSessionStore.getState();
   const { studyOrderLabel } = useStudyOrderLabel(studyOrderLabelType);
-  console.log('contents', contents);
-  console.log('study', study);
+  const { menu, token, logged } = useSessionStore.getState();
+
   const borderStyle = border ? 'border border-[#e9ecf2] tw-mt-14' : '';
+
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   let [isLiked, setIsLiked] = useState(false);
-  const { mutate: onSaveLike, isSuccess } = useSaveLike();
-  const { mutate: onDeleteLike } = useDeleteLike();
   const [participationCode, setParticipationCode] = useState<string>('');
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [isTotalFeedbackModalOpen, setIsTotalFeedbackModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  // contents.clubSequence가 undefined일 수 있으므로 기본값을 null로 설정
   const [aiEvaluationParamsTotal, setAiEvaluationParamsTotal] = useState({ clubSequence: null });
   const [aiFeedbackDataTotal, setAiFeedbackDataTotal] = useState(null);
   const [aiFeedbackDataTotalQuiz, setAiFeedbackDataTotalQuiz] = useState(null);
-
-  const { roles, menu, token, logged } = useSessionStore.getState();
-
   const [isClient, setIsClient] = useState(false);
+
+  // mutate
+  const { mutate: onSaveLike } = useSaveLike();
+  const { mutate: onDeleteLike } = useDeleteLike();
+  const { mutate: onClubJoin, isSuccess: clubJoinSucces } = useClubJoin();
+  const {
+    mutate: onLectureClubEvaluation,
+    isSuccess: lectureClubEvaluationSucces,
+    isError: lectureClubEvaluationError,
+  } = useLectureClubEvaluation();
+
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -81,16 +79,8 @@ const LectureDetaillSolution = ({
     setIsLiked(contents?.isFavorite);
   }, [contents?.isFavorite]);
 
-  const { mutate: onClubJoin, isSuccess: clubJoinSucces } = useClubJoin();
-  const {
-    mutate: onLectureClubEvaluation,
-    isSuccess: lectureClubEvaluationSucces,
-    isError: lectureClubEvaluationError,
-  } = useLectureClubEvaluation();
-
   useEffect(() => {
     if (lectureClubEvaluationSucces) {
-      // contents.clubSequence가 유효할 때만 refetch 실행
       if (contents?.clubSequence) {
         refetchAIEvaluationTotal();
       }
@@ -109,6 +99,12 @@ const LectureDetaillSolution = ({
     }
   }, [clubJoinSucces]);
 
+  useEffect(() => {
+    if (aiFeedbackDataTotal) {
+      setIsTotalFeedbackModalOpen(true);
+    }
+  }, [aiFeedbackDataTotal]);
+
   const onChangeLike = function (postNo: number) {
     event.preventDefault();
     setIsLiked(!isLiked);
@@ -119,25 +115,17 @@ const LectureDetaillSolution = ({
     }
   };
 
-  const handlerClubJoin = (clubSequence: number, isPublic: boolean) => {
-    console.log('test');
+  const handlerClubJoin = () => {
     setIsModalOpen(true);
   };
 
   // 총평 피드백 보기
   const handleTotalFeedbackClick = (clubSequence: number) => {
-    console.log('handleTotalFeedbackClick', clubSequence);
     setAiEvaluationParamsTotal({
       clubSequence: clubSequence,
     });
     refetchAIEvaluationTotal();
   };
-
-  useEffect(() => {
-    if (aiFeedbackDataTotal) {
-      setIsTotalFeedbackModalOpen(true);
-    }
-  }, [aiFeedbackDataTotal]);
 
   // AI 피드백 데이터 조회
   const {
@@ -152,7 +140,6 @@ const LectureDetaillSolution = ({
     },
     error => {
       console.error('❌ AI Evaluation Total ERROR:', error);
-      // clubSequence가 없을 때는 에러 메시지를 표시하지 않음
       if (aiEvaluationParamsTotal.clubSequence) {
         alert('피드백 데이터를 불러오는데 실패했습니다.');
       }
@@ -247,7 +234,7 @@ const LectureDetaillSolution = ({
                 <div className="tw-mt-5">
                   {contents?.clubAboutStatus === '0300' || contents?.clubMemberStatus === '0003' ? (
                     <button
-                      onClick={() => handlerClubJoin(contents?.clubSequence, contents?.isPublic)}
+                      onClick={() => handlerClubJoin()}
                       className="tw-cursor-pointer tw-w-40 tw-text-[14px] tw-font-bold tw-text-center tw-text-white tw-bg-[#31343D] tw-px-4 tw-py-4 tw-rounded"
                     >
                       참여하기
@@ -274,7 +261,7 @@ const LectureDetaillSolution = ({
               <div className="tw-flex tw-text-sm tw-text-black border tw-py-1 tw-px-2  tw-mr-5 tw-rounded-lg">
                 교수자
               </div>
-              <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-[14px]  tw-gap-3">
+              <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
                 <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[21.875px] tw-font-bold tw-text-left tw-text-black">
                   {contents?.leader?.nickname || ''}
                 </p>
