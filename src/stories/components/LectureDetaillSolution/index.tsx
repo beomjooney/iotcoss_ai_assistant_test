@@ -245,7 +245,7 @@ const LectureDetaillSolution = ({
                   src={contents?.clubImageUrl || '/assets/images/banner/Rectangle_190.png'}
                 />
                 <div className="tw-mt-5">
-                  {contents?.clubAboutStatus === '0300' ? (
+                  {contents?.clubAboutStatus === '0300' || contents?.clubMemberStatus === '0003' ? (
                     <button
                       onClick={() => handlerClubJoin(contents?.clubSequence, contents?.isPublic)}
                       className="tw-cursor-pointer tw-w-40 tw-text-[14px] tw-font-bold tw-text-center tw-text-white tw-bg-[#31343D] tw-px-4 tw-py-4 tw-rounded"
