@@ -1,33 +1,23 @@
-// QuizClubDetailInfo.jsx
 import React, { useState, useEffect } from 'react';
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
-
-/** import pagenation */
 import Pagination from '@mui/material/Pagination';
 import PaginationItem from '@mui/material/PaginationItem';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-
 import { useMyDashboardQA, useLectureAboutDetailInfo } from 'src/services/seminars/seminars.queries';
-
 import { Radio, RadioGroup, FormControlLabel, TextField } from '@mui/material';
 import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded';
 import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded';
-import SearchIcon from '@mui/icons-material/Search';
-import { useRouter } from 'next/router';
-
-import { CommunityCard } from 'src/stories/components';
-import { Button, Typography, Profile, Modal, ArticleCard } from 'src/stories/components';
+import { Modal } from 'src/stories/components';
 const cx = classNames.bind(styles);
 
 //comment
@@ -41,13 +31,7 @@ import ChatbotModal from 'src/stories/components/ChatBot';
 import Markdown from 'react-markdown';
 
 const LectureListView = ({ border, id, clubStudySequence }) => {
-  const router = useRouter();
-  // const { clubStudySequence } = router.query;
-  // console.log('clubStudySequence', id, clubStudySequence);
-
   const borderStyle = border ? 'border border-[#e9ecf2] tw-mt-14' : '';
-  // const [activeTab, setActiveTab] = useState('myQuiz');
-  const [activeTab, setActiveTab] = useState('community');
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [myClubList, setMyClubList] = useState<any>([]);
@@ -60,17 +44,21 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
-  // const [selectedValue, setSelectedValue] = useState(id);
-
-  const { roles, menu, token, logged, studyOrderLabelType } = useSessionStore.getState();
+  const { menu, token, logged, studyOrderLabelType } = useSessionStore.getState();
   const { studyOrderLabel } = useStudyOrderLabel(studyOrderLabelType);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  let [key, setKey] = useState('');
+  let [fileName, setFileName] = useState('');
+  const [totalQuestionPage, setTotalQuestionPage] = useState(1);
+  const [myDashboardQA, setMyDashboardQA] = useState<any>([]);
+  const [questionPage, setQuestionPage] = useState(1);
+  const [isInputOpen, setIsInputOpen] = useState(false);
+  const [openInputIndex, setOpenInputIndex] = useState(null);
+  const [clubAbout, setClubAbout] = useState<any>({});
   const [isClient, setIsClient] = useState(false); // 클라이언트 사이드에서만 렌어링하도록 상태 추가
   useEffect(() => {
     setIsClient(true); // 클라이언트 사이드에서 상태를 true로 설정
   }, []);
-
-  const [params, setParams] = useState<any>({ id: '225', page });
 
   useEffect(() => {
     if (clubStudySequence) {
@@ -89,13 +77,6 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
     clubSequence: id,
     clubStudySequence: studySequence,
   });
-
-  console.log('myClubParams', myClubParams);
-
-  // 퀴즈클럽 리스트
-  // const { isFetched: isContentFetched, refetch: refetchMyClub } = useMyClubList({}, data => {
-  //   setMyClubList(data?.data?.contents || []);
-  // });
 
   const { isFetched: isStudyQAInfoFetched } = useLectureStudyQAInfo(myStudyClubParams, data => {
     console.log('second get data', data);
@@ -131,19 +112,8 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
     }
   };
 
-  let [key, setKey] = useState('');
-  let [fileName, setFileName] = useState('');
-  const [totalQuestionPage, setTotalQuestionPage] = useState(1);
-  const [myDashboardQA, setMyDashboardQA] = useState<any>([]);
-  const [questionPage, setQuestionPage] = useState(1);
-  const [isInputOpen, setIsInputOpen] = useState(false);
-  const [openInputIndex, setOpenInputIndex] = useState(null);
-  const [clubAbout, setClubAbout] = useState<any>({});
-
   const { isFetched: isParticipantListFetcheds } = useQuizFileDownload(key, data => {
-    // console.log('file download', data);
     if (data) {
-      // blob 데이터를 파일로 저장하는 로직
       const url = window.URL.createObjectURL(new Blob([data]));
       const link = document.createElement('a');
       link.href = url;
@@ -202,8 +172,6 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
       data: { questionPage: questionPage },
     });
   }, [questionPage]);
-
-  // Handler to delete a question-answer pair
 
   const handleQuizChange = event => {
     const value = event.target.value;
@@ -284,26 +252,6 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
                 );
               })}
           </select>
-
-          {/* <select
-            className="tw-h-14 form-select block w-full tw-bg-gray-100 tw-text-red-500 tw-font-bold tw-px-8"
-            onChange={handleQuizChange}
-            value={selectedValue}
-            aria-label="Default select example"
-          >
-            {isContentFetched &&
-              myClubList?.map((session, idx) => {
-                return (
-                  <option
-                    key={idx}
-                    className="tw-w-20 tw-bg-[#f6f7fb] tw-items-center tw-flex-shrink-0 border-left border-top border-right tw-rounded-t-lg tw-cursor-pointer"
-                    value={session?.clubSequence}
-                  >
-                    퀴즈클럽 : {session?.clubName}
-                  </option>
-                );
-              })}
-          </select> */}
         </div>
         <div className="tw-text-xl tw-text-black  tw-font-bold tw-mt-6">{studyOrderLabel} 정보</div>
         <Divider className="tw-py-3 tw-mb-3" />
@@ -434,23 +382,7 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
                       <div className="tw-flex-auto tw-px-5 tw-w-3/12">
                         <div className={`tw-font-medium tw-text-black`}>{item?.question}</div>
                       </div>
-                      <div className="tw-pr-4">
-                        {/* <button
-                          type="button"
-                          data-tooltip-target="tooltip-default"
-                          onClick={() => {
-                            setIsModalOpen(true);
-                            setMyClubLectureQA({
-                              clubSequence: item?.clubSequence,
-                              sequence: item?.clubStudySequence,
-                              data: { questionPage: 1 },
-                            });
-                          }}
-                          className="tw-bg-black tw-text-white max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-2 tw-rounded"
-                        >
-                          추가 질문하기
-                        </button> */}
-                      </div>
+                      <div className="tw-pr-4"></div>
                     </div>
                     <div className=" border  tw-px-4 tw-py-5 tw-rounded-lg tw-mt-0">
                       <div className="tw-flex tw-items-center ">
@@ -533,10 +465,6 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
                         <div className="tw-text-sm tw-w-11/12">
                           <span className="tw-text-gray-500">{item?.instructor1stAnswer}</span>
                         </div>
-                        {/* <div className="tw-w-[75px] tw-text-sm tw-text-black  tw-font-bold tw-text-blue-700 ">
-                          교수답변 :{' '}
-                        </div>
-                        <div className="tw-text-sm tw-text-black ">{item?.instructor1stAnswer}</div> */}
                       </div>
                     )}
                   </div>
@@ -550,7 +478,7 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
             className="tw-fixed tw-bottom-0 tw-right-0  tw-mr-4 md:tw-mr-10 tw-mb-4 md:tw-mb-8 tw-cursor-pointer tw-z-10"
             onClick={() => setModalIsOpen(true)}
           >
-            <img className="tw-w-[140px] tw-h-[140px]" src="/assets/images/main/chatbot.png" />
+            <img alt="chatbot" className="tw-w-[140px] tw-h-[140px]" src="/assets/images/main/chatbot.png" />
           </div>
         )}
         {isClient && <ChatbotModal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)} token={token} />}

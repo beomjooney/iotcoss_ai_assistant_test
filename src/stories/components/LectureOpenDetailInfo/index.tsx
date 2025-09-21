@@ -1,4 +1,3 @@
-// QuizClubDetailInfo.jsx
 import React, { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid';
 import StarIcon from '@mui/icons-material/Star';
@@ -7,13 +6,8 @@ import { useClubJoin } from 'src/services/community/community.mutations';
 import { useSessionStore } from 'src/store/session';
 import { useSaveLike, useDeleteLike } from 'src/services/community/community.mutations';
 import { getClubStatusMessage } from 'src/utils/clubStatus';
-import { Button, Modal } from 'src/stories/components';
-import styles from './index.module.scss';
-import classNames from 'classnames/bind';
-import { TextField } from '@mui/material';
 import Divider from '@mui/material/Divider';
 
-const cx = classNames.bind(styles);
 interface LectureDetailInfoProps {
   border: boolean;
   user: any; // or the specific type expected
@@ -42,19 +36,14 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
   selectedProfile,
 }) => {
   const { logged } = useSessionStore.getState();
+
   const borderStyle = border ? 'border border-[#e9ecf2] tw-mt-14' : '';
-  const studyWeekCount = parseInt(clubData?.studyWeekCount, 10);
-  const totalMeetings = studyWeekCount * clubData?.studyCycle?.length;
   const { mutate: onClubJoin, isSuccess: clubJoinSucces } = useClubJoin();
   let [isLiked, setIsLiked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [participationCode, setParticipationCode] = useState<string>('');
 
-  const { mutate: onSaveLike, isSuccess } = useSaveLike();
+  const { mutate: onSaveLike } = useSaveLike();
   const { mutate: onDeleteLike } = useDeleteLike();
-
-  console.log('clubData', clubData);
-  console.log('user', user);
 
   useEffect(() => {
     setIsLiked(clubData?.isFavorite);
@@ -66,14 +55,8 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
     }
   }, [clubJoinSucces]);
 
-  console.log(user);
-
-  const handlerClubJoin = (clubSequence: number, isPublic: boolean) => {
+  const handlerClubJoin = () => {
     setIsModalOpen(true);
-    // onClubJoin({
-    //   clubSequence: clubSequence,
-    //   participationCode: '',
-    // });
   };
 
   const onChangeLike = function (postNo: number) {
@@ -140,7 +123,7 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
             className="tw-relative tw-z-10"
           >
             <Grid item xs={8}>
-              <div className="tw-flex tw-item tw-text-base tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
+              <div className="tw-flex tw-item tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
                 <span className="tw-inline-flex tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded">
                   {clubData?.jobGroups[0]?.name || selectedUniversityName || ''}
                 </span>
@@ -216,13 +199,14 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
             <Grid item xs={4} container justifyContent="flex-end">
               <div className="">
                 <img
+                  alt="강의 이미지"
                   className="tw-w-40 tw-h-40 tw-rounded-lg"
                   src={selectedImage || '/assets/images/banner/Rectangle_190.png'}
                 />
                 <div className="tw-mt-5">
                   {clubData?.clubAboutStatus === '0300' ? (
                     <button
-                      onClick={() => handlerClubJoin(clubData?.clubSequence, clubData?.isPublic)}
+                      onClick={() => handlerClubJoin()}
                       className="tw-w-40 tw-text-[12.25px] tw-font-bold tw-text-center tw-text-white tw-bg-blue-600 tw-px-4 tw-py-4 tw-rounded"
                     >
                       참여하기
@@ -243,12 +227,6 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
 
       <div className="tw-px-[108.5px] tw-absolute tw-top-[330px] tw-left-0 tw-right-0 tw-bottom-0 tw-rounded-[8.75px] tw-py-[40px]">
         <div className="tw-flex tw-items-end tw-gap-[16px]">
-          {/* <img
-            className="tw-w-40 tw-h-40 border tw-rounded-full"
-            src={
-              clubData?.leader?.profileImageUrl || selectedProfile || '/assets/images/account/default_profile_image.png'
-            }
-          /> */}
           {clubData?.useCurrentProfileImage === true ? (
             <img
               className="tw-w-40 tw-h-40 tw-rounded-full border"
@@ -266,7 +244,7 @@ const LectureDetailInfo: React.FC<LectureDetailInfoProps> = ({
             <div className="tw-flex tw-justify-center tw-items-center tw-text-sm text-black border tw-py-1 tw-px-2  tw-mr-5 tw-rounded-lg">
               교수자
             </div>
-            <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-[14px]  tw-gap-3">
+            <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
               <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[21.875px] tw-font-bold tw-text-left tw-text-black">
                 {user?.nickname || user?.member?.nickname || ''}
               </p>
