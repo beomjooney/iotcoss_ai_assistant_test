@@ -1,11 +1,7 @@
 // QuizClubDetailInfo.jsx
 import React, { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid';
-import StarIcon from '@mui/icons-material/Star';
-import StarBorderIcon from '@mui/icons-material/StarBorder';
 import { useClubJoin } from 'src/services/community/community.mutations';
-import { useSessionStore } from 'src/store/session';
-import { useSaveLike, useDeleteLike } from 'src/services/community/community.mutations';
 import { getClubStatusMessage } from 'src/utils/clubStatus';
 import { Button, Modal } from 'src/stories/components';
 import styles from './index.module.scss';
@@ -41,23 +37,12 @@ const LectureOpenDetailInfo: React.FC<LectureOpenDetailInfoProps> = ({
   selectedImage,
   selectedProfile,
 }) => {
-  // console.log(user);
-  console.log(clubData);
-  const { logged } = useSessionStore.getState();
   const borderStyle = border ? 'border border-[#e9ecf2] tw-mt-14' : '';
-  const studyWeekCount = parseInt(clubData?.studyWeekCount, 10);
-  const totalMeetings = studyWeekCount * clubData?.studyCycle?.length;
-  const { mutate: onClubJoin, isSuccess: clubJoinSucces } = useClubJoin();
-  let [isLiked, setIsLiked] = useState(false);
+
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [participationCode, setParticipationCode] = useState<string>('');
 
-  const { mutate: onSaveLike, isSuccess } = useSaveLike();
-  const { mutate: onDeleteLike } = useDeleteLike();
-
-  useEffect(() => {
-    setIsLiked(clubData?.isFavorite);
-  }, [clubData?.isFavorite]);
+  const { mutate: onClubJoin, isSuccess: clubJoinSucces } = useClubJoin();
 
   useEffect(() => {
     if (clubJoinSucces) {
@@ -69,24 +54,6 @@ const LectureOpenDetailInfo: React.FC<LectureOpenDetailInfoProps> = ({
 
   const handlerClubJoin = (clubSequence: number, isPublic: boolean) => {
     setIsModalOpen(true);
-    // onClubJoin({
-    //   clubSequence: clubSequence,
-    //   participationCode: '',
-    // });
-  };
-
-  const onChangeLike = function (postNo: number) {
-    event.preventDefault();
-    if (logged) {
-      setIsLiked(!isLiked);
-      if (isLiked) {
-        onDeleteLike(postNo);
-      } else {
-        onSaveLike(postNo);
-      }
-    } else {
-      alert('로그인 후 좋아요를 클릭 할 수 있습니다.');
-    }
   };
 
   return (
@@ -139,7 +106,7 @@ const LectureOpenDetailInfo: React.FC<LectureOpenDetailInfoProps> = ({
             className="tw-relative tw-z-10"
           >
             <Grid item xs={8}>
-              <div className="tw-flex tw-item tw-text-base tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
+              <div className="tw-flex tw-item tw-mb-0 tw-text-sm tw-font-normal tw-text-gray-500 dark:tw-text-gray-400">
                 <span className="tw-inline-flex tw-bg-blue-100 tw-text-blue-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded">
                   {selectedUniversityName || 'N/A'}
                 </span>
@@ -147,19 +114,6 @@ const LectureOpenDetailInfo: React.FC<LectureOpenDetailInfoProps> = ({
                 <span className="tw-inline-flex tw-bg-red-100 tw-text-red-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
                   {selectedJobName.toString() || 'N/A'}
                 </span>
-
-                {/* <button
-                  className="tw-inline-flex"
-                  onClick={() => {
-                    onChangeLike(clubData.clubSequence, clubData.isFavorite);
-                  }}
-                >
-                  {isLiked ? (
-                    <StarIcon sx={{ fontSize: 24 }} color="error" />
-                  ) : (
-                    <StarBorderIcon sx={{ fontSize: 24 }} color="disabled" />
-                  )}
-                </button> */}
               </div>
               <span className="tw-my-2 tw-inline-flex tw-bg-gray-200 tw-text-gray-800 tw-text-sm tw-font-medium tw-mr-2 tw-px-2.5 tw-py-1 tw-rounded ">
                 {jobLevelName.toString() || 'N/A'}
@@ -169,6 +123,7 @@ const LectureOpenDetailInfo: React.FC<LectureOpenDetailInfoProps> = ({
             <Grid item xs={4} container justifyContent="flex-end">
               <div className="">
                 <img
+                  alt="강의 이미지"
                   className="tw-w-40 tw-h-40 tw-rounded-lg"
                   src={selectedImage || '/assets/images/banner/Rectangle_190.png'}
                 />
@@ -196,12 +151,16 @@ const LectureOpenDetailInfo: React.FC<LectureOpenDetailInfoProps> = ({
 
       <div className="tw-px-[108.5px] tw-absolute tw-top-[330px] tw-left-0 tw-right-0 tw-bottom-0 tw-rounded-[8.75px] tw-py-[40px]">
         <div className="tw-flex tw-items-end tw-gap-[16px]">
-          <img className="tw-w-40 tw-h-40 border tw-rounded-full" src={selectedProfile || '/assets/avatars/1.jpg'} />
+          <img
+            alt="교수자"
+            className="tw-w-40 tw-h-40 border tw-rounded-full"
+            src={selectedProfile || '/assets/avatars/1.jpg'}
+          />
           <div className="tw-flex">
             <div className="tw-flex tw-justify-center tw-items-center tw-text-sm text-black border tw-py-1 tw-px-2  tw-mr-5 tw-rounded-lg">
               교수자
             </div>
-            <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-[14px]  tw-gap-3">
+            <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
               <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[21.875px] tw-font-bold tw-text-left tw-text-black">
                 {user?.member?.nickname || 'N/A'}
               </p>
@@ -233,6 +192,7 @@ const LectureOpenDetailInfo: React.FC<LectureOpenDetailInfoProps> = ({
           <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-py-10  tw-p-0">
             <div className="tw-col-start-1 tw-col-end-1 tw-flex tw-justify-center">
               <img
+                alt="학습 주제"
                 src="/assets/images/quiz/Comment_perspective_matte.png"
                 className="tw-max-w-[22.75px] tw-max-h-[23.19px] tw-object-cover"
               />
@@ -250,6 +210,7 @@ const LectureOpenDetailInfo: React.FC<LectureOpenDetailInfoProps> = ({
           <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-py-10  tw-p-0">
             <div className="tw-col-start-1 tw-col-end-1 tw-flex tw-justify-center">
               <img
+                alt="학습 키워드"
                 src="/assets/images/quiz/Message_perspective_matte.png"
                 className="tw-max-w-[22.75px] tw-max-h-[23.19px] tw-object-cover"
               />
@@ -267,6 +228,7 @@ const LectureOpenDetailInfo: React.FC<LectureOpenDetailInfoProps> = ({
           <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-py-10  tw-p-0">
             <div className="tw-col-start-1 tw-col-end-1 tw-flex tw-justify-center">
               <img
+                alt="강의 소개"
                 src="/assets/images/quiz/Success_perspective_matte.png"
                 className="tw-max-w-[22.75px] tw-max-h-[23.19px] tw-object-cover"
               />
@@ -284,6 +246,7 @@ const LectureOpenDetailInfo: React.FC<LectureOpenDetailInfoProps> = ({
           <div className="tw-grid tw-grid-cols-12 tw-gap-0 tw-py-10  tw-p-0">
             <div className="tw-col-start-1 tw-col-end-1 tw-flex tw-justify-center">
               <img
+                alt="강의 일정"
                 src="/assets/images/quiz/Calendar_perspective_matte.png"
                 className="tw-max-w-[22.75px] tw-max-h-[23.19px] tw-object-cover"
               />
@@ -298,6 +261,7 @@ const LectureOpenDetailInfo: React.FC<LectureOpenDetailInfoProps> = ({
           </div>
         </div>
       </div>
+
       <Modal isOpen={isModalOpen} onAfterClose={() => setIsModalOpen(false)} title="" maxWidth="900px">
         <div className={cx('seminar-check-popup')}>
           {clubData?.isPublic ? (
