@@ -1,8 +1,6 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
-import { useStore } from 'src/store';
-import { useSessionStore } from 'src/store/session';
+import React from 'react';
 import QuizClubListView from 'src/stories/components/QuizClubListView';
 
 const cx = classNames.bind(styles);

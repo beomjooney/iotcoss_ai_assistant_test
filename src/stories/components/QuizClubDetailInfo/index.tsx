@@ -1,4 +1,3 @@
-// QuizClubDetailInfo.jsx
 import React, { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid';
 import StarIcon from '@mui/icons-material/Star';
@@ -50,7 +49,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
 
   const { mutate: onClubJoin, isSuccess: clubJoinSucces } = useClubJoin();
   const { mutate: onClubCancel, isSuccess: clubCancelSucces } = useClubCancel();
-  const { mutate: onSaveLike, isSuccess } = useSaveLike();
+  const { mutate: onSaveLike } = useSaveLike();
   const { mutate: onDeleteLike } = useDeleteLike();
 
   useEffect(() => {
@@ -332,7 +331,7 @@ const QuizClubDetailInfo: React.FC<QuizClubDetailInfoProps> = ({
               )}
 
               <div>
-                <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-[14px]  tw-gap-3">
+                <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3">
                   <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[21.875px] tw-font-bold tw-text-left tw-text-black">
                     {user?.nickname || user?.member?.nickname} 교수님
                   </p>

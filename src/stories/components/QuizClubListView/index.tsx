@@ -1,49 +1,25 @@
-// QuizClubDetailInfo.jsx
 import React, { useState } from 'react';
-import Avatar from '@mui/material/Avatar';
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
-
-/** import pagenation */
 import Pagination from '@mui/material/Pagination';
 import PaginationItem from '@mui/material/PaginationItem';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-
 import { useMyClubList } from 'src/services/seminars/seminars.queries';
-
-/**icon */
-import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import SettingsIcon from '@mui/icons-material/Settings';
-
-import { Radio, RadioGroup, FormControlLabel, TextField } from '@mui/material';
-import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { Radio, RadioGroup, FormControlLabel } from '@mui/material';
 import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded';
 import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded';
-import SearchIcon from '@mui/icons-material/Search';
+import { Button, Modal } from 'src/stories/components';
 import router from 'next/router';
-
-import { CommunityCard } from 'src/stories/components';
-import { Button, Typography, Profile, Modal, ArticleCard } from 'src/stories/components';
-const cx = classNames.bind(styles);
-
-//comment
-import {
-  useQuizAnswerDetail,
-  useQuizRankDetail,
-  useQuizSolutionDetail,
-  useQuizMyClubInfo,
-} from 'src/services/quiz/quiz.queries';
+import { useQuizMyClubInfo } from 'src/services/quiz/quiz.queries';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
+const cx = classNames.bind(styles);
 
 const QuizClubListView = ({ border, id }) => {
   const borderStyle = border ? 'border border-[#e9ecf2] tw-mt-14' : '';
-  // const [activeTab, setActiveTab] = useState('myQuiz');
-  const [activeTab, setActiveTab] = useState('community');
-
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [myClubList, setMyClubList] = useState<any>([]);
   const [quizList, setQuizList] = useState<any>([]);
@@ -54,15 +30,12 @@ const QuizClubListView = ({ border, id }) => {
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
-
-  const [params, setParams] = useState<any>({ id: '225', page });
   const [myClubParams, setMyClubParams] = useState<any>({
     clubSequence: id,
     sortType: 'ASC',
     isPublished: '',
     page,
   });
-
   const [myClubSubTitleParams, setMyClubSubTitleParams] = useState<any>({
     clubSequence: id,
     page,
@@ -71,7 +44,7 @@ const QuizClubListView = ({ border, id }) => {
   });
 
   // 퀴즈클럽 리스트
-  const { isFetched: isContentFetched, refetch: refetchMyClub } = useMyClubList(myClubSubTitleParams, data => {
+  const { isFetched: isContentFetched } = useMyClubList(myClubSubTitleParams, data => {
     setMyClubList(data?.data?.contents || []);
   });
 
@@ -79,7 +52,6 @@ const QuizClubListView = ({ border, id }) => {
     console.log('first get data', data);
     setQuizList(data?.contents || []);
     setTotalPage(data?.totalPages);
-    // setSelectedClub(data?.contents[0].clubSequence);
     setTotalElements(data?.totalElements);
     console.log(data);
   });
@@ -189,7 +161,6 @@ const QuizClubListView = ({ border, id }) => {
             </Grid>
 
             <Grid item xs={0.9} justifyContent="flex-end" className="tw-flex">
-              {/* {contents?.isBeforeOpening ? ( */}
               <div className="">
                 <button
                   type="button"
@@ -202,7 +173,6 @@ const QuizClubListView = ({ border, id }) => {
             </Grid>
           </Grid>
         </div>
-        {/* Content Section */}
         <div className="tw-flex tw-flex-col tw-space-y-4 tw-rounded-lg">
           <div className={cx('content-wrap')}>
             <div className={cx('container', 'tw-mt-10')}>
@@ -396,20 +366,6 @@ const QuizClubListView = ({ border, id }) => {
           <br></br>
           <div className="tw-mt-5">
             <Button className="tw-mr-5" color="red" label="확인" size="modal" onClick={() => setIsModalOpen(false)} />
-            {/* <Button
-              color="primary"
-              label="연락처 입력하러가기"
-              size="modal"
-              onClick={() =>
-                router.push(
-                  {
-                    pathname: '/profile',
-                    query: { isOpenModal: true, beforeQuizSequence: id },
-                  },
-                  '/profile',
-                )
-              }
-            /> */}
           </div>
         </div>
       </Modal>
