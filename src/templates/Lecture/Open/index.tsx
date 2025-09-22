@@ -112,7 +112,7 @@ export function LectureOpenTemplate() {
   const [agreements, setAgreements] = useState(true);
   const [keyWorld, setKeyWorld] = useState('');
   const [myKeyWorld, setMyKeyWorld] = useState('');
-  const [studyCycleNum, setStudyCycleNum] = useState(0);
+  const [studyCycleNum, setStudyCycleNum] = useState(16);
   const [buttonFlag, setButtonFlag] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
   const [selectedImageCheck, setSelectedImageCheck] = useState(null);
@@ -272,7 +272,7 @@ export function LectureOpenTemplate() {
       setIncludeReferenceToAnswer(clubForm.includeReferenceToAnswer ? 'true' : 'false');
       setStudyKeywords(clubForm.studyKeywords || []);
       setStudySubject(clubForm.studySubject || '');
-      setStudyCycleNum(clubForm.clubStudyCount || 0);
+      setStudyCycleNum(clubForm.clubStudyCount || 16);
       setUniversityCode(clubForm.jobGroups || '');
       setRecommendLevels(clubForm.jobLevels || '');
       console.log(clubForm?.jobLevels?.map(item => item.name));
@@ -1414,8 +1414,8 @@ export function LectureOpenTemplate() {
                         index < activeStep
                           ? 'tw-bg-gray-300 tw-text-white'
                           : index === activeStep
-                            ? 'tw-bg-blue-600  tw-text-white'
-                            : 'tw-bg-gray-300 tw-text-white'
+                          ? 'tw-bg-blue-600  tw-text-white'
+                          : 'tw-bg-gray-300 tw-text-white'
                       }`}
                     ></div>
                     <div
@@ -1423,8 +1423,8 @@ export function LectureOpenTemplate() {
                         index < activeStep
                           ? ' tw-text-gray-400'
                           : index === activeStep
-                            ? ' tw-text-black tw-font-bold'
-                            : ' tw-text-gray-400'
+                          ? ' tw-text-black tw-font-bold'
+                          : ' tw-text-gray-400'
                       }`}
                     >
                       {step}
@@ -1598,7 +1598,7 @@ export function LectureOpenTemplate() {
                   <div className="tw-mb-10 tw-content-start">
                     <div>
                       <div className="tw-mb-[12px] tw-font-semibold tw-text-sm tw-text-black tw-mt-10 tw-my-2">
-                        강의 회차 설정 <span className="tw-text-red-500">*</span>
+                        강의회차 설정 <span className="tw-text-red-500">*</span>
                       </div>
 
                       <div className="tw-flex tw-items-center tw-gap-2 tw-mt-1">
