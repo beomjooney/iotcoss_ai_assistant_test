@@ -52,6 +52,7 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
   const [openInputIndex, setOpenInputIndex] = useState(null);
   const [clubAbout, setClubAbout] = useState<any>({});
   const [isClient, setIsClient] = useState(false); // 클라이언트 사이드에서만 렌어링하도록 상태 추가
+  const [includeReferenceToAnswer, setIncludeReferenceToAnswer] = useState(false);
 
   useEffect(() => {
     setIsClient(true); // 클라이언트 사이드에서 상태를 true로 설정
@@ -132,6 +133,8 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
     setMyClubList(data?.clubStudies);
     console.log('clubMemberStatus', data?.clubMemberStatus);
     console.log('clubStatus ', data?.clubStatus);
+    console.log('includeReferenceToAnswer ', data?.lectureClub?.includeReferenceToAnswer);
+    setIncludeReferenceToAnswer(data?.lectureClub?.includeReferenceToAnswer);
   });
 
   const [myClubLectureQA, setMyClubLectureQA] = useState<any>({
@@ -149,8 +152,13 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
 
   const onFileDownload = function (key: string, fileName: string) {
     console.log(key);
-    setKey(key);
-    setFileName(fileName);
+    if (!includeReferenceToAnswer) {
+      alert('강의자료를 다운로드 할 수 없습니다.');
+      return;
+    } else {
+      setKey(key);
+      setFileName(fileName);
+    }
   };
 
   const handleQAPageChange = (event: React.ChangeEvent<unknown>, value: number) => {
