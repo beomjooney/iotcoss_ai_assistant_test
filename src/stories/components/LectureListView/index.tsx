@@ -427,7 +427,7 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
                       <div className="tw-flex tw-items-center ">
                         <div className="tw-w-2/12 tw-text-lg tw-font-medium  tw-flex tw-items-start tw-justify-center"></div>
                         <div className="tw-text-sm tw-w-10/12">
-                          {item?.ai1stContents?.files?.length > 0 && (
+                          {item?.ai1stContents?.files?.length > 0 && !includeReferenceToAnswer && (
                             <div className="tw-flex ">
                               <div className="tw-text-left tw-text-sm">
                                 <ul className="">
