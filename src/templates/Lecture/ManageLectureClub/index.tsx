@@ -15,6 +15,7 @@ import {
   useCrewRejectPost,
   useInstructorsAccept,
   useInstructorsDelete,
+  useCrewAcceptAllPost,
 } from 'src/services/admin/friends/friends.mutations';
 import CircularProgress from '@mui/material/CircularProgress';
 import Grid from '@mui/material/Grid';
@@ -102,6 +103,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
   const { mutate: onCrewBan, isSuccess: isBanSuccess } = useCrewBanDelete();
   const { mutate: onCrewAccept, isSuccess: isAcceptSuccess } = useCrewAcceptPost();
   const { mutate: onCrewReject, isSuccess: isRejectSuccess } = useCrewRejectPost();
+  const { mutate: onCrewAcceptAll, isSuccess: isAcceptAllSuccess } = useCrewAcceptAllPost();
   const { mutate: onInstructorsAccept, isSuccess: isInstructorsAcceptSuccess } = useInstructorsAccept();
   const { mutate: onInstructorsDelete, isSuccess: isInstructorsDeleteSuccess } = useInstructorsDelete();
 
@@ -1638,8 +1640,8 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
   }));
 
   const handleBatchAcceptMember = () => {
-    console.log('일괄 승인');
-    if (confirm('일괄 승인하시겠습니까?')) {
+    const isConfirmed = window.confirm('클럽 회원을 일괄 가입하시겠습니까?');
+    if (isConfirmed) {
       let params = {
         club: selectedClub?.clubSequence,
       };
@@ -1877,7 +1879,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                       <button
                         onClick={() => handleBatchAcceptMember()}
                         type="button"
-                        className="tw-text-sm tw-font-bold border tw-py-2 tw-px-5 tw-rounded-md tw-text-black tw-rounded"
+                        className="tw-text-sm tw-font-medium border tw-py-2 tw-px-5 tw-rounded-md tw-text-black tw-rounded"
                       >
                         일괄 승인
                       </button>
