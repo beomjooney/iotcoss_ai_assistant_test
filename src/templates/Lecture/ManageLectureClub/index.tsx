@@ -1637,6 +1637,16 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
     },
   }));
 
+  const handleBatchAcceptMember = () => {
+    console.log('일괄 승인');
+    if (confirm('일괄 승인하시겠습니까?')) {
+      let params = {
+        club: selectedClub?.clubSequence,
+      };
+      onCrewAcceptAll(params);
+    }
+  };
+
   const classes = useStyles();
 
   return (
@@ -1861,9 +1871,16 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                       justifyContent="flex-start"
                       xs={6}
                       sm={10}
-                      className="tw-text-xl tw-text-black tw-font-bold"
+                      className="tw-text-xl tw-text-black tw-font-bold tw-flex tw-justify-between tw-items-center tw-gap-5"
                     >
-                      강의클럽 가입 신청 ({totalElements || 0})
+                      <div>강의클럽 가입 신청 ({totalElements || 0})</div>
+                      <button
+                        onClick={() => handleBatchAcceptMember()}
+                        type="button"
+                        className="tw-text-sm tw-font-bold border tw-py-2 tw-px-5 tw-rounded-md tw-text-black tw-rounded"
+                      >
+                        일괄 승인
+                      </button>
                     </Grid>
 
                     <Grid item container justifyContent="flex-end" xs={6} sm={2} style={{ textAlign: 'right' }}>
@@ -3462,14 +3479,14 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                                   {isProcessing
                                     ? '등록 중'
                                     : fileEntry.fileUploadStatus === '0000'
-                                    ? '등록 전'
-                                    : fileEntry.fileUploadStatus === '1000'
-                                    ? '등록 중'
-                                    : fileEntry.fileUploadStatus === '2000'
-                                    ? '등록 완료'
-                                    : fileEntry.fileUploadStatus === '3000'
-                                    ? '등록 실패'
-                                    : '등록 전'}
+                                      ? '등록 전'
+                                      : fileEntry.fileUploadStatus === '1000'
+                                        ? '등록 중'
+                                        : fileEntry.fileUploadStatus === '2000'
+                                          ? '등록 완료'
+                                          : fileEntry.fileUploadStatus === '3000'
+                                            ? '등록 실패'
+                                            : '등록 전'}
                                 </div>
                               </div>
                             ))}
@@ -3517,14 +3534,14 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                                   {isProcessing
                                     ? '등록 중'
                                     : file.fileUploadStatus === '0000'
-                                    ? '등록 전'
-                                    : file.fileUploadStatus === '1000'
-                                    ? '등록 중'
-                                    : file.fileUploadStatus === '2000'
-                                    ? '등록 완료'
-                                    : file.fileUploadStatus === '3000'
-                                    ? '등록 실패'
-                                    : '등록 전'}
+                                      ? '등록 전'
+                                      : file.fileUploadStatus === '1000'
+                                        ? '등록 중'
+                                        : file.fileUploadStatus === '2000'
+                                          ? '등록 완료'
+                                          : file.fileUploadStatus === '3000'
+                                            ? '등록 실패'
+                                            : '등록 전'}
                                 </div>
                               </div>
                             ))}
