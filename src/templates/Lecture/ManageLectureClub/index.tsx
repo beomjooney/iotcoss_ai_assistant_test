@@ -414,7 +414,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
   useEffect(() => {
     refetchMyMember();
     refetchMyDashboardRequest();
-  }, [isAcceptSuccess, isRejectSuccess]);
+  }, [isAcceptSuccess, isRejectSuccess, isAcceptAllSuccess]);
 
   useDidMountEffect(() => {
     setMyClubParams({
