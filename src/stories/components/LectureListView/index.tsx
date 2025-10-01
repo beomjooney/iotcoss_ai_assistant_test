@@ -417,7 +417,22 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
                         <div className="tw-w-1/12 tw-text-sm tw-text-black  tw-font-bold  ">AI답변 : </div>
                         <div className="tw-text-sm tw-w-10/12">
                           <div className="tw-text-gray-500">
-                            {item?.questionStatus === '0200' ? '(강의자료)' : '(일반서치)'}
+                            <div className="tw-text-gray-500">
+                              {(() => {
+                                const answerTypeMap: Record<string, string> = {
+                                  '0200': '[강의자료기반 답변]  ',
+                                  '0201': '[일반지식기반 답변]  ',
+                                  '0300': '[교수자 답변]  ',
+                                  '0130': '[일반지식기반 미검색] ',
+                                  '0110': '[금지어답변불가] ',
+                                };
+
+                                const prefix = answerTypeMap[item?.answerType] ?? '[답변불가]';
+                                return prefix + (item?.ai1stAnswer ?? '');
+                              })()}
+                            </div>
+
+                            {/* {item?.questionStatus === '0200' ? '(강의자료)' : '(일반서치)'} */}
                             <Markdown className="markdown-container tw-prose tw-pr-2 tw-break-words">
                               {item?.ai1stAnswer}
                             </Markdown>
@@ -562,10 +577,16 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
                                 {questionInfo?.answer
                                   ? 'AI답변 : ' +
                                     (questionInfo?.answerType === '0200'
-                                      ? '(강의자료) : '
-                                      : questionInfo?.answerType === '0300'
-                                      ? '(일반서치) : '
-                                      : '') +
+                                      ? '(강의자료기반 답변) : '
+                                      : questionInfo?.answerType === '0201'
+                                        ? '(일반지식기반 답변) : '
+                                        : questionInfo?.answerType === '0300'
+                                          ? '(교수자 답변) : '
+                                          : questionInfo?.answerType === '0130'
+                                            ? '(일반지식기반 미검색) : '
+                                            : questionInfo?.answerType === '0110'
+                                              ? '(금지어답변불가) : '
+                                              : '(답변불가) : ') +
                                     questionInfo?.answer
                                   : null}
                               </Markdown>
