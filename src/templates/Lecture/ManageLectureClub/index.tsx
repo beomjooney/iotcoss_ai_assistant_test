@@ -1640,6 +1640,11 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
   }));
 
   const handleBatchAcceptMember = () => {
+    if (!myMemberRequestList || myMemberRequestList.length === 0) {
+      alert('클럽 가입 신청이 없습니다.');
+      return;
+    }
+
     const isConfirmed = window.confirm('클럽 회원을 일괄 가입하시겠습니까?');
     if (isConfirmed) {
       let params = {
@@ -3481,14 +3486,14 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                                   {isProcessing
                                     ? '등록 중'
                                     : fileEntry.fileUploadStatus === '0000'
-                                      ? '등록 전'
-                                      : fileEntry.fileUploadStatus === '1000'
-                                        ? '등록 중'
-                                        : fileEntry.fileUploadStatus === '2000'
-                                          ? '등록 완료'
-                                          : fileEntry.fileUploadStatus === '3000'
-                                            ? '등록 실패'
-                                            : '등록 전'}
+                                    ? '등록 전'
+                                    : fileEntry.fileUploadStatus === '1000'
+                                    ? '등록 중'
+                                    : fileEntry.fileUploadStatus === '2000'
+                                    ? '등록 완료'
+                                    : fileEntry.fileUploadStatus === '3000'
+                                    ? '등록 실패'
+                                    : '등록 전'}
                                 </div>
                               </div>
                             ))}
@@ -3536,14 +3541,14 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                                   {isProcessing
                                     ? '등록 중'
                                     : file.fileUploadStatus === '0000'
-                                      ? '등록 전'
-                                      : file.fileUploadStatus === '1000'
-                                        ? '등록 중'
-                                        : file.fileUploadStatus === '2000'
-                                          ? '등록 완료'
-                                          : file.fileUploadStatus === '3000'
-                                            ? '등록 실패'
-                                            : '등록 전'}
+                                    ? '등록 전'
+                                    : file.fileUploadStatus === '1000'
+                                    ? '등록 중'
+                                    : file.fileUploadStatus === '2000'
+                                    ? '등록 완료'
+                                    : file.fileUploadStatus === '3000'
+                                    ? '등록 실패'
+                                    : '등록 전'}
                                 </div>
                               </div>
                             ))}
