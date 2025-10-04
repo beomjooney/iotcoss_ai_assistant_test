@@ -164,6 +164,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
   const [paramss, setParamss] = useState<any>({});
   const [levelNames, setLevelNames] = useState([]);
   const [lectureLanguage, setLectureLanguage] = useState('kor');
+  const [aiAnswerLengths, setAiAnswerLengths] = useState('medium');
   const [contentLanguage, setContentLanguage] = useState('kor');
   const [lectureAILanguage, setLectureAILanguage] = useState('kor');
   const [participationCode, setParticipationCode] = useState('');
@@ -327,6 +328,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
     setLectureLanguage(clubForm.lectureLanguage);
     setContentLanguage(clubForm.contentLanguage);
     setLectureAILanguage(clubForm.aiConversationLanguage);
+    setAiAnswerLengths(clubForm.aiAnswerLengthType || 'medium');
     setAgreements(clubForm.useCurrentProfileImage);
 
     setPreview(clubForm.clubImageUrl);
@@ -790,6 +792,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
       comprehensiveEvaluationMinimumCount: aiSummarySettings?.minimumCompletionCount,
       comprehensiveEvaluationPermissions: aiSummarySettings?.comprehensiveEvaluationPermissions,
       comprehensiveEvaluationViewPermissions: aiSummarySettings?.comprehensiveEvaluationViewPermissions,
+      aiAnswerLengthType: aiAnswerLengths || 'medium',
     };
 
     onLectureModifyAI({ clubFormParams, id: selectedClub?.clubSequence });
@@ -3054,6 +3057,28 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                         OFF
                       </ToggleButton>
                     </ToggleButtonGroup>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="tw-grid tw-grid-cols-3 tw-gap-4 tw-content-start">
+              <div className=" tw-mt-7 tw-mr-3">
+                <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2">답변품질 설정</div>
+                <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3 tw-mt-5">
+                  <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">답변길이</p>
+                  <div className="tw-flex-grow tw-flex-shrink tw-relative tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
+                    <select
+                      className="tw-px-5 tw-w-full tw-text-black"
+                      onChange={e => setAiAnswerLengths(e.target.value)}
+                      value={aiAnswerLengths}
+                    >
+                      <option value="very_short">매우짧게</option>
+                      <option value="short">짧게</option>
+                      <option value="medium">보통</option>
+                      <option value="long">길게</option>
+                      <option value="very_long">매우길게</option>
+                    </select>
                   </div>
                 </div>
               </div>

@@ -88,6 +88,7 @@ export function LectureOpenTemplate() {
   const [lectureLanguage, setLectureLanguage] = useState('kor');
   const [contentLanguage, setContentLanguage] = useState('kor');
   const [lectureAILanguage, setLectureAILanguage] = useState('kor');
+  const [aiAnswerLengths, setAiAnswerLengths] = useState('medium');
   const [skillIdsPopUp, setSkillIdsPopUp] = useState<any[]>([]);
   const [experienceIdsPopUp, setExperienceIdsPopUp] = useState<any[]>([]);
   const [isPublic, setIsPublic] = useState('0001');
@@ -299,6 +300,7 @@ export function LectureOpenTemplate() {
       setLectureLanguage(clubForm.lectureLanguage || 'kor');
       setContentLanguage(clubForm.contentLanguage || 'kor');
       setLectureAILanguage(clubForm.aiConversationLanguage || 'kor');
+      setAiAnswerLengths(clubForm.aiAnswerLengthType || 'medium');
 
       setPreview(clubForm.clubImageUrl);
       setPreviewBanner(clubForm.backgroundImageUrl);
@@ -1066,6 +1068,7 @@ export function LectureOpenTemplate() {
       participationCode: participationCode || '',
       lectureLanguage: lectureLanguage || '',
       contentLanguage: contentLanguage || '',
+      aiAnswerLengths: aiAnswerLengths || 'medium',
       aiConversationLanguage: lectureAILanguage || '',
       description: introductionText || '',
       useCurrentProfileImage: agreements,
@@ -1095,6 +1098,7 @@ export function LectureOpenTemplate() {
     formData.append('clubForm.participationCode', clubFormParams.participationCode);
     formData.append('clubForm.lectureLanguage', clubFormParams.lectureLanguage);
     formData.append('clubForm.contentLanguage', clubFormParams.contentLanguage);
+    formData.append('clubForm.aiAnswerLengthType', clubFormParams.aiAnswerLengths);
     formData.append('clubForm.aiConversationLanguage', clubFormParams.aiConversationLanguage);
     formData.append('clubForm.description', clubFormParams.description);
     formData.append('clubForm.forbiddenWords', clubFormParams.forbiddenWords);
@@ -1834,6 +1838,29 @@ export function LectureOpenTemplate() {
                               OFF
                             </ToggleButton>
                           </ToggleButtonGroup>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="tw-grid tw-grid-cols-3 tw-gap-4 tw-content-start">
+                    <div className=" tw-mt-7 tw-mr-3">
+                      <div className="tw-font-semibold tw-text-sm tw-text-black tw-my-2">답변품질 설정</div>
+                      <div className="tw-flex tw-justify-start tw-items-center tw-relative tw-gap-3 tw-mt-5">
+                        <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">
+                          답변길이
+                        </p>
+                        <div className="tw-flex-grow tw-flex-shrink tw-relative tw-rounded tw-bg-white tw-border tw-border-[#e0e4eb]">
+                          <select
+                            className="tw-px-5 tw-w-full tw-text-black"
+                            onChange={e => setAiAnswerLengths(e.target.value)}
+                            value={aiAnswerLengths}
+                          >
+                            <option value="very_short">매우짧게</option>
+                            <option value="short">짧게</option>
+                            <option value="medium">보통</option>
+                            <option value="long">길게</option>
+                            <option value="very_long">매우길게</option>
+                          </select>
                         </div>
                       </div>
                     </div>
