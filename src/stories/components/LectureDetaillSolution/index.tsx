@@ -324,8 +324,8 @@ const LectureDetaillSolution = ({
                   item
                   container
                   justifyContent="flex-start"
-                  xs={6}
-                  sm={6}
+                  xs={4}
+                  sm={4}
                   className="tw-text-xl tw-text-black tw-font-bold"
                 >
                   강의 목록 ({study?.length || 0})
