@@ -422,6 +422,8 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
                                 ? '[강의자료기반 답변] '
                                 : item?.questionStatus === '0201'
                                 ? '[일반지식기반 답변] '
+                                : item?.questionStatus === '0210'
+                                ? '[일반지식기반 답변] '
                                 : item?.questionStatus === '0300'
                                 ? '[교수자 답변] '
                                 : item?.questionStatus === '0130'
