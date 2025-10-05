@@ -330,7 +330,7 @@ const LectureDetaillSolution = ({
                 >
                   강의 목록 ({study?.length || 0})
                 </Grid>
-                <Grid container justifyContent="flex-end" item xs={6} sm={6} style={{ textAlign: 'right' }}>
+                <Grid container justifyContent="flex-end" item xs={8} sm={8} style={{ textAlign: 'right' }}>
                   {lectureEvaluation?.comprehensiveEvaluationViewable ? (
                     <div className="tw-flex tw-items-center tw-gap-2">
                       <div className="tw-flex tw-items-center">
