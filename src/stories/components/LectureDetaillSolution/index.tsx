@@ -335,8 +335,8 @@ const LectureDetaillSolution = ({
                     <div className="tw-flex tw-items-center tw-gap-2">
                       <div className="tw-flex tw-items-center">
                         <div className="tw-text-base tw-text-black tw-leading-relaxed tw-mr-2">
-                          {lectureEvaluation?.minimumQuestionCount}회 이상 질문 완료 하였습니다. 학습 총평 피드백을 확인
-                          해보세요.
+                          {lectureEvaluation?.minimumQuestionCount}회 이상 질문을 해야 학습 총평 피드백을 확인할 수
+                          있습니다.
                         </div>
                       </div>
                       <button

@@ -440,7 +440,6 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
                               })()}
                             </div>
 
-                            {/* {item?.questionStatus === '0200' ? '(강의자료)' : '(일반서치)'} */}
                             <Markdown className="markdown-container tw-prose tw-pr-2 tw-break-words">
                               {item?.ai1stAnswer}
                             </Markdown>
