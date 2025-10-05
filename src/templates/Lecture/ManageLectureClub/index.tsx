@@ -313,7 +313,6 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
     setRecommendLevels(clubForm.jobLevels.map(item => item.code) || '');
     console.log(clubForm?.jobLevels?.map(item => item.name));
     setStudyCycleNum(clubForm.clubStudyCount || 0);
-
     setLevelNames(clubForm.jobLevels.map(item => item.name));
 
     const selected = optionsData?.data?.jobs?.find(u => u.code === clubForm.jobGroups[0]?.code);
