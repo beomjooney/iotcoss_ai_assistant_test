@@ -420,11 +420,11 @@ const LectureListView = ({ border, id, clubStudySequence }) => {
                             <div className="tw-text-gray-500">
                               {(() => {
                                 const answerTypeMap: Record<string, string> = {
-                                  '0200': '[강의자료기반 답변]',
-                                  '0201': '[일반지식기반 답변]',
-                                  '0300': '[교수자 답변]',
-                                  '0130': '[일반지식기반 미검색]',
-                                  '0110': '[금지어답변불가]',
+                                  '0200': '[강의자료기반 답변] ',
+                                  '0201': '[일반지식기반 답변] ',
+                                  '0300': '[교수자 답변] ',
+                                  '0130': '[일반지식기반 미검색] ',
+                                  '0110': '[금지어답변불가] ',
                                 };
 
                                 const questionStatus = item?.questionStatus ?? '';
