@@ -75,7 +75,7 @@ function MentorsModal({
               top: '50px',
               left: '50%',
               transform: 'translateX(-50%)',
-              width: isProfile ? '55%' : '95%',
+              width: isProfile ? '50%' : '95%',
               height: '100%',
               border: '1px solid #ccc',
               background: '#fff',
@@ -123,7 +123,7 @@ function MentorsModal({
               left: '50%',
               transform: 'translate(-50%, -50%)', // translateX에서 translate로 변경하여 Y축도 중앙 정렬
               // transform: 'translateX(-50%)',
-              width: isContentModalClick ? '1000px' : isProfile ? '680px' : isQuiz ? '750px' : '55%',
+              width: isContentModalClick ? '900px' : isProfile ? '680px' : isQuiz ? '750px' : '49%',
               height: height,
               border: '1px solid #ccc',
               background: '#fff',
