@@ -42,6 +42,7 @@ export const useQuizList = (
       onSuccess,
       onError,
       refetchOnWindowFocus: false,
+      enabled: params && Object.keys(params).length > 0,
     },
   );
 };
@@ -75,6 +76,7 @@ export const useMyQuizContents = (
       onSuccess,
       onError,
       refetchOnWindowFocus: false,
+      enabled: params && Object.keys(params).length > 0,
     },
   );
 };

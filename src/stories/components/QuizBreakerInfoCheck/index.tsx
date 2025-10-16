@@ -1,7 +1,7 @@
 import React from 'react';
 import Checkbox from '@mui/material/Checkbox';
 
-const QuizBreakerInfoCheck = ({
+const QuizBreakerInfoContentCheck = ({
   userName = 'Unknown User',
   questionText,
   index,
@@ -90,4 +90,4 @@ const QuizBreakerInfoCheck = ({
   );
 };
 
-export default QuizBreakerInfoCheck;
+export default QuizBreakerInfoContentCheck;
