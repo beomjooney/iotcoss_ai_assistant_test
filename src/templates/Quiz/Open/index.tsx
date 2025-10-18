@@ -644,20 +644,20 @@ export function QuizOpenTemplate() {
           const newQuiz = allQuizData.find(quiz => quiz.quizSequence === quizSequence);
           const reconstructedQuiz = newQuiz
             ? {
-                quizSequence: newQuiz.quizSequence,
-                question: newQuiz.question,
-                member: {
-                  leaderUri: newQuiz.memberUri,
-                  leaderUUID: newQuiz.memberUUID,
-                  profileImageUrl: newQuiz.memberProfileImageUrl,
-                  nickname: newQuiz.memberNickname,
-                },
-                contentTitle: newQuiz.contentTitle,
-                modelAnswer: newQuiz.modelAnswer,
-                contentName: newQuiz.content.name,
-                contentUrl: newQuiz.content.url,
-                quizUri: newQuiz.quizUri,
-              }
+              quizSequence: newQuiz.quizSequence,
+              question: newQuiz.question,
+              member: {
+                leaderUri: newQuiz.memberUri,
+                leaderUUID: newQuiz.memberUUID,
+                profileImageUrl: newQuiz.memberProfileImageUrl,
+                nickname: newQuiz.memberNickname,
+              },
+              contentTitle: newQuiz.contentTitle,
+              modelAnswer: newQuiz.modelAnswer,
+              contentName: newQuiz.content.name,
+              contentUrl: newQuiz.content.url,
+              quizUri: newQuiz.quizUri,
+            }
             : null;
 
           console.log(newQuiz);
@@ -736,7 +736,7 @@ export function QuizOpenTemplate() {
   }, [active]);
 
   const steps = ['Step 1.클럽 세부사항 설정', 'Step 2.퀴즈 선택', 'Step 3. 개설될 클럽 미리보기'];
-  const [activeStep, setActiveStep] = React.useState(1);
+  const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set<number>());
   const [quizUrl, setQuizUrl] = React.useState('');
   const [quizName, setQuizName] = React.useState('');
@@ -1580,22 +1580,20 @@ export function QuizOpenTemplate() {
                   <div key={index} className="tw-w-1/3">
                     <div className="tw-px-2">
                       <div
-                        className={`tw-flex tw-justify-center tw-items-center tw-w-full tw-relative tw-overflow-hidden tw-gap-2 tw-px-6 tw-py-1  ${
-                          index < activeStep
-                            ? 'tw-bg-gray-300 tw-text-white'
-                            : index === activeStep
-                              ? 'tw-bg-blue-600  tw-text-white'
-                              : 'tw-bg-gray-300 tw-text-white'
-                        }`}
+                        className={`tw-flex tw-justify-center tw-items-center tw-w-full tw-relative tw-overflow-hidden tw-gap-2 tw-px-6 tw-py-1  ${index < activeStep
+                          ? 'tw-bg-gray-300 tw-text-white'
+                          : index === activeStep
+                            ? 'tw-bg-blue-600  tw-text-white'
+                            : 'tw-bg-gray-300 tw-text-white'
+                          }`}
                       ></div>
                       <div
-                        className={`tw-flex tw-text-sm tw-justify-center tw-items-center tw-w-full tw-relative tw-overflow-hidden tw-gap-2 tw-px-6 tw-py-[11.5px] tw-rounded ${
-                          index < activeStep
-                            ? ' tw-text-gray-400'
-                            : index === activeStep
-                              ? ' tw-text-black tw-font-bold'
-                              : ' tw-text-gray-400'
-                        }`}
+                        className={`tw-flex tw-text-sm tw-justify-center tw-items-center tw-w-full tw-relative tw-overflow-hidden tw-gap-2 tw-px-6 tw-py-[11.5px] tw-rounded ${index < activeStep
+                          ? ' tw-text-gray-400'
+                          : index === activeStep
+                            ? ' tw-text-black tw-font-bold'
+                            : ' tw-text-gray-400'
+                          }`}
                       >
                         {step}
                       </div>
@@ -2300,9 +2298,8 @@ export function QuizOpenTemplate() {
                     key={index}
                     src={image}
                     alt={`Image ${index + 1}`}
-                    className={`image-item ${
-                      selectedImage === image ? 'selected' : ''
-                    } tw-object-cover tw-w-[100px] tw-rounded-lg tw-h-[100px] md:tw-h-[100px] md:tw-w-[100px] md:tw-rounded-lg`}
+                    className={`image-item ${selectedImage === image ? 'selected' : ''
+                      } tw-object-cover tw-w-[100px] tw-rounded-lg tw-h-[100px] md:tw-h-[100px] md:tw-w-[100px] md:tw-rounded-lg`}
                     style={{ opacity: selectedImage !== image ? 0.2 : 1 }}
                     onClick={() => handleImageClick(image, 'card', false)}
                   />
@@ -2360,9 +2357,8 @@ export function QuizOpenTemplate() {
                     key={index}
                     src={image}
                     alt={`Image ${index + 1}`}
-                    className={`image-item ${
-                      selectedImageBanner === image ? 'selected' : ''
-                    } tw-object-cover tw-w-[260px] tw-rounded-lg tw-h-[100px] md:tw-h-[100px] md:tw-w-[200px] md:tw-rounded-lg`}
+                    className={`image-item ${selectedImageBanner === image ? 'selected' : ''
+                      } tw-object-cover tw-w-[260px] tw-rounded-lg tw-h-[100px] md:tw-h-[100px] md:tw-w-[200px] md:tw-rounded-lg`}
                     style={{ opacity: selectedImageBanner !== image ? 0.2 : 1 }}
                     onClick={() => handleImageClick(image, 'banner', false)}
                   />
@@ -2534,7 +2530,7 @@ export function QuizOpenTemplate() {
                 </div>
 
                 <div className="tw-h-24 tw-flex tw-justify-center tw-items-center  tw-relative tw-overflow-hidden tw-gap-8">
-                  <div className="tw-flex-1 tw-flex tw-justify-center tw-items-center  tw-h-20 tw-gap-2 border tw-rounded-lg">
+                  {/* <div className="tw-flex-1 tw-flex tw-justify-center tw-items-center  tw-h-20 tw-gap-2 border tw-rounded-lg">
                     <svg
                       width={24}
                       height={24}
@@ -2566,7 +2562,7 @@ export function QuizOpenTemplate() {
                     >
                       지식콘텐츠기반 퀴즈(AI생성) 일괄 등록
                     </button>
-                  </div>
+                  </div> */}
                   <div className="tw-flex-1 tw-flex tw-justify-center tw-items-center tw-gap-2  tw-h-20 border tw-rounded-lg">
                     <svg
                       width={24}
@@ -3004,10 +3000,10 @@ export function QuizOpenTemplate() {
               <QuizBreakerInfoCheckContent
                 questionText={item.name}
                 index={item.contentSequence}
-                // selectedContentIds={selectedContentIds}
-                // handleCheckboxChange={index => {
-                //   setSelectedContentIds([...selectedContentIds, index]);
-                // }}
+              // selectedContentIds={selectedContentIds}
+              // handleCheckboxChange={index => {
+              //   setSelectedContentIds([...selectedContentIds, index]);
+              // }}
               />
             </div>
           ))}

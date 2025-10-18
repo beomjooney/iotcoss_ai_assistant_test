@@ -120,6 +120,8 @@ export const useLogin = (): UseMutationResult => {
         alert('로그인 시도 횟수를 초과했습니다.');
       } else if (responseCode === 'C06002') {
         alert('이메일 계정 또는 암호가 일치하지 않습니다. 다시 한번 확인해 주세요.');
+      } else if (responseCode === 'C06005') {
+        alert('학사DB 연동모듈에 오류가 발생하였습니다. 관리자에게 문의 해주세요.');
       } else {
         alert(`error : [${responseCode}] ${message}`);
       }
@@ -348,7 +350,7 @@ export const useLoginOtpVerification = (): UseMutationResult => {
       alert(`mutation error : [${code}] ${message}`);
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('OTP').all),
-    onSuccess: async data => {},
+    onSuccess: async data => { },
   });
 };
 
@@ -361,7 +363,7 @@ export const useChangePhone = (): UseMutationResult => {
       alert(`mutation error : [${code}] ${message}`);
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('OTP').all),
-    onSuccess: async data => {},
+    onSuccess: async data => { },
   });
 };
 
