@@ -134,6 +134,8 @@ export const useLogin = (): UseMutationResult => {
       if (responseCode === '0000') {
         setCookie('access_token', data?.access_token);
       } else if (responseCode === '1403') {
+      } else if (responseCode === 'C06005') {
+        alert('학사DB 연동모듈에 오류가 발생하였습니다. 관리자에게 문의 해주세요.');
       } else {
         alert(`error : [${responseCode}] ${message}`);
       }
