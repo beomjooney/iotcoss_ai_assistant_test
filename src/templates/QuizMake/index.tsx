@@ -45,6 +45,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { useSessionStore } from 'src/store/session';
 import { useGetGroupLabel } from 'src/hooks/useGetGroupLabel';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 
 export const generateUUID = () => {
@@ -104,6 +105,7 @@ export function QuizMakeTemplate() {
   const [isContentModalClick, setIsContentModalClick] = useState<boolean>(false);
   const [isKnowledgeModalClick, setIsKnowledgeModalClick] = useState<boolean>(false);
   const [isFileOpen, setIsFileOpen] = useState<boolean>(false);
+  const [isAIExcelOpen, setIsAIExcelOpen] = useState<boolean>(false);
   const [jobGroup, setJobGroup] = useState([]);
   const [active, setActive] = useState('');
   const [activeQuiz, setActiveQuiz] = useState('');
@@ -144,6 +146,7 @@ export function QuizMakeTemplate() {
   const [selectedJobName, setSelectedJobName] = useState('');
   const [selectedJob, setSelectedJob] = useState([]);
   const [selectedSubject, setSelectedSubject] = useState('');
+  const [fileCount, setFileCount] = useState(1);
   const [selectedChapter, setSelectedChapter] = useState('');
   const [jobLevel, setJobLevel] = useState([]);
   const [contentUrl, setContentUrl] = useState('');
@@ -155,12 +158,12 @@ export function QuizMakeTemplate() {
   const [editingIndex, setEditingIndex] = useState(null);
   const [fileList, setFileList] = useState([]);
   const [fileListKnowledge, setFileListKnowledge] = useState([]);
-  const [fileNameKnowledge, setFileNameKnowledge] = useState('');
   const [fileNameCopyKnowledge, setFileNameCopyKnowledge] = useState([]);
   const [fileName, setFileName] = useState('');
   const [fileNameCopy, setFileNameCopy] = useState([]);
   const [key, setKey] = useState('');
   const [selectedOption, setSelectedOption] = useState('false');
+  const [selectedOptionFile, setSelectedOptionFile] = useState('false');
   const handleChangeOption = event => {
     console.log('test', event.target.value);
     setSelectedOption(event.target.value);
@@ -328,7 +331,6 @@ export function QuizMakeTemplate() {
   }, [quizAIExcelSuccess]);
 
   const onCloseExcelModal = () => {
-    setIsModalExcelOpen(false);
     setKnowledgeFileName('');
     setKnowledgeQuizFileName('');
     setKnowledgeQuizAIFileName('');
@@ -342,6 +344,7 @@ export function QuizMakeTemplate() {
     refetchMyQuizContent();
 
     setFileList([]);
+    setFileListKnowledge([]);
     setJobLevel([]);
     setSelected1([]);
     setSelected2([]);
@@ -351,6 +354,9 @@ export function QuizMakeTemplate() {
     setUniversityCode('');
     setJobs([]);
     setContentSortType('');
+
+    setIsFileOpen(false);
+    setIsAIExcelOpen(false);
   };
 
   //excel 다운로드
@@ -955,17 +961,20 @@ export function QuizMakeTemplate() {
   };
 
   const handleFileChangeKnowledge = event => {
-    const file = event.target.files[0];
+    const files = Array.from(event.target.files);
     const allowedExtensions = /(\.pdf|\.pptx)$/i;
 
-    if (!allowedExtensions.exec(file.name)) {
-      alert('허용되지 않는 파일 형식입니다.');
+    // 모든 파일이 허용된 확장자인지 확인
+    const invalidFiles = files.filter(file => !allowedExtensions.exec(file.name));
+
+    if (invalidFiles.length > 0) {
+      alert('허용되지 않는 파일 형식이 포함되어 있습니다. (pdf, pptx만 허용)');
       event.target.value = ''; // input 초기화
       return;
     }
 
-    setFileListKnowledge([file]); // 하나의 파일만 받도록 설정
-    setFileNameCopyKnowledge([file]); // 하나의 파일만 받도록 설정
+    setFileListKnowledge(files); // 여러 파일을 받도록 설정
+    setFileNameCopyKnowledge(files); // 여러 파일을 받도록 설정
   };
 
   const onFileDownload = function (key: string, fileName: string) {
@@ -1945,14 +1954,15 @@ export function QuizMakeTemplate() {
         isOpen={isModalExcelOpen}
         onAfterClose={() => {
           onCloseExcelModal();
+          setIsModalExcelOpen(false);
         }}
         title="지식/퀴즈 일괄 등록하기"
         isContentModalClick={false}
-        height="60%"
+        height="75%"
       >
         <div className="tw-px-20">
           <div className="tw-mb-5">
-            <div className="tw-flex tw-flex-row tw-items-start tw-justify-between tw-mb-5">
+            <div className="tw-flex tw-flex-row tw-items-start tw-justify-between tw-mb-5 tw-mt-5">
               <div className=" tw-font-bold tw-text-black tw-flex tw-items-center">지식콘텐츠(아티클) 일괄등록하기</div>
               {excelSuccessLoading && (
                 <div className="tw-flex tw-items-center tw-justify-center tw-ml-2">
@@ -2107,29 +2117,45 @@ export function QuizMakeTemplate() {
             </div>
           </div>
           <div className="tw-mb-5">
-            <div className="tw-justify-between tw-mt-10 tw-mb-5">
+            <div className="tw-justify-between tw-my-10">
               <div
                 className="tw-font-bold tw-text-black tw-flex tw-items-center tw-gap-2 tw-cursor-pointer"
-                onClick={() => setIsFileOpen(!isFileOpen)}
+                onClick={() => {
+                  setIsFileOpen(!isFileOpen);
+                  setIsAIExcelOpen(false);
+
+                  setFileListKnowledge([]);
+                  setJobLevel([]);
+                  setSelected1([]);
+                  setSelected2([]);
+                  setSelectedSubject('');
+                  setSelectedChapter('');
+                  setPersonName([]);
+                  setUniversityCode('');
+                  setJobs([]);
+                  setContentSortType('');
+                }}
               >
-                지식콘텐츠(파일) 일괄 등록 <KeyboardArrowDownIcon />
+                지식콘텐츠(파일) 일괄 등록 {isFileOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
               </div>
             </div>
             {isFileOpen && (
               <div className="border tw-p-5 tw-rounded-lg">
                 <div className="">
-                  <div className="tw-text-sm tw-font-medium tw-text-black tw-pt-5">
+                  <div className="tw-text-sm tw-font-medium tw-text-black tw-pt-5 tw-pb-5">
                     파일 업로드<span className="tw-text-blue-500 tw-text-sm tw-ml-1">*</span>
                   </div>
                   <div className="tw-flex tw-gap-2 tw-justify-between tw-pb-5">
                     <div className="tw-flex tw-items-center tw-justify-between tw-gap-1 tw-text-center">
-                      <div className="tw-flex tw-items-center tw-justify-between tw-gap-1 tw-text-center">
+                      <div className="tw-flex tw-items-center tw-justify-between tw-gap-1 tw-text-left">
                         {!isContentModalClick ? (
                           <div>
-                            {fileList.length > 0 ? (
+                            {fileListKnowledge.length > 0 ? (
                               <div>
-                                {fileList.map((file, index) => (
-                                  <div key={index}>{file.name}</div>
+                                {fileListKnowledge.map((file, index) => (
+                                  <div key={index}>
+                                    {index + 1}. {file.name}
+                                  </div>
                                 ))}
                               </div>
                             ) : (
@@ -2137,11 +2163,11 @@ export function QuizMakeTemplate() {
                             )}
                           </div>
                         ) : (
-                          <div>{fileNameCopy || '파일정보가 없습니다.'}</div>
+                          <div>{fileNameCopyKnowledge || '파일정보가 없습니다.'}</div>
                         )}
                       </div>
                     </div>
-                    <div className="tw-flex tw-items-center tw-gap-2 border tw-px-4 tw-py-2 tw-rounded">
+                    <div className="tw-flex tw-items-center tw-gap-2 border tw-px-4 tw-py-2 tw-rounded tw-h-[35px]">
                       <svg
                         width={16}
                         height={16}
@@ -2163,15 +2189,18 @@ export function QuizMakeTemplate() {
                           </clipPath>
                         </defs>
                       </svg>
-                      <button className=" tw-text-sm tw-text-left tw-text-[#31343d]" onClick={handleButtonClick}>
+                      <button
+                        className=" tw-text-sm tw-text-left tw-text-[#31343d] "
+                        onClick={handleButtonClickKnowledge}
+                      >
                         파일추가
                       </button>
                       <input
                         accept=".pdf,.pptx"
                         type="file"
-                        ref={fileInputRef}
+                        ref={fileInputRefKnowledge}
                         style={{ display: 'none' }}
-                        onChange={handleFileChange}
+                        onChange={handleFileChangeKnowledge}
                       />
                     </div>
                   </div>
@@ -2608,8 +2637,273 @@ export function QuizMakeTemplate() {
               </div>
             </div>
 
-            <div className="tw-flex tw-items-start tw-justify-between tw-my-10">
-              <div className=" tw-font-bold tw-text-black">지식콘텐츠(아티클) + 퀴즈(AI생성) 엑셀 일괄 등록</div>
+            <div className="tw-my-10">
+              <div
+                className=" tw-font-bold tw-text-black tw-cursor-pointer"
+                onClick={() => {
+                  setIsAIExcelOpen(!isAIExcelOpen);
+                  setIsFileOpen(false);
+                  // onCloseExcelModal();
+
+                  setFileListKnowledge([]);
+                  setJobLevel([]);
+                  setSelected1([]);
+                  setSelected2([]);
+                  setSelectedSubject('');
+                  setSelectedChapter('');
+                  setPersonName([]);
+                  setUniversityCode('');
+                  setJobs([]);
+                  setContentSortType('');
+                }}
+              >
+                지식콘텐츠(파일) + 퀴즈(AI생성) 엑셀 일괄 등록{' '}
+                {isAIExcelOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+              </div>
+
+              {isAIExcelOpen && (
+                <div className="border tw-p-5 tw-rounded-lg tw-mt-5">
+                  <div className="">
+                    <div className="tw-text-sm tw-font-medium tw-text-black tw-pt-5 tw-pb-2">
+                      파일 업로드<span className="tw-text-blue-500 tw-text-sm tw-ml-1">*</span>
+                    </div>
+                    <div className="tw-flex tw-gap-2 tw-justify-between tw-pb-5">
+                      <div className="tw-flex tw-items-center tw-justify-between tw-gap-1 tw-text-center">
+                        <div className="tw-flex tw-items-center tw-justify-between tw-gap-1 tw-text-left ">
+                          {!isContentModalClick ? (
+                            <div>
+                              {fileListKnowledge.length > 0 ? (
+                                <div>
+                                  {fileListKnowledge.map((file, index) => (
+                                    <div key={index}>
+                                      {index + 1}. {file.name}
+                                    </div>
+                                  ))}
+                                </div>
+                              ) : (
+                                <div className="tw-text-sm tw-text-gray-500 tw-underline">
+                                  파일을 추가해주세요. (pdf)
+                                </div>
+                              )}
+                            </div>
+                          ) : (
+                            <div>{fileNameCopyKnowledge || '파일정보가 없습니다.'}</div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="tw-flex tw-items-center tw-gap-2 border tw-px-4 tw-py-2 tw-rounded tw-h-[35px]">
+                        <svg
+                          width={16}
+                          height={16}
+                          viewBox="0 0 16 16"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="w-4 h-4 absolute left-0 top-0.5"
+                          preserveAspectRatio="xMidYMid meet"
+                        >
+                          <g clipPath="url(#clip0_679_9101)">
+                            <path
+                              d="M2.61042 6.86336C2.55955 6.9152 2.49887 6.95638 2.4319 6.98449C2.36494 7.01259 2.29304 7.02707 2.22042 7.02707C2.14779 7.02707 2.0759 7.01259 2.00894 6.98449C1.94197 6.95638 1.88128 6.9152 1.83042 6.86336C1.72689 6.75804 1.66887 6.61625 1.66887 6.46856C1.66887 6.32087 1.72689 6.17909 1.83042 6.07376L6.65522 1.20016C7.74322 0.355364 8.83762 -0.050236 9.92722 0.00496403C11.3 0.075364 12.3688 0.598564 13.276 1.45696C14.2008 2.33216 14.7992 3.58096 14.7992 5.09456C14.7992 6.25616 14.4616 7.27856 13.7488 8.18576L6.94642 15.1938C6.25842 15.7578 5.49362 16.0306 4.67442 15.9978C3.63442 15.9546 2.86082 15.6186 2.28562 15.0498C1.61202 14.385 1.19922 13.5682 1.19922 12.4698C1.19922 11.5962 1.50082 10.7898 2.12322 10.033L8.11042 3.92016C8.59042 3.40816 9.06002 3.10416 9.54002 3.03056C9.86039 2.9801 10.1883 3.00876 10.495 3.11403C10.8018 3.21931 11.0781 3.39801 11.3 3.63456C11.7256 4.08496 11.908 4.64656 11.844 5.28576C11.8 5.72176 11.6216 6.12336 11.2936 6.50816L5.78962 12.1466C5.73909 12.1986 5.6787 12.24 5.61198 12.2685C5.54527 12.2969 5.47355 12.3118 5.40102 12.3123C5.3285 12.3127 5.25661 12.2987 5.18954 12.2711C5.12248 12.2435 5.06159 12.2028 5.01042 12.1514C4.90625 12.0467 4.84737 11.9052 4.84647 11.7575C4.84557 11.6099 4.90273 11.4677 5.00562 11.3618L10.4832 5.75216C10.6432 5.56416 10.7272 5.37456 10.7472 5.17296C10.7792 4.85296 10.7024 4.61696 10.5032 4.40656C10.4026 4.29881 10.2769 4.21759 10.1374 4.17014C9.99779 4.12268 9.84865 4.11046 9.70322 4.13456C9.50882 4.16416 9.23682 4.34096 8.90162 4.69776L2.93922 10.7834C2.50962 11.3074 2.30162 11.8634 2.30162 12.4706C2.30162 13.2338 2.57762 13.7802 3.05522 14.2514C3.43522 14.6274 3.95122 14.8514 4.71922 14.8834C5.26322 14.905 5.76722 14.725 6.20562 14.3698L12.9232 7.44976C13.4392 6.78816 13.6968 6.00976 13.6968 5.09536C13.6968 3.90976 13.2352 2.94816 12.5224 2.27296C11.7944 1.58336 10.9624 1.17696 9.87202 1.12096C9.06562 1.07936 8.22002 1.39296 7.37842 2.03776L2.61042 6.86336Z"
+                              fill="#31343D"
+                            />
+                          </g>
+                          <defs>
+                            <clipPath id="clip0_679_9101">
+                              <rect width={16} height={16} fill="white" />
+                            </clipPath>
+                          </defs>
+                        </svg>
+                        <button
+                          className=" tw-text-sm tw-text-left tw-text-[#31343d]"
+                          onClick={handleButtonClickKnowledge}
+                        >
+                          파일추가
+                        </button>
+                        <input
+                          accept=".pdf,.pptx"
+                          type="file"
+                          multiple
+                          ref={fileInputRefKnowledge}
+                          style={{ display: 'none' }}
+                          onChange={handleFileChangeKnowledge}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="tw-flex tw-gap-5 tw-mb-5">
+                      <div className="tw-w-1/2">
+                        <div className="tw-text-sm tw-font-medium tw-text-black tw-py-2">
+                          파일별 생성 퀴즈 개수 <span className="tw-text-blue-500 tw-ml-1">*</span>
+                        </div>
+                        <TextField
+                          required
+                          id="username"
+                          name="username"
+                          variant="outlined"
+                          type="search"
+                          value={fileCount}
+                          size="small"
+                          onChange={e => setFileCount(Number(e.target.value))}
+                          fullWidth
+                          sx={{
+                            '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
+                          }}
+                        />
+                      </div>
+                      <div className="tw-w-1/2">
+                        <div className="tw-text-left tw-flex tw-items-center tw-justify-start tw-gap-2 tw-h-full tw-mt-4">
+                          <div className="form-check form-check-inline">
+                            <input
+                              className="form-check-input"
+                              type="radio"
+                              name="inlineRadioOptions"
+                              id="inlineRadio1"
+                              value="false"
+                              checked={selectedOptionFile === 'false'}
+                              onChange={handleChangeOption}
+                            />
+                            <label className="form-check-label" htmlFor="inlineRadio1">
+                              비공개 퀴즈 생성
+                            </label>
+                          </div>
+                          <div className="form-check form-check-inline">
+                            <input
+                              className="form-check-input"
+                              type="radio"
+                              name="inlineRadioOptions"
+                              id="inlineRadio2"
+                              value="true"
+                              checked={selectedOptionFile === 'true'}
+                              onChange={e => setSelectedOptionFile(e.target.value)}
+                            />
+                            <label className="form-check-label" htmlFor="inlineRadio2">
+                              공개 퀴즈로 전환
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="tw-flex tw-gap-5">
+                      <div className="tw-w-1/2">
+                        <div className="tw-text-sm tw-font-medium tw-text-black tw-py-2">
+                          추천 {groupLabel}
+                          <span className="tw-text-blue-500 tw-ml-1">*</span>
+                        </div>
+                        <select
+                          className="form-select"
+                          onChange={handleUniversityChange}
+                          aria-label="Default select example"
+                          disabled={isContentModalClick}
+                          value={universityCode}
+                        >
+                          <option value="">{groupLabel}을 선택해주세요.</option>
+                          {optionsData?.data?.jobs?.map((university, index) => (
+                            <option key={index} value={university.code}>
+                              {university.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="tw-w-1/2">
+                        <div className="tw-text-sm tw-font-medium tw-text-black tw-py-2">추천 {subGroupLabel}</div>
+                        <FormControl sx={{ width: '100%' }} size="small">
+                          <Select
+                            className="tw-w-full tw-text-black"
+                            size="small"
+                            labelId="demo-multiple-checkbox-label"
+                            id="demo-multiple-checkbox"
+                            multiple
+                            displayEmpty
+                            renderValue={selected => {
+                              if (selected.length === 0) {
+                                return (
+                                  <span style={{ color: 'gray' }}>
+                                    추천 {groupLabel}을 먼저 선택하고, {subGroupLabel}을 선택해주세요.
+                                  </span>
+                                );
+                              }
+                              return selected.join(', ');
+                            }}
+                            disabled={jobs.length === 0 || isContentModalClick}
+                            value={personName}
+                            onChange={handleChange}
+                            MenuProps={{
+                              disableScrollLock: true,
+                              style: {
+                                zIndex: 9999,
+                              },
+                            }}
+                          >
+                            {jobs.map((job, index) => (
+                              <MenuItem key={index} value={job.name}>
+                                <Checkbox checked={personName.indexOf(job.name) > -1} />
+                                <ListItemText primary={job.name} />
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </div>
+                    </div>
+                    <div className="tw-text-sm tw-font-medium tw-text-black tw-pt-5 tw-pb-2">추천 학년</div>
+                    {optionsData?.data?.jobLevels?.map(item => (
+                      <Toggle
+                        key={item.code}
+                        label={item.name}
+                        name={item.name}
+                        disabled={isContentModalClick}
+                        value={item.code}
+                        variant="small"
+                        // checked={activeQuiz === item.code}
+                        checked={jobLevel.indexOf(item.code) >= 0}
+                        isActive
+                        type="tabButton"
+                        onChange={() => {
+                          const index = jobLevel.indexOf(item.code);
+                          setJobLevel(prevState => newCheckItem(item.code, index, prevState));
+                        }}
+                        className={cx('tw-mr-3 !tw-w-[85px]')}
+                      />
+                    ))}
+                    <div className="tw-text-sm tw-font-medium tw-text-black tw-pt-5 tw-pb-3">학습 주제</div>
+                    <TextField
+                      required
+                      id="username"
+                      name="username"
+                      variant="outlined"
+                      disabled={isContentModalClick}
+                      type="search"
+                      value={selectedSubject}
+                      size="small"
+                      onChange={handleInputSubjectChange}
+                      fullWidth
+                      sx={{
+                        '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
+                      }}
+                    />
+                    <div className="tw-text-sm tw-font-medium tw-text-black tw-pt-5 tw-pb-3">학습 챕터</div>
+                    <TextField
+                      required
+                      id="username"
+                      name="username"
+                      value={selectedChapter}
+                      disabled={isContentModalClick}
+                      onChange={handleInputChapterChange}
+                      variant="outlined"
+                      type="search"
+                      size="small"
+                      fullWidth
+                      sx={{
+                        '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
+                      }}
+                    />
+                    <div className="tw-text-sm tw-font-medium tw-text-black tw-pt-5 tw-pb-2">학습 키워드</div>
+                    <Tag value={selected1} onChange={setSelected1} placeHolder="학습 키워드 입력 후 엔터를 쳐주세요." />
+                    <div className="tw-text-sm tw-font-medium tw-text-black tw-pt-5 tw-pb-2">스킬</div>
+                    <Tag value={selected2} onChange={setSelected2} placeHolder="스킬 입력 후 엔터를 쳐주세요." />
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="tw-flex tw-items-center tw-justify-center tw-w-full tw-py-16 tw-gap-4">
@@ -2620,7 +2914,10 @@ export function QuizMakeTemplate() {
                 등록하기
               </button>
               <button
-                onClick={onCloseExcelModal}
+                onClick={() => {
+                  onCloseExcelModal();
+                  setIsModalExcelOpen(false);
+                }}
                 className="tw-flex tw-items-center tw-justify-center tw-w-[150px] tw-h-11 tw-rounded tw-bg-black tw-text-base tw-text-white tw-text-left"
               >
                 닫기
