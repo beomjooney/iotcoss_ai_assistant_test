@@ -44,6 +44,8 @@ import { useQuizFileDownload, useQuizKnowledgeDownload } from 'src/services/quiz
 import { v4 as uuidv4 } from 'uuid';
 import { useSessionStore } from 'src/store/session';
 import { useGetGroupLabel } from 'src/hooks/useGetGroupLabel';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 
 export const generateUUID = () => {
   return uuidv4();
@@ -100,6 +102,8 @@ export function QuizMakeTemplate() {
   const [isModalExcelOpen, setIsModalExcelOpen] = useState<boolean>(false);
   const [isContentModalOpen, setIsContentModalOpen] = useState<boolean>(false);
   const [isContentModalClick, setIsContentModalClick] = useState<boolean>(false);
+  const [isKnowledgeModalClick, setIsKnowledgeModalClick] = useState<boolean>(false);
+  const [isFileOpen, setIsFileOpen] = useState<boolean>(false);
   const [jobGroup, setJobGroup] = useState([]);
   const [active, setActive] = useState('');
   const [activeQuiz, setActiveQuiz] = useState('');
@@ -150,6 +154,9 @@ export function QuizMakeTemplate() {
   const [quizList, setQuizList] = useState([]);
   const [editingIndex, setEditingIndex] = useState(null);
   const [fileList, setFileList] = useState([]);
+  const [fileListKnowledge, setFileListKnowledge] = useState([]);
+  const [fileNameKnowledge, setFileNameKnowledge] = useState('');
+  const [fileNameCopyKnowledge, setFileNameCopyKnowledge] = useState([]);
   const [fileName, setFileName] = useState('');
   const [fileNameCopy, setFileNameCopy] = useState([]);
   const [key, setKey] = useState('');
@@ -900,8 +907,12 @@ export function QuizMakeTemplate() {
   }
 
   const fileInputRef = useRef(null);
+  const fileInputRefKnowledge = useRef(null);
   const handleButtonClick = () => {
     fileInputRef.current.click();
+  };
+  const handleButtonClickKnowledge = () => {
+    fileInputRefKnowledge.current.click();
   };
 
   const handleFileChange = event => {
@@ -916,6 +927,20 @@ export function QuizMakeTemplate() {
 
     setFileList([file]); // 하나의 파일만 받도록 설정
     setFileNameCopy([file]); // 하나의 파일만 받도록 설정
+  };
+
+  const handleFileChangeKnowledge = event => {
+    const file = event.target.files[0];
+    const allowedExtensions = /(\.pdf|\.pptx)$/i;
+
+    if (!allowedExtensions.exec(file.name)) {
+      alert('허용되지 않는 파일 형식입니다.');
+      event.target.value = ''; // input 초기화
+      return;
+    }
+
+    setFileListKnowledge([file]); // 하나의 파일만 받도록 설정
+    setFileNameCopyKnowledge([file]); // 하나의 파일만 받도록 설정
   };
 
   const onFileDownload = function (key: string, fileName: string) {
@@ -1900,10 +1925,10 @@ export function QuizMakeTemplate() {
         isContentModalClick={false}
         height="60%"
       >
-        <div className="tw-px-20 tw-pt-10">
-          <div className="tw-mb-14">
+        <div className="tw-px-20">
+          <div className="tw-mb-5">
             <div className="tw-flex tw-flex-row tw-items-start tw-justify-between tw-mb-5">
-              <div className=" tw-font-bold tw-text-black tw-flex tw-items-center">지식콘텐츠 일괄등록하기</div>
+              <div className=" tw-font-bold tw-text-black tw-flex tw-items-center">지식콘텐츠(아티클) 일괄등록하기</div>
               {excelSuccessLoading && (
                 <div className="tw-flex tw-items-center tw-justify-center tw-ml-2">
                   <svg width="40" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
@@ -2056,9 +2081,125 @@ export function QuizMakeTemplate() {
               </div>
             </div>
           </div>
-          <div className="tw-mb-14">
+          <div className="tw-mb-5">
+            <div className="tw-justify-between tw-mt-10 tw-mb-5">
+              <div
+                className="tw-font-bold tw-text-black tw-flex tw-items-center tw-gap-2 tw-cursor-pointer"
+                onClick={() => setIsFileOpen(!isFileOpen)}
+              >
+                지식콘텐츠(파일) 일괄 등록 <KeyboardArrowDownIcon />
+              </div>
+            </div>
+            {isFileOpen && (
+              <div className="border tw-p-5 tw-rounded-lg ">
+                <div className="">
+                  <div className="tw-text-sm tw-font-medium tw-text-black tw-pt-5">
+                    파일 업로드<span className="tw-text-blue-500 tw-text-sm tw-ml-1">*</span>
+                  </div>
+                  <div className="tw-flex tw-gap-2 tw-justify-between">
+                    <div className="tw-flex tw-items-center tw-justify-between tw-gap-1 tw-text-center">
+                      <div className="tw-flex tw-items-center tw-justify-between tw-gap-1 tw-text-center">
+                        {!isKnowledgeModalClick ? (
+                          <div>
+                            {fileListKnowledge.length > 0 ? (
+                              <div>
+                                {fileListKnowledge.map((file, index) => (
+                                  <div key={index}>{file.name}</div>
+                                ))}
+                              </div>
+                            ) : (
+                              <div className="tw-text-sm tw-text-gray-500 tw-underline">파일을 추가해주세요. (pdf)</div>
+                            )}
+                          </div>
+                        ) : (
+                          <div>{fileNameCopyKnowledge || '파일정보가 없습니다.'}</div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="tw-flex tw-items-center tw-gap-2 border tw-px-4 tw-py-1.5 tw-rounded">
+                      <AttachFileIcon className=" tw-text-sm tw-text-left tw-text-[#31343d]" />
+                      <button className=" tw-text-sm tw-text-left tw-text-[#31343d]">파일추가</button>
+                      <input
+                        accept=".pdf,.pptx"
+                        type="file"
+                        ref={fileInputRefKnowledge}
+                        style={{ display: 'none' }}
+                        onChange={handleFileChangeKnowledge}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="tw-flex tw-gap-2">
+                    <div className="tw-w-1/2">
+                      <div className="tw-text-sm tw-font-bold tw-py-2">
+                        추천 {groupLabel}
+                        <span className="tw-text-blue-500 tw-ml-1">*</span>
+                      </div>
+                      <select
+                        className="form-select"
+                        onChange={handleUniversityChange}
+                        aria-label="Default select example"
+                        disabled={isContentModalClick}
+                        value={universityCode}
+                      >
+                        <option value="">{groupLabel}을 선택해주세요.</option>
+                        {optionsData?.data?.jobs?.map((university, index) => (
+                          <option key={index} value={university.code}>
+                            {university.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="tw-w-1/2">
+                      <div className="tw-text-sm tw-font-bold tw-py-2">추천 {subGroupLabel}</div>
+                      <FormControl sx={{ width: '100%' }} size="small">
+                        <Select
+                          className="tw-w-full tw-text-black"
+                          size="small"
+                          labelId="demo-multiple-checkbox-label"
+                          id="demo-multiple-checkbox"
+                          multiple
+                          displayEmpty
+                          renderValue={selected => {
+                            if (selected.length === 0) {
+                              return (
+                                <span style={{ color: 'gray' }}>
+                                  추천 {groupLabel}을 먼저 선택하고, {subGroupLabel}을 선택해주세요.
+                                </span>
+                              );
+                            }
+                            return selected.join(', ');
+                          }}
+                          disabled={jobs.length === 0 || isContentModalClick}
+                          value={personName}
+                          onChange={handleChange}
+                          MenuProps={{
+                            disableScrollLock: true,
+                            style: {
+                              zIndex: 9999,
+                            },
+                          }}
+                        >
+                          {jobs.map((job, index) => (
+                            <MenuItem key={index} value={job.name}>
+                              <Checkbox checked={personName.indexOf(job.name) > -1} />
+                              <ListItemText primary={job.name} />
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="tw-mb-5">
             <div className="tw-flex tw-flex-row tw-items-start tw-justify-between tw-mb-5">
-              <div className=" tw-font-bold tw-text-black tw-flex tw-items-center ">퀴즈+지식콘텐츠 일괄등록하기</div>
+              <div className=" tw-font-bold tw-text-black tw-flex tw-items-center ">
+                지식콘텐츠(아티클) + 퀴즈 엑셀 일괄 등록
+              </div>
 
               {quizExcelSuccessLoading && (
                 <div className="tw-flex tw-items-center tw-justify-center tw-ml-2">
@@ -2213,7 +2354,7 @@ export function QuizMakeTemplate() {
           </div>
           <div className="">
             <div className="tw-flex tw-items-start tw-justify-between tw-mb-5">
-              <div className=" tw-font-bold tw-text-black">퀴즈+지식콘텐츠 일괄등록하기(AI생성)</div>
+              <div className=" tw-font-bold tw-text-black">지식콘텐츠(아티클) + 퀴즈(AI생성) 엑셀 일괄 등록</div>
               {quizAIExcelSuccessLoading && (
                 <div className="tw-flex tw-items-center tw-justify-center tw-ml-2">
                   <svg width="40" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
@@ -2364,7 +2505,11 @@ export function QuizMakeTemplate() {
               </div>
             </div>
 
-            <div className="tw-flex tw-items-center tw-justify-center tw-w-full tw-mt-16 tw-gap-4">
+            <div className="tw-flex tw-items-start tw-justify-between tw-my-10">
+              <div className=" tw-font-bold tw-text-black">지식콘텐츠(아티클) + 퀴즈(AI생성) 엑셀 일괄 등록</div>
+            </div>
+
+            <div className="tw-flex tw-items-center tw-justify-center tw-w-full tw-my-16 tw-gap-4">
               <button
                 onClick={handleQuizAdd}
                 className="tw-flex tw-items-center tw-justify-center tw-w-[150px] tw-h-11 tw-rounded tw-bg-blue-500 tw-text-base tw-text-white tw-text-left"
