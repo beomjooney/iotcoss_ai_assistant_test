@@ -340,6 +340,17 @@ export function QuizMakeTemplate() {
     setQuizAIExcelSuccessFlag(false);
     refetchMyQuiz();
     refetchMyQuizContent();
+
+    setFileList([]);
+    setJobLevel([]);
+    setSelected1([]);
+    setSelected2([]);
+    setSelectedSubject('');
+    setSelectedChapter('');
+    setPersonName([]);
+    setUniversityCode('');
+    setJobs([]);
+    setContentSortType('');
   };
 
   //excel 다운로드
@@ -412,6 +423,20 @@ export function QuizMakeTemplate() {
       setQuizAIExcelSuccessLoading(true);
       onQuizAIExcelSave(formData);
     }
+
+    if (fileList.length > 0) {
+      console.log('파일 등록');
+      console.log(fileList);
+      console.log(fileNameCopy);
+      console.log(selectedUniversity);
+      console.log(selectedJob);
+      console.log(jobLevel);
+      console.log(selectedSubject);
+      console.log(selectedChapter);
+      console.log(selected1);
+      console.log(selected2);
+    }
+
     console.log('퀴즈 등록');
   };
 
@@ -2091,19 +2116,19 @@ export function QuizMakeTemplate() {
               </div>
             </div>
             {isFileOpen && (
-              <div className="border tw-p-5 tw-rounded-lg ">
+              <div className="border tw-p-5 tw-rounded-lg">
                 <div className="">
                   <div className="tw-text-sm tw-font-medium tw-text-black tw-pt-5">
                     파일 업로드<span className="tw-text-blue-500 tw-text-sm tw-ml-1">*</span>
                   </div>
-                  <div className="tw-flex tw-gap-2 tw-justify-between">
+                  <div className="tw-flex tw-gap-2 tw-justify-between tw-pb-5">
                     <div className="tw-flex tw-items-center tw-justify-between tw-gap-1 tw-text-center">
                       <div className="tw-flex tw-items-center tw-justify-between tw-gap-1 tw-text-center">
-                        {!isKnowledgeModalClick ? (
+                        {!isContentModalClick ? (
                           <div>
-                            {fileListKnowledge.length > 0 ? (
+                            {fileList.length > 0 ? (
                               <div>
-                                {fileListKnowledge.map((file, index) => (
+                                {fileList.map((file, index) => (
                                   <div key={index}>{file.name}</div>
                                 ))}
                               </div>
@@ -2112,26 +2137,48 @@ export function QuizMakeTemplate() {
                             )}
                           </div>
                         ) : (
-                          <div>{fileNameCopyKnowledge || '파일정보가 없습니다.'}</div>
+                          <div>{fileNameCopy || '파일정보가 없습니다.'}</div>
                         )}
                       </div>
                     </div>
-                    <div className="tw-flex tw-items-center tw-gap-2 border tw-px-4 tw-py-1.5 tw-rounded">
-                      <AttachFileIcon className=" tw-text-sm tw-text-left tw-text-[#31343d]" />
-                      <button className=" tw-text-sm tw-text-left tw-text-[#31343d]">파일추가</button>
+                    <div className="tw-flex tw-items-center tw-gap-2 border tw-px-4 tw-py-2 tw-rounded">
+                      <svg
+                        width={16}
+                        height={16}
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-4 h-4 absolute left-0 top-0.5"
+                        preserveAspectRatio="xMidYMid meet"
+                      >
+                        <g clipPath="url(#clip0_679_9101)">
+                          <path
+                            d="M2.61042 6.86336C2.55955 6.9152 2.49887 6.95638 2.4319 6.98449C2.36494 7.01259 2.29304 7.02707 2.22042 7.02707C2.14779 7.02707 2.0759 7.01259 2.00894 6.98449C1.94197 6.95638 1.88128 6.9152 1.83042 6.86336C1.72689 6.75804 1.66887 6.61625 1.66887 6.46856C1.66887 6.32087 1.72689 6.17909 1.83042 6.07376L6.65522 1.20016C7.74322 0.355364 8.83762 -0.050236 9.92722 0.00496403C11.3 0.075364 12.3688 0.598564 13.276 1.45696C14.2008 2.33216 14.7992 3.58096 14.7992 5.09456C14.7992 6.25616 14.4616 7.27856 13.7488 8.18576L6.94642 15.1938C6.25842 15.7578 5.49362 16.0306 4.67442 15.9978C3.63442 15.9546 2.86082 15.6186 2.28562 15.0498C1.61202 14.385 1.19922 13.5682 1.19922 12.4698C1.19922 11.5962 1.50082 10.7898 2.12322 10.033L8.11042 3.92016C8.59042 3.40816 9.06002 3.10416 9.54002 3.03056C9.86039 2.9801 10.1883 3.00876 10.495 3.11403C10.8018 3.21931 11.0781 3.39801 11.3 3.63456C11.7256 4.08496 11.908 4.64656 11.844 5.28576C11.8 5.72176 11.6216 6.12336 11.2936 6.50816L5.78962 12.1466C5.73909 12.1986 5.6787 12.24 5.61198 12.2685C5.54527 12.2969 5.47355 12.3118 5.40102 12.3123C5.3285 12.3127 5.25661 12.2987 5.18954 12.2711C5.12248 12.2435 5.06159 12.2028 5.01042 12.1514C4.90625 12.0467 4.84737 11.9052 4.84647 11.7575C4.84557 11.6099 4.90273 11.4677 5.00562 11.3618L10.4832 5.75216C10.6432 5.56416 10.7272 5.37456 10.7472 5.17296C10.7792 4.85296 10.7024 4.61696 10.5032 4.40656C10.4026 4.29881 10.2769 4.21759 10.1374 4.17014C9.99779 4.12268 9.84865 4.11046 9.70322 4.13456C9.50882 4.16416 9.23682 4.34096 8.90162 4.69776L2.93922 10.7834C2.50962 11.3074 2.30162 11.8634 2.30162 12.4706C2.30162 13.2338 2.57762 13.7802 3.05522 14.2514C3.43522 14.6274 3.95122 14.8514 4.71922 14.8834C5.26322 14.905 5.76722 14.725 6.20562 14.3698L12.9232 7.44976C13.4392 6.78816 13.6968 6.00976 13.6968 5.09536C13.6968 3.90976 13.2352 2.94816 12.5224 2.27296C11.7944 1.58336 10.9624 1.17696 9.87202 1.12096C9.06562 1.07936 8.22002 1.39296 7.37842 2.03776L2.61042 6.86336Z"
+                            fill="#31343D"
+                          />
+                        </g>
+                        <defs>
+                          <clipPath id="clip0_679_9101">
+                            <rect width={16} height={16} fill="white" />
+                          </clipPath>
+                        </defs>
+                      </svg>
+                      <button className=" tw-text-sm tw-text-left tw-text-[#31343d]" onClick={handleButtonClick}>
+                        파일추가
+                      </button>
                       <input
                         accept=".pdf,.pptx"
                         type="file"
-                        ref={fileInputRefKnowledge}
+                        ref={fileInputRef}
                         style={{ display: 'none' }}
-                        onChange={handleFileChangeKnowledge}
+                        onChange={handleFileChange}
                       />
                     </div>
                   </div>
 
                   <div className="tw-flex tw-gap-2">
                     <div className="tw-w-1/2">
-                      <div className="tw-text-sm tw-font-bold tw-py-2">
+                      <div className="tw-text-sm tw-font-medium tw-text-black tw-py-2">
                         추천 {groupLabel}
                         <span className="tw-text-blue-500 tw-ml-1">*</span>
                       </div>
@@ -2151,7 +2198,7 @@ export function QuizMakeTemplate() {
                       </select>
                     </div>
                     <div className="tw-w-1/2">
-                      <div className="tw-text-sm tw-font-bold tw-py-2">추천 {subGroupLabel}</div>
+                      <div className="tw-text-sm tw-font-medium tw-text-black tw-py-2">추천 {subGroupLabel}</div>
                       <FormControl sx={{ width: '100%' }} size="small">
                         <Select
                           className="tw-w-full tw-text-black"
@@ -2190,6 +2237,62 @@ export function QuizMakeTemplate() {
                       </FormControl>
                     </div>
                   </div>
+                  <div className="tw-text-sm tw-font-medium tw-text-black tw-pt-5 tw-pb-2">추천 학년</div>
+                  {optionsData?.data?.jobLevels?.map(item => (
+                    <Toggle
+                      key={item.code}
+                      label={item.name}
+                      name={item.name}
+                      disabled={isContentModalClick}
+                      value={item.code}
+                      variant="small"
+                      // checked={activeQuiz === item.code}
+                      checked={jobLevel.indexOf(item.code) >= 0}
+                      isActive
+                      type="tabButton"
+                      onChange={() => {
+                        const index = jobLevel.indexOf(item.code);
+                        setJobLevel(prevState => newCheckItem(item.code, index, prevState));
+                      }}
+                      className={cx('tw-mr-3 !tw-w-[85px]')}
+                    />
+                  ))}
+                  <div className="tw-text-sm tw-font-medium tw-text-black tw-pt-5 tw-pb-3">학습 주제</div>
+                  <TextField
+                    required
+                    id="username"
+                    name="username"
+                    variant="outlined"
+                    disabled={isContentModalClick}
+                    type="search"
+                    value={selectedSubject}
+                    size="small"
+                    onChange={handleInputSubjectChange}
+                    fullWidth
+                    sx={{
+                      '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
+                    }}
+                  />
+                  <div className="tw-text-sm tw-font-medium tw-text-black tw-pt-5 tw-pb-3">학습 챕터</div>
+                  <TextField
+                    required
+                    id="username"
+                    name="username"
+                    value={selectedChapter}
+                    disabled={isContentModalClick}
+                    onChange={handleInputChapterChange}
+                    variant="outlined"
+                    type="search"
+                    size="small"
+                    fullWidth
+                    sx={{
+                      '& label': { fontSize: 15, color: '#919191', fontWeight: 'light' },
+                    }}
+                  />
+                  <div className="tw-text-sm tw-font-medium tw-text-black tw-pt-5 tw-pb-2">학습 키워드</div>
+                  <Tag value={selected1} onChange={setSelected1} placeHolder="학습 키워드 입력 후 엔터를 쳐주세요." />
+                  <div className="tw-text-sm tw-font-medium tw-text-black tw-pt-5 tw-pb-2">스킬</div>
+                  <Tag value={selected2} onChange={setSelected2} placeHolder="스킬 입력 후 엔터를 쳐주세요." />
                 </div>
               </div>
             )}
@@ -2509,7 +2612,7 @@ export function QuizMakeTemplate() {
               <div className=" tw-font-bold tw-text-black">지식콘텐츠(아티클) + 퀴즈(AI생성) 엑셀 일괄 등록</div>
             </div>
 
-            <div className="tw-flex tw-items-center tw-justify-center tw-w-full tw-my-16 tw-gap-4">
+            <div className="tw-flex tw-items-center tw-justify-center tw-w-full tw-py-16 tw-gap-4">
               <button
                 onClick={handleQuizAdd}
                 className="tw-flex tw-items-center tw-justify-center tw-w-[150px] tw-h-11 tw-rounded tw-bg-blue-500 tw-text-base tw-text-white tw-text-left"
