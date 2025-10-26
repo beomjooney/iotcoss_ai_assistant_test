@@ -29,6 +29,8 @@ import {
   saveQuizAiExcel,
   getContent,
   quizClubEvaluation,
+  saveContentFile,
+  saveContentQuizAiExcel,
 } from './quiz.api';
 import router from 'next/router';
 
@@ -60,7 +62,7 @@ export const useQuizClubEvaluation = (): UseMutationResult => {
       }
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('REPLY').all),
-    onSuccess: async data => {},
+    onSuccess: async data => { },
   });
 };
 
@@ -137,6 +139,8 @@ export const useQuizAiExcelSave = (): UseMutationResult => {
     },
   });
 };
+
+//지식콘텐츠 일괄 등록
 export const useContentExcelSave = (): UseMutationResult => {
   const queryClient = useQueryClient();
   return useMutation<any, any, any>(requestBody => saveExcel(requestBody), {
@@ -149,6 +153,46 @@ export const useContentExcelSave = (): UseMutationResult => {
       const { responseCode, message } = data.data;
       if (responseCode === '0000') {
         // alert('지식콘텐츠가 등록되었습니다.');
+      } else {
+        alert(`error : [${responseCode}] ${message}`);
+      }
+    },
+  });
+};
+
+//지식콘텐츠(파일) 일괄 등록
+export const useContentFileSave = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => saveContentFile(requestBody), {
+    onError: (error, variables, context) => {
+      const { responseCode, message } = error;
+      alert(`[${responseCode}] 지식콘텐츠(파일) 일괄등록하기 : ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CONTENT_FILE').all),
+    onSuccess: async data => {
+      const { responseCode, message } = data.data;
+      if (responseCode === '0000') {
+        // alert('지식콘텐츠(파일) 등록되었습니다.');
+      } else {
+        alert(`error : [${responseCode}] ${message}`);
+      }
+    },
+  });
+};
+
+//지식콘텐츠(파일) + 퀴즈(AI생성) 엑셀 일괄 
+export const useContentQuizAiExcelSave = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => saveContentQuizAiExcel(requestBody), {
+    onError: (error, variables, context) => {
+      const { responseCode, message } = error;
+      alert(`[${responseCode}] 지식콘텐츠(파일) 일괄등록하기 : ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CONTENT_QUIZ_AI_EXCEL').all),
+    onSuccess: async data => {
+      const { responseCode, message } = data.data;
+      if (responseCode === '0000') {
+        // alert('지식콘텐츠(파일) 등록되었습니다.');
       } else {
         alert(`error : [${responseCode}] ${message}`);
       }

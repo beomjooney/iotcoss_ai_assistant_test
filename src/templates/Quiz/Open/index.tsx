@@ -2530,7 +2530,7 @@ export function QuizOpenTemplate() {
                 </div>
 
                 <div className="tw-h-24 tw-flex tw-justify-center tw-items-center  tw-relative tw-overflow-hidden tw-gap-8">
-                  {/* <div className="tw-flex-1 tw-flex tw-justify-center tw-items-center  tw-h-20 tw-gap-2 border tw-rounded-lg">
+                  <div className="tw-flex-1 tw-flex tw-justify-center tw-items-center  tw-h-20 tw-gap-2 border tw-rounded-lg">
                     <svg
                       width={24}
                       height={24}
@@ -2562,7 +2562,7 @@ export function QuizOpenTemplate() {
                     >
                       지식콘텐츠기반 퀴즈(AI생성) 일괄 등록
                     </button>
-                  </div> */}
+                  </div>
                   <div className="tw-flex-1 tw-flex tw-justify-center tw-items-center tw-gap-2  tw-h-20 border tw-rounded-lg">
                     <svg
                       width={24}

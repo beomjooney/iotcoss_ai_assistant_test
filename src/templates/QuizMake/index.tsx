@@ -16,6 +16,8 @@ import {
   useQuizExcelSave,
   useQuizAiExcelSave,
   useContentExcelSave,
+  useContentFileSave,
+  useContentQuizAiExcelSave,
 } from 'src/services/quiz/quiz.mutations';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
 import KnowledgeComponent from 'src/stories/components/KnowledgeComponent';
@@ -295,6 +297,13 @@ export function QuizMakeTemplate() {
   const { mutate: onQuizExcelSave, isSuccess: quizExcelSuccess, isError: quizExcelError } = useQuizExcelSave();
   const { mutate: onQuizAIExcelSave, isSuccess: quizAIExcelSuccess, isError: quizAIExcelError } = useQuizAiExcelSave();
 
+  //지식콘텐츠(파일) 일괄 등록 오류 처리
+  const { mutate: onContentFileSave, isSuccess: contentFileSuccess, isError: contentFileError } = useContentFileSave();
+
+
+  // 지식콘텐츠(파일) + 퀴즈(AI생성) 엑셀 일괄 
+  const { mutate: onContentQuizAIExcelSave, isSuccess: contentQuizAIExcelSuccess, isError: contentQuizAIExcelError } = useContentQuizAiExcelSave();
+
   useEffect(() => {
     if (excelError) {
       setExcelSuccessLoading(false);
@@ -443,7 +452,33 @@ export function QuizMakeTemplate() {
       console.log(selected2);
     }
 
-    console.log('퀴즈 등록');
+
+
+    if (isAIExcelOpen) {
+      console.log('지식콘텐츠(파일) + 퀴즈(AI생성) 엑셀 일괄');
+
+      // onContentFileSave(formData);
+
+    } else if (isFileOpen) {
+      console.log('지식콘텐츠(파일) 일괄 등록');
+      // onContentQuizAIExcelSave(formData);
+      const formData = new FormData();
+      fileListKnowledge.forEach((file, index) => {
+        formData.append('contentFiles', file);
+      });
+      formData.append('jobGroup', selectedUniversity);
+      formData.append('job', selectedJob.join(','));
+      formData.append('jobLevels', jobLevel.join(','));
+      formData.append('studySubject', selectedSubject);
+      formData.append('studyChapter', selectedChapter);
+      formData.append('studyKeywords', selected1.join(','));
+      formData.append('skills', selected2.join(','));
+      console.log(formData);
+
+      formData.forEach((value, key) => {
+        console.log(key, value);
+      });
+    }
   };
 
   const handleExcelDownload = (type: string) => {
@@ -1034,9 +1069,8 @@ export function QuizMakeTemplate() {
               <div className="tw-flex tw-justify-start tw-items-start tw-gap-10">
                 <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-h-11 tw-relative tw-gap-2.5">
                   <p
-                    className={`tw-flex-grow-0 tw-flex-shrink-0 tw-text-lg tw-text-left tw-cursor-pointer ${
-                      activeTab === '퀴즈목록' ? 'tw-font-bold tw-text-black' : 'tw-text-[#6a7380]'
-                    } tw-hover:tw-font-bold tw-hover:tw-text-black`}
+                    className={`tw-flex-grow-0 tw-flex-shrink-0 tw-text-lg tw-text-left tw-cursor-pointer ${activeTab === '퀴즈목록' ? 'tw-font-bold tw-text-black' : 'tw-text-[#6a7380]'
+                      } tw-hover:tw-font-bold tw-hover:tw-text-black`}
                     onClick={() => handleTabClick('퀴즈목록')}
                   >
                     퀴즈목록
@@ -1044,9 +1078,8 @@ export function QuizMakeTemplate() {
                 </div>
                 <div className="tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-h-11 tw-relative tw-gap-2.5">
                   <p
-                    className={`tw-flex-grow-0 tw-flex-shrink-0 tw-text-lg tw-text-left tw-cursor-pointer ${
-                      activeTab === '지식콘텐츠' ? 'tw-font-bold tw-text-black' : 'tw-text-[#6a7380]'
-                    } tw-hover:tw-font-bold tw-hover:tw-text-black`}
+                    className={`tw-flex-grow-0 tw-flex-shrink-0 tw-text-lg tw-text-left tw-cursor-pointer ${activeTab === '지식콘텐츠' ? 'tw-font-bold tw-text-black' : 'tw-text-[#6a7380]'
+                      } tw-hover:tw-font-bold tw-hover:tw-text-black`}
                     onClick={() => handleTabClick('지식콘텐츠')}
                   >
                     지식콘텐츠
@@ -1054,9 +1087,8 @@ export function QuizMakeTemplate() {
                 </div>
                 <div className="tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-h-11 tw-relative tw-gap-2.5">
                   <p
-                    className={`tw-flex-grow-0 tw-flex-shrink-0 tw-text-lg tw-text-left tw-cursor-pointer ${
-                      activeTab === '휴지통' ? 'tw-font-bold tw-text-black' : 'tw-text-[#6a7380]'
-                    } tw-hover:tw-font-bold tw-hover:tw-text-black`}
+                    className={`tw-flex-grow-0 tw-flex-shrink-0 tw-text-lg tw-text-left tw-cursor-pointer ${activeTab === '휴지통' ? 'tw-font-bold tw-text-black' : 'tw-text-[#6a7380]'
+                      } tw-hover:tw-font-bold tw-hover:tw-text-black`}
                     onClick={() => handleTabClick('휴지통')}
                   >
                     휴지통
@@ -2082,9 +2114,8 @@ export function QuizMakeTemplate() {
               </label>
 
               <div
-                className={`tw-flex tw-items-center tw-justify-start tw-gap-2 tw-w-[200px] tw-h-10 tw-rounded tw-bg-white tw-text-sm tw-text-left ${
-                  knowledgeFileName ? 'tw-text-blue-500 tw-underline' : 'tw-text-gray-500 '
-                }`}
+                className={`tw-flex tw-items-center tw-justify-start tw-gap-2 tw-w-[200px] tw-h-10 tw-rounded tw-bg-white tw-text-sm tw-text-left ${knowledgeFileName ? 'tw-text-blue-500 tw-underline' : 'tw-text-gray-500 '
+                  }`}
               >
                 {knowledgeFileName || '선택한 파일 없음'}
                 {knowledgeFileName && (
@@ -2167,7 +2198,7 @@ export function QuizMakeTemplate() {
                         )}
                       </div>
                     </div>
-                    <div className="tw-flex tw-items-center tw-gap-2 border tw-px-4 tw-py-2 tw-rounded tw-h-[35px]">
+                    <div onClick={handleButtonClickKnowledge} className="tw-cursor-pointer tw-flex tw-items-center tw-gap-2 border tw-px-4 tw-py-2 tw-rounded tw-h-[35px]">
                       <svg
                         width={16}
                         height={16}
@@ -2191,13 +2222,13 @@ export function QuizMakeTemplate() {
                       </svg>
                       <button
                         className=" tw-text-sm tw-text-left tw-text-[#31343d] "
-                        onClick={handleButtonClickKnowledge}
                       >
                         파일추가
                       </button>
                       <input
                         accept=".pdf,.pptx"
                         type="file"
+                        multiple
                         ref={fileInputRefKnowledge}
                         style={{ display: 'none' }}
                         onChange={handleFileChangeKnowledge}
@@ -2450,9 +2481,8 @@ export function QuizMakeTemplate() {
                 />
               </label>
               <div
-                className={`tw-flex tw-items-center tw-justify-start tw-gap-2 tw-w-[200px] tw-h-10 tw-rounded tw-bg-white tw-text-sm tw-text-left ${
-                  knowledgeQuizFileName ? 'tw-text-blue-500 tw-underline' : 'tw-text-gray-500 '
-                }`}
+                className={`tw-flex tw-items-center tw-justify-start tw-gap-2 tw-w-[200px] tw-h-10 tw-rounded tw-bg-white tw-text-sm tw-text-left ${knowledgeQuizFileName ? 'tw-text-blue-500 tw-underline' : 'tw-text-gray-500 '
+                  }`}
               >
                 {knowledgeQuizFileName || '선택한 파일 없음'}
                 {knowledgeQuizFileName && (
@@ -2603,9 +2633,8 @@ export function QuizMakeTemplate() {
                 />
               </label>
               <div
-                className={`tw-flex tw-items-center tw-justify-start tw-gap-2 tw-w-[200px] tw-h-10 tw-rounded tw-bg-white tw-text-sm tw-text-left ${
-                  knowledgeQuizAIFileName ? 'tw-text-blue-500 tw-underline' : 'tw-text-gray-500 '
-                }`}
+                className={`tw-flex tw-items-center tw-justify-start tw-gap-2 tw-w-[200px] tw-h-10 tw-rounded tw-bg-white tw-text-sm tw-text-left ${knowledgeQuizAIFileName ? 'tw-text-blue-500 tw-underline' : 'tw-text-gray-500 '
+                  }`}
               >
                 {knowledgeQuizAIFileName || '선택한 파일 없음'}
                 {knowledgeQuizAIFileName && (
@@ -2691,7 +2720,7 @@ export function QuizMakeTemplate() {
                           )}
                         </div>
                       </div>
-                      <div className="tw-flex tw-items-center tw-gap-2 border tw-px-4 tw-py-2 tw-rounded tw-h-[35px]">
+                      <div onClick={handleButtonClickKnowledge} className="tw-cursor-pointer tw-flex tw-items-center tw-gap-2 border tw-px-4 tw-py-2 tw-rounded tw-h-[35px]">
                         <svg
                           width={16}
                           height={16}
@@ -2715,7 +2744,6 @@ export function QuizMakeTemplate() {
                         </svg>
                         <button
                           className=" tw-text-sm tw-text-left tw-text-[#31343d]"
-                          onClick={handleButtonClickKnowledge}
                         >
                           파일추가
                         </button>

@@ -24,6 +24,8 @@ export async function getCamenities(args: CamenityProps) {
 }
 export const savePost = async body => await axiosGeneralAPI().post(`/api/v1/quizzes`, body);
 export const saveExcel = async body => await axiosGeneralAPI().post(`/api/v1/quizzes/upload/content`, body);
+export const saveContentFile = async body => await axiosGeneralAPI().post(`/api/v1/contents/files`, body);
+export const saveContentQuizAiExcel = async body => await axiosGeneralAPI().post(`/api/v1/quizzes/files`, body);
 export const saveQuizExcel = async body => await axiosGeneralAPI().post(`/api/v1/quizzes/upload/quiz`, body);
 export const saveQuizAiExcel = async body => await axiosGeneralAPI().post(`/api/v1/quizzes/upload/quiz-ai`, body);
 

@@ -863,22 +863,22 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
       }
 
       // 중복된 날짜 검사
-      for (let prev of previousSchedules) {
-        if (
-          nextDay3.isBetween(prev.startDate, prev.endDate, null, '[]') ||
-          nextDay4.isBetween(prev.startDate, prev.endDate, null, '[]') ||
-          prev.startDate.isBetween(nextDay3, nextDay4, null, '[]') ||
-          prev.endDate.isBetween(nextDay3, nextDay4, null, '[]')
-        ) {
-          alert(
-            `${i + 1}번째 강의의 시작일(${nextDay3.format('YYYY-MM-DD')})과 종료일(${nextDay4.format(
-              'YYYY-MM-DD',
-            )})이 이전 강의날짜와 겹칩니다.`,
-          );
-          setIsProcessing(false);
-          return;
-        }
-      }
+      // for (let prev of previousSchedules) {
+      //   if (
+      //     nextDay3.isBetween(prev.startDate, prev.endDate, null, '[]') ||
+      //     nextDay4.isBetween(prev.startDate, prev.endDate, null, '[]') ||
+      //     prev.startDate.isBetween(nextDay3, nextDay4, null, '[]') ||
+      //     prev.endDate.isBetween(nextDay3, nextDay4, null, '[]')
+      //   ) {
+      //     alert(
+      //       `${i + 1}번째 강의의 시작일(${nextDay3.format('YYYY-MM-DD')})과 종료일(${nextDay4.format(
+      //         'YYYY-MM-DD',
+      //       )})이 이전 강의날짜와 겹칩니다.`,
+      //     );
+      //     setIsProcessing(false);
+      //     return;
+      //   }
+      // }
 
       // 이전 강의 리스트에 현재 강의 추가
       previousSchedules.push({ startDate: nextDay3, endDate: nextDay4 });
@@ -1395,11 +1395,11 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
               ...item,
               files: item.files
                 ? item.files.map(
-                    file =>
-                      file.serialNumber === indexs
-                        ? { ...file, externalSharingLink: updated } // 해당 파일만 업데이트
-                        : file, // 다른 파일은 그대로 유지
-                  )
+                  file =>
+                    file.serialNumber === indexs
+                      ? { ...file, externalSharingLink: updated } // 해당 파일만 업데이트
+                      : file, // 다른 파일은 그대로 유지
+                )
                 : [], // files 배열이 없는 경우 빈 배열 유지
             };
           }
@@ -1770,39 +1770,33 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
         <div className=" tw-h-12 border-left tw-relative tw-flex tw-items-center tw-mt-14 border-bottom">
           {/* Tab 1: My Quiz */}
           <div
-            className={`tw-w-[164px] tw-h-12 tw-relative tw-cursor-pointer ${
-              activeTab === 'myQuiz' ? 'border-b-0' : ''
-            }`}
+            className={`tw-w-[164px] tw-h-12 tw-relative tw-cursor-pointer ${activeTab === 'myQuiz' ? 'border-b-0' : ''
+              }`}
             onClick={() => handleTabClick('myQuiz')}
           >
             <div
-              className={`tw-w-[164px] border-left tw-h-12 tw-absolute tw-left-[-1px] tw-top-[-1px] tw-rounded-tl-lg tw-rounded-tr-lg ${
-                activeTab === 'myQuiz' ? 'tw-bg-white' : 'tw-bg-[#f6f7fb]'
-              } border-top border-right`}
+              className={`tw-w-[164px] border-left tw-h-12 tw-absolute tw-left-[-1px] tw-top-[-1px] tw-rounded-tl-lg tw-rounded-tr-lg ${activeTab === 'myQuiz' ? 'tw-bg-white' : 'tw-bg-[#f6f7fb]'
+                } border-top border-right`}
             />
             <p
-              className={`tw-absolute tw-top-3 tw-left-0 tw-right-0 tw-text-base tw-text-center ${
-                activeTab === 'myQuiz' ? 'tw-font-bold tw-text-black' : 'tw-text-[#9ca5b2]'
-              }`}
+              className={`tw-absolute tw-top-3 tw-left-0 tw-right-0 tw-text-base tw-text-center ${activeTab === 'myQuiz' ? 'tw-font-bold tw-text-black' : 'tw-text-[#9ca5b2]'
+                }`}
             >
               학생목록
             </p>
           </div>
           <div
-            className={`tw-w-[164px] tw-h-12 tw-relative  tw-ml-2.5 tw-cursor-pointer ${
-              activeTab === 'member' ? 'border-b-0' : ''
-            }`}
+            className={`tw-w-[164px] tw-h-12 tw-relative  tw-ml-2.5 tw-cursor-pointer ${activeTab === 'member' ? 'border-b-0' : ''
+              }`}
             onClick={() => handleTabClick('member')}
           >
             <div
-              className={`tw-w-[164px] border-left tw-h-12 tw-absolute tw-left-[-1px] tw-top-[-1px] tw-rounded-tl-lg tw-rounded-tr-lg ${
-                activeTab === 'member' ? 'tw-bg-white' : 'tw-bg-[#f6f7fb]'
-              } border-top border-right`}
+              className={`tw-w-[164px] border-left tw-h-12 tw-absolute tw-left-[-1px] tw-top-[-1px] tw-rounded-tl-lg tw-rounded-tr-lg ${activeTab === 'member' ? 'tw-bg-white' : 'tw-bg-[#f6f7fb]'
+                } border-top border-right`}
             />
             <p
-              className={`tw-absolute tw-top-3 tw-left-0 tw-right-0 tw-text-base tw-text-center ${
-                activeTab === 'member' ? 'tw-font-bold tw-text-black' : 'tw-text-[#9ca5b2]'
-              }`}
+              className={`tw-absolute tw-top-3 tw-left-0 tw-right-0 tw-text-base tw-text-center ${activeTab === 'member' ? 'tw-font-bold tw-text-black' : 'tw-text-[#9ca5b2]'
+                }`}
             >
               교수자관리
             </p>
@@ -1810,58 +1804,49 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
           {/* Divider Line */}
           {/* Tab 2: Community */}
           <div
-            className={`tw-w-[164px] tw-h-12 tw-relative tw-ml-2.5 tw-cursor-pointer ${
-              activeTab === 'community' ? 'border-b-0' : ''
-            }`}
+            className={`tw-w-[164px] tw-h-12 tw-relative tw-ml-2.5 tw-cursor-pointer ${activeTab === 'community' ? 'border-b-0' : ''
+              }`}
             onClick={() => handleTabClick('community')}
           >
             <div
-              className={`tw-w-[164px] tw-h-12 tw-absolute tw-left-[-1px] tw-top-[-1px] tw-rounded-tl-lg tw-rounded-tr-lg ${
-                activeTab === 'community' ? 'tw-bg-white' : 'tw-bg-[#f6f7fb]'
-              } border-right border-top border-left`}
+              className={`tw-w-[164px] tw-h-12 tw-absolute tw-left-[-1px] tw-top-[-1px] tw-rounded-tl-lg tw-rounded-tr-lg ${activeTab === 'community' ? 'tw-bg-white' : 'tw-bg-[#f6f7fb]'
+                } border-right border-top border-left`}
             />
             <p
-              className={`tw-absolute tw-top-3 tw-left-0 tw-right-0 tw-text-base tw-text-center ${
-                activeTab === 'community' ? 'tw-font-bold tw-text-black' : 'tw-text-[#9ca5b2]'
-              }`}
+              className={`tw-absolute tw-top-3 tw-left-0 tw-right-0 tw-text-base tw-text-center ${activeTab === 'community' ? 'tw-font-bold tw-text-black' : 'tw-text-[#9ca5b2]'
+                }`}
             >
               강의정보관리
             </p>
           </div>
           <div
-            className={`tw-w-[164px] tw-h-12 tw-relative tw-ml-2.5 tw-cursor-pointer ${
-              activeTab === 'lecture' ? 'border-b-0' : ''
-            }`}
+            className={`tw-w-[164px] tw-h-12 tw-relative tw-ml-2.5 tw-cursor-pointer ${activeTab === 'lecture' ? 'border-b-0' : ''
+              }`}
             onClick={() => handleTabClick('lecture')}
           >
             <div
-              className={`tw-w-[164px] tw-h-12 tw-absolute tw-left-[-1px] tw-top-[-1px] tw-rounded-tl-lg tw-rounded-tr-lg ${
-                activeTab === 'lecture' ? 'tw-bg-white' : 'tw-bg-[#f6f7fb]'
-              } border-right border-top border-left`}
+              className={`tw-w-[164px] tw-h-12 tw-absolute tw-left-[-1px] tw-top-[-1px] tw-rounded-tl-lg tw-rounded-tr-lg ${activeTab === 'lecture' ? 'tw-bg-white' : 'tw-bg-[#f6f7fb]'
+                } border-right border-top border-left`}
             />
             <p
-              className={`tw-absolute tw-top-3 tw-left-0 tw-right-0 tw-text-base tw-text-center ${
-                activeTab === 'lecture' ? 'tw-font-bold tw-text-black' : 'tw-text-[#9ca5b2]'
-              }`}
+              className={`tw-absolute tw-top-3 tw-left-0 tw-right-0 tw-text-base tw-text-center ${activeTab === 'lecture' ? 'tw-font-bold tw-text-black' : 'tw-text-[#9ca5b2]'
+                }`}
             >
               커리큘럼관리
             </p>
           </div>
           <div
-            className={`tw-w-[164px] tw-h-12 tw-relative tw-ml-2.5 tw-cursor-pointer ${
-              activeTab === 'ai' ? 'border-b-0' : ''
-            }`}
+            className={`tw-w-[164px] tw-h-12 tw-relative tw-ml-2.5 tw-cursor-pointer ${activeTab === 'ai' ? 'border-b-0' : ''
+              }`}
             onClick={() => handleTabClick('ai')}
           >
             <div
-              className={`tw-w-[164px] tw-h-12 tw-absolute tw-left-[-1px] tw-top-[-1px] tw-rounded-tl-lg tw-rounded-tr-lg ${
-                activeTab === 'ai' ? 'tw-bg-white' : 'tw-bg-[#f6f7fb]'
-              } border-right border-top border-left`}
+              className={`tw-w-[164px] tw-h-12 tw-absolute tw-left-[-1px] tw-top-[-1px] tw-rounded-tl-lg tw-rounded-tr-lg ${activeTab === 'ai' ? 'tw-bg-white' : 'tw-bg-[#f6f7fb]'
+                } border-right border-top border-left`}
             />
             <p
-              className={`tw-absolute tw-top-3 tw-left-0 tw-right-0 tw-text-base tw-text-center ${
-                activeTab === 'ai' ? 'tw-font-bold tw-text-black' : 'tw-text-[#9ca5b2]'
-              }`}
+              className={`tw-absolute tw-top-3 tw-left-0 tw-right-0 tw-text-base tw-text-center ${activeTab === 'ai' ? 'tw-font-bold tw-text-black' : 'tw-text-[#9ca5b2]'
+                }`}
             >
               AI조교관리
             </p>
@@ -2778,9 +2763,8 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                       key={index}
                       src={image}
                       alt={`Image ${index + 1}`}
-                      className={`image-item ${
-                        selectedImage === image ? 'selected' : ''
-                      } tw-object-cover tw-w-[100px] tw-rounded-lg tw-h-[100px] md:tw-h-[100px] md:tw-w-[100px] md:tw-rounded-lg`}
+                      className={`image-item ${selectedImage === image ? 'selected' : ''
+                        } tw-object-cover tw-w-[100px] tw-rounded-lg tw-h-[100px] md:tw-h-[100px] md:tw-w-[100px] md:tw-rounded-lg`}
                       style={{ opacity: selectedImage !== image ? 0.2 : 1 }}
                       onClick={() => handleImageClick(image, 'card', false)}
                     />
@@ -2838,9 +2822,8 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                       key={index}
                       src={image}
                       alt={`Image ${index + 1}`}
-                      className={`image-item ${
-                        selectedImageBanner === image ? 'selected' : ''
-                      } tw-object-cover tw-w-[260px] tw-rounded-lg tw-h-[100px] md:tw-h-[100px] md:tw-w-[200px] md:tw-rounded-lg`}
+                      className={`image-item ${selectedImageBanner === image ? 'selected' : ''
+                        } tw-object-cover tw-w-[260px] tw-rounded-lg tw-h-[100px] md:tw-h-[100px] md:tw-w-[200px] md:tw-rounded-lg`}
                       style={{ opacity: selectedImageBanner !== image ? 0.2 : 1 }}
                       onClick={() => handleImageClick(image, 'banner', false)}
                     />
@@ -3510,14 +3493,14 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                                   {isProcessing
                                     ? '등록 중'
                                     : fileEntry.fileUploadStatus === '0000'
-                                    ? '등록 전'
-                                    : fileEntry.fileUploadStatus === '1000'
-                                    ? '등록 중'
-                                    : fileEntry.fileUploadStatus === '2000'
-                                    ? '등록 완료'
-                                    : fileEntry.fileUploadStatus === '3000'
-                                    ? '등록 실패'
-                                    : '등록 전'}
+                                      ? '등록 전'
+                                      : fileEntry.fileUploadStatus === '1000'
+                                        ? '등록 중'
+                                        : fileEntry.fileUploadStatus === '2000'
+                                          ? '등록 완료'
+                                          : fileEntry.fileUploadStatus === '3000'
+                                            ? '등록 실패'
+                                            : '등록 전'}
                                 </div>
                               </div>
                             ))}
@@ -3565,14 +3548,14 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                                   {isProcessing
                                     ? '등록 중'
                                     : file.fileUploadStatus === '0000'
-                                    ? '등록 전'
-                                    : file.fileUploadStatus === '1000'
-                                    ? '등록 중'
-                                    : file.fileUploadStatus === '2000'
-                                    ? '등록 완료'
-                                    : file.fileUploadStatus === '3000'
-                                    ? '등록 실패'
-                                    : '등록 전'}
+                                      ? '등록 전'
+                                      : file.fileUploadStatus === '1000'
+                                        ? '등록 중'
+                                        : file.fileUploadStatus === '2000'
+                                          ? '등록 완료'
+                                          : file.fileUploadStatus === '3000'
+                                            ? '등록 실패'
+                                            : '등록 전'}
                                 </div>
                               </div>
                             ))}
