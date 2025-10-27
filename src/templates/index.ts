@@ -75,6 +75,9 @@ export * from './MyStudents/Detail/index';
 /** 기업회원 대시보드 */
 export * from './Lecture/Company/index';
 
+/** 기업회원 정보공유관리 */
+export * from './Account/My/CompanyEdit/index';
+
 //system admin
 export * from './System/Admin/index';
 export * from './System/Admin/Club/index';
