@@ -31,6 +31,7 @@ import {
   quizClubEvaluation,
   saveContentFile,
   saveContentQuizAiExcel,
+  saveContentQuizContent,
 } from './quiz.api';
 import router from 'next/router';
 
@@ -62,7 +63,7 @@ export const useQuizClubEvaluation = (): UseMutationResult => {
       }
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('REPLY').all),
-    onSuccess: async data => { },
+    onSuccess: async data => {},
   });
 };
 
@@ -180,7 +181,7 @@ export const useContentFileSave = (): UseMutationResult => {
   });
 };
 
-//지식콘텐츠(파일) + 퀴즈(AI생성) 엑셀 일괄 
+//지식콘텐츠(파일) + 퀴즈(AI생성) 엑셀 일괄
 export const useContentQuizAiExcelSave = (): UseMutationResult => {
   const queryClient = useQueryClient();
   return useMutation<any, any, any>(requestBody => saveContentQuizAiExcel(requestBody), {
@@ -407,6 +408,20 @@ export const useClubTempSave = (): UseMutationResult => {
       }
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('TEMP').all),
+    onSuccess: async data => {
+      alert('저장 되었습니다.');
+    },
+  });
+};
+
+export const useClubQuizContentSave = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => saveContentQuizContent(requestBody), {
+    onError: (error, variables, context) => {
+      const { responseCode, message } = error;
+      alert(`mutation error : [${responseCode}] ${message}`);
+    },
+    onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CONTENT_QUIZ_CONTENT').all),
     onSuccess: async data => {
       alert('저장 되었습니다.');
     },

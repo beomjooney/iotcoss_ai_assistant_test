@@ -20,7 +20,7 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 import { useQuizList, useGetSchedule, useGetTemp, useMyQuizContents } from 'src/services/jobs/jobs.queries';
 import Checkbox from '@mui/material/Checkbox';
-import { useClubQuizSave, useClubTempSave } from 'src/services/quiz/quiz.mutations';
+import { useClubQuizContentSave, useClubQuizSave, useClubTempSave } from 'src/services/quiz/quiz.mutations';
 import { useUploadImage } from 'src/services/image/image.mutations';
 import { makeStyles } from '@mui/styles';
 import { Desktop, Mobile } from 'src/hooks/mediaQuery';
@@ -146,6 +146,7 @@ export function QuizOpenTemplate() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isModalOpenKnowledgeContent, setIsModalOpenKnowledgeContent] = useState<boolean>(false);
   const [selectedQuizIds, setSelectedQuizIds] = useState([]);
+  const [selectedContentIds, setSelectedContentIds] = useState([]);
   const [contentJobType, setContentJobType] = useState<any[]>([]);
   const [isModalContentOpen, setIsModalContentOpen] = useState<boolean>(false);
 
@@ -303,6 +304,24 @@ export function QuizOpenTemplate() {
 
   //temp 등록
   const { mutate: onTempSave, isSuccess: tempSucces } = useClubTempSave();
+  const {
+    mutate: onClubQuizSave,
+    isError,
+    isSuccess: clubSuccess,
+    data: clubDatas,
+    isError: clubError,
+  } = useClubQuizSave();
+  const {
+    mutate: onClubQuizContentSave,
+    isError: clubQuizContentError,
+    isSuccess: clubQuizContentSuccess,
+    data: clubQuizContentDatas,
+  } = useClubQuizContentSave();
+
+  const { mutate: onSaveImage, data: imageUrl, isSuccess: imageSuccess } = useUploadImage();
+  const { isFetched: isContentTypeJobFetched } = useContentJobTypes(data => {
+    setContentJobType(data.data.contents || []);
+  });
 
   const handleAnswerExposureTypeChange = event => {
     setAnswerExposureType(event.target.value);
@@ -311,19 +330,6 @@ export function QuizOpenTemplate() {
   const handleAnswerPublishTypeChange = event => {
     setAnswerPublishType(event.target.value);
   };
-
-  const {
-    mutate: onClubQuizSave,
-    isError,
-    isSuccess: clubSuccess,
-    data: clubDatas,
-    isError: clubError,
-  } = useClubQuizSave();
-
-  const { mutate: onSaveImage, data: imageUrl, isSuccess: imageSuccess } = useUploadImage();
-  const { isFetched: isContentTypeJobFetched } = useContentJobTypes(data => {
-    setContentJobType(data.data.contents || []);
-  });
 
   useEffect(() => {
     if (clubError) {
@@ -588,6 +594,90 @@ export function QuizOpenTemplate() {
     }
   };
 
+  // 지식콘텐츠 체크박스 변경 핸들러
+  const handleContentCheckboxChange = contentSequence => {
+    const maxContentCount = scheduleData.length; // 최대 선택 가능한 개수는 scheduleData.length
+    const nullQuizSequenceCount = scheduleData.filter(item => item.quizSequence === null).length;
+
+    setSelectedContentIds(prevSelectedContentIds => {
+      const isCurrentlySelected = prevSelectedContentIds.includes(contentSequence);
+
+      if (isCurrentlySelected) {
+        // 이미 선택된 경우 해제
+        const newSelectedContentIds = prevSelectedContentIds.filter(id => id !== contentSequence);
+
+        // scheduleData에서 해당 콘텐츠 제거
+        console.log('콘텐츠 해제 - contentSequence:', contentSequence);
+        setScheduleData(prevScheduleData => {
+          const updatedScheduleData = prevScheduleData.map(item =>
+            item.contentSequence === contentSequence
+              ? {
+                  ...item,
+                  quizSequence: null,
+                  contentSequence: null,
+                  contentTitle: null,
+                  contentName: null,
+                  contentUrl: null,
+                }
+              : item,
+          );
+          console.log('해제 후 scheduleData 업데이트:', updatedScheduleData);
+          return updatedScheduleData;
+        });
+
+        return newSelectedContentIds;
+      } else {
+        // 선택하려는 경우 최대 개수 확인 (퀴즈와 지식콘텐츠 합계)
+        const totalSelectedCount = getTotalSelectedCount();
+        if (totalSelectedCount >= maxContentCount) {
+          alert(`퀴즈와 지식콘텐츠는 총 ${maxContentCount}개까지만 선택할 수 있습니다.`);
+          return prevSelectedContentIds;
+        }
+
+        // 선택 가능한 경우 추가
+        const newSelectedContentIds = [...prevSelectedContentIds, contentSequence];
+
+        // scheduleData에 콘텐츠 정보 추가
+        const selectedContent = contentListData.find(content => content.contentSequence === contentSequence);
+        if (selectedContent) {
+          const firstNullItemIndex = scheduleData.findIndex(
+            item => item.quizSequence === null && item.contentSequence === null,
+          );
+
+          console.log('콘텐츠 선택 - 빈 슬롯 인덱스:', firstNullItemIndex);
+          console.log('선택된 콘텐츠:', selectedContent);
+
+          if (firstNullItemIndex !== -1) {
+            setScheduleData(prevScheduleData => {
+              const updatedScheduleData = [...prevScheduleData];
+              updatedScheduleData[firstNullItemIndex] = {
+                ...updatedScheduleData[firstNullItemIndex],
+                contentSequence: contentSequence,
+                contentTitle: selectedContent.name,
+                contentName: selectedContent.name,
+                contentUrl: selectedContent.url || '',
+                quizSequence: null, // 지식콘텐츠는 퀴즈가 아니므로 null
+              };
+              console.log('업데이트된 scheduleData:', updatedScheduleData[firstNullItemIndex]);
+              return updatedScheduleData;
+            });
+          } else {
+            console.log('빈 슬롯을 찾을 수 없습니다.');
+          }
+        }
+
+        return newSelectedContentIds;
+      }
+    });
+  };
+
+  // 통합된 선택 개수 계산
+  const getTotalSelectedCount = () => {
+    const selectedQuizCount = selectedQuizIds.length;
+    const selectedContentCount = selectedContentIds.length;
+    return selectedQuizCount + selectedContentCount;
+  };
+
   //new logic
   const handleCheckboxChange = quizSequence => {
     console.log('order', order);
@@ -644,20 +734,20 @@ export function QuizOpenTemplate() {
           const newQuiz = allQuizData.find(quiz => quiz.quizSequence === quizSequence);
           const reconstructedQuiz = newQuiz
             ? {
-              quizSequence: newQuiz.quizSequence,
-              question: newQuiz.question,
-              member: {
-                leaderUri: newQuiz.memberUri,
-                leaderUUID: newQuiz.memberUUID,
-                profileImageUrl: newQuiz.memberProfileImageUrl,
-                nickname: newQuiz.memberNickname,
-              },
-              contentTitle: newQuiz.contentTitle,
-              modelAnswer: newQuiz.modelAnswer,
-              contentName: newQuiz.content.name,
-              contentUrl: newQuiz.content.url,
-              quizUri: newQuiz.quizUri,
-            }
+                quizSequence: newQuiz.quizSequence,
+                question: newQuiz.question,
+                member: {
+                  leaderUri: newQuiz.memberUri,
+                  leaderUUID: newQuiz.memberUUID,
+                  profileImageUrl: newQuiz.memberProfileImageUrl,
+                  nickname: newQuiz.memberNickname,
+                },
+                contentTitle: newQuiz.contentTitle,
+                modelAnswer: newQuiz.modelAnswer,
+                contentName: newQuiz.content.name,
+                contentUrl: newQuiz.content.url,
+                quizUri: newQuiz.quizUri,
+              }
             : null;
 
           console.log(newQuiz);
@@ -682,8 +772,10 @@ export function QuizOpenTemplate() {
           }
         }
 
-        if (order && selectedQuizIds.length >= eachMaxQuizLength) {
-          alert('퀴즈를 추가 할 수 없습니다.');
+        // 통합된 개수 제한 확인 (퀴즈와 지식콘텐츠 합계)
+        const totalSelectedCount = getTotalSelectedCount();
+        if (totalSelectedCount >= scheduleData.length) {
+          alert(`퀴즈와 지식콘텐츠는 총 ${scheduleData.length}개까지만 선택할 수 있습니다.`);
           return;
         }
       });
@@ -1580,20 +1672,22 @@ export function QuizOpenTemplate() {
                   <div key={index} className="tw-w-1/3">
                     <div className="tw-px-2">
                       <div
-                        className={`tw-flex tw-justify-center tw-items-center tw-w-full tw-relative tw-overflow-hidden tw-gap-2 tw-px-6 tw-py-1  ${index < activeStep
-                          ? 'tw-bg-gray-300 tw-text-white'
-                          : index === activeStep
-                            ? 'tw-bg-blue-600  tw-text-white'
-                            : 'tw-bg-gray-300 tw-text-white'
-                          }`}
+                        className={`tw-flex tw-justify-center tw-items-center tw-w-full tw-relative tw-overflow-hidden tw-gap-2 tw-px-6 tw-py-1  ${
+                          index < activeStep
+                            ? 'tw-bg-gray-300 tw-text-white'
+                            : index === activeStep
+                              ? 'tw-bg-blue-600  tw-text-white'
+                              : 'tw-bg-gray-300 tw-text-white'
+                        }`}
                       ></div>
                       <div
-                        className={`tw-flex tw-text-sm tw-justify-center tw-items-center tw-w-full tw-relative tw-overflow-hidden tw-gap-2 tw-px-6 tw-py-[11.5px] tw-rounded ${index < activeStep
-                          ? ' tw-text-gray-400'
-                          : index === activeStep
-                            ? ' tw-text-black tw-font-bold'
-                            : ' tw-text-gray-400'
-                          }`}
+                        className={`tw-flex tw-text-sm tw-justify-center tw-items-center tw-w-full tw-relative tw-overflow-hidden tw-gap-2 tw-px-6 tw-py-[11.5px] tw-rounded ${
+                          index < activeStep
+                            ? ' tw-text-gray-400'
+                            : index === activeStep
+                              ? ' tw-text-black tw-font-bold'
+                              : ' tw-text-gray-400'
+                        }`}
                       >
                         {step}
                       </div>
@@ -2298,8 +2392,9 @@ export function QuizOpenTemplate() {
                     key={index}
                     src={image}
                     alt={`Image ${index + 1}`}
-                    className={`image-item ${selectedImage === image ? 'selected' : ''
-                      } tw-object-cover tw-w-[100px] tw-rounded-lg tw-h-[100px] md:tw-h-[100px] md:tw-w-[100px] md:tw-rounded-lg`}
+                    className={`image-item ${
+                      selectedImage === image ? 'selected' : ''
+                    } tw-object-cover tw-w-[100px] tw-rounded-lg tw-h-[100px] md:tw-h-[100px] md:tw-w-[100px] md:tw-rounded-lg`}
                     style={{ opacity: selectedImage !== image ? 0.2 : 1 }}
                     onClick={() => handleImageClick(image, 'card', false)}
                   />
@@ -2357,8 +2452,9 @@ export function QuizOpenTemplate() {
                     key={index}
                     src={image}
                     alt={`Image ${index + 1}`}
-                    className={`image-item ${selectedImageBanner === image ? 'selected' : ''
-                      } tw-object-cover tw-w-[260px] tw-rounded-lg tw-h-[100px] md:tw-h-[100px] md:tw-w-[200px] md:tw-rounded-lg`}
+                    className={`image-item ${
+                      selectedImageBanner === image ? 'selected' : ''
+                    } tw-object-cover tw-w-[260px] tw-rounded-lg tw-h-[100px] md:tw-h-[100px] md:tw-w-[200px] md:tw-rounded-lg`}
                     style={{ opacity: selectedImageBanner !== image ? 0.2 : 1 }}
                     onClick={() => handleImageClick(image, 'banner', false)}
                   />
@@ -2844,7 +2940,7 @@ export function QuizOpenTemplate() {
           <Divider sx={{ borderColor: 'rgba(0, 0, 0, 0.5);', paddingY: '10px' }} />
 
           <p className="tw-text-xl tw-font-bold tw-text-left tw-text-black tw-py-5">
-            퀴즈목록 전체 : {totalElements}개 - (퀴즈선택 : {selectedQuizIds.length} / {scheduleData?.length})
+            퀴즈목록 전체 : {totalElements}개 - (퀴즈선택 : {getTotalSelectedCount()} / {scheduleData?.length})
           </p>
           {quizListData.map((item, index) => (
             <div key={index}>
@@ -2992,7 +3088,7 @@ export function QuizOpenTemplate() {
           <Divider sx={{ borderColor: 'rgba(0, 0, 0, 0.5);', paddingY: '10px' }} />
 
           <p className="tw-text-xl tw-font-bold tw-text-left tw-text-black tw-py-5">
-            지식콘텐츠목록 전체 : {totalContentElements}개 - (지식콘텐츠선택 : {selectedQuizIds.length} /{' '}
+            `지식콘텐츠목록 전체` : {totalContentElements}개 - (콘텐츠선택 : {getTotalSelectedCount()} /{' '}
             {scheduleData?.length})
           </p>
           {contentListData.map((item, index) => (
@@ -3000,10 +3096,8 @@ export function QuizOpenTemplate() {
               <QuizBreakerInfoCheckContent
                 questionText={item.name}
                 index={item.contentSequence}
-              // selectedContentIds={selectedContentIds}
-              // handleCheckboxChange={index => {
-              //   setSelectedContentIds([...selectedContentIds, index]);
-              // }}
+                selectedContentIds={selectedContentIds}
+                handleCheckboxChange={handleContentCheckboxChange}
               />
             </div>
           ))}
@@ -3019,7 +3113,9 @@ export function QuizOpenTemplate() {
             </button>
             <button
               className="tw-w-[200px] tw-px-10 tw-text-base tw-py-3 tw-rounded border"
-              onClick={() => setIsModalOpen(false)}
+              onClick={() => {
+                setIsModalOpenKnowledgeContent(false);
+              }}
             >
               닫기
             </button>
@@ -3061,10 +3157,11 @@ export function QuizOpenTemplate() {
                 size="modal"
                 onClick={() => {
                   setIsModalOpen(false);
-                  // onClubJoin({
-                  //   clubSequence: clubData?.clubSequence,
-                  //   participationCode: participationCode,
-                  // });
+                  console.log('selectedContentIds', selectedContentIds);
+                  onClubQuizContentSave({
+                    publishDates: ['2025-10-26', '2025-10-27'],
+                    contentSequences: selectedContentIds,
+                  });
                 }}
               />
             </div>

@@ -141,6 +141,12 @@ export const saveClubTempPost = async body => {
   // await axiosGeneralAPI().post(`/api/v1/club/temporary`, body);
 };
 
+export const saveContentQuizContent = async body => {
+  const { data } = await axiosGeneralAPI().post(`/api/v1/quizzes/club`, body);
+  console.log('data', data);
+  return data;
+};
+
 export const saveClubQuizTempPost = async body => {
   // body.clubForm.clubId = 'quiz_club_temporary_' + generateUUID();
   const { data } = await axiosGeneralAPI().put(`/api/v2/quiz-clubs/${body.clubSequence}`, body.formData, {

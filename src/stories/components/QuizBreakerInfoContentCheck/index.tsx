@@ -4,15 +4,15 @@ import Checkbox from '@mui/material/Checkbox';
 const QuizBreakerInfoCheckContent = ({
   questionText,
   index,
-  // selectedQuizIds = [], // Default to empty array,
-  // handleCheckboxChange,
+  selectedContentIds = [], // Default to empty array
+  handleCheckboxChange,
 }) => {
   return (
     <div className="tw-flex tw-items-center tw-space-x-3 tw-mb-3">
       <Checkbox
         disableRipple
-        // checked={selectedQuizIds.includes(index)}
-        // onChange={() => handleCheckboxChange(index)}
+        checked={selectedContentIds.includes(index)}
+        onChange={() => handleCheckboxChange(index)}
         name={index}
         size="medium"
         className="tw-mr-3"
