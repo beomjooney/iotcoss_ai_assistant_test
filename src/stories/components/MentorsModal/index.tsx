@@ -140,7 +140,9 @@ function MentorsModal({
             <>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div
-                  className={cx('closable tw-font-bold tw-text-xl tw-text-black tw-my-5 tw-mb-2 tw-text-left tw-mt-0')}
+                  className={cx(
+                    'closable tw-font-bold tw-text-xl tw-text-black tw-my-5 tw-mb-2 tw-text-left tw-mt-0 tw-pl-4',
+                  )}
                 >
                   {title}
                 </div>

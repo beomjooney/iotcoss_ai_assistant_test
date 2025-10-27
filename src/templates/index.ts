@@ -43,6 +43,10 @@ export * from './Quiz/AnswersAll/index';
 export * from './Quiz/Open/index';
 export * from './Quiz/Crew/index';
 export * from './Quiz/Manage/index';
+/** 기업회원 로그인 */
+export * from './Account/CompanyLogin/index';
+/** 기업회원 회원가입 */
+export * from './Account/CompanySignUp/index';
 /** 강의 대시보드 */
 export * from './Lecture/Dashboard/index';
 export * from './Lecture/PlayGround/index';
@@ -68,6 +72,9 @@ export * from './Monthly/Quiz/index';
 export * from './Monthly/Maker/index';
 export * from './MyStudents/Detail/index';
 
+/** 기업회원 대시보드 */
+export * from './Lecture/Company/index';
+
 //system admin
 export * from './System/Admin/index';
 export * from './System/Admin/Club/index';
@@ -79,3 +86,4 @@ export * from './System/Admin/ClubManagement/index';
 export * from './System/Admin/Dashboard/index';
 export * from './System/Admin/Terms/index';
 export * from './System/Admin/AccountLinkTest/index';
+export * from './System/Admin/CompanyApproval/index';
