@@ -76,7 +76,7 @@ export function MyTemplate({ children }: MyTemplateProps) {
     { no: 4, title: '내 친구관리', link: '/friends', role: 'all' },
     { no: 5, title: '커뮤니티 작성글', link: '/admin-club', role: 'all' },
     { no: 6, title: '개인정보관리', link: '/member-edit', role: 'all' },
-    { no: 7, title: '기업체 정보공유관리', link: '/company-profile-edit', role: 'all' },
+    // { no: 7, title: '기업체 정보공유관리', link: '/company-profile-edit', role: 'all' },
   ];
   const currentMenu = menus.find(menu => currentPath.includes(menu.link));
   const handleMoveToMentorRegist = () => {

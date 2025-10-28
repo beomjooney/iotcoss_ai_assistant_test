@@ -191,7 +191,7 @@ export const axiosSetHeader = (accessToken: string, userAgent: string, cookie: s
 
 export const axiosGeneralAPI = () => {
   axiosClient.defaults.baseURL = process.env['NEXT_PUBLIC_GENERAL_API_URL'];
-  axiosClient.defaults.timeout = 600000;
+  axiosClient.defaults.timeout = 1200000;
   return axiosClient;
 };
 

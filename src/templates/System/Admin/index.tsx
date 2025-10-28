@@ -86,12 +86,12 @@ export function AdminTemplate({ children }: AdminTemplateProps) {
         { no: 3, title: '계정연동테스트', link: '/system/admin/account-link-test', role: 'all' },
       ],
     },
-    {
-      no: 1,
-      title: '권한관리',
-      role: 'all',
-      sub: [{ no: 0, title: '기업관리 권한 관리', link: '/system/admin/company-management', role: 'all' }],
-    },
+    // {
+    //   no: 1,
+    //   title: '권한관리',
+    //   role: 'all',
+    //   sub: [{ no: 0, title: '기업관리 권한 관리', link: '/system/admin/company-management', role: 'all' }],
+    // },
     {
       no: 2,
       title: '지식콘텐츠/퀴즈 관리',
