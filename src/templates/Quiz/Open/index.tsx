@@ -2626,7 +2626,7 @@ export function QuizOpenTemplate() {
                 </div>
 
                 <div className="tw-h-24 tw-flex tw-justify-center tw-items-center  tw-relative tw-overflow-hidden tw-gap-8">
-                  {/* <div className="tw-flex-1 tw-flex tw-justify-center tw-items-center  tw-h-20 tw-gap-2 border tw-rounded-lg">
+                  <div className="tw-flex-1 tw-flex tw-justify-center tw-items-center  tw-h-20 tw-gap-2 border tw-rounded-lg">
                     <svg
                       width={24}
                       height={24}
@@ -2658,7 +2658,7 @@ export function QuizOpenTemplate() {
                     >
                       지식콘텐츠기반 퀴즈(AI생성) 일괄 등록
                     </button>
-                  </div> */}
+                  </div>
                   <div className="tw-flex-1 tw-flex tw-justify-center tw-items-center tw-gap-2  tw-h-20 border tw-rounded-lg">
                     <svg
                       width={24}
@@ -3088,7 +3088,7 @@ export function QuizOpenTemplate() {
           <Divider sx={{ borderColor: 'rgba(0, 0, 0, 0.5);', paddingY: '10px' }} />
 
           <p className="tw-text-xl tw-font-bold tw-text-left tw-text-black tw-py-5">
-            `지식콘텐츠목록 전체` : {totalContentElements}개 - (콘텐츠선택 : {getTotalSelectedCount()} /{' '}
+            지식콘텐츠목록 전체 : {totalContentElements}개 - (콘텐츠선택 : {getTotalSelectedCount()} /{' '}
             {scheduleData?.length})
           </p>
           {contentListData.map((item, index) => (
@@ -3159,7 +3159,6 @@ export function QuizOpenTemplate() {
                   setIsModalOpen(false);
                   console.log('selectedContentIds', selectedContentIds);
                   onClubQuizContentSave({
-                    publishDates: ['2025-10-26', '2025-10-27'],
                     contentSequences: selectedContentIds,
                   });
                 }}

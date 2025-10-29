@@ -184,7 +184,7 @@ const ArticleList: React.FC<any> = ({ data, refetchMyQuizContent }) => {
             {/* Render hashtags */}
 
             <div className="tw-flex tw-justify-between">
-              <div className="tw-flex">
+              <div className="tw-flex tw-w-full">
                 <p className="tw-text-sm tw-font-bold tw-text-left tw-text-black tw-w-12">URL : </p>
                 <p
                   onClick={() => {

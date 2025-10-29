@@ -352,19 +352,45 @@ export function QuizMakeTemplate() {
     if (contentQuizAIExcelSuccess) {
       setContentQuizAIExcelSuccessFlag(true);
       setContentQuizAIExcelSuccessLoading(false);
+
+      refetchMyQuiz();
+      refetchMyQuizContent();
+
+      setFileList([]);
+      setFileListKnowledge([]);
+      setJobLevel([]);
+      setSelected1([]);
+      setSelected2([]);
+      setSelectedSubject('');
+      setSelectedChapter('');
+      setPersonName([]);
+      setUniversityCode('');
+      setJobs([]);
+      setContentSortType('');
+
+      alert('지식콘텐츠(파일) + 퀴즈(AI생성) 엑셀 일괄 등록 완료');
     }
   }, [contentQuizAIExcelSuccess]);
-
-  useEffect(() => {
-    if (contentQuizAIExcelError) {
-      setContentQuizAIExcelSuccessLoading(false);
-    }
-  }, [contentQuizAIExcelError]);
 
   useEffect(() => {
     if (contentFileSuccess) {
       setContentFileSuccessFlag(true);
       setContentFileSuccessLoading(false);
+      refetchMyQuiz();
+      refetchMyQuizContent();
+
+      setFileList([]);
+      setFileListKnowledge([]);
+      setJobLevel([]);
+      setSelected1([]);
+      setSelected2([]);
+      setSelectedSubject('');
+      setSelectedChapter('');
+      setPersonName([]);
+      setUniversityCode('');
+      setJobs([]);
+      setContentSortType('');
+      alert('지식콘텐츠(파일) 일괄 등록 완료');
     }
   }, [contentFileSuccess]);
 
@@ -372,7 +398,11 @@ export function QuizMakeTemplate() {
     if (contentFileError) {
       setContentFileSuccessLoading(false);
     }
-  }, [contentFileError]);
+
+    if (contentQuizAIExcelError) {
+      setContentQuizAIExcelSuccessLoading(false);
+    }
+  }, [contentFileError, contentQuizAIExcelError]);
 
   const onCloseExcelModal = () => {
     setKnowledgeFileName('');
@@ -2219,7 +2249,7 @@ export function QuizMakeTemplate() {
             </div>
           </div>
           <div className="tw-mb-5">
-            {/* <div className="tw-justify-between tw-my-10">
+            <div className="tw-justify-between tw-my-10">
               <div
                 className="tw-font-bold tw-text-black tw-flex tw-items-center tw-gap-2 tw-cursor-pointer"
                 onClick={() => {
@@ -2240,7 +2270,7 @@ export function QuizMakeTemplate() {
               >
                 지식콘텐츠(파일) 일괄 등록 {isFileOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
               </div>
-            </div> */}
+            </div>
             {isFileOpen && (
               <div className="border tw-p-5 tw-rounded-lg">
                 <div className="">
@@ -2741,7 +2771,7 @@ export function QuizMakeTemplate() {
             </div>
 
             <div className="tw-my-10">
-              {/* <div
+              <div
                 className=" tw-font-bold tw-text-black tw-cursor-pointer"
                 onClick={() => {
                   setIsAIExcelOpen(!isAIExcelOpen);
@@ -2762,7 +2792,7 @@ export function QuizMakeTemplate() {
               >
                 지식콘텐츠(파일) + 퀴즈(AI생성) 엑셀 일괄 등록{' '}
                 {isAIExcelOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-              </div> */}
+              </div>
 
               {isAIExcelOpen && (
                 <div className="border tw-p-5 tw-rounded-lg tw-mt-5">

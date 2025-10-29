@@ -171,7 +171,7 @@ ClubMiniCardProps) => {
             </Grid>
           </Grid>
           <div className="tw-text-base tw-font-bold tw-tracking-tight tw-text-gray-900 ">{item?.clubName}</div>
-          <div className="tw-my-1 tw-text-sm tw-font-medium tw-tracking-tight tw-text-gray-900">
+          <div className="tw-my-1 tw-text-sm tw-font-medium tw-tracking-tight tw-text-gray-900 tw-line-clamp-3">
             {item?.description}
           </div>
 
