@@ -423,7 +423,7 @@ export const useClubQuizContentSave = (): UseMutationResult => {
     },
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('ADMIN_CONTENT_QUIZ_CONTENT').all),
     onSuccess: async data => {
-      alert('저장 되었습니다.');
+      alert('퀴즈 AI생성 및 등록 완료되었습니다.');
     },
   });
 };

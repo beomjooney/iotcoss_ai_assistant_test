@@ -76,7 +76,9 @@ export function QuizOpenTemplate() {
   const [jobGroups, setJobGroups] = useState<any[]>([]);
   const [paramss, setParamss] = useState({});
   const [params, setParams] = useState<any>({});
-  const [contentParams, setContentParams] = useState<any>({});
+  const [contentParams, setContentParams] = useState<any>({
+    aiQuizSupportedFileType: true,
+  });
   const [quizPage, setQuizPage] = useState(1);
   const [quizParams, setQuizParams] = useState<any>({ quizPage, sortType: 'DESC' });
   const [dayParams, setDayParams] = useState<any>({});
@@ -149,7 +151,7 @@ export function QuizOpenTemplate() {
   const [selectedContentIds, setSelectedContentIds] = useState([]);
   const [contentJobType, setContentJobType] = useState<any[]>([]);
   const [isModalContentOpen, setIsModalContentOpen] = useState<boolean>(false);
-
+  const [isModalContentLoading, setIsModalContentLoading] = useState<boolean>(false);
   const onChangeHandleFromToStartDate = date => {
     if (date) {
       // Convert date to a Dayjs object
@@ -311,12 +313,60 @@ export function QuizOpenTemplate() {
     data: clubDatas,
     isError: clubError,
   } = useClubQuizSave();
+
+  // 지식콘텐츠 일괄 등록
   const {
     mutate: onClubQuizContentSave,
     isError: clubQuizContentError,
     isSuccess: clubQuizContentSuccess,
     data: clubQuizContentDatas,
   } = useClubQuizContentSave();
+
+  useEffect(() => {
+    if (clubQuizContentError) {
+      setIsModalContentLoading(false);
+      alert('퀴즈 AI생성 및 등록 중 오류가 발생했습니다.');
+    }
+  }, [clubQuizContentError]);
+
+  useEffect(() => {
+    console.log('SelectedQuizIds', selectedQuizIds);
+  }, [selectedQuizIds]);
+
+  useEffect(() => {
+    if (clubQuizContentSuccess) {
+      setIsModalContentLoading(false);
+
+      console.log('clubQuizContentDatas', clubQuizContentDatas.data.clubQuizzes);
+      console.log('scheduleData', scheduleData);
+
+      // 기존 selectedQuizIds 초기화 후 새로운 데이터 추가
+      const newQuizIds = clubQuizContentDatas.data.clubQuizzes.map(item => {
+        console.log('item', item);
+        return item.quizSequence;
+      });
+      setSelectedQuizIds(newQuizIds);
+
+      setScheduleData(prevScheduleData => {
+        // 기존 scheduleData의 기본값들을 가져옴
+        const defaultValues = prevScheduleData.length > 0 ? prevScheduleData[0] : {};
+
+        const newData = clubQuizContentDatas.data.clubQuizzes.map((item, index) => ({
+          ...item,
+          dayOfWeek: item.dayOfWeek || defaultValues.dayOfWeek || null,
+          order: item.order || index + 1,
+          publishDate: item.publishDate || defaultValues.publishDate || null,
+          weekNumber: item.weekNumber || defaultValues.weekNumber || 1,
+          contentTitle: item.contentTitle || item.contentName, // contentTitle이 undefined인 경우 contentName 사용
+        }));
+        // 기존 배열의 길이만큼 빈 슬롯을 유지하면서 새 데이터를 앞쪽에 채움
+        const remainingSlots = prevScheduleData.slice(newData.length);
+        return [...newData, ...remainingSlots];
+      });
+      setIsModalContentOpen(false);
+      setIsModalOpenKnowledgeContent(false);
+    }
+  }, [clubQuizContentSuccess]);
 
   const { mutate: onSaveImage, data: imageUrl, isSuccess: imageSuccess } = useUploadImage();
   const { isFetched: isContentTypeJobFetched } = useContentJobTypes(data => {
@@ -374,10 +424,11 @@ export function QuizOpenTemplate() {
   useDidMountEffect(() => {
     setContentParams({
       page: contentPage,
-      keyword: contentKeyWorld,
-      jobGroups: contentUniversityCodeQuiz,
-      jobs: contentSelectedJobQuiz.toString(),
-      jobLevels: contentSelectedLevel,
+      keyword: contentKeyWorld || null,
+      jobGroup: contentUniversityCodeQuiz || null,
+      job: contentSelectedJobQuiz?.length > 0 ? contentSelectedJobQuiz.toString() : null,
+      jobLevels: contentSelectedLevel || null,
+      aiQuizSupportedFileType: true,
     });
   }, [contentPage, contentKeyWorld, contentUniversityCodeQuiz, contentSelectedJobQuiz, contentSelectedLevel]);
 
@@ -599,12 +650,12 @@ export function QuizOpenTemplate() {
     const maxContentCount = scheduleData.length; // 최대 선택 가능한 개수는 scheduleData.length
     const nullQuizSequenceCount = scheduleData.filter(item => item.quizSequence === null).length;
 
-    setSelectedContentIds(prevSelectedContentIds => {
-      const isCurrentlySelected = prevSelectedContentIds.includes(contentSequence);
+    setSelectedQuizIds(prevSelectedQuizIds => {
+      const isCurrentlySelected = prevSelectedQuizIds.includes(contentSequence);
 
       if (isCurrentlySelected) {
         // 이미 선택된 경우 해제
-        const newSelectedContentIds = prevSelectedContentIds.filter(id => id !== contentSequence);
+        const newSelectedQuizIds = prevSelectedQuizIds.filter(id => id !== contentSequence);
 
         // scheduleData에서 해당 콘텐츠 제거
         console.log('콘텐츠 해제 - contentSequence:', contentSequence);
@@ -625,17 +676,17 @@ export function QuizOpenTemplate() {
           return updatedScheduleData;
         });
 
-        return newSelectedContentIds;
+        return newSelectedQuizIds;
       } else {
         // 선택하려는 경우 최대 개수 확인 (퀴즈와 지식콘텐츠 합계)
         const totalSelectedCount = getTotalSelectedCount();
         if (totalSelectedCount >= maxContentCount) {
           alert(`퀴즈와 지식콘텐츠는 총 ${maxContentCount}개까지만 선택할 수 있습니다.`);
-          return prevSelectedContentIds;
+          return prevSelectedQuizIds;
         }
 
         // 선택 가능한 경우 추가
-        const newSelectedContentIds = [...prevSelectedContentIds, contentSequence];
+        const newSelectedQuizIds = [...prevSelectedQuizIds, contentSequence];
 
         // scheduleData에 콘텐츠 정보 추가
         const selectedContent = contentListData.find(content => content.contentSequence === contentSequence);
@@ -666,7 +717,7 @@ export function QuizOpenTemplate() {
           }
         }
 
-        return newSelectedContentIds;
+        return newSelectedQuizIds;
       }
     });
   };
@@ -674,8 +725,7 @@ export function QuizOpenTemplate() {
   // 통합된 선택 개수 계산
   const getTotalSelectedCount = () => {
     const selectedQuizCount = selectedQuizIds.length;
-    const selectedContentCount = selectedContentIds.length;
-    return selectedQuizCount + selectedContentCount;
+    return selectedQuizCount;
   };
 
   //new logic
@@ -1574,6 +1624,7 @@ export function QuizOpenTemplate() {
     setJobsContent(selected ? selected.jobs : []);
     setSelectedJobContent([]); // Clear the selected job when university changes
     setPersonNameContent([]); // Clear the selected job when university changes
+    setSelectedQuizIds([]);
   };
 
   const handleUniversitySearchChange = e => {
@@ -2982,6 +3033,8 @@ export function QuizOpenTemplate() {
           setContentUniversityCodeQuiz('');
           setContentSelectedJobQuiz([]);
           setContentSelectedLevel('');
+
+          // setSelectedQuizIds([]);
         }}
         isContentModalClick={false}
       >
@@ -3096,7 +3149,7 @@ export function QuizOpenTemplate() {
               <QuizBreakerInfoCheckContent
                 questionText={item.name}
                 index={item.contentSequence}
-                selectedContentIds={selectedContentIds}
+                selectedQuizIds={selectedQuizIds}
                 handleCheckboxChange={handleContentCheckboxChange}
               />
             </div>
@@ -3153,14 +3206,15 @@ export function QuizOpenTemplate() {
               />
               <Button
                 color="primary"
-                label="진행하기"
+                label={isModalContentLoading ? '진행중...' : '진행하기'}
                 size="modal"
                 onClick={() => {
                   setIsModalOpen(false);
-                  console.log('selectedContentIds', selectedContentIds);
+                  console.log('selectedQuizIds', selectedQuizIds);
                   onClubQuizContentSave({
-                    contentSequences: selectedContentIds,
+                    contentSequences: selectedQuizIds,
                   });
+                  setIsModalContentLoading(true);
                 }}
               />
             </div>
