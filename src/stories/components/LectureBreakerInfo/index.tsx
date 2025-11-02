@@ -448,18 +448,22 @@ const LectureBreakerInfo = ({
                                   }}
                                   onDragStart={e => e.preventDefault()} // Prevent default drag behavior on TextField
                                 />
-                                <div className="tw-w-[80px] tw-p-1.5 tw-text-center tw-bg-black tw-text-white tw-rounded tw-items-center tw-gap-2 tw-px-2">
+                                <div className="tw-w-[120px] tw-p-1.5 tw-text-center tw-bg-black tw-text-white tw-rounded tw-items-center tw-gap-2 tw-px-2">
                                   {isProcessing
                                     ? '등록 중'
                                     : file.fileUploadStatus === '0000'
-                                    ? '등록 전'
-                                    : file.fileUploadStatus === '1000'
-                                    ? '등록 중'
-                                    : file.fileUploadStatus === '2000'
-                                    ? '등록 완료'
-                                    : file.fileUploadStatus === '3000'
-                                    ? '등록 실패'
-                                    : '등록 전'}
+                                      ? '등록 전'
+                                      : file.fileUploadStatus === '1000'
+                                        ? '등록 중'
+                                        : file.fileUploadStatus === '2000'
+                                          ? '등록 완료'
+                                          : file.fileUploadStatus === '3000'
+                                            ? '등록 실패'
+                                            : file.fileUploadStatus === '3001'
+                                              ? '파일 에러'
+                                              : file.fileUploadStatus === '3002'
+                                                ? 'URL 에러'
+                                                : '등록 전'}
                                 </div>
                               </div>
                             </div>
@@ -500,18 +504,22 @@ const LectureBreakerInfo = ({
                                   </svg>
                                 </button>
                               </div>
-                              <div className="tw-p-1 tw-text-center tw-bg-black tw-text-white tw-rounded tw-items-center tw-gap-2 tw-px-2">
+                              <div className="tw-w-[120px] tw-p-1 tw-text-center tw-bg-black tw-text-white tw-rounded tw-items-center tw-gap-2 tw-px-2">
                                 {isProcessing
                                   ? '등록 중'
                                   : file.fileUploadStatus === '0000'
-                                  ? '등록 전'
-                                  : file.fileUploadStatus === '1000'
-                                  ? '등록 중'
-                                  : file.fileUploadStatus === '2000'
-                                  ? '등록 완료'
-                                  : file.fileUploadStatus === '3000'
-                                  ? '등록 실패'
-                                  : '등록 전'}
+                                    ? '등록 전'
+                                    : file.fileUploadStatus === '1000'
+                                      ? '등록 중'
+                                      : file.fileUploadStatus === '2000'
+                                        ? '등록 완료'
+                                        : file.fileUploadStatus === '3000'
+                                          ? '등록 실패'
+                                          : file.fileUploadStatus === '3001'
+                                            ? '파일 에러'
+                                            : file.fileUploadStatus === '3002'
+                                              ? 'URL 에러'
+                                              : '등록 전'}
                               </div>
                             </div>
                           ))}

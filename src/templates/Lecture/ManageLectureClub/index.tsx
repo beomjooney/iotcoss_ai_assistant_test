@@ -3500,7 +3500,11 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                                           ? '등록 완료'
                                           : fileEntry.fileUploadStatus === '3000'
                                             ? '등록 실패'
-                                            : '등록 전'}
+                                            : fileEntry.fileUploadStatus === '3001'
+                                              ? '파일 에러'
+                                              : fileEntry.fileUploadStatus === '3002'
+                                                ? 'URL 에러'
+                                                : '등록 전'}
                                 </div>
                               </div>
                             ))}
@@ -3555,7 +3559,11 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
                                           ? '등록 완료'
                                           : file.fileUploadStatus === '3000'
                                             ? '등록 실패'
-                                            : '등록 전'}
+                                            : file.fileUploadStatus === '3001'
+                                              ? '파일 에러'
+                                              : file.fileUploadStatus === '3002'
+                                                ? 'URL 에러'
+                                                : '등록 전'}
                                 </div>
                               </div>
                             ))}
