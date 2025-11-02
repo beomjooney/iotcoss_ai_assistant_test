@@ -340,28 +340,91 @@ export function QuizOpenTemplate() {
       console.log('clubQuizContentDatas', clubQuizContentDatas.data.clubQuizzes);
       console.log('scheduleData', scheduleData);
 
-      // 기존 selectedQuizIds 초기화 후 새로운 데이터 추가
-      const newQuizIds = clubQuizContentDatas.data.clubQuizzes.map(item => {
-        console.log('item', item);
-        return item.quizSequence;
-      });
-      setSelectedQuizIds(newQuizIds);
-
       setScheduleData(prevScheduleData => {
+        // 기존 scheduleData에 이미 있는 quizSequence 목록
+        const existingQuizSequences = new Set(
+          prevScheduleData.map(item => item.quizSequence).filter(seq => seq !== null && seq !== undefined),
+        );
+
+        console.log('existingQuizSequences', existingQuizSequences);
+
         // 기존 scheduleData의 기본값들을 가져옴
         const defaultValues = prevScheduleData.length > 0 ? prevScheduleData[0] : {};
 
-        const newData = clubQuizContentDatas.data.clubQuizzes.map((item, index) => ({
-          ...item,
-          dayOfWeek: item.dayOfWeek || defaultValues.dayOfWeek || null,
-          order: item.order || index + 1,
-          publishDate: item.publishDate || defaultValues.publishDate || null,
-          weekNumber: item.weekNumber || defaultValues.weekNumber || 1,
-          contentTitle: item.contentTitle || item.contentName, // contentTitle이 undefined인 경우 contentName 사용
-        }));
-        // 기존 배열의 길이만큼 빈 슬롯을 유지하면서 새 데이터를 앞쪽에 채움
-        const remainingSlots = prevScheduleData.slice(newData.length);
-        return [...newData, ...remainingSlots];
+        // 기존에 없는 새로운 항목만 필터링
+        const newItems = clubQuizContentDatas.data.clubQuizzes.filter(
+          item => !existingQuizSequences.has(item.quizSequence),
+        );
+
+        console.log('newItems', newItems);
+
+        // 더 이상 추가할 항목이 없으면 기존 데이터 반환
+        if (newItems.length === 0) {
+          console.log('추가할 항목이 없습니다.');
+          return prevScheduleData;
+        }
+
+        // quizSequence가 null인 슬롯의 인덱스 찾기
+        const nullSlotIndices: number[] = [];
+        prevScheduleData.forEach((item, index) => {
+          if (item.quizSequence === null || item.quizSequence === undefined) {
+            nullSlotIndices.push(index);
+          }
+        });
+
+        console.log('nullSlotIndices', nullSlotIndices);
+
+        // 새로운 배열 생성 (기존 데이터 복사)
+        const updatedScheduleData = [...prevScheduleData];
+        let newItemIndex = 0;
+
+        // 1단계: null 슬롯을 먼저 채움
+        for (let i = 0; i < nullSlotIndices.length && newItemIndex < newItems.length; i++) {
+          const slotIndex = nullSlotIndices[i];
+          const item = newItems[newItemIndex];
+
+          console.log(`null 슬롯 ${slotIndex}에 항목 ${item.quizSequence} 추가`);
+
+          updatedScheduleData[slotIndex] = {
+            ...updatedScheduleData[slotIndex],
+            ...item,
+            dayOfWeek: item.dayOfWeek || updatedScheduleData[slotIndex].dayOfWeek || defaultValues.dayOfWeek || null,
+            order: item.order || updatedScheduleData[slotIndex].order,
+            publishDate: item.publishDate || updatedScheduleData[slotIndex].publishDate || defaultValues.publishDate || null,
+            weekNumber: item.weekNumber || updatedScheduleData[slotIndex].weekNumber || defaultValues.weekNumber || 1,
+            contentTitle: item.contentTitle || item.contentName,
+          };
+
+          newItemIndex++;
+        }
+
+        // 2단계: null 슬롯이 모두 채워지고 남은 항목이 있으면 끝에 추가
+        const remainingItems = newItems.slice(newItemIndex);
+
+        if (remainingItems.length > 0) {
+          console.log(`남은 항목 ${remainingItems.length}개를 끝에 추가`);
+          const itemsToAdd = remainingItems.map((item, index) => ({
+            ...item,
+            dayOfWeek: item.dayOfWeek || defaultValues.dayOfWeek || null,
+            order: item.order || updatedScheduleData.length + index + 1,
+            publishDate: item.publishDate || defaultValues.publishDate || null,
+            weekNumber: item.weekNumber || defaultValues.weekNumber || 1,
+            contentTitle: item.contentTitle || item.contentName,
+          }));
+
+          return [...updatedScheduleData, ...itemsToAdd];
+        }
+
+        console.log('업데이트된 scheduleData', updatedScheduleData);
+        return updatedScheduleData;
+      });
+
+      // 기존 selectedQuizIds와 새로운 quizSequence 합치기 (중복 제거)
+      setSelectedQuizIds(prevSelectedQuizIds => {
+        const newQuizIds = clubQuizContentDatas.data.clubQuizzes.map(item => item.quizSequence);
+        const combinedIds = [...new Set([...prevSelectedQuizIds, ...newQuizIds])];
+        console.log('업데이트된 selectedQuizIds', combinedIds);
+        return combinedIds;
       });
       setIsModalContentOpen(false);
       setIsModalOpenKnowledgeContent(false);
@@ -648,14 +711,15 @@ export function QuizOpenTemplate() {
   // 지식콘텐츠 체크박스 변경 핸들러
   const handleContentCheckboxChange = contentSequence => {
     const maxContentCount = scheduleData.length; // 최대 선택 가능한 개수는 scheduleData.length
+    console.log('maxContentCount', maxContentCount);
     const nullQuizSequenceCount = scheduleData.filter(item => item.quizSequence === null).length;
 
-    setSelectedQuizIds(prevSelectedQuizIds => {
-      const isCurrentlySelected = prevSelectedQuizIds.includes(contentSequence);
+    setSelectedContentIds(prevSelectedContentIds => {
+      const isCurrentlySelected = prevSelectedContentIds.includes(contentSequence);
 
       if (isCurrentlySelected) {
         // 이미 선택된 경우 해제
-        const newSelectedQuizIds = prevSelectedQuizIds.filter(id => id !== contentSequence);
+        const newSelectedContentIds = prevSelectedContentIds.filter(id => id !== contentSequence);
 
         // scheduleData에서 해당 콘텐츠 제거
         console.log('콘텐츠 해제 - contentSequence:', contentSequence);
@@ -663,30 +727,31 @@ export function QuizOpenTemplate() {
           const updatedScheduleData = prevScheduleData.map(item =>
             item.contentSequence === contentSequence
               ? {
-                  ...item,
-                  quizSequence: null,
-                  contentSequence: null,
-                  contentTitle: null,
-                  contentName: null,
-                  contentUrl: null,
-                }
+                ...item,
+                quizSequence: null,
+                contentSequence: null,
+                contentTitle: null,
+                contentName: null,
+                contentUrl: null,
+              }
               : item,
           );
           console.log('해제 후 scheduleData 업데이트:', updatedScheduleData);
           return updatedScheduleData;
         });
 
-        return newSelectedQuizIds;
+        return newSelectedContentIds;
       } else {
         // 선택하려는 경우 최대 개수 확인 (퀴즈와 지식콘텐츠 합계)
-        const totalSelectedCount = getTotalSelectedCount();
+        const totalSelectedCount = selectedContentIds.length + selectedQuizIds.length;
+        console.log('totalSelectedCount', totalSelectedCount);
         if (totalSelectedCount >= maxContentCount) {
           alert(`퀴즈와 지식콘텐츠는 총 ${maxContentCount}개까지만 선택할 수 있습니다.`);
-          return prevSelectedQuizIds;
+          return prevSelectedContentIds;
         }
 
         // 선택 가능한 경우 추가
-        const newSelectedQuizIds = [...prevSelectedQuizIds, contentSequence];
+        const newSelectedContentIds = [...prevSelectedContentIds, contentSequence];
 
         // scheduleData에 콘텐츠 정보 추가
         const selectedContent = contentListData.find(content => content.contentSequence === contentSequence);
@@ -717,7 +782,7 @@ export function QuizOpenTemplate() {
           }
         }
 
-        return newSelectedQuizIds;
+        return newSelectedContentIds;
       }
     });
   };
@@ -784,20 +849,20 @@ export function QuizOpenTemplate() {
           const newQuiz = allQuizData.find(quiz => quiz.quizSequence === quizSequence);
           const reconstructedQuiz = newQuiz
             ? {
-                quizSequence: newQuiz.quizSequence,
-                question: newQuiz.question,
-                member: {
-                  leaderUri: newQuiz.memberUri,
-                  leaderUUID: newQuiz.memberUUID,
-                  profileImageUrl: newQuiz.memberProfileImageUrl,
-                  nickname: newQuiz.memberNickname,
-                },
-                contentTitle: newQuiz.contentTitle,
-                modelAnswer: newQuiz.modelAnswer,
-                contentName: newQuiz.content.name,
-                contentUrl: newQuiz.content.url,
-                quizUri: newQuiz.quizUri,
-              }
+              quizSequence: newQuiz.quizSequence,
+              question: newQuiz.question,
+              member: {
+                leaderUri: newQuiz.memberUri,
+                leaderUUID: newQuiz.memberUUID,
+                profileImageUrl: newQuiz.memberProfileImageUrl,
+                nickname: newQuiz.memberNickname,
+              },
+              contentTitle: newQuiz.contentTitle,
+              modelAnswer: newQuiz.modelAnswer,
+              contentName: newQuiz.content.name,
+              contentUrl: newQuiz.content.url,
+              quizUri: newQuiz.quizUri,
+            }
             : null;
 
           console.log(newQuiz);
@@ -1624,7 +1689,7 @@ export function QuizOpenTemplate() {
     setJobsContent(selected ? selected.jobs : []);
     setSelectedJobContent([]); // Clear the selected job when university changes
     setPersonNameContent([]); // Clear the selected job when university changes
-    setSelectedQuizIds([]);
+    // setSelectedQuizIds([]);
   };
 
   const handleUniversitySearchChange = e => {
@@ -1723,22 +1788,20 @@ export function QuizOpenTemplate() {
                   <div key={index} className="tw-w-1/3">
                     <div className="tw-px-2">
                       <div
-                        className={`tw-flex tw-justify-center tw-items-center tw-w-full tw-relative tw-overflow-hidden tw-gap-2 tw-px-6 tw-py-1  ${
-                          index < activeStep
-                            ? 'tw-bg-gray-300 tw-text-white'
-                            : index === activeStep
-                              ? 'tw-bg-blue-600  tw-text-white'
-                              : 'tw-bg-gray-300 tw-text-white'
-                        }`}
+                        className={`tw-flex tw-justify-center tw-items-center tw-w-full tw-relative tw-overflow-hidden tw-gap-2 tw-px-6 tw-py-1  ${index < activeStep
+                          ? 'tw-bg-gray-300 tw-text-white'
+                          : index === activeStep
+                            ? 'tw-bg-blue-600  tw-text-white'
+                            : 'tw-bg-gray-300 tw-text-white'
+                          }`}
                       ></div>
                       <div
-                        className={`tw-flex tw-text-sm tw-justify-center tw-items-center tw-w-full tw-relative tw-overflow-hidden tw-gap-2 tw-px-6 tw-py-[11.5px] tw-rounded ${
-                          index < activeStep
-                            ? ' tw-text-gray-400'
-                            : index === activeStep
-                              ? ' tw-text-black tw-font-bold'
-                              : ' tw-text-gray-400'
-                        }`}
+                        className={`tw-flex tw-text-sm tw-justify-center tw-items-center tw-w-full tw-relative tw-overflow-hidden tw-gap-2 tw-px-6 tw-py-[11.5px] tw-rounded ${index < activeStep
+                          ? ' tw-text-gray-400'
+                          : index === activeStep
+                            ? ' tw-text-black tw-font-bold'
+                            : ' tw-text-gray-400'
+                          }`}
                       >
                         {step}
                       </div>
@@ -2443,9 +2506,8 @@ export function QuizOpenTemplate() {
                     key={index}
                     src={image}
                     alt={`Image ${index + 1}`}
-                    className={`image-item ${
-                      selectedImage === image ? 'selected' : ''
-                    } tw-object-cover tw-w-[100px] tw-rounded-lg tw-h-[100px] md:tw-h-[100px] md:tw-w-[100px] md:tw-rounded-lg`}
+                    className={`tw-cursor-pointer image-item ${selectedImage === image ? 'selected' : ''
+                      } tw-object-cover tw-w-[100px] tw-rounded-lg tw-h-[100px] md:tw-h-[100px] md:tw-w-[100px] md:tw-rounded-lg`}
                     style={{ opacity: selectedImage !== image ? 0.2 : 1 }}
                     onClick={() => handleImageClick(image, 'card', false)}
                   />
@@ -2503,9 +2565,8 @@ export function QuizOpenTemplate() {
                     key={index}
                     src={image}
                     alt={`Image ${index + 1}`}
-                    className={`image-item ${
-                      selectedImageBanner === image ? 'selected' : ''
-                    } tw-object-cover tw-w-[260px] tw-rounded-lg tw-h-[100px] md:tw-h-[100px] md:tw-w-[200px] md:tw-rounded-lg`}
+                    className={`tw-cursor-pointer image-item ${selectedImageBanner === image ? 'selected' : ''
+                      } tw-object-cover tw-w-[260px] tw-rounded-lg tw-h-[100px] md:tw-h-[100px] md:tw-w-[200px] md:tw-rounded-lg`}
                     style={{ opacity: selectedImageBanner !== image ? 0.2 : 1 }}
                     onClick={() => handleImageClick(image, 'banner', false)}
                   />
@@ -3035,6 +3096,7 @@ export function QuizOpenTemplate() {
           setContentSelectedLevel('');
 
           // setSelectedQuizIds([]);
+          setSelectedContentIds([]);
         }}
         isContentModalClick={false}
       >
@@ -3141,7 +3203,7 @@ export function QuizOpenTemplate() {
           <Divider sx={{ borderColor: 'rgba(0, 0, 0, 0.5);', paddingY: '10px' }} />
 
           <p className="tw-text-xl tw-font-bold tw-text-left tw-text-black tw-py-5">
-            지식콘텐츠목록 전체 : {totalContentElements}개 - (콘텐츠선택 : {getTotalSelectedCount()} /{' '}
+            지식콘텐츠목록 전체 : {totalElements}개 - (콘텐츠선택 : {selectedContentIds.length + selectedQuizIds.length} /{' '}
             {scheduleData?.length})
           </p>
           {contentListData.map((item, index) => (
@@ -3149,7 +3211,7 @@ export function QuizOpenTemplate() {
               <QuizBreakerInfoCheckContent
                 questionText={item.name}
                 index={item.contentSequence}
-                selectedQuizIds={selectedQuizIds}
+                selectedContentIds={selectedContentIds}
                 handleCheckboxChange={handleContentCheckboxChange}
               />
             </div>
@@ -3168,6 +3230,7 @@ export function QuizOpenTemplate() {
               className="tw-w-[200px] tw-px-10 tw-text-base tw-py-3 tw-rounded border"
               onClick={() => {
                 setIsModalOpenKnowledgeContent(false);
+                setSelectedContentIds([]);
               }}
             >
               닫기
@@ -3212,7 +3275,7 @@ export function QuizOpenTemplate() {
                   setIsModalOpen(false);
                   console.log('selectedQuizIds', selectedQuizIds);
                   onClubQuizContentSave({
-                    contentSequences: selectedQuizIds,
+                    contentSequences: selectedContentIds,
                   });
                   setIsModalContentLoading(true);
                 }}

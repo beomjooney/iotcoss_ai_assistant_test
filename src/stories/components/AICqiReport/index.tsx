@@ -5,6 +5,7 @@ import { ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 const AICqiReport: React.FC<AICqiReportProps> = ({ aiFeedbackDataTotal, isLoading = false }) => {
   // AI 사용 현황 데이터를 차트용으로 변환
+  console.log('aiFeedbackDataTotal', aiFeedbackDataTotal);
   const aiUsageData = [
     {
       name: '활용 학생',
@@ -35,6 +36,7 @@ const AICqiReport: React.FC<AICqiReportProps> = ({ aiFeedbackDataTotal, isLoadin
       count: aiFeedbackDataTotal?.lectureQuestion?.instructorAnsweredQuestionCount,
       color: '#1e40af',
     },
+    { category: '기타 답변', count: aiFeedbackDataTotal?.lectureQuestion?.otherCount, color: '#FF6969' },
   ];
 
   // 강의 분석 데이터가 있는 경우의 렌더링 함수
@@ -268,8 +270,7 @@ const AICqiReport: React.FC<AICqiReportProps> = ({ aiFeedbackDataTotal, isLoadin
             // 객체가 존재하고 실제 데이터가 있는지 확인
             const hasValidData =
               aiFeedbackDataTotal &&
-              Object.keys(aiFeedbackDataTotal).length > 0 &&
-              aiFeedbackDataTotal.studentAiInteractionCount;
+              Object.keys(aiFeedbackDataTotal).length > 0
 
             if (hasValidData) {
               return renderLectureAnalysis();
