@@ -756,46 +756,53 @@ export function LectureCompanyTemplate({ id }: LectureCompanyTemplateProps) {
               )}
             </div>
           </div>
+          {memberClubDetailResponse?.lectureClubEvaluation ? (
+            <>
+              <div className="tw-mb-4">
+                <select
+                  className="tw-w-full tw-h-14 form-select block w-full  tw-font-bold tw-px-4"
+                  value={selectedMemberClubSequence || ''}
+                  onChange={event => {
+                    const clubSequenceStr = event.target.value;
+                    const clubSequence = Number(clubSequenceStr);
+                    setSelectedMemberClubSequence(clubSequenceStr);
+                    const selectedClubData = memberClubsData.find(club => club.clubSequence === clubSequence);
+                    if (selectedClubData) {
+                      setSelectedClub(selectedClubData);
+                      setAiEvaluationParamsTotal({
+                        clubSequence: clubSequence,
+                        memberUUID: memberUUIDList,
+                      });
+                    }
+                  }}
+                >
+                  <option value="" disabled>
+                    퀴즈클럽을 선택해주세요.
+                  </option>
+                  {memberClubsData?.map((club, index) => (
+                    <option key={index} value={String(club.clubSequence)}>
+                      {club.clubName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              {/* 새로운 API 데이터 표시 */}
 
-          <div className="tw-mb-4">
-            <select
-              className="tw-w-full tw-h-14 form-select block w-full  tw-font-bold tw-px-4"
-              value={selectedMemberClubSequence || ''}
-              onChange={event => {
-                const clubSequenceStr = event.target.value;
-                const clubSequence = Number(clubSequenceStr);
-                setSelectedMemberClubSequence(clubSequenceStr);
-                const selectedClubData = memberClubsData.find(club => club.clubSequence === clubSequence);
-                if (selectedClubData) {
-                  setSelectedClub(selectedClubData);
-                  setAiEvaluationParamsTotal({
-                    clubSequence: clubSequence,
-                    memberUUID: memberUUIDList,
-                  });
-                }
-              }}
-            >
-              <option value="" disabled>
-                퀴즈클럽을 선택해주세요.
-              </option>
-              {memberClubsData?.map((club, index) => (
-                <option key={index} value={String(club.clubSequence)}>
-                  {club.clubName}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* 새로운 API 데이터 표시 */}
-          <AICompanyFeedbackSummary
-            aiFeedbackDataTotal={memberClubDetailResponse?.lectureClubEvaluation || null}
-            aiFeedbackDataTotalQuiz={aiFeedbackDataTotalQuiz}
-            isLoading={isLoading}
-            isFeedbackOptions={true}
-            isAdmin={true}
-            clubSequence={selectedClub?.clubSequence || id}
-            memberUUID={memberUUIDList}
-          />
+              <AICompanyFeedbackSummary
+                aiFeedbackDataTotal={memberClubDetailResponse?.lectureClubEvaluation || null}
+                aiFeedbackDataTotalQuiz={aiFeedbackDataTotalQuiz}
+                isLoading={isLoading}
+                isFeedbackOptions={true}
+                isAdmin={true}
+                clubSequence={selectedClub?.clubSequence || id}
+                memberUUID={memberUUIDList}
+              />
+            </>
+          ) : (
+            <div className="tw-h-[50vh] tw-flex tw-justify-center tw-items-center tw-text-center tw-text-base tw-font-bold tw-text-[#31343d]">
+              학습자분석 상세보기 데이터가 없습니다.
+            </div>
+          )}
         </div>
       </MentorsModal>
     </div>
