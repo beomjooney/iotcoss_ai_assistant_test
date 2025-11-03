@@ -1,10 +1,10 @@
 import classNames from 'classnames/bind';
 import styles from './index.module.scss';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSessionStore } from 'src/store/session';
-import { useMemberActiveSummaryInfo } from 'src/services/account/account.queries';
+import { useMemberActiveSummaryInfo, useEnterpriseSharedInfo } from 'src/services/account/account.queries';
+import { useUpdateEnterpriseSharedInfo } from 'src/services/account/account.mutations';
 import { useQuizActivityHistory } from 'src/services/quiz/quiz.queries';
-import { useEffect } from 'react';
 import { Button } from '@material-ui/core';
 import { Checkbox } from '@material-ui/core';
 import { FormControlLabel } from '@material-ui/core';
@@ -33,7 +33,7 @@ export function MyCompanyProfileEditTemplate() {
   const [contents, setContents] = useState<any>([]);
 
   const [expandedSections, setExpandedSections] = useState({
-    basic: true,
+    basic: false,
     quizClub: false,
     learnerAnalysis: false,
     representativeQuiz: false,
@@ -42,8 +42,8 @@ export function MyCompanyProfileEditTemplate() {
 
   const [checkedItems, setCheckedItems] = useState({
     consent: false,
-    basic: true,
-    quizClub: true,
+    basic: false,
+    quizClub: false,
     learnerAnalysis: false,
     representativeQuiz: false,
     allQuiz: false,
@@ -91,6 +91,47 @@ export function MyCompanyProfileEditTemplate() {
     }));
   };
 
+  // API 연동
+  const { isFetched: isSharedInfoFetched, refetch: refetchSharedInfo } = useEnterpriseSharedInfo(
+    data => {
+      if (data) {
+        // API 응답 데이터를 UI state에 매핑
+        setCheckedItems({
+          consent: data.shareAgreed || false,
+          basic: data.basicAgreed || false,
+          quizClub: data.quizClubSummaryAgreed || false,
+          learnerAnalysis: data.learnerAnalysisAgreed || false,
+          representativeQuiz: data.representativeQuizAnswerAgreed || false,
+          allQuiz: data.quizAnswerAgreed || false,
+        });
+      }
+    },
+    error => {
+      console.error('기업체 정보 공유 동의 조회 실패:', error);
+    },
+  );
+
+  const updateMutation = useUpdateEnterpriseSharedInfo();
+
+  const handleUpdateClick = () => {
+    // UI state를 API 요청 형식으로 변환
+    const requestBody = {
+      shareAgreed: checkedItems.consent,
+      basicAgreed: checkedItems.basic,
+      quizClubSummaryAgreed: checkedItems.quizClub,
+      learnerAnalysisAgreed: checkedItems.learnerAnalysis,
+      representativeQuizAnswerAgreed: checkedItems.representativeQuiz,
+      quizAnswerAgreed: checkedItems.allQuiz,
+    };
+
+    updateMutation.mutate(requestBody, {
+      onSuccess: () => {
+        // 성공 시 데이터 다시 조회
+        refetchSharedInfo();
+      },
+    });
+  };
+
   const [summary, setSummary] = useState({});
   const { isFetched: isUserFetched } = useMemberActiveSummaryInfo(data => setSummary(data));
 
@@ -115,8 +156,8 @@ export function MyCompanyProfileEditTemplate() {
             {/* Header */}
             <div className="tw-flex tw-items-center tw-justify-between">
               <div className="tw-text-xl tw-font-bold tw-text-black">약관동의 내역</div>
-              <Button variant="outlined" size="large">
-                정보수정
+              <Button variant="outlined" size="large" onClick={handleUpdateClick} disabled={updateMutation.isLoading}>
+                {updateMutation.isLoading ? '저장 중...' : '정보수정'}
               </Button>
             </div>
 

@@ -21,6 +21,7 @@ import {
   loginSignUpDSU,
   loginIdTest,
   loginIdPasswordTest,
+  updateEnterpriseSharedInfo,
 } from './account.api';
 import { setCookie } from 'cookies-next';
 import router from 'next/router';
@@ -434,6 +435,28 @@ export const useUserUpdate = (): UseMutationResult => {
     onSettled: () => queryClient.invalidateQueries(QUERY_KEY_FACTORY('OTP').all),
     onSuccess: async data => {
       alert('회원정보 수정이 완료되었습니다.');
+    },
+  });
+};
+
+// 기업체 정보 공유 동의 수정
+export const useUpdateEnterpriseSharedInfo = (): UseMutationResult => {
+  const queryClient = useQueryClient();
+  return useMutation<any, any, any>(requestBody => updateEnterpriseSharedInfo(requestBody), {
+    onError: (error, variables, context) => {
+      const { responseCode, message } = error;
+      alert(`수정 실패 : [${responseCode}] ${message}`);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries(QUERY_KEY_FACTORY('USER').all);
+    },
+    onSuccess: async data => {
+      const { responseCode, message } = data;
+      if (responseCode === '0000') {
+        alert('정보 수정이 완료되었습니다.');
+      } else {
+        alert(`수정 실패 : [${responseCode}] ${message}`);
+      }
     },
   });
 };

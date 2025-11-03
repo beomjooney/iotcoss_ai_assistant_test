@@ -2,128 +2,44 @@ import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import React, { useState, useEffect } from 'react';
 import Divider from '@mui/material/Divider';
-import { PieChart } from 'react-minimal-pie-chart';
+import { ExperiencesResponse } from 'src/models/experiences';
+import { useOptions } from 'src/services/experiences/experiences.queries';
+import { UseQueryResult } from 'react-query';
 import AICompanyFeedbackSummary from 'src/stories/components/AICompanyFeedbackSummary/index';
 import {
-  useMyLectureList,
-  useMyLectureDashboardList,
-  useMyLectureDashboardStudentList,
-  useMyDashboardLecture,
-  useMyDashboardQA,
-  useMyDashboardStudentQA,
+  useLearnerAnalysisMembers,
+  useLearnerAnalysisMemberClubs,
+  useLearnerAnalysisMemberClubDetail,
 } from 'src/services/seminars/seminars.queries';
-import { useSaveAnswer, useDeleteQuestion } from 'src/services/seminars/seminars.mutations';
-import Grid from '@mui/material/Grid';
 import Paginations from 'src/stories/components/Pagination';
 import useDidMountEffect from 'src/hooks/useDidMountEffect';
-import { Mobile } from 'src/hooks/mediaQuery';
-import SettingsIcon from '@mui/icons-material/Settings';
 import { Radio, RadioGroup, FormControlLabel } from '@mui/material';
 import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded';
 import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded';
-import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
-import TableRow, { tableRowClasses } from '@mui/material/TableRow';
-import Modal from 'src/stories/components/Modal';
-import TextField from '@mui/material/TextField';
-import AIFeedbackSummary from 'src/stories/components/AIFeedbackSummary/index';
-import AICqiReport from 'src/stories/components/AICqiReport/index';
-import Pagination from '@mui/material/Pagination';
-import PaginationItem from '@mui/material/PaginationItem';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { styled } from '@mui/material/styles';
+import TableRow from '@mui/material/TableRow';
 import {
   useQuizAIFeedbackLectureGetMember,
   useQuizFileDownload,
   useQuizAIFeedbackLectureGetMemberCQI,
 } from 'src/services/quiz/quiz.queries';
-import Markdown from 'react-markdown';
-import router from 'next/router';
 import { useSessionStore } from '../../../store/session';
 import { useStudyOrderLabel } from 'src/hooks/useStudyOrderLabel';
 import MentorsModal from 'src/stories/components/MentorsModal';
-import {
-  useLectureClubEvaluationMember,
-  useLectureClubEvaluationReport,
-} from 'src/services/community/community.mutations';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  [`&.${tableRowClasses.root}`]: {
-    height: '150px',
-  },
-}));
+import { useLectureClubEvaluationReport } from 'src/services/community/community.mutations';
 
 export interface LectureCompanyTemplateProps {
   /** 세미나 아이디 */
   id?: any;
 }
 
-const useStyles = makeStyles(theme => ({
-  table: {
-    minWidth: 650,
-    overflowX: 'auto',
-  },
-  sticky: {
-    position: 'sticky',
-    backgroundColor: '#F6F7FB',
-    zIndex: 1,
-  },
-  stickyWhite: {
-    position: 'sticky',
-    backgroundColor: 'white',
-    zIndex: 1,
-  },
-  stickyWhiteBoard: {
-    position: 'sticky',
-    backgroundColor: 'white',
-    borderRight: '2px solid black',
-    zIndex: 1,
-  },
-  stickyBoard: {
-    position: 'sticky',
-    backgroundColor: '#fff !important',
-    borderRight: '2px solid black',
-    zIndex: 1,
-  },
-  stickyFirst: {
-    left: 0,
-    // zIndex: 2,
-  },
-  stickySecond: {
-    left: 150, // Adjust according to the width of the first column
-    // zIndex: 2,
-  },
-  stickyThird: {
-    left: 270, // Adjust according to the width of the first two columns
-    // zIndex: 2,
-  },
-  stickyFourth: {
-    left: 370, // Adjust according to the width of the first two columns
-    // zIndex: 2,
-  },
-  // Add a new class for scrollable container
-  scrollContainer: {
-    overflowX: 'auto',
-    display: 'block',
-  },
-  // New class to add bottom border to TableRow
-  tableRow: {
-    borderBottom: '1px solid #E0E0E0', // Light gray underline
-    // height: '500px',
-  },
-}));
-
 const cx = classNames.bind(styles);
 
 export function LectureCompanyTemplate({ id }: LectureCompanyTemplateProps) {
-  const classes = useStyles();
   const [isMounted, setIsMounted] = useState(false);
   const [clientState, setClientState] = useState({
     roles: [],
@@ -131,27 +47,14 @@ export function LectureCompanyTemplate({ id }: LectureCompanyTemplateProps) {
   });
 
   const { studyOrderLabelType } = useSessionStore.getState();
-  const { studyOrderLabel } = useStudyOrderLabel(studyOrderLabelType);
   const [page, setPage] = useState(1);
   const [pageStudent, setPageStudent] = useState(1);
-  const [lecturePage, setLecturePage] = useState(1);
   const [questionPage, setQuestionPage] = useState(1);
   const [studentQuestionPage, setStudentQuestionPage] = useState(1);
-  const [totalPage, setTotalPage] = useState(1);
   const [totalStudentPage, setTotalStudentPage] = useState(1);
-  const [totalQuestionPage, setTotalQuestionPage] = useState(1);
-  const [totalStudentQuestionPage, setTotalStudentQuestionPage] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
-  const [myClubList, setMyClubList] = useState<any>([]);
-  const [myDashboardList, setMyDashboardList] = useState<any>([]);
-  const [myDashboardStudentList, setMyDashboardStudentList] = useState<any>([]);
-  const [myDashboardLectureList, setMyDashboardLectureList] = useState<any>([]);
-  const [myDashboardQA, setMyDashboardQA] = useState<any>([]);
-  const [myDashboardStudentQA, setMyDashboardStudentQA] = useState<any>([]);
   const [clubStudySequence, setClubStudySequence] = useState('');
   const [selectedClub, setSelectedClub] = useState(null);
-  const [isInputOpen, setIsInputOpen] = useState(false);
-  const [openInputIndex, setOpenInputIndex] = useState(null);
   const [aiEvaluationParamsTotal, setAiEvaluationParamsTotal] = useState(null);
   const [aiEvaluationParamsTotalCQI, setAiEvaluationParamsTotalCQI] = useState(null);
   const [aiFeedbackDataTotal, setAiFeedbackDataTotal] = useState<any>(null);
@@ -159,31 +62,61 @@ export function LectureCompanyTemplate({ id }: LectureCompanyTemplateProps) {
   const [aiFeedbackDataTotalQuiz, setAiFeedbackDataTotalQuiz] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingCQIReport, setIsLoadingCQIReport] = useState(false);
-  const [isCQIReportModalOpen, setIsCQIReportModalOpen] = useState(false);
-  const [myClubSequenceParams, setMyClubSequenceParams] = useState<any>({ clubSequence: id });
-  const [selectedValue, setSelectedValue] = useState(id);
-  const [activeTab, setActiveTab] = useState('myQuiz');
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isStudentModalOpen, setIsStudentModalOpen] = useState(false);
   const [isAIFeedbackModalOpen, setIsAIFeedbackModalOpen] = useState(false);
   const [key, setKey] = useState('');
   const [fileName, setFileName] = useState('');
   const [memberUUID, setMemberUUID] = useState('');
   const [memberUUIDList, setMemberUUIDList] = useState('');
   const [selectedStudentInfo, setSelectedStudentInfo] = useState<any>(null);
-  const [sortType, setSortType] = useState('NAME');
+  const [sortType, setSortType] = useState('DILIGENCE');
   const [myClubLectureQA, setMyClubLectureQA] = useState<any>(null);
   const [sortLectureType, setSortLectureType] = useState('STUDY_ORDER_ASC');
   const [age, setAge] = useState('');
-  const handleChange = event => {
-    setAge(event.target.value);
-  };
-  const [myClubSubTitleParams, setMyClubSubTitleParams] = useState<any>({
-    clubSequence: id,
-    page,
-    clubType: '0200',
-    size: 100,
+  const [job, setJob] = useState('');
+  const [learnerAnalysisParams, setLearnerAnalysisParams] = useState<any>({
+    sortType: 'DESC',
+    page: 1,
+    size: 10,
+    keyword: '',
+    jobGroup: '',
+    job: '',
+    clubMemberEvaluationSortType: 'DILIGENCE',
   });
+  const [learnerAnalysisData, setLearnerAnalysisData] = useState<any>(null);
+  const [memberClubsData, setMemberClubsData] = useState<any[]>([]);
+  const [selectedMemberClubSequence, setSelectedMemberClubSequence] = useState<any>(null);
+  const [memberClubDetailData, setMemberClubDetailData] = useState<any>(null);
+  const [jobs, setJobs] = useState([]);
+  const handleChange = event => {
+    const selectedCode = event.target.value;
+    const selected = (optionsData as any)?.data?.jobs?.find(u => u.code === selectedCode);
+    setAge(selectedCode);
+    setJobs(selected ? selected.jobs : []);
+
+    // 대학 선택 시 jobGroup 업데이트 및 학과 초기화
+    setLearnerAnalysisParams(prev => ({
+      ...prev,
+      jobGroup: selectedCode || '',
+      job: '', // 대학 변경 시 학과 초기화
+      page: 1,
+    }));
+    setJob(''); // 학과도 초기화
+    setPageStudent(1);
+  };
+
+  const handleChangeJob = event => {
+    const selectedCode = event.target.value;
+    const selected = jobs?.find(u => u.code === selectedCode);
+    setJob(selectedCode);
+
+    // 학과 선택 시 job 업데이트
+    setLearnerAnalysisParams(prev => ({
+      ...prev,
+      job: selectedCode || '',
+      page: 1,
+    }));
+    setPageStudent(1);
+  };
 
   const [myClubParams, setMyClubParams] = useState<any>({
     clubSequence: selectedClub?.clubSequence || id,
@@ -201,15 +134,7 @@ export function LectureCompanyTemplate({ id }: LectureCompanyTemplateProps) {
   });
   const [answer, setAnswer] = useState('');
 
-  const { mutate: onSaveAnswer, isSuccess, isError } = useSaveAnswer();
-  const { mutate: onDeleteQuestion, isSuccess: isDeleteSuccess } = useDeleteQuestion();
-
-  /** 개별 클럽의 로딩 상태 설정 */
-  const {
-    mutate: onLectureClubEvaluationMember,
-    isSuccess: lectureClubEvaluationMemberSucces,
-    isError: lectureClubEvaluationMemberError,
-  } = useLectureClubEvaluationMember();
+  const { data: optionsData }: UseQueryResult<ExperiencesResponse> = useOptions();
 
   /** 개별 클럽의 CQI 보고서 생성 */
   const {
@@ -260,128 +185,27 @@ export function LectureCompanyTemplate({ id }: LectureCompanyTemplateProps) {
   }, [lectureClubEvaluationReportSucces, lectureClubEvaluationReportError]);
 
   useEffect(() => {
-    if (lectureClubEvaluationMemberSucces || lectureClubEvaluationMemberError) {
-      refetchAIEvaluationTotal();
-      setIsLoading(false);
-    }
-  }, [lectureClubEvaluationMemberSucces, lectureClubEvaluationMemberError]);
-
-  useEffect(() => {
     if (isSuccessAIEvaluationTotalCQI || isErrorAIEvaluationTotalCQI) {
       refetchAIEvaluationTotalCQI();
       setIsLoadingCQIReport(false);
     }
   }, [isSuccessAIEvaluationTotalCQI, isErrorAIEvaluationTotalCQI]);
 
-  useDidMountEffect(() => {
-    if (isSuccess) {
-      setAnswer('');
-      refetchMyDashboardQA();
-    }
-  }, [isSuccess]);
-
-  useDidMountEffect(() => {
-    if (isDeleteSuccess) {
-      refetchMyDashboardStudentQA();
-      refetchMyDashboardStudent();
-    }
-  }, [isDeleteSuccess]);
-
   const handleChangeQuiz = event => {
-    setSortType(event.target.value);
-  };
+    const value = event.target.value;
+    setSortType(value);
+    // 정렬 타입에 따라 clubMemberEvaluationSortType 매핑
+    let clubMemberEvaluationSortType = value; // DILIGENCE, UNDERSTANDING, PARTICIPATION, AVERAGE
+    let sortTypeParam = 'DESC'; // 기본값은 내림차순
 
-  const handleChangeLecture = event => {
-    setSortLectureType(event.target.value);
-  };
-
-  // 퀴즈클럽 리스트
-  const { isFetched: isContentFetched, refetch: refetchMyClub } = useMyLectureList(myClubSubTitleParams, data => {
-    console.log(data?.data?.contents);
-    setMyClubList(data?.data?.contents || []);
-  });
-
-  // 강의클럽 대시 보드 요약 조회
-  const { isFetched: isDashboardFetched, refetch: refetchMyDashboard } = useMyLectureDashboardList(
-    myClubSequenceParams,
-    data => {
-      console.log('useMyLectureDashboardList', data);
-      console.log('useMyLectureDashboardList', data?.clubStudySequence);
-      setMyDashboardList(data || []);
-    },
-  );
-
-  // 강의클럽 대시보드 학생 참여 현황
-  const { isFetched: isDashboardStudentFetched, refetch: refetchMyDashboardStudent } = useMyLectureDashboardStudentList(
-    myClubParams,
-    data => {
-      console.log('useMyLectureDashboardStudentList', data);
-      setMyDashboardStudentList(data || []);
-      setTotalStudentPage(data?.students?.totalPages);
-    },
-  );
-
-  // 강의클럽 대시보드 강의별 참여 현황
-  const { isFetched: isDashboardLectureFetched, refetch: refetchMyDashboardLecture } = useMyDashboardLecture(
-    myClubLectureParams,
-    data => {
-      console.log('useMyDashboardLecture', data);
-      setTotalPage(data?.totalPages);
-      setTotalElements(data?.totalElements);
-      setMyDashboardLectureList(data || []);
-    },
-  );
-
-  // 강의클럽 대시보드 강의별 참여 현황
-  const { isFetched: isDashboardQAFetched, refetch: refetchMyDashboardQA } = useMyDashboardQA(myClubLectureQA, data => {
-    console.log('useMyDashboardQA', data);
-    setTotalQuestionPage(data?.totalPages);
-    setMyDashboardQA(data || []);
-  });
-
-  // 강의클럽 대시보드 학생별 참여 현황
-  const { isFetched: isDashboardStudentQAFetched, refetch: refetchMyDashboardStudentQA } = useMyDashboardStudentQA(
-    myClubLectureStudentQA,
-    data => {
-      console.log('useMyDashboardStudentQA', data);
-      setTotalStudentQuestionPage(data?.totalPages);
-      setMyDashboardStudentQA(data || []);
-    },
-  );
-
-  useDidMountEffect(() => {
-    console.log('clubStudySequence', clubStudySequence);
-    refetchMyDashboardQA();
-  }, [myClubLectureQA]);
-
-  useDidMountEffect(() => {
-    console.log('clubStudySequence', clubStudySequence);
-    refetchMyDashboardStudentQA();
-  }, [myClubLectureStudentQA]);
-
-  useDidMountEffect(() => {
-    setMyClubParams({
-      clubSequence: selectedClub?.clubSequence || id,
-      data: { sortType: sortType, page: 1, orderBy: sortType === 'NAME' ? 'ASC' : 'DESC' },
-    });
-
-    setMyClubSequenceParams({ clubSequence: selectedClub?.clubSequence || id });
-
-    let dataParam = {};
-    if (sortLectureType === 'STUDY_ORDER_ASC') {
-      dataParam = { orderBy: 'STUDY_ORDER', page: lecturePage, sortType: 'DESC' };
-    } else if (sortLectureType === 'STUDY_ORDER_DESC') {
-      dataParam = { orderBy: 'STUDY_ORDER', page: lecturePage, sortType: 'ASC' };
-    } else {
-      dataParam = { orderBy: 'QUESTION_COUNT', page: lecturePage, sortType: 'DESC' };
-    }
-
-    setMyClubLectureParams({
-      clubSequence: selectedClub?.clubSequence || id,
-      data: dataParam,
-    });
+    setLearnerAnalysisParams(prev => ({
+      ...prev,
+      sortType: sortTypeParam,
+      clubMemberEvaluationSortType: clubMemberEvaluationSortType,
+      page: 1,
+    }));
     setPageStudent(1);
-  }, [sortType, selectedClub, sortLectureType, lecturePage]);
+  };
 
   useDidMountEffect(() => {
     setMyClubParams({
@@ -440,47 +264,6 @@ export function LectureCompanyTemplate({ id }: LectureCompanyTemplateProps) {
     }
   }, [memberUUID]);
 
-  const handleQuizChange = event => {
-    const value = event.target.value;
-    const selectedSession = myClubList?.find(session => {
-      return session.clubSequence === Number(value);
-    });
-
-    console.log('value', value);
-    setSelectedValue(value);
-    setSelectedClub(selectedSession);
-    setAiFeedbackDataTotalReport({});
-    console.log(selectedSession);
-  };
-
-  const handleDeleteQuestion = () => {
-    let params = {
-      questionMemberUUID: memberUUID,
-      clubSequence: selectedClub?.clubSequence || id,
-    };
-    // console.log('handleDeleteQuestion', params);
-    if (confirm('전체질문을 삭제하시겠습니까?')) {
-      onDeleteQuestion(params);
-    }
-  };
-
-  const handleTabClick = tab => {
-    setActiveTab(tab);
-  };
-
-  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    console.log('handlePageChange', value);
-    setLecturePage(value);
-  };
-  const handleQAPageChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    console.log('handleQAPageChange', value);
-    setQuestionPage(value);
-  };
-  const handleStudentQAPageChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    console.log('handleStudentQAPageChange', value);
-    setStudentQuestionPage(value);
-  };
-
   const { isFetched: isParticipantListFetcheds, isSuccess: isParticipantListSuccess } = useQuizFileDownload(
     key,
     data => {
@@ -515,6 +298,78 @@ export function LectureCompanyTemplate({ id }: LectureCompanyTemplateProps) {
     }
   }, []);
 
+  // 학습자 분석 데이터 조회
+  const {
+    isFetched: isLearnerAnalysisFetched,
+    isSuccess: isLearnerAnalysisSuccess,
+    refetch: refetchLearnerAnalysis,
+  } = useLearnerAnalysisMembers(
+    learnerAnalysisParams,
+    data => {
+      console.log('🎉 Learner Analysis SUCCESS:', data);
+      setLearnerAnalysisData(data);
+      if (data?.totalPages) {
+        setTotalStudentPage(data.totalPages);
+      }
+      if (data?.totalElements) {
+        setTotalElements(data.totalElements);
+      }
+    },
+    error => {
+      console.error('❌ Learner Analysis ERROR:', error);
+      alert('학습자 분석 데이터를 불러오는데 실패했습니다.');
+    },
+  );
+
+  // 회원별 퀴즈클럽 목록 조회
+  const {
+    data: memberClubsResponse,
+    isFetched: isMemberClubsFetched,
+    isSuccess: isMemberClubsSuccess,
+    refetch: refetchMemberClubs,
+  } = useLearnerAnalysisMemberClubs(
+    memberUUIDList,
+    data => {
+      console.log('🎉 Member Clubs SUCCESS:', data);
+      setMemberClubsData(data || []);
+      // 첫 번째 클럽을 기본 선택
+      if (data && data.length > 0) {
+        setSelectedMemberClubSequence(String(data[0].clubSequence));
+      }
+    },
+    error => {
+      console.error('❌ Member Clubs ERROR:', error);
+      alert('퀴즈클럽 목록을 불러오는데 실패했습니다.');
+    },
+  );
+
+  // 회원별 클럽 상세 조회
+  const {
+    data: memberClubDetailResponse,
+    isFetched: isMemberClubDetailFetched,
+    isSuccess: isMemberClubDetailSuccess,
+    refetch: refetchMemberClubDetail,
+  } = useLearnerAnalysisMemberClubDetail(
+    memberUUIDList,
+    selectedMemberClubSequence ? Number(selectedMemberClubSequence) : undefined,
+    data => {
+      console.log('🎉 Member Club Detail SUCCESS:', data);
+      setMemberClubDetailData(data);
+    },
+    error => {
+      console.error('❌ Member Club Detail ERROR:', error);
+      alert('클럽 상세 정보를 불러오는데 실패했습니다.');
+    },
+  );
+
+  console.log('memberClubDetailResponse', memberClubDetailResponse);
+
+  useDidMountEffect(() => {
+    if (learnerAnalysisParams) {
+      refetchLearnerAnalysis();
+    }
+  }, [learnerAnalysisParams]);
+
   // AI 개별 피드백 데이터 조회
   useDidMountEffect(() => {
     if (aiEvaluationParamsTotal) {
@@ -527,6 +382,26 @@ export function LectureCompanyTemplate({ id }: LectureCompanyTemplateProps) {
       refetchAIEvaluationTotalCQI();
     }
   }, [aiEvaluationParamsTotalCQI]);
+
+  // 회원별 퀴즈클럽 목록이 로드되면 첫 번째 클럽 선택 및 AI 평가 파라미터 설정
+  useDidMountEffect(() => {
+    if (memberClubsData && memberClubsData.length > 0 && memberUUIDList) {
+      const firstClub = memberClubsData[0];
+      setSelectedMemberClubSequence(String(firstClub.clubSequence));
+      setSelectedClub(firstClub);
+      setAiEvaluationParamsTotal({
+        clubSequence: firstClub.clubSequence,
+        memberUUID: memberUUIDList,
+      });
+    }
+  }, [memberClubsData, memberUUIDList]);
+
+  // 클럽 선택 시 상세 데이터 자동 조회
+  useDidMountEffect(() => {
+    if (selectedMemberClubSequence && memberUUIDList) {
+      refetchMemberClubDetail();
+    }
+  }, [selectedMemberClubSequence, memberUUIDList]);
 
   // 마운트되지 않았을 때 로딩 표시
   if (!isMounted) {
@@ -582,23 +457,27 @@ export function LectureCompanyTemplate({ id }: LectureCompanyTemplateProps) {
                   value={age}
                   aria-label="Default select example"
                 >
-                  <option value="">대학을 선택해주세요</option>
-                  <option value="0100">대학1</option>
-                  <option value="0200">대학2</option>
-                  <option value="0300">대학3</option>
+                  <option value="">대학을 선택해주세요.</option>
+                  {(optionsData as any)?.data?.jobs?.map((university, index) => (
+                    <option key={index} value={university.code}>
+                      {university.name}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div className="tw-flex tw-items-center tw-gap-2">
                 <select
                   className="tw-h-10 tw-w-[250px] form-select block tw-px-4 tw-rounded"
-                  onChange={handleChange}
-                  value={age}
+                  onChange={handleChangeJob}
+                  value={job}
                   aria-label="Default select example"
                 >
-                  <option value="">학과 전체</option>
-                  <option value="0100">교수자 답변노출</option>
-                  <option value="0200">AI 답변노출</option>
-                  <option value="0300">교수자+AI 답변노출</option>
+                  <option value="">학과를 선택해주세요.</option>
+                  {jobs.map((job, index) => (
+                    <option key={index} value={job.code}>
+                      {job.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -614,33 +493,51 @@ export function LectureCompanyTemplate({ id }: LectureCompanyTemplateProps) {
                     정렬 :
                   </p>
                   <FormControlLabel
-                    value="NAME"
+                    value="DILIGENCE"
                     control={
                       <Radio
                         sx={{
                           color: '#ced4de',
-                          '&.Mui-checked': { color: '#e11837' },
+                          '&.Mui-checked': { color: '#007bff' },
                         }}
-                        icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
-                        checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                        icon={<CheckBoxOutlineBlankRoundedIcon />}
+                        checkedIcon={<CheckBoxRoundedIcon />}
                       />
                     }
                     label={
                       <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                        이름순
+                        성실도순
                       </p>
                     }
                   />
                   <FormControlLabel
-                    value="PARTICIPATION_RATE"
+                    value="UNDERSTANDING"
                     control={
                       <Radio
                         sx={{
                           color: '#ced4de',
-                          '&.Mui-checked': { color: '#e11837' },
+                          '&.Mui-checked': { color: '#007bff' },
                         }}
-                        icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
-                        checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                        icon={<CheckBoxOutlineBlankRoundedIcon />}
+                        checkedIcon={<CheckBoxRoundedIcon />}
+                      />
+                    }
+                    label={
+                      <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
+                        이해도순
+                      </p>
+                    }
+                  />
+                  <FormControlLabel
+                    value="PARTICIPATION"
+                    control={
+                      <Radio
+                        sx={{
+                          color: '#ced4de',
+                          '&.Mui-checked': { color: '#007bff' },
+                        }}
+                        icon={<CheckBoxOutlineBlankRoundedIcon />}
+                        checkedIcon={<CheckBoxRoundedIcon />}
                       />
                     }
                     label={
@@ -650,20 +547,20 @@ export function LectureCompanyTemplate({ id }: LectureCompanyTemplateProps) {
                     }
                   />
                   <FormControlLabel
-                    value="QUESTION_COUNT"
+                    value="AVERAGE"
                     control={
                       <Radio
                         sx={{
                           color: '#ced4de',
-                          '&.Mui-checked': { color: '#e11837' },
+                          '&.Mui-checked': { color: '#007bff' },
                         }}
-                        icon={<CheckBoxOutlineBlankRoundedIcon />} // 네모로 변경
-                        checkedIcon={<CheckBoxRoundedIcon />} // 체크됐을 때 동그라미 아이콘 사용
+                        icon={<CheckBoxOutlineBlankRoundedIcon />}
+                        checkedIcon={<CheckBoxRoundedIcon />}
                       />
                     }
                     label={
                       <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-base tw-font-bold tw-text-left tw-text-[#31343d]">
-                        질의많은순
+                        전체 평균 점수순
                       </p>
                     }
                   />
@@ -704,30 +601,12 @@ export function LectureCompanyTemplate({ id }: LectureCompanyTemplateProps) {
                     <TableCell align="center" width={100}>
                       <div className="tw-font-bold tw-text-base">상세보기</div>
                     </TableCell>
-
-                    {/* {myDashboardStudentList?.schedules?.map((session, index) => (
-                      <TableCell key={index} width={90} align="right">
-                        <div>
-                          <p className="tw-text-base tw-font-bold tw-text-center tw-text-[#31343d] tw-left-[15px] tw-top-0">
-                            {session?.order} {studyOrderLabel}
-                          </p>
-                          <p className="tw-w-full tw-h-3.5 tw-text-xs tw-font-medium tw-text-center tw-text-[#9ca5b2] tw-bottom-0">
-                            {session?.publishDate?.slice(5)} ({session?.dayOfWeek})
-                          </p>
-                        </div>
-                      </TableCell>
-                    ))} */}
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {myDashboardStudentList?.students?.contents?.map((info, index) => (
+                  {learnerAnalysisData?.contents?.map((info, index) => (
                     <TableRow key={index}>
-                      <TableCell
-                        align="center"
-                        component="th"
-                        scope="row"
-                        className={`${classes.stickyWhite} ${classes.stickyFirst}`}
-                      >
+                      <TableCell align="center" component="th" scope="row">
                         <div className="tw-flex tw-items-center">
                           <img
                             className="tw-w-10 tw-h-10 tw-rounded-full"
@@ -740,76 +619,69 @@ export function LectureCompanyTemplate({ id }: LectureCompanyTemplateProps) {
                       <TableCell align="center" component="th" scope="row">
                         <div className="tw-font-bold tw-grid tw-gap-1 tw-justify-center tw-items-center">
                           <div>
-                            <span className="tw-text-sm tw-text-gray-500">국어대학교</span>
+                            <span className="tw-text-sm tw-text-gray-500">{info?.jobGroup?.name || '-'}</span>
                           </div>
                         </div>
                       </TableCell>
                       <TableCell padding="none" align="center" component="th" scope="row">
                         <div className=" tw-gap-0 tw-justify-center tw-items-center tw-p-2">
-                          <span className="tw-font-bold">국어문학</span>
+                          <span className="tw-font-bold">{info?.job?.name || '-'}</span>
                         </div>
                       </TableCell>
                       <TableCell padding="none" align="center" component="th" scope="row">
                         <div className="tw-cursor-pointer">
                           <div className=" tw-gap-0 tw-justify-center tw-items-center tw-p-2">
-                            <span className="tw-font-bold">{info?.answeredCount}</span> / 100
+                            <span className="tw-font-bold">{info?.understandingScore || 0}</span> / 100
                           </div>
                         </div>
                       </TableCell>
                       <TableCell padding="none" align="center" component="th" scope="row">
                         <div className="tw-cursor-pointer">
                           <div className=" tw-gap-0 tw-justify-center tw-items-center tw-p-2">
-                            <span className="tw-font-bold">{info?.answeredCount}</span> / 100
+                            <span className="tw-font-bold">{info?.diligenceScore || 0}</span> / 100
                           </div>
                         </div>
                       </TableCell>
                       <TableCell padding="none" align="center" component="th" scope="row">
                         <div className="tw-cursor-pointer">
                           <div className=" tw-gap-0 tw-justify-center tw-items-center tw-p-2">
-                            <span className="tw-font-bold">{info?.answeredCount}</span> / 100
+                            <span className="tw-font-bold">{info?.criticalThinkingScore || 0}</span> / 100
                           </div>
                         </div>
                       </TableCell>
                       <TableCell padding="none" align="center" component="th" scope="row">
                         <div className="tw-cursor-pointer">
                           <div className=" tw-gap-0 tw-justify-center tw-items-center tw-p-2">
-                            <span className="tw-font-bold">{info?.answeredCount}</span> / 100
+                            <span className="tw-font-bold">{info?.completionScore || 0}</span> / 100
                           </div>
                         </div>
                       </TableCell>
                       <TableCell padding="none" align="center" component="th" scope="row">
                         <div className="tw-cursor-pointer">
                           <div className=" tw-gap-0 tw-justify-center tw-items-center tw-p-2">
-                            <span className="tw-font-bold">{info?.answeredCount}</span> / 100
+                            <span className="tw-font-bold">{info?.participationScore || 0}</span> / 100
                           </div>
                         </div>
                       </TableCell>
                       <TableCell padding="none" align="center" component="th" scope="row">
                         <div className="tw-cursor-pointer">
                           <div className=" tw-gap-0 tw-justify-center tw-items-center tw-p-2">
-                            <span className="tw-font-bold">{info?.answeredCount}</span> / 100
+                            <span className="tw-font-bold">{info?.averageScore || 0}</span> / 100
                           </div>
                         </div>
                       </TableCell>
                       <TableCell padding="none" align="center" component="th" scope="row" width={100}>
                         <div
                           onClick={() => {
-                            if (!info?.comprehensiveEvaluationViewable) {
+                            if (!info?.member?.memberUUID) {
                               return;
                             }
                             setSelectedStudentInfo(info);
-                            setIsAIFeedbackModalOpen(true);
-                            setAiEvaluationParamsTotal({
-                              clubSequence: selectedClub?.clubSequence || id,
-                              memberUUID: info?.member?.memberUUID,
-                            });
                             setMemberUUIDList(info?.member?.memberUUID);
+                            setIsAIFeedbackModalOpen(true);
+                            // memberUUID 설정 후 hook이 자동으로 API 호출
                           }}
-                          className={`tw-gap-1 tw-p-1 tw-rounded-[5px] tw-w-[70px] tw-flex tw-justify-center tw-items-center tw-bg-[#6A7380] tw-text-white tw-cursor-pointer tw-text-sm tw-mx-auto ${
-                            info?.comprehensiveEvaluationViewable
-                              ? 'tw-bg-[#6A7380] tw-text-white tw-cursor-pointer'
-                              : 'tw-bg-gray-300 tw-text-gray-500 tw-cursor-not-allowed'
-                          }`}
+                          className="tw-gap-1 tw-p-1 tw-rounded-[5px] tw-w-[70px] tw-flex tw-justify-center tw-items-center tw-bg-[#6A7380] tw-text-white tw-cursor-pointer tw-text-sm tw-mx-auto"
                         >
                           <p>상세보기</p>
                           <svg
@@ -832,9 +704,19 @@ export function LectureCompanyTemplate({ id }: LectureCompanyTemplateProps) {
             </TableContainer>
 
             <div className="tw-mt-10">
-              <Paginations page={pageStudent} setPage={setPageStudent} total={totalStudentPage} />
+              <Paginations
+                page={pageStudent}
+                setPage={newPage => {
+                  setPageStudent(newPage);
+                  setLearnerAnalysisParams(prev => ({
+                    ...prev,
+                    page: newPage,
+                  }));
+                }}
+                total={totalStudentPage}
+              />
             </div>
-            {myDashboardStudentList?.students?.contents?.length === 0 && (
+            {learnerAnalysisData?.contents?.length === 0 && (
               <div className={cx('tw-flex tw-justify-center tw-items-center tw-h-[50vh]')}>
                 <p className="tw-text-center tw-text-base tw-font-bold tw-text-[#31343d]">데이터가 없습니다.</p>
               </div>
@@ -842,328 +724,6 @@ export function LectureCompanyTemplate({ id }: LectureCompanyTemplateProps) {
           </div>
         </>
       </div>
-      <Modal
-        isOpen={isModalOpen}
-        onAfterClose={() => {
-          setQuestionPage(1);
-          setIsModalOpen(false);
-        }}
-        title="질의응답"
-        maxWidth="1100px"
-        maxHeight="800px"
-      >
-        <div className={cx('seminar-check-popup')}>
-          <TableContainer>
-            <Table className="" aria-label="simple table" style={{ tableLayout: 'fixed' }}>
-              <TableHead style={{ backgroundColor: '#F6F7FB' }}>
-                <TableRow>
-                  <TableCell align="left" width={160} className="border-right">
-                    <div className="tw-font-bold tw-text-base">학생</div>
-                  </TableCell>
-                  <TableCell align="left" width={250} className="border-right">
-                    <div className="tw-font-bold tw-text-base">질문</div>
-                  </TableCell>
-                  <TableCell align="left" className="border-right">
-                    <div className="tw-font-bold tw-text-base">답변내역</div>
-                  </TableCell>
-                  <TableCell align="left" width={100}>
-                    <div className="tw-font-bold tw-text-base">추가답변</div>
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {myDashboardQA?.members?.map((info, memberIndex) => (
-                  <React.Fragment key={memberIndex}>
-                    {info.questionAnswers.map((questionInfo, questionIndex) => (
-                      <TableRow key={questionIndex}>
-                        {/* Render the student info only for the first question */}
-                        {questionIndex === 0 && (
-                          <TableCell
-                            align="left"
-                            component="th"
-                            scope="row"
-                            className="border-right"
-                            rowSpan={info.questionAnswers.length}
-                          >
-                            <div className="tw-flex tw-justify-start tw-items-center tw-gap-2">
-                              <img
-                                src={info?.icon?.profileImageUrl || '/assets/images/account/default_profile_image.png'}
-                                className="tw-w-10 tw-h-10 border tw-rounded-full"
-                                alt="Profile"
-                              />
-                              <div className="tw-ml-2">{info?.icon?.nickname}</div>
-                            </div>
-                          </TableCell>
-                        )}
-
-                        {/* Question Column */}
-                        <TableCell align="left" component="th" scope="row" className="border-right">
-                          <div className="tw-font-bold tw-text-sm">{questionInfo?.question}</div>
-                        </TableCell>
-
-                        {/* Answer Details Column */}
-                        <TableCell align="left" component="th" scope="row" className="border-right">
-                          <div className="tw-h-[150px] tw-overflow-auto">
-                            <div className="tw-font-bold tw-text-sm">
-                              <Markdown className="markdown-container tw-prose tw-pr-2 tw-break-words">
-                                {questionInfo?.answer
-                                  ? 'AI답변 : ' +
-                                    (questionInfo?.answerType === '0200'
-                                      ? '(강의자료) : '
-                                      : questionInfo?.answerType === '0300'
-                                        ? '(일반서치) : '
-                                        : '') +
-                                    questionInfo?.answer
-                                  : null}
-                              </Markdown>
-                              {questionInfo?.instructorAnswer && (
-                                <div className="tw-mt-2 tw-text-sm tw-font-medium tw-text-gray-400">
-                                  추가답변 : {questionInfo?.instructorAnswer}
-                                </div>
-                              )}
-                              {openInputIndex === questionInfo?.lectureQuestionSerialNumber && (
-                                <div className="tw-mt-2 tw-flex tw-justify-start tw-items-center tw-gap-2">
-                                  <TextField
-                                    type="text"
-                                    placeholder="답변을 추가하세요"
-                                    size="small"
-                                    className="tw-border tw-px-0 tw-py-0 tw-w-full tw-rounded"
-                                    value={answer}
-                                    onChange={e => {
-                                      setAnswer(e.target.value);
-                                    }}
-                                  />
-                                  <button
-                                    onClick={() => {
-                                      console.log(questionInfo);
-                                      if (answer === '') {
-                                        alert('답변을 입력해주세요.');
-                                      } else {
-                                        onSaveAnswer({
-                                          clubSequence: questionInfo.clubSequence,
-                                          clubStudySequence: questionInfo.clubStudySequence,
-                                          lectureQuestionSerialNumber: questionInfo.lectureQuestionSerialNumber,
-                                          answer: answer,
-                                        });
-                                      }
-                                    }}
-                                    className="tw-w-[80px] tw-text-sm tw-font-bold border tw-py-2.5 tw-px-3 tw-rounded"
-                                  >
-                                    저장
-                                  </button>
-                                  <button
-                                    onClick={e => {
-                                      e.preventDefault();
-                                      setOpenInputIndex(null);
-                                    }}
-                                    className="tw-w-[80px] tw-text-sm tw-font-bold border tw-py-2.5 tw-px-3 tw-rounded"
-                                  >
-                                    삭제
-                                  </button>
-                                </div>
-                              )}
-                            </div>
-
-                            {/* Render files if present */}
-                            {questionInfo?.files?.length > 0 && (
-                              <div className="tw-mt-2 tw-text-sm tw-flex tw-justify-start tw-items-center tw-flex-wrap tw-gap-2">
-                                <div>강의자료 : </div>
-                                {questionInfo.files.map((fileEntry, fileIndex) => (
-                                  <div key={fileIndex} className="border tw-px-2 tw-py-0.5 tw-rounded">
-                                    <span
-                                      onClick={() => {
-                                        window.open(fileEntry.url, '_blank');
-                                      }}
-                                      className="tw-text-gray-400 tw-cursor-pointer"
-                                    >
-                                      {fileEntry?.name}
-                                    </span>
-                                  </div>
-                                ))}
-                              </div>
-                            )}
-
-                            {/* Reference URLs */}
-                            {questionInfo?.referenceUrls && (
-                              <div className="tw-mt-2 tw-text-sm tw-flex tw-justify-start tw-items-center tw-flex-wrap tw-gap-2">
-                                <div>출처 : </div>
-                                <div className="border tw-px-2 tw-py-0.5 tw-rounded">
-                                  <span className="tw-text-gray-400 tw-cursor-pointer">
-                                    {questionInfo?.referenceUrls}
-                                  </span>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        </TableCell>
-
-                        {/* Additional Answer Button Column */}
-                        <TableCell align="center" component="th" scope="row">
-                          <button
-                            onClick={e => {
-                              e.preventDefault();
-                              setIsInputOpen(true);
-                              setOpenInputIndex(questionInfo?.lectureQuestionSerialNumber);
-                            }}
-                            className="tw-text-sm tw-font-bold border tw-py-2 tw-px-3 tw-text-gray-400 tw-rounded"
-                          >
-                            +
-                          </button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </React.Fragment>
-                ))}
-              </TableBody>
-            </Table>
-            {myDashboardQA?.members?.length === 0 && (
-              <div className={cx('tw-flex tw-justify-center tw-items-center tw-h-[20vh]')}>
-                <p className="tw-text-center tw-text-base tw-font-bold tw-text-[#31343d]">데이터가 없습니다.</p>
-              </div>
-            )}
-            <div className="tw-flex tw-justify-center tw-items-center tw-my-5">
-              <Pagination
-                count={totalQuestionPage}
-                size="small"
-                siblingCount={0}
-                page={questionPage}
-                renderItem={item => (
-                  <PaginationItem slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }} {...item} />
-                )}
-                onChange={handleQAPageChange}
-              />
-            </div>
-          </TableContainer>
-        </div>
-      </Modal>
-      <Modal
-        isOpen={isStudentModalOpen}
-        onAfterClose={() => {
-          setIsStudentModalOpen(false);
-        }}
-        title="학생별 상세보기"
-        maxWidth="1100px"
-        maxHeight="820px"
-      >
-        <div className={cx('seminar-check-popup', 'tw-h-[650px] tw-overflow-auto')}>
-          {isMounted && clientState.roles.includes('ROLE_MANAGER') && (
-            <div className="tw-flex tw-justify-end tw-items-center tw-gap-3">
-              <button
-                onClick={() => {
-                  handleDeleteQuestion();
-                }}
-                className="tw-text-sm tw-font-bold tw-text-white tw-bg-black tw-rounded tw-py-2 tw-px-4 tw-mb-3"
-              >
-                질문내역삭제
-              </button>
-            </div>
-          )}
-          <TableContainer>
-            <Table className="" aria-label="simple table" style={{ tableLayout: 'fixed' }}>
-              <TableHead style={{ backgroundColor: '#F6F7FB' }}>
-                <TableRow>
-                  <TableCell align="left" width={200} className="border-right">
-                    <div className="tw-font-bold tw-text-base">강의{studyOrderLabel}</div>
-                  </TableCell>
-                  <TableCell align="left" width={250} className="border-right">
-                    <div className="tw-font-bold tw-text-base">강의질문</div>
-                  </TableCell>
-                  <TableCell align="left" className="">
-                    <div className="tw-font-bold tw-text-base">답변내역</div>
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {myDashboardStudentQA?.contents?.map((info, memberIndex) => (
-                  <React.Fragment key={memberIndex}>
-                    <TableRow key={memberIndex}>
-                      {/* Render the student info only for the first question */}
-                      <TableCell align="left" component="th" scope="row" className="border-right">
-                        <div className="">
-                          <div className="tw-font-bold tw-text-sm">
-                            {info?.studyOrder} {studyOrderLabel}
-                          </div>
-                          <div className="">
-                            {info?.startDate?.substring(5)}({info?.startDayOfWeek}) ~ {info?.endDate?.substring(5)}(
-                            {info?.endDayOfWeek})
-                          </div>
-                        </div>
-                      </TableCell>
-
-                      {/* Question Column */}
-                      <TableCell align="left" component="th" scope="row" className="border-right">
-                        <div className="tw-h-[150px] tw-overflow-auto">
-                          <div className="tw-font-bold tw-text-sm">{info?.question}</div>
-                        </div>
-                      </TableCell>
-
-                      {/* Answer Details Column */}
-                      <TableCell align="left" component="th" scope="row" className="">
-                        <div className="tw-h-[150px] tw-overflow-auto">
-                          <div className="tw-font-bold tw-text-sm">
-                            <Markdown className="markdown-container tw-prose tw-pr-2 tw-break-words">
-                              {info?.answer
-                                ? 'AI답변 : ' +
-                                  (info?.answerType === '0200'
-                                    ? '(강의자료) : '
-                                    : info?.answerType === '0300'
-                                      ? '(일반서치) : '
-                                      : '') +
-                                  info?.answer
-                                : null}
-                            </Markdown>
-                            {info?.instructorAnswer && (
-                              <div className="tw-mt-2 tw-text-sm tw-font-medium tw-text-gray-400">
-                                추가답변 : {info?.instructorAnswer}
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Render files if present */}
-                          {info?.clubContents?.length > 0 && (
-                            <div className="tw-mt-2 tw-text-sm tw-flex tw-justify-start tw-items-center tw-flex-wrap tw-gap-2">
-                              <div>강의자료 : </div>
-                              {info?.clubContents?.map((fileEntry, fileIndex) => (
-                                <div key={fileIndex} className="border tw-px-2 tw-py-0.5 tw-rounded">
-                                  <span
-                                    onClick={() => {
-                                      window.open(fileEntry.url, '_blank');
-                                    }}
-                                    className="tw-text-gray-400 tw-cursor-pointer"
-                                  >
-                                    {fileEntry?.name}
-                                  </span>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  </React.Fragment>
-                ))}
-              </TableBody>
-            </Table>
-            {myDashboardStudentQA?.members?.length === 0 && (
-              <div className={cx('tw-flex tw-justify-center tw-items-center tw-h-[20vh]')}>
-                <p className="tw-text-center tw-text-base tw-font-bold tw-text-[#31343d]">데이터가 없습니다.</p>
-              </div>
-            )}
-          </TableContainer>
-        </div>
-        <div className="tw-flex tw-justify-center tw-items-center tw-my-5">
-          <Pagination
-            count={totalStudentQuestionPage}
-            size="small"
-            siblingCount={0}
-            page={studentQuestionPage}
-            renderItem={item => (
-              <PaginationItem slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }} {...item} />
-            )}
-            onChange={handleStudentQAPageChange}
-          />
-        </div>
-      </Modal>
 
       {/* AI 피드백 모달 */}
       <MentorsModal
@@ -1173,91 +733,70 @@ export function LectureCompanyTemplate({ id }: LectureCompanyTemplateProps) {
           setIsAIFeedbackModalOpen(false);
           setSelectedStudentInfo(null);
           setIsLoading(false); // loading 상태 초기화 추가
+          setMemberClubsData([]);
+          setSelectedMemberClubSequence(null);
+          setMemberUUIDList('');
+          setMemberClubDetailData(null);
         }}
         title={'학습자분석 상세보기'}
       >
         <div>
           <div className="tw-flex tw-justify-between tw-items-center tw-gap-4 tw-mb-4">
-            <div className="tw-text-xl tw-font-bold tw-text-black tw-text-center">수강완료 퀴즈클럽</div>
+            <div className="tw-text-xl tw-font-bold tw-text-black tw-text-center">
+              수강완료 퀴즈클럽 ({memberClubsData.length})
+            </div>
             <div className="tw-flex tw-gap-2">
-              <span className="tw-px-2 tw-py-1 tw-text-xs tw-rounded-md tw-font-medium tw-bg-blue-200 tw-text-blue-900">
-                미래커리어대학
-              </span>
-              <span className="tw-px-2 tw-py-1 tw-text-xs tw-rounded-md tw-font-medium tw-bg-gray-100 tw-text-gray-700">
-                스포츠레저산업학과
-              </span>
-              <span className="tw-px-2 tw-py-1 tw-text-xs tw-rounded-md tw-font-medium tw-bg-yellow-200 tw-text-yellow-900">
-                1학년
-              </span>
+              {selectedStudentInfo?.jobGroup?.name && (
+                <span className="tw-px-2 tw-py-1 tw-text-xs tw-rounded-md tw-font-medium tw-bg-blue-200 tw-text-blue-900">
+                  {selectedStudentInfo.jobGroup.name}
+                </span>
+              )}
+              {selectedStudentInfo?.job?.name && (
+                <span className="tw-px-2 tw-py-1 tw-text-xs tw-rounded-md tw-font-medium tw-bg-gray-100 tw-text-gray-700">
+                  {selectedStudentInfo.job.name}
+                </span>
+              )}
             </div>
           </div>
 
-          <select
-            className="tw-h-14 form-select block w-full  tw-font-bold tw-px-4"
-            onChange={handleQuizChange}
-            value={selectedValue}
-            aria-label="Default select example"
-          >
-            {isContentFetched &&
-              myClubList?.map((session, idx) => {
-                return (
-                  <option
-                    key={idx}
-                    className="tw-w-20 tw-bg-[#f6f7fb] tw-items-center tw-flex-shrink-0 border-left border-top border-right tw-rounded-t-lg tw-cursor-pointer"
-                    value={session?.clubSequence}
-                  >
-                    강의명 : {session?.clubName}
-                  </option>
-                );
-              })}
-          </select>
+          <div className="tw-mb-4">
+            <select
+              className="tw-w-full tw-h-14 form-select block w-full  tw-font-bold tw-px-4"
+              value={selectedMemberClubSequence || ''}
+              onChange={event => {
+                const clubSequenceStr = event.target.value;
+                const clubSequence = Number(clubSequenceStr);
+                setSelectedMemberClubSequence(clubSequenceStr);
+                const selectedClubData = memberClubsData.find(club => club.clubSequence === clubSequence);
+                if (selectedClubData) {
+                  setSelectedClub(selectedClubData);
+                  setAiEvaluationParamsTotal({
+                    clubSequence: clubSequence,
+                    memberUUID: memberUUIDList,
+                  });
+                }
+              }}
+            >
+              <option value="" disabled>
+                퀴즈클럽을 선택해주세요.
+              </option>
+              {memberClubsData?.map((club, index) => (
+                <option key={index} value={String(club.clubSequence)}>
+                  {club.clubName}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* 새로운 API 데이터 표시 */}
           <AICompanyFeedbackSummary
-            aiFeedbackDataTotal={aiFeedbackDataTotal || null}
+            aiFeedbackDataTotal={memberClubDetailResponse?.lectureClubEvaluation || null}
             aiFeedbackDataTotalQuiz={aiFeedbackDataTotalQuiz}
             isLoading={isLoading}
             isFeedbackOptions={true}
             isAdmin={true}
             clubSequence={selectedClub?.clubSequence || id}
             memberUUID={memberUUIDList}
-          />
-        </div>
-      </MentorsModal>
-
-      {/* CQI 보고서 모달 */}
-      <MentorsModal
-        isOpen={isCQIReportModalOpen}
-        isContentModalClick={true}
-        title={'CQI 보고서'}
-        onAfterClose={() => {
-          setIsCQIReportModalOpen(false);
-          setIsLoadingCQIReport(false);
-          setAiFeedbackDataTotalReport({});
-        }}
-      >
-        <div>
-          <div className="tw-flex  tw-justify-end tw-items-center tw-gap-4 tw-mb-4">
-            <button
-              onClick={() => {
-                console.log('CQI 보고서 생성');
-                onLectureClubEvaluationReport({
-                  clubSequence: selectedClub?.clubSequence || id,
-                });
-                setIsLoadingCQIReport(true);
-              }}
-              className="tw-text-base tw-text-center tw-bg-black tw-text-white tw-px-4 tw-py-2 tw-rounded-md"
-            >
-              {isLoadingCQIReport
-                ? 'CQI 보고서 생성중...'
-                : aiFeedbackDataTotalReport?.studentFeedback
-                  ? 'CQI 보고서 AI초안 재생성'
-                  : 'CQI 보고서 AI초안 생성'}
-            </button>
-          </div>
-          <AICqiReport
-            aiFeedbackDataTotal={aiFeedbackDataTotalReport}
-            isLoading={isLoadingCQIReport}
-            isAdmin={true}
-            clubSequence={selectedClub?.clubSequence || id}
           />
         </div>
       </MentorsModal>

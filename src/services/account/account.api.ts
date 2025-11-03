@@ -163,3 +163,15 @@ export async function userUpdate(params: any) {
   const { data } = await axiosGeneralAPI().put('/api/v1/my/personal', params);
   return data.data;
 }
+
+// 기업체 정보 공유 동의 조회
+export async function getEnterpriseSharedInfo() {
+  const { data } = await axiosGeneralAPI().get('/api/v1/my/enterprise/shared-info');
+  return data.data;
+}
+
+// 기업체 정보 공유 동의 수정
+export async function updateEnterpriseSharedInfo(params: any) {
+  const { data } = await axiosGeneralAPI().put('/api/v1/my/enterprise/shared-info', params);
+  return data;
+}

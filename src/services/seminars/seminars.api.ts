@@ -432,3 +432,41 @@ export const updateSeminar = async (params: any) =>
 
 // 세미나 삭제
 export const deleteSeminar = async (seminarId: string) => await axiosGeneralAPI().delete(`/seminars/${seminarId}`);
+
+// 기업 학습자 분석 회원 목록 조회
+export const learnerAnalysisMembers = async (params: any) => {
+  const { data, headers } = await axiosGeneralAPI().get('/api/v1/enterprise/learner-analysis/members', {
+    params: {
+      sortType: params.sortType,
+      page: params.page,
+      size: params.size,
+      keyword: params.keyword,
+      jobGroup: params.jobGroup,
+      job: params.job,
+      clubMemberEvaluationSortType: params.clubMemberEvaluationSortType,
+    },
+  });
+  const responseData = data?.data || {};
+  const totalPage = Number(headers['page-count']) || responseData?.totalPages || Math.ceil((responseData?.totalElements || 0) / (params.size || 1000));
+  return {
+    contents: responseData?.contents || [],
+    page: responseData?.page || params.page,
+    pageSize: responseData?.pageSize || params.size,
+    totalPages: totalPage,
+    totalElements: responseData?.totalElements || 0,
+  };
+};
+
+// 기업 학습자 분석 회원별 퀴즈클럽 목록 조회
+export const learnerAnalysisMemberClubs = async (memberUUID: string) => {
+  const { data } = await axiosGeneralAPI().get(`/api/v1/enterprise/learner-analysis/members/${memberUUID}/clubs`);
+  return data?.data || [];
+};
+
+// 기업 학습자 분석 회원별 클럽 상세 조회
+export const learnerAnalysisMemberClubDetail = async (memberUUID: string, clubSequence: number) => {
+  const { data } = await axiosGeneralAPI().get(
+    `/api/v1/enterprise/learner-analysis/members/${memberUUID}/clubs/${clubSequence}`,
+  );
+  return data?.data || null;
+};

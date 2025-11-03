@@ -11,6 +11,7 @@ import {
   personalInfo,
   myProfile,
   termsInfo2,
+  getEnterpriseSharedInfo,
 } from './account.api';
 import { QUERY_KEY_FACTORY } from '../queryKeys';
 import { User } from 'src/models/user';
@@ -122,3 +123,19 @@ export const useIdVerification = (params, onSuccess?: (data: any) => void, onErr
     enabled: false,
   });
 };
+
+// 기업체 정보 공유 동의 조회
+export const useEnterpriseSharedInfo = (
+  onSuccess?: (data: any) => void,
+  onError?: (error: Error) => void,
+) =>
+  useQuery<any, Error>(
+    QUERY_KEY_FACTORY('USER').details(),
+    () => getEnterpriseSharedInfo(),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+      retry: false,
+    },
+  );

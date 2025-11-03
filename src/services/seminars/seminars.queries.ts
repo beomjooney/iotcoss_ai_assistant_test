@@ -44,6 +44,9 @@ import {
   professorCandidateList,
   myStudentsList,
   myStudentsDetail,
+  learnerAnalysisMembers,
+  learnerAnalysisMemberClubs,
+  learnerAnalysisMemberClubDetail,
 } from './seminars.api';
 
 export interface paramProps {
@@ -621,4 +624,59 @@ export const fetchGuestTenats = async (domain: string): Promise<QueryClient> => 
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery([QUERY_KEY_FACTORY('GUEST_TENANT').detail(domain)], () => guestTenant(domain));
   return queryClient;
+};
+
+// 기업 학습자 분석 회원 목록 조회
+export const useLearnerAnalysisMembers = (
+  params?: paramProps,
+  onSuccess?: (data: any) => void,
+  onError?: (error: Error) => void,
+) => {
+  const DEFAULT_SIZE = 1000;
+  return useQuery<any, Error>(
+    QUERY_KEY_FACTORY('ENTERPRISE_LEARNER_ANALYSIS').list({ size: DEFAULT_SIZE, ...params }),
+    () => learnerAnalysisMembers({ size: DEFAULT_SIZE, ...params }),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+    },
+  );
+};
+
+// 기업 학습자 분석 회원별 퀴즈클럽 목록 조회
+export const useLearnerAnalysisMemberClubs = (
+  memberUUID?: string,
+  onSuccess?: (data: any) => void,
+  onError?: (error: Error) => void,
+) => {
+  return useQuery<any, Error>(
+    QUERY_KEY_FACTORY('ENTERPRISE_LEARNER_ANALYSIS').detail(memberUUID),
+    () => learnerAnalysisMemberClubs(memberUUID!),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+      enabled: !!memberUUID,
+    },
+  );
+};
+
+// 기업 학습자 분석 회원별 클럽 상세 조회
+export const useLearnerAnalysisMemberClubDetail = (
+  memberUUID?: string,
+  clubSequence?: number,
+  onSuccess?: (data: any) => void,
+  onError?: (error: Error) => void,
+) => {
+  return useQuery<any, Error>(
+    QUERY_KEY_FACTORY('ENTERPRISE_LEARNER_ANALYSIS').detail(`${memberUUID}-${clubSequence}`),
+    () => learnerAnalysisMemberClubDetail(memberUUID!, clubSequence!),
+    {
+      onSuccess,
+      onError,
+      refetchOnWindowFocus: false,
+      enabled: !!memberUUID && !!clubSequence,
+    },
+  );
 };
