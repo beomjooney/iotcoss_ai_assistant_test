@@ -28,7 +28,6 @@ import {
   useQuizAIFeedbackLectureGetMemberCQI,
 } from 'src/services/quiz/quiz.queries';
 import { useSessionStore } from '../../../store/session';
-import { useStudyOrderLabel } from 'src/hooks/useStudyOrderLabel';
 import MentorsModal from 'src/stories/components/MentorsModal';
 import { useLectureClubEvaluationReport } from 'src/services/community/community.mutations';
 
@@ -46,7 +45,6 @@ export function LectureCompanyTemplate({ id }: LectureCompanyTemplateProps) {
     studyOrderLabelType: null,
   });
 
-  const { studyOrderLabelType } = useSessionStore.getState();
   const [page, setPage] = useState(1);
   const [pageStudent, setPageStudent] = useState(1);
   const [questionPage, setQuestionPage] = useState(1);
