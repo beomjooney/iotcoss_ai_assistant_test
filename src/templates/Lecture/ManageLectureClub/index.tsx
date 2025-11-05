@@ -2904,7 +2904,7 @@ export function ManageLectureClubTemplate({ id, title, subtitle }: ManageLecture
         )}
 
         {activeTab === 'ai' && (
-          <div className="tw-h-[60vh]">
+          <div className="tw-h-[100vh]">
             <div className="tw-flex tw-justify-between tw-items-center tw-relative tw-gap-3">
               <div className="tw-font-bold tw-text-xl tw-text-black tw-my-10">AI조교 설정</div>
               <div>{isProcessing}</div>

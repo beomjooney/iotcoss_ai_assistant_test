@@ -270,7 +270,8 @@ const AICqiReport: React.FC<AICqiReportProps> = ({ aiFeedbackDataTotal, isLoadin
             // 객체가 존재하고 실제 데이터가 있는지 확인
             const hasValidData =
               aiFeedbackDataTotal &&
-              Object.keys(aiFeedbackDataTotal).length > 0
+              Object.keys(aiFeedbackDataTotal).length > 0 &&
+              aiFeedbackDataTotal?.studentFeedback
 
             if (hasValidData) {
               return renderLectureAnalysis();

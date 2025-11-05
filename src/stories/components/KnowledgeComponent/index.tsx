@@ -421,13 +421,13 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
     <div>
       <div className="tw-pb-6">
         <div className="tw-flex tw-justify-between tw-items-center tw-px-8  tw-h-20 tw-overflow-hidden tw-rounded-lg tw-bg-[#f6f7fb]">
-          <div className="tw-flex tw-items-center tw-gap-5  tw-text-base tw-text-left tw-text-black">
-            <div className="tw-text-sm tw-text-center tw-text-[#9ca5b2] tw-w-14 tw-text-white tw-bg-black tw-rounded tw-py-1  ">
+          <div className="tw-flex tw-items-center tw-gap-5 tw-flex-1 tw-min-w-0 tw-text-base tw-text-left tw-text-black">
+            <div className="tw-text-sm tw-text-center tw-w-[50px] tw-text-white tw-bg-black tw-rounded tw-py-1 tw-flex-shrink-0">
               {data.publishStatus === '0001' ? '비공개' : '공개'}
             </div>
-            <div className=" tw-text-left tw-text-black">{data.question}</div>
+            <div className="tw-text-left tw-text-black tw-line-clamp-2 tw-flex-1 tw-min-w-0" title={data.question}>{data.question}</div>
           </div>
-          <div className="tw-flex tw-w-64 tw-justify-end tw-items-center tw-gap-5">
+          <div className="tw-flex tw-w-64 tw-justify-end tw-items-center tw-gap-5 tw-flex-shrink-0">
             <p className="tw-text-sm tw-text-right tw-text-[#9ca5b2]">{data.createdAt}</p>
             <svg
               onClick={handleClick}
@@ -636,8 +636,8 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
               disableGutters
               sx={{ backgroundColor: '#e9ecf2' }}
               defaultExpanded
-              // expanded={expanded === 0}
-              // onChange={handleChange(0)}
+            // expanded={expanded === 0}
+            // onChange={handleChange(0)}
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <div className="tw-flex tw-justify-between tw-items-center tw-w-full">
@@ -998,11 +998,10 @@ const KnowledgeComponent = ({ data, refetchMyQuiz, refetchMyQuizThresh, thresh =
                               <button
                                 onClick={() => handleAIAnswerClick(modelAnswerFinal)}
                                 disabled={isLoadingAI}
-                                className={`tw-px-5 tw-py-2.5 tw-text-sm tw-w-28 border tw-rounded-md ${
-                                  isLoadingAI
-                                    ? 'tw-bg-gray-100 tw-cursor-not-allowed'
-                                    : 'tw-bg-white hover:tw-bg-gray-50'
-                                }`}
+                                className={`tw-px-5 tw-py-2.5 tw-text-sm tw-w-28 border tw-rounded-md ${isLoadingAI
+                                  ? 'tw-bg-gray-100 tw-cursor-not-allowed'
+                                  : 'tw-bg-white hover:tw-bg-gray-50'
+                                  }`}
                               >
                                 {isLoadingAI ? (
                                   <div className="tw-flex tw-items-center tw-justify-center">
