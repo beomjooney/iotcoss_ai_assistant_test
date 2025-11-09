@@ -1,8 +1,9 @@
 import { useSessionStore } from 'src/store/session';
+import { useRouter } from 'next/router';
 const Footer = () => {
   const { tenantName } = useSessionStore.getState();
   console.log('tenantName', tenantName);
-
+  const router = useRouter();
   return (
     <footer className="tw-border-b-4 border-heading mt-9 md:mt-11 lg:mt-16 3xl:mt-20 pt-2.5 lg:pt-0 2xl:pt-2">
       {tenantName === 'sjunv' || tenantName === 'iotcoss' ? (
@@ -104,11 +105,11 @@ const Footer = () => {
               <div className="tw-flex tw-flex-col tw-col-span-2 max-sm:tw-px-5">
                 <div>
                   <p className="tw-text-base tw-text-white">
-                    (47011) 부산광역시 사상구 주례로 47 동서대학교 특성화지원센터상구 주례로 47
+                    (47011) 부산광역시 사상구 주례로 47 동서대학교 AI융합교육원
                   </p>
                 </div>
                 <div className=" tw-flex tw-gap-10">
-                  <p className="tw-text-base tw-text-white">TEL : 051-320-4292</p>
+                  <p className="tw-text-base tw-text-white">TEL : 051-320-4208</p>
                 </div>
                 <div className="tw-flex tw-mt-4">
                   <p className="tw-text-base tw-text-center tw-text-[#9ca5b2]">
@@ -117,7 +118,16 @@ const Footer = () => {
                 </div>
               </div>
               <div className="tw-flex tw-flex-col tw-items-center">
-                <div className="tw-w-[314px] tw-h-6">
+                <div className="tw-flex tw-flex-row tw-gap-4">
+                  <p
+                    className="tw-text-base tw-text-center tw-text-white tw-cursor-pointer"
+                    onClick={() => {
+                      router.push('/policies/privacy');
+                    }}
+                  >
+                    개인정보 처리방침
+                  </p>
+                  <span className="tw-text-base tw-text-center tw-text-[#9ca5b2] tw-cursor-pointer">|</span>
                   <p
                     className="tw-text-base tw-text-center tw-text-white tw-cursor-pointer"
                     onClick={() => {
