@@ -1,8 +1,10 @@
 import React from 'react';
 import Head from 'next/head';
 import styles from './index.module.scss';
+import { useRouter } from 'next/router';
 
 export function PrivacyPolicyPage() {
+  const router = useRouter();
   return (
     <>
       <Head>
@@ -318,7 +320,7 @@ export function PrivacyPolicyPage() {
                 <span
                   className="tw-cursor-pointer tw-text-red-500 tw-font-bold"
                   onClick={() => {
-                    window.open('https://devus.co.kr/policies/privacy/240901', '_blank');
+                    router.push('/policies/privacy/240901');
                   }}
                 >
                   - 2024년 09월 01일 시행
