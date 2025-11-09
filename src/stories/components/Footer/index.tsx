@@ -122,7 +122,7 @@ const Footer = () => {
                   <p
                     className="tw-text-base tw-text-center tw-text-white tw-cursor-pointer"
                     onClick={() => {
-                      router.push('/policies/privacy');
+                      router.push('/policies/privacy/250901');
                     }}
                   >
                     개인정보 처리방침

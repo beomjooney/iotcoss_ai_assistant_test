@@ -1,0 +1,158 @@
+.privacyContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  line-height: 1.6;
+  color: #333;
+
+  .header {
+    text-align: center;
+    margin-bottom: 50px;
+
+    h1 {
+      font-size: 1.5rem !important;
+      font-weight: 700;
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
+
+    .lastUpdated {
+      font-size: 1rem;
+      color: #666;
+      font-weight: 400;
+    }
+  }
+
+  .content {
+    .section {
+      margin-bottom: 40px;
+
+      h2 {
+        font-size: 1.3rem !important;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #3498db;
+      }
+
+      h3 {
+        font-size: 1.1rem !important;
+        font-weight: 600;
+        color: #34495e;
+        margin: 20px 0 10px 0;
+      }
+
+      h4 {
+        font-size: 1.1rem !important;
+        font-weight: 600;
+        color: #34495e;
+        margin: 20px 0 10px 0;
+      }
+
+      p {
+        margin-bottom: 15px;
+        text-align: justify;
+      }
+
+      ul {
+        margin: 15px 0;
+        padding-left: 20px;
+
+        li {
+          margin-bottom: 6px;
+
+          &::marker {
+            color: #3498db;
+          }
+        }
+      }
+
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+
+        th,
+        td {
+          border: 1px solid #ddd;
+          padding: 12px;
+          text-align: left;
+        }
+
+        th {
+          background-color: #f8f9fa;
+          font-weight: 600;
+          color: #2c3e50;
+        }
+
+        tr:nth-child(even) {
+          background-color: #f9f9f9;
+        }
+      }
+
+      .highlight {
+        background-color: #e8f4fd;
+        padding: 15px;
+        border-left: 4px solid #3498db;
+        margin: 20px 0;
+
+        p {
+          margin-bottom: 0;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+
+  .contactInfo {
+    background-color: #f8f9fa;
+    padding: 30px;
+    border-radius: 8px;
+    margin-top: 40px;
+
+    h3 {
+      color: #2c3e50;
+      margin-bottom: 15px;
+    }
+
+    .contactItem {
+      margin-bottom: 10px;
+
+      strong {
+        display: inline-block;
+        width: 100px;
+        color: #34495e;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .privacyContainer {
+    padding: 20px 15px;
+
+    .header {
+      h1 {
+        font-size: 2rem;
+      }
+    }
+
+    .content {
+      .section {
+        h2 {
+          font-size: 1.3rem;
+        }
+
+        .table {
+          font-size: 0.9rem;
+
+          th,
+          td {
+            padding: 8px;
+          }
+        }
+      }
+    }
+  }
+}
