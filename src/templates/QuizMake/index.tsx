@@ -330,6 +330,8 @@ export function QuizMakeTemplate() {
   useEffect(() => {
     if (excelSuccess) {
       setExcelSuccessFlag(true);
+      setKnowledgeFile([])
+      setKnowledgeFileName('')
       setExcelSuccessLoading(false);
     }
   }, [excelSuccess]);
@@ -337,6 +339,8 @@ export function QuizMakeTemplate() {
   useEffect(() => {
     if (quizExcelSuccess) {
       setQuizExcelSuccessFlag(true);
+      setKnowledgeQuizFile([])
+      setKnowledgeFileName('')
       setQuizExcelSuccessLoading(false);
     }
   }, [quizExcelSuccess]);
@@ -344,6 +348,8 @@ export function QuizMakeTemplate() {
   useEffect(() => {
     if (quizAIExcelSuccess) {
       setQuizAIExcelSuccessFlag(true);
+      setKnowledgeQuizAIFile([])
+      setKnowledgeQuizAIFileName('')
       setQuizAIExcelSuccessLoading(false);
     }
   }, [quizAIExcelSuccess]);
