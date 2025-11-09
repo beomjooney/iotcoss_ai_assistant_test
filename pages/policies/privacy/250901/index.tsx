@@ -320,7 +320,7 @@ export function PrivacyPolicyPage() {
                 <div
                   className="tw-cursor-pointer tw-text-red-500 tw-font-bold"
                   onClick={() => {
-                    router.push('/policies/privacy');
+                    router.push('/policies/privacy/250901');
                   }}
                 >
                   - 2025년 09월 01일 시행
