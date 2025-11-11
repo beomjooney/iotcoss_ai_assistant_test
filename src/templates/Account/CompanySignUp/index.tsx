@@ -84,6 +84,10 @@ export function CompanySignUpTemplate({ title = '', onSubmitLogin }: CompanySign
   const [params, setParams] = useState<any>({ email });
   const [shouldRefetch, setShouldRefetch] = useState(false);
 
+  const [companyName, setCompanyName] = useState('');
+  const [companyPosition, setCompanyPosition] = useState('');
+  const [companyDepartment, setCompanyDepartment] = useState('');
+
   const { mutate: onLoginSignUp, isSuccess: isSignUpSuccess, data: signUpData } = useLoginSignUp();
   const { mutate: onLoginOtp, isSuccess } = useLoginOtp();
   const { mutate: onLoginOtpVerification, isSuccess: isVerification, data: resultData } = useLoginOtpVerification();
@@ -225,7 +229,8 @@ export function CompanySignUpTemplate({ title = '', onSubmitLogin }: CompanySign
   // });
 
   const validationSchema = Yup.object().shape({
-    name: Yup.string().min(2, 'Must be more than one character').required('Username is required'),
+    name: Yup.string().min(2, '2자 이상 입력해주세요').required('이름은 필수 항목입니다.'),
+    companyName: Yup.string().min(2, '2자 이상 입력해주세요').required('기업이름은 필수 항목입니다.'),
     // memberId: Yup.string().required('Email is required').email('Email is invalid'),
     password: Yup.string()
       .required('비밀번호는 필수 항목입니다.')
@@ -323,7 +328,6 @@ export function CompanySignUpTemplate({ title = '', onSubmitLogin }: CompanySign
       return;
     }
 
-    setName(data.name);
     setPassword(data.password);
 
     // Conditionally add the token parameter if registrationAuthenticationType is '0100'
@@ -349,13 +353,13 @@ export function CompanySignUpTemplate({ title = '', onSubmitLogin }: CompanySign
         email: email,
         name: data.name,
         password: data.password,
-        name: data.name,
         phoneNumber: phone,
         agreedTermsIds: ['service1', 'privacy1'],
         emailReceiveYn: email1,
         smsReceiveYn: sms,
         kakaoReceiveYn: kakao,
         tenantUri: tenantUri,
+        memberType: '1003',
       });
       setStep('2');
     }
@@ -666,8 +670,8 @@ export function CompanySignUpTemplate({ title = '', onSubmitLogin }: CompanySign
                 id="name"
                 name="name"
                 {...register('name')}
-                error={errorsId.name ? true : false}
-                helperText={errorsId.name?.message}
+                error={errors.name ? true : false}
+                helperText={errors.name?.message}
               />
             </div>
             <div className="tw-flex tw-items-center">
@@ -741,11 +745,11 @@ export function CompanySignUpTemplate({ title = '', onSubmitLogin }: CompanySign
                 size="small"
                 required
                 type="search"
-                id="name"
-                name="name"
-                {...register('name')}
-                error={errorsId.name ? true : false}
-                helperText={errorsId.name?.message}
+                id="companyName"
+                name="companyName"
+                {...register('companyName')}
+                error={errors.companyName ? true : false}
+                helperText={errors.companyName?.message}
               />
             </div>
             <div className="tw-flex tw-items-center tw-mt-5">
@@ -759,13 +763,12 @@ export function CompanySignUpTemplate({ title = '', onSubmitLogin }: CompanySign
                 }}
                 fullWidth
                 size="small"
-                required
                 type="search"
-                id="name"
-                name="name"
-                {...register('name')}
-                error={errorsId.name ? true : false}
-                helperText={errorsId.name?.message}
+                id="companyDepartment"
+                name="companyDepartment"
+                {...register('companyDepartment')}
+                error={errors.companyDepartment ? true : false}
+                helperText={errors.companyDepartment?.message}
               />
             </div>
             <div className="tw-flex tw-items-center tw-mt-5">
@@ -779,13 +782,12 @@ export function CompanySignUpTemplate({ title = '', onSubmitLogin }: CompanySign
                 }}
                 fullWidth
                 size="small"
-                required
                 type="search"
-                id="name"
-                name="name"
-                {...register('name')}
-                error={errorsId.name ? true : false}
-                helperText={errorsId.name?.message}
+                id="companyPosition"
+                name="companyPosition"
+                {...register('companyPosition')}
+                error={errors.companyPosition ? true : false}
+                helperText={errors.companyPosition?.message}
               />
             </div>
 

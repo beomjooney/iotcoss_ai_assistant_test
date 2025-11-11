@@ -413,7 +413,7 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
                             <div className="tw-w-[90px] tw-text-center tw-text-base tw-text-black tw-font-extrabold">
                               <div
                                 className={`${activeIndex === item.no ? 'border-bottom-3 tw-border-black pb-3' : ''}`}
-                                style={{ paddingBottom: activeIndex === item.no ? '10px' : '10px' }}
+                                style={{ paddingBottom: activeIndex === item.no ? '10px' : '10px', width: '95px' }}
                                 onClick={() => setActiveIndex(item.no)}
                               >
                                 {item.title}
@@ -447,10 +447,16 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
               {!logged && (
                 <li className={cx('custom-item')}>
                   <button
-                    className="tw-bg-white tw-rounded-md border tw-text-sm tw-text-gray-500 tw-font-bold tw-py-2.5 tw-px-5 tw-rounded"
+                    className="tw-mr-2 tw-bg-white tw-rounded-md border tw-text-sm tw-text-gray-500 tw-font-bold tw-py-2 tw-px-4 tw-rounded"
                     onClick={handleClick}
                   >
                     로그인
+                  </button>
+                  <button
+                    className="tw-bg-white tw-rounded-md border tw-text-sm tw-text-gray-500 tw-font-bold tw-py-2 tw-px-4 tw-rounded"
+                    onClick={() => router.push('/account/company-login')}
+                  >
+                    기업 로그인
                   </button>
                 </li>
               )}

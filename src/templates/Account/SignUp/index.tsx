@@ -356,6 +356,7 @@ export function SignUpTemplate({ onSubmitLogin }: SignUpTemplateProps) {
         smsReceiveYn: sms,
         kakaoReceiveYn: kakao,
         tenantUri: tenantUri,
+        memberType: '0001',
       });
       setStep('2');
     }

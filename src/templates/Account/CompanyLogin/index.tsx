@@ -168,7 +168,7 @@ export function CompanyLoginTemplate({ title = '', onSubmitLogin }: CompanyLogin
         // login_member_type: selectedLoginType,
         // tenantUri: tenantUri,
         tenant_uri: tenantUri,
-        login_type: '0100',
+        login_type: '0200',
         tenant_login_member_type: selectedLoginType,
       }),
     );
@@ -184,7 +184,7 @@ export function CompanyLoginTemplate({ title = '', onSubmitLogin }: CompanyLogin
         // login_member_type: selectedLoginType,
         // tenantUri: tenantUri,
         tenant_uri: tenantUri,
-        login_type: '0200',
+        login_type: '0500',
         // tenant_login_member_type: selectedLoginType,
       }),
     );
@@ -327,8 +327,9 @@ export function CompanyLoginTemplate({ title = '', onSubmitLogin }: CompanyLogin
               required
               id="username"
               name="username"
-              placeholder={`${selectedLoginType === '0100' ? '학번' : selectedLoginType === '0300' ? '이메일' : '교번'
-                }을 입력해주세요.`}
+              placeholder={`${
+                selectedLoginType === '0100' ? '학번' : selectedLoginType === '0300' ? '이메일' : '교번'
+              }을 입력해주세요.`}
               variant="outlined"
               type="search"
               fullWidth
@@ -425,15 +426,17 @@ export function CompanyLoginTemplate({ title = '', onSubmitLogin }: CompanyLogin
       <div className="tw-w-full tw-max-w-md tw-mx-auto">
         <div className="tw-flex tw-rounded-lg tw-overflow-hidden tw-border tw-border-gray-200 tw-border-solid tw-p-1.5 tw-bg-gray-100">
           <button
-            className={`tw-flex-1 tw-py-2 tw-text-center tw-font-medium tw-text-sm tw-transition-colors tw-rounded-md ${activeTab2 === 'dsu' ? 'tw-bg-white' : 'tw-bg-gray-100'
-              }`}
+            className={`tw-flex-1 tw-py-2 tw-text-center tw-font-medium tw-text-sm tw-transition-colors tw-rounded-md ${
+              activeTab2 === 'dsu' ? 'tw-bg-white' : 'tw-bg-gray-100'
+            }`}
             onClick={() => setActiveTab2('dsu')}
           >
             DSU 로그인
           </button>
           <button
-            className={`tw-flex-1 tw-py-2 tw-text-center tw-font-medium tw-text-sm tw-transition-colors tw-rounded-md ${activeTab2 === 'general' ? 'tw-bg-white' : 'tw-bg-gray-100'
-              }`}
+            className={`tw-flex-1 tw-py-2 tw-text-center tw-font-medium tw-text-sm tw-transition-colors tw-rounded-md ${
+              activeTab2 === 'general' ? 'tw-bg-white' : 'tw-bg-gray-100'
+            }`}
             onClick={() => setActiveTab2('general')}
           >
             일반 로그인
@@ -542,8 +545,9 @@ export function CompanyLoginTemplate({ title = '', onSubmitLogin }: CompanyLogin
                     required
                     id="username"
                     name="username"
-                    placeholder={`${selectedLoginType === '0100' ? '학번' : selectedLoginType === '0300' ? '이메일' : '교번'
-                      }을 입력해주세요.`}
+                    placeholder={`${
+                      selectedLoginType === '0100' ? '학번' : selectedLoginType === '0300' ? '이메일' : '교번'
+                    }을 입력해주세요.`}
                     variant="outlined"
                     type="search"
                     fullWidth
@@ -723,15 +727,17 @@ export function CompanyLoginTemplate({ title = '', onSubmitLogin }: CompanyLogin
       <div className="tw-w-full tw-max-w-md tw-mx-auto">
         <div className="tw-flex tw-rounded-lg tw-overflow-hidden tw-border tw-border-gray-200 tw-border-solid tw-p-1.5 tw-bg-gray-100">
           <button
-            className={`tw-flex-1 tw-py-2 tw-text-center tw-font-medium tw-text-sm tw-transition-colors tw-rounded-md ${activeTab === 'lms' ? 'tw-bg-white' : 'tw-bg-gray-100'
-              }`}
+            className={`tw-flex-1 tw-py-2 tw-text-center tw-font-medium tw-text-sm tw-transition-colors tw-rounded-md ${
+              activeTab === 'lms' ? 'tw-bg-white' : 'tw-bg-gray-100'
+            }`}
             onClick={() => setActiveTab('lms')}
           >
             LMS 로그인
           </button>
           <button
-            className={`tw-flex-1 tw-py-2 tw-text-center tw-font-medium tw-text-sm tw-transition-colors tw-rounded-md ${activeTab === 'general' ? 'tw-bg-white' : 'tw-bg-gray-100'
-              }`}
+            className={`tw-flex-1 tw-py-2 tw-text-center tw-font-medium tw-text-sm tw-transition-colors tw-rounded-md ${
+              activeTab === 'general' ? 'tw-bg-white' : 'tw-bg-gray-100'
+            }`}
             onClick={() => setActiveTab('general')}
           >
             일반 로그인

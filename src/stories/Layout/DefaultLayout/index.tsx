@@ -138,12 +138,32 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
       role: ['ROLE_MANAGER'], // Multiple roles
       menu: 'all',
     },
+    {
+      no: 9,
+      option: 'nav-item',
+      title: '학습자 대시보드',
+      link: '/company-dashboard',
+      dropdown: [],
+      login: logged,
+      role: ['ROLE_ENTERPRISE_MANAGER'], // Multiple roles
+      menu: 'all',
+    },
   ];
 
   // Check if menuRole is empty
   const isMenuRoleEmpty = Object.keys(menu).length === 0;
+  // ROLE_ENTERPRISE_MANAGER인지 확인
+  const isEnterpriseManager = roles.includes('ROLE_ENTERPRISE_MANAGER');
+  // ROLE_ENTERPRISE_MANAGER에게 숨길 메뉴 항목들
+  const hiddenMenuForEnterpriseManager = ['/quiz', '/lecture', '/studyroom'];
+
   // Filter menu items based on menuRole and the empty case
   const filteredMenuItems = menuItem.filter(item => {
+    // ROLE_ENTERPRISE_MANAGER인 경우 특정 메뉴 숨기기
+    if (isEnterpriseManager && hiddenMenuForEnterpriseManager.includes(item.link)) {
+      return false;
+    }
+
     // 접근 권한을 확인하는 함수
     const hasAccess = () => {
       if (!item.role) return true; // role이 지정되지 않은 경우 모든 로그인 사용자에게 표시
