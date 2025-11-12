@@ -1,7 +1,7 @@
 import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import { useRouter } from 'next/router';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useJoin } from 'src/services/account/account.mutations';
 
 interface SignupAuthenticationTemplateProps {
@@ -27,13 +27,16 @@ export function SignupAuthenticationTemplate({ onSubmitLogin }: SignupAuthentica
       onjoin({
         key: key,
       });
-      // router.push('/account/login');
     }
   }, [key]);
 
+  // 회사 회원 타입 확인
+  const memberType = (joinData as any)?.data?.memberType;
+  const isCompanyMember = memberType === '1003';
+
   return (
     <div className={cx('login-container', 'tw-h-[73vh]')}>
-      {isClient && joinData?.responseCode === '0000' && (
+      {isClient && (joinData as any)?.responseCode === '0000' && (
         <div className={cx('logo-area')}>
           <div className="tw-flex tw-flex-col tw-items-center tw-mt-40">
             <svg className="tw-h-14 tw-w-14" viewBox="0 0 58 58" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -46,7 +49,7 @@ export function SignupAuthenticationTemplate({ onSubmitLogin }: SignupAuthentica
             </svg>
             <div className="tw-mt-6 tw-text-center tw-text-xl tw-font-bold">
               <p className="tw-flex tw-flex-col">
-                <span className="tw-text-blue-500">{}</span>
+                <span className="tw-text-blue-500">{ }</span>
                 <span>회원가입 완료</span>
               </p>
             </div>
@@ -66,7 +69,9 @@ export function SignupAuthenticationTemplate({ onSubmitLogin }: SignupAuthentica
             <div className="tw-mt-10 tw-flex tw-justify-center">
               <button
                 className="tw-px-5 border tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-text-black"
-                onClick={() => (window.location.href = '/account/login')}
+                onClick={() => {
+                  window.location.href = isCompanyMember ? '/account/company-login' : '/account/login';
+                }}
               >
                 로그인바로하기
               </button>
@@ -75,7 +80,7 @@ export function SignupAuthenticationTemplate({ onSubmitLogin }: SignupAuthentica
         </div>
       )}
 
-      {isClient && joinData?.responseCode === '4016' && (
+      {isClient && (joinData as any)?.responseCode === '4016' && (
         <div className={cx('logo-area')}>
           <div className="tw-flex tw-flex-col tw-items-center tw-mt-40">
             <svg className="tw-h-14 tw-w-14" viewBox="0 0 58 58" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -88,7 +93,7 @@ export function SignupAuthenticationTemplate({ onSubmitLogin }: SignupAuthentica
             </svg>
             <div className="tw-mt-6 tw-text-center tw-text-xl tw-font-bold">
               <p className="tw-flex tw-flex-col">
-                <span className="tw-text-blue-500">{}</span>
+                <span className="tw-text-blue-500">{ }</span>
                 <span>세션이 만료되었습니다.</span>
               </p>
             </div>
@@ -103,7 +108,9 @@ export function SignupAuthenticationTemplate({ onSubmitLogin }: SignupAuthentica
             <div className="tw-mt-10 tw-flex tw-justify-center">
               <button
                 className="tw-px-5 border tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-text-black"
-                onClick={() => router.push('/account/signup')}
+                onClick={() => {
+                  router.push(isCompanyMember ? '/account/company-signup' : '/account/signup');
+                }}
               >
                 회원가입 하러가기
               </button>
