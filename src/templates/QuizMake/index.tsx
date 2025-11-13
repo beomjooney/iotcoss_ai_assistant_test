@@ -325,34 +325,69 @@ export function QuizMakeTemplate() {
     if (quizAIExcelError) {
       setQuizAIExcelSuccessLoading(false);
     }
-  }, [excelError, quizExcelError, quizAIExcelError]);
+
+    if (contentFileError) {
+      setContentFileSuccessLoading(false);
+    }
+
+    if (contentQuizAIExcelError) {
+      setContentQuizAIExcelSuccessLoading(false);
+    }
+  }, [excelError, quizExcelError, quizAIExcelError, contentFileError, contentQuizAIExcelError]);
 
   useEffect(() => {
     if (excelSuccess) {
       setExcelSuccessFlag(true);
-      setKnowledgeFile([])
-      setKnowledgeFileName('')
+      setKnowledgeFile([]);
+      setKnowledgeFileName('');
       setExcelSuccessLoading(false);
+      alert('지식콘텐츠(아티클) 엑셀 파일 업로드가 완료되었습니다.');
     }
   }, [excelSuccess]);
 
   useEffect(() => {
     if (quizExcelSuccess) {
       setQuizExcelSuccessFlag(true);
-      setKnowledgeQuizFile([])
-      setKnowledgeFileName('')
+      setKnowledgeQuizFile([]);
+      setKnowledgeQuizFileName('');
       setQuizExcelSuccessLoading(false);
+      alert('지식콘텐츠(퀴즈) 엑셀 파일 업로드가 완료되었습니다.');
     }
   }, [quizExcelSuccess]);
 
   useEffect(() => {
     if (quizAIExcelSuccess) {
       setQuizAIExcelSuccessFlag(true);
-      setKnowledgeQuizAIFile([])
-      setKnowledgeQuizAIFileName('')
+      setKnowledgeQuizAIFile([]);
+      setKnowledgeQuizAIFileName('');
       setQuizAIExcelSuccessLoading(false);
+      alert('지식콘텐츠(퀴즈) + 퀴즈(AI생성) 엑셀 파일 업로드가 완료되었습니다.');
     }
   }, [quizAIExcelSuccess]);
+
+  useEffect(() => {
+    if (contentFileSuccess) {
+      setContentFileSuccessFlag(true);
+      setContentFileSuccessLoading(false);
+
+      refetchMyQuiz();
+      refetchMyQuizContent();
+
+      setFileList([]);
+      setFileListKnowledge([]);
+      setJobLevel([]);
+      setSelected1([]);
+      setSelected2([]);
+      setSelectedSubject('');
+      setSelectedChapter('');
+      setPersonName([]);
+      setUniversityCode('');
+      setJobs([]);
+      setContentSortType('');
+
+      alert('지식콘텐츠(파일) 일괄 등록이 완료되었습니다.');
+    }
+  }, [contentFileSuccess]);
 
   useEffect(() => {
     if (contentQuizAIExcelSuccess) {
@@ -374,41 +409,9 @@ export function QuizMakeTemplate() {
       setJobs([]);
       setContentSortType('');
 
-      alert('지식콘텐츠(파일) + 퀴즈(AI생성) 엑셀 일괄 등록 완료');
+      alert('지식콘텐츠(파일) + 퀴즈(AI생성) 엑셀 일괄 등록이 완료되었습니다.');
     }
   }, [contentQuizAIExcelSuccess]);
-
-  useEffect(() => {
-    if (contentFileSuccess) {
-      setContentFileSuccessFlag(true);
-      setContentFileSuccessLoading(false);
-      refetchMyQuiz();
-      refetchMyQuizContent();
-
-      setFileList([]);
-      setFileListKnowledge([]);
-      setJobLevel([]);
-      setSelected1([]);
-      setSelected2([]);
-      setSelectedSubject('');
-      setSelectedChapter('');
-      setPersonName([]);
-      setUniversityCode('');
-      setJobs([]);
-      setContentSortType('');
-      alert('지식콘텐츠(파일) 일괄 등록 완료');
-    }
-  }, [contentFileSuccess]);
-
-  useEffect(() => {
-    if (contentFileError) {
-      setContentFileSuccessLoading(false);
-    }
-
-    if (contentQuizAIExcelError) {
-      setContentQuizAIExcelSuccessLoading(false);
-    }
-  }, [contentFileError, contentQuizAIExcelError]);
 
   const onCloseExcelModal = () => {
     setKnowledgeFileName('');
@@ -481,6 +484,11 @@ export function QuizMakeTemplate() {
   }, [key]);
 
   const handleQuizAdd = () => {
+    // 중복 등록 방지: 로딩 중이면 함수 실행 중단
+    if (contentQuizAIExcelSuccessLoading || contentFileSuccessLoading) {
+      return;
+    }
+
     setQuizAIExcelSuccessFlag(false);
     setQuizExcelSuccessFlag(false);
     setExcelSuccessFlag(false);
@@ -1179,8 +1187,9 @@ export function QuizMakeTemplate() {
               <div className="tw-flex tw-justify-start tw-items-start tw-gap-10">
                 <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-h-11 tw-relative tw-gap-2.5">
                   <p
-                    className={`tw-flex-grow-0 tw-flex-shrink-0 tw-text-lg tw-text-left tw-cursor-pointer ${activeTab === '퀴즈목록' ? 'tw-font-bold tw-text-black' : 'tw-text-[#6a7380]'
-                      } tw-hover:tw-font-bold tw-hover:tw-text-black`}
+                    className={`tw-flex-grow-0 tw-flex-shrink-0 tw-text-lg tw-text-left tw-cursor-pointer ${
+                      activeTab === '퀴즈목록' ? 'tw-font-bold tw-text-black' : 'tw-text-[#6a7380]'
+                    } tw-hover:tw-font-bold tw-hover:tw-text-black`}
                     onClick={() => handleTabClick('퀴즈목록')}
                   >
                     퀴즈목록
@@ -1188,8 +1197,9 @@ export function QuizMakeTemplate() {
                 </div>
                 <div className="tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-h-11 tw-relative tw-gap-2.5">
                   <p
-                    className={`tw-flex-grow-0 tw-flex-shrink-0 tw-text-lg tw-text-left tw-cursor-pointer ${activeTab === '지식콘텐츠' ? 'tw-font-bold tw-text-black' : 'tw-text-[#6a7380]'
-                      } tw-hover:tw-font-bold tw-hover:tw-text-black`}
+                    className={`tw-flex-grow-0 tw-flex-shrink-0 tw-text-lg tw-text-left tw-cursor-pointer ${
+                      activeTab === '지식콘텐츠' ? 'tw-font-bold tw-text-black' : 'tw-text-[#6a7380]'
+                    } tw-hover:tw-font-bold tw-hover:tw-text-black`}
                     onClick={() => handleTabClick('지식콘텐츠')}
                   >
                     지식콘텐츠
@@ -1197,8 +1207,9 @@ export function QuizMakeTemplate() {
                 </div>
                 <div className="tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-h-11 tw-relative tw-gap-2.5">
                   <p
-                    className={`tw-flex-grow-0 tw-flex-shrink-0 tw-text-lg tw-text-left tw-cursor-pointer ${activeTab === '휴지통' ? 'tw-font-bold tw-text-black' : 'tw-text-[#6a7380]'
-                      } tw-hover:tw-font-bold tw-hover:tw-text-black`}
+                    className={`tw-flex-grow-0 tw-flex-shrink-0 tw-text-lg tw-text-left tw-cursor-pointer ${
+                      activeTab === '휴지통' ? 'tw-font-bold tw-text-black' : 'tw-text-[#6a7380]'
+                    } tw-hover:tw-font-bold tw-hover:tw-text-black`}
                     onClick={() => handleTabClick('휴지통')}
                   >
                     휴지통
@@ -1743,7 +1754,9 @@ export function QuizMakeTemplate() {
                   </Select>
                 </FormControl>
 
-                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">추천 학년<span className="tw-text-red-500 tw-ml-1">*</span></div>
+                <div className="tw-text-sm tw-font-bold tw-pt-5 tw-pb-2">
+                  추천 학년<span className="tw-text-red-500 tw-ml-1">*</span>
+                </div>
                 {optionsData?.data?.jobLevels?.map((item, i) => (
                   <Toggle
                     key={item.code}
@@ -2224,8 +2237,9 @@ export function QuizMakeTemplate() {
               </label>
 
               <div
-                className={`tw-flex tw-items-center tw-justify-start tw-gap-2 tw-w-[200px] tw-h-10 tw-rounded tw-bg-white tw-text-sm tw-text-left ${knowledgeFileName ? 'tw-text-blue-500 tw-underline' : 'tw-text-gray-500 '
-                  }`}
+                className={`tw-flex tw-items-center tw-justify-start tw-gap-2 tw-w-[200px] tw-h-10 tw-rounded tw-bg-white tw-text-sm tw-text-left ${
+                  knowledgeFileName ? 'tw-text-blue-500 tw-underline' : 'tw-text-gray-500 '
+                }`}
               >
                 {knowledgeFileName || '선택한 파일 없음'}
                 {knowledgeFileName && (
@@ -2408,7 +2422,9 @@ export function QuizMakeTemplate() {
                       </FormControl>
                     </div>
                   </div>
-                  <div className="tw-text-sm tw-font-medium tw-text-black tw-pt-5 tw-pb-2">추천 학년<span className="tw-text-blue-500 tw-ml-1">*</span></div>
+                  <div className="tw-text-sm tw-font-medium tw-text-black tw-pt-5 tw-pb-2">
+                    추천 학년<span className="tw-text-blue-500 tw-ml-1">*</span>
+                  </div>
                   {optionsData?.data?.jobLevels?.map(item => (
                     <Toggle
                       key={item.code}
@@ -2592,8 +2608,9 @@ export function QuizMakeTemplate() {
                 />
               </label>
               <div
-                className={`tw-flex tw-items-center tw-justify-start tw-gap-2 tw-w-[200px] tw-h-10 tw-rounded tw-bg-white tw-text-sm tw-text-left ${knowledgeQuizFileName ? 'tw-text-blue-500 tw-underline' : 'tw-text-gray-500 '
-                  }`}
+                className={`tw-flex tw-items-center tw-justify-start tw-gap-2 tw-w-[200px] tw-h-10 tw-rounded tw-bg-white tw-text-sm tw-text-left ${
+                  knowledgeQuizFileName ? 'tw-text-blue-500 tw-underline' : 'tw-text-gray-500 '
+                }`}
               >
                 {knowledgeQuizFileName || '선택한 파일 없음'}
                 {knowledgeQuizFileName && (
@@ -2744,8 +2761,9 @@ export function QuizMakeTemplate() {
                 />
               </label>
               <div
-                className={`tw-flex tw-items-center tw-justify-start tw-gap-2 tw-w-[200px] tw-h-10 tw-rounded tw-bg-white tw-text-sm tw-text-left ${knowledgeQuizAIFileName ? 'tw-text-blue-500 tw-underline' : 'tw-text-gray-500 '
-                  }`}
+                className={`tw-flex tw-items-center tw-justify-start tw-gap-2 tw-w-[200px] tw-h-10 tw-rounded tw-bg-white tw-text-sm tw-text-left ${
+                  knowledgeQuizAIFileName ? 'tw-text-blue-500 tw-underline' : 'tw-text-gray-500 '
+                }`}
               >
                 {knowledgeQuizAIFileName || '선택한 파일 없음'}
                 {knowledgeQuizAIFileName && (
@@ -2986,7 +3004,9 @@ export function QuizMakeTemplate() {
                         </FormControl>
                       </div>
                     </div>
-                    <div className="tw-text-sm tw-font-medium tw-text-black tw-pt-5 tw-pb-2">추천 학년<span className="tw-text-blue-500 tw-ml-1">*</span></div>
+                    <div className="tw-text-sm tw-font-medium tw-text-black tw-pt-5 tw-pb-2">
+                      추천 학년<span className="tw-text-blue-500 tw-ml-1">*</span>
+                    </div>
                     {optionsData?.data?.jobLevels?.map(item => (
                       <Toggle
                         key={item.code}
@@ -3047,10 +3067,11 @@ export function QuizMakeTemplate() {
               )}
             </div>
 
-            <div className="tw-flex tw-items-center tw-justify-center tw-w-full tw-py-16 tw-gap-4">
+            <div className="tw-flex tw-items-center tw-justify-center tw-w-full tw-pb-10  tw-gap-4">
               <button
                 onClick={handleQuizAdd}
-                className="tw-flex tw-items-center tw-justify-center tw-w-[150px] tw-h-11 tw-rounded tw-bg-blue-500 tw-text-base tw-text-white tw-text-left"
+                disabled={contentQuizAIExcelSuccessLoading || contentFileSuccessLoading}
+                className="tw-flex tw-items-center tw-justify-center tw-w-[150px] tw-h-11 tw-rounded tw-bg-blue-500 tw-text-base tw-text-white tw-text-left disabled:tw-opacity-50 disabled:tw-cursor-not-allowed"
               >
                 {contentQuizAIExcelSuccessLoading || contentFileSuccessLoading ? (
                   <CircularProgress size={20} color="inherit" />
