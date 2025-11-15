@@ -360,6 +360,9 @@ export function CompanySignUpTemplate({ title = '', onSubmitLogin }: CompanySign
         kakaoReceiveYn: kakao,
         tenantUri: tenantUri,
         memberType: '1003',
+        enterpriseName: data.companyName,
+        department: data.companyDepartment,
+        title: data.companyPosition,
       });
       setStep('2');
     }
@@ -1041,7 +1044,7 @@ export function CompanySignUpTemplate({ title = '', onSubmitLogin }: CompanySign
             <div className="tw-mt-7 tw-flex tw-justify-center tw-gap-4">
               <button
                 className="tw-px-5 border tw-font-bold tw-rounded-md tw-w-full tw-h-[48px] tw-text-black"
-                onClick={() => (location.href = '/account/login')}
+                onClick={() => (location.href = '/account/company-login')}
               >
                 로그인
               </button>
