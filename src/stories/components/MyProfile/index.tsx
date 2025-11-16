@@ -269,6 +269,36 @@ const MyProfile = ({
                 {profile?.phoneNumber || ''}
               </p>
             </div>
+            {profile?.companyName && (
+              <div className="tw-flex tw-justify-start tw-items-start tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-1">
+                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-left tw-text-[#31343d]">
+                  회사명:
+                </p>
+                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">
+                  {profile.companyName}
+                </p>
+              </div>
+            )}
+            {profile?.department && (
+              <div className="tw-flex tw-justify-start tw-items-start tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-1">
+                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-left tw-text-[#31343d]">
+                  부서:
+                </p>
+                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">
+                  {profile.department}
+                </p>
+              </div>
+            )}
+            {profile?.title && (
+              <div className="tw-flex tw-justify-start tw-items-start tw-flex-grow-0 tw-flex-shrink-0 tw-relative tw-gap-1">
+                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-font-medium tw-text-left tw-text-[#31343d]">
+                  직급:
+                </p>
+                <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-left tw-text-black">
+                  {profile.title}
+                </p>
+              </div>
+            )}
           </div>
           {admin && isProfile && (
             <div>
