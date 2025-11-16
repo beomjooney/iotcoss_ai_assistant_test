@@ -360,7 +360,7 @@ export function CompanySignUpTemplate({ title = '', onSubmitLogin }: CompanySign
         kakaoReceiveYn: kakao,
         tenantUri: tenantUri,
         memberType: '1003',
-        enterpriseName: data.companyName,
+        companyName: data.companyName,
         department: data.companyDepartment,
         title: data.companyPosition,
       });
