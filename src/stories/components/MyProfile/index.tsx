@@ -41,6 +41,9 @@ const MyProfile = ({
   const [fileImageUrl, setFileImageUrl] = useState(null);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [phoneNumberError, setPhoneNumberError] = useState('');
+  const [companyName, setCompanyName] = useState('');
+  const [department, setDepartment] = useState('');
+  const [title, setTitle] = useState('');
 
   // 전화번호 유효성 검사 함수
   const validatePhoneNumber = (phone: string) => {
@@ -103,6 +106,18 @@ const MyProfile = ({
     }
   }, [profile?.phoneNumber]);
 
+  useEffect(() => {
+    setCompanyName(profile?.companyName || '');
+  }, [profile?.companyName]);
+
+  useEffect(() => {
+    setDepartment(profile?.department || '');
+  }, [profile?.department]);
+
+  useEffect(() => {
+    setTitle(profile?.title || '');
+  }, [profile?.title]);
+
   const handleProfileSave = () => {
     if (phoneNumber && !validatePhoneNumber(phoneNumber)) {
       alert('올바른 전화번호 형식이 아닙니다.');
@@ -131,6 +146,9 @@ const MyProfile = ({
     formData.append('jobLevel', jobLevel);
     formData.append('introductionMessage', introductionMessage);
     formData.append('phoneNumber', phoneNumber.replace(/-/g, '')); // 하이픈 제거 후 저장
+    formData.append('companyName', companyName || '');
+    formData.append('department', department || '');
+    formData.append('title', title || '');
 
     console.log('formData', formData);
     onSave({ formData, isProfessor: false });
@@ -165,6 +183,9 @@ const MyProfile = ({
     formData.append('jobLevel', jobLevel);
     formData.append('introductionMessage', introductionMessage);
     formData.append('phoneNumber', phoneNumber); // 전화번호 추가
+    formData.append('companyName', companyName || '');
+    formData.append('department', department || '');
+    formData.append('title', title || '');
 
     console.log('formData', formData);
     onSave({ formData, isProfessor: true });
@@ -313,12 +334,15 @@ const MyProfile = ({
                   setIntroductionMessage(profile.introductionMessage || '');
                   setMemberId(profile?.memberId || '');
                   setJobLevel(profile?.jobLevels[0]?.code || '');
+                  setCompanyName(profile?.companyName || '');
+                  setDepartment(profile?.department || '');
+                  setTitle(profile?.title || '');
                 }}
                 className="tw-mt-4 border tw-py-3 tw-px-5 tw-rounded tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-center tw-text-[#6a7380]"
               >
                 프로필 수정
               </button>
-              {!(roles?.includes('ROLE_ADMIN') || roles?.includes('ROLE_INSTRUCTOR')) && (
+              {!(roles?.includes('ROLE_ADMIN') || roles?.includes('ROLE_INSTRUCTOR') || profile?.companyName) && (
                 <button
                   onClick={() => {
                     setIsProfessor(true);
@@ -331,6 +355,9 @@ const MyProfile = ({
                     setIntroductionMessage(profile.introductionMessage || '');
                     setMemberId(profile?.memberId || '');
                     setJobLevel(profile?.jobLevels[0]?.code || '');
+                    setCompanyName(profile?.companyName || '');
+                    setDepartment(profile?.department || '');
+                    setTitle(profile?.title || '');
                   }}
                   className="tw-ml-3 tw-mt-4 border tw-py-3 tw-px-5 tw-rounded tw-flex-grow-0 tw-flex-shrink-0 tw-text-sm tw-text-center tw-text-[#6a7380]"
                 >
@@ -493,6 +520,51 @@ const MyProfile = ({
                   ))}
                 </dd>
               </div>
+              {profile?.companyName && (
+                <div className="tw-px-4 tw-pt-3 tw-grid tw-grid-cols-6 tw-gap-4 tw-justify-center tw-items-center">
+                  <dt className="tw-text-base tw-font-bold tw-leading-6 tw-text-gray-900">회사명</dt>
+                  <dd className="tw-text-base tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                    <TextField
+                      fullWidth
+                      size="small"
+                      type="text"
+                      value={companyName}
+                      onChange={e => setCompanyName(e.target.value)}
+                      placeholder="회사명을 입력해주세요"
+                    />
+                  </dd>
+                </div>
+              )}
+              {profile?.companyName && (
+                <div className="tw-px-4 tw-pt-3 tw-grid tw-grid-cols-6 tw-gap-4 tw-justify-center tw-items-center">
+                  <dt className="tw-text-base tw-font-bold tw-leading-6 tw-text-gray-900">부서</dt>
+                  <dd className="tw-text-base tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                    <TextField
+                      fullWidth
+                      size="small"
+                      type="text"
+                      value={department}
+                      onChange={e => setDepartment(e.target.value)}
+                      placeholder="부서를 입력해주세요"
+                    />
+                  </dd>
+                </div>
+              )}
+              {profile?.companyName && (
+                <div className="tw-px-4 tw-pt-3 tw-grid tw-grid-cols-6 tw-gap-4 tw-justify-center tw-items-center">
+                  <dt className="tw-text-base tw-font-bold tw-leading-6 tw-text-gray-900">직급</dt>
+                  <dd className="tw-text-base tw-leading-6 tw-text-gray-700 tw-col-span-5">
+                    <TextField
+                      fullWidth
+                      size="small"
+                      type="text"
+                      value={title}
+                      onChange={e => setTitle(e.target.value)}
+                      placeholder="직급을 입력해주세요"
+                    />
+                  </dd>
+                </div>
+              )}
             </dl>
           </div>
         </div>
