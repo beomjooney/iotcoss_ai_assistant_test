@@ -526,8 +526,8 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
                 {isLoading
                   ? 'AI피드백 생성중...'
                   : aiFeedbackDataTotal?.evaluationStatus === '0001'
-                    ? 'AI피드백 재생성'
-                    : 'AI피드백 생성'}
+                    ? 'AI피드백 생성'
+                    : 'AI피드백 재생성'}
               </button>
             )}
             {!comprehensiveEvaluationEnabled && (

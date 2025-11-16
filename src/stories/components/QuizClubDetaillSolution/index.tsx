@@ -404,9 +404,9 @@ const QuizClubDetaillSolution = ({
               <div className="tw-flex tw-gap-4">
                 <div
                   className="tw-bg-gray-400 tw-rounded-[3.5px] tw-px-[24.5px] tw-py-[10.0625px] tw-cursor-pointer"
-                  // onClick={() => {
-                  //   setIsModalOpen(true);
-                  // }}
+                // onClick={() => {
+                //   setIsModalOpen(true);
+                // }}
                 >
                   <p className="tw-text-[12.25px] tw-font-bold tw-text-white tw-text-center">
                     {getButtonText(contents?.club?.clubStatus)}
@@ -441,11 +441,10 @@ const QuizClubDetaillSolution = ({
                     ? '모든 퀴즈를 완료해야 총평 피드백을 확인할 수 있습니다.'
                     : ''
                 }
-                className={`tw-px-4 tw-py-2 tw-rounded-full tw-text-base tw-font-medium ${
-                  contents?.progress?.minimumQuizzesCompleted
+                className={`tw-px-4 tw-py-2 tw-rounded-full tw-text-base tw-font-medium ${contents?.progress?.minimumQuizzesCompleted
                     ? 'tw-bg-[#2474ED] tw-hover:bg-blue-600 tw-text-white tw-cursor-pointer'
                     : 'tw-bg-gray-300 tw-text-gray-500 tw-cursor-not-allowed'
-                }`}
+                  }`}
               >
                 총평 피드백보기
               </button>
@@ -468,12 +467,11 @@ const QuizClubDetaillSolution = ({
                       strokeWidth="8"
                       fill="none"
                       strokeDasharray={`${2 * Math.PI * 50}`}
-                      strokeDashoffset={`${
-                        2 *
+                      strokeDashoffset={`${2 *
                         Math.PI *
                         50 *
                         (1 - (contents?.progress?.currentRound || 0) / (contents?.progress?.studyStatuses?.length || 1))
-                      }`}
+                        }`}
                       strokeLinecap="round"
                       className="tw-transition-all tw-duration-500"
                     />
@@ -483,7 +481,7 @@ const QuizClubDetaillSolution = ({
                     <div className="tw-text-2xl tw-font-bold tw-text-black">
                       {Math.round(
                         ((contents?.progress?.currentRound || 0) / (contents?.progress?.studyStatuses?.length || 1)) *
-                          100,
+                        100,
                       )}
                       %
                     </div>
@@ -689,9 +687,8 @@ const QuizClubDetaillSolution = ({
                                 {item?.publishDate?.slice(5, 10)} {item?.dayOfWeek ? `(${item.dayOfWeek})` : ''}
                               </div>
                               <div
-                                className={`tw-flex-auto tw-mt-10 tw-text-center tw-text-sm ${
-                                  item?.answer?.answerStatus === '0003' ? 'tw-text-gray' : 'tw-text-[#f44]'
-                                } tw-font-bold`}
+                                className={`tw-flex-auto tw-mt-10 tw-text-center tw-text-sm ${item?.answer?.answerStatus === '0003' ? 'tw-text-gray' : 'tw-text-[#f44]'
+                                  } tw-font-bold`}
                               >
                                 {item?.answer?.relativeDaysToPublishDate !== undefined
                                   ? item?.answer?.relativeDaysToPublishDate <= 0
@@ -704,9 +701,8 @@ const QuizClubDetaillSolution = ({
                             <Grid item xs={12} sm={11}>
                               <div className="tw-rounded-xl">
                                 <div
-                                  className={`tw-bg-[#F6F7FB] tw-flex tw-items-center tw-px-4 max-lg:tw-p-3 tw-py-1   ${
-                                    item?.answer ? 'tw-rounded-tl-xl tw-rounded-tr-xl' : 'tw-rounded-xl'
-                                  }`}
+                                  className={`tw-bg-[#F6F7FB] tw-flex tw-items-center tw-px-4 max-lg:tw-p-3 tw-py-1   ${item?.answer ? 'tw-rounded-tl-xl tw-rounded-tr-xl' : 'tw-rounded-xl'
+                                    }`}
                                 >
                                   <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                     <img
@@ -812,9 +808,8 @@ const QuizClubDetaillSolution = ({
                                     {item?.dayOfWeek ? `(${item.dayOfWeek})` : ''}
                                   </div>
                                   <div
-                                    className={`tw-flex-auto tw-mt-10 tw-text-center tw-text-sm ${
-                                      item?.answer?.answerStatus === '0003' ? 'tw-text-gray' : 'tw-text-[#f44]'
-                                    } tw-font-bold`}
+                                    className={`tw-flex-auto tw-mt-10 tw-text-center tw-text-sm ${item?.answer?.answerStatus === '0003' ? 'tw-text-gray' : 'tw-text-[#f44]'
+                                      } tw-font-bold`}
                                   >
                                     {item?.answer?.relativeDaysToPublishDate !== undefined
                                       ? item?.answer?.relativeDaysToPublishDate <= 0
@@ -827,9 +822,8 @@ const QuizClubDetaillSolution = ({
                                 <Grid item xs={12} sm={10}>
                                   <div className="tw-rounded-xl">
                                     <div
-                                      className={`tw-bg-[#F6F7FB] tw-flex tw-items-center tw-px-4 max-lg:tw-p-3 tw-py-1   ${
-                                        item?.answer ? 'tw-rounded-tl-xl tw-rounded-tr-xl' : 'tw-rounded-xl'
-                                      }`}
+                                      className={`tw-bg-[#F6F7FB] tw-flex tw-items-center tw-px-4 max-lg:tw-p-3 tw-py-1   ${item?.answer ? 'tw-rounded-tl-xl tw-rounded-tr-xl' : 'tw-rounded-xl'
+                                        }`}
                                     >
                                       <div className="tw-w-1.5/12 tw-p-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                         <img
@@ -892,13 +886,12 @@ const QuizClubDetaillSolution = ({
                                           </div>
                                           <div className="tw-flex-auto tw-w-9/12 tw-px-5">
                                             <div
-                                              className={`tw-font-medium tw-text-[#9ca5b2] tw-text-sm ${
-                                                expandedQuizzData &&
-                                                expandedQuizzData[index] &&
-                                                !expandedQuizzData[index][quizzIndex]
+                                              className={`tw-font-medium tw-text-[#9ca5b2] tw-text-sm ${expandedQuizzData &&
+                                                  expandedQuizzData[index] &&
+                                                  !expandedQuizzData[index][quizzIndex]
                                                   ? 'tw-line-clamp-2'
                                                   : ''
-                                              }`}
+                                                }`}
                                             >
                                               {item?.answer?.text}
                                             </div>
@@ -1002,16 +995,15 @@ const QuizClubDetaillSolution = ({
                               {item?.dayOfWeek ? `(${item.dayOfWeek})` : ''}
                             </div>
                             <div
-                              className={`tw-flex-auto tw-mt-10 tw-text-center tw-text-sm ${
-                                item?.answer?.answerStatus === '0003' ? 'tw-text-gray' : 'tw-text-[#f44]'
-                              } tw-font-bold`}
+                              className={`tw-flex-auto tw-mt-10 tw-text-center tw-text-sm ${item?.answer?.answerStatus === '0003' ? 'tw-text-gray' : 'tw-text-[#f44]'
+                                } tw-font-bold`}
                             >
                               {item?.answer?.relativeDaysToPublishDate !== undefined
                                 ? item?.answer?.relativeDaysToPublishDate < 0
                                   ? `D${item?.answer?.relativeDaysToPublishDate}`
                                   : item?.answer?.relativeDaysToPublishDate === 0
-                                  ? `D-0`
-                                  : `D+${item?.answer?.relativeDaysToPublishDate}`
+                                    ? `D-0`
+                                    : `D+${item?.answer?.relativeDaysToPublishDate}`
                                 : ''}
                             </div>
                           </Grid>
@@ -1019,9 +1011,8 @@ const QuizClubDetaillSolution = ({
                           <Grid item xs={12} sm={11}>
                             <div className="tw-rounded-xl">
                               <div
-                                className={`tw-bg-[#F6F7FB] tw-flex tw-items-center tw-px-4 max-lg:tw-p-3 tw-py-1   ${
-                                  item?.answer ? 'tw-rounded-tl-xl tw-rounded-tr-xl' : 'tw-rounded-xl'
-                                }`}
+                                className={`tw-bg-[#F6F7FB] tw-flex tw-items-center tw-px-4 max-lg:tw-p-3 tw-py-1   ${item?.answer ? 'tw-rounded-tl-xl tw-rounded-tr-xl' : 'tw-rounded-xl'
+                                  }`}
                               >
                                 <div className="tw-w-1.5/12 tw-py-2 tw-flex tw-flex-col tw-items-center tw-justify-center">
                                   <img
@@ -1087,9 +1078,8 @@ const QuizClubDetaillSolution = ({
                                     </div>
                                     <div className="tw-flex-auto tw-w-9/12 tw-px-5">
                                       <div
-                                        className={`tw-font-medium tw-text-[#9ca5b2] tw-text-sm ${
-                                          !expandedItems[index] ? 'tw-line-clamp-2' : ''
-                                        }`}
+                                        className={`tw-font-medium tw-text-[#9ca5b2] tw-text-sm ${!expandedItems[index] ? 'tw-line-clamp-2' : ''
+                                          }`}
                                       >
                                         {item?.answer?.text}
                                       </div>
@@ -1221,9 +1211,8 @@ const QuizClubDetaillSolution = ({
               return (
                 <div
                   key={index}
-                  className={`border-bottom border-left border-right border-secondary tw-bg-white tw-flex tw-p-3 ${
-                    isLastItem ? 'tw-rounded-bl-xl tw-rounded-br-xl' : ''
-                  }`}
+                  className={`border-bottom border-left border-right border-secondary tw-bg-white tw-flex tw-p-3 ${isLastItem ? 'tw-rounded-bl-xl tw-rounded-br-xl' : ''
+                    }`}
                 >
                   <div className="tw-w-1/12 tw-pt-3 tw-flex tw-flex-col tw-items-center">
                     <svg
@@ -1368,9 +1357,8 @@ const QuizClubDetaillSolution = ({
                       </div>
                     </div>
                     <div
-                      className={`tw-font-medium tw-text-[#9ca5b2] tw-text-sm ${
-                        item?.threadType === '0003' ? 'tw-text-black' : ''
-                      }`}
+                      className={`tw-font-medium tw-text-[#9ca5b2] tw-text-sm ${item?.threadType === '0003' ? 'tw-text-black' : ''
+                        }`}
                     >
                       {item?.text}
                     </div>
@@ -1529,21 +1517,20 @@ const QuizClubDetaillSolution = ({
             {aiFeedbackData?.clubQuizThreads.map(item => (
               <div
                 key={item.threadType}
-                className={`tw-space-y-2 border tw-p-4 tw-rounded-lg ${
-                  item?.threadType === '0001' || item?.threadType === '0002' ? 'tw-bg-[#F6F7FB]' : ''
-                }`}
+                className={`tw-space-y-2 border tw-p-4 tw-rounded-lg ${item?.threadType === '0001' || item?.threadType === '0002' ? 'tw-bg-[#F6F7FB]' : ''
+                  }`}
               >
                 <div className="tw-flex tw-items-center tw-gap-2">
                   <span className="tw-font-semibold tw-text-gray-800">
                     {item.threadType === '0001'
                       ? '사전답변'
                       : item.threadType === '0002'
-                      ? '최종답변'
-                      : item.threadType === '0003'
-                      ? 'AI피드백'
-                      : item.threadType === '0004'
-                      ? '교수자답변'
-                      : '최종답변'}
+                        ? '최종답변'
+                        : item.threadType === '0003'
+                          ? 'AI피드백'
+                          : item.threadType === '0004'
+                            ? '교수자답변'
+                            : '최종답변'}
                   </span>
                   <span className="tw-text-xs tw-text-gray-500">{item.createdAt}</span>
                   {item?.threadType === '0004' && (
