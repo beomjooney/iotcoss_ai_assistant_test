@@ -449,11 +449,10 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
                                         setComprehensiveEvaluationEnabled(clubContent?.comprehensiveEvaluationEnabled);
                                       }}
                                       disabled={!clubContent?.comprehensiveEvaluationViewable}
-                                      className={`tw-gap-1 tw-p-1 tw-rounded-[5px] tw-w-[70px] tw-flex tw-justify-center tw-items-center tw-bg-[#6A7380] tw-text-white tw-cursor-pointer tw-text-sm tw-mx-auto ${
-                                        clubContent?.comprehensiveEvaluationViewable
+                                      className={`tw-gap-1 tw-p-1 tw-rounded-[5px] tw-w-[70px] tw-flex tw-justify-center tw-items-center tw-bg-[#6A7380] tw-text-white tw-cursor-pointer tw-text-sm tw-mx-auto ${clubContent?.comprehensiveEvaluationViewable
                                           ? 'tw-bg-[#6A7380] tw-text-white tw-cursor-pointer'
                                           : 'tw-bg-gray-300 tw-text-gray-500 tw-cursor-not-allowed'
-                                      }`}
+                                        }`}
                                     >
                                       <p>총평확인</p>
                                       <svg
@@ -519,17 +518,16 @@ export function MyStudentsDetailTemplate({ id }: MyStudentsDetailTemplateProps) 
                   setIsLoading(true);
                   console.log('refetchAIEvaluationTotal');
                 }}
-                className={`tw-text-base tw-text-center tw-bg-black tw-text-white tw-px-4 tw-py-2 tw-rounded-md ${
-                  !comprehensiveEvaluationEnabled
+                className={`tw-text-base tw-text-center tw-bg-black tw-text-white tw-px-4 tw-py-2 tw-rounded-md ${!comprehensiveEvaluationEnabled
                     ? 'tw-bg-gray-300 tw-text-gray-500 tw-cursor-not-allowed'
                     : 'tw-bg-black tw-text-white tw-cursor-pointer'
-                }`}
+                  }`}
               >
                 {isLoading
                   ? 'AI피드백 생성중...'
                   : aiFeedbackDataTotal?.evaluationStatus === '0001'
-                  ? 'AI피드백 생성'
-                  : 'AI피드백 재생성'}
+                    ? 'AI피드백 재생성'
+                    : 'AI피드백 생성'}
               </button>
             )}
             {!comprehensiveEvaluationEnabled && (

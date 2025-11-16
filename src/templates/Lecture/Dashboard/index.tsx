@@ -1018,20 +1018,17 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
             <div className="tw-h-12 border-left tw-relative tw-flex tw-items-center tw-mt-14 border-bottom">
               {/* Tab 1: My Quiz */}
               <div
-                className={`tw-w-[164px] tw-h-12 tw-relative tw-cursor-pointer ${
-                  activeTab === 'myQuiz' ? 'border-b-0' : ''
-                }`}
+                className={`tw-w-[164px] tw-h-12 tw-relative tw-cursor-pointer ${activeTab === 'myQuiz' ? 'border-b-0' : ''
+                  }`}
                 onClick={() => handleTabClick('myQuiz')}
               >
                 <div
-                  className={`tw-w-[164px] border-left tw-h-12 tw-absolute tw-left-[-1px] tw-top-[-1px] tw-rounded-tl-lg tw-rounded-tr-lg ${
-                    activeTab === 'myQuiz' ? 'tw-bg-white' : 'tw-bg-[#f6f7fb]'
-                  } border-top border-right`}
+                  className={`tw-w-[164px] border-left tw-h-12 tw-absolute tw-left-[-1px] tw-top-[-1px] tw-rounded-tl-lg tw-rounded-tr-lg ${activeTab === 'myQuiz' ? 'tw-bg-white' : 'tw-bg-[#f6f7fb]'
+                    } border-top border-right`}
                 />
                 <p
-                  className={`tw-absolute tw-left-[41px] tw-top-3 tw-text-base tw-text-center ${
-                    activeTab === 'myQuiz' ? 'tw-font-bold tw-text-black' : 'tw-text-[#9ca5b2]'
-                  }`}
+                  className={`tw-absolute tw-left-[41px] tw-top-3 tw-text-base tw-text-center ${activeTab === 'myQuiz' ? 'tw-font-bold tw-text-black' : 'tw-text-[#9ca5b2]'
+                    }`}
                 >
                   학생별 보기
                 </p>
@@ -1039,20 +1036,17 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
               {/* Divider Line */}
               {/* Tab 2: Community */}
               <div
-                className={`tw-w-[164px] tw-h-12 tw-relative tw-ml-2.5 tw-cursor-pointer ${
-                  activeTab === 'community' ? 'border-b-0' : ''
-                }`}
+                className={`tw-w-[164px] tw-h-12 tw-relative tw-ml-2.5 tw-cursor-pointer ${activeTab === 'community' ? 'border-b-0' : ''
+                  }`}
                 onClick={() => handleTabClick('community')}
               >
                 <div
-                  className={`tw-w-[164px] tw-h-12 tw-absolute tw-left-[-1px] tw-top-[-1px] tw-rounded-tl-lg tw-rounded-tr-lg ${
-                    activeTab === 'community' ? 'tw-bg-white' : 'tw-bg-[#f6f7fb]'
-                  } border-right border-top border-left`}
+                  className={`tw-w-[164px] tw-h-12 tw-absolute tw-left-[-1px] tw-top-[-1px] tw-rounded-tl-lg tw-rounded-tr-lg ${activeTab === 'community' ? 'tw-bg-white' : 'tw-bg-[#f6f7fb]'
+                    } border-right border-top border-left`}
                 />
                 <p
-                  className={`tw-absolute tw-left-[41px] tw-top-3 tw-text-base tw-text-center ${
-                    activeTab === 'community' ? 'tw-font-bold tw-text-black' : 'tw-text-[#9ca5b2]'
-                  }`}
+                  className={`tw-absolute tw-left-[41px] tw-top-3 tw-text-base tw-text-center ${activeTab === 'community' ? 'tw-font-bold tw-text-black' : 'tw-text-[#9ca5b2]'
+                    }`}
                 >
                   강의별 보기
                 </p>
@@ -1350,11 +1344,10 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                 });
                                 setMemberUUIDList(info?.member?.memberUUID);
                               }}
-                              className={`tw-gap-1 tw-p-1 tw-rounded-[5px] tw-w-[70px] tw-flex tw-justify-center tw-items-center tw-bg-[#6A7380] tw-text-white tw-cursor-pointer tw-text-sm tw-mx-auto ${
-                                info?.comprehensiveEvaluationViewable
+                              className={`tw-gap-1 tw-p-1 tw-rounded-[5px] tw-w-[70px] tw-flex tw-justify-center tw-items-center tw-bg-[#6A7380] tw-text-white tw-cursor-pointer tw-text-sm tw-mx-auto ${info?.comprehensiveEvaluationViewable
                                   ? 'tw-bg-[#6A7380] tw-text-white tw-cursor-pointer'
                                   : 'tw-bg-gray-300 tw-text-gray-500 tw-cursor-not-allowed'
-                              }`}
+                                }`}
                             >
                               <p>총평확인</p>
                               <svg
@@ -1577,12 +1570,12 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                                 <Markdown className="markdown-container tw-prose tw-pr-2 tw-break-words">
                                   {info?.questionAnswer?.answer
                                     ? 'AI답변 ' +
-                                      (info.questionAnswer.answerType === '0200'
-                                        ? '(강의자료) : '
-                                        : info.questionAnswer.answerType === '0300'
+                                    (info.questionAnswer.answerType === '0200'
+                                      ? '(강의자료) : '
+                                      : info.questionAnswer.answerType === '0300'
                                         ? '(일반서치) : '
                                         : '') +
-                                      info.questionAnswer.answer
+                                    info.questionAnswer.answer
                                     : ''}
                                 </Markdown>
                               </div>
@@ -1687,12 +1680,12 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                               <Markdown className="markdown-container tw-prose tw-pr-2 tw-break-words">
                                 {questionInfo?.answer
                                   ? 'AI답변 : ' +
-                                    (questionInfo?.answerType === '0200'
-                                      ? '(강의자료) : '
-                                      : questionInfo?.answerType === '0300'
+                                  (questionInfo?.answerType === '0200'
+                                    ? '(강의자료) : '
+                                    : questionInfo?.answerType === '0300'
                                       ? '(일반서치) : '
                                       : '') +
-                                    questionInfo?.answer
+                                  questionInfo?.answer
                                   : null}
                               </Markdown>
                               {questionInfo?.instructorAnswer && (
@@ -1883,12 +1876,12 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
                             <Markdown className="markdown-container tw-prose tw-pr-2 tw-break-words">
                               {info?.answer
                                 ? 'AI답변 : ' +
-                                  (info?.answerType === '0200'
-                                    ? '(강의자료) : '
-                                    : info?.answerType === '0300'
+                                (info?.answerType === '0200'
+                                  ? '(강의자료) : '
+                                  : info?.answerType === '0300'
                                     ? '(일반서치) : '
                                     : '') +
-                                  info?.answer
+                                info?.answer
                                 : null}
                             </Markdown>
                             {info?.instructorAnswer && (
@@ -1971,8 +1964,8 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
               {isLoading
                 ? 'AI피드백 생성중...'
                 : aiFeedbackDataTotal?.evaluationStatus === '0001'
-                ? 'AI피드백 재생성'
-                : 'AI피드백 생성'}
+                  ? 'AI피드백 생성'
+                  : 'AI피드백 재생성'}
             </button>
           </div>
           <AIFeedbackSummary
@@ -2013,8 +2006,8 @@ export function LectureDashboardTemplate({ id }: LectureDashboardTemplateProps) 
               {isLoadingCQIReport
                 ? 'CQI 보고서 생성중...'
                 : aiFeedbackDataTotalReport?.studentFeedback
-                ? 'CQI 보고서 AI초안 재생성'
-                : 'CQI 보고서 AI초안 생성'}
+                  ? 'CQI 보고서 AI초안 재생성'
+                  : 'CQI 보고서 AI초안 생성'}
             </button>
           </div>
           <AICqiReport
