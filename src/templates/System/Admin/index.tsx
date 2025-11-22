@@ -64,6 +64,8 @@ export function AdminTemplate({ children }: AdminTemplateProps) {
   };
 
   const currentPath = router.pathname;
+  // env.dong 빌드인지 확인
+  const isDongBuild = process.env.NEXT_PUBLIC_BUILD_ENV === 'dong';
   // TODO 위에 타이틀 보여지게 하기 - menus에 다 넣고 옵션 값에 따라 role 맞춰 보여주기
   const menus = [
     {
@@ -192,6 +194,8 @@ export function AdminTemplate({ children }: AdminTemplateProps) {
               <ul className={cx('lnb-content', 'tw-px-5', 'tw-pt-0 tw-pb-5')}>
                 {menus.map(
                   menua =>
+                    // env.dong 빌드일 때 '권한관리' 메뉴 숨기기
+                    !(isDongBuild && menua.title === '권한관리') &&
                     (menua.role === 'all' || (menua.role === 'use_quiz_club' && menu.use_quiz_club === true)) && (
                       <Accordion
                         key={menua.no}

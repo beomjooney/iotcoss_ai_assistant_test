@@ -55,6 +55,8 @@ const cx = classNames.bind(styles);
 
 const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIndex }: NavbarProps) => {
   const { logged, roles, menu } = useSessionStore.getState();
+  // env.dong 빌드인지 확인
+  const isDongBuild = process.env.NEXT_PUBLIC_BUILD_ENV === 'dong';
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [anchorElAlarm, setAnchorElAlarm] = useState(null);
   const [contents, setContents] = useState<any>([]);
@@ -257,9 +259,8 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
   return (
     <header className={`header ${classOption}`}>
       <nav
-        className={`navbar navbar-expand-lg max-lg:tw-p-4 tw-p-0 fixed-top ${
-          darkBg ? 'bg-transparent' : 'custom-nav white-bg'
-        } ${scroll > headerTop ? 'affix' : ''}`}
+        className={`navbar navbar-expand-lg max-lg:tw-p-4 tw-p-0 fixed-top ${darkBg ? 'bg-transparent' : 'custom-nav white-bg'
+          } ${scroll > headerTop ? 'affix' : ''}`}
       >
         <div className="container" style={{ alignItems: 'center' }}>
           <div onClick={handleGoHome} className={cx('header-link')}>
@@ -452,12 +453,14 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
                   >
                     로그인
                   </button>
-                  <button
-                    className="tw-bg-white tw-rounded-md border tw-text-sm tw-text-gray-500 tw-font-bold tw-py-2 tw-px-4 tw-rounded"
-                    onClick={() => router.push('/account/company-login')}
-                  >
-                    기업 로그인
-                  </button>
+                  {!isDongBuild && (
+                    <button
+                      className="tw-bg-white tw-rounded-md border tw-text-sm tw-text-gray-500 tw-font-bold tw-py-2 tw-px-4 tw-rounded"
+                      onClick={() => router.push('/account/company-login')}
+                    >
+                      기업 로그인
+                    </button>
+                  )}
                 </li>
               )}
               {logged && (

@@ -156,9 +156,16 @@ const DefaultLayout = ({ darkBg, classOption, title, children }: DefaultLayoutPr
   const isEnterpriseManager = roles.includes('ROLE_ENTERPRISE_MANAGER');
   // ROLE_ENTERPRISE_MANAGER에게 숨길 메뉴 항목들
   const hiddenMenuForEnterpriseManager = ['/quiz', '/lecture', '/studyroom'];
+  // env.dong 빌드인지 확인
+  const isDongBuild = process.env.NEXT_PUBLIC_BUILD_ENV === 'dong';
 
   // Filter menu items based on menuRole and the empty case
   const filteredMenuItems = menuItem.filter(item => {
+    // env.dong 빌드일 때 'My학습자' 메뉴 숨기기
+    if (isDongBuild && item.link === '/my-students') {
+      return false;
+    }
+
     // ROLE_ENTERPRISE_MANAGER인 경우 특정 메뉴 숨기기
     if (isEnterpriseManager && hiddenMenuForEnterpriseManager.includes(item.link)) {
       return false;

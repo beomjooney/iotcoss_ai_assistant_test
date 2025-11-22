@@ -67,6 +67,8 @@ export function MyTemplate({ children }: MyTemplateProps) {
   };
 
   const currentPath = router.pathname;
+  // env.dong 빌드인지 확인
+  const isDongBuild = process.env.NEXT_PUBLIC_BUILD_ENV === 'dong';
   // TODO 위에 타이틀 보여지게 하기 - menus에 다 넣고 옵션 값에 따라 role 맞춰 보여주기
   const menus = [
     { no: 0, title: '나의 활동', link: '/activity', role: 'all' },
@@ -99,18 +101,22 @@ export function MyTemplate({ children }: MyTemplateProps) {
     // console.log('user', user);
     setNickname(user?.nickname);
     setShowMenu(
-      menus.map(menu => {
-        return menu.role === 'all'
-          ? menuItem(menu)
-          : menu.role === 'admin' && user?.roles?.indexOf('ROLE_ADMIN') >= 0 && menuItem(menu);
-      }),
+      menus
+        .filter(menu => !(isDongBuild && menu.title === '기업체 정보공유관리'))
+        .map(menu => {
+          return menu.role === 'all'
+            ? menuItem(menu)
+            : menu.role === 'admin' && user?.roles?.indexOf('ROLE_ADMIN') >= 0 && menuItem(menu);
+        }),
     );
     setShowMenuMobile(
-      menus.map(menu => {
-        return menu.role === 'all'
-          ? menuIteMobile(menu)
-          : menu.role === 'admin' && user?.roles?.indexOf('ROLE_ADMIN') >= 0 && menuIteMobile(menu);
-      }),
+      menus
+        .filter(menu => !(isDongBuild && menu.title === '기업체 정보공유관리'))
+        .map(menu => {
+          return menu.role === 'all'
+            ? menuIteMobile(menu)
+            : menu.role === 'admin' && user?.roles?.indexOf('ROLE_ADMIN') >= 0 && menuIteMobile(menu);
+        }),
     );
   }, [user]);
 
