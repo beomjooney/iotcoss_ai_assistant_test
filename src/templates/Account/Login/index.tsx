@@ -122,6 +122,10 @@ export function LoginTemplate({ title = '', onSubmitLogin }: LoginTemplateProps)
       // alert('학사DB 연동모듈에 오류가 발생하였습니다. 관리자에게 문의 해주세요.');
       return;
     }
+    else if (loginData?.responseCode === 'C06004') {
+      console.log('loginData?.responseCode', loginData?.responseCode);
+      return;
+    }
 
     if (isSuccess) {
       console.log('isSuccess', isSuccess);
