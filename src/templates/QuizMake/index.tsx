@@ -2,7 +2,6 @@ import styles from './index.module.scss';
 import classNames from 'classnames/bind';
 import { Toggle, Pagination, MentorsModal, AIQuizList, Tag } from 'src/stories/components';
 import React, { useEffect, useState, useRef } from 'react';
-import { useRouter } from 'next/router';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/system/Box';
 import SearchIcon from '@mui/icons-material/Search';
@@ -24,9 +23,6 @@ import KnowledgeComponent from 'src/stories/components/KnowledgeComponent';
 import ArticleList from 'src/stories/components/ArticleList';
 import { Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import * as Yup from 'yup';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { Radio, RadioGroup, FormControlLabel, TextField } from '@mui/material';
 import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded';
 import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded';
@@ -36,19 +32,17 @@ import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
 import { styled } from '@mui/material/styles';
 import validator from 'validator';
 import Divider from '@mui/material/Divider';
-
 import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
-import { useQuizFileDownload, useQuizKnowledgeDownload } from 'src/services/quiz/quiz.queries';
+import { useQuizKnowledgeDownload } from 'src/services/quiz/quiz.queries';
 import { v4 as uuidv4 } from 'uuid';
 import { useSessionStore } from 'src/store/session';
 import { useGetGroupLabel } from 'src/hooks/useGetGroupLabel';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import AttachFileIcon from '@mui/icons-material/AttachFile';
 
 export const generateUUID = () => {
   return uuidv4();
@@ -81,31 +75,12 @@ export function QuizMakeTemplate() {
   const { jobGroupLabelType } = useSessionStore.getState();
   const { groupLabel, subGroupLabel } = useGetGroupLabel(jobGroupLabelType);
 
-  const validationSchema = Yup.object().shape({
-    username: Yup.string().required('Email is required').email('Email is invalid'),
-    password: Yup.string()
-      .required('Password is required')
-      .min(4, 'Password must be at least 4 characters')
-      .max(20, 'Password must not exceed 20 characters'),
-  });
-
-  const {
-    register,
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(validationSchema),
-  });
-
-  const router = useRouter();
   const [isMounted, setIsMounted] = useState(false); // Need this for the react-tooltip
   const [personName, setPersonName] = React.useState<string[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isModalExcelOpen, setIsModalExcelOpen] = useState<boolean>(false);
   const [isContentModalOpen, setIsContentModalOpen] = useState<boolean>(false);
   const [isContentModalClick, setIsContentModalClick] = useState<boolean>(false);
-  const [isKnowledgeModalClick, setIsKnowledgeModalClick] = useState<boolean>(false);
   const [isFileOpen, setIsFileOpen] = useState<boolean>(false);
   const [isAIExcelOpen, setIsAIExcelOpen] = useState<boolean>(false);
   const [jobGroup, setJobGroup] = useState([]);
@@ -123,11 +98,9 @@ export function QuizMakeTemplate() {
   const [params, setParams] = useState<any>({ page, quizSortType: '0001' });
   const [quizParams, setQuizParams] = useState<any>({ quizPage, sortType: 'DESC' });
   const [recommendLevels, setRecommendLevels] = useState([]);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [contents, setContents] = useState<any[]>([]);
   const [experienceIds, setExperienceIds] = useState<any[]>([]);
   const [selected, setSelected] = useState([]);
-  const open = Boolean(anchorEl);
   const [keyWorld, setKeyWorld] = useState('');
   const [keyWorldKnowledge, setKeyWorldKnowledge] = useState('');
   const [contentSequence, setContentSequence] = useState('');
@@ -137,7 +110,6 @@ export function QuizMakeTemplate() {
   const [selected2, setSelected2] = useState([]);
   const [selected3, setSelected3] = useState([]);
   const [quizCount, setQuizCount] = useState(1);
-  const [aiQuiz, setAiQuiz] = useState(false);
   const [quizSortType, setQuizSortType] = useState('0001');
   const [contentSortType, setContentSortType] = useState('');
   const [threshSortType, setThreshSortType] = useState('0001');
@@ -166,22 +138,33 @@ export function QuizMakeTemplate() {
   const [key, setKey] = useState('');
   const [selectedOption, setSelectedOption] = useState('false');
   const [selectedOptionFile, setSelectedOptionFile] = useState('false');
-
   const [contentQuizAIExcelSuccessFlag, setContentQuizAIExcelSuccessFlag] = useState(false);
   const [contentQuizAIExcelSuccessLoading, setContentQuizAIExcelSuccessLoading] = useState(false);
   const [contentFileSuccessFlag, setContentFileSuccessFlag] = useState(false);
   const [contentFileSuccessLoading, setContentFileSuccessLoading] = useState(false);
+  const [knowledgeFileName, setKnowledgeFileName] = useState('');
+  const [knowledgeFile, setKnowledgeFile] = useState([]);
+  const [knowledgeQuizFileName, setKnowledgeQuizFileName] = useState('');
+  const [knowledgeQuizFile, setKnowledgeQuizFile] = useState([]);
+  const [knowledgeQuizAIFileName, setKnowledgeQuizAIFileName] = useState('');
+  const [knowledgeQuizAIFile, setKnowledgeQuizAIFile] = useState([]);
+  const [excelSuccessFlag, setExcelSuccessFlag] = useState(false);
+  const [quizExcelSuccessFlag, setQuizExcelSuccessFlag] = useState(false);
+  const [quizAIExcelSuccessFlag, setQuizAIExcelSuccessFlag] = useState(false);
+  const [excelSuccessLoading, setExcelSuccessLoading] = useState(false);
+  const [quizExcelSuccessLoading, setQuizExcelSuccessLoading] = useState(false);
+  const [quizAIExcelSuccessLoading, setQuizAIExcelSuccessLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isGlobalLoading, setIsGlobalLoading] = useState(false);
+  const [isLoadingAI, setIsLoadingAI] = useState({});
+  const [index, setIndex] = useState(0);
+  const [activeTab, setActiveTab] = useState('퀴즈목록');
+  const [quizSearch, setQuizSearch] = React.useState('');
 
   const handleChangeOption = event => {
     console.log('test', event.target.value);
     setSelectedOption(event.target.value);
   };
-
-  // 로딩 상태를 관리하기 위해 useState 훅 사용
-  const [isLoading, setIsLoading] = useState(false);
-  const [isGlobalLoading, setIsGlobalLoading] = useState(false);
-  const [isLoadingAI, setIsLoadingAI] = useState({});
-  const [index, setIndex] = useState(0);
 
   const handleChange = (event: SelectChangeEvent<typeof personName>) => {
     const {
@@ -199,7 +182,6 @@ export function QuizMakeTemplate() {
       .filter(code => code !== null);
 
     setSelectedJob(selectedCodes);
-    console.log(selectedCodes);
   };
 
   useEffect(() => {
@@ -226,7 +208,6 @@ export function QuizMakeTemplate() {
     setContentTitle(data.description || '');
     setSelectedSubject(data.studySubject || '');
     setSelectedChapter(data.studyChapter || '');
-    // setJobLevel(data.jobLevels && data.jobLevels.length > 0 ? data.jobLevels[0].code : '0001');
     setJobLevel(data.jobLevels.map(item => item.code));
     setSelectedUniversity(data.jobGroups[0]?.code || '');
     setUniversityCode(data.jobGroups[0]?.code || '');
@@ -246,7 +227,6 @@ export function QuizMakeTemplate() {
     setFileNameCopy(data.name);
     setQuizCount(1);
     setQuizList([]);
-    // setFileName(data.name);
   };
 
   const handleChangeSortType = event => {
@@ -274,6 +254,7 @@ export function QuizMakeTemplate() {
       setTotalPageThresh(data.totalPages);
     },
   );
+
   const { isFetched: isOptionFetched, data: optionsData }: UseQueryResult<any> = useOptions();
 
   //quiz delete
@@ -281,22 +262,6 @@ export function QuizMakeTemplate() {
   const { mutate: onQuizContentSave, isSuccess: postContentSuccess } = useQuizContentSave();
   const { mutate: onAIQuizSave, isSuccess: updateSuccess, isError: updateError, data: aiQuizData } = useAIQuizSave();
   const { mutate: onAIQuizAnswer, isSuccess: answerSuccess, data: aiQuizAnswerData } = useAIQuizAnswer();
-
-  //퀴즈 등록 변수
-  const [knowledgeFileName, setKnowledgeFileName] = useState('');
-  const [knowledgeFile, setKnowledgeFile] = useState([]);
-  const [knowledgeQuizFileName, setKnowledgeQuizFileName] = useState('');
-  const [knowledgeQuizFile, setKnowledgeQuizFile] = useState([]);
-  const [knowledgeQuizAIFileName, setKnowledgeQuizAIFileName] = useState('');
-  const [knowledgeQuizAIFile, setKnowledgeQuizAIFile] = useState([]);
-
-  const [excelSuccessFlag, setExcelSuccessFlag] = useState(false);
-  const [quizExcelSuccessFlag, setQuizExcelSuccessFlag] = useState(false);
-  const [quizAIExcelSuccessFlag, setQuizAIExcelSuccessFlag] = useState(false);
-
-  const [excelSuccessLoading, setExcelSuccessLoading] = useState(false);
-  const [quizExcelSuccessLoading, setQuizExcelSuccessLoading] = useState(false);
-  const [quizAIExcelSuccessLoading, setQuizAIExcelSuccessLoading] = useState(false);
 
   //excel 업로드
   const { mutate: onExcelSave, isSuccess: excelSuccess, isError: excelError } = useContentExcelSave();
@@ -369,10 +334,8 @@ export function QuizMakeTemplate() {
     if (contentFileSuccess) {
       setContentFileSuccessFlag(true);
       setContentFileSuccessLoading(false);
-
       refetchMyQuiz();
       refetchMyQuizContent();
-
       setFileList([]);
       setFileListKnowledge([]);
       setJobLevel([]);
@@ -384,7 +347,6 @@ export function QuizMakeTemplate() {
       setUniversityCode('');
       setJobs([]);
       setContentSortType('');
-
       alert('지식콘텐츠(파일) 일괄 등록이 완료되었습니다.');
     }
   }, [contentFileSuccess]);
@@ -393,10 +355,8 @@ export function QuizMakeTemplate() {
     if (contentQuizAIExcelSuccess) {
       setContentQuizAIExcelSuccessFlag(true);
       setContentQuizAIExcelSuccessLoading(false);
-
       refetchMyQuiz();
       refetchMyQuizContent();
-
       setFileList([]);
       setFileListKnowledge([]);
       setJobLevel([]);
@@ -408,7 +368,6 @@ export function QuizMakeTemplate() {
       setUniversityCode('');
       setJobs([]);
       setContentSortType('');
-
       alert('지식콘텐츠(파일) + 퀴즈(AI생성) 엑셀 일괄 등록이 완료되었습니다.');
     }
   }, [contentQuizAIExcelSuccess]);
@@ -425,7 +384,6 @@ export function QuizMakeTemplate() {
     setQuizAIExcelSuccessFlag(false);
     refetchMyQuiz();
     refetchMyQuizContent();
-
     setFileList([]);
     setFileListKnowledge([]);
     setJobLevel([]);
@@ -437,7 +395,6 @@ export function QuizMakeTemplate() {
     setUniversityCode('');
     setJobs([]);
     setContentSortType('');
-
     setIsFileOpen(false);
     setIsAIExcelOpen(false);
   };
@@ -518,19 +475,6 @@ export function QuizMakeTemplate() {
       onQuizAIExcelSave(formData);
     }
 
-    if (fileList.length > 0) {
-      console.log('파일 등록');
-      console.log(fileList);
-      console.log(fileNameCopy);
-      console.log(selectedUniversity);
-      console.log(selectedJob);
-      console.log(jobLevel);
-      console.log(selectedSubject);
-      console.log(selectedChapter);
-      console.log(selected1);
-      console.log(selected2);
-    }
-
     if (isFileOpen || isAIExcelOpen) {
       if (fileListKnowledge.length === 0) {
         alert('지식콘텐츠 파일을 업로드해주세요.');
@@ -577,7 +521,6 @@ export function QuizMakeTemplate() {
       onContentQuizAIExcelSave(formData);
     } else if (isFileOpen) {
       console.log('지식콘텐츠(파일) 일괄 등록');
-      // onContentQuizAIExcelSave(formData);
       const formData = new FormData();
       fileListKnowledge.forEach((file, index) => {
         formData.append('contentFiles', file);
@@ -605,8 +548,6 @@ export function QuizMakeTemplate() {
 
   useEffect(() => {
     if (updateError) {
-      // console.log('aiQuizData', aiQuizData);
-      // alert('AI 퀴즈 생성 중 오류가 발생했습니다.');
       setIsLoading(false);
     }
   }, [updateError]);
@@ -640,14 +581,12 @@ export function QuizMakeTemplate() {
 
   useEffect(() => {
     if (answerSuccess) {
-      // setIsLoadingAI(false);
       setIsLoadingAI(prevState => ({ ...prevState, [index]: false }));
     }
   }, [answerSuccess]);
 
   useDidMountEffect(() => {
     setContentTitle('');
-    // setContentUrl('');
     setSelectedSubject('');
     setSelectedChapter('');
     setSelected1([]);
@@ -660,7 +599,6 @@ export function QuizMakeTemplate() {
     setQuizCount(1);
     setFileName('');
     setFileNameCopy([]);
-
     refetchMyQuiz();
     refetchMyQuizContent();
   }, [postSuccess, postContentSuccess]);
@@ -778,18 +716,11 @@ export function QuizMakeTemplate() {
     const jsonString = JSON.stringify(params);
     const blob = new Blob([jsonString], { type: 'application/json' });
     formData.append('request', blob);
-    // formData.append('contentType', contentType);
-    // formData.append('jobLevels', jobLevel.join(','));
-    // formData.append('jobs', selectedJob.join(','));
-    // formData.append('quizCount', quizCount);
-
-    // 로딩 상태를 true로 설정
     setIsLoading(true);
     onAIQuizSave(formData);
   };
 
   const handleQuizClick = () => {
-    // Validation check
     if (!question || !selected3) {
       alert('퀴즈 질문,  키워드를 입력해주세요.');
       return;
@@ -836,7 +767,6 @@ export function QuizMakeTemplate() {
   const handleQuizInsertClick = async () => {
     console.log(selectedUniversity);
     console.log(isContentModalOpen);
-
     if (!contentType) {
       alert('지식콘텐츠 유형을 선택하세요.');
       return;
@@ -887,7 +817,6 @@ export function QuizMakeTemplate() {
         jobLevels: jobLevel,
         studyKeywords: selected1,
         contentId: 'content_id_' + uuidv4(),
-        // publishStatus: selectedOption === 'true' ? '0002' : '0001',
       };
 
       const formData = new FormData();
@@ -957,7 +886,6 @@ export function QuizMakeTemplate() {
     setIsModalOpen(false);
   };
 
-  const [activeTab, setActiveTab] = useState('퀴즈목록');
   const handleTabClick = tabName => {
     setActiveTab(tabName);
   };
@@ -1079,7 +1007,6 @@ export function QuizMakeTemplate() {
     },
   }));
 
-  const [quizSearch, setQuizSearch] = React.useState('');
   const handleInputQuizSearchChange = event => {
     setQuizSearch(event.target.value);
   };
@@ -1187,9 +1114,8 @@ export function QuizMakeTemplate() {
               <div className="tw-flex tw-justify-start tw-items-start tw-gap-10">
                 <div className="tw-flex tw-justify-start tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-h-11 tw-relative tw-gap-2.5">
                   <p
-                    className={`tw-flex-grow-0 tw-flex-shrink-0 tw-text-lg tw-text-left tw-cursor-pointer ${
-                      activeTab === '퀴즈목록' ? 'tw-font-bold tw-text-black' : 'tw-text-[#6a7380]'
-                    } tw-hover:tw-font-bold tw-hover:tw-text-black`}
+                    className={`tw-flex-grow-0 tw-flex-shrink-0 tw-text-lg tw-text-left tw-cursor-pointer ${activeTab === '퀴즈목록' ? 'tw-font-bold tw-text-black' : 'tw-text-[#6a7380]'
+                      } tw-hover:tw-font-bold tw-hover:tw-text-black`}
                     onClick={() => handleTabClick('퀴즈목록')}
                   >
                     퀴즈목록
@@ -1197,9 +1123,8 @@ export function QuizMakeTemplate() {
                 </div>
                 <div className="tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-h-11 tw-relative tw-gap-2.5">
                   <p
-                    className={`tw-flex-grow-0 tw-flex-shrink-0 tw-text-lg tw-text-left tw-cursor-pointer ${
-                      activeTab === '지식콘텐츠' ? 'tw-font-bold tw-text-black' : 'tw-text-[#6a7380]'
-                    } tw-hover:tw-font-bold tw-hover:tw-text-black`}
+                    className={`tw-flex-grow-0 tw-flex-shrink-0 tw-text-lg tw-text-left tw-cursor-pointer ${activeTab === '지식콘텐츠' ? 'tw-font-bold tw-text-black' : 'tw-text-[#6a7380]'
+                      } tw-hover:tw-font-bold tw-hover:tw-text-black`}
                     onClick={() => handleTabClick('지식콘텐츠')}
                   >
                     지식콘텐츠
@@ -1207,9 +1132,8 @@ export function QuizMakeTemplate() {
                 </div>
                 <div className="tw-flex tw-justify-center tw-items-center tw-flex-grow-0 tw-flex-shrink-0 tw-h-11 tw-relative tw-gap-2.5">
                   <p
-                    className={`tw-flex-grow-0 tw-flex-shrink-0 tw-text-lg tw-text-left tw-cursor-pointer ${
-                      activeTab === '휴지통' ? 'tw-font-bold tw-text-black' : 'tw-text-[#6a7380]'
-                    } tw-hover:tw-font-bold tw-hover:tw-text-black`}
+                    className={`tw-flex-grow-0 tw-flex-shrink-0 tw-text-lg tw-text-left tw-cursor-pointer ${activeTab === '휴지통' ? 'tw-font-bold tw-text-black' : 'tw-text-[#6a7380]'
+                      } tw-hover:tw-font-bold tw-hover:tw-text-black`}
                     onClick={() => handleTabClick('휴지통')}
                   >
                     휴지통
@@ -1493,7 +1417,6 @@ export function QuizMakeTemplate() {
       <MentorsModal
         isQuiz={true}
         zIndex={200}
-        // title={'퀴즈 만들기'}
         title={isContentModalOpen ? '지식콘텐츠 만들기' : '퀴즈 만들기'}
         isOpen={isModalOpen}
         isContentModalClick={isContentModalClick}
@@ -1765,7 +1688,6 @@ export function QuizMakeTemplate() {
                     disabled={isContentModalClick}
                     value={item.code}
                     variant="small"
-                    // checked={activeQuiz === item.code}
                     checked={jobLevel.indexOf(item.code) >= 0}
                     isActive
                     type="tabButton"
@@ -2237,9 +2159,8 @@ export function QuizMakeTemplate() {
               </label>
 
               <div
-                className={`tw-flex tw-items-center tw-justify-start tw-gap-2 tw-w-[200px] tw-h-10 tw-rounded tw-bg-white tw-text-sm tw-text-left ${
-                  knowledgeFileName ? 'tw-text-blue-500 tw-underline' : 'tw-text-gray-500 '
-                }`}
+                className={`tw-flex tw-items-center tw-justify-start tw-gap-2 tw-w-[200px] tw-h-10 tw-rounded tw-bg-white tw-text-sm tw-text-left ${knowledgeFileName ? 'tw-text-blue-500 tw-underline' : 'tw-text-gray-500 '
+                  }`}
               >
                 {knowledgeFileName || '선택한 파일 없음'}
                 {knowledgeFileName && (
@@ -2608,9 +2529,8 @@ export function QuizMakeTemplate() {
                 />
               </label>
               <div
-                className={`tw-flex tw-items-center tw-justify-start tw-gap-2 tw-w-[200px] tw-h-10 tw-rounded tw-bg-white tw-text-sm tw-text-left ${
-                  knowledgeQuizFileName ? 'tw-text-blue-500 tw-underline' : 'tw-text-gray-500 '
-                }`}
+                className={`tw-flex tw-items-center tw-justify-start tw-gap-2 tw-w-[200px] tw-h-10 tw-rounded tw-bg-white tw-text-sm tw-text-left ${knowledgeQuizFileName ? 'tw-text-blue-500 tw-underline' : 'tw-text-gray-500 '
+                  }`}
               >
                 {knowledgeQuizFileName || '선택한 파일 없음'}
                 {knowledgeQuizFileName && (
@@ -2761,9 +2681,8 @@ export function QuizMakeTemplate() {
                 />
               </label>
               <div
-                className={`tw-flex tw-items-center tw-justify-start tw-gap-2 tw-w-[200px] tw-h-10 tw-rounded tw-bg-white tw-text-sm tw-text-left ${
-                  knowledgeQuizAIFileName ? 'tw-text-blue-500 tw-underline' : 'tw-text-gray-500 '
-                }`}
+                className={`tw-flex tw-items-center tw-justify-start tw-gap-2 tw-w-[200px] tw-h-10 tw-rounded tw-bg-white tw-text-sm tw-text-left ${knowledgeQuizAIFileName ? 'tw-text-blue-500 tw-underline' : 'tw-text-gray-500 '
+                  }`}
               >
                 {knowledgeQuizAIFileName || '선택한 파일 없음'}
                 {knowledgeQuizAIFileName && (
@@ -2801,8 +2720,6 @@ export function QuizMakeTemplate() {
                 onClick={() => {
                   setIsAIExcelOpen(!isAIExcelOpen);
                   setIsFileOpen(false);
-                  // onCloseExcelModal();
-
                   setFileListKnowledge([]);
                   setJobLevel([]);
                   setSelected1([]);
