@@ -27,8 +27,6 @@ import MenuItem from '@mui/material/MenuItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Logout from '@mui/icons-material/Logout';
 import { useStore } from 'src/store';
-
-/**alarm */
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import Badge from '@mui/material/Badge';
 import Popover from '@mui/material/Popover';
@@ -54,15 +52,25 @@ export interface NavbarProps {
 const cx = classNames.bind(styles);
 
 const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIndex }: NavbarProps) => {
-  const { logged, roles, menu } = useSessionStore.getState();
+  const { logged } = useSessionStore.getState();
+  const { tenantName } = useSessionStore.getState();
+  const { user } = useStore();
   // env.dong 빌드인지 확인
   const isDongBuild = process.env.NEXT_PUBLIC_BUILD_ENV === 'dong';
+  const router = useRouter();
+  const [scroll, setScroll] = useState(0);
+  const [headerTop, setHeaderTop] = useState(0);
+  const [logoutButton, setLogoutButton] = useState<ReactNode>(null);
+  const [adminButton, setAdminButton] = useState<ReactNode>(null);
+  const [isShowMenu, setIsShowMenu] = useState<boolean>(false);
+  const [baseUrl, setBaseUrl] = useState('');
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [anchorElAlarm, setAnchorElAlarm] = useState(null);
   const [contents, setContents] = useState<any>([]);
   const [alarmCount, setAlarmCount] = useState<number>(0);
   const [page, setPage] = useState(1);
   const [params, setParams] = useState<any>({ page, logged });
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const open = Boolean(anchorEl);
   const handleClicks = (event: React.MouseEvent<HTMLElement>) => {
@@ -79,15 +87,6 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
     setAnchorElAlarm(event.currentTarget);
   };
 
-  const router = useRouter();
-  const { tenantName } = useSessionStore.getState();
-  const { user } = useStore();
-  const [scroll, setScroll] = useState(0);
-  const [headerTop, setHeaderTop] = useState(0);
-  const [logoutButton, setLogoutButton] = useState<ReactNode>(null);
-  const [adminButton, setAdminButton] = useState<ReactNode>(null);
-  const [isShowMenu, setIsShowMenu] = useState<boolean>(false);
-  const [baseUrl, setBaseUrl] = useState('');
 
   useEffect(() => {
     localStorage.setItem('activeIndex', activeIndex?.toString());
@@ -156,7 +155,6 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
     location.href = '/';
   };
 
-  const [menuOpen, setMenuOpen] = useState(false);
   const handleCloseMenu = () => {
     setMenuOpen(false);
   };
