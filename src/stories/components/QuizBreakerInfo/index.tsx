@@ -39,9 +39,8 @@ const QuizBreakerInfo = ({
               <p className="tw-mt-[2px] tw-text-[10px] tw-text-center tw-text-black">{userName}</p>
             </div>
             <div
-              className={`tw-w-10/12 tw-text-base tw-text-left tw-flex tw-items-center ${
-                isPublished ? 'tw-text-black' : 'tw-text-gray-400'
-              }`}
+              className={`tw-w-10/12 tw-text-base tw-text-left tw-flex tw-items-center ${isPublished ? 'tw-text-black' : 'tw-text-gray-400'
+                }`}
             >
               {questionText}
             </div>

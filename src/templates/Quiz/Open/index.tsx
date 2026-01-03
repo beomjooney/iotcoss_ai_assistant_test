@@ -1052,7 +1052,7 @@ export function QuizOpenTemplate() {
         publishDate={item.publishDate}
         dayOfWeek={item.dayOfWeek}
         isPublished={item.isPublished}
-        knowledgeContentTitle={item?.contentName}
+        knowledgeContentTitle={item?.contentName || item?.contentUrl}
       />
     </div>
   );
@@ -3203,7 +3203,7 @@ export function QuizOpenTemplate() {
           <Divider sx={{ borderColor: 'rgba(0, 0, 0, 0.5);', paddingY: '10px' }} />
 
           <p className="tw-text-xl tw-font-bold tw-text-left tw-text-black tw-py-5">
-            지식콘텐츠목록 전체 : {totalElements}개 - (콘텐츠선택 : {selectedContentIds.length + selectedQuizIds.length} /{' '}
+            지식콘텐츠목록 전체 : {totalElements}개 - (콘텐츠에서 퀴즈선택 : {selectedContentIds.length + selectedQuizIds.length} /{' '}
             {scheduleData?.length})
           </p>
           {contentListData.map((item, index) => (
@@ -3247,8 +3247,8 @@ export function QuizOpenTemplate() {
               <span className={cx('text-bold', 'tw-text-xl', 'tw-font-bold')}>퀴즈 AI생성 및 등록 진행</span>
             </div>
             <br></br>
-            <div className="tw-text-base">
-              12개 퀴즈를 AI로 생성 및 자동 등록 하시겠습니까?.
+            <div className="tw-text-lg">
+              {selectedContentIds.length} 개의 퀴즈를 AI로 생성 및 자동 등록 하시겠습니까?.
               <br />
               생성 시작 후 등록까지 2~3분 가량 시간이 소요됩니다.
             </div>
