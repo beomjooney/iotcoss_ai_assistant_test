@@ -32,6 +32,13 @@ const AIAnswerQuizList = ({ info, refetchReply, onGradeChange, initialValue = ''
 
   useEffect(() => {
     if (aiQuizAnswerData) {
+      // API 응답에서 grading 값을 valueAI에 설정
+      const responseData = aiQuizAnswerData as { data?: { grading?: number } };
+      if (responseData?.data?.grading !== undefined) {
+        setValueAI(String(responseData.data.grading));
+      }
+      // refetchReply는 부모 컴포넌트에서 전체 목록을 다시 가져오는 함수이므로 호출해도 됩니다.
+      // 하지만 AI 채점 후에는 부모 컴포넌트에서 자동으로 목록이 갱신되므로 호출하지 않아도 됩니다.
       refetchReply();
     }
   }, [aiQuizAnswerData]);
@@ -156,6 +163,8 @@ const AIAnswerQuizList = ({ info, refetchReply, onGradeChange, initialValue = ''
       memberUUID: info.member.memberUUID,
       grading: parseFloat(value),
     };
+
+    console.log('params', params);
 
     onAIQuizAnswerPut(params);
   };
