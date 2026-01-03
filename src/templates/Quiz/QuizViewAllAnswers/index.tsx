@@ -74,6 +74,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
   const [isHideAI, setIsHideAI] = useState(true);
   const [isAIData, setIsAIData] = useState({});
   const [memberUUID, setMemberUUID] = useState('');
+  const [triggerQuizAnswerRefetch, setTriggerQuizAnswerRefetch] = useState(false);
   let [key, setKey] = useState('');
   let [fileName, setFileName] = useState('');
 
@@ -209,6 +210,14 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
       });
     }
   });
+
+  // quizParams 설정 후 refetch 트리거
+  useEffect(() => {
+    if (triggerQuizAnswerRefetch && quizParams.club && quizParams.quiz && quizParams.memberUUID) {
+      refetchQuizAnswer();
+      setTriggerQuizAnswerRefetch(false);
+    }
+  }, [triggerQuizAnswerRefetch, quizParams]);
 
   const {
     isFetched: isQuizGetanswerGet,
@@ -700,7 +709,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
   };
 
   return (
-    <div className={cx('container tw-mb-[250px]')}>
+    <div className={cx('container tw-pb-[250px]')}>
       <div className="tw-pt-[35px]">
         <div className="tw-w-[980px] tw-h-[77px] tw-relative tw-overflow-hidden border-t-0 border-r-0 border-b-[0.88px] tw-border-l-0 tw-border-[#e9ecf2]">
           <div className="tw-flex tw-justify-start tw-items-start tw-absolute tw-left-0 tw-top-3.5 tw-gap-[3.5px]">
@@ -920,7 +929,14 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                       <TableCell padding="none" align="center" component="th" scope="row">
                         <AIAnswerQuizList
                           info={info}
-                          refetchReply={refetchQuizAnswer}
+                          refetchReply={() => {
+                            setQuizParams({
+                              club: id,
+                              quiz: info.quizSequence,
+                              memberUUID: info.member.memberUUID,
+                            });
+                            setTriggerQuizAnswerRefetch(true);
+                          }}
                           onGradeChange={score => handleGradeUpdate(info.member.memberUUID, info.quizSequence, score)}
                           initialValue={
                             gradeScores[`${info.member.memberUUID}_${info.quizSequence}`] || info.gradingFinal || ''
