@@ -315,6 +315,9 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     const value = event.target.value;
     const selectedSession = contents.clubQuizzes.find(session => session.quizSequence === parseInt(value));
 
+    // 퀴즈 변경 시 저장된 점수 초기화
+    setGradeScores({});
+
     if (selectedSession) {
       if (!selectedSession.quizSequence) {
         alert('퀴즈가 공개되지 않았습니다.');
@@ -979,9 +982,8 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                 return (
                   <div
                     key={index}
-                    className={`border tw-flex tw-p-3 tw-rounded-lg ${
-                      item?.threadType === '0001' || item?.threadType === '0002' ? 'tw-bg-[#f6f7fb]' : 'tw-bg-white'
-                    }`}
+                    className={`border tw-flex tw-p-3 tw-rounded-lg ${item?.threadType === '0001' || item?.threadType === '0002' ? 'tw-bg-[#f6f7fb]' : 'tw-bg-white'
+                      }`}
                   >
                     <div className="tw-w-1.5/12  tw-py-2 tw-flex tw-flex-col">
                       {item?.threadType === '0003' ? (
@@ -997,9 +999,8 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                       <div className="tw-py-2">
                         <div className="tw-font-medium tw-text-[#9ca5b2] tw-text-base">
                           <span
-                            className={`tw-font-bold ${
-                              item?.threadType === '0003' ? 'tw-text-red-500' : 'tw-text-black'
-                            }`}
+                            className={`tw-font-bold ${item?.threadType === '0003' ? 'tw-text-red-500' : 'tw-text-black'
+                              }`}
                           >
                             {item?.threadType === '0001' && '사전답변'}
                             {item?.threadType === '0002' && '사후답변'}
@@ -1107,9 +1108,8 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                         </div>
                       ) : (
                         <div
-                          className={`tw-text-[#9ca5b2] tw-text-base ${
-                            item?.threadType === '0003' ? 'tw-text-black' : ''
-                          }`}
+                          className={`tw-text-[#9ca5b2] tw-text-base ${item?.threadType === '0003' ? 'tw-text-black' : ''
+                            }`}
                         >
                           {item?.text}
                         </div>

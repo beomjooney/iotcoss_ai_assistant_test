@@ -42,6 +42,11 @@ const AIAnswerQuizList = ({ info, refetchReply, onGradeChange, initialValue = ''
     }
   }, [isError]);
 
+  // 퀴즈가 변경되면 수정 상태 초기화
+  useEffect(() => {
+    setIsUserEditing(false);
+  }, [info?.quizSequence]);
+
   useEffect(() => {
     if (info) {
       setValueAI(info.gradingAi || '');
@@ -188,6 +193,7 @@ const AIAnswerQuizList = ({ info, refetchReply, onGradeChange, initialValue = ''
       <button
         className=" max-lg:tw-mr-1 border tw-rounded-md tw-text-sm tw-text-black tw-py-2.5 tw-px-4"
         onClick={() => handleClick()}
+        disabled={info.answerStatus !== '0003'}
       >
         저장
       </button>
