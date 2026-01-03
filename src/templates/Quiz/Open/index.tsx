@@ -3203,7 +3203,7 @@ export function QuizOpenTemplate() {
           <Divider sx={{ borderColor: 'rgba(0, 0, 0, 0.5);', paddingY: '10px' }} />
 
           <p className="tw-text-xl tw-font-bold tw-text-left tw-text-black tw-py-5">
-            지식콘텐츠목록 전체 : {totalElements}개 - (콘텐츠에서 퀴즈선택 : {selectedContentIds.length + selectedQuizIds.length} /{' '}
+            지식콘텐츠목록 전체 : {totalElements}개 - (퀴즈선택 : {selectedContentIds.length + selectedQuizIds.length} /{' '}
             {scheduleData?.length})
           </p>
           {contentListData.map((item, index) => (
