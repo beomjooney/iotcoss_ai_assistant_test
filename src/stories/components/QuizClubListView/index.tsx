@@ -89,7 +89,7 @@ const QuizClubListView = ({ border, id }) => {
 
   return (
     <div className={`tw-relative tw-overflow-hidden tw-rounded-lg tw-bg-white ${borderStyle}`}>
-      <div className="tw-pt-[35px]">
+      <div className="tw-pt-[35px] tw-pb-[250px]">
         <div className="tw-w-[980px] tw-h-[77px] tw-relative tw-overflow-hidden border-t-0 border-r-0 border-b-[0.88px] tw-border-l-0 tw-border-[#e9ecf2]">
           <div className="tw-flex tw-justify-start tw-items-start tw-absolute tw-left-0 tw-top-3.5 tw-gap-[3.5px]">
             <p className="tw-flex-grow-0 tw-flex-shrink-0 tw-text-[10.5px] tw-text-left tw-text-[#313b49]">퀴즈클럽</p>
@@ -309,9 +309,8 @@ const QuizClubListView = ({ border, id }) => {
                             </div>
                             <div className="tw-flex-auto tw-px-5 tw-w-3/12">
                               <div
-                                className={`tw-font-medium ${
-                                  item?.isPublished ? 'tw-text-black' : ' tw-text-gray-400'
-                                }`}
+                                className={`tw-font-medium ${item?.isPublished ? 'tw-text-black' : ' tw-text-gray-400'
+                                  }`}
                               >
                                 {item?.question}
                               </div>
@@ -334,11 +333,10 @@ const QuizClubListView = ({ border, id }) => {
                                 disabled={!item?.isPublished}
                                 data-tooltip-target="tooltip-default"
                                 className={`
-                                ${
-                                  item?.isPublished
+                                ${item?.isPublished
                                     ? 'tw-bg-white border border-danger tw-text-black'
                                     : 'tw-bg-gray-200 tw-text-white'
-                                }
+                                  }
                                 max-lg:tw-w-[60px] tw-text-sm tw-font-medium tw-px-3 tw-py-1 tw-rounded`}
                               >
                                 답변확인 및 채점하기 {'>'}
