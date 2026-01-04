@@ -2040,7 +2040,7 @@ export function QuizMakeTemplate() {
         <div className="tw-px-20">
           <div className="tw-mb-5">
             <div className="tw-flex tw-flex-row tw-items-start tw-justify-between tw-mb-5 tw-mt-5">
-              <div className=" tw-font-bold tw-text-black tw-flex tw-items-center">지식콘텐츠(아티클) 일괄등록하기</div>
+              <div className=" tw-font-bold tw-text-black tw-flex tw-items-center">지식콘텐츠(아티클) 일괄등록</div>
               {excelSuccessLoading && (
                 <div className="tw-flex tw-items-center tw-justify-center tw-ml-2">
                   <svg width="40" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
