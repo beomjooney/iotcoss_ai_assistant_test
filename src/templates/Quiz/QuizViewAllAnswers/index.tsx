@@ -126,8 +126,21 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     if (answerErrorEvaluation) {
       setIsLoadingAIAll(false);
       isCompleteAIRef.current = true;
+      // interval이 실행 중이 아닐 때만 호출 (interval 내에서 이미 호출됨)
+      if (!intervalId) {
+        refetchQuizAnswerAll();
+      }
     }
-  }, [answerErrorEvaluation]);
+  }, [answerErrorEvaluation, intervalId]);
+
+  useEffect(() => {
+    if (answerSuccessEvaluation) {
+      // interval이 실행 중이 아닐 때만 호출 (interval 내에서 이미 호출됨)
+      if (!intervalId) {
+        refetchQuizAnswerAll();
+      }
+    }
+  }, [answerSuccessEvaluation, intervalId]);
 
   useEffect(() => {
     if (answerSuccessSavePut) {
@@ -443,11 +456,13 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
 
       // console.log(clubQuizGetThreadsAll);
       if (currentTime - now >= 60000 || isCompleteAIRef.current === true) {
-        // 10초가 경과하면 정지
+        // 60초가 경과하거나 완료되면 정지
         clearInterval(newIntervalId);
         setIntervalId(null);
         setIsLoadingAIAll(false);
         refetchReply();
+        // 완료 시 마지막으로 한 번 더 호출하여 최종 상태 업데이트
+        refetchQuizAnswerAll();
       } else {
         refetchQuizAnswerAll();
         console.log('set interval', isCompleteAIRef.current); // Use the ref value here
@@ -455,6 +470,8 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
     }, 1000); // 1000 밀리초 = 1초
 
     setIntervalId(newIntervalId);
+    // interval 시작 시 즉시 한 번 호출하여 채점 상태 업데이트
+    refetchQuizAnswerAll();
   };
 
   const [fileList, setFileList] = useState([]);
@@ -941,6 +958,7 @@ export function QuizViewAllAnswersTemplate({ id }: QuizViewAllAnswersTemplatePro
                           initialValue={
                             gradeScores[`${info.member.memberUUID}_${info.quizSequence}`] || info.gradingFinal || ''
                           }
+                          refetchQuizAnswerAll={refetchQuizAnswerAll}
                         />
                       </TableCell>
                       <TableCell padding="none" align="center" component="th" scope="row">

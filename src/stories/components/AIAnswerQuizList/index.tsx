@@ -8,9 +8,10 @@ interface AIAnswerQuizListProps {
   refetchReply: () => void;
   onGradeChange?: (score: string) => void;
   initialValue?: string;
+  refetchQuizAnswerAll?: () => void;
 }
 
-const AIAnswerQuizList = ({ info, refetchReply, onGradeChange, initialValue = '' }: AIAnswerQuizListProps) => {
+const AIAnswerQuizList = ({ info, refetchReply, onGradeChange, initialValue = '', refetchQuizAnswerAll }: AIAnswerQuizListProps) => {
   const [isLoadingAI, setIsLoadingAI] = useState(false);
   const [value, setValue] = useState(initialValue);
   const [valueAI, setValueAI] = useState(null);
@@ -40,8 +41,12 @@ const AIAnswerQuizList = ({ info, refetchReply, onGradeChange, initialValue = ''
       // refetchReply는 부모 컴포넌트에서 전체 목록을 다시 가져오는 함수이므로 호출해도 됩니다.
       // 하지만 AI 채점 후에는 부모 컴포넌트에서 자동으로 목록이 갱신되므로 호출하지 않아도 됩니다.
       refetchReply();
+      // AI 채점 완료 시 채점 상태를 업데이트하기 위해 refetchQuizAnswerAll 호출
+      if (refetchQuizAnswerAll) {
+        refetchQuizAnswerAll();
+      }
     }
-  }, [aiQuizAnswerData]);
+  }, [aiQuizAnswerData, refetchQuizAnswerAll]);
 
   useEffect(() => {
     if (isError) {
