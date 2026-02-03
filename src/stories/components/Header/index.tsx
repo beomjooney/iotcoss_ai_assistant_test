@@ -451,14 +451,14 @@ const Header = ({ darkBg, classOption, title, menuItem, activeIndex, setActiveIn
                   >
                     로그인
                   </button>
-                  {!isDongBuild && (
+                  {/* {!isDongBuild && (
                     <button
                       className="tw-bg-white tw-rounded-md border tw-text-sm tw-text-gray-500 tw-font-bold tw-py-2 tw-px-4 tw-rounded"
                       onClick={() => router.push('/account/company-login')}
                     >
                       기업 로그인
                     </button>
-                  )}
+                  )} */}
                 </li>
               )}
               {logged && (
