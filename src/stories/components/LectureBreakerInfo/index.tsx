@@ -452,18 +452,24 @@ const LectureBreakerInfo = ({
                                   {isProcessing
                                     ? '등록 중'
                                     : file.fileUploadStatus === '0000'
-                                      ? '등록 전'
-                                      : file.fileUploadStatus === '1000'
-                                        ? '등록 중'
-                                        : file.fileUploadStatus === '2000'
-                                          ? '등록 완료'
-                                          : file.fileUploadStatus === '3000'
-                                            ? '등록 실패'
-                                            : file.fileUploadStatus === '3001'
-                                              ? '파일 에러'
-                                              : file.fileUploadStatus === '3002'
-                                                ? 'URL 에러'
-                                                : '등록 전'}
+                                    ? '등록 전'
+                                    : file.fileUploadStatus === '1000'
+                                    ? '등록 중'
+                                    : file.fileUploadStatus === '2000'
+                                    ? '등록 완료'
+                                    : file.fileUploadStatus === '3000'
+                                    ? '등록 실패'
+                                    : file.fileUploadStatus === '3001'
+                                    ? '파일 에러'
+                                    : file.fileUploadStatus === '3002'
+                                    ? 'URL 에러'
+                                    : file.fileUploadStatus === '3003'
+                                    ? '다운로드 실패'
+                                    : file.fileUploadStatus === '3004'
+                                    ? '삭제 실패'
+                                    : file.fileUploadStatus === '3005'
+                                    ? '알수 없는 에러'
+                                    : '등록 전'}
                                 </div>
                               </div>
                             </div>
@@ -508,18 +514,24 @@ const LectureBreakerInfo = ({
                                 {isProcessing
                                   ? '등록 중'
                                   : file.fileUploadStatus === '0000'
-                                    ? '등록 전'
-                                    : file.fileUploadStatus === '1000'
-                                      ? '등록 중'
-                                      : file.fileUploadStatus === '2000'
-                                        ? '등록 완료'
-                                        : file.fileUploadStatus === '3000'
-                                          ? '등록 실패'
-                                          : file.fileUploadStatus === '3001'
-                                            ? '파일 에러'
-                                            : file.fileUploadStatus === '3002'
-                                              ? 'URL 에러'
-                                              : '등록 전'}
+                                  ? '등록 전'
+                                  : file.fileUploadStatus === '1000'
+                                  ? '등록 중'
+                                  : file.fileUploadStatus === '2000'
+                                  ? '등록 완료'
+                                  : file.fileUploadStatus === '3000'
+                                  ? '등록 실패'
+                                  : file.fileUploadStatus === '3001'
+                                  ? '파일 에러'
+                                  : file.fileUploadStatus === '3002'
+                                  ? 'URL 에러'
+                                  : file.fileUploadStatus === '3003'
+                                  ? '다운로드 실패'
+                                  : file.fileUploadStatus === '3004'
+                                  ? '삭제 실패'
+                                  : file.fileUploadStatus === '3005'
+                                  ? '알수 없는 에러'
+                                  : '등록 전'}
                               </div>
                             </div>
                           ))}
