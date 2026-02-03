@@ -53,7 +53,7 @@ const Footer = () => {
       ) : tenantName === 'dsuai' ? (
         <div>
           <div className="main-container border-top border-bottom ">
-            <div className="tw-relative tw-overflow-hidden tw-fixed tw-bottom-0 tw-flex tw-justify-center tw-items-center">
+            <div className="tw-relative tw-overflow-hidden tw-flex tw-justify-center tw-items-center">
               <div className="tw-grid tw-grid-cols-1 tw-gap-4 tw-items-center tw-justify-between lg:tw-grid-cols-2 container tw-py-10">
                 <div className="tw-flex tw-flex-col tw-col-span-1 tw-hidden lg:tw-flex tw-flex-col tw-items-start">
                   <img
