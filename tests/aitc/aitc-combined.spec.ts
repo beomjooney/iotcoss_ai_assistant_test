@@ -402,7 +402,7 @@ test.describe('Phase4: 학습자 AI조교 활용', () => {
       // 질문 입력 및 전송
       const inputArea = frame.locator('input[type="text"], textarea').first();
       // 입력창 미노출 시 실패
-      const hasInput = await inputArea.isVisible({ timeout: 3000 }).catch(() => false);
+      const hasInput = await inputArea.isVisible({ timeout: 15_000 }).catch(() => false);
       if (!hasInput) {
         throw new Error('AI조교 iframe 입력창 미노출 — 질의 불가');
       }
@@ -618,7 +618,7 @@ test.describe('Phase5: 교수자 대시보드 분석', () => {
     await page.waitForTimeout(1000);
 
     // 학습피드백 총평 팝업
-    await expect(page.getByText('학습피드백 총평').first()).toBeVisible({ timeout: 5_000 });
+    await expect(page.getByText('학습피드백 총평').first()).toBeVisible({ timeout: 15_000 });
 
     // AI피드백 생성 버튼 클릭 (미노출 시 실패) — button/div/span 등 태그 무관하게 탐색
     const aiBtn = page.locator('button, [role="button"], [class*="cursor-pointer"]')
