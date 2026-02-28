@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e:*)",
+      "Bash(npm install:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(node:*)",
+      "Bash(# Windows에서 /tmp는 다른 경로로 매핑됨 pwd node -e \"\"console.log\\(process.env.TEMP\\)\"\" # docx가 설치된 실제 경로 찾기 find /tmp -name \"\"package.json\"\" -path \"\"*/docx/package.json\"\")",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_click",
+      "mcp__playwright__browser_fill_form",
+      "mcp__playwright__browser_handle_dialog",
+      "mcp__playwright__browser_snapshot",
+      "mcp__playwright__browser_evaluate",
+      "mcp__playwright__browser_wait_for",
+      "mcp__playwright__browser_press_key",
+      "Bash(npx playwright test:*)",
+      "mcp__playwright__browser_type",
+      "mcp__playwright__browser_take_screenshot",
+      "Bash(curl:*)",
+      "mcp__playwright__browser_select_option",
+      "mcp__playwright__browser_run_code",
+      "mcp__playwright__browser_navigate_back",
+      "Bash(npx tsc:*)",
+      "mcp__playwright__browser_close",
+      "mcp__playwright__browser_install",
+      "Bash(start \"\" \"C:\\\\test_auto\\\\dsu-devus\\\\tests\\\\aitc\\\\playwright-report\\\\index.html\")"
+    ]
+  }
+}

@@ -1,0 +1,2116 @@
+{
+  "config": {
+    "configFile": "C:\\test_auto\\dsu-devus\\tests\\aitc\\playwright.config.ts",
+    "rootDir": "C:/test_auto/dsu-devus/tests/aitc",
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/test_auto/dsu-devus/tests/aitc/test-results/artifacts",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "setup-instructor",
+        "name": "setup-instructor",
+        "testDir": "C:/test_auto/dsu-devus/tests/aitc",
+        "testIgnore": [],
+        "testMatch": [
+          "/auth\\.setup\\.ts/"
+        ],
+        "timeout": 45000
+      },
+      {
+        "outputDir": "C:/test_auto/dsu-devus/tests/aitc/test-results/artifacts",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "instructor",
+        "name": "instructor",
+        "testDir": "C:/test_auto/dsu-devus/tests/aitc",
+        "testIgnore": [],
+        "testMatch": [
+          "/aitc-instructor\\.spec\\.ts/"
+        ],
+        "timeout": 45000
+      },
+      {
+        "outputDir": "C:/test_auto/dsu-devus/tests/aitc/test-results/artifacts",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "student",
+        "name": "student",
+        "testDir": "C:/test_auto/dsu-devus/tests/aitc",
+        "testIgnore": [],
+        "testMatch": [
+          "/aitc-student\\.spec\\.ts/"
+        ],
+        "timeout": 45000
+      },
+      {
+        "outputDir": "C:/test_auto/dsu-devus/tests/aitc/test-results/artifacts",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "combined",
+        "name": "combined",
+        "testDir": "C:/test_auto/dsu-devus/tests/aitc",
+        "testIgnore": [],
+        "testMatch": [
+          "/aitc-combined\\.spec\\.ts/"
+        ],
+        "timeout": 45000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "html",
+        {
+          "outputFolder": "C:\\test_auto\\dsu-devus\\tests\\aitc\\playwright-report",
+          "open": "never"
+        }
+      ],
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "C:\\test_auto\\dsu-devus\\tests\\aitc\\test-results\\results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "runAgents": "none",
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.58.2",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "auth.setup.ts",
+      "file": "auth.setup.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "교수자 로그인 저장",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "setup-instructor",
+              "projectName": "setup-instructor",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3773,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "✅ 교수자 auth 저장: C:\\test_auto\\dsu-devus\\tests\\aitc\\auth\\instructor.json\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-02-27T16:50:55.963Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "17e3fe6f4d9d8bd79c6b-56111c1e2ae31b38c557",
+          "file": "auth.setup.ts",
+          "line": 53,
+          "column": 6
+        },
+        {
+          "title": "학습자 로그인 저장",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "setup-instructor",
+              "projectName": "setup-instructor",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3842,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "✅ 학습자 auth 저장: C:\\test_auto\\dsu-devus\\tests\\aitc\\auth\\student.json\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-02-27T16:50:59.964Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "17e3fe6f4d9d8bd79c6b-953d33eb8d167cf49539",
+          "file": "auth.setup.ts",
+          "line": 59,
+          "column": 6
+        }
+      ]
+    },
+    {
+      "title": "aitc-combined.spec.ts",
+      "file": "aitc-combined.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Phase0: 사전 정리",
+          "file": "aitc-combined.spec.ts",
+          "line": 62,
+          "column": 6,
+          "specs": [
+            {
+              "title": "P0-SETUP [교수자] 기존 테스트 클럽 전체 삭제 후 시작",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [
+                    {
+                      "type": "확인",
+                      "description": "사전 정리 완료: 테스트 클럽 0개 삭제"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 7101,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:51:04.970Z",
+                      "annotations": [
+                        {
+                          "type": "확인",
+                          "description": "사전 정리 완료: 테스트 클럽 0개 삭제"
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-87284e94919567eda70b",
+              "file": "aitc-combined.spec.ts",
+              "line": 65,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "Phase1: 교수자 초기 설정",
+          "file": "aitc-combined.spec.ts",
+          "line": 108,
+          "column": 6,
+          "specs": [
+            {
+              "title": "P1-TC001 [교수자] 소개 페이지 진입 - 이미지/내용 정상 표출",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1288,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:51:12.293Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-c10adb47c0827e16c5a8",
+              "file": "aitc-combined.spec.ts",
+              "line": 111,
+              "column": 7
+            },
+            {
+              "title": "P1-TC002 [교수자] 로그인 상태 확인 - 헤더 교수자 메뉴 노출",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1450,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:51:13.589Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-bd43a89f02e847503a21",
+              "file": "aitc-combined.spec.ts",
+              "line": 120,
+              "column": 7
+            },
+            {
+              "title": "P1-TC003 [교수자] 테스트 클럽 개설 - 실제 개설 완료 및 클럽 ID 추출",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [
+                    {
+                      "type": "클럽ID",
+                      "description": "테스트 클럽 ID: 84"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 19595,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:51:15.045Z",
+                      "annotations": [
+                        {
+                          "type": "클럽ID",
+                          "description": "테스트 클럽 ID: 84"
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-b30e111e60b0d3efb16d",
+              "file": "aitc-combined.spec.ts",
+              "line": 129,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "Phase2: 학습자 클럽 참여",
+          "file": "aitc-combined.spec.ts",
+          "line": 225,
+          "column": 6,
+          "specs": [
+            {
+              "title": "P2-TC001 [학습자] 소개 페이지 진입 - 이미지/내용 정상 표출",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1584,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:51:34.647Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-b0433c9e6315e15e08c3",
+              "file": "aitc-combined.spec.ts",
+              "line": 228,
+              "column": 7
+            },
+            {
+              "title": "P2-TC002 [학습자] 로그인 상태 확인 - 헤더 학습자 메뉴 노출",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2294,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:51:36.241Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-b40de1c2b4801c6b0a2d",
+              "file": "aitc-combined.spec.ts",
+              "line": 237,
+              "column": 7
+            },
+            {
+              "title": "P2-TC003 [학습자] 테스트 클럽 가입 신청",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [
+                    {
+                      "type": "확인",
+                      "description": "테스트 클럽 가입 신청 완료"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 12531,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:51:38.542Z",
+                      "annotations": [
+                        {
+                          "type": "확인",
+                          "description": "테스트 클럽 가입 신청 완료"
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-ba4af74576b7c847da5f",
+              "file": "aitc-combined.spec.ts",
+              "line": 247,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "Phase3: 교수자 강의클럽 관리",
+          "file": "aitc-combined.spec.ts",
+          "line": 293,
+          "column": 6,
+          "specs": [
+            {
+              "title": "P3-TC004 [교수자] 강의클럽 목록 확인 - 탭/검색 UI 정상",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4380,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:51:51.082Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-06ee7bd1eaebd171f77d",
+              "file": "aitc-combined.spec.ts",
+              "line": 296,
+              "column": 7
+            },
+            {
+              "title": "P3-TC005 [교수자] 테스트 클럽 - 대시보드 톱니바퀴 → 관리페이지 → 가입신청 일괄 승인",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [
+                    {
+                      "type": "확인",
+                      "description": "가입신청 일괄 승인 완료"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 7872,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:51:55.468Z",
+                      "annotations": [
+                        {
+                          "type": "확인",
+                          "description": "가입신청 일괄 승인 완료"
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-9d96d1156b40bca4984d",
+              "file": "aitc-combined.spec.ts",
+              "line": 306,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "Phase4: 학습자 AI조교 활용",
+          "file": "aitc-combined.spec.ts",
+          "line": 339,
+          "column": 6,
+          "specs": [
+            {
+              "title": "P4-TC004 [학습자] 강의클럽 목록 확인 - 탭/검색 UI 정상 표출",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2277,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:52:03.346Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-7de6113392d8ae81e607",
+              "file": "aitc-combined.spec.ts",
+              "line": 342,
+              "column": 7
+            },
+            {
+              "title": "P4-TC005 [학습자] 강의클럽 상세보기 - 강의 정보 확인",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [
+                    {
+                      "type": "건너뜀",
+                      "description": "강의클럽 데이터 없음"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4306,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:52:05.630Z",
+                      "annotations": [
+                        {
+                          "type": "건너뜀",
+                          "description": "강의클럽 데이터 없음"
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-e9c60912b582d08b171b",
+              "file": "aitc-combined.spec.ts",
+              "line": 352,
+              "column": 7
+            },
+            {
+              "title": "P4-TC006 [학습자] AI 조교 질의 - oneM2M 표준이 뭐야?",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [
+                    {
+                      "type": "확인",
+                      "description": "AI조교 응답 수신 완료"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 14053,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:52:09.944Z",
+                      "annotations": [
+                        {
+                          "type": "확인",
+                          "description": "AI조교 응답 수신 완료"
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-852c18bd7ede7453d4a9",
+              "file": "aitc-combined.spec.ts",
+              "line": 370,
+              "column": 7
+            },
+            {
+              "title": "P4-TC007 [학습자] Q&A 보기 - 강의클럽 내 Q&A 확인",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [
+                    {
+                      "type": "확인",
+                      "description": "Q&A 탭 클릭 성공"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6459,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:52:24.004Z",
+                      "annotations": [
+                        {
+                          "type": "확인",
+                          "description": "Q&A 탭 클릭 성공"
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-fbd4160e0fefaffb36d4",
+              "file": "aitc-combined.spec.ts",
+              "line": 424,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "Phase5: 교수자 대시보드 분석",
+          "file": "aitc-combined.spec.ts",
+          "line": 451,
+          "column": 6,
+          "specs": [
+            {
+              "title": "P5-TC006 [교수자] 강의클럽 목록 - 타 클럽 접근",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [
+                    {
+                      "type": "건너뜀",
+                      "description": "전체 강의클럽 데이터 없음"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5044,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:52:30.469Z",
+                      "annotations": [
+                        {
+                          "type": "건너뜀",
+                          "description": "전체 강의클럽 데이터 없음"
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-09eae218728909de8a23",
+              "file": "aitc-combined.spec.ts",
+              "line": 454,
+              "column": 7
+            },
+            {
+              "title": "P5-TC007 [교수자] 테스트 클럽 대시보드 - Q&A 정보 확인",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4967,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:52:35.519Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-7eeb28af7e0092219ed4",
+              "file": "aitc-combined.spec.ts",
+              "line": 471,
+              "column": 7
+            },
+            {
+              "title": "P5-TC008 [교수자] AI 조교 팝업 - 클럽/회차 선택 드롭다운",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [
+                    {
+                      "type": "확인",
+                      "description": "AI 조교 팝업(iframe) 노출됨"
+                    },
+                    {
+                      "type": "확인",
+                      "description": "iframe 내 강의 선택 콤보박스: true"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6122,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:52:40.491Z",
+                      "annotations": [
+                        {
+                          "type": "확인",
+                          "description": "AI 조교 팝업(iframe) 노출됨"
+                        },
+                        {
+                          "type": "확인",
+                          "description": "iframe 내 강의 선택 콤보박스: true"
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-2293fc697dd8cd5807c6",
+              "file": "aitc-combined.spec.ts",
+              "line": 482,
+              "column": 7
+            },
+            {
+              "title": "P5-TC009 [교수자] 테스트 클럽 대시보드 - 클럽인원/AI피드백 현황 확인",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4082,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:52:46.626Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-79e63718842bbcc2904a",
+              "file": "aitc-combined.spec.ts",
+              "line": 500,
+              "column": 7
+            },
+            {
+              "title": "P5-TC010 [교수자] CQI 보고서 AI초안 생성 - 결과 확인",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 150000,
+                  "annotations": [
+                    {
+                      "type": "확인",
+                      "description": "CQI 보고서 AI초안 생성 완료"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 38048,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:52:50.714Z",
+                      "annotations": [
+                        {
+                          "type": "확인",
+                          "description": "CQI 보고서 AI초안 생성 완료"
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-26a9ff51e90f24d87044",
+              "file": "aitc-combined.spec.ts",
+              "line": 515,
+              "column": 7
+            },
+            {
+              "title": "P5-TC011 [교수자] 플레이그라운드 - 강의 질문내용 요약 답변 확인",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [
+                    {
+                      "type": "확인",
+                      "description": "플레이그라운드 답변 수신: true"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 40409,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:53:28.768Z",
+                      "annotations": [
+                        {
+                          "type": "확인",
+                          "description": "플레이그라운드 답변 수신: true"
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-5147ebffafe71bc37792",
+              "file": "aitc-combined.spec.ts",
+              "line": 559,
+              "column": 7
+            },
+            {
+              "title": "P5-TC012 [교수자] 학생 총평 AI피드백 생성 - 결과 확인",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 150000,
+                  "annotations": [
+                    {
+                      "type": "확인",
+                      "description": "AI피드백 생성 완료"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 34970,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:54:09.187Z",
+                      "annotations": [
+                        {
+                          "type": "확인",
+                          "description": "AI피드백 생성 완료"
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-8d577b5855667163c17a",
+              "file": "aitc-combined.spec.ts",
+              "line": 593,
+              "column": 7
+            },
+            {
+              "title": "P5-TC013 [교수자] 테스트 클럽 대시보드 - 학생별 보기 탭",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4114,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:54:44.163Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-f35e8729a3777add100e",
+              "file": "aitc-combined.spec.ts",
+              "line": 656,
+              "column": 7
+            },
+            {
+              "title": "P5-TC014 [교수자] 테스트 클럽 대시보드 - 강의별 보기 탭",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [
+                    {
+                      "type": "확인",
+                      "description": "강의별 보기 탭 클릭 성공"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5779,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:54:48.283Z",
+                      "annotations": [
+                        {
+                          "type": "확인",
+                          "description": "강의별 보기 탭 클릭 성공"
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-81b9e6d7a513fab2fbbf",
+              "file": "aitc-combined.spec.ts",
+              "line": 670,
+              "column": 7
+            },
+            {
+              "title": "P5-TC015 [교수자] 테스트 클럽 대시보드 - 강의 설정(콤보박스) 변경",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [
+                    {
+                      "type": "확인",
+                      "description": "강의 선택 옵션 수: 4"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4411,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:54:54.069Z",
+                      "annotations": [
+                        {
+                          "type": "확인",
+                          "description": "강의 선택 옵션 수: 4"
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-681b8f75b6152675ccd8",
+              "file": "aitc-combined.spec.ts",
+              "line": 683,
+              "column": 7
+            },
+            {
+              "title": "P5-TC016 [교수자] 마이페이지 - Account settings 버튼 노출",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2323,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:54:58.486Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-4df1b6f6b66fe8f2f1ad",
+              "file": "aitc-combined.spec.ts",
+              "line": 696,
+              "column": 7
+            },
+            {
+              "title": "P5-TC017 [교수자] 마이페이지 - Account settings 클릭 및 반응",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2070,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:55:00.818Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-9d6f990eb95e5c7ce962",
+              "file": "aitc-combined.spec.ts",
+              "line": 704,
+              "column": 7
+            },
+            {
+              "title": "P5-TC018 [교수자] 드로어 - 교수자 전용 메뉴 노출",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2412,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:55:02.896Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-096cd8fd8dbdeba90e0b",
+              "file": "aitc-combined.spec.ts",
+              "line": 715,
+              "column": 7
+            },
+            {
+              "title": "P5-TC019 [교수자] My학습자 - 페이지 접속 및 검색 UI",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4453,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:55:05.312Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-fdcebf1fc6dd9a637b29",
+              "file": "aitc-combined.spec.ts",
+              "line": 725,
+              "column": 7
+            },
+            {
+              "title": "P5-TC020 [교수자] My강의클럽 - 필터(진행중/예정/종료) 체크박스",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [
+                    {
+                      "type": "확인",
+                      "description": "필터 체크박스 수: 3"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4939,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:55:09.772Z",
+                      "annotations": [
+                        {
+                          "type": "확인",
+                          "description": "필터 체크박스 수: 3"
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-121e7ac4ac7d36e1bd67",
+              "file": "aitc-combined.spec.ts",
+              "line": 734,
+              "column": 7
+            },
+            {
+              "title": "P5-TC021 [교수자] My강의클럽 - 검색 기능",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5600,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:55:14.716Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-79a72464e071c155a654",
+              "file": "aitc-combined.spec.ts",
+              "line": 744,
+              "column": 7
+            },
+            {
+              "title": "P5-TC022 [교수자] My강의클럽 - 강의 목록 아이템 1개 이상 존재",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [
+                    {
+                      "type": "확인",
+                      "description": "강의클럽 수: 1"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4971,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:55:20.322Z",
+                      "annotations": [
+                        {
+                          "type": "확인",
+                          "description": "강의클럽 수: 1"
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-41d4b15c209e11388023",
+              "file": "aitc-combined.spec.ts",
+              "line": 755,
+              "column": 7
+            },
+            {
+              "title": "P5-TC023 [교수자] 알림 버튼 - 알림 배지 노출",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [
+                    {
+                      "type": "확인",
+                      "description": "알림 배지: true"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1387,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:55:25.299Z",
+                      "annotations": [
+                        {
+                          "type": "확인",
+                          "description": "알림 배지: true"
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-53be6e7d131f44446260",
+              "file": "aitc-combined.spec.ts",
+              "line": 765,
+              "column": 7
+            },
+            {
+              "title": "P5-TC024 [교수자] 테스트 클럽 대시보드 - 전체 학습 보기 링크",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [
+                    {
+                      "type": "확인",
+                      "description": "전체 학습 보기 링크 노출"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5046,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:55:26.692Z",
+                      "annotations": [
+                        {
+                          "type": "확인",
+                          "description": "전체 학습 보기 링크 노출"
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-02facb833981f0d73ac5",
+              "file": "aitc-combined.spec.ts",
+              "line": 776,
+              "column": 7
+            },
+            {
+              "title": "P5-TC025 [교수자] 드로어 - 로그아웃 버튼 노출",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [
+                    {
+                      "type": "확인",
+                      "description": "로그아웃 메뉴 노출 확인"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2848,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:55:31.743Z",
+                      "annotations": [
+                        {
+                          "type": "확인",
+                          "description": "로그아웃 메뉴 노출 확인"
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-d4febc21cfcd7d7b3634",
+              "file": "aitc-combined.spec.ts",
+              "line": 787,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "Phase6: 학습자 학습 결과",
+          "file": "aitc-combined.spec.ts",
+          "line": 805,
+          "column": 6,
+          "specs": [
+            {
+              "title": "P6-TC008 [학습자] 총평 피드백 보기",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [
+                    {
+                      "type": "확인",
+                      "description": "총평 피드백 내용 일치 확인 (앞 30자: \"학생의 질문이 제출되지 않았습니다. 따라서 강의 내용과\")"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 7254,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:55:34.598Z",
+                      "annotations": [
+                        {
+                          "type": "확인",
+                          "description": "총평 피드백 내용 일치 확인 (앞 30자: \"학생의 질문이 제출되지 않았습니다. 따라서 강의 내용과\")"
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-6d617e3a7cc7dd56faa9",
+              "file": "aitc-combined.spec.ts",
+              "line": 808,
+              "column": 7
+            },
+            {
+              "title": "P6-TC009 [학습자] My학습방 - 나의 클럽 진행사항 확인",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4591,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:55:41.859Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-c24a31f762000e525c8b",
+              "file": "aitc-combined.spec.ts",
+              "line": 849,
+              "column": 7
+            },
+            {
+              "title": "P6-TC010 [학습자] 마이페이지 - Account settings 버튼 노출",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2816,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:55:46.459Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-9988efc1e219b88c1a03",
+              "file": "aitc-combined.spec.ts",
+              "line": 860,
+              "column": 7
+            },
+            {
+              "title": "P6-TC011 [학습자] 마이페이지 - Account settings 클릭 가능",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [
+                    {
+                      "type": "확인",
+                      "description": "프로필 메뉴 노출: true"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1959,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:55:49.281Z",
+                      "annotations": [
+                        {
+                          "type": "확인",
+                          "description": "프로필 메뉴 노출: true"
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-fc12828712518dca7b7b",
+              "file": "aitc-combined.spec.ts",
+              "line": 871,
+              "column": 7
+            },
+            {
+              "title": "P6-TC012 [학습자] 마이페이지 - 드로어 메뉴 정상 노출",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2263,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:55:51.247Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-55d72f3d39f53fd39f96",
+              "file": "aitc-combined.spec.ts",
+              "line": 884,
+              "column": 7
+            },
+            {
+              "title": "P6-TC013 [학습자] My학습방 - AI 조교 챗봇 버튼 노출",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4512,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:55:53.516Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-a6578e3c9b5144c6c1c0",
+              "file": "aitc-combined.spec.ts",
+              "line": 893,
+              "column": 7
+            },
+            {
+              "title": "P6-TC014 [학습자] 강의클럽 목록 - 검색 기능 동작",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5198,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:55:58.034Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-a6137e373cc9e078897f",
+              "file": "aitc-combined.spec.ts",
+              "line": 902,
+              "column": 7
+            },
+            {
+              "title": "P6-TC015 [학습자] 강의클럽 탭 필터 - 카테고리 탭 클릭",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5098,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:56:03.238Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-7abc25ebff3bc2229af6",
+              "file": "aitc-combined.spec.ts",
+              "line": 914,
+              "column": 7
+            },
+            {
+              "title": "P6-TC016 [학습자] My학습방 - 페이지 접속 및 저작권 표시",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [
+                    {
+                      "type": "확인",
+                      "description": "푸터/저작권 영역: true"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2313,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:56:08.342Z",
+                      "annotations": [
+                        {
+                          "type": "확인",
+                          "description": "푸터/저작권 영역: true"
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-87759851342728e22add",
+              "file": "aitc-combined.spec.ts",
+              "line": 925,
+              "column": 7
+            },
+            {
+              "title": "P6-TC017 [학습자] 알림 버튼 - 알림 개수 노출",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [
+                    {
+                      "type": "확인",
+                      "description": "알림 영역 노출: true"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1352,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:56:10.661Z",
+                      "annotations": [
+                        {
+                          "type": "확인",
+                          "description": "알림 영역 노출: true"
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-1ad59638b489d3bdac84",
+              "file": "aitc-combined.spec.ts",
+              "line": 934,
+              "column": 7
+            },
+            {
+              "title": "P6-TC018 [학습자] 홈 소개 페이지 - 하단 챗봇 플로팅 버튼",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [
+                    {
+                      "type": "확인",
+                      "description": "챗봇 플로팅 버튼 노출: true"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2891,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:56:12.019Z",
+                      "annotations": [
+                        {
+                          "type": "확인",
+                          "description": "챗봇 플로팅 버튼 노출: true"
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-682b93ac4135eb2adea1",
+              "file": "aitc-combined.spec.ts",
+              "line": 944,
+              "column": 7
+            },
+            {
+              "title": "P6-TC019 [학습자] 드로어 메뉴 - 로그아웃 버튼 노출",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [
+                    {
+                      "type": "확인",
+                      "description": "로그아웃 메뉴 노출 확인"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2868,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:56:14.918Z",
+                      "annotations": [
+                        {
+                          "type": "확인",
+                          "description": "로그아웃 메뉴 노출 확인"
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-aa89688375c45dc00230",
+              "file": "aitc-combined.spec.ts",
+              "line": 955,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "Phase7: 교수자 클럽 정리",
+          "file": "aitc-combined.spec.ts",
+          "line": 973,
+          "column": 6,
+          "specs": [
+            {
+              "title": "P7-CLEANUP [교수자] 테스트 클럽 삭제 - My강의클럽 → 클럽삭제",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [
+                    {
+                      "type": "확인",
+                      "description": "테스트 클럽 1개 삭제 완료"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "combined",
+                  "projectName": "combined",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 8654,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-27T16:56:17.793Z",
+                      "annotations": [
+                        {
+                          "type": "확인",
+                          "description": "테스트 클럽 1개 삭제 완료"
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "fdadad0d4ffa606df99d-575e0d2629d19ecdac99",
+              "file": "aitc-combined.spec.ts",
+              "line": 976,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-02-27T16:50:55.111Z",
+    "duration": 331997.96499999997,
+    "expected": 48,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

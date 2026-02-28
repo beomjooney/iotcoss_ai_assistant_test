@@ -1,0 +1,9 @@
+[      81ms] [WARNING] [DEPRECATED] Default export is deprecated. Instead use `import { create } from 'zustand'`. @ https://ai.devus.co.kr/_next/static/chunks/pages/_app-c03de0ff67a2bcc3.js:155
+[      87ms] [WARNING] [DEPRECATED] Default export is deprecated. Instead use `import { create } from 'zustand'`. @ https://ai.devus.co.kr/_next/static/chunks/pages/_app-c03de0ff67a2bcc3.js:155
+[      87ms] [WARNING] [DEPRECATED] `getStorage`, `serialize` and `deserialize` options are deprecated. Use `storage` option instead. @ https://ai.devus.co.kr/_next/static/chunks/pages/_app-c03de0ff67a2bcc3.js:155
+[  178722ms] [WARNING] [DEPRECATED] Default export is deprecated. Instead use `import { create } from 'zustand'`. @ https://ai.devus.co.kr/_next/static/chunks/pages/_app-c03de0ff67a2bcc3.js:155
+[  178727ms] [WARNING] [DEPRECATED] Default export is deprecated. Instead use `import { create } from 'zustand'`. @ https://ai.devus.co.kr/_next/static/chunks/pages/_app-c03de0ff67a2bcc3.js:155
+[  178727ms] [WARNING] [DEPRECATED] `getStorage`, `serialize` and `deserialize` options are deprecated. Use `storage` option instead. @ https://ai.devus.co.kr/_next/static/chunks/pages/_app-c03de0ff67a2bcc3.js:155
+[  279043ms] [WARNING] [DEPRECATED] Default export is deprecated. Instead use `import { create } from 'zustand'`. @ https://ai.devus.co.kr/_next/static/chunks/pages/_app-c03de0ff67a2bcc3.js:155
+[  279048ms] [WARNING] [DEPRECATED] Default export is deprecated. Instead use `import { create } from 'zustand'`. @ https://ai.devus.co.kr/_next/static/chunks/pages/_app-c03de0ff67a2bcc3.js:155
+[  279048ms] [WARNING] [DEPRECATED] `getStorage`, `serialize` and `deserialize` options are deprecated. Use `storage` option instead. @ https://ai.devus.co.kr/_next/static/chunks/pages/_app-c03de0ff67a2bcc3.js:155

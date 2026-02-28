@@ -1,0 +1,12 @@
+[      66ms] [WARNING] [DEPRECATED] Default export is deprecated. Instead use `import { create } from 'zustand'`. @ https://ai.devus.co.kr/_next/static/chunks/pages/_app-c03de0ff67a2bcc3.js:155
+[      72ms] [WARNING] [DEPRECATED] Default export is deprecated. Instead use `import { create } from 'zustand'`. @ https://ai.devus.co.kr/_next/static/chunks/pages/_app-c03de0ff67a2bcc3.js:155
+[      72ms] [WARNING] [DEPRECATED] `getStorage`, `serialize` and `deserialize` options are deprecated. Use `storage` option instead. @ https://ai.devus.co.kr/_next/static/chunks/pages/_app-c03de0ff67a2bcc3.js:155
+[   16106ms] [ERROR] Error: <path> attribute d: Expected number, "M NaN NaN A 45 45 …". @ https://ai.devus.co.kr/_next/static/chunks/framework-3236775a9ca336a2.js:8
+[   16106ms] [ERROR] Error: <path> attribute d: Expected number, "M NaN NaN A 45 45 …". @ https://ai.devus.co.kr/_next/static/chunks/framework-3236775a9ca336a2.js:8
+[   16106ms] [ERROR] Error: <path> attribute d: Expected number, "M NaN NaN A 45 45 …". @ https://ai.devus.co.kr/_next/static/chunks/framework-3236775a9ca336a2.js:8
+[   58960ms] [ERROR] Error: <path> attribute d: Expected number, "M NaN NaN A 45 45 …". @ https://ai.devus.co.kr/_next/static/chunks/framework-3236775a9ca336a2.js:8
+[   58960ms] [ERROR] Error: <path> attribute d: Expected number, "M NaN NaN A 45 45 …". @ https://ai.devus.co.kr/_next/static/chunks/framework-3236775a9ca336a2.js:8
+[   58960ms] [ERROR] Error: <path> attribute d: Expected number, "M NaN NaN A 45 45 …". @ https://ai.devus.co.kr/_next/static/chunks/framework-3236775a9ca336a2.js:8
+[   68177ms] [ERROR] Blocked aria-hidden on a <body> element because it would hide the entire accessibility tree from assistive technology users. For more details, see the aria-hidden section of the WAI-ARIA specification at https://w3c.github.io/aria/#aria-hidden. @ https://ai.devus.co.kr/lecture-dashboard/235:0
+[  141226ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ https://api.devus.co.kr/api/v1/lecture-clubs/235/evaluations/ec27b52e-e29f-4293-adec-64f9fc54ae85:0
+[  141227ms] [ERROR] {responseCode: 5000, message: LLM internal error occurred: Internal Server Error} @ https://ai.devus.co.kr/_next/static/chunks/pages/_app-c03de0ff67a2bcc3.js:135

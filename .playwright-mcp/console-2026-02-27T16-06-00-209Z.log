@@ -1,0 +1,3 @@
+[      82ms] [WARNING] [DEPRECATED] Default export is deprecated. Instead use `import { create } from 'zustand'`. @ https://iotcoss.devus.co.kr/_next/static/chunks/pages/_app-c03de0ff67a2bcc3.js:155
+[      88ms] [WARNING] [DEPRECATED] Default export is deprecated. Instead use `import { create } from 'zustand'`. @ https://iotcoss.devus.co.kr/_next/static/chunks/pages/_app-c03de0ff67a2bcc3.js:155
+[      88ms] [WARNING] [DEPRECATED] `getStorage`, `serialize` and `deserialize` options are deprecated. Use `storage` option instead. @ https://iotcoss.devus.co.kr/_next/static/chunks/pages/_app-c03de0ff67a2bcc3.js:155

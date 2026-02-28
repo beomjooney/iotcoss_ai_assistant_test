@@ -1,0 +1,53 @@
+{
+  "cookies": [
+    {
+      "name": "_ga",
+      "value": "GA1.1.1304157824.1772211057",
+      "domain": ".devus.co.kr",
+      "path": "/",
+      "expires": 1806771057.151654,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga_D24D4W3C1M",
+      "value": "GS2.1.s1772211057$o1$g0$t1772211059$j58$l0$h0",
+      "domain": ".devus.co.kr",
+      "path": "/",
+      "expires": 1806771059.176091,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "access_token",
+      "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzY2NkNzVmZS0xNzdiLTQzNmYtYmM2OS1lMzE0OWY3YzZiYTAiLCJtZW1iZXJJZCI6InNqcWExQHNlam9uZy5hYy5rciIsIm5pY2tuYW1lIjoiUUExIiwidGVuYW50SWQiOiJzanVudiIsInRlbmFudFVVSUQiOiI0ZTNkODdiNS1hOTY4LTRkZmEtYTQxMS00M2NhNGZmY2ZjMjIiLCJyb2xlcyI6WyJST0xFX01BTkFHRVIiLCJST0xFX0lOU1RSVUNUT1IiLCJST0xFX1VTRVIiXSwiaWF0IjoxNzcyMjExMDU5LCJleHAiOjE3NzIyNDcwNTl9.EmuFfAe86tUymXRYwjTRlRVMWGFD-edHUab8BgVL1_dWB1AvJkVr2F7q8nq2xaanPW5wDTLpJDVCsym_GzMH9A",
+      "domain": "iotcoss.devus.co.kr",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "https://iotcoss.devus.co.kr",
+      "localStorage": [
+        {
+          "name": "activeIndex",
+          "value": "0"
+        },
+        {
+          "name": "auth-store",
+          "value": "{\"state\":{\"token\":\"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzY2NkNzVmZS0xNzdiLTQzNmYtYmM2OS1lMzE0OWY3YzZiYTAiLCJtZW1iZXJJZCI6InNqcWExQHNlam9uZy5hYy5rciIsIm5pY2tuYW1lIjoiUUExIiwidGVuYW50SWQiOiJzanVudiIsInRlbmFudFVVSUQiOiI0ZTNkODdiNS1hOTY4LTRkZmEtYTQxMS00M2NhNGZmY2ZjMjIiLCJyb2xlcyI6WyJST0xFX01BTkFHRVIiLCJST0xFX0lOU1RSVUNUT1IiLCJST0xFX1VTRVIiXSwiaWF0IjoxNzcyMjExMDU5LCJleHAiOjE3NzIyNDcwNTl9.EmuFfAe86tUymXRYwjTRlRVMWGFD-edHUab8BgVL1_dWB1AvJkVr2F7q8nq2xaanPW5wDTLpJDVCsym_GzMH9A\",\"memberType\":\"3ccd75fe-177b-436f-bc69-e3149f7c6ba0\",\"memberId\":\"3ccd75fe-177b-436f-bc69-e3149f7c6ba0\",\"memberName\":\"QA1\",\"tenantName\":\"sjunv\",\"tenantUri\":\"iotcoss\",\"loginType\":[\"0101\",\"0200\"],\"jobGroupLabelType\":\"0100\",\"studyOrderLabelType\":\"0200\",\"tenantLoginMemberTypes\":[],\"menu\":{\"use_lecture_club\":true,\"use_quiz_club\":false},\"redirections\":{\"home_url\":\"https://iotcoss.devus.co.kr\",\"login_url\":\"https://iotcoss.devus.co.kr/account/login\"},\"logged\":true,\"roles\":[\"ROLE_MANAGER\",\"ROLE_INSTRUCTOR\",\"ROLE_USER\"],\"tenantOrganizationCodes\":[{\"code\":\"0000\",\"name\":\"일반\"},{\"code\":\"0100\",\"name\":\"세종대학교\"},{\"code\":\"0200\",\"name\":\"동국대학교\"},{\"code\":\"0300\",\"name\":\"대전대학교\"},{\"code\":\"0400\",\"name\":\"제주대학교\"},{\"code\":\"0500\",\"name\":\"제주한라대학교\"}],\"registrationAuthenticationType\":\"0200\"},\"version\":0}"
+        },
+        {
+          "name": "app-storage",
+          "value": "{\"state\":{\"isDarkMode\":true,\"user\":{\"member\":{\"memberUUID\":\"3ccd75fe-177b-436f-bc69-e3149f7c6ba0\",\"memberUri\":\"406855736158\",\"profileImageUrl\":null,\"nickname\":\"QA1\",\"memberId\":\"sjqa1@sejong.ac.kr\"},\"jobGroup\":{\"code\":\"SEJONG\",\"name\":\"세종대학교\"},\"job\":{\"code\":\"SEJONG_0001\",\"name\":\"세종대학교 일반대학\"},\"jobLevels\":[],\"introductionMessage\":null,\"email\":\"sjqa1@sejong.ac.kr\",\"phoneNumber\":\"01025658578\",\"companyName\":null,\"department\":null,\"title\":null,\"experienceYears\":null,\"skills\":[]},\"hasResumeStory\":{},\"jobGroups\":[],\"contentTypes\":[],\"paymentTypes\":[],\"placeTypes\":[],\"experiences\":[],\"skills\":[]},\"version\":0}"
+        }
+      ]
+    }
+  ]
+}
