@@ -1,0 +1,12 @@
+{
+  "name": "iotcoss-e2e-tests",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "test:combined": "playwright test --project=combined"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2"
+  }
+}

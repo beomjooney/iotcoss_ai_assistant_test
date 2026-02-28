@@ -24,3 +24,6 @@ yarn-error.log
 /.sass-cache
 
 career-mentors.iml
+
+# Playwright 테스트 임시 파일
+tests/aitc/.club-id-temp.txt

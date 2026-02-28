@@ -19,7 +19,7 @@ export default defineConfig({
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
-    headless: false,
+    headless: !!process.env.CI,
     viewport: { width: 1280, height: 900 },
     locale: 'ko-KR',
     timezoneId: 'Asia/Seoul',
