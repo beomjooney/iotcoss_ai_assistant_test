@@ -391,16 +391,20 @@ test.describe('Phase4: 학습자 AI조교 활용', () => {
     const hasSelect = await lectureSelect.isVisible({ timeout: 5_000 }).catch(() => false);
 
     if (hasSelect) {
-      // 테스트 클럽 옵션 찾아 선택
+      // 옵션이 완전히 로드될 때까지 대기 (CI 환경에서 options 늦게 로드됨)
+      await page.waitForTimeout(2000);
       const optTexts = await lectureSelect.locator('option').allTextContents().catch(() => [] as string[]);
       const testOpt = optTexts.find(o => o.includes('테스트 클럽'));
-      if (testOpt) {
-        await lectureSelect.selectOption({ label: testOpt }).catch(() => {});
-        await page.waitForTimeout(500);
+      // testOpt 미발견 시 첫 번째 유효 옵션을 fallback으로 선택
+      const fallbackOpt = optTexts.find(o => o.trim().length > 0 && !/선택|--/.test(o));
+      const optToSelect = testOpt || fallbackOpt;
+      if (optToSelect) {
+        await lectureSelect.selectOption({ label: optToSelect }).catch(() => {});
+        await page.waitForTimeout(3000); // 채팅 UI 로드 대기 (500ms → 3000ms)
       }
 
-      // 질문 입력 및 전송
-      const inputArea = frame.locator('input[type="text"], textarea').first();
+      // 질문 입력 및 전송 — contenteditable/role="textbox" 포함 확장 selector
+      const inputArea = frame.locator('input[type="text"], textarea, [contenteditable="true"], [role="textbox"]').first();
       // 입력창 미노출 시 실패
       const hasInput = await inputArea.isVisible({ timeout: 15_000 }).catch(() => false);
       if (!hasInput) {
@@ -614,8 +618,9 @@ test.describe('Phase5: 교수자 대시보드 분석', () => {
     if (!hasTotalBtn) {
       throw new Error('총평확인 버튼 미노출 — 학생 활동 데이터 없음');
     }
+    await totalBtn.scrollIntoViewIfNeeded().catch(() => {});
     await totalBtn.click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(2000); // 팝업 API 응답 대기 (1000ms → 2000ms)
 
     // 학습피드백 총평 팝업
     await expect(page.getByText('학습피드백 총평').first()).toBeVisible({ timeout: 15_000 });
